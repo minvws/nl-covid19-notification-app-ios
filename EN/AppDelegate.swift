@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError("AppDelegate - Window not found!")
         }
         
-        window.rootViewController = ViewController()
+        window.rootViewController = NavigationController(rootViewController: OnboardingStepViewController(index: 0))
         window.makeKeyAndVisible()
         
         return true
