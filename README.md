@@ -1,20 +1,19 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Covid19 Notification App - iOS
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This repository contains the iOS sources for the Covid19 Notification App that's being developed by the Dutch Government.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## Disclaimer
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+This repository is a work in progress. It is not a code dump of the final version of the app.
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.
+
+## How this application is being developed
+
+There are two Git environments for this repository. One is private and hosted on Azure DevOps. The other one is public and hosted on Github. They are linked using Git.
+
+Contributions from the members of the core team are done in Azure DevOps. The master branch is periodically pushed to Github, keeping the history intact.
+
+External contributions are done in Github. A contributor creates a fork and opens a Pull Request. All checks and reviews are performed in Github. When all checks succeed, the branch is pulled into Azure DevOps and merged into the master branch. In the next push of the master branch, the Pull Request will automatically be closed.
+
+In case of non-trivial changes, we kindly ask you to open an issue so we can discuss it.
