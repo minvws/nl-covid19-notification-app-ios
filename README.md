@@ -1,20 +1,19 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Covid19 Notification App - iOS
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This repository contains the iOS App of the Proof of Concept for the Dutch exposure notification app. We provide this code in an early stage so that everyone can follow along as we develop the app, and to solicit feedback. Note that due to the early stage in which we are sharing this code, significant portions of the code might still change. We might add or remove features and code as needed, based on validation and user tests that are conducted partially in parallel to the development.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+The iOS app is located in the repository you are currently viewing.
+The Android app can be found here: https://github.com/minvws/nl-covid19-notification-app-android
+The backend can be found here: https://github.com/minvws/nl-covid19-notification-app-backend
+The designs that are used as a basis to develop the apps can be found here: https://github.com/minvws/nl-covid19-notification-app-design
+The architecture that underpins the development can be found here: https://github.com/minvws/nl-covid19-notification-app-coordination
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+## Development & Contribution process
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+The core team works on the repository in a private fork (for reasons of compliance with existing processes) and will share its work as often as possible.
+If you plan to make non-trivial changes, we recommend to open an issue beforehand where we can discuss your planned changes.
+This increases the chance that we might be able to use your contribution (or it avoids doing work if there are reasons why we wouldn't be able to use it).
+
+## Disclaimer
+
+Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.
