@@ -36,7 +36,7 @@ class OnboardingStepViewController: UIViewController {
     var index: Int
     var onboardingStep: OnboardingStep
 
-    // MARK: - Live cycle
+    // MARK: - Lifecycle
 
     init(index: Int) {
 

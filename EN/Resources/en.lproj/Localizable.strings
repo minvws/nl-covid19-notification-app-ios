@@ -11,7 +11,7 @@
 "yes" = "Ja";
 "no" = "Nee";
 "warning" = "Waarschuwing";
-"back" = "Terug";
+"back" = "Vorige";
 "cancel" = "Annuleren";
 
 // MARK: - Onboarding Steps
