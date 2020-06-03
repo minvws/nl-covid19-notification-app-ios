@@ -7,11 +7,6 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-             
-    }
+public func Localized(_ key: String) -> String {
+    return NSLocalizedString(key, comment: "")
 }
-

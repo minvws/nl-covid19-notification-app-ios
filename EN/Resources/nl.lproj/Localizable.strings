@@ -1,0 +1,32 @@
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
+
+// MARK: - General
+"" = "Empty localized string";
+"ok" = "Ok";
+"yes" = "Ja";
+"no" = "Nee";
+"warning" = "Waarschuwing";
+"back" = "Vorige";
+"cancel" = "Annuleren";
+
+// MARK: - Onboarding Steps
+"step1Title" = "Bescherm je vrienden, familie en de rest van Nederland";
+"step1Content" = "Deze app waarschuwt nadat je in de buurt bent geweest van iemand met het coronavirus. Zo kunnen we samen de verspreiding stoppen.";
+
+"step2Title" = "De app ziet via Bluetooth of je dicht bij iemand bent geweest";
+"step2Content" = "Hoe sterker het Bluetooth signaal, hoe dichter bij je bent geweest. Dit is 100% anoniem. De app ziet niet waar je bent geweest en gebruikt weinig energie.";
+
+"step3Title" = "Krijg een melding nadat je een verhoogd risico op besmetting hebt gelopen";
+"step3Content" = "Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die daarna positief is getest. Deze persoon moet ook de app gebruiken.";
+
+"step4Title" = "Fietste er iemand voorbij? Dan krijg je later geen melding.";
+"step4Content" = "De Bluetooth signaalsterkte was door de afstand namelijk erg zwak, en jullie waren maar kort bij elkaar in de buurt.";
+
+// MARK: - Onboarding
+"nextButtonTitle" = "Volgende";
+"example" = "Voorbeeld";
