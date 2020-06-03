@@ -1,19 +1,19 @@
 # Covid19 Notification App - iOS
 
-This repository contains the iOS sources for the Covid19 Notification App that's being developed by the Dutch Government.
+This repository contains the iOS App of the Proof of Concept for the Dutch exposure notification app. We provide this code in an early stage so that everyone can follow along as we develop the app, and to solicit feedback. Note that due to the early stage in which we are sharing this code, significant portions of the code might still change. We might add or remove features and code as needed, based on validation and user tests that are conducted partially in parallel to the development.
+
+The iOS app is located in the repository you are currently viewing.
+The Android app can be found here: https://github.com/minvws/nl-covid19-notification-app-android
+The backend can be found here: https://github.com/minvws/nl-covid19-notification-app-backend
+The designs that are used as a basis to develop the apps can be found here: https://github.com/minvws/nl-covid19-notification-app-design
+The architecture that underpins the development can be found here: https://github.com/minvws/nl-covid19-notification-app-coordination
+
+## Development & Contribution process
+
+The core team working on this application will periodically add features to this repository.
+If you plan to make non-trivial changes, we recommend to open an issue beforehand where we can discuss your planned changes.
+This increases the chance that we might be able to use your contribution (or it avoids doing work if there are reasons why we wouldn't be able to use it).
 
 ## Disclaimer
 
-This repository is a work in progress. It is not a code dump of the final version of the app.
-
 Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.
-
-## How this application is being developed
-
-There are two Git environments for this repository. One is private and hosted on Azure DevOps. The other one is public and hosted on Github. They are linked using Git.
-
-Contributions from the members of the core team are done in Azure DevOps. The master branch is periodically pushed to Github, keeping the history intact.
-
-External contributions are done in Github. A contributor creates a fork and opens a Pull Request. All checks and reviews are performed in Github. When all checks succeed, the branch is pulled into Azure DevOps and merged into the master branch. In the next push of the master branch, the Pull Request will automatically be closed.
-
-In case of non-trivial changes, we kindly ask you to open an issue so we can discuss it.
