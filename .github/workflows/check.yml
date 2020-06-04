@@ -1,0 +1,26 @@
+name: Testing & Linting
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+      - name: Force XCode 11.5
+        run: sudo xcode-select -switch /Applications/Xcode_11.5.app
+      - name: Testing iOS app
+        run: xcodebuild -scheme EN -destination platform=iOS\ Simulator,OS=13.5,name=iPhone\ 11 clean test | xcpretty
+  lint:
+    name: Run SwiftLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+      - name: Run SwiftLint
+        uses: norio-nomura/action-swiftlint@3.1.0
+        env:
+          DIFF_BASE: ${{ github.base_ref }}
