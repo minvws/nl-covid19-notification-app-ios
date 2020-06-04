@@ -25,18 +25,10 @@ final class OnboardingStep: NSObject {
         self.isExample = isExample
 
         let attributedString = NSMutableAttributedString()
-
-        let newLineAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 10)]
-        let newLine = NSAttributedString(string: "\n\n", attributes: newLineAttributes)
-
-        let exampleStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 15, weight: .bold), .foregroundColor: UIColor.secondaryColor]
-        let exampleString = NSAttributedString(string: Localized("example"), attributes: exampleStringAttributes)
-
-        let titleStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 22, weight: .bold), .foregroundColor: UIColor.black]
-        let titleString = NSAttributedString(string: title, attributes: titleStringAttributes)
-
-        let contentStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 17, weight: .regular), .foregroundColor: UIColor.grayColor]
-        let contentString = NSAttributedString(string: content, attributes: contentStringAttributes)
+        let newLine: NSAttributedString = .make(text: "\n\n", font: .systemFont(ofSize: 10), textColor: .black)
+        let exampleString: NSAttributedString = .make(text: Localized("example"), font: .systemFont(ofSize: 15, weight: .bold), textColor: UIColor.secondaryColor)
+        let titleString: NSAttributedString = .make(text: title, font: .boldSystemFont(ofSize: 22), textColor: .black)
+        let contentString: NSAttributedString = .make(text: content, font: .systemFont(ofSize: 17), textColor: .grayColor)
 
         if isExample {
             for string in [exampleString, newLine, titleString, newLine, contentString] { attributedString.append(string) }
