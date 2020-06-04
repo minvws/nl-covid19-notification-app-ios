@@ -18,14 +18,14 @@
 		74D95DC524865AB000836229 /* Haptic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DC424865AB000836229 /* Haptic.swift */; };
 		74D95DC724865B9900836229 /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DC624865B9900836229 /* OnboardingStep.swift */; };
 		74D95DC924865DCC00836229 /* UIViewController+UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DC824865DCC00836229 /* UIViewController+UINavigationController.swift */; };
-		74D95DCD248660C700836229 /* NSLocalizedString+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */; };
+		74D95DCD248660C700836229 /* NSLocalizedString+localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCC248660C700836229 /* NSLocalizedString+localized.swift */; };
 		74D95DCF2486618C00836229 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCE2486618C00836229 /* NavigationController.swift */; };
 		74D95DD1248668D300836229 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 74D95DD3248668D300836229 /* Localizable.strings */; };
 		74D95DD624866B9900836229 /* OnboardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DD524866B9900836229 /* OnboardingManager.swift */; };
 		74D95DDE2487C56100836229 /* ENUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DDD2487C56100836229 /* ENUnitTests.swift */; };
 		74D95DE52487E7B300836229 /* OnboardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DD524866B9900836229 /* OnboardingManager.swift */; };
 		74D95DE62487E7B700836229 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 74D95DD3248668D300836229 /* Localizable.strings */; };
-		74D95DE72487E7E500836229 /* NSLocalizedString+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */; };
+		74D95DE72487E7E500836229 /* NSLocalizedString+localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCC248660C700836229 /* NSLocalizedString+localized.swift */; };
 		74D95DE82487E90D00836229 /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DC624865B9900836229 /* OnboardingStep.swift */; };
 		74D95DE92487E9DA00836229 /* UIColor+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DBE2486519B00836229 /* UIColor+Theme.swift */; };
 /* End PBXBuildFile section */
@@ -55,7 +55,7 @@
 		74D95DC424865AB000836229 /* Haptic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptic.swift; sourceTree = "<group>"; };
 		74D95DC624865B9900836229 /* OnboardingStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStep.swift; sourceTree = "<group>"; };
 		74D95DC824865DCC00836229 /* UIViewController+UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+UINavigationController.swift"; sourceTree = "<group>"; };
-		74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLocalizedString+Localized.swift"; sourceTree = "<group>"; };
+		74D95DCC248660C700836229 /* NSLocalizedString+localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLocalizedString+localized.swift"; sourceTree = "<group>"; };
 		74D95DCE2486618C00836229 /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		74D95DD2248668D300836229 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		74D95DD4248668D700836229 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -146,7 +146,7 @@
 			children = (
 				74D95DBE2486519B00836229 /* UIColor+Theme.swift */,
 				74D95DC824865DCC00836229 /* UIViewController+UINavigationController.swift */,
-				74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */,
+				74D95DCC248660C700836229 /* NSLocalizedString+localized.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -324,7 +324,7 @@
 				74D95DD624866B9900836229 /* OnboardingManager.swift in Sources */,
 				74D95DC724865B9900836229 /* OnboardingStep.swift in Sources */,
 				74D95DCF2486618C00836229 /* NavigationController.swift in Sources */,
-				74D95DCD248660C700836229 /* NSLocalizedString+Localized.swift in Sources */,
+				74D95DCD248660C700836229 /* NSLocalizedString+localized.swift in Sources */,
 				74D95DC12486577A00836229 /* OnboardingStepViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -335,7 +335,7 @@
 			files = (
 				74D95DE92487E9DA00836229 /* UIColor+Theme.swift in Sources */,
 				74D95DE52487E7B300836229 /* OnboardingManager.swift in Sources */,
-				74D95DE72487E7E500836229 /* NSLocalizedString+Localized.swift in Sources */,
+				74D95DE72487E7E500836229 /* NSLocalizedString+localized.swift in Sources */,
 				74D95DE82487E90D00836229 /* OnboardingStep.swift in Sources */,
 				74D95DDE2487C56100836229 /* ENUnitTests.swift in Sources */,
 			);

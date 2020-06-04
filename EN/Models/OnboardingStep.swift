@@ -30,7 +30,7 @@ class OnboardingStep: NSObject {
         let newLine = NSAttributedString(string: "\n\n", attributes: newLineAttributes)
 
         let exampleStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 15, weight: .bold), .foregroundColor: UIColor.secondaryColor]
-        let exampleString = NSAttributedString(string: Localized("example"), attributes: exampleStringAttributes)
+        let exampleString = NSAttributedString(string: localized("example"), attributes: exampleStringAttributes)
 
         let titleStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 22, weight: .bold), .foregroundColor: UIColor.black]
         let titleString = NSAttributedString(string: title, attributes: titleStringAttributes)

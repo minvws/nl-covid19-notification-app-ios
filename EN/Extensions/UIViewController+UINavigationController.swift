@@ -18,7 +18,7 @@ extension UIViewController {
     }
 
     func showNavigationBarBackTitle() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: Localized("back"), style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: localized("back"), style: .plain, target: nil, action: nil)
     }
 
     func showNavigationBar(animated showAnimated: Bool = false) {

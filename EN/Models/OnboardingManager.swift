@@ -17,40 +17,40 @@ class OnboardingManager {
 
         onboardingSteps.append(
             OnboardingStep(
-                title: Localized("step1Title"),
-                content: Localized("step1Content"),
+                title: localized("step1Title"),
+                content: localized("step1Content"),
                 image: UIImage(named: "Step1") ?? UIImage(),
-                buttonTitle: Localized("nextButtonTitle"),
+                buttonTitle: localized("nextButtonTitle"),
                 isExample: false
             )
         )
 
         onboardingSteps.append(
             OnboardingStep(
-                title: Localized("step2Title"),
-                content: Localized("step2Content"),
+                title: localized("step2Title"),
+                content: localized("step2Content"),
                 image: UIImage(named: "Step2") ?? UIImage(),
-                buttonTitle: Localized("nextButtonTitle"),
+                buttonTitle: localized("nextButtonTitle"),
                 isExample: false
             )
         )
 
         onboardingSteps.append(
             OnboardingStep(
-                title: Localized("step3Title"),
-                content: Localized("step3Content"),
+                title: localized("step3Title"),
+                content: localized("step3Content"),
                 image: UIImage(named: "Step3") ?? UIImage(),
-                buttonTitle: Localized("nextButtonTitle"),
+                buttonTitle: localized("nextButtonTitle"),
                 isExample: false
             )
         )
 
         onboardingSteps.append(
             OnboardingStep(
-                title: Localized("step4Title"),
-                content: Localized("step4Content"),
+                title: localized("step4Title"),
+                content: localized("step4Content"),
                 image: UIImage(named: "Step4") ?? UIImage(),
-                buttonTitle: Localized("nextButtonTitle"),
+                buttonTitle: localized("nextButtonTitle"),
                 isExample: true
             )
         )

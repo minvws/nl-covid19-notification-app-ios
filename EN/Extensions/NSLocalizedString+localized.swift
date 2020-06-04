@@ -7,6 +7,6 @@
 
 import UIKit
 
-public func Localized(_ key: String) -> String {
+public func localized(_ key: String) -> String {
     return NSLocalizedString(key, comment: "")
 }
