@@ -29,17 +29,28 @@ class OnboardingStep: NSObject {
         let newLineAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 10)]
         let newLine = NSAttributedString(string: "\n\n", attributes: newLineAttributes)
 
-        let exampleStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 15, weight: .bold), .foregroundColor: UIColor.secondaryColor]
+        let exampleStringAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 15, weight: .bold),
+            .foregroundColor: UIColor.secondaryColor
+        ]
         let exampleString = NSAttributedString(string: localized("example"), attributes: exampleStringAttributes)
 
-        let titleStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 22, weight: .bold), .foregroundColor: UIColor.black]
+        let titleStringAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 22, weight: .bold),
+            .foregroundColor: UIColor.black
+        ]
         let titleString = NSAttributedString(string: title, attributes: titleStringAttributes)
 
-        let contentStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 17, weight: .regular), .foregroundColor: UIColor.grayColor]
+        let contentStringAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 17, weight: .regular),
+            .foregroundColor: UIColor.grayColor
+        ]
         let contentString = NSAttributedString(string: content, attributes: contentStringAttributes)
 
         if isExample {
-            for string in [exampleString, newLine, titleString, newLine, contentString] { attributedString.append(string) }
+            for string in [exampleString, newLine, titleString, newLine, contentString] {
+                attributedString.append(string)
+            }
         } else {
             for string in [titleString, newLine, contentString] { attributedString.append(string) }
         }

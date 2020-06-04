@@ -18,6 +18,11 @@ extension UIColor {
 
     // MARK: - Controllers
 
-    class var navigationControllerBackgroundColor: UIColor { return UIColor(named: "NavigationControllerBackgroundColor") ?? .clear }
-    class var viewControllerBackgroundColor: UIColor { return UIColor(named: "ViewControllerBackgroundColor") ?? .clear }
+    class var navigationControllerBackgroundColor: UIColor {
+        return UIColor(named: "NavigationControllerBackgroundColor") ?? .clear
+    }
+
+    class var viewControllerBackgroundColor: UIColor {
+        return UIColor(named: "ViewControllerBackgroundColor") ?? .clear
+    }
 }

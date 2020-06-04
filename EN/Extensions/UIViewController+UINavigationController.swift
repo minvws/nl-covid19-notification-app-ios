@@ -18,14 +18,21 @@ extension UIViewController {
     }
 
     func showNavigationBarBackTitle() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: localized("back"), style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(
+            title: localized("back"),
+            style: .plain,
+            target: nil,
+            action: nil
+        )
     }
 
     func showNavigationBar(animated showAnimated: Bool = false) {
         navigationController?.setNavigationBarHidden(false, animated: showAnimated)
     }
 
-    func setThemeNavigationBar(withTitle title: String = "", backgroundColor: UIColor = .viewControllerBackgroundColor, shouldHideBackTitle: Bool = false) {
+    func setThemeNavigationBar(withTitle title: String = "",
+                               backgroundColor: UIColor = .viewControllerBackgroundColor,
+                               shouldHideBackTitle: Bool = false) {
 
         navigationController?.navigationBar.topItem?.title = title
 

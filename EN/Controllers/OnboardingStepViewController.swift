@@ -42,7 +42,9 @@ class OnboardingStepViewController: UIViewController {
 
         self.index = index
 
-        guard let step = OnboardingManager.shared.getStep(index) else { fatalError("OnboardingStep index out of range") }
+        guard let step = OnboardingManager.shared.getStep(index) else {
+            fatalError("OnboardingStep index out of range")
+        }
 
         self.onboardingStep = step
 
@@ -110,7 +112,10 @@ class OnboardingStepViewController: UIViewController {
     @objc func buttonPressed() {
         let nextIndex = self.index + 1
         if OnboardingManager.shared.onboardingSteps.count > nextIndex {
-            self.navigationController?.pushViewController(OnboardingStepViewController(index: nextIndex), animated: true)
+            self.navigationController?.pushViewController(
+                OnboardingStepViewController(index: nextIndex),
+                animated: true
+            )
         }
     }
 }
