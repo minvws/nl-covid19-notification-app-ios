@@ -28,6 +28,7 @@
 		74D95DE72487E7E500836229 /* NSLocalizedString+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */; };
 		74D95DE82487E90D00836229 /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DC624865B9900836229 /* OnboardingStep.swift */; };
 		74D95DE92487E9DA00836229 /* UIColor+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DBE2486519B00836229 /* UIColor+Theme.swift */; };
+		A82CED2124890A4D003E23EA /* NSAttributedString+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82CED2024890A4D003E23EA /* NSAttributedString+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		74D95DDB2487C56100836229 /* ENUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ENUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74D95DDD2487C56100836229 /* ENUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ENUnitTests.swift; sourceTree = "<group>"; };
 		74D95DDF2487C56100836229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A82CED2024890A4D003E23EA /* NSAttributedString+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 				74D95DBE2486519B00836229 /* UIColor+Theme.swift */,
 				74D95DC824865DCC00836229 /* UIViewController+UINavigationController.swift */,
 				74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */,
+				A82CED2024890A4D003E23EA /* NSAttributedString+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 			files = (
 				74D95DC524865AB000836229 /* Haptic.swift in Sources */,
 				74D95DC324865A0E00836229 /* Button.swift in Sources */,
+				A82CED2124890A4D003E23EA /* NSAttributedString+Extension.swift in Sources */,
 				74D95DBF2486519B00836229 /* UIColor+Theme.swift in Sources */,
 				74D95DC924865DCC00836229 /* UIViewController+UINavigationController.swift in Sources */,
 				74D95D9D248638C100836229 /* AppDelegate.swift in Sources */,
