@@ -17,7 +17,7 @@ extension UIColor {
     class var grayColor: UIColor { return UIColor(named: "GrayColor") ?? .clear }
 
     // MARK: - Controllers
-    
+
     class var navigationControllerBackgroundColor: UIColor { return UIColor(named: "NavigationControllerBackgroundColor") ?? .clear }
     class var viewControllerBackgroundColor: UIColor { return UIColor(named: "ViewControllerBackgroundColor") ?? .clear }
 }

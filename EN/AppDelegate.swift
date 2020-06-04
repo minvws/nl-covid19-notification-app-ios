@@ -13,18 +13,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+
         window = UIWindow()
 
         guard let window = window else {
             fatalError("AppDelegate - Window not found!")
         }
-        
+
         window.rootViewController = NavigationController(rootViewController: OnboardingStepViewController(index: 0))
         window.makeKeyAndVisible()
-        
+
         return true
     }
 
 }
-

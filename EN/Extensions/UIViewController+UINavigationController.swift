@@ -26,7 +26,7 @@ extension UIViewController {
     }
 
     func setThemeNavigationBar(withTitle title: String = "", backgroundColor: UIColor = .viewControllerBackgroundColor, shouldHideBackTitle: Bool = false) {
-        
+
         navigationController?.navigationBar.topItem?.title = title
 
         navigationController?.navigationBar.isTranslucent = false

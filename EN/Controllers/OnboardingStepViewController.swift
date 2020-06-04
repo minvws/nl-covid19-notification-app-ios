@@ -41,7 +41,7 @@ class OnboardingStepViewController: UIViewController {
     init(index: Int) {
 
         self.index = index
-        
+
         guard let step = OnboardingManager.shared.getStep(index) else { fatalError("OnboardingStep index out of range") }
 
         self.onboardingStep = step
@@ -51,7 +51,7 @@ class OnboardingStepViewController: UIViewController {
         self.button.title = self.onboardingStep.buttonTitle
         self.imageView.image = self.onboardingStep.image
         self.label.attributedText = self.onboardingStep.attributedText
-        
+
         self.button.isHidden = OnboardingManager.shared.onboardingSteps.count == self.index + 1
     }
 
@@ -71,9 +71,9 @@ class OnboardingStepViewController: UIViewController {
     private func setupViews() {
 
         view.backgroundColor = .viewControllerBackgroundColor
-        
+
         setThemeNavigationBar()
-        
+
         for subView in viewsInDisplayOrder { view.addSubview(subView) }
     }
 
@@ -92,16 +92,16 @@ class OnboardingStepViewController: UIViewController {
             button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            button.heightAnchor.constraint(equalToConstant: 50),
+            button.heightAnchor.constraint(equalToConstant: 50)
             ])
 
         constraints.append([
             label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 0),
             label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            label.bottomAnchor.constraint(equalTo: button.topAnchor, constant: 0),
+            label.bottomAnchor.constraint(equalTo: button.topAnchor, constant: 0)
             ])
-        
+
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
 
@@ -114,4 +114,3 @@ class OnboardingStepViewController: UIViewController {
         }
     }
 }
-

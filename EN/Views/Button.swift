@@ -33,7 +33,7 @@ class Button: UIButton {
 
         self.setTitle(title, for: .normal)
         self.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
-        
+
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
 

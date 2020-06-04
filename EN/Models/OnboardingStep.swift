@@ -17,7 +17,7 @@ class OnboardingStep: NSObject {
     var attributedText: NSAttributedString = NSAttributedString(string: "")
 
     init(title: String, content: String, image: UIImage, buttonTitle: String, isExample: Bool) {
-        
+
         self.title = title
         self.content = content
         self.image = image

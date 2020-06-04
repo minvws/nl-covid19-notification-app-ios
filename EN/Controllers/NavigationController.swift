@@ -11,7 +11,7 @@ class NavigationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.view.backgroundColor = .navigationControllerBackgroundColor            
+
+        self.view.backgroundColor = .navigationControllerBackgroundColor
     }
 }
