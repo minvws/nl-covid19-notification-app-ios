@@ -105,7 +105,7 @@ class OnboardingStepViewController: UIViewController {
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
 
-    //MARK: - Functions
+    // MARK: - Functions
 
     @objc func buttonPressed() {
         let nextIndex = self.index + 1
