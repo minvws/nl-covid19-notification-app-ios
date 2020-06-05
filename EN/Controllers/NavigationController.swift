@@ -9,9 +9,13 @@ import UIKit
 
 class NavigationController: UINavigationController {
 
+    private var manager: NavigationManager! = nil
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = .navigationControllerBackgroundColor            
+
+        manager = NavigationManager(controller: self)
     }
 }
