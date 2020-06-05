@@ -9,6 +9,12 @@ import UIKit
 
 class OnboardingStepViewController: UIViewController {
 
+    lazy public var progressView: UIProgressView = {
+        let progressView = UIProgressView()
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        return progressView
+    }()
+
     lazy private var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -31,10 +37,16 @@ class OnboardingStepViewController: UIViewController {
         return button
     }()
 
-    lazy private var viewsInDisplayOrder = [imageView, button, label]
+    lazy public var viewsAnimatedTransition = [imageView, label]
+
+    lazy private var viewsInDisplayOrder = [progressView, imageView, button, label]
 
     var index: Int
     var onboardingStep: OnboardingStep
+
+    var progress: Float {
+        return max(0.01, Float(index) / Float(OnboardingManager.shared.onboardingSteps.count - 1))
+    }
 
     // MARK: - Lifecycle
 
@@ -48,6 +60,7 @@ class OnboardingStepViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
+        self.progressView.progress = self.progress
         self.button.title = self.onboardingStep.buttonTitle
         self.imageView.image = self.onboardingStep.image
         self.label.attributedText = self.onboardingStep.attributedText
@@ -82,7 +95,13 @@ class OnboardingStepViewController: UIViewController {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            progressView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            progressView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.3, constant: 1),
+            progressView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0)
+        ])
+
+        constraints.append([
+            imageView.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 0),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
