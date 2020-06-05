@@ -13,7 +13,7 @@ jobs:
       - name: Force XCode 11.5
         run: sudo xcode-select -switch /Applications/Xcode_11.5.app
       - name: Testing iOS app
-        run: xcodebuild -scheme EN -destination platform=iOS\ Simulator,OS=13.5,name=iPhone\ 11 clean test | xcpretty
+        run: set -o pipefail && xcodebuild -scheme EN -destination platform=iOS\ Simulator,OS=13.5,name=iPhone\ 11 clean test | xcpretty
   lint:
     name: Run SwiftLint
     runs-on: ubuntu-latest
