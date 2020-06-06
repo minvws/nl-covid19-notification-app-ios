@@ -22,8 +22,4 @@ import UIKit
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-
-    override func prepareForInterfaceBuilder() {
-        self.text = Bundle(for: type(of: self)).localizedString(forKey: localizedKey, value: "", table: nil)
-    }
 }
