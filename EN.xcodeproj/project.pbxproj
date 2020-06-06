@@ -28,6 +28,9 @@
 		74D95DE72487E7E500836229 /* NSLocalizedString+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */; };
 		74D95DE82487E90D00836229 /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DC624865B9900836229 /* OnboardingStep.swift */; };
 		74D95DE92487E9DA00836229 /* UIColor+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DBE2486519B00836229 /* UIColor+Theme.swift */; };
+		DA99C583248B88FD0019BCFE /* UnsupportedOs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA99C582248B88FD0019BCFE /* UnsupportedOs.storyboard */; };
+		DA99C585248BA2DD0019BCFE /* Label.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA99C584248BA2DD0019BCFE /* Label.swift */; };
+		DABB403A248BC36C001AAB99 /* DismissSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABB4039248BC36C001AAB99 /* DismissSegue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +66,9 @@
 		74D95DDB2487C56100836229 /* ENUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ENUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74D95DDD2487C56100836229 /* ENUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ENUnitTests.swift; sourceTree = "<group>"; };
 		74D95DDF2487C56100836229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA99C582248B88FD0019BCFE /* UnsupportedOs.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UnsupportedOs.storyboard; sourceTree = "<group>"; };
+		DA99C584248BA2DD0019BCFE /* Label.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Label.swift; sourceTree = "<group>"; };
+		DABB4039248BC36C001AAB99 /* DismissSegue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissSegue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				74D95DC224865A0E00836229 /* Button.swift */,
+				DA99C584248BA2DD0019BCFE /* Label.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -163,12 +170,13 @@
 		74D95DB62486394800836229 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				74D95DB824864F1B00836229 /* EN.entitlements */,
 				74D95DA5248638C500836229 /* Assets.xcassets */,
 				74D95DBC248650EF00836229 /* Colors.xcassets */,
-				74D95DA7248638C500836229 /* LaunchScreen.storyboard */,
+				74D95DB824864F1B00836229 /* EN.entitlements */,
 				74D95DAA248638C500836229 /* Info.plist */,
+				74D95DA7248638C500836229 /* LaunchScreen.storyboard */,
 				74D95DD3248668D300836229 /* Localizable.strings */,
+				DA99C582248B88FD0019BCFE /* UnsupportedOs.storyboard */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -177,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				74D95DC424865AB000836229 /* Haptic.swift */,
+				DABB4039248BC36C001AAB99 /* DismissSegue.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -277,6 +286,7 @@
 				74D95DBD248650EF00836229 /* Colors.xcassets in Resources */,
 				74D95DA9248638C500836229 /* LaunchScreen.storyboard in Resources */,
 				74D95DA6248638C500836229 /* Assets.xcassets in Resources */,
+				DA99C583248B88FD0019BCFE /* UnsupportedOs.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,11 +309,13 @@
 				74D95DC324865A0E00836229 /* Button.swift in Sources */,
 				74D95DBF2486519B00836229 /* UIColor+Theme.swift in Sources */,
 				74D95DC924865DCC00836229 /* UIViewController+UINavigationController.swift in Sources */,
+				DA99C585248BA2DD0019BCFE /* Label.swift in Sources */,
 				74D95D9D248638C100836229 /* AppDelegate.swift in Sources */,
 				74D95DD624866B9900836229 /* OnboardingManager.swift in Sources */,
 				74D95DC724865B9900836229 /* OnboardingStep.swift in Sources */,
 				74D95DCF2486618C00836229 /* NavigationController.swift in Sources */,
 				74D95DCD248660C700836229 /* NSLocalizedString+Localized.swift in Sources */,
+				DABB403A248BC36C001AAB99 /* DismissSegue.swift in Sources */,
 				74D95DC12486577A00836229 /* OnboardingStepViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

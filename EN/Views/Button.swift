@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Button: UIButton {
+@IBDesignable class Button: UIButton {
 
     enum ButtonType {
         case primary
@@ -25,13 +25,31 @@ class Button: UIButton {
         }
     }
 
+    @IBInspectable public var localizedKey: String = "" {
+        didSet {
+            self.title = Localized(localizedKey)
+        }
+    }
+
     var useHapticFeedback = true
 
     required init(title: String = "") {
-
         super.init(frame: .zero)
+        self.title = title
+        sharedInit()
+    }
 
-        self.setTitle(title, for: .normal)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        sharedInit()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        sharedInit()
+    }
+
+    private func sharedInit() {
         self.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         
         self.layer.cornerRadius = 10
@@ -46,8 +64,8 @@ class Button: UIButton {
         updateButtonType()
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override func prepareForInterfaceBuilder() {
+        sharedInit()
     }
 
     fileprivate func updateButtonType() {

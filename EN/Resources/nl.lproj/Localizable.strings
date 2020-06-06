@@ -30,3 +30,17 @@
 // MARK: - Onboarding
 "nextButtonTitle" = "Volgende";
 "example" = "Voorbeeld";
+
+// MARK: - Unsupported OS
+"unsupportedOsTitle" = "Update je telefoon om de app te gebruiken";
+"unsupportedOsContent" = "Deze app heeft nieuwere software op je telefoon nodig: iOS 13.5 of hoger. Het updaten doe je zelf in een paar simpele stappen.";
+"unsupportedOsHowToButton" = "Hoe doe ik dat?";
+
+"unsupportedOsHowToTitle" = "Volg deze stappen om je telefoon te updaten";
+"unsupportedOsHowToStep1" = "1. Open `Instellingen` op je telefoon";
+"unsupportedOsHowToStep2" = "2. Ga naar `Algemeen`";
+"unsupportedOsHowToStep3" = "3. Ga naar `Software-update`";
+"unsupportedOsHowToStep4" = "4. Kies `Download en installeer`";
+"unsupportedOsHowToSettings" = "Instellingen";
+"unsupportedOsHowToSettingsGeneral" = "Algemeen";
+"unsupportedOsHowToSettingsSoftwareUpdate" = "Software-update";

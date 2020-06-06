@@ -7,6 +7,8 @@
 
 import UIKit
 
-public func Localized(_ key: String) -> String {
-    return Bundle(for: AppDelegate.self).localizedString(forKey: key, value: "", table: nil)
+class DismissSegue: UIStoryboardSegue {
+    override func perform() {
+        self.source.presentingViewController?.dismiss(animated: true, completion: nil)
+   }
 }

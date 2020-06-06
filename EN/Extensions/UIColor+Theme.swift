@@ -11,8 +11,8 @@ extension UIColor {
 
     // MARK: - Colors
 
-    class var primaryColor: UIColor { return UIColor(named: "PrimaryColor") ?? .clear }
-    class var secondaryColor: UIColor { return UIColor(named: "SecondaryColor") ?? .clear }
+    class var primaryColor: UIColor { return UIColor(named: "PrimaryColor", in: Bundle(for: AppDelegate.self), compatibleWith: nil) ?? .clear }
+    class var secondaryColor: UIColor { return UIColor(named: "SecondaryColor", in: Bundle(for: AppDelegate.self), compatibleWith: nil) ?? .clear }
 
     class var grayColor: UIColor { return UIColor(named: "GrayColor") ?? .clear }
 

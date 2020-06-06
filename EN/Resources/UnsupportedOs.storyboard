@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="MYe-Ht-hnT">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Unsupported Os-->
+        <scene sceneID="pFI-lm-h4j">
+            <objects>
+                <viewController id="MYe-Ht-hnT" userLabel="Unsupported Os" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wFb-UI-IDd">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="UnsupportedOs" translatesAutoresizingMaskIntoConstraints="NO" id="czU-Oj-qsb" userLabel="Top Image">
+                                <rect key="frame" x="50" y="74" width="314" height="314"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="czU-Oj-qsb" secondAttribute="height" multiplier="1:1" priority="750" id="Awm-KR-5eB"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gxf-LN-vEx" userLabel="Title" customClass="Label" customModule="EN" customModuleProvider="target">
+                                <rect key="frame" x="20" y="428" width="374" height="82"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsTitle"/>
+                                </userDefinedRuntimeAttributes>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pkD-n0-qGT" userLabel="Content" customClass="Label" customModule="EN" customModuleProvider="target">
+                                <rect key="frame" x="20" y="530" width="374" height="64.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsContent"/>
+                                </userDefinedRuntimeAttributes>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YBR-GD-Ikz" userLabel="How To Button" customClass="Button" customModule="EN" customModuleProvider="target">
+                                <rect key="frame" x="20" y="792" width="374" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="wmx-bG-n7h"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToButton"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <segue destination="1z1-ww-dfb" kind="presentation" id="HN8-DI-F0N"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="YBR-GD-Ikz" firstAttribute="top" relation="greaterThanOrEqual" secondItem="pkD-n0-qGT" secondAttribute="bottom" constant="20" id="5yh-mg-6kG"/>
+                            <constraint firstItem="czU-Oj-qsb" firstAttribute="top" secondItem="Jf7-mV-jT6" secondAttribute="top" constant="30" id="8kq-Ls-Wgj"/>
+                            <constraint firstItem="pkD-n0-qGT" firstAttribute="top" secondItem="Gxf-LN-vEx" secondAttribute="bottom" constant="20" id="B7h-UI-XLA"/>
+                            <constraint firstItem="Jf7-mV-jT6" firstAttribute="trailing" secondItem="Gxf-LN-vEx" secondAttribute="trailing" constant="20" id="FMy-eA-pdl"/>
+                            <constraint firstItem="YBR-GD-Ikz" firstAttribute="leading" secondItem="Jf7-mV-jT6" secondAttribute="leading" constant="20" id="GOi-aY-Y7m"/>
+                            <constraint firstItem="Jf7-mV-jT6" firstAttribute="trailing" secondItem="pkD-n0-qGT" secondAttribute="trailing" constant="20" id="HhQ-CW-hdU"/>
+                            <constraint firstItem="czU-Oj-qsb" firstAttribute="leading" secondItem="Jf7-mV-jT6" secondAttribute="leading" constant="50" id="Vxd-Gr-xGa"/>
+                            <constraint firstItem="Jf7-mV-jT6" firstAttribute="trailing" secondItem="czU-Oj-qsb" secondAttribute="trailing" constant="50" id="Xq8-56-ZQ4"/>
+                            <constraint firstItem="Jf7-mV-jT6" firstAttribute="trailing" secondItem="YBR-GD-Ikz" secondAttribute="trailing" constant="20" id="bLE-h8-C1x"/>
+                            <constraint firstItem="pkD-n0-qGT" firstAttribute="leading" secondItem="Jf7-mV-jT6" secondAttribute="leading" constant="20" id="fvs-hL-5zY"/>
+                            <constraint firstItem="Jf7-mV-jT6" firstAttribute="bottom" secondItem="YBR-GD-Ikz" secondAttribute="bottom" constant="20" id="hGy-nG-Nbd"/>
+                            <constraint firstItem="Gxf-LN-vEx" firstAttribute="top" secondItem="czU-Oj-qsb" secondAttribute="bottom" constant="40" id="jiZ-ij-Olw"/>
+                            <constraint firstItem="Gxf-LN-vEx" firstAttribute="leading" secondItem="Jf7-mV-jT6" secondAttribute="leading" constant="20" id="puR-ac-aBB"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Jf7-mV-jT6"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fNe-bN-Mff" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-110.14492753623189" y="190.84821428571428"/>
+        </scene>
+        <!--How To-->
+        <scene sceneID="PCr-vD-F9X">
+            <objects>
+                <viewController id="1z1-ww-dfb" userLabel="How To" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="xzB-Qu-lhy">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v1F-i7-XCE">
+                                <rect key="frame" x="354" y="20" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="BSF-Tj-nHw"/>
+                                    <constraint firstAttribute="width" constant="40" id="W0k-LQ-Fz0"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="Dismiss"/>
+                                <connections>
+                                    <segue destination="1z1-ww-dfb" kind="custom" customClass="DismissSegue" customModule="EN" customModuleProvider="target" id="ZeE-UE-89U"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dmG-FO-gxy" customClass="Label" customModule="EN" customModuleProvider="target">
+                                <rect key="frame" x="20" y="80" width="374" height="82"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToTitle"/>
+                                </userDefinedRuntimeAttributes>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="iBk-a9-quD">
+                                <rect key="frame" x="20" y="182" width="374" height="606"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="751" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8S4-tS-ANo" userLabel="Step 1" customClass="Label" customModule="EN" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToStep1"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="32b-1X-Bl7" userLabel="Settings">
+                                        <rect key="frame" x="0.0" y="40.5" width="374" height="50"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SettingsIcon" translatesAutoresizingMaskIntoConstraints="NO" id="EZI-p4-YfR" userLabel="Settings Icon">
+                                                <rect key="frame" x="10" y="5" width="40" height="40"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="EZI-p4-YfR" secondAttribute="height" multiplier="1:1" id="LcG-8e-8UG"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SBC-We-Cnb" userLabel="Settings Label" customClass="Label" customModule="EN" customModuleProvider="target">
+                                                <rect key="frame" x="58" y="15" width="87.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToSettings"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="tertiarySystemFillColor" red="0.46274509800000002" green="0.46274509800000002" blue="0.50196078430000002" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="SBC-We-Cnb" firstAttribute="centerY" secondItem="EZI-p4-YfR" secondAttribute="centerY" id="2HF-f5-Hr4"/>
+                                            <constraint firstItem="EZI-p4-YfR" firstAttribute="leading" secondItem="32b-1X-Bl7" secondAttribute="leading" constant="10" id="FDc-Wi-XBC"/>
+                                            <constraint firstItem="EZI-p4-YfR" firstAttribute="centerY" secondItem="32b-1X-Bl7" secondAttribute="centerY" id="MPW-rQ-8Y0"/>
+                                            <constraint firstItem="EZI-p4-YfR" firstAttribute="height" secondItem="32b-1X-Bl7" secondAttribute="height" multiplier="0.8" id="XBa-GM-yAl"/>
+                                            <constraint firstAttribute="height" constant="50" id="fhq-6s-WMg"/>
+                                            <constraint firstItem="SBC-We-Cnb" firstAttribute="leading" secondItem="EZI-p4-YfR" secondAttribute="trailing" constant="8" id="iJW-E2-Jzk"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cfB-uA-z95" userLabel="Step 2" customClass="Label" customModule="EN" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="110.5" width="374" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToStep2"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BHz-vP-iec" userLabel="Settings General">
+                                        <rect key="frame" x="0.0" y="151" width="374" height="50"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SettingsGeneralIcon" translatesAutoresizingMaskIntoConstraints="NO" id="RfE-5j-vo6" userLabel="Settings General Icon">
+                                                <rect key="frame" x="10" y="5" width="40" height="40"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="RfE-5j-vo6" secondAttribute="height" multiplier="1:1" id="dFC-RF-oml"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m2b-vI-lM8" userLabel="Settings General Label" customClass="Label" customModule="EN" customModuleProvider="target">
+                                                <rect key="frame" x="58" y="15" width="77" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToSettingsGeneral"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </label>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Chevron" translatesAutoresizingMaskIntoConstraints="NO" id="Sls-Xr-UpQ">
+                                                <rect key="frame" x="349" y="17.5" width="15" height="15"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="Sls-Xr-UpQ" secondAttribute="height" multiplier="1:1" id="Q2X-RS-6Jw"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="tertiarySystemFillColor" red="0.46274509800000002" green="0.46274509800000002" blue="0.50196078430000002" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="m2b-vI-lM8" firstAttribute="centerY" secondItem="RfE-5j-vo6" secondAttribute="centerY" id="EIv-gV-xPO"/>
+                                            <constraint firstItem="m2b-vI-lM8" firstAttribute="leading" secondItem="RfE-5j-vo6" secondAttribute="trailing" constant="8" id="Kr4-CQ-JHu"/>
+                                            <constraint firstAttribute="height" constant="50" id="TlQ-MN-JUo"/>
+                                            <constraint firstItem="RfE-5j-vo6" firstAttribute="leading" secondItem="BHz-vP-iec" secondAttribute="leading" constant="10" id="Txx-Dy-GJh"/>
+                                            <constraint firstAttribute="trailing" secondItem="Sls-Xr-UpQ" secondAttribute="trailing" constant="10" id="Vmd-WT-0Y7"/>
+                                            <constraint firstItem="Sls-Xr-UpQ" firstAttribute="height" secondItem="BHz-vP-iec" secondAttribute="height" multiplier="0.3" id="pjs-gq-jub"/>
+                                            <constraint firstItem="RfE-5j-vo6" firstAttribute="centerY" secondItem="BHz-vP-iec" secondAttribute="centerY" id="uaV-cW-dJn"/>
+                                            <constraint firstItem="Sls-Xr-UpQ" firstAttribute="centerY" secondItem="BHz-vP-iec" secondAttribute="centerY" id="yT2-ko-Lq0"/>
+                                            <constraint firstItem="RfE-5j-vo6" firstAttribute="height" secondItem="BHz-vP-iec" secondAttribute="height" multiplier="0.8" id="yqQ-Dz-cJj"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wvz-UV-UXJ" userLabel="Step 3" customClass="Label" customModule="EN" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="221" width="374" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToStep3"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0l-jd-u5o" userLabel="Software Update">
+                                        <rect key="frame" x="0.0" y="261.5" width="374" height="50"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TYZ-3y-xjw" userLabel="Software Update Label" customClass="Label" customModule="EN" customModuleProvider="target">
+                                                <rect key="frame" x="20" y="15" width="129.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToSettingsSoftwareUpdate"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K1a-Q8-J0S" userLabel="Update Dot">
+                                                <rect key="frame" x="317" y="15.5" width="20" height="19"/>
+                                                <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="J4z-2K-HIL"/>
+                                                    <constraint firstAttribute="width" secondItem="K1a-Q8-J0S" secondAttribute="height" multiplier="1:1" constant="1" id="xIl-Ab-Xd3"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="10"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Chevron" translatesAutoresizingMaskIntoConstraints="NO" id="9Vc-7B-deI">
+                                                <rect key="frame" x="349" y="17.5" width="15" height="15"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="9Vc-7B-deI" secondAttribute="height" multiplier="1:1" id="wXf-jL-198"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="tertiarySystemFillColor" red="0.46274509800000002" green="0.46274509800000002" blue="0.50196078430000002" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="9Vc-7B-deI" firstAttribute="centerY" secondItem="c0l-jd-u5o" secondAttribute="centerY" id="8I7-2x-iTs"/>
+                                            <constraint firstItem="9Vc-7B-deI" firstAttribute="leading" secondItem="K1a-Q8-J0S" secondAttribute="trailing" constant="12" id="BDX-eZ-ho5"/>
+                                            <constraint firstItem="TYZ-3y-xjw" firstAttribute="centerY" secondItem="c0l-jd-u5o" secondAttribute="centerY" id="L2g-Di-mzX"/>
+                                            <constraint firstAttribute="trailing" secondItem="9Vc-7B-deI" secondAttribute="trailing" constant="10" id="Ohw-Ap-XoK"/>
+                                            <constraint firstItem="TYZ-3y-xjw" firstAttribute="leading" secondItem="c0l-jd-u5o" secondAttribute="leading" constant="20" id="VPy-Ou-LP4"/>
+                                            <constraint firstItem="9Vc-7B-deI" firstAttribute="height" secondItem="c0l-jd-u5o" secondAttribute="height" multiplier="0.3" id="lmS-z6-S7C"/>
+                                            <constraint firstItem="K1a-Q8-J0S" firstAttribute="centerY" secondItem="c0l-jd-u5o" secondAttribute="centerY" id="uNR-2T-VOl"/>
+                                            <constraint firstAttribute="height" constant="50" id="zkg-Vk-vzq"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rJ1-0W-Ycv" userLabel="Step 4" customClass="Label" customModule="EN" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="331.5" width="374" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="localizedKey" value="unsupportedOsHowToStep4"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="13I-L1-dfs" userLabel="Spacer">
+                                        <rect key="frame" x="0.0" y="372" width="374" height="234"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                    </view>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="u6Y-lr-SLK" firstAttribute="bottom" secondItem="iBk-a9-quD" secondAttribute="bottom" constant="20" id="5iP-EH-dAs"/>
+                            <constraint firstItem="v1F-i7-XCE" firstAttribute="top" secondItem="u6Y-lr-SLK" secondAttribute="top" constant="20" id="8BO-Qn-sqc"/>
+                            <constraint firstItem="dmG-FO-gxy" firstAttribute="leading" secondItem="u6Y-lr-SLK" secondAttribute="leading" constant="20" id="A48-TR-hs1"/>
+                            <constraint firstItem="u6Y-lr-SLK" firstAttribute="trailing" secondItem="v1F-i7-XCE" secondAttribute="trailing" constant="20" id="ACP-rr-xlA"/>
+                            <constraint firstItem="u6Y-lr-SLK" firstAttribute="trailing" secondItem="iBk-a9-quD" secondAttribute="trailing" constant="20" id="TRt-Ge-h8T"/>
+                            <constraint firstItem="iBk-a9-quD" firstAttribute="leading" secondItem="u6Y-lr-SLK" secondAttribute="leading" constant="20" id="b5H-tF-l8A"/>
+                            <constraint firstItem="u6Y-lr-SLK" firstAttribute="trailing" secondItem="dmG-FO-gxy" secondAttribute="trailing" constant="20" id="bLo-ug-GtJ"/>
+                            <constraint firstItem="dmG-FO-gxy" firstAttribute="top" secondItem="v1F-i7-XCE" secondAttribute="bottom" constant="20" id="nlf-Gm-Cfq"/>
+                            <constraint firstItem="iBk-a9-quD" firstAttribute="top" secondItem="dmG-FO-gxy" secondAttribute="bottom" constant="20" id="pMn-ez-PY6"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="u6Y-lr-SLK"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="S5X-O8-MFv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="755" y="191"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Chevron" width="6" height="10"/>
+        <image name="Dismiss" width="24" height="24"/>
+        <image name="SettingsGeneralIcon" width="256" height="256"/>
+        <image name="SettingsIcon" width="1024" height="1024"/>
+        <image name="UnsupportedOs" width="146" height="131"/>
+    </resources>
+</document>

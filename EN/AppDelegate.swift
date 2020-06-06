@@ -20,7 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError("AppDelegate - Window not found!")
         }
         
-        window.rootViewController = NavigationController(rootViewController: OnboardingStepViewController(index: 0))
+        if #available(iOS 13.5, *) {
+            window.rootViewController = NavigationController(rootViewController: OnboardingStepViewController(index: 0))
+        } else {
+            window.rootViewController = UIStoryboard(name: "UnsupportedOs", bundle: nil)
+                .instantiateInitialViewController()
+        }
         window.makeKeyAndVisible()
         
         return true
