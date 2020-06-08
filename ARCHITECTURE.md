@@ -1,15 +1,15 @@
 # Covid19 Notification App - iOS Architecture
 
-This document describes the architecture approach for the Covid19 Notification App.
+This document describes the current architecture approach for the Covid19 Notification iOS App.
 
-### Architecture
+## Architecture
 
-The application is based using an MVC approach. On top of it two additional patterns are added:
+The application is using an MVC approach with two additional patterns added:
 
 - [Builder design pattern](https://en.wikipedia.org/wiki/Builder_pattern) - To construct objects and help with dependency management
-- [Router pattern] (https://www.objc.io/issues/13-architecture/viper/#routing) - A router (from the VIPER architecture) can be used to move routing logic to a separate object to reduce the amount of logic in the ViewController
+- [Router pattern](https://www.objc.io/issues/13-architecture/viper/#routing) - A router (from the VIPER architecture) to abstract routing logic to a separate object which can reduce the amount of logic in the ViewController
 
-All objects are defined by interfaces (`protocol`) to enable exchanging them with mocked versions during unit testing. The [Swift API design](https://swift.org/documentation/api-design-guidelines/) guidelines are followed as much as possible. 
+All objects are defined by interfaces (`protocol`) to enable replacing them with mocked versions during (unit) testing. The [Swift API design](https://swift.org/documentation/api-design-guidelines/) guidelines are followed as much as possible. 
 
 Examples:
 
@@ -17,7 +17,7 @@ Examples:
 - `Router`s are defined by `Routing` interfaces
 - `ViewController`'s are defined by `ViewControllable` interfaces
 
-#### Component
+### Component
 
 Every isolated piece of functionality/logic in the app is called a component.
 
@@ -27,22 +27,23 @@ A component always consists of a `Builder` together with the object it builds. I
 - `Builder` builds `Controller` (e.g. `networkController`, `exposureNotificationController`)
 - `Builder` builds a `Router` which uses a `ViewController` to present other `viewController`s
 
-Some examples of Components are:
+Some examples of components are:
 
-- ExposureNotification (consists of `ExposureNotificationBuilder` and `ExposureNotificationController`)
+- ExposureNotification (consists of `ExposureNotificationBuilder` and `ExposureNotificationController`) - Not live yet
 - Onboarding (consists of `OnboardingBuilder`, `OnboardingRouter` and `OnboardingViewController`)
 
-#### Builder Pattern
+### Builder Pattern
 
-To simplify object construction and to remove the need to worry about dependencies during object creation `Builder`s are used. `Builder`s can define the dependencies they require by specifying a `Dependency` interface:
+To simplify object construction, and to remove the need to deal with dependencies during object creation, `Builder`s are used. `Builder`s can define the dependencies they require by creating a `Dependency` interface:
 
 ```
+/// Specifies dependencies for the Main component
 protocol MainDependency {
     var exposureNotificationController: ExposureNotificationControlling { get }
 }
 ```
 
-A builder specifies this dependency, or can use `EmptyDependency` if no parent dependencies are needed:
+A builder specifies which dependency it requires, or can use `EmptyDependency` if no parent dependencies are needed:
 
 ```
 // 1)
@@ -69,9 +70,11 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
 }
 ```
 
-First, an interface is defined that describes the `MainBuilder`: it's `build` function and the interface that describes the object that's being built. Any dynamic dependency (for example, a `listener`) can be passed as argument to the `build` method. Usually builders return generic interfaces (Routing, ViewControllable) to not leak implementation details to the call site. For example: it usually does not make sense for the parent to call into routing functions of a child.
+First, an interface is defined that describes the `MainBuilder`: it's `build` function and the interface of the to-be-built object. Any dynamic dependency (for example, a `listener`) can be passed as argument to the `build` method. 
 
-Secondly, a `DependencyProvider` is created. DependencyProviders can be constructed by the Builder to get dependencies from. Any local dependencies can be constructed directly in the DependencyProvider:
+Note: Usually builders return generic interfaces (`Routing`, `ViewControllable`) to not leak implementation details to the call site. For example: it usually does not make sense for the parent to call into routing functions of a child.
+
+Secondly, a `DependencyProvider` is created. `DependencyProvider`s can be constructed by the `Builder` to get dependencies from. Any local dependency can be constructed directly by the `DependencyProvider`:
 
 ```
 final class MainDependencyProvider: DependencyProvider<MainDependency> {
@@ -82,17 +85,17 @@ final class MainDependencyProvider: DependencyProvider<MainDependency> {
 
 These dependencies can be used by child builders later on. For an example, see the below Router section.
 
-Finally (3), a concrete `Builder` class is created. It's structure follows the same pattern: a DependencyProvider is created, any intermediate objects (in this case `mainViewController`) is created and the final Router is constructed and returned.
+Finally (3), a concrete `Builder` class is created. Its structure follows the same pattern: a `DependencyProvider` is created, any intermediate objects (in this case `mainViewController`) is created and the final `Router` is constructed and returned.
 
-#### Router
+### Router
 
-The Router concept comes from VIPER and is used to extract router specific logic. A `Router` has an associated `viewController` that it uses to route with. Usually routers call `present`/`dismiss`/`push`/`pop` calls on their `viewControllers`. ViewControllers call their router to perform specific router operations.
+The Router concept comes from VIPER and is used to extract router specific logic. A `Router` has an associated `viewController` that it uses to route with. Usually routers call `present`/`dismiss`/`push`/`pop` methods on their `viewControllers`. ViewControllers have a reference to their router to initiate routing requests.
 
-A Component with a router looks as follows:
+A component with a router is structured as following:
 
 `Builder` -> builds -> `Router` -> uses `ViewController` -> calls back into the same `Router`.
 
-As the Router uses the ViewController and vice versa, both objects define each others interfaces:
+As the `Router` uses the `ViewController` and vice versa, both objects define each others' interfaces:
 
 MainRouter.swift:
 
@@ -159,3 +162,30 @@ final class MainViewController: ViewController, MainViewControllable {
     }
 }
 ```
+
+## Conventions
+
+More conventions could be added later (e.g. once decisions have been made about for example UI tests):
+
+- All concrete classes are defined by protocols
+- Follow the [Swift API design](https://swift.org/documentation/api-design-guidelines/) guidelines to name your entities 
+- Every component should try to expose the smallest API possible to its call site. Instead of returning `MainRouting` from `MainBuilder`, just return `Routing`
+    - Example showing difference of 'external' vs 'internal' interface: `RootBuilder` returns `AppEntryPoint`
+- Use the Common UI objects provided as base classes. This will allow to easily extend common functionality in the future. If a base class is missing and you feel there's a need to have one, please add it.
+- Keep the file tree organised by ceature and component instead of Model / Controller / View
+    - For now there are only a few features - high levels components: Root, Onboarding and Main 
+- Use the provided `.xctemplate` for easy and consistent scaffolding
+- Try to use the right modifiers where possible (e.g. `final`, `private`, `fileprivate`)
+- Shared extensions can go, for now, in Common/Extensions. If your extension is limited to a component, it can live next to the component
+- Testing
+    - Business logic and routing logic should be covered by unit tests
+    - The plan for UI tests and possibly snapshot tests will be added in the future
+
+## Mocks
+
+[Mockolo](https://github.com/uber/mockolo) is used for generating Mocks. The `ENTests` target has a build step to generate mocks automatically. Make sure to annotate interfaces with `/// @mockable` to have mocks generated for it.
+
+## Questions / Feedback / Remarks
+
+Please reach out to the #notificatie-app-ios channel in the [CodeFor.NL](codefor.nl) slack workspace or directly to one us of: Leon Boon, Rob Mulder or Robin van Dijke.
+
