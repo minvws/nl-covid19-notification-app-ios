@@ -46,7 +46,7 @@
 		74D95DE72487E7E500836229 /* NSLocalizedString+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */; };
 		74D95DE82487E90D00836229 /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DC624865B9900836229 /* OnboardingStep.swift */; };
 		74D95DE92487E9DA00836229 /* UIColor+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DBE2486519B00836229 /* UIColor+Theme.swift */; };
-		D274221B248EBBBF006AB4E0 /* appcenter-pre-build.sh in Resources */ = {isa = PBXBuildFile; fileRef = D274221A248EBBBF006AB4E0 /* appcenter-pre-build.sh */; };
+		D274221B248EBBBF006AB4E0 /* appcenter-post-clone.sh in Resources */ = {isa = PBXBuildFile; fileRef = D274221A248EBBBF006AB4E0 /* appcenter-post-clone.sh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,7 +101,7 @@
 		74D95DDB2487C56100836229 /* ENUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ENUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74D95DDD2487C56100836229 /* ENUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ENUnitTests.swift; sourceTree = "<group>"; };
 		74D95DDF2487C56100836229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D274221A248EBBBF006AB4E0 /* appcenter-pre-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "appcenter-pre-build.sh"; sourceTree = "<group>"; };
+		D274221A248EBBBF006AB4E0 /* appcenter-post-clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "appcenter-post-clone.sh"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,7 +249,7 @@
 			children = (
 				034814AD248BC84200825A08 /* ARCHITECTURE.md */,
 				74D95DB92486505A00836229 /* README.md */,
-				D274221A248EBBBF006AB4E0 /* appcenter-pre-build.sh */,
+				D274221A248EBBBF006AB4E0 /* appcenter-post-clone.sh */,
 				74D95D9B248638C100836229 /* EN */,
 				74D95DDC2487C56100836229 /* ENUnitTests */,
 				74D95D9A248638C100836229 /* Products */,
@@ -436,7 +436,7 @@
 				74D95DBA2486505A00836229 /* README.md in Resources */,
 				74D95DBD248650EF00836229 /* Colors.xcassets in Resources */,
 				74D95DA9248638C500836229 /* LaunchScreen.storyboard in Resources */,
-				D274221B248EBBBF006AB4E0 /* appcenter-pre-build.sh in Resources */,
+				D274221B248EBBBF006AB4E0 /* appcenter-post-clone.sh in Resources */,
 				74D95DA6248638C500836229 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
