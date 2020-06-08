@@ -7,7 +7,9 @@
 
 import UIKit
 
-class OnboardingStepViewController: UIViewController {
+protocol OnboardingStepViewControllable: ViewControllable {}
+
+final class OnboardingStepViewController: ViewController, OnboardingStepViewControllable {
 
     lazy private var imageView: UIImageView = {
         let imageView = UIImageView()
@@ -33,13 +35,19 @@ class OnboardingStepViewController: UIViewController {
 
     lazy private var viewsInDisplayOrder = [imageView, button, label]
 
-    var index: Int
-    var onboardingStep: OnboardingStep
+    private var index: Int
+    private var onboardingStep: OnboardingStep
+    private let onboardingManager: OnboardingManaging
+    private let onboardingStepBuilder: OnboardingStepBuildable
 
     // MARK: - Lifecycle
 
-    init(index: Int) {
+    init(onboardingManager: OnboardingManaging,
+         onboardingStepBuilder: OnboardingStepBuildable,
+         index: Int) {
 
+        self.onboardingManager = onboardingManager
+        self.onboardingStepBuilder = onboardingStepBuilder
         self.index = index
         
         guard let step = OnboardingManager.shared.getStep(index) else { fatalError("OnboardingStep index out of range") }
@@ -109,8 +117,9 @@ class OnboardingStepViewController: UIViewController {
 
     @objc func buttonPressed() {
         let nextIndex = self.index + 1
-        if OnboardingManager.shared.onboardingSteps.count > nextIndex {
-            self.navigationController?.pushViewController(OnboardingStepViewController(index: nextIndex), animated: true)
+        if onboardingManager.onboardingSteps.count > nextIndex {
+            let viewController = onboardingStepBuilder.build(initialIndex: nextIndex)
+            self.navigationController?.pushViewController(viewController.uiviewController, animated: true)
         }
     }
 }

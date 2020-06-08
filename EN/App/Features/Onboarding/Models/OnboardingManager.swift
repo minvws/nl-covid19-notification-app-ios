@@ -7,7 +7,13 @@
 
 import UIKit
 
-class OnboardingManager {
+protocol OnboardingManaging {
+    var onboardingSteps: [OnboardingStep] { get }
+    
+    func getStep(_ index: Int) -> OnboardingStep?
+}
+
+final class OnboardingManager: OnboardingManaging {
 
     static let shared = OnboardingManager()
 

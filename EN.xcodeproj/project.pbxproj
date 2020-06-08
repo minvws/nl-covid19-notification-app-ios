@@ -7,6 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03481492248BB27A00825A08 /* OnboardingBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03481491248BB27A00825A08 /* OnboardingBuilder.swift */; };
+		03481494248BB2D500825A08 /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03481493248BB2D500825A08 /* Builder.swift */; };
+		03481496248BB2DA00825A08 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03481495248BB2DA00825A08 /* Dependency.swift */; };
+		03481498248BB2E100825A08 /* DependencyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03481497248BB2E100825A08 /* DependencyProvider.swift */; };
+		0348149B248BB4A100825A08 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0348149A248BB4A100825A08 /* OnboardingViewController.swift */; };
+		0348149D248BB4C500825A08 /* OnboardingStepBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0348149C248BB4C500825A08 /* OnboardingStepBuilder.swift */; };
+		0348149F248BB4F200825A08 /* ViewControllable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0348149E248BB4F200825A08 /* ViewControllable.swift */; };
+		034814A1248BB91B00825A08 /* MainBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034814A0248BB91B00825A08 /* MainBuilder.swift */; };
+		034814A3248BB92100825A08 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034814A2248BB92100825A08 /* MainViewController.swift */; };
+		034814A5248BBBD200825A08 /* RootRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034814A4248BBBD200825A08 /* RootRouter.swift */; };
+		034814A9248BBE7A00825A08 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034814A8248BBE7A00825A08 /* Router.swift */; };
+		034814AB248BBF9A00825A08 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034814AA248BBF9A00825A08 /* Mocks.swift */; };
+		034814B1248D190100825A08 /* RootRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034814B0248D190100825A08 /* RootRouterTests.swift */; };
+		036B8B60248AB1230056F4D2 /* RootBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036B8B5F248AB1230056F4D2 /* RootBuilder.swift */; };
+		036B8B62248AB19E0056F4D2 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036B8B61248AB19E0056F4D2 /* RootViewController.swift */; };
+		036B8B66248AB5300056F4D2 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036B8B65248AB5300056F4D2 /* View.swift */; };
+		036B8B68248AB6430056F4D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036B8B67248AB6430056F4D2 /* SceneDelegate.swift */; };
+		036B8BA0248BADAA0056F4D2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036B8B9F248BADAA0056F4D2 /* ViewController.swift */; };
 		74D95D9D248638C100836229 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95D9C248638C100836229 /* AppDelegate.swift */; };
 		74D95DA6248638C500836229 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74D95DA5248638C500836229 /* Assets.xcassets */; };
 		74D95DA9248638C500836229 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74D95DA7248638C500836229 /* LaunchScreen.storyboard */; };
@@ -41,6 +59,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03481491248BB27A00825A08 /* OnboardingBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingBuilder.swift; sourceTree = "<group>"; };
+		03481493248BB2D500825A08 /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
+		03481495248BB2DA00825A08 /* Dependency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dependency.swift; sourceTree = "<group>"; };
+		03481497248BB2E100825A08 /* DependencyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyProvider.swift; sourceTree = "<group>"; };
+		0348149A248BB4A100825A08 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		0348149C248BB4C500825A08 /* OnboardingStepBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepBuilder.swift; sourceTree = "<group>"; };
+		0348149E248BB4F200825A08 /* ViewControllable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllable.swift; sourceTree = "<group>"; };
+		034814A0248BB91B00825A08 /* MainBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBuilder.swift; sourceTree = "<group>"; };
+		034814A2248BB92100825A08 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		034814A4248BBBD200825A08 /* RootRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootRouter.swift; sourceTree = "<group>"; };
+		034814A8248BBE7A00825A08 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		034814AA248BBF9A00825A08 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
+		034814AD248BC84200825A08 /* ARCHITECTURE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ARCHITECTURE.md; sourceTree = "<group>"; };
+		034814B0248D190100825A08 /* RootRouterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootRouterTests.swift; sourceTree = "<group>"; };
+		036B8B5F248AB1230056F4D2 /* RootBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RootBuilder.swift; path = ../../RootBuilder.swift; sourceTree = "<group>"; };
+		036B8B61248AB19E0056F4D2 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RootViewController.swift; path = ../../RootViewController.swift; sourceTree = "<group>"; };
+		036B8B65248AB5300056F4D2 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		036B8B67248AB6430056F4D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		036B8B9F248BADAA0056F4D2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		74D95D99248638C100836229 /* EN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74D95D9C248638C100836229 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		74D95DA5248638C500836229 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -83,9 +120,132 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03481490248BB26E00825A08 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				036B8B5F248AB1230056F4D2 /* RootBuilder.swift */,
+				034814A4248BBBD200825A08 /* RootRouter.swift */,
+				036B8B61248AB19E0056F4D2 /* RootViewController.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		03481499248BB49500825A08 /* Steps */ = {
+			isa = PBXGroup;
+			children = (
+				0348149C248BB4C500825A08 /* OnboardingStepBuilder.swift */,
+				74D95DC02486577900836229 /* OnboardingStepViewController.swift */,
+			);
+			path = Steps;
+			sourceTree = "<group>";
+		};
+		034814A6248BBE2A00825A08 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				034814B0248D190100825A08 /* RootRouterTests.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		034814A7248BBE2F00825A08 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		036B8B57248AB0A90056F4D2 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				74D95DCE2486618C00836229 /* NavigationController.swift */,
+				74D95DC224865A0E00836229 /* Button.swift */,
+				036B8B65248AB5300056F4D2 /* View.swift */,
+				036B8B9F248BADAA0056F4D2 /* ViewController.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		036B8B58248AB0B30056F4D2 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				03481490248BB26E00825A08 /* Root */,
+				036B8B59248AB0BB0056F4D2 /* Onboarding */,
+				036B8B5B248AB0CA0056F4D2 /* Main */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		036B8B59248AB0BB0056F4D2 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				03481499248BB49500825A08 /* Steps */,
+				03481491248BB27A00825A08 /* OnboardingBuilder.swift */,
+				0348149A248BB4A100825A08 /* OnboardingViewController.swift */,
+				74D95DB52486394000836229 /* Models */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		036B8B5B248AB0CA0056F4D2 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				034814A0248BB91B00825A08 /* MainBuilder.swift */,
+				034814A2248BB92100825A08 /* MainViewController.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		036B8B5D248AB0E50056F4D2 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				036B8B58248AB0B30056F4D2 /* Features */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		036B8B5E248AB0FF0056F4D2 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				036B8B9E248BAD9E0056F4D2 /* Core */,
+				74D95DB32486393000836229 /* Extensions */,
+				036B8B57248AB0A90056F4D2 /* UI */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		036B8B97248AB88C0056F4D2 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				036B8B98248AB8900056F4D2 /* Features */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		036B8B98248AB8900056F4D2 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				034814A6248BBE2A00825A08 /* Root */,
+				034814A7248BBE2F00825A08 /* Onboarding */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		036B8B9E248BAD9E0056F4D2 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				03481493248BB2D500825A08 /* Builder.swift */,
+				034814A8248BBE7A00825A08 /* Router.swift */,
+				03481495248BB2DA00825A08 /* Dependency.swift */,
+				03481497248BB2E100825A08 /* DependencyProvider.swift */,
+				0348149E248BB4F200825A08 /* ViewControllable.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		74D95D90248638C100836229 = {
 			isa = PBXGroup;
 			children = (
+				034814AD248BC84200825A08 /* ARCHITECTURE.md */,
 				74D95DB92486505A00836229 /* README.md */,
 				74D95D9B248638C100836229 /* EN */,
 				74D95DDC2487C56100836229 /* ENUnitTests */,
@@ -106,9 +266,9 @@
 			isa = PBXGroup;
 			children = (
 				74D95D9C248638C100836229 /* AppDelegate.swift */,
-				74D95DB22486392900836229 /* Controllers */,
-				74D95DB32486393000836229 /* Extensions */,
-				74D95DB52486394000836229 /* Models */,
+				036B8B67248AB6430056F4D2 /* SceneDelegate.swift */,
+				036B8B5D248AB0E50056F4D2 /* App */,
+				036B8B5E248AB0FF0056F4D2 /* Common */,
 				74D95DB12486392300836229 /* Networking */,
 				74D95DB62486394800836229 /* Resources */,
 				74D95DB72486395000836229 /* Utilities */,
@@ -120,7 +280,6 @@
 		74D95DB02486391B00836229 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				74D95DC224865A0E00836229 /* Button.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -130,15 +289,6 @@
 			children = (
 			);
 			path = Networking;
-			sourceTree = "<group>";
-		};
-		74D95DB22486392900836229 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				74D95DC02486577900836229 /* OnboardingStepViewController.swift */,
-				74D95DCE2486618C00836229 /* NavigationController.swift */,
-			);
-			path = Controllers;
 			sourceTree = "<group>";
 		};
 		74D95DB32486393000836229 /* Extensions */ = {
@@ -184,6 +334,8 @@
 		74D95DDC2487C56100836229 /* ENUnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				034814AA248BBF9A00825A08 /* Mocks.swift */,
+				036B8B97248AB88C0056F4D2 /* App */,
 				74D95DDD2487C56100836229 /* ENUnitTests.swift */,
 				74D95DDF2487C56100836229 /* Info.plist */,
 			);
@@ -206,6 +358,8 @@
 			dependencies = (
 			);
 			name = EN;
+			packageProductDependencies = (
+			);
 			productName = EN;
 			productReference = 74D95D99248638C100836229 /* EN.app */;
 			productType = "com.apple.product-type.application";
@@ -214,6 +368,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 74D95DE42487C56100836229 /* Build configuration list for PBXNativeTarget "ENUnitTests" */;
 			buildPhases = (
+				034814AC248BC0EC00825A08 /* ShellScript */,
 				74D95DD72487C56100836229 /* Sources */,
 				74D95DD82487C56100836229 /* Frameworks */,
 				74D95DD92487C56100836229 /* Resources */,
@@ -257,6 +412,8 @@
 				nl,
 			);
 			mainGroup = 74D95D90248638C100836229;
+			packageReferences = (
+			);
 			productRefGroup = 74D95D9A248638C100836229 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -290,20 +447,56 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		034814AC248BC0EC00825A08 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "MOCKOLO_PATH=\"/usr/local/bin/mockolo\"\nREPO_ROOT=`git rev-parse --show-toplevel`\n\nif [[ ! -f \"${MOCKOLO_PATH}\" ]]; then\n    echo \"Unit tests rely on mock generation using Mockolo. Please run 'brew install mockolo' before continuing\"\n    exit 1\nfi\n\nSRC=\"${REPO_ROOT}/EN\"\nDEST=\"${REPO_ROOT}/ENUnitTests/Mocks.swift\"\n\n\"${MOCKOLO_PATH}\" -s \"${SRC}\" -d \"${DEST}\" -x Images Strings -i EN\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		74D95D95248638C100836229 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				74D95DC524865AB000836229 /* Haptic.swift in Sources */,
+				034814A5248BBBD200825A08 /* RootRouter.swift in Sources */,
 				74D95DC324865A0E00836229 /* Button.swift in Sources */,
 				74D95DBF2486519B00836229 /* UIColor+Theme.swift in Sources */,
 				74D95DC924865DCC00836229 /* UIViewController+UINavigationController.swift in Sources */,
+				0348149D248BB4C500825A08 /* OnboardingStepBuilder.swift in Sources */,
+				036B8B68248AB6430056F4D2 /* SceneDelegate.swift in Sources */,
+				034814A1248BB91B00825A08 /* MainBuilder.swift in Sources */,
 				74D95D9D248638C100836229 /* AppDelegate.swift in Sources */,
 				74D95DD624866B9900836229 /* OnboardingManager.swift in Sources */,
+				0348149B248BB4A100825A08 /* OnboardingViewController.swift in Sources */,
+				03481494248BB2D500825A08 /* Builder.swift in Sources */,
+				034814A9248BBE7A00825A08 /* Router.swift in Sources */,
+				036B8B60248AB1230056F4D2 /* RootBuilder.swift in Sources */,
 				74D95DC724865B9900836229 /* OnboardingStep.swift in Sources */,
+				03481498248BB2E100825A08 /* DependencyProvider.swift in Sources */,
 				74D95DCF2486618C00836229 /* NavigationController.swift in Sources */,
+				034814A3248BB92100825A08 /* MainViewController.swift in Sources */,
+				036B8B62248AB19E0056F4D2 /* RootViewController.swift in Sources */,
+				03481496248BB2DA00825A08 /* Dependency.swift in Sources */,
 				74D95DCD248660C700836229 /* NSLocalizedString+Localized.swift in Sources */,
+				0348149F248BB4F200825A08 /* ViewControllable.swift in Sources */,
+				03481492248BB27A00825A08 /* OnboardingBuilder.swift in Sources */,
+				036B8B66248AB5300056F4D2 /* View.swift in Sources */,
+				036B8BA0248BADAA0056F4D2 /* ViewController.swift in Sources */,
 				74D95DC12486577A00836229 /* OnboardingStepViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,6 +508,8 @@
 				74D95DE92487E9DA00836229 /* UIColor+Theme.swift in Sources */,
 				74D95DE52487E7B300836229 /* OnboardingManager.swift in Sources */,
 				74D95DE72487E7E500836229 /* NSLocalizedString+Localized.swift in Sources */,
+				034814AB248BBF9A00825A08 /* Mocks.swift in Sources */,
+				034814B1248D190100825A08 /* RootRouterTests.swift in Sources */,
 				74D95DE82487E90D00836229 /* OnboardingStep.swift in Sources */,
 				74D95DDE2487C56100836229 /* ENUnitTests.swift in Sources */,
 			);

@@ -7,11 +7,8 @@
 
 import UIKit
 
-class NavigationController: UINavigationController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.view.backgroundColor = .navigationControllerBackgroundColor            
+open class ViewController: UIViewController, ViewControllable {
+    var uiviewController: UIViewController {
+        return self
     }
 }
