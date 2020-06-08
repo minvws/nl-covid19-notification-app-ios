@@ -12,6 +12,6 @@ import UIKit
 /// Adopted by for example `ViewController` and `NavigationController`
 /// and designated to use together with `Routing` and `Router`
 /// @mockable
-protocol ViewControllable {
+protocol ViewControllable: AnyObject {
     var uiviewController: UIViewController { get }
 }

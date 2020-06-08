@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DefaultCompletionName</key>
+	<string>MyComponent</string>
+	<key>Description</key>
+	<string>Creates COVID-NL app Component</string>
+	<key>Kind</key>
+	<string>Xcode.IDEKit.TextSubstitutionFileTemplateKind</string>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Description</key>
+			<string>The name of the component to create</string>
+			<key>Identifier</key>
+			<string>componentName</string>
+			<key>Name</key>
+			<string>Component Name:</string>
+			<key>NotPersisted</key>
+			<true/>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>text</string>
+		</dict>
+		<dict>
+			<key>Default</key>
+			<string>___VARIABLE_componentName:identifier___</string>
+			<key>Identifier</key>
+			<string>productName</string>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+		<dict>
+			<key>Description</key>
+			<string>A router is recommended to route between different children. This removes the routing specific logic from the viewController</string>
+			<key>Default</key>
+			<false/>
+			<key>Identifier</key>
+			<string>WithRouter</string>
+			<key>Name</key>
+			<string>Include Router</string>
+			<key>NotPersisted</key>
+			<true/>
+			<key>Required</key>
+			<false/>
+			<key>Type</key>
+			<string>checkbox</string>
+		</dict>
+	</array>
+	<key>SortOrder</key>
+	<string>6</string>
+	<key>Summary</key>
+	<string>Creates COVID-NL app Component</string>
+</dict>
+</plist>
