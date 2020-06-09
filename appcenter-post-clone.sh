@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-echo "Installingen Mockolo"
+echo "Installing Mockolo"
 brew install mockolo

@@ -40,7 +40,6 @@
 		74D95DCF2486618C00836229 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCE2486618C00836229 /* NavigationController.swift */; };
 		74D95DD1248668D300836229 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 74D95DD3248668D300836229 /* Localizable.strings */; };
 		74D95DD624866B9900836229 /* OnboardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DD524866B9900836229 /* OnboardingManager.swift */; };
-		74D95DDE2487C56100836229 /* ENUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DDD2487C56100836229 /* ENUnitTests.swift */; };
 		74D95DE52487E7B300836229 /* OnboardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DD524866B9900836229 /* OnboardingManager.swift */; };
 		74D95DE62487E7B700836229 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 74D95DD3248668D300836229 /* Localizable.strings */; };
 		74D95DE72487E7E500836229 /* NSLocalizedString+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D95DCC248660C700836229 /* NSLocalizedString+Localized.swift */; };
@@ -99,7 +98,6 @@
 		74D95DD4248668D700836229 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		74D95DD524866B9900836229 /* OnboardingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManager.swift; sourceTree = "<group>"; };
 		74D95DDB2487C56100836229 /* ENUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ENUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		74D95DDD2487C56100836229 /* ENUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ENUnitTests.swift; sourceTree = "<group>"; };
 		74D95DDF2487C56100836229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D274221A248EBBBF006AB4E0 /* appcenter-post-clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "appcenter-post-clone.sh"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -339,7 +337,6 @@
 			children = (
 				034814AA248BBF9A00825A08 /* Mocks.swift */,
 				036B8B97248AB88C0056F4D2 /* App */,
-				74D95DDD2487C56100836229 /* ENUnitTests.swift */,
 				74D95DDF2487C56100836229 /* Info.plist */,
 			);
 			path = ENUnitTests;
@@ -515,7 +512,6 @@
 				034814AB248BBF9A00825A08 /* Mocks.swift in Sources */,
 				034814B1248D190100825A08 /* RootRouterTests.swift in Sources */,
 				74D95DE82487E90D00836229 /* OnboardingStep.swift in Sources */,
-				74D95DDE2487C56100836229 /* ENUnitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
