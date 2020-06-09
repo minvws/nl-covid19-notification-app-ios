@@ -17,6 +17,12 @@ ifeq (, $(shell which brew))
  $(error "Please install homebrew (https://brew.sh) to continue")
 endif
 
+# install xcodegen, used for unit tests
+ifeq (, $(shell which xcodegen))
+	echo "Installing xcodegen"
+	brew install xcodegen
+endif
+
 # install mockolo, used for unit tests
 ifeq (, $(shell which mockolo))
 	echo "Installing mockolo"

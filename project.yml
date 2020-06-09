@@ -1,0 +1,67 @@
+name: EN
+
+options:
+  developmentLanguage: $(DEVELOPMENT_LANGUAGE)
+
+targets:
+  EN:
+    platform: iOS
+    type: application
+    deploymentTarget: "13.0"
+    sources:
+      - path: EN
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en
+        SWIFT_VERSION: 5.2
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: C2H38GV99H
+        ENABLE_BITCODE: YES
+        TARGETED_DEVICE_FAMILY: 1
+
+    info:
+      path: EN/Resources/Info.plist
+      properties:
+        BGTaskSchedulerPermittedIdentifiers:
+          [$(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification]
+        CFBundleName: EN
+        CFBundleDisplayName: EN
+        CFBundleIcons: {}
+        CFBundleShortVersionString: "0.1"
+        CFBundleVersion: "1.0"
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationQueriesSchemes: [""]
+        LSRequiresIPhoneOS: true
+        UIAppFonts: []
+        UIBackgroundModes: [fetch, processing]
+        UILaunchStoryboardName: LaunchScreen
+        UIRequiredDeviceCapabilities: [armv7, telephony]
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIViewControllerBasedStatusBarAppearance: true
+        UIUserInterfaceStyle: "Light"
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+                UISceneConfigurationName: Default Configuration
+
+    scheme:
+      gatherCoverageData: true
+      testTargets:
+        - name: ENTests
+          parallelizable: false
+          randomExecutionOrder: true
+
+  ENTests:
+    platform: iOS
+    type: bundle.unit-test
+    deploymentTarget: "13.0"
+    sources:
+      - ENUnitTests
+    dependencies:
+      - target: EN
+    settings:
+      base:
+        SWIFT_VERSION: 5.2

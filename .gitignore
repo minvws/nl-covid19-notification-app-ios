@@ -5,6 +5,9 @@
 ## Build generated
 build/
 DerivedData/
+*.xcodeproj
+EN/Resources/Info.plist
+ENUnitTests/Mocks.swift
 
 ## Various settings
 *.pbxuser
