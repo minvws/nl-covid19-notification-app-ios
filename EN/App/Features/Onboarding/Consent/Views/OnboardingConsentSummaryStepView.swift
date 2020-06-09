@@ -26,7 +26,7 @@ final class OnboardingConsentSummaryStepView: View {
 
     lazy private var viewsInDisplayOrder = [imageView, label]
 
-    var consentSummaryStep: OnboardingConsentSummaryStep
+    private var consentSummaryStep: OnboardingConsentSummaryStep
 
     var estimateHeight: CGFloat {
         get {

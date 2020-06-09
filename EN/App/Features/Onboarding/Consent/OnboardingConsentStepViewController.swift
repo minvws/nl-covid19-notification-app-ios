@@ -26,15 +26,12 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     private var index: Int
     private let onboardingConsentManager: OnboardingConsentManaging
-    private let onboardingConsentStepBuilder: OnboardingConsentBuildable
 
     init(onboardingConsentManager: OnboardingConsentManaging,
-        onboardingConcentStepBuilder: OnboardingConsentBuildable,
         listener: OnboardingConsentListener,
         index: Int) {
 
         self.onboardingConsentManager = onboardingConsentManager
-        self.onboardingConsentStepBuilder = onboardingConcentStepBuilder
         self.listener = listener
         self.index = index
 

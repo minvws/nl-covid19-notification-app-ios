@@ -27,7 +27,7 @@ private final class OnboardingDependencyProvider: DependencyProvider<EmptyDepend
     
     // MARK: - OnboardingConsentDependency
     
-    lazy var onboardingConcentManager: OnboardingConsentManaging = OnboardingConsentManager()
+    lazy var onboardingConsentManager: OnboardingConsentManaging = OnboardingConsentManager()
 
     // MARK: - Child Builders
 

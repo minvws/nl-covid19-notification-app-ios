@@ -8,12 +8,6 @@
 import Foundation
 
 /// @mockable
-protocol OnboardingConsentListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
-}
-
-/// @mockable
 protocol OnboardingConsentBuildable {
     /// Builds OnboardingConsent
     ///
@@ -22,8 +16,14 @@ protocol OnboardingConsentBuildable {
     func build(withListener listener: OnboardingConsentListener, initialIndex: Int) -> ViewControllable
 }
 
+/// @mockable
+protocol OnboardingConsentListener: AnyObject {
+    // TODO: Add any functions to communicate to the parent
+    //       object, which should set itself as listener
+}
+
 protocol OnboardingConsentDependency {
-    var onboardingConcentManager: OnboardingConsentManaging { get }
+    var onboardingConsentManager: OnboardingConsentManaging { get }
 }
 
 private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> {
@@ -37,11 +37,10 @@ final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, Onbo
 
     func build(withListener listener: OnboardingConsentListener, initialIndex: Int = 0) -> ViewControllable {
         let dependencyProvider = OnboardingConsentDependencyProvider(dependency: dependency)
-        let onboardingConcentManager = dependencyProvider.dependency.onboardingConcentManager
+        let onboardingConsentManager = dependencyProvider.dependency.onboardingConsentManager
 
         return OnboardingConsentStepViewController(
-            onboardingConsentManager: onboardingConcentManager,
-            onboardingConcentStepBuilder: self,
+            onboardingConsentManager: onboardingConsentManager,            
             listener: listener,
             index: 0)
     }

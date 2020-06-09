@@ -9,7 +9,7 @@ import UIKit
 
 final class OnboardingConsentSummaryStepsView: View {
 
-    let consentSummarySteps: [OnboardingConsentSummaryStep]
+    private let consentSummarySteps: [OnboardingConsentSummaryStep]
     var consentSummaryStepViews: [OnboardingConsentSummaryStepView] = []
 
     // MARK: - Lifecycle
