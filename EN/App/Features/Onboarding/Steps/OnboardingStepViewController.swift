@@ -39,18 +39,22 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     private var onboardingStep: OnboardingStep
     private let onboardingManager: OnboardingManaging
     private let onboardingStepBuilder: OnboardingStepBuildable
+    
+    private weak var listener: OnboardingStepListener?
 
     // MARK: - Lifecycle
 
     init(onboardingManager: OnboardingManaging,
          onboardingStepBuilder: OnboardingStepBuildable,
+         listener: OnboardingStepListener,
          index: Int) {
 
         self.onboardingManager = onboardingManager
         self.onboardingStepBuilder = onboardingStepBuilder
+        self.listener = listener
         self.index = index
         
-        guard let step = OnboardingManager.shared.getStep(index) else { fatalError("OnboardingStep index out of range") }
+        guard let step = self.onboardingManager.getStep(index) else { fatalError("OnboardingStep index out of range") }
 
         self.onboardingStep = step
 
@@ -59,8 +63,6 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         self.button.title = self.onboardingStep.buttonTitle
         self.imageView.image = self.onboardingStep.image
         self.label.attributedText = self.onboardingStep.attributedText
-        
-        self.button.isHidden = OnboardingManager.shared.onboardingSteps.count == self.index + 1
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -118,8 +120,11 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     @objc func buttonPressed() {
         let nextIndex = self.index + 1
         if onboardingManager.onboardingSteps.count > nextIndex {
-            let viewController = onboardingStepBuilder.build(initialIndex: nextIndex)
+            let viewController = onboardingStepBuilder.build(withListener: listener!, initialIndex: nextIndex)
             self.navigationController?.pushViewController(viewController.uiviewController, animated: true)
+        } else {
+            // build consent
+            listener?.onboardingStepsDidComplete()
         }
     }
 }

@@ -14,12 +14,12 @@ protocol OnboardingListener: AnyObject {
 
 /// @mockable
 protocol OnboardingBuildable {
-    func build(withListener listener: OnboardingListener) -> ViewControllable
+    func build(withListener listener: OnboardingListener) -> Routing
 }
 
 ///
 /// - Tag: OnboardingDependencyProvider
-private final class OnboardingDependencyProvider: DependencyProvider<EmptyDependency>, OnboardingStepDependency {
+private final class OnboardingDependencyProvider: DependencyProvider<EmptyDependency>, OnboardingStepDependency, OnboardingConsentDependency {
     
     // MARK: - OnboardingStepDependency
     
@@ -30,13 +30,19 @@ private final class OnboardingDependencyProvider: DependencyProvider<EmptyDepend
     var stepBuilder: OnboardingStepBuildable {
         return OnboardingStepBuilder(dependency: self)
     }
+    
+    var consentBuilder: OnboardingConsentBuildable {
+        return OnboardingConsentBuilder(dependency: self)
+    }
 }
 
 final class OnboardingBuilder: Builder<EmptyDependency>, OnboardingBuildable {
-    func build(withListener listener: OnboardingListener) -> ViewControllable {
+    func build(withListener listener: OnboardingListener) -> Routing {
         let dependencyProvider = OnboardingDependencyProvider(dependency: dependency)
+        let viewController = OnboardingViewController(listener: listener)
         
-        return OnboardingViewController(listener: listener,
-                                        stepBuilder: dependencyProvider.stepBuilder)
+        return OnboardingRouter(viewController: viewController,
+                                onboardingStepBuilder: dependencyProvider.stepBuilder,
+                                onboardingConsentBuilder: dependencyProvider.consentBuilder)
     }
 }

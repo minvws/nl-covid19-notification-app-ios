@@ -9,12 +9,16 @@ import Foundation
 
 /// @mockable
 protocol OnboardingStepBuildable {
-    func build() -> ViewControllable
-    func build(initialIndex: Int) -> ViewControllable
+    func build(withListener listener: OnboardingStepListener) -> ViewControllable
+    func build(withListener listener: OnboardingStepListener, initialIndex: Int) -> ViewControllable
 }
 
 protocol OnboardingStepDependency {
     var onboardingManager: OnboardingManaging { get }
+}
+
+protocol OnboardingStepListener: AnyObject {
+    func onboardingStepsDidComplete()
 }
 
 final class OnboardingStepDependencyProvider: DependencyProvider<OnboardingStepDependency> {
@@ -22,16 +26,17 @@ final class OnboardingStepDependencyProvider: DependencyProvider<OnboardingStepD
 }
 
 final class OnboardingStepBuilder: Builder<OnboardingStepDependency>, OnboardingStepBuildable {
-    func build() -> ViewControllable {
-        return build(initialIndex: 0)
+    func build(withListener listener: OnboardingStepListener) -> ViewControllable {
+        return build(withListener: listener, initialIndex: 0)
     }
     
-    func build(initialIndex: Int = 0) -> ViewControllable {
+    func build(withListener listener: OnboardingStepListener, initialIndex: Int = 0) -> ViewControllable {
         let dependencyProvider = OnboardingStepDependencyProvider(dependency: dependency)
         let onboardingManager = dependencyProvider.dependency.onboardingManager
         
         return OnboardingStepViewController(onboardingManager: onboardingManager,
                                             onboardingStepBuilder: self,
+                                            listener: listener,
                                             index: initialIndex)
     }
 }
