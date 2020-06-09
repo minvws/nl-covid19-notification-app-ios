@@ -62,14 +62,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
     
     func detachOnboarding(animated: Bool, completion: @escaping () -> ()) {
-        guard let onboardingViewController = onboardingViewController else {
+        guard let onboardingRouter = onboardingRouter else {
             completion()
             return
         }
         
-        self.onboardingViewController = nil
+        self.onboardingRouter = nil
         
-        viewController.dismiss(viewController: onboardingViewController,
+        viewController.dismiss(viewController: onboardingRouter.viewControllable,
                                animated: animated,
                                completion: completion)
     }
@@ -77,21 +77,21 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     // MARK: - Private
     
     private func routeToOnboarding() {
-        guard onboardingViewController == nil else {
+        guard onboardingRouter == nil else {
             // already presented
             return
         }
         
-        let onboardingViewController = onboardingBuilder.build(withListener: viewController)
-        self.onboardingViewController = onboardingViewController
+        let onboardingRouter = onboardingBuilder.build(withListener: viewController)
+        self.onboardingRouter = onboardingRouter
         
-        viewController.present(viewController: onboardingViewController,
+        viewController.present(viewController: onboardingRouter.viewControllable,
                                animated: false,
                                completion: nil)
     }
     
     private let onboardingBuilder: OnboardingBuildable
-    private var onboardingViewController: ViewControllable?
+    private var onboardingRouter: Routing?
     
     private let mainBuilder: MainBuildable
     private var mainViewController: ViewControllable?

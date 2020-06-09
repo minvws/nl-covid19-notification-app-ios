@@ -1,24 +1,23 @@
-//
-//  OnboardingViewController.swift
-//  EN
-//
-//  Created by Robin van Dijke on 06/06/2020.
-//  Copyright © 2020 Rob Mulder. All rights reserved.
-//
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
 
 import Foundation
 
-/// @mockable
-protocol OnboardingViewControllable: ViewControllable {
-    
+protocol OnboardingRouting: Routing {
+    func routeToSteps()
+    func routeToConsent()
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable {
     
-    init(listener: OnboardingListener,
-         stepBuilder: OnboardingStepBuildable) {
+    weak var router: OnboardingRouting?
+    
+    init(listener: OnboardingListener) {
         self.listener = listener
-        self.stepBuilder = stepBuilder
         
         super.init(nibName: nil, bundle: nil)
         
@@ -29,21 +28,28 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - OnboardingViewControllable
+    
+    func push(viewController: ViewControllable, animated: Bool) {
+        pushViewController(viewController.uiviewController, animated: animated)
+    }
+    
+    // MARK: - OnboardingStepListener
+    
+    func onboardingStepsDidComplete() {
+        
+        router?.routeToConsent()
+    }
+    
     // MARK: - ViewController Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let stepViewController = stepBuilder.build()
-        pushViewController(stepViewController.uiviewController, animated: false)
-        
-        self.stepViewController = stepViewController
+        router?.routeToSteps()
     }
     
     // MARK: - Private
     
     private weak var listener: OnboardingListener?
-    
-    private let stepBuilder: OnboardingStepBuildable
-    private var stepViewController: ViewControllable?
 }

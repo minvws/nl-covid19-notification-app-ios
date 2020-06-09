@@ -15,8 +15,6 @@ protocol OnboardingManaging {
 
 final class OnboardingManager: OnboardingManaging {
 
-    static let shared = OnboardingManager()
-
     var onboardingSteps: [OnboardingStep] = []
 
     init() {
