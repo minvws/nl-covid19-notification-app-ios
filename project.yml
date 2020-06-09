@@ -65,3 +65,6 @@ targets:
     settings:
       base:
         SWIFT_VERSION: 5.2
+    preBuildScripts:
+      - path: tools/scripts/generate-mocks.sh
+        name: Generate Mocks
