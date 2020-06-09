@@ -4,6 +4,11 @@ BREW_PATH="/usr/local/bin/brew2"
 XCODE_TEMPLATE_PATH_SRC="tools/Xcode Templates/Component.xctemplate"
 XCODE_TEMPLATE_PATH_DST="~/Library/Developer/Xcode/Templates/File Templates/COVID-NL"
 
+# Creates xcodeproj
+project: 
+	xcodegen
+	open EN.xcodeproj
+
 # Initializes dev environment
 dev: install_xcode_templates install_dev_deps
 

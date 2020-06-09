@@ -14,6 +14,10 @@ The core team works on the repository in a private fork (for reasons of complian
 If you plan to make non-trivial changes, we recommend to open an issue beforehand where we can discuss your planned changes.
 This increases the chance that we might be able to use your contribution (or it avoids doing work if there are reasons why we wouldn't be able to use it).
 
+## Getting Started
+
+Run `make dev` && `make project` to get started. Homebrew (https://brew.sh) is a requirement to install dependencies.
+
 ## Disclaimer
 
 Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.
