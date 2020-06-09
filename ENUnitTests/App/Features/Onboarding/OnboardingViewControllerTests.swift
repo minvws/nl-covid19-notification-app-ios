@@ -12,12 +12,12 @@ import XCTest
 final class OnboardingViewControllerTests: XCTestCase {
     private var viewController: OnboardingViewController!
     private let router = OnboardingRoutingMock()
-    // TODO: Add other dependencies
+    private let listener = OnboardingListenerMock()
 
     override func setUp() {
         super.setUp()
 
-        viewController = OnboardingViewController()
+        viewController = OnboardingViewController(listener: listener)
         viewController.router = router
     }
 

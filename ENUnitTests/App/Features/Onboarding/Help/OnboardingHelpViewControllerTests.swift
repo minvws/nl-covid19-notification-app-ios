@@ -11,13 +11,12 @@ import XCTest
 
 final class OnboardingHelpViewControllerTests: XCTestCase {
     private var viewController: OnboardingHelpViewController!
-    // TODO: Add any external components (e.g. a listener)
+    private let listener = OnboardingHelpListenerMock()
 
     override func setUp() {
         super.setUp()
 
-        // TODO: Set up other components properly and connect them to the viewController
-        viewController = OnboardingHelpViewController()
+        viewController = OnboardingHelpViewController(listener: listener)
     }
 
     // TODO: Write test cases

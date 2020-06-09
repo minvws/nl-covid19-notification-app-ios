@@ -11,13 +11,12 @@ import XCTest
 
 final class OnboardingConsentViewControllerTests: XCTestCase {
     private var viewController: OnboardingConsentViewController!
-    // TODO: Add any external components (e.g. a listener)
+    private let listener = OnboardingConsentListenerMock()
 
     override func setUp() {
         super.setUp()
 
-        // TODO: Set up other components properly and connect them to the viewController
-        viewController = OnboardingConsentViewController()
+        viewController = OnboardingConsentViewController(listener: listener)
     }
 
     // TODO: Write test cases

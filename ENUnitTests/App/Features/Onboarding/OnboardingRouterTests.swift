@@ -11,7 +11,11 @@ import XCTest
 
 final class OnboardingRouterTests: XCTestCase {
     private let viewController = OnboardingViewControllableMock()
-    // TODO: Add additional childBuilders / dependencies
+    private let stepBuilder = OnboardingStepBuildableMock()
+    private let consentBuilder = OnboardingConsentBuildableMock()
+    private let helpBuilder = OnboardingHelpBuildableMock()
+    private let webBuilder = WebBuildableMock()
+    private let shareSheetBuilder = ShareSheetBuildableMock()
 
     private var router: OnboardingRouter!
 
@@ -19,7 +23,12 @@ final class OnboardingRouterTests: XCTestCase {
         super.setUp()
 
         // TODO: Add other dependencies
-        router = OnboardingRouter(viewController: viewController)
+        router = OnboardingRouter(viewController: viewController,
+                                  stepBuilder: stepBuilder,
+                                  consentBuilder: consentBuilder,
+                                  helpBuilder: helpBuilder,
+                                  webBuilder: webBuilder,
+                                  shareSheetBuilder: shareSheetBuilder)
     }
 
     func test_init_setsRouterOnViewController() {

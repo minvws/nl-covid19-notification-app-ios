@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// @mockable
 protocol OnboardingManaging {
     var onboardingSteps: [OnboardingStep] { get }
     

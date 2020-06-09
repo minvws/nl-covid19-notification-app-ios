@@ -18,7 +18,6 @@ final class StatusRouterTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        // TODO: Add other dependencies
         router = StatusRouter(listener: listener,
                               viewController: viewController)
     }

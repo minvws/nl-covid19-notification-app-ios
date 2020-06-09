@@ -17,6 +17,7 @@ protocol OnboardingStepDependency {
     var onboardingManager: OnboardingManaging { get }
 }
 
+/// @mockable
 protocol OnboardingStepListener: AnyObject {
     func onboardingStepsDidComplete()
 }
