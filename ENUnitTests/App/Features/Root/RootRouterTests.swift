@@ -29,7 +29,7 @@ final class RootRouterTests: XCTestCase {
     }
     
     func test_start_buildsAndPresentsOnboarding() {
-        onboardingBuilder.buildHandler = { _ in return OnboardingViewControllableMock() }
+        onboardingBuilder.buildHandler = { _ in return OnboardingRoutingMock() }
         
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.presentCallCount, 0)
@@ -41,7 +41,7 @@ final class RootRouterTests: XCTestCase {
     }
     
     func test_callStartTwice_doesNotPresentTwice() {
-        onboardingBuilder.buildHandler = { _ in OnboardingViewControllableMock() }
+        onboardingBuilder.buildHandler = { _ in OnboardingRoutingMock() }
         
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.presentCallCount, 0)

@@ -41,6 +41,17 @@ class AppEntryPointMock: AppEntryPoint {
     }
 }
 
+class OnboardingConsentViewControllableMock: OnboardingConsentViewControllable {
+    init() { }
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
 class RootRoutingMock: RootRouting {
     init() { }
     init(viewControllable: ViewControllable = ViewControllableMock()) {
@@ -128,6 +139,12 @@ class ViewControllableMock: ViewControllable {
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
+class OnboardingConsentListenerMock: OnboardingConsentListener {
+    init() { }
+
+
+}
+
 class OnboardingListenerMock: OnboardingListener {
     init() { }
 
@@ -143,26 +160,57 @@ class OnboardingListenerMock: OnboardingListener {
     }
 }
 
+class OnboardingRoutingMock: OnboardingRouting {
+    init() { }
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+
+    var routeToStepsCallCount = 0
+    var routeToStepsHandler: (() -> ())?
+    func routeToSteps()  {
+        routeToStepsCallCount += 1
+        if let routeToStepsHandler = routeToStepsHandler {
+            routeToStepsHandler()
+        }
+        
+    }
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+
+    var routeToConsentCallCount = 0
+    var routeToConsentHandler: (() -> ())?
+    func routeToConsent()  {
+        routeToConsentCallCount += 1
+        if let routeToConsentHandler = routeToConsentHandler {
+            routeToConsentHandler()
+        }
+        
+    }
+}
+
 class OnboardingStepBuildableMock: OnboardingStepBuildable {
     init() { }
 
 
     var buildCallCount = 0
-    var buildHandler: (() -> (ViewControllable))?
-    func build() -> ViewControllable {
+    var buildHandler: ((OnboardingStepListener) -> (ViewControllable))?
+    func build(withListener listener: OnboardingStepListener) -> ViewControllable {
         buildCallCount += 1
         if let buildHandler = buildHandler {
-            return buildHandler()
+            return buildHandler(listener)
         }
         return ViewControllableMock()
     }
 
-    var buildInitialIndexCallCount = 0
-    var buildInitialIndexHandler: ((Int) -> (ViewControllable))?
-    func build(initialIndex: Int) -> ViewControllable {
-        buildInitialIndexCallCount += 1
-        if let buildInitialIndexHandler = buildInitialIndexHandler {
-            return buildInitialIndexHandler(initialIndex)
+    var buildWithListenerCallCount = 0
+    var buildWithListenerHandler: ((OnboardingStepListener, Int) -> (ViewControllable))?
+    func build(withListener listener: OnboardingStepListener, initialIndex: Int) -> ViewControllable {
+        buildWithListenerCallCount += 1
+        if let buildWithListenerHandler = buildWithListenerHandler {
+            return buildWithListenerHandler(listener, initialIndex)
         }
         return ViewControllableMock()
     }
@@ -170,13 +218,37 @@ class OnboardingStepBuildableMock: OnboardingStepBuildable {
 
 class OnboardingViewControllableMock: OnboardingViewControllable {
     init() { }
-    init(uiviewController: UIViewController = UIViewController()) {
+    init(router: OnboardingRouting? = nil, uiviewController: UIViewController = UIViewController()) {
+        self.router = router
         self.uiviewController = uiviewController
     }
 
 
+    var routerSetCallCount = 0
+    var router: OnboardingRouting? = nil { didSet { routerSetCallCount += 1 } }
+
+    var pushCallCount = 0
+    var pushHandler: ((ViewControllable, Bool) -> ())?
+    func push(viewController: ViewControllable, animated: Bool)  {
+        pushCallCount += 1
+        if let pushHandler = pushHandler {
+            pushHandler(viewController, animated)
+        }
+        
+    }
+
     var uiviewControllerSetCallCount = 0
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+
+    var onboardingStepsDidCompleteCallCount = 0
+    var onboardingStepsDidCompleteHandler: (() -> ())?
+    func onboardingStepsDidComplete()  {
+        onboardingStepsDidCompleteCallCount += 1
+        if let onboardingStepsDidCompleteHandler = onboardingStepsDidCompleteHandler {
+            onboardingStepsDidCompleteHandler()
+        }
+        
+    }
 }
 
 class RoutingMock: Routing {
@@ -210,8 +282,23 @@ class OnboardingBuildableMock: OnboardingBuildable {
 
 
     var buildCallCount = 0
-    var buildHandler: ((OnboardingListener) -> (ViewControllable))?
-    func build(withListener listener: OnboardingListener) -> ViewControllable {
+    var buildHandler: ((OnboardingListener) -> (Routing))?
+    func build(withListener listener: OnboardingListener) -> Routing {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener)
+        }
+        return RoutingMock()
+    }
+}
+
+class OnboardingConsentBuildableMock: OnboardingConsentBuildable {
+    init() { }
+
+
+    var buildCallCount = 0
+    var buildHandler: ((OnboardingConsentListener) -> (ViewControllable))?
+    func build(withListener listener: OnboardingConsentListener) -> ViewControllable {
         buildCallCount += 1
         if let buildHandler = buildHandler {
             return buildHandler(listener)

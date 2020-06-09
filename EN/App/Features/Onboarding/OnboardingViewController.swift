@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// @mockable
 protocol OnboardingRouting: Routing {
     func routeToSteps()
     func routeToConsent()
