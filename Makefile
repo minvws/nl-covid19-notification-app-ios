@@ -1,8 +1,8 @@
 # COVID-NL APP iOS Makefile
 
-BREW_PATH="/usr/local/bin/brew2"
+BREW_PATH=`which brew`
 XCODE_TEMPLATE_PATH_SRC="tools/Xcode Templates/Component.xctemplate"
-XCODE_TEMPLATE_PATH_DST="~/Library/Developer/Xcode/Templates/File Templates/COVID-NL"
+XCODE_TEMPLATE_PATH_DST="${HOME}/Library/Developer/Xcode/Templates/File Templates/COVID-NL"
 
 # Creates xcodeproj
 project: 
