@@ -70,7 +70,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
 }
 ```
 
-First, an interface is defined that describes the `MainBuilder`: it's `build` function and the interface of the to-be-built object. Any dynamic dependency (for example, a `listener`) can be passed as argument to the `build` method. 
+First, an interface is defined that describes the `MainBuilder`: its `build` function and the interface of the to-be-built object. Any dynamic dependency (for example, a `listener`) can be passed as argument to the `build` method. 
 
 Note: Usually builders return generic interfaces (`Routing`, `ViewControllable`) to not leak implementation details to the call site. For example: it usually does not make sense for the parent to call into routing functions of a child.
 
@@ -79,17 +79,18 @@ Secondly, a `DependencyProvider` is created. `DependencyProvider`s can be constr
 ```
 final class MainDependencyProvider: DependencyProvider<MainDependency> {
     // dependencies defined here can use parent dependencies from the `dependency` variable 
+    // NOTE: lazy var's are not thread safe. This is supposed to be used from the main thread.
     lazy var mainStateController: MainStateControlling = MainStateController()
 } 
 ```
 
 These dependencies can be used by child builders later on. For an example, see the below Router section.
 
-Finally (3), a concrete `Builder` class is created. Its structure follows the same pattern: a `DependencyProvider` is created, any intermediate objects (in this case `mainViewController`) is created and the final `Router` is constructed and returned.
+Finally (3), a concrete `Builder` class is created. Its structure follows the same pattern: a `DependencyProvider` is created, any intermediate objects (in this case `mainViewController`) are created and the final `Router` is constructed and returned.
 
 ### Router
 
-The Router concept comes from VIPER and is used to extract router specific logic. A `Router` has an associated `viewController` that it uses to route with. Usually routers call `present`/`dismiss`/`push`/`pop` methods on their `viewControllers`. ViewControllers have a reference to their router to initiate routing requests.
+The Router concept comes from VIPER and is used to extract router specific logic. A `Router` has an associated `viewController` that it uses to route with. Usually routers call `present`/`dismiss`/`push`/`pop` methods on their `viewControllers`. ViewControllers have a **weak** reference to their router to initiate routing requests.
 
 A component with a router is structured as following:
 
@@ -169,13 +170,13 @@ More conventions could be added later (e.g. once decisions have been made about 
 
 - All concrete classes are defined by protocols
 - Follow the [Swift API design](https://swift.org/documentation/api-design-guidelines/) guidelines to name your entities 
-- Every component should try to expose the smallest API possible to its call site. Instead of returning `MainRouting` from `MainBuilder`, just return `Routing`
+- Every component should expose the smallest API possible. Instead of returning `MainRouting` from `MainBuilder`, just return `Routing`
     - Example showing difference of 'external' vs 'internal' interface: `RootBuilder` returns `AppEntryPoint`
 - Use the Common UI objects provided as base classes. This will allow to easily extend common functionality in the future. If a base class is missing and you feel there's a need to have one, please add it.
 - Keep the file tree organised by ceature and component instead of Model / Controller / View
     - For now there are only a few features - high levels components: Root, Onboarding and Main 
 - Use the provided `.xctemplate` for easy and consistent scaffolding
-- Try to use the right modifiers where possible (e.g. `final`, `private`, `fileprivate`)
+- As a rule, start with the `final` and `private` modifiers and relax when needed (by removing them, `public` is not used as everything is in one module)
 - Shared extensions can go, for now, in Common/Extensions. If your extension is limited to a component, it can live next to the component
 - Testing
     - Business logic and routing logic should be covered by unit tests
