@@ -61,8 +61,6 @@ final class OnboardingManager: OnboardingManaging {
         )
     }
 
-    deinit { }
-
     func getStep(_ index: Int) -> OnboardingStep? {
         if self.onboardingSteps.count > index { return self.onboardingSteps[index] }
         return nil

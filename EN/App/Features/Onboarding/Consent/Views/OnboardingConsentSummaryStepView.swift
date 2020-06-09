@@ -36,13 +36,9 @@ final class OnboardingConsentSummaryStepView: View {
     
     // MARK: - Lifecycle
 
-    required init(with step: OnboardingConsentSummaryStep) {
-
+    init(with step: OnboardingConsentSummaryStep) {
         self.consentSummaryStep = step
-
         super.init(frame: .zero)
-        
-        super.configure()
     }
 
     required init?(coder: NSCoder) {

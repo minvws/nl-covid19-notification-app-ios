@@ -20,9 +20,7 @@ final class OnboardingConsentSummaryStepsView: View {
 
         self.consentSummaryStepViews = consentSummarySteps.map { OnboardingConsentSummaryStepView(with: $0) }
 
-        super.init(frame: .zero)
-        
-        super.configure()
+        super.init(frame: .zero)        
     }
 
 

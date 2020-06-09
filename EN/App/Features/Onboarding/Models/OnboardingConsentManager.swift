@@ -45,8 +45,6 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         )
     }
 
-    deinit { }
-
     func getStep(_ index: Int) -> OnboardingConsentStep? {
         if self.onboardingConsentSteps.count > index { return self.onboardingConsentSteps[index] }
         return nil
