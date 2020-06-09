@@ -84,7 +84,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         
         setThemeNavigationBar()
         
-        for subView in viewsInDisplayOrder { view.addSubview(subView) }
+        viewsInDisplayOrder.forEach { view.addSubview($0) }
     }
 
     private func setupConstraints() {

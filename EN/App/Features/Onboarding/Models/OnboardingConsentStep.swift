@@ -7,7 +7,7 @@
 
 import UIKit
 
-class OnboardingConsentStep: NSObject {
+final class OnboardingConsentStep: NSObject {
 
     var title: String = ""
     var content: String = ""

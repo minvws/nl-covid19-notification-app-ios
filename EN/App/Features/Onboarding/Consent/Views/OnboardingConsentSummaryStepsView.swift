@@ -7,9 +7,9 @@
 
 import UIKit
 
-class OnboardingConsentSummaryStepsView: UIView {
+final class OnboardingConsentSummaryStepsView: View {
 
-    var consentSummarySteps: [OnboardingConsentSummaryStep]
+    let consentSummarySteps: [OnboardingConsentSummaryStep]
     var consentSummaryStepViews: [OnboardingConsentSummaryStepView] = []
 
     // MARK: - Lifecycle
@@ -18,16 +18,11 @@ class OnboardingConsentSummaryStepsView: UIView {
 
         self.consentSummarySteps = steps
 
-        for consentSummaryStep in self.consentSummarySteps {
-            consentSummaryStepViews.append(
-                OnboardingConsentSummaryStepView(with: consentSummaryStep)
-            )
-        }
+        self.consentSummaryStepViews = consentSummarySteps.map { OnboardingConsentSummaryStepView(with: $0) }
 
         super.init(frame: .zero)
-
-        setupViews()
-        setupConstraints()
+        
+        super.configure()
     }
 
 
@@ -35,18 +30,18 @@ class OnboardingConsentSummaryStepsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Setups
-
-    private func setupViews() {
+    override func build() {
+        super.build()
 
         backgroundColor = .clear
         clipsToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
-        
-        for subView in consentSummaryStepViews { addSubview(subView) }
+
+        consentSummaryStepViews.forEach { addSubview($0) }
     }
 
-    private func setupConstraints() {
+    override func setupConstraints() {
+        super.setupConstraints()
 
         var constraints = [[NSLayoutConstraint]()]
 

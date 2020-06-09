@@ -37,9 +37,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         self.onboardingConsentStepBuilder = onboardingConcentStepBuilder
         self.listener = listener
         self.index = index
-        
+
         guard let step = self.onboardingConsentManager.getStep(index) else { fatalError("ConsentStep index out of range") }
-        
+
         self.internalView = OnboardingConsentView(step: step)
 
         super.init(nibName: nil, bundle: nil)
@@ -59,7 +59,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         super.viewDidLoad()
 
         view.backgroundColor = .viewControllerBackgroundColor
-        
+
         self.skipStepButton.target = self
 
         setThemeNavigationBar()
@@ -130,9 +130,9 @@ private final class OnboardingConsentView: View {
 
     override func build() {
         super.build()
-        
+
         backgroundColor = .red
-        
+
         self.primaryButton.title = self.consentStep.primaryButtonTitle
         self.secondaryButton.title = self.consentStep.secondaryButtonTitle
 
@@ -147,8 +147,8 @@ private final class OnboardingConsentView: View {
         }
 
         self.label.attributedText = self.consentStep.attributedText
-        
-        for subView in viewsInDisplayOrder { addSubview(subView) }
+
+        viewsInDisplayOrder.forEach { addSubview($0) }
     }
 
     override func setupConstraints() {

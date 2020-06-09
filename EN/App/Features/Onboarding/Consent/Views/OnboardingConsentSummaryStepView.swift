@@ -7,7 +7,7 @@
 
 import UIKit
 
-class OnboardingConsentSummaryStepView: UIView {
+final class OnboardingConsentSummaryStepView: View {
 
     lazy private var imageView: UIImageView = {
         let imageView = UIImageView()
@@ -41,9 +41,8 @@ class OnboardingConsentSummaryStepView: UIView {
         self.consentSummaryStep = step
 
         super.init(frame: .zero)
-
-        setupViews()
-        setupConstraints()
+        
+        super.configure()
     }
 
     required init?(coder: NSCoder) {
@@ -52,7 +51,8 @@ class OnboardingConsentSummaryStepView: UIView {
 
     // MARK: - Setups
 
-    private func setupViews() {
+    override func build() {
+        super.build()
 
         backgroundColor = .clear
         clipsToBounds = true
@@ -61,10 +61,12 @@ class OnboardingConsentSummaryStepView: UIView {
         self.imageView.image = self.consentSummaryStep.image
         self.label.attributedText = self.consentSummaryStep.title
         
-        for subView in viewsInDisplayOrder { addSubview(subView) }
+        viewsInDisplayOrder.forEach { addSubview($0) }
     }
 
-    private func setupConstraints() {
+    
+    override func setupConstraints() {
+        super.setupConstraints()
 
         var constraints = [[NSLayoutConstraint]()]
 

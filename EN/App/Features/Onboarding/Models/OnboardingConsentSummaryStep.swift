@@ -7,7 +7,7 @@
 
 import UIKit
 
-class OnboardingConsentSummaryStep: NSObject {
+final class OnboardingConsentSummaryStep: NSObject {
 
     var title: NSAttributedString = NSAttributedString(string: "")
     var image: UIImage = UIImage()
