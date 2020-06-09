@@ -33,7 +33,7 @@ final class OnboardingConsentSummaryStepView: View {
             return (UIScreen.main.bounds.size.width - (OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin + OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin)) / 4
         }
     }
-    
+
     // MARK: - Lifecycle
 
     init(with step: OnboardingConsentSummaryStep) {
@@ -53,18 +53,21 @@ final class OnboardingConsentSummaryStepView: View {
         backgroundColor = .clear
         clipsToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
-        
+
         self.imageView.image = self.consentSummaryStep.image
         self.label.attributedText = self.consentSummaryStep.title
-        
+
         viewsInDisplayOrder.forEach { addSubview($0) }
     }
 
-    
+
     override func setupConstraints() {
         super.setupConstraints()
 
         var constraints = [[NSLayoutConstraint]()]
+        
+        imageView.constraints.forEach({ imageView.removeConstraint($0) })
+        label.constraints.forEach({ label.removeConstraint($0) })
 
         constraints.append([
             imageView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
@@ -74,7 +77,7 @@ final class OnboardingConsentSummaryStepView: View {
             ])
 
         constraints.append([
-            label.topAnchor.constraint(equalTo:  topAnchor, constant: 0),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 0),
             label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 20),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             label.heightAnchor.constraint(greaterThanOrEqualToConstant: 1)

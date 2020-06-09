@@ -162,10 +162,10 @@ private final class OnboardingConsentView: View {
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
-    
-    private func updateView(){
 
-        guard let step = self.consentStep else { return }
+    private func updateView() {
+
+        guard let step = self.consentStep, let summarySteps = step.summarySteps else { return }
 
         self.primaryButton.title = step.primaryButtonTitle
         self.secondaryButton.title = step.secondaryButtonTitle
@@ -176,20 +176,30 @@ private final class OnboardingConsentView: View {
         }
 
         if step.hasSummarySteps {
-            consentSummaryStepsView = OnboardingConsentSummaryStepsView(with: step.summarySteps!)
-            viewsInDisplayOrder.append(consentSummaryStepsView!)
+
+            consentSummaryStepsView = OnboardingConsentSummaryStepsView(with: summarySteps)
+
+            subviews.forEach({
+                if $0 is OnboardingConsentSummaryStepView {
+                    $0.removeFromSuperview()
+                }
+            })
+            
+            if let consentSummaryStepsView = consentSummaryStepsView {
+                addSubview(consentSummaryStepsView)
+            }
         }
 
         self.label.attributedText = step.attributedText
     }
-    
+
     private func updateViewConstraints() {
-        
-        guard let step = self.consentStep else { return }
-        
+
+        guard let step = self.consentStep, let consentSummaryStepsView = consentSummaryStepsView else { return }
+
         label.constraints.forEach({ label.removeConstraint($0) })
-        consentSummaryStepsView!.constraints.forEach({ consentSummaryStepsView!.removeConstraint($0) })
-        
+        consentSummaryStepsView.constraints.forEach({ consentSummaryStepsView.removeConstraint($0) })
+
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
@@ -200,12 +210,15 @@ private final class OnboardingConsentView: View {
             ])
 
         if step.hasSummarySteps {
+
             constraints.append([
-                consentSummaryStepsView!.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 20),
-                consentSummaryStepsView!.leadingAnchor.constraint(equalTo: leadingAnchor, constant: OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin),
-                consentSummaryStepsView!.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin),
-                consentSummaryStepsView!.bottomAnchor.constraint(equalTo: secondaryButton.topAnchor, constant: -20)
+                consentSummaryStepsView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 20),
+                consentSummaryStepsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin),
+                consentSummaryStepsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin),
+                consentSummaryStepsView.bottomAnchor.constraint(equalTo: secondaryButton.topAnchor, constant: -20)
                 ])
+
+            consentSummaryStepsView.setupConstraints()
         }
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }

@@ -20,7 +20,7 @@ final class OnboardingConsentSummaryStepsView: View {
 
         self.consentSummaryStepViews = consentSummarySteps.map { OnboardingConsentSummaryStepView(with: $0) }
 
-        super.init(frame: .zero)        
+        super.init(frame: .zero)
     }
 
 
@@ -44,12 +44,17 @@ final class OnboardingConsentSummaryStepsView: View {
         var constraints = [[NSLayoutConstraint]()]
 
         for (index, consentSummaryStepView) in self.consentSummaryStepViews.enumerated() {
+            
+            consentSummaryStepView.constraints.forEach({ consentSummaryStepView.removeConstraint($0) })
+            
             constraints.append([
                 consentSummaryStepView.topAnchor.constraint(equalTo: index == 0 ? topAnchor : self.consentSummaryStepViews[index - 1].bottomAnchor, constant: 0),
                 consentSummaryStepView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
                 consentSummaryStepView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
                 consentSummaryStepView.heightAnchor.constraint(greaterThanOrEqualToConstant: self.consentSummaryStepViews[index].estimateHeight)
                 ])
+            
+            consentSummaryStepView.setupConstraints()
         }
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
