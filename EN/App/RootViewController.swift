@@ -9,6 +9,8 @@ import UIKit
 
 /// Routing interface for the Root feature. Contains functions that are
 /// called from `RootViewController`.
+/// 
+/// @mockable
 protocol RootRouting: Routing {
     /// Detaches the onboarding feature and calls completion when done.
     /// When the onboarding flow is not attached, completion is called immediately

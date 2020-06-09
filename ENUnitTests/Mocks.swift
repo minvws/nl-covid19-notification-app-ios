@@ -20,17 +20,6 @@ class MainViewControllableMock: MainViewControllable {
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
-class OnboardingViewControllableMock: OnboardingViewControllable {
-    init() { }
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
 class AppEntryPointMock: AppEntryPoint {
     init() { }
     init(uiviewController: UIViewController = UIViewController()) {
@@ -47,6 +36,37 @@ class AppEntryPointMock: AppEntryPoint {
         startCallCount += 1
         if let startHandler = startHandler {
             startHandler()
+        }
+        
+    }
+}
+
+class RootRoutingMock: RootRouting {
+    init() { }
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+
+    var detachOnboardingCallCount = 0
+    var detachOnboardingHandler: ((Bool, @escaping () -> ()) -> ())?
+    func detachOnboarding(animated: Bool, completion: @escaping () -> ())  {
+        detachOnboardingCallCount += 1
+        if let detachOnboardingHandler = detachOnboardingHandler {
+            detachOnboardingHandler(animated, completion)
+        }
+        
+    }
+
+    var routeToMainCallCount = 0
+    var routeToMainHandler: (() -> ())?
+    func routeToMain()  {
+        routeToMainCallCount += 1
+        if let routeToMainHandler = routeToMainHandler {
+            routeToMainHandler()
         }
         
     }
@@ -146,6 +166,17 @@ class OnboardingStepBuildableMock: OnboardingStepBuildable {
         }
         return ViewControllableMock()
     }
+}
+
+class OnboardingViewControllableMock: OnboardingViewControllable {
+    init() { }
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
 class RoutingMock: Routing {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0345DBFA248F8C2300AEDAFE /* RootViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345DBF9248F8C2300AEDAFE /* RootViewControllerTests.swift */; };
 		03481492248BB27A00825A08 /* OnboardingBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03481491248BB27A00825A08 /* OnboardingBuilder.swift */; };
 		03481494248BB2D500825A08 /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03481493248BB2D500825A08 /* Builder.swift */; };
 		03481496248BB2DA00825A08 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03481495248BB2DA00825A08 /* Dependency.swift */; };
@@ -59,6 +60,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0345DBF9248F8C2300AEDAFE /* RootViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerTests.swift; sourceTree = "<group>"; };
 		03481491248BB27A00825A08 /* OnboardingBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingBuilder.swift; sourceTree = "<group>"; };
 		03481493248BB2D500825A08 /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
 		03481495248BB2DA00825A08 /* Dependency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dependency.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				034814B0248D190100825A08 /* RootRouterTests.swift */,
+				0345DBF9248F8C2300AEDAFE /* RootViewControllerTests.swift */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -509,6 +512,7 @@
 				74D95DE92487E9DA00836229 /* UIColor+Theme.swift in Sources */,
 				74D95DE52487E7B300836229 /* OnboardingManager.swift in Sources */,
 				74D95DE72487E7E500836229 /* NSLocalizedString+Localized.swift in Sources */,
+				0345DBFA248F8C2300AEDAFE /* RootViewControllerTests.swift in Sources */,
 				034814AB248BBF9A00825A08 /* Mocks.swift in Sources */,
 				034814B1248D190100825A08 /* RootRouterTests.swift in Sources */,
 				74D95DE82487E90D00836229 /* OnboardingStep.swift in Sources */,
