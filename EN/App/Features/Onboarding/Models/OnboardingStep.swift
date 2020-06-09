@@ -7,7 +7,7 @@
 
 import UIKit
 
-class OnboardingStep: NSObject {
+final class OnboardingStep: NSObject {
 
     var title: String = ""
     var content: String = ""
