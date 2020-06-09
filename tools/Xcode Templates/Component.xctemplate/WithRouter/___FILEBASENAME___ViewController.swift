@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// @mockable
 protocol ___VARIABLE_componentName___Routing: Routing {
     // TODO: Add any routing functions that are called from the ViewController
     // func routeToChild()
