@@ -24,34 +24,35 @@ final class OnboardingConsentViewController: ViewController, OnboardingConsentVi
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Lifecycle
+    // MARK: - ViewController Lifecycle
+
+    override func loadView() {
+        self.view = internalView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupViews()
-        setupConstraints()
-    }
-
-    // MARK: - Setups
-
-    private func setupViews() {
-
-        view.backgroundColor = .viewControllerBackgroundColor
-
-        setThemeNavigationBar()
-
-        for subView in viewsInDisplayOrder { view.addSubview(subView) }
-    }
-
-    private func setupConstraints() {
-
-        var constraints = [[NSLayoutConstraint]()]
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        // TODO: Implement or delete
     }
 
     // MARK: - Private
 
     private weak var listener: OnboardingConsentListener?
+    private lazy var internalView: OnboardingConsentView = OnboardingConsentView()
 }
+
+private final class OnboardingConsentView: View {
+    override func build() {
+        super.build()
+
+        // TODO: Construct View here or delete this function
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        // TODO: Setup constraints here or delete this function
+    }
+}
+
