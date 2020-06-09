@@ -13,6 +13,7 @@ extension UIColor {
 
     class var primaryColor: UIColor { return UIColor(named: "PrimaryColor") ?? .clear }
     class var secondaryColor: UIColor { return UIColor(named: "SecondaryColor") ?? .clear }
+    class var tertiaryColor: UIColor { return UIColor(named: "TertiaryColor") ?? .clear }
 
     class var grayColor: UIColor { return UIColor(named: "GrayColor") ?? .clear }
 

@@ -10,7 +10,7 @@ import UIKit
 class Button: UIButton {
 
     enum ButtonType {
-        case primary
+        case primary, secondary, tertiary
     }
 
     var style = ButtonType.primary {
@@ -33,7 +33,7 @@ class Button: UIButton {
 
         self.setTitle(title, for: .normal)
         self.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
-        
+
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
 
@@ -55,6 +55,12 @@ class Button: UIButton {
         case .primary:
             self.backgroundColor = .primaryColor
             self.setTitleColor(.white, for: .normal)
+        case .secondary:
+            self.backgroundColor = .secondaryColor
+            self.setTitleColor(.white, for: .normal)
+        case .tertiary:
+            self.backgroundColor = .tertiaryColor
+            self.setTitleColor(.primaryColor, for: .normal)
         }
 
         self.tintColor = .white
@@ -76,3 +82,4 @@ class Button: UIButton {
     }
 
 }
+

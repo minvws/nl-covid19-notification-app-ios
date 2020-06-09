@@ -19,25 +19,30 @@ protocol OnboardingConsentBuildable {
     ///
     /// - Parameter listener: Listener of created OnboardingConsentViewController
     func build(withListener listener: OnboardingConsentListener) -> ViewControllable
+    func build(withListener listener: OnboardingConsentListener, initialIndex: Int) -> ViewControllable
 }
 
 protocol OnboardingConsentDependency {
-    // TODO: Add any external dependency
+    var onboardingConcentManager: OnboardingConsentManaging { get }
 }
 
 private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> {
-    // TODO: Create and return any dependency that should be limited
-    //       to OnboardingConsent's scope or any child of OnboardingConsent
+
 }
 
-final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, OnboardingConsentBuildable {    
+final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, OnboardingConsentBuildable {
     func build(withListener listener: OnboardingConsentListener) -> ViewControllable {
-        // TODO: Add any other dynamic dependency as parameter
-        
+        return build(withListener: listener, initialIndex: 0)
+    }
+
+    func build(withListener listener: OnboardingConsentListener, initialIndex: Int = 0) -> ViewControllable {
         let dependencyProvider = OnboardingConsentDependencyProvider(dependency: dependency)
-        
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
-        return OnboardingConsentViewController(listener: listener)
+        let onboardingConcentManager = dependencyProvider.dependency.onboardingConcentManager
+
+        return OnboardingConsentStepViewController(
+            onboardingConsentManager: onboardingConcentManager,
+            onboardingConcentStepBuilder: self,
+            listener: listener,
+            index: 0)
     }
 }

@@ -13,6 +13,7 @@
 "warning" = "Waarschuwing";
 "back" = "Vorige";
 "cancel" = "Annuleren";
+"example" = "Voorbeeld";
 
 // MARK: - Onboarding Steps
 "step1Title" = "Bescherm je vrienden, familie en de rest van Nederland";
@@ -29,4 +30,15 @@
 
 // MARK: - Onboarding
 "nextButtonTitle" = "Volgende";
-"example" = "Voorbeeld";
+
+// MARK: - Consent Steps
+"consentStep1Title" = "Geef toestemming om COVID-19 blootstelling bij te houden";
+"consentStep1Content" = "";
+"consentStep1Summary1" = "Je Bluetooth-gegevens worden 14 dagen op je telefoon bewaard. Je kunt ze altijd zelf verwijderen.";
+"consentStep1Summary2" = "Je naam en andere persoonsgegevens worden niet gebruikt of bewaard.";
+"consentStep1Summary3" = "Je locatiegegevens worden niet gebruikt of bewaard";
+
+// MARK: - Consent
+"skipStep" = "Sla over";
+"consentExplanationButton" = "Hoe werkt de app precies?";
+"consentPermissionsButton" = "Toestemming geven";

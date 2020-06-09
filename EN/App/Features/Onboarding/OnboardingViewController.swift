@@ -10,7 +10,7 @@ import Foundation
 /// @mockable
 protocol OnboardingRouting: Routing {
     func routeToSteps()
-    func routeToConsent()
+    func routeToConsent(animated: Bool)
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable {
@@ -39,7 +39,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     
     func onboardingStepsDidComplete() {
         
-        router?.routeToConsent()
+        router?.routeToConsent(animated: true)
     }
     
     // MARK: - ViewController Lifecycle
