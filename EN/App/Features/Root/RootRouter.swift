@@ -7,6 +7,12 @@
 
 import UIKit
 
+#if DEBUG
+/// Use this to skip the onboarding flow
+/// Don't forget to revert before committing or unit tests will fail
+let skipOnboarding = false
+#endif
+
 /// Describes internal `RootViewController` functionality. Contains functions
 /// that can be called from `RootRouter`. Should not be exposed
 /// from `RootBuilder`. `RootBuilder` returns an `AppEntryPoint` instance instead
@@ -18,6 +24,8 @@ protocol RootViewControllable: ViewControllable, OnboardingListener {
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
     func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
+    
+    func embed(viewController: ViewControllable)
 }
 
 final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint {
@@ -42,12 +50,23 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
     
     func start() {
-        routeToOnboarding()
+        if skipOnboarding {
+            routeToMain()
+        } else {
+            routeToOnboarding()
+        }
     }
     
     // MARK: - RootRouting
+
+    func detachOnboardingAndRouteToMain(animated: Bool) {
+        routeToMain()
+        detachOnboarding(animated: animated)
+    }
     
-    func routeToMain() {
+    // MARK: - Private
+    
+    private func routeToMain() {
         guard mainViewController == nil else {
             // already presented
             return
@@ -56,14 +75,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let mainViewController = self.mainBuilder.build()
         self.mainViewController = mainViewController
         
-        self.viewController.present(viewController: mainViewController,
-                                    animated: true,
-                                    completion: nil)
+        self.viewController.embed(viewController: mainViewController)
     }
     
-    func detachOnboarding(animated: Bool, completion: @escaping () -> ()) {
+    private func detachOnboarding(animated: Bool) {
         guard let onboardingRouter = onboardingRouter else {
-            completion()
             return
         }
         
@@ -71,10 +87,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         
         viewController.dismiss(viewController: onboardingRouter.viewControllable,
                                animated: animated,
-                               completion: completion)
+                               completion: nil)
     }
-    
-    // MARK: - Private
     
     private func routeToOnboarding() {
         guard onboardingRouter == nil else {

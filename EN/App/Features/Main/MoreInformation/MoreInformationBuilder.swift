@@ -27,29 +27,20 @@ protocol MoreInformationDependency {
 }
 
 private final class MoreInformationDependencyProvider: DependencyProvider<MoreInformationDependency> /*, ChildDependency */ {
-    // TODO: Create and return any dependency that should be limited
-    //       to MoreInformation's scope or any child of MoreInformation
-    
-    // TODO: Replace `childBuilder` by a real child scope and adjust
-    //       `ChildDependency`
-    // var childBuilder: ChildBuildable {
-    //    return ChildBuilder(dependency: self)
-    //}
+    var tableController: MoreInformationTableControlling {
+        return MoreInformationTableController()
+    }
 }
 
 final class MoreInformationBuilder: Builder<MoreInformationDependency>, MoreInformationBuildable {
     func build(withListener listener: MoreInformationListener) -> Routing {
-        // TODO: Add any other dynamic dependency as parameter
-        
         let dependencyProvider = MoreInformationDependencyProvider(dependency: dependency)
         
-        // let childBuilder = dependencyProvider.childBuilder
-        let viewController = MoreInformationViewController()
+        let tableController = dependencyProvider.tableController
+        let viewController = MoreInformationViewController(tableController: tableController)
         
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
+        
         return MoreInformationRouter(listener: listener,
-                                                  viewController: viewController /*,
-                                                  childBuilder: childBuilder */)
+                                     viewController: viewController)
     }
 }

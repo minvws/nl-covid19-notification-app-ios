@@ -26,7 +26,7 @@ open class View: UIView {
     }
 
     open func build() {
-
+        backgroundColor = .systemBackground
     }
 
     open func setupConstraints() {

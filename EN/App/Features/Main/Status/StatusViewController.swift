@@ -9,8 +9,6 @@ import UIKit
 
 /// @mockable
 protocol StatusRouting: Routing {
-    // TODO: Add any routing functions that are called from the ViewController
-    // func routeToChild()
 }
 
 final class StatusViewController: ViewController, StatusViewControllable {
@@ -18,9 +16,6 @@ final class StatusViewController: ViewController, StatusViewControllable {
     // MARK: - StatusViewControllable
     
     weak var router: StatusRouting?
-    
-    // TODO: Validate whether you need the below functions and remove or replace
-    //       them as desired.
     
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
         present(viewController.uiviewController,
@@ -32,7 +27,66 @@ final class StatusViewController: ViewController, StatusViewControllable {
         viewController.uiviewController.dismiss(animated: animated, completion: completion)
     }
     
+    // MARK: - View Lifecycle
+    
+    override func loadView() {
+        self.view = statusView
+    }
+    
     // MARK: - Private
     
-    // TODO: Anything private goes here
+    private lazy var statusView: StatusView = StatusView()
+
+}
+
+fileprivate final class StatusView: View {
+    fileprivate let iconView = UIImageView()
+    fileprivate let titleLabel = Label()
+    fileprivate let descriptionLabel = Label()
+    
+    override func build() {
+        super.build()
+        
+        addSubview(iconView)
+        addSubview(titleLabel)
+        addSubview(descriptionLabel)
+        
+        titleLabel.textAlignment = .center
+        descriptionLabel.textAlignment = .center
+        
+        titleLabel.text = "De app is actief"
+        
+        descriptionLabel.text = "Je krijgt een melding nadat je extra kans op besmetting hebt opgelopen"
+        descriptionLabel.numberOfLines = 0
+        
+        backgroundColor = .orange
+        iconView.backgroundColor = .green
+    }
+    
+    override func setupConstraints() {
+        super.setupConstraints()
+        
+        iconView.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        let constraints = [
+            iconView.topAnchor.constraint(equalTo: topAnchor, constant: 44),
+            iconView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            iconView.widthAnchor.constraint(equalToConstant: 88),
+            iconView.heightAnchor.constraint(equalToConstant: 88),
+            
+            titleLabel.topAnchor.constraint(equalTo: iconView.bottomAnchor, constant: 44),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: safeAreaInsets.left),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -safeAreaInsets.right),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 44),
+            descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -44),
+            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: safeAreaInsets.left),
+            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -safeAreaInsets.right),
+            
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
 }

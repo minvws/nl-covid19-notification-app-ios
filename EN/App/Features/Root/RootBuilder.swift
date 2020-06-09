@@ -20,7 +20,7 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency> {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency {
     /// Builds onboarding flow
     var onboardingBuilder: OnboardingBuildable {
         return OnboardingBuilder()
@@ -28,7 +28,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency> 
     
     /// Builds main flow
     var mainBuilder: MainBuildable {
-        return MainBuilder()
+        return MainBuilder(dependency: self)
     }
 }
 

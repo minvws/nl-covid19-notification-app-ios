@@ -20,15 +20,11 @@ final class RootViewControllerTests: XCTestCase {
         viewController.router = router
     }
     
-    func test_didCompleteOnboarding_callsDetachOnboardingAndRoutesToMain() {
-        router.detachOnboardingHandler = { _, completion in completion() }
-        
-        XCTAssertEqual(router.detachOnboardingCallCount, 0)
-        XCTAssertEqual(router.routeToMainCallCount, 0)
+    func test_didCompleteOnboarding_callsDetachOnboardingAndRouteToMain() {
+        XCTAssertEqual(router.detachOnboardingAndRouteToMainCallCount, 0)
         
         viewController.didCompleteOnboarding()
         
-        XCTAssertEqual(router.detachOnboardingCallCount, 1)
-        XCTAssertEqual(router.routeToMainCallCount, 1)
+        XCTAssertEqual(router.detachOnboardingAndRouteToMainCallCount, 1)
     }
 }

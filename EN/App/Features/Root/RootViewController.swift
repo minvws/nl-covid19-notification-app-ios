@@ -16,12 +16,7 @@ protocol RootRouting: Routing {
     /// When the onboarding flow is not attached, completion is called immediately
     ///
     /// - Parameter animated: Animates the dismissal animation
-    /// - Parameter completion: Executed after completed detaching
-    func detachOnboarding(animated: Bool, completion: @escaping () -> ())
-    
-    /// Routes to the main feature. When main is already attached this
-    /// function does nothing.
-    func routeToMain()
+    func detachOnboardingAndRouteToMain(animated: Bool)
 }
 
 final class RootViewController: ViewController, RootViewControllable {
@@ -40,12 +35,16 @@ final class RootViewController: ViewController, RootViewControllable {
         viewController.uiviewController.dismiss(animated: animated, completion: completion)
     }
     
+    func embed(viewController: ViewControllable) {
+        addChild(viewController.uiviewController)
+        view.addSubview(viewController.uiviewController.view)
+        viewController.uiviewController.didMove(toParent: self)
+    }
+    
     // MARK: - OnboardingListener
     
     func didCompleteOnboarding() {
-        router?.detachOnboarding(animated: true) {
-            self.router?.routeToMain()
-        }
+        router?.detachOnboardingAndRouteToMain(animated: true)
     }
 
 }

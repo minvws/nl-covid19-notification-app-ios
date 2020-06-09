@@ -53,38 +53,15 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.presentCallCount, 1)
     }
     
-    func test_detachOnboarding_whenOnboardingNotPresented_doesNotCallDismiss() {
-        XCTAssertEqual(viewController.dismissCallCount, 0)
-        
-        var completionCalled = false
-        router.detachOnboarding(animated: true, completion: { completionCalled = true })
-        
-        XCTAssertEqual(viewController.dismissCallCount, 0)
-        XCTAssertTrue(completionCalled)
-    }
-    
-    func test_detachOnboarding_whenOnboardingPresented_callsDismiss() {
+    func test_detachOnboardingAndRouteToMain_callsEmbedAndDismiss() {
         router.start()
-        viewController.dismissHandler = { _, _, completion in completion?() }
         
+        XCTAssertEqual(viewController.embedCallCount, 0)
         XCTAssertEqual(viewController.dismissCallCount, 0)
         
-        var completionCalled = false
-        router.detachOnboarding(animated: true, completion: { completionCalled = true })
+        router.detachOnboardingAndRouteToMain(animated: true)
         
+        XCTAssertEqual(viewController.embedCallCount, 1)
         XCTAssertEqual(viewController.dismissCallCount, 1)
-        XCTAssertTrue(completionCalled)
-    }
-    
-    func test_routeToMain_presentsMain() {
-        mainBuilder.buildHandler = { MainViewControllableMock() }
-        
-        XCTAssertEqual(mainBuilder.buildCallCount, 0)
-        XCTAssertEqual(viewController.presentCallCount, 0)
-        
-        router.routeToMain()
-        
-        XCTAssertEqual(mainBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.presentCallCount, 1)
     }
 }
