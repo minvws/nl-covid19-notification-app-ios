@@ -9,10 +9,6 @@ import UIKit
 
 class NavigationController: UINavigationController, ViewControllable {
 
-    // MARK: - ViewControllable
-    
-    var uiviewController: UIViewController { return self }
-    
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {

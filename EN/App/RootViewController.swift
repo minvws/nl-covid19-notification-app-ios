@@ -22,7 +22,7 @@ protocol RootRouting: Routing {
     func routeToMain()
 }
 
-final class RootViewController: ViewController, RootViewControllable {
+final class RootViewController: UIViewController, RootViewControllable {
     
     // MARK: - RootViewControllable
     

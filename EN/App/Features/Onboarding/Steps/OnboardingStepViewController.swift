@@ -9,7 +9,7 @@ import UIKit
 
 protocol OnboardingStepViewControllable: ViewControllable {}
 
-final class OnboardingStepViewController: ViewController, OnboardingStepViewControllable {
+final class OnboardingStepViewController: UIViewController, OnboardingStepViewControllable {
 
     lazy private var imageView: UIImageView = {
         let imageView = UIImageView()

@@ -15,3 +15,7 @@ import UIKit
 protocol ViewControllable: AnyObject {
     var uiviewController: UIViewController { get }
 }
+
+extension ViewControllable where Self: UIViewController {
+    var uiviewController: UIViewController { return self }
+}

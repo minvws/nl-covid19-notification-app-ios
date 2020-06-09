@@ -5,8 +5,10 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-final class MainViewController: ViewController, MainViewControllable {
-    
+import UIKit
+
+final class MainViewController: UIViewController, MainViewControllable {
+
     // MARK: - View Lifecycle
     
     override func loadView() {
