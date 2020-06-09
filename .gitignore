@@ -5,6 +5,7 @@
 ## Build generated
 build/
 DerivedData/
+!*.xcodeproj/xcshareddata/xcschemes
 *.xcodeproj
 EN/Resources/Info.plist
 ENUnitTests/Mocks.swift
