@@ -10,15 +10,23 @@ import Foundation
 import XCTest
 
 final class OnboardingConsentViewControllerTests: XCTestCase {
-    private var viewController: OnboardingConsentViewController!
+    private var viewController: OnboardingConsentStepViewController!
     private let listener = OnboardingConsentListenerMock()
+    private let manager = OnboardingConsentManagingMock()
 
     override func setUp() {
         super.setUp()
 
-        viewController = OnboardingConsentViewController(listener: listener)
+        viewController = OnboardingConsentStepViewController(onboardingConsentManager: manager,
+                                                             listener: listener,
+                                                             index: 0)
     }
 
-    // TODO: Write test cases
-    func test_case() {}
+    func test_skipButtonTapped_callsListener() {
+        XCTAssertEqual(listener.consentRequestsSkipCallCount, 0)
+        
+        viewController.skipStepButtonPressed()
+        
+        XCTAssertEqual(listener.consentRequestsSkipCallCount, 1)
+    }
 }

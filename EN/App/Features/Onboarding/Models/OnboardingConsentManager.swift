@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// @mockable
 protocol OnboardingConsentManaging {
     var onboardingConsentSteps: [OnboardingConsentStep] { get }
     
