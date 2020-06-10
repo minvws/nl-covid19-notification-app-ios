@@ -8,27 +8,28 @@
 import UIKit
 
 open class View: UIView {
-    convenience init() {
-        let frame = CGRect(x: 0,
-                           y: 0,
-                           width: UIScreen.main.bounds.width,
-                           height: UIScreen.main.bounds.height)
-        
-        self.init(frame: frame)
-        
+
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+
         configure()
     }
-    
+
+    public required init?(coder: NSCoder) {
+        fatalError("Not implemented")
+    }
+
     func configure() {
+
         build()
         setupConstraints()
     }
-    
+
     open func build() {
-        
+
     }
-    
+
     open func setupConstraints() {
-        
+
     }
 }

@@ -20,9 +20,14 @@ protocol OnboardingBuildable {
 ///
 /// - Tag: OnboardingDependencyProvider
 private final class OnboardingDependencyProvider: DependencyProvider<EmptyDependency>, OnboardingStepDependency, OnboardingConsentDependency {
+    
     // MARK: - OnboardingStepDependency
 
     lazy var onboardingManager: OnboardingManaging = OnboardingManager()
+    
+    // MARK: - OnboardingConsentDependency
+    
+    lazy var onboardingConsentManager: OnboardingConsentManaging = OnboardingConsentManager()
 
     // MARK: - Child Builders
 

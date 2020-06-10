@@ -21,6 +21,10 @@ extension UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: Localized("back"), style: .plain, target: nil, action: nil)
     }
 
+    func setNavigationRightBarButtonItems(_ items: [UIBarButtonItem]) {
+        navigationItem.setRightBarButtonItems(items, animated: false)
+    }
+    
     func showNavigationBar(animated showAnimated: Bool = false) {
         navigationController?.setNavigationBarHidden(false, animated: showAnimated)
     }
