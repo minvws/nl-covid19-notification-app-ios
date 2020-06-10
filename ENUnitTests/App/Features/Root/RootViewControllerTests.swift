@@ -1,10 +1,9 @@
-//
-//  RootViewControllerTests.swift
-//  ENUnitTests
-//
-//  Created by Robin van Dijke on 09/06/2020.
-//  Copyright © 2020 Rob Mulder. All rights reserved.
-//
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
 
 @testable import EN
 import Foundation
