@@ -29,6 +29,14 @@ struct ExposureDetectionSummary {
     let metadata: [AnyHashable : Any]?
 }
 
+enum ENFrameworkStatus : Int {
+    case unknown = 0
+    case active = 1
+    case disabled = 2
+    case bluetoothOff = 3
+    case restricted = 4
+}
+
 
 /// @mockable
 protocol ExposureManaging {
@@ -40,6 +48,8 @@ protocol ExposureManaging {
     func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler)
     func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler)
     func isExposureNotificationEnabled() -> Bool
+    func getExposureNotificationStatus() -> ENFrameworkStatus
+    
 }
 
 @available(iOS 13.5, *)
@@ -109,7 +119,6 @@ class ExposureManager: ExposureManaging {
         }
     }
     
-    
     func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler) {
         self.manager.setExposureNotificationEnabled(enabled, completionHandler: completionHandler)
     }
@@ -118,7 +127,10 @@ class ExposureManager: ExposureManaging {
         self.manager.exposureNotificationEnabled
     }
     
-    
+    func getExposureNotificationStatus() -> ENFrameworkStatus {
+        let status = self.manager.exposureNotificationStatus.rawValue
+        return ENFrameworkStatus.init(rawValue: status) ?? ENFrameworkStatus.unknown
+    }
     
     /// temporary - hardcoded - function
     private func getExposureConfiguration() -> ENExposureConfiguration {

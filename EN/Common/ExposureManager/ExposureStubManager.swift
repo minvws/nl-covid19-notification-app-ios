@@ -9,6 +9,10 @@ import Foundation
 
 class ExposureStubManager: ExposureManaging {
     
+    func getExposureNotificationStatus() -> ENFrameworkStatus {
+        return ENFrameworkStatus.active
+    }
+    
     private var exposureNotificationEnabled: Bool = false
     
     func isExposureNotificationEnabled() -> Bool {
