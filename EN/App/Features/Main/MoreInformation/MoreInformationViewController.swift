@@ -8,7 +8,7 @@
 import UIKit
 
 final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationTableListener {
-    private enum MoreInformationCellIdentifier {
+    private enum MoreInformationCellIdentifier: CaseIterable {
         case aboutApp
         case receivedNotification
         case infected
@@ -44,7 +44,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     func didSelect(cell: MoreInformationCell, at index: Int) {
         guard (0 ..< cells.keys.count).contains(index) else { return }
         
-        switch Array(cells.keys)[index] {
+        switch MoreInformationCellIdentifier.allCases[index] {
         case .aboutApp:
             listener?.moreInformationRequestsAbout()
         case .infected:
@@ -61,7 +61,11 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         moreInformationView.tableView.dataSource = tableController.dataSource
         
         tableController.listener = self
-        tableController.set(cells: Array(cells.values))
+        
+        let cells = MoreInformationCellIdentifier.allCases.compactMap { identifier in
+            return self.cells[identifier]
+        }
+        tableController.set(cells: cells)
         
         moreInformationView.tableView.reloadData()
         moreInformationView.updateHeightConstraint()
