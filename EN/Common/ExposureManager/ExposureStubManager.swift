@@ -9,4 +9,22 @@ import Foundation
 
 class ExposureStubManager: ExposureManaging {
     
+    func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler) {
+        let keys = [ENDiagnosisKey]()
+        completionHandler(.success(keys))
+    }
+    
+    func detectExposures() {
+        
+    }
+    
+    func getDiagnonisKeys() {
+        
+    }
+    
+    func setExposureNotificationEnabled(enabled: Bool) {
+        
+    }
+    
+    
 }
