@@ -5,8 +5,9 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+import Foundation
 import UIKit
 
-class Label: UILabel {
-    
+final class UITableViewDelegateMock: NSObject, UITableViewDelegate {
+    // TODO: Implement functions required to mock
 }

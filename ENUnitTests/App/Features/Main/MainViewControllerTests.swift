@@ -13,9 +13,13 @@ final class MainViewControllerTests: XCTestCase {
     private var viewController: MainViewController!
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()
+    private let tableController = MoreInformationTableControllingMock()
     
     override func setUp() {
         super.setUp()
+        
+        tableController.dataSource = UITableViewDataSourceMock()
+        tableController.delegate = UITableViewDelegateMock()
         
         viewController = MainViewController(statusBuilder: statusBuilder,
                                             moreInformationBuilder: moreInformationBuilder)
@@ -60,12 +64,16 @@ final class MainViewControllerTests: XCTestCase {
     }
     
     func test_viewDidLoad_buildsStatusAndMoreInformation_inRightOrder() {
+        // TODO: Introduce MainRouter so embed call can be mocked and tested
+        //       which saves the need to instantiate concrete classes here.
+        //       It will also enable us to remove tableController as this test
+        //       class should have nothing to do with it
         statusBuilder.buildHandler = { _ in
             return StatusRoutingMock(viewControllable: StatusViewController())
         }
         
         moreInformationBuilder.buildHandler = { _ in
-            return MoreInformationRoutingMock(viewControllable: MoreInformationViewController())
+            return MoreInformationRoutingMock(viewControllable: MoreInformationViewController(tableController: self.tableController))
         }
         
         XCTAssertEqual(statusBuilder.buildCallCount, 0)

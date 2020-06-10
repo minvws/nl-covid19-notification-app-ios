@@ -53,8 +53,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     // MARK: - Private
     
     private func setupTableView() {
-        moreInformationView.tableView.delegate = tableController
-        moreInformationView.tableView.dataSource = tableController
+        moreInformationView.tableView.delegate = tableController.delegate
+        moreInformationView.tableView.dataSource = tableController.dataSource
         
         // dummy data
         tableController.set(cells: [
