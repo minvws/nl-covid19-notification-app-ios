@@ -7,54 +7,24 @@
 
 import UIKit
 
+/// @mockable
+protocol MainRouting: Routing {
+    func attachStatus()
+    func attachMoreInformation()
+    
+    func routeToAboutApp()
+    func routeToReceivedNotification()
+    func routeToInfected()
+    func routeToRequestTest()
+    func routeToShareApp()
+    func routeToSettings()
+}
+
 final class MainViewController: ViewController, MainViewControllable, StatusListener, MoreInformationListener {
-    
-    // MARK: - Initialisation
-    
-    init(statusBuilder: StatusBuildable,
-         moreInformationBuilder: MoreInformationBuildable) {
-        self.statusBuilder = statusBuilder
-        self.moreInformationBuilder = moreInformationBuilder
-        
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("Not implemented")
-    }
-    
-    // MARK: - View Lifecycle
-    
-    override func loadView() {
-        self.view = mainView
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        attachStatus()
-        attachMoreInformation()
-    }
     
     // MARK: - MainViewControllable
     
-    func attachStatus() {
-        guard statusRouter == nil else { return }
-        
-        let statusRouter = statusBuilder.build(withListener: self)
-        self.statusRouter = statusRouter
-        
-        embed(stackedViewController: statusRouter.viewControllable)
-    }
-    
-    func attachMoreInformation() {
-        guard moreInformationRouter == nil else { return }
-        
-        let moreInformationRouter = moreInformationBuilder.build(withListener: self)
-        self.moreInformationRouter = moreInformationRouter
-        
-        embed(stackedViewController: moreInformationRouter.viewControllable)
-    }
+    weak var router: MainRouting?
     
     func embed(stackedViewController: ViewControllable) {
         addChild(stackedViewController.uiviewController)
@@ -67,15 +37,48 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         stackedViewController.uiviewController.didMove(toParent: self)
     }
     
+    // MARK: - MoreInformationListener
+    
+    func moreInformationRequestsAbout() {
+        router?.routeToAboutApp()
+    }
+    
+    func moreInformationRequestsReceivedNotification() {
+        router?.routeToReceivedNotification()
+    }
+    
+    func moreInformationRequestsInfected() {
+        router?.routeToInfected()
+    }
+    
+    func moreInformationRequestsRequestTest() {
+        router?.routeToRequestTest()
+    }
+    
+    func moreInformationRequestsShareApp() {
+        router?.routeToShareApp()
+    }
+    
+    func moreInformationRequestsSettings() {
+        router?.routeToSettings()
+    }
+    
+    // MARK: - View Lifecycle
+    
+    override func loadView() {
+        self.view = mainView
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        router?.attachStatus()
+        router?.attachMoreInformation()
+    }
+    
     // MARK: - Private
     
     private lazy var mainView: MainView = MainView()
-    
-    private let statusBuilder: StatusBuildable
-    private var statusRouter: Routing?
-    
-    private let moreInformationBuilder: MoreInformationBuildable
-    private var moreInformationRouter: Routing?
 }
 
 private final class MainView: View {

@@ -11,6 +11,7 @@ import XCTest
 
 final class MainViewControllerTests: XCTestCase {
     private var viewController: MainViewController!
+    private let router = MainRoutingMock()
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()
     private let tableController = MoreInformationTableControllingMock()
@@ -21,72 +22,91 @@ final class MainViewControllerTests: XCTestCase {
         tableController.dataSource = UITableViewDataSourceMock()
         tableController.delegate = UITableViewDelegateMock()
         
-        viewController = MainViewController(statusBuilder: statusBuilder,
-                                            moreInformationBuilder: moreInformationBuilder)
+        viewController = MainViewController()
+        viewController.router = router
     }
     
-    func test_attachStatus_callsBuildAndEmbeds() {
-        var receivedListener: Any?
-        statusBuilder.buildHandler = { listener in
-            receivedListener = listener
-            
-            return StatusRoutingMock()
-        }
+    // MARK: - MoreInformationListener
+    
+    func test_moreInformationRequestsAbout_callsRouter() {
+        XCTAssertEqual(router.routeToAboutAppCallCount, 0)
         
-        XCTAssertEqual(statusBuilder.buildCallCount, 0)
+        viewController.moreInformationRequestsAbout()
+        
+        XCTAssertEqual(router.routeToAboutAppCallCount, 1)
+    }
+    
+    func test_moreInformationRequestsReceivedNotification_callsRouter() {
+        XCTAssertEqual(router.routeToReceivedNotificationCallCount, 0)
+        
+        viewController.moreInformationRequestsReceivedNotification()
+        
+        XCTAssertEqual(router.routeToReceivedNotificationCallCount, 1)
+    }
+    
+    func test_moreInformationRequestsInfected_callsRouter() {
+        XCTAssertEqual(router.routeToInfectedCallCount, 0)
+        
+        viewController.moreInformationRequestsInfected()
+        
+        XCTAssertEqual(router.routeToInfectedCallCount, 1)
+    }
+    
+    func test_moreInformationRequestsRequestTest_callsRouter() {
+        XCTAssertEqual(router.routeToRequestTestCallCount, 0)
+        
+        viewController.moreInformationRequestsRequestTest()
+        
+        XCTAssertEqual(router.routeToRequestTestCallCount, 1)
+    }
+    
+    func test_moreInformationRequestsShareApp_callsRouter() {
+        XCTAssertEqual(router.routeToShareAppCallCount, 0)
+        
+        viewController.moreInformationRequestsShareApp()
+        
+        XCTAssertEqual(router.routeToShareAppCallCount, 1)
+    }
+    
+    func test_moreInformationRequestsSettings_callsRouter() {
+        XCTAssertEqual(router.routeToSettingsCallCount, 0)
+        
+        viewController.moreInformationRequestsSettings()
+        
+        XCTAssertEqual(router.routeToSettingsCallCount, 1)
+    }
+    
+    func test_embed_addsChildViewController() {
         XCTAssertEqual(viewController.children.count, 0)
         
-        viewController.attachStatus()
+        viewController.embed(stackedViewController: ViewControllableMock())
         
-        XCTAssertEqual(statusBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.children.count, 1)
-        XCTAssertTrue(receivedListener is MainViewControllable)
-        XCTAssertTrue((receivedListener as! MainViewControllable) === viewController)
     }
     
-    func test_attachMoreInformation_callsBuildAndEmbeds() {
-        var receivedListener: Any?
-        moreInformationBuilder.buildHandler = { listener in
-            receivedListener = listener
-            
-            return MoreInformationRoutingMock()
+    func test_viewDidLoad_callsRouterInRightOrder() {
+        XCTAssertEqual(router.attachStatusCallCount, 0)
+        XCTAssertEqual(router.attachMoreInformationCallCount, 0)
+        
+        var callCountIndex = 0
+        var attachStatusCallCountIndex = 0
+        var attachMoreInformationCallCountIndex = 0
+        
+        router.attachStatusHandler = {
+            callCountIndex += 1
+            attachStatusCallCountIndex = callCountIndex
         }
         
-        XCTAssertEqual(moreInformationBuilder.buildCallCount, 0)
-        XCTAssertEqual(viewController.children.count, 0)
-        
-        viewController.attachMoreInformation()
-        
-        XCTAssertEqual(moreInformationBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.children.count, 1)
-        XCTAssertTrue(receivedListener is MainViewControllable)
-        XCTAssertTrue((receivedListener as! MainViewControllable) === viewController)
-    }
-    
-    func test_viewDidLoad_buildsStatusAndMoreInformation_inRightOrder() {
-        // TODO: Introduce MainRouter so embed call can be mocked and tested
-        //       which saves the need to instantiate concrete classes here.
-        //       It will also enable us to remove tableController as this test
-        //       class should have nothing to do with it
-        statusBuilder.buildHandler = { _ in
-            return StatusRoutingMock(viewControllable: StatusViewController())
+        router.attachMoreInformationHandler = {
+            callCountIndex += 1
+            attachMoreInformationCallCountIndex = callCountIndex
         }
         
-        moreInformationBuilder.buildHandler = { _ in
-            return MoreInformationRoutingMock(viewControllable: MoreInformationViewController(tableController: self.tableController))
-        }
-        
-        XCTAssertEqual(statusBuilder.buildCallCount, 0)
-        XCTAssertEqual(moreInformationBuilder.buildCallCount, 0)
-        XCTAssertEqual(viewController.children.count, 0)
-        
-        // cause loadView/viewDidLoad cycle
         _ = viewController.view
         
-        XCTAssertEqual(statusBuilder.buildCallCount, 1)
-        XCTAssertEqual(moreInformationBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.children.count, 2)
-        XCTAssertTrue(viewController.children[0] is StatusViewControllable)
-        XCTAssertTrue(viewController.children[1] is MoreInformationViewControllable)
+        XCTAssertEqual(router.attachStatusCallCount, 1)
+        XCTAssertEqual(router.attachMoreInformationCallCount, 1)
+        XCTAssertEqual(attachStatusCallCountIndex, 1)
+        XCTAssertEqual(attachMoreInformationCallCountIndex, 2)
     }
 }

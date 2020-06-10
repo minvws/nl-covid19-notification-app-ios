@@ -8,9 +8,15 @@
 import UIKit
 
 /// @mockable
-protocol MoreInformationTableControlling {
+protocol MoreInformationTableListener: AnyObject {
+    func didSelect(cell: MoreInformationCell, at index: Int)
+}
+
+/// @mockable
+protocol MoreInformationTableControlling: AnyObject {
     func set(cells: [MoreInformationCell])
     
+    var listener: MoreInformationTableListener? { get set }
     var delegate: UITableViewDelegate { get }
     var dataSource: UITableViewDataSource { get }
 }
@@ -30,6 +36,8 @@ struct MoreInformationCellViewModel: MoreInformationCell {
 final class MoreInformationTableController: NSObject, UITableViewDelegate, UITableViewDataSource, MoreInformationTableControlling {
     
     // MARK: - MoreInformationTableControlling
+    
+    weak var listener: MoreInformationTableListener?
     
     func set(cells: [MoreInformationCell]) {
         self.cells = cells
@@ -68,6 +76,7 @@ final class MoreInformationTableController: NSObject, UITableViewDelegate, UITab
         }
         
         let cellViewModel = cells[indexPath.row]
+        cell.selectionStyle = .gray
         cell.textLabel?.text = cellViewModel.title
         cell.detailTextLabel?.text = cellViewModel.description
         
@@ -76,6 +85,17 @@ final class MoreInformationTableController: NSObject, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Meer informatie".uppercased()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard (0 ..< cells.count).contains(indexPath.row) else {
+            return
+        }
+        
+        let cell = cells[indexPath.row]
+        listener?.didSelect(cell: cell, at: indexPath.row)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     // MARK: - Private

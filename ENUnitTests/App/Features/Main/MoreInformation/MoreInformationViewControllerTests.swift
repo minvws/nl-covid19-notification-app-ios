@@ -11,7 +11,7 @@ import XCTest
 
 final class MoreInformationViewControllerTests: XCTestCase {
     private var viewController: MoreInformationViewController!
-    private let router = MoreInformationRoutingMock()
+    private let listener = MoreInformationListenerMock()
     private let tableController = MoreInformationTableControllingMock()
     private let tableViewDelegate = UITableViewDelegateMock()
     private let tableViewDataSource = UITableViewDataSourceMock()
@@ -22,8 +22,8 @@ final class MoreInformationViewControllerTests: XCTestCase {
         tableController.dataSource = tableViewDataSource
         tableController.delegate = tableViewDelegate
         
-        viewController = MoreInformationViewController(tableController: tableController)
-        viewController.router = router
+        viewController = MoreInformationViewController(listener: listener,
+                                                       tableController: tableController)
     }
     
     func test_viewDidLoad_setsCells() {

@@ -68,15 +68,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     // MARK: - Private
 
     private func routeToMain() {
-        guard mainViewController == nil else {
-            // already presented
+        guard mainRouter == nil else {
+            // already attached
             return
         }
-
-        let mainViewController = self.mainBuilder.build()
-        self.mainViewController = mainViewController
-
-        self.viewController.embed(viewController: mainViewController)
+        
+        let mainRouter = self.mainBuilder.build()
+        self.mainRouter = mainRouter
+        
+        self.viewController.embed(viewController: mainRouter.viewControllable)
     }
 
     private func detachOnboarding(animated: Bool) {
@@ -109,5 +109,5 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private var onboardingRouter: Routing?
 
     private let mainBuilder: MainBuildable
-    private var mainViewController: ViewControllable?
+    private var mainRouter: Routing?
 }

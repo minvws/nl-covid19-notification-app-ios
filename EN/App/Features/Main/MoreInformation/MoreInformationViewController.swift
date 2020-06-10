@@ -7,13 +7,16 @@
 
 import UIKit
 
-/// @mockable
-protocol MoreInformationRouting: Routing {
-}
-
-final class MoreInformationViewController: ViewController, MoreInformationViewControllable {
+final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationTableListener {
+    private enum MoreInformationCellIdentifier {
+        case aboutApp
+        case receivedNotification
+        case infected
+    }
     
-    init(tableController: MoreInformationTableControlling) {
+    
+    init(listener: MoreInformationListener,
+         tableController: MoreInformationTableControlling) {
         self.tableController = tableController
         
         super.init(nibName: nil, bundle: nil)
@@ -21,20 +24,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     
     required init?(coder: NSCoder) {
         fatalError("Not implemented")
-    }
-    
-    // MARK: - MoreInformationViewControllable
-    
-    weak var router: MoreInformationRouting?
-    
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        present(viewController.uiviewController,
-                animated: animated,
-                completion: completion)
-    }
-    
-    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        viewController.uiviewController.dismiss(animated: animated, completion: completion)
     }
     
     // MARK: - View Lifecycle
@@ -50,32 +39,86 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         setupButtonsView()
     }
     
+    // MARK: - MoreInformationTableListener
+    
+    func didSelect(cell: MoreInformationCell, at index: Int) {
+        guard (0 ..< cells.keys.count).contains(index) else { return }
+        
+        switch Array(cells.keys)[index] {
+        case .aboutApp:
+            listener?.moreInformationRequestsAbout()
+        case .infected:
+            listener?.moreInformationRequestsInfected()
+        case .receivedNotification:
+            listener?.moreInformationRequestsReceivedNotification()
+        }
+    }
+    
     // MARK: - Private
     
     private func setupTableView() {
         moreInformationView.tableView.delegate = tableController.delegate
         moreInformationView.tableView.dataSource = tableController.dataSource
         
-        // dummy data
-        tableController.set(cells: [
-            MoreInformationCellViewModel(icon: UIImage(), title: "Over de app", description: "Hoe de app werkt en wat privacy betekent"),
-            MoreInformationCellViewModel(icon: UIImage(), title: "Ik krijg een melding", description: "Wat moet je doen nadat een ander het virus blijkt te hebben"),
-            MoreInformationCellViewModel(icon: UIImage(), title: "Ik ben besmet", description: "Zo laat je anderen weten dat je positief getest bent"),
-        ])
+        tableController.listener = self
+        tableController.set(cells: Array(cells.values))
+        
         moreInformationView.tableView.reloadData()
         moreInformationView.updateHeightConstraint()
     }
     
     private func setupButtonsView() {
-        moreInformationView.set(buttonTitles: [
-            "Coronatest aanvragen",
-            "App delen",
-            "Instellingen"
-        ])
+        moreInformationView.addButton(withTitle: "Coronatest aanvragen",
+                                      target: self,
+                                      action: #selector(didTapRequestTestButton))
+        
+        moreInformationView.addButton(withTitle: "App delen",
+                                      target: self,
+                                      action: #selector(didTapRequestShareAppButton))
+        
+        moreInformationView.addButton(withTitle: "Instellingen",
+                                      target: self,
+                                      action: #selector(didTapRequestSettingsButton))
+    }
+    
+    @objc
+    func didTapRequestTestButton() {
+        listener?.moreInformationRequestsRequestTest()
+    }
+    
+    @objc
+    func didTapRequestShareAppButton() {
+        listener?.moreInformationRequestsShareApp()
+    }
+    
+    @objc
+    func didTapRequestSettingsButton() {
+        listener?.moreInformationRequestsSettings()
+    }
+    
+    private var cells: [MoreInformationCellIdentifier: MoreInformationCell] {
+        // dummy data
+        let aboutAppModel = MoreInformationCellViewModel(icon: UIImage(),
+                                                         title: "Over de app",
+                                                         description: "Hoe de app werkt en wat privacy betekent")
+        
+        let receivedNotificationModel = MoreInformationCellViewModel(icon: UIImage(),
+                                                                     title: "Ik krijg een melding",
+                                                                     description: "Wat moet je doen nadat een ander het virus blijkt te hebben")
+        let infectedModel = MoreInformationCellViewModel(icon: UIImage(),
+                                                         title: "Ik ben besmet",
+                                                         description: "Zo laat je anderen weten dat je positief getest bent")
+        
+        return [
+            .aboutApp: aboutAppModel,
+            .receivedNotification: receivedNotificationModel,
+            .infected: infectedModel
+        ]
     }
     
     private lazy var moreInformationView: MoreInformationView = MoreInformationView()
     
+    private weak var listener: MoreInformationListener?
     private let tableController: MoreInformationTableControlling
 }
 
@@ -126,17 +169,13 @@ fileprivate final class MoreInformationView: View {
         heightConstraint?.isActive = true
     }
     
-    fileprivate func set(buttonTitles: [String]) {
-        buttonsView.arrangedSubviews.forEach { view in
-            buttonsView.removeArrangedSubview(view)
-        }
+    fileprivate func addButton(withTitle title: String, target: Any, action: Selector) {
+        let buttonView = Button(title: title)
         
-        buttonTitles.forEach { title in
-            let buttonView = Button(title: title)
-            buttonView.heightAnchor.constraint(equalToConstant: 44).isActive = true
-            
-            buttonsView.addArrangedSubview(buttonView)
-            buttonsView.setCustomSpacing(20, after: buttonView)
-        }
+        buttonView.addTarget(target, action: action, for: .touchUpInside)
+        buttonView.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        
+        buttonsView.addArrangedSubview(buttonView)
+        buttonsView.setCustomSpacing(20, after: buttonView)
     }
 }

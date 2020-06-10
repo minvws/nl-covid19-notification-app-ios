@@ -8,9 +8,18 @@
 import Foundation
 
 /// @mockable
+protocol MoreInformationViewControllable: ViewControllable {
+    
+}
+
+/// @mockable
 protocol MoreInformationListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
+    func moreInformationRequestsAbout()
+    func moreInformationRequestsReceivedNotification()
+    func moreInformationRequestsInfected()
+    func moreInformationRequestsRequestTest()
+    func moreInformationRequestsShareApp()
+    func moreInformationRequestsSettings()
 }
 
 /// @mockable
@@ -19,7 +28,7 @@ protocol MoreInformationBuildable {
     ///
     /// - Parameter listener: Listener of created MoreInformation component
     /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: MoreInformationListener) -> Routing
+    func build(withListener listener: MoreInformationListener) -> MoreInformationViewControllable
 }
 
 protocol MoreInformationDependency {
@@ -33,14 +42,11 @@ private final class MoreInformationDependencyProvider: DependencyProvider<MoreIn
 }
 
 final class MoreInformationBuilder: Builder<MoreInformationDependency>, MoreInformationBuildable {
-    func build(withListener listener: MoreInformationListener) -> Routing {
+    func build(withListener listener: MoreInformationListener) -> MoreInformationViewControllable {
         let dependencyProvider = MoreInformationDependencyProvider(dependency: dependency)
         
         let tableController = dependencyProvider.tableController
-        let viewController = MoreInformationViewController(tableController: tableController)
-        
-        
-        return MoreInformationRouter(listener: listener,
-                                     viewController: viewController)
+        return MoreInformationViewController(listener: listener,
+                                             tableController: tableController)
     }
 }

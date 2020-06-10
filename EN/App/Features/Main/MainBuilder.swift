@@ -6,16 +6,8 @@
 */
 
 /// @mockable
-protocol MainViewControllable: ViewControllable {
-    func attachStatus()
-    func attachMoreInformation()
-    
-    func embed(stackedViewController: ViewControllable)
-}
-
-/// @mockable
 protocol MainBuildable {
-    func build() -> ViewControllable
+    func build() -> Routing
 }
 
 protocol MainDependency {
@@ -33,10 +25,12 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
-    func build() -> ViewControllable {
+    func build() -> Routing {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
+        let viewController = MainViewController()
         
-        return MainViewController(statusBuilder: dependencyProvider.statusBuilder,
-                                  moreInformationBuilder: dependencyProvider.moreInformationBuilder)
+        return MainRouter(viewController: viewController,
+                          statusBuilder: dependencyProvider.statusBuilder,
+                          moreInformationBuilder: dependencyProvider.moreInformationBuilder)
     }
 }
