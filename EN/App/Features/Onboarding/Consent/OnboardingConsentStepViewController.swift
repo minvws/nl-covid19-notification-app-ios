@@ -24,8 +24,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     static let onboardingConsentSummaryStepsViewLeadingMargin: CGFloat = 20
     static let onboardingConsentSummaryStepsViewTrailingMargin: CGFloat = 20
 
-    private var index: Int
     private let onboardingConsentManager: OnboardingConsentManaging
+
+    let consentStep: OnboardingConsentStep?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
         listener: OnboardingConsentListener,
@@ -33,7 +34,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
-        self.index = index
+        self.consentStep = self.onboardingConsentManager.getStep(index)
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,16 +54,28 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
         view.backgroundColor = .viewControllerBackgroundColor
 
-        internalView.consentStep = self.onboardingConsentManager.getStep(index)
+        internalView.consentStep = consentStep
+        internalView.onboardingConsentManager = onboardingConsentManager
+        internalView.listener = listener
 
         self.skipStepButton.target = self
 
         setThemeNavigationBar()
-        setNavigationRightBarButtonItems([skipStepButton])
+
+        if consentStep?.hasNavigationBarSkipButton ?? false {
+            setNavigationRightBarButtonItems([skipStepButton])
+        }
     }
 
     @objc func skipStepButtonPressed() {
-        listener?.consentRequestsSkip()
+
+        if let consentStep = consentStep {
+            if let nextStep = onboardingConsentManager.getNextConsentStep(consentStep.step) {
+                self.listener?.consentRequest(nextStep)
+            } else {
+                self.listener?.consentClose()
+            }
+        }
     }
 
     // MARK: - Private
@@ -71,7 +84,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     private lazy var internalView: OnboardingConsentView = OnboardingConsentView()
 }
 
-private final class OnboardingConsentView: View {
+final class OnboardingConsentView: View {
 
     lazy private var imageView: UIImageView = {
         let imageView = UIImageView()
@@ -108,6 +121,8 @@ private final class OnboardingConsentView: View {
     lazy private var viewsInDisplayOrder = [imageView, primaryButton, secondaryButton, label]
 
     private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?
+    var onboardingConsentManager: OnboardingConsentManaging?
+    var listener: OnboardingConsentListener?
 
     var consentStep: OnboardingConsentStep? {
         didSet {
@@ -153,7 +168,11 @@ private final class OnboardingConsentView: View {
 
     private func updateView() {
 
-        guard let step = self.consentStep, let summarySteps = step.summarySteps else { return }
+        guard let step = self.consentStep else {
+            return
+        }
+
+        self.label.attributedText = step.attributedText
 
         self.primaryButton.title = step.primaryButtonTitle
         self.secondaryButton.title = step.secondaryButtonTitle
@@ -161,6 +180,10 @@ private final class OnboardingConsentView: View {
         if let image = step.image {
             self.imageView.image = image
             self.imageView.isHidden = false
+        }
+
+        guard let summarySteps = step.summarySteps else {
+            return
         }
 
         if step.hasSummarySteps {
@@ -172,23 +195,20 @@ private final class OnboardingConsentView: View {
                     $0.removeFromSuperview()
                 }
             })
-            
+
             if let consentSummaryStepsView = consentSummaryStepsView {
                 addSubview(consentSummaryStepsView)
             }
         }
-
-        self.label.attributedText = step.attributedText
     }
 
     private func updateViewConstraints() {
 
-        guard let step = self.consentStep, let consentSummaryStepsView = consentSummaryStepsView else { return }
-
-        label.constraints.forEach({ label.removeConstraint($0) })
-        consentSummaryStepsView.constraints.forEach({ consentSummaryStepsView.removeConstraint($0) })
+        guard let step = self.consentStep else { return }
 
         var constraints = [[NSLayoutConstraint]()]
+
+        label.constraints.forEach({ label.removeConstraint($0) })
 
         constraints.append([
             label.topAnchor.constraint(equalTo: step.hasImage ? imageView.bottomAnchor : topAnchor, constant: 25),
@@ -197,16 +217,21 @@ private final class OnboardingConsentView: View {
             label.heightAnchor.constraint(greaterThanOrEqualToConstant: 0)
             ])
 
-        if step.hasSummarySteps {
+        if let consentSummaryStepsView = consentSummaryStepsView {
 
-            constraints.append([
-                consentSummaryStepsView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 20),
-                consentSummaryStepsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin),
-                consentSummaryStepsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin),
-                consentSummaryStepsView.bottomAnchor.constraint(equalTo: secondaryButton.topAnchor, constant: -20)
-                ])
+            consentSummaryStepsView.constraints.forEach({ consentSummaryStepsView.removeConstraint($0) })
 
-            consentSummaryStepsView.setupConstraints()
+            if step.hasSummarySteps {
+
+                constraints.append([
+                    consentSummaryStepsView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 20),
+                    consentSummaryStepsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin),
+                    consentSummaryStepsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin),
+                    consentSummaryStepsView.bottomAnchor.constraint(equalTo: secondaryButton.topAnchor, constant: -20)
+                    ])
+
+                consentSummaryStepsView.setupConstraints()
+            }
         }
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
@@ -214,12 +239,42 @@ private final class OnboardingConsentView: View {
 
     //MARK: - Functions
 
-    @objc func primaryButtonPressed() {
-
+    @objc private func primaryButtonPressed() {
+        if let consentStep = consentStep, let manger = onboardingConsentManager {
+            switch consentStep.step {
+            case .en:
+                manger.askEnableExposureNotifications {
+                    self.goToNextStepOrCloseConsent()
+                }
+            case .bluetooth:
+                manger.askEnableBluetooth {
+                    self.goToNextStepOrCloseConsent()
+                }
+            case .share:
+                manger.askToShare {
+                    self.goToNextStepOrCloseConsent()
+                }
+            }
+        }
     }
 
-    @objc func secondaryButtonPressed() {
+    @objc private func secondaryButtonPressed() {
+        if let consentStep = consentStep {
+            switch consentStep.step {
+            case .en, .bluetooth, .share:
+                self.goToNextStepOrCloseConsent()
+            }
+        }
+    }
 
+    private func goToNextStepOrCloseConsent() {
+        if let consentStep = consentStep, let manager = onboardingConsentManager {
+            if let nextStep = manager.getNextConsentStep(consentStep.step) {
+                self.listener?.consentRequest(nextStep)
+            } else {
+                self.listener?.consentClose()
+            }
+        }
     }
 }
 

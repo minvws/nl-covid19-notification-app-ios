@@ -18,7 +18,8 @@ protocol OnboardingConsentBuildable {
 
 /// @mockable
 protocol OnboardingConsentListener: AnyObject {
-    func consentRequestsSkip()
+    func consentClose()
+    func consentRequest(_ step: OnboardingConsentStepIndex)
 }
 
 protocol OnboardingConsentDependency {
@@ -34,13 +35,13 @@ final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, Onbo
         return build(withListener: listener, initialIndex: 0)
     }
 
-    func build(withListener listener: OnboardingConsentListener, initialIndex: Int = 0) -> ViewControllable {
+    func build(withListener listener: OnboardingConsentListener, initialIndex index: Int = 0) -> ViewControllable {
         let dependencyProvider = OnboardingConsentDependencyProvider(dependency: dependency)
         let onboardingConsentManager = dependencyProvider.dependency.onboardingConsentManager
 
         return OnboardingConsentStepViewController(
             onboardingConsentManager: onboardingConsentManager,            
             listener: listener,
-            index: 0)
+            index: index)
     }
 }

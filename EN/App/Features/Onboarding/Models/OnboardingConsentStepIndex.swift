@@ -7,8 +7,15 @@
 
 import UIKit
 
+enum OnboardingConsentStepIndex: Int {
+    case en = 0
+    case bluetooth
+    case share
+}
+
 final class OnboardingConsentStep: NSObject {
 
+    var step: OnboardingConsentStepIndex
     var title: String = ""
     var content: String = ""
     var image: UIImage?
@@ -22,17 +29,27 @@ final class OnboardingConsentStep: NSObject {
     }
     var primaryButtonTitle: String = ""
     var secondaryButtonTitle: String = ""
+    var hasNavigationBarSkipButton: Bool = false
     var attributedText: NSAttributedString = NSAttributedString(string: "")
 
-    init(title: String, content: String, image: UIImage?, summarySteps: [OnboardingConsentSummaryStep]?, primaryButtonTitle: String, secondaryButtonTitle: String) {
+    init(step: OnboardingConsentStepIndex,
+        title: String,
+        content: String,
+        image: UIImage?,
+        summarySteps: [OnboardingConsentSummaryStep]?,
+        primaryButtonTitle: String,
+        secondaryButtonTitle: String,
+        hasNavigationBarSkipButton: Bool) {
 
+        self.step = step
         self.title = title
         self.content = content
         self.image = image
         self.summarySteps = summarySteps
         self.primaryButtonTitle = primaryButtonTitle
         self.secondaryButtonTitle = secondaryButtonTitle
-
+        self.hasNavigationBarSkipButton = hasNavigationBarSkipButton
+        
         let attributedString = NSMutableAttributedString()
 
         let newLineAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 10)]
