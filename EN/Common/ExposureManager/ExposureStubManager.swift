@@ -9,6 +9,18 @@ import Foundation
 
 class ExposureStubManager: ExposureManaging {
     
+    private var exposureNotificationEnabled: Bool = false
+    
+    func isExposureNotificationEnabled() -> Bool {
+        return exposureNotificationEnabled
+    }
+    
+    
+    func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler) {
+        self.exposureNotificationEnabled = enabled
+        completionHandler(nil)
+    }
+    
     func detectExposures(_ urls: [URL], completionHandler: @escaping DetectExposuresHandler) {
         completionHandler(.success(ExposureDetectionSummary(
             attenuationDurations: [15],
@@ -22,10 +34,6 @@ class ExposureStubManager: ExposureManaging {
     func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler) {
         let keys = [DiagnosisKey]()
         completionHandler(.success(keys))
-    }
-    
-    func getDiagnonisKeys() {
-        
     }
     
     func setExposureNotificationEnabled(enabled: Bool) {

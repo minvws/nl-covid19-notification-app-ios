@@ -14,8 +14,6 @@ enum ExposureManagerStatus {
     case active
 }
 
-
-
 struct DiagnosisKey: Codable {
     let keyData: Data
     let rollingPeriod: UInt32
@@ -34,12 +32,14 @@ struct ExposureDetectionSummary {
 
 /// @mockable
 protocol ExposureManaging {
+    typealias ErrorHandler = (Error?) -> Void
     typealias GetDiagnosisKeysHandler = (Result<[DiagnosisKey], Error>) -> Void
     typealias DetectExposuresHandler = (Result<ExposureDetectionSummary?, Error>) -> Void
     
     func detectExposures(_ urls:[URL], completionHandler: @escaping DetectExposuresHandler)
     func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler)
-    func setExposureNotificationEnabled(enabled: Bool)
+    func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler)
+    func isExposureNotificationEnabled() -> Bool
 }
 
 @available(iOS 13.5, *)
@@ -109,13 +109,18 @@ class ExposureManager: ExposureManaging {
         }
     }
     
-    func setExposureNotificationEnabled(enabled: Bool) {
-        self.manager.setExposureNotificationEnabled(enabled) { error in
-            
-        }
+    
+    func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler) {
+        self.manager.setExposureNotificationEnabled(enabled, completionHandler: completionHandler)
     }
     
-    /// temporary function
+    func isExposureNotificationEnabled() -> Bool {
+        self.manager.exposureNotificationEnabled
+    }
+    
+    
+    
+    /// temporary - hardcoded - function
     private func getExposureConfiguration() -> ENExposureConfiguration {
         
         let SEQUENTIAL_WEIGHTS :[NSNumber] = [1,2,3,4,5,6,7,8]
