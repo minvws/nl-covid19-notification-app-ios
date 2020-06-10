@@ -37,6 +37,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         stackedViewController.uiviewController.didMove(toParent: self)
     }
     
+    func present(viewController: ViewControllable, animated: Bool) {
+        let navigationController = NavigationController(rootViewController: viewController.uiviewController)
+        
+        present(navigationController, animated: animated, completion: nil)
+    }
+    
     // MARK: - MoreInformationListener
     
     func moreInformationRequestsAbout() {
@@ -61,6 +67,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     
     func moreInformationRequestsSettings() {
         router?.routeToSettings()
+    }
+    
+    // MARK: - AboutListener
+    
+    func aboutRequestsDismissal() {
+        // TODO
     }
     
     // MARK: - View Lifecycle

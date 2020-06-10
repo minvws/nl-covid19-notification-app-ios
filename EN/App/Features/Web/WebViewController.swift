@@ -6,6 +6,7 @@
 */
 
 import Foundation
+import WebKit
 
 /// @mockable
 protocol WebViewControllable: ViewControllable {
@@ -28,13 +29,13 @@ final class WebViewController: ViewController, WebViewControllable {
     // MARK: - ViewController Lifecycle
     
     override func loadView() {
-        self.view = internalView
+        self.view = webView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // TODO: Implement or delete
+        webView.load(urlRequest)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -48,20 +49,6 @@ final class WebViewController: ViewController, WebViewControllable {
     // MARK: - Private
     
     private weak var listener: WebListener?
-    private lazy var internalView: WebView = WebView()
+    private lazy var webView: WKWebView = WKWebView()
     private let urlRequest: URLRequest
-}
-
-private final class WebView: View {
-    override func build() {
-        super.build()
-        
-        // TODO: Construct View here or delete this function
-    }
-    
-    override func setupConstraints() {
-        super.setupConstraints()
-        
-        // TODO: Setup constraints here or delete this function
-    }
 }

@@ -22,6 +22,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var moreInformationBuilder: MoreInformationBuildable {
         return MoreInformationBuilder(dependency: self)
     }
+    
+    var aboutBuilder: AboutBuildable {
+        return AboutBuilder()
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -31,6 +35,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,
-                          moreInformationBuilder: dependencyProvider.moreInformationBuilder)
+                          moreInformationBuilder: dependencyProvider.moreInformationBuilder,
+                          aboutBuilder: dependencyProvider.aboutBuilder)
     }
 }

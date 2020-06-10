@@ -12,46 +12,54 @@ protocol AboutViewControllable: ViewControllable {
     
 }
 
-final class AboutViewController: ViewController, AboutViewControllable {
+final class AboutViewController: ViewController, AboutViewControllable, WebListener {
     
-    init(listener: AboutListener) {
+    init(listener: AboutListener,
+         webBuilder: WebBuildable) {
         self.listener = listener
+        self.webBuilder = webBuilder
         
         super.init(nibName: nil, bundle: nil)
+        
+        title = "About the app"
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - ViewController Lifecycle
+    // MARK: - WebListener
     
-    override func loadView() {
-        self.view = internalView
+    func webRequestsDismissal(shouldHideViewController: Bool) {
+        
     }
+    
+    // MARK: - ViewController Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // TODO: Implement or delete
+        loadWebView()
     }
     
     // MARK: - Private
     
-    private weak var listener: AboutListener?
-    private lazy var internalView: AboutView = AboutView()
-}
-
-private final class AboutView: View {
-    override func build() {
-        super.build()
+    private func loadWebView() {
+        guard webViewController == nil,
+            let url = URL(string: "https://www.rijksoverheid.nl/onderwerpen/coronavirus-app/tijdpad-proces-coronavirus-app") else {
+            return
+        }
         
-        // TODO: Construct View here or delete this function
+        let urlRequest = URLRequest(url: url)
+        let webViewController = webBuilder.build(withListener: self,
+                                                 urlRequest: urlRequest)
+        self.webViewController = webViewController
+        
+        embed(childViewController: webViewController.uiviewController)
     }
     
-    override func setupConstraints() {
-        super.setupConstraints()
-        
-        // TODO: Setup constraints here or delete this function
-    }
+    private weak var listener: AboutListener?
+    
+    private let webBuilder: WebBuildable
+    private var webViewController: ViewControllable?
 }

@@ -9,8 +9,7 @@ import Foundation
 
 /// @mockable
 protocol AboutListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
+    func aboutRequestsDismissal()
 }
 
 /// @mockable
@@ -21,23 +20,17 @@ protocol AboutBuildable {
     func build(withListener listener: AboutListener) -> ViewControllable
 }
 
-protocol AboutDependency {
-    // TODO: Add any external dependency
+final class AboutDependencyProvider: DependencyProvider<EmptyDependency> {
+    var webBuilder: WebBuildable {
+        return WebBuilder()
+    }
 }
 
-private final class AboutDependencyProvider: DependencyProvider<AboutDependency> {
-    // TODO: Create and return any dependency that should be limited
-    //       to About's scope or any child of About
-}
-
-final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
+final class AboutBuilder: Builder<EmptyDependency>, AboutBuildable {
     func build(withListener listener: AboutListener) -> ViewControllable {
-        // TODO: Add any other dynamic dependency as parameter
+        let dependencyProvider = AboutDependencyProvider()
         
-        let dependencyProvider = AboutDependencyProvider(dependency: dependency)
-        
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
-        return AboutViewController(listener: listener)
+        return AboutViewController(listener: listener,
+                                   webBuilder: dependencyProvider.webBuilder)
     }
 }
