@@ -14,18 +14,30 @@ enum ExposureManagerStatus {
     case active
 }
 
-struct ENDiagnosisKey: Codable {
+
+
+struct DiagnosisKey: Codable {
     let keyData: Data
     let rollingPeriod: UInt32
     let rollingStartNumber: UInt32
     let transmissionRiskLevel: UInt8
 }
 
+struct ExposureDetectionSummary {
+    let attenuationDurations: [NSNumber]
+    let daysSinceLastExposure: Int
+    let matchedKeyCount: UInt64
+    let maximumRiskScore: UInt8
+    let metadata: [AnyHashable : Any]?
+}
+
+
 /// @mockable
 protocol ExposureManaging {
-    typealias GetDiagnosisKeysHandler = (Result<[ENDiagnosisKey], Error>) -> Void
+    typealias GetDiagnosisKeysHandler = (Result<[DiagnosisKey], Error>) -> Void
+    typealias DetectExposuresHandler = (Result<ExposureDetectionSummary?, Error>) -> Void
     
-    func detectExposures()
+    func detectExposures(_ urls:[URL], completionHandler: @escaping DetectExposuresHandler)
     func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler)
     func setExposureNotificationEnabled(enabled: Bool)
 }
@@ -45,8 +57,30 @@ class ExposureManager: ExposureManaging {
         }
     }
     
-    func detectExposures() {
-        
+    func detectExposures(_ urls: [URL], completionHandler: @escaping DetectExposuresHandler) {
+        self.manager.detectExposures(configuration: self.getExposureConfiguration(), diagnosisKeyURLs: urls) { summary, error in
+            
+            if let error = error {
+                completionHandler(.failure(error))
+            } else {
+                
+                guard let summary = summary else {
+                    // call to api success bu no exposure
+                    completionHandler(.success(nil))
+                    return
+                }
+                
+                // convert to generic
+                let exposureDetectionSummary = ExposureDetectionSummary(
+                    attenuationDurations: summary.attenuationDurations,
+                    daysSinceLastExposure: summary.daysSinceLastExposure,
+                    matchedKeyCount: summary.matchedKeyCount,
+                    maximumRiskScore: summary.maximumRiskScore,
+                    metadata: summary.metadata)
+                
+                completionHandler(.success(exposureDetectionSummary))
+            }
+        }
     }
     
     func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler) {
@@ -55,9 +89,16 @@ class ExposureManager: ExposureManaging {
             if let error = error {
                 completionHandler(.failure(error))
             } else {
+                
+                guard let keys = keys else {
+                    // call is success, no keys
+                    completionHandler(.success([DiagnosisKey]()))
+                    return
+                }
+                
                 // Convert keys to something generic
-                let diagnosisKeys = keys!.compactMap { diagnosisKey -> ENDiagnosisKey? in
-                    return ENDiagnosisKey(keyData: diagnosisKey.keyData,
+                let diagnosisKeys = keys.compactMap { diagnosisKey -> DiagnosisKey? in
+                    return DiagnosisKey(keyData: diagnosisKey.keyData,
                                           rollingPeriod: diagnosisKey.rollingPeriod,
                                           rollingStartNumber: diagnosisKey.rollingStartNumber,
                                           transmissionRiskLevel: diagnosisKey.transmissionRiskLevel)
@@ -69,7 +110,25 @@ class ExposureManager: ExposureManaging {
     }
     
     func setExposureNotificationEnabled(enabled: Bool) {
+        self.manager.setExposureNotificationEnabled(enabled) { error in
+            
+        }
+    }
+    
+    /// temporary function
+    private func getExposureConfiguration() -> ENExposureConfiguration {
         
+        let SEQUENTIAL_WEIGHTS :[NSNumber] = [1,2,3,4,5,6,7,8]
+        let EQUAL_WEIGHTS :[NSNumber] = [1,1,1,1,1,1,1,1]
+        
+        let exposureConfiguration = ENExposureConfiguration()
+        exposureConfiguration.minimumRiskScore = 1
+        exposureConfiguration.attenuationLevelValues = SEQUENTIAL_WEIGHTS
+        exposureConfiguration.daysSinceLastExposureLevelValues = EQUAL_WEIGHTS
+        exposureConfiguration.durationLevelValues = EQUAL_WEIGHTS
+        exposureConfiguration.transmissionRiskLevelValues = EQUAL_WEIGHTS
+        exposureConfiguration.metadata = ["attenuationDurationThresholds": [42, 56]]
+        return exposureConfiguration
     }
     
 }

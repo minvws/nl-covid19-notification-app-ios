@@ -9,13 +9,19 @@ import Foundation
 
 class ExposureStubManager: ExposureManaging {
     
-    func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler) {
-        let keys = [ENDiagnosisKey]()
-        completionHandler(.success(keys))
+    func detectExposures(_ urls: [URL], completionHandler: @escaping DetectExposuresHandler) {
+        completionHandler(.success(ExposureDetectionSummary(
+            attenuationDurations: [15],
+            daysSinceLastExposure: 1,
+            matchedKeyCount: 2,
+            maximumRiskScore: 3,
+            metadata: [AnyHashable:Any]()
+        )))
     }
     
-    func detectExposures() {
-        
+    func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler) {
+        let keys = [DiagnosisKey]()
+        completionHandler(.success(keys))
     }
     
     func getDiagnonisKeys() {
