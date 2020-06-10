@@ -37,7 +37,6 @@ enum ENFrameworkStatus : Int {
     case restricted = 4
 }
 
-
 /// @mockable
 protocol ExposureManaging {
     typealias ErrorHandler = (Error?) -> Void
