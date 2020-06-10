@@ -8,6 +8,15 @@
 import UIKit
 
 open class View: UIView {
+    
+    init() {
+        super.init(frame: CGRect(x: 0,
+                                 y: 0,
+                                 width: UIScreen.main.bounds.width,
+                                 height: UIScreen.main.bounds.height))
+        
+        configure()
+    }
 
     public override init(frame: CGRect) {
         super.init(frame: frame)

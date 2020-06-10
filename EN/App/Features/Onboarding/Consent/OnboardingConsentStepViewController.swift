@@ -45,7 +45,6 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-
         self.view = internalView
     }
 
@@ -63,13 +62,13 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     }
 
     @objc func skipStepButtonPressed() {
-
+        listener?.consentRequestsSkip()
     }
 
     // MARK: - Private
 
     private weak var listener: OnboardingConsentListener?
-    private var internalView: OnboardingConsentView = OnboardingConsentView()
+    private lazy var internalView: OnboardingConsentView = OnboardingConsentView()
 }
 
 private final class OnboardingConsentView: View {
@@ -115,14 +114,6 @@ private final class OnboardingConsentView: View {
             updateView()
             updateViewConstraints()
         }
-    }
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override func build() {

@@ -18,8 +18,7 @@ protocol OnboardingConsentBuildable {
 
 /// @mockable
 protocol OnboardingConsentListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
+    func consentRequestsSkip()
 }
 
 protocol OnboardingConsentDependency {

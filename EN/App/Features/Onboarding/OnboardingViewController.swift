@@ -42,6 +42,12 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         router?.routeToConsent(animated: true)
     }
     
+    // MARK: - OnboardingConsentListener
+    
+    func consentRequestsSkip() {
+        listener?.didCompleteOnboarding()
+    }
+    
     // MARK: - ViewController Lifecycle
     
     override func viewDidLoad() {
