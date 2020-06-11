@@ -112,6 +112,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.attachStatus()
         router?.attachMoreInformation()
     }
+
+    // MARK: - StatusListener
+    func handleButtonAction(_ action: StatusViewButtonModel.Action) {
+        // TODO: handle
+        print("handle \(action)")
+    }
     
     // MARK: - Private
     

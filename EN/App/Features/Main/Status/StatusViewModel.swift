@@ -8,23 +8,46 @@
 import Foundation
 import UIKit
 
-enum StatusViewIcon {
-    case ok
-    case warning
-    case pause
-    case lock
+struct StatusViewIcon {
+    let color: UIColor
+    let icon: UIImage?
+
+    static let ok = StatusViewIcon(color: .okGreen, icon: UIImage(named: "StatusIconOk"))
+    static let notified = StatusViewIcon(color: .notifiedRed, icon: UIImage(named: "StatusIconNotified"))
+//    case warning
+//    case pause
+//    case lock
 }
 
 struct StatusViewButtonModel {
     let title: String
-    let action: () -> ()
+    let style: Button.ButtonType
+    let action: Action
+
+    enum Action {
+        case explainRisk
+        case removeNotification
+    }
+
+    static let moreInfo = StatusViewButtonModel(
+        title: "Wat moet ik nu doen?",
+        style: .primary,
+        action: .explainRisk
+    )
+
+    static let removeNotification = StatusViewButtonModel(
+        title: "Melding verwijderen",
+        style: .secondary,
+        action: .removeNotification
+    )
+
 }
 
-protocol StatusViewModel {
-    var icon: StatusViewIcon { get }
-    var title: NSAttributedString { get }
-    var description: NSAttributedString { get }
-    var button: StatusViewButtonModel? { get }
-    var footer: NSAttributedString? { get }
-    var shouldShowHideMessage: Bool { get }
+struct StatusViewModel {
+    var icon: StatusViewIcon
+    var title: NSAttributedString
+    var description: NSAttributedString
+    var buttons: [StatusViewButtonModel]
+    var footer: NSAttributedString?
+    var shouldShowHideMessage: Bool
 }

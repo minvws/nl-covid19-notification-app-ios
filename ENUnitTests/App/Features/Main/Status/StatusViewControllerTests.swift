@@ -8,6 +8,7 @@
 @testable import EN
 import Foundation
 import XCTest
+import SnapshotTesting
 
 final class StatusViewControllerTests: XCTestCase {
     private var viewController: StatusViewController!
@@ -16,9 +17,17 @@ final class StatusViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        viewController = StatusViewController()
+        viewController = StatusViewController(listener: StatusListenerMock())
         viewController.router = router
     }
 
-    // TODO: Add tests
+    func testSnapshotActive() {
+        viewController.update(with: .active)
+        assertSnapshot(matching: viewController, as: .image(), record: true)
+    }
+
+    func testSnapshotNotified() {
+        viewController.update(with: .notified)
+        assertSnapshot(matching: viewController, as: .image(), record: true)
+    }
 }
