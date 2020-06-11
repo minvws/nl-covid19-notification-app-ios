@@ -7,7 +7,12 @@
 
 import Foundation
 
-class ExposureStubManager: ExposureManaging {
+class StubExposureManager: ExposureManaging {
+    
+    func activate(_ completionHandler: @escaping CompletionHandler) {
+        completionHandler(nil)
+    }
+    
     
     func getExposureNotificationStatus() -> ENFrameworkStatus {
         if(!isExposureNotificationEnabled()) {

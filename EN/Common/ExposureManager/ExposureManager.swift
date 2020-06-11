@@ -8,10 +8,22 @@
 import Foundation
 import ExposureNotification
 
-enum ExposureManagerStatus {
-    case notAvailable
-    case updateOS
-    case active
+enum ExposureManagerError: Int {
+    case unknown = 1
+    case badParameter = 2
+    case notEntitled = 3
+    case notAuthorized = 4
+    case unsupported = 5
+    case invalidated = 6
+    case bluetoothOff = 7
+    case insufficientStorage = 8
+    case notEnabled = 9
+    case apiMisuse = 10
+    case `internal` = 11
+    case insufficientMemory = 12
+    case rateLimited = 13
+    case restricted = 14
+    case badFormat = 15
 }
 
 struct DiagnosisKey: Codable {
@@ -37,36 +49,62 @@ enum ENFrameworkStatus : Int {
     case restricted = 4
 }
 
+    
+
 /// @mockable
 protocol ExposureManaging {
     typealias ErrorHandler = (Error?) -> Void
+    typealias CompletionHandler = (ExposureManagerError?) -> Void
     typealias GetDiagnosisKeysHandler = (Result<[DiagnosisKey], Error>) -> Void
     typealias DetectExposuresHandler = (Result<ExposureDetectionSummary?, Error>) -> Void
     
+    func activate(_ completionHandler: @escaping CompletionHandler)
     func detectExposures(_ urls:[URL], completionHandler: @escaping DetectExposuresHandler)
     func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler)
     func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler)
     func isExposureNotificationEnabled() -> Bool
     func getExposureNotificationStatus() -> ENFrameworkStatus
+}
+
+
+struct ExposureManager {
     
+    enum NotSupported: Error {
+        case description(String)
+    }
+    
+    static func instance() throws -> ExposureManaging {
+        if #available(iOS 13.5, *) {
+            // check for simulator
+            #if arch(i386) || arch(x86_64)
+                return StubExposureManager()
+            #else
+                return InternalExposureManager()
+            #endif
+            
+        } else {
+            throw NotSupported.description("Update iOS")
+        }
+
+    }
 }
 
 @available(iOS 13.5, *)
-class ExposureManager: ExposureManaging {
+private class InternalExposureManager: ExposureManaging {
     
     private let manager = ENManager()
     
-    init() {
-        manager.activate { _ in
-            if ENManager.authorizationStatus == .authorized && !self.manager.exposureNotificationEnabled {
-                self.manager.setExposureNotificationEnabled(true) { _ in
-                    // No error handling for attempts to enable on launch
-                }
+    func activate(_ completionHandler: @escaping CompletionHandler) {
+        manager.activate { error in
+            if let error = error {
+                self.handleError(error: error, completionHandler: completionHandler)
             }
+            completionHandler(nil)
         }
     }
     
     func detectExposures(_ urls: [URL], completionHandler: @escaping DetectExposuresHandler) {
+        
         self.manager.detectExposures(configuration: self.getExposureConfiguration(), diagnosisKeyURLs: urls) { summary, error in
             
             if let error = error {
@@ -74,7 +112,7 @@ class ExposureManager: ExposureManaging {
             } else {
                 
                 guard let summary = summary else {
-                    // call to api success bu no exposure
+                    // call to api success but no exposure
                     completionHandler(.success(nil))
                     return
                 }
@@ -129,6 +167,13 @@ class ExposureManager: ExposureManaging {
     func getExposureNotificationStatus() -> ENFrameworkStatus {
         let status = self.manager.exposureNotificationStatus.rawValue
         return ENFrameworkStatus.init(rawValue: status) ?? ENFrameworkStatus.unknown
+    }
+    
+    private func handleError(error: Error, completionHandler: @escaping CompletionHandler) {
+        if let error = error as? ENError {
+            let err = ExposureManagerError.init(rawValue: error.errorCode) ?? ExposureManagerError.unknown
+            completionHandler(err)
+        }
     }
     
     /// temporary - hardcoded - function
