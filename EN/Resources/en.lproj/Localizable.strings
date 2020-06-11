@@ -37,8 +37,19 @@
 "consentStep1Summary1" = "Je Bluetooth-gegevens worden 14 dagen op je telefoon bewaard. Je kunt ze altijd zelf verwijderen.";
 "consentStep1Summary2" = "Je naam en andere persoonsgegevens worden niet gebruikt of bewaard.";
 "consentStep1Summary3" = "Je locatiegegevens worden niet gebruikt of bewaard";
+"consentStep1PrimaryButton" = "Toestemming geven";
+"consentStep1SecondaryButton" = "Hoe werkt de app precies?";
+
+"consentStep2Title" = "Zet je Bluetooth aan om de app te gebruiken";
+"consentStep2Content" = "Je Bluetooth staat uit. Daardoor kan de app niet zien of je bij anderen in de buurt bent geweest.";
+"consentStep2PrimaryButton" = "Bluetooth aanzetten";
+"consentStep2SecondaryButton" = "Misschien later";
+
+"consentStep3Title" = "Laat anderen weten dat jij helpt het virus te stoppen ";
+"consentStep3Content" = "De app werkt beter hoe meer mensen het gebruiken. Alleen samen kunnen we de verspreiding van het virus stoppen. Deel de app dus met zo veel mogelijk anderen.";
+"consentStep3PrimaryButton" = "App delen";
+"consentStep3SecondaryButton" = "Misschien later";
 
 // MARK: - Consent
 "skipStep" = "Sla over";
-"consentExplanationButton" = "Hoe werkt de app precies?";
-"consentPermissionsButton" = "Toestemming geven";
+

@@ -50,6 +50,13 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.push(viewController: consentViewController, animated: animated)
     }
 
+    func routeToConsent(withIndex index: Int, animated: Bool) {
+        let consentViewController = consentBuilder.build(withListener: viewController, initialIndex: index)
+        self.consentViewController = consentViewController
+
+        viewController.push(viewController: consentViewController, animated: animated)
+    }
+    
     private let stepBuilder: OnboardingStepBuildable
     private var stepViewController: ViewControllable?
 

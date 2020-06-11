@@ -11,52 +11,57 @@ import Foundation
 protocol OnboardingRouting: Routing {
     func routeToSteps()
     func routeToConsent(animated: Bool)
+    func routeToConsent(withIndex index: Int, animated: Bool)
 }
 
-final class OnboardingViewController: NavigationController, OnboardingViewControllable {
-    
+final class OnboardingViewController: NavigationController, OnboardingViewControllable {    
+
     weak var router: OnboardingRouting?
-    
+
     init(listener: OnboardingListener) {
         self.listener = listener
-        
+
         super.init(nibName: nil, bundle: nil)
-        
+
         modalPresentationStyle = .fullScreen
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - OnboardingViewControllable
-    
+
     func push(viewController: ViewControllable, animated: Bool) {
         pushViewController(viewController.uiviewController, animated: animated)
     }
-    
+
     // MARK: - OnboardingStepListener
-    
+
     func onboardingStepsDidComplete() {
-        
+
         router?.routeToConsent(animated: true)
     }
-    
+
     // MARK: - OnboardingConsentListener
-    
-    func consentRequestsSkip() {
+
+    func consentClose() {
         listener?.didCompleteOnboarding()
     }
-    
+
+    func consentRequest(step: OnboardingConsentStepIndex) {
+        router?.routeToConsent(withIndex: step.rawValue, animated: true)
+    }
+
     // MARK: - ViewController Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         router?.routeToSteps()
     }
-    
+
     // MARK: - Private
-    
+
     private weak var listener: OnboardingListener?
 }

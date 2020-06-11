@@ -6,13 +6,17 @@
 */
 
 import UIKit
+import ExposureNotification
 
 /// @mockable
 protocol OnboardingConsentManaging {
     var onboardingConsentSteps: [OnboardingConsentStep] { get }
-    
+
     func getStep(_ index: Int) -> OnboardingConsentStep?
-    func getNextStepIndex(_ currentIndex: Int) -> Int?
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex) -> OnboardingConsentStepIndex?
+
+    func askEnableExposureNotifications(_ completion: @escaping (() -> ()))
+    func askEnableBluetooth(_ completion: @escaping (() -> ()))    
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -23,6 +27,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
         onboardingConsentSteps.append(
             OnboardingConsentStep(
+                step: .en,
                 title: Localized("consentStep1Title"),
                 content: Localized("consentStep1Content"),
                 image: nil,
@@ -40,11 +45,27 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                         image: UIImage(named: "CheckmarkShield")
                     )
                 ],
-                primaryButtonTitle: Localized("consentPermissionsButton"),
-                secondaryButtonTitle: Localized("consentExplanationButton")
+                primaryButtonTitle: Localized("consentStep1PrimaryButton"),
+                secondaryButtonTitle: Localized("consentStep1SecondaryButton"),
+                hasNavigationBarSkipButton: true
+            )
+        )
+
+        onboardingConsentSteps.append(
+            OnboardingConsentStep(
+                step: .bluetooth,
+                title: Localized("consentStep2Title"),
+                content: Localized("consentStep2Content"),
+                image: UIImage(named: "PleaseTurnOnBluetooth"),
+                summarySteps: nil,
+                primaryButtonTitle: Localized("consentStep2PrimaryButton"),
+                secondaryButtonTitle: Localized("consentStep2SecondaryButton"),
+                hasNavigationBarSkipButton: false
             )
         )
     }
+
+    //MARK: - Functions
 
     func getStep(_ index: Int) -> OnboardingConsentStep? {
         if self.onboardingConsentSteps.count > index { return self.onboardingConsentSteps[index] }
@@ -52,9 +73,23 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
     }
 
     // TODO: Add EN, Bluetooth and other checks to return the correct index
-    func getNextStepIndex(_ currentIndex: Int) -> Int? {
-        let nextIndex = currentIndex + 1
-        if self.onboardingConsentSteps.count > nextIndex { return nextIndex }
-        return nil
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex) -> OnboardingConsentStepIndex? {
+
+        switch currentStep {
+        case .en:
+            return .bluetooth
+        case .bluetooth:
+            return nil
+        }
+    }
+
+    // TODO: Add Exposure Notifications logic
+    func askEnableExposureNotifications(_ completion: @escaping (() -> ())) {
+        completion()
+    }
+
+    // TODO: Add Bluetooth enabling logic
+    func askEnableBluetooth(_ completion: @escaping (() -> ())) {
+        completion()
     }
 }
