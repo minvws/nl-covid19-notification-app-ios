@@ -19,11 +19,19 @@ class Button: UIButton {
         }
     }
 
+    var rounded = false {
+        didSet {
+            updateRoundedCorners()
+        }
+    }
+
     var title = "" {
         didSet {
             self.setTitle(title, for: .normal)
         }
     }
+
+    var action: (() -> Void)?
 
     var useHapticFeedback = true
 
@@ -43,11 +51,18 @@ class Button: UIButton {
 
         self.addTarget(self, action: #selector(self.touchDownAnimation), for: .touchDown)
 
+        self.addTarget(self, action: #selector(self.touchUpAction), for: .touchUpInside)
+
         updateButtonType()
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateRoundedCorners()
     }
 
     fileprivate func updateButtonType() {
@@ -66,6 +81,14 @@ class Button: UIButton {
         self.tintColor = .white
     }
 
+    fileprivate func updateRoundedCorners() {
+        if rounded {
+            layer.cornerRadius = min(bounds.width, bounds.height) / 2
+        } else {
+            layer.cornerRadius = 0
+        }
+    }
+
     @objc func touchDownAnimation() {
 
         if useHapticFeedback { Haptic.light() }
@@ -79,6 +102,10 @@ class Button: UIButton {
         UIButton.animate(withDuration: 0.2, animations: {
             self.transform = CGAffineTransform.identity
         })
+    }
+
+    @objc func touchUpAction() {
+        action?()
     }
 
 }
