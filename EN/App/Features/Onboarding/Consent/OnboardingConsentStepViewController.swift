@@ -26,7 +26,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     private let onboardingConsentManager: OnboardingConsentManaging
 
-    let consentStep: OnboardingConsentStep?
+    private let consentStep: OnboardingConsentStep?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
         listener: OnboardingConsentListener,
@@ -55,9 +55,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         view.backgroundColor = .viewControllerBackgroundColor
 
         internalView.consentStep = consentStep
-        internalView.onboardingConsentManager = onboardingConsentManager
-        internalView.listener = listener
-
+        internalView.primaryButton.addTarget(self, action: #selector(primaryButtonPressed), for: .touchUpInside)
+        internalView.secondaryButton.addTarget(self, action: #selector(secondaryButtonPressed), for: .touchUpInside)
+        
         self.skipStepButton.target = self
 
         setThemeNavigationBar()
@@ -67,11 +67,51 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         }
     }
 
+    //MARK: - Functions
+
+    @objc private func primaryButtonPressed() {
+        if let consentStep = consentStep {
+            switch consentStep.step {
+            case .en:
+                onboardingConsentManager.askEnableExposureNotifications {
+                    self.goToNextStepOrCloseConsent()
+                }
+            case .bluetooth:
+                onboardingConsentManager.askEnableBluetooth {
+                    self.goToNextStepOrCloseConsent()
+                }
+            case .share:
+                onboardingConsentManager.askToShare {
+                    self.goToNextStepOrCloseConsent()
+                }
+            }
+        }
+    }
+
+    @objc private func secondaryButtonPressed() {
+        if let consentStep = consentStep {
+            switch consentStep.step {
+            case .en, .bluetooth, .share:
+                self.goToNextStepOrCloseConsent()
+            }
+        }
+    }
+
+    private func goToNextStepOrCloseConsent() {
+        if let consentStep = consentStep {
+            if let nextStep = onboardingConsentManager.getNextConsentStep(consentStep.step) {
+                self.listener?.consentRequest(step: nextStep)
+            } else {
+                self.listener?.consentClose()
+            }
+        }
+    }
+    
     @objc func skipStepButtonPressed() {
 
         if let consentStep = consentStep {
             if let nextStep = onboardingConsentManager.getNextConsentStep(consentStep.step) {
-                self.listener?.consentRequest(nextStep)
+                self.listener?.consentRequest(step: nextStep)
             } else {
                 self.listener?.consentClose()
             }
@@ -102,27 +142,23 @@ final class OnboardingConsentView: View {
         return label
     }()
 
-    lazy private var primaryButton: Button = {
+    lazy var primaryButton: Button = {
         let button = Button()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .primary
-        button.addTarget(self, action: #selector(primaryButtonPressed), for: .touchUpInside)
         return button
     }()
 
-    lazy private var secondaryButton: Button = {
+    lazy var secondaryButton: Button = {
         let button = Button()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .tertiary
-        button.addTarget(self, action: #selector(secondaryButtonPressed), for: .touchUpInside)
         return button
     }()
 
     lazy private var viewsInDisplayOrder = [imageView, primaryButton, secondaryButton, label]
 
-    private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?
-    var onboardingConsentManager: OnboardingConsentManaging?
-    var listener: OnboardingConsentListener?
+    private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?    
 
     var consentStep: OnboardingConsentStep? {
         didSet {
@@ -235,46 +271,6 @@ final class OnboardingConsentView: View {
         }
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
-    }
-
-    //MARK: - Functions
-
-    @objc private func primaryButtonPressed() {
-        if let consentStep = consentStep, let manger = onboardingConsentManager {
-            switch consentStep.step {
-            case .en:
-                manger.askEnableExposureNotifications {
-                    self.goToNextStepOrCloseConsent()
-                }
-            case .bluetooth:
-                manger.askEnableBluetooth {
-                    self.goToNextStepOrCloseConsent()
-                }
-            case .share:
-                manger.askToShare {
-                    self.goToNextStepOrCloseConsent()
-                }
-            }
-        }
-    }
-
-    @objc private func secondaryButtonPressed() {
-        if let consentStep = consentStep {
-            switch consentStep.step {
-            case .en, .bluetooth, .share:
-                self.goToNextStepOrCloseConsent()
-            }
-        }
-    }
-
-    private func goToNextStepOrCloseConsent() {
-        if let consentStep = consentStep, let manager = onboardingConsentManager {
-            if let nextStep = manager.getNextConsentStep(consentStep.step) {
-                self.listener?.consentRequest(nextStep)
-            } else {
-                self.listener?.consentClose()
-            }
-        }
     }
 }
 

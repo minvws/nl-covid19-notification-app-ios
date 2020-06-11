@@ -19,7 +19,7 @@ protocol OnboardingConsentBuildable {
 /// @mockable
 protocol OnboardingConsentListener: AnyObject {
     func consentClose()
-    func consentRequest(_ step: OnboardingConsentStepIndex)
+    func consentRequest(step: OnboardingConsentStepIndex)
 }
 
 protocol OnboardingConsentDependency {

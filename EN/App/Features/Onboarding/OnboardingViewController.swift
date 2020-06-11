@@ -49,7 +49,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         listener?.didCompleteOnboarding()
     }
 
-    func consentRequest(_ step: OnboardingConsentStepIndex) {
+    func consentRequest(step: OnboardingConsentStepIndex) {
         router?.routeToConsent(withIndex: step.rawValue, animated: true)
     }
 
