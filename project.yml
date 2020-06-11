@@ -3,6 +3,11 @@ name: EN
 options:
   developmentLanguage: $(DEVELOPMENT_LANGUAGE)
 
+packages:
+  SwiftSnapshotTesting:
+    url: https://github.com/pointfreeco/swift-snapshot-testing.git
+    from: 1.7.2
+
 targets:
   EN:
     platform: iOS
@@ -62,6 +67,7 @@ targets:
       - ENUnitTests
     dependencies:
       - target: EN
+      - package: SwiftSnapshotTesting
     settings:
       base:
         SWIFT_VERSION: 5.2

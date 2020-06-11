@@ -9,8 +9,7 @@ import Foundation
 
 /// @mockable
 protocol StatusListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
+    func handleButtonAction(_ action: StatusViewButtonModel.Action)
 }
 
 /// @mockable
@@ -44,7 +43,7 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
         let dependencyProvider = StatusDependencyProvider(dependency: dependency)
         
         // let childBuilder = dependencyProvider.childBuilder
-        let viewController = StatusViewController()
+        let viewController = StatusViewController(listener: listener)
         
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.

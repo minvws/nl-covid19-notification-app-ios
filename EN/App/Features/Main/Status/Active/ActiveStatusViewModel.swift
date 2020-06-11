@@ -8,11 +8,13 @@
 import Foundation
 
 /// Represents the Active App State
-struct ActiveStatusViewModel: StatusViewModel {
-    let icon: StatusViewIcon = .ok
-    let title: NSAttributedString = .init(string: "Active")
-    let description: NSAttributedString = .init(string: "Description")
-    let button: StatusViewButtonModel? = nil
-    let footer: NSAttributedString? = nil
-    let shouldShowHideMessage: Bool = false
+extension StatusViewModel {
+    static let active = StatusViewModel(
+        icon: .ok,
+        title: .init(string: "De app is actief"),
+        description: .init(string: "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen."),
+        buttons: [],
+        footer: nil,
+        shouldShowHideMessage: false
+    )
 }
