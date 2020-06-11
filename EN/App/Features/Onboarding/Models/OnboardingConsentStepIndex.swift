@@ -10,7 +10,6 @@ import UIKit
 enum OnboardingConsentStepIndex: Int {
     case en = 0
     case bluetooth
-    case share
 }
 
 final class OnboardingConsentStep: NSObject {

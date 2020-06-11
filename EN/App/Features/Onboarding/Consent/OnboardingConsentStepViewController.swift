@@ -57,7 +57,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         internalView.consentStep = consentStep
         internalView.primaryButton.addTarget(self, action: #selector(primaryButtonPressed), for: .touchUpInside)
         internalView.secondaryButton.addTarget(self, action: #selector(secondaryButtonPressed), for: .touchUpInside)
-        
+
         self.skipStepButton.target = self
 
         setThemeNavigationBar()
@@ -80,10 +80,6 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                 onboardingConsentManager.askEnableBluetooth {
                     self.goToNextStepOrCloseConsent()
                 }
-            case .share:
-                onboardingConsentManager.askToShare {
-                    self.goToNextStepOrCloseConsent()
-                }
             }
         }
     }
@@ -91,7 +87,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     @objc private func secondaryButtonPressed() {
         if let consentStep = consentStep {
             switch consentStep.step {
-            case .en, .bluetooth, .share:
+            case .en, .bluetooth:
                 self.goToNextStepOrCloseConsent()
             }
         }
@@ -106,7 +102,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             }
         }
     }
-    
+
     @objc func skipStepButtonPressed() {
 
         if let consentStep = consentStep {
@@ -158,7 +154,7 @@ final class OnboardingConsentView: View {
 
     lazy private var viewsInDisplayOrder = [imageView, primaryButton, secondaryButton, label]
 
-    private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?    
+    private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?
 
     var consentStep: OnboardingConsentStep? {
         didSet {

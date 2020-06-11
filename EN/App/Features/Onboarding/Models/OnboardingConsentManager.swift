@@ -16,8 +16,7 @@ protocol OnboardingConsentManaging {
     func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex) -> OnboardingConsentStepIndex?
 
     func askEnableExposureNotifications(_ completion: @escaping (() -> ()))
-    func askEnableBluetooth(_ completion: @escaping (() -> ()))
-    func askToShare(_ completion: @escaping (() -> ()))
+    func askEnableBluetooth(_ completion: @escaping (() -> ()))    
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -64,19 +63,6 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 hasNavigationBarSkipButton: false
             )
         )
-
-        onboardingConsentSteps.append(
-            OnboardingConsentStep(
-                step: .share,
-                title: Localized("consentStep3Title"),
-                content: Localized("consentStep3Content"),
-                image: UIImage(named: "ShareApp"),
-                summarySteps: nil,
-                primaryButtonTitle: Localized("consentStep3PrimaryButton"),
-                secondaryButtonTitle: Localized("consentStep3SecondaryButton"),
-                hasNavigationBarSkipButton: false
-            )
-        )
     }
 
     //MARK: - Functions
@@ -93,8 +79,6 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         case .en:
             return .bluetooth
         case .bluetooth:
-            return .share
-        case .share:
             return nil
         }
     }
@@ -106,11 +90,6 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
     // TODO: Add Bluetooth enabling logic
     func askEnableBluetooth(_ completion: @escaping (() -> ())) {
-        completion()
-    }
-
-    // TODO: Add share logic
-    func askToShare(_ completion: @escaping (() -> ())) {
         completion()
     }
 }
