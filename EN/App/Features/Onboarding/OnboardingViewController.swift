@@ -12,9 +12,10 @@ protocol OnboardingRouting: Routing {
     func routeToSteps()
     func routeToConsent(animated: Bool)
     func routeToConsent(withIndex index: Int, animated: Bool)
+    func routeToHelp()
 }
 
-final class OnboardingViewController: NavigationController, OnboardingViewControllable {    
+final class OnboardingViewController: NavigationController, OnboardingViewControllable {
 
     weak var router: OnboardingRouting?
 
@@ -36,6 +37,10 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         pushViewController(viewController.uiviewController, animated: animated)
     }
 
+    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
+        present(viewController.uiviewController, animated: animated, completion: completion)
+    }
+
     // MARK: - OnboardingStepListener
 
     func onboardingStepsDidComplete() {
@@ -51,6 +56,24 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     func consentRequest(step: OnboardingConsentStepIndex) {
         router?.routeToConsent(withIndex: step.rawValue, animated: true)
+    }
+
+    // MARK: - OnboardingHelpListener
+
+    func displayHelp() {
+        router?.routeToHelp()
+    }
+
+    func helpRequestsFAQ() {
+
+    }
+
+    func helpRequestsPermission() {
+
+    }
+
+    func helpRequestsClose() {
+
     }
 
     // MARK: - ViewController Lifecycle
