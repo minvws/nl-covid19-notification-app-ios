@@ -49,7 +49,6 @@ enum ENFrameworkStatus : Int {
     case restricted = 4
 }
 
-    
 
 /// @mockable
 protocol ExposureManaging {
@@ -58,6 +57,7 @@ protocol ExposureManaging {
     typealias GetDiagnosisKeysHandler = (Result<[DiagnosisKey], Error>) -> Void
     typealias DetectExposuresHandler = (Result<ExposureDetectionSummary?, Error>) -> Void
     
+    /// important to call first before any other actions, the framework will be activated
     func activate(_ completionHandler: @escaping CompletionHandler)
     func detectExposures(_ urls:[URL], completionHandler: @escaping DetectExposuresHandler)
     func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler)
@@ -66,9 +66,7 @@ protocol ExposureManaging {
     func getExposureNotificationStatus() -> ENFrameworkStatus
 }
 
-
 struct ExposureManager {
-    
     enum NotSupported: Error {
         case description(String)
     }
@@ -77,20 +75,20 @@ struct ExposureManager {
         if #available(iOS 13.5, *) {
             // check for simulator
             #if arch(i386) || arch(x86_64)
-                return StubExposureManager()
+            return StubExposureManager()
             #else
-                return InternalExposureManager()
+            return InternalExposureManager()
             #endif
             
         } else {
             throw NotSupported.description("Update iOS")
         }
-
+        
     }
 }
 
 @available(iOS 13.5, *)
-private class InternalExposureManager: ExposureManaging {
+final class InternalExposureManager: ExposureManaging {
     
     private let manager = ENManager()
     
@@ -132,7 +130,7 @@ private class InternalExposureManager: ExposureManaging {
     
     func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler) {
         self.manager.getDiagnosisKeys { keys, error in
-
+            
             if let error = error {
                 completionHandler(.failure(error))
             } else {
@@ -146,13 +144,13 @@ private class InternalExposureManager: ExposureManaging {
                 // Convert keys to something generic
                 let diagnosisKeys = keys.compactMap { diagnosisKey -> DiagnosisKey? in
                     return DiagnosisKey(keyData: diagnosisKey.keyData,
-                                          rollingPeriod: diagnosisKey.rollingPeriod,
-                                          rollingStartNumber: diagnosisKey.rollingStartNumber,
-                                          transmissionRiskLevel: diagnosisKey.transmissionRiskLevel)
+                                        rollingPeriod: diagnosisKey.rollingPeriod,
+                                        rollingStartNumber: diagnosisKey.rollingStartNumber,
+                                        transmissionRiskLevel: diagnosisKey.transmissionRiskLevel)
                 }
                 completionHandler(.success(diagnosisKeys))
             }
-
+            
         }
     }
     
