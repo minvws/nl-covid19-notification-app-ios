@@ -18,24 +18,8 @@ enum ENAuthorisationStatus : Int {
     case notAuthorized = 5
 }
 
-/// Method for getting an instance of ExposureNotification depending on the OS version and device you are running it on
-struct ExposureManager {
-    enum NotSupported: Error {
-        case description(String)
-    }
-    
-    static func instance() throws -> ExposureManaging {
-        if #available(iOS 13.5, *) {
-            // check for simulator
-            #if arch(i386) || arch(x86_64)
-            return StubExposureManager()
-            #else
-            return InternalExposureManager()
-            #endif
-        } else {
-            throw NotSupported.description("Update iOS")
-        }
-    }
+enum ENNotSupported: Error {
+    case description(String)
 }
 
 

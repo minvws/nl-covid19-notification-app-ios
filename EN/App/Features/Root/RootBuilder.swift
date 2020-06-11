@@ -30,6 +30,11 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     var mainBuilder: MainBuildable {
         return MainBuilder(dependency: self)
     }
+    
+    /// Builds exposure manager
+    var exposureManagerBuilder: ExposureManagerBuildable {
+        return ExposureManagerBuilder()
+    }
 }
 
 /// Interface describing the builder that builds
