@@ -8,64 +8,17 @@
 import Foundation
 import ExposureNotification
 
-enum ExposureManagerError: Int {
-    case unknown = 1
-    case badParameter = 2
-    case notEntitled = 3
-    case notAuthorized = 4
-    case unsupported = 5
-    case invalidated = 6
-    case bluetoothOff = 7
-    case insufficientStorage = 8
-    case notEnabled = 9
-    case apiMisuse = 10
-    case `internal` = 11
-    case insufficientMemory = 12
-    case rateLimited = 13
-    case restricted = 14
-    case badFormat = 15
-}
 
-struct DiagnosisKey: Codable {
-    let keyData: Data
-    let rollingPeriod: UInt32
-    let rollingStartNumber: UInt32
-    let transmissionRiskLevel: UInt8
-}
-
-struct ExposureDetectionSummary {
-    let attenuationDurations: [NSNumber]
-    let daysSinceLastExposure: Int
-    let matchedKeyCount: UInt64
-    let maximumRiskScore: UInt8
-    let metadata: [AnyHashable : Any]?
-}
-
-enum ENFrameworkStatus : Int {
+enum ENAuthorisationStatus : Int {
     case unknown = 0
     case active = 1
     case disabled = 2
     case bluetoothOff = 3
     case restricted = 4
+    case notAuthorized = 5
 }
 
-
-/// @mockable
-protocol ExposureManaging {
-    typealias ErrorHandler = (Error?) -> Void
-    typealias CompletionHandler = (ExposureManagerError?) -> Void
-    typealias GetDiagnosisKeysHandler = (Result<[DiagnosisKey], Error>) -> Void
-    typealias DetectExposuresHandler = (Result<ExposureDetectionSummary?, Error>) -> Void
-    
-    /// important to call first before any other actions, the framework will be activated
-    func activate(_ completionHandler: @escaping CompletionHandler)
-    func detectExposures(_ urls:[URL], completionHandler: @escaping DetectExposuresHandler)
-    func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler)
-    func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler)
-    func isExposureNotificationEnabled() -> Bool
-    func getExposureNotificationStatus() -> ENFrameworkStatus
-}
-
+/// Method for getting an instance of ExposureNotification depending on the OS version and device you are running it on
 struct ExposureManager {
     enum NotSupported: Error {
         case description(String)
@@ -79,13 +32,29 @@ struct ExposureManager {
             #else
             return InternalExposureManager()
             #endif
-            
         } else {
             throw NotSupported.description("Update iOS")
         }
-        
     }
 }
+
+
+/// @mockable
+protocol ExposureManaging {
+    typealias ErrorHandler = (Error?) -> Void
+    typealias CompletionHandler = (ENAuthorisationStatus?) -> Void
+    typealias GetDiagnosisKeysHandler = (Result<[DiagnosisKey], Error>) -> Void
+    typealias DetectExposuresHandler = (Result<ExposureDetectionSummary?, Error>) -> Void
+    
+    /// important to call first before any other actions, the framework will be activated
+    func activate(_ completionHandler: @escaping CompletionHandler)
+    func detectExposures(_ urls:[URL], completionHandler: @escaping DetectExposuresHandler)
+    func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler)
+    func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler)
+    func isExposureNotificationEnabled() -> Bool
+    func getExposureNotificationStatus() -> ENAuthorisationStatus
+}
+
 
 @available(iOS 13.5, *)
 final class InternalExposureManager: ExposureManaging {
@@ -162,15 +131,27 @@ final class InternalExposureManager: ExposureManaging {
         self.manager.exposureNotificationEnabled
     }
     
-    func getExposureNotificationStatus() -> ENFrameworkStatus {
+    func getExposureNotificationStatus() -> ENAuthorisationStatus {
         let status = self.manager.exposureNotificationStatus.rawValue
-        return ENFrameworkStatus.init(rawValue: status) ?? ENFrameworkStatus.unknown
+        return ENAuthorisationStatus.init(rawValue: status) ?? ENAuthorisationStatus.unknown
     }
     
     private func handleError(error: Error, completionHandler: @escaping CompletionHandler) {
         if let error = error as? ENError {
-            let err = ExposureManagerError.init(rawValue: error.errorCode) ?? ExposureManagerError.unknown
-            completionHandler(err)
+            var status:ENAuthorisationStatus
+            switch error.code {
+            case .bluetoothOff:
+                status = .bluetoothOff
+            case .restricted:
+                status = .restricted
+            case .notAuthorized:
+                status = .notAuthorized
+            case .notEnabled:
+                status = .disabled
+            default:
+                status = .unknown
+            }
+            completionHandler(status)
         }
     }
     

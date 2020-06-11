@@ -7,19 +7,18 @@
 
 import Foundation
 
-class StubExposureManager: ExposureManaging {
+final class StubExposureManager: ExposureManaging {
     
     func activate(_ completionHandler: @escaping CompletionHandler) {
         completionHandler(nil)
     }
     
     
-    func getExposureNotificationStatus() -> ENFrameworkStatus {
+    func getExposureNotificationStatus() -> ENAuthorisationStatus {
         if(!isExposureNotificationEnabled()) {
-            return ENFrameworkStatus.disabled
+            return ENAuthorisationStatus.disabled
         }
-        
-        return ENFrameworkStatus.active
+        return ENAuthorisationStatus.active
     }
     
     private var exposureNotificationEnabled: Bool = false
