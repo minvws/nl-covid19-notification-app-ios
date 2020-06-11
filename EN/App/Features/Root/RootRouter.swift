@@ -7,10 +7,11 @@
 
 import UIKit
 
-#if DEBUG
 /// Use this to skip the onboarding flow
-/// Don't forget to revert before committing or unit tests will fail
-let skipOnboarding = false
+#if DEBUG
+    let skipOnboarding = true
+#else
+    let skipOnboarding = false
 #endif
 
 /// Describes internal `RootViewController` functionality. Contains functions
@@ -50,16 +51,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func start() {
-
-        #if DEBUG
-            if skipOnboarding {
-                routeToMain()
-            } else {
-                routeToOnboarding()
-            }
-        #else
+        if skipOnboarding {
+            routeToMain()
+        } else {
             routeToOnboarding()
-        #endif
+        }
     }
 
     // MARK: - RootRouting
