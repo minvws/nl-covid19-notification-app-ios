@@ -24,89 +24,94 @@ protocol RootViewControllable: ViewControllable, OnboardingListener {
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
     func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
-    
+
     func embed(viewController: ViewControllable)
 }
 
 final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint {
-    
+
     // MARK: - Initialisation
-    
+
     init(viewController: RootViewControllable,
-         onboardingBuilder: OnboardingBuildable,
-         mainBuilder: MainBuildable) {
+        onboardingBuilder: OnboardingBuildable,
+        mainBuilder: MainBuildable) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
-        
+
         super.init(viewController: viewController)
-        
+
         viewController.router = self
     }
-    
+
     // MARK: - AppEntryPoint
-    
+
     var uiviewController: UIViewController {
         return viewController.uiviewController
     }
-    
+
     func start() {
-        if skipOnboarding {
-            routeToMain()
-        } else {
+
+        #if DEBUG
+            if skipOnboarding {
+                routeToMain()
+            } else {
+                routeToOnboarding()
+            }
+        #else
             routeToOnboarding()
-        }
+        #endif
     }
-    
+
     // MARK: - RootRouting
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
         routeToMain()
         detachOnboarding(animated: animated)
     }
-    
+
     // MARK: - Private
-    
+
     private func routeToMain() {
         guard mainViewController == nil else {
             // already presented
             return
         }
-        
+
         let mainViewController = self.mainBuilder.build()
         self.mainViewController = mainViewController
-        
+
         self.viewController.embed(viewController: mainViewController)
     }
-    
+
     private func detachOnboarding(animated: Bool) {
         guard let onboardingRouter = onboardingRouter else {
             return
         }
-        
+
         self.onboardingRouter = nil
-        
+
         viewController.dismiss(viewController: onboardingRouter.viewControllable,
-                               animated: animated,
-                               completion: nil)
+            animated: animated,
+            completion: nil)
     }
-    
+
     private func routeToOnboarding() {
         guard onboardingRouter == nil else {
             // already presented
             return
         }
-        
+
         let onboardingRouter = onboardingBuilder.build(withListener: viewController)
         self.onboardingRouter = onboardingRouter
-        
+
         viewController.present(viewController: onboardingRouter.viewControllable,
-                               animated: false,
-                               completion: nil)
+            animated: false,
+            completion: nil)
     }
-    
+
     private let onboardingBuilder: OnboardingBuildable
     private var onboardingRouter: Routing?
-    
+
     private let mainBuilder: MainBuildable
     private var mainViewController: ViewControllable?
 }
