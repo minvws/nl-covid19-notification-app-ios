@@ -6,7 +6,6 @@
 */
 
 import UIKit
-import ExposureNotification
 
 /// @mockable
 protocol OnboardingConsentManaging {

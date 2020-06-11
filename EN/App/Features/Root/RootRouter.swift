@@ -7,9 +7,9 @@
 
 import UIKit
 
-/// Use this to skip the onboarding flow
 #if DEBUG
-    let skipOnboarding = true
+    /// Use this to skip the onboarding flow
+    let skipOnboarding = false
 #else
     let skipOnboarding = false
 #endif

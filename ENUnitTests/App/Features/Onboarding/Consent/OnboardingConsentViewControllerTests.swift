@@ -21,12 +21,4 @@ final class OnboardingConsentViewControllerTests: XCTestCase {
                                                              listener: listener,
                                                              index: 0)
     }
-
-    func test_skipButtonTapped_callsListener() {
-        XCTAssertEqual(listener.consentRequestsSkipCallCount, 0)
-        
-        viewController.skipStepButtonPressed()
-        
-        XCTAssertEqual(listener.consentRequestsSkipCallCount, 1)
-    }
 }
