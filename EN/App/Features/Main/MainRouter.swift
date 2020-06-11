@@ -13,6 +13,7 @@ protocol MainViewControllable: ViewControllable, StatusListener, MoreInformation
     
     func embed(stackedViewController: ViewControllable)
     func present(viewController: ViewControllable, animated: Bool)
+    func dismiss(viewController: ViewControllable, animated: Bool)
 }
 
 final class MainRouter: Router<MainViewControllable>, MainRouting {
@@ -57,6 +58,15 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.aboutViewController = aboutViewController
         
         viewController.present(viewController: aboutViewController, animated: true)
+    }
+    
+    func detachAboutApp(shouldHideViewController: Bool) {
+        guard let aboutViewController = aboutViewController else { return }
+        self.aboutViewController = nil
+        
+        if shouldHideViewController {
+            viewController.dismiss(viewController: aboutViewController, animated: true)
+        }
     }
     
     func routeToReceivedNotification() {

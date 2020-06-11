@@ -13,6 +13,8 @@ protocol MainRouting: Routing {
     func attachMoreInformation()
     
     func routeToAboutApp()
+    func detachAboutApp(shouldHideViewController: Bool)
+    
     func routeToReceivedNotification()
     func routeToInfected()
     func routeToRequestTest()
@@ -40,7 +42,30 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     func present(viewController: ViewControllable, animated: Bool) {
         let navigationController = NavigationController(rootViewController: viewController.uiviewController)
         
+        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
+            navigationController.presentationController?.delegate = presentationDelegate
+        }
+        
         present(navigationController, animated: animated, completion: nil)
+    }
+    
+    func dismiss(viewController: ViewControllable, animated: Bool) {
+        guard let presentedViewController = presentedViewController else {
+            return
+        }
+        
+        var viewControllerToDismiss: UIViewController?
+        
+        if let navigationController = presentedViewController as? NavigationController,
+            navigationController.visibleViewController === viewController.uiviewController {
+            viewControllerToDismiss = navigationController
+        } else if presentedViewController === viewController.uiviewController {
+            viewControllerToDismiss = presentedViewController
+        }
+        
+        if let viewController = viewControllerToDismiss {
+            viewController.dismiss(animated: animated, completion: nil)
+        }
     }
     
     // MARK: - MoreInformationListener
@@ -71,8 +96,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     
     // MARK: - AboutListener
     
-    func aboutRequestsDismissal() {
-        // TODO
+    func aboutRequestsDismissal(shouldHideViewController: Bool) {
+        router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
     }
     
     // MARK: - View Lifecycle

@@ -6,10 +6,10 @@
 */
 
 import Foundation
+import WebKit
 
 /// @mockable
 protocol WebListener: AnyObject {
-    func webRequestsDismissal(shouldHideViewController: Bool)
 }
 
 /// @mockable
@@ -20,8 +20,26 @@ protocol WebBuildable {
     func build(withListener listener: WebListener, urlRequest: URLRequest) -> ViewControllable
 }
 
+extension WKWebView: WebViewing {
+    var uiview: UIView { return self }
+    
+    func load(request: URLRequest) {
+        load(request)
+    }
+}
+
+private final class WebDependencyProvider: DependencyProvider<EmptyDependency> {
+    var webView: WebViewing {
+        return WKWebView()
+    }
+}
+
 final class WebBuilder: Builder<EmptyDependency>, WebBuildable {
     func build(withListener listener: WebListener, urlRequest: URLRequest) -> ViewControllable {
-        return WebViewController(listener: listener, urlRequest: urlRequest)
+        let dependencyProvider = WebDependencyProvider()
+        
+        return WebViewController(listener: listener,
+                                 webView: dependencyProvider.webView,
+                                 urlRequest: urlRequest)
     }
 }

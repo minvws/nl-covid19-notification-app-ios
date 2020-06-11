@@ -14,10 +14,10 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         case infected
     }
     
-    
     init(listener: MoreInformationListener,
          tableController: MoreInformationTableControlling) {
         self.tableController = tableController
+        self.listener = listener
         
         super.init(nibName: nil, bundle: nil)
     }

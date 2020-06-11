@@ -13,6 +13,7 @@ final class MainRouterTests: XCTestCase {
     private let viewController = MainViewControllableMock()
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()
+    private let aboutBuilder = AboutBuildableMock()
 
     private var router: MainRouter!
     
@@ -21,7 +22,8 @@ final class MainRouterTests: XCTestCase {
         
         router = MainRouter(viewController: viewController,
                             statusBuilder: statusBuilder,
-                            moreInformationBuilder: moreInformationBuilder)
+                            moreInformationBuilder: moreInformationBuilder,
+                            aboutBuilder: aboutBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
@@ -104,5 +106,38 @@ final class MainRouterTests: XCTestCase {
         XCTAssertEqual(moreInformationBuilder.buildCallCount, 1)
         XCTAssertNotNil(receivedListener)
         XCTAssert(receivedListener === viewController)
+    }
+    
+    func test_routeToAboutApp_callsBuildAndPresent() {
+        aboutBuilder.buildHandler = { _ in AboutViewControllableMock() }
+        
+        XCTAssertEqual(aboutBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.presentCallCount, 0)
+        
+        router.routeToAboutApp()
+        
+        XCTAssertEqual(viewController.presentCallCount, 1)
+        XCTAssertEqual(aboutBuilder.buildCallCount, 1)
+    }
+    
+
+    func test_detachAboutApp_shouldHideViewController_callsViewController() {
+        router.routeToAboutApp()
+        
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+        
+        router.detachAboutApp(shouldHideViewController: true)
+        
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+    
+    func test_detachAboutApp_shouldNotHideViewController_doesNotCallViewController() {
+        router.routeToAboutApp()
+        
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+        
+        router.detachAboutApp(shouldHideViewController: false)
+        
+        XCTAssertEqual(viewController.dismissCallCount, 0)
     }
 }

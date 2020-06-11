@@ -6,13 +6,14 @@
 */
 
 import Foundation
+import UIKit
 
 /// @mockable
 protocol AboutViewControllable: ViewControllable {
     
 }
 
-final class AboutViewController: ViewController, AboutViewControllable, WebListener {
+final class AboutViewController: ViewController, AboutViewControllable, WebListener, UIAdaptivePresentationControllerDelegate {
     
     init(listener: AboutListener,
          webBuilder: WebBuildable) {
@@ -28,16 +29,18 @@ final class AboutViewController: ViewController, AboutViewControllable, WebListe
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - WebListener
+    // MARK: - UIAdaptivePresentationControllerDelegate
     
-    func webRequestsDismissal(shouldHideViewController: Bool) {
-        
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        listener?.aboutRequestsDismissal(shouldHideViewController: false)
     }
     
     // MARK: - ViewController Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.rightBarButtonItem = closeBarButtonItem
         
         loadWebView()
     }
@@ -58,8 +61,17 @@ final class AboutViewController: ViewController, AboutViewControllable, WebListe
         embed(childViewController: webViewController.uiviewController)
     }
     
+    @objc
+    func didTapClose() {
+        listener?.aboutRequestsDismissal(shouldHideViewController: true)
+    }
+    
     private weak var listener: AboutListener?
     
     private let webBuilder: WebBuildable
     private var webViewController: ViewControllable?
+    
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                          target: self,
+                                                          action: #selector(didTapClose))
 }

@@ -9,7 +9,7 @@ import Foundation
 
 /// @mockable
 protocol AboutListener: AnyObject {
-    func aboutRequestsDismissal()
+    func aboutRequestsDismissal(shouldHideViewController: Bool)
 }
 
 /// @mockable

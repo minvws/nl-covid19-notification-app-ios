@@ -6,7 +6,14 @@
 */
 
 import Foundation
-import WebKit
+import UIKit
+
+/// @mockable
+protocol WebViewing {
+    var uiview: UIView { get }
+    
+    func load(request: URLRequest)
+}
 
 /// @mockable
 protocol WebViewControllable: ViewControllable {
@@ -15,8 +22,11 @@ protocol WebViewControllable: ViewControllable {
 
 final class WebViewController: ViewController, WebViewControllable {
     
-    init(listener: WebListener, urlRequest: URLRequest) {
+    init(listener: WebListener,
+         webView: WebViewing,
+         urlRequest: URLRequest) {
         self.listener = listener
+        self.webView = webView
         self.urlRequest = urlRequest
         
         super.init(nibName: nil, bundle: nil)
@@ -28,27 +38,34 @@ final class WebViewController: ViewController, WebViewControllable {
     
     // MARK: - ViewController Lifecycle
     
-    override func loadView() {
-        self.view = webView
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        webView.load(urlRequest)
+        view.addSubview(webView.uiview)
+        
+        webView.uiview.translatesAutoresizingMaskIntoConstraints = false
+        
+        let constraints = [
+            webView.uiview.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.uiview.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.uiview.topAnchor.constraint(equalTo: view.topAnchor),
+            webView.uiview.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
         
-        if isMovingFromParent {
-            listener?.webRequestsDismissal(shouldHideViewController: false)
+        if parent != nil {
+            webView.load(request: urlRequest)
         }
     }
     
     // MARK: - Private
     
     private weak var listener: WebListener?
-    private lazy var webView: WKWebView = WKWebView()
+    private let webView: WebViewing
     private let urlRequest: URLRequest
 }
