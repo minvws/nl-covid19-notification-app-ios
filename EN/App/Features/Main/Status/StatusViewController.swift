@@ -9,6 +9,9 @@ import UIKit
 
 /// @mockable
 protocol StatusRouting: Routing {
+
+    func update(with viewModel: StatusViewModel)
+    
 }
 
 final class StatusViewController: ViewController, StatusViewControllable {
@@ -52,13 +55,28 @@ fileprivate final class StatusView: View {
     fileprivate let textContainer = UIStackView()
     fileprivate let buttonContainer = UIStackView()
 
-    fileprivate let iconView = UIImageView()
+    fileprivate let iconImageView = UIImageView()
 
     fileprivate let titleLabel = Label()
     fileprivate let descriptionLabel = Label()
 
+    fileprivate let gradientLayer = CAGradientLayer()
+    fileprivate let cloudsImageView = UIImageView()
+    fileprivate let sceneImageView = UIImageView()
+
+    fileprivate var containerToSceneVerticalConstraint: NSLayoutConstraint?
+
     override func build() {
         super.build()
+
+        // background
+        layer.addSublayer(gradientLayer)
+
+        cloudsImageView.image = UIImage(named: "StatusClouds")
+        addSubview(cloudsImageView)
+
+        sceneImageView.image = UIImage(named: "StatusScene")
+        addSubview(sceneImageView)
 
         // container
         container.axis = .vertical
@@ -66,9 +84,9 @@ fileprivate final class StatusView: View {
         container.alignment = .center
 
         // iconView
-        iconView.contentMode = .center
-        iconView.layer.cornerRadius = 24
-        container.addArrangedSubview(iconView)
+        iconImageView.contentMode = .center
+        iconImageView.layer.cornerRadius = 24
+        container.addArrangedSubview(iconImageView)
 
         // textContainer
         textContainer.axis = .vertical
@@ -94,23 +112,41 @@ fileprivate final class StatusView: View {
     
     override func setupConstraints() {
         super.setupConstraints()
-        
+
+        cloudsImageView.translatesAutoresizingMaskIntoConstraints = false
+        sceneImageView.translatesAutoresizingMaskIntoConstraints = false
         container.translatesAutoresizingMaskIntoConstraints = false
-        
+
+        containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(greaterThanOrEqualTo: container.bottomAnchor)
+
         NSLayoutConstraint.activate([
+            cloudsImageView.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor),
+            cloudsImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            cloudsImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+
+            sceneImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            sceneImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            sceneImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+
             leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: -20),
             trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: 20),
             topAnchor.constraint(equalTo: container.topAnchor, constant: -70),
-            bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            bottomAnchor.constraint(greaterThanOrEqualTo: container.bottomAnchor),
+            bottomAnchor.constraint(equalTo: container.bottomAnchor).withPriority(.defaultLow),
 
-            iconView.widthAnchor.constraint(equalToConstant: 48),
-            iconView.heightAnchor.constraint(equalToConstant: 48)
+            iconImageView.widthAnchor.constraint(equalToConstant: 48),
+            iconImageView.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = bounds
+    }
+
     func update(with viewModel: StatusViewModel) {
-        iconView.backgroundColor = viewModel.icon.color
-        iconView.image = viewModel.icon.icon
+        iconImageView.backgroundColor = viewModel.icon.color
+        iconImageView.image = viewModel.icon.icon
 
         titleLabel.attributedText = viewModel.title
         descriptionLabel.attributedText = viewModel.description
@@ -125,5 +161,10 @@ fileprivate final class StatusView: View {
             }
             buttonContainer.addArrangedSubview(button)
         }
+
+        gradientLayer.colors = [viewModel.gradientColor.cgColor, UIColor.white.withAlphaComponent(0).cgColor]
+
+        sceneImageView.isHidden = !viewModel.showScene
+        containerToSceneVerticalConstraint?.isActive = viewModel.showScene
     }
 }

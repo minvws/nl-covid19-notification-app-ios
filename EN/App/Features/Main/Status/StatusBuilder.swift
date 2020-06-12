@@ -18,7 +18,7 @@ protocol StatusBuildable {
     ///
     /// - Parameter listener: Listener of created Status component
     /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: StatusListener) -> Routing
+    func build(withListener listener: StatusListener) -> StatusRouting
 }
 
 protocol StatusDependency {
@@ -37,7 +37,7 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
-    func build(withListener listener: StatusListener) -> Routing {
+    func build(withListener listener: StatusListener) -> StatusRouting {
         // TODO: Add any other dynamic dependency as parameter
         
         let dependencyProvider = StatusDependencyProvider(dependency: dependency)

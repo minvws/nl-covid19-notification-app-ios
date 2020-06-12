@@ -32,7 +32,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     }
     
     // MARK: - MainRouting
-    
+
     func attachStatus() {
         guard statusRouter == nil else { return }
         
@@ -49,6 +49,10 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.moreInformationViewController = moreInformationViewController
         
         viewController.embed(stackedViewController: moreInformationViewController)
+    }
+
+    func updateStatus(with viewModel: StatusViewModel) {
+        statusRouter?.update(with: viewModel)
     }
     
     func routeToAboutApp() {
@@ -74,7 +78,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     }
     
     func routeToInfected() {
-        
+
     }
     
     func routeToRequestTest() {
@@ -92,7 +96,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     // MARK: - Private
     
     private let statusBuilder: StatusBuildable
-    private var statusRouter: Routing?
+    private var statusRouter: StatusRouting?
     
     private let moreInformationBuilder: MoreInformationBuildable
     private var moreInformationViewController: ViewControllable?
