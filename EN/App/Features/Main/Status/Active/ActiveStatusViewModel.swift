@@ -15,6 +15,8 @@ extension StatusViewModel {
         description: .init(string: "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen."),
         buttons: [],
         footer: nil,
-        shouldShowHideMessage: false
+        shouldShowHideMessage: false,
+        gradientColor: .statusGradientBlue,
+        showScene: true
     )
 }

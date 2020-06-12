@@ -50,4 +50,6 @@ struct StatusViewModel {
     var buttons: [StatusViewButtonModel]
     var footer: NSAttributedString?
     var shouldShowHideMessage: Bool
+    var gradientColor: UIColor
+    var showScene: Bool
 }

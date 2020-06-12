@@ -20,6 +20,9 @@ extension UIColor {
     class var okGreen: UIColor { return UIColor(named: "OkGreen") ?? .clear }
     class var notifiedRed: UIColor { return UIColor(named: "NotifiedRed") ?? .clear }
 
+    class var statusGradientBlue: UIColor { return UIColor(named: "StatusGradientBlue") ?? .clear }
+    class var statusGradientRed: UIColor { return UIColor(named: "StatusGradientRed") ?? .clear }
+
     // MARK: - Controllers
     
     class var navigationControllerBackgroundColor: UIColor { return UIColor(named: "NavigationControllerBackgroundColor") ?? .clear }

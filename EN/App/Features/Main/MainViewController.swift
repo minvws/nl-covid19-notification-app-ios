@@ -11,7 +11,9 @@ import UIKit
 protocol MainRouting: Routing {
     func attachStatus()
     func attachMoreInformation()
-    
+
+    func updateStatus(with viewModel: StatusViewModel)
+
     func routeToAboutApp()
     func detachAboutApp(shouldHideViewController: Bool)
     
@@ -35,7 +37,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         
         mainView.stackView.addArrangedSubview(view)
         view.widthAnchor.constraint(equalTo: mainView.widthAnchor).isActive = true
-        
+
         stackedViewController.uiviewController.didMove(toParent: self)
     }
     
@@ -111,6 +113,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         
         router?.attachStatus()
         router?.attachMoreInformation()
+
+        router?.updateStatus(with: .active)
     }
 
     // MARK: - StatusListener
@@ -130,10 +134,11 @@ private final class MainView: View {
     
     override func build() {
         super.build()
-        
+
         addSubview(scrollView)
         scrollView.addSubview(stackView)
-        
+
+        scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.alwaysBounceVertical = true
         
         stackView.axis = .vertical

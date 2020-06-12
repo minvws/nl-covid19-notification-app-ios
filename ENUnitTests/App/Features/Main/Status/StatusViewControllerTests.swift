@@ -17,17 +17,21 @@ final class StatusViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        SnapshotTesting.record = true
+
         viewController = StatusViewController(listener: StatusListenerMock())
         viewController.router = router
     }
 
     func testSnapshotActive() {
         viewController.update(with: .active)
-        assertSnapshot(matching: viewController, as: .image(), record: true)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        assertSnapshot(matching: viewController, as: .image())
     }
 
     func testSnapshotNotified() {
         viewController.update(with: .notified)
-        assertSnapshot(matching: viewController, as: .image(), record: true)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        assertSnapshot(matching: viewController, as: .image())
     }
 }

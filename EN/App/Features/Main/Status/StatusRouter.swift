@@ -27,35 +27,10 @@ final class StatusRouter: Router<StatusViewControllable>, StatusRouting {
         
         viewController.router = self
     }
-    
-    // TODO: Add any child routing functions here.
-    //       See RootRouter as an example
-    //
-    //    func routeToChild() {
-    //        guard childViewController == nil else {
-    //            // already presented
-    //            return
-    //        }
-    //
-    //        let childViewController = self.childBuilder.build()
-    //        self.childViewController = childViewController
-    //
-    //        self.viewController.present(viewController: childViewController,
-    //                                    animated: true,
-    //                                    completion: nil)
-    //    }
-    //
-    //    func detachChild() {
-    //        guard let childViewController = childViewController else {
-    //            return
-    //        }
-    //
-    //        self.childViewController = nil
-    //
-    //        viewController.dismiss(viewController: childViewController,
-    //                               animated: animated,
-    //                               completion: completion)
-    //    }
+
+    func update(with viewModel: StatusViewModel) {
+        self.viewController.update(with: viewModel)
+    }
     
     // MARK: - Private
     
