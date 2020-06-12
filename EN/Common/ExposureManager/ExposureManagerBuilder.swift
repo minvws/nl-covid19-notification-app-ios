@@ -66,7 +66,7 @@ final class ExposureManagerBuilder: Builder<EmptyDependency>, ExposureManagerBui
             #if targetEnvironment(simulator)
             return StubExposureManager()
             #else
-            return ExposureManager(manager: EMManager())
+            return ExposureManager(manager: ENManager())
             #endif
         }
         
