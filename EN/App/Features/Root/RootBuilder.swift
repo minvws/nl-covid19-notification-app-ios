@@ -20,7 +20,7 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency {
     /// Builds onboarding flow
     var onboardingBuilder: OnboardingBuildable {
         return OnboardingBuilder()
@@ -31,10 +31,20 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return MainBuilder(dependency: self)
     }
     
-    /// Builds exposure manager
-    var exposureManagerBuilder: ExposureManagerBuildable {
-        return ExposureManagerBuilder()
+    /// Exposure controller, to control the exposure data flows
+    lazy var exposureController: ExposureControlling = {
+        let builder = ExposureControllerBuilder(dependency: self)
+        
+        return builder.build()
+    }()
+    
+    /// Exposure state stream, informs about the current exposure states
+    var exposureStateStream: ExposureStateStreaming {
+        return mutableExposureStatusStream
     }
+    
+    /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
+    fileprivate lazy var mutableExposureStatusStream: MutableExposureStateStreaming = ExposureStateStream()
 }
 
 /// Interface describing the builder that builds

@@ -7,49 +7,51 @@
 
 import Foundation
 
+/// Stub implementation of ExposureManaging to
+/// use when in simulator
 final class StubExposureManager: ExposureManaging {
     
-    func activate(_ completionHandler: @escaping CompletionHandler) {
-        completionHandler(nil)
+    func activate(completion: @escaping (ExposureManagerAuthorisationStatus) -> Void) {
+        // activation always succeed in stub-land
+        completion(.active)
     }
     
-    
-    func getExposureNotificationStatus() -> ENAuthorisationStatus {
-        if(!isExposureNotificationEnabled()) {
-            return ENAuthorisationStatus.disabled
-        }
-        return ENAuthorisationStatus.active
+    func getExposureNotificationAuthorisationStatus() -> ExposureManagerAuthorisationStatus {
+        return isExposureNotificationEnabled() ? .active : .inactive(.unknown)
     }
-    
-    private var exposureNotificationEnabled: Bool = false
     
     func isExposureNotificationEnabled() -> Bool {
         return exposureNotificationEnabled
     }
     
-    func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler) {
-        self.exposureNotificationEnabled = enabled
-        completionHandler(nil)
+    func setExposureNotificationEnabled(_ enabled: Bool, completion: @escaping (Result<(), ExposureManagerError>) -> Void) {
+        exposureNotificationEnabled = enabled
+        
+        completion(.success(()))
     }
     
-    func detectExposures(_ urls: [URL], completionHandler: @escaping DetectExposuresHandler) {
-        completionHandler(.success(ExposureDetectionSummary(
+    func detectExposures(diagnosisKeyURLs: [URL], completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> Void) {
+        // fake exposure
+        
+        let summary = ExposureDetectionSummary(
             attenuationDurations: [15],
             daysSinceLastExposure: 1,
             matchedKeyCount: 2,
             maximumRiskScore: 3,
             metadata: [AnyHashable:Any]()
-        )))
+        )
+        
+        completion(.success(summary))
     }
     
-    func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler) {
-        let keys = [DiagnosisKey]()
-        completionHandler(.success(keys))
+    func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> Void) {
+        completion(.success([]))
     }
     
     func setExposureNotificationEnabled(enabled: Bool) {
         self.exposureNotificationEnabled = enabled
     }
     
-    
+    // return whether exposureNotifications should be enabled or not
+    private var exposureNotificationEnabled = false
 }

@@ -6,123 +6,147 @@
  */
 
 import Foundation
+
+#if canImport(ExposureNotification)
 import ExposureNotification
 
-
-enum ENAuthorisationStatus : Int {
-    case unknown = 0
-    case active = 1
-    case disabled = 2
-    case bluetoothOff = 3
-    case restricted = 4
-    case notAuthorized = 5
-}
-
-enum ENNotSupported: Error {
-    case description(String)
-}
-
-
-/// @mockable
-protocol ExposureManaging {
-    typealias ErrorHandler = (Error?) -> Void
-    typealias CompletionHandler = (ENAuthorisationStatus?) -> Void
-    typealias GetDiagnosisKeysHandler = (Result<[DiagnosisKey], Error>) -> Void
-    typealias DetectExposuresHandler = (Result<ExposureDetectionSummary?, Error>) -> Void
-    
-    /// important to call first before any other actions, the framework will be activated
-    func activate(_ completionHandler: @escaping CompletionHandler)
-    func detectExposures(_ urls:[URL], completionHandler: @escaping DetectExposuresHandler)
-    func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler)
-    func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler)
-    func isExposureNotificationEnabled() -> Bool
-    func getExposureNotificationStatus() -> ENAuthorisationStatus
-}
-
-
 @available(iOS 13.5, *)
-final class InternalExposureManager: ExposureManaging {
+final class ExposureManager: ExposureManaging {
     
-    private let manager = ENManager()
+    init(manager: ENManaging) {
+        self.manager = manager
+    }
     
-    func activate(_ completionHandler: @escaping CompletionHandler) {
-        manager.activate { error in
-            if let error = error {
-                self.handleError(error: error, completionHandler: completionHandler)
+    deinit {
+        manager.invalidate()
+    }
+    
+    // MARK: - ExposureManaging
+    
+    func activate(completion: @escaping (ExposureManagerAuthorisationStatus) -> Void) {
+        manager.activate { [weak self] error in
+            guard let strongSelf = self else {
+                // Exposure Manager released before activation
+                completion(.inactive(.unknown))
+                
+                return
             }
-            completionHandler(nil)
+            
+            if let error = error.map(ExposureManager.mapError) {
+                let authorisationStatus: ExposureManagerAuthorisationStatus = .inactive(error)
+                
+                completion(authorisationStatus)
+                return
+            }
+            
+            // successful initialisation
+            let authorisationStatus = strongSelf.getExposureNotificationAuthorisationStatus()
+            completion(authorisationStatus)
         }
     }
     
-    func detectExposures(_ urls: [URL], completionHandler: @escaping DetectExposuresHandler) {
+    func detectExposures(diagnosisKeyURLs: [URL], completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> Void) {
+        let configuration = getExposureConfiguration()
         
-        self.manager.detectExposures(configuration: self.getExposureConfiguration(), diagnosisKeyURLs: urls) { summary, error in
+        _ = manager.detectExposures(configuration: configuration,
+                                    diagnosisKeyURLs: diagnosisKeyURLs)
+        { summary, error in
             
-            if let error = error {
-                completionHandler(.failure(error))
-            } else {
-                
-                guard let summary = summary else {
-                    // call to api success but no exposure
-                    completionHandler(.success(nil))
-                    return
-                }
-                
-                // convert to generic
-                let exposureDetectionSummary = ExposureDetectionSummary(
-                    attenuationDurations: summary.attenuationDurations,
-                    daysSinceLastExposure: summary.daysSinceLastExposure,
-                    matchedKeyCount: summary.matchedKeyCount,
-                    maximumRiskScore: summary.maximumRiskScore,
-                    metadata: summary.metadata)
-                
-                completionHandler(.success(exposureDetectionSummary))
+            if let error = error.map(ExposureManager.mapError) {
+                completion(.failure(error))
+                return
             }
+                
+            guard let summary = summary else {
+                // call to api success - no exposure
+                completion(.success(nil))
+                return
+            }
+            
+            // convert to generic
+            let exposureDetectionSummary = ExposureDetectionSummary(
+                attenuationDurations: summary.attenuationDurations,
+                daysSinceLastExposure: summary.daysSinceLastExposure,
+                matchedKeyCount: summary.matchedKeyCount,
+                maximumRiskScore: summary.maximumRiskScore,
+                metadata: summary.metadata)
+            
+            completion(.success(exposureDetectionSummary))
         }
     }
     
-    func getDiagnonisKeys(completionHandler: @escaping GetDiagnosisKeysHandler) {
-        self.manager.getDiagnosisKeys { keys, error in
+    func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> Void) {
+        manager.getDiagnosisKeys { keys, error in
             
-            if let error = error {
-                completionHandler(.failure(error))
-            } else {
-                
-                guard let keys = keys else {
-                    // call is success, no keys
-                    completionHandler(.success([DiagnosisKey]()))
-                    return
-                }
-                
-                // Convert keys to something generic
-                let diagnosisKeys = keys.compactMap { diagnosisKey -> DiagnosisKey? in
-                    return DiagnosisKey(keyData: diagnosisKey.keyData,
-                                        rollingPeriod: diagnosisKey.rollingPeriod,
-                                        rollingStartNumber: diagnosisKey.rollingStartNumber,
-                                        transmissionRiskLevel: diagnosisKey.transmissionRiskLevel)
-                }
-                completionHandler(.success(diagnosisKeys))
+            if let error = error.map(ExposureManager.mapError) {
+                completion(.failure(error))
+                return
             }
+            
+            guard let keys = keys else {
+                // call is success, no keys
+                completion(.success([]))
+                return
+            }
+            
+            // Convert keys to generic struct
+            let diagnosisKeys = keys.map { diagnosisKey -> DiagnosisKey in
+                return DiagnosisKey(keyData: diagnosisKey.keyData,
+                                    rollingPeriod: diagnosisKey.rollingPeriod,
+                                    rollingStartNumber: diagnosisKey.rollingStartNumber,
+                                    transmissionRiskLevel: diagnosisKey.transmissionRiskLevel)
+            }
+            
+            completion(.success(diagnosisKeys))
             
         }
     }
     
-    func setExposureNotificationEnabled(_ enabled: Bool, completionHandler: @escaping ErrorHandler) {
-        self.manager.setExposureNotificationEnabled(enabled, completionHandler: completionHandler)
+    func setExposureNotificationEnabled(_ enabled: Bool, completion: @escaping (Result<(), ExposureManagerError>) -> Void) {
+        manager.setExposureNotificationEnabled(enabled) { error in
+            guard let error = error.map(ExposureManager.mapError) else {
+                completion(.success(()))
+                return
+            }
+            
+            completion(.failure(error))
+        }
     }
     
     func isExposureNotificationEnabled() -> Bool {
-        self.manager.exposureNotificationEnabled
+        manager.exposureNotificationEnabled
     }
     
-    func getExposureNotificationStatus() -> ENAuthorisationStatus {
-        let status = self.manager.exposureNotificationStatus.rawValue
-        return ENAuthorisationStatus.init(rawValue: status) ?? ENAuthorisationStatus.unknown
+    func getExposureNotificationAuthorisationStatus() -> ExposureManagerAuthorisationStatus {
+        let authorisationStatus = type(of: manager).authorizationStatus
+        
+        switch authorisationStatus {
+        case .authorized:
+            switch manager.exposureNotificationStatus {
+            case .active:
+                return .active
+            case .bluetoothOff:
+                return .inactive(.bluetoothOff)
+            case .disabled:
+                return .inactive(.disabled)
+            case .restricted:
+                return .inactive(.restricted)
+            default:
+                return .inactive(.unknown)
+            }
+        case .notAuthorized:
+            return .inactive(.notAuthorized)
+        case .restricted:
+            return .inactive(.restricted)
+        default:
+            return .inactive(.unknown)
+        }
     }
     
-    private func handleError(error: Error, completionHandler: @escaping CompletionHandler) {
+    private static func mapError(_ error: Error) -> ExposureManagerError {
         if let error = error as? ENError {
-            var status:ENAuthorisationStatus
+            let status: ExposureManagerError
+            
             switch error.code {
             case .bluetoothOff:
                 status = .bluetoothOff
@@ -135,8 +159,11 @@ final class InternalExposureManager: ExposureManaging {
             default:
                 status = .unknown
             }
-            completionHandler(status)
+            
+            return status
         }
+        
+        return .unknown
     }
     
     /// temporary - hardcoded - function
@@ -155,4 +182,7 @@ final class InternalExposureManager: ExposureManaging {
         return exposureConfiguration
     }
     
+    private let manager: ENManaging
 }
+
+#endif

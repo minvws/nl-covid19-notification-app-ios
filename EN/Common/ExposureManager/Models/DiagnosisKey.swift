@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DiagnosisKey: Codable {
+struct DiagnosisKey {
     let keyData: Data
     let rollingPeriod: UInt32
     let rollingStartNumber: UInt32
