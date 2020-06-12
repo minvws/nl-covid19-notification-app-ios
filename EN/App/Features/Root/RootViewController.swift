@@ -38,6 +38,7 @@ final class RootViewController: ViewController, RootViewControllable {
     func embed(viewController: ViewControllable) {
         addChild(viewController.uiviewController)
         view.addSubview(viewController.uiviewController.view)
+        viewController.uiviewController.view.frame = view.bounds
         viewController.uiviewController.didMove(toParent: self)
     }
     
