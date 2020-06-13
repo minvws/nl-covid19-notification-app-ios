@@ -10,12 +10,15 @@ project:
 	open EN.xcodeproj
 
 # Initializes dev environment
-dev: install_xcode_templates install_dev_deps
+dev: install_xcode_templates install_dev_deps ignore_mocks_changes
 
 install_xcode_templates:
 	@echo "Installing latest xcode template"
 	@mkdir -p ${XCODE_TEMPLATE_PATH_DST}
 	@cp -rf ${XCODE_TEMPLATE_PATH_SRC} ${XCODE_TEMPLATE_PATH_DST}
+
+ignore_mocks_changes:
+	git update-index --skip-worktree ENUnitTests/Mocks.swift 
 
 install_dev_deps: check_homebrew_installed install_xcodegen install_mockolo install_carthage run_carthage
 	@echo "All dependencies are installed"
