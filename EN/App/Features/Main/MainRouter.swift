@@ -50,10 +50,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         
         viewController.embed(stackedViewController: moreInformationViewController)
     }
-
-    func updateStatus(with viewModel: StatusViewModel) {
-        statusRouter?.update(with: viewModel)
-    }
     
     func routeToAboutApp() {
         guard aboutViewController == nil else { return }

@@ -22,7 +22,7 @@ protocol StatusBuildable {
 }
 
 protocol StatusDependency {
-    // TODO: Add any external dependency
+    var exposureStateStream: ExposureStateStreaming { get }
 }
 
 private final class StatusDependencyProvider: DependencyProvider<StatusDependency> /*, ChildDependency */ {
@@ -40,10 +40,11 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
     func build(withListener listener: StatusListener) -> StatusRouting {
         // TODO: Add any other dynamic dependency as parameter
         
-        let dependencyProvider = StatusDependencyProvider(dependency: dependency)
-        
         // let childBuilder = dependencyProvider.childBuilder
-        let viewController = StatusViewController(listener: listener)
+        let viewController = StatusViewController(
+            exposureStateStream: dependency.exposureStateStream,
+            listener: listener
+        )
         
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.

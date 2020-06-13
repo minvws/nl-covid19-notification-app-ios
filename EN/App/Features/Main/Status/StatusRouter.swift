@@ -10,8 +10,6 @@ import UIKit
 /// @mockable
 protocol StatusViewControllable: ViewControllable {
     var router: StatusRouting? { get set }
-
-    func update(with viewModel: StatusViewModel)
 }
 
 final class StatusRouter: Router<StatusViewControllable>, StatusRouting {
@@ -26,10 +24,6 @@ final class StatusRouter: Router<StatusViewControllable>, StatusRouting {
         super.init(viewController: viewController)
         
         viewController.router = self
-    }
-
-    func update(with viewModel: StatusViewModel) {
-        self.viewController.update(with: viewModel)
     }
     
     // MARK: - Private

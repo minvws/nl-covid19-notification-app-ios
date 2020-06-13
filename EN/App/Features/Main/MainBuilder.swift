@@ -11,10 +11,15 @@ protocol MainBuildable {
 }
 
 protocol MainDependency {
-    
+    var exposureStateStream: ExposureStateStreaming { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency {
+
+    var exposureStateStream: ExposureStateStreaming {
+        return dependency.exposureStateStream
+    }
+
     var statusBuilder: StatusBuildable {
         return StatusBuilder(dependency: self)
     }
