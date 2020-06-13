@@ -23,6 +23,7 @@ enum ExposureStateInactiveState: Equatable {
     case noRecentNotificationUpdates
 }
 
+/// @mockable
 protocol ExposureStateStreaming {
     var exposureStatus: AnyPublisher<ExposureState, Never> { get }
 }

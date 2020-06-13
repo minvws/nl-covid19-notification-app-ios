@@ -169,16 +169,6 @@ class MainRoutingMock: MainRouting {
         
     }
 
-    var updateStatusCallCount = 0
-    var updateStatusHandler: ((StatusViewModel) -> ())?
-    func updateStatus(with viewModel: StatusViewModel)  {
-        updateStatusCallCount += 1
-        if let updateStatusHandler = updateStatusHandler {
-            updateStatusHandler(viewModel)
-        }
-        
-    }
-
     var routeToAboutAppCallCount = 0
     var routeToAboutAppHandler: (() -> ())?
     func routeToAboutApp()  {
@@ -415,27 +405,6 @@ class RootRoutingMock: RootRouting {
     }
 }
 
-class StatusRoutingMock: StatusRouting {
-    init() { }
-    init(viewControllable: ViewControllable = ViewControllableMock()) {
-        self.viewControllable = viewControllable
-    }
-
-
-    var updateCallCount = 0
-    var updateHandler: ((StatusViewModel) -> ())?
-    func update(with viewModel: StatusViewModel)  {
-        updateCallCount += 1
-        if let updateHandler = updateHandler {
-            updateHandler(viewModel)
-        }
-        
-    }
-
-    var viewControllableSetCallCount = 0
-    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
-}
-
 class StatusViewControllableMock: StatusViewControllable {
     init() { }
     init(router: StatusRouting? = nil, uiviewController: UIViewController = UIViewController()) {
@@ -446,16 +415,6 @@ class StatusViewControllableMock: StatusViewControllable {
 
     var routerSetCallCount = 0
     var router: StatusRouting? = nil { didSet { routerSetCallCount += 1 } }
-
-    var updateCallCount = 0
-    var updateHandler: ((StatusViewModel) -> ())?
-    func update(with viewModel: StatusViewModel)  {
-        updateCallCount += 1
-        if let updateHandler = updateHandler {
-            updateHandler(viewModel)
-        }
-        
-    }
 
     var uiviewControllerSetCallCount = 0
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
@@ -977,6 +936,17 @@ class OnboardingViewControllableMock: OnboardingViewControllable {
     }
 }
 
+class StatusRoutingMock: StatusRouting {
+    init() { }
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+}
+
 class AboutViewControllableMock: AboutViewControllable {
     init() { }
     init(uiviewController: UIViewController = UIViewController()) {
@@ -1416,6 +1386,21 @@ class ExposureControllerBuildableMock: ExposureControllerBuildable {
             return buildHandler()
         }
         return ExposureControllingMock()
+    }
+}
+
+class ExposureStateStreamingMock: ExposureStateStreaming {
+    init() { }
+    init(exposureStatus: AnyPublisher<ExposureState, Never>) {
+        self._exposureStatus = exposureStatus
+    }
+
+
+    var exposureStatusSetCallCount = 0
+    private var _exposureStatus: AnyPublisher<ExposureState, Never>!  { didSet { exposureStatusSetCallCount += 1 } }
+    var exposureStatus: AnyPublisher<ExposureState, Never> {
+        get { return _exposureStatus }
+        set { _exposureStatus = newValue }
     }
 }
 

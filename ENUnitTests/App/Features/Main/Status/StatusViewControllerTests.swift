@@ -9,8 +9,10 @@
 import Foundation
 import XCTest
 import SnapshotTesting
+import Combine
 
 final class StatusViewControllerTests: XCTestCase {
+    private var exposureStateStream = ExposureStateStreamingMock()
     private var viewController: StatusViewController!
     private let router = StatusRoutingMock()
 
@@ -19,18 +21,18 @@ final class StatusViewControllerTests: XCTestCase {
 
         SnapshotTesting.record = true
 
-        viewController = StatusViewController(listener: StatusListenerMock())
+        viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock())
         viewController.router = router
     }
 
     func testSnapshotActive() {
-        viewController.update(with: .active)
+        exposureStateStream.exposureStatus = Just(.active).eraseToAnyPublisher()
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
         assertSnapshot(matching: viewController, as: .image())
     }
 
     func testSnapshotNotified() {
-        viewController.update(with: .notified)
+        exposureStateStream.exposureStatus = Just(.notified).eraseToAnyPublisher()
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
         assertSnapshot(matching: viewController, as: .image())
     }
