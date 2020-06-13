@@ -12,8 +12,6 @@ protocol MainRouting: Routing {
     func attachStatus()
     func attachMoreInformation()
 
-    func updateStatus(with viewModel: StatusViewModel)
-
     func routeToAboutApp()
     func detachAboutApp(shouldHideViewController: Bool)
     
@@ -113,8 +111,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         
         router?.attachStatus()
         router?.attachMoreInformation()
-
-        router?.updateStatus(with: .active)
     }
 
     // MARK: - StatusListener

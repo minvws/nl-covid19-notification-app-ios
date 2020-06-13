@@ -6,11 +6,10 @@
 */
 
 import UIKit
+import Combine
 
 /// @mockable
 protocol StatusRouting: Routing {
-
-    func update(with viewModel: StatusViewModel)
     
 }
 
@@ -19,9 +18,14 @@ final class StatusViewController: ViewController, StatusViewControllable {
     // MARK: - StatusViewControllable
 
     weak var router: StatusRouting?
+
+    private var exposureStateStream: ExposureStateStreaming
     private weak var listener: StatusListener?
 
-    init(listener: StatusListener) {
+    private var exposureStateStreamCancellable: AnyCancellable?
+
+    init(exposureStateStream: ExposureStateStreaming, listener: StatusListener) {
+        self.exposureStateStream = exposureStateStream
         self.listener = listener
 
         super.init(nibName: nil, bundle: nil)
@@ -32,7 +36,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
     }
 
     func update(with viewModel: StatusViewModel) {
-        statusView.update(with: viewModel)
+
     }
     
     // MARK: - View Lifecycle
@@ -40,7 +44,30 @@ final class StatusViewController: ViewController, StatusViewControllable {
     override func loadView() {
         self.view = statusView
     }
-    
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // TODO: remove
+        statusView.update(with: .active)
+        exposureStateStreamCancellable = exposureStateStream.exposureStatus.sink { [weak self] status in
+            switch (status) {
+            case .active:
+                self?.statusView.update(with: .active)
+            case .notified:
+                self?.statusView.update(with: .notified)
+            default:
+                break
+            }
+        }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewWillDisappear(false)
+
+        exposureStateStreamCancellable = nil
+    }
+
     // MARK: - Private
     
     private lazy var statusView: StatusView = StatusView()
