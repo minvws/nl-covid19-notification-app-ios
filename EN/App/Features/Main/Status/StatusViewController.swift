@@ -34,10 +34,6 @@ final class StatusViewController: ViewController, StatusViewControllable {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func update(with viewModel: StatusViewModel) {
-
-    }
     
     // MARK: - View Lifecycle
     
