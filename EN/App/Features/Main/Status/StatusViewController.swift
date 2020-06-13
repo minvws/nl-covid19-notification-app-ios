@@ -55,7 +55,7 @@ fileprivate final class StatusView: View {
     fileprivate let textContainer = UIStackView()
     fileprivate let buttonContainer = UIStackView()
 
-    fileprivate let iconImageView = UIImageView()
+    fileprivate let iconView = StatusIconView()
 
     fileprivate let titleLabel = Label()
     fileprivate let descriptionLabel = Label()
@@ -75,6 +75,7 @@ fileprivate final class StatusView: View {
         cloudsImageView.image = UIImage(named: "StatusClouds")
         addSubview(cloudsImageView)
 
+        sceneImageView.contentMode = .scaleAspectFit
         sceneImageView.image = UIImage(named: "StatusScene")
         addSubview(sceneImageView)
 
@@ -84,9 +85,7 @@ fileprivate final class StatusView: View {
         container.alignment = .center
 
         // iconView
-        iconImageView.contentMode = .center
-        iconImageView.layer.cornerRadius = 24
-        container.addArrangedSubview(iconImageView)
+        container.addArrangedSubview(iconView)
 
         // textContainer
         textContainer.axis = .vertical
@@ -119,14 +118,17 @@ fileprivate final class StatusView: View {
 
         containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(greaterThanOrEqualTo: container.bottomAnchor)
 
+        let sceneImageAspectRatio = sceneImageView.image.map { $0.size.width / $0.size.height } ?? 1
+
         NSLayoutConstraint.activate([
-            cloudsImageView.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor),
+            cloudsImageView.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
             cloudsImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             cloudsImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
 
             sceneImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             sceneImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             sceneImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            sceneImageView.widthAnchor.constraint(equalTo: sceneImageView.heightAnchor, multiplier: sceneImageAspectRatio),
 
             leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: -20),
             trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: 20),
@@ -134,8 +136,8 @@ fileprivate final class StatusView: View {
             bottomAnchor.constraint(greaterThanOrEqualTo: container.bottomAnchor),
             bottomAnchor.constraint(equalTo: container.bottomAnchor).withPriority(.defaultLow),
 
-            iconImageView.widthAnchor.constraint(equalToConstant: 48),
-            iconImageView.heightAnchor.constraint(equalToConstant: 48)
+            iconView.widthAnchor.constraint(equalToConstant: 48),
+            iconView.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
 
@@ -145,8 +147,7 @@ fileprivate final class StatusView: View {
     }
 
     func update(with viewModel: StatusViewModel) {
-        iconImageView.backgroundColor = viewModel.icon.color
-        iconImageView.image = viewModel.icon.icon
+        iconView.update(with: viewModel.icon)
 
         titleLabel.attributedText = viewModel.title
         descriptionLabel.attributedText = viewModel.description
@@ -161,6 +162,7 @@ fileprivate final class StatusView: View {
             }
             buttonContainer.addArrangedSubview(button)
         }
+        buttonContainer.isHidden = viewModel.buttons.isEmpty
 
         gradientLayer.colors = [viewModel.gradientColor.cgColor, UIColor.white.withAlphaComponent(0).cgColor]
 
