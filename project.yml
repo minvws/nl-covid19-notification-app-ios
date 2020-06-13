@@ -62,6 +62,7 @@ targets:
       - ENUnitTests
     dependencies:
       - target: EN
+      - carthage: SnapshotTesting
     settings:
       base:
         SWIFT_VERSION: 5.2

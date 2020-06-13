@@ -17,22 +17,35 @@ install_xcode_templates:
 	@mkdir -p ${XCODE_TEMPLATE_PATH_DST}
 	@cp -rf ${XCODE_TEMPLATE_PATH_SRC} ${XCODE_TEMPLATE_PATH_DST}
 
-install_dev_deps:
+install_dev_deps: check_homebrew_installed install_xcodegen install_mockolo install_carthage run_carthage
+	@echo "All dependencies are installed"
+	@echo "You're ready to go"
+
+check_homebrew_installed:
 ifeq (, $(shell which brew))
  $(error "Please install homebrew (https://brew.sh) to continue")
 endif
 
-# install xcodegen, used for unit tests
+install_xcodegen:
+# install xcodegen, used for project generation
 ifeq (, $(shell which xcodegen))
-	echo "Installing xcodegen"
-	brew install xcodegen
+	@echo "Installing xcodegen"
+	@brew install xcodegen
 endif
 
+install_mockolo:
 # install mockolo, used for unit tests
 ifeq (, $(shell which mockolo))
-	echo "Installing mockolo"
-	brew install mockolo
+	@echo "Installing mockolo"
+	@brew install mockolo
 endif
 
-	@echo "All dependencies are installed"
-	@echo "You're ready to go"
+install_carthage:
+# install carthage, used for swift package management
+ifeq (, $(shell which carthage))
+	@echo "Installing carthage"
+	@brew install carthage
+endif
+
+run_carthage:
+	@carthage bootstrap --platform ios

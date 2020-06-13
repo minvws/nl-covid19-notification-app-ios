@@ -9,6 +9,8 @@ DerivedData/
 *.xcodeproj
 EN/Resources/Info.plist
 ENUnitTests/Mocks.swift
+Carthage
+Cartfile.resolved
 
 ## Various settings
 *.pbxuser
