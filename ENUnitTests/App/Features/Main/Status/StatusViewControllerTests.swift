@@ -27,17 +27,25 @@ final class StatusViewControllerTests: XCTestCase {
     }
 
     func testSnapshotActive() {
-        exposureStateStream.exposureStatus = Just(.active).eraseToAnyPublisher()
+        set(activeState: .active)
         assertSnapshot(matching: viewController, as: .image())
     }
 
     func testSnapshotNotified() {
-        exposureStateStream.exposureStatus = Just(.notified).eraseToAnyPublisher()
+        set(notified: true)
         assertSnapshot(matching: viewController, as: .image())
     }
 
     func testSnapshotNotifiedInactive() {
-        exposureStateStream.exposureStatus = Just(.inactive(.noRecentNotificationUpdates)).eraseToAnyPublisher()
+        set(activeState: .inactive(.noRecentNotificationUpdates), notified: true)
         assertSnapshot(matching: viewController, as: .image())
+    }
+    
+    // MARK: - Private
+    
+    private func set(activeState: ExposureActiveState = .active, notified: Bool = false) {
+        let state = ExposureState(notified: notified, activeState: activeState)
+        
+        exposureStateStream.exposureState = Just(state).eraseToAnyPublisher()
     }
 }

@@ -61,16 +61,17 @@ final class StatusViewController: ViewController, StatusViewControllable {
         // TODO: remove
         statusView.update(with: .active)
 
-        exposureStateStreamCancellable = exposureStateStream.exposureStatus.sink { [weak self] status in
-            switch (status) {
-            case .active:
+        exposureStateStreamCancellable = exposureStateStream.exposureState.sink { [weak self] status in
+            switch (status.activeState, status.notified) {
+            case (.active, false):
                 self?.statusView.update(with: .active)
-            case .notified:
+            case (.active, true):
                 self?.statusView.update(with: .notified)
-            case .inactive(_):
-                // TODO: there is currently no way to model the state where the user is notified and the app is inactive
-                // so we use .inactive for that for now
+            case (.inactive(_), true):
                 self?.statusView.update(with: StatusViewModel.notified.with(card: StatusCardViewModel.inactive))
+            default:
+                // TODO: Handle more cases
+                break
             }
         }
     }
