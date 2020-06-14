@@ -35,7 +35,12 @@ final class ExposureController: ExposureControlling {
     // MARK: - Private
     
     private func activateExposureManager() {
-        exposureManager?.activate { _ in
+        guard let exposureManager = exposureManager else {
+            updateStatusStream()
+            return
+        }
+        
+        exposureManager.activate { _ in
             self.updateStatusStream()
         }
     }
@@ -61,7 +66,8 @@ final class ExposureController: ExposureControlling {
         case .inactive(let error) where error == .notAuthorized:
             activeState = .notAuthorized
         case .inactive(let error) where error == .unknown:
-            activeState = .notAuthorized
+            // Most likely due to code signing issues
+            activeState = .inactive(.disabled)
         case .inactive(_):
             activeState = .inactive(.disabled)
         case .notAuthorized:
@@ -75,7 +81,7 @@ final class ExposureController: ExposureControlling {
     
     private var isNotified: Bool {
         // TODO: Replace with right value
-        return true
+        return false
     }
     
     private let mutableStatusStream: MutableExposureStateStreaming

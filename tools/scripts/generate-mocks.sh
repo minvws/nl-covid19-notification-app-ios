@@ -11,8 +11,19 @@ fi
 
 SRC="${REPO_ROOT}/EN"
 DEST="${REPO_ROOT}/ENUnitTests/Mocks.swift"
-${MOCKOLO_PATH} -s ${SRC} -d ${DEST}.tmp -x ${EXCLUDES} -i EN
+${MOCKOLO_PATH} -s ${SRC} -d ${DEST} -x ${EXCLUDES} -i EN
 
-# Filter out import of ExposureManager
-cat ${DEST}.tmp | grep -v "import ExposureNotification" > ${DEST}
-rm ${DEST}.tmp
+# Shield import of ExposureManager
+ORIGINAL="import ExposureNotification"
+REPLACEMENT='#if canImport(ExposureNotification) \
+    import ExposureNotification \
+#endif'
+
+sed -i '' "s/${ORIGINAL}/${REPLACEMENT}/g" ${DEST}
+
+# Mark EMManaging class as iOS 13.5 only
+ORIGINAL="class ENManagingMock: ENManaging"
+REPLACEMENT='@available(iOS 13.5, *) \
+class ENManagingMock: ENManaging'
+
+sed -i '' "s/${ORIGINAL}/${REPLACEMENT}/g" ${DEST}

@@ -11,7 +11,7 @@ import ExposureNotification
 import Foundation
 import UIKit
 
-enum ExposureManagerStatus {
+enum ExposureManagerStatus: Equatable {
     case active
     case inactive(ExposureManagerError)
     case notAuthorized

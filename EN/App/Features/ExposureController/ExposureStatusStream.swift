@@ -27,6 +27,7 @@ enum ExposureStateInactiveState: Equatable {
     case noRecentNotificationUpdates
 }
 
+/// @mockable
 protocol ExposureStateStreaming {
     /// A publisher to subscribe to for getting new state updates
     /// Does not emit the current state immediately
@@ -36,6 +37,7 @@ protocol ExposureStateStreaming {
     var currentExposureState: ExposureState? { get }
 }
 
+/// @mockable
 protocol MutableExposureStateStreaming: ExposureStateStreaming {
     func update(state: ExposureState)
 }

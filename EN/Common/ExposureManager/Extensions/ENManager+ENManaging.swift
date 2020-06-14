@@ -9,6 +9,7 @@
 import ExposureNotification
 
 /// ENManaging interface to mock ENManager
+/// @mockable
 @available(iOS 13.5, *)
 protocol ENManaging {
     func activate(completionHandler: @escaping ENErrorHandler)

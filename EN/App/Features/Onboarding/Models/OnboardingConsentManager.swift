@@ -89,8 +89,8 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
     // TODO: Add Exposure Notifications logic
     func askEnableExposureNotifications(_ completion: @escaping (() -> ())) {
-        if let exposureState = exposureStateStream.currentExposureState,
-            exposureState != .notAuthorized {
+        if let exposureActiveState = exposureStateStream.currentExposureState?.activeState,
+            exposureActiveState != .notAuthorized {
             // already authorized
             completion()
             return
@@ -103,7 +103,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         exposureStateSubscription = exposureStateStream.exposureState.sink { [weak self] state in
             self?.exposureStateSubscription = nil
             
-            switch state {
+            switch state.activeState {
             case .notAuthorized:
                 // something else is going on
                 break
