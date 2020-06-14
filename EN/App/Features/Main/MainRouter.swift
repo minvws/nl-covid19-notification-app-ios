@@ -6,6 +6,7 @@
 */
 
 import Foundation
+import UIKit
 
 /// @mockable
 protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener {
@@ -33,10 +34,10 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     
     // MARK: - MainRouting
 
-    func attachStatus() {
+    func attachStatus(topAnchor: NSLayoutYAxisAnchor) {
         guard statusRouter == nil else { return }
         
-        let statusRouter = statusBuilder.build(withListener: viewController)
+        let statusRouter = statusBuilder.build(withListener: viewController, topAnchor: topAnchor)
         self.statusRouter = statusRouter
         
         viewController.embed(stackedViewController: statusRouter.viewControllable)

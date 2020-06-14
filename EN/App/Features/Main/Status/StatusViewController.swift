@@ -21,12 +21,14 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     private var exposureStateStream: ExposureStateStreaming
     private weak var listener: StatusListener?
+    private weak var topAnchor: NSLayoutYAxisAnchor?
 
     private var exposureStateStreamCancellable: AnyCancellable?
 
-    init(exposureStateStream: ExposureStateStreaming, listener: StatusListener) {
+    init(exposureStateStream: ExposureStateStreaming, listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) {
         self.exposureStateStream = exposureStateStream
         self.listener = listener
+        self.topAnchor = topAnchor
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -39,6 +41,18 @@ final class StatusViewController: ViewController, StatusViewControllable {
     
     override func loadView() {
         self.view = statusView
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+
+        // Ties the top anchor of the view to the top anchor of the main view (outside of the scroll view)
+        // to make the view stretch while rubber banding
+        if let topAnchor = topAnchor {
+            statusView.stretchGuide.topAnchor.constraint(equalTo: topAnchor)
+                .withPriority(.defaultHigh-100)
+                .isActive = true
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -74,7 +88,10 @@ fileprivate final class StatusView: View {
 
     fileprivate weak var listener: StatusListener?
 
-    fileprivate let container = UIStackView()
+    fileprivate let stretchGuide = UILayoutGuide() // grows larger while stretching, grows all visible elements
+    fileprivate let contentStretchGuide = UILayoutGuide() // grows larger while stretching, used to center the content
+
+    fileprivate let contentContainer = UIStackView()
     fileprivate let textContainer = UIStackView()
     fileprivate let buttonContainer = UIStackView()
 
@@ -88,6 +105,7 @@ fileprivate final class StatusView: View {
     fileprivate let sceneImageView = UIImageView()
 
     fileprivate var containerToSceneVerticalConstraint: NSLayoutConstraint?
+    fileprivate var heightConstraint: NSLayoutConstraint?
 
     override func build() {
         super.build()
@@ -103,12 +121,12 @@ fileprivate final class StatusView: View {
         addSubview(sceneImageView)
 
         // container
-        container.axis = .vertical
-        container.spacing = 24
-        container.alignment = .center
+        contentContainer.axis = .vertical
+        contentContainer.spacing = 24
+        contentContainer.alignment = .center
 
         // iconView
-        container.addArrangedSubview(iconView)
+        contentContainer.addArrangedSubview(iconView)
 
         // textContainer
         textContainer.axis = .vertical
@@ -122,14 +140,16 @@ fileprivate final class StatusView: View {
         descriptionLabel.textAlignment = .center
         textContainer.addArrangedSubview(descriptionLabel)
 
-        container.addArrangedSubview(textContainer)
+        contentContainer.addArrangedSubview(textContainer)
 
         // buttonContainer
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
-        container.addArrangedSubview(buttonContainer)
+        contentContainer.addArrangedSubview(buttonContainer)
 
-        addSubview(container)
+        addSubview(contentContainer)
+        addLayoutGuide(contentStretchGuide)
+        addLayoutGuide(stretchGuide)
     }
     
     override func setupConstraints() {
@@ -137,36 +157,56 @@ fileprivate final class StatusView: View {
 
         cloudsImageView.translatesAutoresizingMaskIntoConstraints = false
         sceneImageView.translatesAutoresizingMaskIntoConstraints = false
-        container.translatesAutoresizingMaskIntoConstraints = false
+        contentContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(greaterThanOrEqualTo: container.bottomAnchor)
+        containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor)
+        self.heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh+100)
 
         let sceneImageAspectRatio = sceneImageView.image.map { $0.size.width / $0.size.height } ?? 1
 
         NSLayoutConstraint.activate([
             cloudsImageView.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
-            cloudsImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            cloudsImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            cloudsImageView.leadingAnchor.constraint(equalTo: stretchGuide.leadingAnchor),
+            cloudsImageView.trailingAnchor.constraint(equalTo: stretchGuide.trailingAnchor),
 
-            sceneImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            sceneImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            sceneImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            sceneImageView.leadingAnchor.constraint(equalTo: stretchGuide.leadingAnchor),
+            sceneImageView.trailingAnchor.constraint(equalTo: stretchGuide.trailingAnchor),
+            sceneImageView.bottomAnchor.constraint(equalTo: stretchGuide.bottomAnchor),
             sceneImageView.widthAnchor.constraint(equalTo: sceneImageView.heightAnchor, multiplier: sceneImageAspectRatio),
 
-            leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: -20),
-            trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: 20),
-            topAnchor.constraint(equalTo: container.topAnchor, constant: -70),
-            bottomAnchor.constraint(greaterThanOrEqualTo: container.bottomAnchor),
-            bottomAnchor.constraint(equalTo: container.bottomAnchor).withPriority(.defaultLow),
+            stretchGuide.leadingAnchor.constraint(equalTo: contentStretchGuide.leadingAnchor, constant: -20),
+            stretchGuide.trailingAnchor.constraint(equalTo: contentStretchGuide.trailingAnchor, constant: 20),
+            stretchGuide.topAnchor.constraint(equalTo: contentStretchGuide.topAnchor, constant: -70),
+            stretchGuide.bottomAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor),
+
+            contentStretchGuide.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
+            contentStretchGuide.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
+            contentStretchGuide.centerYAnchor.constraint(equalTo: contentContainer.centerYAnchor),
+            contentStretchGuide.heightAnchor.constraint(greaterThanOrEqualTo: contentContainer.heightAnchor),
+
+            stretchGuide.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stretchGuide.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stretchGuide.topAnchor.constraint(equalTo: topAnchor).withPriority(.defaultLow),
+            stretchGuide.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             iconView.widthAnchor.constraint(equalToConstant: 48),
-            iconView.heightAnchor.constraint(equalToConstant: 48)
+            iconView.heightAnchor.constraint(equalToConstant: 48),
         ])
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        gradientLayer.frame = bounds
+
+        let widthChanged = gradientLayer.frame.width != bounds.width
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        gradientLayer.frame = stretchGuide.layoutFrame
+        CATransaction.commit()
+
+        if widthChanged {
+            evaluateHeight()
+        }
     }
 
     func update(with viewModel: StatusViewModel) {
@@ -191,5 +231,18 @@ fileprivate final class StatusView: View {
 
         sceneImageView.isHidden = !viewModel.showScene
         containerToSceneVerticalConstraint?.isActive = viewModel.showScene
+
+        evaluateHeight()
+    }
+
+    /// Calculates the desired height for the current content
+    /// This is required for stretching
+    private func evaluateHeight() {
+        guard bounds.width > 0 else { return }
+
+        heightConstraint?.isActive = false
+        let size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        heightConstraint?.constant = size.height
+        heightConstraint?.isActive = true
     }
 }

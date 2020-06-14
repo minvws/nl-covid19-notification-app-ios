@@ -6,6 +6,7 @@
 */
 
 import Foundation
+import UIKit
 
 /// @mockable
 protocol StatusListener: AnyObject {
@@ -18,7 +19,7 @@ protocol StatusBuildable {
     ///
     /// - Parameter listener: Listener of created Status component
     /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: StatusListener) -> StatusRouting
+    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> StatusRouting
 }
 
 protocol StatusDependency {
@@ -37,13 +38,14 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
-    func build(withListener listener: StatusListener) -> StatusRouting {
+    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> StatusRouting {
         // TODO: Add any other dynamic dependency as parameter
         
         // let childBuilder = dependencyProvider.childBuilder
         let viewController = StatusViewController(
             exposureStateStream: dependency.exposureStateStream,
-            listener: listener
+            listener: listener,
+            topAnchor: topAnchor
         )
         
         // TODO: Adjust the initialiser to use the correct parameters.

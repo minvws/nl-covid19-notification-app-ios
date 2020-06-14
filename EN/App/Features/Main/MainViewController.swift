@@ -9,7 +9,7 @@ import UIKit
 
 /// @mockable
 protocol MainRouting: Routing {
-    func attachStatus()
+    func attachStatus(topAnchor: NSLayoutYAxisAnchor)
     func attachMoreInformation()
 
     func routeToAboutApp()
@@ -109,7 +109,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        router?.attachStatus()
+        router?.attachStatus(topAnchor: view.topAnchor)
         router?.attachMoreInformation()
     }
 

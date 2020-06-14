@@ -92,7 +92,7 @@ final class MainViewControllerTests: XCTestCase {
         var attachStatusCallCountIndex = 0
         var attachMoreInformationCallCountIndex = 0
         
-        router.attachStatusHandler = {
+        router.attachStatusHandler = { _ in
             callCountIndex += 1
             attachStatusCallCountIndex = callCountIndex
         }
