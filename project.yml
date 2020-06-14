@@ -19,6 +19,17 @@ targets:
         DEVELOPMENT_TEAM: C2H38GV99H
         ENABLE_BITCODE: YES
         TARGETED_DEVICE_FAMILY: 1
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: C2H38GV99H
+      configs:
+        Debug:
+          CODE_SIGN_IDENTITY: "Apple Development"
+          CODE_SIGN_ENTITLEMENTS: EN/Resources/Entitlements/Debug.entitlements
+          PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
+        Release:
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          CODE_SIGN_ENTITLEMENTS: EN/Resources/Entitlements/Releas.entitlements
+          PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
 
     info:
       path: EN/Resources/Info.plist

@@ -14,7 +14,6 @@ final class ExposureController: ExposureControlling {
         self.exposureManager = exposureManager
         
         activateExposureManager()
-        updateStatusStream()
     }
     
     // MARK: - ExposureControlling
@@ -50,7 +49,7 @@ final class ExposureController: ExposureControlling {
         
         let state: ExposureState
         
-        switch exposureManager.getExposureNotificationAuthorisationStatus() {
+        switch exposureManager.getExposureNotificationStatus() {
         case .active:
             state = .active
         case .inactive(let error) where error == .bluetoothOff:
@@ -58,9 +57,13 @@ final class ExposureController: ExposureControlling {
         case .inactive(let error) where error == .disabled || error == .restricted:
             state = .inactive(.disabled)
         case .inactive(let error) where error == .notAuthorized:
-            state = .inactive(.notAuthorized)
+            state = .notAuthorized
+        case .inactive(let error) where error == .unknown:
+            state = .notAuthorized
         case .inactive(_):
             state = .inactive(.disabled)
+        case .notAuthorized:
+            state = .notAuthorized
         }
         
         mutableStatusStream.update(state: state)

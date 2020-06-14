@@ -5,6 +5,7 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+import Combine
 import UIKit
 
 /// @mockable
@@ -22,8 +23,12 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
     var onboardingConsentSteps: [OnboardingConsentStep] = []
 
-    init() {
+    init(exposureStateStream: ExposureStateStreaming,
+         exposureController: ExposureControlling) {
 
+        self.exposureStateStream = exposureStateStream
+        self.exposureController = exposureController
+        
         onboardingConsentSteps.append(
             OnboardingConsentStep(
                 step: .en,
@@ -64,7 +69,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         )
     }
 
-    //MARK: - Functions
+    // MARK: - Functions
 
     func getStep(_ index: Int) -> OnboardingConsentStep? {
         if self.onboardingConsentSteps.count > index { return self.onboardingConsentSteps[index] }
@@ -84,11 +89,41 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
     // TODO: Add Exposure Notifications logic
     func askEnableExposureNotifications(_ completion: @escaping (() -> ())) {
-        completion()
+        if let exposureState = exposureStateStream.currentExposureState,
+            exposureState != .notAuthorized {
+            // already authorized
+            completion()
+            return
+        }
+        
+        if let subscription = exposureStateSubscription {
+            subscription.cancel()
+        }
+        
+        exposureStateSubscription = exposureStateStream.exposureState.sink { [weak self] state in
+            self?.exposureStateSubscription = nil
+            
+            switch state {
+            case .notAuthorized:
+                // something else is going on
+                break
+            default:
+                completion()
+            }
+        }
+        
+        exposureController.requestExposureNotificationPermission()
     }
 
     // TODO: Add Bluetooth enabling logic
     func askEnableBluetooth(_ completion: @escaping (() -> ())) {
         completion()
     }
+    
+    // MARK: - Private
+    
+    private let exposureStateStream: ExposureStateStreaming
+    private let exposureController: ExposureControlling
+    
+    private var exposureStateSubscription: Cancellable?
 }

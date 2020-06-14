@@ -11,9 +11,10 @@ import ExposureNotification
 import Foundation
 import UIKit
 
-enum ExposureManagerAuthorisationStatus {
+enum ExposureManagerStatus {
     case active
     case inactive(ExposureManagerError)
+    case notAuthorized
 }
 
 enum ExposureManagerError: Error {
@@ -30,7 +31,7 @@ protocol ExposureManaging {
     
     /// Activates the ExposureManager - Should be the first call to execute. The framework
     /// might be usable until an active state is returned
-    func activate(completion: @escaping (ExposureManagerAuthorisationStatus) -> Void)
+    func activate(completion: @escaping (ExposureManagerStatus) -> Void)
     
     /// Detects exposures from a given set of exposure key URLs.
     /// A summary is returned when a match is found. If no summary is returned
@@ -48,8 +49,8 @@ protocol ExposureManaging {
     /// Returns whether exposure notifications are enabled
     func isExposureNotificationEnabled() -> Bool
     
-    /// Returns the current authorisation status
-    func getExposureNotificationAuthorisationStatus() -> ExposureManagerAuthorisationStatus
+    /// Returns the current framework status
+    func getExposureNotificationStatus() -> ExposureManagerStatus
 }
 
 /// @mockable

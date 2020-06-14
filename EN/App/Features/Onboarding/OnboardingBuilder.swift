@@ -17,9 +17,14 @@ protocol OnboardingBuildable {
     func build(withListener listener: OnboardingListener) -> Routing
 }
 
+protocol OnboardingDependency {
+    var exposureController: ExposureControlling { get }
+    var exposureStateStream: ExposureStateStreaming { get }
+}
+
 ///
 /// - Tag: OnboardingDependencyProvider
-private final class OnboardingDependencyProvider: DependencyProvider<EmptyDependency>, OnboardingStepDependency, OnboardingConsentDependency {
+private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency {
     
     // MARK: - OnboardingStepDependency
 
@@ -27,7 +32,10 @@ private final class OnboardingDependencyProvider: DependencyProvider<EmptyDepend
     
     // MARK: - OnboardingConsentDependency
     
-    lazy var onboardingConsentManager: OnboardingConsentManaging = OnboardingConsentManager()
+    lazy var onboardingConsentManager: OnboardingConsentManaging = {
+        return OnboardingConsentManager(exposureStateStream: dependency.exposureStateStream,
+                                        exposureController: dependency.exposureController)
+    }()
 
     // MARK: - Child Builders
 
@@ -52,7 +60,7 @@ private final class OnboardingDependencyProvider: DependencyProvider<EmptyDepend
     }
 }
 
-final class OnboardingBuilder: Builder<EmptyDependency>, OnboardingBuildable {
+final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildable {
     func build(withListener listener: OnboardingListener) -> Routing {
         let dependencyProvider = OnboardingDependencyProvider(dependency: dependency)
         let viewController = OnboardingViewController(listener: listener)

@@ -22,7 +22,7 @@ protocol OnboardingConsentListener: AnyObject {
     func consentRequest(step: OnboardingConsentStepIndex)
 }
 
-protocol OnboardingConsentDependency {
+protocol OnboardingConsentDependency {    
     var onboardingConsentManager: OnboardingConsentManaging { get }
 }
 

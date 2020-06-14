@@ -11,12 +11,12 @@ import Foundation
 /// use when in simulator
 final class StubExposureManager: ExposureManaging {
     
-    func activate(completion: @escaping (ExposureManagerAuthorisationStatus) -> Void) {
+    func activate(completion: @escaping (ExposureManagerStatus) -> Void) {
         // activation always succeed in stub-land
         completion(.active)
     }
     
-    func getExposureNotificationAuthorisationStatus() -> ExposureManagerAuthorisationStatus {
+    func getExposureNotificationStatus() -> ExposureManagerStatus {
         return isExposureNotificationEnabled() ? .active : .inactive(.unknown)
     }
     

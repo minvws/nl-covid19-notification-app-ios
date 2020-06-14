@@ -23,7 +23,7 @@ final class ExposureManager: ExposureManaging {
     
     // MARK: - ExposureManaging
     
-    func activate(completion: @escaping (ExposureManagerAuthorisationStatus) -> Void) {
+    func activate(completion: @escaping (ExposureManagerStatus) -> Void) {
         manager.activate { [weak self] error in
             guard let strongSelf = self else {
                 // Exposure Manager released before activation
@@ -33,14 +33,14 @@ final class ExposureManager: ExposureManaging {
             }
             
             if let error = error.map(ExposureManager.mapError) {
-                let authorisationStatus: ExposureManagerAuthorisationStatus = .inactive(error)
+                let authorisationStatus: ExposureManagerStatus = .inactive(error)
                 
                 completion(authorisationStatus)
                 return
             }
             
             // successful initialisation
-            let authorisationStatus = strongSelf.getExposureNotificationAuthorisationStatus()
+            let authorisationStatus = strongSelf.getExposureNotificationStatus()
             completion(authorisationStatus)
         }
     }
@@ -117,7 +117,7 @@ final class ExposureManager: ExposureManaging {
         manager.exposureNotificationEnabled
     }
     
-    func getExposureNotificationAuthorisationStatus() -> ExposureManagerAuthorisationStatus {
+    func getExposureNotificationStatus() -> ExposureManagerStatus {
         let authorisationStatus = type(of: manager).authorizationStatus
         
         switch authorisationStatus {
@@ -135,7 +135,7 @@ final class ExposureManager: ExposureManaging {
                 return .inactive(.unknown)
             }
         case .notAuthorized:
-            return .inactive(.notAuthorized)
+            return .notAuthorized
         case .restricted:
             return .inactive(.restricted)
         default:

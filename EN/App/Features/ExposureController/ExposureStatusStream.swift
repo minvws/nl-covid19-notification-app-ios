@@ -12,19 +12,24 @@ enum ExposureState: Equatable {
     case active
     case notified
     case inactive(ExposureStateInactiveState)
+    case notAuthorized
 }
 
 enum ExposureStateInactiveState: Equatable {
     case paused
     case disabled
     case requiresOSUpdate
-    case notAuthorized
     case bluetoothOff
     case noRecentNotificationUpdates
 }
 
 protocol ExposureStateStreaming {
-    var exposureStatus: AnyPublisher<ExposureState, Never> { get }
+    /// A publisher to subscribe to for getting new state updates
+    /// Does not emit the current state immediately
+    var exposureState: AnyPublisher<ExposureState, Never> { get }
+    
+    /// Returns the last state, if any was set
+    var currentExposureState: ExposureState? { get }
 }
 
 protocol MutableExposureStateStreaming: ExposureStateStreaming {
@@ -36,13 +41,17 @@ final class ExposureStateStream: MutableExposureStateStreaming {
     
     // MARK: - ExposureStateStreaming
     
-    var exposureStatus: AnyPublisher<ExposureState, Never> {
+    var exposureState: AnyPublisher<ExposureState, Never> {
         return subject.removeDuplicates(by: ==).eraseToAnyPublisher()
     }
+    
+    var currentExposureState: ExposureState?
     
     // MARK: - MutableExposureStateStreaming
     
     func update(state: ExposureState) {
+        currentExposureState = state
+        
         subject.send(state)
     }
 }
