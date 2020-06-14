@@ -174,8 +174,8 @@ fileprivate final class StatusView: View {
             sceneImageView.bottomAnchor.constraint(equalTo: stretchGuide.bottomAnchor),
             sceneImageView.widthAnchor.constraint(equalTo: sceneImageView.heightAnchor, multiplier: sceneImageAspectRatio),
 
-            stretchGuide.leadingAnchor.constraint(equalTo: contentStretchGuide.leadingAnchor, constant: -20),
-            stretchGuide.trailingAnchor.constraint(equalTo: contentStretchGuide.trailingAnchor, constant: 20),
+            stretchGuide.leadingAnchor.constraint(equalTo: contentStretchGuide.leadingAnchor, constant: -16),
+            stretchGuide.trailingAnchor.constraint(equalTo: contentStretchGuide.trailingAnchor, constant: 16),
             stretchGuide.topAnchor.constraint(equalTo: contentStretchGuide.topAnchor, constant: -70),
             stretchGuide.bottomAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor),
 
@@ -189,8 +189,8 @@ fileprivate final class StatusView: View {
             stretchGuide.topAnchor.constraint(equalTo: topAnchor).withPriority(.defaultLow),
             stretchGuide.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            iconView.widthAnchor.constraint(equalToConstant: 48),
-            iconView.heightAnchor.constraint(equalToConstant: 48),
+            iconView.widthAnchor.constraint(equalToConstant: 56),
+            iconView.heightAnchor.constraint(equalToConstant: 56),
         ])
     }
 
