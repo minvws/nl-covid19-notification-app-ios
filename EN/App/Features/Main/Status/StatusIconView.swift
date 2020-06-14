@@ -22,8 +22,6 @@ class StatusIconView: View {
         buildEmitterLayer()
         layer.addSublayer(emitterLayer)
 
-        iconImageView.layer.cornerRadius = 24
-
         iconImageView.contentMode = .center
         addSubview(iconImageView)
     }
@@ -61,6 +59,8 @@ class StatusIconView: View {
 
             updateEmitterCell()
         }
+
+        iconImageView.layer.cornerRadius = min(bounds.width, bounds.height) / 2
     }
 
     func update(with icon: StatusViewIcon) {
