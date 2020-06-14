@@ -147,11 +147,11 @@ class MainRoutingMock: MainRouting {
 
 
     var attachStatusCallCount = 0
-    var attachStatusHandler: (() -> ())?
-    func attachStatus()  {
+    var attachStatusHandler: ((NSLayoutYAxisAnchor) -> ())?
+    func attachStatus(topAnchor: NSLayoutYAxisAnchor)  {
         attachStatusCallCount += 1
         if let attachStatusHandler = attachStatusHandler {
-            attachStatusHandler()
+            attachStatusHandler(topAnchor)
         }
         
     }
@@ -527,131 +527,6 @@ class InfectedResultViewControllableMock: InfectedResultViewControllable {
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
-class MainViewControllableMock: MainViewControllable {
-    init() { }
-    init(router: MainRouting? = nil, uiviewController: UIViewController = UIViewController()) {
-        self.router = router
-        self.uiviewController = uiviewController
-    }
-
-
-    var aboutRequestsDismissalCallCount = 0
-    var aboutRequestsDismissalHandler: ((Bool) -> ())?
-    func aboutRequestsDismissal(shouldHideViewController: Bool)  {
-        aboutRequestsDismissalCallCount += 1
-        if let aboutRequestsDismissalHandler = aboutRequestsDismissalHandler {
-            aboutRequestsDismissalHandler(shouldHideViewController)
-        }
-        
-    }
-
-    var handleButtonActionCallCount = 0
-    var handleButtonActionHandler: ((StatusViewButtonModel.Action) -> ())?
-    func handleButtonAction(_ action: StatusViewButtonModel.Action)  {
-        handleButtonActionCallCount += 1
-        if let handleButtonActionHandler = handleButtonActionHandler {
-            handleButtonActionHandler(action)
-        }
-        
-    }
-
-    var routerSetCallCount = 0
-    var router: MainRouting? = nil { didSet { routerSetCallCount += 1 } }
-
-    var moreInformationRequestsAboutCallCount = 0
-    var moreInformationRequestsAboutHandler: (() -> ())?
-    func moreInformationRequestsAbout()  {
-        moreInformationRequestsAboutCallCount += 1
-        if let moreInformationRequestsAboutHandler = moreInformationRequestsAboutHandler {
-            moreInformationRequestsAboutHandler()
-        }
-        
-    }
-
-    var embedCallCount = 0
-    var embedHandler: ((ViewControllable) -> ())?
-    func embed(stackedViewController: ViewControllable)  {
-        embedCallCount += 1
-        if let embedHandler = embedHandler {
-            embedHandler(stackedViewController)
-        }
-        
-    }
-
-    var moreInformationRequestsReceivedNotificationCallCount = 0
-    var moreInformationRequestsReceivedNotificationHandler: (() -> ())?
-    func moreInformationRequestsReceivedNotification()  {
-        moreInformationRequestsReceivedNotificationCallCount += 1
-        if let moreInformationRequestsReceivedNotificationHandler = moreInformationRequestsReceivedNotificationHandler {
-            moreInformationRequestsReceivedNotificationHandler()
-        }
-        
-    }
-
-    var presentCallCount = 0
-    var presentHandler: ((ViewControllable, Bool) -> ())?
-    func present(viewController: ViewControllable, animated: Bool)  {
-        presentCallCount += 1
-        if let presentHandler = presentHandler {
-            presentHandler(viewController, animated)
-        }
-        
-    }
-
-    var moreInformationRequestsInfectedCallCount = 0
-    var moreInformationRequestsInfectedHandler: (() -> ())?
-    func moreInformationRequestsInfected()  {
-        moreInformationRequestsInfectedCallCount += 1
-        if let moreInformationRequestsInfectedHandler = moreInformationRequestsInfectedHandler {
-            moreInformationRequestsInfectedHandler()
-        }
-        
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-
-    var moreInformationRequestsRequestTestCallCount = 0
-    var moreInformationRequestsRequestTestHandler: (() -> ())?
-    func moreInformationRequestsRequestTest()  {
-        moreInformationRequestsRequestTestCallCount += 1
-        if let moreInformationRequestsRequestTestHandler = moreInformationRequestsRequestTestHandler {
-            moreInformationRequestsRequestTestHandler()
-        }
-        
-    }
-
-    var dismissCallCount = 0
-    var dismissHandler: ((ViewControllable, Bool) -> ())?
-    func dismiss(viewController: ViewControllable, animated: Bool)  {
-        dismissCallCount += 1
-        if let dismissHandler = dismissHandler {
-            dismissHandler(viewController, animated)
-        }
-        
-    }
-
-    var moreInformationRequestsShareAppCallCount = 0
-    var moreInformationRequestsShareAppHandler: (() -> ())?
-    func moreInformationRequestsShareApp()  {
-        moreInformationRequestsShareAppCallCount += 1
-        if let moreInformationRequestsShareAppHandler = moreInformationRequestsShareAppHandler {
-            moreInformationRequestsShareAppHandler()
-        }
-        
-    }
-
-    var moreInformationRequestsSettingsCallCount = 0
-    var moreInformationRequestsSettingsHandler: (() -> ())?
-    func moreInformationRequestsSettings()  {
-        moreInformationRequestsSettingsCallCount += 1
-        if let moreInformationRequestsSettingsHandler = moreInformationRequestsSettingsHandler {
-            moreInformationRequestsSettingsHandler()
-        }
-        
-    }
-}
-
 class MoreInformationViewControllableMock: MoreInformationViewControllable {
     init() { }
     init(uiviewController: UIViewController = UIViewController()) {
@@ -851,21 +726,6 @@ class SettingsViewControllableMock: SettingsViewControllable {
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
-class StatusListenerMock: StatusListener {
-    init() { }
-
-
-    var handleButtonActionCallCount = 0
-    var handleButtonActionHandler: ((StatusViewButtonModel.Action) -> ())?
-    func handleButtonAction(_ action: StatusViewButtonModel.Action)  {
-        handleButtonActionCallCount += 1
-        if let handleButtonActionHandler = handleButtonActionHandler {
-            handleButtonActionHandler(action)
-        }
-        
-    }
-}
-
 class OnboardingListenerMock: OnboardingListener {
     init() { }
 
@@ -958,6 +818,131 @@ class AboutViewControllableMock: AboutViewControllable {
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
+class MainViewControllableMock: MainViewControllable {
+    init() { }
+    init(router: MainRouting? = nil, uiviewController: UIViewController = UIViewController()) {
+        self.router = router
+        self.uiviewController = uiviewController
+    }
+
+
+    var aboutRequestsDismissalCallCount = 0
+    var aboutRequestsDismissalHandler: ((Bool) -> ())?
+    func aboutRequestsDismissal(shouldHideViewController: Bool)  {
+        aboutRequestsDismissalCallCount += 1
+        if let aboutRequestsDismissalHandler = aboutRequestsDismissalHandler {
+            aboutRequestsDismissalHandler(shouldHideViewController)
+        }
+        
+    }
+
+    var handleButtonActionCallCount = 0
+    var handleButtonActionHandler: ((StatusViewButtonModel.Action) -> ())?
+    func handleButtonAction(_ action: StatusViewButtonModel.Action)  {
+        handleButtonActionCallCount += 1
+        if let handleButtonActionHandler = handleButtonActionHandler {
+            handleButtonActionHandler(action)
+        }
+        
+    }
+
+    var routerSetCallCount = 0
+    var router: MainRouting? = nil { didSet { routerSetCallCount += 1 } }
+
+    var moreInformationRequestsAboutCallCount = 0
+    var moreInformationRequestsAboutHandler: (() -> ())?
+    func moreInformationRequestsAbout()  {
+        moreInformationRequestsAboutCallCount += 1
+        if let moreInformationRequestsAboutHandler = moreInformationRequestsAboutHandler {
+            moreInformationRequestsAboutHandler()
+        }
+        
+    }
+
+    var embedCallCount = 0
+    var embedHandler: ((ViewControllable) -> ())?
+    func embed(stackedViewController: ViewControllable)  {
+        embedCallCount += 1
+        if let embedHandler = embedHandler {
+            embedHandler(stackedViewController)
+        }
+        
+    }
+
+    var moreInformationRequestsReceivedNotificationCallCount = 0
+    var moreInformationRequestsReceivedNotificationHandler: (() -> ())?
+    func moreInformationRequestsReceivedNotification()  {
+        moreInformationRequestsReceivedNotificationCallCount += 1
+        if let moreInformationRequestsReceivedNotificationHandler = moreInformationRequestsReceivedNotificationHandler {
+            moreInformationRequestsReceivedNotificationHandler()
+        }
+        
+    }
+
+    var presentCallCount = 0
+    var presentHandler: ((ViewControllable, Bool) -> ())?
+    func present(viewController: ViewControllable, animated: Bool)  {
+        presentCallCount += 1
+        if let presentHandler = presentHandler {
+            presentHandler(viewController, animated)
+        }
+        
+    }
+
+    var moreInformationRequestsInfectedCallCount = 0
+    var moreInformationRequestsInfectedHandler: (() -> ())?
+    func moreInformationRequestsInfected()  {
+        moreInformationRequestsInfectedCallCount += 1
+        if let moreInformationRequestsInfectedHandler = moreInformationRequestsInfectedHandler {
+            moreInformationRequestsInfectedHandler()
+        }
+        
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+
+    var moreInformationRequestsRequestTestCallCount = 0
+    var moreInformationRequestsRequestTestHandler: (() -> ())?
+    func moreInformationRequestsRequestTest()  {
+        moreInformationRequestsRequestTestCallCount += 1
+        if let moreInformationRequestsRequestTestHandler = moreInformationRequestsRequestTestHandler {
+            moreInformationRequestsRequestTestHandler()
+        }
+        
+    }
+
+    var dismissCallCount = 0
+    var dismissHandler: ((ViewControllable, Bool) -> ())?
+    func dismiss(viewController: ViewControllable, animated: Bool)  {
+        dismissCallCount += 1
+        if let dismissHandler = dismissHandler {
+            dismissHandler(viewController, animated)
+        }
+        
+    }
+
+    var moreInformationRequestsShareAppCallCount = 0
+    var moreInformationRequestsShareAppHandler: (() -> ())?
+    func moreInformationRequestsShareApp()  {
+        moreInformationRequestsShareAppCallCount += 1
+        if let moreInformationRequestsShareAppHandler = moreInformationRequestsShareAppHandler {
+            moreInformationRequestsShareAppHandler()
+        }
+        
+    }
+
+    var moreInformationRequestsSettingsCallCount = 0
+    var moreInformationRequestsSettingsHandler: (() -> ())?
+    func moreInformationRequestsSettings()  {
+        moreInformationRequestsSettingsCallCount += 1
+        if let moreInformationRequestsSettingsHandler = moreInformationRequestsSettingsHandler {
+            moreInformationRequestsSettingsHandler()
+        }
+        
+    }
+}
+
 class ShareSheetListenerMock: ShareSheetListener {
     init() { }
 
@@ -982,6 +967,21 @@ class ShareSheetViewControllableMock: ShareSheetViewControllable {
 
     var uiviewControllerSetCallCount = 0
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class StatusListenerMock: StatusListener {
+    init() { }
+
+
+    var handleButtonActionCallCount = 0
+    var handleButtonActionHandler: ((StatusViewButtonModel.Action) -> ())?
+    func handleButtonAction(_ action: StatusViewButtonModel.Action)  {
+        handleButtonActionCallCount += 1
+        if let handleButtonActionHandler = handleButtonActionHandler {
+            handleButtonActionHandler(action)
+        }
+        
+    }
 }
 
 class WebViewingMock: WebViewing {
@@ -1136,21 +1136,6 @@ class AboutBuildableMock: AboutBuildable {
     }
 }
 
-class StatusBuildableMock: StatusBuildable {
-    init() { }
-
-
-    var buildCallCount = 0
-    var buildHandler: ((StatusListener) -> (StatusRouting))?
-    func build(withListener listener: StatusListener) -> StatusRouting {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler(listener)
-        }
-        return StatusRoutingMock()
-    }
-}
-
 class WebViewControllableMock: WebViewControllable {
     init() { }
     init(uiviewController: UIViewController = UIViewController()) {
@@ -1251,6 +1236,21 @@ class RootViewControllableMock: RootViewControllable {
             embedHandler(viewController)
         }
         
+    }
+}
+
+class StatusBuildableMock: StatusBuildable {
+    init() { }
+
+
+    var buildCallCount = 0
+    var buildHandler: ((StatusListener, NSLayoutYAxisAnchor?) -> (StatusRouting))?
+    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> StatusRouting {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener, topAnchor)
+        }
+        return StatusRoutingMock()
     }
 }
 

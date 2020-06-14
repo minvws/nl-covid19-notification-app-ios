@@ -21,7 +21,7 @@ final class StatusViewControllerTests: XCTestCase {
 
         SnapshotTesting.record = true
 
-        viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock())
+        viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), topAnchor: nil)
         viewController.router = router
     }
 

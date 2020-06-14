@@ -32,41 +32,49 @@ final class MainRouterTests: XCTestCase {
 
     func test_attachStatus_callsBuildAndEmbed() {
         var receivedListener: StatusListener!
-        statusBuilder.buildHandler = { listener in
+        var receivedAnchor: NSLayoutYAxisAnchor!
+        statusBuilder.buildHandler = { listener, anchor in
             receivedListener = listener
+            receivedAnchor = anchor
             
             return StatusRoutingMock()
         }
         
         XCTAssertEqual(statusBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.embedCallCount, 0)
-        
-        router.attachStatus()
+
+        let anchor = NSLayoutYAxisAnchor()
+        router.attachStatus(topAnchor: anchor)
         
         XCTAssertEqual(viewController.embedCallCount, 1)
         XCTAssertEqual(statusBuilder.buildCallCount, 1)
         XCTAssertNotNil(receivedListener)
         XCTAssert(receivedListener === viewController)
+        XCTAssert(receivedAnchor === anchor)
     }
     
     func test_callAttachStatusTwice_callsBuildAndEmbedOnce() {
         var receivedListener: StatusListener!
-        statusBuilder.buildHandler = { listener in
+        var receivedAnchor: NSLayoutYAxisAnchor!
+        statusBuilder.buildHandler = { listener, anchor in
             receivedListener = listener
+            receivedAnchor = anchor
             
             return StatusRoutingMock()
         }
         
         XCTAssertEqual(statusBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.embedCallCount, 0)
-        
-        router.attachStatus()
-        router.attachStatus()
+
+        let anchor = NSLayoutYAxisAnchor()
+        router.attachStatus(topAnchor: anchor)
+        router.attachStatus(topAnchor: NSLayoutYAxisAnchor())
         
         XCTAssertEqual(viewController.embedCallCount, 1)
         XCTAssertEqual(statusBuilder.buildCallCount, 1)
         XCTAssertNotNil(receivedListener)
         XCTAssert(receivedListener === viewController)
+        XCTAssert(receivedAnchor === anchor)
     }
     
     func test_attachMoreInformation_callsBuildAndEmbed() {
