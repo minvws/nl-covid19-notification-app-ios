@@ -8,9 +8,13 @@
 import Combine
 import Foundation
 
-enum ExposureState: Equatable {
+struct ExposureState: Equatable {
+    let notified: Bool
+    let activeState: ExposureActiveState
+}
+
+enum ExposureActiveState: Equatable {
     case active
-    case notified
     case inactive(ExposureStateInactiveState)
     case notAuthorized
 }

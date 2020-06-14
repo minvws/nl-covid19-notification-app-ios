@@ -34,39 +34,48 @@ final class ExposureController: ExposureControlling {
     
     // MARK: - Private
     
-    func activateExposureManager() {
+    private func activateExposureManager() {
         exposureManager?.activate { _ in
             self.updateStatusStream()
         }
     }
     
-    func updateStatusStream() {
+    private func updateStatusStream() {
         guard let exposureManager = exposureManager else {
-            mutableStatusStream.update(state: .inactive(.requiresOSUpdate))
+            mutableStatusStream.update(state: .init(notified: isNotified,
+                                                    activeState: .inactive(.requiresOSUpdate))
+            )
             
             return
         }
         
-        let state: ExposureState
+        let activeState: ExposureActiveState
         
         switch exposureManager.getExposureNotificationStatus() {
         case .active:
-            state = .active
+            activeState = .active
         case .inactive(let error) where error == .bluetoothOff:
-            state = .inactive(.bluetoothOff)
+            activeState = .inactive(.bluetoothOff)
         case .inactive(let error) where error == .disabled || error == .restricted:
-            state = .inactive(.disabled)
+            activeState = .inactive(.disabled)
         case .inactive(let error) where error == .notAuthorized:
-            state = .notAuthorized
+            activeState = .notAuthorized
         case .inactive(let error) where error == .unknown:
-            state = .notAuthorized
+            activeState = .notAuthorized
         case .inactive(_):
-            state = .inactive(.disabled)
+            activeState = .inactive(.disabled)
         case .notAuthorized:
-            state = .notAuthorized
+            activeState = .notAuthorized
         }
         
-        mutableStatusStream.update(state: state)
+        mutableStatusStream.update(state: .init(notified: isNotified,
+                                                activeState: activeState)
+        )
+    }
+    
+    private var isNotified: Bool {
+        // TODO: Replace with right value
+        return true
     }
     
     private let mutableStatusStream: MutableExposureStateStreaming
