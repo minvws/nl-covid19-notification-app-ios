@@ -22,18 +22,22 @@ final class StatusViewControllerTests: XCTestCase {
         SnapshotTesting.record = true
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), topAnchor: nil)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
         viewController.router = router
     }
 
     func testSnapshotActive() {
         exposureStateStream.exposureStatus = Just(.active).eraseToAnyPublisher()
-        viewController.view.translatesAutoresizingMaskIntoConstraints = false
         assertSnapshot(matching: viewController, as: .image())
     }
 
     func testSnapshotNotified() {
         exposureStateStream.exposureStatus = Just(.notified).eraseToAnyPublisher()
-        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func testSnapshotNotifiedInactive() {
+        exposureStateStream.exposureStatus = Just(.inactive(.noRecentNotificationUpdates)).eraseToAnyPublisher()
         assertSnapshot(matching: viewController, as: .image())
     }
 }

@@ -60,14 +60,17 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         // TODO: remove
         statusView.update(with: .active)
+
         exposureStateStreamCancellable = exposureStateStream.exposureStatus.sink { [weak self] status in
             switch (status) {
             case .active:
                 self?.statusView.update(with: .active)
             case .notified:
                 self?.statusView.update(with: .notified)
-            default:
-                break
+            case .inactive(_):
+                // TODO: there is currently no way to model the state where the user is notified and the app is inactive
+                // so we use .inactive for that for now
+                self?.statusView.update(with: StatusViewModel.notified.with(card: StatusCardViewModel.inactive))
             }
         }
     }
@@ -94,6 +97,7 @@ fileprivate final class StatusView: View {
     fileprivate let contentContainer = UIStackView()
     fileprivate let textContainer = UIStackView()
     fileprivate let buttonContainer = UIStackView()
+    fileprivate let cardView = StatusCardView()
 
     fileprivate let iconView = StatusIconView()
 
@@ -146,6 +150,9 @@ fileprivate final class StatusView: View {
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
         contentContainer.addArrangedSubview(buttonContainer)
+
+        // cardView
+        contentContainer.addArrangedSubview(cardView)
 
         addSubview(contentContainer)
         addLayoutGuide(contentStretchGuide)
@@ -226,6 +233,13 @@ fileprivate final class StatusView: View {
             buttonContainer.addArrangedSubview(button)
         }
         buttonContainer.isHidden = viewModel.buttons.isEmpty
+
+        if let cardViewModel = viewModel.card {
+            cardView.update(with: cardViewModel)
+            cardView.isHidden = false
+        } else {
+            cardView.isHidden = true
+        }
 
         gradientLayer.colors = [viewModel.gradientColor.cgColor, UIColor.white.withAlphaComponent(0).cgColor]
 

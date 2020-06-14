@@ -27,6 +27,7 @@ struct StatusViewButtonModel {
     enum Action {
         case explainRisk
         case removeNotification
+        case turnOnApp
     }
 
     static let moreInfo = StatusViewButtonModel(
@@ -43,13 +44,41 @@ struct StatusViewButtonModel {
 
 }
 
+struct StatusCardViewModel {
+    let icon: StatusViewIcon
+    let title: NSAttributedString
+    let description: NSAttributedString
+    let button: StatusViewButtonModel
+
+    static let inactive = StatusCardViewModel(
+        icon: StatusViewIcon(color: .inactiveOrange, icon: UIImage(named: "StatusIconNotified")),
+        title: .init(string: "App is niet actief"),
+        description: .init(string: "Hier moet nog een tekst komen dat uitlegt dat Blootstelling uitstaat en dat Bluetooth ook uitstaat."),
+        button: StatusViewButtonModel(
+            title: "App aanzetten",
+            style: .primary,
+            action: .turnOnApp
+        )
+    )
+}
+
 struct StatusViewModel {
     var icon: StatusViewIcon
     var title: NSAttributedString
     var description: NSAttributedString
     var buttons: [StatusViewButtonModel]
+    var card: StatusCardViewModel?
     var footer: NSAttributedString?
     var shouldShowHideMessage: Bool
     var gradientColor: UIColor
     var showScene: Bool
+
+    func with(card: StatusCardViewModel?? = nil) -> Self {
+        var result = self
+        if let card = card {
+            result.card = card
+        }
+        return result
+    }
+
 }
