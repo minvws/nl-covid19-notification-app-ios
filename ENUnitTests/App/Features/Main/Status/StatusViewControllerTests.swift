@@ -19,7 +19,7 @@ final class StatusViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        SnapshotTesting.record = true
+        SnapshotTesting.record = false
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), topAnchor: nil)
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
