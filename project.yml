@@ -28,7 +28,7 @@ targets:
           PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
         Release:
           CODE_SIGN_IDENTITY: "Apple Distribution"
-          CODE_SIGN_ENTITLEMENTS: EN/Resources/Entitlements/Releas.entitlements
+          CODE_SIGN_ENTITLEMENTS: EN/Resources/Entitlements/Release.entitlements
           PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
 
     info:
