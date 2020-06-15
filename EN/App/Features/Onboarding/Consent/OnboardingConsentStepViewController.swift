@@ -82,7 +82,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                     }
                 }
             case .bluetooth:
-                onboardingConsentManager.askEnableBluetooth {
+                onboardingConsentManager.goToBluetoothSettings {
                     self.goToNextStepOrCloseConsent()
                 }
             }
