@@ -19,39 +19,30 @@ protocol StatusBuildable {
     ///
     /// - Parameter listener: Listener of created Status component
     /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> StatusRouting
+    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> Routing
 }
 
 protocol StatusDependency {
     var exposureStateStream: ExposureStateStreaming { get }
 }
 
-private final class StatusDependencyProvider: DependencyProvider<StatusDependency> /*, ChildDependency */ {
-    // TODO: Create and return any dependency that should be limited
-    //       to Status's scope or any child of Status
-    
-    // TODO: Replace `childBuilder` by a real child scope and adjust
-    //       `ChildDependency`
-    // var childBuilder: ChildBuildable {
-    //    return ChildBuilder(dependency: self)
-    //}
+private final class StatusDependencyProvider: DependencyProvider<StatusDependency> {
+    var exposureStateStream: ExposureStateStreaming {
+        return dependency.exposureStateStream
+    }
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
-    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> StatusRouting {
-        // TODO: Add any other dynamic dependency as parameter
+    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> Routing {
+        let dependencyProvider = StatusDependencyProvider(dependency: dependency)
         
-        // let childBuilder = dependencyProvider.childBuilder
         let viewController = StatusViewController(
-            exposureStateStream: dependency.exposureStateStream,
+            exposureStateStream: dependencyProvider.exposureStateStream,
             listener: listener,
             topAnchor: topAnchor
         )
         
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
         return StatusRouter(listener: listener,
-                                                  viewController: viewController /*,
-                                                  childBuilder: childBuilder */)
+                            viewController: viewController)
     }
 }

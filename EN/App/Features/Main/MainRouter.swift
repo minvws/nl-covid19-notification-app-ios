@@ -93,7 +93,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     // MARK: - Private
     
     private let statusBuilder: StatusBuildable
-    private var statusRouter: StatusRouting?
+    private var statusRouter: Routing?
     
     private let moreInformationBuilder: MoreInformationBuildable
     private var moreInformationViewController: ViewControllable?
