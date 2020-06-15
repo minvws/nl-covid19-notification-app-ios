@@ -26,39 +26,39 @@ final class AboutViewControllerTests: XCTestCase {
 
     func test_viewDidLoad_callsBuildAndEmbedWebView() {
         webBuilder.buildHandler = { _, _ in WebViewControllableMock() }
-        
+
         XCTAssertEqual(webBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.children.count, 0)
-        
+
         _ = viewController.view
-        
+
         XCTAssertEqual(webBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.children.count, 1)
     }
-    
+
     func test_didTapClose_callsListener() {
         var shouldDismissViewController: Bool!
         listener.aboutRequestsDismissalHandler = { shouldDismissViewController = $0 }
-        
+
         XCTAssertEqual(listener.aboutRequestsDismissalCallCount, 0)
-        
+
         viewController.didTapClose()
-        
+
         XCTAssertEqual(listener.aboutRequestsDismissalCallCount, 1)
         XCTAssertNotNil(shouldDismissViewController)
         XCTAssertTrue(shouldDismissViewController)
     }
-    
+
     func test_presentationControllerDidDismiss_callsListener() {
         var shouldDismissViewController: Bool!
         listener.aboutRequestsDismissalHandler = { shouldDismissViewController = $0 }
-        
+
         XCTAssertEqual(listener.aboutRequestsDismissalCallCount, 0)
-        
+
         let presentationController = UIPresentationController(presentedViewController: UIViewController(),
                                                               presenting: nil)
         viewController.presentationControllerDidDismiss(presentationController)
-        
+
         XCTAssertEqual(listener.aboutRequestsDismissalCallCount, 1)
         XCTAssertNotNil(shouldDismissViewController)
         XCTAssertFalse(shouldDismissViewController)

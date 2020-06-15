@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 
@@ -33,9 +33,9 @@ private final class ___VARIABLE_componentName___DependencyProvider: DependencyPr
 final class ___VARIABLE_componentName___Builder: Builder<___VARIABLE_componentName___Dependency>, ___VARIABLE_componentName___Buildable {
     func build(withListener listener: ___VARIABLE_componentName___Listener) -> ViewControllable {
         // TODO: Add any other dynamic dependency as parameter
-        
+
         let dependencyProvider = ___VARIABLE_componentName___DependencyProvider(dependency: dependency)
-        
+
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
         return ___VARIABLE_componentName___ViewController(listener: listener)

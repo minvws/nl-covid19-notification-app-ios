@@ -20,7 +20,7 @@ install_xcode_templates:
 ignore_mocks_changes:
 	git update-index --skip-worktree ENUnitTests/Mocks.swift 
 
-install_dev_deps: check_homebrew_installed install_xcodegen install_mockolo install_carthage run_carthage
+install_dev_deps: check_homebrew_installed install_xcodegen install_mockolo install_swiftformat install_carthage run_carthage
 	@echo "All dependencies are installed"
 	@echo "You're ready to go"
 
@@ -41,6 +41,13 @@ install_mockolo:
 ifeq (, $(shell which mockolo))
 	@echo "Installing mockolo"
 	@brew install mockolo
+endif
+
+install_swiftformat:
+# install swiftformat - standardised formatting of the codebase
+ifeq (, $(shell which swiftformat))
+	@echo "Installing swiftformat"
+	@brew install swiftformat
 endif
 
 install_carthage:

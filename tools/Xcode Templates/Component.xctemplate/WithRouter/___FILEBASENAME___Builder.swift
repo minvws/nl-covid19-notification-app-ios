@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 
@@ -26,30 +26,30 @@ protocol ___VARIABLE_componentName___Dependency {
     // TODO: Add any external dependency
 }
 
-private final class ___VARIABLE_componentName___DependencyProvider: DependencyProvider<___VARIABLE_componentName___Dependency> /*, ChildDependency */ {
+private final class ___VARIABLE_componentName___DependencyProvider: DependencyProvider<___VARIABLE_componentName___Dependency> /* , ChildDependency */ {
     // TODO: Create and return any dependency that should be limited
     //       to ___VARIABLE_componentName___'s scope or any child of ___VARIABLE_componentName___
-    
+
     // TODO: Replace `childBuilder` by a real child scope and adjust
     //       `ChildDependency`
     // var childBuilder: ChildBuildable {
     //    return ChildBuilder(dependency: self)
-    //}
+    // }
 }
 
 final class ___VARIABLE_componentName___Builder: Builder<___VARIABLE_componentName___Dependency>, ___VARIABLE_componentName___Buildable {
     func build(withListener listener: ___VARIABLE_componentName___Listener) -> Routing {
         // TODO: Add any other dynamic dependency as parameter
-        
+
         let dependencyProvider = ___VARIABLE_componentName___DependencyProvider(dependency: dependency)
-        
+
         // let childBuilder = dependencyProvider.childBuilder
         let viewController = ___VARIABLE_componentName___ViewController()
-        
+
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
         return ___VARIABLE_componentName___Router(listener: listener,
-                                                  viewController: viewController /*,
-                                                  childBuilder: childBuilder */)
+                                                  viewController: viewController /* ,
+                                                   childBuilder: childBuilder */ )
     }
 }

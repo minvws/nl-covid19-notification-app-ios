@@ -1,0 +1,18 @@
+--header "/*\n * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.\n *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2\n *\n *  SPDX-License-Identifier: EUPL-1.2\n*/"
+--indent 4 
+--allman false 
+--wraparguments disabled 
+--wrapcollections beforefirst 
+--exponentcase uppercase 
+--binarygrouping none 
+--empty tuples 
+--trimwhitespace always 
+--hexliteralcase lowercase 
+--linebreaks lf 
+--decimalgrouping none 
+--commas inline 
+--octalgrouping none 
+--hexgrouping none 
+--semicolons inline 
+--disable isEmpty,typeSugar,redundantSelf,unusedArguments,redundantBackticks,redundantReturn,linebreakAtEndOfFile,blankLinesAtStartOfScope,blankLinesBetweenScopes 
+--exclude Carthage

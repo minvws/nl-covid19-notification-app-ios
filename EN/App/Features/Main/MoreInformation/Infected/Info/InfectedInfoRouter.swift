@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import UIKit
 
@@ -13,14 +13,14 @@ protocol InfectedInfoViewControllable: ViewControllable {
 
     // TODO: Validate whether you need the below functions and remove or replace
     //       them as desired.
-    
+
     /// Presents a viewController
     ///
     /// - Parameter viewController: ViewController to present
     /// - Parameter animated: Animates the transition
     /// - Parameter completion: Executed upon presentation completion
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
-    
+
     /// Dismisses a viewController
     ///
     /// - Parameter viewController: ViewController to dismiss
@@ -30,20 +30,20 @@ protocol InfectedInfoViewControllable: ViewControllable {
 }
 
 final class InfectedInfoRouter: Router<InfectedInfoViewControllable>, InfectedInfoRouting {
-    
+
     // MARK: - Initialisation
-    
+
     init(listener: InfectedInfoListener,
-         viewController: InfectedInfoViewControllable /*,
-         childBuilder: ChildBuildable*/) {
+         viewController: InfectedInfoViewControllable /* ,
+          childBuilder: ChildBuildable */ ) {
         self.listener = listener
         // self.childBuilder = childBuilder
-        
+
         super.init(viewController: viewController)
-        
+
         viewController.router = self
     }
-    
+
     // TODO: Add any child routing functions here.
     //       See RootRouter as an example
     //
@@ -72,13 +72,13 @@ final class InfectedInfoRouter: Router<InfectedInfoViewControllable>, InfectedIn
     //                               animated: animated,
     //                               completion: completion)
     //    }
-    
+
     // MARK: - Private
-    
+
     // TODO: Add any private functions and instance variables here
-    
+
     private weak var listener: InfectedInfoListener?
-    
+
     // private let childBuilder: ChildBuildable
     // private var childViewController: ViewControllable?
 }

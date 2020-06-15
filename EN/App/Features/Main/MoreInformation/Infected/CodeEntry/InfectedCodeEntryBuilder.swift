@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 
@@ -33,9 +33,9 @@ private final class InfectedCodeEntryDependencyProvider: DependencyProvider<Infe
 final class InfectedCodeEntryBuilder: Builder<InfectedCodeEntryDependency>, InfectedCodeEntryBuildable {
     func build(withListener listener: InfectedCodeEntryListener) -> ViewControllable {
         // TODO: Add any other dynamic dependency as parameter
-        
+
         let dependencyProvider = InfectedCodeEntryDependencyProvider(dependency: dependency)
-        
+
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
         return InfectedCodeEntryViewController(listener: listener, theme: dependencyProvider.dependency.theme)
