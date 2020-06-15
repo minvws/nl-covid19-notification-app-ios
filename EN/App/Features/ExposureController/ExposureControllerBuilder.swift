@@ -9,6 +9,10 @@ import Foundation
 
 /// @mockable
 protocol ExposureControlling {
+    // MARK: - Setup
+    
+    func activate()
+    
     // MARK: - Permissions
     
     func requestExposureNotificationPermission()

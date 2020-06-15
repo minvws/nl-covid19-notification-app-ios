@@ -47,5 +47,4 @@ final class RootViewController: ViewController, RootViewControllable {
     func didCompleteOnboarding() {
         router?.detachOnboardingAndRouteToMain(animated: true)
     }
-
 }

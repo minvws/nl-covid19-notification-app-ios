@@ -5,6 +5,7 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+import Combine
 import UIKit
 
 #if DEBUG
@@ -32,16 +33,25 @@ protocol RootViewControllable: ViewControllable, OnboardingListener {
 final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint {
 
     // MARK: - Initialisation
-
+    
     init(viewController: RootViewControllable,
-        onboardingBuilder: OnboardingBuildable,
-        mainBuilder: MainBuildable) {
+         onboardingBuilder: OnboardingBuildable,
+         mainBuilder: MainBuildable,
+         exposureController: ExposureControlling,
+         exposureStateStream: ExposureStateStreaming) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
-
+        
+        self.exposureController = exposureController
+        self.exposureStateStream = exposureStateStream
+        
         super.init(viewController: viewController)
 
         viewController.router = self
+    }
+    
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - AppEntryPoint
@@ -51,11 +61,21 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func start() {
-        if skipOnboarding {
-            routeToMain()
-        } else {
-            routeToOnboarding()
+        guard mainRouter == nil && onboardingRouter == nil else {
+            // already started
+            return
         }
+        
+        exposureStateStream.exposureState.sink { [weak self] state in
+            if state.activeState.isAuthorized {
+                self?.routeToMain()
+            } else {
+                self?.routeToOnboarding()
+            }
+        }
+        .store(in: &disposeBag)
+            
+        exposureController.activate()
     }
 
     // MARK: - RootRouting
@@ -104,10 +124,26 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             animated: false,
             completion: nil)
     }
+    
+    private let exposureController: ExposureControlling
+    private let exposureStateStream: ExposureStateStreaming
 
     private let onboardingBuilder: OnboardingBuildable
     private var onboardingRouter: Routing?
 
     private let mainBuilder: MainBuildable
     private var mainRouter: Routing?
+    
+    private var disposeBag = Set<AnyCancellable>()
+}
+
+private extension ExposureActiveState {
+    var isAuthorized: Bool {
+        switch self {
+        case .active, .inactive, .authorizationDenied:
+            return true
+        case .notAuthorized:
+            return false
+        }
+    }
 }

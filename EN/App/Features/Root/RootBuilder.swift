@@ -73,6 +73,8 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
         
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
-                          mainBuilder: dependencyProvider.mainBuilder)
+                          mainBuilder: dependencyProvider.mainBuilder,
+                          exposureController: dependencyProvider.exposureController,
+                          exposureStateStream: dependencyProvider.exposureStateStream)
     }
 }

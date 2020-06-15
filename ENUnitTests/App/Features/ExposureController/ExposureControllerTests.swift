@@ -24,15 +24,14 @@ final class ExposureControllerTests: XCTestCase {
         mutableStatusStream.updateCallCount = 0
     }
     
-    func test_init_activesAndUpdatesStream() {
+    func test_activate_activesAndUpdatesStream() {
         exposureManager.activateHandler = { completion in completion(.active) }
         exposureManager.getExposureNotificationStatusHandler = { .active }
         
         XCTAssertEqual(exposureManager.activateCallCount, 0)
         XCTAssertEqual(mutableStatusStream.updateCallCount, 0)
         
-        controller = ExposureController(mutableStatusStream: mutableStatusStream,
-        exposureManager: exposureManager)
+        controller.activate()
         
         XCTAssertEqual(exposureManager.activateCallCount, 1)
         XCTAssertEqual(mutableStatusStream.updateCallCount, 1)
@@ -67,12 +66,13 @@ final class ExposureControllerTests: XCTestCase {
         // Not implemented yet
     }
     
-    func test_initActivates_noManager_updatesStreamWithRequiresOSUpdate() {
+    func test_activate_noManager_updatesStreamWithRequiresOSUpdate() {
         exposureManager.activateHandler = { completion in completion(.active) }
         
         let expectation = expect(activeState: .inactive(.requiresOSUpdate))
         
         controller = ExposureController(mutableStatusStream: mutableStatusStream, exposureManager: nil)
+        controller.activate()
         
         XCTAssertTrue(expectation.evaluate())
     }
