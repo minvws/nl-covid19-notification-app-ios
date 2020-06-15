@@ -89,7 +89,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ())) {
         if let exposureActiveState = exposureStateStream.currentExposureState?.activeState,
-            exposureActiveState == .active {
+            exposureActiveState != .notAuthorized {
             // already active
             completion(exposureActiveState)
             return
