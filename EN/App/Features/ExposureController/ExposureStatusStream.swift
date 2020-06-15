@@ -14,9 +14,17 @@ struct ExposureState: Equatable {
 }
 
 enum ExposureActiveState: Equatable {
+    /// Exposure Notification is active
     case active
+    
+    /// Exposure Notification is inactive, inactiveState contains the reason why
     case inactive(ExposureStateInactiveState)
+    
+    /// No authorisation has been given yet
     case notAuthorized
+    
+    /// Authorisation has been explicitly denied
+    case authorizationDenied
 }
 
 enum ExposureStateInactiveState: Equatable {

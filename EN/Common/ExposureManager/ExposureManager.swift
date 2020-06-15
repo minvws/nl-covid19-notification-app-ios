@@ -135,6 +135,8 @@ final class ExposureManager: ExposureManaging {
                 return .inactive(.unknown)
             }
         case .notAuthorized:
+            return .authorizationDenied
+        case .unknown:
             return .notAuthorized
         case .restricted:
             return .inactive(.restricted)

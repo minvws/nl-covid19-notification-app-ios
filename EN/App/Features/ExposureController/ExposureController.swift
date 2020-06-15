@@ -72,6 +72,8 @@ final class ExposureController: ExposureControlling {
             activeState = .inactive(.disabled)
         case .notAuthorized:
             activeState = .notAuthorized
+        case .authorizationDenied:
+            activeState = .authorizationDenied
         }
         
         mutableStatusStream.update(state: .init(notified: isNotified,
