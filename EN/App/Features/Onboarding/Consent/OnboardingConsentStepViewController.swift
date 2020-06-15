@@ -73,8 +73,13 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         if let consentStep = consentStep {
             switch consentStep.step {
             case .en:
-                onboardingConsentManager.askEnableExposureNotifications {
-                    self.goToNextStepOrCloseConsent()
+                onboardingConsentManager.askEnableExposureNotifications { activeState in
+                    switch activeState {
+                    case .notAuthorized:
+                        self.closeConsent()
+                    default:
+                        self.goToNextStepOrCloseConsent()
+                    }
                 }
             case .bluetooth:
                 onboardingConsentManager.askEnableBluetooth {
@@ -91,6 +96,10 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                 self.goToNextStepOrCloseConsent()
             }
         }
+    }
+
+    private func closeConsent() {
+        self.listener?.consentClose()
     }
 
     private func goToNextStepOrCloseConsent() {
