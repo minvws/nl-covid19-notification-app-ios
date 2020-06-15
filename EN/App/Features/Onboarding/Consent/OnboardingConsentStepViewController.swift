@@ -75,10 +75,10 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             case .en:
                 onboardingConsentManager.askEnableExposureNotifications { activeState in
                     switch activeState {
-                    case .active, .inactive:
-                        self.goToNextStepOrCloseConsent()
                     case .notAuthorized:
-                        self.closeConsent()                    
+                        self.closeConsent()
+                    default:
+                        self.goToNextStepOrCloseConsent()
                     }
                 }
             case .bluetooth:
