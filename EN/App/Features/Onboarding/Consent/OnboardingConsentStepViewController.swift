@@ -92,7 +92,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     @objc private func secondaryButtonPressed() {
         if let consentStep = consentStep {
             switch consentStep.step {
-            case .en, .bluetooth:
+            case .en:
+                self.listener?.displayHelp()
+            case .bluetooth:
                 self.goToNextStepOrCloseConsent()
             }
         }

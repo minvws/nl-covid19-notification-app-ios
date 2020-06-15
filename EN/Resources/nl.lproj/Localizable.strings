@@ -53,3 +53,18 @@
 // MARK: - Consent
 "skipStep" = "Sla over";
 
+// MARK: - Help
+"helpTitle" = "Hoe werkt het?";
+"helpAcceptButtonTitle" = "Toestemming geven";
+"helpContent" = "
+<h1>Kan de app mijn locatie zien?</h1>
+<p>Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die de app ook op hun telefoon hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen twee apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.</p>
+<h1>Hoe kan de app anoniem zijn?</h1>
+<p>De app wisselt cijfers uit met andere telefoons. In deze cijfers staan geen persoonsgegevens of locatiegegevens van je. Ze zijn helemaal willekeurig. Het uitwisselen van cijfers gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.</br></br>Als deze persoon daarna positief test kan diegene in de app zijn of haar cijfers naar een centrale server sturen. Daarna krijgen jij en alle andere mensen die deze cijfers op hun telefoon hebben een melding. In deze melding staat alleen op welke datum je extra kans op besmetting hebt gelopen. Het is onbekend wie besmet is en waar je die persoon tegengekomen bent. </p>
+<h1>Wanneer krijg ik een melding van de app? </h1>
+<p>Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die daarna positief test op het coronavirus. Deze persoon moet ook de app hebben. Het RIVM en de GGD zien dat als een situatie waarin je besmet kunt raken.</br></br>Of je dichtbij genoeg bent geweest hangt af van de sterkte van het Bluetooth-signaal. Fietste er iemand voorbij op straat? Dan krijg je geen melding. Het Bluetooth-signaal was door de afstand te zwak en jullie waren maar kort bij elkaar in de buurt. Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt. </p>
+<h1>Werkt Bluetooth ook door muren heen?</h1>
+<p>Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon. De kans is bijvoorbeeld heel klein dat je app het Bluetooth-signaal van je buren ontvangt. En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman positief test en jullie niet in dezelfde ruimte zijn geweest.</p>
+<h1>Hoeveel stroom gebruikt Bluetooth?</h1>
+<p>De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.</p>
+";

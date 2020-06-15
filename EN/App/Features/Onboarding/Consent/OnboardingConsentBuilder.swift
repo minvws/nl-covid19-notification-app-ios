@@ -20,6 +20,7 @@ protocol OnboardingConsentBuildable {
 protocol OnboardingConsentListener: AnyObject {
     func consentClose()
     func consentRequest(step: OnboardingConsentStepIndex)
+    func displayHelp()
 }
 
 protocol OnboardingConsentDependency {    
