@@ -16,7 +16,7 @@ protocol OnboardingConsentManaging {
     func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex) -> OnboardingConsentStepIndex?
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
-    func askEnableBluetooth(_ completion: @escaping (() -> ()))
+    func goToBluetoothSettings(_ completion: @escaping (() -> ()))
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -76,12 +76,15 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         return nil
     }
 
-    // TODO: Add EN, Bluetooth and other checks to return the correct index
     func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex) -> OnboardingConsentStepIndex? {
 
         switch currentStep {
         case .en:
-            return .bluetooth
+            if let exposureActiveState = exposureStateStream.currentExposureState?.activeState,
+                exposureActiveState == .inactive(.bluetoothOff) {
+                return .bluetooth
+            }
+            return nil
         case .bluetooth:
             return nil
         }
@@ -90,7 +93,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ())) {
         if let exposureActiveState = exposureStateStream.currentExposureState?.activeState,
             exposureActiveState != .notAuthorized {
-            // already active
+            // already authorized
             completion(exposureActiveState)
             return
         }
@@ -101,15 +104,21 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
         exposureStateSubscription = exposureStateStream.exposureState.sink { [weak self] state in
             self?.exposureStateSubscription = nil
-            
+
             completion(state.activeState)
         }
 
         exposureController.requestExposureNotificationPermission()
     }
-
-    // TODO: Add Bluetooth enabling logic
-    func askEnableBluetooth(_ completion: @escaping (() -> ())) {
+    
+    func goToBluetoothSettings(_ completion: @escaping (() -> ())) {
+        
+        if let settingsUrl = URL(string: "App-prefs:Bluetooth") {
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl)
+            }
+        }
+        
         completion()
     }
 
