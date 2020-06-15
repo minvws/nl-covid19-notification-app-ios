@@ -15,8 +15,8 @@ protocol OnboardingConsentManaging {
     func getStep(_ index: Int) -> OnboardingConsentStep?
     func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex) -> OnboardingConsentStepIndex?
 
-    func askEnableExposureNotifications(_ completion: @escaping (() -> ()))
-    func askEnableBluetooth(_ completion: @escaping (() -> ()))    
+    func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
+    func askEnableBluetooth(_ completion: @escaping (() -> ()))
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -24,11 +24,11 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
     var onboardingConsentSteps: [OnboardingConsentStep] = []
 
     init(exposureStateStream: ExposureStateStreaming,
-         exposureController: ExposureControlling) {
+        exposureController: ExposureControlling) {
 
         self.exposureStateStream = exposureStateStream
         self.exposureController = exposureController
-        
+
         onboardingConsentSteps.append(
             OnboardingConsentStep(
                 step: .en,
@@ -87,31 +87,24 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         }
     }
 
-    // TODO: Add Exposure Notifications logic
-    func askEnableExposureNotifications(_ completion: @escaping (() -> ())) {
+    func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ())) {
         if let exposureActiveState = exposureStateStream.currentExposureState?.activeState,
-            exposureActiveState != .notAuthorized {
-            // already authorized
-            completion()
+            exposureActiveState == .active {
+            // already active
+            completion(exposureActiveState)
             return
         }
-        
+
         if let subscription = exposureStateSubscription {
             subscription.cancel()
         }
-        
+
         exposureStateSubscription = exposureStateStream.exposureState.sink { [weak self] state in
             self?.exposureStateSubscription = nil
             
-            switch state.activeState {
-            case .notAuthorized:
-                // something else is going on
-                break
-            default:
-                completion()
-            }
+            completion(state.activeState)
         }
-        
+
         exposureController.requestExposureNotificationPermission()
     }
 
@@ -119,11 +112,11 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
     func askEnableBluetooth(_ completion: @escaping (() -> ())) {
         completion()
     }
-    
+
     // MARK: - Private
-    
+
     private let exposureStateStream: ExposureStateStreaming
     private let exposureController: ExposureControlling
-    
+
     private var exposureStateSubscription: Cancellable?
 }
