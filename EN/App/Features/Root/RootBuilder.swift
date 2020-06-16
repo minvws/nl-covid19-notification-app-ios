@@ -46,7 +46,11 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
         return builder.build()
     }()
-
+    
+    lazy var backgroundController: BackgroundControlling = {
+        return BackgroundControllerBuilder().build()
+    }()
+    
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()
 
