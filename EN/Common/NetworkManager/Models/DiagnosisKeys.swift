@@ -8,6 +8,7 @@
 import Foundation
 
 struct DiagnosisKeys : Encodable {
+    
     let keys: [DiagnosisKey]
     let padding: String
 }

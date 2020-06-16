@@ -27,7 +27,8 @@ final class NetworkController: NetworkControlling {
                     completion(.failure(error))
                     break;
                 case let .success(manifest):
-                    LocalStore.shared.manifest = manifest
+                    
+                    //LocalStore.shared.manifest = manifest
                     completion(.success(manifest))
                     break;
                 }
@@ -136,11 +137,21 @@ final class NetworkController: NetworkControlling {
         }
     }
     
+    func serialize() {
+        
+    }
+    
+    func deserialize() {
+        
+    }
     
     
-    init(networkManager:NetworkManaging) {
+    init(networkManager:NetworkManaging,
+         storageController:StorageControlling) {
         self.networkManager = networkManager
+        self.storageController = storageController
     }
     
     private let networkManager:NetworkManaging
+    private let storageController:StorageControlling
 }

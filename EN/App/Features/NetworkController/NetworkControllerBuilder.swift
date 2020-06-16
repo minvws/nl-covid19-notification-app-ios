@@ -23,16 +23,23 @@ protocol NetworkControllerBuildable {
 }
 
 
-private final class NetworkControllerDependencyProvider: DependencyProvider<EmptyDependency> {
+protocol NetworkControllerDependency {
+   var storageController: StorageControlling { get }
+}
+
+private final class NetworkControllerDependencyProvider: DependencyProvider<NetworkControllerDependency> {
     lazy var networkManager: NetworkManaging = {
         return NetworkManagerBuilder().build()
     }()
 }
 
-final class NetworkControllerBuilder: Builder<EmptyDependency>, NetworkControllerBuildable {
+final class NetworkControllerBuilder: Builder<NetworkControllerDependency>, NetworkControllerBuildable {
     
     func build() -> NetworkControlling {
-        let provider = NetworkControllerDependencyProvider(dependency: dependency)
-        return NetworkController(networkManager: provider.networkManager)
+        
+        let dependencyProvider = NetworkControllerDependencyProvider(dependency: dependency)
+        return NetworkController(
+            networkManager: dependencyProvider.networkManager,
+            storageController: dependencyProvider.dependency.storageController)
     }
 }

@@ -8,6 +8,8 @@
 import Foundation
 
 struct Manifest: Codable {
+    
+    
     let exposureKeySets: [String]
     let resourceBundle, riskCalculationParameters, appConfig: String
 }

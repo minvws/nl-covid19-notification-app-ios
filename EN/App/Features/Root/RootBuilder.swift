@@ -20,10 +20,10 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency {
 
     // MARK: - Child Builders
-
+    
     /// Builds onboarding flow
     var onboardingBuilder: OnboardingBuildable {
         return OnboardingBuilder(dependency: self)
@@ -46,10 +46,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return builder.build()
     }()
     
-    /// NetworkController controller
     lazy var networkController: NetworkControlling = {
-        let builder = NetworkControllerBuilder(dependency: self)
-        return builder.build()
+        return NetworkControllerBuilder(dependency: self).build()
     }()
     
     lazy var backgroundController: BackgroundControlling = {
