@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 import UIKit
@@ -27,8 +27,7 @@ protocol ShareSheetBuildable {
                items: [Any]) -> ViewControllable
 }
 
-private final class ShareSheetDependencyProvider: DependencyProvider<ShareSheetDependency> {
-}
+private final class ShareSheetDependencyProvider: DependencyProvider<ShareSheetDependency> {}
 
 final class ShareSheetBuilder: Builder<ShareSheetDependency>, ShareSheetBuildable {
     func build(withListener listener: ShareSheetListener, items: [Any]) -> ViewControllable {

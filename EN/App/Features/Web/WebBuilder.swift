@@ -1,16 +1,15 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 import WebKit
 
 /// @mockable
-protocol WebListener: AnyObject {
-}
+protocol WebListener: AnyObject {}
 
 /// @mockable
 protocol WebBuildable {
@@ -22,7 +21,7 @@ protocol WebBuildable {
 
 extension WKWebView: WebViewing {
     var uiview: UIView { return self }
-    
+
     func load(request: URLRequest) {
         load(request)
     }
@@ -41,7 +40,7 @@ private final class WebDependencyProvider: DependencyProvider<WebDependency> {
 final class WebBuilder: Builder<WebDependency>, WebBuildable {
     func build(withListener listener: WebListener, urlRequest: URLRequest) -> ViewControllable {
         let dependencyProvider = WebDependencyProvider(dependency: dependency)
-        
+
         return WebViewController(listener: listener,
                                  theme: dependencyProvider.dependency.theme,
                                  webView: dependencyProvider.webView,

@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 
@@ -26,30 +26,30 @@ protocol RequestTestDependency {
     var theme: Theme { get }
 }
 
-private final class RequestTestDependencyProvider: DependencyProvider<RequestTestDependency> /*, ChildDependency */ {
+private final class RequestTestDependencyProvider: DependencyProvider<RequestTestDependency> /* , ChildDependency */ {
     // TODO: Create and return any dependency that should be limited
     //       to RequestTest's scope or any child of RequestTest
-    
+
     // TODO: Replace `childBuilder` by a real child scope and adjust
     //       `ChildDependency`
     // var childBuilder: ChildBuildable {
     //    return ChildBuilder(dependency: self)
-    //}
+    // }
 }
 
 final class RequestTestBuilder: Builder<RequestTestDependency>, RequestTestBuildable {
     func build(withListener listener: RequestTestListener) -> Routing {
         // TODO: Add any other dynamic dependency as parameter
-        
+
         let dependencyProvider = RequestTestDependencyProvider(dependency: dependency)
-        
+
         // let childBuilder = dependencyProvider.childBuilder
         let viewController = RequestTestViewController(theme: dependencyProvider.dependency.theme)
-        
+
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
         return RequestTestRouter(listener: listener,
-                                                  viewController: viewController /*,
-                                                  childBuilder: childBuilder */)
+                                 viewController: viewController /* ,
+                                  childBuilder: childBuilder */ )
     }
 }

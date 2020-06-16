@@ -1,18 +1,18 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import UIKit
 
 /// @mockable
-protocol OnboardingConsentViewControllable: ViewControllable { }
+protocol OnboardingConsentViewControllable: ViewControllable {}
 
 final class OnboardingConsentStepViewController: ViewController, OnboardingConsentViewControllable {
 
-    lazy private var skipStepButton: UIBarButtonItem = {
+    private lazy var skipStepButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
         button.target = self
         button.title = Localized("skipStep")
@@ -29,9 +29,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     private let consentStep: OnboardingConsentStep?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
-        listener: OnboardingConsentListener,
-        theme: Theme,
-        index: Int) {
+         listener: OnboardingConsentListener,
+         theme: Theme,
+         index: Int) {
 
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
@@ -62,7 +62,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         }
     }
 
-    //MARK: - Functions
+    // MARK: - Functions
 
     @objc private func primaryButtonPressed() {
         if let consentStep = consentStep {
@@ -85,7 +85,6 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                     self.goToNextStepOrCloseConsent()
                 }
             }
-
         }
     }
 
@@ -133,7 +132,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
 final class OnboardingConsentView: View {
 
-    lazy private var imageView: UIImageView = {
+    private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
@@ -142,7 +141,7 @@ final class OnboardingConsentView: View {
         return imageView
     }()
 
-    lazy private var label: UILabel = {
+    private lazy var label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
@@ -163,7 +162,7 @@ final class OnboardingConsentView: View {
         return button
     }()
 
-    lazy private var viewsInDisplayOrder = [imageView, primaryButton, secondaryButton, label]
+    private lazy var viewsInDisplayOrder = [imageView, primaryButton, secondaryButton, label]
 
     private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?
 
@@ -190,21 +189,21 @@ final class OnboardingConsentView: View {
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
-            ])
+        ])
 
         constraints.append([
             primaryButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             primaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             primaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            primaryButton.heightAnchor.constraint(equalToConstant: 50),
-            ])
+            primaryButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
 
         constraints.append([
             secondaryButton.bottomAnchor.constraint(equalTo: primaryButton.topAnchor, constant: -20),
             secondaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             secondaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            secondaryButton.heightAnchor.constraint(equalToConstant: 50),
-            ])
+            secondaryButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
@@ -233,11 +232,11 @@ final class OnboardingConsentView: View {
 
             consentSummaryStepsView = OnboardingConsentSummaryStepsView(with: summarySteps, theme: theme)
 
-            subviews.forEach({
+            subviews.forEach {
                 if $0 is OnboardingConsentSummaryStepView {
                     $0.removeFromSuperview()
                 }
-            })
+            }
 
             if let consentSummaryStepsView = consentSummaryStepsView {
                 addSubview(consentSummaryStepsView)
@@ -251,18 +250,18 @@ final class OnboardingConsentView: View {
 
         var constraints = [[NSLayoutConstraint]()]
 
-        label.constraints.forEach({ label.removeConstraint($0) })
+        label.constraints.forEach { label.removeConstraint($0) }
 
         constraints.append([
             label.topAnchor.constraint(equalTo: step.hasImage ? imageView.bottomAnchor : topAnchor, constant: 25),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             label.heightAnchor.constraint(greaterThanOrEqualToConstant: 0)
-            ])
+        ])
 
         if let consentSummaryStepsView = consentSummaryStepsView {
 
-            consentSummaryStepsView.constraints.forEach({ consentSummaryStepsView.removeConstraint($0) })
+            consentSummaryStepsView.constraints.forEach { consentSummaryStepsView.removeConstraint($0) }
 
             if step.hasSummarySteps {
 
@@ -271,7 +270,7 @@ final class OnboardingConsentView: View {
                     consentSummaryStepsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin),
                     consentSummaryStepsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin),
                     consentSummaryStepsView.bottomAnchor.constraint(equalTo: secondaryButton.topAnchor, constant: -20)
-                    ])
+                ])
 
                 consentSummaryStepsView.setupConstraints()
             }
@@ -280,4 +279,3 @@ final class OnboardingConsentView: View {
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
 }
-

@@ -1,13 +1,13 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
+import CoreGraphics
 import Foundation
 import UIKit
-import CoreGraphics
 
 class StatusIconView: View {
     private var iconImageView = UIImageView()
@@ -54,7 +54,7 @@ class StatusIconView: View {
 
         if emitterLayer.frame != bounds {
             emitterLayer.frame = bounds
-            emitterLayer.position = CGPoint(x: bounds.width/2, y: bounds.height/2)
+            emitterLayer.position = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
             emitterLayer.emitterPosition = emitterLayer.position
 
             updateEmitterCell()
@@ -72,7 +72,7 @@ class StatusIconView: View {
 
     private func updateEmitterCell() {
         emitterCell.contents = particle(
-            size: CGSize(width: bounds.width*2, height: bounds.height*2),
+            size: CGSize(width: bounds.width * 2, height: bounds.height * 2),
             color: iconImageView.backgroundColor ?? .clear
         ).cgImage
     }
@@ -85,5 +85,4 @@ class StatusIconView: View {
             context.cgContext.fillPath()
         }
     }
-
 }

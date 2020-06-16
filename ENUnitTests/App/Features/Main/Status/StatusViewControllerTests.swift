@@ -5,11 +5,11 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import EN
 import Foundation
-import XCTest
 import SnapshotTesting
-import Combine
+import XCTest
 
 final class StatusViewControllerTests: XCTestCase {
     private var exposureStateStream = ExposureStateStreamingMock()
@@ -18,7 +18,7 @@ final class StatusViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        
+
         let theme = ENTheme()
 
         SnapshotTesting.record = false
@@ -42,12 +42,12 @@ final class StatusViewControllerTests: XCTestCase {
         set(activeState: .inactive(.noRecentNotificationUpdates), notified: true)
         assertSnapshot(matching: viewController, as: .image())
     }
-    
+
     // MARK: - Private
-    
+
     private func set(activeState: ExposureActiveState = .active, notified: Bool = false) {
         let state = ExposureState(notified: notified, activeState: activeState)
-        
+
         exposureStateStream.exposureState = Just(state).eraseToAnyPublisher()
     }
 }

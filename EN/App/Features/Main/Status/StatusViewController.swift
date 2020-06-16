@@ -1,20 +1,18 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
-import UIKit
 import Combine
+import UIKit
 
 /// @mockable
-protocol StatusRouting: Routing {
-    
-}
+protocol StatusRouting: Routing {}
 
 final class StatusViewController: ViewController, StatusViewControllable {
-    
+
     // MARK: - StatusViewControllable
 
     weak var router: StatusRouting?
@@ -35,9 +33,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         super.init(theme: theme)
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         self.view = statusView
     }
@@ -49,7 +47,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
         // to make the view stretch while rubber banding
         if let topAnchor = topAnchor {
             statusView.stretchGuide.topAnchor.constraint(equalTo: topAnchor)
-                .withPriority(.defaultHigh-100)
+                .withPriority(.defaultHigh - 100)
                 .isActive = true
         }
     }
@@ -85,12 +83,11 @@ final class StatusViewController: ViewController, StatusViewControllable {
     }
 
     // MARK: - Private
-    
-    private lazy var statusView: StatusView = StatusView(theme: self.theme)
 
+    private lazy var statusView: StatusView = StatusView(theme: self.theme)
 }
 
-fileprivate final class StatusView: View {
+private final class StatusView: View {
 
     fileprivate weak var listener: StatusListener?
 
@@ -164,7 +161,7 @@ fileprivate final class StatusView: View {
         addLayoutGuide(contentStretchGuide)
         addLayoutGuide(stretchGuide)
     }
-    
+
     override func setupConstraints() {
         super.setupConstraints()
 
@@ -173,7 +170,7 @@ fileprivate final class StatusView: View {
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
 
         containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor)
-        self.heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh+100)
+        self.heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
         let sceneImageAspectRatio = sceneImageView.image.map { $0.size.width / $0.size.height } ?? 1
 
@@ -203,7 +200,7 @@ fileprivate final class StatusView: View {
             stretchGuide.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             iconView.widthAnchor.constraint(equalToConstant: 56),
-            iconView.heightAnchor.constraint(equalToConstant: 56),
+            iconView.heightAnchor.constraint(equalToConstant: 56)
         ])
     }
 

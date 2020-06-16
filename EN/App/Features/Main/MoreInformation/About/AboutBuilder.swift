@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 
@@ -28,7 +28,7 @@ final class AboutDependencyProvider: DependencyProvider<AboutDependency>, WebDep
     var theme: Theme {
         return dependency.theme
     }
-    
+
     var webBuilder: WebBuildable {
         return WebBuilder(dependency: self)
     }
@@ -37,7 +37,7 @@ final class AboutDependencyProvider: DependencyProvider<AboutDependency>, WebDep
 final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
     func build(withListener listener: AboutListener) -> ViewControllable {
         let dependencyProvider = AboutDependencyProvider(dependency: dependency)
-        
+
         return AboutViewController(listener: listener,
                                    theme: dependencyProvider.dependency.theme,
                                    webBuilder: dependencyProvider.webBuilder)

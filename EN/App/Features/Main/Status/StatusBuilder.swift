@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 import UIKit
@@ -36,14 +36,14 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
     func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> Routing {
         let dependencyProvider = StatusDependencyProvider(dependency: dependency)
-        
+
         let viewController = StatusViewController(
             exposureStateStream: dependencyProvider.exposureStateStream,
             listener: listener,
             theme: dependencyProvider.dependency.theme,
             topAnchor: topAnchor
         )
-        
+
         return StatusRouter(listener: listener,
                             viewController: viewController)
     }

@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Combine
 import UIKit
@@ -33,7 +33,7 @@ protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMe
 final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint {
 
     // MARK: - Initialisation
-    
+
     init(viewController: RootViewControllable,
          onboardingBuilder: OnboardingBuildable,
          mainBuilder: MainBuildable,
@@ -43,15 +43,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.developerMenuBuilder = developerMenuBuilder
-        
+
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
-        
+
         super.init(viewController: viewController)
 
         viewController.router = self
     }
-    
+
     deinit {
         disposeBag.forEach { $0.cancel() }
     }
@@ -63,11 +63,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func start() {
-        guard mainRouter == nil && onboardingRouter == nil else {
+        guard mainRouter == nil, onboardingRouter == nil else {
             // already started
             return
         }
-        
+
         exposureStateStream.exposureState.sink { [weak self] state in
             if state.activeState.isAuthorized {
                 self?.routeToMain()
@@ -76,7 +76,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
         .store(in: &disposeBag)
-            
+
         exposureController.activate()
 
         #if DEBUG
@@ -85,7 +85,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     // MARK: - RootRouting
-    
+
     func routeToOnboarding() {
         guard onboardingRouter == nil else {
             // already presented
@@ -96,8 +96,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.onboardingRouter = onboardingRouter
 
         viewController.present(viewController: onboardingRouter.viewControllable,
-            animated: false,
-            completion: nil)
+                               animated: false,
+                               completion: nil)
     }
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
@@ -112,10 +112,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             // already attached
             return
         }
-        
+
         let mainRouter = self.mainBuilder.build()
         self.mainRouter = mainRouter
-        
+
         self.viewController.embed(viewController: mainRouter.viewControllable)
     }
 
@@ -127,17 +127,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.onboardingRouter = nil
 
         viewController.dismiss(viewController: onboardingRouter.viewControllable,
-            animated: animated,
-            completion: nil)
+                               animated: animated,
+                               completion: nil)
     }
-    
+
     private func attachDeveloperMenu() {
         guard developerMenuViewController == nil else { return }
-        
+
         let developerMenuViewController = developerMenuBuilder.build(listener: viewController)
         self.developerMenuViewController = developerMenuViewController
     }
-    
+
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
 
@@ -146,7 +146,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let mainBuilder: MainBuildable
     private var mainRouter: Routing?
-    
+
     private var disposeBag = Set<AnyCancellable>()
 
     private let developerMenuBuilder: DeveloperMenuBuildable

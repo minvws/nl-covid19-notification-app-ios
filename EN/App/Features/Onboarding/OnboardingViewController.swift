@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 
@@ -24,7 +24,6 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         super.init(theme: theme)
         modalPresentationStyle = .fullScreen
     }
-
 
     // MARK: - OnboardingViewControllable
 
@@ -59,17 +58,11 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         router?.routeToHelp()
     }
 
-    func helpRequestsFAQ() {
+    func helpRequestsFAQ() {}
 
-    }
+    func helpRequestsPermission() {}
 
-    func helpRequestsPermission() {
-
-    }
-
-    func helpRequestsClose() {
-
-    }
+    func helpRequestsClose() {}
 
     // MARK: - ViewController Lifecycle
 

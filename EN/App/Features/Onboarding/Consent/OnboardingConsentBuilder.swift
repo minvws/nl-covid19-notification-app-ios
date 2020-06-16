@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 
@@ -28,9 +28,7 @@ protocol OnboardingConsentDependency {
     var onboardingConsentManager: OnboardingConsentManaging { get }
 }
 
-private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> {
-
-}
+private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> {}
 
 final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, OnboardingConsentBuildable {
     func build(withListener listener: OnboardingConsentListener) -> ViewControllable {
@@ -42,7 +40,7 @@ final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, Onbo
         let onboardingConsentManager = dependencyProvider.dependency.onboardingConsentManager
 
         return OnboardingConsentStepViewController(
-            onboardingConsentManager: onboardingConsentManager,            
+            onboardingConsentManager: onboardingConsentManager,
             listener: listener,
             theme: dependencyProvider.dependency.theme,
             index: index)

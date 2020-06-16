@@ -15,7 +15,7 @@ final class InfectedViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        
+
         let theme = ENTheme()
 
         viewController = InfectedViewController(theme: theme)

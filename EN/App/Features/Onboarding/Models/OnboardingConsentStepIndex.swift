@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import UIKit
 
@@ -19,13 +19,11 @@ final class OnboardingConsentStep: NSObject {
     var title: String = ""
     var content: String = ""
     var image: UIImage?
-    var hasImage: Bool { get { return self.image != nil } }
+    var hasImage: Bool { return self.image != nil }
     var summarySteps: [OnboardingConsentSummaryStep]?
     var hasSummarySteps: Bool {
-        get {
-            guard let summarySteps = self.summarySteps else { return false }
-            return !summarySteps.isEmpty
-        }
+        guard let summarySteps = self.summarySteps else { return false }
+        return !summarySteps.isEmpty
     }
     var primaryButtonTitle: String = ""
     var secondaryButtonTitle: String = ""
@@ -34,13 +32,13 @@ final class OnboardingConsentStep: NSObject {
 
     init(step: OnboardingConsentStepIndex,
          theme: Theme,
-        title: String,
-        content: String,
-        image: UIImage?,
-        summarySteps: [OnboardingConsentSummaryStep]?,
-        primaryButtonTitle: String,
-        secondaryButtonTitle: String,
-        hasNavigationBarSkipButton: Bool) {
+         title: String,
+         content: String,
+         image: UIImage?,
+         summarySteps: [OnboardingConsentSummaryStep]?,
+         primaryButtonTitle: String,
+         secondaryButtonTitle: String,
+         hasNavigationBarSkipButton: Bool) {
 
         self.step = step
         self.title = title
@@ -50,7 +48,7 @@ final class OnboardingConsentStep: NSObject {
         self.primaryButtonTitle = primaryButtonTitle
         self.secondaryButtonTitle = secondaryButtonTitle
         self.hasNavigationBarSkipButton = hasNavigationBarSkipButton
-        
+
         let attributedString = NSMutableAttributedString()
 
         let newLineAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 10)]
