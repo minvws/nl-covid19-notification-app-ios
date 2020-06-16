@@ -1,17 +1,17 @@
 /*
- * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
- *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
- *
- *  SPDX-License-Identifier: EUPL-1.2
- */
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
 
 import UIKit
 
-protocol OnboardingStepViewControllable: ViewControllable {}
+protocol OnboardingStepViewControllable: ViewControllable { }
 
 final class OnboardingStepViewController: ViewController, OnboardingStepViewControllable {
 
-    private lazy var imageView: UIImageView = {
+    lazy private var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
@@ -19,21 +19,28 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         return imageView
     }()
 
-    private lazy var label: UILabel = {
+    lazy private var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         return label
     }()
 
-    private lazy var button: Button = {
+    lazy private var contentLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0        
+        return label
+    }()
+
+    lazy private var button: Button = {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [imageView, button, label]
+    lazy private var viewsInDisplayOrder = [imageView, button, titleLabel, contentLabel]
 
     private var index: Int
     private var onboardingStep: OnboardingStep
@@ -45,10 +52,10 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     // MARK: - Lifecycle
 
     init(onboardingManager: OnboardingManaging,
-         onboardingStepBuilder: OnboardingStepBuildable,
-         listener: OnboardingStepListener,
-         theme: Theme,
-         index: Int) {
+        onboardingStepBuilder: OnboardingStepBuildable,
+        listener: OnboardingStepListener,
+        theme: Theme,
+        index: Int) {
 
         self.onboardingManager = onboardingManager
         self.onboardingStepBuilder = onboardingStepBuilder
@@ -63,7 +70,8 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
         self.button.title = self.onboardingStep.buttonTitle
         self.imageView.image = self.onboardingStep.image
-        self.label.attributedText = self.onboardingStep.attributedText
+        self.titleLabel.attributedText = self.onboardingStep.attributedTitle
+        self.contentLabel.attributedText = self.onboardingStep.attributedContent
     }
 
     override func viewDidLoad() {
@@ -90,26 +98,35 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
-        ])
+            ])
 
         constraints.append([
             button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            button.heightAnchor.constraint(equalToConstant: 50)
-        ])
+            button.heightAnchor.constraint(equalToConstant: 50),
+            ])
 
         constraints.append([
-            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 0),
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            label.bottomAnchor.constraint(equalTo: button.topAnchor, constant: 0)
-        ])
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 0),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
+            ])
+
+        constraints.append([
+            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            contentLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            contentLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
+            ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        
+        self.contentLabel.sizeToFit()
     }
 
-    // MARK: - Functions
+    //MARK: - Functions
 
     @objc func buttonPressed() {
         let nextIndex = self.index + 1
@@ -122,3 +139,4 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         }
     }
 }
+
