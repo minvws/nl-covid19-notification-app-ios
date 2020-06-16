@@ -14,13 +14,14 @@ protocol NetworkControlling {
     func getManifest(completion: @escaping (Result<Manifest, Error>) -> ())
     func getExposureKeySet(exposureKeySet:String, completion: @escaping (Result<[URL], Error>) -> ())
     func getResourceBundle()
-    func getRiskCalculationParameters() -> RiskCalculationParameters
+    func getRiskCalculationParameters(appConfig:String)
     func getAppConfig() -> AppConfig
-    func postKeys()
+    
     func postStopKeys()
     
     // MARK: - Post requests
     func register()
+    func postKeys(diagnosisKeys:DiagnosisKeys)
 }
 
 /// @mockable

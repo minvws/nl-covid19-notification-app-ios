@@ -58,10 +58,10 @@ final class NetworkManager : NetworkManaging {
     
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
     /// - Parameter completion: completion description
-    func getAppConfig(appConfig:String, completion: @escaping (Error?) -> Void) {
+    func getAppConfig(appConfig:String, completion: @escaping (Result<AppConfig, Error>) -> Void) {
         session.get(self.configuration.appConfigUrl(param: appConfig)) { data, response, error in
             if let error = error {
-                completion(error)
+                completion(.failure(error))
                 return
             }
             
@@ -69,13 +69,10 @@ final class NetworkManager : NetworkManaging {
                 guard let data = data else {
                     throw NetworkManagerError.noData
                 }
-                
                 let appConfig = try JSONDecoder().decode(AppConfig.self, from: data)
-                
-                // TODO: SAVE IN USER DEFAULTS!!!
-                completion(nil)
+                completion(.success(appConfig))
             } catch {
-                completion(error)
+                completion(.failure(error))
             }
             
         }
@@ -84,10 +81,10 @@ final class NetworkManager : NetworkManaging {
     
     /// Fetches risk parameters used by the ExposureManager
     /// - Parameter completion: success or fail
-    func getRiskCalculationParameters(appConfig:String, completion: @escaping (Error?) -> Void) {
+    func getRiskCalculationParameters(appConfig:String, completion: @escaping (Result<RiskCalculationParameters, Error>) -> Void) {
         session.get(self.configuration.riskCalculationParametersUrl(param: appConfig)) { data, response, error in
             if let error = error {
-                completion(error)
+                completion(.failure(error))
                 return
             }
             
@@ -97,11 +94,9 @@ final class NetworkManager : NetworkManaging {
                 }
                 
                 let riskCalculationParameters = try JSONDecoder().decode(RiskCalculationParameters.self, from: data)
-                
-                // TODO: SAVE IN USER DEFAULTS!!!
-                completion(nil)
+                completion(.success(riskCalculationParameters))
             } catch {
-                completion(error)
+                completion(.failure(error))
             }
         }
     }
@@ -141,7 +136,7 @@ final class NetworkManager : NetworkManaging {
     /// - Parameters:
     ///   - diagnosisKeys: Contains all diagnosisKeys available
     ///   - completion: completion nil if succes else error
-    func stopKeys(diagnosisKeys:DiagnosisKeys, completion: @escaping (Error?) -> Void) {
+    func postStopKeys(diagnosisKeys:DiagnosisKeys, completion: @escaping (Error?) -> Void) {
         session.post(self.configuration.postKeysUrl, object: diagnosisKeys) { data, response, error in
             completion(error)
         }

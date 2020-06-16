@@ -78,8 +78,16 @@ final class NetworkController: NetworkControlling {
         
     }
     
-    func getRiskCalculationParameters(appConfig:String) -> RiskCalculationParameters {
-        self.networkManager.getRiskCalculationParameters(appConfig: appConfig, completion: <#T##(Error?) -> Void#>)
+    func getRiskCalculationParameters(appConfig:String) {
+        self.networkManager.getRiskCalculationParameters(appConfig: appConfig) { result in
+            switch(result) {
+            case let .failure(error):
+                break;
+            case let .success(params):
+                // todo save
+                break;
+            }
+        }
     }
     
     func getAppConfig() -> AppConfig {
@@ -90,12 +98,42 @@ final class NetworkController: NetworkControlling {
         
     }
     
-    func postKeys() {
-        
+    func postKeys(diagnosisKeys:DiagnosisKeys) {
+        self.networkManager.postKeys(diagnosisKeys: diagnosisKeys) { error in
+            // handle?
+        }
     }
     
     func postStopKeys() {
         
+        // generate decoy data
+        var keys = [DiagnosisKey]()
+        
+        // how many days, max 14
+        let days = Int.random(in: 1 ... 14)
+        for _ in 1...days {
+            var bytes = Data(count: 16)
+            _ = bytes.withUnsafeMutableBytes {
+                SecRandomCopyBytes(kSecRandomDefault, 16, $0.baseAddress!)
+            }
+            
+            let key = DiagnosisKey(
+                keyData: bytes,
+                rollingPeriod: 1,
+                rollingStartNumber: 2648160,
+                transmissionRiskLevel: 0)
+            
+            keys.append(key)
+        }
+        
+        let diagnosisKeys = DiagnosisKeys(keys: keys, padding: "unknown")
+        self.networkManager.postKeys(diagnosisKeys: diagnosisKeys) { error in
+            if let error = error {
+                // TODO: Handle
+            }
+            
+            // TODO: success?
+        }
     }
     
     
