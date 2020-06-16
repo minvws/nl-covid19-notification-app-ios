@@ -26,21 +26,21 @@ protocol OnboardingDependency {
 ///
 /// - Tag: OnboardingDependencyProvider
 private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, OnboardingHelpDependency, WebDependency, ShareSheetDependency {
-    
+
     // MARK: - OnboardingStepDependency
 
     lazy var onboardingManager: OnboardingManaging = {
         OnboardingManager(theme: self.theme)
     }()
-    
+
     // MARK: - OnboardingConsentDependency
-    
+
     lazy var onboardingConsentManager: OnboardingConsentManaging = {
         return OnboardingConsentManager(exposureStateStream: dependency.exposureStateStream,
                                         exposureController: dependency.exposureController,
                                         theme: self.theme)
     }()
-    
+
     var theme: Theme {
         return dependency.theme
     }

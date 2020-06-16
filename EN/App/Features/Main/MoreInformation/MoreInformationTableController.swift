@@ -32,7 +32,7 @@ struct MoreInformationCellViewModel: MoreInformationCell {
     let title: String
     let description: String
 }
- 
+
 final class MoreInformationTableController: NSObject, UITableViewDelegate, UITableViewDataSource, MoreInformationTableControlling {
 
     // MARK: - MoreInformationTableControlling

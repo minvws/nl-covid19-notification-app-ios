@@ -1,9 +1,9 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import UIKit
 import WebKit
@@ -69,7 +69,7 @@ private final class OnboardingHelpView: View {
         return label
     }()
 
-    lazy private var lineView: UIView = {
+    private lazy var lineView: UIView = {
         let lineView = UILabel()
         lineView.translatesAutoresizingMaskIntoConstraints = false
         lineView.backgroundColor = .black
@@ -91,7 +91,7 @@ private final class OnboardingHelpView: View {
         return webView
     }()
 
-    lazy private var gradientImageView: UIImageView = {
+    private lazy var gradientImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
@@ -99,7 +99,6 @@ private final class OnboardingHelpView: View {
         imageView.image = UIImage(named: "Gradient") ?? UIImage()
         return imageView
     }()
-
 
     lazy var acceptButton: Button = {
         let button = Button(theme: self.theme)
@@ -109,7 +108,7 @@ private final class OnboardingHelpView: View {
         return button
     }()
 
-    lazy private var viewsInDisplayOrder = [titleLabel, closeButton, lineView, webView, gradientImageView, acceptButton]
+    private lazy var viewsInDisplayOrder = [titleLabel, closeButton, lineView, webView, gradientImageView, acceptButton]
 
     override func build() {
         super.build()
@@ -127,42 +126,42 @@ private final class OnboardingHelpView: View {
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             titleLabel.heightAnchor.constraint(equalToConstant: 75)
-            ])
+        ])
 
         constraints.append([
             closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 0),
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             closeButton.heightAnchor.constraint(equalToConstant: 75),
             closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-            ])
+        ])
 
         constraints.append([
             lineView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             lineView.leadingAnchor.constraint(equalTo: leadingAnchor),
             lineView.trailingAnchor.constraint(equalTo: trailingAnchor),
             lineView.heightAnchor.constraint(equalToConstant: 1)
-            ])
+        ])
 
         constraints.append([
             webView.topAnchor.constraint(equalTo: lineView.bottomAnchor, constant: 0),
             webView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             webView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             webView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-            ])
+        ])
 
         constraints.append([
             gradientImageView.heightAnchor.constraint(equalToConstant: 25),
             gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             gradientImageView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-            ])
+        ])
 
         constraints.append([
             acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
+        ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }

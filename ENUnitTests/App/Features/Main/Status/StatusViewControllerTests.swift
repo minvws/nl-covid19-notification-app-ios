@@ -18,7 +18,7 @@ final class StatusViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        
+
         let theme = ENTheme()
 
         SnapshotTesting.record = false

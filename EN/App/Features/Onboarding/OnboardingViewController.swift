@@ -25,7 +25,6 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         modalPresentationStyle = .fullScreen
     }
 
-
     // MARK: - OnboardingViewControllable
 
     func push(viewController: ViewControllable, animated: Bool) {
@@ -59,17 +58,11 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         router?.routeToHelp()
     }
 
-    func helpRequestsFAQ() {
+    func helpRequestsFAQ() {}
 
-    }
+    func helpRequestsPermission() {}
 
-    func helpRequestsPermission() {
-
-    }
-
-    func helpRequestsClose() {
-
-    }
+    func helpRequestsClose() {}
 
     // MARK: - ViewController Lifecycle
 

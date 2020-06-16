@@ -18,11 +18,11 @@ protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, O
 final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
 
     init(viewController: OnboardingViewControllable,
-        stepBuilder: OnboardingStepBuildable,
-        consentBuilder: OnboardingConsentBuildable,
-        helpBuilder: OnboardingHelpBuildable,
-        webBuilder: WebBuildable,
-        shareSheetBuilder: ShareSheetBuildable) {
+         stepBuilder: OnboardingStepBuildable,
+         consentBuilder: OnboardingConsentBuildable,
+         helpBuilder: OnboardingHelpBuildable,
+         webBuilder: WebBuildable,
+         shareSheetBuilder: ShareSheetBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
         self.helpBuilder = helpBuilder

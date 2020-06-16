@@ -16,7 +16,7 @@ final class AboutViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        
+
         let theme = ENTheme()
 
         viewController = AboutViewController(listener: listener,

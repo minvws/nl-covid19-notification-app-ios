@@ -14,13 +14,13 @@ import UIKit
 enum ExposureManagerStatus: Equatable {
     /// Exposure Notification is active
     case active
-    
+
     /// Exposure Notification is inactive
     case inactive(ExposureManagerError)
-    
+
     /// No authorisation has been given yet
     case notAuthorized
-    
+
     /// Authorisation has been explicitly denied
     case authorizationDenied
 }

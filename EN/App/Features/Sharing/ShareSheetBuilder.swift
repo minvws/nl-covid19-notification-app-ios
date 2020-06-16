@@ -27,8 +27,7 @@ protocol ShareSheetBuildable {
                items: [Any]) -> ViewControllable
 }
 
-private final class ShareSheetDependencyProvider: DependencyProvider<ShareSheetDependency> {
-}
+private final class ShareSheetDependencyProvider: DependencyProvider<ShareSheetDependency> {}
 
 final class ShareSheetBuilder: Builder<ShareSheetDependency>, ShareSheetBuildable {
     func build(withListener listener: ShareSheetListener, items: [Any]) -> ViewControllable {

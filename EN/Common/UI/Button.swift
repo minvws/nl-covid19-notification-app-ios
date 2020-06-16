@@ -30,7 +30,7 @@ class Button: UIButton, Themeable {
             self.setTitle(title, for: .normal)
         }
     }
-    
+
     let theme: Theme
 
     var action: (() -> ())?

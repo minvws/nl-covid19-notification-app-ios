@@ -14,12 +14,12 @@ struct StatusViewIcon {
         case notified
         case inactive
     }
-    
+
     let color: UIColor
     let icon: UIImage?
-    
+
     // MARK: - Init
-    
+
     init(theme: Theme, status: Status) {
         switch status {
         case .ok:
@@ -64,9 +64,9 @@ struct StatusCardViewModel {
     let title: NSAttributedString
     let description: NSAttributedString
     let button: StatusViewButtonModel
-    
+
     // MARK: - Init
-    
+
     init(theme: Theme) {
         self.icon = StatusViewIcon(theme: theme, status: .inactive)
         self.title = .init(string: "App is niet actief")
@@ -82,7 +82,7 @@ struct StatusViewModel {
         case active
         case notified
     }
-    
+
     var icon: StatusViewIcon
     var title: NSAttributedString
     var description: NSAttributedString
@@ -92,7 +92,7 @@ struct StatusViewModel {
     var shouldShowHideMessage: Bool
     var gradientColor: UIColor
     var showScene: Bool
-    
+
     init(theme: Theme, status: Status) {
         switch status {
         case .active:
@@ -121,7 +121,7 @@ struct StatusViewModel {
             )
         }
     }
-    
+
     init(theme: Theme,
          icon: StatusViewIcon.Status,
          title: NSAttributedString,

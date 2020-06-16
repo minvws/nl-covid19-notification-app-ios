@@ -15,7 +15,7 @@ final class RequestTestViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        
+
         let theme = ENTheme()
 
         viewController = RequestTestViewController(theme: theme)
