@@ -16,8 +16,10 @@ final class ___VARIABLE_componentName___ViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        let theme = ENTheme()
+
         // TODO: Set up other components properly and connect them to the viewController
-        viewController = ___VARIABLE_componentName___ViewController()
+        viewController = ___VARIABLE_componentName___ViewController(theme: theme)
     }
 
     // TODO: Write test cases

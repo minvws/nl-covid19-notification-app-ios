@@ -22,6 +22,7 @@ protocol ___VARIABLE_componentName___Buildable {
 }
 
 protocol ___VARIABLE_componentName___Dependency {
+    var theme: Theme { get }
     // TODO: Add any external dependency
 }
 
@@ -38,6 +39,6 @@ final class ___VARIABLE_componentName___Builder: Builder<___VARIABLE_componentNa
 
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
-        return ___VARIABLE_componentName___ViewController(listener: listener)
+        return ___VARIABLE_componentName___ViewController(listener: listener, theme: dependencyProvider.dependency.theme)
     }
 }

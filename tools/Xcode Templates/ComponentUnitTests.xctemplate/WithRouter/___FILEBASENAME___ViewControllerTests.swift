@@ -17,7 +17,9 @@ final class ___VARIABLE_componentName___ViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        viewController = ___VARIABLE_componentName___ViewController()
+        let theme = ENTheme()
+
+        viewController = ___VARIABLE_componentName___ViewController(theme: theme)
         viewController.router = router
     }
 
