@@ -51,8 +51,7 @@ extension NSAttributedString {
             
             return attributedTitle
         }
-    
-        print("🔥 Text: \(text) could not be attributed")
+        
         return NSAttributedString(string: text)
     }
 }
