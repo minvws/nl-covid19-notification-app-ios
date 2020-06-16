@@ -31,7 +31,5 @@ open class ViewController: UIViewController, ViewControllable, Themeable {
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = theme.colors.viewControllerBackground
     }
 }

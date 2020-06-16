@@ -44,7 +44,7 @@ open class View: UIView, Themeable {
     }
 
     open func build() {
-        backgroundColor = .systemBackground
+        backgroundColor = theme.colors.viewControllerBackground
     }
 
     open func setupConstraints() {}
