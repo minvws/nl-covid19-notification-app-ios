@@ -230,7 +230,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         internalView.tapGestureRecognizer.addTarget(self, action: #selector(didTapBackground))
     }
 
-    private lazy var internalView: DeveloperMenuView = DeveloperMenuView()
+    private lazy var internalView: DeveloperMenuView = DeveloperMenuView(theme: self.theme)
     private var isShown: Bool = false
     private weak var listener: DeveloperMenuListener?
     private let mutableExposureStateStream: MutableExposureStateStreaming
@@ -245,13 +245,13 @@ private final class DeveloperMenuView: View {
     private let contentView = UIView()
     fileprivate let tableView = UITableView()
     fileprivate let tapGestureRecognizer = UITapGestureRecognizer()
-    
+
     // MARK: - Init
-    
+
     override init(theme: Theme) {
         super.init(theme: theme)
     }
-    
+
     // MARK: - Overrides
 
     override func build() {
