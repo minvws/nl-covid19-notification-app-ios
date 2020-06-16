@@ -1,1 +1,2 @@
 github "pointfreeco/swift-snapshot-testing" "1.7.2"
+github "weichsel/ZIPFoundation" ~> 0.9

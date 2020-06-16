@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DiagnosisKey {
+struct DiagnosisKey : Encodable {
     let keyData: Data
     let rollingPeriod: UInt32
     let rollingStartNumber: UInt32

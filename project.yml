@@ -57,6 +57,9 @@ targets:
             UIWindowSceneSessionRoleApplication:
               - UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
                 UISceneConfigurationName: Default Configuration
+                
+    dependencies:
+      - carthage: ZIPFoundation
 
     scheme:
       gatherCoverageData: true
