@@ -41,6 +41,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
         internalView.tableView.delegate = self
         internalView.tableView.dataSource = self
+
+        view.backgroundColor = .clear
     }
 
     // MARK: - UITableViewDataSource
