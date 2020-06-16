@@ -19,7 +19,6 @@ protocol MainRouting: Routing {
     func routeToInfected()
     func routeToRequestTest()
     func routeToShareApp()
-    func routeToSettings()
 }
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, MoreInformationListener {
@@ -89,11 +88,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     func moreInformationRequestsShareApp() {
         router?.routeToShareApp()
     }
-    
-    func moreInformationRequestsSettings() {
-        router?.routeToSettings()
-    }
-    
+
     // MARK: - AboutListener
     
     func aboutRequestsDismissal(shouldHideViewController: Bool) {

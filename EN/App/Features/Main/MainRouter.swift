@@ -86,10 +86,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         
     }
     
-    func routeToSettings() {
-        
-    }
-    
     // MARK: - Private
     
     private let statusBuilder: StatusBuildable

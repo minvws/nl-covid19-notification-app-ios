@@ -75,29 +75,11 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         moreInformationView.addButton(withTitle: "Coronatest aanvragen",
                                       target: self,
                                       action: #selector(didTapRequestTestButton))
-        
-        moreInformationView.addButton(withTitle: "App delen",
-                                      target: self,
-                                      action: #selector(didTapRequestShareAppButton))
-        
-        moreInformationView.addButton(withTitle: "Instellingen",
-                                      target: self,
-                                      action: #selector(didTapRequestSettingsButton))
     }
     
     @objc
     func didTapRequestTestButton() {
         listener?.moreInformationRequestsRequestTest()
-    }
-    
-    @objc
-    func didTapRequestShareAppButton() {
-        listener?.moreInformationRequestsShareApp()
-    }
-    
-    @objc
-    func didTapRequestSettingsButton() {
-        listener?.moreInformationRequestsSettings()
     }
     
     private var cells: [MoreInformationCellIdentifier: MoreInformationCell] {
