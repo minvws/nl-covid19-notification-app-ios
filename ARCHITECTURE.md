@@ -186,7 +186,11 @@ More conventions could be added later (e.g. once decisions have been made about 
 
 [Mockolo](https://github.com/uber/mockolo) is used for generating Mocks. The `ENTests` target has a build step to generate mocks automatically. Make sure to annotate interfaces with `/// @mockable` to have mocks generated for it.
 
+## Snapshot tests
+
+[Snapshot Tests](https://github.com/pointfreeco/swift-snapshot-testing) are used to protect against unwanted UI changes. Ensure you commit Snapshot tests for any UI related implementations/changes. These should be run on the iPhone 11 simulator.
+
 ## Questions / Feedback / Remarks
 
-Please reach out to the #notificatie-app-ios channel in the [CodeFor.NL](codefor.nl) slack workspace or directly to one us of: Leon Boon, Rob Mulder or Robin van Dijke.
+Please reach out to the #notificatie-app-ios channel in the [CodeFor.NL](codefor.nl) slack workspace or directly to one us of: Leon Boon, Rob Mulder, Cameron Mc Gorian or Robin van Dijke.
 
