@@ -4,29 +4,6 @@ BREW_PATH=`which brew`
 XCODE_TEMPLATE_PATH_SRC="tools/Xcode Templates/Component.xctemplate"
 XCODE_TEMPLATE_PATH_DST="${HOME}/Library/Developer/Xcode/Templates/File Templates/COVID-NL"
 
-# Define pre commit script to auto format the code
-define _add_pre_commit
-SWIFTFORMAT_PATH=`which swiftformat`
-
-cat > .git/hooks/pre-commit << ENDOFFILE
-#!/bin/sh
-
-FILES=\$(git diff --cached --name-only --diff-filter=ACMR "*.swift" | sed 's| |\\ |g')
-[ -z "\$FILES" ] && exit 0
-
-# Format
-${SWIFTFORMAT_PATH} \$FILES
-
-# Add back the formatted files to staging
-echo "\$FILES" | xargs git add
-
-exit 0
-ENDOFFILE
-
-chmod +x .git/hooks/pre-commit
-endef
-export add_pre_commit_script = $(value _add_pre_commit)
-
 # Creates xcodeproj
 project: 
 	xcodegen
@@ -72,14 +49,14 @@ ifeq (, $(shell which swiftformat))
 	@echo "Installing swiftformat"
 	@brew install swiftformat
 endif
-	eval "$$add_pre_commit_script"
+	eval $(shell sh tools/scripts/pre-commit.sh)
 
 install_carthage:
 # install carthage, used for swift package management
 ifeq (, $(shell which carthage))
 	@echo "Installing carthage"
 	@brew install carthage
-endif
+endif 
 
 run_carthage:
 	@carthage bootstrap --platform ios
