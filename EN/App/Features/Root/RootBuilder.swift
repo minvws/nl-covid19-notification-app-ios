@@ -39,6 +39,9 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return builder.build()
     }()
     
+    /// Local Storage
+    lazy var storageController: StorageControlling = StorageControllerBuilder().build()
+    
     /// Exposure state stream, informs about the current exposure states
     var exposureStateStream: ExposureStateStreaming {
         return mutableExposureStatusStream

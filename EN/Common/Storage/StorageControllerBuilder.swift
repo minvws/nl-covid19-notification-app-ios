@@ -15,8 +15,8 @@ protocol StorageControllerBuildable {
     func build() -> StorageControlling
 }
 
-final class StorageControllerBuilder: Builder<StorageControllerDependency>, StorageControllerBuildable {
+final class StorageControllerBuilder: Builder<EmptyDependency>, StorageControllerBuildable {
     func build() -> StorageControlling {
-        return StorageControllerViewController(listener: listener)
+        return StorageController()
     }
 }
