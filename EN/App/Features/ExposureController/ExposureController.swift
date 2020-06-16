@@ -12,7 +12,12 @@ final class ExposureController: ExposureControlling {
     init(mutableStateStream: MutableExposureStateStreaming,
          exposureManager: ExposureManaging?) {
         self.mutableStateStream = mutableStateStream
+    init(mutableStatusStream: MutableExposureStateStreaming,
+        exposureManager: ExposureManaging?) {
+        self.mutableStatusStream = mutableStatusStream
         self.exposureManager = exposureManager
+
+        activateExposureManager()
     }
 
     // MARK: - ExposureControlling
@@ -27,7 +32,7 @@ final class ExposureController: ExposureControlling {
             self.updateStatusStream()
         }
     }
-    
+
     func requestExposureNotificationPermission() {
         exposureManager?.setExposureNotificationEnabled(true) { _ in
             self.updateStatusStream()
@@ -58,10 +63,23 @@ final class ExposureController: ExposureControlling {
 
     // MARK: - Private
 
+    private func activateExposureManager() {
+        guard let exposureManager = exposureManager else {
+            updateStatusStream()
+            return
+        }
+
+        exposureManager.activate { _ in
+            self.updateStatusStream()
+        }
+    }
+
     private func updateStatusStream() {
         guard let exposureManager = exposureManager else {
             mutableStateStream.update(state: .init(notified: isNotified,
                                                     activeState: .inactive(.requiresOSUpdate))
+            mutableStatusStream.update(state: .init(notified: isNotified,
+                activeState: .inactive(.requiresOSUpdate))
             )
 
             return
@@ -91,6 +109,9 @@ final class ExposureController: ExposureControlling {
         
         mutableStateStream.update(state: .init(notified: isNotified,
                                                 activeState: activeState)
+
+        mutableStatusStream.update(state: .init(notified: isNotified,
+            activeState: activeState)
         )
     }
 
@@ -100,5 +121,7 @@ final class ExposureController: ExposureControlling {
     }
     
     private let mutableStateStream: MutableExposureStateStreaming
+
+    private let mutableStatusStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging?
 }
