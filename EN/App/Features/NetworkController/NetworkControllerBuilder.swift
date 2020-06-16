@@ -10,18 +10,8 @@ import Foundation
 
 protocol NetworkControlling {
     
-    // MARK: - Calls for the background manager, should be queued
-    func getManifest(completion: @escaping (Result<Manifest, Error>) -> ())
-    func getExposureKeySet(exposureKeySet:String, completion: @escaping (Result<[URL], Error>) -> ())
-    func getResourceBundle()
-    func getRiskCalculationParameters(appConfig:String)
-    func getAppConfig() -> AppConfig
-    
-    func postStopKeys()
-    
-    // MARK: - Post requests
+    // only register should be exposed
     func register()
-    func postKeys(diagnosisKeys:DiagnosisKeys)
 }
 
 /// @mockable

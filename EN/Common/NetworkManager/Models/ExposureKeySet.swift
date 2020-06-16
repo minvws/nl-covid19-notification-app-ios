@@ -20,8 +20,8 @@ struct ExposureKeySet {
     static let EXPORT_BINARY = "export.bin"
     static let EXPORT_SIGNATURE = "export.sig"
     
-    var keys:Data
-    var signature:Data
+    let keys:Data
+    let signature:Data
     
     init(url:URL) throws {
         

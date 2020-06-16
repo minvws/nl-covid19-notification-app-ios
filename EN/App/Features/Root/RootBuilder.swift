@@ -43,7 +43,12 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     /// Exposure controller, to control the exposure data flows
     lazy var exposureController: ExposureControlling = {
         let builder = ExposureControllerBuilder(dependency: self)
-
+        return builder.build()
+    }()
+    
+    /// NetworkController controller
+    lazy var networkController: NetworkControlling = {
+        let builder = NetworkControllerBuilder(dependency: self)
         return builder.build()
     }()
     
