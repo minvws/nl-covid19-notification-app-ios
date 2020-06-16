@@ -22,7 +22,7 @@
 "step2Title" = "De app ziet via Bluetooth of je dicht bij iemand bent geweest";
 "step2Content" = "Hoe sterker het Bluetooth signaal, hoe dichter bij je bent geweest. Dit is 100% anoniem. De app ziet niet waar je bent geweest en gebruikt weinig energie.";
 
-"step3Title" = "Krijg een melding nadat je een verhoogd risico op besmetting hebt gelopen";
+"step3Title" = "Je krijgt een melding <u>nadat</u> je extra kans op besmetting hebt gelopen";
 "step3Content" = "Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die daarna positief is getest. Deze persoon moet ook de app gebruiken.";
 
 "step4Title" = "Fietste er iemand voorbij? Dan krijg je later geen melding.";

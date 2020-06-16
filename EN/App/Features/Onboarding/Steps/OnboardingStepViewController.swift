@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol OnboardingStepViewControllable: ViewControllable {}
+protocol OnboardingStepViewControllable: ViewControllable { }
 
 final class OnboardingStepViewController: ViewController, OnboardingStepViewControllable {
 
@@ -19,10 +19,17 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         return imageView
     }()
 
-    lazy private var label: UILabel = {
+    lazy private var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
+        return label
+    }()
+
+    lazy private var contentLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0        
         return label
     }()
 
@@ -33,28 +40,28 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         return button
     }()
 
-    lazy private var viewsInDisplayOrder = [imageView, button, label]
+    lazy private var viewsInDisplayOrder = [imageView, button, titleLabel, contentLabel]
 
     private var index: Int
     private var onboardingStep: OnboardingStep
     private let onboardingManager: OnboardingManaging
     private let onboardingStepBuilder: OnboardingStepBuildable
-    
+
     private weak var listener: OnboardingStepListener?
 
     // MARK: - Lifecycle
 
     init(onboardingManager: OnboardingManaging,
-         onboardingStepBuilder: OnboardingStepBuildable,
-         listener: OnboardingStepListener,
-         theme: Theme,
-         index: Int) {
+        onboardingStepBuilder: OnboardingStepBuildable,
+        listener: OnboardingStepListener,
+        theme: Theme,
+        index: Int) {
 
         self.onboardingManager = onboardingManager
         self.onboardingStepBuilder = onboardingStepBuilder
         self.listener = listener
         self.index = index
-        
+
         guard let step = self.onboardingManager.getStep(index) else { fatalError("OnboardingStep index out of range") }
 
         self.onboardingStep = step
@@ -63,7 +70,8 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
         self.button.title = self.onboardingStep.buttonTitle
         self.imageView.image = self.onboardingStep.image
-        self.label.attributedText = self.onboardingStep.attributedText
+        self.titleLabel.attributedText = self.onboardingStep.attributedTitle
+        self.contentLabel.attributedText = self.onboardingStep.attributedContent
     }
 
     override func viewDidLoad() {
@@ -77,7 +85,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
     private func setupViews() {
         setThemeNavigationBar()
-        
+
         viewsInDisplayOrder.forEach { view.addSubview($0) }
     }
 
@@ -100,13 +108,22 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
             ])
 
         constraints.append([
-            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 0),
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            label.bottomAnchor.constraint(equalTo: button.topAnchor, constant: 0),
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 0),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
             ])
-        
+
+        constraints.append([
+            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            contentLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            contentLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
+            ])
+
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        
+        self.contentLabel.sizeToFit()
     }
 
     //MARK: - Functions
