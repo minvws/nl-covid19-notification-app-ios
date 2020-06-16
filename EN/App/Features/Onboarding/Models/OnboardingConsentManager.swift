@@ -133,7 +133,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
     func goToBluetoothSettings(_ completion: @escaping (() -> ())) {
 
-        if let settingsUrl = URL(string: "App-prefs:Bluetooth") {
+        if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
             if UIApplication.shared.canOpenURL(settingsUrl) {
                 UIApplication.shared.open(settingsUrl)
             }
