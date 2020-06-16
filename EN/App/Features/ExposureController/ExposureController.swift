@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 
 final class ExposureController: ExposureControlling {
-    init(mutableStatusStream: MutableExposureStateStreaming,
-        exposureManager: ExposureManaging?) {
-        self.mutableStatusStream = mutableStatusStream
+    init(mutableStateStream: MutableExposureStateStreaming,
+         exposureManager: ExposureManaging?) {
+        self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
     }
 
@@ -60,8 +60,8 @@ final class ExposureController: ExposureControlling {
 
     private func updateStatusStream() {
         guard let exposureManager = exposureManager else {
-            mutableStatusStream.update(state: .init(notified: isNotified,
-                activeState: .inactive(.requiresOSUpdate))
+            mutableStateStream.update(state: .init(notified: isNotified,
+                                                    activeState: .inactive(.requiresOSUpdate))
             )
 
             return
@@ -88,9 +88,9 @@ final class ExposureController: ExposureControlling {
         case .authorizationDenied:
             activeState = .authorizationDenied
         }
-
-        mutableStatusStream.update(state: .init(notified: isNotified,
-            activeState: activeState)
+        
+        mutableStateStream.update(state: .init(notified: isNotified,
+                                                activeState: activeState)
         )
     }
 
@@ -98,7 +98,7 @@ final class ExposureController: ExposureControlling {
         // TODO: Replace with right value
         return false
     }
-
-    private let mutableStatusStream: MutableExposureStateStreaming
+    
+    private let mutableStateStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging?
 }

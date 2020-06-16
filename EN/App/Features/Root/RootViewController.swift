@@ -12,6 +12,9 @@ import UIKit
 /// 
 /// @mockable
 protocol RootRouting: Routing {
+    /// Presents the onboarding flow
+    func routeToOnboarding()
+    
     /// Detaches the onboarding feature and calls completion when done.
     /// When the onboarding flow is not attached, completion is called immediately
     ///
@@ -46,5 +49,11 @@ final class RootViewController: ViewController, RootViewControllable {
     
     func didCompleteOnboarding() {
         router?.detachOnboardingAndRouteToMain(animated: true)
+    }
+
+    // MARK: - DeveloperMenu Listener
+    
+    func developerMenuRequestsOnboardingFlow() {
+        router?.routeToOnboarding()
     }
 }

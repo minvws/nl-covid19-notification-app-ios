@@ -20,8 +20,11 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency
-{
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency
+{    
+    
+    // MARK: - Child Builders
+    
     /// Builds onboarding flow
     var onboardingBuilder: OnboardingBuildable {
         return OnboardingBuilder(dependency: self)
@@ -31,6 +34,12 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     var mainBuilder: MainBuildable {
         return MainBuilder(dependency: self)
     }
+    
+    var developerMenuBuilder: DeveloperMenuBuildable {
+        return DeveloperMenuBuilder(dependency: self)
+    }
+    
+    // MARK: - Exposure Related
     
     /// Exposure controller, to control the exposure data flows
     lazy var exposureController: ExposureControlling = {
@@ -44,11 +53,11 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     
     /// Exposure state stream, informs about the current exposure states
     var exposureStateStream: ExposureStateStreaming {
-        return mutableExposureStatusStream
+        return mutableExposureStateStream
     }
     
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
-    fileprivate lazy var mutableExposureStatusStream: MutableExposureStateStreaming = ExposureStateStream()
+    lazy var mutableExposureStateStream: MutableExposureStateStreaming = ExposureStateStream()
 }
 
 /// Interface describing the builder that builds
@@ -78,6 +87,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
                           exposureController: dependencyProvider.exposureController,
-                          exposureStateStream: dependencyProvider.exposureStateStream)
+                          exposureStateStream: dependencyProvider.exposureStateStream,
+                          developerMenuBuilder: dependencyProvider.developerMenuBuilder)
     }
 }

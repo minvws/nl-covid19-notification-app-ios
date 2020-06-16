@@ -21,7 +21,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener {
     var router: RootRouting? { get set }
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
@@ -38,9 +38,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          onboardingBuilder: OnboardingBuildable,
          mainBuilder: MainBuildable,
          exposureController: ExposureControlling,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         developerMenuBuilder: DeveloperMenuBuildable) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
+        self.developerMenuBuilder = developerMenuBuilder
         
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
@@ -76,9 +78,27 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         .store(in: &disposeBag)
             
         exposureController.activate()
+
+        #if DEBUG
+            attachDeveloperMenu()
+        #endif
     }
 
     // MARK: - RootRouting
+    
+    func routeToOnboarding() {
+        guard onboardingRouter == nil else {
+            // already presented
+            return
+        }
+
+        let onboardingRouter = onboardingBuilder.build(withListener: viewController)
+        self.onboardingRouter = onboardingRouter
+
+        viewController.present(viewController: onboardingRouter.viewControllable,
+            animated: false,
+            completion: nil)
+    }
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
         routeToMain()
@@ -110,19 +130,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             animated: animated,
             completion: nil)
     }
-
-    private func routeToOnboarding() {
-        guard onboardingRouter == nil else {
-            // already presented
-            return
-        }
-
-        let onboardingRouter = onboardingBuilder.build(withListener: viewController)
-        self.onboardingRouter = onboardingRouter
-
-        viewController.present(viewController: onboardingRouter.viewControllable,
-            animated: false,
-            completion: nil)
+    
+    private func attachDeveloperMenu() {
+        guard developerMenuViewController == nil else { return }
+        
+        let developerMenuViewController = developerMenuBuilder.build(listener: viewController)
+        self.developerMenuViewController = developerMenuViewController
     }
     
     private let exposureController: ExposureControlling
@@ -135,6 +148,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private var mainRouter: Routing?
     
     private var disposeBag = Set<AnyCancellable>()
+
+    private let developerMenuBuilder: DeveloperMenuBuildable
+    private var developerMenuViewController: ViewControllable?
 }
 
 private extension ExposureActiveState {

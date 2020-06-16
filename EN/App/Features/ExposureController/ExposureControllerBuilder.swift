@@ -29,7 +29,7 @@ protocol ExposureControllerBuildable {
 }
 
 protocol ExposureControllerDependency {
-    var mutableExposureStatusStream: MutableExposureStateStreaming { get }
+    var mutableExposureStateStream: MutableExposureStateStreaming { get }
 }
 
 private final class ExposureControllerDependencyProvider: DependencyProvider<ExposureControllerDependency> {
@@ -44,7 +44,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
     func build() -> ExposureControlling {
         let dependencyProvider = ExposureControllerDependencyProvider(dependency: dependency)
         
-        return ExposureController(mutableStatusStream: dependencyProvider.dependency.mutableExposureStatusStream,
+        return ExposureController(mutableStateStream: dependencyProvider.dependency.mutableExposureStateStream,
                                   exposureManager: dependencyProvider.exposureManager)
     }
 }
