@@ -14,6 +14,7 @@ final class RootRouterTests: XCTestCase {
     private let viewController = RootViewControllableMock()
     private let onboardingBuilder = OnboardingBuildableMock()
     private let mainBuilder = MainBuildableMock()
+    private let developerMenuBuilder = DeveloperMenuBuildableMock()
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
     
@@ -26,7 +27,8 @@ final class RootRouterTests: XCTestCase {
                             onboardingBuilder: onboardingBuilder,
                             mainBuilder: mainBuilder,
                             exposureController: exposureController,
-                            exposureStateStream: exposureStateStream)
+                            exposureStateStream: exposureStateStream,
+                            developerMenuBuilder: developerMenuBuilder)
         
         set(activeState: .notAuthorized)
     }
