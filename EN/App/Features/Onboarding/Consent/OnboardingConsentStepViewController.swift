@@ -86,10 +86,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                     self.goToNextStepOrCloseConsent()
                 }
             case .notifications:
-                onboardingConsentManager.askNotificationsAuthorization { (granted, error) in
-                    guard error == nil else {
-                        return
-                    }
+                onboardingConsentManager.askNotificationsAuthorization {
                     self.goToNextStepOrCloseConsent()
                 }
             }

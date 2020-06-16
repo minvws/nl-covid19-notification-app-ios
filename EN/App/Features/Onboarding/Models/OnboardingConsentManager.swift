@@ -17,7 +17,7 @@ protocol OnboardingConsentManaging {
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
-    func askNotificationsAuthorization(_ completion: @escaping (Bool, Error?) -> ())
+    func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -139,21 +139,9 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         completion()
     }
 
-    func askNotificationsAuthorization(_ completion: @escaping ((Bool, Error?) -> ())) {
-        let uncc = UNUserNotificationCenter.current()
-
-        uncc.getNotificationSettings { (settings) in
-            if settings.authorizationStatus == .authorized {
-                DispatchQueue.main.async {
-                    completion(true, nil)
-                }
-            }
-        }
-
-        uncc.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-            DispatchQueue.main.async {
-                completion(granted, error)
-            }
+    func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
+        exposureController.requestPushNotificationPermission {
+            completion()
         }
     }
 
