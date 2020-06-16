@@ -12,10 +12,10 @@ protocol ___VARIABLE_componentName___ViewControllable: ViewControllable {}
 
 final class ___VARIABLE_componentName___ViewController: ViewController, ___VARIABLE_componentName___ViewControllable {
 
-    init(listener: ___VARIABLE_componentName___Listener) {
+    init(listener: ___VARIABLE_componentName___Listener, theme: Theme: Theme) {
         self.listener = listener
 
-        super.init(nibName: nil, bundle: nil)
+        super.init(theme: theme)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -37,10 +37,19 @@ final class ___VARIABLE_componentName___ViewController: ViewController, ___VARIA
     // MARK: - Private
 
     private weak var listener: ___VARIABLE_componentName___Listener?
-    private lazy var internalView: ___VARIABLE_componentName___View = ___VARIABLE_componentName___View()
+    private lazy var internalView: ___VARIABLE_componentName___View = ___VARIABLE_componentName___View(theme: self.theme)
 }
 
 private final class ___VARIABLE_componentName___View: View {
+
+    // MARK: - Init
+    
+    override init(theme: Theme) {
+        super.init(theme: theme)
+    }
+    
+    // MARK: - Overrides
+
     override func build() {
         super.build()
 

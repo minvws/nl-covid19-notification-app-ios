@@ -245,6 +245,14 @@ private final class DeveloperMenuView: View {
     private let contentView = UIView()
     fileprivate let tableView = UITableView()
     fileprivate let tapGestureRecognizer = UITapGestureRecognizer()
+    
+    // MARK: - Init
+    
+    override init(theme: Theme) {
+        super.init(theme: theme)
+    }
+    
+    // MARK: - Overrides
 
     override func build() {
         super.build()
