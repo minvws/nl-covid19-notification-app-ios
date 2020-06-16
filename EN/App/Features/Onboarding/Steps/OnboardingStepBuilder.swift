@@ -14,6 +14,7 @@ protocol OnboardingStepBuildable {
 }
 
 protocol OnboardingStepDependency {
+    var theme: Theme { get }
     var onboardingManager: OnboardingManaging { get }
 }
 
@@ -38,6 +39,7 @@ final class OnboardingStepBuilder: Builder<OnboardingStepDependency>, Onboarding
         return OnboardingStepViewController(onboardingManager: onboardingManager,
                                             onboardingStepBuilder: self,
                                             listener: listener,
+                                            theme: dependencyProvider.dependency.theme,
                                             index: initialIndex)
     }
 }

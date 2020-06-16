@@ -18,24 +18,32 @@ protocol OnboardingBuildable {
 }
 
 protocol OnboardingDependency {
+    var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
 }
 
 ///
 /// - Tag: OnboardingDependencyProvider
-private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency {
+private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, OnboardingHelpDependency, WebDependency, ShareSheetDependency {
     
     // MARK: - OnboardingStepDependency
 
-    lazy var onboardingManager: OnboardingManaging = OnboardingManager()
+    lazy var onboardingManager: OnboardingManaging = {
+        OnboardingManager(theme: self.theme)
+    }()
     
     // MARK: - OnboardingConsentDependency
     
     lazy var onboardingConsentManager: OnboardingConsentManaging = {
         return OnboardingConsentManager(exposureStateStream: dependency.exposureStateStream,
-                                        exposureController: dependency.exposureController)
+                                        exposureController: dependency.exposureController,
+                                        theme: self.theme)
     }()
+    
+    var theme: Theme {
+        return dependency.theme
+    }
 
     // MARK: - Child Builders
 
@@ -48,22 +56,23 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
     }
 
     var webBuilder: WebBuildable {
-        return WebBuilder()
+        return WebBuilder(dependency: self)
     }
 
     var helpBuilder: OnboardingHelpBuildable {
-        return OnboardingHelpBuilder()
+        return OnboardingHelpBuilder(dependency: self)
     }
 
     var shareSheetBuilder: ShareSheetBuildable {
-        return ShareSheetBuilder()
+        return ShareSheetBuilder(dependency: self)
     }
 }
 
 final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildable {
     func build(withListener listener: OnboardingListener) -> Routing {
         let dependencyProvider = OnboardingDependencyProvider(dependency: dependency)
-        let viewController = OnboardingViewController(listener: listener)
+        let viewController = OnboardingViewController(listener: listener,
+                                                      theme: dependencyProvider.dependency.theme)
 
         return OnboardingRouter(viewController: viewController,
                                 stepBuilder: dependencyProvider.stepBuilder,

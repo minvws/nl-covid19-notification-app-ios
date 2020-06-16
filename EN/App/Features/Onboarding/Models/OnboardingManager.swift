@@ -18,10 +18,11 @@ final class OnboardingManager: OnboardingManaging {
 
     var onboardingSteps: [OnboardingStep] = []
 
-    init() {
+    init(theme: Theme) {
 
         onboardingSteps.append(
             OnboardingStep(
+                theme: theme,
                 title: Localized("step1Title"),
                 content: Localized("step1Content"),
                 image: UIImage(named: "Step1") ?? UIImage(),
@@ -32,6 +33,7 @@ final class OnboardingManager: OnboardingManaging {
 
         onboardingSteps.append(
             OnboardingStep(
+                theme: theme,
                 title: Localized("step2Title"),
                 content: Localized("step2Content"),
                 image: UIImage(named: "Step2") ?? UIImage(),
@@ -42,6 +44,7 @@ final class OnboardingManager: OnboardingManaging {
 
         onboardingSteps.append(
             OnboardingStep(
+                theme: theme,
                 title: Localized("step3Title"),
                 content: Localized("step3Content"),
                 image: UIImage(named: "Step3") ?? UIImage(),
@@ -52,6 +55,7 @@ final class OnboardingManager: OnboardingManaging {
 
         onboardingSteps.append(
             OnboardingStep(
+                theme: theme,
                 title: Localized("step4Title"),
                 content: Localized("step4Content"),
                 image: UIImage(named: "Step4") ?? UIImage(),

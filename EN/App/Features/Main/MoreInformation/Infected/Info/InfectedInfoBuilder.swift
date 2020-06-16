@@ -24,6 +24,7 @@ protocol InfectedInfoBuildable {
 
 protocol InfectedInfoDependency {
     // TODO: Add any external dependency
+    var theme: Theme { get }
 }
 
 private final class InfectedInfoDependencyProvider: DependencyProvider<InfectedInfoDependency> /*, ChildDependency */ {
@@ -44,7 +45,7 @@ final class InfectedInfoBuilder: Builder<InfectedInfoDependency>, InfectedInfoBu
         let dependencyProvider = InfectedInfoDependencyProvider(dependency: dependency)
         
         // let childBuilder = dependencyProvider.childBuilder
-        let viewController = InfectedInfoViewController()
+        let viewController = InfectedInfoViewController(theme: dependencyProvider.dependency.theme)
         
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.

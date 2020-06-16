@@ -14,14 +14,10 @@ protocol InfectedCodeEntryViewControllable: ViewControllable {
 
 final class InfectedCodeEntryViewController: ViewController, InfectedCodeEntryViewControllable {
     
-    init(listener: InfectedCodeEntryListener) {
+    init(listener: InfectedCodeEntryListener, theme: Theme) {
         self.listener = listener
         
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
     
     // MARK: - ViewController Lifecycle
@@ -39,10 +35,11 @@ final class InfectedCodeEntryViewController: ViewController, InfectedCodeEntryVi
     // MARK: - Private
     
     private weak var listener: InfectedCodeEntryListener?
-    private lazy var internalView: InfectedCodeEntryView = InfectedCodeEntryView()
+    private lazy var internalView: InfectedCodeEntryView = InfectedCodeEntryView(theme: self.theme)
 }
 
 private final class InfectedCodeEntryView: View {
+    
     override func build() {
         super.build()
         

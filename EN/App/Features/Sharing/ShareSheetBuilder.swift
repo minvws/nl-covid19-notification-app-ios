@@ -13,6 +13,10 @@ protocol ShareSheetListener: AnyObject {
     func shareSheetDidComplete()
 }
 
+protocol ShareSheetDependency {
+    var theme: Theme { get }
+}
+
 /// @mockable
 protocol ShareSheetBuildable {
     /// Builds ShareSheet
@@ -23,9 +27,13 @@ protocol ShareSheetBuildable {
                items: [Any]) -> ViewControllable
 }
 
-final class ShareSheetBuilder: Builder<EmptyDependency>, ShareSheetBuildable {
+private final class ShareSheetDependencyProvider: DependencyProvider<ShareSheetDependency> {
+}
+
+final class ShareSheetBuilder: Builder<ShareSheetDependency>, ShareSheetBuildable {
     func build(withListener listener: ShareSheetListener, items: [Any]) -> ViewControllable {
-        // TODO: Forward Items
-        return ShareSheetViewController(listener: listener)
+        let dependencyProvider = ShareSheetDependencyProvider(dependency: dependency)
+        return ShareSheetViewController(listener: listener,
+                                        theme: dependencyProvider.dependency.theme)
     }
 }

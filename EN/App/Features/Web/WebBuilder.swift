@@ -28,17 +28,22 @@ extension WKWebView: WebViewing {
     }
 }
 
-private final class WebDependencyProvider: DependencyProvider<EmptyDependency> {
+protocol WebDependency {
+    var theme: Theme { get }
+}
+
+private final class WebDependencyProvider: DependencyProvider<WebDependency> {
     var webView: WebViewing {
         return WKWebView()
     }
 }
 
-final class WebBuilder: Builder<EmptyDependency>, WebBuildable {
+final class WebBuilder: Builder<WebDependency>, WebBuildable {
     func build(withListener listener: WebListener, urlRequest: URLRequest) -> ViewControllable {
-        let dependencyProvider = WebDependencyProvider()
+        let dependencyProvider = WebDependencyProvider(dependency: dependency)
         
         return WebViewController(listener: listener,
+                                 theme: dependencyProvider.dependency.theme,
                                  webView: dependencyProvider.webView,
                                  urlRequest: urlRequest)
     }

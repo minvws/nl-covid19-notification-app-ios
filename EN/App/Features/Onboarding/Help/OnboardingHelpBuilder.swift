@@ -14,6 +14,10 @@ protocol OnboardingHelpListener: AnyObject {
     func helpRequestsClose()
 }
 
+protocol OnboardingHelpDependency {
+    var theme: Theme { get }
+}
+
 /// @mockable
 protocol OnboardingHelpBuildable {
     /// Builds OnboardingHelp
@@ -22,11 +26,14 @@ protocol OnboardingHelpBuildable {
     func build(withListener listener: OnboardingHelpListener) -> ViewControllable
 }
 
-private final class OnboardingHelpDependencyProvider: DependencyProvider<EmptyDependency> {
+private final class OnboardingHelpDependencyProvider: DependencyProvider<OnboardingHelpDependency> {
 }
 
-final class OnboardingHelpBuilder: Builder<EmptyDependency>, OnboardingHelpBuildable {
+final class OnboardingHelpBuilder: Builder<OnboardingHelpDependency>, OnboardingHelpBuildable {
     func build(withListener listener: OnboardingHelpListener) -> ViewControllable {
-        return OnboardingHelpViewController(listener: listener)
+        let dependencyProvidr = OnboardingHelpDependencyProvider(dependency: dependency)
+        
+        return OnboardingHelpViewController(listener: listener,
+                                            theme: dependencyProvidr.dependency.theme)
     }
 }

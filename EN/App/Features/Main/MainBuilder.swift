@@ -11,10 +11,15 @@ protocol MainBuildable {
 }
 
 protocol MainDependency {
+    var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency {
+    
+    var theme: Theme {
+        return dependency.theme
+    }
 
     var exposureStateStream: ExposureStateStreaming {
         return dependency.exposureStateStream
@@ -29,14 +34,14 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     }
     
     var aboutBuilder: AboutBuildable {
-        return AboutBuilder()
+        return AboutBuilder(dependency: self)
     }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
     func build() -> Routing {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
-        let viewController = MainViewController()
+        let viewController = MainViewController(theme: dependencyProvider.dependency.theme)
         
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,

@@ -16,7 +16,7 @@ final class OnboardingStep: NSObject {
     var isExample: Bool = false
     var attributedText: NSAttributedString = NSAttributedString(string: "")
 
-    init(title: String, content: String, image: UIImage, buttonTitle: String, isExample: Bool) {
+    init(theme: Theme, title: String, content: String, image: UIImage, buttonTitle: String, isExample: Bool) {
         
         self.title = title
         self.content = content
@@ -26,9 +26,9 @@ final class OnboardingStep: NSObject {
 
         let attributedString = NSMutableAttributedString()
         let newLine: NSAttributedString = .make(text: "\n\n", font: .systemFont(ofSize: 10), textColor: .black)
-        let exampleString: NSAttributedString = .make(text: Localized("example"), font: .systemFont(ofSize: 15, weight: .bold), textColor: UIColor.secondaryColor)
+        let exampleString: NSAttributedString = .make(text: Localized("example"), font: .systemFont(ofSize: 15, weight: .bold), textColor: theme.colors.secondary)
         let titleString: NSAttributedString = .make(text: title, font: .boldSystemFont(ofSize: 22), textColor: .black)
-        let contentString: NSAttributedString = .make(text: content, font: .systemFont(ofSize: 17), textColor: .grayColor)
+        let contentString: NSAttributedString = .make(text: content, font: .systemFont(ofSize: 17), textColor: theme.colors.gray)
 
         if isExample {
             for string in [exampleString, newLine, titleString, newLine, contentString] { attributedString.append(string) }

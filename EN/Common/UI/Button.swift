@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Button: UIButton {
+class Button: UIButton, Themeable {
 
     enum ButtonType {
         case primary, secondary, tertiary
@@ -30,13 +30,15 @@ class Button: UIButton {
             self.setTitle(title, for: .normal)
         }
     }
+    
+    let theme: Theme
 
     var action: (() -> Void)?
 
     var useHapticFeedback = true
 
-    required init(title: String = "") {
-
+    required init(title: String = "", theme: Theme) {
+        self.theme = theme
         super.init(frame: .zero)
 
         self.setTitle(title, for: .normal)
@@ -68,14 +70,14 @@ class Button: UIButton {
     fileprivate func updateButtonType() {
         switch style {
         case .primary:
-            self.backgroundColor = .primaryColor
+            self.backgroundColor = theme.colors.primary
             self.setTitleColor(.white, for: .normal)
         case .secondary:
-            self.backgroundColor = .secondaryColor
+            self.backgroundColor = theme.colors.secondary
             self.setTitleColor(.white, for: .normal)
         case .tertiary:
-            self.backgroundColor = .tertiaryColor
-            self.setTitleColor(.primaryColor, for: .normal)
+            self.backgroundColor = theme.colors.tertiary
+            self.setTitleColor(theme.colors.primary, for: .normal)
         }
 
         self.tintColor = .white

@@ -14,18 +14,10 @@ final class OnboardingConsentSummaryStepsView: View {
 
     // MARK: - Lifecycle
 
-    required init(with steps: [OnboardingConsentSummaryStep]) {
-
+    required init(with steps: [OnboardingConsentSummaryStep], theme: Theme) {
         self.consentSummarySteps = steps
-
-        self.consentSummaryStepViews = consentSummarySteps.map { OnboardingConsentSummaryStepView(with: $0) }
-
-        super.init(frame: .zero)
-    }
-
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        self.consentSummaryStepViews = consentSummarySteps.map { OnboardingConsentSummaryStepView(with: $0, theme: theme) }
+        super.init(theme: theme)
     }
 
     override func build() {

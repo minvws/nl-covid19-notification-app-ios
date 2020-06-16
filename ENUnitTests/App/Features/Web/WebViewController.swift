@@ -17,8 +17,11 @@ final class WebViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
+        let theme = ENTheme()
+        
         let request = URLRequest(url: URL(string: "https://www.rijksoverheid.nl")!)
         viewController = WebViewController(listener: listener,
+                                           theme: theme,
                                            webView: webView,
                                            urlRequest: request)
     }

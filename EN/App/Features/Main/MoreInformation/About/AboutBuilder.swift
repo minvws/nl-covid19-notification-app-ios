@@ -12,6 +12,10 @@ protocol AboutListener: AnyObject {
     func aboutRequestsDismissal(shouldHideViewController: Bool)
 }
 
+protocol AboutDependency {
+    var theme: Theme { get }
+}
+
 /// @mockable
 protocol AboutBuildable {
     /// Builds About
@@ -20,17 +24,22 @@ protocol AboutBuildable {
     func build(withListener listener: AboutListener) -> ViewControllable
 }
 
-final class AboutDependencyProvider: DependencyProvider<EmptyDependency> {
+final class AboutDependencyProvider: DependencyProvider<AboutDependency>, WebDependency {
+    var theme: Theme {
+        return dependency.theme
+    }
+    
     var webBuilder: WebBuildable {
-        return WebBuilder()
+        return WebBuilder(dependency: self)
     }
 }
 
-final class AboutBuilder: Builder<EmptyDependency>, AboutBuildable {
+final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
     func build(withListener listener: AboutListener) -> ViewControllable {
-        let dependencyProvider = AboutDependencyProvider()
+        let dependencyProvider = AboutDependencyProvider(dependency: dependency)
         
         return AboutViewController(listener: listener,
+                                   theme: dependencyProvider.dependency.theme,
                                    webBuilder: dependencyProvider.webBuilder)
     }
 }

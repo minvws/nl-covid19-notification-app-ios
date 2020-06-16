@@ -15,14 +15,10 @@ protocol ShareSheetViewControllable: ViewControllable {
 
 final class ShareSheetViewController: ViewController, ShareSheetViewControllable {
     
-    init(listener: ShareSheetListener) {
+    init(listener: ShareSheetListener, theme: Theme) {
         self.listener = listener
         
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
     
     // MARK: - ViewController Lifecycle

@@ -23,17 +23,14 @@ protocol WebViewControllable: ViewControllable {
 final class WebViewController: ViewController, WebViewControllable {
     
     init(listener: WebListener,
+         theme: Theme,
          webView: WebViewing,
          urlRequest: URLRequest) {
         self.listener = listener
         self.webView = webView
         self.urlRequest = urlRequest
         
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
     
     // MARK: - ViewController Lifecycle

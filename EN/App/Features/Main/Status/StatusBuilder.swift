@@ -23,6 +23,7 @@ protocol StatusBuildable {
 }
 
 protocol StatusDependency {
+    var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
 }
 
@@ -39,6 +40,7 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
         let viewController = StatusViewController(
             exposureStateStream: dependencyProvider.exposureStateStream,
             listener: listener,
+            theme: dependencyProvider.dependency.theme,
             topAnchor: topAnchor
         )
         
