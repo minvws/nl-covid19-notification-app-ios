@@ -9,27 +9,14 @@ import Foundation
 import UIKit
 
 final class ExposureController: ExposureControlling {
+
     init(mutableStateStream: MutableExposureStateStreaming,
          exposureManager: ExposureManaging?) {
         self.mutableStateStream = mutableStateStream
-    init(mutableStatusStream: MutableExposureStateStreaming,
-        exposureManager: ExposureManaging?) {
-        self.mutableStatusStream = mutableStatusStream
         self.exposureManager = exposureManager
     }
 
     // MARK: - ExposureControlling
-
-    func activate() {
-        guard let exposureManager = exposureManager else {
-            updateStatusStream()
-            return
-        }
-        
-        exposureManager.activate { _ in
-            self.updateStatusStream()
-        }
-    }
 
     func activate() {
         guard let exposureManager = exposureManager else {
@@ -74,12 +61,7 @@ final class ExposureController: ExposureControlling {
 
     private func updateStatusStream() {
         guard let exposureManager = exposureManager else {
-            mutableStateStream.update(state: .init(notified: isNotified,
-                                                    activeState: .inactive(.requiresOSUpdate))
-            mutableStatusStream.update(state: .init(notified: isNotified,
-                activeState: .inactive(.requiresOSUpdate))
-            )
-
+            mutableStateStream.update(state: .init(notified: isNotified, activeState: .inactive(.requiresOSUpdate)))
             return
         }
 
@@ -105,12 +87,7 @@ final class ExposureController: ExposureControlling {
             activeState = .authorizationDenied
         }
         
-        mutableStateStream.update(state: .init(notified: isNotified,
-                                                activeState: activeState)
-
-        mutableStatusStream.update(state: .init(notified: isNotified,
-            activeState: activeState)
-        )
+        mutableStateStream.update(state: .init(notified: isNotified, activeState: activeState))
     }
 
     private var isNotified: Bool {
@@ -119,7 +96,5 @@ final class ExposureController: ExposureControlling {
     }
     
     private let mutableStateStream: MutableExposureStateStreaming
-
-    private let mutableStatusStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging?
 }

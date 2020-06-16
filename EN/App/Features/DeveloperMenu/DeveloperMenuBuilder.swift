@@ -20,6 +20,7 @@ protocol DeveloperMenuBuildable {
 }
 
 protocol DeveloperMenuDependency {
+    var theme: Theme { get }
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
 }
 
@@ -34,6 +35,7 @@ final class DeveloperMenuBuilder: Builder<DeveloperMenuDependency>, DeveloperMen
         let dependencyProvider = DeveloperMenuDependencyProvider(dependency: dependency)
         
         return DeveloperMenuViewController(listener: listener,
+                                           theme: dependencyProvider.dependency.theme,
                                            mutableExposureStateStream: dependencyProvider.mutableExposureStateStream)
     }
 }

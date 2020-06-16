@@ -75,6 +75,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         onboardingConsentSteps.append(
             OnboardingConsentStep(
                 step: .notifications,
+                theme: theme,
                 title: Localized("consentStep3Title"),
                 content: Localized("consentStep3Content"),
                 image: UIImage(named: "PleaseTurnOnNotifications"),

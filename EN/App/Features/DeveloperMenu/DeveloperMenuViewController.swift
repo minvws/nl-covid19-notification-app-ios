@@ -22,17 +22,14 @@ private struct DeveloperItem {
 final class DeveloperMenuViewController: ViewController, DeveloperMenuViewControllable, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     init(listener: DeveloperMenuListener,
+         theme: Theme,
          mutableExposureStateStream: MutableExposureStateStreaming) {
         self.listener = listener
         self.mutableExposureStateStream = mutableExposureStateStream
         
-        super.init(nibName: nil, bundle: nil)
+        super.init(theme: theme)
         
         attach()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - ViewController Lifecycle
