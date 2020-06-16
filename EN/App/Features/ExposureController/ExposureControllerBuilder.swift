@@ -16,7 +16,7 @@ protocol ExposureControlling {
     // MARK: - Permissions
     
     func requestExposureNotificationPermission()
-    func requestPushNotificationPermission()
+    func requestPushNotificationPermission(_ completion: @escaping () -> ())
     
     // MARK: - Exposure Notification
     

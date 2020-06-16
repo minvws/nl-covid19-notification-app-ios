@@ -17,6 +17,7 @@ protocol OnboardingConsentManaging {
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
+    func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -67,6 +68,19 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 hasNavigationBarSkipButton: false
             )
         )
+
+        onboardingConsentSteps.append(
+            OnboardingConsentStep(
+                step: .notifications,
+                title: Localized("consentStep3Title"),
+                content: Localized("consentStep3Content"),
+                image: UIImage(named: "PleaseTurnOnNotifications"),
+                summarySteps: nil,
+                primaryButtonTitle: Localized("consentStep3PrimaryButton"),
+                secondaryButtonTitle: Localized("consentStep3SecondaryButton"),
+                hasNavigationBarSkipButton: false
+            )
+        )
     }
 
     // MARK: - Functions
@@ -84,10 +98,13 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 exposureActiveState == .inactive(.bluetoothOff) {
                 return .bluetooth
             }
-            return nil
+            return .notifications
         case .bluetooth:
+            return .notifications
+        case .notifications:
             return nil
         }
+
     }
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ())) {
@@ -110,19 +127,23 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
         exposureController.requestExposureNotificationPermission()
     }
-    
+
     func goToBluetoothSettings(_ completion: @escaping (() -> ())) {
-        
+
         if let settingsUrl = URL(string: "App-prefs:Bluetooth") {
             if UIApplication.shared.canOpenURL(settingsUrl) {
                 UIApplication.shared.open(settingsUrl)
             }
         }
-        
+
         completion()
     }
 
-    // MARK: - Private
+    func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
+        exposureController.requestPushNotificationPermission {
+            completion()
+        }
+    }
 
     private let exposureStateStream: ExposureStateStreaming
     private let exposureController: ExposureControlling

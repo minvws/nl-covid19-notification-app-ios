@@ -6,16 +6,17 @@
 */
 
 import Foundation
+import UIKit
 
 final class ExposureController: ExposureControlling {
     init(mutableStatusStream: MutableExposureStateStreaming,
-         exposureManager: ExposureManaging?) {
+        exposureManager: ExposureManaging?) {
         self.mutableStatusStream = mutableStatusStream
         self.exposureManager = exposureManager
     }
-    
+
     // MARK: - ExposureControlling
-    
+
     func activate() {
         guard let exposureManager = exposureManager else {
             updateStatusStream()
@@ -32,28 +33,42 @@ final class ExposureController: ExposureControlling {
             self.updateStatusStream()
         }
     }
-    
-    func requestPushNotificationPermission() {
-        // Not implemented yet
+
+    func requestPushNotificationPermission(_ completion: @escaping (() -> ())) {
+        let uncc = UNUserNotificationCenter.current()
+
+        uncc.getNotificationSettings { (settings) in
+            if settings.authorizationStatus == .authorized {
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+        }
+
+        uncc.requestAuthorization(options: [.alert, .badge, .sound]) { (_, _) in
+            DispatchQueue.main.async {
+                completion()
+            }
+        }
     }
-    
+
     func confirmExposureNotification() {
         // Not implemented yet
     }
-    
+
     // MARK: - Private
-    
+
     private func updateStatusStream() {
         guard let exposureManager = exposureManager else {
             mutableStatusStream.update(state: .init(notified: isNotified,
-                                                    activeState: .inactive(.requiresOSUpdate))
+                activeState: .inactive(.requiresOSUpdate))
             )
-            
+
             return
         }
-        
+
         let activeState: ExposureActiveState
-        
+
         switch exposureManager.getExposureNotificationStatus() {
         case .active:
             activeState = .active
@@ -73,17 +88,17 @@ final class ExposureController: ExposureControlling {
         case .authorizationDenied:
             activeState = .authorizationDenied
         }
-        
+
         mutableStatusStream.update(state: .init(notified: isNotified,
-                                                activeState: activeState)
+            activeState: activeState)
         )
     }
-    
+
     private var isNotified: Bool {
         // TODO: Replace with right value
         return false
     }
-    
+
     private let mutableStatusStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging?
 }

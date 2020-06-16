@@ -45,9 +45,9 @@
 "consentStep2PrimaryButton" = "Bluetooth aanzetten";
 "consentStep2SecondaryButton" = "Misschien later";
 
-"consentStep3Title" = "Laat anderen weten dat jij helpt het virus te stoppen ";
-"consentStep3Content" = "De app werkt beter hoe meer mensen het gebruiken. Alleen samen kunnen we de verspreiding van het virus stoppen. Deel de app dus met zo veel mogelijk anderen.";
-"consentStep3PrimaryButton" = "App delen";
+"consentStep3Title" = "Geef toestemming om meldingen te krijgen";
+"consentStep3Content" = "De app kan direct informatie met je delen wanneer dat nodig is.";
+"consentStep3PrimaryButton" = "Toestemming geven";
 "consentStep3SecondaryButton" = "Misschien later";
 
 // MARK: - Consent

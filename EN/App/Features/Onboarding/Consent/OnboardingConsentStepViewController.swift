@@ -85,7 +85,12 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                 onboardingConsentManager.goToBluetoothSettings {
                     self.goToNextStepOrCloseConsent()
                 }
+            case .notifications:
+                onboardingConsentManager.askNotificationsAuthorization {
+                    self.goToNextStepOrCloseConsent()
+                }
             }
+
         }
     }
 
@@ -94,7 +99,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             switch consentStep.step {
             case .en:
                 self.listener?.displayHelp()
-            case .bluetooth:
+            case .bluetooth, .notifications:
                 self.goToNextStepOrCloseConsent()
             }
         }
