@@ -18,7 +18,7 @@ final class NetworkController: NetworkControlling {
     func getManifest(completion: @escaping (Result<Manifest, Error>) -> Void) {
         
         // verify is there is a manifest available
-        if let manifest = LocalStore.shared.manifest {
+        if let manifest = self.storageController.retrieveObject(identifiedBy: Manifest.key, ofType: Manifest.self) {
             completion(.success(manifest))
         } else {
             self.networkManager.getManifest { result in

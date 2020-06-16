@@ -7,9 +7,14 @@
 
 import Foundation
 
+struct ManifestKey: StoreKey {
+    var asString: String = "manifest"
+    var storeType: StoreType = .insecure(volatile: true)
+}
+
 struct Manifest: Codable {
     
-    
+    static let key = ManifestKey()
     let exposureKeySets: [String]
     let resourceBundle, riskCalculationParameters, appConfig: String
 }
