@@ -36,13 +36,9 @@ final class OnboardingConsentSummaryStepView: View {
 
     // MARK: - Lifecycle
 
-    init(with step: OnboardingConsentSummaryStep) {
+    init(with step: OnboardingConsentSummaryStep, theme: Theme) {
         self.consentSummaryStep = step
-        super.init(frame: .zero)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
 
     // MARK: - Setups

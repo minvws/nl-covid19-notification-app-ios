@@ -16,7 +16,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         let button = UIBarButtonItem()
         button.target = self
         button.title = Localized("skipStep")
-        button.tintColor = .primaryColor
+        button.tintColor = self.theme.colors.primary
         button.action = #selector(skipStepButtonPressed)
         return button
     }()
@@ -30,17 +30,14 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     init(onboardingConsentManager: OnboardingConsentManaging,
         listener: OnboardingConsentListener,
+        theme: Theme,
         index: Int) {
 
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         self.consentStep = self.onboardingConsentManager.getStep(index)
 
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
 
     // MARK: - ViewController Lifecycle
@@ -51,8 +48,6 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .viewControllerBackgroundColor
 
         internalView.consentStep = consentStep
         internalView.primaryButton.addTarget(self, action: #selector(primaryButtonPressed), for: .touchUpInside)
@@ -133,7 +128,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     // MARK: - Private
 
     private weak var listener: OnboardingConsentListener?
-    private lazy var internalView: OnboardingConsentView = OnboardingConsentView()
+    private lazy var internalView: OnboardingConsentView = OnboardingConsentView(theme: self.theme)
 }
 
 final class OnboardingConsentView: View {
@@ -155,14 +150,14 @@ final class OnboardingConsentView: View {
     }()
 
     lazy var primaryButton: Button = {
-        let button = Button()
+        let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .primary
         return button
     }()
 
     lazy var secondaryButton: Button = {
-        let button = Button()
+        let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .tertiary
         return button
@@ -236,7 +231,7 @@ final class OnboardingConsentView: View {
 
         if step.hasSummarySteps {
 
-            consentSummaryStepsView = OnboardingConsentSummaryStepsView(with: summarySteps)
+            consentSummaryStepsView = OnboardingConsentSummaryStepsView(with: summarySteps, theme: theme)
 
             subviews.forEach({
                 if $0 is OnboardingConsentSummaryStepView {

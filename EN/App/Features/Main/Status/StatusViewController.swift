@@ -25,16 +25,15 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     private var exposureStateStreamCancellable: AnyCancellable?
 
-    init(exposureStateStream: ExposureStateStreaming, listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) {
+    init(exposureStateStream: ExposureStateStreaming,
+         listener: StatusListener,
+         theme: Theme,
+         topAnchor: NSLayoutYAxisAnchor?) {
         self.exposureStateStream = exposureStateStream
         self.listener = listener
         self.topAnchor = topAnchor
 
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
     
     // MARK: - View Lifecycle
@@ -59,16 +58,19 @@ final class StatusViewController: ViewController, StatusViewControllable {
         super.viewWillAppear(animated)
 
         // TODO: remove
-        statusView.update(with: .active)
+        statusView.update(with: StatusViewModel(theme: theme, status: .active))
 
         exposureStateStreamCancellable = exposureStateStream.exposureState.sink { [weak self] status in
+            guard let strongSelf = self else {
+                return
+            }
             switch (status.activeState, status.notified) {
             case (.active, false):
-                self?.statusView.update(with: .active)
+                strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .active))
             case (.active, true):
-                self?.statusView.update(with: .notified)
+                strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .notified))
             case (.inactive(_), true):
-                self?.statusView.update(with: StatusViewModel.notified.with(card: StatusCardViewModel.inactive))
+                strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .notified).with(card: StatusCardViewModel(theme: strongSelf.theme)))
             default:
                 // TODO: Handle more cases
                 break
@@ -84,7 +86,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     // MARK: - Private
     
-    private lazy var statusView: StatusView = StatusView()
+    private lazy var statusView: StatusView = StatusView(theme: self.theme)
 
 }
 
@@ -98,9 +100,12 @@ fileprivate final class StatusView: View {
     fileprivate let contentContainer = UIStackView()
     fileprivate let textContainer = UIStackView()
     fileprivate let buttonContainer = UIStackView()
-    fileprivate let cardView = StatusCardView()
-
-    fileprivate let iconView = StatusIconView()
+    fileprivate lazy var cardView: StatusCardView = {
+        return StatusCardView(theme: self.theme)
+    }()
+    fileprivate lazy var iconView: StatusIconView = {
+        StatusIconView(theme: self.theme)
+    }()
 
     fileprivate let titleLabel = Label()
     fileprivate let descriptionLabel = Label()
@@ -225,7 +230,7 @@ fileprivate final class StatusView: View {
 
         buttonContainer.subviews.forEach { $0.removeFromSuperview() }
         for buttonModel in viewModel.buttons {
-            let button = Button(title: buttonModel.title)
+            let button = Button(title: buttonModel.title, theme: theme)
             button.style = buttonModel.style
             button.rounded = true
             button.action = { [weak self] in

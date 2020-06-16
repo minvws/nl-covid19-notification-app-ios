@@ -31,6 +31,7 @@ protocol MoreInformationBuildable {
 
 protocol MoreInformationDependency {
     // TODO: Add any external dependency
+    var theme: Theme { get }
 }
 
 private final class MoreInformationDependencyProvider: DependencyProvider<MoreInformationDependency> /*, ChildDependency */ {
@@ -45,6 +46,7 @@ final class MoreInformationBuilder: Builder<MoreInformationDependency>, MoreInfo
         
         let tableController = dependencyProvider.tableController
         return MoreInformationViewController(listener: listener,
+                                             theme: dependencyProvider.dependency.theme,
                                              tableController: tableController)
     }
 }

@@ -12,11 +12,15 @@ final class StatusCardView: View {
     private let container = UIStackView()
     private let header = UIStackView()
 
-    private let headerIconView = StatusIconView()
+    private lazy var headerIconView = {
+        StatusIconView(theme: self.theme)
+    }()
     private let headerTitleLabel = Label()
 
     private let descriptionLabel = Label()
-    private let button = Button()
+    private lazy var button: Button = {
+        Button(theme: self.theme)
+    }()
 
     override func build() {
         super.build()

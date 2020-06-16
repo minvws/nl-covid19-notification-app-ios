@@ -56,6 +56,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableExposureStateStream
     }
     
+    let theme: Theme = ENTheme()
+    
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
     lazy var mutableExposureStateStream: MutableExposureStateStreaming = ExposureStateStream()
 }
@@ -81,7 +83,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
     
     func build() -> AppEntryPoint {
         let dependencyProvider = RootDependencyProvider()
-        let viewController = RootViewController()
+        let viewController = RootViewController(theme: dependencyProvider.theme)
         
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,

@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIViewController {
+extension ViewControllable where Self: ViewController {
 
     func hideNavigationBar() {
         navigationController?.setNavigationBarHidden(true, animated: false)
@@ -29,16 +29,17 @@ extension UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: showAnimated)
     }
 
-    func setThemeNavigationBar(withTitle title: String = "", backgroundColor: UIColor = .viewControllerBackgroundColor, shouldHideBackTitle: Bool = false) {
+    func setThemeNavigationBar(withTitle title: String = "", shouldHideBackTitle: Bool = false) {
+        guard let navigationBar = navigationController?.navigationBar else {
+            return 
+        }
         
-        navigationController?.navigationBar.topItem?.title = title
-
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barTintColor = backgroundColor
-        navigationController?.navigationBar.tintColor = .primaryColor
-        navigationController?.navigationBar.shadowImage = UIImage()
-
-        navigationController?.navigationBar.titleTextAttributes = [
+        navigationBar.topItem?.title = title
+        navigationBar.isTranslucent = false
+        navigationBar.barTintColor = theme.colors.navigationControllerBackground
+        navigationBar.tintColor = theme.colors.primary
+        navigationBar.shadowImage = UIImage()
+        navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .regular),
             NSAttributedString.Key.foregroundColor: UIColor.black
         ]

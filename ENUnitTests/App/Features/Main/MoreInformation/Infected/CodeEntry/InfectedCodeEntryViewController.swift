@@ -16,8 +16,10 @@ final class InfectedCodeEntryViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
+        let theme = ENTheme()
+        
         // TODO: Set up other components properly and connect them to the viewController
-        viewController = InfectedCodeEntryViewController(listener: listener)
+        viewController = InfectedCodeEntryViewController(listener: listener, theme: theme)
     }
     
     // TODO: Write test cases

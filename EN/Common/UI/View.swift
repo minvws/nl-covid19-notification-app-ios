@@ -7,23 +7,35 @@
 
 import UIKit
 
-open class View: UIView {
+open class View: UIView, Themeable {
     
-    init() {
+    public let theme: Theme
+    
+    // MARK: - Init
+    
+    init(theme: Theme) {
+        self.theme = theme
         super.init(frame: .zero)
         
         configure()
     }
+    
+    @available(*, unavailable, message: "Use `init(theme:)`")
+    init() {
+        fatalError("Not Supported")
+    }
 
+    @available(*, unavailable, message: "Use `init(theme:)`")
     public override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        configure()
+        fatalError("Not Supported")
     }
 
+    @available(*, unavailable, message: "NSCoder and Interface Builder is not supported. Use Programmatic layout.")
     public required init?(coder: NSCoder) {
-        fatalError("Not implemented")
+        fatalError("Not Supported")
     }
+    
+    // MARK: - Internal
 
     func configure() {
 

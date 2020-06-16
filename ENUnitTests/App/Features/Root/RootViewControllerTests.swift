@@ -16,7 +16,9 @@ final class RootViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        viewController = RootViewController()
+        let theme = ENTheme()
+        
+        viewController = RootViewController(theme: theme)
         viewController.router = router
     }
     

@@ -33,6 +33,7 @@ final class OnboardingConsentStep: NSObject {
     var attributedText: NSAttributedString = NSAttributedString(string: "")
 
     init(step: OnboardingConsentStepIndex,
+         theme: Theme,
         title: String,
         content: String,
         image: UIImage?,
@@ -58,7 +59,7 @@ final class OnboardingConsentStep: NSObject {
         let titleStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 22, weight: .bold), .foregroundColor: UIColor.black]
         let titleString = NSAttributedString(string: title, attributes: titleStringAttributes)
 
-        let contentStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 17, weight: .regular), .foregroundColor: UIColor.grayColor]
+        let contentStringAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 17, weight: .regular), .foregroundColor: theme.colors.gray]
         let contentString = NSAttributedString(string: content, attributes: contentStringAttributes)
 
         for string in [titleString, newLine, contentString] { attributedString.append(string) }

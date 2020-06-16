@@ -9,14 +9,30 @@ import Foundation
 import UIKit
 
 struct StatusViewIcon {
+    enum Status {
+        case ok
+        case notified
+        case inactive
+    }
+    
     let color: UIColor
     let icon: UIImage?
-
-    static let ok = StatusViewIcon(color: .okGreen, icon: UIImage(named: "StatusIconOk"))
-    static let notified = StatusViewIcon(color: .notifiedRed, icon: UIImage(named: "StatusIconNotified"))
-//    case warning
-//    case pause
-//    case lock
+    
+    // MARK: - Init
+    
+    init(theme: Theme, status: Status) {
+        switch status {
+        case .ok:
+            self.color = theme.colors.ok
+            self.icon = UIImage(named: "StatusIconOk")
+        case .notified:
+            self.color = theme.colors.notified
+            self.icon = UIImage(named: "StatusIconNotified")
+        case .inactive:
+            self.color = theme.colors.inactive
+            self.icon = UIImage(named: "StatusIconNotified")
+        }
+    }
 }
 
 struct StatusViewButtonModel {
@@ -49,20 +65,25 @@ struct StatusCardViewModel {
     let title: NSAttributedString
     let description: NSAttributedString
     let button: StatusViewButtonModel
-
-    static let inactive = StatusCardViewModel(
-        icon: StatusViewIcon(color: .inactiveOrange, icon: UIImage(named: "StatusIconNotified")),
-        title: .init(string: "App is niet actief"),
-        description: .init(string: "Hier moet nog een tekst komen dat uitlegt dat Blootstelling uitstaat en dat Bluetooth ook uitstaat."),
-        button: StatusViewButtonModel(
-            title: "App aanzetten",
-            style: .primary,
-            action: .turnOnApp
-        )
-    )
+    
+    // MARK: - Init
+    
+    init(theme: Theme) {
+        self.icon = StatusViewIcon(theme: theme, status: .inactive)
+        self.title = .init(string: "App is niet actief")
+        self.description = .init(string: "Hier moet nog een tekst komen dat uitlegt dat Blootstelling uitstaat en dat Bluetooth ook uitstaat.")
+        self.button = StatusViewButtonModel(title: "App aanzetten",
+                                            style: .primary,
+                                            action: .turnOnApp)
+    }
 }
 
 struct StatusViewModel {
+    enum Status {
+        case active
+        case notified
+    }
+    
     var icon: StatusViewIcon
     var title: NSAttributedString
     var description: NSAttributedString
@@ -72,6 +93,56 @@ struct StatusViewModel {
     var shouldShowHideMessage: Bool
     var gradientColor: UIColor
     var showScene: Bool
+    
+    init(theme: Theme, status: Status) {
+        switch status {
+        case .active:
+            self.init(
+                theme: theme,
+                icon: .ok,
+                title: .init(string: "De app is actief"),
+                description: .init(string: "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen."),
+                buttons: [],
+                footer: nil,
+                shouldShowHideMessage: false,
+                gradientColor: theme.colors.statusGradientActive,
+                showScene: true
+            )
+        case .notified:
+            self.init(
+                theme: theme,
+                icon: .notified,
+                title: .init(string: "Je hebt extra kans op besmetting gelopen"),
+                description: .init(string: "Je bent op maandag 1 juni dicht bij iemand geweest die daarna positief is getest op het coronavirus."),
+                buttons: [.moreInfo, .removeNotification],
+                footer: nil,
+                shouldShowHideMessage: false,
+                gradientColor: theme.colors.statusGradienNotified,
+                showScene: false
+            )
+        }
+    }
+    
+    init(theme: Theme,
+         icon: StatusViewIcon.Status,
+         title: NSAttributedString,
+         description: NSAttributedString,
+         buttons: [StatusViewButtonModel],
+         card: StatusCardViewModel? = nil,
+         footer: NSAttributedString? = nil,
+         shouldShowHideMessage: Bool,
+         gradientColor: UIColor,
+         showScene: Bool) {
+        self.icon = StatusViewIcon(theme: theme, status: icon)
+        self.title = title
+        self.description = description
+        self.buttons = buttons
+        self.card = card
+        self.footer = footer
+        self.shouldShowHideMessage = shouldShowHideMessage
+        self.gradientColor = gradientColor
+        self.showScene = showScene
+    }
 
     func with(card: StatusCardViewModel?? = nil) -> Self {
         var result = self
@@ -80,5 +151,4 @@ struct StatusViewModel {
         }
         return result
     }
-
 }

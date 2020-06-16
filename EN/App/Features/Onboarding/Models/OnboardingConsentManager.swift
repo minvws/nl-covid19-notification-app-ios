@@ -25,7 +25,8 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
     var onboardingConsentSteps: [OnboardingConsentStep] = []
 
     init(exposureStateStream: ExposureStateStreaming,
-        exposureController: ExposureControlling) {
+         exposureController: ExposureControlling,
+         theme: Theme) {
 
         self.exposureStateStream = exposureStateStream
         self.exposureController = exposureController
@@ -33,6 +34,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         onboardingConsentSteps.append(
             OnboardingConsentStep(
                 step: .en,
+                theme: theme,
                 title: Localized("consentStep1Title"),
                 content: Localized("consentStep1Content"),
                 image: nil,
@@ -59,6 +61,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         onboardingConsentSteps.append(
             OnboardingConsentStep(
                 step: .bluetooth,
+                theme: theme,
                 title: Localized("consentStep2Title"),
                 content: Localized("consentStep2Content"),
                 image: UIImage(named: "PleaseTurnOnBluetooth"),

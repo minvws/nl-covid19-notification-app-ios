@@ -15,8 +15,10 @@ final class OnboardingHelpViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        
+        let theme = ENTheme()
 
-        viewController = OnboardingHelpViewController(listener: listener)
+        viewController = OnboardingHelpViewController(listener: listener, theme: theme)
     }
 
     // TODO: Write test cases

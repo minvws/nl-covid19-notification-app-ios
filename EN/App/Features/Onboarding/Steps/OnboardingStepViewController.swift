@@ -27,7 +27,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     }()
 
     lazy private var button: Button = {
-        let button = Button()
+        let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
@@ -47,6 +47,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     init(onboardingManager: OnboardingManaging,
          onboardingStepBuilder: OnboardingStepBuildable,
          listener: OnboardingStepListener,
+         theme: Theme,
          index: Int) {
 
         self.onboardingManager = onboardingManager
@@ -58,15 +59,11 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
         self.onboardingStep = step
 
-        super.init(nibName: nil, bundle: nil)
+        super.init(theme: theme)
 
         self.button.title = self.onboardingStep.buttonTitle
         self.imageView.image = self.onboardingStep.image
         self.label.attributedText = self.onboardingStep.attributedText
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -79,9 +76,6 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     // MARK: - Setups
 
     private func setupViews() {
-
-        view.backgroundColor = .viewControllerBackgroundColor
-        
         setThemeNavigationBar()
         
         viewsInDisplayOrder.forEach { view.addSubview($0) }

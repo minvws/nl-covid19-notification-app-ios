@@ -19,10 +19,12 @@ final class MainViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
+        let theme = ENTheme()
+        
         tableController.dataSource = UITableViewDataSourceMock()
         tableController.delegate = UITableViewDelegateMock()
         
-        viewController = MainViewController()
+        viewController = MainViewController(theme: theme)
         viewController.router = router
     }
     

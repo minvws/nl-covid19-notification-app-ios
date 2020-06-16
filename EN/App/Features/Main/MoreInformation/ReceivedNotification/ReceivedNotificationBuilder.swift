@@ -22,7 +22,7 @@ protocol ReceivedNotificationBuildable {
 }
 
 protocol ReceivedNotificationDependency {
-    // TODO: Add any external dependency
+    var theme: Theme { get }
 }
 
 private final class ReceivedNotificationDependencyProvider: DependencyProvider<ReceivedNotificationDependency> {
@@ -38,6 +38,6 @@ final class ReceivedNotificationBuilder: Builder<ReceivedNotificationDependency>
         
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
-        return ReceivedNotificationViewController(listener: listener)
+        return ReceivedNotificationViewController(listener: listener, theme: dependencyProvider.dependency.theme)
     }
 }

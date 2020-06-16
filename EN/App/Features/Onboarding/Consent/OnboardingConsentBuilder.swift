@@ -23,7 +23,8 @@ protocol OnboardingConsentListener: AnyObject {
     func displayHelp()
 }
 
-protocol OnboardingConsentDependency {    
+protocol OnboardingConsentDependency {
+    var theme: Theme { get }
     var onboardingConsentManager: OnboardingConsentManaging { get }
 }
 
@@ -43,6 +44,7 @@ final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, Onbo
         return OnboardingConsentStepViewController(
             onboardingConsentManager: onboardingConsentManager,            
             listener: listener,
+            theme: dependencyProvider.dependency.theme,
             index: index)
     }
 }

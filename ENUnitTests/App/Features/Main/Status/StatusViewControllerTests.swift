@@ -18,10 +18,12 @@ final class StatusViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        
+        let theme = ENTheme()
 
         SnapshotTesting.record = false
 
-        viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), topAnchor: nil)
+        viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), theme: theme, topAnchor: nil)
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
         viewController.router = router
     }

@@ -23,7 +23,7 @@ protocol RequestTestBuildable {
 }
 
 protocol RequestTestDependency {
-    // TODO: Add any external dependency
+    var theme: Theme { get }
 }
 
 private final class RequestTestDependencyProvider: DependencyProvider<RequestTestDependency> /*, ChildDependency */ {
@@ -44,7 +44,7 @@ final class RequestTestBuilder: Builder<RequestTestDependency>, RequestTestBuild
         let dependencyProvider = RequestTestDependencyProvider(dependency: dependency)
         
         // let childBuilder = dependencyProvider.childBuilder
-        let viewController = RequestTestViewController()
+        let viewController = RequestTestViewController(theme: dependencyProvider.dependency.theme)
         
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.

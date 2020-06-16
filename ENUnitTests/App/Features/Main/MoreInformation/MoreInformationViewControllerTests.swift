@@ -19,10 +19,13 @@ final class MoreInformationViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
+        let theme = ENTheme()
+        
         tableController.dataSource = tableViewDataSource
         tableController.delegate = tableViewDelegate
         
         viewController = MoreInformationViewController(listener: listener,
+                                                       theme: theme,
                                                        tableController: tableController)
     }
     

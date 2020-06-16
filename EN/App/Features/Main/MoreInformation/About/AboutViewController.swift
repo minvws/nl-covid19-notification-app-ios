@@ -16,17 +16,14 @@ protocol AboutViewControllable: ViewControllable {
 final class AboutViewController: ViewController, AboutViewControllable, WebListener, UIAdaptivePresentationControllerDelegate {
     
     init(listener: AboutListener,
+         theme: Theme,
          webBuilder: WebBuildable) {
         self.listener = listener
         self.webBuilder = webBuilder
         
-        super.init(nibName: nil, bundle: nil)
+        super.init(theme: theme)
         
         title = "About the app"
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - UIAdaptivePresentationControllerDelegate

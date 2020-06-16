@@ -18,8 +18,11 @@ final class OnboardingStepViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
+        let theme = ENTheme()
+        
         manager.getStepHandler = { index in
-            return OnboardingStep(title: "Title",
+            return OnboardingStep(theme: theme,
+                                  title: "Title",
                                   content: "Content",
                                   image: UIImage(),
                                   buttonTitle: "Button",
@@ -29,6 +32,7 @@ final class OnboardingStepViewControllerTests: XCTestCase {
         viewController = OnboardingStepViewController(onboardingManager: manager,
                                                       onboardingStepBuilder: stepBuilder,
                                                       listener: listener,
+                                                      theme: theme,
                                                       index: 0)
     }
 

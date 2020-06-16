@@ -19,17 +19,12 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     weak var router: OnboardingRouting?
 
-    init(listener: OnboardingListener) {
+    init(listener: OnboardingListener, theme: Theme) {
         self.listener = listener
-
-        super.init(nibName: nil, bundle: nil)
-
+        super.init(theme: theme)
         modalPresentationStyle = .fullScreen
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     // MARK: - OnboardingViewControllable
 

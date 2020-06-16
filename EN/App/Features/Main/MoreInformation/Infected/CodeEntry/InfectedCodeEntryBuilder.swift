@@ -22,7 +22,7 @@ protocol InfectedCodeEntryBuildable {
 }
 
 protocol InfectedCodeEntryDependency {
-    // TODO: Add any external dependency
+    var theme: Theme { get }
 }
 
 private final class InfectedCodeEntryDependencyProvider: DependencyProvider<InfectedCodeEntryDependency> {
@@ -38,6 +38,6 @@ final class InfectedCodeEntryBuilder: Builder<InfectedCodeEntryDependency>, Infe
         
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
-        return InfectedCodeEntryViewController(listener: listener)
+        return InfectedCodeEntryViewController(listener: listener, theme: dependencyProvider.dependency.theme)
     }
 }

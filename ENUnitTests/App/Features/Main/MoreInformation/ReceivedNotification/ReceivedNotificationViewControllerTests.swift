@@ -15,9 +15,11 @@ final class ReceivedNotificationViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        
+        let theme = ENTheme()
 
         // TODO: Set up other components properly and connect them to the viewController
-        viewController = ReceivedNotificationViewController(listener: listener)
+        viewController = ReceivedNotificationViewController(listener: listener, theme: theme)
     }
 
     // TODO: Write test cases

@@ -39,7 +39,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     }
     
     func present(viewController: ViewControllable, animated: Bool) {
-        let navigationController = NavigationController(rootViewController: viewController.uiviewController)
+        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
         
         if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
             navigationController.presentationController?.delegate = presentationDelegate
@@ -116,7 +116,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     
     // MARK: - Private
     
-    private lazy var mainView: MainView = MainView()
+    private lazy var mainView: MainView = MainView(theme: self.theme)
 }
 
 private final class MainView: View {

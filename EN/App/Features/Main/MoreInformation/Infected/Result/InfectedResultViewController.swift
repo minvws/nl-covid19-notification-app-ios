@@ -14,14 +14,10 @@ protocol InfectedResultViewControllable: ViewControllable {
 
 final class InfectedResultViewController: ViewController, InfectedResultViewControllable {
     
-    init(listener: InfectedResultListener) {
+    init(listener: InfectedResultListener, theme: Theme) {
         self.listener = listener
         
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
     
     // MARK: - ViewController Lifecycle
@@ -39,7 +35,7 @@ final class InfectedResultViewController: ViewController, InfectedResultViewCont
     // MARK: - Private
     
     private weak var listener: InfectedResultListener?
-    private lazy var internalView: InfectedResultView = InfectedResultView()
+    private lazy var internalView: InfectedResultView = InfectedResultView(theme: self.theme)
 }
 
 private final class InfectedResultView: View {

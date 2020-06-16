@@ -16,7 +16,9 @@ final class InfectedInfoViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        viewController = InfectedInfoViewController()
+        let theme = ENTheme()
+        
+        viewController = InfectedInfoViewController(theme: theme)
         viewController.router = router
     }
     

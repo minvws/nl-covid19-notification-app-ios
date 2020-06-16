@@ -15,14 +15,11 @@ protocol OnboardingHelpViewControllable: ViewControllable {
 
 final class OnboardingHelpViewController: ViewController, OnboardingHelpViewControllable {
 
-    init(listener: OnboardingHelpListener) {
+    init(listener: OnboardingHelpListener,
+         theme: Theme) {
         self.listener = listener
 
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
 
     // MARK: - ViewController Lifecycle
@@ -58,7 +55,7 @@ final class OnboardingHelpViewController: ViewController, OnboardingHelpViewCont
     // MARK: - Private
 
     private weak var listener: OnboardingHelpListener?
-    private lazy var internalView: OnboardingHelpView = OnboardingHelpView()
+    private lazy var internalView: OnboardingHelpView = OnboardingHelpView(theme: self.theme)
 }
 
 private final class OnboardingHelpView: View {
@@ -105,7 +102,7 @@ private final class OnboardingHelpView: View {
 
 
     lazy var acceptButton: Button = {
-        let button = Button()
+        let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .primary
         button.title = Localized("helpAcceptButtonTitle")

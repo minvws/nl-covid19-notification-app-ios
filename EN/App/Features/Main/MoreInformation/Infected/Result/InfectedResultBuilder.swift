@@ -22,7 +22,7 @@ protocol InfectedResultBuildable {
 }
 
 protocol InfectedResultDependency {
-    // TODO: Add any external dependency
+    var theme: Theme { get }
 }
 
 private final class InfectedResultDependencyProvider: DependencyProvider<InfectedResultDependency> {
@@ -38,6 +38,6 @@ final class InfectedResultBuilder: Builder<InfectedResultDependency>, InfectedRe
         
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
-        return InfectedResultViewController(listener: listener)
+        return InfectedResultViewController(listener: listener, theme: dependencyProvider.dependency.theme)
     }
 }

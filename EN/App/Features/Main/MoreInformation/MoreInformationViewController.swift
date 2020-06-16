@@ -15,15 +15,12 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     }
     
     init(listener: MoreInformationListener,
+         theme: Theme,
          tableController: MoreInformationTableControlling) {
         self.tableController = tableController
         self.listener = listener
         
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("Not implemented")
+        super.init(theme: theme)
     }
     
     // MARK: - View Lifecycle
@@ -102,7 +99,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         ]
     }
     
-    private lazy var moreInformationView: MoreInformationView = MoreInformationView()
+    private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
     
     private weak var listener: MoreInformationListener?
     private let tableController: MoreInformationTableControlling
@@ -156,7 +153,7 @@ fileprivate final class MoreInformationView: View {
     }
     
     fileprivate func addButton(withTitle title: String, target: Any, action: Selector) {
-        let buttonView = Button(title: title)
+        let buttonView = Button(title: title, theme: theme)
         
         buttonView.addTarget(target, action: action, for: .touchUpInside)
         buttonView.heightAnchor.constraint(equalToConstant: 44).isActive = true

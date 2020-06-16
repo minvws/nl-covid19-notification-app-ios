@@ -14,14 +14,10 @@ protocol ReceivedNotificationViewControllable: ViewControllable {
 
 final class ReceivedNotificationViewController: ViewController, ReceivedNotificationViewControllable {
     
-    init(listener: ReceivedNotificationListener) {
+    init(listener: ReceivedNotificationListener, theme: Theme) {
         self.listener = listener
         
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(theme: theme)
     }
     
     // MARK: - ViewController Lifecycle
@@ -39,7 +35,7 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     // MARK: - Private
     
     private weak var listener: ReceivedNotificationListener?
-    private lazy var internalView: ReceivedNotificationView = ReceivedNotificationView()
+    private lazy var internalView: ReceivedNotificationView = ReceivedNotificationView(theme: self.theme)
 }
 
 private final class ReceivedNotificationView: View {
