@@ -13,12 +13,21 @@ final class ExposureController: ExposureControlling {
         exposureManager: ExposureManaging?) {
         self.mutableStatusStream = mutableStatusStream
         self.exposureManager = exposureManager
-
-        activateExposureManager()
     }
 
     // MARK: - ExposureControlling
 
+    func activate() {
+        guard let exposureManager = exposureManager else {
+            updateStatusStream()
+            return
+        }
+        
+        exposureManager.activate { _ in
+            self.updateStatusStream()
+        }
+    }
+    
     func requestExposureNotificationPermission() {
         exposureManager?.setExposureNotificationEnabled(true) { _ in
             self.updateStatusStream()
@@ -48,17 +57,6 @@ final class ExposureController: ExposureControlling {
     }
 
     // MARK: - Private
-
-    private func activateExposureManager() {
-        guard let exposureManager = exposureManager else {
-            updateStatusStream()
-            return
-        }
-
-        exposureManager.activate { _ in
-            self.updateStatusStream()
-        }
-    }
 
     private func updateStatusStream() {
         guard let exposureManager = exposureManager else {
