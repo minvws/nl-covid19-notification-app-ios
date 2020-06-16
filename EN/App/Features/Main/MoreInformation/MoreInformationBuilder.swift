@@ -18,8 +18,6 @@ protocol MoreInformationListener: AnyObject {
     func moreInformationRequestsReceivedNotification()
     func moreInformationRequestsInfected()
     func moreInformationRequestsRequestTest()
-    func moreInformationRequestsShareApp()
-    func moreInformationRequestsSettings()
 }
 
 /// @mockable

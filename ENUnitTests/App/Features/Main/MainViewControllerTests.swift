@@ -68,22 +68,6 @@ final class MainViewControllerTests: XCTestCase {
         XCTAssertEqual(router.routeToShareAppCallCount, 1)
     }
     
-    func test_moreInformationRequestsSettings_callsRouter() {
-        XCTAssertEqual(router.routeToSettingsCallCount, 0)
-        
-        viewController.moreInformationRequestsSettings()
-        
-        XCTAssertEqual(router.routeToSettingsCallCount, 1)
-    }
-    
-    func test_embed_addsChildViewController() {
-        XCTAssertEqual(viewController.children.count, 0)
-        
-        viewController.embed(stackedViewController: ViewControllableMock())
-        
-        XCTAssertEqual(viewController.children.count, 1)
-    }
-    
     func test_viewDidLoad_callsRouterInRightOrder() {
         XCTAssertEqual(router.attachStatusCallCount, 0)
         XCTAssertEqual(router.attachMoreInformationCallCount, 0)
