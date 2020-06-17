@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
 
 enum NetworkError: Error {
@@ -12,11 +13,9 @@ enum NetworkError: Error {
 }
 
 protocol NetworkControlling {
-
-    func initialize(completion: (NetworkError?) -> ())
-
-    // only register should be exposed
-    func register()
+    var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> { get }
+    var exposureRiskCalculationParameters: Future<ExposureRiskCalculationParameters, NetworkError> { get }
+    var resourceBundle: Future<ResourceBundle, NetworkError> { get }
 }
 
 /// @mockable
