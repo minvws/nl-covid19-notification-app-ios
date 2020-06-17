@@ -14,7 +14,7 @@ protocol StoreKey {
 
 enum StoreType {
     case secure
-    case insecure(volatile: Bool)
+    case insecure(volatile: Bool, maximumAge: TimeInterval? = nil)
 }
 
 enum StoreError: Error {
@@ -74,7 +74,7 @@ final class StorageController: StorageControlling {
                     completion(success ? nil : StoreError.keychainError)
                 }
             }
-        case let .insecure(volatile: isVolatile):
+        case let .insecure(volatile: isVolatile, _):
             guard let storeUrl = self.storeUrl(isVolatile: isVolatile) else {
                 inMemoryStore[key.asString] = data
 
@@ -107,7 +107,7 @@ final class StorageController: StorageControlling {
             }
 
             return data
-        case let .insecure(volatile: isVolatile):
+        case let .insecure(volatile: isVolatile, maximumAge: maximumAge):
             guard let storeUrl = self.storeUrl(isVolatile: isVolatile) else {
                 return inMemoryStore[key.asString] as? Data
             }
@@ -115,7 +115,7 @@ final class StorageController: StorageControlling {
             var data: Data?
 
             storageAccessQueue.sync {
-                data = self.retrieveData(for: key.asString, storeUrl: storeUrl)
+                data = self.retrieveData(for: key.asString, storeUrl: storeUrl, maximumAge: maximumAge)
             }
 
             return data
@@ -148,8 +148,18 @@ final class StorageController: StorageControlling {
         storeAvailable = true
     }
 
-    private func retrieveData(for key: String, storeUrl: URL) -> Data? {
+    private func retrieveData(for key: String, storeUrl: URL, maximumAge: TimeInterval?) -> Data? {
         let url = storeUrl.appendingPathComponent(key)
+
+        // check date last modified, if any
+        if let maximumAge = maximumAge,
+            let attributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+            let dateLastModified = attributes[.modificationDate] as? Date {
+
+            if dateLastModified.addingTimeInterval(maximumAge) < Date() {
+                return nil
+            }
+        }
 
         return try? Data(contentsOf: url)
     }

@@ -5,15 +5,41 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
-
-enum NetworkControllerError: Error {
-    case cantAccessDirectory
-}
 
 final class NetworkController: NetworkControlling {
     
+    // MARK: - NetworkController
+    
+    func initialize(completion: (NetworkError?) -> ()) {
+        verifyAndUpdateManifest().sink(receiveValue: {
+                
+        })
+    }
+    
      // MARK: - Manifest
+    
+    private func verifyAndUpdateManifest() -> Future<(), NetworkError> {
+        return Future { promise in
+            guard self.storageController.getManifest() == nil else {
+                // TODO: Check update frequency
+                
+                // No update needed
+                promise(.success(()))
+                return
+            }
+            
+            self.networkManager.getManifest { result in
+                if case .success(let manifest) = result {
+                    self.storageController.store(manifest: manifest)
+                }
+                
+                result.mapError(<#T##transform: (Error) -> Error##(Error) -> Error#>)
+                promise(result)
+            }
+        }
+    }
     
     func getManifest(completion: @escaping (Result<Manifest, Error>) -> Void) {
         
@@ -61,12 +87,10 @@ final class NetworkController: NetworkControlling {
     
     private func processExposureKeySet(exposureKeySet:ExposureKeySet) throws -> [URL] {
         // save to disk temporary, the framework expects [URL]
-        guard let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
-            throw NetworkControllerError.cantAccessDirectory
-        }
+        let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         
-        let binaryUrl = cachesDirectory.appendingPathComponent(ExposureKeySet.EXPORT_BINARY)
-        let signatureUrl = cachesDirectory.appendingPathComponent(ExposureKeySet.EXPORT_SIGNATURE)
+        let binaryUrl = temporaryDirectory.appendingPathComponent(ExposureKeySet.EXPORT_BINARY)
+        let signatureUrl = temporaryDirectory.appendingPathComponent(ExposureKeySet.EXPORT_SIGNATURE)
         
         // write to temporary location
         try exposureKeySet.keys.write(to: binaryUrl)
