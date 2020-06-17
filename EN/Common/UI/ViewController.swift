@@ -33,5 +33,6 @@ open class ViewController: UIViewController, ViewControllable, Themeable {
         super.viewDidLoad()
 
         view.backgroundColor = theme.colors.viewControllerBackground
+        edgesForExtendedLayout = []
     }
 }

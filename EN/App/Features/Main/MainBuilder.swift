@@ -15,7 +15,7 @@ protocol MainDependency {
     var exposureStateStream: ExposureStateStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ReceivedNotificationDependency, RequestTestDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -36,6 +36,14 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var aboutBuilder: AboutBuildable {
         return AboutBuilder(dependency: self)
     }
+
+    var receivedNotificationBuilder: ReceivedNotificationBuildable {
+        return ReceivedNotificationBuilder(dependency: self)
+    }
+
+    var requestTestBuilder: RequestTestBuildable {
+        return RequestTestBuilder(dependency: self)
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -46,6 +54,8 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,
                           moreInformationBuilder: dependencyProvider.moreInformationBuilder,
-                          aboutBuilder: dependencyProvider.aboutBuilder)
+                          aboutBuilder: dependencyProvider.aboutBuilder,
+                          receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder,
+                          requestTestBuilder: dependencyProvider.requestTestBuilder)
     }
 }

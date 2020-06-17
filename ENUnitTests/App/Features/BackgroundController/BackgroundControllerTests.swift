@@ -11,7 +11,7 @@ import XCTest
 
 final class BackgroundControllerTests: XCTestCase {
     private var controller: BackgroundController!
-    
+
     override func setUp() {
         super.setUp()
         controller = BackgroundController()

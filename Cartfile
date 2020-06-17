@@ -1,2 +1,3 @@
 github "pointfreeco/swift-snapshot-testing" "1.7.2"
 github "weichsel/ZIPFoundation" ~> 0.9
+github "SnapKit/SnapKit" ~> 5.0.0

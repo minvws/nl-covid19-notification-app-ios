@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener {
     var router: MainRouting? { get set }
 
     func embed(stackedViewController: ViewControllable)
@@ -22,10 +22,14 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     init(viewController: MainViewControllable,
          statusBuilder: StatusBuildable,
          moreInformationBuilder: MoreInformationBuildable,
-         aboutBuilder: AboutBuildable) {
+         aboutBuilder: AboutBuildable,
+         receivedNotificationBuilder: ReceivedNotificationBuildable,
+         requestTestBuilder: RequestTestBuildable) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
+        self.receivedNotificationBuilder = receivedNotificationBuilder
+        self.requestTestBuilder = requestTestBuilder
 
         super.init(viewController: viewController)
 
@@ -70,13 +74,53 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         }
     }
 
-    func routeToReceivedNotification() {}
+    func routeToReceivedNotification() {
+        guard receivedNotificationViewController == nil else {
+            return
+        }
 
-    func routeToInfected() {}
+        let receivedNotificationViewController = receivedNotificationBuilder.build(withListener: viewController)
+        self.receivedNotificationViewController = receivedNotificationViewController
 
-    func routeToRequestTest() {}
+        viewController.present(viewController: receivedNotificationViewController, animated: true)
+    }
 
-    func routeToShareApp() {}
+    func detachReceivedNotification(shouldDismissViewController: Bool) {
+        guard let receivedNotificationViewController = receivedNotificationViewController else {
+            return
+        }
+        self.receivedNotificationViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: receivedNotificationViewController, animated: true)
+        }
+    }
+
+    func routeToInfected() {
+        print("Route to Infected")
+    }
+
+    func routeToRequestTest() {
+        guard requestTestViewController == nil else {
+            return
+        }
+
+        let requestTestViewController = requestTestBuilder.build(withListener: viewController)
+        self.requestTestViewController = requestTestViewController
+
+        viewController.present(viewController: requestTestViewController, animated: true)
+    }
+
+    func detachRequestTest(shouldDismissViewController: Bool) {
+        guard let requestTestViewController = requestTestViewController else {
+            return
+        }
+        self.requestTestViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: requestTestViewController, animated: true)
+        }
+    }
 
     // MARK: - Private
 
@@ -88,4 +132,10 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let aboutBuilder: AboutBuildable
     private var aboutViewController: ViewControllable?
+
+    private let receivedNotificationBuilder: ReceivedNotificationBuildable
+    private var receivedNotificationViewController: ViewControllable?
+
+    private let requestTestBuilder: RequestTestBuildable
+    private var requestTestViewController: ViewControllable?
 }

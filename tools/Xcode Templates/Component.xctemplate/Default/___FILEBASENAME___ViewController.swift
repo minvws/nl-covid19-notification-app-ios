@@ -43,11 +43,11 @@ final class ___VARIABLE_componentName___ViewController: ViewController, ___VARIA
 private final class ___VARIABLE_componentName___View: View {
 
     // MARK: - Init
-    
+
     override init(theme: Theme) {
         super.init(theme: theme)
     }
-    
+
     // MARK: - Overrides
 
     override func build() {

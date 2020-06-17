@@ -9,8 +9,7 @@ import Foundation
 
 /// @mockable
 protocol ReceivedNotificationListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
+    func receivedNotificationWantsDismissal(shouldDismissViewController: Bool)
 }
 
 /// @mockable
@@ -25,19 +24,12 @@ protocol ReceivedNotificationDependency {
     var theme: Theme { get }
 }
 
-private final class ReceivedNotificationDependencyProvider: DependencyProvider<ReceivedNotificationDependency> {
-    // TODO: Create and return any dependency that should be limited
-    //       to ReceivedNotification's scope or any child of ReceivedNotification
-}
+private final class ReceivedNotificationDependencyProvider: DependencyProvider<ReceivedNotificationDependency> {}
 
 final class ReceivedNotificationBuilder: Builder<ReceivedNotificationDependency>, ReceivedNotificationBuildable {
     func build(withListener listener: ReceivedNotificationListener) -> ViewControllable {
-        // TODO: Add any other dynamic dependency as parameter
-
         let dependencyProvider = ReceivedNotificationDependencyProvider(dependency: dependency)
-
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
-        return ReceivedNotificationViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        return ReceivedNotificationViewController(listener: listener,
+                                                  theme: dependencyProvider.dependency.theme)
     }
 }

@@ -28,7 +28,7 @@ public protocol Colors: AnyObject {
 
 final class ENColors: Colors {
     var primary: UIColor {
-        return color(for: "theme.colors.primary")
+        return color(for: "PrimaryColor")
     }
 
     var secondary: UIColor {
