@@ -21,6 +21,7 @@ protocol OnboardingConsentListener: AnyObject {
     func consentClose()
     func consentRequest(step: OnboardingConsentStepIndex)
     func displayHelp()
+    func displayHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp)
 }
 
 protocol OnboardingConsentDependency {
@@ -28,7 +29,7 @@ protocol OnboardingConsentDependency {
     var onboardingConsentManager: OnboardingConsentManaging { get }
 }
 
-private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> {}
+private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> { }
 
 final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, OnboardingConsentBuildable {
     func build(withListener listener: OnboardingConsentListener) -> ViewControllable {

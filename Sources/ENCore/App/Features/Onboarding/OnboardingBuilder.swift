@@ -41,6 +41,12 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
                                         theme: self.theme)
     }()
 
+    // MARK: - OnboardingConsentHelpDependency
+
+    lazy var onboardingConsentHelpManager: OnboardingConsentHelpManaging = {
+        return OnboardingConsentHelpManager(theme: self.theme)
+    }()
+    
     var theme: Theme {
         return dependency.theme
     }

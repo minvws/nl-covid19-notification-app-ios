@@ -54,7 +54,8 @@
 "skipStep" = "Sla over";
 
 // MARK: - Help
-"helpTitle" = "Hoe werkt het?";
+"helpTitle" = "Over de app";
+"helpSubtitle" = "Veelgestelde vragen";
 "helpAcceptButtonTitle" = "Toestemming geven";
 "helpContent" = "
 <h1>Kan de app mijn locatie zien?</h1>

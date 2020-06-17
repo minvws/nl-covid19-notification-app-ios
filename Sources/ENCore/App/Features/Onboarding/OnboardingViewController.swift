@@ -13,6 +13,7 @@ protocol OnboardingRouting: Routing {
     func routeToConsent(animated: Bool)
     func routeToConsent(withIndex index: Int, animated: Bool)
     func routeToHelp()
+    func routeToHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp)
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable {
@@ -58,11 +59,15 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         router?.routeToHelp()
     }
 
-    func helpRequestsFAQ() {}
+    func displayHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp) {
+        router?.routeToHelpDetail(withOnboardingConsentHelp: onboardingConsentHelp)
+    }
+    
+    func helpRequestsFAQ() { }
 
-    func helpRequestsPermission() {}
+    func helpRequestsPermission() { }
 
-    func helpRequestsClose() {}
+    func helpRequestsClose() { }
 
     // MARK: - ViewController Lifecycle
 
@@ -76,3 +81,4 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     private weak var listener: OnboardingListener?
 }
+

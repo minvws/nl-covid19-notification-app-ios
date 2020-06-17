@@ -13,10 +13,15 @@ protocol OnboardingHelpViewControllable: ViewControllable {
     func acceptButtonPressed()
 }
 
-final class OnboardingHelpViewController: ViewController, OnboardingHelpViewControllable {
+final class OnboardingHelpViewController: ViewController, OnboardingHelpViewControllable, UITableViewDelegate, UITableViewDataSource {
 
-    init(listener: OnboardingHelpListener,
-         theme: Theme) {
+    private let onboardingConsentHelpManager: OnboardingConsentHelpManaging
+
+    init(onboardingConsentHelpManager: OnboardingConsentHelpManaging,
+        listener: OnboardingHelpListener,
+        theme: Theme) {
+        
+        self.onboardingConsentHelpManager = onboardingConsentHelpManager
         self.listener = listener
 
         super.init(theme: theme)
@@ -32,23 +37,56 @@ final class OnboardingHelpViewController: ViewController, OnboardingHelpViewCont
         super.viewDidLoad()
 
         internalView.titleLabel.text = Localized("helpTitle")
+        internalView.subtitleLabel.text = Localized("helpSubtitle")
+        
         internalView.closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
-
-        if let url = Bundle.main.url(forResource: "template", withExtension: "html") {
-            if let template = try? String(contentsOf: url) {
-                let html = template.replacingOccurrences(of: "%s", with: Localized("helpContent") + "</br>")
-                internalView.webView.loadHTMLString(html, baseURL: Bundle.main.bundleURL)
-            }
-        }
+        internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
+        internalView.tableView.delegate = self
+        internalView.tableView.dataSource = self
     }
 
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return onboardingConsentHelpManager.onboardingConsentHelp.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        let cell: UITableViewCell
+        let cellIdentifier = "helpCell"
+
+        if let aCell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) {
+            cell = aCell
+        } else {
+            cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+        }
+
+        cell.textLabel?.text = onboardingConsentHelpManager.onboardingConsentHelp[indexPath.row].question
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.font = .systemFont(ofSize: 17)
+        
+        cell.accessoryType = .disclosureIndicator
+        
+        cell.indentationLevel = 1
+        cell.indentationWidth = 5
+        
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard (0 ..< onboardingConsentHelpManager.onboardingConsentHelp.count).contains(indexPath.row) else {
+            return
+        }
+        listener?.displayHelpDetail(withOnboardingConsentHelp: onboardingConsentHelpManager.onboardingConsentHelp[indexPath.row])
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
     @objc func closeButtonPressed() {
         self.dismiss(animated: true)
     }
 
     @objc func acceptButtonPressed() {
         self.dismiss(animated: true, completion: {
-            // TODO: Ask permissions
+            self.listener?.helpRequestsPermission()
         })
     }
 
@@ -64,16 +102,17 @@ private final class OnboardingHelpView: View {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 17, weight: .semibold)
-        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 28, weight: .bold)
         return label
     }()
-
-    private lazy var lineView: UIView = {
-        let lineView = UILabel()
-        lineView.translatesAutoresizingMaskIntoConstraints = false
-        lineView.backgroundColor = .black
-        return lineView
+        
+    lazy var subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        label.font = .systemFont(ofSize: 15, weight: .bold)
+        label.textColor = self.theme.colors.primary
+        return label
     }()
 
     lazy var closeButton: UIButton = {
@@ -83,21 +122,23 @@ private final class OnboardingHelpView: View {
         return button
     }()
 
-    lazy var webView: WKWebView = {
-        let webView = WKWebView()
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        webView.allowsBackForwardNavigationGestures = false
-        webView.backgroundColor = .clear
-        return webView
-    }()
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
 
-    private lazy var gradientImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .clear
-        imageView.image = Image.named("Gradient") ?? UIImage()
-        return imageView
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+
+        tableView.showsVerticalScrollIndicator = true
+        tableView.showsHorizontalScrollIndicator = false
+        tableView.isScrollEnabled = true
+
+        tableView.estimatedRowHeight = 100
+        tableView.rowHeight = UITableView.automaticDimension
+        
+        tableView.allowsMultipleSelection = false
+
+        return tableView
     }()
 
     lazy var acceptButton: Button = {
@@ -108,7 +149,7 @@ private final class OnboardingHelpView: View {
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [titleLabel, closeButton, lineView, webView, gradientImageView, acceptButton]
+    private lazy var viewsInDisplayOrder = [closeButton, titleLabel, subtitleLabel, tableView, acceptButton]
 
     override func build() {
         super.build()
@@ -122,46 +163,39 @@ private final class OnboardingHelpView: View {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: 75)
-        ])
-
-        constraints.append([
             closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 0),
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            closeButton.heightAnchor.constraint(equalToConstant: 75),
+            closeButton.heightAnchor.constraint(equalToConstant: 50),
             closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-        ])
+            ])
 
         constraints.append([
-            lineView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            lineView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            lineView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            lineView.heightAnchor.constraint(equalToConstant: 1)
-        ])
+            titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 0),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
+            ])
 
         constraints.append([
-            webView.topAnchor.constraint(equalTo: lineView.bottomAnchor, constant: 0),
-            webView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            webView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            webView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
-
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 25),
+            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            subtitleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
+            ])
+        
         constraints.append([
-            gradientImageView.heightAnchor.constraint(equalToConstant: 25),
-            gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gradientImageView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
+            tableView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 15),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+            tableView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
+            ])
 
         constraints.append([
             acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
+            ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }

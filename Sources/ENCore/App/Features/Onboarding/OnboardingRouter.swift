@@ -18,11 +18,11 @@ protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, O
 final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
 
     init(viewController: OnboardingViewControllable,
-         stepBuilder: OnboardingStepBuildable,
-         consentBuilder: OnboardingConsentBuildable,
-         helpBuilder: OnboardingHelpBuildable,
-         webBuilder: WebBuildable,
-         shareSheetBuilder: ShareSheetBuildable) {
+        stepBuilder: OnboardingStepBuildable,
+        consentBuilder: OnboardingConsentBuildable,
+        helpBuilder: OnboardingHelpBuildable,
+        webBuilder: WebBuildable,
+        shareSheetBuilder: ShareSheetBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
         self.helpBuilder = helpBuilder
@@ -66,6 +66,13 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.present(viewController: helpViewController, animated: true, completion: nil)
     }
 
+    func routeToHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp) {
+        let helpDetailViewController = helpBuilder.buildDetail(withListener: viewController, onboardingConsentHelp: onboardingConsentHelp)
+        self.helpDetailViewController = helpDetailViewController
+
+        viewController.push(viewController: helpDetailViewController, animated: false)
+    }
+
     private let stepBuilder: OnboardingStepBuildable
     private var stepViewController: ViewControllable?
 
@@ -74,6 +81,7 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
 
     private let helpBuilder: OnboardingHelpBuildable
     private var helpViewController: ViewControllable?
+    private var helpDetailViewController: ViewControllable?
 
     private let webBuilder: WebBuildable
     private var webViewController: ViewControllable?
