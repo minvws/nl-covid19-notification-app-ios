@@ -15,9 +15,10 @@ enum NetworkManagerError: Error {
 
 final class NetworkManager: NetworkManaging {
 
-    init(configuration: NetworkConfiguration, urlSession: URLSession = URLSession.shared) {
+    init(configuration: NetworkConfiguration, networkResponseHandler: NetworkResponseHandler, urlSession: URLSession = URLSession.shared) {
         self.configuration = configuration
         self.session = urlSession
+        self.networkResponseHandler = networkResponseHandler
     }
 
     // MARK: CDN
@@ -158,4 +159,5 @@ final class NetworkManager: NetworkManaging {
 
     private let configuration: NetworkConfiguration
     private let session: URLSession
+    private let networkResponseHandler: NetworkResponseHandler
 }

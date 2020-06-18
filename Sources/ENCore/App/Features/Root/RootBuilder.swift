@@ -45,11 +45,11 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         let builder = ExposureControllerBuilder(dependency: self)
         return builder.build()
     }()
-
+    
     lazy var networkController: NetworkControlling = {
         return NetworkControllerBuilder(dependency: self).build()
     }()
-
+    
     lazy var backgroundController: BackgroundControlling = {
         return BackgroundControllerBuilder().build()
     }()
