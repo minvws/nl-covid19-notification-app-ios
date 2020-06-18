@@ -11,7 +11,7 @@ enum VerifySignatureError: Error {
     case cantVerify
 }
 
-final class VerifySignatureResponseHandler: NetworkResponseHandling {
+final class VerifySignatureResponseHandler {
     
     enum TEKFiles:String {
            case binary = "export.bin"

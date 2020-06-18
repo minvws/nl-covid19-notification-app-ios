@@ -24,20 +24,30 @@ protocol NetworkManaging {
     func postStopKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (NetworkManagerError?) -> ())
 }
 
+
+
 /// @mockable
 protocol NetworkManagerBuildable {
     func build() -> NetworkManaging
 }
 
+private final class NetworkManagerDependencyProvider: DependencyProvider<EmptyDependency> {
+    lazy var networkResponseProvider: NetworkResponseProviderHandling = {
+        return NetworkResponseProvider()
+    }()
+}
+
+
 final class NetworkManagerBuilder: Builder<EmptyDependency>, NetworkManagerBuildable {
     func build() -> NetworkManaging {
+        
+        let dependencyProvider = NetworkManagerDependencyProvider(dependency: dependency)
         #if DEBUG
             let configuration: NetworkConfiguration = .development
         #else
             let configuration: NetworkConfiguration = .production
         #endif
         
-        let responseHandler = NetworkResponseHandlerProvider()
-        return NetworkManager(configuration: configuration, networkResponseHandler: responseHandler)
+        return NetworkManager(configuration: configuration, networkResponseHandler: dependencyProvider.networkResponseProvider)
     }
 }

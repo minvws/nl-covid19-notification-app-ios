@@ -8,13 +8,16 @@
 import Foundation
 import ZIPFoundation
 enum UnzipNetworkResponseError: Error {
-    case placeholder
+    case error
     case cantOpenDirectory
 }
 
 
+/// @mockable
+protocol FileManaging {}
+extension FileManager: FileManaging {}
 
-final class UnzipNetworkResponseHandler: NetworkResponseHandling {
+final class UnzipNetworkResponseHandler {
     
     let zip = "file.zip"
     
@@ -31,22 +34,21 @@ final class UnzipNetworkResponseHandler: NetworkResponseHandling {
     }
     
     private func moveToTemporaryLocation(url:URL) throws -> URL {
-        guard let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else {
-            throw UnzipNetworkResponseError.cantOpenDirectory
+        
+        guard let zipUrl = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(zip) else {
+            throw UnzipNetworkResponseError.error
         }
         
-        let zipUrl = cachesDirectory.appendingPathComponent(zip)
         try fileManager.moveItem(at: url, to: zipUrl)
         return zipUrl
     }
     
     func unzipAndMove(sourceURL: URL) throws -> [URL] {
         
-        guard let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else {
-            throw UnzipNetworkResponseError.cantOpenDirectory
+        guard let destinationDirectory = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString) else {
+            throw UnzipNetworkResponseError.error
         }
         
-        let destinationDirectory = cachesDirectory.appendingPathComponent(UUID().uuidString)
         try fileManager.createDirectory(at: destinationDirectory, withIntermediateDirectories: true, attributes: nil)
         try fileManager.unzipItem(at: sourceURL, to: destinationDirectory)
         

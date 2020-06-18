@@ -8,25 +8,13 @@
 import Foundation
 
 enum NetworkResponseError: Error {
-    case placeholder
-    case emptyUrl
-    case fileNotFound
-    case unzipError(UnzipNetworkResponseError)
-    case signatureError(VerifySignatureError)
+    case error
+    case badRequest
+    case serverError
 }
 
-struct HandlerResult {
-    let Object:Codable?
-    let status:Bool
-}
-
-/// @mockable
-protocol NetworkResponseHandling {}
-
-final class NetworkResponseHandlerProvider {
+final class NetworkResponseProvider : NetworkResponseProviderHandling {
    
-    
-    
     // handlers
     let verifySignatureHandler:VerifySignatureResponseHandler
     let unzipNetworkResponseHandler:UnzipNetworkResponseHandler
@@ -37,14 +25,12 @@ final class NetworkResponseHandlerProvider {
         self.unzipNetworkResponseHandler = unzipNetworkResponseHandler
     }
     
-    
     func handleReturnData(url: URL?, response: URLResponse?, error: Error?) throws -> Data  {
-        
         let files = try self.handleReturnUrls(url: url, response: response, error: error)
         let filtered = files.filter( { $0.pathExtension == "bin" } )
         
         guard let binUrl = filtered.first else {
-             throw NetworkResponseError.fileNotFound
+             throw NetworkResponseError.error
         }
         
         let data = try Data(contentsOf: binUrl)
@@ -58,14 +44,27 @@ final class NetworkResponseHandlerProvider {
             throw error
         }
         
+        if let httpResponse = response as? HTTPURLResponse {
+            
+            switch httpResponse.statusCode {
+            case 400...499:
+                throw NetworkResponseError.badRequest
+            case 500...599:
+                throw NetworkResponseError.serverError
+            default:
+                // continue
+                break;
+            }
+        }
+        
         guard let url = url else {
-            throw NetworkResponseError.emptyUrl
+            throw NetworkResponseError.error
         }
         
         // extract files
         let urls = try self.unzipNetworkResponseHandler.handle(url: url)
         if !self.verifySignatureHandler.handle(urls: urls) {
-            throw NetworkResponseError.signatureError(.cantVerify)
+            throw NetworkResponseError.error
         }
     
         return urls

@@ -15,7 +15,7 @@ enum NetworkManagerError: Error {
 
 final class NetworkManager: NetworkManaging {
 
-    init(configuration: NetworkConfiguration, networkResponseHandler: NetworkResponseHandlerProvider, urlSession: URLSession = URLSession.shared) {
+    init(configuration: NetworkConfiguration, networkResponseHandler: NetworkResponseProviderHandling, urlSession: URLSession = URLSession.shared) {
         self.configuration = configuration
         self.session = urlSession
         self.networkResponseHandler = networkResponseHandler
@@ -155,5 +155,5 @@ final class NetworkManager: NetworkManaging {
 
     private let configuration: NetworkConfiguration
     private let session: URLSession
-    private let networkResponseHandler: NetworkResponseHandlerProvider
+    private let networkResponseHandler: NetworkResponseProviderHandling
 }
