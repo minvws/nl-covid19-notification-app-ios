@@ -57,6 +57,8 @@ targets:
             UIWindowSceneSessionRoleApplication:
               - UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
                 UISceneConfigurationName: Default Configuration
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
                 
     dependencies:
       - carthage: ZIPFoundation

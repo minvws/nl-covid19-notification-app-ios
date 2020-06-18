@@ -46,14 +46,32 @@ protocol ExposureControllerBuildable {
 
 protocol ExposureControllerDependency {
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
+    var networkController: NetworkControlling { get }
+    var storageController: StorageControlling { get }
 }
 
-private final class ExposureControllerDependencyProvider: DependencyProvider<ExposureControllerDependency> {
+private final class ExposureControllerDependencyProvider: DependencyProvider<ExposureControllerDependency>, ExposureDataControllerDependency {
+    // MARK: - ExposureDataControllerDependency
+
+    var networkController: NetworkControlling {
+        return dependency.networkController
+    }
+
+    var storageController: StorageControlling {
+        return dependency.storageController
+    }
+
+    // MARK: - Private Dependencies
+
     lazy var exposureManager: ExposureManaging? = {
         let builder = ExposureManagerBuilder()
 
         return builder.build()
     }()
+
+    var dataController: ExposureDataControlling {
+        return ExposureDataControllerBuilder(dependency: self).build()
+    }
 }
 
 final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, ExposureControllerBuildable {
@@ -61,6 +79,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
         let dependencyProvider = ExposureControllerDependencyProvider(dependency: dependency)
 
         return ExposureController(mutableStateStream: dependencyProvider.dependency.mutableExposureStateStream,
-                                  exposureManager: dependencyProvider.exposureManager)
+                                  exposureManager: dependencyProvider.exposureManager,
+                                  dataController: dependencyProvider.dataController)
     }
 }

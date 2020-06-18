@@ -8,12 +8,20 @@
 import Combine
 import Foundation
 
+enum ExposureDataError: Error {
+    case networkUnreachable
+    case serverUnreachable
+}
+
+/// @mockable
 protocol ExposureDataControlling {
     // MARK: - Tasks
 
     func fetchAndProcessExposureKeySets() -> Future<(), Never>
 
     // MARK: - Lab Flow
+
+    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
 }
 
 protocol ExposureDataControllerBuildable {
@@ -22,14 +30,32 @@ protocol ExposureDataControllerBuildable {
 
 protocol ExposureDataControllerDependency {
     var networkController: NetworkControlling { get }
+    var storageController: StorageControlling { get }
 }
 
-private final class ExposureDataControllerDependencyProvider: DependencyProvider<ExposureDataControllerDependency> {}
+private final class ExposureDataControllerDependencyProvider: DependencyProvider<ExposureDataControllerDependency>, ExposureDataOperationProviderDependency {
+
+    // MARK: - ExposureDataOperationProviderDependency
+
+    var networkController: NetworkControlling {
+        return dependency.networkController
+    }
+
+    var storageController: StorageControlling {
+        return dependency.storageController
+    }
+
+    // MARK: - Private Dependencies
+
+    var operationProvider: ExposureDataOperationProvider {
+        return ExposureDataOperationProviderBuilder(dependency: self).build()
+    }
+}
 
 final class ExposureDataControllerBuilder: Builder<ExposureDataControllerDependency>, ExposureDataControllerBuildable {
     func build() -> ExposureDataControlling {
         let dependencyProvider = ExposureDataControllerDependencyProvider(dependency: dependency)
 
-        return ExposureDataController(networkController: dependencyProvider.dependency.networkController)
+        return ExposureDataController(operationProvider: dependencyProvider.operationProvider)
     }
 }

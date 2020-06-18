@@ -12,16 +12,16 @@ protocol NetworkManaging {
 
     // MARK: CDN
 
-    func getManifest(completion: @escaping (Result<Manifest, Error>) -> ())
-    func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, Error>) -> ())
-    func getRiskCalculationParameters(appConfig: String, completion: @escaping (Result<RiskCalculationParameters, Error>) -> ())
-    func getDiagnosisKeys(_ id: String, completion: @escaping (Result<ExposureKeySet, Error>) -> ())
+    func getManifest(completion: @escaping (Result<Manifest, NetworkManagerError>) -> ())
+    func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkManagerError>) -> ())
+    func getRiskCalculationParameters(appConfig: String, completion: @escaping (Result<RiskCalculationParameters, NetworkManagerError>) -> ())
+    func getDiagnosisKeys(_ id: String, completion: @escaping (Result<ExposureKeySet, NetworkManagerError>) -> ())
 
     // MARK: Enrollment
 
-    func postRegister(register: Register, completion: @escaping (Result<LabInformation, Error>) -> ())
-    func postKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (Error?) -> ())
-    func postStopKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (Error?) -> ())
+    func postRegister(register: RegisterRequest, completion: @escaping (Result<LabInformation, NetworkManagerError>) -> ())
+    func postKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (NetworkManagerError?) -> ())
+    func postStopKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (NetworkManagerError?) -> ())
 }
 
 /// @mockable

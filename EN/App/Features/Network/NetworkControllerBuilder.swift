@@ -10,12 +10,16 @@ import Foundation
 
 enum NetworkError: Error {
     case serverNotReachable
+    case invalidResponse
 }
 
+/// @mockable
 protocol NetworkControlling {
     var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> { get }
     var exposureRiskCalculationParameters: Future<ExposureRiskCalculationParameters, NetworkError> { get }
     var resourceBundle: Future<ResourceBundle, NetworkError> { get }
+
+    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError>
 }
 
 /// @mockable

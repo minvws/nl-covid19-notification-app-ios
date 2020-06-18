@@ -8,10 +8,14 @@
 import Combine
 import Foundation
 
+struct ExposureDataStorageKey {
+    static var labConfirmationKey = AnyStoreKey(name: "labConfirmationKey", storeType: .secure)
+}
+
 final class ExposureDataController: ExposureDataControlling {
 
-    init(networkController: NetworkControlling) {
-        self.networkController = networkController
+    init(operationProvider: ExposureDataOperationProvider) {
+        self.operationProvider = operationProvider
     }
 
     // MARK: - ExposureDataControlling
@@ -22,7 +26,26 @@ final class ExposureDataController: ExposureDataControlling {
         }
     }
 
+    // MARK: - LabFlow
+
+    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
+        let operation = operationProvider.requestLabConfirmationKeyOperation
+
+        return operation.execute()
+            .setFailureType(to: ExposureDataError.self)
+//            .flatMap { labConfirmationKey -> AnyPublisher<LabConfirmationKey, ExposureDataError> in
+//                guard let labConfirmationKey = labConfirmationKey else {
+//                    return Fail(error: ExposureDataError.serverUnreachable).eraseToAnyPublisher()
+//                }
+//
+//                return Just(labConfirmationKey)
+//                    .setFailureType(to: ExposureDataError.self)
+//                    .eraseToAnyPublisher()
+//        }
+            .eraseToAnyPublisher()
+    }
+
     // MARK: - Private
 
-    private let networkController: NetworkControlling
+    private let operationProvider: ExposureDataOperationProvider
 }

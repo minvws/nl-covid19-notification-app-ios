@@ -14,9 +14,9 @@ struct NetworkConfiguration {
     let mock: Bool
 
     static let development = NetworkConfiguration(
-        url: "http://localhost:5000",
-        path: "cdn/v1",
-        mock: true
+        url: "http://localhost:5004",
+        path: "MobileAppApi/v1",
+        mock: false
     )
 
     static let production = NetworkConfiguration(

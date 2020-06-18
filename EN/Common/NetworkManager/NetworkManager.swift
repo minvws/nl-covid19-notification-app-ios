@@ -10,6 +10,7 @@ import ZIPFoundation
 
 enum NetworkManagerError: Error {
     case emptyResponse
+    case other(Error) // TODO: Map correctly
 }
 
 final class NetworkManager: NetworkManaging {
@@ -25,10 +26,10 @@ final class NetworkManager: NetworkManaging {
 
     /// Fetches manifest from server with all available parameters
     /// - Parameter completion: return
-    func getManifest(completion: @escaping (Result<Manifest, Error>) -> ()) {
+    func getManifest(completion: @escaping (Result<Manifest, NetworkManagerError>) -> ()) {
         session.get(self.configuration.manifestUrl) { data, response, error in
             if let error = error {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
                 return
             }
 
@@ -42,17 +43,17 @@ final class NetworkManager: NetworkManaging {
                 // TODO: SAVE IN USER DEFAULTS!!!
                 completion(.success(manifest))
             } catch {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
             }
         }
     }
 
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
     /// - Parameter completion: completion description
-    func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, Error>) -> ()) {
+    func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkManagerError>) -> ()) {
         session.get(self.configuration.appConfigUrl(param: appConfig)) { data, response, error in
             if let error = error {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
                 return
             }
 
@@ -63,17 +64,17 @@ final class NetworkManager: NetworkManaging {
                 let appConfig = try JSONDecoder().decode(AppConfig.self, from: data)
                 completion(.success(appConfig))
             } catch {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
             }
         }
     }
 
     /// Fetches risk parameters used by the ExposureManager
     /// - Parameter completion: success or fail
-    func getRiskCalculationParameters(appConfig: String, completion: @escaping (Result<RiskCalculationParameters, Error>) -> ()) {
+    func getRiskCalculationParameters(appConfig: String, completion: @escaping (Result<RiskCalculationParameters, NetworkManagerError>) -> ()) {
         session.get(self.configuration.riskCalculationParametersUrl(param: appConfig)) { data, response, error in
             if let error = error {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
                 return
             }
 
@@ -85,7 +86,7 @@ final class NetworkManager: NetworkManaging {
                 let riskCalculationParameters = try JSONDecoder().decode(RiskCalculationParameters.self, from: data)
                 completion(.success(riskCalculationParameters))
             } catch {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
             }
         }
     }
@@ -94,7 +95,7 @@ final class NetworkManager: NetworkManaging {
     /// - Parameters:
     ///   - id: id of the exposureKeySet
     ///   - completion: executed on complete or failure
-    func getDiagnosisKeys(_ id: String, completion: @escaping (Result<ExposureKeySet, Error>) -> ()) {
+    func getDiagnosisKeys(_ id: String, completion: @escaping (Result<ExposureKeySet, NetworkManagerError>) -> ()) {
         session.download(self.configuration.exposureKeySetUrl(param: id)) { url, response, error in
 
             guard let url = url else {
@@ -106,7 +107,7 @@ final class NetworkManager: NetworkManaging {
                 let exposureKeySet = try ExposureKeySet(url: url)
                 completion(.success(exposureKeySet))
             } catch {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
             }
         }
     }
@@ -115,9 +116,9 @@ final class NetworkManager: NetworkManaging {
     /// - Parameters:
     ///   - diagnosisKeys: Contains all diagnosisKeys available
     ///   - completion: completion nil if succes else error
-    func postKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (Error?) -> ()) {
+    func postKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (NetworkManagerError?) -> ()) {
         session.post(self.configuration.postKeysUrl, object: diagnosisKeys) { data, response, error in
-            completion(error)
+            completion(error.map { NetworkManagerError.other($0) })
         }
     }
 
@@ -125,9 +126,9 @@ final class NetworkManager: NetworkManaging {
     /// - Parameters:
     ///   - diagnosisKeys: Contains all diagnosisKeys available
     ///   - completion: completion nil if succes else error
-    func postStopKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (Error?) -> ()) {
+    func postStopKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (NetworkManagerError?) -> ()) {
         session.post(self.configuration.postKeysUrl, object: diagnosisKeys) { data, response, error in
-            completion(error)
+            completion(error.map { NetworkManagerError.other($0) })
         }
     }
 
@@ -135,10 +136,10 @@ final class NetworkManager: NetworkManaging {
     /// - Parameters:
     ///   - register: Contains confirmation key
     ///   - completion: completion
-    func postRegister(register: Register, completion: @escaping (Result<LabInformation, Error>) -> ()) {
+    func postRegister(register: RegisterRequest, completion: @escaping (Result<LabInformation, NetworkManagerError>) -> ()) {
         session.post(self.configuration.registerUrl, object: register) { data, response, error in
             if let error = error {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
                 return
             }
 
@@ -150,7 +151,7 @@ final class NetworkManager: NetworkManaging {
                 let labInformation = try JSONDecoder().decode(LabInformation.self, from: data)
                 completion(.success(labInformation))
             } catch {
-                completion(.failure(error))
+                completion(.failure(.other(error)))
             }
         }
     }

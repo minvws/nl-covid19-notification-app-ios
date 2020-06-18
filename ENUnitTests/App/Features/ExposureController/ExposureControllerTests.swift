@@ -13,12 +13,14 @@ final class ExposureControllerTests: XCTestCase {
     private var controller: ExposureController!
     private let mutableStateStream = MutableExposureStateStreamingMock()
     private let exposureManager = ExposureManagingMock()
+    private let dataController = ExposureDataControllingMock()
 
     override func setUp() {
         super.setUp()
 
         controller = ExposureController(mutableStateStream: mutableStateStream,
-                                        exposureManager: exposureManager)
+                                        exposureManager: exposureManager,
+                                        dataController: dataController)
 
         exposureManager.activateCallCount = 0
         mutableStateStream.updateCallCount = 0
@@ -71,7 +73,9 @@ final class ExposureControllerTests: XCTestCase {
 
         let expectation = expect(activeState: .inactive(.requiresOSUpdate))
 
-        controller = ExposureController(mutableStateStream: mutableStateStream, exposureManager: nil)
+        controller = ExposureController(mutableStateStream: mutableStateStream,
+                                        exposureManager: nil,
+                                        dataController: dataController)
         controller.activate()
 
         XCTAssertTrue(expectation.evaluate())

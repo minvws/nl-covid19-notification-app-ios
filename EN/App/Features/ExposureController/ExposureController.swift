@@ -5,15 +5,22 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
 import UIKit
 
 final class ExposureController: ExposureControlling {
 
     init(mutableStateStream: MutableExposureStateStreaming,
-         exposureManager: ExposureManaging?) {
+         exposureManager: ExposureManaging?,
+         dataController: ExposureDataControlling) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
+        self.dataController = dataController
+    }
+
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - ExposureControlling
@@ -57,7 +64,16 @@ final class ExposureController: ExposureControlling {
         // Not implemented yet
     }
 
-    func requestLabConfirmationKey(completion: @escaping (String, Date) -> ()) {}
+    func requestLabConfirmationKey(completion: @escaping (String, Date) -> ()) {
+        dataController.requestLabConfirmationKey().sink(
+            receiveCompletion: { completion in
+                print(completion)
+            },
+            receiveValue: { labConfirmationKey in
+                completion(labConfirmationKey.identifier, labConfirmationKey.validUntil)
+        })
+            .store(in: &disposeBag)
+    }
 
     func requestUploadKeys(completion: @escaping (Bool) -> ()) {}
 
@@ -102,4 +118,6 @@ final class ExposureController: ExposureControlling {
 
     private let mutableStateStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging?
+    private let dataController: ExposureDataControlling
+    private var disposeBag = Set<AnyCancellable>()
 }

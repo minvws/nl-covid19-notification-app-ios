@@ -12,6 +12,18 @@ protocol StoreKey {
     var storeType: StoreType { get }
 }
 
+struct AnyStoreKey: StoreKey {
+    var asString: String { name }
+    let storeType: StoreType
+
+    init(name: String, storeType: StoreType) {
+        self.name = name
+        self.storeType = storeType
+    }
+
+    private let name: String
+}
+
 enum StoreType {
     case secure
     case insecure(volatile: Bool, maximumAge: TimeInterval? = nil)
@@ -30,7 +42,7 @@ protocol StorageControlling {
 }
 
 extension StorageControlling {
-    func store<Object: Codable, Key: StoreKey>(object: Object, identifiedBy key: Key, completion: @escaping (Error?) -> ()) {
+    func store<Object: Encodable, Key: StoreKey>(object: Object, identifiedBy key: Key, completion: @escaping (Error?) -> ()) {
         guard let data = try? JSONEncoder().encode(object) else {
             completion(StoreError.cannotEncode)
             return

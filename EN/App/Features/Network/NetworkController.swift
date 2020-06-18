@@ -30,6 +30,29 @@ final class NetworkController: NetworkControlling {
         }
     }
 
+    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError> {
+        return Future { promise in
+            let request = RegisterRequest(padding: "5342fds89erwtsdf")
+
+            self.networkManager.postRegister(register: request) { result in
+
+                let convertLabConfirmationKey: (LabInformation) -> Result<LabConfirmationKey, NetworkError> = { labInformation in
+                    guard let labConfirmationKey = labInformation.asLabConfirmationKey else {
+                        return .failure(.invalidResponse)
+                    }
+
+                    return .success(labConfirmationKey)
+                }
+
+                promise(result
+                    .mapError { error in error.asNetworkError }
+                    .flatMap(convertLabConfirmationKey)
+                )
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
     private func updateWhenRequired(includeResources: Bool) -> Future<(), NetworkError> {
         return Future { promise in
             // TODO: Check if manifest, check if up-to-date, otherwise download
@@ -49,4 +72,15 @@ final class NetworkController: NetworkControlling {
 
     private let networkManager: NetworkManaging
     private let storageController: StorageControlling
+}
+
+private extension NetworkManagerError {
+    var asNetworkError: NetworkError {
+        switch self {
+        case .emptyResponse:
+            return .invalidResponse
+        case .other:
+            return .invalidResponse
+        }
+    }
 }
