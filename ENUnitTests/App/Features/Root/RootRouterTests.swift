@@ -109,7 +109,7 @@ final class RootRouterTests: XCTestCase {
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState) {
-        exposureStateStream.exposureState = Just(ExposureState(notified: false,
+        exposureStateStream.exposureState = Just(ExposureState(notifiedState: .notNotified,
                                                                activeState: activeState)).eraseToAnyPublisher()
     }
 }

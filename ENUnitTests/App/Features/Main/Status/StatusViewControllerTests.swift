@@ -46,7 +46,8 @@ final class StatusViewControllerTests: XCTestCase {
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState = .active, notified: Bool = false) {
-        let state = ExposureState(notified: notified, activeState: activeState)
+        let notifiedState: ExposureStateNotified = notified ? .notified(Date()) : .notNotified
+        let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
         exposureStateStream.exposureState = Just(state).eraseToAnyPublisher()
     }

@@ -12,6 +12,8 @@ protocol ExposureDataControlling {
     // MARK: - Tasks
 
     func fetchAndProcessExposureKeySets() -> Future<(), Never>
+
+    // MARK: - Lab Flow
 }
 
 protocol ExposureDataControllerBuildable {

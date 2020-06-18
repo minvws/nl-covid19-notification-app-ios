@@ -9,8 +9,13 @@ import Combine
 import Foundation
 
 struct ExposureState: Equatable {
-    let notified: Bool
+    let notifiedState: ExposureStateNotified
     let activeState: ExposureActiveState
+}
+
+enum ExposureStateNotified: Equatable {
+    case notified(Date)
+    case notNotified
 }
 
 enum ExposureActiveState: Equatable {
@@ -33,6 +38,7 @@ enum ExposureStateInactiveState: Equatable {
     case requiresOSUpdate
     case bluetoothOff
     case noRecentNotificationUpdates
+    case airplaneMode
 }
 
 /// @mockable

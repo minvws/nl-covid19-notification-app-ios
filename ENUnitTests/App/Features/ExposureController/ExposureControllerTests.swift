@@ -147,6 +147,14 @@ final class ExposureControllerTests: XCTestCase {
         XCTAssertTrue(expectation.evaluate())
     }
 
+    func test_requestLabConfirmationKey_callsCompletion() {
+        // TODO:
+    }
+
+    func test_requestUploadKeys_callsCompletion() {
+        // TODO:
+    }
+
     // MARK: - Private
 
     private func triggerUpdateStream() {
@@ -156,8 +164,8 @@ final class ExposureControllerTests: XCTestCase {
         controller.requestExposureNotificationPermission()
     }
 
-    private func expect(activeState: ExposureActiveState? = nil, notified: Bool? = nil) -> ExpectStatusEvaluator {
-        let evaluator = ExpectStatusEvaluator(activeState: activeState, notified: notified)
+    private func expect(activeState: ExposureActiveState? = nil, notifiedState: ExposureStateNotified? = nil) -> ExpectStatusEvaluator {
+        let evaluator = ExpectStatusEvaluator(activeState: activeState, notifiedState: notifiedState)
 
         mutableStateStream.updateHandler = evaluator.updateHandler
 
@@ -166,13 +174,13 @@ final class ExposureControllerTests: XCTestCase {
 
     private final class ExpectStatusEvaluator {
         private let expectedActiveState: ExposureActiveState?
-        private let expectedNotified: Bool?
+        private let expectedNotifiedState: ExposureStateNotified?
 
         private var receivedState: ExposureState?
 
-        init(activeState: ExposureActiveState?, notified: Bool?) {
+        init(activeState: ExposureActiveState?, notifiedState: ExposureStateNotified?) {
             expectedActiveState = activeState
-            expectedNotified = notified
+            expectedNotifiedState = notifiedState
         }
 
         var updateHandler: (ExposureState) -> () {
@@ -191,8 +199,8 @@ final class ExposureControllerTests: XCTestCase {
                 matchActiveState = activeState == state.activeState
             }
 
-            if let notified = expectedNotified {
-                matchNotified = notified == state.notified
+            if let notifiedState = expectedNotifiedState {
+                matchNotified = notifiedState == state.notifiedState
             }
 
             return matchActiveState && matchNotified

@@ -57,11 +57,16 @@ final class ExposureController: ExposureControlling {
         // Not implemented yet
     }
 
+    func requestLabConfirmationKey(completion: @escaping (String, Date) -> ()) {}
+
+    func requestUploadKeys(completion: @escaping (Bool) -> ()) {}
+
     // MARK: - Private
 
     private func updateStatusStream() {
         guard let exposureManager = exposureManager else {
-            mutableStateStream.update(state: .init(notified: isNotified, activeState: .inactive(.requiresOSUpdate)))
+            mutableStateStream.update(state: .init(notifiedState: notifiedState,
+                                                   activeState: .inactive(.requiresOSUpdate)))
             return
         }
 
@@ -87,12 +92,12 @@ final class ExposureController: ExposureControlling {
             activeState = .authorizationDenied
         }
 
-        mutableStateStream.update(state: .init(notified: isNotified, activeState: activeState))
+        mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: activeState))
     }
 
-    private var isNotified: Bool {
+    private var notifiedState: ExposureStateNotified {
         // TODO: Replace with right value
-        return false
+        return .notNotified
     }
 
     private let mutableStateStream: MutableExposureStateStreaming

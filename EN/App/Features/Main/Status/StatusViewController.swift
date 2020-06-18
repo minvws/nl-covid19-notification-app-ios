@@ -62,12 +62,12 @@ final class StatusViewController: ViewController, StatusViewControllable {
             guard let strongSelf = self else {
                 return
             }
-            switch (status.activeState, status.notified) {
-            case (.active, false):
+            switch (status.activeState, status.notifiedState) {
+            case (.active, .notNotified):
                 strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .active))
-            case (.active, true):
+            case (.active, .notified):
                 strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .notified))
-            case (.inactive(_), true):
+            case (.inactive(_), .notified):
                 strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .notified).with(card: StatusCardViewModel(theme: strongSelf.theme)))
             default:
                 // TODO: Handle more cases

@@ -104,7 +104,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState?.activeState.asString ?? "None")",
                               action: { [weak self] in self?.changeExposureState() }),
                 DeveloperItem(title: "Change Notified",
-                              subtitle: "Current: \((self.mutableExposureStateStream.currentExposureState?.notified ?? false) ? "Yes" : "No")",
+                              subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState?.notifiedState.asString ?? "No")",
                               action: { [weak self] in self?.changeNotified() })
             ])
         ]
@@ -154,9 +154,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         let exposureState: ExposureState
 
         if let current = mutableExposureStateStream.currentExposureState {
-            exposureState = .init(notified: current.notified, activeState: to)
+            exposureState = .init(notifiedState: current.notifiedState, activeState: to)
         } else {
-            exposureState = .init(notified: false, activeState: to)
+            exposureState = .init(notifiedState: .notNotified, activeState: to)
         }
 
         mutableExposureStateStream.update(state: exposureState)
@@ -167,9 +167,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         let exposureState: ExposureState
 
         if let current = mutableExposureStateStream.currentExposureState {
-            exposureState = .init(notified: !current.notified, activeState: current.activeState)
+            exposureState = .init(notifiedState: current.notifiedState.toggled, activeState: current.activeState)
         } else {
-            exposureState = .init(notified: true, activeState: .active)
+            exposureState = .init(notifiedState: .notified(Date()), activeState: .active)
         }
 
         mutableExposureStateStream.update(state: exposureState)
@@ -354,7 +354,31 @@ private extension ExposureActiveState {
                 return "Inactive - Paused"
             case .requiresOSUpdate:
                 return "Inactive - Requires OS Update"
+            case .airplaneMode:
+                return "Inactive - Airplane Mode"
             }
+        }
+    }
+}
+
+private extension ExposureStateNotified {
+    var asString: String {
+        switch self {
+        case let .notified(date):
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .short
+            return "Yes - On \(dateFormatter.string(for: date) ?? "?")"
+        case .notNotified:
+            return "No"
+        }
+    }
+
+    var toggled: ExposureStateNotified {
+        switch self {
+        case .notified:
+            return .notNotified
+        case .notNotified:
+            return .notified(Date())
         }
     }
 }

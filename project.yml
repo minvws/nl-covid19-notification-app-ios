@@ -60,6 +60,7 @@ targets:
                 
     dependencies:
       - carthage: ZIPFoundation
+      - carthage: SnapKit
 
     scheme:
       gatherCoverageData: true
@@ -67,9 +68,6 @@ targets:
         - name: ENTests
           parallelizable: false
           randomExecutionOrder: true
-
-    dependencies:
-      - carthage: SnapKit
 
   ENTests:
     platform: iOS

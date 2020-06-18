@@ -20,7 +20,23 @@ protocol ExposureControlling {
 
     // MARK: - Exposure Notification
 
+    /// Sets the current `notified` state to false
     func confirmExposureNotification()
+
+    // MARK: - Lab Flow
+
+    /// Requests a human readable confirmation key
+    ///
+    /// - Parameter completion: Executed when key is available
+    /// - Parameter confirmationKey: Human readable lab confirmation key
+    /// - Parameter expiration: Key's expiration date
+    func requestLabConfirmationKey(completion: @escaping (_ confirmationKey: String, _ expiration: Date) -> ())
+
+    /// Requests keys from the framework and uploads them to the server.
+    ///
+    /// - Parameter completion: Executed when upload completes.
+    /// - Parameter success: Indicates whether process was successful
+    func requestUploadKeys(completion: @escaping (_ success: Bool) -> ())
 }
 
 /// @mockable
