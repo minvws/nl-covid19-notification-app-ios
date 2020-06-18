@@ -62,14 +62,6 @@ final class MainViewControllerTests: XCTestCase {
         XCTAssertEqual(router.routeToRequestTestCallCount, 1)
     }
 
-    func test_moreInformationRequestsShareApp_callsRouter() {
-        XCTAssertEqual(router.routeToShareAppCallCount, 0)
-
-        viewController.moreInformationRequestsShareApp()
-
-        XCTAssertEqual(router.routeToShareAppCallCount, 1)
-    }
-
     func test_viewDidLoad_callsRouterInRightOrder() {
         XCTAssertEqual(router.attachStatusCallCount, 0)
         XCTAssertEqual(router.attachMoreInformationCallCount, 0)

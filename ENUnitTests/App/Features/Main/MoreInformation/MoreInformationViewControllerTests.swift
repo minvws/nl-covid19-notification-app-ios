@@ -39,6 +39,6 @@ final class MoreInformationViewControllerTests: XCTestCase {
 
         XCTAssertEqual(tableController.setCallCount, 1)
         XCTAssertNotNil(receivedCells)
-        XCTAssertEqual(receivedCells?.count, 3)
+        XCTAssertEqual(receivedCells?.count, 4)
     }
 }

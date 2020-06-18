@@ -10,9 +10,9 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class RequestTestViewControllerTests: XCTestCase {
-    private var viewController: RequestTestViewController!
-    private let listern = RequestTestListenerMock()
+final class ReceivedNotificationViewControllerTests: XCTestCase {
+    private var viewController: ReceivedNotificationViewController!
+    private let listern = ReceivedNotificationListenerMock()
 
     override func setUp() {
         super.setUp()
@@ -20,22 +20,22 @@ final class RequestTestViewControllerTests: XCTestCase {
         let theme = ENTheme()
         SnapshotTesting.record = false
 
-        viewController = RequestTestViewController(listener: listern, theme: theme)
+        viewController = ReceivedNotificationViewController(listener: listern, theme: theme)
     }
 
     // MARK: - Tests
 
-    func testSnapshotRequestTestViewController() {
+    func testSnapshotReceivedNotificationViewController() {
         assertSnapshot(matching: viewController, as: .image())
     }
 
     func testPresentationControllerDidDismissCallsListener() {
-        listern.requestTestWantsDismissalHandler = { value in
+        listern.receivedNotificationWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }
 
         viewController.presentationControllerDidDismiss(UIPresentationController(presentedViewController: viewController, presenting: nil))
 
-        XCTAssertEqual(listern.requestTestWantsDismissalCallCount, 1)
+        XCTAssertEqual(listern.receivedNotificationWantsDismissalCallCount, 1)
     }
 }

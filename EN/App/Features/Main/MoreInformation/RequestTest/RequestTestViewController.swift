@@ -11,7 +11,7 @@ import UIKit
 /// @mockable
 protocol RequestTestViewControllable: ViewControllable {}
 
-final class RequestTestViewController: ViewController, RequestTestViewControllable {
+final class RequestTestViewController: ViewController, RequestTestViewControllable, UIAdaptivePresentationControllerDelegate {
 
     // MARK: - Init
 
@@ -31,7 +31,9 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
         super.viewDidLoad()
 
         title = "Coronatest aanvragen"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sluit", style: .done, target: self, action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                            target: self,
+                                                            action: #selector(didTapCloseButton(sender:)))
 
         internalView.contactButtonActionHandler = {
             let urlString = "tel://08001202"
@@ -52,8 +54,6 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
         listener?.requestTestWantsDismissal(shouldDismissViewController: true)
     }
 
-    @objc private func didTapContactButton(sender: Button) {}
-
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         listener?.requestTestWantsDismissal(shouldDismissViewController: false)
     }
@@ -71,11 +71,8 @@ private final class RequestTestView: View {
     // MARK: - Init
 
     override init(theme: Theme) {
-        let headerConfig = InfoHeaderConfig(alignment: .top,
-                                            backgroundColor: .clear,
-                                            imageView: UIImage(named: "Coronatest"))
         let config = InfoViewConfig(actionButtonTitle: "Bel voor coronatest",
-                                    headerConfig: headerConfig)
+                                    headerImage: UIImage(named: "Coronatest"))
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }
@@ -87,7 +84,8 @@ private final class RequestTestView: View {
 
         infoView.addSections([
             receivedNotification(),
-            complaints()
+            complaints(),
+            info()
         ])
 
         addSubview(infoView)
@@ -118,5 +116,10 @@ private final class RequestTestView: View {
         string.append(list)
         string.append(content)
         return InfoSectionTextView(theme: theme, title: "Klachten die passen bij het coronavirus (COVID-19)", content: string)
+    }
+
+    private func info() -> View {
+        let string = NSAttributedString(string: "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart.")
+        return InfoSectionCalloutView(theme: theme, content: string)
     }
 }

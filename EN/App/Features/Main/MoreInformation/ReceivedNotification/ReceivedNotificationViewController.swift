@@ -32,7 +32,9 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
         super.viewDidLoad()
 
         title = "Melding gekregen"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sluit", style: .done, target: self, action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                            target: self,
+                                                            action: #selector(didTapCloseButton(sender:)))
 
         internalView.contactButtonActionHandler = {
             let urlString = "tel://08001202"
@@ -53,10 +55,10 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
         listener?.receivedNotificationWantsDismissal(shouldDismissViewController: true)
     }
 
-    @objc private func didTapContactButton(sender: Button) {}
+    // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        self.listener?.receivedNotificationWantsDismissal(shouldDismissViewController: false)
+        listener?.receivedNotificationWantsDismissal(shouldDismissViewController: false)
     }
 }
 
@@ -72,11 +74,8 @@ private final class ReceivedNotificationView: View {
     // MARK: - Init
 
     override init(theme: Theme) {
-        let headerConfig = InfoHeaderConfig(alignment: .bottom,
-                                            backgroundColor: UIColor(red: 0.882, green: 0.965, blue: 0.973, alpha: 1),
-                                            imageView: UIImage(named: "ReceivedNotification"))
         let config = InfoViewConfig(actionButtonTitle: "Bel voor coronatest",
-                                    headerConfig: headerConfig)
+                                    headerImage: UIImage(named: "ReceivedNotification"))
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }
@@ -89,7 +88,8 @@ private final class ReceivedNotificationView: View {
         infoView.addSections([
             notificationExplanation(),
             complaints(),
-            doCoronaTest()
+            doCoronaTest(),
+            info()
         ])
 
         addSubview(infoView)
@@ -124,5 +124,10 @@ private final class ReceivedNotificationView: View {
     private func doCoronaTest() -> View {
         // TODO: Bold Phone Number
         InfoSectionTextView(theme: theme, title: "Doe een coronatest", content: NSAttributedString(string: "De GGD raadt aan je te laten testen op het virus, zelfs als je je nog niet ziek voelt. Want zonder je ziek te voelen kun je het virus al verspreiden en zo anderen besmetten.\n\nTesten is gratis en kan meestal snel gebeuren. Blijf zo veel mogelijk thuis tot de uitslag bekend is.\n\nBel gratis 0800-1202 om een coranatest aan te vragen."))
+    }
+
+    private func info() -> View {
+        let string = NSAttributedString(string: "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart.")
+        return InfoSectionCalloutView(theme: theme, content: string)
     }
 }
