@@ -9,194 +9,53 @@ import UIKit
 import WebKit
 
 /// @mockable
-protocol OnboardingHelpViewControllable: ViewControllable {
-    func acceptButtonPressed()
+protocol OnboardingHelpRouting: Routing {
+    func routeToHelp()
+    func routeToHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp)
 }
 
-final class OnboardingHelpViewController: ViewController, OnboardingHelpViewControllable, UITableViewDelegate, UITableViewDataSource {
+final class OnboardingHelpViewController: NavigationController, OnboardingHelpViewControllable {
+    
+    weak var router: OnboardingHelpRouting?
 
-    private let onboardingConsentHelpManager: OnboardingConsentHelpManaging
-
-    init(onboardingConsentHelpManager: OnboardingConsentHelpManaging,
-        listener: OnboardingHelpListener,
-        theme: Theme) {
-        
-        self.onboardingConsentHelpManager = onboardingConsentHelpManager
+    init(listener: OnboardingHelpListener, theme: Theme) {
         self.listener = listener
-
         super.init(theme: theme)
+        modalPresentationStyle = .fullScreen
+    }
+
+    // MARK: - OnboardingViewControllable
+
+    func push(viewController: ViewControllable, animated: Bool) {
+        pushViewController(viewController.uiviewController, animated: animated)
+    }
+
+    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
+        present(viewController.uiviewController, animated: animated, completion: completion)
+    }
+
+    func acceptButtonPressed() {
+        
+    }
+    
+    func displayHelp() {
+        
+    }
+    
+    func displayHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp) {
+        
     }
 
     // MARK: - ViewController Lifecycle
 
-    override func loadView() {
-        self.view = internalView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.titleLabel.text = Localized("helpTitle")
-        internalView.subtitleLabel.text = Localized("helpSubtitle")
-        
-        internalView.closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
-        internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
-        internalView.tableView.delegate = self
-        internalView.tableView.dataSource = self
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return onboardingConsentHelpManager.onboardingConsentHelp.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let cell: UITableViewCell
-        let cellIdentifier = "helpCell"
-
-        if let aCell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) {
-            cell = aCell
-        } else {
-            cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
-        }
-
-        cell.textLabel?.text = onboardingConsentHelpManager.onboardingConsentHelp[indexPath.row].question
-        cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.font = .systemFont(ofSize: 17)
-        
-        cell.accessoryType = .disclosureIndicator
-        
-        cell.indentationLevel = 1
-        cell.indentationWidth = 5
-        
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard (0 ..< onboardingConsentHelpManager.onboardingConsentHelp.count).contains(indexPath.row) else {
-            return
-        }
-        listener?.displayHelpDetail(withOnboardingConsentHelp: onboardingConsentHelpManager.onboardingConsentHelp[indexPath.row])
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    @objc func closeButtonPressed() {
-        self.dismiss(animated: true)
-    }
-
-    @objc func acceptButtonPressed() {
-        self.dismiss(animated: true, completion: {
-            self.listener?.helpRequestsPermission()
-        })
+        router?.routeToHelp()
     }
 
     // MARK: - Private
 
     private weak var listener: OnboardingHelpListener?
-    private lazy var internalView: OnboardingHelpView = OnboardingHelpView(theme: self.theme)
 }
 
-private final class OnboardingHelpView: View {
-
-    lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 28, weight: .bold)
-        return label
-    }()
-        
-    lazy var subtitleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 15, weight: .bold)
-        label.textColor = self.theme.colors.primary
-        return label
-    }()
-
-    lazy var closeButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(Image.named("CloseButton"), for: .normal)
-        return button
-    }()
-
-    lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-
-        tableView.showsVerticalScrollIndicator = true
-        tableView.showsHorizontalScrollIndicator = false
-        tableView.isScrollEnabled = true
-
-        tableView.estimatedRowHeight = 100
-        tableView.rowHeight = UITableView.automaticDimension
-        
-        tableView.allowsMultipleSelection = false
-
-        return tableView
-    }()
-
-    lazy var acceptButton: Button = {
-        let button = Button(theme: self.theme)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.style = .primary
-        button.title = Localized("helpAcceptButtonTitle")
-        return button
-    }()
-
-    private lazy var viewsInDisplayOrder = [closeButton, titleLabel, subtitleLabel, tableView, acceptButton]
-
-    override func build() {
-        super.build()
-
-        viewsInDisplayOrder.forEach { addSubview($0) }
-    }
-
-    override func setupConstraints() {
-        super.setupConstraints()
-
-        var constraints = [[NSLayoutConstraint]()]
-
-        constraints.append([
-            closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            closeButton.heightAnchor.constraint(equalToConstant: 50),
-            closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-            ])
-
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 0),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-            ])
-
-        constraints.append([
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 25),
-            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            subtitleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-            ])
-        
-        constraints.append([
-            tableView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 15),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            tableView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-            ])
-
-        constraints.append([
-            acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            acceptButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
-    }
-}

@@ -23,7 +23,7 @@ final class OnboardingConsentHelpManager: OnboardingConsentHelpManaging {
         onboardingConsentHelp.append(
             OnboardingConsentHelp(
                 theme: theme,
-                question: "Kan de app mijn locatie zienpp mijn locatie zien pp mijn locatie zien? pp mijn locatie zien?",
+                question: "Kan de app mijn locatie zienpp mijn locatie zien?",
                 answer: "Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die de app ook op hun telefoon hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent.Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen twee apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.")
         )
         

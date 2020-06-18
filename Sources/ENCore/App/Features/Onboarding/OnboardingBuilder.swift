@@ -10,6 +10,7 @@ import Foundation
 /// @mockable
 protocol OnboardingListener: AnyObject {
     func didCompleteOnboarding()
+    func displayHelp()
 }
 
 /// @mockable
@@ -25,7 +26,7 @@ protocol OnboardingDependency {
 
 ///
 /// - Tag: OnboardingDependencyProvider
-private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, OnboardingHelpDependency, WebDependency, ShareSheetDependency {
+private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, WebDependency, ShareSheetDependency {
 
     // MARK: - OnboardingStepDependency
 
@@ -39,12 +40,6 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
         return OnboardingConsentManager(exposureStateStream: dependency.exposureStateStream,
                                         exposureController: dependency.exposureController,
                                         theme: self.theme)
-    }()
-
-    // MARK: - OnboardingConsentHelpDependency
-
-    lazy var onboardingConsentHelpManager: OnboardingConsentHelpManaging = {
-        return OnboardingConsentHelpManager(theme: self.theme)
     }()
     
     var theme: Theme {
@@ -64,11 +59,7 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
     var webBuilder: WebBuildable {
         return WebBuilder(dependency: self)
     }
-
-    var helpBuilder: OnboardingHelpBuildable {
-        return OnboardingHelpBuilder(dependency: self)
-    }
-
+    
     var shareSheetBuilder: ShareSheetBuildable {
         return ShareSheetBuilder(dependency: self)
     }
@@ -83,7 +74,6 @@ final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildabl
         return OnboardingRouter(viewController: viewController,
                                 stepBuilder: dependencyProvider.stepBuilder,
                                 consentBuilder: dependencyProvider.consentBuilder,
-                                helpBuilder: dependencyProvider.helpBuilder,
                                 webBuilder: dependencyProvider.webBuilder,
                                 shareSheetBuilder: dependencyProvider.shareSheetBuilder)
     }

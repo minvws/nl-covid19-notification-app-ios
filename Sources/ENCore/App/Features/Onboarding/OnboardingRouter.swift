@@ -8,7 +8,7 @@
 import Foundation
 
 /// @mockable
-protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, OnboardingHelpListener {
+protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
@@ -20,12 +20,10 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     init(viewController: OnboardingViewControllable,
         stepBuilder: OnboardingStepBuildable,
         consentBuilder: OnboardingConsentBuildable,
-        helpBuilder: OnboardingHelpBuildable,
         webBuilder: WebBuildable,
         shareSheetBuilder: ShareSheetBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
-        self.helpBuilder = helpBuilder
         self.webBuilder = webBuilder
         self.shareSheetBuilder = shareSheetBuilder
 
@@ -59,29 +57,11 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.push(viewController: consentViewController, animated: animated)
     }
 
-    func routeToHelp() {
-        let helpViewController = helpBuilder.build(withListener: viewController)
-        self.helpViewController = helpViewController
-
-        viewController.present(viewController: helpViewController, animated: true, completion: nil)
-    }
-
-    func routeToHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp) {
-        let helpDetailViewController = helpBuilder.buildDetail(withListener: viewController, onboardingConsentHelp: onboardingConsentHelp)
-        self.helpDetailViewController = helpDetailViewController
-
-        viewController.push(viewController: helpDetailViewController, animated: false)
-    }
-
     private let stepBuilder: OnboardingStepBuildable
     private var stepViewController: ViewControllable?
 
     private let consentBuilder: OnboardingConsentBuildable
     private var consentViewController: ViewControllable?
-
-    private let helpBuilder: OnboardingHelpBuildable
-    private var helpViewController: ViewControllable?
-    private var helpDetailViewController: ViewControllable?
 
     private let webBuilder: WebBuildable
     private var webViewController: ViewControllable?

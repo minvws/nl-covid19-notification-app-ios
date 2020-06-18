@@ -9,15 +9,12 @@ import Foundation
 
 /// @mockable
 protocol OnboardingHelpListener: AnyObject {
-    func helpRequestsFAQ()
-    func helpRequestsPermission()
-    func helpRequestsClose()
+    func displayHelp()
     func displayHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp)
 }
 
 protocol OnboardingHelpDependency {
     var theme: Theme { get }
-    var onboardingConsentHelpManager: OnboardingConsentHelpManaging { get }
 }
 
 /// @mockable
@@ -25,7 +22,8 @@ protocol OnboardingHelpBuildable {
     /// Builds OnboardingHelp
     ///
     /// - Parameter listener: Listener of created OnboardingHelpViewController
-    func build(withListener listener: OnboardingHelpListener) -> ViewControllable
+    func build(withListener listener: OnboardingHelpListener) -> Routing
+    func buildOverview(withListener listener: OnboardingHelpListener) -> ViewControllable
     func buildDetail(withListener listener: OnboardingHelpListener, onboardingConsentHelp: OnboardingConsentHelp) -> ViewControllable
 }
 
@@ -33,19 +31,28 @@ private final class OnboardingHelpDependencyProvider: DependencyProvider<Onboard
 
 final class OnboardingHelpBuilder: Builder<OnboardingHelpDependency>, OnboardingHelpBuildable {
 
-    // MARK: - OnboardingConsentDependency
+    lazy var onboardingConsentHelpManager: OnboardingConsentHelpManaging = {
+        OnboardingConsentHelpManager(theme: self.theme)
+    }()
+
+    // MARK: - OnboardingConsentHelpDependency
 
     var theme: Theme {
         return dependency.theme
     }
 
-    func build(withListener listener: OnboardingHelpListener) -> ViewControllable {
+    func build(withListener listener: OnboardingHelpListener) -> Routing {
         let dependencyProvider = OnboardingHelpDependencyProvider(dependency: dependency)
-        let onboardingConsentHelpManager = dependencyProvider.dependency.onboardingConsentHelpManager
+        let viewController = OnboardingHelpViewController(listener: listener,
+            theme: dependencyProvider.dependency.theme)
 
-        return OnboardingHelpViewController(
-            onboardingConsentHelpManager: onboardingConsentHelpManager,
-            listener: listener,
+        return OnboardingHelpRouter(viewController: viewController, helpBuilder: self)
+    }
+
+    func buildOverview(withListener listener: OnboardingHelpListener) -> ViewControllable {
+        let dependencyProvider = OnboardingHelpDependencyProvider(dependency: dependency)
+
+        return OnboardingHelpOverviewViewController(onboardingConsentHelpManager: self.onboardingConsentHelpManager, listener: listener,
             theme: dependencyProvider.dependency.theme)
     }
 
@@ -53,7 +60,7 @@ final class OnboardingHelpBuilder: Builder<OnboardingHelpDependency>, Onboarding
         let dependencyProvidr = OnboardingHelpDependencyProvider(dependency: dependency)
 
         return OnboardingHelpDetailViewController(listener: listener,
-                                                  onboardingConsentHelp: onboardingConsentHelp,
+            onboardingConsentHelp: onboardingConsentHelp,
             theme: dependencyProvidr.dependency.theme)
     }
 }

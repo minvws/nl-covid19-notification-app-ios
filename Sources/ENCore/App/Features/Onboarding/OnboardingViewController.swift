@@ -12,8 +12,6 @@ protocol OnboardingRouting: Routing {
     func routeToSteps()
     func routeToConsent(animated: Bool)
     func routeToConsent(withIndex index: Int, animated: Bool)
-    func routeToHelp()
-    func routeToHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp)
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable {
@@ -56,13 +54,9 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     // MARK: - OnboardingHelpListener
 
     func displayHelp() {
-        router?.routeToHelp()
+        listener?.displayHelp()
     }
 
-    func displayHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp) {
-        router?.routeToHelpDetail(withOnboardingConsentHelp: onboardingConsentHelp)
-    }
-    
     func helpRequestsFAQ() { }
 
     func helpRequestsPermission() { }
