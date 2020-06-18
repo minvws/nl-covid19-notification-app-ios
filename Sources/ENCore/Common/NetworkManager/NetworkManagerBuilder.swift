@@ -33,7 +33,7 @@ protocol NetworkManagerBuildable {
 
 private final class NetworkManagerDependencyProvider: DependencyProvider<EmptyDependency> {
     lazy var networkResponseProvider: NetworkResponseProviderHandling = {
-        return NetworkResponseProvider()
+        return NetworkResponseProviderBuilder().build()
     }()
 }
 
