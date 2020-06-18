@@ -8,18 +8,46 @@
 import Foundation
 
 enum VerifySignatureError: Error {
-    case placeholder
+    case cantVerify
 }
 
-/// @mockable
-protocol VerifySignatureResponseHandlerControlling {
-    func verify(_ data:Data, signature:String) throws -> Bool
-}
-
-final class VerifySignatureResponseHandler : VerifySignatureResponseHandlerControlling {
-    func verify(_ data: Data, signature: String) throws -> Bool {
-        return true
+final class VerifySignatureResponseHandler: NetworkResponseHandling {
+    
+    enum TEKFiles:String {
+           case binary = "export.bin"
+           case signatureApple = "export.sig"
+           case signatureRijksoverheid = "content.sig"
     }
     
+    enum ContentFiles:String {
+           case binary = "content.bin"
+           case signatureRijksoverheid = "content.sig"
+    }
+ 
+    
+    /// Methods to verify file signature, returns true for now (signature check disabled)
+    /// - Parameter urls: unzipped file urls
+    /// - Returns: signature match
+    func handle(urls:[URL]) -> Bool {
+        
+        let fileNames = urls.map({ $0.lastPathComponent})
+        
+        // Apple TEK file
+        if fileNames.contains(TEKFiles.binary.rawValue) &&
+            fileNames.contains(TEKFiles.signatureApple.rawValue) &&
+            fileNames.contains(TEKFiles.signatureRijksoverheid.rawValue) {
+            return self.verifySignature()
+        // Self signed files
+        } else if fileNames.contains(ContentFiles.binary.rawValue) &&
+            fileNames.contains(ContentFiles.signatureRijksoverheid.rawValue) {
+            return self.verifySignature()
+        }
+        
+        return false
+    }
+    
+    private func verifySignature() -> Bool {
+        return true
+    }
     
 }

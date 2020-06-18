@@ -37,7 +37,7 @@ final class NetworkManagerBuilder: Builder<EmptyDependency>, NetworkManagerBuild
             let configuration: NetworkConfiguration = .production
         #endif
         
-        let responseHandler = NetworkResponseHandler()
+        let responseHandler = NetworkResponseHandlerProvider()
         return NetworkManager(configuration: configuration, networkResponseHandler: responseHandler)
     }
 }

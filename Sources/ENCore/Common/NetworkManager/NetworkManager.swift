@@ -15,7 +15,7 @@ enum NetworkManagerError: Error {
 
 final class NetworkManager: NetworkManaging {
 
-    init(configuration: NetworkConfiguration, networkResponseHandler: NetworkResponseHandler, urlSession: URLSession = URLSession.shared) {
+    init(configuration: NetworkConfiguration, networkResponseHandler: NetworkResponseHandlerProvider, urlSession: URLSession = URLSession.shared) {
         self.configuration = configuration
         self.session = urlSession
         self.networkResponseHandler = networkResponseHandler
@@ -29,6 +29,8 @@ final class NetworkManager: NetworkManaging {
     /// - Parameter completion: return
     func getManifest(completion: @escaping (Result<Manifest, NetworkManagerError>) -> ()) {
         session.get(self.configuration.manifestUrl) { data, response, error in
+            
+            
             if let error = error {
                 completion(.failure(.other(error)))
                 return
@@ -52,16 +54,10 @@ final class NetworkManager: NetworkManaging {
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
     /// - Parameter completion: completion description
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkManagerError>) -> ()) {
-        session.get(self.configuration.appConfigUrl(param: appConfig)) { data, response, error in
-            if let error = error {
-                completion(.failure(.other(error)))
-                return
-            }
-
+        session.download(self.configuration.appConfigUrl(param: appConfig)) { url, response, error in
             do {
-                guard let data = data else {
-                    throw NetworkManagerError.emptyResponse
-                }
+                // get bin file and convert to object
+                let data = try self.networkResponseHandler.handleReturnData(url: url, response: response, error: error)
                 let appConfig = try JSONDecoder().decode(AppConfig.self, from: data)
                 completion(.success(appConfig))
             } catch {
@@ -159,5 +155,5 @@ final class NetworkManager: NetworkManaging {
 
     private let configuration: NetworkConfiguration
     private let session: URLSession
-    private let networkResponseHandler: NetworkResponseHandler
+    private let networkResponseHandler: NetworkResponseHandlerProvider
 }
