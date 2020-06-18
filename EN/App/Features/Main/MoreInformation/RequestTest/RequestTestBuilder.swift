@@ -9,8 +9,7 @@ import Foundation
 
 /// @mockable
 protocol RequestTestListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
+    func requestTestWantsDismissal(shouldDismissViewController: Bool)
 }
 
 /// @mockable
@@ -18,38 +17,19 @@ protocol RequestTestBuildable {
     /// Builds RequestTest
     ///
     /// - Parameter listener: Listener of created RequestTest component
-    /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: RequestTestListener) -> Routing
+    func build(withListener listener: RequestTestListener) -> ViewControllable
 }
 
 protocol RequestTestDependency {
     var theme: Theme { get }
 }
 
-private final class RequestTestDependencyProvider: DependencyProvider<RequestTestDependency> /* , ChildDependency */ {
-    // TODO: Create and return any dependency that should be limited
-    //       to RequestTest's scope or any child of RequestTest
-
-    // TODO: Replace `childBuilder` by a real child scope and adjust
-    //       `ChildDependency`
-    // var childBuilder: ChildBuildable {
-    //    return ChildBuilder(dependency: self)
-    // }
-}
+private final class RequestTestDependencyProvider: DependencyProvider<RequestTestDependency> {}
 
 final class RequestTestBuilder: Builder<RequestTestDependency>, RequestTestBuildable {
-    func build(withListener listener: RequestTestListener) -> Routing {
-        // TODO: Add any other dynamic dependency as parameter
-
+    func build(withListener listener: RequestTestListener) -> ViewControllable {
         let dependencyProvider = RequestTestDependencyProvider(dependency: dependency)
-
-        // let childBuilder = dependencyProvider.childBuilder
-        let viewController = RequestTestViewController(theme: dependencyProvider.dependency.theme)
-
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
-        return RequestTestRouter(listener: listener,
-                                 viewController: viewController /* ,
-                                  childBuilder: childBuilder */ )
+        return RequestTestViewController(listener: listener,
+                                         theme: dependencyProvider.dependency.theme)
     }
 }

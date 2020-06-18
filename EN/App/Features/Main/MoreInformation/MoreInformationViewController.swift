@@ -11,6 +11,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     private enum MoreInformationCellIdentifier: CaseIterable {
         case aboutApp
         case receivedNotification
+        case requestTest
         case infected
     }
 
@@ -33,7 +34,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         super.viewDidLoad()
 
         setupTableView()
-        setupButtonsView()
     }
 
     // MARK: - MoreInformationTableListener
@@ -48,6 +48,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             listener?.moreInformationRequestsInfected()
         case .receivedNotification:
             listener?.moreInformationRequestsReceivedNotification()
+        case .requestTest:
+            listener?.moreInformationRequestsRequestTest()
         }
     }
 
@@ -68,12 +70,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         moreInformationView.updateHeightConstraint()
     }
 
-    private func setupButtonsView() {
-        moreInformationView.addButton(withTitle: "Coronatest aanvragen",
-                                      target: self,
-                                      action: #selector(didTapRequestTestButton))
-    }
-
     @objc
     func didTapRequestTestButton() {
         listener?.moreInformationRequestsRequestTest()
@@ -83,11 +79,16 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         // dummy data
         let aboutAppModel = MoreInformationCellViewModel(icon: UIImage(),
                                                          title: "Over de app",
-                                                         description: "Hoe de app werkt en wat privacy betekent")
+                                                         description: "Hoe de app werkt en wat dit voor je privacy betekent.")
 
         let receivedNotificationModel = MoreInformationCellViewModel(icon: UIImage(),
-                                                                     title: "Ik krijg een melding",
-                                                                     description: "Wat moet je doen nadat een ander het virus blijkt te hebben")
+                                                                     title: "Een melding ontvangen?",
+                                                                     description: "Wat je kunt doen nadat iemand anders het virus blijkt te hebben.")
+
+        let requestTestModel = MoreInformationCellViewModel(icon: UIImage(),
+                                                            title: "Coronatest aanvragen",
+                                                            description: "Waarschuw anderen anoniem meteen nadat je hoort dat je besmet bent.")
+
         let infectedModel = MoreInformationCellViewModel(icon: UIImage(),
                                                          title: "Ik ben besmet",
                                                          description: "Zo laat je anderen weten dat je positief getest bent")
@@ -95,6 +96,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         return [
             .aboutApp: aboutAppModel,
             .receivedNotification: receivedNotificationModel,
+            .requestTest: requestTestModel,
             .infected: infectedModel
         ]
     }
@@ -107,17 +109,12 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
 private final class MoreInformationView: View {
     fileprivate let tableView = UITableView()
-    fileprivate let buttonsView = UIStackView()
     private var heightConstraint: NSLayoutConstraint?
 
     override func build() {
         super.build()
 
         addSubview(tableView)
-        addSubview(buttonsView)
-
-        buttonsView.axis = .vertical
-        buttonsView.distribution = .fillEqually
 
         tableView.isScrollEnabled = false
         tableView.estimatedRowHeight = 100
@@ -127,19 +124,13 @@ private final class MoreInformationView: View {
         super.setupConstraints()
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        buttonsView.translatesAutoresizingMaskIntoConstraints = false
-
         tableView.setContentCompressionResistancePriority(.required, for: .vertical)
 
         let constraints = [
             tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-
-            buttonsView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 44),
-            buttonsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 44),
-            buttonsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -44),
-            buttonsView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         heightConstraint = tableView.heightAnchor.constraint(equalToConstant: 0)
@@ -150,15 +141,5 @@ private final class MoreInformationView: View {
     fileprivate func updateHeightConstraint() {
         heightConstraint = tableView.heightAnchor.constraint(equalToConstant: tableView.contentSize.height)
         heightConstraint?.isActive = true
-    }
-
-    fileprivate func addButton(withTitle title: String, target: Any, action: Selector) {
-        let buttonView = Button(title: title, theme: theme)
-
-        buttonView.addTarget(target, action: action, for: .touchUpInside)
-        buttonView.heightAnchor.constraint(equalToConstant: 44).isActive = true
-
-        buttonsView.addArrangedSubview(buttonView)
-        buttonsView.setCustomSpacing(20, after: buttonView)
     }
 }

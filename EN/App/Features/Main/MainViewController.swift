@@ -16,9 +16,12 @@ protocol MainRouting: Routing {
     func detachAboutApp(shouldHideViewController: Bool)
 
     func routeToReceivedNotification()
-    func routeToInfected()
+    func detachReceivedNotification(shouldDismissViewController: Bool)
+
     func routeToRequestTest()
-    func routeToShareApp()
+    func detachRequestTest(shouldDismissViewController: Bool)
+
+    func routeToInfected()
 }
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, MoreInformationListener {
@@ -85,14 +88,22 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToRequestTest()
     }
 
-    func moreInformationRequestsShareApp() {
-        router?.routeToShareApp()
-    }
-
     // MARK: - AboutListener
 
     func aboutRequestsDismissal(shouldHideViewController: Bool) {
         router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
+    }
+
+    // MARK: - ReceivedNotificationListner
+
+    func receivedNotificationWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachReceivedNotification(shouldDismissViewController: shouldDismissViewController)
+    }
+
+    // MARK: - RequestTestListener
+
+    func requestTestWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachRequestTest(shouldDismissViewController: shouldDismissViewController)
     }
 
     // MARK: - View Lifecycle
@@ -130,7 +141,7 @@ private final class MainView: View {
         addSubview(scrollView)
         scrollView.addSubview(stackView)
 
-        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.contentInsetAdjustmentBehavior = .automatic
         scrollView.alwaysBounceVertical = true
 
         stackView.axis = .vertical

@@ -68,6 +68,9 @@ targets:
           parallelizable: false
           randomExecutionOrder: true
 
+    dependencies:
+      - carthage: SnapKit
+
   ENTests:
     platform: iOS
     type: bundle.unit-test

@@ -49,11 +49,11 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var networkController: NetworkControlling = {
         return NetworkControllerBuilder(dependency: self).build()
     }()
-    
+
     lazy var backgroundController: BackgroundControlling = {
         return BackgroundControllerBuilder().build()
     }()
-    
+
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()
 
