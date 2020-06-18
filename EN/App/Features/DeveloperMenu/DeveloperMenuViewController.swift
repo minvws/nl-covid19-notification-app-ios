@@ -361,7 +361,7 @@ private extension ExposureActiveState {
     }
 }
 
-private extension ExposureStateNotified {
+private extension ExposureNotificationState {
     var asString: String {
         switch self {
         case let .notified(date):
@@ -373,7 +373,7 @@ private extension ExposureStateNotified {
         }
     }
 
-    var toggled: ExposureStateNotified {
+    var toggled: ExposureNotificationState {
         switch self {
         case .notified:
             return .notNotified

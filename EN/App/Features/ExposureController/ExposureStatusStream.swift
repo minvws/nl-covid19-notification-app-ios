@@ -9,11 +9,11 @@ import Combine
 import Foundation
 
 struct ExposureState: Equatable {
-    let notifiedState: ExposureStateNotified
+    let notifiedState: ExposureNotificationState
     let activeState: ExposureActiveState
 }
 
-enum ExposureStateNotified: Equatable {
+enum ExposureNotificationState: Equatable {
     case notified(Date)
     case notNotified
 }

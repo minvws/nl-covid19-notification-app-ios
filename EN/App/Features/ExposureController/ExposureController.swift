@@ -95,7 +95,7 @@ final class ExposureController: ExposureControlling {
         mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: activeState))
     }
 
-    private var notifiedState: ExposureStateNotified {
+    private var notifiedState: ExposureNotificationState {
         // TODO: Replace with right value
         return .notNotified
     }

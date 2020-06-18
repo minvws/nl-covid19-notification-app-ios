@@ -164,7 +164,7 @@ final class ExposureControllerTests: XCTestCase {
         controller.requestExposureNotificationPermission()
     }
 
-    private func expect(activeState: ExposureActiveState? = nil, notifiedState: ExposureStateNotified? = nil) -> ExpectStatusEvaluator {
+    private func expect(activeState: ExposureActiveState? = nil, notifiedState: ExposureNotificationState? = nil) -> ExpectStatusEvaluator {
         let evaluator = ExpectStatusEvaluator(activeState: activeState, notifiedState: notifiedState)
 
         mutableStateStream.updateHandler = evaluator.updateHandler
@@ -174,11 +174,11 @@ final class ExposureControllerTests: XCTestCase {
 
     private final class ExpectStatusEvaluator {
         private let expectedActiveState: ExposureActiveState?
-        private let expectedNotifiedState: ExposureStateNotified?
+        private let expectedNotifiedState: ExposureNotificationState?
 
         private var receivedState: ExposureState?
 
-        init(activeState: ExposureActiveState?, notifiedState: ExposureStateNotified?) {
+        init(activeState: ExposureActiveState?, notifiedState: ExposureNotificationState?) {
             expectedActiveState = activeState
             expectedNotifiedState = notifiedState
         }
