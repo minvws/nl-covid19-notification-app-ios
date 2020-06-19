@@ -34,6 +34,10 @@ final class ExposureDataController: ExposureDataControlling {
         return operation.execute()
     }
 
+    func storeAndUpload(diagnosisKeys: [DiagnosisKey]) {
+        // TODO: Store and upload keys
+    }
+
     // MARK: - Private
 
     private let operationProvider: ExposureDataOperationProvider

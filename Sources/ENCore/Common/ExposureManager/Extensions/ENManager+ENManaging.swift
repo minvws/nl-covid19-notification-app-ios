@@ -18,6 +18,7 @@ protocol ENManaging {
                          completionHandler: @escaping ENDetectExposuresHandler) -> Progress
 
     func getDiagnosisKeys(completionHandler: @escaping ENGetDiagnosisKeysHandler)
+    func getTestDiagnosisKeys(completionHandler: @escaping ENGetDiagnosisKeysHandler)
 
     func setExposureNotificationEnabled(_ enabled: Bool,
                                         completionHandler: @escaping ENErrorHandler)

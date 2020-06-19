@@ -71,6 +71,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureStateStream.exposureState.sink { [weak self] state in
             if state.activeState.isAuthorized {
                 self?.routeToMain()
+
+                self?.exposureController.requestUploadKeys { success in
+                    print(success)
+                }
             } else {
                 self?.routeToOnboarding()
             }

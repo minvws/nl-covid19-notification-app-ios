@@ -40,8 +40,24 @@ protocol ExposureControlling {
     /// Requests keys from the framework and uploads them to the server.
     ///
     /// - Parameter completion: Executed when upload completes.
-    /// - Parameter success: Indicates whether process was successful
-    func requestUploadKeys(completion: @escaping (_ success: Bool) -> ())
+    /// - Parameter result: Result of the request
+    func requestUploadKeys(completion: @escaping (_ result: ExposureControllerUploadKeysResult) -> ())
+}
+
+/// Result of the requestUploadKeys
+///
+enum ExposureControllerUploadKeysResult {
+    /// Upload Keys request was finished successfully
+    /// Keys will be uploaded in the background
+    case success
+
+    /// User did not authorize sharing their keys
+    case notAuthorized
+
+    /// Underlying failure - related to inactivity of the framework
+    /// The UI should be prevent requesting keys when the framework
+    /// is in an inactive state
+    case inactive
 }
 
 /// @mockable

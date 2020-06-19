@@ -87,7 +87,31 @@ final class ExposureController: ExposureControlling {
             .store(in: &disposeBag)
     }
 
-    func requestUploadKeys(completion: @escaping (Bool) -> ()) {}
+    func requestUploadKeys(completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
+        let receiveCompletion: (Subscribers.Completion<ExposureManagerError>) -> () = { result in
+            if case let .failure(error) = result {
+                let result: ExposureControllerUploadKeysResult
+                switch error {
+                case .notAuthorized:
+                    result = .notAuthorized
+                default:
+                    result = .inactive
+                }
+
+                completion(result)
+            }
+        }
+
+        let receiveValue: ([DiagnosisKey]) -> () = { keys in
+            self.dataController.storeAndUpload(diagnosisKeys: keys)
+
+            completion(.success)
+        }
+
+        requestDiagnosisKeys()
+            .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
+            .store(in: &disposeBag)
+    }
 
     // MARK: - Private
 
@@ -126,6 +150,19 @@ final class ExposureController: ExposureControlling {
     private var notifiedState: ExposureNotificationState {
         // TODO: Replace with right value
         return .notNotified
+    }
+
+    private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {
+        return Future { promise in
+            guard let exposureManager = self.exposureManager else {
+                // ExposureController not activated, mark flow as failure
+                promise(.failure(.unknown))
+                return
+            }
+
+            exposureManager.getDiagnonisKeys(completion: promise)
+        }
+        .eraseToAnyPublisher()
     }
 
     private let mutableStateStream: MutableExposureStateStreaming

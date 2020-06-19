@@ -22,6 +22,7 @@ protocol ExposureDataControlling {
     // MARK: - Lab Flow
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
+    func storeAndUpload(diagnosisKeys: [DiagnosisKey])
 }
 
 protocol ExposureDataControllerBuildable {

@@ -73,7 +73,15 @@ final class ExposureManager: ExposureManaging {
     }
 
     func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
-        manager.getDiagnosisKeys { keys, error in
+        let retrieve: (@escaping ENGetDiagnosisKeysHandler) -> ()
+
+        #if DEBUG
+            retrieve = manager.getTestDiagnosisKeys(completionHandler:)
+        #else
+            retrieve = manager.getDiagnosisKeys(completionHandler:)
+        #endif
+
+        retrieve { keys, error in
 
             if let error = error.map(ExposureManager.mapError) {
                 completion(.failure(error))
