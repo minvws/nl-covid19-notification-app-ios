@@ -42,6 +42,8 @@ final class StatusCardView: View {
         header.addArrangedSubview(headerIconView)
 
         //   headerTitleLabel
+        headerTitleLabel.adjustsFontForContentSizeCategory = true
+        headerTitleLabel.font = theme.fonts.title3
         headerTitleLabel.numberOfLines = 0
         headerTitleLabel.preferredMaxLayoutWidth = 1000
         header.addArrangedSubview(headerTitleLabel)
@@ -49,6 +51,8 @@ final class StatusCardView: View {
         container.addArrangedSubview(header)
 
         //  descriptionLabel
+        descriptionLabel.adjustsFontForContentSizeCategory = true
+        descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
         container.addArrangedSubview(descriptionLabel)
 
@@ -70,8 +74,8 @@ final class StatusCardView: View {
             container.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
             container.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
 
-            headerIconView.widthAnchor.constraint(equalToConstant: 48),
-            headerIconView.heightAnchor.constraint(equalToConstant: 48)
+            headerIconView.widthAnchor.constraint(equalToConstant: 40),
+            headerIconView.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
 

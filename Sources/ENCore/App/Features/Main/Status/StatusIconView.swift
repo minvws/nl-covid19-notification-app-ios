@@ -22,7 +22,7 @@ class StatusIconView: View {
         buildEmitterLayer()
         layer.addSublayer(emitterLayer)
 
-        iconImageView.contentMode = .center
+        iconImageView.contentMode = .scaleAspectFit
         addSubview(iconImageView)
     }
 
@@ -42,10 +42,11 @@ class StatusIconView: View {
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            iconImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            iconImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            iconImageView.topAnchor.constraint(equalTo: topAnchor),
-            iconImageView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            iconImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+
+            iconImageView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.5),
+            iconImageView.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, multiplier: 0.5)
         ])
     }
 
@@ -60,11 +61,11 @@ class StatusIconView: View {
             updateEmitterCell()
         }
 
-        iconImageView.layer.cornerRadius = min(bounds.width, bounds.height) / 2
+        layer.cornerRadius = min(bounds.width, bounds.height) / 2
     }
 
     func update(with icon: StatusViewIcon) {
-        iconImageView.backgroundColor = theme.colors[keyPath: icon.color]
+        backgroundColor = theme.colors[keyPath: icon.color]
         iconImageView.image = icon.icon
 
         updateEmitterCell()
@@ -73,7 +74,7 @@ class StatusIconView: View {
     private func updateEmitterCell() {
         emitterCell.contents = particle(
             size: CGSize(width: bounds.width * 2, height: bounds.height * 2),
-            color: iconImageView.backgroundColor ?? .clear
+            color: backgroundColor ?? .clear
         ).cgImage
     }
 

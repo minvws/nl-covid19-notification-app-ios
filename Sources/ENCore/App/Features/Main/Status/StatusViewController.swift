@@ -140,10 +140,14 @@ private final class StatusView: View {
         textContainer.axis = .vertical
         textContainer.spacing = 16
         //   titleLabel
+        titleLabel.adjustsFontForContentSizeCategory = true
+        titleLabel.font = theme.fonts.title2
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
         textContainer.addArrangedSubview(titleLabel)
         //   descriptionLabel
+        descriptionLabel.adjustsFontForContentSizeCategory = true
+        descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
         textContainer.addArrangedSubview(descriptionLabel)
@@ -201,31 +205,26 @@ private final class StatusView: View {
             stretchGuide.topAnchor.constraint(equalTo: topAnchor).withPriority(.defaultLow),
             stretchGuide.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            iconView.widthAnchor.constraint(equalToConstant: 56),
-            iconView.heightAnchor.constraint(equalToConstant: 56)
+            iconView.widthAnchor.constraint(equalToConstant: 48),
+            iconView.heightAnchor.constraint(equalToConstant: 48)
         ])
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let widthChanged = gradientLayer.frame.width != bounds.width
-
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         gradientLayer.frame = stretchGuide.layoutFrame
         CATransaction.commit()
 
-        if widthChanged {
-            evaluateHeight()
-        }
+        evaluateHeight()
     }
 
     func update(with viewModel: StatusViewModel) {
         iconView.update(with: viewModel.icon)
 
-        titleLabel.text = viewModel.title.string
-        titleLabel.adjustsFontForContentSizeCategory = true
+        titleLabel.attributedText = viewModel.title
         descriptionLabel.attributedText = viewModel.description
 
         buttonContainer.subviews.forEach { $0.removeFromSuperview() }
