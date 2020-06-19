@@ -21,7 +21,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, OnboardingHelpListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener {
     var router: RootRouting? { get set }
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
@@ -36,14 +36,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     init(viewController: RootViewControllable,
          onboardingBuilder: OnboardingBuildable,
-         helpBuilder: OnboardingHelpBuildable,
          mainBuilder: MainBuildable,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
          developerMenuBuilder: DeveloperMenuBuildable) {
-        
+
         self.onboardingBuilder = onboardingBuilder
-        self.onboardingHelpBuilder = helpBuilder
         self.mainBuilder = mainBuilder
         self.developerMenuBuilder = developerMenuBuilder
 
@@ -108,20 +106,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         detachOnboarding(animated: animated)
     }
 
-    func routeToHelp() {
-        guard onboardingHelpRouter == nil else {
-            // already presented
-            return
-        }
-
-        let helpRouter = onboardingHelpBuilder.build(withListener: viewController)
-        self.onboardingHelpRouter = helpRouter
-
-        viewController.present(viewController: helpRouter.viewControllable,
-                               animated: false,
-                               completion: nil)
-    }
-    
     // MARK: - Private
 
     private func routeToMain() {
@@ -161,9 +145,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let onboardingBuilder: OnboardingBuildable
     private var onboardingRouter: Routing?
 
-    private let onboardingHelpBuilder: OnboardingHelpBuildable
-    private var onboardingHelpRouter: Routing?
-    
     private let mainBuilder: MainBuildable
     private var mainRouter: Routing?
 

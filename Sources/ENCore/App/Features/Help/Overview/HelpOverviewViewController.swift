@@ -1,24 +1,19 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import UIKit
 
-final class OnboardingHelpOverviewViewController: ViewController, UITableViewDelegate, UITableViewDataSource {    
-    
-    var router: OnboardingHelpRouting?
-    
-    private let onboardingConsentHelpManager: OnboardingConsentHelpManaging
+final class HelpOverviewViewController: ViewController, UITableViewDelegate, UITableViewDataSource {
+    init(listener: HelpOverviewListener,
+         helpManager: HelpManaging,
+         theme: Theme) {
 
-    init(onboardingConsentHelpManager: OnboardingConsentHelpManaging,
-        listener: OnboardingHelpListener,
-        theme: Theme) {
-        
-        self.onboardingConsentHelpManager = onboardingConsentHelpManager
         self.listener = listener
+        self.helpManager = helpManager
 
         super.init(theme: theme)
     }
@@ -27,6 +22,7 @@ final class OnboardingHelpOverviewViewController: ViewController, UITableViewDel
 
     override func loadView() {
         self.view = internalView
+        self.view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -34,7 +30,7 @@ final class OnboardingHelpOverviewViewController: ViewController, UITableViewDel
 
         internalView.titleLabel.text = Localized("helpTitle")
         internalView.subtitleLabel.text = Localized("helpSubtitle")
-        
+
         internalView.closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
         internalView.tableView.delegate = self
@@ -42,7 +38,7 @@ final class OnboardingHelpOverviewViewController: ViewController, UITableViewDel
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return onboardingConsentHelpManager.onboardingConsentHelp.count
+        return helpManager.questions.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -56,44 +52,47 @@ final class OnboardingHelpOverviewViewController: ViewController, UITableViewDel
             cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
         }
 
-        cell.textLabel?.text = onboardingConsentHelpManager.onboardingConsentHelp[indexPath.row].question
+        let question = helpManager.questions[indexPath.row]
+
+        cell.textLabel?.text = question.question
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = .systemFont(ofSize: 17)
-        
+
         cell.accessoryType = .disclosureIndicator
-        
+
         cell.indentationLevel = 1
         cell.indentationWidth = 5
-        
+
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard (0 ..< onboardingConsentHelpManager.onboardingConsentHelp.count).contains(indexPath.row) else {
+        guard (0 ..< helpManager.questions.count).contains(indexPath.row) else {
             return
         }
-        
-        listener?.displayHelpDetail(withOnboardingConsentHelp: onboardingConsentHelpManager.onboardingConsentHelp[indexPath.row])
+
+        let question = helpManager.questions[indexPath.row]
+        listener?.helpOverviewRequestsRouteTo(question: question)
+
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
+
     @objc func closeButtonPressed() {
-        self.dismiss(animated: true)
+        listener?.helpOverviewRequestsDismissal(shouldDismissViewController: true)
     }
 
     @objc func acceptButtonPressed() {
-        self.dismiss(animated: true, completion: {
-
-        })
+        listener?.helpOverviewDidTapEnableAppButton()
     }
 
     // MARK: - Private
 
-    private weak var listener: OnboardingHelpListener?
-    private lazy var internalView: OnboardingHelpView = OnboardingHelpView(theme: self.theme)
+    private weak var listener: HelpOverviewListener?
+    private let helpManager: HelpManaging
+    private lazy var internalView: HelpView = HelpView(theme: self.theme)
 }
 
-private final class OnboardingHelpView: View {
+private final class HelpView: View {
 
     lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -102,7 +101,7 @@ private final class OnboardingHelpView: View {
         label.font = .systemFont(ofSize: 28, weight: .bold)
         return label
     }()
-        
+
     lazy var subtitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -132,7 +131,7 @@ private final class OnboardingHelpView: View {
 
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableView.automaticDimension
-        
+
         tableView.allowsMultipleSelection = false
 
         return tableView
@@ -164,35 +163,35 @@ private final class OnboardingHelpView: View {
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             closeButton.heightAnchor.constraint(equalToConstant: 50),
             closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-            ])
+        ])
 
         constraints.append([
             titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 0),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-            ])
+        ])
 
         constraints.append([
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 25),
             subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             subtitleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-            ])
-        
+        ])
+
         constraints.append([
             tableView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 15),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             tableView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-            ])
+        ])
 
         constraints.append([
             acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
+        ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }

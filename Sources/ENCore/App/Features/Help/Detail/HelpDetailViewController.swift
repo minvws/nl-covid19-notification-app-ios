@@ -1,26 +1,20 @@
 /*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
-
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import UIKit
 import WebKit
 
-/// @mockable
-protocol OnboardingHelpDetailViewControllable: ViewControllable {
-    func acceptButtonPressed()
-}
+final class HelpDetailViewController: ViewController {
 
-final class OnboardingHelpDetailViewController: ViewController, OnboardingHelpDetailViewControllable {
-
-    init(listener: OnboardingHelpListener,
-        onboardingConsentHelp: OnboardingConsentHelp,
-        theme: Theme) {
-        self.onboardingConsentHelp = onboardingConsentHelp
+    init(listener: HelpDetailListener,
+         question: HelpQuestion,
+         theme: Theme) {
         self.listener = listener
+        self.question = question
 
         super.init(theme: theme)
     }
@@ -29,34 +23,29 @@ final class OnboardingHelpDetailViewController: ViewController, OnboardingHelpDe
 
     override func loadView() {
         self.view = internalView
+        self.view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.titleLabel.attributedText = onboardingConsentHelp?.attributedTitle
-        internalView.contentTextView.attributedText = onboardingConsentHelp?.attributedAnswer
+        internalView.titleLabel.attributedText = question.attributedTitle
+        internalView.contentTextView.attributedText = question.attributedAnswer
         internalView.closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
     }
 
     @objc func closeButtonPressed() {
-        self.dismiss(animated: true)
-    }
-
-    @objc func acceptButtonPressed() {
-        self.dismiss(animated: true, completion: {
-            // TODO: Ask permissions
-        })
+        listener?.helpDetailRequestsDismissal(shouldDismissViewController: true)
     }
 
     // MARK: - Private
 
-    private weak var listener: OnboardingHelpListener?
-    private weak var onboardingConsentHelp: OnboardingConsentHelp?
-    private lazy var internalView: OnboardingHelpView = OnboardingHelpView(theme: self.theme)
+    private weak var listener: HelpDetailListener?
+    private let question: HelpQuestion
+    private lazy var internalView: HelpView = HelpView(theme: self.theme)
 }
 
-private final class OnboardingHelpView: View {
+private final class HelpView: View {
 
     lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -68,7 +57,7 @@ private final class OnboardingHelpView: View {
     lazy var contentTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.isEditable = false        
+        textView.isEditable = false
         return textView
     }()
 
@@ -114,35 +103,35 @@ private final class OnboardingHelpView: View {
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             closeButton.heightAnchor.constraint(equalToConstant: 50),
             closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-            ])
+        ])
 
         constraints.append([
             titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 0),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-            ])
+        ])
 
         constraints.append([
             contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
             contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             contentTextView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-            ])
+        ])
 
         constraints.append([
             gradientImageView.heightAnchor.constraint(equalToConstant: 25),
             gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             gradientImageView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-            ])
+        ])
 
         constraints.append([
             acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
+        ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }

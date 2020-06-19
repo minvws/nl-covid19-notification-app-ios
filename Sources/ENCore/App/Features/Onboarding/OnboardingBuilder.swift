@@ -10,7 +10,6 @@ import Foundation
 /// @mockable
 protocol OnboardingListener: AnyObject {
     func didCompleteOnboarding()
-    func displayHelp()
 }
 
 /// @mockable
@@ -26,7 +25,7 @@ protocol OnboardingDependency {
 
 ///
 /// - Tag: OnboardingDependencyProvider
-private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, WebDependency, ShareSheetDependency {
+private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, WebDependency, ShareSheetDependency, HelpDependency {
 
     // MARK: - OnboardingStepDependency
 
@@ -41,7 +40,7 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
                                         exposureController: dependency.exposureController,
                                         theme: self.theme)
     }()
-    
+
     var theme: Theme {
         return dependency.theme
     }
@@ -59,9 +58,13 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
     var webBuilder: WebBuildable {
         return WebBuilder(dependency: self)
     }
-    
+
     var shareSheetBuilder: ShareSheetBuildable {
         return ShareSheetBuilder(dependency: self)
+    }
+
+    var helpBuilder: HelpBuildable {
+        return HelpBuilder(dependency: self)
     }
 }
 
@@ -75,6 +78,7 @@ final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildabl
                                 stepBuilder: dependencyProvider.stepBuilder,
                                 consentBuilder: dependencyProvider.consentBuilder,
                                 webBuilder: dependencyProvider.webBuilder,
-                                shareSheetBuilder: dependencyProvider.shareSheetBuilder)
+                                shareSheetBuilder: dependencyProvider.shareSheetBuilder,
+                                helpBuilder: dependencyProvider.helpBuilder)
     }
 }

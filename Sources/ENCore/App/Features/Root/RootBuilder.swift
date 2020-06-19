@@ -29,11 +29,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return OnboardingBuilder(dependency: self)
     }
 
-    /// Builds help onboarding flow
-    var onboardingHelpBuilder: OnboardingHelpBuildable {
-        return OnboardingHelpBuilder(dependency: self)
-    }
-    
     /// Builds main flow
     var mainBuilder: MainBuildable {
         return MainBuilder(dependency: self)
@@ -98,7 +93,6 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
 
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
-                          helpBuilder: dependencyProvider.onboardingHelpBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,

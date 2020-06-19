@@ -505,7 +505,7 @@ class OnboardingConsentBuildableMock: OnboardingConsentBuildable {
     }
 }
 
-class OnboardingHelpListenerMock: OnboardingHelpListener {
+class HelpListenerMock: HelpListener {
     init() {}
 
     var helpRequestsFAQCallCount = 0
@@ -764,7 +764,7 @@ class StorageControllerBuildableMock: StorageControllerBuildable {
     }
 }
 
-class OnboardingHelpViewControllableMock: OnboardingHelpViewControllable {
+class HelpViewControllableMock: HelpViewControllable {
     init() {}
     init(uiviewController: UIViewController = UIViewController()) {
         self.uiviewController = uiviewController
@@ -1514,12 +1514,12 @@ class InfectedCodeEntryBuildableMock: InfectedCodeEntryBuildable {
     }
 }
 
-class OnboardingHelpBuildableMock: OnboardingHelpBuildable {
+class HelpBuildableMock: HelpBuildable {
     init() {}
 
     var buildCallCount = 0
-    var buildHandler: ((OnboardingHelpListener) -> (ViewControllable))?
-    func build(withListener listener: OnboardingHelpListener) -> ViewControllable {
+    var buildHandler: ((HelpListener) -> (ViewControllable))?
+    func build(withListener listener: HelpListener) -> ViewControllable {
         buildCallCount += 1
         if let buildHandler = buildHandler {
             return buildHandler(listener)

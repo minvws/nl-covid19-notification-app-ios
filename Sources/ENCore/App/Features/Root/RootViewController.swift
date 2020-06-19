@@ -20,13 +20,10 @@ protocol RootRouting: Routing {
     ///
     /// - Parameter animated: Animates the dismissal animation
     func detachOnboardingAndRouteToMain(animated: Bool)
-    
-    /// Presents the onboarding help flow
-    func routeToHelp()
 }
 
 final class RootViewController: ViewController, RootViewControllable {
-    
+
     // MARK: - RootViewControllable
 
     weak var router: RootRouting?
@@ -53,15 +50,7 @@ final class RootViewController: ViewController, RootViewControllable {
     func didCompleteOnboarding() {
         router?.detachOnboardingAndRouteToMain(animated: true)
     }
-    
-    func displayHelp() {
-        router?.routeToHelp()
-    }
-    
-    func displayHelpDetail(withOnboardingConsentHelp onboardingConsentHelp: OnboardingConsentHelp) {
-        
-    }
-    
+
     // MARK: - DeveloperMenu Listener
 
     func developerMenuRequestsOnboardingFlow() {
