@@ -28,7 +28,7 @@ final class NetworkManager: NetworkManaging {
     /// Fetches manifest from server with all available parameters
     /// - Parameter completion: return
     func getManifest(completion: @escaping (Result<Manifest, NetworkManagerError>) -> ()) {
-        session.get(self.configuration.manifestUrl) { url, response, error in
+        session.download(self.configuration.manifestUrl) { url, response, error in
             do {
                 // get bin file and convert to object
                 let data = try self.networkResponseHandler.handleReturnData(url: url, response: response, error: error)
