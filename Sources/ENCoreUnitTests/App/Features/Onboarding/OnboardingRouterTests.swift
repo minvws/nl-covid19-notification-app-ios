@@ -5,7 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-@testable import EN
+@testable import ENCore
 import Foundation
 import XCTest
 

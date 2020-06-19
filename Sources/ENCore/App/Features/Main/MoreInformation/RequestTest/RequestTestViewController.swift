@@ -72,7 +72,7 @@ private final class RequestTestView: View {
 
     override init(theme: Theme) {
         let config = InfoViewConfig(actionButtonTitle: "Bel voor coronatest",
-                                    headerImage: UIImage(named: "CoronatestHeader"))
+                                    headerImage: Image.named("CoronatestHeader"))
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }

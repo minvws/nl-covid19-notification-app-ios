@@ -70,22 +70,22 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     private var objects: [MoreInformation] {
         let aboutAppModel = MoreInformationCellViewModel(identifier: .about,
-                                                         icon: UIImage(named: "About"),
+                                                         icon: Image.named("About"),
                                                          title: "Over de app",
                                                          subtitle: "Hoe de app werkt en wat dit voor je privacy betekent.")
 
         let receivedNotificationModel = MoreInformationCellViewModel(identifier: .receivedNotification,
-                                                                     icon: UIImage(named: "Warning"),
+                                                                     icon: Image.named("Warning"),
                                                                      title: "Een melding ontvangen?",
                                                                      subtitle: "Wat je kunt doen nadat iemand anders het virus blijkt te hebben.")
 
         let requestTestModel = MoreInformationCellViewModel(identifier: .requestTest,
-                                                            icon: UIImage(named: "Coronatest"),
+                                                            icon: Image.named("Coronatest"),
                                                             title: "Coronatest aanvragen",
                                                             subtitle: "Ontdek zo snel mogelijk of je zelf besmet bent.")
 
         let infectedModel = MoreInformationCellViewModel(identifier: .infected,
-                                                         icon: UIImage(named: "Infected"),
+                                                         icon: Image.named("Infected"),
                                                          title: "Ik ben positief getest",
                                                          subtitle: "Waarschuw anderen anoniem meteen nadat je hoort dat je besmet bent.")
 

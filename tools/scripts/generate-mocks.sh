@@ -9,9 +9,9 @@ if [[ ! -f ${MOCKOLO_PATH} ]]; then
     exit 1
 fi
 
-SRC="${REPO_ROOT}/EN"
-DEST="${REPO_ROOT}/ENUnitTests/Mocks.swift"
-${MOCKOLO_PATH} -s ${SRC} -d ${DEST} -x ${EXCLUDES} -i EN
+SRC="${REPO_ROOT}/Sources/ENCore"
+DEST="${REPO_ROOT}/Sources/ENCoreUnitTests/Mocks.swift"
+${MOCKOLO_PATH} -s ${SRC} -d ${DEST} -x ${EXCLUDES} -i ENCore
 
 # Shield import of ExposureManager
 ORIGINAL="import ExposureNotification"

@@ -6,7 +6,7 @@
  */
 
 import Combine
-@testable import EN
+@testable import ENCore
 import XCTest
 
 final class NetworkControllerTests: TestCase {

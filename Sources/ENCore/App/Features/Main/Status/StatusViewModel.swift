@@ -24,13 +24,13 @@ struct StatusViewIcon {
         switch status {
         case .ok:
             self.color = theme.colors.ok
-            self.icon = UIImage(named: "StatusIconOk")
+            self.icon = Image.named("StatusIconOk")
         case .notified:
             self.color = theme.colors.notified
-            self.icon = UIImage(named: "StatusIconNotified")
+            self.icon = Image.named("StatusIconNotified")
         case .inactive:
             self.color = theme.colors.inactive
-            self.icon = UIImage(named: "StatusIconNotified")
+            self.icon = Image.named("StatusIconNotified")
         }
     }
 }

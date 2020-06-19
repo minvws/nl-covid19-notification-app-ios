@@ -8,7 +8,7 @@ import CryptoKit
 #if canImport(ExposureNotification)
     import ExposureNotification
 #endif
-@testable import EN
+@testable import ENCore
 import Foundation
 import Security
 import SnapKit
@@ -219,19 +219,6 @@ class MainRoutingMock: MainRouting {
         routeToInfectedCallCount += 1
         if let routeToInfectedHandler = routeToInfectedHandler {
             routeToInfectedHandler()
-        }
-    }
-}
-
-class MoreInformationTableListenerMock: MoreInformationTableListener {
-    init() {}
-
-    var didSelectCallCount = 0
-    var didSelectHandler: ((MoreInformationCell, Int) -> ())?
-    func didSelect(cell: MoreInformationCell, at index: Int) {
-        didSelectCallCount += 1
-        if let didSelectHandler = didSelectHandler {
-            didSelectHandler(cell, index)
         }
     }
 }
@@ -1342,41 +1329,6 @@ class ExposureDataOperationProviderMock: ExposureDataOperationProvider {
     var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation {
         get { return _requestLabConfirmationKeyOperation }
         set { _requestLabConfirmationKeyOperation = newValue }
-    }
-}
-
-class MoreInformationTableControllingMock: MoreInformationTableControlling {
-    init() {}
-    init(listener: MoreInformationTableListener? = nil, delegate: UITableViewDelegate, dataSource: UITableViewDataSource) {
-        self.listener = listener
-        self._delegate = delegate
-        self._dataSource = dataSource
-    }
-
-    var setCallCount = 0
-    var setHandler: (([MoreInformationCell]) -> ())?
-    func set(cells: [MoreInformationCell]) {
-        setCallCount += 1
-        if let setHandler = setHandler {
-            setHandler(cells)
-        }
-    }
-
-    var listenerSetCallCount = 0
-    var listener: MoreInformationTableListener? { didSet { listenerSetCallCount += 1 } }
-
-    var delegateSetCallCount = 0
-    private var _delegate: UITableViewDelegate! { didSet { delegateSetCallCount += 1 } }
-    var delegate: UITableViewDelegate {
-        get { return _delegate }
-        set { _delegate = newValue }
-    }
-
-    var dataSourceSetCallCount = 0
-    private var _dataSource: UITableViewDataSource! { didSet { dataSourceSetCallCount += 1 } }
-    var dataSource: UITableViewDataSource {
-        get { return _dataSource }
-        set { _dataSource = newValue }
     }
 }
 

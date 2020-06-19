@@ -9,7 +9,7 @@
     import ExposureNotification
 #endif
 
-@testable import EN
+@testable import ENCore
 import Foundation
 import XCTest
 

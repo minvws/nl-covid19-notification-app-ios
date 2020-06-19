@@ -21,7 +21,7 @@ targets:
         TARGETED_DEVICE_FAMILY: 1
         CODE_SIGN_STYLE: Manual
         DEVELOPMENT_TEAM: C2H38GV99H
-        SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/EN-Bridging-Header.h
+        SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
       configs:
         Debug:
           CODE_SIGN_IDENTITY: "Apple Development"
@@ -67,7 +67,7 @@ targets:
     scheme:
       gatherCoverageData: true
       testTargets:
-        - name: ENTests
+        - name: ENCoreTests
           parallelizable: false
           randomExecutionOrder: true
 
@@ -86,14 +86,14 @@ targets:
       - carthage: ZIPFoundation
       - carthage: SnapKit
 
-  ENTests:
+  ENCoreTests:
     platform: iOS
     type: bundle.unit-test
-    deploymentTarget: "13.0"
+    deploymentTarget: "13.5"
     sources:
       - Sources/ENCoreUnitTests
     dependencies:
-      - target: EN
+      - target: ENCore
       - carthage: SnapshotTesting
     settings:
       base:

@@ -155,7 +155,7 @@ final class InfoSectionCalloutView: View {
     init(theme: Theme, content: NSAttributedString) {
         self.backgroundView = View(theme: theme)
         self.contentLabel = Label(frame: .zero)
-        self.iconImageView = UIImageView(image: UIImage(named: "Info"))
+        self.iconImageView = UIImageView(image: Image.named("Info"))
         super.init(theme: theme)
 
         contentLabel.attributedText = content

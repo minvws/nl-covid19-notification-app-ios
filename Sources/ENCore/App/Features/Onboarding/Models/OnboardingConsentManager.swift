@@ -41,15 +41,15 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 summarySteps: [
                     OnboardingConsentSummaryStep(
                         title: NSAttributedString(string: Localized("consentStep1Summary1")),
-                        image: UIImage(named: "CheckmarkShield")
+                        image: Image.named("CheckmarkShield")
                     ),
                     OnboardingConsentSummaryStep(
                         title: NSAttributedString(string: Localized("consentStep1Summary2")),
-                        image: UIImage(named: "CheckmarkShield")
+                        image: Image.named("CheckmarkShield")
                     ),
                     OnboardingConsentSummaryStep(
                         title: NSAttributedString(string: Localized("consentStep1Summary3")),
-                        image: UIImage(named: "CheckmarkShield")
+                        image: Image.named("CheckmarkShield")
                     )
                 ],
                 primaryButtonTitle: Localized("consentStep1PrimaryButton"),
@@ -64,7 +64,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 theme: theme,
                 title: Localized("consentStep2Title"),
                 content: Localized("consentStep2Content"),
-                image: UIImage(named: "PleaseTurnOnBluetooth"),
+                image: Image.named("PleaseTurnOnBluetooth"),
                 summarySteps: nil,
                 primaryButtonTitle: Localized("consentStep2PrimaryButton"),
                 secondaryButtonTitle: Localized("consentStep2SecondaryButton"),
@@ -78,7 +78,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 theme: theme,
                 title: Localized("consentStep3Title"),
                 content: Localized("consentStep3Content"),
-                image: UIImage(named: "PleaseTurnOnNotifications"),
+                image: Image.named("PleaseTurnOnNotifications"),
                 summarySteps: nil,
                 primaryButtonTitle: Localized("consentStep3PrimaryButton"),
                 secondaryButtonTitle: Localized("consentStep3SecondaryButton"),

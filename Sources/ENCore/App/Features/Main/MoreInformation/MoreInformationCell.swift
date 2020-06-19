@@ -34,7 +34,7 @@ final class MoreInformationCell: UIControl, Themeable {
         self.identifier = data.identifier
         self.theme = theme
         self.borderView = View(theme: theme)
-        self.chevronImageView = UIImageView(image: UIImage(named: "Chevron"))
+        self.chevronImageView = UIImageView(image: Image.named("Chevron"))
         self.iconImageView = UIImageView(frame: .zero)
         self.titleLabel = Label()
         self.subtitleLabel = Label()

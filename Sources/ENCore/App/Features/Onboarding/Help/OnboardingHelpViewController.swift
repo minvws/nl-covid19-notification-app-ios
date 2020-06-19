@@ -79,7 +79,7 @@ private final class OnboardingHelpView: View {
     lazy var closeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "CloseButton"), for: .normal)
+        button.setImage(Image.named("CloseButton"), for: .normal)
         return button
     }()
 
@@ -96,7 +96,7 @@ private final class OnboardingHelpView: View {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .clear
-        imageView.image = UIImage(named: "Gradient") ?? UIImage()
+        imageView.image = Image.named("Gradient") ?? UIImage()
         return imageView
     }()
 

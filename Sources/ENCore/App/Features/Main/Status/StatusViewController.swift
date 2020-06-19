@@ -120,11 +120,11 @@ private final class StatusView: View {
         // background
         layer.addSublayer(gradientLayer)
 
-        cloudsImageView.image = UIImage(named: "StatusClouds")
+        cloudsImageView.image = Image.named("StatusClouds")
         addSubview(cloudsImageView)
 
         sceneImageView.contentMode = .scaleAspectFit
-        sceneImageView.image = UIImage(named: "StatusScene")
+        sceneImageView.image = Image.named("StatusScene")
         addSubview(sceneImageView)
 
         // container

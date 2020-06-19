@@ -75,7 +75,7 @@ private final class ReceivedNotificationView: View {
 
     override init(theme: Theme) {
         let config = InfoViewConfig(actionButtonTitle: "Bel voor coronatest",
-                                    headerImage: UIImage(named: "ReceivedNotificationHeader"))
+                                    headerImage: Image.named("ReceivedNotificationHeader"))
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }

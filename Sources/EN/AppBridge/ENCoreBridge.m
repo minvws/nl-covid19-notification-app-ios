@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Bridge.h"
+#import "ENCoreBridge.h"
 
 @import ENCore;
 
