@@ -7,19 +7,24 @@
 
 import Foundation
 
-enum Endpoint: String {
+struct Path {
+    let firstParameter: String
+    let lastParameter: String
+}
 
-    // MARK: GET
-    case manifest = "manifest"
-    case exposureKeySet = "exposurekeyset"
-    case resourceBundle = "resourcebundle"
-    case riskCalculationParameters = "riskcalculationparameters"
-    case appConfig = "appconfig"
+struct Endpoint {
 
-    // MARK: POST
+    // MARK: - CDN
 
-    case register
-    case labConfirm = "labconfirm"
-    case postKeys = "postkeys"
-    case stopKeys = "stopkeys"
+    static let manifest = Path(firstParameter: "cdn", lastParameter: "manifest")
+    static let exposureKeySet = Path(firstParameter: "cdn", lastParameter: "manifest")
+    static let resourceBundle = Path(firstParameter: "cdn", lastParameter: "manifest")
+    static let riskCalculationParameters = Path(firstParameter: "cdn", lastParameter: "manifest")
+    static let appConfig = Path(firstParameter: "cdn", lastParameter: "manifest")
+
+    // MARK: - API
+
+    static let register = Path(firstParameter: "MobileAppApi", lastParameter: "register")
+    static let postKeys = Path(firstParameter: "MobileAppApi", lastParameter: "postkeys")
+    static let stopKeys = Path(firstParameter: "MobileAppApi", lastParameter: "stopkeys")
 }
