@@ -194,6 +194,7 @@ private final class StatusView: View {
             contentStretchGuide.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
             contentStretchGuide.centerYAnchor.constraint(equalTo: contentContainer.centerYAnchor),
             contentStretchGuide.heightAnchor.constraint(greaterThanOrEqualTo: contentContainer.heightAnchor),
+            contentStretchGuide.bottomAnchor.constraint(equalTo: stretchGuide.bottomAnchor).withPriority(.defaultHigh),
 
             stretchGuide.leadingAnchor.constraint(equalTo: leadingAnchor),
             stretchGuide.trailingAnchor.constraint(equalTo: trailingAnchor),
