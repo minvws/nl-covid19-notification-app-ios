@@ -57,7 +57,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
         super.viewWillAppear(animated)
 
         // TODO: remove
-        statusView.update(with: StatusViewModel(theme: theme, status: .active))
+        statusView.update(with: .active)
 
         exposureStateStreamCancellable = exposureStateStream.exposureState.sink { [weak self] status in
             guard let strongSelf = self else {
@@ -65,11 +65,11 @@ final class StatusViewController: ViewController, StatusViewControllable {
             }
             switch (status.activeState, status.notifiedState) {
             case (.active, .notNotified):
-                strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .active))
+                strongSelf.statusView.update(with: .active)
             case (.active, .notified):
-                strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .notified))
+                strongSelf.statusView.update(with: .notified)
             case (.inactive(_), .notified):
-                strongSelf.statusView.update(with: StatusViewModel(theme: strongSelf.theme, status: .notified).with(card: StatusCardViewModel(theme: strongSelf.theme)))
+                strongSelf.statusView.update(with: StatusViewModel.notified.with(card: StatusCardViewModel.inactive))
             default:
                 // TODO: Handle more cases
                 break
@@ -223,7 +223,8 @@ private final class StatusView: View {
     func update(with viewModel: StatusViewModel) {
         iconView.update(with: viewModel.icon)
 
-        titleLabel.attributedText = viewModel.title
+        titleLabel.text = viewModel.title.string
+        titleLabel.adjustsFontForContentSizeCategory = true
         descriptionLabel.attributedText = viewModel.description
 
         buttonContainer.subviews.forEach { $0.removeFromSuperview() }
@@ -245,7 +246,7 @@ private final class StatusView: View {
             cardView.isHidden = true
         }
 
-        gradientLayer.colors = [viewModel.gradientColor.cgColor, UIColor.white.withAlphaComponent(0).cgColor]
+        gradientLayer.colors = [theme.colors[keyPath: viewModel.gradientColor].cgColor, UIColor.white.withAlphaComponent(0).cgColor]
 
         sceneImageView.isHidden = !viewModel.showScene
         containerToSceneVerticalConstraint?.isActive = viewModel.showScene

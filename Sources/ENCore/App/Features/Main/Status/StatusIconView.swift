@@ -64,7 +64,7 @@ class StatusIconView: View {
     }
 
     func update(with icon: StatusViewIcon) {
-        iconImageView.backgroundColor = icon.color
+        iconImageView.backgroundColor = theme.colors[keyPath: icon.color]
         iconImageView.image = icon.icon
 
         updateEmitterCell()

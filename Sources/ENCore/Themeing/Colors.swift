@@ -20,7 +20,7 @@ public protocol Colors: AnyObject {
     var inactive: UIColor { get }
 
     var statusGradientActive: UIColor { get }
-    var statusGradienNotified: UIColor { get }
+    var statusGradientNotified: UIColor { get }
 
     var navigationControllerBackground: UIColor { get }
     var viewControllerBackground: UIColor { get }
@@ -59,7 +59,7 @@ final class ENColors: Colors {
         return color(for: "StatusGradientBlue")
     }
 
-    var statusGradienNotified: UIColor {
+    var statusGradientNotified: UIColor {
         return color(for: "StatusGradientRed")
     }
 

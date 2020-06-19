@@ -15,6 +15,8 @@ public protocol Theme: AnyObject {
     init()
 }
 
+typealias ThemeColor = KeyPath<Colors, UIColor>
+
 public protocol Themeable {
     var theme: Theme { get }
 }
