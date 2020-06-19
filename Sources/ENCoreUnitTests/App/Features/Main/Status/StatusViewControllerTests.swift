@@ -28,17 +28,17 @@ final class StatusViewControllerTests: XCTestCase {
         viewController.router = router
     }
 
-    func __DISABLED__testSnapshotActive() {
+    func testSnapshotActive() {
         set(activeState: .active)
         assertSnapshot(matching: viewController, as: .image())
     }
 
-    func __DISABLED__testSnapshotNotified() {
+    func testSnapshotNotified() {
         set(notified: true)
         assertSnapshot(matching: viewController, as: .image())
     }
 
-    func __DISABLED__testSnapshotNotifiedInactive() {
+    func testSnapshotNotifiedInactive() {
         set(activeState: .inactive(.noRecentNotificationUpdates), notified: true)
         assertSnapshot(matching: viewController, as: .image())
     }

@@ -5,13 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-#if canImport(ExposureNotification)
-    import ExposureNotification
-#endif
-
+import ExposureNotification
 import Foundation
 
 protocol ExposureRiskCalculationParameters {
-    @available(iOS 13.5, *)
     var asExposureConfiguration: ENExposureConfiguration { get }
 }

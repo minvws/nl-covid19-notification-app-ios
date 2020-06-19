@@ -5,37 +5,32 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-#if canImport(ExposureNotification)
-    import ExposureNotification
+import ExposureNotification
 
-    /// ENManaging interface to mock ENManager
-    /// @mockable
-    @available(iOS 13.5, *)
-    protocol ENManaging {
-        func activate(completionHandler: @escaping ENErrorHandler)
-        func invalidate()
+/// ENManaging interface to mock ENManager
+/// @mockable
+protocol ENManaging {
+    func activate(completionHandler: @escaping ENErrorHandler)
+    func invalidate()
 
-        func detectExposures(configuration: ENExposureConfiguration,
-                             diagnosisKeyURLs: [URL],
-                             completionHandler: @escaping ENDetectExposuresHandler) -> Progress
+    func detectExposures(configuration: ENExposureConfiguration,
+                         diagnosisKeyURLs: [URL],
+                         completionHandler: @escaping ENDetectExposuresHandler) -> Progress
 
-        func getDiagnosisKeys(completionHandler: @escaping ENGetDiagnosisKeysHandler)
+    func getDiagnosisKeys(completionHandler: @escaping ENGetDiagnosisKeysHandler)
 
-        func setExposureNotificationEnabled(_ enabled: Bool,
-                                            completionHandler: @escaping ENErrorHandler)
-        var exposureNotificationEnabled: Bool { get }
+    func setExposureNotificationEnabled(_ enabled: Bool,
+                                        completionHandler: @escaping ENErrorHandler)
+    var exposureNotificationEnabled: Bool { get }
 
-        var exposureNotificationStatus: ENStatus { get }
-        var invalidationHandler: (() -> ())? { get set }
+    var exposureNotificationStatus: ENStatus { get }
+    var invalidationHandler: (() -> ())? { get set }
 
-        static var authorizationStatus: ENAuthorizationStatus { get }
+    static var authorizationStatus: ENAuthorizationStatus { get }
 
-        func getExposureInfo(summary: ENExposureDetectionSummary,
-                             userExplanation: String,
-                             completionHandler: @escaping ENGetExposureInfoHandler) -> Progress
-    }
+    func getExposureInfo(summary: ENExposureDetectionSummary,
+                         userExplanation: String,
+                         completionHandler: @escaping ENGetExposureInfoHandler) -> Progress
+}
 
-    @available(iOS 13.5, *)
-    extension ENManager: ENManaging {}
-
-#endif
+extension ENManager: ENManaging {}

@@ -12,18 +12,3 @@ fi
 SRC="${REPO_ROOT}/Sources/ENCore"
 DEST="${REPO_ROOT}/Sources/ENCoreUnitTests/Mocks.swift"
 ${MOCKOLO_PATH} -s ${SRC} -d ${DEST} -x ${EXCLUDES} -i ENCore
-
-# Shield import of ExposureManager
-ORIGINAL="import ExposureNotification"
-REPLACEMENT='#if canImport(ExposureNotification) \
-    import ExposureNotification \
-#endif'
-
-sed -i '' "s/${ORIGINAL}/${REPLACEMENT}/g" ${DEST}
-
-# Mark EMManaging class as iOS 13.5 only
-ORIGINAL="class ENManagingMock: ENManaging"
-REPLACEMENT='@available(iOS 13.5, *) \
-class ENManagingMock: ENManaging'
-
-sed -i '' "s/${ORIGINAL}/${REPLACEMENT}/g" ${DEST}

@@ -25,7 +25,7 @@ final class RequestTestViewControllerTests: XCTestCase {
 
     // MARK: - Tests
 
-    func __DISABLED__testSnapshotRequestTestViewController() {
+    func testSnapshotRequestTestViewController() {
         assertSnapshot(matching: viewController, as: .image())
     }
 

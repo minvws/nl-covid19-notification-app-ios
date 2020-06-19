@@ -30,7 +30,7 @@ final class MoreInformationViewControllerTests: XCTestCase {
 
     // MARK: - Tests
 
-    func __DISABLED__test_snapshot_moreInformationViewController() {
+    func test_snapshot_moreInformationViewController() {
         assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 470)))
     }
 

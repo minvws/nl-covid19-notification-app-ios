@@ -38,6 +38,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     override func loadView() {
         self.view = statusView
+        self.view.frame = UIScreen.main.bounds
     }
 
     override func didMove(toParent parent: UIViewController?) {

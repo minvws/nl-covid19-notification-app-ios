@@ -26,6 +26,7 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
 
     override func loadView() {
         self.view = internalView
+        self.view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {

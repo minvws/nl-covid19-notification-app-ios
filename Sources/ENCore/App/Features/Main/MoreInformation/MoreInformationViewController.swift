@@ -43,6 +43,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     override func loadView() {
         self.view = moreInformationView
+        self.view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {

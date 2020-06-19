@@ -5,10 +5,8 @@
 import BackgroundTasks
 import Combine
 import CryptoKit
-#if canImport(ExposureNotification)
-    import ExposureNotification
-#endif
 @testable import ENCore
+import ExposureNotification
 import Foundation
 import Security
 import SnapKit
@@ -1050,34 +1048,6 @@ class WebViewingMock: WebViewing {
     }
 }
 
-class WebListenerMock: WebListener {
-    init() {}
-}
-
-class BackgroundControllingMock: BackgroundControlling {
-    init() {}
-
-    var scheduleCallCount = 0
-    var scheduleHandler: ((String, @escaping (BGTask) -> ()) -> ())?
-    func schedule(taskIdentifier: String, launchHandler: @escaping (BGTask) -> ()) {
-        scheduleCallCount += 1
-        if let scheduleHandler = scheduleHandler {
-            scheduleHandler(taskIdentifier, launchHandler)
-        }
-    }
-}
-
-class ReceivedNotificationViewControllableMock: ReceivedNotificationViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-@available(iOS 13.5, *)
 class ENManagingMock: ENManaging {
     init() {}
     init(exposureNotificationEnabled: Bool = false, exposureNotificationStatus: ENStatus) {
@@ -1160,6 +1130,33 @@ class ENManagingMock: ENManaging {
         }
         fatalError("getExposureInfoHandler returns can't have a default value thus its handler must be set")
     }
+}
+
+class WebListenerMock: WebListener {
+    init() {}
+}
+
+class BackgroundControllingMock: BackgroundControlling {
+    init() {}
+
+    var scheduleCallCount = 0
+    var scheduleHandler: ((String, @escaping (BGTask) -> ()) -> ())?
+    func schedule(taskIdentifier: String, launchHandler: @escaping (BGTask) -> ()) {
+        scheduleCallCount += 1
+        if let scheduleHandler = scheduleHandler {
+            scheduleHandler(taskIdentifier, launchHandler)
+        }
+    }
+}
+
+class ReceivedNotificationViewControllableMock: ReceivedNotificationViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
 class WebBuildableMock: WebBuildable {
@@ -1603,29 +1600,6 @@ class NetworkControllerBuildableMock: NetworkControllerBuildable {
     }
 }
 
-class StorageControllingMock: StorageControlling {
-    init() {}
-
-    var storeCallCount = 0
-    var storeHandler: ((Data, Any, @escaping (Error?) -> ()) -> ())?
-    func store<Key: StoreKey>(data: Data, identifiedBy key: Key, completion: @escaping (Error?) -> ()) {
-        storeCallCount += 1
-        if let storeHandler = storeHandler {
-            storeHandler(data, key, completion)
-        }
-    }
-
-    var retrieveDataCallCount = 0
-    var retrieveDataHandler: ((Any) -> (Data?))?
-    func retrieveData<Key: StoreKey>(identifiedBy key: Key) -> Data? {
-        retrieveDataCallCount += 1
-        if let retrieveDataHandler = retrieveDataHandler {
-            return retrieveDataHandler(key)
-        }
-        return nil
-    }
-}
-
 class ExposureManagingMock: ExposureManaging {
     init() {}
 
@@ -1683,6 +1657,29 @@ class ExposureManagingMock: ExposureManaging {
             return getExposureNotificationStatusHandler()
         }
         fatalError("getExposureNotificationStatusHandler returns can't have a default value thus its handler must be set")
+    }
+}
+
+class StorageControllingMock: StorageControlling {
+    init() {}
+
+    var storeCallCount = 0
+    var storeHandler: ((Data, Any, @escaping (Error?) -> ()) -> ())?
+    func store<Key: StoreKey>(data: Data, identifiedBy key: Key, completion: @escaping (Error?) -> ()) {
+        storeCallCount += 1
+        if let storeHandler = storeHandler {
+            storeHandler(data, key, completion)
+        }
+    }
+
+    var retrieveDataCallCount = 0
+    var retrieveDataHandler: ((Any) -> (Data?))?
+    func retrieveData<Key: StoreKey>(identifiedBy key: Key) -> Data? {
+        retrieveDataCallCount += 1
+        if let retrieveDataHandler = retrieveDataHandler {
+            return retrieveDataHandler(key)
+        }
+        return nil
     }
 }
 

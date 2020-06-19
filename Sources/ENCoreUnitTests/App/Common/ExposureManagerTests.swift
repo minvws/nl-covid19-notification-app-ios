@@ -5,15 +5,11 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-#if canImport(ExposureNotification)
-    import ExposureNotification
-#endif
-
 @testable import ENCore
+import ExposureNotification
 import Foundation
 import XCTest
 
-@available(iOS 13.5, *)
 final class ExposureManagerTests: XCTestCase {
     private var manager: ExposureManager!
     private let mock = ENManagingMock()

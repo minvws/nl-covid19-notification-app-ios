@@ -25,7 +25,7 @@ final class ReceivedNotificationViewControllerTests: XCTestCase {
 
     // MARK: - Tests
 
-    func __DISABLED__testSnapshotReceivedNotificationViewController() {
+    func testSnapshotReceivedNotificationViewController() {
         assertSnapshot(matching: viewController, as: .image())
     }
 
