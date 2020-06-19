@@ -16,9 +16,9 @@ class TestCase: XCTestCase {
     }
 
     override func tearDown() {
-        super.tearDown()
-
         disposeBag.forEach { $0.cancel() }
+
+        super.tearDown()
     }
 }
 

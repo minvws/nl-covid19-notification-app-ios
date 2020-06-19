@@ -48,7 +48,7 @@ extension URLSession: URLSessionManagable {
         }
     }
 
-    // TODO: Make this middleware?
+    // TODO: Make this middleware
     private var defaultHeaders: [String: String] {
         return [
             "Content-Type": "application/json",
