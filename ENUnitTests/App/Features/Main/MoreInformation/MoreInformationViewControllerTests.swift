@@ -7,38 +7,54 @@
 
 @testable import EN
 import Foundation
+import SnapshotTesting
 import XCTest
 
 final class MoreInformationViewControllerTests: XCTestCase {
     private var viewController: MoreInformationViewController!
     private let listener = MoreInformationListenerMock()
-    private let tableController = MoreInformationTableControllingMock()
     private let tableViewDelegate = UITableViewDelegateMock()
     private let tableViewDataSource = UITableViewDataSourceMock()
+
+    // MARK: - Setup
 
     override func setUp() {
         super.setUp()
 
+        SnapshotTesting.record = false
+
         let theme = ENTheme()
-
-        tableController.dataSource = tableViewDataSource
-        tableController.delegate = tableViewDelegate
-
         viewController = MoreInformationViewController(listener: listener,
-                                                       theme: theme,
-                                                       tableController: tableController)
+                                                       theme: theme)
     }
 
-    func test_viewDidLoad_setsCells() {
-        var receivedCells: [MoreInformationCell]?
-        tableController.setHandler = { cells in receivedCells = cells }
+    // MARK: - Tests
 
-        XCTAssertEqual(tableController.setCallCount, 0)
+    func test_snapshot_moreInformationViewController() {
+        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 470)))
+    }
 
-        _ = viewController.view
+    func test_didSelectItem_about() {
+        viewController.didSelect(identifier: .about)
 
-        XCTAssertEqual(tableController.setCallCount, 1)
-        XCTAssertNotNil(receivedCells)
-        XCTAssertEqual(receivedCells?.count, 4)
+        XCTAssertEqual(listener.moreInformationRequestsAboutCallCount, 1)
+    }
+
+    func test_didSelectItem_infected() {
+        viewController.didSelect(identifier: .infected)
+
+        XCTAssertEqual(listener.moreInformationRequestsInfectedCallCount, 1)
+    }
+
+    func test_didSelectItem_receivedNotification() {
+        viewController.didSelect(identifier: .receivedNotification)
+
+        XCTAssertEqual(listener.moreInformationRequestsReceivedNotificationCallCount, 1)
+    }
+
+    func test_didSelectItem_requestTest() {
+        viewController.didSelect(identifier: .requestTest)
+
+        XCTAssertEqual(listener.moreInformationRequestsRequestTestCallCount, 1)
     }
 }

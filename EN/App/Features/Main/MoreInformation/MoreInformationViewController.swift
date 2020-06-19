@@ -5,20 +5,35 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import SnapKit
 import UIKit
 
-final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationTableListener {
-    private enum MoreInformationCellIdentifier: CaseIterable {
-        case aboutApp
-        case receivedNotification
-        case requestTest
-        case infected
-    }
+enum MoreInformationIdentifier {
+    case about
+    case infected
+    case receivedNotification
+    case requestTest
+}
 
-    init(listener: MoreInformationListener,
-         theme: Theme,
-         tableController: MoreInformationTableControlling) {
-        self.tableController = tableController
+protocol MoreInformation {
+    var identifier: MoreInformationIdentifier { get }
+    var icon: UIImage? { get }
+    var title: String { get }
+    var subtitle: String { get }
+}
+
+struct MoreInformationCellViewModel: MoreInformation {
+    let identifier: MoreInformationIdentifier
+    let icon: UIImage?
+    let title: String
+    let subtitle: String
+}
+
+final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationCellListner {
+
+    // MARK: - Init
+
+    init(listener: MoreInformationListener, theme: Theme) {
         self.listener = listener
 
         super.init(theme: theme)
@@ -33,16 +48,14 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupTableView()
+        moreInformationView.set(data: objects, listener: self)
     }
 
-    // MARK: - MoreInformationTableListener
+    // MARK: - MoreInformationCellListner
 
-    func didSelect(cell: MoreInformationCell, at index: Int) {
-        guard (0 ..< cells.keys.count).contains(index) else { return }
-
-        switch MoreInformationCellIdentifier.allCases[index] {
-        case .aboutApp:
+    func didSelect(identifier: MoreInformationIdentifier) {
+        switch identifier {
+        case .about:
             listener?.moreInformationRequestsAbout()
         case .infected:
             listener?.moreInformationRequestsInfected()
@@ -55,91 +68,89 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     // MARK: - Private
 
-    private func setupTableView() {
-        moreInformationView.tableView.delegate = tableController.delegate
-        moreInformationView.tableView.dataSource = tableController.dataSource
-
-        tableController.listener = self
-
-        let cells = MoreInformationCellIdentifier.allCases.compactMap { identifier in
-            return self.cells[identifier]
-        }
-        tableController.set(cells: cells)
-
-        moreInformationView.tableView.reloadData()
-        moreInformationView.updateHeightConstraint()
-    }
-
-    @objc
-    func didTapRequestTestButton() {
-        listener?.moreInformationRequestsRequestTest()
-    }
-
-    private var cells: [MoreInformationCellIdentifier: MoreInformationCell] {
-        // dummy data
-        let aboutAppModel = MoreInformationCellViewModel(icon: UIImage(),
+    private var objects: [MoreInformation] {
+        let aboutAppModel = MoreInformationCellViewModel(identifier: .about,
+                                                         icon: UIImage(named: "About"),
                                                          title: "Over de app",
-                                                         description: "Hoe de app werkt en wat dit voor je privacy betekent.")
+                                                         subtitle: "Hoe de app werkt en wat dit voor je privacy betekent.")
 
-        let receivedNotificationModel = MoreInformationCellViewModel(icon: UIImage(),
+        let receivedNotificationModel = MoreInformationCellViewModel(identifier: .receivedNotification,
+                                                                     icon: UIImage(named: "Warning"),
                                                                      title: "Een melding ontvangen?",
-                                                                     description: "Wat je kunt doen nadat iemand anders het virus blijkt te hebben.")
+                                                                     subtitle: "Wat je kunt doen nadat iemand anders het virus blijkt te hebben.")
 
-        let requestTestModel = MoreInformationCellViewModel(icon: UIImage(),
+        let requestTestModel = MoreInformationCellViewModel(identifier: .requestTest,
+                                                            icon: UIImage(named: "Coronatest"),
                                                             title: "Coronatest aanvragen",
-                                                            description: "Waarschuw anderen anoniem meteen nadat je hoort dat je besmet bent.")
+                                                            subtitle: "Ontdek zo snel mogelijk of je zelf besmet bent.")
 
-        let infectedModel = MoreInformationCellViewModel(icon: UIImage(),
-                                                         title: "Ik ben besmet",
-                                                         description: "Zo laat je anderen weten dat je positief getest bent")
+        let infectedModel = MoreInformationCellViewModel(identifier: .infected,
+                                                         icon: UIImage(named: "Infected"),
+                                                         title: "Ik ben positief getest",
+                                                         subtitle: "Waarschuw anderen anoniem meteen nadat je hoort dat je besmet bent.")
 
         return [
-            .aboutApp: aboutAppModel,
-            .receivedNotification: receivedNotificationModel,
-            .requestTest: requestTestModel,
-            .infected: infectedModel
+            aboutAppModel,
+            receivedNotificationModel,
+            requestTestModel,
+            infectedModel
         ]
     }
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
 
     private weak var listener: MoreInformationListener?
-    private let tableController: MoreInformationTableControlling
 }
 
 private final class MoreInformationView: View {
-    fileprivate let tableView = UITableView()
-    private var heightConstraint: NSLayoutConstraint?
+
+    var didSelectItem: ((MoreInformationIdentifier) -> ())?
+
+    private let headerLabel: Label
+    private let stackView: UIStackView
+
+    // MARK: - Init
+
+    override init(theme: Theme) {
+        self.headerLabel = Label()
+        self.stackView = UIStackView(frame: .zero)
+        super.init(theme: theme)
+    }
+
+    // MARK: - Overrides
 
     override func build() {
         super.build()
 
-        addSubview(tableView)
+        headerLabel.text = "MEER INFORMATIE"
+        headerLabel.font = theme.fonts.footnote // TODO: Should actually be bold
 
-        tableView.isScrollEnabled = false
-        tableView.estimatedRowHeight = 100
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+
+        addSubview(headerLabel)
+        addSubview(stackView)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.setContentCompressionResistancePriority(.required, for: .vertical)
-
-        let constraints = [
-            tableView.topAnchor.constraint(equalTo: topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ]
-
-        heightConstraint = tableView.heightAnchor.constraint(equalToConstant: 0)
-
-        NSLayoutConstraint.activate(constraints)
+        headerLabel.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.top.equalToSuperview().offset(16)
+            maker.leading.trailing.equalToSuperview().inset(16)
+        }
+        stackView.snp.makeConstraints { maker in
+            maker.top.equalTo(headerLabel.snp.bottom).offset(16)
+            maker.leading.trailing.bottom.equalToSuperview()
+        }
     }
 
-    fileprivate func updateHeightConstraint() {
-        heightConstraint = tableView.heightAnchor.constraint(equalToConstant: tableView.contentSize.height)
-        heightConstraint?.isActive = true
+    // MARK: - Private
+
+    fileprivate func set(data: [MoreInformation], listener: MoreInformationCellListner) {
+        for object in data {
+            let view = MoreInformationCell(listener: listener, theme: theme, data: object)
+            stackView.addArrangedSubview(view)
+        }
     }
 }

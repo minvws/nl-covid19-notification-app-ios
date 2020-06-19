@@ -14,15 +14,11 @@ final class MainViewControllerTests: XCTestCase {
     private let router = MainRoutingMock()
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()
-    private let tableController = MoreInformationTableControllingMock()
 
     override func setUp() {
         super.setUp()
 
         let theme = ENTheme()
-
-        tableController.dataSource = UITableViewDataSourceMock()
-        tableController.delegate = UITableViewDelegateMock()
 
         viewController = MainViewController(theme: theme)
         viewController.router = router
