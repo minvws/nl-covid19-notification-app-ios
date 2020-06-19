@@ -5,6 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-struct AppConfig: Codable {
+import Foundation
+
+struct AppConfig: Decodable {
     let version, manifestFrequency, decoyProbability: Int
 }
