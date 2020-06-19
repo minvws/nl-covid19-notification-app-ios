@@ -60,18 +60,9 @@ final class NetworkResponseProvider : NetworkResponseProviderHandling {
             throw NetworkResponseError.error
         }
         
-        switch httpResponse.statusCode {
-        case 400...499:
-            throw NetworkResponseError.badRequest
-        case 500...599:
-            throw NetworkResponseError.serverError
-        default: break
-        }
-        
         guard let type = ContentType.init(rawValue: contentType) else {
             throw NetworkResponseError.error
         }
-        
         
         // extract files if necessary
         let urls = try self.fileNetworkResponseHandler.handle(url: url, type: type)

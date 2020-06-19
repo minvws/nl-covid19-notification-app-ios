@@ -13,18 +13,11 @@ protocol URLSessionManagable {
     func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTask
     func downloadTask(with request: URLRequest, completionHandler: @escaping (URL?, URLResponse?, Error?) -> ()) -> URLSessionDownloadTask
 
-    func get(_ url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ())
     func download(_ url: URL, contentType:ContentType, completionHandler: @escaping (URL?, URLResponse?, Error?) -> ())
-
     func post(_ url: URL, object: Encodable, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ())
 }
 
 extension URLSession: URLSessionManagable {
-
-    func get(_ url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) {
-        let request = URLRequest(url: url)
-        dataTask(with: request, completionHandler: completionHandler).resume()
-    }
 
     func download(_ url: URL, contentType:ContentType, completionHandler: @escaping (URL?, URLResponse?, Error?) -> ()) {
         var request = URLRequest(url: url)
@@ -37,7 +30,7 @@ extension URLSession: URLSessionManagable {
               completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) {
         var request = URLRequest(url: url)
 
-        //request.allHTTPHeaderFields = defaultHeaders
+        request.allHTTPHeaderFields = defaultHeaders
         request.httpMethod = HTTPMethod.POST.rawValue
 
         do {

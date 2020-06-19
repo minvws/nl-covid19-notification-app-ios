@@ -19,6 +19,10 @@ final class NetworkManager: NetworkManaging {
         self.configuration = configuration
         self.session = urlSession
         self.networkResponseHandler = networkResponseHandler
+        
+        // initialize json decoder with custom decoding strategy
+        self.jsonDecoder = JSONDecoder()
+        self.jsonDecoder.keyDecodingStrategy = .convertFromUpperCamelCase
     }
 
     // MARK: CDN
@@ -32,7 +36,7 @@ final class NetworkManager: NetworkManaging {
             do {
                 // get bin file and convert to object
                 let data = try self.networkResponseHandler.handleReturnData(url: url, response: response, error: error)
-                let manifest = try JSONDecoder().decode(Manifest.self, from: data)
+                let manifest = try self.jsonDecoder.decode(Manifest.self, from: data)
                 completion(.success(manifest))
             } catch {
                 completion(.failure(.other(error)))
@@ -47,7 +51,7 @@ final class NetworkManager: NetworkManaging {
             do {
                 // get bin file and convert to object
                 let data = try self.networkResponseHandler.handleReturnData(url: url, response: response, error: error)
-                let appConfig = try JSONDecoder().decode(AppConfig.self, from: data)
+                let appConfig = try self.jsonDecoder.decode(AppConfig.self, from: data)
                 completion(.success(appConfig))
             } catch {
                 completion(.failure(.other(error)))
@@ -58,19 +62,13 @@ final class NetworkManager: NetworkManaging {
     /// Fetches risk parameters used by the ExposureManager
     /// - Parameter completion: success or fail
     func getRiskCalculationParameters(appConfig: String, completion: @escaping (Result<RiskCalculationParameters, NetworkManagerError>) -> ()) {
-        session.get(self.configuration.riskCalculationParametersUrl(param: appConfig)) { data, response, error in
-            if let error = error {
-                completion(.failure(.other(error)))
-                return
-            }
-
+        session.download(self.configuration.riskCalculationParametersUrl(param: appConfig), contentType: self.configuration.contentType) {
+            url, response, error in
             do {
-                guard let data = data else {
-                    throw NetworkManagerError.emptyResponse
-                }
-
-                let riskCalculationParameters = try JSONDecoder().decode(RiskCalculationParameters.self, from: data)
-                completion(.success(riskCalculationParameters))
+                // get bin file and convert to object
+                let data = try self.networkResponseHandler.handleReturnData(url: url, response: response, error: error)
+                let riskCalculationParams = try self.jsonDecoder.decode(RiskCalculationParameters.self, from: data)
+                completion(.success(riskCalculationParams))
             } catch {
                 completion(.failure(.other(error)))
             }
@@ -81,17 +79,11 @@ final class NetworkManager: NetworkManaging {
     /// - Parameters:
     ///   - id: id of the exposureKeySet
     ///   - completion: executed on complete or failure
-    func getDiagnosisKeys(_ id: String, completion: @escaping (Result<ExposureKeySet, NetworkManagerError>) -> ()) {
+    func getDiagnosisKeys(_ id: String, completion: @escaping (Result<[URL], NetworkManagerError>) -> ()) {
         session.download(self.configuration.exposureKeySetUrl(param: id), contentType: self.configuration.contentType) { url, response, error in
-
-            guard let url = url else {
-                completion(.failure(NetworkManagerError.emptyResponse))
-                return
-            }
-
             do {
-                let exposureKeySet = try ExposureKeySet(url: url)
-                completion(.success(exposureKeySet))
+                let urls = try self.networkResponseHandler.handleReturnUrls(url: url, response: response, error: error)
+                completion(.success(urls))
             } catch {
                 completion(.failure(.other(error)))
             }
@@ -145,4 +137,5 @@ final class NetworkManager: NetworkManaging {
     private let configuration: NetworkConfiguration
     private let session: URLSession
     private let networkResponseHandler: NetworkResponseProviderHandling
+    private let jsonDecoder: JSONDecoder
 }
