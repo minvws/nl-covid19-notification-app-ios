@@ -7,9 +7,9 @@ targets:
   EN:
     platform: iOS
     type: application
-    deploymentTarget: "13.0"
+    deploymentTarget: "11.0"
     sources:
-      - path: EN
+      - path: Sources/EN
 
     settings:
       base:
@@ -21,18 +21,19 @@ targets:
         TARGETED_DEVICE_FAMILY: 1
         CODE_SIGN_STYLE: Manual
         DEVELOPMENT_TEAM: C2H38GV99H
+        SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/EN-Bridging-Header.h
       configs:
         Debug:
           CODE_SIGN_IDENTITY: "Apple Development"
-          CODE_SIGN_ENTITLEMENTS: EN/Resources/Entitlements/Debug.entitlements
+          CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Debug.entitlements
           PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
         Release:
           CODE_SIGN_IDENTITY: "Apple Distribution"
-          CODE_SIGN_ENTITLEMENTS: EN/Resources/Entitlements/Release.entitlements
+          CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Release.entitlements
           PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
 
     info:
-      path: EN/Resources/Info.plist
+      path: Sources/EN/Resources/Info.plist
       properties:
         BGTaskSchedulerPermittedIdentifiers:
           [$(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification]
@@ -61,8 +62,7 @@ targets:
           NSAllowsArbitraryLoads: true
                 
     dependencies:
-      - carthage: ZIPFoundation
-      - carthage: SnapKit
+      - target: ENCore
 
     scheme:
       gatherCoverageData: true
@@ -71,12 +71,27 @@ targets:
           parallelizable: false
           randomExecutionOrder: true
 
+  ENCore:
+    platform: iOS
+    type: framework
+    deploymentTarget: "13.5"
+    sources:
+      - Sources/ENCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.core
+        TARGETED_DEVICE_FAMILY: 1
+        SWIFT_VERSION: 5.2
+    dependencies:
+      - carthage: ZIPFoundation
+      - carthage: SnapKit
+
   ENTests:
     platform: iOS
     type: bundle.unit-test
     deploymentTarget: "13.0"
     sources:
-      - ENUnitTests
+      - Sources/ENCoreUnitTests
     dependencies:
       - target: EN
       - carthage: SnapshotTesting
