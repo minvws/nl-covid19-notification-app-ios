@@ -10,7 +10,7 @@ import Foundation
 
 enum ExposureDataError: Error {
     case networkUnreachable
-    case serverUnreachable
+    case serverError
 }
 
 /// @mockable

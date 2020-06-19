@@ -47,6 +47,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
+            .assertNoFailure()
             .sink { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
             }
@@ -75,6 +76,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
+            .assertNoFailure()
             .sink { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
             }
@@ -116,6 +118,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
+            .assertNoFailure()
             .sink { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
             }

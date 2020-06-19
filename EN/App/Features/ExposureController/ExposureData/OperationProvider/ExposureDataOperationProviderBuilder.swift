@@ -9,9 +9,8 @@ import Combine
 
 protocol ExposureDataOperation {
     associatedtype Result
-    associatedtype Error: Swift.Error
 
-    func execute() -> AnyPublisher<Result, Error>
+    func execute() -> AnyPublisher<Result, ExposureDataError>
 }
 
 /// @mockable

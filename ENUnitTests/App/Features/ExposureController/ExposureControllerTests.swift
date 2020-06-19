@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import EN
 import Foundation
 import XCTest
@@ -151,8 +152,56 @@ final class ExposureControllerTests: XCTestCase {
         XCTAssertTrue(expectation.evaluate())
     }
 
-    func test_requestLabConfirmationKey_callsCompletion() {
-        // TODO:
+    func test_requestLabConfirmationKey_isSuccess_callsCompletionWithKey() {
+        let expirationDate = Date()
+
+        dataController.requestLabConfirmationKeyHandler = {
+            let labConfirmationKey = LabConfirmationKey(identifier: "identifier",
+                                                        bucketIdentifier: Data(),
+                                                        confirmationKey: Data(),
+                                                        validUntil: expirationDate)
+            return Just(labConfirmationKey)
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
+        XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 0)
+
+        var receivedResult: Result<ExposureController.ConfirmationKey, ExposureDataError>!
+
+        controller.requestLabConfirmationKey { result in
+            receivedResult = result
+        }
+
+        XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 1)
+        XCTAssertNotNil(receivedResult)
+        XCTAssertNotNil(try! receivedResult.get())
+        XCTAssertEqual(try! receivedResult.get().confirmationKey, "identifier")
+        XCTAssertEqual(try! receivedResult.get().expiration, expirationDate)
+    }
+
+    func test_requestLabConfirmationKey_isFailure_callsCompletionWithFailure() {
+        dataController.requestLabConfirmationKeyHandler = {
+            return Fail(error: ExposureDataError.serverError)
+                .eraseToAnyPublisher()
+        }
+
+        XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 0)
+
+        var receivedResult: Result<ExposureController.ConfirmationKey, ExposureDataError>!
+
+        controller.requestLabConfirmationKey { result in
+            receivedResult = result
+        }
+
+        XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 1)
+        XCTAssertNotNil(receivedResult)
+
+        guard case let .failure(error) = receivedResult else {
+            XCTFail("Expecting error")
+            return
+        }
+        XCTAssertEqual(error, ExposureDataError.serverError)
     }
 
     func test_requestUploadKeys_callsCompletion() {

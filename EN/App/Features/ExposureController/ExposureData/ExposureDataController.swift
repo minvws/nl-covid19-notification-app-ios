@@ -32,17 +32,6 @@ final class ExposureDataController: ExposureDataControlling {
         let operation = operationProvider.requestLabConfirmationKeyOperation
 
         return operation.execute()
-            .setFailureType(to: ExposureDataError.self)
-//            .flatMap { labConfirmationKey -> AnyPublisher<LabConfirmationKey, ExposureDataError> in
-//                guard let labConfirmationKey = labConfirmationKey else {
-//                    return Fail(error: ExposureDataError.serverUnreachable).eraseToAnyPublisher()
-//                }
-//
-//                return Just(labConfirmationKey)
-//                    .setFailureType(to: ExposureDataError.self)
-//                    .eraseToAnyPublisher()
-//        }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private

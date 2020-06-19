@@ -64,14 +64,26 @@ final class ExposureController: ExposureControlling {
         // Not implemented yet
     }
 
-    func requestLabConfirmationKey(completion: @escaping (String, Date) -> ()) {
-        dataController.requestLabConfirmationKey().sink(
-            receiveCompletion: { completion in
-                print(completion)
-            },
-            receiveValue: { labConfirmationKey in
-                completion(labConfirmationKey.identifier, labConfirmationKey.validUntil)
-        })
+    func requestLabConfirmationKey(completion: @escaping (Result<ConfirmationKey, ExposureDataError>) -> ()) {
+        let convertConfirmationKey: (LabConfirmationKey) -> ConfirmationKey = { labConfirmationKey in
+            return (confirmationKey: labConfirmationKey.identifier,
+                    expiration: labConfirmationKey.validUntil)
+        }
+
+        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
+            if case let .failure(error) = result {
+                completion(.failure(error))
+            }
+        }
+
+        let receiveValue: (ConfirmationKey) -> () = { key in
+            completion(.success(key))
+        }
+
+        dataController
+            .requestLabConfirmationKey()
+            .map(convertConfirmationKey)
+            .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
             .store(in: &disposeBag)
     }
 

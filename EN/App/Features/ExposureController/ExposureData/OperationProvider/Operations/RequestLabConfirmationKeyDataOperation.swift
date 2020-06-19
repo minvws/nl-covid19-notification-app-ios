@@ -21,7 +21,6 @@ extension LabConfirmationKey {
 
 final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
     typealias Result = LabConfirmationKey
-    typealias Error = Never // TODO: Define correct error
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {
@@ -31,29 +30,32 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<LabConfirmationKey, Never> {
+    func execute() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
         return retrieveStoredKey()
-            .flatMap { confirmationKey -> AnyPublisher<LabConfirmationKey, Never> in
+            .flatMap { confirmationKey -> AnyPublisher<LabConfirmationKey, ExposureDataError> in
                 if let confirmationKey = confirmationKey, confirmationKey.isValid {
-                    return Just(confirmationKey).eraseToAnyPublisher()
+                    return Just(confirmationKey)
+                        .setFailureType(to: ExposureDataError.self)
+                        .eraseToAnyPublisher()
                 }
 
                 return self.requestNewKey()
-                    .assertNoFailure()
                     .flatMap(self.storeReceivedKey(key:))
                     .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }
 
-    private func retrieveStoredKey() -> AnyPublisher<LabConfirmationKey?, Never> {
+    private func retrieveStoredKey() -> AnyPublisher<LabConfirmationKey?, ExposureDataError> {
         let key = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey,
                                                    ofType: LabConfirmationKey.self)
 
-        return Just(key).eraseToAnyPublisher()
+        return Just(key)
+            .setFailureType(to: ExposureDataError.self)
+            .eraseToAnyPublisher()
     }
 
-    private func storeReceivedKey(key: LabConfirmationKey) -> AnyPublisher<LabConfirmationKey, Never> {
+    private func storeReceivedKey(key: LabConfirmationKey) -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
         return Future { promise in
             self.storageController.store(object: key,
                                          identifiedBy: ExposureDataStorageKey.labConfirmationKey,
@@ -64,12 +66,26 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
         .eraseToAnyPublisher()
     }
 
-    private func requestNewKey() -> AnyPublisher<LabConfirmationKey, NetworkError> {
-        return networkController.requestLabConfirmationKey()
+    private func requestNewKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
+        return networkController
+            .requestLabConfirmationKey()
+            .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
+            .eraseToAnyPublisher()
     }
 
     // MARK: - Private
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+}
+
+private extension NetworkError {
+    var asExposureDataError: ExposureDataError {
+        switch self {
+        case .invalidResponse:
+            return .serverError
+        case .serverNotReachable:
+            return .networkUnreachable
+        }
+    }
 }
