@@ -11,50 +11,34 @@ struct NetworkConfiguration {
 
     let url: String
     let path: String
-    let mock: Bool
+    let contentType: ContentType
 
     static let development = NetworkConfiguration(
         url: "http://localhost:5004",
         path: "cdn/v1",
-        mock: false
+        contentType: .json
     )
 
     static let production = NetworkConfiguration(
         url: "https://www.rijksoverheid.nl/prod/",
         path: "api",
-        mock: false
+        contentType: .zip
     )
 
     var manifestUrl: URL {
-        if mock {
-            return self.getLocalUrl(name: "manifest.json")
-        } else {
-            return self.combine(endpoint: Endpoint.manifest)
-        }
+        return self.combine(endpoint: Endpoint.manifest)
     }
 
     func exposureKeySetUrl(param: String) -> URL {
-        if mock {
-            return self.getLocalUrl(name: param)
-        } else {
-            return self.combine(endpoint: Endpoint.exposureKeySet, params: [param])
-        }
+        return self.combine(endpoint: Endpoint.exposureKeySet, params: [param])
     }
 
     func riskCalculationParametersUrl(param: String) -> URL {
-        if mock {
-            return self.getLocalUrl(name: "riskcalculationparameters.json")
-        } else {
-            return self.combine(endpoint: Endpoint.riskCalculationParameters, params: [param])
-        }
+        return self.combine(endpoint: Endpoint.riskCalculationParameters, params: [param])
     }
 
     func appConfigUrl(param: String) -> URL {
-        if mock {
-            return self.getLocalUrl(name: "appconfig.json")
-        } else {
-            return self.combine(endpoint: Endpoint.riskCalculationParameters, params: [param])
-        }
+        return self.combine(endpoint: Endpoint.riskCalculationParameters, params: [param])
     }
 
     var registerUrl: URL {

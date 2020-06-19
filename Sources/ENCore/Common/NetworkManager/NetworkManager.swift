@@ -28,7 +28,7 @@ final class NetworkManager: NetworkManaging {
     /// Fetches manifest from server with all available parameters
     /// - Parameter completion: return
     func getManifest(completion: @escaping (Result<Manifest, NetworkManagerError>) -> ()) {
-        session.download(self.configuration.manifestUrl) { url, response, error in
+        session.download(self.configuration.manifestUrl, contentType: self.configuration.contentType) { url, response, error in
             do {
                 // get bin file and convert to object
                 let data = try self.networkResponseHandler.handleReturnData(url: url, response: response, error: error)
@@ -43,7 +43,7 @@ final class NetworkManager: NetworkManaging {
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
     /// - Parameter completion: completion description
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkManagerError>) -> ()) {
-        session.download(self.configuration.appConfigUrl(param: appConfig)) { url, response, error in
+        session.download(self.configuration.appConfigUrl(param: appConfig), contentType: self.configuration.contentType) { url, response, error in
             do {
                 // get bin file and convert to object
                 let data = try self.networkResponseHandler.handleReturnData(url: url, response: response, error: error)
@@ -82,7 +82,7 @@ final class NetworkManager: NetworkManaging {
     ///   - id: id of the exposureKeySet
     ///   - completion: executed on complete or failure
     func getDiagnosisKeys(_ id: String, completion: @escaping (Result<ExposureKeySet, NetworkManagerError>) -> ()) {
-        session.download(self.configuration.exposureKeySetUrl(param: id)) { url, response, error in
+        session.download(self.configuration.exposureKeySetUrl(param: id), contentType: self.configuration.contentType) { url, response, error in
 
             guard let url = url else {
                 completion(.failure(NetworkManagerError.emptyResponse))
