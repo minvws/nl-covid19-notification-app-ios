@@ -11,6 +11,7 @@
 @import ENCore;
 
 @interface ENCoreBridge() {
+    NS_AVAILABLE_IOS(13_5)
     ENAppRoot *_appRoot;
 }
 
@@ -29,7 +30,11 @@
     self = [super init];
     
     if (self) {
-        _appRoot = [[ENAppRoot alloc] init];
+        if (@available(iOS 13.5, *)) {
+            _appRoot = [[ENAppRoot alloc] init];
+        } else {
+            return nil;
+        }
         return self;
     }
     

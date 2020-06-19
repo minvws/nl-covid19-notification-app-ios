@@ -238,7 +238,11 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private let mutableExposureStateStream: MutableExposureStateStreaming
 
     private var window: UIWindow? {
-        UIApplication.shared.keyWindow
+        if #available(iOS 13.0, *) {
+            return UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+        } else {
+            return UIApplication.shared.keyWindow
+        }
     }
 }
 
