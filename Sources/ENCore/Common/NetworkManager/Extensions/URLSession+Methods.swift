@@ -27,7 +27,8 @@ extension URLSession: URLSessionManagable {
     }
 
     func download(_ url: URL, completionHandler: @escaping (URL?, URLResponse?, Error?) -> ()) {
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.allHTTPHeaderFields = ["Accept": "application/json"]
         downloadTask(with: request, completionHandler: completionHandler).resume()
     }
 
@@ -36,7 +37,7 @@ extension URLSession: URLSessionManagable {
               completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) {
         var request = URLRequest(url: url)
 
-        request.allHTTPHeaderFields = defaultHeaders
+        //request.allHTTPHeaderFields = defaultHeaders
         request.httpMethod = HTTPMethod.POST.rawValue
 
         do {
@@ -52,7 +53,7 @@ extension URLSession: URLSessionManagable {
     private var defaultHeaders: [String: String] {
         return [
             "Content-Type": "application/json",
-            "Accept": "*/*"
+            "Accept": "application/zip"
         ]
     }
 }

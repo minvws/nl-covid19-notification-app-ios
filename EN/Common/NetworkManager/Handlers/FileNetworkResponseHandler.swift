@@ -19,7 +19,7 @@ extension FileManager: FileManaging {}
 
 final class FileNetworkResponseHandler {
     
-    let localFile = "response.data"
+    let localFile = "response.bin"
     
     let fileManager:FileManager
     init(fileManager:FileManager = FileManager.default) {
@@ -45,6 +45,9 @@ final class FileNetworkResponseHandler {
             throw UnzipNetworkResponseError.error
         }
         
+        // clean up possible old files
+        try? fileManager.removeItem(at: zipUrl)
+        // move
         try fileManager.moveItem(at: url, to: zipUrl)
         return zipUrl
     }
