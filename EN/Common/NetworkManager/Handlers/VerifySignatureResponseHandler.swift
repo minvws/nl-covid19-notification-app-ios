@@ -43,7 +43,8 @@ final class VerifySignatureResponseHandler {
             return self.verifySignature()
         }
         
-        return false
+        // true is the files didnt match, no signature 
+        return true
     }
     
     private func verifySignature() -> Bool {

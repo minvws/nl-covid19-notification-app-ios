@@ -13,16 +13,23 @@ enum NetworkResponseError: Error {
     case serverError
 }
 
+
+enum ContentType: String {
+    case zip = "application/zip"
+    case json = "application/json"
+}
+
 final class NetworkResponseProvider : NetworkResponseProviderHandling {
    
+    
     // handlers
     let verifySignatureHandler:VerifySignatureResponseHandler
-    let unzipNetworkResponseHandler:UnzipNetworkResponseHandler
+    let fileNetworkResponseHandler:FileNetworkResponseHandler
     
     init(verifySignatureHandler:VerifySignatureResponseHandler = VerifySignatureResponseHandler(),
-         unzipNetworkResponseHandler:UnzipNetworkResponseHandler = UnzipNetworkResponseHandler()) {
+         fileNetworkResponseHandler:FileNetworkResponseHandler = FileNetworkResponseHandler()) {
         self.verifySignatureHandler = verifySignatureHandler
-        self.unzipNetworkResponseHandler = unzipNetworkResponseHandler
+        self.fileNetworkResponseHandler = fileNetworkResponseHandler
     }
     
     func handleReturnData(url: URL?, response: URLResponse?, error: Error?) throws -> Data  {
@@ -44,25 +51,30 @@ final class NetworkResponseProvider : NetworkResponseProviderHandling {
             throw error
         }
         
-        if let httpResponse = response as? HTTPURLResponse {
-            
-            switch httpResponse.statusCode {
-            case 400...499:
-                throw NetworkResponseError.badRequest
-            case 500...599:
-                throw NetworkResponseError.serverError
-            default:
-                // continue
-                break;
-            }
-        }
-        
-        guard let url = url else {
+        // http response should always be available, local url aswell and content type needs to be set
+        guard
+            let httpResponse = response as? HTTPURLResponse,
+            let url = url,
+            let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type")
+        else {
             throw NetworkResponseError.error
         }
         
-        // extract files
-        let urls = try self.unzipNetworkResponseHandler.handle(url: url)
+        switch httpResponse.statusCode {
+        case 400...499:
+            throw NetworkResponseError.badRequest
+        case 500...599:
+            throw NetworkResponseError.serverError
+        default: break
+        }
+        
+        guard let type = ContentType.init(rawValue: contentType) else {
+            throw NetworkResponseError.error
+        }
+        
+        
+        // extract files if necessary
+        let urls = try self.fileNetworkResponseHandler.handle(url: url, type: type)
         if !self.verifySignatureHandler.handle(urls: urls) {
             throw NetworkResponseError.error
         }

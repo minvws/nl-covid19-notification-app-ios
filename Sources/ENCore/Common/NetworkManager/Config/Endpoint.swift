@@ -10,8 +10,7 @@ import Foundation
 enum Endpoint: String {
 
     // MARK: GET
-
-    case manifest = "manifest.json"
+    case manifest = "manifest"
     case exposureKeySet = "exposurekeyset"
     case resourceBundle = "resourcebundle"
     case riskCalculationParameters = "riskcalculationparameters"

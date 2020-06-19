@@ -28,22 +28,11 @@ final class NetworkManager: NetworkManaging {
     /// Fetches manifest from server with all available parameters
     /// - Parameter completion: return
     func getManifest(completion: @escaping (Result<Manifest, NetworkManagerError>) -> ()) {
-        session.get(self.configuration.manifestUrl) { data, response, error in
-            
-            
-            if let error = error {
-                completion(.failure(.other(error)))
-                return
-            }
-
+        session.get(self.configuration.manifestUrl) { url, response, error in
             do {
-                guard let data = data else {
-                    throw NetworkManagerError.emptyResponse
-                }
-
+                // get bin file and convert to object
+                let data = try self.networkResponseHandler.handleReturnData(url: url, response: response, error: error)
                 let manifest = try JSONDecoder().decode(Manifest.self, from: data)
-
-                // TODO: SAVE IN USER DEFAULTS!!!
                 completion(.success(manifest))
             } catch {
                 completion(.failure(.other(error)))
