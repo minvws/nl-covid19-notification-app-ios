@@ -28,23 +28,16 @@ protocol MoreInformationBuildable {
 }
 
 protocol MoreInformationDependency {
-    // TODO: Add any external dependency
     var theme: Theme { get }
 }
 
-private final class MoreInformationDependencyProvider: DependencyProvider<MoreInformationDependency> /* , ChildDependency */ {
-    var tableController: MoreInformationTableControlling {
-        return MoreInformationTableController()
-    }
-}
+private final class MoreInformationDependencyProvider: DependencyProvider<MoreInformationDependency> {}
 
 final class MoreInformationBuilder: Builder<MoreInformationDependency>, MoreInformationBuildable {
     func build(withListener listener: MoreInformationListener) -> MoreInformationViewControllable {
         let dependencyProvider = MoreInformationDependencyProvider(dependency: dependency)
 
-        let tableController = dependencyProvider.tableController
         return MoreInformationViewController(listener: listener,
-                                             theme: dependencyProvider.dependency.theme,
-                                             tableController: tableController)
+                                             theme: dependencyProvider.dependency.theme)
     }
 }

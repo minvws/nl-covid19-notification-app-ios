@@ -19,6 +19,10 @@ public protocol Themeable {
     var theme: Theme { get }
 }
 
+public protocol ReusableThemable: Themeable {
+    func configure(with theme: Theme)
+}
+
 final class ENTheme: Theme {
     let fonts: Fonts
     let colors: Colors
