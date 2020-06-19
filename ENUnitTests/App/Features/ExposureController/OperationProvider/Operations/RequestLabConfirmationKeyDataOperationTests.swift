@@ -10,23 +10,16 @@ import Combine
 import Foundation
 import XCTest
 
-final class RequestLabConfirmationKeyDataOperationTests: XCTestCase {
+final class RequestLabConfirmationKeyDataOperationTests: TestCase {
     private var operation: RequestLabConfirmationKeyDataOperation!
     private let networkController = NetworkControllingMock()
     private let storageController = StorageControllingMock()
-    private var disposeBag = Set<AnyCancellable>()
 
     override func setUp() {
         super.setUp()
 
         operation = RequestLabConfirmationKeyDataOperation(networkController: networkController,
                                                            storageController: storageController)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-
-        disposeBag.forEach { $0.cancel() }
     }
 
     func test_execute_noPreviousKey() {
@@ -57,7 +50,76 @@ final class RequestLabConfirmationKeyDataOperationTests: XCTestCase {
             .sink { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
             }
-            .store(in: &disposeBag)
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(storageController.retrieveDataCallCount, 1)
+        XCTAssertEqual(storageController.storeCallCount, 1)
+        XCTAssertEqual(networkController.requestLabConfirmationKeyCallCount, 1)
+        XCTAssertNotNil(receivedLabConfirmationKey)
+    }
+
+    func test_execute_validPreviousKey_noStoreAndNetworkCalls() {
+        storageController.retrieveDataHandler = { _ in
+            let key = LabConfirmationKey(identifier: "id",
+                                         bucketIdentifier: Data(),
+                                         confirmationKey: Data(),
+                                         validUntil: Date(timeIntervalSinceNow: 20))
+
+            return try! JSONEncoder().encode(key)
+        }
+
+        XCTAssertEqual(storageController.retrieveDataCallCount, 0)
+        XCTAssertEqual(storageController.storeCallCount, 0)
+        XCTAssertEqual(networkController.requestLabConfirmationKeyCallCount, 0)
+
+        var receivedLabConfirmationKey: LabConfirmationKey!
+        operation
+            .execute()
+            .sink { labConfirmationKey in
+                receivedLabConfirmationKey = labConfirmationKey
+            }
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(storageController.retrieveDataCallCount, 1)
+        XCTAssertEqual(storageController.storeCallCount, 0)
+        XCTAssertEqual(networkController.requestLabConfirmationKeyCallCount, 0)
+        XCTAssertNotNil(receivedLabConfirmationKey)
+    }
+
+    func test_execute_previousButExpiredKey_downloadsAndStoresNewKey() {
+        storageController.retrieveDataHandler = { _ in
+            let key = LabConfirmationKey(identifier: "id",
+                                         bucketIdentifier: Data(),
+                                         confirmationKey: Data(),
+                                         validUntil: Date(timeIntervalSinceNow: -1))
+
+            return try! JSONEncoder().encode(key)
+        }
+        storageController.storeHandler = { _, _, completion in
+            completion(nil)
+        }
+
+        networkController.requestLabConfirmationKeyHandler = {
+            let labConfirmationKey = LabConfirmationKey(identifier: "id",
+                                                        bucketIdentifier: Data(),
+                                                        confirmationKey: Data(),
+                                                        validUntil: Date())
+            return Just(labConfirmationKey)
+                .setFailureType(to: NetworkError.self)
+                .eraseToAnyPublisher()
+        }
+
+        XCTAssertEqual(storageController.retrieveDataCallCount, 0)
+        XCTAssertEqual(storageController.storeCallCount, 0)
+        XCTAssertEqual(networkController.requestLabConfirmationKeyCallCount, 0)
+
+        var receivedLabConfirmationKey: LabConfirmationKey!
+        operation
+            .execute()
+            .sink { labConfirmationKey in
+                receivedLabConfirmationKey = labConfirmationKey
+            }
+            .disposeOnTearDown(of: self)
 
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
         XCTAssertEqual(storageController.storeCallCount, 1)

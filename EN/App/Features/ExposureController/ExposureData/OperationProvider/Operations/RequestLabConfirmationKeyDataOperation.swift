@@ -16,7 +16,7 @@ struct LabConfirmationKey: Codable {
 }
 
 extension LabConfirmationKey {
-    var isValid: Bool { validUntil < Date() }
+    var isValid: Bool { validUntil >= Date() }
 }
 
 final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
@@ -34,7 +34,7 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
     func execute() -> AnyPublisher<LabConfirmationKey, Never> {
         return retrieveStoredKey()
             .flatMap { confirmationKey -> AnyPublisher<LabConfirmationKey, Never> in
-                if let confirmationKey = confirmationKey {
+                if let confirmationKey = confirmationKey, confirmationKey.isValid {
                     return Just(confirmationKey).eraseToAnyPublisher()
                 }
 

@@ -14,6 +14,7 @@ protocol ExposureDataOperation {
     func execute() -> AnyPublisher<Result, Error>
 }
 
+/// @mockable
 protocol ExposureDataOperationProvider {
     var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation { get }
 }
