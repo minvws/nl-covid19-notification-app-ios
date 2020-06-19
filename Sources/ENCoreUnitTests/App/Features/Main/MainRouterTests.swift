@@ -16,6 +16,7 @@ final class MainRouterTests: XCTestCase {
     private let aboutBuilder = AboutBuildableMock()
     private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
     private let requestTestBuilder = RequestTestBuildableMock()
+    private let infectedBuilder = InfectedBuildableMock()
 
     private var router: MainRouter!
 
@@ -27,7 +28,8 @@ final class MainRouterTests: XCTestCase {
                             moreInformationBuilder: moreInformationBuilder,
                             aboutBuilder: aboutBuilder,
                             receivedNotificationBuilder: receivedNotificationBuilder,
-                            requestTestBuilder: requestTestBuilder)
+                            requestTestBuilder: requestTestBuilder,
+                            infectedBuilder: infectedBuilder)
     }
 
     func test_init_setsRouterOnViewController() {

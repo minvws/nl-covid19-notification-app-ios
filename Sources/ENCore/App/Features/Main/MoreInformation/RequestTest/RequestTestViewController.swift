@@ -46,6 +46,12 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
         }
     }
 
+    // MARK: - UIAdaptivePresentationControllerDelegate
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        listener?.requestTestWantsDismissal(shouldDismissViewController: false)
+    }
+
     // MARK: - Private
 
     private weak var listener: RequestTestListener?
@@ -53,10 +59,6 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.requestTestWantsDismissal(shouldDismissViewController: true)
-    }
-
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        listener?.requestTestWantsDismissal(shouldDismissViewController: false)
     }
 }
 

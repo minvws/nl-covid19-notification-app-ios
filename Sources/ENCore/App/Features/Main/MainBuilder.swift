@@ -15,7 +15,7 @@ protocol MainDependency {
     var exposureStateStream: ExposureStateStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ReceivedNotificationDependency, RequestTestDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -44,6 +44,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var requestTestBuilder: RequestTestBuildable {
         return RequestTestBuilder(dependency: self)
     }
+
+    var infectedBuilder: InfectedBuildable {
+        return InfectedBuilder(dependency: self)
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -56,6 +60,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           moreInformationBuilder: dependencyProvider.moreInformationBuilder,
                           aboutBuilder: dependencyProvider.aboutBuilder,
                           receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder,
-                          requestTestBuilder: dependencyProvider.requestTestBuilder)
+                          requestTestBuilder: dependencyProvider.requestTestBuilder,
+                          infectedBuilder: dependencyProvider.infectedBuilder)
     }
 }

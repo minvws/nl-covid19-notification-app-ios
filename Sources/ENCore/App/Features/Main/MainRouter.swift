@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener {
     var router: MainRouting? { get set }
 
     func embed(stackedViewController: ViewControllable)
@@ -24,12 +24,14 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          moreInformationBuilder: MoreInformationBuildable,
          aboutBuilder: AboutBuildable,
          receivedNotificationBuilder: ReceivedNotificationBuildable,
-         requestTestBuilder: RequestTestBuildable) {
+         requestTestBuilder: RequestTestBuildable,
+         infectedBuilder: InfectedBuildable) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
         self.receivedNotificationBuilder = receivedNotificationBuilder
         self.requestTestBuilder = requestTestBuilder
+        self.infectedBuilder = infectedBuilder
 
         super.init(viewController: viewController)
 
@@ -97,7 +99,25 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     }
 
     func routeToInfected() {
-        print("Route to Infected")
+        guard infectedRouter == nil else {
+            return
+        }
+
+        let infectedRouter = infectedBuilder.build(withListener: viewController)
+        self.infectedRouter = infectedRouter
+
+        viewController.present(viewController: infectedRouter.viewControllable, animated: true)
+    }
+
+    func detachInfected(shouldDismissViewController: Bool) {
+        guard let infectedRouter = infectedRouter else {
+            return
+        }
+        self.infectedRouter = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: infectedRouter.viewControllable, animated: true)
+        }
     }
 
     func routeToRequestTest() {
@@ -138,4 +158,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let requestTestBuilder: RequestTestBuildable
     private var requestTestViewController: ViewControllable?
+
+    private let infectedBuilder: InfectedBuildable
+    private var infectedRouter: Routing?
 }

@@ -31,11 +31,17 @@ class Button: UIButton, Themeable {
         }
     }
 
+    override var isEnabled: Bool {
+        didSet {
+            updateButtonType()
+        }
+    }
+
     let theme: Theme
-
     var action: (() -> ())?
-
     var useHapticFeedback = true
+
+    // MARK: - Init
 
     required init(title: String = "", theme: Theme) {
         self.theme = theme
@@ -50,9 +56,7 @@ class Button: UIButton, Themeable {
         self.addTarget(self, action: #selector(self.touchUpAnimation), for: .touchDragExit)
         self.addTarget(self, action: #selector(self.touchUpAnimation), for: .touchCancel)
         self.addTarget(self, action: #selector(self.touchUpAnimation), for: .touchUpInside)
-
         self.addTarget(self, action: #selector(self.touchDownAnimation), for: .touchDown)
-
         self.addTarget(self, action: #selector(self.touchUpAction), for: .touchUpInside)
 
         updateButtonType()
@@ -62,16 +66,25 @@ class Button: UIButton, Themeable {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Overrides
+
     override func layoutSubviews() {
         super.layoutSubviews()
         updateRoundedCorners()
     }
 
-    fileprivate func updateButtonType() {
+    // MARK: - Private
+
+    private func updateButtonType() {
         switch style {
         case .primary:
-            self.backgroundColor = theme.colors.primary
-            self.setTitleColor(.white, for: .normal)
+            if isEnabled {
+                backgroundColor = theme.colors.primary
+                setTitleColor(.white, for: .normal)
+            } else {
+                backgroundColor = theme.colors.tertiary
+                setTitleColor(.gray, for: .normal)
+            }
         case .secondary:
             self.backgroundColor = theme.colors.secondary
             self.setTitleColor(.white, for: .normal)
@@ -83,13 +96,13 @@ class Button: UIButton, Themeable {
         self.tintColor = .white
     }
 
-    fileprivate func updateRoundedCorners() {
+    private func updateRoundedCorners() {
         if rounded {
             layer.cornerRadius = min(bounds.width, bounds.height) / 2
         }
     }
 
-    @objc func touchDownAnimation() {
+    @objc private func touchDownAnimation() {
 
         if useHapticFeedback { Haptic.light() }
 
@@ -98,13 +111,13 @@ class Button: UIButton, Themeable {
         })
     }
 
-    @objc func touchUpAnimation() {
+    @objc private func touchUpAnimation() {
         UIButton.animate(withDuration: 0.2, animations: {
             self.transform = CGAffineTransform.identity
         })
     }
 
-    @objc func touchUpAction() {
+    @objc private func touchUpAction() {
         action?()
     }
 }

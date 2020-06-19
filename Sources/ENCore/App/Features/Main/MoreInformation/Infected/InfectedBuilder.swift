@@ -9,8 +9,7 @@ import Foundation
 
 /// @mockable
 protocol InfectedListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
+    func infectedWantsDismissal(shouldDismissViewController: Bool)
 }
 
 /// @mockable

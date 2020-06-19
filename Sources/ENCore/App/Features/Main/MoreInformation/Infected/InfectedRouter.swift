@@ -33,52 +33,20 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
 
     // MARK: - Initialisation
 
-    init(listener: InfectedListener,
-         viewController: InfectedViewControllable /* ,
-          childBuilder: ChildBuildable */ ) {
+    init(listener: InfectedListener, viewController: InfectedViewControllable) {
         self.listener = listener
-        // self.childBuilder = childBuilder
-
         super.init(viewController: viewController)
 
         viewController.router = self
     }
 
-    // TODO: Add any child routing functions here.
-    //       See RootRouter as an example
-    //
-    //    func routeToChild() {
-    //        guard childViewController == nil else {
-    //            // already presented
-    //            return
-    //        }
-    //
-    //        let childViewController = self.childBuilder.build()
-    //        self.childViewController = childViewController
-    //
-    //        self.viewController.present(viewController: childViewController,
-    //                                    animated: true,
-    //                                    completion: nil)
-    //    }
-    //
-    //    func detachChild() {
-    //        guard let childViewController = childViewController else {
-    //            return
-    //        }
-    //
-    //        self.childViewController = nil
-    //
-    //        viewController.dismiss(viewController: childViewController,
-    //                               animated: animated,
-    //                               completion: completion)
-    //    }
+    // MARK: - InfectedRouting
+
+    func infectedWantsDismissal(shouldDismissViewController: Bool) {
+        listener?.infectedWantsDismissal(shouldDismissViewController: shouldDismissViewController)
+    }
 
     // MARK: - Private
 
-    // TODO: Add any private functions and instance variables here
-
     private weak var listener: InfectedListener?
-
-    // private let childBuilder: ChildBuildable
-    // private var childViewController: ViewControllable?
 }

@@ -17,6 +17,9 @@ struct InfoViewConfig {
 final class InfoView: View {
 
     var actionHandler: (() -> ())?
+    var isActionButtonEnabled: Bool = true {
+        didSet { actionButton.isEnabled = isActionButtonEnabled }
+    }
 
     private let scrollView: UIScrollView
     private let contentView: UIView
@@ -193,5 +196,227 @@ final class InfoSectionCalloutView: View {
             maker.leading.equalTo(iconImageView.snp.trailing).offset(18)
             maker.trailing.bottom.equalToSuperview().inset(16)
         }
+    }
+}
+
+final class InfoSectionDynamicCalloutView: View {
+
+    enum State {
+        case loading(String)
+        case success(String)
+        case error(String, () -> ())
+    }
+
+    private let titleLabel: Label
+    private let contentView: View
+
+    // MARK: - Init
+
+    init(theme: Theme, title: String) {
+        self.titleLabel = Label(frame: .zero)
+        self.contentView = View(theme: theme)
+        super.init(theme: theme)
+
+        titleLabel.text = title
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        contentView.layer.cornerRadius = 8
+        contentView.backgroundColor = theme.colors.tertiary
+
+        titleLabel.numberOfLines = 0
+        titleLabel.font = theme.fonts.title2
+
+        addSubview(titleLabel)
+        addSubview(contentView)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        titleLabel.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.leading.trailing.equalToSuperview().inset(16)
+        }
+        contentView.snp.makeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
+            maker.leading.trailing.equalTo(titleLabel)
+            maker.bottom.equalToSuperview()
+        }
+    }
+
+    // MARK: - Internal
+
+    func set(state: State) {
+        func add(_ view: View) {
+            view.clipsToBounds = true
+            view.backgroundColor = .clear
+
+            contentView.subviews.filter {
+                $0 is InfoSectionDynamicLoadingView || $0 is InfoSectionDynamicSuccessView || $0 is InfoSectionDynamicErrorView
+            }.forEach {
+                $0.removeFromSuperview()
+            }
+            contentView.addSubview(view)
+
+            view.snp.makeConstraints { maker in
+                maker.edges.equalToSuperview()
+            }
+        }
+
+        switch state {
+        case let .loading(title):
+            let view = InfoSectionDynamicLoadingView(theme: theme, title: title)
+            add(view)
+        case let .success(code):
+            let view = InfoSectionDynamicSuccessView(theme: theme, title: code)
+            add(view)
+        case let .error(error, actionHandler):
+            let view = InfoSectionDynamicErrorView(theme: theme, title: error, actionHandler: actionHandler)
+            add(view)
+        }
+    }
+}
+
+private final class InfoSectionDynamicLoadingView: View {
+
+    private let activityIndicator: UIActivityIndicatorView
+    private let loadingLabel: Label
+
+    // MARK: - Init
+
+    init(theme: Theme, title: String) {
+        self.activityIndicator = UIActivityIndicatorView(style: .large)
+        self.loadingLabel = Label()
+        super.init(theme: theme)
+
+        loadingLabel.text = title
+    }
+
+    // MARK: - Overrides
+
+    override func removeFromSuperview() {
+        activityIndicator.startAnimating()
+        super.removeFromSuperview()
+    }
+
+    override func build() {
+        super.build()
+
+        backgroundColor = .clear
+
+        activityIndicator.startAnimating()
+        loadingLabel.font = theme.fonts.subhead
+        loadingLabel.textAlignment = .center
+
+        addSubview(activityIndicator)
+        addSubview(loadingLabel)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        activityIndicator.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.height.width.equalTo(40)
+            maker.centerX.equalToSuperview()
+            maker.top.equalToSuperview().offset(24)
+        }
+        loadingLabel.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.top.equalTo(activityIndicator.snp.bottom).offset(12)
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.bottom.equalToSuperview().inset(12)
+        }
+    }
+}
+
+private final class InfoSectionDynamicSuccessView: View {
+
+    private let titleLabel: Label
+
+    // MARK: - Init
+
+    init(theme: Theme, title: String) {
+        self.titleLabel = Label()
+        super.init(theme: theme)
+
+        titleLabel.text = title
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        titleLabel.textAlignment = .center
+        titleLabel.font = theme.fonts.largeTitle
+
+        addSubview(titleLabel)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        titleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.top.bottom.equalToSuperview().inset(27)
+            maker.leading.trailing.equalToSuperview().inset(16)
+        }
+    }
+}
+
+private final class InfoSectionDynamicErrorView: View {
+
+    private var actionHandler: () -> ()
+
+    private let titleLabel: Label
+    private let actionButton: Button
+
+    // MARK: - Init
+
+    init(theme: Theme, title: String, actionHandler: @escaping () -> ()) {
+        self.titleLabel = Label()
+        self.actionButton = Button(theme: theme)
+        self.actionHandler = actionHandler
+        super.init(theme: theme)
+
+        titleLabel.text = title
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        titleLabel.font = theme.fonts.subhead
+
+        actionButton.style = .tertiary
+        actionButton.setTitle("Probeer opnieuw", for: .normal)
+        actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
+
+        addSubview(titleLabel)
+        addSubview(actionButton)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        titleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.top.leading.trailing.equalToSuperview().inset(16)
+        }
+        actionButton.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
+            maker.leading.trailing.bottom.equalToSuperview().inset(16)
+        }
+    }
+
+    // MARK: - Private
+
+    @objc private func didTapActionButton(sender: Button) {
+        actionHandler()
     }
 }
