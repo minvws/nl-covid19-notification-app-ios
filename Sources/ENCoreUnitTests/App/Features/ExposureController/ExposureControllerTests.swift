@@ -204,8 +204,66 @@ final class ExposureControllerTests: XCTestCase {
         XCTAssertEqual(error, ExposureDataError.serverError)
     }
 
-    func test_requestUploadKeys_callsCompletion() {
-        // TODO:
+    func test_requestUploadKeys_exposureManagerReturnsKeys_callsCompletionWithKeys() {
+        exposureManager.getDiagnonisKeysHandler = { completion in
+            let keys = [
+                DiagnosisKey(keyData: Data(),
+                             rollingPeriod: 0,
+                             rollingStartNumber: 0,
+                             transmissionRiskLevel: 0)
+            ]
+
+            completion(.success(keys))
+        }
+
+        dataController.storeAndUploadHandler = { _ in }
+
+        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
+        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+
+        var receivedResult: ExposureControllerUploadKeysResult!
+        controller.requestUploadKeys { result in
+            receivedResult = result
+        }
+
+        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
+        XCTAssertEqual(dataController.storeAndUploadCallCount, 1)
+        XCTAssertNotNil(receivedResult)
+        XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.success)
+    }
+
+    func test_requestUploadKeys_failsWithNotAuthorizedError_callsCompletionWithNotAuthorized() {
+        exposureManager.getDiagnonisKeysHandler = { completion in completion(.failure(.notAuthorized)) }
+
+        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
+        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+
+        var receivedResult: ExposureControllerUploadKeysResult!
+        controller.requestUploadKeys { result in
+            receivedResult = result
+        }
+
+        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
+        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+        XCTAssertNotNil(receivedResult)
+        XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.notAuthorized)
+    }
+
+    func test_requestUploadKeys_failsWithOtherError_callsCompletionWithNotActive() {
+        exposureManager.getDiagnonisKeysHandler = { completion in completion(.failure(.unknown)) }
+
+        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
+        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+
+        var receivedResult: ExposureControllerUploadKeysResult!
+        controller.requestUploadKeys { result in
+            receivedResult = result
+        }
+
+        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
+        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+        XCTAssertNotNil(receivedResult)
+        XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.inactive)
     }
 
     // MARK: - Private
