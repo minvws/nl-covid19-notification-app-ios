@@ -17,10 +17,9 @@ struct Endpoint {
     // MARK: - CDN
 
     static let manifest = Path(firstParameter: "cdn", lastParameter: "manifest")
-    static let exposureKeySet = Path(firstParameter: "cdn", lastParameter: "manifest")
-    static let resourceBundle = Path(firstParameter: "cdn", lastParameter: "manifest")
-    static let riskCalculationParameters = Path(firstParameter: "cdn", lastParameter: "manifest")
-    static let appConfig = Path(firstParameter: "cdn", lastParameter: "manifest")
+    static let exposureKeySet = Path(firstParameter: "cdn", lastParameter: "exposurekeyset")
+    static let riskCalculationParameters = Path(firstParameter: "cdn", lastParameter: "riskcalculationparameters")
+    static let appConfig = Path(firstParameter: "cdn", lastParameter: "appconfig")
 
     // MARK: - API
 
