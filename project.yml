@@ -22,6 +22,7 @@ targets:
         CODE_SIGN_STYLE: Manual
         DEVELOPMENT_TEAM: C2H38GV99H
         SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
+        OTHER_LDFLAGS: -weak_framework ENCore
       configs:
         Debug:
           CODE_SIGN_IDENTITY: "Apple Development"
@@ -63,6 +64,7 @@ targets:
                 
     dependencies:
       - target: ENCore
+        optional: true
 
     scheme:
       gatherCoverageData: true
@@ -82,9 +84,12 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.core
         TARGETED_DEVICE_FAMILY: 1
         SWIFT_VERSION: 5.2
+        OTHER_LDFLAGS: -weak_framework ExposureNotification
     dependencies:
       - carthage: ZIPFoundation
       - carthage: SnapKit
+      - sdk: ExposureNotification.framework
+        optional: true
 
   ENCoreTests:
     platform: iOS

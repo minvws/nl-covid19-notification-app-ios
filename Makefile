@@ -5,7 +5,7 @@ XCODE_TEMPLATE_PATH_SRC="tools/Xcode Templates/Component.xctemplate"
 XCODE_TEMPLATE_PATH_DST="${HOME}/Library/Developer/Xcode/Templates/File Templates/COVID-NL"
 
 # Creates xcodeproj
-project: 
+project: run_carthage_update
 	xcodegen
 	open EN.xcodeproj
 
@@ -49,7 +49,7 @@ ifeq (, $(shell which swiftformat))
 	@echo "Installing swiftformat"
 	@brew install swiftformat
 endif
-	eval $(shell sh tools/scripts/pre-commit.sh)
+	@eval $(shell sh tools/scripts/pre-commit.sh)
 
 install_carthage:
 # install carthage, used for swift package management
@@ -59,4 +59,7 @@ ifeq (, $(shell which carthage))
 endif 
 
 run_carthage:
-	@carthage bootstrap --platform ios
+	@carthage bootstrap --platform iOS
+
+run_carthage_update:
+	@carthage validate

@@ -17,15 +17,15 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        if ENCoreBridge.isAppRootAvailable() {
-            bridge = ENCoreBridge()
-        } else {
-            // Handle OS Update Case
-        }
-
         let window = UIWindow(windowScene: windowScene)
 
-        bridge?.attach(to: window)
+        if ENCoreBridge.isAppRootAvailable() {
+            bridge = ENCoreBridge()
+            bridge?.attach(to: window)
+        } else {
+            // Handle OS Update Case
+            window.rootViewController = RequiresUpdateViewController()
+        }
         window.makeKeyAndVisible()
 
         self.window = window

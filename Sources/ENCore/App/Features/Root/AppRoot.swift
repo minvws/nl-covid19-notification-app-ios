@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@available(iOS 13.5,*)
 @objc public final class ENAppRoot: NSObject {
     private let rootBuilder = RootBuilder()
     private var appEntryPoint: AppEntryPoint?

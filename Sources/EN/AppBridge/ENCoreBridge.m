@@ -18,7 +18,11 @@
 
 @implementation ENCoreBridge
 + (BOOL)isAppRootAvailable {
-    return [ENAppRoot class] != nil;
+    if (@available(iOS 13.5, *)) {
+        return [ENAppRoot class] != nil;
+    } else {
+        return NO;
+    }
 }
 
 - (instancetype)init {
