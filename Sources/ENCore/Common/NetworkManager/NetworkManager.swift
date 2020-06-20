@@ -10,6 +10,7 @@ import ZIPFoundation
 
 enum NetworkManagerError: Error {
     case emptyResponse
+    case invalidUrlArgument
     case other(Error) // TODO: Map correctly
 }
 
@@ -19,7 +20,7 @@ final class NetworkManager: NetworkManaging {
         self.configuration = configuration
         self.session = urlSession
         self.networkResponseHandler = networkResponseHandler
-        
+
         // initialize json decoder with custom decoding strategy
         self.jsonDecoder = JSONDecoder()
         self.jsonDecoder.keyDecodingStrategy = .convertFromUpperCamelCase
@@ -92,10 +93,22 @@ final class NetworkManager: NetworkManaging {
 
     /// Upload diagnosis keys (TEKs) to the server
     /// - Parameters:
-    ///   - diagnosisKeys: Contains all diagnosisKeys available
+    ///   - request: PostKeysRequest
+    ///   - signature: Signature to add a queryString parameter
     ///   - completion: completion nil if succes else error
-    func postKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (NetworkManagerError?) -> ()) {
-        session.post(self.configuration.postKeysUrl, object: diagnosisKeys) { data, response, error in
+    func postKeys(request: PostKeysRequest, signature: String, completion: @escaping (NetworkManagerError?) -> ()) {
+        let baseUrl = configuration.postKeysUrl
+
+        var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)
+        urlComponents?.queryItems = [URLQueryItem(name: "sig", value: signature.url)]
+
+        guard let url = urlComponents?.url else {
+            completion(.invalidUrlArgument)
+            return
+        }
+
+        session.post(url, object: request) { data, response, error in
+            // TODO: Handle error codes
             completion(error.map { NetworkManagerError.other($0) })
         }
     }

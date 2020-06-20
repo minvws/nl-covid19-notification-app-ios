@@ -18,6 +18,12 @@ final class ExposureDataController: ExposureDataControlling {
         self.operationProvider = operationProvider
     }
 
+    // MARK: - Operations
+
+    func scheduleOperations() {
+        // TODO: Implement
+    }
+
     // MARK: - ExposureDataControlling
 
     func fetchAndProcessExposureKeySets() -> Future<(), Never> {
@@ -34,8 +40,11 @@ final class ExposureDataController: ExposureDataControlling {
         return operation.execute()
     }
 
-    func storeAndUpload(diagnosisKeys: [DiagnosisKey]) {
-        // TODO: Store and upload keys
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
+        let operation = operationProvider.uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys,
+                                                                       labConfirmationKey: labConfirmationKey)
+
+        return operation.execute()
     }
 
     // MARK: - Private

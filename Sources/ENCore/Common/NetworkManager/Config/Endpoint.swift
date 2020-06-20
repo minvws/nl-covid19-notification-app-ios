@@ -8,22 +8,25 @@
 import Foundation
 
 struct Path {
-    let firstParameter: String
-    let lastParameter: String
+    let components: [String]
+
+    init(components: String...) {
+        self.components = Array(components)
+    }
 }
 
 struct Endpoint {
 
     // MARK: - CDN
 
-    static let manifest = Path(firstParameter: "cdn", lastParameter: "manifest")
-    static let exposureKeySet = Path(firstParameter: "cdn", lastParameter: "exposurekeyset")
-    static let riskCalculationParameters = Path(firstParameter: "cdn", lastParameter: "riskcalculationparameters")
-    static let appConfig = Path(firstParameter: "cdn", lastParameter: "appconfig")
+    static let manifest = Path(components: "cdn", "manifest")
+    static let exposureKeySet = Path(components: "cdn", "exposurekeyset")
+    static let riskCalculationParameters = Path(components: "cdn", "riskcalculationparameters")
+    static let appConfig = Path(components: "cdn", "appconfig")
 
     // MARK: - API
 
-    static let register = Path(firstParameter: "MobileAppApi", lastParameter: "register")
-    static let postKeys = Path(firstParameter: "MobileAppApi", lastParameter: "postkeys")
-    static let stopKeys = Path(firstParameter: "MobileAppApi", lastParameter: "stopkeys")
+    static let register = Path(components: "register")
+    static let postKeys = Path(components: "postkeys")
+    static let stopKeys = Path(components: "stopkeys")
 }

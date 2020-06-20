@@ -10,8 +10,7 @@ import Foundation
 extension LabInformation {
     var asLabConfirmationKey: LabConfirmationKey? {
         guard
-            let bucketIdentifier = Data(base64Encoded: bucketId),
-            let confirmationKey = Data(base64Encoded: confirmationKey) else {
+            let bucketIdentifier = Data(base64Encoded: bucketId) else {
             return nil
         }
 
@@ -19,5 +18,13 @@ extension LabInformation {
                                   bucketIdentifier: bucketIdentifier,
                                   confirmationKey: confirmationKey,
                                   validUntil: Date(timeIntervalSinceNow: TimeInterval(validity)))
+    }
+}
+
+extension DiagnosisKey {
+    var asTemporaryKey: TemporaryKey {
+        return TemporaryKey(keyData: keyData.base64EncodedString(),
+                            rollingStartNumber: Int(rollingStartNumber),
+                            rollingPeriod: Int(rollingPeriod))
     }
 }

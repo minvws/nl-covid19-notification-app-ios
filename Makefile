@@ -18,7 +18,7 @@ install_xcode_templates:
 	@cp -rf ${XCODE_TEMPLATE_PATH_SRC} ${XCODE_TEMPLATE_PATH_DST}
 
 ignore_mocks_changes:
-	git update-index --skip-worktree ENUnitTests/Mocks.swift 
+	git update-index --skip-worktree Sources/ENCoreUnitTests/Mocks.swift 
 
 install_dev_deps: check_homebrew_installed install_xcodegen install_mockolo install_swiftformat install_carthage run_carthage
 	@echo "All dependencies are installed"

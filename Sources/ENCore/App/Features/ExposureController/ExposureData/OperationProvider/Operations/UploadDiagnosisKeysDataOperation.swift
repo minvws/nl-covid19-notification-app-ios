@@ -6,10 +6,3 @@
  */
 
 import Foundation
-
-struct DiagnosisKey: Codable {
-    let keyData: Data
-    let rollingPeriod: UInt32
-    let rollingStartNumber: UInt32
-    let transmissionRiskLevel: UInt8
-}

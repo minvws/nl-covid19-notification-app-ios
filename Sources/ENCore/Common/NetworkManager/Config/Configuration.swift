@@ -14,13 +14,13 @@ struct NetworkConfiguration {
     let contentType: ContentType
 
     static let development = NetworkConfiguration(
-        url: "http://localhost:5004",
+        url: "http://10.0.0.133:5004",
         version: "v1",
         contentType: .json
     )
 
     static let production = NetworkConfiguration(
-        url: "https://www.rijksoverheid.nl/prod/",
+        url: "https://api-ota.alleensamenmelden.nl/mss-acc",
         version: "v1",
         contentType: .zip
     )
@@ -54,7 +54,7 @@ struct NetworkConfiguration {
     }
 
     private func combine(path: Path, params: [String] = []) -> URL {
-        let urlParts = [url, path.firstParameter, version, path.lastParameter] + params
+        let urlParts = [url, version] + path.components + params
         let endpoint: URL? = URL(string: urlParts.joined(separator: "/"))
         guard let url = endpoint else {
             fatalError("incorrect url")

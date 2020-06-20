@@ -82,7 +82,6 @@ final class ExposureManager: ExposureManaging {
         #endif
 
         retrieve { keys, error in
-
             if let error = error.map(ExposureManager.mapError) {
                 completion(.failure(error))
                 return

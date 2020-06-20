@@ -11,7 +11,7 @@ import Foundation
 struct LabConfirmationKey: Codable {
     let identifier: String
     let bucketIdentifier: Data
-    let confirmationKey: Data
+    let confirmationKey: String
     let validUntil: Date
 }
 
@@ -77,15 +77,4 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
-}
-
-private extension NetworkError {
-    var asExposureDataError: ExposureDataError {
-        switch self {
-        case .invalidResponse:
-            return .serverError
-        case .serverNotReachable:
-            return .networkUnreachable
-        }
-    }
 }

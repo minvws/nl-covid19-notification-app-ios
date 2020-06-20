@@ -11,6 +11,7 @@ import Foundation
 enum NetworkError: Error {
     case serverNotReachable
     case invalidResponse
+    case encodingError
 }
 
 /// @mockable
@@ -20,6 +21,7 @@ protocol NetworkControlling {
     var resourceBundle: Future<ResourceBundle, NetworkError> { get }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError>
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError>
 }
 
 /// @mockable
@@ -30,23 +32,24 @@ protocol NetworkControllerBuildable {
     func build() -> NetworkControlling
 }
 
-protocol NetworkControllerDependency {
-    var storageController: StorageControlling { get }
-}
+protocol NetworkControllerDependency {}
 
 private final class NetworkControllerDependencyProvider: DependencyProvider<NetworkControllerDependency> {
     lazy var networkManager: NetworkManaging = {
         return NetworkManagerBuilder().build()
     }()
+
+    var cryptoUtility: CryptoUtility {
+        return CryptoUtilityBuilder().build()
+    }
 }
 
 final class NetworkControllerBuilder: Builder<NetworkControllerDependency>, NetworkControllerBuildable {
 
     func build() -> NetworkControlling {
-
         let dependencyProvider = NetworkControllerDependencyProvider(dependency: dependency)
-        return NetworkController(
-            networkManager: dependencyProvider.networkManager,
-            storageController: dependencyProvider.dependency.storageController)
+
+        return NetworkController(networkManager: dependencyProvider.networkManager,
+                                 cryptoUtility: dependencyProvider.cryptoUtility)
     }
 }

@@ -11,10 +11,15 @@ import Foundation
 enum ExposureDataError: Error {
     case networkUnreachable
     case serverError
+    case internalError
 }
 
 /// @mockable
 protocol ExposureDataControlling {
+    // MARK: - Operations
+
+    func scheduleOperations()
+
     // MARK: - Tasks
 
     func fetchAndProcessExposureKeySets() -> Future<(), Never>
@@ -22,7 +27,7 @@ protocol ExposureDataControlling {
     // MARK: - Lab Flow
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
-    func storeAndUpload(diagnosisKeys: [DiagnosisKey])
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
 }
 
 protocol ExposureDataControllerBuildable {

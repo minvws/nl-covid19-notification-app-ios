@@ -15,17 +15,12 @@ private final class CryptoUtilityDependencyProvider: DependencyProvider<EmptyDep
     var validationKey: Key {
         Key.random
     }
-
-    var signingKey: Key {
-        Key.random
-    }
 }
 
 final class CryptoUtilityBuilder: CryptoUtilityBuildable {
     func build() -> CryptoUtility {
         let dependencyProvider = CryptoUtilityDependencyProvider()
 
-        return CryptoUtilityImpl(signingKey: dependencyProvider.signingKey,
-                                 validationKey: dependencyProvider.validationKey)
+        return CryptoUtilityImpl(validationKey: dependencyProvider.validationKey)
     }
 }

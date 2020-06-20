@@ -20,11 +20,9 @@ protocol NetworkManaging {
     // MARK: Enrollment
 
     func postRegister(register: RegisterRequest, completion: @escaping (Result<LabInformation, NetworkManagerError>) -> ())
-    func postKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (NetworkManagerError?) -> ())
+    func postKeys(request: PostKeysRequest, signature: String, completion: @escaping (NetworkManagerError?) -> ())
     func postStopKeys(diagnosisKeys: DiagnosisKeys, completion: @escaping (NetworkManagerError?) -> ())
 }
-
-
 
 /// @mockable
 protocol NetworkManagerBuildable {
@@ -37,17 +35,16 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<EmptyDe
     }()
 }
 
-
 final class NetworkManagerBuilder: Builder<EmptyDependency>, NetworkManagerBuildable {
     func build() -> NetworkManaging {
-        
+
         let dependencyProvider = NetworkManagerDependencyProvider(dependency: dependency)
         #if DEBUG
             let configuration: NetworkConfiguration = .development
         #else
             let configuration: NetworkConfiguration = .production
         #endif
-        
+
         return NetworkManager(configuration: configuration, networkResponseHandler: dependencyProvider.networkResponseProvider)
     }
 }

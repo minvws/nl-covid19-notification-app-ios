@@ -7,42 +7,8 @@
 
 import Foundation
 
-protocol StoreKey {
-    var asString: String { get }
-    var storeType: StoreType { get }
-}
-
-struct AnyStoreKey: StoreKey {
-    var asString: String { name }
-    let storeType: StoreType
-
-    init(name: String, storeType: StoreType) {
-        self.name = name
-        self.storeType = storeType
-    }
-
-    private let name: String
-}
-
-enum StoreType {
-    case secure
-    case insecure(volatile: Bool, maximumAge: TimeInterval? = nil)
-}
-
-enum StoreError: Error {
-    case keychainError
-    case fileSystemError
-    case cannotEncode
-}
-
-/// @mockable
-protocol StorageControlling {
-    func store<Key: StoreKey>(data: Data, identifiedBy key: Key, completion: @escaping (Error?) -> ())
-    func retrieveData<Key: StoreKey>(identifiedBy key: Key) -> Data?
-}
-
 extension StorageControlling {
-    func store<Object: Encodable, Key: StoreKey>(object: Object, identifiedBy key: Key, completion: @escaping (Error?) -> ()) {
+    func store<Object: Encodable, Key: StoreKey>(object: Object, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
         guard let data = try? JSONEncoder().encode(object) else {
             completion(StoreError.cannotEncode)
             return
@@ -68,73 +34,95 @@ final class StorageController: StorageControlling {
 
     // MARK: - StorageControlling
 
-    func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (Error?) -> ()) where Key: StoreKey {
-        guard storeAvailable else {
-            inMemoryStore[key.asString] = data
-
-            completion(nil)
-
-            return
-        }
-
-        switch key.storeType {
-        case .secure:
-            secureAccessQueue.async {
-                let success = self.storeSecure(data: data, with: key.asString)
-
-                DispatchQueue.main.async {
-                    completion(success ? nil : StoreError.keychainError)
-                }
-            }
-        case let .insecure(volatile: isVolatile, _):
-            guard let storeUrl = self.storeUrl(isVolatile: isVolatile) else {
-                inMemoryStore[key.asString] = data
-
-                completion(nil)
-                return
-            }
-
-            storageAccessQueue.async {
-                let success = self.store(data: data, for: key.asString, storeUrl: storeUrl)
-
-                DispatchQueue.main.async {
-                    completion(success ? nil : StoreError.fileSystemError)
-                }
-            }
-        }
+    func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
+        return store(guardAccess: true, data: data, identifiedBy: key, completion: completion)
     }
 
     func retrieveData<Key>(identifiedBy key: Key) -> Data? where Key: StoreKey {
-        guard storeAvailable else {
-            return inMemoryStore[key.asString] as? Data
-        }
+        return retrieveData(guardAccess: true, identifiedBy: key)
+    }
 
-        switch key.storeType {
-        case .secure:
-
-            var data: Data?
-
-            secureAccessQueue.sync {
-                data = self.retrieveDataSecure(for: key.asString)
-            }
-
-            return data
-        case let .insecure(volatile: isVolatile, maximumAge: maximumAge):
-            guard let storeUrl = self.storeUrl(isVolatile: isVolatile) else {
-                return inMemoryStore[key.asString] as? Data
-            }
-
-            var data: Data?
-
-            storageAccessQueue.sync {
-                data = self.retrieveData(for: key.asString, storeUrl: storeUrl, maximumAge: maximumAge)
-            }
-
-            return data
+    func requestExclusiveAccess(_ work: @escaping (StorageControlling) -> ()) {
+        accessQueue.async(flags: .barrier) {
+            work(ExclusiveStorageController(storageController: self))
         }
     }
 
     // MARK: - Private
+
+    fileprivate func store<Key>(guardAccess: Bool, data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
+        let operation: () -> () = {
+            guard self.storeAvailable else {
+                self.inMemoryStore[key.asString] = data
+
+                completion(nil)
+
+                return
+            }
+
+            switch key.storeType {
+            case .secure:
+                self.secureAccessQueue.async {
+                    let success = self.storeSecure(data: data, with: key.asString)
+
+                    DispatchQueue.main.async {
+                        completion(success ? nil : .keychainError)
+                    }
+                }
+            case let .insecure(volatile: isVolatile, _):
+                guard let storeUrl = self.storeUrl(isVolatile: isVolatile) else {
+                    self.inMemoryStore[key.asString] = data
+
+                    completion(nil)
+                    return
+                }
+
+                self.storageAccessQueue.async {
+                    let success = self.store(data: data, for: key.asString, storeUrl: storeUrl)
+
+                    DispatchQueue.main.async {
+                        completion(success ? nil : .fileSystemError)
+                    }
+                }
+            }
+        }
+
+        // execute storage operation
+        guardAccess ? accessQueue.sync(execute: operation) : operation()
+    }
+
+    fileprivate func retrieveData<Key>(guardAccess: Bool, identifiedBy key: Key) -> Data? where Key: StoreKey {
+        var data: Data?
+
+        let operation = {
+            guard self.storeAvailable else {
+                data = self.inMemoryStore[key.asString] as? Data
+                return
+            }
+
+            switch key.storeType {
+            case .secure:
+
+                self.secureAccessQueue.sync {
+                    data = self.retrieveDataSecure(for: key.asString)
+                }
+
+            case let .insecure(volatile: isVolatile, maximumAge: maximumAge):
+                guard let storeUrl = self.storeUrl(isVolatile: isVolatile) else {
+                    data = self.inMemoryStore[key.asString] as? Data
+                    return
+                }
+
+                self.storageAccessQueue.sync {
+                    data = self.retrieveData(for: key.asString, storeUrl: storeUrl, maximumAge: maximumAge)
+                }
+            }
+        }
+
+        guardAccess ? accessQueue.sync(execute: operation) : operation()
+
+        return data
+    }
 
     private func prepareStore() {
         guard let storeUrl = self.storeUrl(isVolatile: false) else {
@@ -242,6 +230,7 @@ final class StorageController: StorageControlling {
     private var inMemoryStore: [String: Any] = [:]
     private let secureAccessQueue = DispatchQueue(label: "secureAccessQueue")
     private let storageAccessQueue = DispatchQueue(label: "storageAccessQueue")
+    private let accessQueue = DispatchQueue(label: "accessQueue", attributes: .concurrent)
 
     private func storeUrl(isVolatile: Bool) -> URL? {
         let base = isVolatile ? cacheUrl : documentsUrl
@@ -260,4 +249,28 @@ final class StorageController: StorageControlling {
 
         return urls.first
     }
+}
+
+private final class ExclusiveStorageController: StorageControlling {
+
+    fileprivate init(storageController: StorageController) {
+        self.storageController = storageController
+    }
+
+    func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
+        storageController.store(guardAccess: false, data: data, identifiedBy: key, completion: completion)
+    }
+
+    func retrieveData<Key>(identifiedBy key: Key) -> Data? where Key: StoreKey {
+        storageController.retrieveData(guardAccess: false, identifiedBy: key)
+    }
+
+    func requestExclusiveAccess(_ work: (StorageControlling) -> ()) {
+        // already has exclusive access
+        work(self)
+    }
+
+    // MARK: - Private
+
+    private let storageController: StorageController
 }

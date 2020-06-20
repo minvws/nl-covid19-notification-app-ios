@@ -10,6 +10,12 @@ import Foundation
 
 final class NetworkController: NetworkControlling {
 
+    init(networkManager: NetworkManaging,
+         cryptoUtility: CryptoUtility) {
+        self.networkManager = networkManager
+        self.cryptoUtility = cryptoUtility
+    }
+
     // MARK: - NetworkControlling
 
     var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> {
@@ -53,25 +59,43 @@ final class NetworkController: NetworkControlling {
         .eraseToAnyPublisher()
     }
 
-    private func updateWhenRequired(includeResources: Bool) -> Future<(), NetworkError> {
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError> {
         return Future { promise in
-            // TODO: Check if manifest, check if up-to-date, otherwise download
-            // TODO: Check if new exposure keys, if any, download and store them
-            // TODO: If includeResources = true, download any resources if needed
-            //       Don't do this when in the background
+            let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
+                                          bucketID: labConfirmationKey.bucketIdentifier.base64EncodedString(),
+                                          padding: "test".data(using: .utf8)!.base64EncodedString())
 
-            promise(.success(()))
+            guard let requestData = try? JSONEncoder().encode(request) else {
+                promise(.failure(.encodingError))
+                return
+            }
+
+            let signature = self.cryptoUtility
+                .signature(forData: requestData, key: labConfirmationKey.confirmationKey.data(using: .utf8)!)
+                .base64EncodedString()
+
+            print(signature)
+
+            let completion: (NetworkManagerError?) -> () = { error in
+                if let error = error?.asNetworkError {
+                    promise(.failure(error))
+                    return
+                }
+
+                promise(.success(()))
+            }
+
+            self.networkManager.postKeys(request: request,
+                                         signature: signature,
+                                         completion: completion)
         }
+        .eraseToAnyPublisher()
     }
 
-    init(networkManager: NetworkManaging,
-         storageController: StorageControlling) {
-        self.networkManager = networkManager
-        self.storageController = storageController
-    }
+    // MARK: - Private
 
     private let networkManager: NetworkManaging
-    private let storageController: StorageControlling
+    private let cryptoUtility: CryptoUtility
 }
 
 private extension NetworkManagerError {
@@ -79,6 +103,8 @@ private extension NetworkManagerError {
         switch self {
         case .emptyResponse:
             return .invalidResponse
+        case .invalidUrlArgument:
+            return .encodingError
         case .other:
             return .invalidResponse
         }

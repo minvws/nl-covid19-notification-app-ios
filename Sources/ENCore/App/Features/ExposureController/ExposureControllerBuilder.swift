@@ -25,23 +25,28 @@ protocol ExposureControlling {
 
     // MARK: - Lab Flow
 
-    /// Represents a ConfirmationKey for the Lab Flow
-    ///
-    /// - Parameter confirmationKey: Human readable lab confirmation key
-    /// - Parameter expiration: Key's expiration date
-    typealias ConfirmationKey = (confirmationKey: String, expiration: Date)
-
     /// Requests a human readable confirmation key
     ///
     /// - Parameter completion: Executed when key is available
     /// - Parameter result: Result contains ConfirmationKey upon success or ExposureDataError on failure
-    func requestLabConfirmationKey(completion: @escaping (_ result: Result<ConfirmationKey, ExposureDataError>) -> ())
+    func requestLabConfirmationKey(completion: @escaping (_ result: Result<ExposureConfirmationKey, ExposureDataError>) -> ())
 
     /// Requests keys from the framework and uploads them to the server.
     ///
+    /// - Parameter labConfirmationKey: LabConfirmationKey that was used prior to the request
     /// - Parameter completion: Executed when upload completes.
     /// - Parameter result: Result of the request
-    func requestUploadKeys(completion: @escaping (_ result: ExposureControllerUploadKeysResult) -> ())
+    func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
+                           completion: @escaping (_ result: ExposureControllerUploadKeysResult) -> ())
+}
+
+/// Represents a ConfirmationKey for the Lab Flow
+///
+/// - Parameter key: Human readable lab confirmation key
+/// - Parameter expiration: Key's expiration date
+protocol ExposureConfirmationKey {
+    var key: String { get }
+    var expiration: Date { get }
 }
 
 /// Result of the requestUploadKeys
@@ -58,6 +63,14 @@ enum ExposureControllerUploadKeysResult {
     /// The UI should be prevent requesting keys when the framework
     /// is in an inactive state
     case inactive
+
+    /// This error happens when the given confirmationKey
+    /// does not match the one that was returned from the
+    /// requestLabConfirmationKey function.
+    case invalidConfirmationKey
+
+    /// An internal error happened when preparing the upload request
+    case internalError
 }
 
 /// @mockable

@@ -20,8 +20,37 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                       storageController: storageController)
     }
 
+    func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
+                                      labConfirmationKey: LabConfirmationKey) -> UploadDiagnosisKeysDataOperation {
+        return UploadDiagnosisKeysDataOperation(networkController: networkController,
+                                                diagnosisKeys: diagnosisKeys,
+                                                labConfirmationKey: labConfirmationKey)
+    }
+
     // MARK: - Private
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+}
+
+extension NetworkError {
+    var asExposureDataError: ExposureDataError {
+        switch self {
+        case .invalidResponse:
+            return .serverError
+        case .serverNotReachable:
+            return .networkUnreachable
+        case .encodingError:
+            return .internalError
+        }
+    }
+}
+
+extension StoreError {
+    var asExposureDataError: ExposureDataError {
+        switch self {
+        case .cannotEncode, .fileSystemError, .keychainError:
+            return .internalError
+        }
+    }
 }

@@ -64,30 +64,25 @@ final class ExposureController: ExposureControlling {
         // Not implemented yet
     }
 
-    func requestLabConfirmationKey(completion: @escaping (Result<ConfirmationKey, ExposureDataError>) -> ()) {
-        let convertConfirmationKey: (LabConfirmationKey) -> ConfirmationKey = { labConfirmationKey in
-            return (confirmationKey: labConfirmationKey.identifier,
-                    expiration: labConfirmationKey.validUntil)
-        }
-
+    func requestLabConfirmationKey(completion: @escaping (Result<ExposureConfirmationKey, ExposureDataError>) -> ()) {
         let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
             if case let .failure(error) = result {
                 completion(.failure(error))
             }
         }
 
-        let receiveValue: (ConfirmationKey) -> () = { key in
+        let receiveValue: (ExposureConfirmationKey) -> () = { key in
             completion(.success(key))
         }
 
         dataController
             .requestLabConfirmationKey()
-            .map(convertConfirmationKey)
             .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
             .store(in: &disposeBag)
     }
 
-    func requestUploadKeys(completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
+    func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
+                           completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
         let receiveCompletion: (Subscribers.Completion<ExposureManagerError>) -> () = { result in
             if case let .failure(error) = result {
                 let result: ExposureControllerUploadKeysResult
@@ -102,14 +97,20 @@ final class ExposureController: ExposureControlling {
             }
         }
 
-        let receiveValue: ([DiagnosisKey]) -> () = { keys in
-            self.dataController.storeAndUpload(diagnosisKeys: keys)
+        guard let labConfirmationKey = labConfirmationKey as? LabConfirmationKey else {
+            completion(.invalidConfirmationKey)
+            return
+        }
 
-            completion(.success)
+        let receiveValue: ([DiagnosisKey]) -> () = { keys in
+            self.storeAndPrepareUploadRequest(forDiagnosisKeys: keys,
+                                              labConfirmationKey: labConfirmationKey,
+                                              completion: completion)
         }
 
         requestDiagnosisKeys()
-            .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
+            .sink(receiveCompletion: receiveCompletion,
+                  receiveValue: receiveValue)
             .store(in: &disposeBag)
     }
 
@@ -165,8 +166,47 @@ final class ExposureController: ExposureControlling {
         .eraseToAnyPublisher()
     }
 
+    private func storeAndPrepareUploadRequest(forDiagnosisKeys keys: [DiagnosisKey],
+                                              labConfirmationKey: LabConfirmationKey,
+                                              completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
+        let mapExposureDataError: (ExposureDataError) -> ExposureControllerUploadKeysResult = { error in
+            switch error {
+            case .internalError, .networkUnreachable, .serverError:
+                // No network request is done (yet), these errors can only mean
+                // an internal error
+                return .internalError
+            }
+        }
+
+        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
+            switch result {
+            case let .failure(error):
+                completion(mapExposureDataError(error))
+            default:
+                break
+            }
+        }
+
+        self.dataController
+            .upload(diagnosisKeys: keys, labConfirmationKey: labConfirmationKey)
+            .map { _ in return ExposureControllerUploadKeysResult.success }
+            .sink(receiveCompletion: receiveCompletion,
+                  receiveValue: completion)
+            .store(in: &disposeBag)
+    }
+
     private let mutableStateStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging?
     private let dataController: ExposureDataControlling
     private var disposeBag = Set<AnyCancellable>()
+}
+
+extension LabConfirmationKey: ExposureConfirmationKey {
+    var key: String {
+        return identifier
+    }
+
+    var expiration: Date {
+        return validUntil
+    }
 }

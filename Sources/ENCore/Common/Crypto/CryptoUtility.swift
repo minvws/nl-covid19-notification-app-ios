@@ -5,13 +5,15 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import CommonCrypto
 import CryptoKit
 import Foundation
 import Security
 
+/// @mockable
 protocol CryptoUtility {
     func validate(data: Data, signature: Data) -> Bool
-    func signature(for data: Data) -> Data
+    func signature(forData data: Data, key: Data) -> Data
 }
 
 /// Crypto Utility for validating and generating signatures
@@ -22,8 +24,7 @@ protocol CryptoUtility {
 ///
 final class CryptoUtilityImpl: CryptoUtility {
 
-    init(signingKey: Key, validationKey: Key) {
-        self.signingKey = signingKey
+    init(validationKey: Key) {
         self.validationKey = validationKey
     }
 
@@ -41,14 +42,15 @@ final class CryptoUtilityImpl: CryptoUtility {
                                      nil)
     }
 
-    func signature(for data: Data) -> Data {
-        let signature = HMAC<SHA256>.authenticationCode(for: data, using: signingKey.symmetricKey)
+    func signature(forData data: Data, key: Data) -> Data {
+        let key = SymmetricKey(data: key)
+
+        let signature = HMAC<SHA256>.authenticationCode(for: data, using: key)
 
         return Data(signature)
     }
 
     // MARK: - Private
 
-    private let signingKey: Key
     private let validationKey: Key
 }
