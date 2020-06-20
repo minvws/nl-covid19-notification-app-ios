@@ -10,7 +10,8 @@ import Foundation
 extension LabInformation {
     var asLabConfirmationKey: LabConfirmationKey? {
         guard
-            let bucketIdentifier = Data(base64Encoded: bucketId) else {
+            let bucketIdentifier = Data(base64Encoded: bucketId),
+            let confirmationKey = Data(base64Encoded: confirmationKey) else {
             return nil
         }
 

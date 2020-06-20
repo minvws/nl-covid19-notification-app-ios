@@ -9,64 +9,68 @@ import Foundation
 
 struct NetworkConfiguration {
 
-    let url: String
-    let version: String
-    let contentType: ContentType
+    let scheme: String
+    let host: String
+    let port: Int?
+    let path: [String]
+    let expectedContentType: HTTPContentType
 
     static let development = NetworkConfiguration(
-        url: "http://10.0.0.133:5004",
-        version: "v1",
-        contentType: .json
+        scheme: "http",
+        host: "10.0.0.133",
+        port: 5004,
+        path: ["v1"],
+        expectedContentType: .json
     )
 
     static let production = NetworkConfiguration(
-        url: "https://api-ota.alleensamenmelden.nl/mss-acc",
-        version: "v1",
-        contentType: .zip
+        scheme: "https",
+        host: "mss-standalone-acc.azurewebsites.net",
+        port: nil,
+        path: ["mss-acc/v1"],
+        expectedContentType: .all
     )
 
-    var manifestUrl: URL {
+    var manifestUrl: URL? {
         return self.combine(path: Endpoint.manifest)
     }
 
-    func exposureKeySetUrl(param: String) -> URL {
-        return self.combine(path: Endpoint.exposureKeySet, params: [param])
+    func exposureKeySetUrl(identifier: String) -> URL? {
+        return self.combine(path: Endpoint.exposureKeySet, params: ["": identifier])
     }
 
-    func riskCalculationParametersUrl(param: String) -> URL {
-        return self.combine(path: Endpoint.riskCalculationParameters, params: [param])
+    func riskCalculationParametersUrl(identifier: String) -> URL? {
+        return self.combine(path: Endpoint.riskCalculationParameters, params: ["": identifier])
     }
 
-    func appConfigUrl(param: String) -> URL {
-        return self.combine(path: Endpoint.riskCalculationParameters, params: [param])
+    func appConfigUrl(identifier: String) -> URL? {
+        return self.combine(path: Endpoint.riskCalculationParameters, params: ["": identifier])
     }
 
-    var registerUrl: URL {
+    var registerUrl: URL? {
         return self.combine(path: Endpoint.register)
     }
 
-    var postKeysUrl: URL {
-        return self.combine(path: Endpoint.postKeys)
+    func postKeysUrl(signature: String) -> URL? {
+        return self.combine(path: Endpoint.postKeys, params: ["sig": signature])
     }
 
-    var stopKeysUrl: URL {
+    var stopKeysUrl: URL? {
         return self.combine(path: Endpoint.stopKeys)
     }
 
-    private func combine(path: Path, params: [String] = []) -> URL {
-        let urlParts = [url, version] + path.components + params
-        let endpoint: URL? = URL(string: urlParts.joined(separator: "/"))
-        guard let url = endpoint else {
-            fatalError("incorrect url")
-        }
-        print(url)
-        return url
-    }
+    private func combine(path: Path, params: [String: String] = [:]) -> URL? {
+        var urlComponents = URLComponents()
+        urlComponents.scheme = scheme
+        urlComponents.host = host
+        urlComponents.port = port
+        urlComponents.path = "/" + (self.path + path.components).joined(separator: "/")
 
-    func getLocalUrl(name: String) -> URL {
-        guard let url = Bundle.main.url(forAuxiliaryExecutable: name) else {
-            fatalError("Local file not found")
+        if params.count > 0 {
+            urlComponents.queryItems = params.map { parameter in URLQueryItem(name: parameter.key,
+                                                                              value: parameter.value) }
         }
-        return url
+
+        return urlComponents.url
     }
 }

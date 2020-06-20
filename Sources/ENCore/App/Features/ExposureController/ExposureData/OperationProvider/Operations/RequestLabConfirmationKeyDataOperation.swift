@@ -11,7 +11,7 @@ import Foundation
 struct LabConfirmationKey: Codable {
     let identifier: String
     let bucketIdentifier: Data
-    let confirmationKey: String
+    let confirmationKey: Data
     let validUntil: Date
 }
 

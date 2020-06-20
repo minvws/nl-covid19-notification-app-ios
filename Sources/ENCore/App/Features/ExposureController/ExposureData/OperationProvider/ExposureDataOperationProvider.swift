@@ -40,6 +40,14 @@ extension NetworkError {
             return .serverError
         case .serverNotReachable:
             return .networkUnreachable
+        case .invalidRequest:
+            return .internalError
+        case .resourceNotFound:
+            return .serverError
+        case .responseCached:
+            return .internalError
+        case .serverError:
+            return .serverError
         case .encodingError:
             return .internalError
         }

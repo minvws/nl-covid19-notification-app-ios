@@ -8,12 +8,6 @@
 import Combine
 import Foundation
 
-enum NetworkError: Error {
-    case serverNotReachable
-    case invalidResponse
-    case encodingError
-}
-
 /// @mockable
 protocol NetworkControlling {
     var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> { get }

@@ -216,14 +216,14 @@ final class ExposureControllerTests: XCTestCase {
             completion(.success(keys))
         }
 
-        dataController.storeAndUploadHandler = { _, _ in
+        dataController.uploadHandler = { _, _ in
             Just(())
                 .setFailureType(to: ExposureDataError.self)
                 .eraseToAnyPublisher()
         }
 
         XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
-        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+        XCTAssertEqual(dataController.uploadCallCount, 0)
 
         var receivedResult: ExposureControllerUploadKeysResult!
         controller.requestUploadKeys(forLabConfirmationKey: LabConfirmationKey.test) { result in
@@ -231,7 +231,7 @@ final class ExposureControllerTests: XCTestCase {
         }
 
         XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
-        XCTAssertEqual(dataController.storeAndUploadCallCount, 1)
+        XCTAssertEqual(dataController.uploadCallCount, 1)
         XCTAssertNotNil(receivedResult)
         XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.success)
     }
@@ -240,7 +240,7 @@ final class ExposureControllerTests: XCTestCase {
         exposureManager.getDiagnonisKeysHandler = { completion in completion(.failure(.notAuthorized)) }
 
         XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
-        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+        XCTAssertEqual(dataController.uploadCallCount, 0)
 
         var receivedResult: ExposureControllerUploadKeysResult!
         controller.requestUploadKeys(forLabConfirmationKey: LabConfirmationKey.test) { result in
@@ -248,7 +248,7 @@ final class ExposureControllerTests: XCTestCase {
         }
 
         XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
-        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+        XCTAssertEqual(dataController.uploadCallCount, 0)
         XCTAssertNotNil(receivedResult)
         XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.notAuthorized)
     }
@@ -257,7 +257,7 @@ final class ExposureControllerTests: XCTestCase {
         exposureManager.getDiagnonisKeysHandler = { completion in completion(.failure(.unknown)) }
 
         XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
-        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+        XCTAssertEqual(dataController.uploadCallCount, 0)
 
         var receivedResult: ExposureControllerUploadKeysResult!
         controller.requestUploadKeys(forLabConfirmationKey: LabConfirmationKey.test) { result in
@@ -265,7 +265,7 @@ final class ExposureControllerTests: XCTestCase {
         }
 
         XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
-        XCTAssertEqual(dataController.storeAndUploadCallCount, 0)
+        XCTAssertEqual(dataController.uploadCallCount, 0)
         XCTAssertNotNil(receivedResult)
         XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.inactive)
     }

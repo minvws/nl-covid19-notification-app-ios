@@ -58,7 +58,7 @@ final class NetworkControllerTests: TestCase {
 
     func test_requestLabConfirmationKey_callsNetworkManager_failsOnInvalidResponse() {
         networkManager.postRegisterHandler = { _, completion in
-            completion(.failure(.emptyResponse))
+            completion(.failure(.invalidResponse))
         }
 
         var receivedValue: LabConfirmationKey!

@@ -40,7 +40,7 @@ final class NetworkController: NetworkControlling {
         return Future { promise in
             let request = RegisterRequest(padding: "5342fds89erwtsdf")
 
-            self.networkManager.postRegister(register: request) { result in
+            self.networkManager.postRegister(request: request) { result in
 
                 let convertLabConfirmationKey: (LabInformation) -> Result<LabConfirmationKey, NetworkError> = { labInformation in
                     guard let labConfirmationKey = labInformation.asLabConfirmationKey else {
@@ -51,7 +51,6 @@ final class NetworkController: NetworkControlling {
                 }
 
                 promise(result
-                    .mapError { error in error.asNetworkError }
                     .flatMap(convertLabConfirmationKey)
                 )
             }
@@ -63,7 +62,7 @@ final class NetworkController: NetworkControlling {
         return Future { promise in
             let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
                                           bucketID: labConfirmationKey.bucketIdentifier.base64EncodedString(),
-                                          padding: "test".data(using: .utf8)!.base64EncodedString())
+                                          padding: "aGFsbG8gcmVpbmllci4gYWxzIGplIGRpdCBsZWVzdCwgemVnIGJvZSEgb3Agd2ViZXgK")
 
             guard let requestData = try? JSONEncoder().encode(request) else {
                 promise(.failure(.encodingError))
@@ -71,13 +70,13 @@ final class NetworkController: NetworkControlling {
             }
 
             let signature = self.cryptoUtility
-                .signature(forData: requestData, key: labConfirmationKey.confirmationKey.data(using: .utf8)!)
+                .signature(forData: requestData, key: labConfirmationKey.confirmationKey)
                 .base64EncodedString()
 
             print(signature)
 
-            let completion: (NetworkManagerError?) -> () = { error in
-                if let error = error?.asNetworkError {
+            let completion: (NetworkError?) -> () = { error in
+                if let error = error {
                     promise(.failure(error))
                     return
                 }
@@ -96,17 +95,4 @@ final class NetworkController: NetworkControlling {
 
     private let networkManager: NetworkManaging
     private let cryptoUtility: CryptoUtility
-}
-
-private extension NetworkManagerError {
-    var asNetworkError: NetworkError {
-        switch self {
-        case .emptyResponse:
-            return .invalidResponse
-        case .invalidUrlArgument:
-            return .encodingError
-        case .other:
-            return .invalidResponse
-        }
-    }
 }

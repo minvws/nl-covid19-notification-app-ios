@@ -8,20 +8,37 @@
 import Foundation
 
 /// mockable
-protocol NetworkResponseProviderHandling {
-    func handleReturnData(url: URL?, response: URLResponse?, error: Error?) throws -> Data
-    func handleReturnUrls(url: URL?, response: URLResponse?, error: Error?) throws -> [URL]
+protocol NetworkResponseHandler {
+    associatedtype Input
+    associatedtype Output
+
+    func isApplicable(for response: URLResponse, input: Input) -> Bool
+    func process(response: URLResponse, input: Input) throws -> Output
+}
+
+protocol NetworkResponseHandlerProvider {
+    var readFromDiskResponseHandler: ReadFromDiskResponseHandler { get }
+    var unzipNetworkResponseHandler: UnzipNetworkResponseHandler { get }
+    var verifySignatureResponseHandler: VerifySignatureResponseHandler { get }
 }
 
 /// @mockable
-protocol NetworkResponseProviderBuildable {
+protocol NetworkResponseHandlerProviderBuildable {
     /// Builds Network response provider
     ///
-    func build() -> NetworkResponseProviderHandling
+    func build() -> NetworkResponseHandlerProvider
 }
 
-final class NetworkResponseProviderBuilder: Builder<EmptyDependency>, NetworkResponseProviderBuildable {
-    func build() -> NetworkResponseProviderHandling {
-        return NetworkResponseProvider()
+private final class NetworkResponseProviderDependencyProvider: DependencyProvider<EmptyDependency> {
+    var cryptoUtility: CryptoUtility {
+        return CryptoUtilityBuilder().build()
+    }
+}
+
+final class NetworkResponseHandlerProviderBuilder: Builder<EmptyDependency>, NetworkResponseHandlerProviderBuildable {
+    func build() -> NetworkResponseHandlerProvider {
+        let dependencyProvider = NetworkResponseProviderDependencyProvider()
+
+        return NetworkResponseHandlerProviderImpl(cryptoUtility: dependencyProvider.cryptoUtility)
     }
 }

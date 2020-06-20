@@ -7,11 +7,10 @@
 
 import Foundation
 
-enum VerifySignatureError: Error {
-    case cantVerify
-}
+final class VerifySignatureResponseHandler: NetworkResponseHandler {
 
-final class VerifySignatureResponseHandler {
+    typealias Input = URL
+    typealias Output = URL
 
     enum TEKFiles: String {
         case binary = "export.bin"
@@ -22,6 +21,20 @@ final class VerifySignatureResponseHandler {
     enum ContentFiles: String {
         case binary = "content.bin"
         case signatureRijksoverheid = "content.sig"
+    }
+
+    // MARK: - NetworkResponseHandler
+
+    func isApplicable(for response: URLResponse, input: URL) -> Bool {
+        return true
+    }
+
+    func process(response: URLResponse, input: URL) throws -> URL {
+        guard verifySignature() else {
+            throw NetworkResponseHandleError.invalidSignature
+        }
+
+        return input
     }
 
     /// Methods to verify file signature, returns true for now (signature check disabled)

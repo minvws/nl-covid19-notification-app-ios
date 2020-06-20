@@ -7,67 +7,44 @@
 
 import Foundation
 
-enum NetworkResponseError: Error {
-    case error
-    case badRequest
-    case serverError
+enum NetworkResponseHandleError: Error {
+    case cannotUnzip
+    case invalidSignature
+    case cannotDeserialize
 }
 
-enum ContentType: String {
+enum HTTPHeaderKey: String {
+    case contentType = "Content-Type"
+    case acceptedContentType = "Accept"
+}
+
+enum HTTPContentType: String {
+    case all = "*/*"
     case zip = "application/zip"
     case json = "application/json"
 }
 
-final class NetworkResponseProvider: NetworkResponseProviderHandling {
+final class NetworkResponseHandlerProviderImpl: NetworkResponseHandlerProvider {
 
-    // handlers
-    let verifySignatureHandler: VerifySignatureResponseHandler
-    let fileNetworkResponseHandler: FileNetworkResponseHandler
-
-    init(verifySignatureHandler: VerifySignatureResponseHandler = VerifySignatureResponseHandler(),
-         fileNetworkResponseHandler: FileNetworkResponseHandler = FileNetworkResponseHandler()) {
-        self.verifySignatureHandler = verifySignatureHandler
-        self.fileNetworkResponseHandler = fileNetworkResponseHandler
+    init(cryptoUtility: CryptoUtility) {
+        self.cryptoUtility = cryptoUtility
     }
 
-    func handleReturnData(url: URL?, response: URLResponse?, error: Error?) throws -> Data {
-        let files = try self.handleReturnUrls(url: url, response: response, error: error)
-        let filtered = files.filter { $0.pathExtension == "bin" }
+    // MARK: - NetworkResponseHandlerProvider
 
-        guard let binUrl = filtered.first else {
-            throw NetworkResponseError.error
-        }
-
-        let data = try Data(contentsOf: binUrl)
-        return data
+    var readFromDiskResponseHandler: ReadFromDiskResponseHandler {
+        return ReadFromDiskResponseHandler()
     }
 
-    func handleReturnUrls(url: URL?, response: URLResponse?, error: Error?) throws -> [URL] {
-
-        // handle errors
-        if let error = error {
-            throw error
-        }
-
-        // http response should always be available, local url aswell and content type needs to be set
-        guard
-            let httpResponse = response as? HTTPURLResponse,
-            let url = url,
-            let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type")
-        else {
-            throw NetworkResponseError.error
-        }
-
-        guard let type = ContentType(rawValue: contentType) else {
-            throw NetworkResponseError.error
-        }
-
-        // extract files if necessary
-        let urls = try self.fileNetworkResponseHandler.handle(url: url, type: type)
-        if !self.verifySignatureHandler.handle(urls: urls) {
-            throw NetworkResponseError.error
-        }
-
-        return urls
+    var unzipNetworkResponseHandler: UnzipNetworkResponseHandler {
+        return UnzipNetworkResponseHandler()
     }
+
+    var verifySignatureResponseHandler: VerifySignatureResponseHandler {
+        return VerifySignatureResponseHandler()
+    }
+
+    // MARK: - Private
+
+    private let cryptoUtility: CryptoUtility
 }
