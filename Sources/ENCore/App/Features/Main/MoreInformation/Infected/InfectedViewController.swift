@@ -10,6 +10,7 @@ import UIKit
 
 /// @mockable
 protocol InfectedRouting: Routing {
+    func didUploadCodes()
     func infectedWantsDismissal(shouldDismissViewController: Bool)
 }
 
@@ -44,24 +45,28 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
-    }
 
-    // MARK: - InfectedViewControllable
-
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        present(viewController.uiviewController,
-                animated: animated,
-                completion: completion)
-    }
-
-    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        viewController.uiviewController.dismiss(animated: animated, completion: completion)
+        internalView.infoView.actionHandler = { [weak self] in
+            self?.router?.didUploadCodes()
+        }
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         router?.infectedWantsDismissal(shouldDismissViewController: false)
+    }
+
+    // MARK: - InfectedViewControllable
+
+    func push(viewController: ViewControllable) {
+        navigationController?.pushViewController(viewController.uiviewController, animated: true)
+    }
+
+    func thankYouWantsDismissal() {
+        router?.infectedWantsDismissal(shouldDismissViewController: false)
+
+        navigationController?.dismiss(animated: true, completion: nil)
     }
 
     // MARK: - Private

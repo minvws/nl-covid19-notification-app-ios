@@ -8,33 +8,21 @@
 import UIKit
 
 /// @mockable
-protocol InfectedViewControllable: ViewControllable {
+protocol InfectedViewControllable: ViewControllable, ThankYouListener {
     var router: InfectedRouting? { get set }
 
-    // TODO: Validate whether you need the below functions and remove or replace
-    //       them as desired.
-
-    /// Presents a viewController
-    ///
-    /// - Parameter viewController: ViewController to present
-    /// - Parameter animated: Animates the transition
-    /// - Parameter completion: Executed upon presentation completion
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
-
-    /// Dismisses a viewController
-    ///
-    /// - Parameter viewController: ViewController to dismiss
-    /// - Parameter animated: Animates the transition
-    /// - Parameter completion: Executed upon presentation completion
-    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
+    func push(viewController: ViewControllable)
 }
 
 final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
 
     // MARK: - Initialisation
 
-    init(listener: InfectedListener, viewController: InfectedViewControllable) {
+    init(listener: InfectedListener,
+         viewController: InfectedViewControllable,
+         thankYouBuilder: ThankYouBuildable) {
         self.listener = listener
+        self.thankYouBuilder = thankYouBuilder
         super.init(viewController: viewController)
 
         viewController.router = self
@@ -46,7 +34,21 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
         listener?.infectedWantsDismissal(shouldDismissViewController: shouldDismissViewController)
     }
 
+    func didUploadCodes() {
+        guard thankYouViewController == nil else {
+            return
+        }
+
+        let thankYouViewController = thankYouBuilder.build(withListener: viewController)
+        self.thankYouViewController = thankYouViewController
+
+        viewController.push(viewController: thankYouViewController)
+    }
+
     // MARK: - Private
 
     private weak var listener: InfectedListener?
+
+    private let thankYouBuilder: ThankYouBuildable
+    private var thankYouViewController: ViewControllable?
 }

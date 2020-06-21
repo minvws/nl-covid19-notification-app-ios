@@ -25,30 +25,24 @@ protocol InfectedDependency {
     var theme: Theme { get }
 }
 
-private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency> /* , ChildDependency */ {
-    // TODO: Create and return any dependency that should be limited
-    //       to Infected's scope or any child of Infected
+private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency {
 
-    // TODO: Replace `childBuilder` by a real child scope and adjust
-    //       `ChildDependency`
-    // var childBuilder: ChildBuildable {
-    //    return ChildBuilder(dependency: self)
-    // }
+    var theme: Theme {
+        dependency.theme
+    }
+
+    var thankYouBuilder: ThankYouBuildable {
+        ThankYouBuilder(dependency: self)
+    }
 }
 
 final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
     func build(withListener listener: InfectedListener) -> Routing {
-        // TODO: Add any other dynamic dependency as parameter
-
         let dependencyProvider = InfectedDependencyProvider(dependency: dependency)
-
-        // let childBuilder = dependencyProvider.childBuilder
         let viewController = InfectedViewController(theme: dependencyProvider.dependency.theme)
 
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
         return InfectedRouter(listener: listener,
-                              viewController: viewController /* ,
-                               childBuilder: childBuilder */ )
+                              viewController: viewController,
+                              thankYouBuilder: dependencyProvider.thankYouBuilder)
     }
 }

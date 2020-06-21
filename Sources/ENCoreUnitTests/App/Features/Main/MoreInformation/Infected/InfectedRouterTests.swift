@@ -18,14 +18,12 @@ final class InfectedRouterTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        // TODO: Add other dependencies
         router = InfectedRouter(listener: listener,
-                                viewController: viewController)
+                                viewController: viewController,
+                                thankYouBuilder: ThankYouBuildableMock())
     }
 
     func test_init_setsRouterOnViewController() {
         XCTAssertEqual(viewController.routerSetCallCount, 1)
     }
-
-    // TODO: Add more tests
 }
