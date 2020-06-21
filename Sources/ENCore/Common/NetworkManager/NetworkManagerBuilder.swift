@@ -39,23 +39,22 @@ protocol NetworkManagerBuildable {
     func build() -> NetworkManaging
 }
 
-private final class NetworkManagerDependencyProvider: DependencyProvider<EmptyDependency> {
+protocol NetworkManagerDependency {
+    var networkConfigurationProvider: NetworkConfigurationProvider { get }
+}
+
+private final class NetworkManagerDependencyProvider: DependencyProvider<NetworkManagerDependency> {
     lazy var responseHandlerProvider: NetworkResponseHandlerProvider = {
         return NetworkResponseHandlerProviderBuilder().build()
     }()
 }
 
-final class NetworkManagerBuilder: Builder<EmptyDependency>, NetworkManagerBuildable {
+final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkManagerBuildable {
     func build() -> NetworkManaging {
 
         let dependencyProvider = NetworkManagerDependencyProvider(dependency: dependency)
-        #if DEBUG
-            let configuration: NetworkConfiguration = .production
-        #else
-            let configuration: NetworkConfiguration = .production
-        #endif
 
-        return NetworkManager(configuration: configuration,
+        return NetworkManager(configurationProvider: dependencyProvider.dependency.networkConfigurationProvider,
                               responseHandlerProvider: dependencyProvider.responseHandlerProvider)
     }
 }

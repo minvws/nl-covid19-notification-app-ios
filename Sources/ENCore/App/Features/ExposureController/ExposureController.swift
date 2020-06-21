@@ -77,6 +77,7 @@ final class ExposureController: ExposureControlling {
 
         dataController
             .requestLabConfirmationKey()
+            .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
             .store(in: &disposeBag)
     }
@@ -103,9 +104,9 @@ final class ExposureController: ExposureControlling {
         }
 
         let receiveValue: ([DiagnosisKey]) -> () = { keys in
-            self.storeAndPrepareUploadRequest(forDiagnosisKeys: keys,
-                                              labConfirmationKey: labConfirmationKey,
-                                              completion: completion)
+            self.upload(diagnosisKeys: keys,
+                        labConfirmationKey: labConfirmationKey,
+                        completion: completion)
         }
 
         requestDiagnosisKeys()
@@ -166,9 +167,9 @@ final class ExposureController: ExposureControlling {
         .eraseToAnyPublisher()
     }
 
-    private func storeAndPrepareUploadRequest(forDiagnosisKeys keys: [DiagnosisKey],
-                                              labConfirmationKey: LabConfirmationKey,
-                                              completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
+    private func upload(diagnosisKeys keys: [DiagnosisKey],
+                        labConfirmationKey: LabConfirmationKey,
+                        completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
         let mapExposureDataError: (ExposureDataError) -> ExposureControllerUploadKeysResult = { error in
             switch error {
             case .internalError, .networkUnreachable, .serverError:
@@ -190,6 +191,7 @@ final class ExposureController: ExposureControlling {
         self.dataController
             .upload(diagnosisKeys: keys, labConfirmationKey: labConfirmationKey)
             .map { _ in return ExposureControllerUploadKeysResult.success }
+            .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: receiveCompletion,
                   receiveValue: completion)
             .store(in: &disposeBag)

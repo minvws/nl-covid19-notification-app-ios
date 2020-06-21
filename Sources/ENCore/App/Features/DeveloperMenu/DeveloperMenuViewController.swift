@@ -21,9 +21,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
     init(listener: DeveloperMenuListener,
          theme: Theme,
-         mutableExposureStateStream: MutableExposureStateStreaming) {
+         mutableExposureStateStream: MutableExposureStateStreaming,
+         mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming,
+         exposureController: ExposureControlling,
+         storageController: StorageControlling) {
         self.listener = listener
         self.mutableExposureStateStream = mutableExposureStateStream
+        self.mutableNetworkConfigurationStream = mutableNetworkConfigurationStream
+        self.exposureController = exposureController
+        self.storageController = storageController
 
         super.init(theme: theme)
 
@@ -99,13 +105,24 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Launches Onboarding",
                               action: { [weak self] in self?.launchOnboarding() })
             ]),
-            ("Exposure State", [
+            ("Exposure", [
                 DeveloperItem(title: "Change Exposure State",
                               subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState?.activeState.asString ?? "None")",
                               action: { [weak self] in self?.changeExposureState() }),
                 DeveloperItem(title: "Change Notified",
                               subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState?.notifiedState.asString ?? "No")",
-                              action: { [weak self] in self?.changeNotified() })
+                              action: { [weak self] in self?.changeNotified() }),
+                DeveloperItem(title: "Upload Exposure Keys",
+                              subtitle: "Upload keys after giving permission",
+                              action: { [weak self] in self?.uploadKeys() }),
+                DeveloperItem(title: "Remove Stored LabConfirmationKey",
+                              subtitle: "Will fetch a new key next time when uploading",
+                              action: { [weak self] in self?.removeStoredConfirmationKey() })
+            ]),
+            ("Networking", [
+                DeveloperItem(title: "Network Configuration",
+                              subtitle: "Current: \(self.mutableNetworkConfigurationStream.configuration.name)",
+                              action: { [weak self] in self?.changeNetworkConfiguration() })
             ])
         ]
     }
@@ -113,9 +130,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     // MARK: - Actions
 
     private func launchOnboarding() {
-        listener?.developerMenuRequestsOnboardingFlow()
-
         hide()
+
+        listener?.developerMenuRequestsOnboardingFlow()
     }
 
     private func changeExposureState() {
@@ -135,19 +152,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                                  handler: actionHandler)
         }
 
-        let actionViewController = UIAlertController(title: "Update Exposure State",
-                                                     message: nil,
-                                                     preferredStyle: .actionSheet)
-        actionItems.forEach { actionItem in actionViewController.addAction(actionItem) }
-
-        let cancelItem = UIAlertAction(title: "Cancel",
-                                       style: .destructive,
-                                       handler: { [weak actionViewController] _ in
-                                           actionViewController?.dismiss(animated: true, completion: nil)
-        })
-        actionViewController.addAction(cancelItem)
-
-        present(actionViewController, animated: true, completion: nil)
+        present(actionItems: actionItems, title: "Update Exposure State")
     }
 
     private func updateExposureState(to: ExposureActiveState) {
@@ -175,7 +180,75 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         mutableExposureStateStream.update(state: exposureState)
     }
 
+    private func changeNetworkConfiguration() {
+        let configurations: [NetworkConfiguration] = [.development, .production]
+
+        let actionItems = configurations.map { (configuration) -> UIAlertAction in
+            let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
+                self?.mutableNetworkConfigurationStream.update(configuration: configuration)
+
+                self?.internalView.tableView.reloadData()
+            }
+
+            return UIAlertAction(title: configuration.name,
+                                 style: .default,
+                                 handler: actionHandler)
+        }
+
+        present(actionItems: actionItems, title: "Update Network Configuration")
+    }
+
+    private func uploadKeys() {
+        exposureController.requestLabConfirmationKey { result in
+            let actionTitle: String
+            let actionItems: [UIAlertAction]
+
+            switch result {
+            case let .success(key):
+                actionTitle = "Proceed? If yes, don't press any other button after pressing Upload"
+                actionItems = [
+                    UIAlertAction(title: "Upload using \(key.key)",
+                                  style: .default,
+                                  handler: { [weak self] _ in self?.continueUploadKey(with: key) })
+                ]
+            case let .failure(error):
+                actionTitle = "Failure: \(error)"
+                actionItems = []
+            }
+
+            self.present(actionItems: actionItems, title: actionTitle)
+        }
+    }
+
+    private func continueUploadKey(with key: ExposureConfirmationKey) {
+        self.exposureController.requestUploadKeys(forLabConfirmationKey: key) { result in
+            let title = "Result: \(result)"
+
+            self.present(actionItems: [], title: title)
+        }
+    }
+
+    private func removeStoredConfirmationKey() {
+        storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
+    }
+
     // MARK: - Private
+
+    func present(actionItems: [UIAlertAction], title: String) {
+        let actionViewController = UIAlertController(title: title,
+                                                     message: nil,
+                                                     preferredStyle: .actionSheet)
+        actionItems.forEach { actionItem in actionViewController.addAction(actionItem) }
+
+        let cancelItem = UIAlertAction(title: "Cancel",
+                                       style: .destructive,
+                                       handler: { [weak actionViewController] _ in
+                                           actionViewController?.dismiss(animated: true, completion: nil)
+        })
+        actionViewController.addAction(cancelItem)
+
+        present(actionViewController, animated: true, completion: nil)
+    }
 
     private func show() {
         guard let window = window else { return }
@@ -236,6 +309,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private var isShown: Bool = false
     private weak var listener: DeveloperMenuListener?
     private let mutableExposureStateStream: MutableExposureStateStreaming
+    private let mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming
+    private let exposureController: ExposureControlling
+    private let storageController: StorageControlling
 
     private var window: UIWindow? {
         if #available(iOS 13.0, *) {
@@ -243,6 +319,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         } else {
             return UIApplication.shared.keyWindow
         }
+    }
+
+    private var rootViewController: UIViewController? {
+        return window?.rootViewController
     }
 }
 
@@ -313,9 +393,9 @@ private final class DeveloperMenuView: View {
     fileprivate func showContentView() {
         contentView.transform = CGAffineTransform(translationX: bounds.width * 0.7, y: 0)
 
-        UIView.animate(withDuration: 0.3,
+        UIView.animate(withDuration: 0.2,
                        delay: 0.0,
-                       options: [.beginFromCurrentState, .curveEaseIn],
+                       options: [.beginFromCurrentState, .curveEaseOut],
                        animations: { self.contentView.transform = .identity },
                        completion: nil)
     }

@@ -45,11 +45,20 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         let builder = ExposureControllerBuilder(dependency: self)
         return builder.build()
     }()
-    
+
+    lazy var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming = {
+        return NetworkConfigurationStream(configuration: .production)
+    }()
+
+    var networkConfigurationProvider: NetworkConfigurationProvider {
+        // TODO: Replace this with static configuration when releasing
+        return DynamicNetworkConfigurationProvider(configurationStream: mutableNetworkConfigurationStream)
+    }
+
     lazy var networkController: NetworkControlling = {
         return NetworkControllerBuilder(dependency: self).build()
     }()
-    
+
     lazy var backgroundController: BackgroundControlling = {
         return BackgroundControllerBuilder().build()
     }()

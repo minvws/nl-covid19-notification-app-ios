@@ -42,6 +42,10 @@ final class StorageController: StorageControlling {
         return retrieveData(guardAccess: true, identifiedBy: key)
     }
 
+    func removeData<Key: StoreKey>(for key: Key, completion: @escaping (StoreError?) -> ()) {
+        return removeData(guardAccess: true, identifiedBy: key, completion: completion)
+    }
+
     func requestExclusiveAccess(_ work: @escaping (StorageControlling) -> ()) {
         accessQueue.async(flags: .barrier) {
             work(ExclusiveStorageController(storageController: self))
@@ -55,7 +59,9 @@ final class StorageController: StorageControlling {
             guard self.storeAvailable else {
                 self.inMemoryStore[key.asString] = data
 
-                completion(nil)
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
 
                 return
             }
@@ -124,6 +130,42 @@ final class StorageController: StorageControlling {
         return data
     }
 
+    func removeData<Key: StoreKey>(guardAccess: Bool, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
+        let operation = {
+            guard self.retrieveData(identifiedBy: key) != nil else {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+
+                return
+            }
+
+            var result: StoreError?
+
+            switch key.storeType {
+            case .secure:
+                self.secureAccessQueue.sync {
+                    result = self.removeSecure(for: key.asString) ? nil : .keychainError
+                }
+            case let .insecure(isVolatile, _):
+                guard let storeUrl = self.storeUrl(isVolatile: isVolatile) else {
+                    self.inMemoryStore[key.asString] = nil
+                    return
+                }
+
+                self.storageAccessQueue.sync {
+                    result = self.removeData(for: key.asString, storeUrl: storeUrl) ? nil : .fileSystemError
+                }
+            }
+
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+
+        guardAccess ? accessQueue.sync(execute: operation) : operation()
+    }
+
     private func prepareStore() {
         guard let storeUrl = self.storeUrl(isVolatile: false) else {
             return
@@ -176,6 +218,19 @@ final class StorageController: StorageControlling {
         return true
     }
 
+    private func removeData(for key: String, storeUrl: URL) -> Bool {
+        let url = storeUrl.appendingPathComponent(key)
+
+        do {
+            try FileManager.default.removeItem(at: url)
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    // MARK: - Secure
+
     private func retrieveDataSecure(for key: String) -> Data? {
         var query = keychainQuery(for: key)
         query[kSecReturnData as String] = kCFBooleanTrue
@@ -213,6 +268,13 @@ final class StorageController: StorageControlling {
         query[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
 
         let resultCode = SecItemAdd(query as CFDictionary, nil)
+        return resultCode == errSecSuccess
+    }
+
+    private func removeSecure(for key: String) -> Bool {
+        let query = keychainQuery(for: key)
+
+        let resultCode = SecItemDelete(query as CFDictionary)
         return resultCode == errSecSuccess
     }
 
@@ -263,6 +325,10 @@ private final class ExclusiveStorageController: StorageControlling {
 
     func retrieveData<Key>(identifiedBy key: Key) -> Data? where Key: StoreKey {
         storageController.retrieveData(guardAccess: false, identifiedBy: key)
+    }
+
+    func removeData<Key>(for key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
+        storageController.removeData(for: key, completion: completion)
     }
 
     func requestExclusiveAccess(_ work: (StorageControlling) -> ()) {

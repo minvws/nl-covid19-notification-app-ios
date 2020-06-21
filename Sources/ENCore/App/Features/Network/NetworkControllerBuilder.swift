@@ -26,15 +26,21 @@ protocol NetworkControllerBuildable {
     func build() -> NetworkControlling
 }
 
-protocol NetworkControllerDependency {}
+protocol NetworkControllerDependency {
+    var networkConfigurationProvider: NetworkConfigurationProvider { get }
+}
 
-private final class NetworkControllerDependencyProvider: DependencyProvider<NetworkControllerDependency> {
+private final class NetworkControllerDependencyProvider: DependencyProvider<NetworkControllerDependency>, NetworkManagerDependency {
     lazy var networkManager: NetworkManaging = {
-        return NetworkManagerBuilder().build()
+        return NetworkManagerBuilder(dependency: self).build()
     }()
 
     var cryptoUtility: CryptoUtility {
         return CryptoUtilityBuilder().build()
+    }
+
+    var networkConfigurationProvider: NetworkConfigurationProvider {
+        return dependency.networkConfigurationProvider
     }
 }
 

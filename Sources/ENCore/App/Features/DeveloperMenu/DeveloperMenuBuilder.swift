@@ -22,6 +22,9 @@ protocol DeveloperMenuBuildable {
 protocol DeveloperMenuDependency {
     var theme: Theme { get }
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
+    var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming { get }
+    var exposureController: ExposureControlling { get }
+    var storageController: StorageControlling { get }
 }
 
 private final class DeveloperMenuDependencyProvider: DependencyProvider<DeveloperMenuDependency> {
@@ -36,6 +39,9 @@ final class DeveloperMenuBuilder: Builder<DeveloperMenuDependency>, DeveloperMen
 
         return DeveloperMenuViewController(listener: listener,
                                            theme: dependencyProvider.dependency.theme,
-                                           mutableExposureStateStream: dependencyProvider.mutableExposureStateStream)
+                                           mutableExposureStateStream: dependencyProvider.mutableExposureStateStream,
+                                           mutableNetworkConfigurationStream: dependencyProvider.dependency.mutableNetworkConfigurationStream,
+                                           exposureController: dependencyProvider.dependency.exposureController,
+                                           storageController: dependencyProvider.dependency.storageController)
     }
 }

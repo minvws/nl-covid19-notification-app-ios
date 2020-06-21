@@ -10,10 +10,10 @@ import Foundation
 
 final class NetworkManager: NetworkManaging {
 
-    init(configuration: NetworkConfiguration,
+    init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          urlSession: URLSession = URLSession.shared) {
-        self.configuration = configuration
+        self.configurationProvider = configurationProvider
         self.session = urlSession
         self.responseHandlerProvider = responseHandlerProvider
     }
@@ -340,9 +340,13 @@ final class NetworkManager: NetworkManaging {
 
     // MARK: - Private
 
-    private let configuration: NetworkConfiguration
+    private let configurationProvider: NetworkConfigurationProvider
     private let session: URLSession
     private let responseHandlerProvider: NetworkResponseHandlerProvider
+
+    private var configuration: NetworkConfiguration {
+        return configurationProvider.configuration
+    }
 
     private lazy var jsonDecoder: JSONDecoder = {
         let decoder = JSONDecoder()

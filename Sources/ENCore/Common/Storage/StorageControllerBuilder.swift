@@ -39,6 +39,7 @@ enum StoreError: Error {
 protocol StorageControlling {
     func store<Key: StoreKey>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ())
     func retrieveData<Key: StoreKey>(identifiedBy key: Key) -> Data?
+    func removeData<Key: StoreKey>(for key: Key, completion: @escaping (StoreError?) -> ())
 
     func requestExclusiveAccess(_ work: @escaping (StorageControlling) -> ())
 }

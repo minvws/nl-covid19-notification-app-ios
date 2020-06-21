@@ -9,6 +9,7 @@ import Foundation
 
 struct NetworkConfiguration {
 
+    let name: String
     let scheme: String
     let host: String
     let port: Int?
@@ -16,6 +17,7 @@ struct NetworkConfiguration {
     let expectedContentType: HTTPContentType
 
     static let development = NetworkConfiguration(
+        name: "Development",
         scheme: "http",
         host: "10.0.0.133",
         port: 5004,
@@ -24,10 +26,11 @@ struct NetworkConfiguration {
     )
 
     static let production = NetworkConfiguration(
+        name: "Production",
         scheme: "https",
         host: "mss-standalone-acc.azurewebsites.net",
         port: nil,
-        path: ["mss-acc/v1"],
+        path: ["v1"],
         expectedContentType: .all
     )
 

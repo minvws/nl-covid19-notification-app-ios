@@ -72,6 +72,8 @@ targets:
         - name: ENCoreTests
           parallelizable: false
           randomExecutionOrder: true
+      environmentVariables:
+        USE_DEVELOPER_MENU: ${USE_DEVELOPER_MENU}
 
   ENCore:
     platform: iOS
