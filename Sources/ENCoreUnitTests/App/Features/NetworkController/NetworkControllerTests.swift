@@ -32,6 +32,8 @@ final class NetworkControllerTests: TestCase {
             completion(.success(key))
         }
 
+        cryptoUtility.randomBytesHandler = { _ in return Data() }
+
         var receivedValue: LabConfirmationKey!
         var receivedCompletion: Subscribers.Completion<NetworkError>!
 
@@ -60,6 +62,8 @@ final class NetworkControllerTests: TestCase {
         networkManager.postRegisterHandler = { _, completion in
             completion(.failure(.invalidResponse))
         }
+
+        cryptoUtility.randomBytesHandler = { _ in return Data() }
 
         var receivedValue: LabConfirmationKey!
         var receivedCompletion: Subscribers.Completion<NetworkError>!
