@@ -70,10 +70,23 @@ struct NetworkConfiguration {
         urlComponents.path = "/" + (self.path + path.components).joined(separator: "/")
 
         if params.count > 0 {
-            urlComponents.queryItems = params.map { parameter in URLQueryItem(name: parameter.key,
-                                                                              value: parameter.value) }
+            urlComponents.percentEncodedQueryItems = params.compactMap { parameter in
+                guard let name = parameter.key.addingPercentEncoding(withAllowedCharacters: urlQueryEncodedCharacterSet),
+                    let value = parameter.value.addingPercentEncoding(withAllowedCharacters: urlQueryEncodedCharacterSet) else {
+                    return nil
+                }
+
+                return URLQueryItem(name: name, value: value)
+            }
         }
 
         return urlComponents.url
     }
+
+    private var urlQueryEncodedCharacterSet: CharacterSet = {
+        var characterSet = CharacterSet.urlQueryAllowed
+        characterSet.remove("+")
+
+        return characterSet
+    }()
 }
