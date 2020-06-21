@@ -23,8 +23,14 @@ final class ThankYouViewControllerTests: XCTestCase {
 
         let theme = ENTheme()
 
+        let key = LabConfirmationKey(identifier: "Key Here",
+                                     bucketIdentifier: Data(),
+                                     confirmationKey: Data(),
+                                     validUntil: Date())
+
         viewController = ThankYouViewController(listener: listenr,
-                                                theme: theme)
+                                                theme: theme,
+                                                exposureConfirmationKey: key)
     }
 
     // MARK: - Tests

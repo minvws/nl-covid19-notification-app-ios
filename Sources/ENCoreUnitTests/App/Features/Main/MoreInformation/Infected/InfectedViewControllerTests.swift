@@ -13,6 +13,7 @@ import XCTest
 final class InfectedViewControllerTests: XCTestCase {
     private var viewController: InfectedViewController!
     private let router = InfectedRoutingMock()
+    private let exposureController = ExposureControllingMock()
 
     override func setUp() {
         super.setUp()
@@ -21,7 +22,7 @@ final class InfectedViewControllerTests: XCTestCase {
 
         let theme = ENTheme()
 
-        viewController = InfectedViewController(theme: theme)
+        viewController = InfectedViewController(theme: theme, exposureController: exposureController)
         viewController.router = router
     }
 
@@ -33,7 +34,10 @@ final class InfectedViewControllerTests: XCTestCase {
     }
 
     func test_infected_snapshotStateSuccess() {
-        viewController.state = .success
+        viewController.state = .success(confirmationKey: LabConfirmationKey(identifier: "key here",
+                                                                            bucketIdentifier: Data(),
+                                                                            confirmationKey: Data(),
+                                                                            validUntil: Date()))
         assertSnapshot(matching: viewController, as: .image())
     }
 
