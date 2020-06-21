@@ -71,18 +71,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureStateStream.exposureState.sink { [weak self] state in
             if state.activeState.isAuthorized {
                 self?.routeToMain()
-
-                self?.exposureController.requestLabConfirmationKey { result in
-                    switch result {
-                    case let .success(key):
-                        self?.exposureController.requestUploadKeys(forLabConfirmationKey: key) { result in
-                            print(result)
-                        }
-                    case .failure:
-                        print("Cannot fetch key")
-                    }
-                }
-
             } else {
                 self?.routeToOnboarding()
             }
