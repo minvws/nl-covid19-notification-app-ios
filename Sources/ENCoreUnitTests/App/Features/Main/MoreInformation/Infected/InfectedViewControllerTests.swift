@@ -7,6 +7,7 @@
 
 @testable import ENCore
 import Foundation
+import SnapshotTesting
 import XCTest
 
 final class InfectedViewControllerTests: XCTestCase {
@@ -16,11 +17,28 @@ final class InfectedViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        SnapshotTesting.record = false
+
         let theme = ENTheme()
 
         viewController = InfectedViewController(theme: theme)
         viewController.router = router
     }
 
-    // TODO: Add tests
+    // MARK: - Tests
+
+    func testSnapshotStateLoading() {
+        viewController.state = .loading
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func testSnapshotStateSuccess() {
+        viewController.state = .success
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func testSnapshotStateError() {
+        viewController.state = .error
+        assertSnapshot(matching: viewController, as: .image())
+    }
 }

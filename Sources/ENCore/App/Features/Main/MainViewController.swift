@@ -22,6 +22,7 @@ protocol MainRouting: Routing {
     func detachRequestTest(shouldDismissViewController: Bool)
 
     func routeToInfected()
+    func detachInfected(shouldDismissViewController: Bool)
 }
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, MoreInformationListener {
@@ -29,6 +30,21 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     // MARK: - MainViewControllable
 
     weak var router: MainRouting?
+
+    // MARK: - View Lifecycle
+
+    override func loadView() {
+        self.view = mainView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        router?.attachStatus(topAnchor: view.topAnchor)
+        router?.attachMoreInformation()
+    }
+
+    // MARK: - Internal
 
     func embed(stackedViewController: ViewControllable) {
         addChild(stackedViewController.uiviewController)
@@ -106,17 +122,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachRequestTest(shouldDismissViewController: shouldDismissViewController)
     }
 
-    // MARK: - View Lifecycle
+    // MARK: - InfectedListener
 
-    override func loadView() {
-        self.view = mainView
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        router?.attachStatus(topAnchor: view.topAnchor)
-        router?.attachMoreInformation()
+    func infectedWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachInfected(shouldDismissViewController: shouldDismissViewController)
     }
 
     // MARK: - StatusListener
