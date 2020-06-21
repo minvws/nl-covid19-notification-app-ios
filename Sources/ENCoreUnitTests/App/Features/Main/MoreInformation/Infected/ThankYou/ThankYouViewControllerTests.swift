@@ -29,7 +29,7 @@ final class ThankYouViewControllerTests: XCTestCase {
 
     // MARK: - Tests
 
-    func testSnapshotStateLoading() {
+    func test_thankYou_snapshotStateLoading() {
         assertSnapshot(matching: viewController, as: .image())
     }
 }

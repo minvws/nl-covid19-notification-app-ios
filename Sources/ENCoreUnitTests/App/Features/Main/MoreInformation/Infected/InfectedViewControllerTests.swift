@@ -27,17 +27,17 @@ final class InfectedViewControllerTests: XCTestCase {
 
     // MARK: - Tests
 
-    func testSnapshotStateLoading() {
+    func test_infected_snapshotStateLoading() {
         viewController.state = .loading
         assertSnapshot(matching: viewController, as: .image())
     }
 
-    func testSnapshotStateSuccess() {
+    func test_infected_snapshotStateSuccess() {
         viewController.state = .success
         assertSnapshot(matching: viewController, as: .image())
     }
 
-    func testSnapshotStateError() {
+    func test_infected_snapshotStateError() {
         viewController.state = .error
         assertSnapshot(matching: viewController, as: .image())
     }

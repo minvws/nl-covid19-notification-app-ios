@@ -169,9 +169,14 @@ final class ExposureControllerTests: XCTestCase {
 
         var receivedResult: Result<ExposureConfirmationKey, ExposureDataError>!
 
+        let exp = expectation(description: "Wait for async")
         controller.requestLabConfirmationKey { result in
             receivedResult = result
+
+            exp.fulfill()
         }
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 1)
         XCTAssertNotNil(receivedResult)
@@ -190,9 +195,13 @@ final class ExposureControllerTests: XCTestCase {
 
         var receivedResult: Result<ExposureConfirmationKey, ExposureDataError>!
 
+        let exp = expectation(description: "Wait for async")
         controller.requestLabConfirmationKey { result in
             receivedResult = result
+            exp.fulfill()
         }
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 1)
         XCTAssertNotNil(receivedResult)
