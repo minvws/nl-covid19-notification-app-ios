@@ -17,7 +17,8 @@ protocol ThankYouBuildable {
     /// Builds ThankYou
     ///
     /// - Parameter listener: Listener of created ThankYouViewController
-    func build(withListener listener: ThankYouListener) -> ViewControllable
+    func build(withListener listener: ThankYouListener,
+               exposureConfirmationKey: ExposureConfirmationKey) -> ViewControllable
 }
 
 protocol ThankYouDependency {
@@ -27,9 +28,10 @@ protocol ThankYouDependency {
 private final class ThankYouDependencyProvider: DependencyProvider<ThankYouDependency> {}
 
 final class ThankYouBuilder: Builder<ThankYouDependency>, ThankYouBuildable {
-    func build(withListener listener: ThankYouListener) -> ViewControllable {
+    func build(withListener listener: ThankYouListener, exposureConfirmationKey: ExposureConfirmationKey) -> ViewControllable {
         let dependencyProvider = ThankYouDependencyProvider(dependency: dependency)
         return ThankYouViewController(listener: listener,
-                                      theme: dependencyProvider.dependency.theme)
+                                      theme: dependencyProvider.dependency.theme,
+                                      exposureConfirmationKey: exposureConfirmationKey)
     }
 }

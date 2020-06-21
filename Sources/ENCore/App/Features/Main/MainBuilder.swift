@@ -13,6 +13,7 @@ protocol MainBuildable {
 protocol MainDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
+    var exposureController: ExposureControlling { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency {
@@ -47,6 +48,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var infectedBuilder: InfectedBuildable {
         return InfectedBuilder(dependency: self)
+    }
+
+    var exposureController: ExposureControlling {
+        return dependency.exposureController
     }
 }
 

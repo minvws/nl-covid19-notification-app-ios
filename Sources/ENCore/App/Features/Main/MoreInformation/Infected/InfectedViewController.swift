@@ -10,7 +10,7 @@ import UIKit
 
 /// @mockable
 protocol InfectedRouting: Routing {
-    func didUploadCodes()
+    func didUploadCodes(withKey key: ExposureConfirmationKey)
     func infectedWantsDismissal(shouldDismissViewController: Bool)
 }
 
@@ -19,7 +19,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     // NOTE: This is temp, should hook into the framework
     enum State {
         case loading
-        case success
+        case success(confirmationKey: ExposureConfirmationKey)
         case error
     }
 
@@ -29,6 +29,12 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         didSet {
             updateState()
         }
+    }
+
+    init(theme: Theme, exposureController: ExposureControlling) {
+        self.exposureController = exposureController
+
+        super.init(theme: theme)
     }
 
     // MARK: - Overrides
@@ -47,7 +53,18 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
                                                             action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.actionHandler = { [weak self] in
-            self?.router?.didUploadCodes()
+            self?.uploadCodes()
+        }
+
+        state = .loading
+
+        exposureController.requestLabConfirmationKey { [weak self] result in
+            switch result {
+            case let .success(key):
+                self?.state = .success(confirmationKey: key)
+            case .failure:
+                self?.state = .error
+            }
         }
     }
 
@@ -71,7 +88,33 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
     // MARK: - Private
 
+    private func uploadCodes() {
+        guard case let .success(key) = state else { return }
+
+        exposureController.requestUploadKeys(forLabConfirmationKey: key) { [weak self] result in
+            switch result {
+            case .success:
+                self?.router?.didUploadCodes(withKey: key)
+            default:
+                // TODO: Error Handling
+
+                let alertController = UIAlertController(title: "Something went wrong",
+                                                        message: "Error while uploading codes: \(result)",
+                                                        preferredStyle: .alert)
+
+                let alertAction = UIAlertAction(title: "Ok", style: .default) { _ in
+                    alertController.dismiss(animated: true, completion: nil)
+                }
+
+                alertController.addAction(alertAction)
+
+                self?.present(alertController, animated: true, completion: nil)
+            }
+        }
+    }
+
     private lazy var internalView: InfectedView = InfectedView(theme: self.theme)
+    private let exposureController: ExposureControlling
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         router?.infectedWantsDismissal(shouldDismissViewController: true)
@@ -82,9 +125,9 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         case .loading:
             internalView.infoView.isActionButtonEnabled = false
             internalView.controlCode.set(state: .loading("Controlecode aan het ophalen"))
-        case .success:
+        case let .success(key):
             internalView.infoView.isActionButtonEnabled = true
-            internalView.controlCode.set(state: .success("A 4 5 - 3 2 F")) // TODO: Should be the real code
+            internalView.controlCode.set(state: .success(key.key))
         case .error:
             internalView.infoView.isActionButtonEnabled = false
             internalView.controlCode.set(state: .error("Er kon geen controlecode worden opgehaald. Controleer je internet- verbinding en probeer het opnieuw.") {

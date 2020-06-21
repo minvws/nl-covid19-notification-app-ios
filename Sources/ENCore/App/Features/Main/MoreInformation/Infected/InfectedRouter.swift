@@ -34,12 +34,13 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
         listener?.infectedWantsDismissal(shouldDismissViewController: shouldDismissViewController)
     }
 
-    func didUploadCodes() {
+    func didUploadCodes(withKey key: ExposureConfirmationKey) {
         guard thankYouViewController == nil else {
             return
         }
 
-        let thankYouViewController = thankYouBuilder.build(withListener: viewController)
+        let thankYouViewController = thankYouBuilder.build(withListener: viewController,
+                                                           exposureConfirmationKey: key)
         self.thankYouViewController = thankYouViewController
 
         viewController.push(viewController: thankYouViewController)

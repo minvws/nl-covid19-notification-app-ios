@@ -16,8 +16,9 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
 
     // MARK: - Init
 
-    init(listener: ThankYouListener, theme: Theme) {
+    init(listener: ThankYouListener, theme: Theme, exposureConfirmationKey: ExposureConfirmationKey) {
         self.listener = listener
+        self.exposureConfirmationKey = exposureConfirmationKey
 
         super.init(theme: theme)
     }
@@ -52,7 +53,8 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
     // MARK: - Private
 
     private weak var listener: ThankYouListener?
-    private lazy var internalView: ThankYouView = ThankYouView(theme: self.theme)
+    private lazy var internalView: ThankYouView = ThankYouView(theme: self.theme, exposureConfirmationKey: exposureConfirmationKey)
+    private let exposureConfirmationKey: ExposureConfirmationKey
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.thankYouWantsDismissal()
@@ -62,13 +64,16 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
 private final class ThankYouView: View {
 
     fileprivate let infoView: InfoView
+    private let exposureConfirmationKey: ExposureConfirmationKey
 
     // MARK: - Init
 
-    override init(theme: Theme) {
+    // TODO: Remove exposureConfirmationKey from init and make it settable
+    init(theme: Theme, exposureConfirmationKey: ExposureConfirmationKey) {
         let config = InfoViewConfig(actionButtonTitle: "Sluiten",
                                     headerImage: Image.named("ThankYouHeader"))
         self.infoView = InfoView(theme: theme, config: config)
+        self.exposureConfirmationKey = exposureConfirmationKey
         super.init(theme: theme)
     }
 
@@ -88,7 +93,7 @@ private final class ThankYouView: View {
                                                  theme: theme,
                                                  font: theme.fonts.body)
 
-        let footer = NSAttributedString(string: "Gebruikte controlecode: A 5 6 - 3 4 F")
+        let footer = NSAttributedString(string: "Gebruikte controlecode: \(exposureConfirmationKey.key)")
 
         let string = NSMutableAttributedString()
         string.append(header)
