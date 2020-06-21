@@ -225,10 +225,15 @@ final class ExposureControllerTests: XCTestCase {
         XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
         XCTAssertEqual(dataController.uploadCallCount, 0)
 
+        let exp = expectation(description: "Scheduling complete")
+
         var receivedResult: ExposureControllerUploadKeysResult!
         controller.requestUploadKeys(forLabConfirmationKey: LabConfirmationKey.test) { result in
             receivedResult = result
+            exp.fulfill()
         }
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
         XCTAssertEqual(dataController.uploadCallCount, 1)
