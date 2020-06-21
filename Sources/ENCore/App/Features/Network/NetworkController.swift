@@ -38,7 +38,8 @@ final class NetworkController: NetworkControlling {
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError> {
         return Future { promise in
-            let request = RegisterRequest(padding: "5342fds89erwtsdf")
+            let padding = self.cryptoUtility.randomBytes(ofLength: 32).base64EncodedString()
+            let request = RegisterRequest(padding: padding)
 
             self.networkManager.postRegister(request: request) { result in
 
@@ -60,9 +61,10 @@ final class NetworkController: NetworkControlling {
 
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError> {
         return Future { promise in
+            let padding = self.cryptoUtility.randomBytes(ofLength: 32).base64EncodedString()
             let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
                                           bucketID: labConfirmationKey.bucketIdentifier.base64EncodedString(),
-                                          padding: "aGFsbG8gcmVpbmllci4gYWxzIGplIGRpdCBsZWVzdCwgemVnIGJvZSEgb3Agd2ViZXgK")
+                                          padding: padding)
 
             guard let requestData = try? JSONEncoder().encode(request) else {
                 promise(.failure(.encodingError))
