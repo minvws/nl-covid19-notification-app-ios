@@ -23,6 +23,7 @@ targets:
         DEVELOPMENT_TEAM: C2H38GV99H
         SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
         OTHER_LDFLAGS: -weak_framework ENCore
+        USE_DEVELOPER_MENU: ${USE_DEVELOPER_MENU}
       configs:
         Debug:
           CODE_SIGN_IDENTITY: "Apple Development"
