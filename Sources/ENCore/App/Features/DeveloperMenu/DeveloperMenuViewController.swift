@@ -55,10 +55,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
     // MARK: - Internal
 
-    func present(actionItems: [UIAlertAction], title: String) {
+    func present(actionItems: [UIAlertAction], title: String, message: String? = nil) {
         let actionViewController = UIAlertController(title: title,
-                                                     message: nil,
-                                                     preferredStyle: .actionSheet)
+                                                     message: message,
+                                                     preferredStyle: .alert)
         actionItems.forEach { actionItem in actionViewController.addAction(actionItem) }
 
         let cancelItem = UIAlertAction(title: "Cancel",
@@ -156,7 +156,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.listener?.developerMenuRequestMessage(title: "Message from Developer Menu", body: "The body of the message which was launched from the Developer Menu"); self?.hide() }),
                 DeveloperItem(title: "Schedule Message Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
-                              action: { [weak self] in self?.scheduleNotification(); self?.hide() })
+                              action: { [weak self] in self?.wantsScheduleNotification() })
             ])
         ]
     }
@@ -266,6 +266,32 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
     }
 
+    private func wantsScheduleNotification() {
+        let unc = UNUserNotificationCenter.current()
+        unc.getNotificationSettings { [weak self] settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .authorized {
+                    self?.scheduleNotification()
+                } else {
+                    self?.displayNotificationError()
+                }
+            }
+        }
+    }
+
+    private func displayNotificationError() {
+        let alertController = UIAlertController(title: "Push Notification Error",
+                                                message: "Push Notifications are not enabled, please go through the Onboarding Flow and enable push notifcations",
+                                                preferredStyle: .alert)
+        let cancelItem = UIAlertAction(title: "Close",
+                                       style: .destructive,
+                                       handler: { [weak alertController] _ in
+                                           alertController?.dismiss(animated: true, completion: nil)
+        })
+        alertController.addAction(cancelItem)
+        present(alertController, animated: true, completion: nil)
+    }
+
     private func scheduleNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Local Notification"
@@ -280,12 +306,13 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         let identifier = "Local Notification"
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
 
-        let unnc = UNUserNotificationCenter.current()
-        unnc.add(request) { error in
+        let unc = UNUserNotificationCenter.current()
+        unc.add(request) { error in
             if let error = error {
                 print("🔥 Error \(error.localizedDescription)")
             }
         }
+        hide()
     }
 
     private func show() {

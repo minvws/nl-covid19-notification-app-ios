@@ -94,6 +94,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         mutablePushNotificationStream
             .pushNotificationStream
             .sink { [weak self] (notificationRespone: UNNotificationResponse) in
+                // TODO: Use the identifier to know which flow to launch
                 let content = notificationRespone.notification.request.content
                 self?.routeToMessage(title: content.title, body: content.body)
             }.store(in: &disposeBag)
