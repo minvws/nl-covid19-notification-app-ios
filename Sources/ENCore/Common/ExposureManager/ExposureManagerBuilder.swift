@@ -68,7 +68,6 @@ protocol ExposureManagerBuildable {
 
 final class ExposureManagerBuilder: Builder<EmptyDependency>, ExposureManagerBuildable {
 
-    
     func build() -> ExposureManaging? {
         if #available(iOS 13.5, *) {
             #if targetEnvironment(simulator)

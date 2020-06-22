@@ -127,6 +127,11 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Network Configuration",
                               subtitle: "Current: \(self.mutableNetworkConfigurationStream.configuration.name)",
                               action: { [weak self] in self?.changeNetworkConfiguration() })
+            ]),
+            ("Push Notifications", [
+                DeveloperItem(title: "Launch Message Flow",
+                              subtitle: "Launches the message flow as would be done from a push notification",
+                              action: { [weak self] in self?.listener?.developerMenuRequestMessage(); self?.hide() })
             ])
         ]
     }

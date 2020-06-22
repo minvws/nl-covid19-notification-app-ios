@@ -14,6 +14,7 @@ final class RootRouterTests: XCTestCase {
     private let viewController = RootViewControllableMock()
     private let onboardingBuilder = OnboardingBuildableMock()
     private let mainBuilder = MainBuildableMock()
+    private let messageBuilder = MessageBuildableMock()
     private let developerMenuBuilder = DeveloperMenuBuildableMock()
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
@@ -26,6 +27,7 @@ final class RootRouterTests: XCTestCase {
         router = RootRouter(viewController: viewController,
                             onboardingBuilder: onboardingBuilder,
                             mainBuilder: mainBuilder,
+                            messageBuilder: messageBuilder,
                             exposureController: exposureController,
                             exposureStateStream: exposureStateStream,
                             developerMenuBuilder: developerMenuBuilder)
