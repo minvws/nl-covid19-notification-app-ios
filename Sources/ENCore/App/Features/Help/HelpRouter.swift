@@ -29,25 +29,26 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
         viewController.router = self
     }
 
-    func routeToOverview() {
+    func routeToOverview(shouldShowEnableAppButton: Bool) {
         guard helpOverviewViewController == nil else {
             return
         }
 
         let helpOverviewViewController = helpOverviewBuilder.build(withListener: viewController,
-                                                                   shouldShowEnableAppButton: true)
-        // TODO: Use correct value for shouldShowEnableAppButton
+                                                                   shouldShowEnableAppButton: shouldShowEnableAppButton)
+        
         self.helpOverviewViewController = helpOverviewViewController
-
+        
         viewController.push(viewController: helpOverviewViewController, animated: false)
     }
 
-    func routeTo(question: HelpQuestion) {
+    func routeTo(question: HelpQuestion, shouldShowEnableAppButton: Bool) {
         let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
+                                                               shouldShowEnableAppButton: shouldShowEnableAppButton,
                                                                question: question)
         self.helpDetailViewController = helpDetailViewController
 
-        viewController.push(viewController: helpDetailViewController, animated: false)
+        viewController.push(viewController: helpDetailViewController, animated: true)
     }
 
     func detachHelpDetail(shouldDismissViewController: Bool) {

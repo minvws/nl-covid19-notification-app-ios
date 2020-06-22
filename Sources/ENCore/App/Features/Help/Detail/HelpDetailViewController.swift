@@ -11,9 +11,11 @@ import WebKit
 final class HelpDetailViewController: ViewController {
 
     init(listener: HelpDetailListener,
-         question: HelpQuestion,
-         theme: Theme) {
+        shouldShowEnableAppButton: Bool,
+        question: HelpQuestion,
+        theme: Theme) {
         self.listener = listener
+        self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.question = question
 
         super.init(theme: theme)
@@ -31,7 +33,13 @@ final class HelpDetailViewController: ViewController {
 
         internalView.titleLabel.attributedText = question.attributedTitle
         internalView.contentTextView.attributedText = question.attributedAnswer
+        internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
         internalView.closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
+        internalView.acceptButton.isHidden = !shouldShowEnableAppButton
+    }
+
+    @objc func acceptButtonPressed() {
+        listener?.helpDetailDidTapEnableAppButton()
     }
 
     @objc func closeButtonPressed() {
@@ -41,6 +49,7 @@ final class HelpDetailViewController: ViewController {
     // MARK: - Private
 
     private weak var listener: HelpDetailListener?
+    private let shouldShowEnableAppButton: Bool
     private let question: HelpQuestion
     private lazy var internalView: HelpView = HelpView(theme: self.theme)
 }
@@ -103,35 +112,35 @@ private final class HelpView: View {
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             closeButton.heightAnchor.constraint(equalToConstant: 50),
             closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-        ])
+            ])
 
         constraints.append([
             titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 0),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-        ])
+            ])
 
         constraints.append([
             contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
             contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             contentTextView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
+            ])
 
         constraints.append([
             gradientImageView.heightAnchor.constraint(equalToConstant: 25),
             gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             gradientImageView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
+            ])
 
         constraints.append([
             acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
+            ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }

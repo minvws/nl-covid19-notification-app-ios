@@ -9,10 +9,12 @@ import Foundation
 
 protocol HelpDetailListener: AnyObject {
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool)
+    func helpDetailDidTapEnableAppButton()
 }
 
 protocol HelpDetailBuildable {
     func build(withListener listener: HelpDetailListener,
+               shouldShowEnableAppButton: Bool,
                question: HelpQuestion) -> ViewControllable
 }
 
@@ -24,10 +26,12 @@ private final class HelpDetailDependencyProvider: DependencyProvider<HelpDetailD
 
 final class HelpDetailBuilder: Builder<HelpDetailDependency>, HelpDetailBuildable {
     func build(withListener listener: HelpDetailListener,
+               shouldShowEnableAppButton: Bool,
                question: HelpQuestion) -> ViewControllable {
         let dependencyProvider = HelpDetailDependencyProvider(dependency: dependency)
 
         return HelpDetailViewController(listener: listener,
+                                        shouldShowEnableAppButton: shouldShowEnableAppButton,
                                         question: question,
                                         theme: dependencyProvider.dependency.theme)
     }

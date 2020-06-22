@@ -31,6 +31,7 @@ final class HelpOverviewBuilder: Builder<HelpOverviewDependency>, HelpOverviewBu
         let dependencyProvider = HelpOverviewDependencyDependencyProvider(dependency: dependency)
 
         return HelpOverviewViewController(listener: listener,
+                                          shouldShowEnableAppButton: shouldShowEnableAppButton,
                                           helpManager: dependencyProvider.dependency.helpManager,
                                           theme: dependencyProvider.dependency.theme)
     }

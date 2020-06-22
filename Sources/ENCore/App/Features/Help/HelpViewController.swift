@@ -10,18 +10,20 @@ import WebKit
 
 /// @mockable
 protocol HelpRouting: Routing {
-    func routeToOverview()
-    func routeTo(question: HelpQuestion)
+    func routeToOverview(shouldShowEnableAppButton: Bool)
+    func routeTo(question: HelpQuestion, shouldShowEnableAppButton: Bool)
 }
 
 final class HelpViewController: NavigationController, HelpViewControllable {
 
     weak var router: HelpRouting?
 
-    init(listener: HelpListener, theme: Theme) {
+    init(listener: HelpListener, shouldShowEnableAppButton: Bool, exposureController: ExposureControlling, theme: Theme) {
         self.listener = listener
+        self.shouldShowEnableAppButton = shouldShowEnableAppButton
+        self.exposureController = exposureController
         super.init(theme: theme)
-        modalPresentationStyle = .fullScreen
+        modalPresentationStyle = .popover
     }
 
     // MARK: - HelpViewControllable
@@ -37,21 +39,29 @@ final class HelpViewController: NavigationController, HelpViewControllable {
     // MARK: - HelpOverviewListener
 
     func helpOverviewRequestsRouteTo(question: HelpQuestion) {
-        // TODO:
+        router?.routeTo(question: question, shouldShowEnableAppButton: shouldShowEnableAppButton)
     }
 
     func helpOverviewRequestsDismissal(shouldDismissViewController: Bool) {
-        // TODO:
+        self.dismiss(animated: true)
     }
 
     func helpOverviewDidTapEnableAppButton() {
-        // TODO:
+        self.dismiss(animated: true) {
+            self.listener?.helpRequestsEnableApp()
+        }
     }
 
     // MARK: - HelpDetailListener
 
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
-        // TODO:
+        self.dismiss(animated: true)
+    }
+
+    func helpDetailDidTapEnableAppButton() {
+        self.dismiss(animated: true) {
+            self.listener?.helpRequestsEnableApp()
+        }
     }
 
     // MARK: - ViewController Lifecycle
@@ -59,10 +69,12 @@ final class HelpViewController: NavigationController, HelpViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        router?.routeToOverview()
+        router?.routeToOverview(shouldShowEnableAppButton: shouldShowEnableAppButton)
     }
 
     // MARK: - Private
 
     private weak var listener: HelpListener?
+    private let shouldShowEnableAppButton: Bool
+    private let exposureController: ExposureControlling
 }

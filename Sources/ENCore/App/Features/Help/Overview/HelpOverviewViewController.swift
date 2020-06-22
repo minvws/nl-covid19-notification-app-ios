@@ -8,11 +8,14 @@
 import UIKit
 
 final class HelpOverviewViewController: ViewController, UITableViewDelegate, UITableViewDataSource {
+
     init(listener: HelpOverviewListener,
-         helpManager: HelpManaging,
-         theme: Theme) {
+        shouldShowEnableAppButton: Bool,
+        helpManager: HelpManaging,
+        theme: Theme) {
 
         self.listener = listener
+        self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.helpManager = helpManager
 
         super.init(theme: theme)
@@ -33,6 +36,9 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
 
         internalView.closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
+
+        internalView.acceptButton.isHidden = !shouldShowEnableAppButton
+        
         internalView.tableView.delegate = self
         internalView.tableView.dataSource = self
     }
@@ -88,6 +94,7 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     // MARK: - Private
 
     private weak var listener: HelpOverviewListener?
+    private let shouldShowEnableAppButton: Bool
     private let helpManager: HelpManaging
     private lazy var internalView: HelpView = HelpView(theme: self.theme)
 }
@@ -163,35 +170,35 @@ private final class HelpView: View {
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             closeButton.heightAnchor.constraint(equalToConstant: 50),
             closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-        ])
+            ])
 
         constraints.append([
             titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 0),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-        ])
+            ])
 
         constraints.append([
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 25),
             subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             subtitleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-        ])
+            ])
 
         constraints.append([
             tableView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 15),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             tableView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
+            ])
 
         constraints.append([
             acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
+            ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }

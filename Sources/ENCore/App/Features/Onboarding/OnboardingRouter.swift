@@ -8,7 +8,7 @@
 import Foundation
 
 /// @mockable
-protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener {
+protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
@@ -18,11 +18,11 @@ protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, O
 final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
 
     init(viewController: OnboardingViewControllable,
-         stepBuilder: OnboardingStepBuildable,
-         consentBuilder: OnboardingConsentBuildable,
-         webBuilder: WebBuildable,
-         shareSheetBuilder: ShareSheetBuildable,
-         helpBuilder: HelpBuildable) {
+        stepBuilder: OnboardingStepBuildable,
+        consentBuilder: OnboardingConsentBuildable,
+        webBuilder: WebBuildable,
+        shareSheetBuilder: ShareSheetBuildable,
+        helpBuilder: HelpBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
         self.webBuilder = webBuilder
@@ -60,7 +60,12 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     }
 
     func routeToHelp() {
-        // TODO: Build and push help
+        let helpRouter = helpBuilder.build(withListener: viewController, shouldShowEnableAppButton: true)
+        self.helpRouter = helpRouter
+
+        viewController.present(viewController: helpRouter.viewControllable,
+            animated: true,
+            completion: nil)
     }
 
     private let stepBuilder: OnboardingStepBuildable
@@ -77,4 +82,5 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
 
     private let helpBuilder: HelpBuildable
     private var helpViewController: ViewControllable?
+    private var helpRouter: Routing?
 }

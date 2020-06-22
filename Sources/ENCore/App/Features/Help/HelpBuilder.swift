@@ -9,7 +9,6 @@ import Foundation
 
 /// @mockable
 protocol HelpListener: AnyObject {
-    func helpRequestsDismissal(shouldDismissViewController: Bool)
     func helpRequestsEnableApp()
 }
 
@@ -24,6 +23,7 @@ protocol HelpBuildable {
 
 protocol HelpDependency {
     var theme: Theme { get }
+    var exposureController: ExposureControlling { get }
 }
 
 private final class HelpDependencyProvider: DependencyProvider<HelpDependency>, HelpOverviewDependency, HelpDetailDependency {
@@ -57,6 +57,8 @@ final class HelpBuilder: Builder<HelpDependency>, HelpBuildable {
                shouldShowEnableAppButton: Bool) -> Routing {
         let dependencyProvider = HelpDependencyProvider(dependency: dependency)
         let viewController = HelpViewController(listener: listener,
+                                                shouldShowEnableAppButton: shouldShowEnableAppButton,
+                                                exposureController: dependencyProvider.dependency.exposureController,
                                                 theme: dependencyProvider.dependency.theme)
 
         return HelpRouter(viewController: viewController,
