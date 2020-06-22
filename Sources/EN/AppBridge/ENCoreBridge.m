@@ -51,7 +51,8 @@
 }
 
 - (void)didReceiveRemoteNotification:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
-    
+    [_appRoot receiveRemoteNotificationWithResponse:response];
+    completionHandler();
 }
 
 @end

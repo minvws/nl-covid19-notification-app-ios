@@ -41,7 +41,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          messageBuilder: MessageBuildable,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
-         developerMenuBuilder: DeveloperMenuBuildable) {
+         developerMenuBuilder: DeveloperMenuBuildable,
+         mutablePushNotificationStream: MutablePushNotificationStreaming) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.messageBuilder = messageBuilder
@@ -49,6 +50,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
+
+        self.mutablePushNotificationStream = mutablePushNotificationStream
 
         super.init(viewController: viewController)
 
@@ -65,9 +68,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         return viewController.uiviewController
     }
 
-    var mutablePushNotificationStream: MutablePushNotificationStreaming {
-        fatalError()
-    }
+    let mutablePushNotificationStream: MutablePushNotificationStreaming
 
     func start() {
         guard mainRouter == nil, onboardingRouter == nil else {
@@ -89,6 +90,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         #if USE_DEVELOPER_MENU || DEBUG
             attachDeveloperMenu()
         #endif
+
+        mutablePushNotificationStream
+            .pushNotificationStream
+            .sink { notification in
+                print(notification)
+            }.store(in: &disposeBag)
     }
 
     // MARK: - RootRouting

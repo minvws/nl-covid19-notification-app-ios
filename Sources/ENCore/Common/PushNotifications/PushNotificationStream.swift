@@ -5,8 +5,31 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
+import NotificationCenter
 
-public protocol PushNotificaionStreaming {}
+protocol PushNotificaionStreaming {
+    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> { get }
+}
 
-public protocol MutablePushNotificationStreaming: PushNotificaionStreaming {}
+protocol MutablePushNotificationStreaming: PushNotificaionStreaming {
+    func update(response: UNNotificationResponse)
+}
+
+final class PushNotificaionStream: MutablePushNotificationStreaming {
+
+    // MARK: - PushNotificaionStreaming
+
+    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
+        return subject.eraseToAnyPublisher()
+    }
+
+    // MARK: - MutablePushNotificationStreaming
+
+    func update(response: UNNotificationResponse) {
+        subject.send(response)
+    }
+
+    private let subject = PassthroughSubject<UNNotificationResponse, Never>()
+}

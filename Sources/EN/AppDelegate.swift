@@ -11,6 +11,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var pushNotificationHandler: ((UNUserNotificationCenter, UNNotificationResponse, @escaping () -> ()) -> ())?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -53,7 +54,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> ()) {
-        print("Notification: \(response)")
-        completionHandler()
+        if let pushNotificationHandler = pushNotificationHandler {
+            pushNotificationHandler(center, response, completionHandler)
+        }
     }
 }
