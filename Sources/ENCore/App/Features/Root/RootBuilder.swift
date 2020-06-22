@@ -7,12 +7,17 @@
 
 import UIKit
 
+typealias AppStartResult = () -> ()
+
 /// The App's entry point.
 ///
 /// @mockable
 protocol AppEntryPoint {
     /// The `UIViewController` instance that should be used as `keyWindow` property
     var uiviewController: UIViewController { get }
+
+    /// The Stream to publish received PushNotifications to for the Root Router to handle
+    var mutablePushNotificationStream: MutablePushNotificationStreaming { get }
 
     /// Starts the application. Start should be called once
     /// the `SceneDelegate`'s `sceneDidBecomeActive` method is called.

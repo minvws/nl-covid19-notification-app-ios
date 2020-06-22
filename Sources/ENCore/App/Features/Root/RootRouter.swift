@@ -65,6 +65,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         return viewController.uiviewController
     }
 
+    var mutablePushNotificationStream: MutablePushNotificationStreaming {
+        fatalError()
+    }
+
     func start() {
         guard mainRouter == nil, onboardingRouter == nil else {
             // already started

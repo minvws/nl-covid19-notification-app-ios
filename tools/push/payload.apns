@@ -1,0 +1,10 @@
+{
+  "aps": {
+    "alert": {
+      "title": "Push Notification Title",
+      "body": "Push Notification Body --- Test Test Test"
+    },
+    "badge": 0
+  },
+  "Simulator Target Bundle": "nl.rijksoverheid.en"
+}
