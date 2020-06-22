@@ -12,6 +12,8 @@ import WebKit
 protocol HelpRouting: Routing {
     func routeToOverview(shouldShowEnableAppButton: Bool)
     func routeTo(question: HelpQuestion, shouldShowEnableAppButton: Bool)
+    func detachHelpOverview(shouldDismissViewController: Bool)
+    func detachHelpDetail(shouldDismissViewController: Bool)
 }
 
 final class HelpViewController: NavigationController, HelpViewControllable {
@@ -36,6 +38,10 @@ final class HelpViewController: NavigationController, HelpViewControllable {
         present(viewController.uiviewController, animated: animated, completion: completion)
     }
 
+    func dismiss(viewController: ViewControllable, animated: Bool) {
+        viewController.uiviewController.dismiss(animated: animated)
+    }
+
     // MARK: - HelpOverviewListener
 
     func helpOverviewRequestsRouteTo(question: HelpQuestion) {
@@ -43,25 +49,25 @@ final class HelpViewController: NavigationController, HelpViewControllable {
     }
 
     func helpOverviewRequestsDismissal(shouldDismissViewController: Bool) {
-        self.dismiss(animated: true)
+        router?.detachHelpOverview(shouldDismissViewController: true)
     }
 
     func helpOverviewDidTapEnableAppButton() {
-        self.dismiss(animated: true) {
-            self.listener?.helpRequestsEnableApp()
-        }
+        router?.detachHelpOverview(shouldDismissViewController: true)
+        self.listener?.helpRequestsEnableApp()
     }
 
     // MARK: - HelpDetailListener
 
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
-        self.dismiss(animated: true)
+        router?.detachHelpDetail(shouldDismissViewController: true)
     }
 
     func helpDetailDidTapEnableAppButton() {
-        self.dismiss(animated: true) {
-            self.listener?.helpRequestsEnableApp()
-        }
+
+        router?.detachHelpDetail(shouldDismissViewController: true)
+        self.listener?.helpRequestsEnableApp()
+
     }
 
     // MARK: - ViewController Lifecycle

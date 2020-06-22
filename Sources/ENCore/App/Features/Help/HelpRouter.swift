@@ -13,6 +13,7 @@ protocol HelpViewControllable: ViewControllable, HelpOverviewListener, HelpDetai
 
     func push(viewController: ViewControllable, animated: Bool)
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
+    func dismiss(viewController: ViewControllable, animated: Bool)
 }
 
 final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
@@ -51,8 +52,22 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
         viewController.push(viewController: helpDetailViewController, animated: true)
     }
 
+    func detachHelpOverview(shouldDismissViewController: Bool) {
+        guard let helpOverviewViewController = helpOverviewViewController else { return }
+        self.helpOverviewViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: helpOverviewViewController, animated: true)
+        }
+    }
+    
     func detachHelpDetail(shouldDismissViewController: Bool) {
-        // TODO: Close Help Detail and dismiss viewController when needed
+        guard let helpDetailViewController = helpDetailViewController else { return }
+        self.helpDetailViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: helpDetailViewController, animated: true)
+        }
     }
 
     private let helpOverviewBuilder: HelpOverviewBuildable
