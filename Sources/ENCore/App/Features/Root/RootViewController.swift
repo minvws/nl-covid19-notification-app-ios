@@ -22,7 +22,7 @@ protocol RootRouting: Routing {
     func detachOnboardingAndRouteToMain(animated: Bool)
 
     /// Routes to the message flow
-    func routeToMessage()
+    func routeToMessage(title: String, body: String)
 
     /// Detaches the message flow
     ///
@@ -53,7 +53,11 @@ final class RootViewController: ViewController, RootViewControllable {
     }
 
     func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        viewController.uiviewController.dismiss(animated: animated, completion: completion)
+        if let navigationController = viewController.uiviewController.navigationController {
+            navigationController.dismiss(animated: true, completion: completion)
+        } else {
+            viewController.uiviewController.dismiss(animated: animated, completion: completion)
+        }
     }
 
     func embed(viewController: ViewControllable) {
@@ -81,7 +85,7 @@ final class RootViewController: ViewController, RootViewControllable {
         router?.routeToOnboarding()
     }
 
-    func developerMenuRequestMessage() {
-        router?.routeToMessage()
+    func developerMenuRequestMessage(title: String, body: String) {
+        router?.routeToMessage(title: title, body: body)
     }
 }

@@ -93,8 +93,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         mutablePushNotificationStream
             .pushNotificationStream
-            .sink { notification in
-                print(notification)
+            .sink { [weak self] (notificationRespone: UNNotificationResponse) in
+                let content = notificationRespone.notification.request.content
+                self?.routeToMessage(title: content.title, body: content.body)
             }.store(in: &disposeBag)
     }
 
@@ -119,11 +120,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         detachOnboarding(animated: animated)
     }
 
-    func routeToMessage() {
+    func routeToMessage(title: String, body: String) {
         guard messageViewController == nil else {
             return
         }
-        let messageViewController = messageBuilder.build(withListener: viewController)
+        let messageViewController = messageBuilder.build(withListener: viewController, title: title, body: body)
         self.messageViewController = messageViewController
 
         viewController.presentInNavigationController(viewController: messageViewController, animated: true)

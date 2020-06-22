@@ -2,7 +2,7 @@
   "aps": {
     "alert": {
       "title": "Push Notification Title",
-      "body": "Push Notification Body --- Test Test Test"
+      "body": "Push Notification Body with Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec dictum urna."
     },
     "badge": 0
   },

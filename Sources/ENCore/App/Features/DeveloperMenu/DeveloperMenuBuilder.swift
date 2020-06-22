@@ -9,7 +9,7 @@ import Foundation
 
 protocol DeveloperMenuListener: AnyObject {
     func developerMenuRequestsOnboardingFlow()
-    func developerMenuRequestMessage()
+    func developerMenuRequestMessage(title: String, body: String)
 }
 
 /// @mockable

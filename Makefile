@@ -63,3 +63,6 @@ run_carthage:
 
 run_carthage_update:
 	@carthage validate
+
+push_notification:
+	@xcrun simctl push booted nl.rijksoverheid.en tools/push/payload.apns
