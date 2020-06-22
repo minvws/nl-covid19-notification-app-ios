@@ -47,6 +47,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
         internalView.tableView.delegate = self
         internalView.tableView.dataSource = self
+        internalView.tableView.estimatedRowHeight = 44
+        internalView.tableView.rowHeight = UITableView.automaticDimension
 
         view.backgroundColor = .clear
     }
@@ -82,7 +84,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         let item = sections[indexPath.section].items[indexPath.row]
 
         cell.textLabel?.text = item.title
+        cell.textLabel?.numberOfLines = 0
         cell.detailTextLabel?.text = item.subtitle
+        cell.detailTextLabel?.numberOfLines = 0
 
         return cell
     }
