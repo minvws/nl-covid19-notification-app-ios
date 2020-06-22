@@ -20,6 +20,14 @@ protocol RootRouting: Routing {
     ///
     /// - Parameter animated: Animates the dismissal animation
     func detachOnboardingAndRouteToMain(animated: Bool)
+
+    /// Routes to the message flow
+    func routeToMessage()
+
+    /// Detaches the message flow
+    ///
+    /// - Parameter shouldDismissViewController: should the viewController actually be dismissed.
+    func detachMessage(shouldDismissViewController: Bool)
 }
 
 final class RootViewController: ViewController, RootViewControllable {
@@ -27,6 +35,16 @@ final class RootViewController: ViewController, RootViewControllable {
     // MARK: - RootViewControllable
 
     weak var router: RootRouting?
+
+    func presentInNavigationController(viewController: ViewControllable, animated: Bool) {
+        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
+
+        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
+            navigationController.presentationController?.delegate = presentationDelegate
+        }
+
+        present(navigationController, animated: animated, completion: nil)
+    }
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
         present(viewController.uiviewController,
@@ -51,9 +69,19 @@ final class RootViewController: ViewController, RootViewControllable {
         router?.detachOnboardingAndRouteToMain(animated: true)
     }
 
+    // MARK: - MessageListner
+
+    func messageWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachMessage(shouldDismissViewController: shouldDismissViewController)
+    }
+
     // MARK: - DeveloperMenu Listener
 
     func developerMenuRequestsOnboardingFlow() {
         router?.routeToOnboarding()
+    }
+
+    func developerMenuRequestMessage() {
+        router?.routeToMessage()
     }
 }

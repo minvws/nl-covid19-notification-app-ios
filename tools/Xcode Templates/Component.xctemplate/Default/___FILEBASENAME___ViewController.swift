@@ -6,26 +6,24 @@
  */
 
 import Foundation
+import UIKit
 
 /// @mockable
 protocol ___VARIABLE_componentName___ViewControllable: ViewControllable {}
 
 final class ___VARIABLE_componentName___ViewController: ViewController, ___VARIABLE_componentName___ViewControllable {
 
-    init(listener: ___VARIABLE_componentName___Listener, theme: Theme: Theme) {
+    init(listener: ___VARIABLE_componentName___Listener, theme: Theme) {
         self.listener = listener
 
         super.init(theme: theme)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
         self.view = internalView
+        self.view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {

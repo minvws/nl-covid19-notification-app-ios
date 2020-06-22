@@ -21,9 +21,10 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener {
     var router: RootRouting? { get set }
 
+    func presentInNavigationController(viewController: ViewControllable, animated: Bool)
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
     func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
 
@@ -37,11 +38,13 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     init(viewController: RootViewControllable,
          onboardingBuilder: OnboardingBuildable,
          mainBuilder: MainBuildable,
+         messageBuilder: MessageBuildable,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
          developerMenuBuilder: DeveloperMenuBuildable) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
+        self.messageBuilder = messageBuilder
         self.developerMenuBuilder = developerMenuBuilder
 
         self.exposureController = exposureController
@@ -105,6 +108,27 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         detachOnboarding(animated: animated)
     }
 
+    func routeToMessage() {
+        guard messageViewController == nil else {
+            return
+        }
+        let messageViewController = messageBuilder.build(withListener: viewController)
+        self.messageViewController = messageViewController
+
+        viewController.presentInNavigationController(viewController: messageViewController, animated: true)
+    }
+
+    func detachMessage(shouldDismissViewController: Bool) {
+        guard let messageViewController = messageViewController else {
+            return
+        }
+        self.messageViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: messageViewController, animated: true, completion: nil)
+        }
+    }
+
     // MARK: - Private
 
     private func routeToMain() {
@@ -146,6 +170,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let mainBuilder: MainBuildable
     private var mainRouter: Routing?
+
+    private let messageBuilder: MessageBuildable
+    private var messageViewController: ViewControllable?
 
     private var disposeBag = Set<AnyCancellable>()
 
