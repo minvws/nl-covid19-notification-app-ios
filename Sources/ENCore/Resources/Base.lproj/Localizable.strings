@@ -1,0 +1,152 @@
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
+
+// MARK: - General
+"" = "Empty localized string";
+"ok" = "Ok";
+"yes" = "Ja";
+"no" = "Nee";
+"warning" = "Waarschuwing";
+"back" = "Vorige";
+"cancel" = "Annuleren";
+"example" = "Voorbeeld";
+"close" = "Sluiten";
+"error.title" = "Something went wrong";
+
+// MARK: - Onboarding Steps
+"step1Title" = "Bescherm je vrienden, familie en de rest van Nederland";
+"step1Content" = "Deze app waarschuwt nadat je in de buurt bent geweest van iemand met het coronavirus. Zo kunnen we samen de verspreiding stoppen.";
+
+"step2Title" = "De app ziet via Bluetooth of je dicht bij iemand bent geweest";
+"step2Content" = "Hoe sterker het Bluetooth signaal, hoe dichter bij je bent geweest. Dit is 100% anoniem. De app ziet niet waar je bent geweest en gebruikt weinig energie.";
+
+"step3Title" = "Je krijgt een melding <u>nadat</u> je extra kans op besmetting hebt gelopen";
+"step3Content" = "Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die daarna positief is getest. Deze persoon moet ook de app gebruiken.";
+
+"step4Title" = "Fietste er iemand voorbij? Dan krijg je later geen melding.";
+"step4Content" = "De Bluetooth signaalsterkte was door de afstand namelijk erg zwak, en jullie waren maar kort bij elkaar in de buurt.";
+
+// MARK: - Onboarding
+"nextButtonTitle" = "Volgende";
+
+// MARK: - Consent Steps
+"consentStep1Title" = "Geef toestemming om COVID-19 blootstelling bij te houden";
+"consentStep1Content" = "";
+"consentStep1Summary1" = "Je Bluetooth-gegevens worden 14 dagen op je telefoon bewaard. Je kunt ze altijd zelf verwijderen.";
+"consentStep1Summary2" = "Je naam en andere persoonsgegevens worden niet gebruikt of bewaard.";
+"consentStep1Summary3" = "Je locatiegegevens worden niet gebruikt of bewaard";
+"consentStep1PrimaryButton" = "Toestemming geven";
+"consentStep1SecondaryButton" = "Hoe werkt de app precies?";
+
+"consentStep2Title" = "Zet je Bluetooth aan om de app te gebruiken";
+"consentStep2Content" = "Je Bluetooth staat uit. Daardoor kan de app niet zien of je bij anderen in de buurt bent geweest.";
+"consentStep2PrimaryButton" = "Bluetooth aanzetten";
+"consentStep2SecondaryButton" = "Misschien later";
+
+"consentStep3Title" = "Geef toestemming om meldingen te krijgen";
+"consentStep3Content" = "De app kan direct informatie met je delen wanneer dat nodig is.";
+"consentStep3PrimaryButton" = "Toestemming geven";
+"consentStep3SecondaryButton" = "Misschien later";
+
+// MARK: - Consent
+"skipStep" = "Sla over";
+
+// MARK: - Help
+"helpTitle" = "Over de app";
+"helpSubtitle" = "Veelgestelde vragen";
+"helpAcceptButtonTitle" = "Toestemming geven";
+"helpContent" = "
+<h1>Kan de app mijn locatie zien?</h1>
+<p>Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die de app ook op hun telefoon hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen twee apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.</p>
+<h1>Hoe kan de app anoniem zijn?</h1>
+<p>De app wisselt cijfers uit met andere telefoons. In deze cijfers staan geen persoonsgegevens of locatiegegevens van je. Ze zijn helemaal willekeurig. Het uitwisselen van cijfers gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.</br></br>Als deze persoon daarna positief test kan diegene in de app zijn of haar cijfers naar een centrale server sturen. Daarna krijgen jij en alle andere mensen die deze cijfers op hun telefoon hebben een melding. In deze melding staat alleen op welke datum je extra kans op besmetting hebt gelopen. Het is onbekend wie besmet is en waar je die persoon tegengekomen bent. </p>
+<h1>Wanneer krijg ik een melding van de app? </h1>
+<p>Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die daarna positief test op het coronavirus. Deze persoon moet ook de app hebben. Het RIVM en de GGD zien dat als een situatie waarin je besmet kunt raken.</br></br>Of je dichtbij genoeg bent geweest hangt af van de sterkte van het Bluetooth-signaal. Fietste er iemand voorbij op straat? Dan krijg je geen melding. Het Bluetooth-signaal was door de afstand te zwak en jullie waren maar kort bij elkaar in de buurt. Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt. </p>
+<h1>Werkt Bluetooth ook door muren heen?</h1>
+<p>Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon. De kans is bijvoorbeeld heel klein dat je app het Bluetooth-signaal van je buren ontvangt. En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman positief test en jullie niet in dezelfde ruimte zijn geweest.</p>
+<h1>Hoeveel stroom gebruikt Bluetooth?</h1>
+<p>De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.</p>
+";
+
+// MARK: - Message
+
+"message.title" = "Melding gekregen";
+"message.button.title" = "Bel voor coronatest";
+
+
+// MARK: - MoreInformation
+
+/* The title for the table of items in more infromation */
+"moreInformation.headerTitle" = "Meer informatie";
+
+"moreInformation.cell.about.title" = "Over de app";
+"moreInformation.cell.about.subtitle" = "Hoe de app werkt en wat dit voor je privacy betekent.";
+
+"moreInformation.cell.receivedNotification.title" = "Een melding ontvangen?";
+"moreInformation.cell.receivedNotification.subtitle" = "Wat je kunt doen nadat iemand anders het virus blijkt te hebben.";
+
+"moreInformation.cell.requestTest.title" = "Coronatest aanvragen";
+"moreInformation.cell.requestTest.subtitle" = "Ontdek zo snel mogelijk of je zelf besmet bent.";
+
+"moreInformation.cell.infected.title" = "Ik ben positief getest";
+"moreInformation.cell.infected.subtitle" = "Waarschuw anderen anoniem meteen nadat je hoort dat je besmet bent.";
+
+"moreInformation.info.title" = "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart.";
+
+"moreInformation.complaints.item1" = "(licht) hoesten";
+"moreInformation.complaints.item2" = "loopneus, niezen, keelpijn";
+"moreInformation.complaints.item3" = "verlies van geur en/of smaak kortademigheid/benauwdheid";
+"moreInformation.complaints.item4" = "koorts boven de 38 graden";
+"moreInformation.complaints.title" = "Klachten die passen bij het coronavirus (COVID-19)";
+"moreInformation.complaints.content" = "Heb je klachten? Blijf dan zoveel mogelijk thuis. Zijn het ernstige klachten? Bel meteen je huisarts.";
+
+
+// MARK: - MoreInformation | About
+
+"moreInformation.about.title" = "Over de app";
+
+// MARK: - MoreInformation | Infected
+
+"moreInformation.infected.title" = "Positief getest";
+"moreInformation.infected.loading" = "Controlecode aan het ophalen";
+"moreInformation.infected.upload" = "Codes uploaden";
+
+"moreInformation.infected.error" = "Er kon geen controlecode worden opgehaald. Controleer je internet- verbinding en probeer het opnieuw.";
+"moreInformation.infected.error.upload" = "Error while uploading codes: %@";
+
+"moreInformation.infected.section.anonomuslyWarnOthers.title" = "Waarschuw anderen anoniem dat je besmet bent";
+"moreInformation.infected.section.anonomuslyWarnOthers.content" = "Je kunt alleen mensen waarschuwen als je positief getest bent door de GGD. De GGD vraagt je tijdens een telefoongesprek naar dit scherm te gaan en de volgende instructies te volgen:";
+"moreInformation.infected.section.controlCode.title" = "1. Geef deze controlecode aan de GGD-medewerker:";
+"moreInformation.infected.section.uploadCodes.title" = "2. Upload de codes die op je telefoon bewaard zijn";
+"moreInformation.infected.section.controlCode.content" = "Alle mensen met de app waarbij je, in de periode dat je besmettelijk was, in de buurt bent geweest krijgen daarna een melding. Deze melding is anoniem.";
+
+// MARK: - MoreInformation | Infected | Thank You
+
+"moreInformation.thankyou.title" = "Bedankt";
+"moreInformation.thankyou.section.title" = "Bedankt en beterschap";
+"moreInformation.thankyou.section.header" = "Je hebt geholpen de verspreiding van het coronavirus te stoppen. Bedankt en veel sterkte met je verdere herstel.";
+/* The passed in parameter will be the exposure confirmation key */
+"moreInformation.thankyou.section.footer" = "Gebruikte controlecode: %@";
+"moreInformation.thankyou.list.item1" = "Blijf binnen tot 2 dagen na laatste klachten";
+"moreInformation.thankyou.list.item2" = "Voorkom contact met je huisgenoten";
+"moreInformation.thankyou.list.item3" = "Worden je klachten erger? Neem direct contact op met de GGD of je huisarts";
+
+// MARK: - MoreInformation | Received Notification
+
+"moreInformation.receivedNotification.title" = "Melding gekregen";
+"moreInformation.receivedNotification.button.title" = "Bel voor coronatest";
+"moreInformation.receivedNotification.notificationExplanation.title" = "Wat betekent het als je een melding krijgt?";
+"moreInformation.receivedNotification.notificationExplanation.content" = "De app stuurt een melding als je 10 minuten dicht bij iemand bent geweest die daarna positief is getest op het virus. Ook moet deze persoon de app gebruiken. Het RIVM en de GGD zien het contact als een mogelijk gevaarlijke situatie. Voor jezelf en je omgeving.";
+"moreInformation.receivedNotification.doCoronaTest.title" = "Doe een coronatest";
+"moreInformation.receivedNotification.doCoronaTest.content" = "De GGD raadt aan je te laten testen op het virus, zelfs als je je nog niet ziek voelt. Want zonder je ziek te voelen kun je het virus al verspreiden en zo anderen besmetten.\n\nTesten is gratis en kan meestal snel gebeuren. Blijf zo veel mogelijk thuis tot de uitslag bekend is.\n\nBel gratis 0800-1202 om een coranatest aan te vragen.";
+
+// MARK: - MoreInformation | Request Test
+
+"moreInformation.requestTest.title" = "Coronatest aanvragen";
+"moreInformation.requestTest.button.title" = "Bel voor coronatest";
+"moreInformation.requestTest.receivedNotification.title" = "Heb je een melding gekregen of twijfel je of je ziek bent? Vraag een test aan";
+"moreInformation.requestTest.receivedNotification.content" = "Als je een melding krijgt, raadt de GGD aan je te laten testen op het virus. Ook als je je nog niet ziek voelt. Heb je geen melding gekregen, maar wel last van klachten die bij het virus passen? Vraag ook dan een test aan.\n\nTesten is gratis en kan meestal snel gebeuren. Blijf zo veel mogelijk thuis tot de uitslag bekend is. Bel gratis 0800-1202 om een coranatest aan te vragen.";

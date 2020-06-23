@@ -23,10 +23,10 @@ final class OnboardingManager: OnboardingManaging {
         onboardingSteps.append(
             OnboardingStep(
                 theme: theme,
-                title: Localized("step1Title"),
-                content: Localized("step1Content"),
+                title: Localization.string(for: "step1Title"),
+                content: Localization.string(for: "step1Content"),
                 image: Image.named("Step1") ?? UIImage(),
-                buttonTitle: Localized("nextButtonTitle"),
+                buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
             )
         )
@@ -34,10 +34,10 @@ final class OnboardingManager: OnboardingManaging {
         onboardingSteps.append(
             OnboardingStep(
                 theme: theme,
-                title: Localized("step2Title"),
-                content: Localized("step2Content"),
+                title: Localization.string(for: "step2Title"),
+                content: Localization.string(for: "step2Content"),
                 image: Image.named("Step2") ?? UIImage(),
-                buttonTitle: Localized("nextButtonTitle"),
+                buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
             )
         )
@@ -45,10 +45,10 @@ final class OnboardingManager: OnboardingManaging {
         onboardingSteps.append(
             OnboardingStep(
                 theme: theme,
-                title: Localized("step3Title"),
-                content: Localized("step3Content"),
+                title: Localization.string(for: "step3Title"),
+                content: Localization.string(for: "step3Content"),
                 image: Image.named("Step3") ?? UIImage(),
-                buttonTitle: Localized("nextButtonTitle"),
+                buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
             )
         )
@@ -56,10 +56,10 @@ final class OnboardingManager: OnboardingManaging {
         onboardingSteps.append(
             OnboardingStep(
                 theme: theme,
-                title: Localized("step4Title"),
-                content: Localized("step4Content"),
+                title: Localization.string(for: "step4Title"),
+                content: Localization.string(for: "step4Content"),
                 image: Image.named("Step4") ?? UIImage(),
-                buttonTitle: Localized("nextButtonTitle"),
+                buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: true
             )
         )

@@ -33,7 +33,7 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Bedankt"
+        title = Localization.string(for: "moreInformation.thankyou.title")
         navigationItem.hidesBackButton = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
@@ -70,7 +70,7 @@ private final class ThankYouView: View {
 
     // TODO: Remove exposureConfirmationKey from init and make it settable
     init(theme: Theme, exposureConfirmationKey: ExposureConfirmationKey) {
-        let config = InfoViewConfig(actionButtonTitle: "Sluiten",
+        let config = InfoViewConfig(actionButtonTitle: Localization.string(for: "close"),
                                     headerImage: Image.named("ThankYouHeader"))
         self.infoView = InfoView(theme: theme, config: config)
         self.exposureConfirmationKey = exposureConfirmationKey
@@ -83,17 +83,17 @@ private final class ThankYouView: View {
         super.build()
 
         let bulletPoints = [
-            "Blijf binnen tot 2 dagen na laatste   klachten",
-            "Voorkom contact met je huisgenoten",
-            "Worden je klachten erger? Neem direct contact op met de GGD of je huisarts"
+            Localization.string(for: "moreInformation.thankyou.list.item1"),
+            Localization.string(for: "moreInformation.thankyou.list.item2"),
+            Localization.string(for: "moreInformation.thankyou.list.item3")
         ]
 
-        let header = NSAttributedString(string: "Je hebt geholpen de verspreiding van het coronavirus te stoppen. Bedankt en veel sterkte met je verdere herstel.")
+        let header = Localization.attributedString(for: "moreInformation.thankyou.section.header")
         let list = NSAttributedString.bulletList(bulletPoints,
                                                  theme: theme,
                                                  font: theme.fonts.body)
 
-        let footer = NSAttributedString(string: "Gebruikte controlecode: \(exposureConfirmationKey.key)")
+        let footer = Localization.attributedString(for: "moreInformation.thankyou.section.footer", [exposureConfirmationKey.key])
 
         let string = NSMutableAttributedString()
         string.append(header)
@@ -103,7 +103,7 @@ private final class ThankYouView: View {
         string.append(footer)
 
         let view = InfoSectionTextView(theme: theme,
-                                       title: "Bedankt en beterschap",
+                                       title: Localization.string(for: "moreInformation.thankyou.section.title"),
                                        content: string)
 
         infoView.addSections([view])

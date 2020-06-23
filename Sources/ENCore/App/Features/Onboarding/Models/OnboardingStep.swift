@@ -25,7 +25,7 @@ final class OnboardingStep: NSObject {
         let attributedTitleString = NSMutableAttributedString()
 
         if isExample {
-            attributedTitleString.append(.make(text: Localized("example") + "\n\n", font: .systemFont(ofSize: 15, weight: .bold), textColor: theme.colors.secondary))
+            attributedTitleString.append(.make(text: Localization.string(for: "example") + "\n\n", font: .systemFont(ofSize: 15, weight: .bold), textColor: theme.colors.secondary))
         }
 
         attributedTitleString.append(.makeFromHtml(text: title, font: .boldSystemFont(ofSize: 22), textColor: .black))
