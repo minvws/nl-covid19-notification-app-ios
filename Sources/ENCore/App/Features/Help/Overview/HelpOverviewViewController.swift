@@ -61,7 +61,7 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
 
         cell.textLabel?.text = question.question
         cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.font = .systemFont(ofSize: 17)
+        cell.textLabel?.font = theme.fonts.body
 
         cell.accessoryType = .disclosureIndicator
 
