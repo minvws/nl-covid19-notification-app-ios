@@ -18,9 +18,12 @@ final class MessageViewControllerTests: XCTestCase {
         super.setUp()
 
         let theme = ENTheme()
-        SnapshotTesting.record = false
+        SnapshotTesting.record = true
 
-        viewController = MessageViewController(listener: listern, theme: theme)
+        viewController = MessageViewController(listener: listern,
+                                               theme: theme,
+                                               message: MessageViewController.Message(title: "Title",
+                                                                                      body: "Body"))
     }
 
     // MARK: - Tests

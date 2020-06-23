@@ -13,13 +13,15 @@ final class OnboardingViewControllerTests: XCTestCase {
     private var viewController: OnboardingViewController!
     private let router = OnboardingRoutingMock()
     private let listener = OnboardingListenerMock()
+    private let consentManager = OnboardingConsentManagingMock()
 
     override func setUp() {
         super.setUp()
 
         let theme = ENTheme()
 
-        viewController = OnboardingViewController(listener: listener,
+        viewController = OnboardingViewController(onboardingConsentManager: consentManager,
+                                                  listener: listener,
                                                   theme: theme)
         viewController.router = router
     }

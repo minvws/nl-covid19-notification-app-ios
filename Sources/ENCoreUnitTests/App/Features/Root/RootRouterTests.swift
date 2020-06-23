@@ -18,11 +18,15 @@ final class RootRouterTests: XCTestCase {
     private let developerMenuBuilder = DeveloperMenuBuildableMock()
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
+    private let mutablePushNotificationStream = MutablePushNotificationStreamingMock()
+    private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     private var router: RootRouter!
 
     override func setUp() {
         super.setUp()
+
+        mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
         router = RootRouter(viewController: viewController,
                             onboardingBuilder: onboardingBuilder,
@@ -30,7 +34,8 @@ final class RootRouterTests: XCTestCase {
                             messageBuilder: messageBuilder,
                             exposureController: exposureController,
                             exposureStateStream: exposureStateStream,
-                            developerMenuBuilder: developerMenuBuilder)
+                            developerMenuBuilder: developerMenuBuilder,
+                            mutablePushNotificationStream: mutablePushNotificationStream)
 
         set(activeState: .notAuthorized)
     }

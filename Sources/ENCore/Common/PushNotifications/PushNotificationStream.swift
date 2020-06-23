@@ -9,17 +9,19 @@ import Combine
 import Foundation
 import NotificationCenter
 
-protocol PushNotificaionStreaming {
+/// @mockable
+protocol PushNotificationStreaming {
     var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> { get }
 }
 
-protocol MutablePushNotificationStreaming: PushNotificaionStreaming {
+/// @mockable
+protocol MutablePushNotificationStreaming: PushNotificationStreaming {
     func update(response: UNNotificationResponse)
 }
 
 final class PushNotificaionStream: MutablePushNotificationStreaming {
 
-    // MARK: - PushNotificaionStreaming
+    // MARK: - PushNotificationStreaming
 
     var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
         return subject.eraseToAnyPublisher()

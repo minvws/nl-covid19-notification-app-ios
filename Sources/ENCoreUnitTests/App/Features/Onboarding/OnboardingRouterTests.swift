@@ -26,9 +26,9 @@ final class OnboardingRouterTests: XCTestCase {
         router = OnboardingRouter(viewController: viewController,
                                   stepBuilder: stepBuilder,
                                   consentBuilder: consentBuilder,
-                                  helpBuilder: helpBuilder,
                                   webBuilder: webBuilder,
-                                  shareSheetBuilder: shareSheetBuilder)
+                                  shareSheetBuilder: shareSheetBuilder,
+                                  helpBuilder: helpBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
