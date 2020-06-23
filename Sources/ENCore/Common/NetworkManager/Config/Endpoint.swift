@@ -19,11 +19,11 @@ struct Endpoint {
 
     // MARK: - CDN
 
-    static let manifest = Path(components: "cdn", "v1", "manifest")
-    static let exposureKeySet = Path(components: "cdn", "v1", "exposurekeyset")
+    static let manifest = Path(components: "v1", "manifest")
     static let riskCalculationParameters = Path(components: "cdn", "riskcalculationparameters")
 
-    static func appConfig(identifier: String) -> Path { Path(components: "cdn", "v1", "appconfig", identifier) }
+    static func appConfig(identifier: String) -> Path { Path(components: "v1", "appconfig", identifier) }
+    static func exposureKeySet(identifier: String) -> Path { Path(components: "v1", "exposurekeyset", identifier) }
 
     // MARK: - API
 

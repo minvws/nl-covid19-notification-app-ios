@@ -60,6 +60,13 @@ final class ExposureManager: ExposureManaging {
                 return
             }
 
+            let p = self.manager.getExposureInfo(summary: summary,
+                                                 userExplanation: "Hello There World") { info, error in
+                print(info)
+                print(error)
+            }
+            p.resume()
+
             // convert to generic
             let exposureDetectionSummary = ExposureDetectionSummary(
                 attenuationDurations: summary.attenuationDurations,
@@ -103,6 +110,12 @@ final class ExposureManager: ExposureManaging {
 
             completion(.success(diagnosisKeys))
         }
+    }
+
+    func getExposureInfo(summary: ENExposureDetectionSummary,
+                         userExplanation: String,
+                         completionHandler: @escaping ENGetExposureInfoHandler) -> Progress {
+        return manager.getExposureInfo(summary: summary, userExplanation: userExplanation, completionHandler: completionHandler)
     }
 
     func setExposureNotificationEnabled(_ enabled: Bool, completion: @escaping (Result<(), ExposureManagerError>) -> ()) {

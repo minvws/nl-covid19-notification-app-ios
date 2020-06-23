@@ -20,7 +20,7 @@ struct NetworkConfiguration {
         scheme: "http",
         host: "10.0.0.133",
         port: 5004,
-        path: ["v1"]
+        path: []
     )
 
     static let production = NetworkConfiguration(
@@ -36,7 +36,7 @@ struct NetworkConfiguration {
     }
 
     func exposureKeySetUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.exposureKeySet, params: ["": identifier])
+        return self.combine(path: Endpoint.exposureKeySet(identifier: identifier))
     }
 
     func riskCalculationParametersUrl(identifier: String) -> URL? {

@@ -15,6 +15,9 @@ protocol NetworkControlling {
     var applicationManifest: Future<ApplicationManifest, NetworkError> { get }
     var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> { get }
     var exposureRiskCalculationParameters: Future<ExposureRiskCalculationParameters, NetworkError> { get }
+
+    func fetchExposureKeySet(identifier: String) -> Future<ExposureKeySetHolder, NetworkError>
+
     var resourceBundle: Future<ResourceBundle, NetworkError> { get }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError>

@@ -38,7 +38,7 @@ final class NetworkManager: NetworkManaging {
                 completion(.failure(error))
             case let .success(result):
                 let dataResult = self
-                    .handleDataResponse(for: result.0, url: result.1)
+                    .responseToData(for: result.0, url: result.1)
 
                 completion(dataResult
                     .flatMap(self.decodeJson(data:))
@@ -64,7 +64,7 @@ final class NetworkManager: NetworkManaging {
                 completion(.failure(error))
             case let .success(result):
                 let dataResult = self
-                    .handleDataResponse(for: result.0, url: result.1)
+                    .responseToData(for: result.0, url: result.1)
 
                 completion(dataResult
                     .flatMap(self.decodeJson(data:))
@@ -90,7 +90,7 @@ final class NetworkManager: NetworkManaging {
                 completion(.failure(error))
             case let .success(result):
                 let dataResult = self
-                    .handleDataResponse(for: result.0, url: result.1)
+                    .responseToData(for: result.0, url: result.1)
 
                 completion(dataResult
                     .flatMap(self.decodeJson(data:))
@@ -104,16 +104,26 @@ final class NetworkManager: NetworkManaging {
     /// - Parameters:
     ///   - id: id of the exposureKeySet
     ///   - completion: executed on complete or failure
-    func getDiagnosisKeys(_ id: String, completion: @escaping (Result<[URL], NetworkError>) -> ()) {
+    func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let urlRequest = constructRequest(url: configuration.exposureKeySetUrl(identifier: id),
+        let urlRequest = constructRequest(url: configuration.exposureKeySetUrl(identifier: identifier),
                                           method: .GET,
                                           headers: headers)
 
         download(request: urlRequest) { result in
-            // TODO: Interpret result
+            switch result {
+            case let .failure(error):
+                completion(.failure(error))
+            case let .success(result):
+                let urlResponse = self
+                    .responseToLocalUrl(for: result.0, url: result.1)
+
+                completion(urlResponse
+                    .mapError { $0.asNetworkError }
+                )
+            }
         }
     }
 
@@ -292,8 +302,7 @@ final class NetworkManager: NetworkManaging {
         completion(.success((response, object)))
     }
 
-    /// Unzips, verifies signature and reads response in memory
-    private func handleDataResponse(for response: URLResponse, url: URL) -> Result<Data, NetworkResponseHandleError> {
+    private func responseToLocalUrl(for response: URLResponse, url: URL) -> Result<URL, NetworkResponseHandleError> {
         var localUrl = url
 
         // unzip
@@ -314,6 +323,20 @@ final class NetworkManager: NetworkManaging {
             } catch {
                 return .failure((error as? NetworkResponseHandleError) ?? .cannotDeserialize)
             }
+        }
+
+        return .success(localUrl)
+    }
+
+    /// Unzips, verifies signature and reads response in memory
+    private func responseToData(for response: URLResponse, url: URL) -> Result<Data, NetworkResponseHandleError> {
+        let localUrl: URL
+
+        switch responseToLocalUrl(for: response, url: url) {
+        case let .failure(error):
+            return .failure(error)
+        case let .success(url):
+            localUrl = url
         }
 
         // read from disk

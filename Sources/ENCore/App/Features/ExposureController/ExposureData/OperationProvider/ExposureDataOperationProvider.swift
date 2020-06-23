@@ -21,6 +21,12 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                     appConfigurationIdentifier: identifier)
     }
 
+    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation {
+        return RequestExposureKeySetsDataOperation(networkController: networkController,
+                                                   storageController: storageController,
+                                                   exposureKeySetIdentifiers: identifiers)
+    }
+
     var requestManifestOperation: RequestAppManifestDataOperation {
         return RequestAppManifestDataOperation(networkController: networkController,
                                                storageController: storageController)

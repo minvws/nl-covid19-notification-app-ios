@@ -46,6 +46,18 @@ final class NetworkController: NetworkControlling {
         }
     }
 
+    func fetchExposureKeySet(identifier: String) -> Future<ExposureKeySetHolder, NetworkError> {
+        return Future { promise in
+            self.networkManager.getExposureKeySet(identifier: identifier) { result in
+                promise(result
+                    .map { localUrl in ExposureKeySetHolder(identifier: identifier,
+                                                            fileUrl: localUrl)
+                    }
+                )
+            }
+        }
+    }
+
     var resourceBundle: Future<ResourceBundle, NetworkError> {
         return Future { promise in
             promise(.failure(.serverNotReachable))

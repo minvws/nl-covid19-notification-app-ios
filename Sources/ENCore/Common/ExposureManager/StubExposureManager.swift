@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ExposureNotification
 import Foundation
 
 /// Stub implementation of ExposureManaging to
@@ -50,6 +51,10 @@ final class StubExposureManager: ExposureManaging {
 
     func setExposureNotificationEnabled(enabled: Bool) {
         self.exposureNotificationEnabled = enabled
+    }
+
+    func getExposureInfo(summary: ENExposureDetectionSummary, userExplanation: String, completionHandler: @escaping ENGetExposureInfoHandler) -> Progress {
+        return Progress()
     }
 
     // return whether exposureNotifications should be enabled or not
