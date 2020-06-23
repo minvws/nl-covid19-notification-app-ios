@@ -126,7 +126,7 @@ private final class ReceivedNotificationView: View {
         string.append(bulletList)
         string.append(content)
         return InfoSectionTextView(theme: theme,
-                                   title: Localization.string(for: "moreInformatio.complaints.title"),
+                                   title: Localization.string(for: "moreInformation.complaints.title"),
                                    content: string)
     }
 

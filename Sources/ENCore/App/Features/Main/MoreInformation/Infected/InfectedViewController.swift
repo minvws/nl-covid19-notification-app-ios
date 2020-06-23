@@ -99,7 +99,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
                 // TODO: Error Handling
 
                 let alertController = UIAlertController(title: Localization.string(for: "error.title"),
-                                                        message: Localization.string(for: "moreInformation.infected.error.uploadingCodes", "\(result)"),
+                                                        message: Localization.string(for: "moreInformation.infected.error.uploadingCodes", ["\(result)"]),
                                                         preferredStyle: .alert)
 
                 let alertAction = UIAlertAction(title: Localization.string(for: "ok"), style: .default) { _ in
@@ -154,7 +154,7 @@ private final class InfectedView: View {
 
     private lazy var uploadCodes: View = {
         InfoSectionTextView(theme: theme,
-                            title: Localization.string(for: "moreInformation.infected.section.controlCode.title"),
+                            title: Localization.string(for: "moreInformation.infected.section.uploadCodes.title"),
                             content: Localization.attributedString(for: "moreInformation.infected.section.controlCode.content"))
     }()
 

@@ -77,7 +77,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         let receivedNotificationModel = MoreInformationCellViewModel(identifier: .receivedNotification,
                                                                      icon: Image.named("Warning"),
-                                                                     title: Localization.string(for: "moreInformation.cell.receivedNotification.subtitle"),
+                                                                     title: Localization.string(for: "moreInformation.cell.receivedNotification.title"),
                                                                      subtitle: Localization.string(for: "moreInformation.cell.receivedNotification.subtitle"))
 
         let requestTestModel = MoreInformationCellViewModel(identifier: .requestTest,
@@ -123,7 +123,7 @@ private final class MoreInformationView: View {
     override func build() {
         super.build()
 
-        headerLabel.text = Localization.string(for: "moreInformation.headerTitle")
+        headerLabel.text = Localization.string(for: "moreInformation.headerTitle").uppercased()
         headerLabel.font = theme.fonts.footnote // TODO: Should actually be bold
 
         stackView.axis = .vertical

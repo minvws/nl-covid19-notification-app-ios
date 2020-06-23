@@ -93,7 +93,7 @@ private final class ThankYouView: View {
                                                  theme: theme,
                                                  font: theme.fonts.body)
 
-        let footer = Localization.attributedString(for: "moreInformation.thankyou.section.footer", exposureConfirmationKey.key)
+        let footer = Localization.attributedString(for: "moreInformation.thankyou.section.footer", [exposureConfirmationKey.key])
 
         let string = NSMutableAttributedString()
         string.append(header)

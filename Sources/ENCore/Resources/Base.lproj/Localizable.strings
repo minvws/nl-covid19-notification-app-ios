@@ -112,8 +112,8 @@
 // MARK: - MoreInformation | Infected
 
 "moreInformation.infected.title" = "Positief getest";
-"moreInformation.infected.loading" = "Codes uploaden";
-"moreInformation.infected.upload" = "Controlecode aan het ophalen";
+"moreInformation.infected.loading" = "Controlecode aan het ophalen";
+"moreInformation.infected.upload" = "Codes uploaden";
 
 "moreInformation.infected.error" = "Er kon geen controlecode worden opgehaald. Controleer je internet- verbinding en probeer het opnieuw.";
 "moreInformation.infected.error.upload" = "Error while uploading codes: %@";
