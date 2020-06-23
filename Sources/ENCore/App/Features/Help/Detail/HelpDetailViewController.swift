@@ -11,9 +11,9 @@ import WebKit
 final class HelpDetailViewController: ViewController {
 
     init(listener: HelpDetailListener,
-        shouldShowEnableAppButton: Bool,
-        question: HelpQuestion,
-        theme: Theme) {
+         shouldShowEnableAppButton: Bool,
+         question: HelpQuestion,
+         theme: Theme) {
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.question = question
@@ -82,7 +82,7 @@ private final class HelpView: View {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .primary
-        button.title = Localized("helpAcceptButtonTitle")
+        button.title = Localization.string(for: "helpAcceptButtonTitle")
         return button
     }()
 
@@ -104,28 +104,28 @@ private final class HelpView: View {
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-            ])
+        ])
 
         constraints.append([
             contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
             contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             contentTextView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-            ])
+        ])
 
         constraints.append([
             gradientImageView.heightAnchor.constraint(equalToConstant: 25),
             gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             gradientImageView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-            ])
+        ])
 
         constraints.append([
             acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
+        ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }

@@ -47,7 +47,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Positief getest"
+        title = Localization.string(for: "moreInformation.infected.title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
@@ -98,11 +98,11 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
             default:
                 // TODO: Error Handling
 
-                let alertController = UIAlertController(title: "Something went wrong",
-                                                        message: "Error while uploading codes: \(result)",
+                let alertController = UIAlertController(title: Localization.string(for: "error.title"),
+                                                        message: Localization.string(for: "moreInformation.infected.error.uploadingCodes", "\(result)"),
                                                         preferredStyle: .alert)
 
-                let alertAction = UIAlertAction(title: "Ok", style: .default) { _ in
+                let alertAction = UIAlertAction(title: Localization.string(for: "ok"), style: .default) { _ in
                     alertController.dismiss(animated: true, completion: nil)
                 }
 
@@ -124,13 +124,13 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         switch state {
         case .loading:
             internalView.infoView.isActionButtonEnabled = false
-            internalView.controlCode.set(state: .loading("Controlecode aan het ophalen"))
+            internalView.controlCode.set(state: .loading(Localization.string(for: "moreInformation.infected.loading")))
         case let .success(key):
             internalView.infoView.isActionButtonEnabled = true
             internalView.controlCode.set(state: .success(key.key))
         case .error:
             internalView.infoView.isActionButtonEnabled = false
-            internalView.controlCode.set(state: .error("Er kon geen controlecode worden opgehaald. Controleer je internet- verbinding en probeer het opnieuw.") {
+            internalView.controlCode.set(state: .error(Localization.string(for: "moreInformation.infected.error")) {
                 print("Handle Retry")
             })
         }
@@ -143,24 +143,25 @@ private final class InfectedView: View {
 
     private lazy var anonomuslyWarnOthers: View = {
         InfoSectionTextView(theme: theme,
-                            title: "Waarschuw anderen anoniem dat je besmet bent",
-                            content: NSAttributedString(string: "Je kunt alleen mensen waarschuwen als je positief getest bent door de GGD. De GGD vraagt je tijdens een telefoongesprek naar dit scherm te gaan en de volgende instructies te volgen:"))
+                            title: Localization.string(for: "moreInformation.infected.section.anonomuslyWarnOthers.title"),
+                            content: NSAttributedString(string: Localization.string(for: "moreInformation.infected.section.anonomuslyWarnOthers.content")))
     }()
 
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
-        InfoSectionDynamicCalloutView(theme: theme, title: "1. Geef deze controlecode aan de GGD-medewerker:")
+        InfoSectionDynamicCalloutView(theme: theme,
+                                      title: Localization.string(for: "moreInformation.infected.section.controlCode.title"))
     }()
 
     private lazy var uploadCodes: View = {
         InfoSectionTextView(theme: theme,
-                            title: "2. Upload de codes die op je telefoon bewaard zijn",
-                            content: NSAttributedString(string: "Alle mensen met de app waarbij je, in de periode dat je besmettelijk was, in de buurt bent geweest krijgen daarna een melding. Deze melding is anoniem."))
+                            title: Localization.string(for: "moreInformation.infected.section.controlCode.title"),
+                            content: NSAttributedString(string: Localization.string(for: "moreInformation.infected.section.controlCode.content")))
     }()
 
     // MARK: - Init
 
     override init(theme: Theme) {
-        let config = InfoViewConfig(actionButtonTitle: "Codes uploaden",
+        let config = InfoViewConfig(actionButtonTitle: Localization.string(for: "moreInformation.infected.upload"),
                                     headerImage: Image.named("InfectedHeader"))
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)

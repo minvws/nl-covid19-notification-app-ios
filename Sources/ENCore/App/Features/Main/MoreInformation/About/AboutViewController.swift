@@ -20,8 +20,6 @@ final class AboutViewController: ViewController, AboutViewControllable, WebListe
         self.webBuilder = webBuilder
 
         super.init(theme: theme)
-
-        title = "About the app"
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -35,6 +33,7 @@ final class AboutViewController: ViewController, AboutViewControllable, WebListe
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = Localization.string(for: "moreInformation.about.title")
         navigationItem.rightBarButtonItem = closeBarButtonItem
 
         loadWebView()

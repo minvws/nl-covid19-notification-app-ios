@@ -72,23 +72,23 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     private var objects: [MoreInformation] {
         let aboutAppModel = MoreInformationCellViewModel(identifier: .about,
                                                          icon: Image.named("About"),
-                                                         title: "Over de app",
-                                                         subtitle: "Hoe de app werkt en wat dit voor je privacy betekent.")
+                                                         title: Localization.string(for: "moreInformation.cell.about.title"),
+                                                         subtitle: Localization.string(for: "moreInformation.cell.about.subtitle"))
 
         let receivedNotificationModel = MoreInformationCellViewModel(identifier: .receivedNotification,
                                                                      icon: Image.named("Warning"),
-                                                                     title: "Een melding ontvangen?",
-                                                                     subtitle: "Wat je kunt doen nadat iemand anders het virus blijkt te hebben.")
+                                                                     title: Localization.string(for: "moreInformation.cell.receivedNotification.subtitle"),
+                                                                     subtitle: Localization.string(for: "moreInformation.cell.receivedNotification.subtitle"))
 
         let requestTestModel = MoreInformationCellViewModel(identifier: .requestTest,
                                                             icon: Image.named("Coronatest"),
-                                                            title: "Coronatest aanvragen",
-                                                            subtitle: "Ontdek zo snel mogelijk of je zelf besmet bent.")
+                                                            title: Localization.string(for: "moreInformation.cell.requestTest.title"),
+                                                            subtitle: Localization.string(for: "moreInformation.cell.requestTest.subtitle"))
 
         let infectedModel = MoreInformationCellViewModel(identifier: .infected,
                                                          icon: Image.named("Infected"),
-                                                         title: "Ik ben positief getest",
-                                                         subtitle: "Waarschuw anderen anoniem meteen nadat je hoort dat je besmet bent.")
+                                                         title: Localization.string(for: "moreInformation.cell.infected.title"),
+                                                         subtitle: Localization.string(for: "moreInformation.cell.infected.subtitle"))
 
         return [
             aboutAppModel,
@@ -123,7 +123,7 @@ private final class MoreInformationView: View {
     override func build() {
         super.build()
 
-        headerLabel.text = "MEER INFORMATIE"
+        headerLabel.text = Localization.string(for: "moreInformation.headerTitle")
         headerLabel.font = theme.fonts.footnote // TODO: Should actually be bold
 
         stackView.axis = .vertical
