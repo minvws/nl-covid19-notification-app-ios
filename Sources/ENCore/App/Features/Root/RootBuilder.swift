@@ -7,8 +7,6 @@
 
 import UIKit
 
-typealias AppStartResult = () -> ()
-
 /// The App's entry point.
 ///
 /// @mockable
