@@ -142,8 +142,11 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Upload keys after giving permission",
                               action: { [weak self] in self?.uploadKeys() }),
                 DeveloperItem(title: "Remove Stored LabConfirmationKey",
-                              subtitle: "Will fetch a new key next time when uploading",
-                              action: { [weak self] in self?.removeStoredConfirmationKey() })
+                              subtitle: "Last: \(getLastStoredConfirmationKey())",
+                              action: { [weak self] in self?.removeStoredConfirmationKey() }),
+                DeveloperItem(title: "Remove Last Uploaded RollingStart",
+                              subtitle: "Last: \(getLastUploadedRollingStartNumber())",
+                              action: { [weak self] in self?.removeLastUploadedRollingStartNumber() })
             ]),
             ("Networking", [
                 DeveloperItem(title: "Network Configuration",
@@ -265,6 +268,28 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private func removeStoredConfirmationKey() {
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
     }
+
+private func removeLastUploadedRollingStartNumber() {
+storageController.removeData(for: ExposureDataStorageKey.lastUploadedRollingStartNumber, completion: { _ in })
+
+internalView.tableView.reloadData()
+}
+
+// MARK: - Private
+
+private func getLastStoredConfirmationKey() -> String {
+storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey,
+ofType: LabConfirmationKey.self)?.identifier ?? "None"
+}
+
+private func getLastUploadedRollingStartNumber() -> String {
+guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber,
+ofType: Int32.self) else {
+return "None"
+}
+
+return String(last)
+}
 
     private func wantsScheduleNotification() {
         let unc = UNUserNotificationCenter.current()
