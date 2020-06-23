@@ -14,6 +14,9 @@ protocol AppEntryPoint {
     /// The `UIViewController` instance that should be used as `keyWindow` property
     var uiviewController: UIViewController { get }
 
+    /// The Stream to publish received PushNotifications to for the Root Router to handle
+    var mutablePushNotificationStream: MutablePushNotificationStreaming { get }
+
     /// Starts the application. Start should be called once
     /// the `SceneDelegate`'s `sceneDidBecomeActive` method is called.
     func start()
@@ -79,6 +82,9 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
     lazy var mutableExposureStateStream: MutableExposureStateStreaming = ExposureStateStream()
+
+    /// Mutable stream for publishing PushNotifcaiton objects to
+    lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificaionStream()
 }
 
 /// Interface describing the builder that builds
@@ -110,6 +116,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           messageBuilder: dependencyProvider.messageBuilder,
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,
-                          developerMenuBuilder: dependencyProvider.developerMenuBuilder)
+                          developerMenuBuilder: dependencyProvider.developerMenuBuilder,
+                          mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream)
     }
 }

@@ -53,6 +53,28 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         view.backgroundColor = .clear
     }
 
+    // MARK: - Internal
+
+    func present(actionItems: [UIAlertAction], title: String, message: String? = nil) {
+        let actionViewController = UIAlertController(title: title,
+                                                     message: message,
+                                                     preferredStyle: .alert)
+        actionItems.forEach { actionItem in actionViewController.addAction(actionItem) }
+
+        let cancelItem = UIAlertAction(title: "Cancel",
+                                       style: .destructive,
+                                       handler: { [weak actionViewController] _ in
+                                           actionViewController?.dismiss(animated: true, completion: nil)
+        })
+        actionViewController.addAction(cancelItem)
+
+        present(actionViewController, animated: true, completion: nil)
+    }
+
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return !isShown
+    }
+
     // MARK: - UITableViewDataSource
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -131,7 +153,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             ("Push Notifications", [
                 DeveloperItem(title: "Launch Message Flow",
                               subtitle: "Launches the message flow as would be done from a push notification",
-                              action: { [weak self] in self?.listener?.developerMenuRequestMessage(); self?.hide() })
+                              action: { [weak self] in self?.listener?.developerMenuRequestMessage(title: "Message from Developer Menu", body: "The body of the message which was launched from the Developer Menu"); self?.hide() }),
+                DeveloperItem(title: "Schedule Message Flow",
+                              subtitle: "Schedules a push notifiction to be sent in 5 seconds",
+                              action: { [weak self] in self?.wantsScheduleNotification() })
             ])
         ]
     }
@@ -241,22 +266,53 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
     }
 
-    // MARK: - Private
+    private func wantsScheduleNotification() {
+        let unc = UNUserNotificationCenter.current()
+        unc.getNotificationSettings { [weak self] settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .authorized {
+                    self?.scheduleNotification()
+                } else {
+                    self?.displayNotificationError()
+                }
+            }
+        }
+    }
 
-    func present(actionItems: [UIAlertAction], title: String) {
-        let actionViewController = UIAlertController(title: title,
-                                                     message: nil,
-                                                     preferredStyle: .actionSheet)
-        actionItems.forEach { actionItem in actionViewController.addAction(actionItem) }
-
-        let cancelItem = UIAlertAction(title: "Cancel",
+    private func displayNotificationError() {
+        let alertController = UIAlertController(title: "Push Notification Error",
+                                                message: "Push Notifications are not enabled, please go through the Onboarding Flow and enable push notifcations",
+                                                preferredStyle: .alert)
+        let cancelItem = UIAlertAction(title: "Close",
                                        style: .destructive,
-                                       handler: { [weak actionViewController] _ in
-                                           actionViewController?.dismiss(animated: true, completion: nil)
+                                       handler: { [weak alertController] _ in
+                                           alertController?.dismiss(animated: true, completion: nil)
         })
-        actionViewController.addAction(cancelItem)
+        alertController.addAction(cancelItem)
+        present(alertController, animated: true, completion: nil)
+    }
 
-        present(actionViewController, animated: true, completion: nil)
+    private func scheduleNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Local Notification"
+        content.body = "The body of the message which was scheduled from the Developer Menu"
+        content.sound = UNNotificationSound.default
+        content.badge = 0
+
+        let date = Date(timeIntervalSinceNow: 5)
+        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+
+        let identifier = "Local Notification"
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+
+        let unc = UNUserNotificationCenter.current()
+        unc.add(request) { error in
+            if let error = error {
+                print("🔥 Error \(error.localizedDescription)")
+            }
+        }
+        hide()
     }
 
     private func show() {
@@ -295,10 +351,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     @objc
     private func didTapBackground() {
         hide()
-    }
-
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return !isShown
     }
 
     private func attach() {

@@ -14,8 +14,16 @@ protocol MessageViewControllable: ViewControllable {}
 
 final class MessageViewController: ViewController, MessageViewControllable, UIAdaptivePresentationControllerDelegate {
 
-    init(listener: MessageListener, theme: Theme) {
+    struct Message {
+        let title: String
+        let body: String
+    }
+
+    // MARK: - Init
+
+    init(listener: MessageListener, theme: Theme, message: Message) {
         self.listener = listener
+        self.message = message
 
         super.init(theme: theme)
     }
@@ -53,8 +61,12 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     // MARK: - Private
 
+    private let message: Message
+
     private weak var listener: MessageListener?
-    private lazy var internalView: MessageView = MessageView(theme: self.theme)
+    private lazy var internalView: MessageView = {
+        MessageView(theme: self.theme, title: self.message.title, body: self.message.body)
+    }()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.messageWantsDismissal(shouldDismissViewController: true)
@@ -64,10 +76,14 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 private final class MessageView: View {
 
     fileprivate let infoView: InfoView
+    private let title: String
+    private let body: String
 
     // MARK: - Init
 
-    override init(theme: Theme) {
+    init(theme: Theme, title: String, body: String) {
+        self.title = title
+        self.body = body
         let config = InfoViewConfig(actionButtonTitle: "Bel voor coronatest", headerImage: Image.named("MessageHeader"))
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
@@ -99,7 +115,7 @@ private final class MessageView: View {
     // MARK: - Private
 
     private func message() -> View {
-        InfoSectionTextView(theme: theme, title: "Je bent in de buurt geweest van iemand met het coronavirus [DIT IS EEN TEST BERICHT]", content: NSAttributedString(string: "Je was 10 dagen geleden (op maandag 1 juni) dicht bij iemand die daarna positief is getest op het coronavirus. Het RIVM en de GGD zien dit als een situatie waarin je extra kans op besmetting hebt gelopen. Als je inderdaad besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt."))
+        InfoSectionTextView(theme: theme, title: title, content: NSAttributedString(string: body))
     }
 
     private func complaints() -> View {

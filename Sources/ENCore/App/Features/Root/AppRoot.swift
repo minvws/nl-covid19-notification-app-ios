@@ -29,4 +29,9 @@ import UIKit
     public func start() {
         appEntryPoint?.start()
     }
+
+    @objc
+    public func receiveRemoteNotification(response: UNNotificationResponse) {
+        appEntryPoint?.mutablePushNotificationStream.update(response: response)
+    }
 }

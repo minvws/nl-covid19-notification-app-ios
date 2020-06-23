@@ -41,7 +41,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          messageBuilder: MessageBuildable,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
-         developerMenuBuilder: DeveloperMenuBuildable) {
+         developerMenuBuilder: DeveloperMenuBuildable,
+         mutablePushNotificationStream: MutablePushNotificationStreaming) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.messageBuilder = messageBuilder
@@ -49,6 +50,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
+
+        self.mutablePushNotificationStream = mutablePushNotificationStream
 
         super.init(viewController: viewController)
 
@@ -64,6 +67,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     var uiviewController: UIViewController {
         return viewController.uiviewController
     }
+
+    let mutablePushNotificationStream: MutablePushNotificationStreaming
 
     func start() {
         guard mainRouter == nil, onboardingRouter == nil else {
@@ -85,6 +90,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         #if USE_DEVELOPER_MENU || DEBUG
             attachDeveloperMenu()
         #endif
+
+        mutablePushNotificationStream
+            .pushNotificationStream
+            .sink { [weak self] (notificationRespone: UNNotificationResponse) in
+                // TODO: Use the identifier to know which flow to launch
+                let content = notificationRespone.notification.request.content
+                self?.routeToMessage(title: content.title, body: content.body)
+            }.store(in: &disposeBag)
     }
 
     // MARK: - RootRouting
@@ -108,11 +121,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         detachOnboarding(animated: animated)
     }
 
-    func routeToMessage() {
+    func routeToMessage(title: String, body: String) {
         guard messageViewController == nil else {
             return
         }
-        let messageViewController = messageBuilder.build(withListener: viewController)
+        let messageViewController = messageBuilder.build(withListener: viewController, title: title, body: body)
         self.messageViewController = messageViewController
 
         viewController.presentInNavigationController(viewController: messageViewController, animated: true)
