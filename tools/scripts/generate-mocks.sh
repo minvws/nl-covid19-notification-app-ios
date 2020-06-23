@@ -1,7 +1,8 @@
 #!/bin/bash
 
 MOCKOLO_PATH=`which mockolo`
-REPO_ROOT=`git rev-parse --show-toplevel`
+GIT=`which git`
+REPO_ROOT=`${GIT} rev-parse --show-toplevel`
 EXCLUDES="Images,Strings"
 
 if [[ ! -f ${MOCKOLO_PATH} ]]; then
