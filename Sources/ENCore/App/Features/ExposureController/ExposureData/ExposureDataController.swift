@@ -10,6 +10,7 @@ import Foundation
 
 struct ExposureDataStorageKey {
     static var labConfirmationKey = AnyStoreKey(name: "labConfirmationKey", storeType: .secure)
+    static var lastUploadedRollingStartNumber = AnyStoreKey(name: "lastUploadedRollingStartNumber", storeType: .secure)
 }
 
 final class ExposureDataController: ExposureDataControlling {

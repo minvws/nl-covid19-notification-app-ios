@@ -23,6 +23,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey) -> UploadDiagnosisKeysDataOperation {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
+                                                storageController: storageController,
                                                 diagnosisKeys: diagnosisKeys,
                                                 labConfirmationKey: labConfirmationKey)
     }
