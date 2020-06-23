@@ -19,7 +19,6 @@ final class ThankYouViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        SnapshotTesting.diffTool = "ksdiff"
         SnapshotTesting.record = false
 
         let theme = ENTheme()

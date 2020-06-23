@@ -18,7 +18,6 @@ final class ReceivedNotificationViewControllerTests: XCTestCase {
         super.setUp()
 
         let theme = ENTheme()
-        SnapshotTesting.diffTool = "ksdiff"
         SnapshotTesting.record = false
 
         viewController = ReceivedNotificationViewController(listener: listern, theme: theme)
