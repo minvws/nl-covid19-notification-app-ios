@@ -104,7 +104,7 @@ private final class HelpView: View {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 28, weight: .bold)
+        label.font =  theme.fonts.title2
         return label
     }()
 
@@ -112,7 +112,7 @@ private final class HelpView: View {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 15, weight: .bold)
+        label.font = theme.fonts.body
         label.textColor = self.theme.colors.primary
         return label
     }()
