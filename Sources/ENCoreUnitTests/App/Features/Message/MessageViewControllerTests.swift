@@ -18,7 +18,7 @@ final class MessageViewControllerTests: XCTestCase {
         super.setUp()
 
         let theme = ENTheme()
-        SnapshotTesting.record = true
+        SnapshotTesting.record = false
 
         viewController = MessageViewController(listener: listern,
                                                theme: theme,
