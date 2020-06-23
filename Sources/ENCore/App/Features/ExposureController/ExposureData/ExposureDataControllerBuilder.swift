@@ -22,7 +22,7 @@ protocol ExposureDataControlling {
 
     // MARK: - Tasks
 
-    func fetchAndProcessExposureKeySets() -> Future<(), Never>
+    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), Never>
 
     // MARK: - Lab Flow
 

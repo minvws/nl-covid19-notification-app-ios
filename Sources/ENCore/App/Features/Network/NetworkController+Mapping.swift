@@ -39,3 +39,13 @@ extension Manifest {
                                    creationDate: Date())
     }
 }
+
+extension AppConfig {
+    func asApplicationConfiguration(identifier: String) -> ApplicationConfiguration {
+        return ApplicationConfiguration(version: version,
+                                        manifestRefreshFrequency: manifestFrequency,
+                                        decoyProbability: decoyProbability,
+                                        creationDate: Date(),
+                                        identifier: identifier)
+    }
+}

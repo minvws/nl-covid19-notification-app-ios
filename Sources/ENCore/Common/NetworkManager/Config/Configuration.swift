@@ -44,7 +44,7 @@ struct NetworkConfiguration {
     }
 
     func appConfigUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.riskCalculationParameters, params: ["": identifier])
+        return self.combine(path: Endpoint.appConfig(identifier: identifier))
     }
 
     var registerUrl: URL? {

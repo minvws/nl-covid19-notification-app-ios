@@ -19,6 +19,8 @@ struct ApplicationManifest: Codable {
 final class RequestAppManifestDataOperation: ExposureDataOperation {
     typealias Result = ApplicationManifest
 
+    private let defaultRefreshFrequency = 60 * 60 * 4 // 4 hours
+
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {
         self.networkController = networkController
@@ -46,8 +48,8 @@ final class RequestAppManifestDataOperation: ExposureDataOperation {
     // MARK: - Private
 
     private func retrieveManifestUpdateFrequency() -> Int? {
-        // TODO: Implement once appConfig is fetched
-        return nil
+        // TODO: Get from appConfig once fetched
+        return defaultRefreshFrequency
     }
 
     private func retrieveStoredManifest() -> ApplicationManifest? {

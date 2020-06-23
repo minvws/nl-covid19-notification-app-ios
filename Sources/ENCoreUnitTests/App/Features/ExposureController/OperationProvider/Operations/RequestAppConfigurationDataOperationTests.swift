@@ -10,16 +10,17 @@ import Combine
 import Foundation
 import XCTest
 
-final class RequestAppManifestDataOperationTests: TestCase {
-    private var operation: RequestAppManifestDataOperation!
+final class RequestAppConfigurationDataOperationTests: TestCase {
+    private var operation: RequestAppConfigurationDataOperation!
     private let networkController = NetworkControllingMock()
     private let storageController = StorageControllingMock()
 
     override func setUp() {
         super.setUp()
 
-        operation = RequestAppManifestDataOperation(networkController: networkController,
-                                                    storageController: storageController)
+        operation = RequestAppConfigurationDataOperation(networkController: networkController,
+                                                         storageController: storageController,
+                                                         appConfigurationIdentifier: "test")
     }
 
     // TODO: Write tests

@@ -12,6 +12,7 @@ struct ExposureDataStorageKey {
     static let labConfirmationKey = AnyStoreKey(name: "labConfirmationKey", storeType: .secure)
     static let lastUploadedRollingStartNumber = AnyStoreKey(name: "lastUploadedRollingStartNumber", storeType: .secure)
     static let appManifest = AnyStoreKey(name: "appManifest", storeType: .insecure(volatile: true))
+    static let appConfiguration = AnyStoreKey(name: "appConfiguration", storeType: .insecure(volatile: true))
 }
 
 final class ExposureDataController: ExposureDataControlling {
@@ -21,14 +22,10 @@ final class ExposureDataController: ExposureDataControlling {
     init(operationProvider: ExposureDataOperationProvider) {
         self.operationProvider = operationProvider
 
-        operationProvider.requestManifestOperation
-            .execute()
-            .sink(receiveCompletion: { completion in
-                print(completion)
-            }) { manifest in
-                print(manifest)
-            }
-            .store(in: &disposeBag)
+        fetchAndProcessExposureKeySets()
+            .sink { () in
+
+            }.store(in: &disposeBag)
     }
 
     // MARK: - Operations
@@ -39,10 +36,8 @@ final class ExposureDataController: ExposureDataControlling {
 
     // MARK: - ExposureDataControlling
 
-    func fetchAndProcessExposureKeySets() -> Future<(), Never> {
-        return Future { promise in
-            promise(.success(()))
-        }
+    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), Never> {
+        return Just(()).eraseToAnyPublisher()
     }
 
     // MARK: - LabFlow

@@ -15,6 +15,8 @@ protocol ExposureDataOperation {
 
 /// @mockable
 protocol ExposureDataOperationProvider {
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
+
     var requestManifestOperation: RequestAppManifestDataOperation { get }
     var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation { get }
 

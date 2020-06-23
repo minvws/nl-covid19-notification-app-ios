@@ -15,6 +15,12 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     // MARK: - ExposureDataOperationProvider
 
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
+        return RequestAppConfigurationDataOperation(networkController: networkController,
+                                                    storageController: storageController,
+                                                    appConfigurationIdentifier: identifier)
+    }
+
     var requestManifestOperation: RequestAppManifestDataOperation {
         return RequestAppManifestDataOperation(networkController: networkController,
                                                storageController: storageController)

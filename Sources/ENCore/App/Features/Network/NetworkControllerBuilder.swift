@@ -10,9 +10,11 @@ import Foundation
 
 /// @mockable
 protocol NetworkControlling {
+    func applicationConfiguration(identifier: String) -> Future<ApplicationConfiguration, NetworkError>
+
+    var applicationManifest: Future<ApplicationManifest, NetworkError> { get }
     var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> { get }
     var exposureRiskCalculationParameters: Future<ExposureRiskCalculationParameters, NetworkError> { get }
-    var applicationManifest: Future<ApplicationManifest, NetworkError> { get }
     var resourceBundle: Future<ResourceBundle, NetworkError> { get }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError>

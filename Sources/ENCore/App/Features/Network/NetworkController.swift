@@ -26,6 +26,14 @@ final class NetworkController: NetworkControlling {
         }
     }
 
+    func applicationConfiguration(identifier: String) -> Future<ApplicationConfiguration, NetworkError> {
+        return Future { promise in
+            self.networkManager.getAppConfig(appConfig: identifier) { result in
+                promise(result.map { $0.asApplicationConfiguration(identifier: identifier) })
+            }
+        }
+    }
+
     var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> {
         return Future { promise in
             promise(.failure(.serverNotReachable))
