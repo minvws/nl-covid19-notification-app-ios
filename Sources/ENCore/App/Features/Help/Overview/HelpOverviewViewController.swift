@@ -34,7 +34,6 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
         internalView.titleLabel.text = Localized("helpTitle")
         internalView.subtitleLabel.text = Localized("helpSubtitle")
 
-        internalView.closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
 
         internalView.acceptButton.isHidden = !shouldShowEnableAppButton
@@ -118,13 +117,6 @@ private final class HelpView: View {
         return label
     }()
 
-    lazy var closeButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "CloseButton"), for: .normal)
-        return button
-    }()
-
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -152,7 +144,7 @@ private final class HelpView: View {
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [closeButton, titleLabel, subtitleLabel, tableView, acceptButton]
+    private lazy var viewsInDisplayOrder = [titleLabel, subtitleLabel, tableView, acceptButton]
 
     override func build() {
         super.build()
@@ -166,14 +158,7 @@ private final class HelpView: View {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            closeButton.heightAnchor.constraint(equalToConstant: 50),
-            closeButton.widthAnchor.constraint(equalTo: closeButton.heightAnchor)
-            ])
-
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 0),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)

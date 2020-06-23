@@ -16,7 +16,7 @@ protocol HelpRouting: Routing {
     func detachHelpDetail(shouldDismissViewController: Bool)
 }
 
-final class HelpViewController: NavigationController, HelpViewControllable {
+final class HelpViewController: NavigationController, HelpViewControllable, UIAdaptivePresentationControllerDelegate {
 
     weak var router: HelpRouting?
 
@@ -70,7 +70,19 @@ final class HelpViewController: NavigationController, HelpViewControllable {
 
     }
 
+    // MARK: - UIAdaptivePresentationControllerDelegate
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        router?.detachHelpDetail(shouldDismissViewController: false)
+    }
+
     // MARK: - ViewController Lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        navigationItem.rightBarButtonItem = closeBarButtonItem
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -78,9 +90,16 @@ final class HelpViewController: NavigationController, HelpViewControllable {
         router?.routeToOverview(shouldShowEnableAppButton: shouldShowEnableAppButton)
     }
 
+    @objc func didTapClose() {
+        router?.detachHelpOverview(shouldDismissViewController: true)
+    }
+
     // MARK: - Private
 
     private weak var listener: HelpListener?
     private let shouldShowEnableAppButton: Bool
     private let exposureController: ExposureControlling
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+        target: self,
+        action: #selector(didTapClose))
 }
