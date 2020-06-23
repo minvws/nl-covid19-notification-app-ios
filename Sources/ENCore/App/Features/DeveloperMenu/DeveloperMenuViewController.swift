@@ -269,27 +269,27 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
     }
 
-private func removeLastUploadedRollingStartNumber() {
-storageController.removeData(for: ExposureDataStorageKey.lastUploadedRollingStartNumber, completion: { _ in })
+    private func removeLastUploadedRollingStartNumber() {
+        storageController.removeData(for: ExposureDataStorageKey.lastUploadedRollingStartNumber, completion: { _ in })
 
-internalView.tableView.reloadData()
-}
+        internalView.tableView.reloadData()
+    }
 
-// MARK: - Private
+    // MARK: - Private
 
-private func getLastStoredConfirmationKey() -> String {
-storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey,
-ofType: LabConfirmationKey.self)?.identifier ?? "None"
-}
+    private func getLastStoredConfirmationKey() -> String {
+        storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey,
+                                         ofType: LabConfirmationKey.self)?.identifier ?? "None"
+    }
 
-private func getLastUploadedRollingStartNumber() -> String {
-guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber,
-ofType: Int32.self) else {
-return "None"
-}
+    private func getLastUploadedRollingStartNumber() -> String {
+        guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber,
+                                                          ofType: Int32.self) else {
+            return "None"
+        }
 
-return String(last)
-}
+        return String(last)
+    }
 
     private func wantsScheduleNotification() {
         let unc = UNUserNotificationCenter.current()
