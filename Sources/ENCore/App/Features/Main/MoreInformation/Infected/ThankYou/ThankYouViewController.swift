@@ -88,12 +88,12 @@ private final class ThankYouView: View {
             Localization.string(for: "moreInformation.thankyou.list.item3")
         ]
 
-        let header = NSAttributedString(string: Localization.string(for: "moreInformation.thankyou.section.header"))
+        let header = Localization.attributedString(for: "moreInformation.thankyou.section.header")
         let list = NSAttributedString.bulletList(bulletPoints,
                                                  theme: theme,
                                                  font: theme.fonts.body)
 
-        let footer = NSAttributedString(string: Localization.string(for: "moreInformation.thankyou.section.footer", exposureConfirmationKey.key))
+        let footer = Localization.attributedString(for: "moreInformation.thankyou.section.footer", exposureConfirmationKey.key)
 
         let string = NSMutableAttributedString()
         string.append(header)

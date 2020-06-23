@@ -89,6 +89,15 @@
 "moreInformation.cell.infected.title" = "Ik ben positief getest";
 "moreInformation.cell.infected.subtitle" = "Waarschuw anderen anoniem meteen nadat je hoort dat je besmet bent.";
 
+"moreInformation.info.title" = "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart.";
+
+"moreInformation.complaints.item1" = "(licht) hoesten";
+"moreInformation.complaints.item2" = "loopneus, niezen, keelpijn";
+"moreInformation.complaints.item3" = "verlies van geur en/of smaak kortademigheid/benauwdheid";
+"moreInformation.complaints.item4" = "koorts boven de 38 graden";
+"moreInformation.complaints.title" = "Klachten die passen bij het coronavirus (COVID-19)";
+"moreInformation.complaints.content" = "Heb je klachten? Blijf dan zoveel mogelijk thuis. Zijn het ernstige klachten? Bel meteen je huisarts.";
+
 
 // MARK: - MoreInformation | About
 
@@ -126,12 +135,12 @@
 "moreInformation.receivedNotification.button.title" = "Bel voor coronatest";
 "moreInformation.receivedNotification.notificationExplanation.title" = "Wat betekent het als je een melding krijgt?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "De app stuurt een melding als je 10 minuten dicht bij iemand bent geweest die daarna positief is getest op het virus. Ook moet deze persoon de app gebruiken. Het RIVM en de GGD zien het contact als een mogelijk gevaarlijke situatie. Voor jezelf en je omgeving.";
-"moreInformation.receivedNotification.complaints.item1" = "(licht) hoesten";
-"moreInformation.receivedNotification.complaints.item2" = "loopneus, niezen, keelpijn";
-"moreInformation.receivedNotification.complaints.item3" = "verlies van geur en/of smaak kortademigheid/benauwdheid";
-"moreInformation.receivedNotification.complaints.item4" = "koorts boven de 38 graden";
-"moreInformation.receivedNotification.complaints.title" = "Klachten die passen bij het coronavirus (COVID-19)";
-"moreInformation.receivedNotification.complaints.content" = "Heb je klachten? Blijf dan zoveel mogelijk thuis. Zijn het ernstige klachten? Bel meteen je huisarts.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Doe een coronatest";
 "moreInformation.receivedNotification.doCoronaTest.content" = "De GGD raadt aan je te laten testen op het virus, zelfs als je je nog niet ziek voelt. Want zonder je ziek te voelen kun je het virus al verspreiden en zo anderen besmetten.\n\nTesten is gratis en kan meestal snel gebeuren. Blijf zo veel mogelijk thuis tot de uitslag bekend is.\n\nBel gratis 0800-1202 om een coranatest aan te vragen.";
-"moreInformation.receivedNotification.info.title" = "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart.";
+
+// MARK: - MoreInformation | Request Test
+
+"moreInformation.requestTest.title" = "Coronatest aanvragen";
+"moreInformation.requestTest.button.title" = "Bel voor coronatest";
+"moreInformation.requestTest.receivedNotification.title" = "Heb je een melding gekregen of twijfel je of je ziek bent? Vraag een test aan";
+"moreInformation.requestTest.receivedNotification.content" = "Als je een melding krijgt, raadt de GGD aan je te laten testen op het virus. Ook als je je nog niet ziek voelt. Heb je geen melding gekregen, maar wel last van klachten die bij het virus passen? Vraag ook dan een test aan.\n\nTesten is gratis en kan meestal snel gebeuren. Blijf zo veel mogelijk thuis tot de uitslag bekend is. Bel gratis 0800-1202 om een coranatest aan te vragen.";

@@ -109,35 +109,35 @@ private final class ReceivedNotificationView: View {
     private func notificationExplanation() -> View {
         InfoSectionTextView(theme: theme,
                             title: Localization.string(for: "moreInformation.receivedNotification.notificationExplanation.title"),
-                            content: NSAttributedString(string: Localization.string(for: "moreInformation.receivedNotification.notificationExplanation.content")))
+                            content: Localization.attributedString(for: "moreInformation.receivedNotification.notificationExplanation.content"))
     }
 
     private func complaints() -> View {
         let list = [
-            Localization.string(for: "moreInformation.receivedNotification.complaints.item1"),
-            Localization.string(for: "moreInformation.receivedNotification.complaints.item2"),
-            Localization.string(for: "moreInformation.receivedNotification.complaints.item3"),
-            Localization.string(for: "moreInformation.receivedNotification.complaints.item4")
+            Localization.string(for: "moreInformation.complaints.item1"),
+            Localization.string(for: "moreInformation.complaints.item2"),
+            Localization.string(for: "moreInformation.complaints.item3"),
+            Localization.string(for: "moreInformation.complaints.item4")
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-        let content = NSAttributedString(string: Localization.string(for: "moreInformation.receivedNotification.complaints.content"))
+        let content = Localization.attributedString(for: "moreInformation.complaints.content")
 
         let string = NSMutableAttributedString()
         string.append(bulletList)
         string.append(content)
         return InfoSectionTextView(theme: theme,
-                                   title: Localization.string(for: "moreInformation.receivedNotification.complaints.title"),
+                                   title: Localization.string(for: "moreInformatio.complaints.title"),
                                    content: string)
     }
 
     private func doCoronaTest() -> View {
         InfoSectionTextView(theme: theme,
                             title: Localization.string(for: "moreInformation.receivedNotification.doCoronaTest.title"),
-                            content: NSAttributedString(string: Localization.string(for: "moreInformation.receivedNotification.doCoronaTest.content")))
+                            content: Localization.attributedString(for: "moreInformation.receivedNotification.doCoronaTest.content"))
     }
 
     private func info() -> View {
-        let string = NSAttributedString(string: Localization.string(for: "moreInformation.receivedNotification.info.title"))
+        let string = Localization.attributedString(for: "moreInformation.info.title")
         return InfoSectionCalloutView(theme: theme, content: string)
     }
 }

@@ -144,7 +144,7 @@ private final class InfectedView: View {
     private lazy var anonomuslyWarnOthers: View = {
         InfoSectionTextView(theme: theme,
                             title: Localization.string(for: "moreInformation.infected.section.anonomuslyWarnOthers.title"),
-                            content: NSAttributedString(string: Localization.string(for: "moreInformation.infected.section.anonomuslyWarnOthers.content")))
+                            content: Localization.attributedString(for: "moreInformation.infected.section.anonomuslyWarnOthers.content"))
     }()
 
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
@@ -155,7 +155,7 @@ private final class InfectedView: View {
     private lazy var uploadCodes: View = {
         InfoSectionTextView(theme: theme,
                             title: Localization.string(for: "moreInformation.infected.section.controlCode.title"),
-                            content: NSAttributedString(string: Localization.string(for: "moreInformation.infected.section.controlCode.content")))
+                            content: Localization.attributedString(for: "moreInformation.infected.section.controlCode.content"))
     }()
 
     // MARK: - Init

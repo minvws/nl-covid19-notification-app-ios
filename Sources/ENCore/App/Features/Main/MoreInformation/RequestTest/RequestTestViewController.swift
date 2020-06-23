@@ -31,7 +31,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Coronatest aanvragen"
+        title = Localization.string(for: "moreInformation.requestTest.title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
@@ -74,7 +74,7 @@ private final class RequestTestView: View {
     // MARK: - Init
 
     override init(theme: Theme) {
-        let config = InfoViewConfig(actionButtonTitle: "Bel voor coronatest",
+        let config = InfoViewConfig(actionButtonTitle: Localization.string(for: "moreInformation.requestTest.button.title"),
                                     headerImage: Image.named("CoronatestHeader"))
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
@@ -106,23 +106,31 @@ private final class RequestTestView: View {
 
     private func receivedNotification() -> View {
         // TODO: Bold Phone Number
-        InfoSectionTextView(theme: theme, title: "Heb je een melding gekregen of twijfel je of je ziek bent? Vraag een test aan", content: NSAttributedString(string: "Als je een melding krijgt, raadt de GGD aan je te laten testen op het virus. Ook als je je nog niet ziek voelt. Heb je geen melding gekregen, maar wel last van klachten die bij het virus passen? Vraag ook dan een test aan.\n\nTesten is gratis en kan meestal snel gebeuren. Blijf zo veel mogelijk thuis tot de uitslag bekend is. Bel gratis 0800-1202 om een coranatest aan te vragen."))
+        InfoSectionTextView(theme: theme,
+                            title: Localization.string(for: "moreInformation.requestTest.receivedNotification.title"),
+                            content: Localization.attributedString(for: "moreInformation.requestTest.receivedNotification.content"))
     }
 
     private func complaints() -> View {
-        let list = NSAttributedString.bulletList(["(licht) hoesten", "loopneus, niezen, keelpijn", "verlies van geur en/of smaak kortademigheid/benauwdheid", "koorts boven de 38 graden"],
-                                                 theme: theme,
-                                                 font: theme.fonts.body)
-        let content = NSAttributedString(string: "Heb je klachten? Blijf dan zoveel mogelijk thuis. Zijn het ernstige klachten? Bel meteen je huisarts.")
+        let list = [
+            Localization.string(for: "moreInformation.complaints.item1"),
+            Localization.string(for: "moreInformation.complaints.item2"),
+            Localization.string(for: "moreInformation.complaints.item3"),
+            Localization.string(for: "moreInformation.complaints.item4")
+        ]
+        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+        let content = Localization.attributedString(for: "moreInformation.complaints.content")
 
         let string = NSMutableAttributedString()
-        string.append(list)
+        string.append(bulletList)
         string.append(content)
-        return InfoSectionTextView(theme: theme, title: "Klachten die passen bij het coronavirus (COVID-19)", content: string)
+        return InfoSectionTextView(theme: theme,
+                                   title: Localization.string(for: "moreInformatio.complaints.title"),
+                                   content: string)
     }
 
     private func info() -> View {
-        let string = NSAttributedString(string: "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart.")
+        let string = Localization.attributedString(for: "moreInformation.info.title")
         return InfoSectionCalloutView(theme: theme, content: string)
     }
 }

@@ -40,15 +40,15 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 image: nil,
                 summarySteps: [
                     OnboardingConsentSummaryStep(
-                        title: NSAttributedString(string: Localization.string(for: "consentStep1Summary1")),
+                        title: Localization.attributedString(for: "consentStep1Summary1"),
                         image: Image.named("CheckmarkShield")
                     ),
                     OnboardingConsentSummaryStep(
-                        title: NSAttributedString(string: Localization.string(for: "consentStep1Summary2")),
+                        title: Localization.attributedString(for: "consentStep1Summary2"),
                         image: Image.named("CheckmarkShield")
                     ),
                     OnboardingConsentSummaryStep(
-                        title: NSAttributedString(string: Localization.string(for: "consentStep1Summary3")),
+                        title: Localization.attributedString(for: "consentStep1Summary3"),
                         image: Image.named("CheckmarkShield")
                     )
                 ],

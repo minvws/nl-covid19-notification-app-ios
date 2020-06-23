@@ -24,4 +24,8 @@ public final class Localization {
         let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
         return String(format: localizedString, arguments)
     }
+
+    public static func attributedString(for key: String, comment: String = "", _ arguments: CVarArg...) -> NSAttributedString {
+        return NSAttributedString(string: string(for: key, arguments))
+    }
 }
