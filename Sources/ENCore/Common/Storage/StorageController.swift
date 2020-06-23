@@ -203,6 +203,12 @@ final class StorageController: StorageControlling {
             }
         }
 
+        // check if path exists and is a file
+        var isDirectory = ObjCBool(false)
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), !isDirectory.boolValue else {
+            return nil
+        }
+
         return try? Data(contentsOf: url)
     }
 

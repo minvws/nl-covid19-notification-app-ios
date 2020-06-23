@@ -29,3 +29,13 @@ extension DiagnosisKey {
                             rollingPeriod: Int(rollingPeriod))
     }
 }
+
+extension Manifest {
+    var asApplicationManifest: ApplicationManifest {
+        return ApplicationManifest(exposureKeySetsIdentifiers: exposureKeySets,
+                                   resourceBundleIdentifier: resourceBundle,
+                                   riskCalculationParametersIdentifier: riskCalculationParameters,
+                                   appConfigurationIdentifier: appConfig,
+                                   creationDate: Date())
+    }
+}

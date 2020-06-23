@@ -14,15 +14,13 @@ struct NetworkConfiguration {
     let host: String
     let port: Int?
     let path: [String]
-    let expectedContentType: HTTPContentType
 
     static let development = NetworkConfiguration(
         name: "Development",
         scheme: "http",
         host: "10.0.0.133",
         port: 5004,
-        path: ["v1"],
-        expectedContentType: .json
+        path: ["v1"]
     )
 
     static let production = NetworkConfiguration(
@@ -30,8 +28,7 @@ struct NetworkConfiguration {
         scheme: "https",
         host: "mss-standalone-acc.azurewebsites.net",
         port: nil,
-        path: ["v1"],
-        expectedContentType: .all
+        path: []
     )
 
     var manifestUrl: URL? {

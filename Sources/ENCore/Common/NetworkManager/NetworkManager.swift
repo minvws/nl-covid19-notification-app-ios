@@ -25,8 +25,12 @@ final class NetworkManager: NetworkManaging {
     /// Fetches manifest from server with all available parameters
     /// - Parameter completion: return
     func getManifest(completion: @escaping (Result<Manifest, NetworkError>) -> ()) {
+        let expectedContentType = HTTPContentType.zip
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
         let urlRequest = constructRequest(url: configuration.manifestUrl,
-                                          method: .GET)
+                                          method: .GET,
+                                          headers: headers)
 
         download(request: urlRequest) { result in
             switch result {
@@ -47,8 +51,12 @@ final class NetworkManager: NetworkManaging {
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
     /// - Parameter completion: completion description
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ()) {
+        let expectedContentType = HTTPContentType.zip
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
         let urlRequest = constructRequest(url: configuration.appConfigUrl(identifier: appConfig),
-                                          method: .GET)
+                                          method: .GET,
+                                          headers: headers)
 
         download(request: urlRequest) { result in
             switch result {
@@ -69,8 +77,12 @@ final class NetworkManager: NetworkManaging {
     /// Fetches risk parameters used by the ExposureManager
     /// - Parameter completion: success or fail
     func getRiskCalculationParameters(appConfig: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ()) {
+        let expectedContentType = HTTPContentType.zip
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
         let urlRequest = constructRequest(url: configuration.riskCalculationParametersUrl(identifier: appConfig),
-                                          method: .GET)
+                                          method: .GET,
+                                          headers: headers)
 
         download(request: urlRequest) { result in
             switch result {
@@ -93,8 +105,12 @@ final class NetworkManager: NetworkManaging {
     ///   - id: id of the exposureKeySet
     ///   - completion: executed on complete or failure
     func getDiagnosisKeys(_ id: String, completion: @escaping (Result<[URL], NetworkError>) -> ()) {
+        let expectedContentType = HTTPContentType.zip
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
         let urlRequest = constructRequest(url: configuration.exposureKeySetUrl(identifier: id),
-                                          method: .GET)
+                                          method: .GET,
+                                          headers: headers)
 
         download(request: urlRequest) { result in
             // TODO: Interpret result
@@ -107,9 +123,13 @@ final class NetworkManager: NetworkManaging {
     ///   - signature: Signature to add a queryString parameter
     ///   - completion: completion nil if succes else error
     func postKeys(request: PostKeysRequest, signature: String, completion: @escaping (NetworkError?) -> ()) {
+        let expectedContentType = HTTPContentType.json
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
         let urlRequest = constructRequest(url: configuration.postKeysUrl(signature: signature),
                                           method: .POST,
-                                          body: request)
+                                          body: request,
+                                          headers: headers)
 
         data(request: urlRequest) { result in
             switch result {
@@ -126,9 +146,13 @@ final class NetworkManager: NetworkManaging {
     ///   - diagnosisKeys: Contains all diagnosisKeys available
     ///   - completion: completion nil if succes else error
     func postStopKeys(request: PostKeysRequest, signature: String, completion: @escaping (NetworkError?) -> ()) {
+        let expectedContentType = HTTPContentType.json
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
         let urlRequest = constructRequest(url: configuration.postKeysUrl(signature: signature),
                                           method: .POST,
-                                          body: request)
+                                          body: request,
+                                          headers: headers)
 
         data(request: urlRequest) { result in
             switch result {
@@ -145,7 +169,13 @@ final class NetworkManager: NetworkManaging {
     ///   - register: Contains confirmation key
     ///   - completion: completion
     func postRegister(request: RegisterRequest, completion: @escaping (Result<LabInformation, NetworkError>) -> ()) {
-        let urlRequest = constructRequest(url: configuration.registerUrl, method: .POST, body: request)
+        let expectedContentType = HTTPContentType.json
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
+        let urlRequest = constructRequest(url: configuration.registerUrl,
+                                          method: .POST,
+                                          body: request,
+                                          headers: headers)
 
         data(request: urlRequest) { result in
             completion(self.jsonResponseHandler(result: result))
@@ -157,7 +187,7 @@ final class NetworkManager: NetworkManaging {
     private func constructRequest(url: URL?,
                                   method: HTTPMethod = .GET,
                                   body: Encodable? = nil,
-                                  headers: [String: String] = [:]) -> Result<URLRequest, NetworkError> {
+                                  headers: [HTTPHeaderKey: String] = [:]) -> Result<URLRequest, NetworkError> {
         guard let url = url else {
             return .failure(.invalidRequest)
         }
@@ -168,19 +198,22 @@ final class NetworkManager: NetworkManaging {
         request.httpMethod = method.rawValue
 
         let defaultHeaders = [
-            HTTPHeaderKey.acceptedContentType.rawValue: configuration.expectedContentType.rawValue,
             HTTPHeaderKey.contentType.rawValue: HTTPContentType.json.rawValue
         ]
 
         request.allHTTPHeaderFields = defaultHeaders
 
         headers.forEach { header, value in
-            request.addValue(value, forHTTPHeaderField: header)
+            request.addValue(value, forHTTPHeaderField: header.rawValue)
         }
 
         if let body = body.map({ try? self.jsonEncoder.encode(AnyEncodable($0)) }) {
             request.httpBody = body
         }
+
+        print(request.url)
+        print(request.allHTTPHeaderFields)
+        print(request.httpBody)
 
         return .success(request)
     }

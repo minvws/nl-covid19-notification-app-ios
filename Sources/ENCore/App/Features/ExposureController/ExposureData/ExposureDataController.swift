@@ -9,14 +9,26 @@ import Combine
 import Foundation
 
 struct ExposureDataStorageKey {
-    static var labConfirmationKey = AnyStoreKey(name: "labConfirmationKey", storeType: .secure)
-    static var lastUploadedRollingStartNumber = AnyStoreKey(name: "lastUploadedRollingStartNumber", storeType: .secure)
+    static let labConfirmationKey = AnyStoreKey(name: "labConfirmationKey", storeType: .secure)
+    static let lastUploadedRollingStartNumber = AnyStoreKey(name: "lastUploadedRollingStartNumber", storeType: .secure)
+    static let appManifest = AnyStoreKey(name: "appManifest", storeType: .insecure(volatile: true))
 }
 
 final class ExposureDataController: ExposureDataControlling {
 
+    private var disposeBag = Set<AnyCancellable>()
+
     init(operationProvider: ExposureDataOperationProvider) {
         self.operationProvider = operationProvider
+
+        operationProvider.requestManifestOperation
+            .execute()
+            .sink(receiveCompletion: { completion in
+                print(completion)
+            }) { manifest in
+                print(manifest)
+            }
+            .store(in: &disposeBag)
     }
 
     // MARK: - Operations

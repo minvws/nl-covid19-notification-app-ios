@@ -18,6 +18,14 @@ final class NetworkController: NetworkControlling {
 
     // MARK: - NetworkControlling
 
+    var applicationManifest: Future<ApplicationManifest, NetworkError> {
+        return Future { promise in
+            self.networkManager.getManifest { result in
+                promise(result.map { $0.asApplicationManifest })
+            }
+        }
+    }
+
     var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> {
         return Future { promise in
             promise(.failure(.serverNotReachable))

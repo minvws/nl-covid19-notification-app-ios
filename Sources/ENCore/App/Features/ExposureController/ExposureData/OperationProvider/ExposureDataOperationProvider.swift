@@ -15,6 +15,11 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     // MARK: - ExposureDataOperationProvider
 
+    var requestManifestOperation: RequestAppManifestDataOperation {
+        return RequestAppManifestDataOperation(networkController: networkController,
+                                               storageController: storageController)
+    }
+
     var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation {
         return RequestLabConfirmationKeyDataOperation(networkController: networkController,
                                                       storageController: storageController)

@@ -19,14 +19,14 @@ struct Endpoint {
 
     // MARK: - CDN
 
-    static let manifest = Path(components: "cdn", "manifest")
-    static let exposureKeySet = Path(components: "cdn", "exposurekeyset")
+    static let manifest = Path(components: "cdn", "v1", "manifest")
+    static let exposureKeySet = Path(components: "cdn", "v1", "exposurekeyset")
     static let riskCalculationParameters = Path(components: "cdn", "riskcalculationparameters")
-    static let appConfig = Path(components: "cdn", "appconfig")
+    static let appConfig = Path(components: "cdn", "v1", "appconfig")
 
     // MARK: - API
 
-    static let register = Path(components: "register")
-    static let postKeys = Path(components: "postkeys")
-    static let stopKeys = Path(components: "stopkeys")
+    static let register = Path(components: "v1", "register")
+    static let postKeys = Path(components: "v1", "postkeys")
+    static let stopKeys = Path(components: "v1", "stopkeys")
 }

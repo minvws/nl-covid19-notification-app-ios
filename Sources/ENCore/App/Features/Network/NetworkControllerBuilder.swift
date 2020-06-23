@@ -12,6 +12,7 @@ import Foundation
 protocol NetworkControlling {
     var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> { get }
     var exposureRiskCalculationParameters: Future<ExposureRiskCalculationParameters, NetworkError> { get }
+    var applicationManifest: Future<ApplicationManifest, NetworkError> { get }
     var resourceBundle: Future<ResourceBundle, NetworkError> { get }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError>

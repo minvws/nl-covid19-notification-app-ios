@@ -15,6 +15,7 @@ protocol ExposureDataOperation {
 
 /// @mockable
 protocol ExposureDataOperationProvider {
+    var requestManifestOperation: RequestAppManifestDataOperation { get }
     var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation { get }
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
