@@ -5,10 +5,11 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Lottie
 import UIKit
 
 /// @mockable
-protocol OnboardingConsentViewControllable: ViewControllable { }
+protocol OnboardingConsentViewControllable: ViewControllable {}
 
 final class OnboardingConsentStepViewController: ViewController, OnboardingConsentViewControllable {
 
@@ -29,9 +30,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     private let consentStep: OnboardingConsentStep?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
-        listener: OnboardingConsentListener,
-        theme: Theme,
-        index: Int) {
+         listener: OnboardingConsentListener,
+         theme: Theme,
+         index: Int) {
 
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
@@ -132,6 +133,13 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
 final class OnboardingConsentView: View {
 
+    private lazy var animationView: AnimationView = {
+        let animationView = AnimationView()
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        animationView.isHidden = true
+        return animationView
+    }()
+
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -141,14 +149,14 @@ final class OnboardingConsentView: View {
         return imageView
     }()
 
-    lazy private var titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         return label
     }()
 
-    lazy private var contentLabel: UILabel = {
+    private lazy var contentLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
@@ -169,7 +177,7 @@ final class OnboardingConsentView: View {
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [imageView, primaryButton, secondaryButton, titleLabel, contentLabel]
+    private lazy var viewsInDisplayOrder = [imageView, animationView, primaryButton, secondaryButton, titleLabel, contentLabel]
 
     private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?
 
@@ -196,21 +204,28 @@ final class OnboardingConsentView: View {
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
-            ])
+        ])
+
+        constraints.append([
+            animationView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            animationView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            animationView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            animationView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
+        ])
 
         constraints.append([
             primaryButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             primaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             primaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             primaryButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
+        ])
 
         constraints.append([
             secondaryButton.bottomAnchor.constraint(equalTo: primaryButton.topAnchor, constant: -20),
             secondaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             secondaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             secondaryButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
+        ])
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
@@ -227,7 +242,10 @@ final class OnboardingConsentView: View {
         self.primaryButton.title = step.primaryButtonTitle
         self.secondaryButton.title = step.secondaryButtonTitle
 
-        if let image = step.image {
+        if let animation = step.animation {
+            self.animationView.animation = animation
+            self.animationView.isHidden = false
+        } else if let image = step.image {
             self.imageView.image = image
             self.imageView.isHidden = false
         }
@@ -266,14 +284,14 @@ final class OnboardingConsentView: View {
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-            ])
+        ])
 
         constraints.append([
             contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             contentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             contentLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-            ])
+        ])
 
         if let consentSummaryStepsView = consentSummaryStepsView {
 
@@ -286,7 +304,7 @@ final class OnboardingConsentView: View {
                     consentSummaryStepsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin),
                     consentSummaryStepsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin),
                     consentSummaryStepsView.bottomAnchor.constraint(equalTo: secondaryButton.topAnchor, constant: -20)
-                    ])
+                ])
 
                 consentSummaryStepsView.setupConstraints()
             }
