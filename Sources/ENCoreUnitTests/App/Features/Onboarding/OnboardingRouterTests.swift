@@ -13,7 +13,7 @@ final class OnboardingRouterTests: XCTestCase {
     private let viewController = OnboardingViewControllableMock()
     private let stepBuilder = OnboardingStepBuildableMock()
     private let consentBuilder = OnboardingConsentBuildableMock()
-    private let helpBuilder = OnboardingHelpBuildableMock()
+    private let helpBuilder = HelpBuildableMock()
     private let webBuilder = WebBuildableMock()
     private let shareSheetBuilder = ShareSheetBuildableMock()
 

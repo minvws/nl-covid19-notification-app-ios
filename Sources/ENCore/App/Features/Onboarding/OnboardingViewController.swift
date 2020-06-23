@@ -19,7 +19,9 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     weak var router: OnboardingRouting?
 
-    init(listener: OnboardingListener, theme: Theme) {
+    init(onboardingConsentManager: OnboardingConsentManaging,
+        listener: OnboardingListener, theme: Theme) {
+        self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         super.init(theme: theme)
         modalPresentationStyle = .fullScreen
@@ -52,17 +54,26 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         router?.routeToConsent(withIndex: step.rawValue, animated: true)
     }
 
-    // MARK: - OnboardingHelpListener
+    // MARK: - HelpListener
 
     func displayHelp() {
         router?.routeToHelp()
     }
 
-    func helpRequestsFAQ() {}
-
-    func helpRequestsPermission() {}
-
-    func helpRequestsClose() {}
+    func helpRequestsEnableApp() {
+        onboardingConsentManager.askEnableExposureNotifications { activeState in
+            switch activeState {
+            case .notAuthorized:
+                self.listener?.didCompleteOnboarding()
+            default:
+                if let nextStep = self.onboardingConsentManager.getNextConsentStep(.en) {
+                    self.router?.routeToConsent(withIndex: nextStep.rawValue, animated: true)
+                } else {
+                    self.listener?.didCompleteOnboarding()
+                }
+            }
+        }
+    }
 
     // MARK: - ViewController Lifecycle
 
@@ -75,4 +86,5 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     // MARK: - Private
 
     private weak var listener: OnboardingListener?
+    private let onboardingConsentManager: OnboardingConsentManaging
 }

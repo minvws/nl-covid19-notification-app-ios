@@ -8,7 +8,7 @@
 import Foundation
 
 /// @mockable
-protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, OnboardingHelpListener {
+protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
@@ -18,16 +18,16 @@ protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, O
 final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
 
     init(viewController: OnboardingViewControllable,
-         stepBuilder: OnboardingStepBuildable,
-         consentBuilder: OnboardingConsentBuildable,
-         helpBuilder: OnboardingHelpBuildable,
-         webBuilder: WebBuildable,
-         shareSheetBuilder: ShareSheetBuildable) {
+        stepBuilder: OnboardingStepBuildable,
+        consentBuilder: OnboardingConsentBuildable,
+        webBuilder: WebBuildable,
+        shareSheetBuilder: ShareSheetBuildable,
+        helpBuilder: HelpBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
-        self.helpBuilder = helpBuilder
         self.webBuilder = webBuilder
         self.shareSheetBuilder = shareSheetBuilder
+        self.helpBuilder = helpBuilder
 
         super.init(viewController: viewController)
 
@@ -60,10 +60,12 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     }
 
     func routeToHelp() {
-        let helpViewController = helpBuilder.build(withListener: viewController)
-        self.helpViewController = helpViewController
+        let helpRouter = helpBuilder.build(withListener: viewController, shouldShowEnableAppButton: true)
+        self.helpRouter = helpRouter
 
-        viewController.present(viewController: helpViewController, animated: true, completion: nil)
+        viewController.present(viewController: helpRouter.viewControllable,
+            animated: true,
+            completion: nil)
     }
 
     private let stepBuilder: OnboardingStepBuildable
@@ -72,12 +74,13 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     private let consentBuilder: OnboardingConsentBuildable
     private var consentViewController: ViewControllable?
 
-    private let helpBuilder: OnboardingHelpBuildable
-    private var helpViewController: ViewControllable?
-
     private let webBuilder: WebBuildable
     private var webViewController: ViewControllable?
 
     private let shareSheetBuilder: ShareSheetBuildable
     private var shareSheetViewController: ShareSheetViewControllable?
+
+    private let helpBuilder: HelpBuildable
+    private var helpViewController: ViewControllable?
+    private var helpRouter: Routing?
 }

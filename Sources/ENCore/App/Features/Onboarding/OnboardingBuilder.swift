@@ -25,7 +25,7 @@ protocol OnboardingDependency {
 
 ///
 /// - Tag: OnboardingDependencyProvider
-private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, OnboardingHelpDependency, WebDependency, ShareSheetDependency {
+private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, WebDependency, ShareSheetDependency, HelpDependency {
 
     // MARK: - OnboardingStepDependency
 
@@ -37,9 +37,13 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
 
     lazy var onboardingConsentManager: OnboardingConsentManaging = {
         return OnboardingConsentManager(exposureStateStream: dependency.exposureStateStream,
-                                        exposureController: dependency.exposureController,
-                                        theme: self.theme)
+            exposureController: dependency.exposureController,
+            theme: self.theme)
     }()
+
+    var exposureController: ExposureControlling {
+        return dependency.exposureController
+    }
 
     var theme: Theme {
         return dependency.theme
@@ -59,26 +63,27 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
         return WebBuilder(dependency: self)
     }
 
-    var helpBuilder: OnboardingHelpBuildable {
-        return OnboardingHelpBuilder(dependency: self)
-    }
-
     var shareSheetBuilder: ShareSheetBuildable {
         return ShareSheetBuilder(dependency: self)
+    }
+
+    var helpBuilder: HelpBuildable {
+        return HelpBuilder(dependency: self)
     }
 }
 
 final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildable {
     func build(withListener listener: OnboardingListener) -> Routing {
         let dependencyProvider = OnboardingDependencyProvider(dependency: dependency)
-        let viewController = OnboardingViewController(listener: listener,
-                                                      theme: dependencyProvider.dependency.theme)
+        let viewController = OnboardingViewController(onboardingConsentManager: dependencyProvider.onboardingConsentManager,
+            listener: listener,
+            theme: dependencyProvider.dependency.theme)
 
         return OnboardingRouter(viewController: viewController,
-                                stepBuilder: dependencyProvider.stepBuilder,
-                                consentBuilder: dependencyProvider.consentBuilder,
-                                helpBuilder: dependencyProvider.helpBuilder,
-                                webBuilder: dependencyProvider.webBuilder,
-                                shareSheetBuilder: dependencyProvider.shareSheetBuilder)
+            stepBuilder: dependencyProvider.stepBuilder,
+            consentBuilder: dependencyProvider.consentBuilder,
+            webBuilder: dependencyProvider.webBuilder,
+            shareSheetBuilder: dependencyProvider.shareSheetBuilder,
+            helpBuilder: dependencyProvider.helpBuilder)
     }
 }
