@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MOCKOLO_PATH="/usr/local/bin/mockolo"
+MOCKOLO_PATH=`which mockolo`
 REPO_ROOT=`git rev-parse --show-toplevel`
 EXCLUDES="Images,Strings"
 
