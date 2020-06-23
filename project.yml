@@ -93,6 +93,14 @@ targets:
       - carthage: SnapKit
       - sdk: ExposureNotification.framework
         optional: true
+    scheme:
+      gatherCoverageData: true
+      testTargets:
+        - name: ENCoreTests
+          parallelizable: false
+          randomExecutionOrder: true
+      environmentVariables:
+        USE_DEVELOPER_MENU: ${USE_DEVELOPER_MENU}
 
   ENCoreTests:
     platform: iOS
