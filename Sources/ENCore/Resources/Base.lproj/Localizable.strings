@@ -72,6 +72,12 @@
 <p>De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.</p>
 ";
 
+// MARK: - Message
+
+"message.title" = "Melding gekregen";
+"message.button.title" = "Bel voor coronatest";
+
+
 // MARK: - MoreInformation
 
 /* The title for the table of items in more infromation */
