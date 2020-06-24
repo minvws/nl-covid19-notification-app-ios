@@ -25,6 +25,7 @@ final class OnboardingStepViewControllerTests: XCTestCase {
                                   title: "Title",
                                   content: "Content",
                                   image: UIImage(),
+                                  animationName: "test",
                                   buttonTitle: "Button",
                                   isExample: true)
         }

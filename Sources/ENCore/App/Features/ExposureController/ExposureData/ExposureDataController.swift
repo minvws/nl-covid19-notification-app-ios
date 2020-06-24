@@ -9,11 +9,16 @@ import Combine
 import Foundation
 
 struct ExposureDataStorageKey {
-    static let labConfirmationKey = AnyStoreKey(name: "labConfirmationKey", storeType: .secure)
-    static let lastUploadedRollingStartNumber = AnyStoreKey(name: "lastUploadedRollingStartNumber", storeType: .secure)
-    static let appManifest = AnyStoreKey(name: "appManifest", storeType: .insecure(volatile: true))
-    static let appConfiguration = AnyStoreKey(name: "appConfiguration", storeType: .insecure(volatile: true))
-    static let exposureKeySetsHolders = AnyStoreKey(name: "exposureKeySetsHolders", storeType: .insecure(volatile: false))
+    static let labConfirmationKey = CodableStorageKey<LabConfirmationKey>(name: "labConfirmationKey",
+                                                                          storeType: .secure)
+    static let lastUploadedRollingStartNumber = CodableStorageKey<Int32>(name: "lastUploadedRollingStartNumber",
+                                                                         storeType: .secure)
+    static let appManifest = CodableStorageKey<ApplicationManifest>(name: "appManifest",
+                                                                    storeType: .insecure(volatile: true))
+    static let appConfiguration = CodableStorageKey<ApplicationConfiguration>(name: "appConfiguration",
+                                                                              storeType: .insecure(volatile: true))
+    static let exposureKeySetsHolders = CodableStorageKey<[ExposureKeySetHolder]>(name: "exposureKeySetsHolders",
+                                                                                  storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling {

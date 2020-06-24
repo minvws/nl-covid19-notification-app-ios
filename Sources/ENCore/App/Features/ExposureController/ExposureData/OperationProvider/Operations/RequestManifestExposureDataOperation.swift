@@ -48,8 +48,7 @@ final class RequestAppManifestDataOperation: ExposureDataOperation {
     // MARK: - Private
 
     private func retrieveManifestUpdateFrequency() -> Int {
-        guard let appConfiguration = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration,
-                                                                      ofType: ApplicationConfiguration.self) else {
+        guard let appConfiguration = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
             return defaultRefreshFrequency
         }
 
@@ -57,8 +56,7 @@ final class RequestAppManifestDataOperation: ExposureDataOperation {
     }
 
     private func retrieveStoredManifest() -> ApplicationManifest? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest,
-                                                ofType: ApplicationManifest.self)
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)
     }
 
     private func store(manifest: ApplicationManifest) -> AnyPublisher<ApplicationManifest, ExposureDataError> {

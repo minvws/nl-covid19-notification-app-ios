@@ -278,13 +278,11 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     // MARK: - Private
 
     private func getLastStoredConfirmationKey() -> String {
-        storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey,
-                                         ofType: LabConfirmationKey.self)?.identifier ?? "None"
+        storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)?.identifier ?? "None"
     }
 
     private func getLastUploadedRollingStartNumber() -> String {
-        guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber,
-                                                          ofType: Int32.self) else {
+        guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber) else {
             return "None"
         }
 

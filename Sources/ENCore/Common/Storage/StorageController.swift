@@ -8,7 +8,7 @@
 import Foundation
 
 extension StorageControlling {
-    func store<Object: Encodable, Key: StoreKey>(object: Object, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
+    func store<Key: CodableStoreKey>(object: Key.Object, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
         guard let data = try? JSONEncoder().encode(object) else {
             completion(StoreError.cannotEncode)
             return
@@ -17,12 +17,12 @@ extension StorageControlling {
         store(data: data, identifiedBy: key, completion: completion)
     }
 
-    func retrieveObject<Object: Decodable, Key: StoreKey>(identifiedBy key: Key, ofType type: Object.Type) -> Object? {
+    func retrieveObject<Key: CodableStoreKey>(identifiedBy key: Key) -> Key.Object? {
         guard let data = retrieveData(identifiedBy: key) else {
             return nil
         }
 
-        return try? JSONDecoder().decode(type, from: data)
+        return try? JSONDecoder().decode(key.objectType, from: data)
     }
 }
 

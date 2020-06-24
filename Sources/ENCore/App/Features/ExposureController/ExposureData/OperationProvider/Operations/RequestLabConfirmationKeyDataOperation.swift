@@ -47,8 +47,7 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
     }
 
     private func retrieveStoredKey() -> AnyPublisher<LabConfirmationKey?, ExposureDataError> {
-        let key = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey,
-                                                   ofType: LabConfirmationKey.self)
+        let key = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)
 
         return Just(key)
             .setFailureType(to: ExposureDataError.self)

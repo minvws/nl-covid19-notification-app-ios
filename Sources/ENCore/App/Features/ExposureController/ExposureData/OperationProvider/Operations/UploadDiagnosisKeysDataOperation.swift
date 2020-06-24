@@ -41,7 +41,7 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
         }
 
         return Future { promise in
-            self.storageController.store(object: highestRollingStartNumber,
+            self.storageController.store(object: Int32(highestRollingStartNumber),
                                          identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber) { error in
                 // cannot store - ignore and upload the whole set again next time
                 promise(.success(()))
@@ -52,8 +52,7 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
 
     private func filterOutAlreadyUploadedKeys(_ keys: [DiagnosisKey]) -> [DiagnosisKey] {
         let storageKey = ExposureDataStorageKey.lastUploadedRollingStartNumber
-        let storedLastRollingStartNumber = storageController.retrieveObject(identifiedBy: storageKey,
-                                                                            ofType: Int32.self)
+        let storedLastRollingStartNumber = storageController.retrieveObject(identifiedBy: storageKey)
 
         guard let lastRollingStartNumber = storedLastRollingStartNumber else {
             return keys

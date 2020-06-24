@@ -53,8 +53,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
     // MARK: - Private
 
     private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders,
-                                                ofType: [ExposureKeySetHolder].self) ?? []
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
     }
 
     private func removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from identifiers: [String],
@@ -67,8 +66,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
     private func storeDownloadedKeySetsHolders(_ downloadedKeySetsHolders: [ExposureKeySetHolder]) -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
         return Future { promise in
             self.storageController.requestExclusiveAccess { storageController in
-                var keySetsHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders,
-                                                                      ofType: [ExposureKeySetHolder].self) ?? []
+                var keySetsHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
 
                 downloadedKeySetsHolders.forEach { keySetsHolder in
                     let matchesKeySetsHolder: (ExposureKeySetHolder) -> Bool = { $0.identifier == keySetsHolder.identifier }

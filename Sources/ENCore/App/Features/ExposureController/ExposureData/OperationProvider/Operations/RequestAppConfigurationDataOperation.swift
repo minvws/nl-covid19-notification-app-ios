@@ -46,8 +46,7 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation {
     // MARK: - Private
 
     private func retrieveStoredConfiguration() -> ApplicationConfiguration? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration,
-                                                ofType: ApplicationConfiguration.self)
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration)
     }
 
     private func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {

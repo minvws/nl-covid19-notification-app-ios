@@ -12,8 +12,28 @@ protocol StoreKey {
     var storeType: StoreType { get }
 }
 
-struct AnyStoreKey: StoreKey {
+protocol CodableStoreKey: StoreKey {
+    associatedtype Object: Codable
+
+    var objectType: Object.Type { get }
+}
+
+struct StorageKey: StoreKey {
     var asString: String { name }
+    let storeType: StoreType
+
+    init(name: String, storeType: StoreType) {
+        self.name = name
+        self.storeType = storeType
+    }
+
+    private let name: String
+}
+
+struct CodableStorageKey<Object: Codable>: CodableStoreKey {
+    var asString: String { name }
+    var objectType: Object.Type { return Object.self }
+
     let storeType: StoreType
 
     init(name: String, storeType: StoreType) {
