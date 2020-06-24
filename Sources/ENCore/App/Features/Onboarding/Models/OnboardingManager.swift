@@ -26,6 +26,7 @@ final class OnboardingManager: OnboardingManaging {
                 title: Localized("step1Title"),
                 content: Localized("step1Content"),
                 image: Image.named("Step1") ?? UIImage(),
+                animationName: "ontheway",
                 buttonTitle: Localized("nextButtonTitle"),
                 isExample: false
             )
@@ -37,6 +38,7 @@ final class OnboardingManager: OnboardingManaging {
                 title: Localized("step2Title"),
                 content: Localized("step2Content"),
                 image: Image.named("Step2") ?? UIImage(),
+                animationName: "bluetooth",
                 buttonTitle: Localized("nextButtonTitle"),
                 isExample: false
             )
@@ -48,6 +50,7 @@ final class OnboardingManager: OnboardingManaging {
                 title: Localized("step3Title"),
                 content: Localized("step3Content"),
                 image: Image.named("Step3") ?? UIImage(),
+                animationName: "popup",
                 buttonTitle: Localized("nextButtonTitle"),
                 isExample: false
             )
@@ -59,6 +62,7 @@ final class OnboardingManager: OnboardingManaging {
                 title: Localized("step4Title"),
                 content: Localized("step4Content"),
                 image: Image.named("Step4") ?? UIImage(),
+                animationName: nil,
                 buttonTitle: Localized("nextButtonTitle"),
                 isExample: true
             )

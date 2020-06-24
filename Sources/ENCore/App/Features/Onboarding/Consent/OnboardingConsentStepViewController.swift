@@ -63,6 +63,12 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        self.internalView.animationView.play()
+    }
+
     // MARK: - Functions
 
     @objc private func primaryButtonPressed() {
@@ -133,10 +139,11 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
 final class OnboardingConsentView: View {
 
-    private lazy var animationView: AnimationView = {
+    lazy var animationView: AnimationView = {
         let animationView = AnimationView()
         animationView.translatesAutoresizingMaskIntoConstraints = false
         animationView.isHidden = true
+        animationView.loopMode = .loop
         return animationView
     }()
 

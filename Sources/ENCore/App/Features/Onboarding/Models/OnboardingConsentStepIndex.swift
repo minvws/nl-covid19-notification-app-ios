@@ -37,7 +37,7 @@ final class OnboardingConsentStep: NSObject {
          title: String,
          content: String,
          image: UIImage?,
-         animationNamed animationName: String?,
+         animationName: String?,
          summarySteps: [OnboardingConsentSummaryStep]?,
          primaryButtonTitle: String,
          secondaryButtonTitle: String,
@@ -46,7 +46,7 @@ final class OnboardingConsentStep: NSObject {
         self.step = step
         self.image = image
         if let animationName = animationName {
-            if let animation = Animation.named(animationName) {
+            if let animation = Animation.named(animationName, bundle: Bundle(for: OnboardingConsentStep.self)) {
                 self.animation = animation
             }
         }
