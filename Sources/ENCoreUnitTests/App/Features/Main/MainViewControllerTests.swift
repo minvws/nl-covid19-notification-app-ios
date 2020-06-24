@@ -14,13 +14,15 @@ final class MainViewControllerTests: XCTestCase {
     private let router = MainRoutingMock()
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()
+    private let exposureController = ExposureControllingMock()
 
     override func setUp() {
         super.setUp()
 
         let theme = ENTheme()
 
-        viewController = MainViewController(theme: theme)
+        viewController = MainViewController(theme: theme,
+                                            exposureController: exposureController)
         viewController.router = router
     }
 
