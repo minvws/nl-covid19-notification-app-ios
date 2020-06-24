@@ -29,7 +29,7 @@ final class OnboardingStep: NSObject {
 
         self.image = image
         if let animationName = animationName {
-            if let animation = Animation.named(animationName, bundle: Bundle(for: OnboardingStep.self)) {
+            if let animation = LottieAnimation.named(animationName) {
                 self.animation = animation
             }
         }
