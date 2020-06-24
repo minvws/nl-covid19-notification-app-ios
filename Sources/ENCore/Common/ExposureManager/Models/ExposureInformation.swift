@@ -12,5 +12,4 @@ protocol ExposureInformation {
     var date: Date { get }
     var duration: TimeInterval { get }
     var metadata: [AnyHashable: Any]? { get }
-    var totalRiskScoreFullRange: Double { get }
 }
