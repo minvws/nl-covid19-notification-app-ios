@@ -54,7 +54,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }()
 
     lazy var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming = {
-        return NetworkConfigurationStream(configuration: .development)
+        return NetworkConfigurationStream(configuration: .production)
     }()
 
     var networkConfigurationProvider: NetworkConfigurationProvider {

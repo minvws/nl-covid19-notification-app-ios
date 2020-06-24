@@ -13,7 +13,7 @@ struct ExposureDataStorageKey {
     static let lastUploadedRollingStartNumber = AnyStoreKey(name: "lastUploadedRollingStartNumber", storeType: .secure)
     static let appManifest = AnyStoreKey(name: "appManifest", storeType: .insecure(volatile: true))
     static let appConfiguration = AnyStoreKey(name: "appConfiguration", storeType: .insecure(volatile: true))
-    static let exposureKeySetsHolders = AnyStoreKey(name: "exposureKeySetsHolders", storeType: .insecure(volatile: true))
+    static let exposureKeySetsHolders = AnyStoreKey(name: "exposureKeySetsHolders", storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling {
@@ -32,7 +32,7 @@ final class ExposureDataController: ExposureDataControlling {
 
     // MARK: - ExposureDataControlling
 
-    func fetchAndProcessExposureKeySets() -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
+    func fetchExposureKeySets() -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
         return operationProvider
             .requestManifestOperation
             .execute()
@@ -43,12 +43,6 @@ final class ExposureDataController: ExposureDataControlling {
                     .execute()
             }
             .eraseToAnyPublisher()
-//        .map { (sets) -> () in
-//            print(sets)
-//            return ()
-//        }
-//        .assertNoFailure()
-//        .eraseToAnyPublisher()
     }
 
     // MARK: - LabFlow

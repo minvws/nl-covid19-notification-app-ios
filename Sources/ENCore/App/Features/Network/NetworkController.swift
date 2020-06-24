@@ -51,7 +51,9 @@ final class NetworkController: NetworkControlling {
             self.networkManager.getExposureKeySet(identifier: identifier) { result in
                 promise(result
                     .map { localUrl in ExposureKeySetHolder(identifier: identifier,
-                                                            fileUrl: localUrl)
+                                                            fileUrl: localUrl,
+                                                            processed: false,
+                                                            creationDate: Date())
                     }
                 )
             }

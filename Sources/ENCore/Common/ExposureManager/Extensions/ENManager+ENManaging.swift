@@ -35,3 +35,6 @@ protocol ENManaging {
 }
 
 extension ENManager: ENManaging {}
+
+extension ENExposureDetectionSummary: ExposureDetectionSummary {}
+extension ENExposureInfo: ExposureInformation {}

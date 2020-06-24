@@ -60,22 +60,7 @@ final class ExposureManager: ExposureManaging {
                 return
             }
 
-            let p = self.manager.getExposureInfo(summary: summary,
-                                                 userExplanation: "Hello There World") { info, error in
-                print(info)
-                print(error)
-            }
-            p.resume()
-
-            // convert to generic
-            let exposureDetectionSummary = ExposureDetectionSummary(
-                attenuationDurations: summary.attenuationDurations,
-                daysSinceLastExposure: summary.daysSinceLastExposure,
-                matchedKeyCount: summary.matchedKeyCount,
-                maximumRiskScore: summary.maximumRiskScore,
-                metadata: summary.metadata)
-
-            completion(.success(exposureDetectionSummary))
+            completion(.success(summary))
         }
     }
 
@@ -112,10 +97,17 @@ final class ExposureManager: ExposureManaging {
         }
     }
 
-    func getExposureInfo(summary: ENExposureDetectionSummary,
+    func getExposureInfo(summary: ExposureDetectionSummary,
                          userExplanation: String,
-                         completionHandler: @escaping ENGetExposureInfoHandler) -> Progress {
-        return manager.getExposureInfo(summary: summary, userExplanation: userExplanation, completionHandler: completionHandler)
+                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) -> Progress {
+        guard let summary = summary as? ENExposureDetectionSummary else {
+            completionHandler(nil, .internalTypeMismatch)
+            return Progress()
+        }
+
+        return manager.getExposureInfo(summary: summary, userExplanation: userExplanation) { (info: [ENExposureInfo]?, error: Error?) in
+            completionHandler(info, error.map(ExposureManager.mapError))
+        }
     }
 
     func setExposureNotificationEnabled(_ enabled: Bool, completion: @escaping (Result<(), ExposureManagerError>) -> ()) {

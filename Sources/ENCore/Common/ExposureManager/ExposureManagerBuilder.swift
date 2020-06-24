@@ -29,6 +29,7 @@ enum ExposureManagerError: Error {
     case bluetoothOff
     case restricted
     case notAuthorized
+    case internalTypeMismatch // programmers error
 }
 
 /// @mockable
@@ -58,9 +59,9 @@ protocol ExposureManaging {
     /// Returns the current framework status
     func getExposureNotificationStatus() -> ExposureManagerStatus
 
-    func getExposureInfo(summary: ENExposureDetectionSummary,
+    func getExposureInfo(summary: ExposureDetectionSummary,
                          userExplanation: String,
-                         completionHandler: @escaping ENGetExposureInfoHandler) -> Progress
+                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) -> Progress
 }
 
 /// @mockable

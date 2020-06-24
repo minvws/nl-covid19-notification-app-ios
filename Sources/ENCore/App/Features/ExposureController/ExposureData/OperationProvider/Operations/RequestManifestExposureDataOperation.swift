@@ -47,9 +47,13 @@ final class RequestAppManifestDataOperation: ExposureDataOperation {
 
     // MARK: - Private
 
-    private func retrieveManifestUpdateFrequency() -> Int? {
-        // TODO: Get from appConfig once fetched
-        return defaultRefreshFrequency
+    private func retrieveManifestUpdateFrequency() -> Int {
+        guard let appConfiguration = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration,
+                                                                      ofType: ApplicationConfiguration.self) else {
+            return defaultRefreshFrequency
+        }
+
+        return appConfiguration.manifestRefreshFrequency
     }
 
     private func retrieveStoredManifest() -> ApplicationManifest? {
@@ -73,12 +77,7 @@ final class RequestAppManifestDataOperation: ExposureDataOperation {
 }
 
 extension ApplicationManifest {
-    func isValid(forUpdateFrequency updateFrequency: Int?) -> Bool {
-        guard let updateFrequency = updateFrequency else {
-            // no update frequency, deem as valid
-            return true
-        }
-
-        return Date(timeIntervalSinceNow: TimeInterval(updateFrequency)) >= Date()
+    func isValid(forUpdateFrequency updateFrequency: Int) -> Bool {
+        return creationDate.addingTimeInterval(TimeInterval(updateFrequency)) >= Date()
     }
 }

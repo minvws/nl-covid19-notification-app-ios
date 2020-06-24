@@ -34,7 +34,7 @@ final class StubExposureManager: ExposureManaging {
     func detectExposures(diagnosisKeyURLs: [URL], completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ()) {
         // fake exposure
 
-        let summary = ExposureDetectionSummary(
+        let summary = ExposureDetectionSummaryImpl(
             attenuationDurations: [15],
             daysSinceLastExposure: 1,
             matchedKeyCount: 2,
@@ -53,10 +53,24 @@ final class StubExposureManager: ExposureManaging {
         self.exposureNotificationEnabled = enabled
     }
 
-    func getExposureInfo(summary: ENExposureDetectionSummary, userExplanation: String, completionHandler: @escaping ENGetExposureInfoHandler) -> Progress {
+    func getExposureInfo(summary: ExposureDetectionSummary,
+                         userExplanation: String,
+                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) -> Progress {
+        DispatchQueue.main.async {
+            completionHandler(nil, nil)
+        }
+
         return Progress()
     }
 
     // return whether exposureNotifications should be enabled or not
     private var exposureNotificationEnabled = false
+}
+
+private struct ExposureDetectionSummaryImpl: ExposureDetectionSummary {
+    let attenuationDurations: [NSNumber]
+    let daysSinceLastExposure: Int
+    let matchedKeyCount: UInt64
+    let maximumRiskScore: UInt8
+    let metadata: [AnyHashable: Any]?
 }

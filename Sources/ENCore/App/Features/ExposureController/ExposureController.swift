@@ -33,45 +33,7 @@ final class ExposureController: ExposureControlling {
 
         exposureManager.activate { _ in
             self.updateStatusStream()
-
-            self.dataController.fetchAndProcessExposureKeySets()
-                .sink(receiveCompletion: { completion in
-                    print(completion)
-                },
-                receiveValue: { sets in
-                    let url = sets.first!.fileUrl
-                    let urls = [url.appendingPathComponent("export.sig"), url.appendingPathComponent("export.bin")]
-                    self.exposureManager?.detectExposures(diagnosisKeyURLs: urls,
-                                                          completion: { result in
-                                                              print(result)
-                                                              //                                                            if case .success(let summary) = result {
-                                                              //                                                                self.exposureManager?.getExposureInfo(summary: summary,
-                                                              //                                                                                                      userExplanation: "Hello World",
-                                                              //                                                                                                      completionHandler: { (info, error) in
-                                                              //                                                                                                        print(info)
-                                                              //                                                                                                        print(error)
-                                                              //                                                                    }).resume()
-                                                              //                                                            }
-                                })
-
-                        })
-                .store(in: &self.disposeBag)
         }
-
-//        let url = URL(fileURLWithPath: "/Users/rvandijke/Library/Developer/CoreSimulator/Devices/6C4EA67B-836E-4DE7-84FC-92FD2A816DA3/data/Containers/Data/Application/D3A499C5-5EDF-456F-A837-FF3BDBD7EC26/tmp/49B8C83B-FAAC-42E2-9834-9F4B0CB80014")
-
-//        exposureManager.detectExposures(diagnosisKeyURLs: [url]) { (result) in
-//            print(result)
-
-//            if case .success(let oSummary) = result, let summary = oSummary {
-//                let progress = self.exposureManager?.getExposureInfo(summary: summary,
-//                                                                     userExplanation: "My First EN Notification",
-//                                                                     completionHandler: { (info, error) in
-//                                                                        print(info)
-//                                                                        print(error)
-//                })
-//            }
-//        }
     }
 
     func requestExposureNotificationPermission() {

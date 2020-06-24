@@ -22,7 +22,7 @@ protocol ExposureDataControlling {
 
     // MARK: - Tasks
 
-    func fetchAndProcessExposureKeySets() -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError>
+    func fetchExposureKeySets() -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError>
 
     // MARK: - Lab Flow
 
