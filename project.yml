@@ -62,6 +62,7 @@ targets:
                 UISceneConfigurationName: Default Configuration
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
+        UIRequiredDeviceCapabilities: [bluetooth-le, telephony]
                 
     dependencies:
       - target: ENCore
