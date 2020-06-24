@@ -21,6 +21,7 @@ protocol OnboardingStepDependency {
 /// @mockable
 protocol OnboardingStepListener: AnyObject {
     func onboardingStepsDidComplete()
+    func nextStepAtIndex(_ index: Int)
 }
 
 final class OnboardingStepDependencyProvider: DependencyProvider<OnboardingStepDependency> {}

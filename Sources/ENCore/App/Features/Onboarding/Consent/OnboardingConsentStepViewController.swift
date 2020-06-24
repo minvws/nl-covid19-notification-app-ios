@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Lottie
 import UIKit
 
 /// @mockable
@@ -60,6 +61,18 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         if consentStep?.hasNavigationBarSkipButton ?? false {
             setNavigationRightBarButtonItems([skipStepButton])
         }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        self.internalView.animationView.play()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        self.internalView.animationView.stop()
     }
 
     // MARK: - Functions
@@ -132,6 +145,14 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
 final class OnboardingConsentView: View {
 
+    lazy var animationView: AnimationView = {
+        let animationView = AnimationView()
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        animationView.isHidden = true
+        animationView.loopMode = .loop
+        return animationView
+    }()
+
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -169,7 +190,7 @@ final class OnboardingConsentView: View {
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [imageView, primaryButton, secondaryButton, titleLabel, contentLabel]
+    private lazy var viewsInDisplayOrder = [imageView, animationView, primaryButton, secondaryButton, titleLabel, contentLabel]
 
     private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?
 
@@ -196,6 +217,13 @@ final class OnboardingConsentView: View {
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
+        ])
+
+        constraints.append([
+            animationView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            animationView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            animationView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            animationView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
         ])
 
         constraints.append([
@@ -227,7 +255,10 @@ final class OnboardingConsentView: View {
         self.primaryButton.title = step.primaryButtonTitle
         self.secondaryButton.title = step.secondaryButtonTitle
 
-        if let image = step.image {
+        if let animation = step.animation {
+            self.animationView.animation = animation
+            self.animationView.isHidden = false
+        } else if let image = step.image {
             self.imageView.image = image
             self.imageView.isHidden = false
         }

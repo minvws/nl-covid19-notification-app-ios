@@ -38,6 +38,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 title: Localization.string(for: "consentStep1Title"),
                 content: Localization.string(for: "consentStep1Content"),
                 image: nil,
+                animationName: nil,
                 summarySteps: [
                     OnboardingConsentSummaryStep(
                         title: Localization.attributedString(for: "consentStep1Summary1"),
@@ -65,6 +66,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 title: Localization.string(for: "consentStep2Title"),
                 content: Localization.string(for: "consentStep2Content"),
                 image: Image.named("PleaseTurnOnBluetooth"),
+                animationName: nil,
                 summarySteps: nil,
                 primaryButtonTitle: Localization.string(for: "consentStep2PrimaryButton"),
                 secondaryButtonTitle: Localization.string(for: "consentStep2SecondaryButton"),
@@ -79,6 +81,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 title: Localization.string(for: "consentStep3Title"),
                 content: Localization.string(for: "consentStep3Content"),
                 image: Image.named("PleaseTurnOnNotifications"),
+                animationName: nil,
                 summarySteps: nil,
                 primaryButtonTitle: Localization.string(for: "consentStep3PrimaryButton"),
                 secondaryButtonTitle: Localization.string(for: "consentStep3SecondaryButton"),

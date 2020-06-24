@@ -91,6 +91,7 @@ targets:
     dependencies:
       - carthage: ZIPFoundation
       - carthage: SnapKit
+      - carthage: Lottie
       - sdk: ExposureNotification.framework
         optional: true
     scheme:
