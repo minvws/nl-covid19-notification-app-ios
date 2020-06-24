@@ -35,26 +35,26 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             OnboardingConsentStep(
                 step: .en,
                 theme: theme,
-                title: Localized("consentStep1Title"),
-                content: Localized("consentStep1Content"),
+                title: Localization.string(for: "consentStep1Title"),
+                content: Localization.string(for: "consentStep1Content"),
                 image: nil,
                 animationName: nil,
                 summarySteps: [
                     OnboardingConsentSummaryStep(
-                        title: NSAttributedString(string: Localized("consentStep1Summary1")),
+                        title: NSAttributedString(string: Localization.string(for: "consentStep1Summary1")),
                         image: Image.named("CheckmarkShield")
                     ),
                     OnboardingConsentSummaryStep(
-                        title: NSAttributedString(string: Localized("consentStep1Summary2")),
+                        title: NSAttributedString(string: Localization.string(for: "consentStep1Summary2")),
                         image: Image.named("CheckmarkShield")
                     ),
                     OnboardingConsentSummaryStep(
-                        title: NSAttributedString(string: Localized("consentStep1Summary3")),
+                        title: NSAttributedString(string: Localization.string(for: "consentStep1Summary3")),
                         image: Image.named("CheckmarkShield")
                     )
                 ],
-                primaryButtonTitle: Localized("consentStep1PrimaryButton"),
-                secondaryButtonTitle: Localized("consentStep1SecondaryButton"),
+                primaryButtonTitle: Localization.string(for: "consentStep1PrimaryButton"),
+                secondaryButtonTitle: Localization.string(for: "consentStep1SecondaryButton"),
                 hasNavigationBarSkipButton: true
             )
         )
@@ -63,13 +63,13 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             OnboardingConsentStep(
                 step: .bluetooth,
                 theme: theme,
-                title: Localized("consentStep2Title"),
-                content: Localized("consentStep2Content"),
+                title: Localization.string(for: "consentStep2Title"),
+                content: Localization.string(for: "consentStep2Content"),
                 image: Image.named("PleaseTurnOnBluetooth"),
                 animationName: nil,
                 summarySteps: nil,
-                primaryButtonTitle: Localized("consentStep2PrimaryButton"),
-                secondaryButtonTitle: Localized("consentStep2SecondaryButton"),
+                primaryButtonTitle: Localization.string(for: "consentStep2PrimaryButton"),
+                secondaryButtonTitle: Localization.string(for: "consentStep2SecondaryButton"),
                 hasNavigationBarSkipButton: false
             )
         )
@@ -78,13 +78,13 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             OnboardingConsentStep(
                 step: .notifications,
                 theme: theme,
-                title: Localized("consentStep3Title"),
-                content: Localized("consentStep3Content"),
+                title: Localization.string(for: "consentStep3Title"),
+                content: Localization.string(for: "consentStep3Content"),
                 image: Image.named("PleaseTurnOnNotifications"),
                 animationName: nil,
                 summarySteps: nil,
-                primaryButtonTitle: Localized("consentStep3PrimaryButton"),
-                secondaryButtonTitle: Localized("consentStep3SecondaryButton"),
+                primaryButtonTitle: Localization.string(for: "consentStep3PrimaryButton"),
+                secondaryButtonTitle: Localization.string(for: "consentStep3SecondaryButton"),
                 hasNavigationBarSkipButton: false
             )
         )

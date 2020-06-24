@@ -16,7 +16,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     private lazy var skipStepButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
         button.target = self
-        button.title = Localized("skipStep")
+        button.title = Localization.string(for: "skipStep")
         button.tintColor = self.theme.colors.primary
         button.action = #selector(skipStepButtonPressed)
         return button
