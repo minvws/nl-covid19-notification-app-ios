@@ -85,4 +85,15 @@ final class MainViewControllerTests: XCTestCase {
         XCTAssertEqual(attachStatusCallCountIndex, 1)
         XCTAssertEqual(attachMoreInformationCallCountIndex, 2)
     }
+
+    func test_handleButtonAction_explainRisk() {
+        XCTAssertEqual(router.routeToReceivedNotificationCallCount, 0)
+        viewController.handleButtonAction(.explainRisk)
+        XCTAssertEqual(router.routeToReceivedNotificationCallCount, 1)
+    }
+
+    func test_handleButtonAction_removeNotification() {
+        // TODO: Internally this calls a `UIAlertController` which has a cancel & accept button
+        // we should create a mock for the controller and handle the desired button clicks.
+    }
 }
