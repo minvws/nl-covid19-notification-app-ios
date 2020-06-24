@@ -1,0 +1,4 @@
+github "SnapKit/SnapKit" "5.0.1"
+github "airbnb/lottie-ios" "4e5877425dae5c10792fc9d22d53dc6bf6824dc1"
+github "pointfreeco/swift-snapshot-testing" "1.7.2"
+github "weichsel/ZIPFoundation" "0.9.11"
