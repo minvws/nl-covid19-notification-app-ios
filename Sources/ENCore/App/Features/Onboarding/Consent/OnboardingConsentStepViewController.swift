@@ -69,6 +69,12 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         self.internalView.animationView.play()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        self.internalView.animationView.stop()
+    }
+
     // MARK: - Functions
 
     @objc private func primaryButtonPressed() {

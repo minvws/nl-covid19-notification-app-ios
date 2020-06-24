@@ -58,6 +58,12 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         self.internalView.animationView.play()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        self.internalView.animationView.stop()
+    }
+
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
