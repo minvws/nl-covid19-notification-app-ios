@@ -18,11 +18,11 @@ protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, O
 final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
 
     init(viewController: OnboardingViewControllable,
-        stepBuilder: OnboardingStepBuildable,
-        consentBuilder: OnboardingConsentBuildable,
-        webBuilder: WebBuildable,
-        shareSheetBuilder: ShareSheetBuildable,
-        helpBuilder: HelpBuildable) {
+         stepBuilder: OnboardingStepBuildable,
+         consentBuilder: OnboardingConsentBuildable,
+         webBuilder: WebBuildable,
+         shareSheetBuilder: ShareSheetBuildable,
+         helpBuilder: HelpBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
         self.webBuilder = webBuilder
@@ -45,6 +45,14 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.push(viewController: stepViewController, animated: false)
     }
 
+    func routeToStep(withIndex index: Int, animated: Bool) {
+
+        let stepViewController = stepBuilder.build(withListener: viewController, initialIndex: index)
+        self.stepViewController = stepViewController
+
+        viewController.push(viewController: stepViewController, animated: animated)
+    }
+
     func routeToConsent(animated: Bool) {
         let consentViewController = consentBuilder.build(withListener: viewController)
         self.consentViewController = consentViewController
@@ -64,8 +72,8 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         self.helpRouter = helpRouter
 
         viewController.present(viewController: helpRouter.viewControllable,
-            animated: true,
-            completion: nil)
+                               animated: true,
+                               completion: nil)
     }
 
     private let stepBuilder: OnboardingStepBuildable

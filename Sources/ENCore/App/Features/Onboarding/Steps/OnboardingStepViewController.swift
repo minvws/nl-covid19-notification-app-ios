@@ -68,6 +68,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
     override func loadView() {
         self.view = internalView
+        self.view.frame = UIScreen.main.bounds
     }
 
     // MARK: - Private
@@ -107,8 +108,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     @objc func buttonPressed() {
         let nextIndex = self.index + 1
         if onboardingManager.onboardingSteps.count > nextIndex {
-            let viewController = onboardingStepBuilder.build(withListener: listener!, initialIndex: nextIndex)
-            self.navigationController?.pushViewController(viewController.uiviewController, animated: true)
+            listener?.nextStepAtIndex(nextIndex)
         } else {
             // build consent
             listener?.onboardingStepsDidComplete()

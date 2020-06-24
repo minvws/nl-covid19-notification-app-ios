@@ -10,6 +10,7 @@ import Foundation
 /// @mockable
 protocol OnboardingRouting: Routing {
     func routeToSteps()
+    func routeToStep(withIndex index: Int, animated: Bool)
     func routeToConsent(animated: Bool)
     func routeToConsent(withIndex index: Int, animated: Bool)
     func routeToHelp()
@@ -20,7 +21,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     weak var router: OnboardingRouting?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
-        listener: OnboardingListener, theme: Theme) {
+         listener: OnboardingListener, theme: Theme) {
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         super.init(theme: theme)
@@ -42,6 +43,10 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     func onboardingStepsDidComplete() {
 
         router?.routeToConsent(animated: true)
+    }
+
+    func nextStepAtIndex(_ index: Int) {
+        router?.routeToStep(withIndex: index, animated: true)
     }
 
     // MARK: - OnboardingConsentListener
