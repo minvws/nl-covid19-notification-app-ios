@@ -16,7 +16,6 @@ protocol InfectedRouting: Routing {
 
 final class InfectedViewController: ViewController, InfectedViewControllable, UIAdaptivePresentationControllerDelegate {
 
-    // NOTE: This is temp, should hook into the framework
     enum State {
         case loading
         case success(confirmationKey: ExposureConfirmationKey)
@@ -55,17 +54,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         internalView.infoView.actionHandler = { [weak self] in
             self?.uploadCodes()
         }
-
-        state = .loading
-
-        exposureController.requestLabConfirmationKey { [weak self] result in
-            switch result {
-            case let .success(key):
-                self?.state = .success(confirmationKey: key)
-            case .failure:
-                self?.state = .error
-            }
-        }
+        requestLabConfirmationKey()
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -130,9 +119,21 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
             internalView.controlCode.set(state: .success(key.key))
         case .error:
             internalView.infoView.isActionButtonEnabled = false
-            internalView.controlCode.set(state: .error(Localization.string(for: "moreInformation.infected.error")) {
-                print("Handle Retry")
+            internalView.controlCode.set(state: .error(Localization.string(for: "moreInformation.infected.error")) { [weak self] in
+                self?.requestLabConfirmationKey()
             })
+        }
+    }
+
+    private func requestLabConfirmationKey() {
+        state = .loading
+        exposureController.requestLabConfirmationKey { [weak self] result in
+            switch result {
+            case let .success(key):
+                self?.state = .success(confirmationKey: key)
+            case .failure:
+                self?.state = .error
+            }
         }
     }
 }

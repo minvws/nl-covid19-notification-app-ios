@@ -45,4 +45,9 @@ final class InfectedViewControllerTests: XCTestCase {
         viewController.state = .error
         assertSnapshot(matching: viewController, as: .image())
     }
+
+    func test_viewDidLoad_calls_exposureController() {
+        XCTAssertNotNil(viewController.view)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
+    }
 }
