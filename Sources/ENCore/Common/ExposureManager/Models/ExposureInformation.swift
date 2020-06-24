@@ -9,11 +9,8 @@ import Foundation
 
 protocol ExposureInformation {
     var attenuationDurations: [NSNumber] { get }
-    var attenuationValue: UInt8 { get }
     var date: Date { get }
     var duration: TimeInterval { get }
     var metadata: [AnyHashable: Any]? { get }
-    var totalRiskScore: UInt8 { get }
     var totalRiskScoreFullRange: Double { get }
-    var transmissionRiskLevel: UInt8 { get }
 }
