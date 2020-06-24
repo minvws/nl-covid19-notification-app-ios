@@ -50,7 +50,7 @@ targets:
         UIAppFonts: []
         UIBackgroundModes: [fetch, processing]
         UILaunchStoryboardName: LaunchScreen
-        UIRequiredDeviceCapabilities: [armv7, telephony]
+        UIRequiredDeviceCapabilities: [armv7, bluetooth-le, telephony]
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UIViewControllerBasedStatusBarAppearance: true
         UIUserInterfaceStyle: "Light"
@@ -62,7 +62,6 @@ targets:
                 UISceneConfigurationName: Default Configuration
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
-        UIRequiredDeviceCapabilities: [bluetooth-le, telephony]
                 
     dependencies:
       - target: ENCore
