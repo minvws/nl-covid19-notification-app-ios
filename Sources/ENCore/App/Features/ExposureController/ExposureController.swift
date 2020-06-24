@@ -62,6 +62,7 @@ final class ExposureController: ExposureControlling {
 
     func confirmExposureNotification() {
         // Not implemented yet
+        mutableStateStream.update(state: .init(notifiedState: .notNotified, activeState: .active))
     }
 
     func requestLabConfirmationKey(completion: @escaping (Result<ExposureConfirmationKey, ExposureDataError>) -> ()) {

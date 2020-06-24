@@ -41,6 +41,12 @@ final class StatusViewController: ViewController, StatusViewControllable {
         self.view.frame = UIScreen.main.bounds
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        statusView.listener = listener
+    }
+
     override func didMove(toParent parent: UIViewController?) {
         super.didMove(toParent: parent)
 
@@ -189,8 +195,8 @@ private final class StatusView: View {
             sceneImageView.bottomAnchor.constraint(equalTo: stretchGuide.bottomAnchor),
             sceneImageView.widthAnchor.constraint(equalTo: sceneImageView.heightAnchor, multiplier: sceneImageAspectRatio),
 
-            stretchGuide.leadingAnchor.constraint(equalTo: contentStretchGuide.leadingAnchor, constant: -16),
-            stretchGuide.trailingAnchor.constraint(equalTo: contentStretchGuide.trailingAnchor, constant: 16),
+            stretchGuide.leadingAnchor.constraint(equalTo: contentStretchGuide.leadingAnchor, constant: -24),
+            stretchGuide.trailingAnchor.constraint(equalTo: contentStretchGuide.trailingAnchor, constant: 24),
             stretchGuide.topAnchor.constraint(equalTo: contentStretchGuide.topAnchor, constant: -70),
             stretchGuide.bottomAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor),
 
@@ -230,6 +236,7 @@ private final class StatusView: View {
         buttonContainer.subviews.forEach { $0.removeFromSuperview() }
         for buttonModel in viewModel.buttons {
             let button = Button(title: buttonModel.title, theme: theme)
+            button.contentEdgeInsets = UIEdgeInsets(top: 14, left: 24, bottom: 14, right: 24)
             button.style = buttonModel.style
             button.rounded = true
             button.action = { [weak self] in

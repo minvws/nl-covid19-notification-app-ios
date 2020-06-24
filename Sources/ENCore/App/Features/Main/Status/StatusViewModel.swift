@@ -28,14 +28,14 @@ struct StatusViewButtonModel {
     }
 
     static let moreInfo = StatusViewButtonModel(
-        title: "Wat moet ik nu doen?",
-        style: .primary,
+        title: Localization.string(for: "status.notified.moreInfo"),
+        style: .secondary,
         action: .explainRisk
     )
 
     static let removeNotification = StatusViewButtonModel(
-        title: "Melding verwijderen",
-        style: .secondary,
+        title: Localization.string(for: "status.notified.removeNotification"),
+        style: .tertiary,
         action: .removeNotification
     )
 }
@@ -79,8 +79,8 @@ struct StatusViewModel {
 
     static let active = StatusViewModel(
         icon: .ok,
-        title: .init(string: "De app is actief"),
-        description: .init(string: "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen."),
+        title: .init(string: Localization.string(for: "status.appState")),
+        description: .init(string: Localization.string(for: "status.active.description")),
         buttons: [],
         footer: nil,
         shouldShowHideMessage: false,
@@ -90,8 +90,8 @@ struct StatusViewModel {
 
     static let notified = StatusViewModel(
         icon: .notified,
-        title: .init(string: "Je hebt extra kans op besmetting gelopen"),
-        description: .init(string: "Je bent op maandag 1 juni dicht bij iemand geweest die daarna positief is getest op het coronavirus."),
+        title: .init(string: Localization.string(for: "status.appState")),
+        description: .init(string: Localization.string(for: "status.notified.description")), // TODO: this needs to be dynamic
         buttons: [.moreInfo, .removeNotification],
         footer: nil,
         shouldShowHideMessage: false,

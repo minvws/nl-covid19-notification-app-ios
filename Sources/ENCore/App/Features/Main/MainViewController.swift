@@ -27,9 +27,14 @@ protocol MainRouting: Routing {
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, MoreInformationListener {
 
-    // MARK: - MainViewControllable
-
     weak var router: MainRouting?
+
+    // MARK: - Init
+
+    init(theme: Theme, exposureController: ExposureControlling) {
+        self.exposureController = exposureController
+        super.init(theme: theme)
+    }
 
     // MARK: - View Lifecycle
 
@@ -131,13 +136,33 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     // MARK: - StatusListener
 
     func handleButtonAction(_ action: StatusViewButtonModel.Action) {
-        // TODO: handle
-        print("handle \(action)")
+        switch action {
+        case .explainRisk:
+            router?.routeToReceivedNotification()
+        case .removeNotification:
+            confirmNotificationRemoval()
+        case .turnOnApp:
+            print("handle \(action)")
+        }
     }
 
     // MARK: - Private
 
     private lazy var mainView: MainView = MainView(theme: self.theme)
+    private let exposureController: ExposureControlling
+
+    private func confirmNotificationRemoval() {
+        let alertController = UIAlertController(title: Localization.string(for: "main.confirmNotificationRemoval.title"),
+                                                message: Localization.string(for: "main.confirmNotificationRemoval.title"),
+                                                preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: Localization.string(for: "cancel"), style: .default) { [weak self] _ in
+            self?.dismiss(animated: true, completion: nil)
+        })
+        alertController.addAction(UIAlertAction(title: Localization.string(for: "main.confirmNotificationRemoval.confirm"), style: .default) { [weak self] _ in
+            self?.exposureController.confirmExposureNotification()
+        })
+        present(alertController, animated: true, completion: nil)
+    }
 }
 
 private final class MainView: View {
