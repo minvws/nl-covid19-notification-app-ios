@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  EN
+
+  Created by Rob Mulder on 25/06/2020.
+  
+*/
+
+"title" = "Je moet de software op je telefoon updaten";
+"content" = "[Naam app] heeft iOS 13.5 of hoger nodig om te werken. Het updaten doe je zelf in een paar simpele stappen.";
+"button" = "Updaten";
