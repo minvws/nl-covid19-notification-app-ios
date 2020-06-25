@@ -222,6 +222,8 @@ final class ExposureController: ExposureControlling {
                 return .inactive
             case .notAuthorized:
                 return .notAuthorized
+            case .responseCached:
+                return .responseCached
             }
         }
 

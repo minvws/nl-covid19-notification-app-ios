@@ -14,6 +14,7 @@ enum ExposureDataError: Error, Equatable {
     case internalError
     case inactive(ExposureStateInactiveState)
     case notAuthorized
+    case responseCached
 }
 
 /// @mockable

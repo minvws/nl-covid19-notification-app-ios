@@ -15,6 +15,7 @@ enum NetworkError: Error {
     case serverError
     case resourceNotFound
     case encodingError
+    case redirection
 }
 
 /// @mockable
@@ -41,6 +42,7 @@ protocol NetworkManagerBuildable {
 
 protocol NetworkManagerDependency {
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
+    var storageController: StorageControlling { get }
 }
 
 private final class NetworkManagerDependencyProvider: DependencyProvider<NetworkManagerDependency> {
@@ -55,6 +57,7 @@ final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkMan
         let dependencyProvider = NetworkManagerDependencyProvider(dependency: dependency)
 
         return NetworkManager(configurationProvider: dependencyProvider.dependency.networkConfigurationProvider,
-                              responseHandlerProvider: dependencyProvider.responseHandlerProvider)
+                              responseHandlerProvider: dependencyProvider.responseHandlerProvider,
+                              storageController: dependencyProvider.dependency.storageController)
     }
 }

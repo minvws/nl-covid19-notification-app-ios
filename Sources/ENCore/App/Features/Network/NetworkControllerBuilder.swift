@@ -30,6 +30,7 @@ protocol NetworkControllerBuildable {
 
 protocol NetworkControllerDependency {
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
+    var storageController: StorageControlling { get }
 }
 
 private final class NetworkControllerDependencyProvider: DependencyProvider<NetworkControllerDependency>, NetworkManagerDependency {
@@ -43,6 +44,10 @@ private final class NetworkControllerDependencyProvider: DependencyProvider<Netw
 
     var networkConfigurationProvider: NetworkConfigurationProvider {
         return dependency.networkConfigurationProvider
+    }
+
+    var storageController: StorageControlling {
+        return dependency.storageController
     }
 }
 

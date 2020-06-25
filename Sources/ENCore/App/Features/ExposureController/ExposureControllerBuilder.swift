@@ -80,6 +80,9 @@ enum ExposureControllerUploadKeysResult {
 
     /// An internal error happened when preparing the upload request
     case internalError
+
+    /// The response is cached and should not be updated
+    case responseCached
 }
 
 /// @mockable

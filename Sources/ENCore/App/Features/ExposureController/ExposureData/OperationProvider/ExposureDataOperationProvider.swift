@@ -86,6 +86,8 @@ extension NetworkError {
             return .serverError
         case .encodingError:
             return .internalError
+        case .redirection:
+            return .serverError
         }
     }
 }

@@ -12,10 +12,12 @@ final class NetworkManager: NetworkManaging {
 
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
+         storageController: StorageControlling,
          urlSession: URLSession = URLSession.shared) {
         self.configurationProvider = configurationProvider
         self.session = urlSession
         self.responseHandlerProvider = responseHandlerProvider
+        self.storageController = storageController
     }
 
     // MARK: CDN
@@ -242,13 +244,36 @@ final class NetworkManager: NetworkManaging {
     }
 
     fileprivate func download(request: URLRequest, completion: @escaping (Result<(URLResponse, URL), NetworkError>) -> ()) {
-        session.downloadTask(with: request) { localUrl, response, error in
-            self.handleNetworkResponse(localUrl,
-                                       response: response,
-                                       error: error,
-                                       completion: completion)
+
+        var request = request
+
+        var storageKey: CodableStorageKey<String>?
+        // check local storage if etag for url is present
+        if let hash = request.url?.absoluteString.hashValue {
+            storageKey = CodableStorageKey<String>(name: "\(hash)", storeType: .insecure(volatile: false, maximumAge: nil))
+            if let key = storageKey, let etag = self.storageController.retrieveObject(identifiedBy: key) {
+                request.addValue(etag, forHTTPHeaderField: "If-None-Match")
+            }
         }
-        .resume()
+
+        session.downloadTask(with: request) { localUrl, response, error in
+
+            guard let httpUrlResponse = response as? HTTPURLResponse else {
+                self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
+                return
+            }
+
+            let etag = httpUrlResponse.allHeaderFields["Etag"] as? String
+            if let storageKey = storageKey, let etag = etag {
+                self.storageController.store(object: etag, identifiedBy: storageKey) { error in
+                    if error != nil {
+                        self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
+                        return
+                    }
+                }
+            }
+            self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
+        }.resume()
     }
 
     // MARK: - Download Data
@@ -388,8 +413,10 @@ final class NetworkManager: NetworkManaging {
         switch response.statusCode {
         case 200 ... 299:
             return nil
-        case 300 ... 399:
+        case 304:
             return .responseCached
+        case 300 ... 399:
+            return .redirection
         case 400 ... 499:
             return .resourceNotFound
         case 500 ... 599:
@@ -404,6 +431,7 @@ final class NetworkManager: NetworkManaging {
     private let configurationProvider: NetworkConfigurationProvider
     private let session: URLSession
     private let responseHandlerProvider: NetworkResponseHandlerProvider
+    private let storageController: StorageControlling
 
     private var configuration: NetworkConfiguration {
         return configurationProvider.configuration
