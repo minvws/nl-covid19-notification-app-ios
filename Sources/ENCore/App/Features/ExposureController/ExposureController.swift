@@ -85,8 +85,12 @@ final class ExposureController: ExposureControlling {
     }
 
     func confirmExposureNotification() {
-        // Not implemented yet
-        mutableStateStream.update(state: .init(notifiedState: .notNotified, activeState: .active))
+        dataController
+            .removeLastExposure()
+            .sink { [weak self] _ in
+                self?.updateStatusStream()
+            }
+            .store(in: &disposeBag)
     }
 
     func requestLabConfirmationKey(completion: @escaping (Result<ExposureConfirmationKey, ExposureDataError>) -> ()) {
@@ -173,8 +177,11 @@ final class ExposureController: ExposureControlling {
     }
 
     private var notifiedState: ExposureNotificationState {
-        // TODO: Replace with right value
-        return .notNotified
+        guard let exposureReport = dataController.lastExposure else {
+            return .notNotified
+        }
+
+        return .notified(exposureReport.date)
     }
 
     private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {

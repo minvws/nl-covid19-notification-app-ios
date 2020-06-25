@@ -29,8 +29,10 @@ final class ExposureDataController: ExposureDataControlling {
 
     private var disposeBag = Set<AnyCancellable>()
 
-    init(operationProvider: ExposureDataOperationProvider) {
+    init(operationProvider: ExposureDataOperationProvider,
+         storageController: StorageControlling) {
         self.operationProvider = operationProvider
+        self.storageController = storageController
     }
 
     // MARK: - Operations
@@ -48,6 +50,18 @@ final class ExposureDataController: ExposureDataControlling {
         return fetchAndStoreExposureKeySets()
             .flatMap { processOperation.execute() }
             .eraseToAnyPublisher()
+    }
+
+    var lastExposure: ExposureReport? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport)
+    }
+
+    func removeLastExposure() -> Future<(), Never> {
+        return Future { promise in
+            self.storageController.removeData(for: ExposureDataStorageKey.lastExposureReport) { _ in
+                promise(.success(()))
+            }
+        }
     }
 
     func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
@@ -87,4 +101,5 @@ final class ExposureDataController: ExposureDataControlling {
     // MARK: - Private
 
     private let operationProvider: ExposureDataOperationProvider
+    private let storageController: StorageControlling
 }

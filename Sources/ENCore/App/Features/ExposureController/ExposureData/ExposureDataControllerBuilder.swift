@@ -25,6 +25,8 @@ protocol ExposureDataControlling {
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
+    var lastExposure: ExposureReport? { get }
+    func removeLastExposure() -> Future<(), Never>
 
     // MARK: - Lab Flow
 
@@ -64,6 +66,7 @@ final class ExposureDataControllerBuilder: Builder<ExposureDataControllerDepende
     func build() -> ExposureDataControlling {
         let dependencyProvider = ExposureDataControllerDependencyProvider(dependency: dependency)
 
-        return ExposureDataController(operationProvider: dependencyProvider.operationProvider)
+        return ExposureDataController(operationProvider: dependencyProvider.operationProvider,
+                                      storageController: dependencyProvider.storageController)
     }
 }
