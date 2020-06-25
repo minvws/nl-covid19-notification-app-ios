@@ -14,11 +14,11 @@ enum LocalFolder {
     case exposureKeySets
 }
 
-protocol LocalPathProvider {
+protocol LocalPathProviding {
     func path(for folder: LocalFolder) -> URL?
 }
 
-final class LocalPathProviderImpl: LocalPathProvider {
+final class LocalPathProvider: LocalPathProviding {
 
     init(fileManager: FileManager = .default) {
         self.fileManager = fileManager

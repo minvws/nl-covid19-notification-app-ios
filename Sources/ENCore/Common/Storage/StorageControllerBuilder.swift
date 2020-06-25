@@ -73,8 +73,8 @@ protocol StorageControllerBuildable {
 }
 
 private final class StorageDependencyProvider: DependencyProvider<EmptyDependency> {
-    var localPathProvider: LocalPathProvider {
-        return LocalPathProviderImpl()
+    var localPathProvider: LocalPathProviding {
+        return LocalPathProvider()
     }
 }
 

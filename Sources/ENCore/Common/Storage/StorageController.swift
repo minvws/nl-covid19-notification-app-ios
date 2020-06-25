@@ -28,7 +28,7 @@ extension StorageControlling {
 
 final class StorageController: StorageControlling {
 
-    init(localPathProvider: LocalPathProvider) {
+    init(localPathProvider: LocalPathProviding) {
         self.localPathProvider = localPathProvider
 
         prepareStore()
@@ -295,7 +295,7 @@ final class StorageController: StorageControlling {
         return query
     }
 
-    private let localPathProvider: LocalPathProvider
+    private let localPathProvider: LocalPathProviding
     private let serviceName = (Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en") + ".exposure"
     private var storeAvailable = false
     private var inMemoryStore: [String: Any] = [:]
