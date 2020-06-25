@@ -28,7 +28,9 @@ extension StorageControlling {
 
 final class StorageController: StorageControlling {
 
-    init() {
+    init(localPathProvider: LocalPathProvider) {
+        self.localPathProvider = localPathProvider
+
         prepareStore()
     }
 
@@ -293,6 +295,7 @@ final class StorageController: StorageControlling {
         return query
     }
 
+    private let localPathProvider: LocalPathProvider
     private let serviceName = (Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en") + ".exposure"
     private var storeAvailable = false
     private var inMemoryStore: [String: Any] = [:]
@@ -301,21 +304,9 @@ final class StorageController: StorageControlling {
     private let accessQueue = DispatchQueue(label: "accessQueue", attributes: .concurrent)
 
     private func storeUrl(isVolatile: Bool) -> URL? {
-        let base = isVolatile ? cacheUrl : documentsUrl
+        let base = isVolatile ? localPathProvider.path(for: .cache) : localPathProvider.path(for: .documents)
 
         return base?.appendingPathComponent("store")
-    }
-
-    private var cacheUrl: URL? {
-        let urls = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
-
-        return urls.first
-    }
-
-    private var documentsUrl: URL? {
-        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-
-        return urls.first
     }
 }
 

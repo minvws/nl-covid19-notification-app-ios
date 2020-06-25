@@ -72,8 +72,16 @@ protocol StorageControllerBuildable {
     func build() -> StorageControlling
 }
 
+private final class StorageDependencyProvider: DependencyProvider<EmptyDependency> {
+    var localPathProvider: LocalPathProvider {
+        return LocalPathProviderImpl()
+    }
+}
+
 final class StorageControllerBuilder: Builder<EmptyDependency>, StorageControllerBuildable {
     func build() -> StorageControlling {
-        return StorageController()
+        let dependencyProvider = StorageDependencyProvider()
+
+        return StorageController(localPathProvider: dependencyProvider.localPathProvider)
     }
 }
