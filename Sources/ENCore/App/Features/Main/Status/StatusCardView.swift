@@ -13,7 +13,7 @@ final class StatusCardView: View {
     private let header = UIStackView()
 
     private lazy var headerIconView = {
-        StatusIconView(theme: self.theme)
+        UIImageView(image: nil)
     }()
     private let headerTitleLabel = Label()
 
@@ -57,6 +57,7 @@ final class StatusCardView: View {
         container.addArrangedSubview(descriptionLabel)
 
         //  button
+        button.titleEdgeInsets = UIEdgeInsets(top: 40, left: 41, bottom: 40, right: 41)
         button.layer.cornerRadius = 8
         container.addArrangedSubview(button)
 
@@ -75,12 +76,14 @@ final class StatusCardView: View {
             container.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
 
             headerIconView.widthAnchor.constraint(equalToConstant: 40),
-            headerIconView.heightAnchor.constraint(equalToConstant: 40)
+            headerIconView.heightAnchor.constraint(equalToConstant: 40),
+
+            button.heightAnchor.constraint(greaterThanOrEqualToConstant: 48)
         ])
     }
 
     func update(with viewModel: StatusCardViewModel) {
-        headerIconView.update(with: viewModel.icon)
+        headerIconView.image = viewModel.icon.icon
         headerTitleLabel.attributedText = viewModel.title
         descriptionLabel.attributedText = viewModel.description
 

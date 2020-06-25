@@ -57,12 +57,11 @@ protocol MutableExposureStateStreaming: ExposureStateStreaming {
 }
 
 final class ExposureStateStream: MutableExposureStateStreaming {
-    let subject = PassthroughSubject<ExposureState, Never>()
 
     // MARK: - ExposureStateStreaming
 
     var exposureState: AnyPublisher<ExposureState, Never> {
-        return subject.removeDuplicates(by: ==).eraseToAnyPublisher()
+        return subject.removeDuplicates(by: ==).compactMap { $0 }.eraseToAnyPublisher()
     }
 
     var currentExposureState: ExposureState?
@@ -74,4 +73,8 @@ final class ExposureStateStream: MutableExposureStateStreaming {
 
         subject.send(state)
     }
+
+    // MARK: - Private
+
+    private let subject = CurrentValueSubject<ExposureState?, Never>(nil)
 }

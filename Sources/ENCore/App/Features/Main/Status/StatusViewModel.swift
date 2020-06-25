@@ -14,6 +14,7 @@ struct StatusViewIcon {
 
     static let ok = StatusViewIcon(color: \.ok, icon: Image.named("StatusIconOk"))
     static let notified = StatusViewIcon(color: \.notified, icon: Image.named("StatusIconNotified"))
+    static let inactive = StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive"))
 }
 
 struct StatusViewButtonModel {
@@ -38,6 +39,12 @@ struct StatusViewButtonModel {
         style: .tertiary,
         action: .removeNotification
     )
+
+    static let enableSettings = StatusViewButtonModel(
+        title: "Instellingen aanzetten",
+        style: .primary,
+        action: .turnOnApp
+    )
 }
 
 struct StatusCardViewModel {
@@ -47,11 +54,11 @@ struct StatusCardViewModel {
     let button: StatusViewButtonModel
 
     static let inactive = StatusCardViewModel(
-        icon: StatusViewIcon(color: \.inactive, icon: Image.named("StatusIconNotified")),
+        icon: StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive")),
         title: .init(string: "App is niet actief"),
-        description: .init(string: "Hier moet nog een tekst komen dat uitlegt dat Blootstelling uitstaat en dat Bluetooth ook uitstaat."),
+        description: .init(string: "Zet de instellingen aan die de app nodig heeft om te werken."),
         button: StatusViewButtonModel(
-            title: "App aanzetten",
+            title: "Instellingen aanzetten",
             style: .primary,
             action: .turnOnApp
         )
@@ -77,7 +84,18 @@ struct StatusViewModel {
         return result
     }
 
-    static let active = StatusViewModel(
+    static let activeWithNotified = StatusViewModel(
+        icon: .notified,
+        title: .init(string: Localization.string(for: "status.appState")),
+        description: .init(string: Localization.string(for: "status.notified.description")), // TODO: this needs to be dynamic
+        buttons: [.moreInfo, .removeNotification],
+        footer: nil,
+        shouldShowHideMessage: false,
+        gradientColor: \.statusGradientNotified,
+        showScene: false
+    )
+
+    static let activeWithNotNotified = StatusViewModel(
         icon: .ok,
         title: .init(string: Localization.string(for: "status.appState")),
         description: .init(string: Localization.string(for: "status.active.description")),
@@ -88,7 +106,7 @@ struct StatusViewModel {
         showScene: true
     )
 
-    static let notified = StatusViewModel(
+    static let inactiveWithNotified = StatusViewModel(
         icon: .notified,
         title: .init(string: Localization.string(for: "status.appState")),
         description: .init(string: Localization.string(for: "status.notified.description")), // TODO: this needs to be dynamic
@@ -96,6 +114,17 @@ struct StatusViewModel {
         footer: nil,
         shouldShowHideMessage: false,
         gradientColor: \.statusGradientNotified,
+        showScene: false
+    )
+
+    static let inactiveWithNotNotified = StatusViewModel(
+        icon: .inactive,
+        title: .init(string: "De app is niet actief"),
+        description: .init(string: "Zet de instellingen aan die de app nodig heeft om te werken"),
+        buttons: [.enableSettings],
+        footer: nil,
+        shouldShowHideMessage: false,
+        gradientColor: \.inactive,
         showScene: false
     )
 }

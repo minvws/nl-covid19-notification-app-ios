@@ -62,23 +62,27 @@ final class StatusViewController: ViewController, StatusViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // TODO: remove
-        statusView.update(with: .active)
-
         exposureStateStreamCancellable = exposureStateStream.exposureState.sink { [weak self] status in
             guard let strongSelf = self else {
                 return
             }
             switch (status.activeState, status.notifiedState) {
             case (.active, .notNotified):
-                strongSelf.statusView.update(with: .active)
+                strongSelf.statusView.update(with: .activeWithNotNotified)
             case (.active, .notified):
-                strongSelf.statusView.update(with: .notified)
+                strongSelf.statusView.update(with: .activeWithNotified)
             case (.inactive(_), .notified):
-                strongSelf.statusView.update(with: StatusViewModel.notified.with(card: StatusCardViewModel.inactive))
-            default:
-                // TODO: Handle more cases
-                break
+                strongSelf.statusView.update(with: StatusViewModel.activeWithNotified.with(card: StatusCardViewModel.inactive))
+            case (.inactive(_), .notNotified):
+                strongSelf.statusView.update(with: .inactiveWithNotNotified)
+            case (.authorizationDenied, .notified(_)):
+                strongSelf.statusView.update(with: StatusViewModel.inactiveWithNotified.with(card: StatusCardViewModel.inactive))
+            case (.authorizationDenied, .notNotified):
+                strongSelf.statusView.update(with: .inactiveWithNotNotified)
+            case (.notAuthorized, .notified(_)):
+                strongSelf.statusView.update(with: StatusViewModel.inactiveWithNotified.with(card: StatusCardViewModel.inactive))
+            case (.notAuthorized, .notNotified):
+                strongSelf.statusView.update(with: .inactiveWithNotNotified)
             }
         }
     }
@@ -107,8 +111,8 @@ private final class StatusView: View {
     fileprivate lazy var cardView: StatusCardView = {
         return StatusCardView(theme: self.theme)
     }()
-    fileprivate lazy var iconView: StatusIconView = {
-        StatusIconView(theme: self.theme)
+    fileprivate lazy var iconView: EmitterStatusIconView = {
+        EmitterStatusIconView(theme: self.theme)
     }()
 
     fileprivate let titleLabel = Label()

@@ -9,7 +9,7 @@ import CoreGraphics
 import Foundation
 import UIKit
 
-class StatusIconView: View {
+final class EmitterStatusIconView: View {
     private var iconImageView = UIImageView()
     private var emitterLayer = CAEmitterLayer()
     private var emitterCell = CAEmitterCell()

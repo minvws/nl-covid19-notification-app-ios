@@ -21,6 +21,7 @@ final class StatusViewControllerTests: XCTestCase {
 
         let theme = ENTheme()
 
+        SnapshotTesting.diffTool = "ksdiff"
         SnapshotTesting.record = false
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), theme: theme, topAnchor: nil)
@@ -28,24 +29,49 @@ final class StatusViewControllerTests: XCTestCase {
         viewController.router = router
     }
 
-    func testSnapshotActive() {
-        set(activeState: .active)
+    func test_snapshot_active_not_notified() {
+        set(activeState: .active, notified: false)
         assertSnapshot(matching: viewController, as: .image())
     }
 
-    func testSnapshotNotified() {
-        set(notified: true)
+    func test_snapshot_active_notified() {
+        set(activeState: .active, notified: true)
         assertSnapshot(matching: viewController, as: .image())
     }
 
-    func testSnapshotNotifiedInactive() {
-        set(activeState: .inactive(.noRecentNotificationUpdates), notified: true)
+    func test_snapshot_inactive_notified() {
+        set(activeState: .inactive(.paused), notified: true)
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func test_snapshot_inactive_not_notified() {
+        set(activeState: .inactive(.paused), notified: false)
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func test_snapshot_authorized_denied_notNotified() {
+        set(activeState: .authorizationDenied, notified: true)
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func test_snapshot_authorized_denied_notified() {
+        set(activeState: .authorizationDenied, notified: false)
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func test_snapshot_not_authorized_notified() {
+        set(activeState: .notAuthorized, notified: true)
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func test_snapshot_not_authorized_not_notified() {
+        set(activeState: .notAuthorized, notified: false)
         assertSnapshot(matching: viewController, as: .image())
     }
 
     // MARK: - Private
 
-    private func set(activeState: ExposureActiveState = .active, notified: Bool = false) {
+    private func set(activeState: ExposureActiveState, notified: Bool) {
         let notifiedState: ExposureNotificationState = notified ? .notified(Date()) : .notNotified
         let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
