@@ -31,7 +31,9 @@ final class StubExposureManager: ExposureManaging {
         completion(.success(()))
     }
 
-    func detectExposures(diagnosisKeyURLs: [URL], completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ()) {
+    func detectExposures(configuration: ExposureConfiguration,
+                         diagnosisKeyURLs: [URL],
+                         completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ()) {
         // fake exposure
 
         let summary = ExposureDetectionSummaryImpl(

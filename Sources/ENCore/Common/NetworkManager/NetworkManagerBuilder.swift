@@ -24,7 +24,7 @@ protocol NetworkManaging {
 
     func getManifest(completion: @escaping (Result<Manifest, NetworkError>) -> ())
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ())
-    func getRiskCalculationParameters(appConfig: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ())
+    func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ())
     func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ())
 
     // MARK: Enrollment

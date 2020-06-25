@@ -49,3 +49,15 @@ extension AppConfig {
                                         identifier: identifier)
     }
 }
+
+extension RiskCalculationParameters {
+    func asExposureRiskConfiguration(identifier: String) -> ExposureRiskConfiguration {
+        return ExposureRiskConfiguration(identifier: identifier,
+                                         minimumRiskScope: UInt8(minimumRiskScore),
+                                         attenuationLevelValues: attenuationScores,
+                                         daysSinceLastExposureLevelValues: daysSinceLastExposureScores,
+                                         durationLevelValues: durationScores,
+                                         transmissionRiskLevelValues: transmissionRiskScores,
+                                         attenuationDurationThresholds: durationAtAttenuationThresholds)
+    }
+}

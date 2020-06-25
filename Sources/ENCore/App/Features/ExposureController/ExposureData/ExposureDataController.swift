@@ -23,6 +23,8 @@ struct ExposureDataStorageKey {
                                                                       storeType: .secure)
     static let lastExposureProcessingDate = CodableStorageKey<Date>(name: "lastExposureProcessingDate",
                                                                     storeType: .insecure(volatile: false))
+    static let exposureConfiguration = CodableStorageKey<ExposureRiskConfiguration>(name: "exposureConfiguration",
+                                                                                    storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling {
@@ -35,20 +37,11 @@ final class ExposureDataController: ExposureDataControlling {
         self.storageController = storageController
     }
 
-    // MARK: - Operations
-
-    func scheduleOperations() {
-        // TODO: Implement
-    }
-
     // MARK: - ExposureDataControlling
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
-        let processOperation = operationProvider
-            .processExposureKeySetsOperation(exposureManager: exposureManager)
-
         return fetchAndStoreExposureKeySets()
-            .flatMap { processOperation.execute() }
+            .flatMap { self.processStoredExposureKeySets(exposureManager: exposureManager) }
             .eraseToAnyPublisher()
     }
 
@@ -65,15 +58,18 @@ final class ExposureDataController: ExposureDataControlling {
     }
 
     func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
-        return operationProvider
-            .processExposureKeySetsOperation(exposureManager: exposureManager)
-            .execute()
+        return requestExposureRiskConfiguration()
+            .flatMap { configuration in
+                return self.operationProvider
+                    .processExposureKeySetsOperation(exposureManager: exposureManager,
+                                                     configuration: configuration)
+                    .execute()
+            }
+            .eraseToAnyPublisher()
     }
 
     func fetchAndStoreExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
-        return operationProvider
-            .requestManifestOperation
-            .execute()
+        return requestApplicationManifest()
             .map { (manifest: ApplicationManifest) -> [String] in manifest.exposureKeySetsIdentifiers }
             .flatMap { exposureKeySetsIdentifiers in
                 self.operationProvider
@@ -99,6 +95,23 @@ final class ExposureDataController: ExposureDataControlling {
     }
 
     // MARK: - Private
+
+    private func requestApplicationManifest() -> AnyPublisher<ApplicationManifest, ExposureDataError> {
+        return operationProvider
+            .requestManifestOperation
+            .execute()
+    }
+
+    private func requestExposureRiskConfiguration() -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
+        return requestApplicationManifest()
+            .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
+            .flatMap { identifier in
+                self.operationProvider
+                    .requestExposureConfigurationOperation(identifier: identifier)
+                    .execute()
+            }
+            .eraseToAnyPublisher()
+    }
 
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling

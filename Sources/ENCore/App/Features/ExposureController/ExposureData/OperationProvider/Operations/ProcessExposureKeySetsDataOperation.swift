@@ -23,10 +23,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
-         exposureManager: ExposureManaging) {
+         exposureManager: ExposureManaging,
+         configuration: ExposureConfiguration) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
+        self.configuration = configuration
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
@@ -101,7 +103,8 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
 
                 let diagnosisKeyURLs = [keySetHolder.signatureFileUrl, keySetHolder.binaryFileUrl]
 
-                self.exposureManager.detectExposures(diagnosisKeyURLs: diagnosisKeyURLs) { result in
+                self.exposureManager.detectExposures(configuration: self.configuration,
+                                                     diagnosisKeyURLs: diagnosisKeyURLs) { result in
                     switch result {
                     case let .success(summary):
                         promise(.success(ExposureDetectionResult(keySetHolder: keySetHolder,
@@ -174,15 +177,27 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
     }
 
     private func selectFrom(results: [ExposureDetectionResult]) -> ExposureDetectionSummary? {
-        let isNewer: (ExposureDetectionSummary, ExposureDetectionSummary) -> Bool = { first, second in
-            return second.daysSinceLastExposure < first.daysSinceLastExposure
-        }
-
-        return results
+        // filter out unprocessed results
+        let summaries = results
             .filter { $0.processedCorrectly }
             .compactMap { $0.exposureSummary }
-            .filter { $0.matchedKeyCount > 0 }
-            .sorted(by: isNewer)
+            .filter { $0.daysSinceLastExposure > 0 }
+
+        // find most recent exposure day
+        guard let mostRecentDaysSinceLastExposure = summaries
+            .sorted(by: { $1.daysSinceLastExposure < $0.daysSinceLastExposure })
+            .last?
+            .daysSinceLastExposure
+        else {
+            return nil
+        }
+
+        // take only most recent exposures
+        let mostRecentSummaries = summaries.filter { $0.daysSinceLastExposure == mostRecentDaysSinceLastExposure }
+
+        // sort by maximum risk and return last
+        return mostRecentSummaries
+            .sorted(by: { $1.maximumRiskScore > $0.maximumRiskScore })
             .last
     }
 
@@ -275,4 +290,5 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureManager: ExposureManaging
+    private let configuration: ExposureConfiguration
 }

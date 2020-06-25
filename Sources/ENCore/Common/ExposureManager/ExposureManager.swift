@@ -47,14 +47,14 @@ final class ExposureManager: ExposureManaging {
         }
     }
 
-    func detectExposures(diagnosisKeyURLs: [URL], completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ()) {
+    func detectExposures(configuration: ExposureConfiguration,
+                         diagnosisKeyURLs: [URL],
+                         completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ()) {
         #if DEBUG
             assert(Thread.isMainThread)
         #endif
 
-        let configuration = self.getExposureConfiguration()
-
-        self.manager.detectExposures(configuration: configuration,
+        self.manager.detectExposures(configuration: configuration.asExposureConfiguration,
                                      diagnosisKeyURLs: diagnosisKeyURLs)
         { summary, error in
             if let error = error.map({ $0.asExposureManagerError }) {
@@ -168,22 +168,6 @@ final class ExposureManager: ExposureManaging {
         default:
             return .inactive(.unknown)
         }
-    }
-
-    /// temporary - hardcoded - function
-    private func getExposureConfiguration() -> ENExposureConfiguration {
-
-        let SEQUENTIAL_WEIGHTS: [NSNumber] = [1, 2, 3, 4, 5, 6, 7, 8]
-        let EQUAL_WEIGHTS: [NSNumber] = [1, 1, 1, 1, 1, 1, 1, 1]
-
-        let exposureConfiguration = ENExposureConfiguration()
-        exposureConfiguration.minimumRiskScore = 1
-        exposureConfiguration.attenuationLevelValues = SEQUENTIAL_WEIGHTS
-        exposureConfiguration.daysSinceLastExposureLevelValues = EQUAL_WEIGHTS
-        exposureConfiguration.durationLevelValues = EQUAL_WEIGHTS
-        exposureConfiguration.transmissionRiskLevelValues = EQUAL_WEIGHTS
-        exposureConfiguration.metadata = ["attenuationDurationThresholds": [42, 56]]
-        return exposureConfiguration
     }
 
     private let manager: ENManaging

@@ -246,6 +246,12 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         let actionItems = configurations.map { (configuration) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
                 self?.mutableNetworkConfigurationStream.update(configuration: configuration)
+                self?.removeLastExposure()
+                self?.removeAllExposureKeySets()
+                self?.removeStoredConfirmationKey()
+                self?.removeLastUploadedRollingStartNumber()
+
+                self?.exposureController.refreshStatus()
 
                 self?.internalView.tableView.reloadData()
             }
@@ -290,17 +296,22 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
     private func removeStoredConfirmationKey() {
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
+
+        exposureController.refreshStatus()
+        internalView.tableView.reloadData()
     }
 
     private func removeLastUploadedRollingStartNumber() {
         storageController.removeData(for: ExposureDataStorageKey.lastUploadedRollingStartNumber, completion: { _ in })
 
+        exposureController.refreshStatus()
         internalView.tableView.reloadData()
     }
 
     private func removeLastExposure() {
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
 
+        exposureController.refreshStatus()
         internalView.tableView.reloadData()
     }
 
@@ -312,6 +323,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             try? FileManager.default.removeItem(at: folder)
         }
 
+        exposureController.refreshStatus()
         internalView.tableView.reloadData()
     }
 

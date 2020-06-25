@@ -43,7 +43,8 @@ protocol ExposureManaging {
     /// Detects exposures from a given set of exposure key URLs.
     /// A summary is returned when a match is found. If no summary is returned
     /// no match has been found
-    func detectExposures(diagnosisKeyURLs: [URL],
+    func detectExposures(configuration: ExposureConfiguration,
+                         diagnosisKeyURLs: [URL],
                          completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ())
 
     /// Returns this device's diagnosis keys

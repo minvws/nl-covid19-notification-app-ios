@@ -15,8 +15,10 @@ protocol ExposureDataOperation {
 
 /// @mockable
 protocol ExposureDataOperationProvider {
-    func processExposureKeySetsOperation(exposureManager: ExposureManaging) -> ProcessExposureKeySetsDataOperation
+    func processExposureKeySetsOperation(exposureManager: ExposureManaging,
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
 
     var requestManifestOperation: RequestAppManifestDataOperation { get }

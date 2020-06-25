@@ -26,6 +26,7 @@ final class NetworkController: NetworkControlling {
                 }
             }
         }
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
@@ -37,24 +38,21 @@ final class NetworkController: NetworkControlling {
                 }
             }
         }
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
-    var exposureKeySetProvider: AnyPublisher<ExposureKeySetProvider, NetworkError> {
+    func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError> {
         return Deferred {
             Future { promise in
-                promise(.failure(.serverNotReachable))
+                self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
+                    promise(result
+                        .map { $0.asExposureRiskConfiguration(identifier: identifier) }
+                    )
+                }
             }
         }
-        .eraseToAnyPublisher()
-    }
-
-    var exposureRiskCalculationParameters: AnyPublisher<ExposureRiskCalculationParameters, NetworkError> {
-        return Deferred {
-            Future { promise in
-                promise(.failure(.serverNotReachable))
-            }
-        }
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
@@ -68,15 +66,7 @@ final class NetworkController: NetworkControlling {
                 }
             }
         }
-        .eraseToAnyPublisher()
-    }
-
-    var resourceBundle: AnyPublisher<ResourceBundle, NetworkError> {
-        return Deferred {
-            Future { promise in
-                promise(.failure(.serverNotReachable))
-            }
-        }
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
@@ -102,6 +92,7 @@ final class NetworkController: NetworkControlling {
                 }
             }
         }
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
@@ -138,6 +129,7 @@ final class NetworkController: NetworkControlling {
                                              completion: completion)
             }
         }
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 

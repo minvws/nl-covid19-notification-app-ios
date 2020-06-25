@@ -38,3 +38,31 @@ extension ENManager: ENManaging {}
 
 extension ENExposureDetectionSummary: ExposureDetectionSummary {}
 extension ENExposureInfo: ExposureInformation {}
+
+extension ExposureConfiguration {
+    var asExposureConfiguration: ENExposureConfiguration {
+        return DefaultExposureConfiguration(exposureConfiguration: self)
+    }
+}
+
+private class DefaultExposureConfiguration: ENExposureConfiguration {
+    override var attenuationDurationThresholds: [NSNumber] {
+        return exposureConfiguration.attenuationDurationThresholds.map { NSNumber(value: $0) }
+    }
+
+    init(exposureConfiguration: ExposureConfiguration) {
+        self.exposureConfiguration = exposureConfiguration
+
+        super.init()
+
+        self.minimumRiskScore = exposureConfiguration.minimumRiskScope
+        self.attenuationLevelValues = exposureConfiguration.attenuationLevelValues.map { NSNumber(value: $0) }
+        self.daysSinceLastExposureLevelValues = exposureConfiguration.daysSinceLastExposureLevelValues.map { NSNumber(value: $0) }
+        self.durationLevelValues = exposureConfiguration.durationLevelValues.map { NSNumber(value: $0) }
+        self.transmissionRiskLevelValues = exposureConfiguration.transmissionRiskLevelValues.map { NSNumber(value: $0) }
+    }
+
+    // MARK: - Private
+
+    private let exposureConfiguration: ExposureConfiguration
+}

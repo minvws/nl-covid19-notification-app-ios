@@ -17,16 +17,24 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     // MARK: - ExposureDataOperationProvider
 
-    func processExposureKeySetsOperation(exposureManager: ExposureManaging) -> ProcessExposureKeySetsDataOperation {
+    func processExposureKeySetsOperation(exposureManager: ExposureManaging,
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation {
         return ProcessExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
-                                                   exposureManager: exposureManager)
+                                                   exposureManager: exposureManager,
+                                                   configuration: configuration)
     }
 
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,
                                                     appConfigurationIdentifier: identifier)
+    }
+
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation {
+        return RequestExposureConfigurationDataOperation(networkController: networkController,
+                                                         storageController: storageController,
+                                                         exposureConfigurationIdentifier: identifier)
     }
 
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation {

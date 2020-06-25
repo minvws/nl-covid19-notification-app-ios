@@ -40,7 +40,7 @@ struct NetworkConfiguration {
     }
 
     func riskCalculationParametersUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.riskCalculationParameters, params: ["": identifier])
+        return self.combine(path: Endpoint.riskCalculationParameters(identifier: identifier))
     }
 
     func appConfigUrl(identifier: String) -> URL? {

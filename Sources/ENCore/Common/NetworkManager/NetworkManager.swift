@@ -76,11 +76,11 @@ final class NetworkManager: NetworkManaging {
 
     /// Fetches risk parameters used by the ExposureManager
     /// - Parameter completion: success or fail
-    func getRiskCalculationParameters(appConfig: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ()) {
+    func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let urlRequest = constructRequest(url: configuration.riskCalculationParametersUrl(identifier: appConfig),
+        let urlRequest = constructRequest(url: configuration.riskCalculationParametersUrl(identifier: identifier),
                                           method: .GET,
                                           headers: headers)
 

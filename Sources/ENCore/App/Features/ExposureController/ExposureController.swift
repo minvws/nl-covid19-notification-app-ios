@@ -36,6 +36,10 @@ final class ExposureController: ExposureControlling {
         }
     }
 
+    func refreshStatus() {
+        updateStatusStream()
+    }
+
     func requestExposureNotificationPermission() {
         exposureManager?.setExposureNotificationEnabled(true) { _ in
             self.updateStatusStream()

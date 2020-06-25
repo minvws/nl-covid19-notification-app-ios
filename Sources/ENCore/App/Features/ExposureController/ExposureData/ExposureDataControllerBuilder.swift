@@ -18,10 +18,6 @@ enum ExposureDataError: Error {
 
 /// @mockable
 protocol ExposureDataControlling {
-    // MARK: - Operations
-
-    func scheduleOperations()
-
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
