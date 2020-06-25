@@ -32,7 +32,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
+    func execute() -> AnyPublisher<(), ExposureDataError> {
         let storedKeySetsHolders = getStoredKeySetsHolders()
         let identifiers = removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from: exposureKeySetIdentifiers,
                                                                               storedKeySetsHolders: storedKeySetsHolders)
@@ -108,23 +108,25 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
     }
 
     // stores the downloaded keysets holders and returns the final list of keysets holders on disk
-    private func storeDownloadedKeySetsHolders(_ downloadedKeySetsHolders: [ExposureKeySetHolder]) -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
-        return Future { promise in
-            self.storageController.requestExclusiveAccess { storageController in
-                var keySetsHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
+    private func storeDownloadedKeySetsHolders(_ downloadedKeySetsHolders: [ExposureKeySetHolder]) -> AnyPublisher<(), ExposureDataError> {
+        return Deferred {
+            Future { promise in
+                self.storageController.requestExclusiveAccess { storageController in
+                    var keySetHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
 
-                downloadedKeySetsHolders.forEach { keySetsHolder in
-                    let matchesKeySetsHolder: (ExposureKeySetHolder) -> Bool = { $0.identifier == keySetsHolder.identifier }
+                    downloadedKeySetsHolders.forEach { keySetHolder in
+                        let matchesKeySetsHolder: (ExposureKeySetHolder) -> Bool = { $0.identifier == keySetHolder.identifier }
 
-                    if !keySetsHolders.contains(where: matchesKeySetsHolder) {
-                        keySetsHolders.append(keySetsHolder)
+                        if !keySetHolders.contains(where: matchesKeySetsHolder) {
+                            keySetHolders.append(keySetHolder)
+                        }
                     }
-                }
 
-                storageController.store(object: keySetsHolders,
-                                        identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
-                    // ignore any storage error - in that case the keyset will be downloaded and processed again
-                    promise(.success(keySetsHolders))
+                    storageController.store(object: keySetHolders,
+                                            identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
+                        // ignore any storage error - in that case the keyset will be downloaded and processed again
+                        promise(.success(()))
+                    }
                 }
             }
         }

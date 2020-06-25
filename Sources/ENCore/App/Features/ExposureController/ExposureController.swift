@@ -60,6 +60,30 @@ final class ExposureController: ExposureControlling {
         }
     }
 
+    func fetchAndProcessExposureKeySets(_ completion: @escaping () -> ()) {
+        guard let exposureManager = exposureManager else {
+            // no exposureManager, nothing to do
+            completion()
+            return
+        }
+
+        guard exposureKeyUpdateCancellable == nil else {
+            // already fetching
+            completion()
+            return
+        }
+
+        exposureKeyUpdateCancellable = dataController
+            .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
+            .sink(receiveCompletion: { [weak self] _ in
+                self?.updateStatusStream()
+                self?.exposureKeyUpdateCancellable = nil
+
+                completion()
+            },
+            receiveValue: { _ in })
+    }
+
     func confirmExposureNotification() {
         // Not implemented yet
         mutableStateStream.update(state: .init(notifiedState: .notNotified, activeState: .active))
@@ -115,8 +139,6 @@ final class ExposureController: ExposureControlling {
                   receiveValue: receiveValue)
             .store(in: &disposeBag)
     }
-
-    // MARK: - Private
 
     private func updateStatusStream() {
         guard let exposureManager = exposureManager else {
@@ -177,6 +199,10 @@ final class ExposureController: ExposureControlling {
                 // No network request is done (yet), these errors can only mean
                 // an internal error
                 return .internalError
+            case .inactive:
+                return .inactive
+            case .notAuthorized:
+                return .notAuthorized
             }
         }
 
@@ -202,6 +228,7 @@ final class ExposureController: ExposureControlling {
     private let exposureManager: ExposureManaging?
     private let dataController: ExposureDataControlling
     private var disposeBag = Set<AnyCancellable>()
+    private var exposureKeyUpdateCancellable: AnyCancellable?
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {

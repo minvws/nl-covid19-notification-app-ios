@@ -18,7 +18,7 @@ struct NetworkConfiguration {
     static let development = NetworkConfiguration(
         name: "Development",
         scheme: "http",
-        host: "localhost",
+        host: "10.0.0.133",
         port: 5004,
         path: []
     )

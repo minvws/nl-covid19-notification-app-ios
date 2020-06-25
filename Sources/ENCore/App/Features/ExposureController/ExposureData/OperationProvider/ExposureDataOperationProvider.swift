@@ -17,6 +17,12 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     // MARK: - ExposureDataOperationProvider
 
+    func processExposureKeySetsOperation(exposureManager: ExposureManaging) -> ProcessExposureKeySetsDataOperation {
+        return ProcessExposureKeySetsDataOperation(networkController: networkController,
+                                                   storageController: storageController,
+                                                   exposureManager: exposureManager)
+    }
+
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,
@@ -80,6 +86,21 @@ extension StoreError {
     var asExposureDataError: ExposureDataError {
         switch self {
         case .cannotEncode, .fileSystemError, .keychainError:
+            return .internalError
+        }
+    }
+}
+
+extension ExposureManagerError {
+    var asExposureDataError: ExposureDataError {
+        switch self {
+        case .bluetoothOff:
+            return .inactive(.bluetoothOff)
+        case .disabled, .restricted:
+            return .inactive(.disabled)
+        case .notAuthorized:
+            return .notAuthorized
+        case .internalTypeMismatch, .unknown:
             return .internalError
         }
     }

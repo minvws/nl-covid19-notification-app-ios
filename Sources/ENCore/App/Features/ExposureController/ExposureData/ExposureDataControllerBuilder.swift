@@ -12,6 +12,8 @@ enum ExposureDataError: Error {
     case networkUnreachable
     case serverError
     case internalError
+    case inactive(ExposureStateInactiveState)
+    case notAuthorized
 }
 
 /// @mockable
@@ -20,9 +22,9 @@ protocol ExposureDataControlling {
 
     func scheduleOperations()
 
-    // MARK: - Tasks
+    // MARK: - Exposure Detection
 
-    func fetchExposureKeySets() -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError>
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Lab Flow
 

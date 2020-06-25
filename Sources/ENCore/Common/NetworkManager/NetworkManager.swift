@@ -221,9 +221,11 @@ final class NetworkManager: NetworkManaging {
             request.httpBody = body
         }
 
-        print(request.url)
-        print(request.allHTTPHeaderFields)
-        print(request.httpBody)
+        #if DEBUG
+            if let url = request.url { print(url) }
+            if let allHTTPHeaderFields = request.allHTTPHeaderFields { print(allHTTPHeaderFields) }
+            if let httpBody = request.url { print(httpBody) }
+        #endif
 
         return .success(request)
     }
@@ -283,10 +285,13 @@ final class NetworkManager: NetworkManaging {
             return
         }
 
-        print(response)
-        if let object = object as? Data {
-            print(String(data: object, encoding: .utf8)!)
-        }
+        #if DEBUG
+            if let response = response { print(response) }
+
+            if let object = object as? Data {
+                print(String(data: object, encoding: .utf8)!)
+            }
+        #endif
 
         guard let response = response,
             let object = object else {

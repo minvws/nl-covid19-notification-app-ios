@@ -19,6 +19,10 @@ struct ExposureDataStorageKey {
                                                                               storeType: .insecure(volatile: true))
     static let exposureKeySetsHolders = CodableStorageKey<[ExposureKeySetHolder]>(name: "exposureKeySetsHolders",
                                                                                   storeType: .insecure(volatile: false))
+    static let lastExposureReport = CodableStorageKey<ExposureReport>(name: "exposureReport",
+                                                                      storeType: .secure)
+    static let lastExposureProcessingDate = CodableStorageKey<Date>(name: "lastExposureProcessingDate",
+                                                                    storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling {
@@ -37,7 +41,22 @@ final class ExposureDataController: ExposureDataControlling {
 
     // MARK: - ExposureDataControlling
 
-    func fetchExposureKeySets() -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
+        let processOperation = operationProvider
+            .processExposureKeySetsOperation(exposureManager: exposureManager)
+
+        return fetchAndStoreExposureKeySets()
+            .flatMap { processOperation.execute() }
+            .eraseToAnyPublisher()
+    }
+
+    func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
+        return operationProvider
+            .processExposureKeySetsOperation(exposureManager: exposureManager)
+            .execute()
+    }
+
+    func fetchAndStoreExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
         return operationProvider
             .requestManifestOperation
             .execute()

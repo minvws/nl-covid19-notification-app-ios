@@ -15,6 +15,14 @@ private struct DeveloperItem {
     let title: String
     let subtitle: String
     let action: () -> ()
+    let enabled: Bool
+
+    init(title: String, subtitle: String, action: @escaping () -> (), enabled: Bool = true) {
+        self.title = title
+        self.subtitle = subtitle
+        self.action = action
+        self.enabled = enabled
+    }
 }
 
 final class DeveloperMenuViewController: ViewController, DeveloperMenuViewControllable, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
@@ -109,6 +117,11 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         cell.textLabel?.numberOfLines = 0
         cell.detailTextLabel?.text = item.subtitle
         cell.detailTextLabel?.numberOfLines = 0
+        cell.isUserInteractionEnabled = item.enabled
+
+        if item.enabled == false {
+            cell.detailTextLabel?.text = "Busy ..."
+        }
 
         return cell
     }
@@ -146,7 +159,17 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.removeStoredConfirmationKey() }),
                 DeveloperItem(title: "Remove Last Uploaded RollingStart",
                               subtitle: "Last: \(getLastUploadedRollingStartNumber())",
-                              action: { [weak self] in self?.removeLastUploadedRollingStartNumber() })
+                              action: { [weak self] in self?.removeLastUploadedRollingStartNumber() }),
+                DeveloperItem(title: "Remove Last Exposure",
+                              subtitle: "Last: \(getLastExposureString())",
+                              action: { [weak self] in self?.removeLastExposure() }),
+                DeveloperItem(title: "Remove Processed KeySets",
+                              subtitle: "Will redownload them next time",
+                              action: { [weak self] in self?.removeAllExposureKeySets() }),
+                DeveloperItem(title: "Download and Process New KeySets",
+                              subtitle: "Last time: \(getLastExposureFetchString())",
+                              action: { [weak self] in self?.fetchAndProcessKeySets() },
+                              enabled: !isFetchingKeys)
             ]),
             ("Networking", [
                 DeveloperItem(title: "Network Configuration",
@@ -275,6 +298,38 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         internalView.tableView.reloadData()
     }
 
+    private func removeLastExposure() {
+        storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
+
+        internalView.tableView.reloadData()
+    }
+
+    private func removeAllExposureKeySets() {
+        storageController.removeData(for: ExposureDataStorageKey.exposureKeySetsHolders, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in })
+
+        if let folder = LocalPathProvider().path(for: .exposureKeySets) {
+            try? FileManager.default.removeItem(at: folder)
+        }
+
+        internalView.tableView.reloadData()
+    }
+
+    private func fetchAndProcessKeySets() {
+        guard isFetchingKeys == false else { return }
+
+        isFetchingKeys = true
+        internalView.tableView.reloadData()
+
+        exposureController.fetchAndProcessExposureKeySets { [weak self] in
+            // done
+            self?.isFetchingKeys = false
+
+            assert(Thread.isMainThread)
+            self?.internalView.tableView.reloadData()
+        }
+    }
+
     // MARK: - Private
 
     private func getLastStoredConfirmationKey() -> String {
@@ -287,6 +342,26 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         }
 
         return String(last)
+    }
+
+    private func getLastExposureString() -> String {
+        guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport) else {
+            return "None"
+        }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        return "\(dateFormatter.string(from: last.date)) for \(last.duration) seconds"
+    }
+
+    private func getLastExposureFetchString() -> String {
+        guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate) else {
+            return "None"
+        }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        return "\(dateFormatter.string(from: last))"
     }
 
     private func wantsScheduleNotification() {
@@ -396,6 +471,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private let mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
+
+    private var isFetchingKeys = false
 
     private var window: UIWindow? {
         if #available(iOS 13.0, *) {

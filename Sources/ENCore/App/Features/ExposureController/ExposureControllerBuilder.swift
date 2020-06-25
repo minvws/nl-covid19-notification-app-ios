@@ -18,6 +18,10 @@ protocol ExposureControlling {
     func requestExposureNotificationPermission()
     func requestPushNotificationPermission(_ completion: @escaping () -> ())
 
+    // MARK: - Exposure KeySets
+
+    func fetchAndProcessExposureKeySets(_ completion: @escaping () -> ())
+
     // MARK: - Exposure Notification
 
     /// Sets the current `notified` state to false
