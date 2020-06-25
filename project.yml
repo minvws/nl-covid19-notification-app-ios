@@ -43,6 +43,7 @@ targets:
         CFBundleDisplayName: EN
         CFBundleShortVersionString: "0.1"
         CFBundleVersion: "1.0"
+        CFBundleIconName: "Assets.xcassets/AppIcon.appiconset"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes: [""]
         LSRequiresIPhoneOS: true
@@ -61,7 +62,6 @@ targets:
                 UISceneConfigurationName: Default Configuration
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
-        CFBundleIconName: "AppIcon"
 
                 
     dependencies:
