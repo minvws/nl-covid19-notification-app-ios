@@ -21,7 +21,9 @@ final class ExposureManager: ExposureManaging {
     // MARK: - ExposureManaging
 
     func activate(completion: @escaping (ExposureManagerStatus) -> ()) {
-        assert(Thread.isMainThread)
+        #if DEBUG
+            assert(Thread.isMainThread)
+        #endif
 
         manager.activate { [weak self] error in
             guard let strongSelf = self else {
@@ -46,7 +48,9 @@ final class ExposureManager: ExposureManaging {
     }
 
     func detectExposures(diagnosisKeyURLs: [URL], completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ()) {
-        assert(Thread.isMainThread)
+        #if DEBUG
+            assert(Thread.isMainThread)
+        #endif
 
         let configuration = self.getExposureConfiguration()
 
@@ -70,7 +74,9 @@ final class ExposureManager: ExposureManaging {
     }
 
     func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
-        assert(Thread.isMainThread)
+        #if DEBUG
+            assert(Thread.isMainThread)
+        #endif
 
         let retrieve: (@escaping ENGetDiagnosisKeysHandler) -> ()
 
@@ -107,7 +113,9 @@ final class ExposureManager: ExposureManaging {
     func getExposureInfo(summary: ExposureDetectionSummary,
                          userExplanation: String,
                          completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) -> Progress {
-        assert(Thread.isMainThread)
+        #if DEBUG
+            assert(Thread.isMainThread)
+        #endif
 
         guard let summary = summary as? ENExposureDetectionSummary else {
             completionHandler(nil, .internalTypeMismatch)

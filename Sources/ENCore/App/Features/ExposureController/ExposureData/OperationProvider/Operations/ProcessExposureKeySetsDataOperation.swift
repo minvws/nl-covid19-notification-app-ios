@@ -33,21 +33,31 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         let exposureKeySets = getStoredKeySetsHolders()
             .filter { $0.processed == false }
 
+        // convert all exposureKeySets into streams which emit detection reports
         let exposures = exposureKeySets.map {
             self.detectExposures(for: $0)
                 .eraseToAnyPublisher()
         }
 
+        // Combine all streams into an array of streams
         return Publishers.Sequence<[AnyPublisher<ExposureDetectionResult, ExposureDataError>], ExposureDataError>(sequence: exposures)
+            // execute a single exposure at the same time
             .flatMap(maxPublishers: .max(1)) { $0 }
+            // wait until all of them are done and collect them in an array again
             .collect()
+            // persist exposure results
             .flatMap(persistResults(_:))
+            // remove correctly processed sig/bin files from disk
             .handleEvents(receiveOutput: removeBlobs(forSuccessfulExposureResults:))
+            // select the right exposure result
             .map(selectFrom(results:))
+            // show user notification and get info about the exposure
             .flatMap { summary in
                 self.getExposureInformations(for: summary, userExplanation: Localization.string(for: "exposure.notification.userExplanation"))
             }
+            // persist exposure report
             .flatMap(persist(exposure:))
+            // update last processing date
             .flatMap { _ in self.updateLastProcessingDate() }
             .eraseToAnyPublisher()
     }
