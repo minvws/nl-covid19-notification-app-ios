@@ -19,27 +19,30 @@
 
 // MARK: - Onboarding Steps
 "step1Title" = "Bescherm je vrienden, familie en de rest van Nederland";
-"step1Content" = "Deze app waarschuwt nadat je in de buurt bent geweest van iemand met het coronavirus. Zo kunnen we samen de verspreiding stoppen.";
+"step1Content" = "[Naam app] waarschuwt nadat je in de buurt bent geweest van iemand met het coronavirus. Zo kunnen we samen de verspreiding stoppen.";
 
-"step2Title" = "De app ziet via Bluetooth of je dicht bij iemand bent geweest";
-"step2Content" = "Hoe sterker het Bluetooth signaal, hoe dichter bij je bent geweest. Dit is 100% anoniem. De app ziet niet waar je bent geweest en gebruikt weinig energie.";
+"step2Title" = "Je krijgt een melding <u>nadat</u> je extra kans op besmetting hebt gelopen";
+"step2Content" = "Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die daarna positief is getest. Deze persoon moet ook de app gebruiken.";
 
-"step3Title" = "Je krijgt een melding <u>nadat</u> je extra kans op besmetting hebt gelopen";
-"step3Content" = "Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die daarna positief is getest. Deze persoon moet ook de app gebruiken.";
+"step3Title" = "De app gebruikt Bluetooth, <u>geen</u> locatiegegevens";
+"step3Content" = "De app ziet via Bluetooth of je dicht bij iemand was. Hoe dichterbij, hoe sterker het Bluetooth-signaal. De app weet niet waar je was en wie je bent.";
 
 "step4Title" = "Fietste er iemand voorbij? Dan krijg je later geen melding.";
 "step4Content" = "De Bluetooth signaalsterkte was door de afstand namelijk erg zwak, en jullie waren maar kort bij elkaar in de buurt.";
+
+"step5Title" = "Zat je dicht bij iemand in de trein? Dan kun je <u>later</u> wel een melding krijgen";
+"step5Content" = "Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
 
 // MARK: - Onboarding
 "nextButtonTitle" = "Volgende";
 
 // MARK: - Consent Steps
-"consentStep1Title" = "Geef toestemming om COVID-19 blootstelling bij te houden";
+"consentStep1Title" = "Meldingen over mogelijke blootstelling COVID-19 inschakelen";
 "consentStep1Content" = "";
 "consentStep1Summary1" = "Je Bluetooth-gegevens worden 14 dagen op je telefoon bewaard. Je kunt ze altijd zelf verwijderen.";
-"consentStep1Summary2" = "Je naam en andere persoonsgegevens worden niet gebruikt of bewaard.";
-"consentStep1Summary3" = "Je locatiegegevens worden niet gebruikt of bewaard";
-"consentStep1PrimaryButton" = "Toestemming geven";
+"consentStep1Summary2" = "Je naam en andere persoonsgegevens worden <b>niet</b> gebruikt of bewaard.";
+"consentStep1Summary3" = "Je gps-locatiegegevens worden <i>niet</i> gebruikt of bewaard.";
+"consentStep1PrimaryButton" = "Inschakelen";
 "consentStep1SecondaryButton" = "Hoe werkt de app precies?";
 
 "consentStep2Title" = "Zet je Bluetooth aan om de app te gebruiken";

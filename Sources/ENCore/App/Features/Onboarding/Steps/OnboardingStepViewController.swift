@@ -168,9 +168,9 @@ final class OnboardingStepView: View {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
         ])
 
@@ -182,7 +182,7 @@ final class OnboardingStepView: View {
         ])
 
         constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 0),
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
