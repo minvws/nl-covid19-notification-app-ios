@@ -41,7 +41,6 @@ targets:
           [$(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification]
         CFBundleName: EN
         CFBundleDisplayName: EN
-        CFBundleIcons: {}
         CFBundleShortVersionString: "0.1"
         CFBundleVersion: "1.0"
         ITSAppUsesNonExemptEncryption: false
