@@ -41,16 +41,19 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 animationName: nil,
                 summarySteps: [
                     OnboardingConsentSummaryStep(
-                        title: Localization.attributedString(for: "consentStep1Summary1"),
-                        image: Image.named("CheckmarkShield")
+                        theme: theme,
+                        title: Localization.string(for: "consentStep1Summary1"),
+                        image: Image.named("BluetoothShield")
                     ),
                     OnboardingConsentSummaryStep(
-                        title: Localization.attributedString(for: "consentStep1Summary2"),
-                        image: Image.named("CheckmarkShield")
+                        theme: theme,
+                        title: Localization.string(for: "consentStep1Summary2"),
+                        image: Image.named("LockShield")
                     ),
                     OnboardingConsentSummaryStep(
-                        title: Localization.attributedString(for: "consentStep1Summary3"),
-                        image: Image.named("CheckmarkShield")
+                        theme: theme,
+                        title: Localization.string(for: "consentStep1Summary3"),
+                        image: Image.named("LockShield")
                     )
                 ],
                 primaryButtonTitle: Localization.string(for: "consentStep1PrimaryButton"),
@@ -70,7 +73,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 summarySteps: nil,
                 primaryButtonTitle: Localization.string(for: "consentStep2PrimaryButton"),
                 secondaryButtonTitle: Localization.string(for: "consentStep2SecondaryButton"),
-                hasNavigationBarSkipButton: false
+                hasNavigationBarSkipButton: true
             )
         )
 
@@ -85,7 +88,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 summarySteps: nil,
                 primaryButtonTitle: Localization.string(for: "consentStep3PrimaryButton"),
                 secondaryButtonTitle: Localization.string(for: "consentStep3SecondaryButton"),
-                hasNavigationBarSkipButton: false
+                hasNavigationBarSkipButton: true
             )
         )
     }

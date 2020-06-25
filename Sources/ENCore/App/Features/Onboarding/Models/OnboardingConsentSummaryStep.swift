@@ -12,9 +12,9 @@ final class OnboardingConsentSummaryStep: NSObject {
     var title: NSAttributedString = NSAttributedString(string: "")
     var image: UIImage = UIImage()
 
-    init(title: NSAttributedString, image: UIImage?) {
+    init(theme: Theme, title: String, image: UIImage?) {
 
-        self.title = title
+        self.title = .makeFromHtml(text: title, font: theme.fonts.body, textColor: theme.colors.gray)
         if let image = image { self.image = image }
     }
 }

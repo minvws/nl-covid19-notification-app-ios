@@ -13,7 +13,7 @@ final class OnboardingStep: NSObject {
     var attributedTitle: NSAttributedString = NSAttributedString(string: "")
     var attributedContent: NSAttributedString = NSAttributedString(string: "")
 
-    var image: UIImage = UIImage()
+    var image: UIImage?
     var animation: Animation?
     var hasAnimation: Bool { return self.animation != nil }
     var buttonTitle: String = ""
@@ -22,7 +22,7 @@ final class OnboardingStep: NSObject {
     init(theme: Theme,
          title: String,
          content: String,
-         image: UIImage,
+         image: UIImage?,
          animationName: String?,
          buttonTitle: String,
          isExample: Bool) {
@@ -39,12 +39,12 @@ final class OnboardingStep: NSObject {
         let attributedTitleString = NSMutableAttributedString()
 
         if isExample {
-            attributedTitleString.append(.make(text: Localization.string(for: "example") + "\n\n", font: .systemFont(ofSize: 15, weight: .bold), textColor: theme.colors.secondary))
+            attributedTitleString.append(.make(text: Localization.string(for: "example") + "\n\n", font: theme.fonts.subhead, textColor: theme.colors.secondary))
         }
 
-        attributedTitleString.append(.makeFromHtml(text: title, font: .boldSystemFont(ofSize: 22), textColor: .black))
+        attributedTitleString.append(.makeFromHtml(text: title, font: theme.fonts.title2, textColor: .black))
 
         self.attributedTitle = attributedTitleString
-        self.attributedContent = .makeFromHtml(text: content, font: .systemFont(ofSize: 17), textColor: theme.colors.gray)
+        self.attributedContent = .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray)
     }
 }
