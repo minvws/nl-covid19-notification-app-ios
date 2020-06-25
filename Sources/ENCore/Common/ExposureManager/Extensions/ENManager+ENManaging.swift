@@ -46,9 +46,10 @@ extension ExposureConfiguration {
 }
 
 private class DefaultExposureConfiguration: ENExposureConfiguration {
-    override var attenuationDurationThresholds: [NSNumber] {
-        return exposureConfiguration.attenuationDurationThresholds.map { NSNumber(value: $0) }
-    }
+    // only available on Xcode 11.5+
+//    override var attenuationDurationThresholds: [NSNumber] {
+//        return exposureConfiguration.attenuationDurationThresholds.map { NSNumber(value: $0) }
+//    }
 
     init(exposureConfiguration: ExposureConfiguration) {
         self.exposureConfiguration = exposureConfiguration
