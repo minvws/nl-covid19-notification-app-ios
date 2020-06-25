@@ -34,13 +34,18 @@ protocol ExposureDataOperationProviderDependency {
     var storageController: StorageControlling { get }
 }
 
-private final class ExposureDataOperationProviderDependencyProvider: DependencyProvider<ExposureDataOperationProviderDependency> {}
+private final class ExposureDataOperationProviderDependencyProvider: DependencyProvider<ExposureDataOperationProviderDependency> {
+    var localPathProvider: LocalPathProviding {
+        return LocalPathProvider()
+    }
+}
 
 final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationProviderDependency>, ExposureDataOperationProviderBuildable {
     func build() -> ExposureDataOperationProvider {
         let dependencyProvider = ExposureDataOperationProviderDependencyProvider(dependency: dependency)
 
         return ExposureDataOperationProviderImpl(networkController: dependencyProvider.dependency.networkController,
-                                                 storageController: dependencyProvider.dependency.storageController)
+                                                 storageController: dependencyProvider.dependency.storageController,
+                                                 localPathProvider: dependencyProvider.localPathProvider)
     }
 }

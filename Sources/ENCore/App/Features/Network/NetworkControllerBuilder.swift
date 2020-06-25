@@ -10,15 +10,15 @@ import Foundation
 
 /// @mockable
 protocol NetworkControlling {
-    func applicationConfiguration(identifier: String) -> Future<ApplicationConfiguration, NetworkError>
+    func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError>
 
-    var applicationManifest: Future<ApplicationManifest, NetworkError> { get }
-    var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> { get }
-    var exposureRiskCalculationParameters: Future<ExposureRiskCalculationParameters, NetworkError> { get }
+    var applicationManifest: AnyPublisher<ApplicationManifest, NetworkError> { get }
+    var exposureKeySetProvider: AnyPublisher<ExposureKeySetProvider, NetworkError> { get }
+    var exposureRiskCalculationParameters: AnyPublisher<ExposureRiskCalculationParameters, NetworkError> { get }
 
-    func fetchExposureKeySet(identifier: String) -> Future<ExposureKeySetHolder, NetworkError>
+    func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError>
 
-    var resourceBundle: Future<ResourceBundle, NetworkError> { get }
+    var resourceBundle: AnyPublisher<ResourceBundle, NetworkError> { get }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError>

@@ -18,107 +18,125 @@ final class NetworkController: NetworkControlling {
 
     // MARK: - NetworkControlling
 
-    var applicationManifest: Future<ApplicationManifest, NetworkError> {
-        return Future { promise in
-            self.networkManager.getManifest { result in
-                promise(result.map { $0.asApplicationManifest })
+    var applicationManifest: AnyPublisher<ApplicationManifest, NetworkError> {
+        return Deferred {
+            Future { promise in
+                self.networkManager.getManifest { result in
+                    promise(result.map { $0.asApplicationManifest })
+                }
             }
         }
+        .eraseToAnyPublisher()
     }
 
-    func applicationConfiguration(identifier: String) -> Future<ApplicationConfiguration, NetworkError> {
-        return Future { promise in
-            self.networkManager.getAppConfig(appConfig: identifier) { result in
-                promise(result.map { $0.asApplicationConfiguration(identifier: identifier) })
+    func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError> {
+        return Deferred {
+            Future { promise in
+                self.networkManager.getAppConfig(appConfig: identifier) { result in
+                    promise(result.map { $0.asApplicationConfiguration(identifier: identifier) })
+                }
             }
         }
+        .eraseToAnyPublisher()
     }
 
-    var exposureKeySetProvider: Future<ExposureKeySetProvider, NetworkError> {
-        return Future { promise in
-            promise(.failure(.serverNotReachable))
-        }
-    }
-
-    var exposureRiskCalculationParameters: Future<ExposureRiskCalculationParameters, NetworkError> {
-        return Future { promise in
-            promise(.failure(.serverNotReachable))
-        }
-    }
-
-    func fetchExposureKeySet(identifier: String) -> Future<ExposureKeySetHolder, NetworkError> {
-        return Future { promise in
-            self.networkManager.getExposureKeySet(identifier: identifier) { result in
-                promise(result
-                    .map { localUrl in ExposureKeySetHolder(identifier: identifier,
-                                                            fileUrl: localUrl,
-                                                            processed: false,
-                                                            creationDate: Date())
-                    }
-                )
+    var exposureKeySetProvider: AnyPublisher<ExposureKeySetProvider, NetworkError> {
+        return Deferred {
+            Future { promise in
+                promise(.failure(.serverNotReachable))
             }
         }
+        .eraseToAnyPublisher()
     }
 
-    var resourceBundle: Future<ResourceBundle, NetworkError> {
-        return Future { promise in
-            promise(.failure(.serverNotReachable))
+    var exposureRiskCalculationParameters: AnyPublisher<ExposureRiskCalculationParameters, NetworkError> {
+        return Deferred {
+            Future { promise in
+                promise(.failure(.serverNotReachable))
+            }
         }
+        .eraseToAnyPublisher()
+    }
+
+    func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError> {
+        return Deferred {
+            Future { promise in
+                self.networkManager.getExposureKeySet(identifier: identifier) { result in
+                    promise(result
+                        .map { localUrl in (identifier, localUrl) }
+                    )
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    var resourceBundle: AnyPublisher<ResourceBundle, NetworkError> {
+        return Deferred {
+            Future { promise in
+                promise(.failure(.serverNotReachable))
+            }
+        }
+        .eraseToAnyPublisher()
     }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError> {
-        return Future { promise in
-            let padding = self.cryptoUtility.randomBytes(ofLength: 32).base64EncodedString()
-            let request = RegisterRequest(padding: padding)
+        return Deferred {
+            Future { promise in
+                let padding = self.cryptoUtility.randomBytes(ofLength: 32).base64EncodedString()
+                let request = RegisterRequest(padding: padding)
 
-            self.networkManager.postRegister(request: request) { result in
+                self.networkManager.postRegister(request: request) { result in
 
-                let convertLabConfirmationKey: (LabInformation) -> Result<LabConfirmationKey, NetworkError> = { labInformation in
-                    guard let labConfirmationKey = labInformation.asLabConfirmationKey else {
-                        return .failure(.invalidResponse)
+                    let convertLabConfirmationKey: (LabInformation) -> Result<LabConfirmationKey, NetworkError> = { labInformation in
+                        guard let labConfirmationKey = labInformation.asLabConfirmationKey else {
+                            return .failure(.invalidResponse)
+                        }
+
+                        return .success(labConfirmationKey)
                     }
 
-                    return .success(labConfirmationKey)
+                    promise(result
+                        .flatMap(convertLabConfirmationKey)
+                    )
                 }
-
-                promise(result
-                    .flatMap(convertLabConfirmationKey)
-                )
             }
         }
         .eraseToAnyPublisher()
     }
 
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError> {
-        return Future { promise in
-            let padding = self.cryptoUtility.randomBytes(ofLength: 32).base64EncodedString()
-            let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
-                                          bucketID: labConfirmationKey.bucketIdentifier.base64EncodedString(),
-                                          padding: padding)
+        return Deferred {
+            Future { promise in
+                let padding = self.cryptoUtility.randomBytes(ofLength: 32).base64EncodedString()
+                let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
+                                              bucketID: labConfirmationKey.bucketIdentifier.base64EncodedString(),
+                                              padding: padding)
 
-            guard let requestData = try? JSONEncoder().encode(request) else {
-                promise(.failure(.encodingError))
-                return
-            }
-
-            let signature = self.cryptoUtility
-                .signature(forData: requestData, key: labConfirmationKey.confirmationKey)
-                .base64EncodedString()
-
-            print(signature)
-
-            let completion: (NetworkError?) -> () = { error in
-                if let error = error {
-                    promise(.failure(error))
+                guard let requestData = try? JSONEncoder().encode(request) else {
+                    promise(.failure(.encodingError))
                     return
                 }
 
-                promise(.success(()))
-            }
+                let signature = self.cryptoUtility
+                    .signature(forData: requestData, key: labConfirmationKey.confirmationKey)
+                    .base64EncodedString()
 
-            self.networkManager.postKeys(request: request,
-                                         signature: signature,
-                                         completion: completion)
+                print(signature)
+
+                let completion: (NetworkError?) -> () = { error in
+                    if let error = error {
+                        promise(.failure(error))
+                        return
+                    }
+
+                    promise(.success(()))
+                }
+
+                self.networkManager.postKeys(request: request,
+                                             signature: signature,
+                                             completion: completion)
+            }
         }
         .eraseToAnyPublisher()
     }

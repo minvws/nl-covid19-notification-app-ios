@@ -10,19 +10,23 @@ import Foundation
 
 struct ExposureKeySetHolder: Codable {
     let identifier: String
-    let fileUrl: URL
+    let signatureFileUrl: URL
+    let binaryFileUrl: URL
     let processed: Bool
     let creationDate: Date
 }
 
 final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
-    typealias Result = [ExposureKeySetHolder]
+    private let signatureFilename = "export.sig"
+    private let binaryFilename = "export.bin"
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
+         localPathProvider: LocalPathProviding,
          exposureKeySetIdentifiers: [String]) {
         self.networkController = networkController
         self.storageController = storageController
+        self.localPathProvider = localPathProvider
         self.exposureKeySetIdentifiers = exposureKeySetIdentifiers
     }
 
@@ -34,7 +38,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
                                                                               storedKeySetsHolders: storedKeySetsHolders)
 
         // download remaining keysets
-        let exposureKeySetStreams: [AnyPublisher<ExposureKeySetHolder, NetworkError>] = identifiers.map { identifier in
+        let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = identifiers.map { identifier in
             self.networkController
                 .fetchExposureKeySet(identifier: identifier)
                 .eraseToAnyPublisher()
@@ -42,11 +46,12 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
 
         // schedule all downloads at once - the networking layer should limit the number of parallel
         // requests if necessary
-        return Publishers.Sequence<[AnyPublisher<ExposureKeySetHolder, NetworkError>], NetworkError>(sequence: exposureKeySetStreams)
+        return Publishers.Sequence<[AnyPublisher<(String, URL), NetworkError>], NetworkError>(sequence: exposureKeySetStreams)
             .flatMap { $0 }
             .mapError { error in error.asExposureDataError }
             .collect()
-            .flatMap(self.storeDownloadedKeySetsHolders)
+            .flatMap(createKeySetHolders)
+            .flatMap(storeDownloadedKeySetsHolders)
             .eraseToAnyPublisher()
     }
 
@@ -60,6 +65,46 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
                                                                      storedKeySetsHolders: [ExposureKeySetHolder]) -> [String] {
         let isNotDownloadedOrProcessed: (String) -> Bool = { identifier in !storedKeySetsHolders.contains { $0.identifier == identifier } }
         return identifiers.filter(isNotDownloadedOrProcessed)
+    }
+
+    private func createKeySetHolders(forDownloadedKeySets keySets: [(String, URL)]) -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
+        return Deferred {
+            return Future<[ExposureKeySetHolder], ExposureDataError> { promise in
+                guard let keySetStorageUrl = self.localPathProvider.path(for: .exposureKeySets) else {
+                    promise(.failure(.internalError))
+                    return
+                }
+
+                var keySetHolders: [ExposureKeySetHolder] = []
+
+                keySets.forEach { keySet in
+                    let (identifier, localUrl) = keySet
+                    let srcSignatureUrl = localUrl.appendingPathComponent(self.signatureFilename)
+                    let srcBinaryUrl = localUrl.appendingPathComponent(self.binaryFilename)
+
+                    let dstSignatureUrl = keySetStorageUrl.appendingPathComponent(identifier).appendingPathExtension("sig")
+                    let dstBinaryUrl = keySetStorageUrl.appendingPathComponent(identifier).appendingPathExtension("bin")
+
+                    do {
+                        try FileManager.default.moveItem(at: srcSignatureUrl, to: dstSignatureUrl)
+                        try FileManager.default.moveItem(at: srcBinaryUrl, to: dstBinaryUrl)
+                    } catch {
+                        // do nothing, just ignore this keySetHolder
+                        return
+                    }
+
+                    let keySetHolder = ExposureKeySetHolder(identifier: identifier,
+                                                            signatureFileUrl: dstSignatureUrl,
+                                                            binaryFileUrl: dstBinaryUrl,
+                                                            processed: false,
+                                                            creationDate: Date())
+                    keySetHolders.append(keySetHolder)
+                }
+
+                promise(.success(keySetHolders))
+            }
+        }
+        .eraseToAnyPublisher()
     }
 
     // stores the downloaded keysets holders and returns the final list of keysets holders on disk
@@ -88,5 +133,6 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let localPathProvider: LocalPathProviding
     private let exposureKeySetIdentifiers: [String]
 }

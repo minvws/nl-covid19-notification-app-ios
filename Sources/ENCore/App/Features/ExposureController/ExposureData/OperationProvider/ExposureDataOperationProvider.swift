@@ -8,9 +8,11 @@
 final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     init(networkController: NetworkControlling,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         localPathProvider: LocalPathProviding) {
         self.networkController = networkController
         self.storageController = storageController
+        self.localPathProvider = localPathProvider
     }
 
     // MARK: - ExposureDataOperationProvider
@@ -24,6 +26,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation {
         return RequestExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
+                                                   localPathProvider: localPathProvider,
                                                    exposureKeySetIdentifiers: identifiers)
     }
 
@@ -49,6 +52,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let localPathProvider: LocalPathProviding
 }
 
 extension NetworkError {
