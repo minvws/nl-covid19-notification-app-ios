@@ -43,7 +43,7 @@ targets:
         CFBundleDisplayName: EN
         CFBundleShortVersionString: "0.1"
         CFBundleVersion: "1.0"
-        CFBundleIconName: "Assets.xcassets/AppIcon.appiconset"
+        CFBundleIconName: "Media.xcassets/AppIcon.appiconset"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes: [""]
         LSRequiresIPhoneOS: true
