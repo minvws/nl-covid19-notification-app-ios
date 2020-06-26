@@ -249,9 +249,9 @@ final class NetworkManager: NetworkManaging {
 
         var etagStore = self.storageController.retrieveObject(identifiedBy: ETagStore.key) ?? ETagStore()
 
-        if let url = request.url?.absoluteString,
-            let etag = etagStore.etags[url] {
-            request.addValue(etag, forHTTPHeaderField: "If-None-Match")
+        let key = "\(request.hashValue)"
+        if let etag = etagStore.etags[key] {
+            request.addValue(etag, forHTTPHeaderField: HTTPHeaderKey.ifNoneMatch.rawValue)
         }
 
         session.downloadTask(with: request) { localUrl, response, error in
@@ -261,11 +261,10 @@ final class NetworkManager: NetworkManaging {
                 return
             }
 
-            let etag = httpUrlResponse.allHeaderFields["Etag"] as? String
-            if let etag = etag,
-                let url = request.url?.absoluteString {
+            let etag = httpUrlResponse.allHeaderFields[HTTPHeaderKey.etag.rawValue] as? String
+            if let etag = etag {
                 // store etag
-                etagStore.etags[url] = etag
+                etagStore.etags[key] = etag
                 self.storageController.store(object: etagStore, identifiedBy: ETagStore.key) { error in
                     self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
                     return
