@@ -55,4 +55,8 @@
     completionHandler();
 }
 
+- (void)didEnterForeground {
+    [_appRoot didEnterForeground];
+}
+
 @end

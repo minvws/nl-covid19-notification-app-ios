@@ -100,6 +100,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }.store(in: &disposeBag)
     }
 
+    func didEnterForeground() {
+        exposureController.updateWhenRequired()
+    }
+
     // MARK: - RootRouting
 
     func routeToOnboarding() {

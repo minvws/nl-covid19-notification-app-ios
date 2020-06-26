@@ -40,6 +40,14 @@ final class ExposureController: ExposureControlling {
         updateStatusStream()
     }
 
+    func updateWhenRequired() {
+        guard case .active = mutableStateStream.currentExposureState?.activeState else { return }
+
+        fetchAndProcessExposureKeySets {
+            // done
+        }
+    }
+
     func requestExposureNotificationPermission() {
         exposureManager?.setExposureNotificationEnabled(true) { _ in
             self.updateStatusStream()

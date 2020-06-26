@@ -13,7 +13,10 @@ protocol ExposureControlling {
 
     func activate()
 
+    // MARK: - Updates
+
     func refreshStatus()
+    func updateWhenRequired()
 
     // MARK: - Permissions
 

@@ -185,7 +185,7 @@ final class ExposureControllerTests: XCTestCase {
         XCTAssertEqual(try! receivedResult.get().expiration, expirationDate)
     }
 
-    func DISABLED__test_requestLabConfirmationKey_isFailure_callsCompletionWithFailure() {
+    func test_requestLabConfirmationKey_isFailure_callsCompletionWithFailure() {
         dataController.requestLabConfirmationKeyHandler = {
             return Fail(error: ExposureDataError.serverError)
                 .eraseToAnyPublisher()
@@ -210,7 +210,7 @@ final class ExposureControllerTests: XCTestCase {
             XCTFail("Expecting error")
             return
         }
-//        XCTAssertEqual(error, ExposureDataError.serverError) // FIXME:
+        XCTAssertEqual(error, ExposureDataError.serverError)
     }
 
     func test_requestUploadKeys_exposureManagerReturnsKeys_callsCompletionWithKeys() {
@@ -282,6 +282,22 @@ final class ExposureControllerTests: XCTestCase {
         XCTAssertEqual(dataController.uploadCallCount, 0)
         XCTAssertNotNil(receivedResult)
         XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.inactive)
+    }
+
+    func test_updateWhenRequired_callsDataControllerWhenActive() {
+        exposureManager.getExposureNotificationStatusHandler = { .active }
+        mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in
+            return Just(())
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+
+        controller.updateWhenRequired()
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
     // MARK: - Private

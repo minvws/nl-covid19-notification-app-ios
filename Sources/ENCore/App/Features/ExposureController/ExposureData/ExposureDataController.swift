@@ -39,6 +39,8 @@ final class ExposureDataController: ExposureDataControlling {
 
     // MARK: - ExposureDataControlling
 
+    // MARK: - Exposure Detection
+
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
         return fetchAndStoreExposureKeySets()
             .flatMap { self.processStoredExposureKeySets(exposureManager: exposureManager) }

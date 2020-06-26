@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// @mockable
 protocol ExposureConfiguration {
     var minimumRiskScope: UInt8 { get }
     var attenuationLevelValues: [UInt8] { get }

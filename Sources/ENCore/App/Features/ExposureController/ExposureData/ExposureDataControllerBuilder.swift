@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-enum ExposureDataError: Error {
+enum ExposureDataError: Error, Equatable {
     case networkUnreachable
     case serverError
     case internalError
@@ -18,6 +18,7 @@ enum ExposureDataError: Error {
 
 /// @mockable
 protocol ExposureDataControlling {
+
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>

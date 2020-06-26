@@ -20,6 +20,9 @@ protocol AppEntryPoint {
     /// Starts the application. Start should be called once
     /// the `SceneDelegate`'s `sceneDidBecomeActive` method is called.
     func start()
+
+    /// Should be called when the app did enter the foreground
+    func didEnterForeground()
 }
 
 /// Provides all dependencies to build the RootRouter

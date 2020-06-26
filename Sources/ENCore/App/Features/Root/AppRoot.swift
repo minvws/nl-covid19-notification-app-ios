@@ -34,4 +34,9 @@ import UIKit
     public func receiveRemoteNotification(response: UNNotificationResponse) {
         appEntryPoint?.mutablePushNotificationStream.update(response: response)
     }
+
+    @objc
+    public func didEnterForeground() {
+        appEntryPoint?.didEnterForeground()
+    }
 }

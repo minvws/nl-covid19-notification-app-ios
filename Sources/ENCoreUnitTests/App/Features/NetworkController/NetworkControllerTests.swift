@@ -37,16 +37,22 @@ final class NetworkControllerTests: TestCase {
         var receivedValue: LabConfirmationKey!
         var receivedCompletion: Subscribers.Completion<NetworkError>!
 
+        let exp = expectation(description: "wait")
+
         networkController
             .requestLabConfirmationKey()
             .sink(
                 receiveCompletion: { completion in
                     receivedCompletion = completion
+
+                    exp.fulfill()
                 },
                 receiveValue: { value in
                     receivedValue = value
             })
             .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssertNotNil(receivedValue)
         XCTAssertEqual(receivedValue.identifier, "test")
@@ -68,16 +74,22 @@ final class NetworkControllerTests: TestCase {
         var receivedValue: LabConfirmationKey!
         var receivedCompletion: Subscribers.Completion<NetworkError>!
 
+        let exp = expectation(description: "wait")
+
         networkController
             .requestLabConfirmationKey()
             .sink(
                 receiveCompletion: { completion in
                     receivedCompletion = completion
+
+                    exp.fulfill()
                 },
                 receiveValue: { value in
                     receivedValue = value
             })
             .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssertNil(receivedValue)
 
