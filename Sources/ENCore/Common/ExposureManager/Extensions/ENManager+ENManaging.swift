@@ -46,21 +46,17 @@ extension ExposureConfiguration {
 }
 
 private class DefaultExposureConfiguration: ENExposureConfiguration {
-    // only available on Xcode 11.5+
-//    override var attenuationDurationThresholds: [NSNumber] {
-//        return exposureConfiguration.attenuationDurationThresholds.map { NSNumber(value: $0) }
-//    }
-
     init(exposureConfiguration: ExposureConfiguration) {
         self.exposureConfiguration = exposureConfiguration
 
         super.init()
 
         self.minimumRiskScore = exposureConfiguration.minimumRiskScope
-        self.attenuationLevelValues = exposureConfiguration.attenuationLevelValues.map { NSNumber(value: $0) }
-        self.daysSinceLastExposureLevelValues = exposureConfiguration.daysSinceLastExposureLevelValues.map { NSNumber(value: $0) }
-        self.durationLevelValues = exposureConfiguration.durationLevelValues.map { NSNumber(value: $0) }
-        self.transmissionRiskLevelValues = exposureConfiguration.transmissionRiskLevelValues.map { NSNumber(value: $0) }
+        self.attenuationLevelValues = exposureConfiguration.attenuationLevelValues as [NSNumber]
+        self.daysSinceLastExposureLevelValues = exposureConfiguration.daysSinceLastExposureLevelValues as [NSNumber]
+        self.durationLevelValues = exposureConfiguration.durationLevelValues as [NSNumber]
+        self.transmissionRiskLevelValues = exposureConfiguration.transmissionRiskLevelValues as [NSNumber]
+        self.metadata = ["attenuationDurationThresholds": exposureConfiguration.attenuationDurationThresholds]
     }
 
     // MARK: - Private

@@ -12,10 +12,10 @@ struct ExposureRiskConfiguration: Codable, ExposureConfiguration {
     let identifier: String
 
     let minimumRiskScope: UInt8
-    let attenuationLevelValues: [Int]
-    let daysSinceLastExposureLevelValues: [Int]
-    let durationLevelValues: [Int]
-    let transmissionRiskLevelValues: [Int]
+    let attenuationLevelValues: [UInt8]
+    let daysSinceLastExposureLevelValues: [UInt8]
+    let durationLevelValues: [UInt8]
+    let transmissionRiskLevelValues: [UInt8]
     let attenuationDurationThresholds: [Int]
 }
 
