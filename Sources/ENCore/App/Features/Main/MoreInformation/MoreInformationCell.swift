@@ -40,6 +40,10 @@ final class MoreInformationCell: UIControl, Themeable {
         self.subtitleLabel = Label()
         super.init(frame: .zero)
 
+        self.isAccessibilityElement = true
+        self.accessibilityTraits = .button
+        self.accessibilityLabel = "\(data.title). \(data.subtitle)"
+
         build()
         setupConstraints()
 
