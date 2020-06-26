@@ -247,13 +247,11 @@ final class NetworkManager: NetworkManaging {
 
         var request = request
 
-        var storageKey: CodableStorageKey<String>?
-        // check local storage if etag for url is present
-        if let hash = request.url?.absoluteString.hashValue {
-            storageKey = CodableStorageKey<String>(name: "\(hash)", storeType: .insecure(volatile: false, maximumAge: nil))
-            if let key = storageKey, let etag = self.storageController.retrieveObject(identifiedBy: key) {
-                request.addValue(etag, forHTTPHeaderField: "If-None-Match")
-            }
+        var etagStore = self.storageController.retrieveObject(identifiedBy: ETagStore.key) ?? ETagStore()
+
+        if let url = request.url?.absoluteString,
+            let etag = etagStore.etags[url] {
+            request.addValue(etag, forHTTPHeaderField: "If-None-Match")
         }
 
         session.downloadTask(with: request) { localUrl, response, error in
@@ -264,12 +262,13 @@ final class NetworkManager: NetworkManaging {
             }
 
             let etag = httpUrlResponse.allHeaderFields["Etag"] as? String
-            if let storageKey = storageKey, let etag = etag {
-                self.storageController.store(object: etag, identifiedBy: storageKey) { error in
-                    if error != nil {
-                        self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
-                        return
-                    }
+            if let etag = etag,
+                let url = request.url?.absoluteString {
+                // store etag
+                etagStore.etags[url] = etag
+                self.storageController.store(object: etagStore, identifiedBy: ETagStore.key) { error in
+                    self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
+                    return
                 }
             }
             self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
