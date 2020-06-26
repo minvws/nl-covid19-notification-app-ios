@@ -241,7 +241,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     private func changeNetworkConfiguration() {
-        let configurations: [NetworkConfiguration] = [.development, .production]
+        let configurations: [NetworkConfiguration] = [.development, .acceptance, .production]
 
         let actionItems = configurations.map { (configuration) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
@@ -250,6 +250,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 self?.removeAllExposureKeySets()
                 self?.removeStoredConfirmationKey()
                 self?.removeLastUploadedRollingStartNumber()
+                self?.storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
+                self?.storageController.removeData(for: ExposureDataStorageKey.appConfiguration, completion: { _ in })
+                self?.storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
 
                 self?.exposureController.refreshStatus()
 

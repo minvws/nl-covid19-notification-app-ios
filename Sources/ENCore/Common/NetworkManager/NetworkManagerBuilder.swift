@@ -49,6 +49,18 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
     lazy var responseHandlerProvider: NetworkResponseHandlerProvider = {
         return NetworkResponseHandlerProviderBuilder().build()
     }()
+
+    var session: URLSession {
+        let configuration = URLSessionConfiguration.default
+
+        return URLSession(configuration: configuration,
+                          delegate: sessionDelegate,
+                          delegateQueue: OperationQueue.main)
+    }
+
+    var sessionDelegate: URLSessionDelegate? {
+        return NetworkManagerURLSessionDelegate(configurationProvider: dependency.networkConfigurationProvider)
+    }
 }
 
 final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkManagerBuildable {
@@ -58,6 +70,8 @@ final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkMan
 
         return NetworkManager(configurationProvider: dependencyProvider.dependency.networkConfigurationProvider,
                               responseHandlerProvider: dependencyProvider.responseHandlerProvider,
-                              storageController: dependencyProvider.dependency.storageController)
+                              storageController: dependencyProvider.dependency.storageController,
+                              session: dependencyProvider.session,
+                              sessionDelegate: dependencyProvider.sessionDelegate)
     }
 }

@@ -8,63 +8,115 @@
 import Foundation
 
 struct NetworkConfiguration {
+    struct EndpointConfiguration {
+        let scheme: String
+        let host: String
+        let port: Int?
+        let path: [String]
+        let certificate: Certificate? // SSL pinning certificate, nil = no pinning
+    }
 
     let name: String
-    let scheme: String
-    let host: String
-    let port: Int?
-    let path: [String]
+    let api: EndpointConfiguration
+    let cdn: EndpointConfiguration
+
+    func certificate(forHost host: String) -> Certificate? {
+        if api.host == host { return api.certificate }
+        if cdn.host == host { return cdn.certificate }
+
+        return nil
+    }
 
     static let development = NetworkConfiguration(
         name: "Development",
-        scheme: "http",
-        host: "localhost",
-        port: 5004,
-        path: []
+        api: .init(
+            scheme: "http",
+            host: "localhost",
+            port: 5004,
+            path: ["v1"],
+            certificate: nil
+        ),
+        cdn: .init(
+            scheme: "http",
+            host: "localhost",
+            port: 5004,
+            path: ["v1"],
+            certificate: nil
+        )
+    )
+
+    static let acceptance = NetworkConfiguration(
+        name: "ACC",
+        api: .init(
+            scheme: "https",
+            host: "mss-standalone-acc.azurewebsites.net",
+            port: nil,
+            path: ["v1"],
+            certificate: nil
+        ),
+        cdn: .init(
+            scheme: "https",
+            host: "mss-standalone-acc.azurewebsites.net",
+            port: nil,
+            path: ["v1"],
+            certificate: nil
+        )
     )
 
     static let production = NetworkConfiguration(
         name: "Production",
-        scheme: "https",
-        host: "mss-standalone-acc.azurewebsites.net",
-        port: nil,
-        path: []
+        api: .init(
+            scheme: "https",
+            host: "notknown",
+            port: nil,
+            path: [],
+            certificate: nil
+        ),
+        cdn: .init(
+            scheme: "https",
+            host: "notknown",
+            port: nil,
+            path: [],
+            certificate: nil
+        )
     )
 
     var manifestUrl: URL? {
-        return self.combine(path: Endpoint.manifest)
+        return self.combine(path: Endpoint.manifest, fromCdn: true)
     }
 
     func exposureKeySetUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.exposureKeySet(identifier: identifier))
+        return self.combine(path: Endpoint.exposureKeySet(identifier: identifier), fromCdn: true)
     }
 
     func riskCalculationParametersUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.riskCalculationParameters(identifier: identifier))
+        return self.combine(path: Endpoint.riskCalculationParameters(identifier: identifier), fromCdn: true)
     }
 
     func appConfigUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.appConfig(identifier: identifier))
+        return self.combine(path: Endpoint.appConfig(identifier: identifier), fromCdn: true)
     }
 
     var registerUrl: URL? {
-        return self.combine(path: Endpoint.register)
+        return self.combine(path: Endpoint.register, fromCdn: false)
     }
 
     func postKeysUrl(signature: String) -> URL? {
-        return self.combine(path: Endpoint.postKeys, params: ["sig": signature])
+        return self.combine(path: Endpoint.postKeys, fromCdn: false, params: ["sig": signature])
     }
 
     var stopKeysUrl: URL? {
-        return self.combine(path: Endpoint.stopKeys)
+        return self.combine(path: Endpoint.stopKeys, fromCdn: false)
     }
 
-    private func combine(path: Path, params: [String: String] = [:]) -> URL? {
+    private func combine(path: Path, fromCdn: Bool, params: [String: String] = [:]) -> URL? {
+        let config = fromCdn ? cdn : api
+
         var urlComponents = URLComponents()
-        urlComponents.scheme = scheme
-        urlComponents.host = host
-        urlComponents.port = port
-        urlComponents.path = "/" + (self.path + path.components).joined(separator: "/")
+        urlComponents.scheme = config.scheme
+        urlComponents.host = config.host
+        urlComponents.port = config.port
+        urlComponents.path = "/" + (config.path + path.components).joined(separator: "/")
 
         if params.count > 0 {
             urlComponents.percentEncodedQueryItems = params.compactMap { parameter in

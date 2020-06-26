@@ -13,11 +13,13 @@ final class NetworkManager: NetworkManaging {
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          storageController: StorageControlling,
-         urlSession: URLSession = URLSession.shared) {
+         session: URLSession,
+         sessionDelegate: URLSessionDelegate?) {
         self.configurationProvider = configurationProvider
-        self.session = urlSession
         self.responseHandlerProvider = responseHandlerProvider
         self.storageController = storageController
+        self.session = session
+        self.sessionDelegate = sessionDelegate
     }
 
     // MARK: CDN
@@ -428,6 +430,7 @@ final class NetworkManager: NetworkManaging {
 
     private let configurationProvider: NetworkConfigurationProvider
     private let session: URLSession
+    private let sessionDelegate: URLSessionDelegate? // hold on to delegate to prevent deallocation
     private let responseHandlerProvider: NetworkResponseHandlerProvider
     private let storageController: StorageControlling
 
