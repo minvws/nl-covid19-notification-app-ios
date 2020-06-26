@@ -10,11 +10,8 @@ import Foundation
 import XCTest
 
 final class StoreControllerTests: XCTestCase {
-    private var controller: StorageController = StorageController()
 
     override class func setUp() {
         super.setUp()
-
-//        controller = StorageController()
     }
 }
