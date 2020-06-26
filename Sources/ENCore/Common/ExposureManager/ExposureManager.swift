@@ -112,17 +112,17 @@ final class ExposureManager: ExposureManaging {
 
     func getExposureInfo(summary: ExposureDetectionSummary,
                          userExplanation: String,
-                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) -> Progress {
+                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) {
         #if DEBUG
             assert(Thread.isMainThread)
         #endif
 
         guard let summary = summary as? ENExposureDetectionSummary else {
             completionHandler(nil, .internalTypeMismatch)
-            return Progress()
+            return
         }
 
-        return manager.getExposureInfo(summary: summary, userExplanation: userExplanation) { (info: [ENExposureInfo]?, error: Error?) in
+        _ = manager.getExposureInfo(summary: summary, userExplanation: userExplanation) { (info: [ENExposureInfo]?, error: Error?) in
             completionHandler(info, error.map { $0.asExposureManagerError })
         }
     }

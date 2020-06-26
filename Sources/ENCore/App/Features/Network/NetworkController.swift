@@ -113,8 +113,6 @@ final class NetworkController: NetworkControlling {
                     .signature(forData: requestData, key: labConfirmationKey.confirmationKey)
                     .base64EncodedString()
 
-                print(signature)
-
                 let completion: (NetworkError?) -> () = { error in
                     if let error = error {
                         promise(.failure(error))

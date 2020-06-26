@@ -9,10 +9,16 @@ import Combine
 import Foundation
 import UIKit
 
-private struct ExposureDetectionResult {
+private struct ExposureKeySetDetectionResult {
     let keySetHolder: ExposureKeySetHolder
     let exposureSummary: ExposureDetectionSummary?
     let processedCorrectly: Bool
+    let exposureReport: ExposureReport?
+}
+
+private struct ExposureDetectionResult {
+    let keySetDetectionResults: [ExposureKeySetDetectionResult]
+    let exposureSummary: ExposureDetectionSummary?
 }
 
 struct ExposureReport: Codable {
@@ -33,6 +39,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
+        // get all keySets that have not been processed before
         let exposureKeySets = getStoredKeySetsHolders()
             .filter { $0.processed == false }
 
@@ -43,19 +50,25 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         }
 
         // Combine all streams into an array of streams
-        return Publishers.Sequence<[AnyPublisher<ExposureDetectionResult, ExposureDataError>], ExposureDataError>(sequence: exposures)
-            // execute a single exposure at the same time
+        return Publishers.Sequence<[AnyPublisher<ExposureKeySetDetectionResult, ExposureDataError>], ExposureDataError>(sequence: exposures)
+            // execute them one by one
             .flatMap(maxPublishers: .max(1)) { $0 }
             // wait until all of them are done and collect them in an array again
             .collect()
-            // persist exposure results
-            .flatMap(persistResults(_:))
-            // remove correctly processed sig/bin files from disk
-            .handleEvents(receiveOutput: removeBlobs(forSuccessfulExposureResults:))
-            // convert into exposure report and trigger a location notification
-            .flatMap(convertResultsIntoExposureReportAndTriggerNotification(results:))
-            // persist exposure report
-            .flatMap(persist(exposureReport:))
+            // batch detect the correctly processed results to get a single exposureSummary
+            .flatMap(self.batchDetectExposures(for:))
+            // persist keySetHolders in local storage to remember which ones have been processed correctly
+            .flatMap(self.persistResult(_:))
+            // create an exposureReport and trigger a local notification
+            .flatMap(self.createReportAndTriggerNotification(forResult:))
+            // remove all blobs for all keySetHolders - successful ones are processed and
+            // should not be processed again. Failed ones should be downloaded again and
+            // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
+            .handleEvents(receiveOutput: removeBlobs(forResult:))
+            // remove the exposureDetectionResult and return only the ExposureReport
+            .map { value in value.1 }
+            // persist the ExposureReport
+            .flatMap(self.persist(exposureReport:))
             // update last processing date
             .flatMap { _ in self.updateLastProcessingDate() }
             .eraseToAnyPublisher()
@@ -63,10 +76,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
 
     // MARK: - Private
 
+    /// Retrieves all stores keySetHolders from local storage
     private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
     }
 
+    /// Verifies whether the KeySetHolder URLs point to valid files
     private func verifyLocalFileUrl(forKeySetsHolder keySetHolder: ExposureKeySetHolder) -> Bool {
         var isDirectory = ObjCBool(booleanLiteral: false)
 
@@ -82,18 +97,55 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         return true
     }
 
-    /// Returns ExposureDetectionResult in case of a success, or in case of an error that's
+    /// Batch processes the previous results to result in a single exposure summary.
+    /// Will filter out unsuccessfully processed results before batch processing them
+    private func batchDetectExposures(for previousResults: [ExposureKeySetDetectionResult]) -> AnyPublisher<ExposureDetectionResult, ExposureDataError> {
+        return Deferred {
+            return Future { promise in
+                // combine all urls into a single collection
+                let urls = previousResults
+                    .filter { result in result.processedCorrectly }
+                    .flatMap { result in [result.keySetHolder.signatureFileUrl, result.keySetHolder.binaryFileUrl] }
+
+                // detect exposures
+                self.exposureManager.detectExposures(configuration: self.configuration,
+                                                     diagnosisKeyURLs: urls) { result in
+                    switch result {
+                    case let .success(summary):
+                        let result = ExposureDetectionResult(keySetDetectionResults: previousResults,
+                                                             exposureSummary: summary)
+                        promise(.success(result))
+                    case let .failure(error):
+                        switch error {
+                        case .bluetoothOff, .disabled, .notAuthorized, .restricted:
+                            promise(.failure(error.asExposureDataError))
+                        case .internalTypeMismatch:
+                            promise(.failure(.internalError))
+                        default:
+                            let result = ExposureDetectionResult(keySetDetectionResults: previousResults,
+                                                                 exposureSummary: nil)
+                            promise(.success(result))
+                        }
+                    }
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    /// Returns ExposureKeySetDetectionResult in case of a success, or in case of an error that's
     /// not related to the framework's inactiveness. When an error is thrown from here exposure detection
     /// should be stopped until the user enables the framework
-    private func detectExposures(for keySetHolder: ExposureKeySetHolder) -> AnyPublisher<ExposureDetectionResult, ExposureDataError> {
+    private func detectExposures(for keySetHolder: ExposureKeySetHolder) -> AnyPublisher<ExposureKeySetDetectionResult, ExposureDataError> {
         return Deferred {
             Future { promise in
                 if self.verifyLocalFileUrl(forKeySetsHolder: keySetHolder) == false {
-                    // mark it as processed incorrectly to remove it from disk - will be downloaded again
+                    // mark it as processed incorrectly - will be downloaded again
                     // next time
-                    let result = ExposureDetectionResult(keySetHolder: keySetHolder,
-                                                         exposureSummary: nil,
-                                                         processedCorrectly: false)
+                    let result = ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
+                                                               exposureSummary: nil,
+                                                               processedCorrectly: false,
+                                                               exposureReport: nil)
                     promise(.success(result))
                     return
                 }
@@ -104,9 +156,10 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                                                      diagnosisKeyURLs: diagnosisKeyURLs) { result in
                     switch result {
                     case let .success(summary):
-                        promise(.success(ExposureDetectionResult(keySetHolder: keySetHolder,
-                                                                 exposureSummary: summary,
-                                                                 processedCorrectly: true)))
+                        promise(.success(ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
+                                                                       exposureSummary: summary,
+                                                                       processedCorrectly: true,
+                                                                       exposureReport: nil)))
                     case let .failure(error):
                         switch error {
                         case .bluetoothOff, .disabled, .notAuthorized, .restricted:
@@ -114,9 +167,10 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                         case .internalTypeMismatch:
                             promise(.failure(.internalError))
                         default:
-                            promise(.success(ExposureDetectionResult(keySetHolder: keySetHolder,
-                                                                     exposureSummary: nil,
-                                                                     processedCorrectly: false)))
+                            promise(.success(ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
+                                                                           exposureSummary: nil,
+                                                                           processedCorrectly: false,
+                                                                           exposureReport: nil)))
                         }
                     }
                 }
@@ -125,11 +179,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         .eraseToAnyPublisher()
     }
 
-    private func persistResults(_ results: [ExposureDetectionResult]) -> AnyPublisher<[ExposureDetectionResult], ExposureDataError> {
+    /// Updates the local keySetHolder storage with the latest results
+    private func persistResult(_ result: ExposureDetectionResult) -> AnyPublisher<ExposureDetectionResult, ExposureDataError> {
         return Deferred {
             Future { promise in
-                let selectResult: (ExposureKeySetHolder) -> ExposureDetectionResult? = { holder in
-                    return results.first { result in result.keySetHolder.identifier == holder.identifier }
+                let selectKeySetDetectionResult: (ExposureKeySetHolder) -> ExposureKeySetDetectionResult? = { keySetHolder in
+                    // find result that belongs to the keySetHolder
+                    result.keySetDetectionResults.first { result in result.keySetHolder.identifier == keySetHolder.identifier }
                 }
 
                 self.storageController.requestExclusiveAccess { storageController in
@@ -137,7 +193,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                     var keySetHolders: [ExposureKeySetHolder] = []
 
                     storedKeySetHolders.forEach { keySetHolder in
-                        guard let result = selectResult(keySetHolder) else {
+                        guard let result = selectKeySetDetectionResult(keySetHolder) else {
                             // no result for this one, just append and process it next time
                             keySetHolders.append(keySetHolder)
                             return
@@ -156,7 +212,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
 
                     storageController.store(object: keySetHolders,
                                             identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
-                        promise(.success(results))
+                        promise(.success(result))
                     }
                 }
             }
@@ -164,18 +220,21 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         .eraseToAnyPublisher()
     }
 
-    private func removeBlobs(forSuccessfulExposureResults exposureResults: [ExposureDetectionResult]) {
-        exposureResults
-            .filter { $0.processedCorrectly }
-            .forEach { result in
-                try? FileManager.default.removeItem(at: result.keySetHolder.signatureFileUrl)
-                try? FileManager.default.removeItem(at: result.keySetHolder.binaryFileUrl)
-            }
+    /// Removes binary files for the keySetHolders of the exposureDetectionResult
+    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?)) {
+        let keySetHolders = exposureResult.0.keySetDetectionResults.map { $0.keySetHolder }
+
+        keySetHolders.forEach { keySetHolder in
+            try? FileManager.default.removeItem(at: keySetHolder.signatureFileUrl)
+            try? FileManager.default.removeItem(at: keySetHolder.binaryFileUrl)
+        }
     }
 
-    private func selectLastSummaryFrom(results: [ExposureDetectionResult]) -> ExposureDetectionSummary? {
+    /// Select a most recent exposure summary
+    private func selectLastSummaryFrom(result: ExposureDetectionResult) -> ExposureDetectionSummary? {
         // filter out unprocessed results
-        let summaries = results
+        let summaries = result
+            .keySetDetectionResults
             .filter { $0.processedCorrectly }
             .compactMap { $0.exposureSummary }
             .filter { $0.daysSinceLastExposure > 0 }
@@ -195,15 +254,22 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
             .first
     }
 
-    private func convertResultsIntoExposureReportAndTriggerNotification(results: [ExposureDetectionResult]) -> AnyPublisher<ExposureReport?, ExposureDataError> {
+    /// Creates the final ExposureReport and triggers a local notification.
+    /// If no push notification permission is given the EN framework is used to trigger a local notification.
+    /// If push notification permission is given a local notification is scheduled
+    private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
 
+        // figure out whether push notification permission was given
         hasAccessToShowLocalNotification
             .setFailureType(to: ExposureDataError.self)
-            .flatMap { (hasAccessToShowLocalNotification: Bool) -> AnyPublisher<ExposureReport?, ExposureDataError> in
+            .flatMap { (hasAccessToShowLocalNotification: Bool) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> in
                 if hasAccessToShowLocalNotification {
+                    // user has given permission for push notifications
                     // no need to call API to get ExposureInformations, show local notification and move on
-                    guard let latestSummary = self.selectLastSummaryFrom(results: results) else {
-                        return Just(nil)
+
+                    // select a most recent summary
+                    guard let latestSummary = self.selectLastSummaryFrom(result: result) else {
+                        return Just((result, nil))
                             .setFailureType(to: ExposureDataError.self)
                             .eraseToAnyPublisher()
                     }
@@ -211,7 +277,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                     // calculate exposure date
                     let calendar = Calendar(identifier: .gregorian)
                     guard let exposureDate = calendar.date(byAdding: .day, value: -latestSummary.daysSinceLastExposure, to: Date()) else {
-                        return Just(nil)
+                        return Just((result, nil))
                             .setFailureType(to: ExposureDataError.self)
                             .eraseToAnyPublisher()
                     }
@@ -221,46 +287,46 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                     // show notification
                     self.showLocalPushNotification(for: exposureReport)
 
-                    return Just(exposureReport)
+                    return Just((result, exposureReport))
                         .setFailureType(to: ExposureDataError.self)
                         .eraseToAnyPublisher()
                 }
 
-                // no access to local notifications, call the framework to show a notification
-                let summaries = results
-                    .map { $0.exposureSummary }
-                    .compactMap { $0 }
-                    .filter { $0.daysSinceLastExposure > 0 }
+                // no access to local notifications, call the framework to show a notification using
+                // the overall exposureSummary
+                guard let summary = result.exposureSummary else {
+                    return Just((result, nil))
+                        .setFailureType(to: ExposureDataError.self)
+                        .eraseToAnyPublisher()
+                }
 
                 return self
-                    .getExposureInformations(forSummaries: summaries,
+                    .getExposureInformations(forSummary: summary,
                                              userExplanation: Localization.string(for: "exposure.notification.userExplanation"))
-                    .map { (exposureInformation) -> ExposureReport? in
-                        guard let exposureInformation = exposureInformation else {
-                            return nil
+                    .map { (exposureInformations) -> (ExposureDetectionResult, ExposureReport?) in
+                        // get most recent exposureInformation
+                        guard let exposureInformation = self.getLastExposureInformation(for: exposureInformations) else {
+                            return (result, nil)
                         }
 
-                        return ExposureReport(date: exposureInformation.date,
-                                              duration: exposureInformation.duration)
+                        let exposureReport = ExposureReport(date: exposureInformation.date,
+                                                            duration: exposureInformation.duration)
+
+                        return (result, exposureReport)
                     }
                     .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }
 
-    private func getExposureInformations(forSummaries summaries: [ExposureDetectionSummary], userExplanation: String) -> AnyPublisher<ExposureInformation?, ExposureDataError> {
-        let exposureChecks = summaries.map { summary in
-            self.getExposureInformations(forSummary: summary, userExplanation: userExplanation)
+    /// Asks the EN framework for more information about the exposure summary which
+    /// triggers a local notification if the exposure was risky enough (according to the configuration and
+    /// the rules of the EN framework)
+    private func getExposureInformations(forSummary summary: ExposureDetectionSummary?, userExplanation: String) -> AnyPublisher<[ExposureInformation]?, ExposureDataError> {
+        guard let summary = summary else {
+            return Just(nil).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        return Publishers.Sequence<[AnyPublisher<[ExposureInformation]?, ExposureDataError>], ExposureDataError>(sequence: exposureChecks)
-            .flatMap(maxPublishers: .max(1)) { $0 }
-            .first { exposureInformations in (exposureInformations?.isEmpty ?? true) == false }
-            .map(self.getLastExposureInformation(for:))
-            .eraseToAnyPublisher()
-    }
-
-    private func getExposureInformations(forSummary summary: ExposureDetectionSummary, userExplanation: String) -> AnyPublisher<[ExposureInformation]?, ExposureDataError> {
         return Deferred {
             Future<[ExposureInformation]?, ExposureDataError> { promise in
                 self.exposureManager
@@ -271,17 +337,15 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                             return
                         }
 
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            promise(.success(infos))
-                        }
+                        promise(.success(infos))
                     }
-                    .resume()
             }
             .subscribe(on: DispatchQueue.main)
         }
         .eraseToAnyPublisher()
     }
 
+    /// Returns the exposureInformation with the most recent date
     private func getLastExposureInformation(for informations: [ExposureInformation]?) -> ExposureInformation? {
         guard let informations = informations else { return nil }
 
@@ -292,6 +356,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         return informations.sorted(by: isNewer).last
     }
 
+    /// Stores the exposureReport in local storage (which triggers the 'notified' state)
     private func persist(exposureReport: ExposureReport?) -> AnyPublisher<(), ExposureDataError> {
         return Deferred {
             Future { promise in
@@ -319,6 +384,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         .eraseToAnyPublisher()
     }
 
+    /// Updates the date when this operation has last run
     private func updateLastProcessingDate() -> AnyPublisher<(), ExposureDataError> {
         return Deferred {
             Future { promise in
@@ -342,6 +408,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         .eraseToAnyPublisher()
     }
 
+    /// Returns whether a user has given permission to trigger push notifications
     private var hasAccessToShowLocalNotification: AnyPublisher<Bool, Never> {
         return Future { promise in
             UNUserNotificationCenter.current().getNotificationSettings { settings in
@@ -352,27 +419,28 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         .eraseToAnyPublisher()
     }
 
+    /// Schedules a local notification for the given exposureReport
     private func showLocalPushNotification(for exposureReport: ExposureReport) {
-//        let content = UNMutableNotificationContent()
-//        content.title = "Local Notification"
-//        content.body = "The body of the message which was scheduled from the Developer Menu"
-//        content.sound = UNNotificationSound.default
-//        content.badge = 0
-//
-//        let date = Date(timeIntervalSinceNow: 5)
-//        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-//        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-//
-//        let identifier = "Local Notification"
-//        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-//
-//        let unc = UNUserNotificationCenter.current()
-//        unc.add(request) { error in
-//            if let error = error {
-//                print("🔥 Error \(error.localizedDescription)")
-//            }
-//        }
-//        hide()
+        // TODO: Implement properly
+        let content = UNMutableNotificationContent()
+        content.title = "Local Notification"
+        content.body = "The body of the message which was scheduled from the Developer Menu"
+        content.sound = UNNotificationSound.default
+        content.badge = 0
+
+        let date = Date(timeIntervalSinceNow: 1)
+        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+
+        let identifier = "Local Notification"
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+
+        let unc = UNUserNotificationCenter.current()
+        unc.add(request) { error in
+            if let error = error {
+                print("🔥 Error \(error.localizedDescription)")
+            }
+        }
     }
 
     private let networkController: NetworkControlling

@@ -62,7 +62,7 @@ protocol ExposureManaging {
 
     func getExposureInfo(summary: ExposureDetectionSummary,
                          userExplanation: String,
-                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) -> Progress
+                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ())
 }
 
 /// @mockable
