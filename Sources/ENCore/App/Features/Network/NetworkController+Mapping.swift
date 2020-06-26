@@ -53,7 +53,7 @@ extension AppConfig {
 extension RiskCalculationParameters {
     func asExposureRiskConfiguration(identifier: String) -> ExposureRiskConfiguration {
         return ExposureRiskConfiguration(identifier: identifier,
-                                         minimumRiskScope: UInt8(minimumRiskScore),
+                                         minimumRiskScope: minimumRiskScore,
                                          attenuationLevelValues: attenuationScores,
                                          daysSinceLastExposureLevelValues: daysSinceLastExposureScores,
                                          durationLevelValues: durationScores,

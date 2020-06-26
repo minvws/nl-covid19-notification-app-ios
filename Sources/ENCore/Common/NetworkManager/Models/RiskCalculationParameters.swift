@@ -6,10 +6,10 @@
  */
 
 struct RiskCalculationParameters: Codable {
-    let minimumRiskScore: Int
-    let attenuationScores: [Int]
-    let daysSinceLastExposureScores: [Int]
-    let durationScores: [Int]
-    let transmissionRiskScores: [Int]
+    let minimumRiskScore: UInt8
+    let attenuationScores: [UInt8]
+    let daysSinceLastExposureScores: [UInt8]
+    let durationScores: [UInt8]
+    let transmissionRiskScores: [UInt8]
     let durationAtAttenuationThresholds: [Int]
 }
