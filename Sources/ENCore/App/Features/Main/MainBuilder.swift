@@ -59,7 +59,8 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
     func build() -> Routing {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
-                                                exposureController: dependencyProvider.exposureController)
+                                                exposureController: dependencyProvider.exposureController,
+                                                exposureStateStream: dependencyProvider.exposureStateStream)
 
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,

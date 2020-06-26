@@ -31,8 +31,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     // MARK: - Init
 
-    init(theme: Theme, exposureController: ExposureControlling) {
+    init(theme: Theme,
+         exposureController: ExposureControlling,
+         exposureStateStream: ExposureStateStreaming) {
         self.exposureController = exposureController
+        self.exposureStateStream = exposureStateStream
         super.init(theme: theme)
     }
 
@@ -141,15 +144,21 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             router?.routeToReceivedNotification()
         case .removeNotification:
             confirmNotificationRemoval()
-        case .turnOnApp:
-            print("handle \(action)")
+        case .updateAppSettings:
+            handleUpdateAppSettings()
         }
     }
 
     // MARK: - Private
 
+    private enum Settings: String {
+        case airplaneMode = "AIRPLANE_MODE"
+        case bluetooth = "Bluetooth"
+    }
+
     private lazy var mainView: MainView = MainView(theme: self.theme)
     private let exposureController: ExposureControlling
+    private let exposureStateStream: ExposureStateStreaming
 
     private func confirmNotificationRemoval() {
         let alertController = UIAlertController(title: Localization.string(for: "main.confirmNotificationRemoval.title"),
@@ -162,6 +171,44 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             self?.exposureController.confirmExposureNotification()
         })
         present(alertController, animated: true, completion: nil)
+    }
+
+    private func handleUpdateAppSettings() {
+        guard let exposureState = exposureStateStream.currentExposureState else {
+            return print("🔥 Exposure State is `nil`")
+        }
+        guard case let .inactive(reason) = exposureState.activeState else {
+            return print("🔥 Exposure State not handled")
+        }
+
+        switch reason {
+        case .airplaneMode:
+            openSettings(with: .airplaneMode)
+        case .bluetoothOff:
+            openSettings(with: .bluetooth)
+        case .disabled:
+            openAppSettings()
+        case .noRecentNotificationUpdates:
+            print("🔥 Not implemented")
+        case .paused:
+            print("🔥 Not implemented")
+        case .requiresOSUpdate:
+            print("🔥 Not implemented")
+        }
+    }
+
+    private func openAppSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else {
+            return print("🔥 Settings URL string problem")
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+
+    private func openSettings(with scheme: Settings) {
+        guard let url = URL(string: "App-prefs:root=\(scheme.rawValue)") else {
+            return print("🔥 Settings URL string problem: \(scheme.rawValue)")
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
 

@@ -25,7 +25,7 @@ struct StatusViewButtonModel {
     enum Action {
         case explainRisk
         case removeNotification
-        case turnOnApp
+        case updateAppSettings
     }
 
     static let moreInfo = StatusViewButtonModel(
@@ -43,7 +43,7 @@ struct StatusViewButtonModel {
     static let enableSettings = StatusViewButtonModel(
         title: "Instellingen aanzetten",
         style: .primary,
-        action: .turnOnApp
+        action: .updateAppSettings
     )
 }
 
@@ -60,7 +60,7 @@ struct StatusCardViewModel {
         button: StatusViewButtonModel(
             title: "Instellingen aanzetten",
             style: .primary,
-            action: .turnOnApp
+            action: .updateAppSettings
         )
     )
 }
