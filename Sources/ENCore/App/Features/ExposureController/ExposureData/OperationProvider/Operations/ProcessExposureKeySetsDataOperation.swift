@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import UIKit
 
 private struct ExposureDetectionResult {
     let keySetHolder: ExposureKeySetHolder
@@ -16,7 +17,7 @@ private struct ExposureDetectionResult {
 
 struct ExposureReport: Codable {
     let date: Date
-    let duration: TimeInterval
+    let duration: TimeInterval?
 }
 
 final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
@@ -51,14 +52,10 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
             .flatMap(persistResults(_:))
             // remove correctly processed sig/bin files from disk
             .handleEvents(receiveOutput: removeBlobs(forSuccessfulExposureResults:))
-            // select the right exposure result
-            .map(selectFrom(results:))
-            // show user notification and get info about the exposure
-            .flatMap { summary in
-                self.getExposureInformations(for: summary, userExplanation: Localization.string(for: "exposure.notification.userExplanation"))
-            }
+            // convert into exposure report and trigger a location notification
+            .flatMap(convertResultsIntoExposureReportAndTriggerNotification(results:))
             // persist exposure report
-            .flatMap(persist(exposure:))
+            .flatMap(persist(exposureReport:))
             // update last processing date
             .flatMap { _ in self.updateLastProcessingDate() }
             .eraseToAnyPublisher()
@@ -176,7 +173,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
             }
     }
 
-    private func selectFrom(results: [ExposureDetectionResult]) -> ExposureDetectionSummary? {
+    private func selectLastSummaryFrom(results: [ExposureDetectionResult]) -> ExposureDetectionSummary? {
         // filter out unprocessed results
         let summaries = results
             .filter { $0.processedCorrectly }
@@ -192,41 +189,102 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
             return nil
         }
 
-        // take only most recent exposures
-        let mostRecentSummaries = summaries.filter { $0.daysSinceLastExposure == mostRecentDaysSinceLastExposure }
-
-        // sort by maximum risk and return last
-        return mostRecentSummaries
-            .sorted(by: { $1.maximumRiskScore > $0.maximumRiskScore })
-            .last
+        // take only most recent exposures and select first (doesn't matter which one)
+        return summaries
+            .filter { $0.daysSinceLastExposure == mostRecentDaysSinceLastExposure }
+            .first
     }
 
-    private func getExposureInformations(for summary: ExposureDetectionSummary?, userExplanation: String) -> AnyPublisher<ExposureInformation?, ExposureDataError> {
-        return Deferred {
-            Future { promise in
-                guard let summary = summary else {
-                    promise(.success(nil))
-                    return
-                }
+    private func convertResultsIntoExposureReportAndTriggerNotification(results: [ExposureDetectionResult]) -> AnyPublisher<ExposureReport?, ExposureDataError> {
 
-                self.exposureManager.getExposureInfo(summary: summary,
-                                                     userExplanation: userExplanation)
-                { informations, error in
-                    if let error = error?.asExposureDataError {
-                        promise(.failure(error))
-                        return
+        hasAccessToShowLocalNotification
+            .setFailureType(to: ExposureDataError.self)
+            .flatMap { (hasAccessToShowLocalNotification: Bool) -> AnyPublisher<ExposureReport?, ExposureDataError> in
+                if hasAccessToShowLocalNotification {
+                    // no need to call API to get ExposureInformations, show local notification and move on
+                    guard let latestSummary = self.selectLastSummaryFrom(results: results) else {
+                        return Just(nil)
+                            .setFailureType(to: ExposureDataError.self)
+                            .eraseToAnyPublisher()
                     }
 
-                    let information = self.getLastExposureInformation(for: informations ?? [])
-                    promise(.success(information))
+                    // calculate exposure date
+                    let calendar = Calendar(identifier: .gregorian)
+                    guard let exposureDate = calendar.date(byAdding: .day, value: -latestSummary.daysSinceLastExposure, to: Date()) else {
+                        return Just(nil)
+                            .setFailureType(to: ExposureDataError.self)
+                            .eraseToAnyPublisher()
+                    }
+
+                    let exposureReport = ExposureReport(date: exposureDate, duration: nil)
+
+                    // show notification
+                    self.showLocalPushNotification(for: exposureReport)
+
+                    return Just(exposureReport)
+                        .setFailureType(to: ExposureDataError.self)
+                        .eraseToAnyPublisher()
                 }
-                .resume()
+
+                // no access to local notifications, call the framework to show a notification
+                let summaries = results
+                    .map { $0.exposureSummary }
+                    .compactMap { $0 }
+                    .filter { $0.daysSinceLastExposure > 0 }
+
+                return self
+                    .getExposureInformations(forSummaries: summaries,
+                                             userExplanation: Localization.string(for: "exposure.notification.userExplanation"))
+                    .map { (exposureInformation) -> ExposureReport? in
+                        guard let exposureInformation = exposureInformation else {
+                            return nil
+                        }
+
+                        return ExposureReport(date: exposureInformation.date,
+                                              duration: exposureInformation.duration)
+                    }
+                    .eraseToAnyPublisher()
             }
+            .eraseToAnyPublisher()
+    }
+
+    private func getExposureInformations(forSummaries summaries: [ExposureDetectionSummary], userExplanation: String) -> AnyPublisher<ExposureInformation?, ExposureDataError> {
+        let exposureChecks = summaries.map { summary in
+            self.getExposureInformations(forSummary: summary, userExplanation: userExplanation)
+        }
+
+        return Publishers.Sequence<[AnyPublisher<[ExposureInformation]?, ExposureDataError>], ExposureDataError>(sequence: exposureChecks)
+            .flatMap(maxPublishers: .max(1)) { $0 }
+            .first { exposureInformations in (exposureInformations?.isEmpty ?? true) == false }
+            .map(self.getLastExposureInformation(for:))
+            .eraseToAnyPublisher()
+    }
+
+    private func getExposureInformations(forSummary summary: ExposureDetectionSummary, userExplanation: String) -> AnyPublisher<[ExposureInformation]?, ExposureDataError> {
+        return Deferred {
+            Future<[ExposureInformation]?, ExposureDataError> { promise in
+                self.exposureManager
+                    .getExposureInfo(summary: summary,
+                                     userExplanation: userExplanation) { infos, error in
+                        if let error = error {
+                            promise(.failure(error.asExposureDataError))
+                            return
+                        }
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            promise(.success(infos))
+                        }
+                    }
+                    .resume()
+            }
+            .subscribe(on: DispatchQueue.main)
         }
         .eraseToAnyPublisher()
     }
 
-    private func getLastExposureInformation(for informations: [ExposureInformation]) -> ExposureInformation? {
+    private func getLastExposureInformation(for informations: [ExposureInformation]?) -> ExposureInformation? {
+        guard let informations = informations else { return nil }
+
         let isNewer: (ExposureInformation, ExposureInformation) -> Bool = { first, second in
             return second.date > first.date
         }
@@ -234,16 +292,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         return informations.sorted(by: isNewer).last
     }
 
-    private func persist(exposure: ExposureInformation?) -> AnyPublisher<(), ExposureDataError> {
+    private func persist(exposureReport: ExposureReport?) -> AnyPublisher<(), ExposureDataError> {
         return Deferred {
             Future { promise in
-                guard let exposure = exposure else {
+                guard let exposureReport = exposureReport else {
                     promise(.success(()))
                     return
                 }
-
-                let exposureReport = ExposureReport(date: exposure.date,
-                                                    duration: exposure.duration)
 
                 self.storageController.requestExclusiveAccess { storageController in
                     let lastExposureReport = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport)
@@ -285,6 +340,39 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
             }
         }
         .eraseToAnyPublisher()
+    }
+
+    private var hasAccessToShowLocalNotification: AnyPublisher<Bool, Never> {
+        return Future { promise in
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                promise(.success(settings.authorizationStatus == .authorized))
+            }
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
+
+    private func showLocalPushNotification(for exposureReport: ExposureReport) {
+//        let content = UNMutableNotificationContent()
+//        content.title = "Local Notification"
+//        content.body = "The body of the message which was scheduled from the Developer Menu"
+//        content.sound = UNNotificationSound.default
+//        content.badge = 0
+//
+//        let date = Date(timeIntervalSinceNow: 5)
+//        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+//        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+//
+//        let identifier = "Local Notification"
+//        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+//
+//        let unc = UNUserNotificationCenter.current()
+//        unc.add(request) { error in
+//            if let error = error {
+//                print("🔥 Error \(error.localizedDescription)")
+//            }
+//        }
+//        hide()
     }
 
     private let networkController: NetworkControlling
