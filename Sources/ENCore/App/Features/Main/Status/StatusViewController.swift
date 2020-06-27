@@ -69,18 +69,18 @@ final class StatusViewController: ViewController, StatusViewControllable {
             switch (status.activeState, status.notifiedState) {
             case (.active, .notNotified):
                 strongSelf.statusView.update(with: .activeWithNotNotified)
-            case (.active, .notified):
-                strongSelf.statusView.update(with: .activeWithNotified)
-            case (.inactive(_), .notified):
-                strongSelf.statusView.update(with: StatusViewModel.activeWithNotified.with(card: StatusCardViewModel.inactive))
+            case let (.active, .notified(date)):
+                strongSelf.statusView.update(with: .activeWithNotified(date: date))
+            case let (.inactive(_), .notified(date)):
+                strongSelf.statusView.update(with: StatusViewModel.activeWithNotified(date: date).with(card: StatusCardViewModel.inactive))
             case (.inactive(_), .notNotified):
                 strongSelf.statusView.update(with: .inactiveWithNotNotified)
-            case (.authorizationDenied, .notified(_)):
-                strongSelf.statusView.update(with: StatusViewModel.inactiveWithNotified.with(card: StatusCardViewModel.inactive))
+            case let (.authorizationDenied, .notified(date)):
+                strongSelf.statusView.update(with: StatusViewModel.inactiveWithNotified(date: date).with(card: StatusCardViewModel.inactive))
             case (.authorizationDenied, .notNotified):
                 strongSelf.statusView.update(with: .inactiveWithNotNotified)
-            case (.notAuthorized, .notified(_)):
-                strongSelf.statusView.update(with: StatusViewModel.inactiveWithNotified.with(card: StatusCardViewModel.inactive))
+            case let (.notAuthorized, .notified(date)):
+                strongSelf.statusView.update(with: StatusViewModel.inactiveWithNotified(date: date).with(card: StatusCardViewModel.inactive))
             case (.notAuthorized, .notNotified):
                 strongSelf.statusView.update(with: .inactiveWithNotNotified)
             }

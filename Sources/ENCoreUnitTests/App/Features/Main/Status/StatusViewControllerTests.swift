@@ -21,6 +21,8 @@ final class StatusViewControllerTests: XCTestCase {
 
         let theme = ENTheme()
 
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
+
         SnapshotTesting.diffTool = "ksdiff"
         SnapshotTesting.record = false
 
@@ -35,6 +37,12 @@ final class StatusViewControllerTests: XCTestCase {
     }
 
     func test_snapshot_active_notified() {
+        set(activeState: .active, notified: true)
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func test_snapshot_active_notified_days_ago() {
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593000030)
         set(activeState: .active, notified: true)
         assertSnapshot(matching: viewController, as: .image())
     }
@@ -72,7 +80,7 @@ final class StatusViewControllerTests: XCTestCase {
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState, notified: Bool) {
-        let notifiedState: ExposureNotificationState = notified ? .notified(Date()) : .notNotified
+        let notifiedState: ExposureNotificationState = notified ? .notified(Date(timeIntervalSince1970: 1593262397)) : .notNotified
         let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
         exposureStateStream.exposureState = Just(state).eraseToAnyPublisher()
