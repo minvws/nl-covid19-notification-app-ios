@@ -17,7 +17,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     weak var router: StatusRouting?
 
-    private var exposureStateStream: ExposureStateStreaming
+    private let exposureStateStream: ExposureStateStreaming
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
