@@ -90,8 +90,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.activate()
 
-        networkController.startObserveReachability()
-
 //        #if USE_DEVELOPER_MENU || DEBUG
         attachDeveloperMenu()
 //        #endif
@@ -107,6 +105,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didEnterForeground() {
         exposureController.updateWhenRequired()
+        networkController.startObservingNetworkReachability()
+    }
+
+    func didEnterBackground() {
+        networkController.stopObservingNetworkReachability()
     }
 
     // MARK: - RootRouting

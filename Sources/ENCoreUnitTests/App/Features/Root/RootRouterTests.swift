@@ -115,12 +115,20 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(exposureController.activateCallCount, 1)
     }
 
-    func test_start_() {
-        XCTAssertEqual(networkController.startObserveReachabilityCallCount, 0)
+    func test_didEnterForeground_startsObservingNetworkReachability() {
+        XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 0)
 
-        router.start()
+        router.didEnterForeground()
 
-        XCTAssertEqual(networkController.startObserveReachabilityCallCount, 1)
+        XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 1)
+    }
+
+    func test_didEnterBackground_startsObservingNetworkReachability() {
+        XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 0)
+
+        router.didEnterBackground()
+
+        XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 1)
     }
 
     // MARK: - Private

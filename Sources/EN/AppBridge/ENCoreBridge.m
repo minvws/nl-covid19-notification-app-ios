@@ -59,4 +59,8 @@
     [_appRoot didEnterForeground];
 }
 
+- (void)didEnterBackground {
+    [_appRoot didEnterBackground];
+}
+
 @end

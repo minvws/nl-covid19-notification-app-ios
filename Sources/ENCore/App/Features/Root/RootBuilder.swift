@@ -23,6 +23,9 @@ protocol AppEntryPoint {
 
     /// Should be called when the app did enter the foreground
     func didEnterForeground()
+
+    /// Should be called when the app did enter the background
+    func didEnterBackground()
 }
 
 /// Provides all dependencies to build the RootRouter

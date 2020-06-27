@@ -19,8 +19,8 @@ protocol NetworkControlling {
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError>
 
-    func startObserveReachability()
-    func stopObserveReachability()
+    func startObservingNetworkReachability()
+    func stopObservingNetworkReachability()
 }
 
 /// @mockable

@@ -136,7 +136,7 @@ final class NetworkController: NetworkControlling {
         .eraseToAnyPublisher()
     }
 
-    func startObserveReachability() {
+    func startObservingNetworkReachability() {
         if reachability == nil {
             do {
                 self.reachability = try Reachability()
@@ -158,7 +158,7 @@ final class NetworkController: NetworkControlling {
         }
     }
 
-    func stopObserveReachability() {
+    func stopObservingNetworkReachability() {
         guard let reachability = reachability else {
             return
         }

@@ -39,4 +39,9 @@ import UIKit
     public func didEnterForeground() {
         appEntryPoint?.didEnterForeground()
     }
+
+    @objc
+    public func didEnterBackground() {
+        appEntryPoint?.didEnterBackground()
+    }
 }
