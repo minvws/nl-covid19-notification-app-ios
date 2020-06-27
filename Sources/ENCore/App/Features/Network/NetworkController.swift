@@ -7,13 +7,18 @@
 
 import Combine
 import Foundation
+import Reachability
 
 final class NetworkController: NetworkControlling {
 
+    // MARK: - Init
+
     init(networkManager: NetworkManaging,
-         cryptoUtility: CryptoUtility) {
+         cryptoUtility: CryptoUtility,
+         mutableNetworkStatusStream: MutableNetworkStatusStreaming) {
         self.networkManager = networkManager
         self.cryptoUtility = cryptoUtility
+        self.mutableNetworkStatusStream = mutableNetworkStatusStream
     }
 
     // MARK: - NetworkControlling
@@ -131,8 +136,39 @@ final class NetworkController: NetworkControlling {
         .eraseToAnyPublisher()
     }
 
+    func startObserveReachability() {
+        if reachability == nil {
+            do {
+                self.reachability = try Reachability()
+            } catch {
+                print("🔥 Unable to instantiate Reachability")
+            }
+        }
+        reachability?.whenReachable = { [weak self] status in
+            self?.mutableNetworkStatusStream.update(isReachable: status.connection != .unavailable)
+        }
+        reachability?.whenUnreachable = { [weak self] status in
+            self?.mutableNetworkStatusStream.update(isReachable: !(status.connection == .unavailable))
+        }
+
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            print("🔥 Unable to start Reachability")
+        }
+    }
+
+    func stopObserveReachability() {
+        guard let reachability = reachability else {
+            return
+        }
+        reachability.stopNotifier()
+    }
+
     // MARK: - Private
 
     private let networkManager: NetworkManaging
     private let cryptoUtility: CryptoUtility
+    private var reachability: Reachability?
+    private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
 }

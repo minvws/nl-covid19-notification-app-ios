@@ -1,4 +1,5 @@
-github "pointfreeco/swift-snapshot-testing" "1.7.2"
-github "weichsel/ZIPFoundation" ~> 0.9
-github "SnapKit/SnapKit" ~> 5.0.0
 github "airbnb/lottie-ios" ~> 3.1.8
+github "ashleymills/Reachability.swift"
+github "pointfreeco/swift-snapshot-testing" "1.7.2"
+github "SnapKit/SnapKit" ~> 5.0.0
+github "weichsel/ZIPFoundation" ~> 0.9

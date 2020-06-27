@@ -15,13 +15,16 @@ final class ExposureControllerTests: XCTestCase {
     private let mutableStateStream = MutableExposureStateStreamingMock()
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
+    private let networkStatusStream = NetworkStatusStreamingMock(networkStatusStream: CurrentValueSubject<Bool, Never>(true).eraseToAnyPublisher())
 
     override func setUp() {
         super.setUp()
 
+        networkStatusStream.currentStatus = true
         controller = ExposureController(mutableStateStream: mutableStateStream,
                                         exposureManager: exposureManager,
-                                        dataController: dataController)
+                                        dataController: dataController,
+                                        networkStatusStream: networkStatusStream)
 
         exposureManager.activateCallCount = 0
         mutableStateStream.updateCallCount = 0
@@ -37,7 +40,7 @@ final class ExposureControllerTests: XCTestCase {
         controller.activate()
 
         XCTAssertEqual(exposureManager.activateCallCount, 1)
-        XCTAssertEqual(mutableStateStream.updateCallCount, 1)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 2)
     }
 
     func test_requestExposureNotificationPermission_callsManager_updatesStream() {
@@ -76,7 +79,8 @@ final class ExposureControllerTests: XCTestCase {
 
         controller = ExposureController(mutableStateStream: mutableStateStream,
                                         exposureManager: nil,
-                                        dataController: dataController)
+                                        dataController: dataController,
+                                        networkStatusStream: networkStatusStream)
         controller.activate()
 
         XCTAssertTrue(expectation.evaluate())
@@ -86,6 +90,17 @@ final class ExposureControllerTests: XCTestCase {
         exposureManager.getExposureNotificationStatusHandler = { .active }
 
         let expectation = expect(activeState: .active)
+
+        triggerUpdateStream()
+
+        XCTAssertTrue(expectation.evaluate())
+    }
+
+    func test_managerIsActive_noNetwork() {
+        exposureManager.getExposureNotificationStatusHandler = { .active }
+
+        networkStatusStream.currentStatus = false
+        let expectation = expect(activeState: .inactive(.airplaneMode))
 
         triggerUpdateStream()
 
