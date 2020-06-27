@@ -14,12 +14,14 @@ final class NetworkControllerTests: TestCase {
     private var networkController: NetworkController!
     private let networkManager = NetworkManagingMock()
     private let cryptoUtility = CryptoUtilityMock()
+    private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         networkController = NetworkController(networkManager: networkManager,
-                                              cryptoUtility: cryptoUtility)
+                                              cryptoUtility: cryptoUtility,
+                                              mutableNetworkStatusStream: mutableNetworkStatusStream)
     }
 
     func test_requestLabConfirmationKey_callsNetworkManager_returnsKeyOnSuccess() {

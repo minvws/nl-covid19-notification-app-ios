@@ -23,6 +23,9 @@ protocol AppEntryPoint {
 
     /// Should be called when the app did enter the foreground
     func didEnterForeground()
+
+    /// Should be called when the app did enter the background
+    func didEnterBackground()
 }
 
 /// Provides all dependencies to build the RootRouter
@@ -81,6 +84,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableExposureStateStream
     }
 
+    var networkStatusStream: NetworkStatusStreaming {
+        return mutableNetworkStatusStream
+    }
+
     let theme: Theme = ENTheme()
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
@@ -88,6 +95,9 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     /// Mutable stream for publishing PushNotifcaiton objects to
     lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificaionStream()
+
+    /// Mutable stream for publishing the NetworkStatus reachability to
+    lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
 }
 
 /// Interface describing the builder that builds
@@ -120,6 +130,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,
                           developerMenuBuilder: dependencyProvider.developerMenuBuilder,
-                          mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream)
+                          mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
+                          networkController: dependencyProvider.networkController)
     }
 }

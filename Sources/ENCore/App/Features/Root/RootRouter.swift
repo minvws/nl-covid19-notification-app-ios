@@ -42,7 +42,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
          developerMenuBuilder: DeveloperMenuBuildable,
-         mutablePushNotificationStream: MutablePushNotificationStreaming) {
+         mutablePushNotificationStream: MutablePushNotificationStreaming,
+         networkController: NetworkControlling) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.messageBuilder = messageBuilder
@@ -52,6 +53,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.exposureStateStream = exposureStateStream
 
         self.mutablePushNotificationStream = mutablePushNotificationStream
+
+        self.networkController = networkController
 
         super.init(viewController: viewController)
 
@@ -102,6 +105,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didEnterForeground() {
         exposureController.updateWhenRequired()
+        networkController.startObservingNetworkReachability()
+    }
+
+    func didEnterBackground() {
+        networkController.stopObservingNetworkReachability()
     }
 
     // MARK: - RootRouting
@@ -178,6 +186,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let developerMenuViewController = developerMenuBuilder.build(listener: viewController)
         self.developerMenuViewController = developerMenuViewController
     }
+
+    private let networkController: NetworkControlling
 
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming

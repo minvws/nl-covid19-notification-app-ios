@@ -19,6 +19,7 @@ final class RootRouterTests: XCTestCase {
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
     private let mutablePushNotificationStream = MutablePushNotificationStreamingMock()
+    private let networkController = NetworkControllingMock()
     private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     private var router: RootRouter!
@@ -35,7 +36,8 @@ final class RootRouterTests: XCTestCase {
                             exposureController: exposureController,
                             exposureStateStream: exposureStateStream,
                             developerMenuBuilder: developerMenuBuilder,
-                            mutablePushNotificationStream: mutablePushNotificationStream)
+                            mutablePushNotificationStream: mutablePushNotificationStream,
+                            networkController: networkController)
 
         set(activeState: .notAuthorized)
     }
@@ -111,6 +113,22 @@ final class RootRouterTests: XCTestCase {
         router.start()
 
         XCTAssertEqual(exposureController.activateCallCount, 1)
+    }
+
+    func test_didEnterForeground_startsObservingNetworkReachability() {
+        XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 0)
+
+        router.didEnterForeground()
+
+        XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 1)
+    }
+
+    func test_didEnterBackground_startsObservingNetworkReachability() {
+        XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 0)
+
+        router.didEnterBackground()
+
+        XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 1)
     }
 
     // MARK: - Private

@@ -21,6 +21,7 @@
 - (void)start;
 - (void)didReceiveRemoteNotification:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler;
 - (void)didEnterForeground;
+- (void)didEnterBackground;
 
 @end
 

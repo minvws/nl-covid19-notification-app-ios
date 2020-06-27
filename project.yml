@@ -93,6 +93,7 @@ targets:
       - carthage: ZIPFoundation
       - carthage: SnapKit
       - carthage: Lottie
+      - carthage: Reachability
       - sdk: ExposureNotification.framework
         optional: true
     scheme:

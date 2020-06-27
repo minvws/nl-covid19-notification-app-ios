@@ -94,6 +94,7 @@ protocol ExposureControllerDependency {
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var networkStatusStream: NetworkStatusStreaming { get }
 }
 
 private final class ExposureControllerDependencyProvider: DependencyProvider<ExposureControllerDependency>, ExposureDataControllerDependency {
@@ -126,6 +127,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
 
         return ExposureController(mutableStateStream: dependencyProvider.dependency.mutableExposureStateStream,
                                   exposureManager: dependencyProvider.exposureManager,
-                                  dataController: dependencyProvider.dataController)
+                                  dataController: dependencyProvider.dataController,
+                                  networkStatusStream: dependencyProvider.dependency.networkStatusStream)
     }
 }

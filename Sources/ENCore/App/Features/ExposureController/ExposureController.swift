@@ -13,10 +13,12 @@ final class ExposureController: ExposureControlling {
 
     init(mutableStateStream: MutableExposureStateStreaming,
          exposureManager: ExposureManaging?,
-         dataController: ExposureDataControlling) {
+         dataController: ExposureDataControlling,
+         networkStatusStream: NetworkStatusStreaming) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
+        self.networkStatusStream = networkStatusStream
     }
 
     deinit {
@@ -34,6 +36,12 @@ final class ExposureController: ExposureControlling {
         exposureManager.activate { _ in
             self.updateStatusStream()
         }
+
+        networkStatusStream
+            .networkStatusStream
+            .sink { [weak self] _ in
+                self?.updateStatusStream()
+            }.store(in: &disposeBag)
     }
 
     func refreshStatus() {
@@ -163,22 +171,25 @@ final class ExposureController: ExposureControlling {
             return
         }
 
+        let currentNetworkStatus = networkStatusStream.currentStatus
         let activeState: ExposureActiveState
 
         switch exposureManager.getExposureNotificationStatus() {
-        case .active:
+        case .active where currentNetworkStatus == true:
             activeState = .active
-        case let .inactive(error) where error == .bluetoothOff:
+        case .active:
+            activeState = .inactive(.airplaneMode)
+        case let .inactive(error) where error == .bluetoothOff && currentNetworkStatus == true:
             activeState = .inactive(.bluetoothOff)
-        case let .inactive(error) where error == .disabled || error == .restricted:
+        case let .inactive(error) where error == .disabled || error == .restricted && currentNetworkStatus == true:
             activeState = .inactive(.disabled)
-        case let .inactive(error) where error == .notAuthorized:
+        case let .inactive(error) where error == .notAuthorized && currentNetworkStatus == true:
             activeState = .notAuthorized
-        case let .inactive(error) where error == .unknown:
+        case let .inactive(error) where error == .unknown && currentNetworkStatus == true:
             // Most likely due to code signing issues
             activeState = .inactive(.disabled)
         case .inactive:
-            activeState = .inactive(.disabled)
+            activeState = !currentNetworkStatus ? .inactive(.airplaneMode) : .inactive(.disabled)
         case .notAuthorized:
             activeState = .notAuthorized
         case .authorizationDenied:
@@ -250,6 +261,7 @@ final class ExposureController: ExposureControlling {
     private let dataController: ExposureDataControlling
     private var disposeBag = Set<AnyCancellable>()
     private var exposureKeyUpdateCancellable: AnyCancellable?
+    private let networkStatusStream: NetworkStatusStreaming
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {
