@@ -91,7 +91,10 @@
 "status.appState" = "De app is actief";
 "status.active.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen.";
 /* TOD: This needs to be dynamically updated with the proper days & date */
-"status.notified.description" = "Je hebt 10 dagen geleden (maandag 1 juni) extra kans op besmetting gelopen.";
+"status.notified.description_days" = "%@ dagen geleden (%@)";
+"status.notified.description_hours" = "%@ hours geleden (%@)";
+"status.notified.description_none" = "op %@";
+"status.notified.description" = "Je hebt %@ extra kans op besmetting gelopen.";
 "status.notified.moreInfo" = "Wat kan ik nu doen?";
 "status.notified.removeNotification" = "Melding verwijderen";
 

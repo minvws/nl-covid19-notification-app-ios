@@ -84,16 +84,18 @@ struct StatusViewModel {
         return result
     }
 
-    static let activeWithNotified = StatusViewModel(
-        icon: .notified,
-        title: .init(string: Localization.string(for: "status.appState")),
-        description: .init(string: Localization.string(for: "status.notified.description")), // TODO: this needs to be dynamic
-        buttons: [.moreInfo, .removeNotification],
-        footer: nil,
-        shouldShowHideMessage: false,
-        gradientColor: \.statusGradientNotified,
-        showScene: false
-    )
+    static func activeWithNotified(date: Date) -> StatusViewModel {
+        StatusViewModel(
+            icon: .notified,
+            title: .init(string: Localization.string(for: "status.appState")),
+            description: .init(string: Localization.string(for: "status.notified.description", [timeAgo(from: date)])),
+            buttons: [.moreInfo, .removeNotification],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.statusGradientNotified,
+            showScene: false
+        )
+    }
 
     static let activeWithNotNotified = StatusViewModel(
         icon: .ok,
@@ -106,16 +108,18 @@ struct StatusViewModel {
         showScene: true
     )
 
-    static let inactiveWithNotified = StatusViewModel(
-        icon: .notified,
-        title: .init(string: Localization.string(for: "status.appState")),
-        description: .init(string: Localization.string(for: "status.notified.description")), // TODO: this needs to be dynamic
-        buttons: [.moreInfo, .removeNotification],
-        footer: nil,
-        shouldShowHideMessage: false,
-        gradientColor: \.statusGradientNotified,
-        showScene: false
-    )
+    static func inactiveWithNotified(date: Date) -> StatusViewModel {
+        StatusViewModel(
+            icon: .notified,
+            title: .init(string: Localization.string(for: "status.appState")),
+            description: .init(string: Localization.string(for: "status.notified.description", [timeAgo(from: date)])),
+            buttons: [.moreInfo, .removeNotification],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.statusGradientNotified,
+            showScene: false
+        )
+    }
 
     static let inactiveWithNotNotified = StatusViewModel(
         icon: .inactive,
@@ -127,4 +131,20 @@ struct StatusViewModel {
         gradientColor: \.inactive,
         showScene: false
     )
+
+    private static func timeAgo(from: Date) -> String {
+        let now = currentDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+
+        let dateString = dateFormatter.string(from: from)
+
+        if let days = from.days(sinceDate: now), days > 0 {
+            return Localization.string(for: "status.notified.description_days", ["\(days)", dateString])
+        }
+        if let hours = from.hours(sinceDate: now), hours > 0 {
+            return Localization.string(for: "status.notified.description_hours", ["\(hours)", dateString])
+        }
+        return Localization.string(for: "status.notified.description_none", [dateString])
+    }
 }

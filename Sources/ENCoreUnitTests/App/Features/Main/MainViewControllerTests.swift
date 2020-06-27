@@ -15,6 +15,7 @@ final class MainViewControllerTests: XCTestCase {
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()
     private let exposureController = ExposureControllingMock()
+    private let exposureStateStream = ExposureStateStreamingMock()
 
     override func setUp() {
         super.setUp()
@@ -22,7 +23,8 @@ final class MainViewControllerTests: XCTestCase {
         let theme = ENTheme()
 
         viewController = MainViewController(theme: theme,
-                                            exposureController: exposureController)
+                                            exposureController: exposureController,
+                                            exposureStateStream: exposureStateStream)
         viewController.router = router
     }
 
