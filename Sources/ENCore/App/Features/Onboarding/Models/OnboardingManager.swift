@@ -25,8 +25,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: Localization.string(for: "step1Title"),
                 content: Localization.string(for: "step1Content"),
-                image: Image.named("Step1") ?? UIImage(),
-                animationName: "ontheway",
+                illustration: .animation(named: "ontheway"),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
             )
@@ -37,8 +36,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: Localization.string(for: "step2Title"),
                 content: Localization.string(for: "step2Content"),
-                image: Image.named("Step2") ?? UIImage(),
-                animationName: nil,
+                illustration: .animation(named: "popup", repeatFromFrame: 94),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
             )
@@ -49,8 +47,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: Localization.string(for: "step3Title"),
                 content: Localization.string(for: "step3Content"),
-                image: nil,
-                animationName: "bluetooth",
+                illustration: .animation(named: "bluetooth"),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
             )
@@ -61,8 +58,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: Localization.string(for: "step4Title"),
                 content: Localization.string(for: "step4Content"),
-                image: Image.named("Step4") ?? UIImage(),
-                animationName: nil,
+                illustration: .animation(named: "ontheway"),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: true
             )
@@ -73,8 +69,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: Localization.string(for: "step5Title"),
                 content: Localization.string(for: "step5Content"),
-                image: Image.named("Step5") ?? UIImage(),
-                animationName: nil,
+                illustration: .image(named: "Step5"),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: true
             )

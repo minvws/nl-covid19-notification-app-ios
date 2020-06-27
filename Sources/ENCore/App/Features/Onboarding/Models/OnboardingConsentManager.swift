@@ -128,11 +128,15 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             subscription.cancel()
         }
 
-        exposureStateSubscription = exposureStateStream.exposureState.sink { [weak self] state in
-            self?.exposureStateSubscription = nil
+        exposureStateSubscription = exposureStateStream
+            .exposureState
+            // drop first as as soon as one subscribes the current state is returned
+            .dropFirst()
+            .sink { [weak self] state in
+                self?.exposureStateSubscription = nil
 
-            completion(state.activeState)
-        }
+                completion(state.activeState)
+            }
 
         exposureController.requestExposureNotificationPermission()
     }

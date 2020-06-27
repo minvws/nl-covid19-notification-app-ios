@@ -7,6 +7,7 @@
 
 @testable import ENCore
 import Foundation
+import SnapshotTesting
 import XCTest
 
 final class OnboardingStepViewControllerTests: XCTestCase {
@@ -18,14 +19,15 @@ final class OnboardingStepViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        SnapshotTesting.record = false
+
         let theme = ENTheme()
 
         manager.getStepHandler = { index in
             return OnboardingStep(theme: theme,
                                   title: "Title",
                                   content: "Content",
-                                  image: UIImage(),
-                                  animationName: "test",
+                                  illustration: .image(named: "Step5"),
                                   buttonTitle: "Button",
                                   isExample: true)
         }
@@ -38,5 +40,7 @@ final class OnboardingStepViewControllerTests: XCTestCase {
     }
 
     // TODO: Write test cases
-    func test_case() {}
+    func test_case() {
+        assertSnapshot(matching: viewController, as: .image())
+    }
 }

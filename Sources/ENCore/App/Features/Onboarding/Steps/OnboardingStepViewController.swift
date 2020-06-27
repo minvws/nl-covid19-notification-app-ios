@@ -52,10 +52,12 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         setupConstraints()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
-        self.internalView.animationView.play()
+        if internalView.animationView.animation != nil {
+            self.internalView.animationView.play()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -121,8 +123,7 @@ final class OnboardingStepView: View {
     lazy var animationView: AnimationView = {
         let animationView = AnimationView()
         animationView.translatesAutoresizingMaskIntoConstraints = false
-        animationView.isHidden = true
-        animationView.loopMode = .loop
+        animationView.contentMode = .scaleAspectFill
         return animationView
     }()
 
@@ -154,6 +155,11 @@ final class OnboardingStepView: View {
         didSet {
             updateView()
         }
+    }
+
+    deinit {
+        displayLink?.invalidate()
+        displayLink = nil
     }
 
     override func build() {
@@ -206,12 +212,52 @@ final class OnboardingStepView: View {
             return
         }
 
-        self.imageView.image = step.image
-        self.animationView.animation = step.animation
         self.titleLabel.attributedText = step.attributedTitle
         self.contentLabel.attributedText = step.attributedContent
+        self.displayLink?.invalidate()
+        self.displayLink = nil
+        self.frameNumber = nil
 
-        self.imageView.isHidden = step.hasAnimation
-        self.animationView.isHidden = !step.hasAnimation
+        switch step.illustration {
+        case let .image(named: name):
+            imageView.image = Image.named(name)
+            animationView.isHidden = true
+            imageView.isHidden = false
+        case let .animation(named: name, repeatFromFrame: repeatFromFrame):
+            animationView.animation = LottieAnimation.named(name)
+            animationView.isHidden = false
+            imageView.isHidden = true
+
+            if let repeatFromFrame = repeatFromFrame {
+                loopAnimation(fromFrame: repeatFromFrame)
+            } else {
+                animationView.loopMode = .loop
+            }
+        }
+    }
+
+    // MARK: - Private
+
+    var displayLink: CADisplayLink?
+    var frameNumber: Int?
+
+    private func loopAnimation(fromFrame frameNumber: Int) {
+        self.frameNumber = frameNumber
+
+        displayLink?.invalidate()
+
+        displayLink = CADisplayLink(target: self, selector: #selector(tick))
+        displayLink?.add(to: RunLoop.current, forMode: .common)
+    }
+
+    @objc private func tick() {
+        if animationView.currentProgress == 1.0,
+            animationView.isAnimationPlaying == false,
+            let frameNumber = frameNumber {
+            animationView.play(fromFrame: CGFloat(frameNumber),
+                               toFrame: animationView.animation?.endFrame ?? 0,
+                               loopMode: nil,
+                               completion: nil)
+        }
     }
 }

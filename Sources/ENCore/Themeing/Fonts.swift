@@ -17,6 +17,7 @@ public protocol Fonts {
     var body: UIFont { get }
     var callout: UIFont { get }
     var subhead: UIFont { get }
+    var subheadBold: UIFont { get }
     var footnote: UIFont { get }
     var caption1: UIFont { get }
 }
@@ -53,6 +54,10 @@ final class ENFonts: Fonts {
 
     var subhead: UIFont {
         font(size: 15, weight: .regular, textStyle: .subheadline)
+    }
+
+    var subheadBold: UIFont {
+        font(size: 15, weight: .bold, textStyle: .subheadline)
     }
 
     var footnote: UIFont {
