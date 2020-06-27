@@ -25,6 +25,8 @@ struct ExposureDataStorageKey {
                                                                     storeType: .insecure(volatile: false))
     static let exposureConfiguration = CodableStorageKey<ExposureRiskConfiguration>(name: "exposureConfiguration",
                                                                                     storeType: .insecure(volatile: false))
+    static let pendingLabUploadRequests = CodableStorageKey<[PendingLabConfirmationUploadRequest]>(name: "pendingLabUploadRequests",
+                                                                                                   storeType: .secure)
 }
 
 final class ExposureDataController: ExposureDataControlling {

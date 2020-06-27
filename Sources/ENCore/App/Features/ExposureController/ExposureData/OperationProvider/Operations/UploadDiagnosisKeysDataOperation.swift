@@ -25,6 +25,7 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
         return networkController
             .postKeys(keys: keys, labConfirmationKey: labConfirmationKey)
             .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
+            .catch { error in self.scheduleRetryWhenFailed(error: error, diagnosisKeys: keys, labConfirmationKey: self.labConfirmationKey) }
             .flatMap { self.storeLastRollingStartNumber(for: keys) }
             .eraseToAnyPublisher()
     }
@@ -45,6 +46,41 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
                                          identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber) { error in
                 // cannot store - ignore and upload the whole set again next time
                 promise(.success(()))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private func scheduleRetryWhenFailed(error: ExposureDataError, diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
+
+        return Future { promise in
+            guard
+                let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: Date()),
+                let expiryDate = Calendar.current.date(bySettingHour: 3,
+                                                       minute: 59,
+                                                       second: 0,
+                                                       of: nextDay,
+                                                       matchingPolicy: .nextTime,
+                                                       repeatedTimePolicy: .first,
+                                                       direction: .forward)
+            else {
+                // cannot calculate next day - skip request
+                promise(.success(()))
+                return
+            }
+
+            let retryRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: labConfirmationKey,
+                                                                   diagnosisKeys: diagnosisKeys,
+                                                                   expiryDate: expiryDate)
+
+            self.storageController.requestExclusiveAccess { storageController in
+                var requests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
+
+                requests.append(retryRequest)
+
+                storageController.store(object: requests, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
+                    promise(.success(()))
+                }
             }
         }
         .eraseToAnyPublisher()

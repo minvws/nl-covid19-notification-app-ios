@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-struct LabConfirmationKey: Codable {
+struct LabConfirmationKey: Codable, Equatable {
     let identifier: String
     let bucketIdentifier: Data
     let confirmationKey: Data

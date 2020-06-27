@@ -275,7 +275,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                     }
 
                     // calculate exposure date
-                    let calendar = Calendar(identifier: .gregorian)
+                    let calendar = Calendar.current
                     guard let exposureDate = calendar.date(byAdding: .day, value: -latestSummary.daysSinceLastExposure, to: Date()) else {
                         return Just((result, nil))
                             .setFailureType(to: ExposureDataError.self)

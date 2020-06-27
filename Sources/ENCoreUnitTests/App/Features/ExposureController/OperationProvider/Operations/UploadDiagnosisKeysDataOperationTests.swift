@@ -121,6 +121,58 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(bytes[1], 55)
     }
 
+    func test_error_schedulesRetryRequest() {
+        let alreadyPendingRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
+                                                                        diagnosisKeys: [],
+                                                                        expiryDate: Date().addingTimeInterval(60))
+
+        networkController.postKeysHandler = { keys, confirmationKey in
+            return Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher()
+        }
+
+        storageController.requestExclusiveAccessHandler = { $0(self.storageController) }
+
+        storageController.retrieveDataHandler = { key in
+            if key is CodableStorageKey<Int32> {
+                let bytes: [UInt8] = [0, 0]
+                return Data(bytes)
+            }
+
+            if key is CodableStorageKey<[PendingLabConfirmationUploadRequest]> {
+                let encoder = JSONEncoder()
+                return try! encoder.encode([alreadyPendingRequest])
+            }
+
+            return nil
+        }
+
+        var receivedPendingRequests: [PendingLabConfirmationUploadRequest]!
+        storageController.storeHandler = { data, _, _ in
+            let decoder = JSONDecoder()
+            receivedPendingRequests = try! decoder.decode([PendingLabConfirmationUploadRequest].self, from: data)
+        }
+
+        XCTAssertEqual(storageController.retrieveDataCallCount, 0)
+        XCTAssertEqual(storageController.storeCallCount, 0)
+
+        operation.execute()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(storageController.storeCallCount, 1)
+        XCTAssertEqual(storageController.retrieveDataCallCount, 2)
+        XCTAssertEqual(receivedPendingRequests.count, 2)
+        XCTAssertEqual(receivedPendingRequests[0], alreadyPendingRequest)
+        XCTAssertEqual(receivedPendingRequests[1].diagnosisKeys, createDiagnosisKeys(withHighestRollingStartNumber: 65))
+
+        let currentDay = Calendar.current.dateComponents([.day], from: Date()).day!
+        let dateComponents = Calendar.current.dateComponents([.day, .hour, .minute, .second], from: receivedPendingRequests[1].expiryDate)
+        XCTAssertEqual(dateComponents.day, currentDay + 1)
+        XCTAssertEqual(dateComponents.hour, 3)
+        XCTAssertEqual(dateComponents.minute, 59)
+        XCTAssertEqual(dateComponents.second, 0)
+    }
+
     // MARK: - Private
 
     private func createDiagnosisKeys(withHighestRollingStartNumber highestRollingStartNumber: Int32) -> [DiagnosisKey] {
@@ -137,14 +189,16 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     }
 
     private func createOperation(withKeys keys: [DiagnosisKey]) -> UploadDiagnosisKeysDataOperation {
-        let labConfirmationKey = LabConfirmationKey(identifier: "test",
-                                                    bucketIdentifier: "bucket".data(using: .utf8)!,
-                                                    confirmationKey: Data(),
-                                                    validUntil: Date())
-
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: keys,
-                                                labConfirmationKey: labConfirmationKey)
+                                                labConfirmationKey: createLabConfirmationKey())
+    }
+
+    private func createLabConfirmationKey() -> LabConfirmationKey {
+        LabConfirmationKey(identifier: "test",
+                           bucketIdentifier: "bucket".data(using: .utf8)!,
+                           confirmationKey: Data(),
+                           validUntil: Date())
     }
 }
