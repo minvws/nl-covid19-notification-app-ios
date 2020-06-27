@@ -90,7 +90,7 @@
 
 "status.appState" = "De app is actief";
 "status.active.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen.";
-/* TOD: This needs to be dynamically updated with the proper days & date */
+/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
 "status.notified.description_days" = "%@ dagen geleden (%@)";
 "status.notified.description_hours" = "%@ hours geleden (%@)";
 "status.notified.description_none" = "op %@";
