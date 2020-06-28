@@ -11,7 +11,7 @@ import Foundation
 
 /// BackgroundController
 ///
-/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `print("Done")` statement and background the application.
+/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `print("🐞 Scheduled Update")` statement and background the application.
 /// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.background-update"]`
 /// and resume the application. The background task will be run.
 final class BackgroundController: BackgroundControlling {
@@ -59,10 +59,10 @@ final class BackgroundController: BackgroundControlling {
 
         do {
             try BGTaskScheduler.shared.submit(request)
+            print("🐞 Scheduled Update")
         } catch {
             print("Could not schedule app refresh: \(error)")
         }
-        print("🐞 Done")
     }
 
     private func handleUpdate(task: BGProcessingTask) {
