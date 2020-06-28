@@ -189,12 +189,23 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case .disabled:
             openAppSettings()
         case .noRecentNotificationUpdates:
-            print("🔥 Not implemented")
+            // FIXME: This is a temporary solution while design is being updated
+            presentAlert(message: "No Recenet Notification Updates")
         case .paused:
-            print("🔥 Not implemented")
+            // FIXME: This is a temporary solution while design is being updated
+            presentAlert(message: "The Application has been paused")
         case .requiresOSUpdate:
-            print("🔥 Not implemented")
+            // FIXME: This is a temporary solution while design is being updated
+            presentAlert(message: "Please update your operating system")
         }
+    }
+
+    private func presentAlert(message: String) {
+        let alertController = UIAlertController(title: "Update App Settings", message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: Localization.string(for: "ok"), style: .default) { [weak self] _ in
+            self?.dismiss(animated: true, completion: nil)
+        })
+        present(alertController, animated: true, completion: nil)
     }
 
     private func openAppSettings() {
