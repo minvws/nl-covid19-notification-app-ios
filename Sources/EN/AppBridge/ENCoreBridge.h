@@ -16,7 +16,7 @@
 @interface ENCoreBridge: NSObject
 + (BOOL)isAppRootAvailable;
 
-- (instancetype )init;
+- (instancetype)init;
 
 - (void)attachToWindow:(UIWindow *)window;
 - (void)start;

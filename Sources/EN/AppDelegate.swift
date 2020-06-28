@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             return true
         }
-        // Note: The follwoing needs to be set before application:didFinishLaunchingWithOptions: returns
+        // Note: The following needs to be set before application:didFinishLaunchingWithOptions: returns
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
 
