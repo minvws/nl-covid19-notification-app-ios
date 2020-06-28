@@ -56,7 +56,7 @@ struct NetworkConfiguration {
         ),
         cdn: .init(
             scheme: "https",
-            host: "api-ota.alleensamenmelden.nl",
+            host: "mss-content-acc.azurewebsites.net",
             port: nil,
             path: ["mss-acc", "v1"],
             certificate: nil
