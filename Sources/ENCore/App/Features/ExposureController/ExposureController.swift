@@ -28,6 +28,13 @@ final class ExposureController: ExposureControlling {
     // MARK: - ExposureControlling
 
     func activate() {
+        guard isActivated == false else {
+            assertionFailure("Should only activate ExposureController once")
+            return
+        }
+
+        isActivated = true
+
         guard let exposureManager = exposureManager else {
             updateStatusStream()
             return
@@ -37,11 +44,24 @@ final class ExposureController: ExposureControlling {
             self.updateStatusStream()
         }
 
+        mutableStateStream
+            .exposureState
+            .filter { [.active, .inactive(.noRecentNotificationUpdates)].contains($0.activeState) }
+            .first()
+            .sink { [weak self] _ in
+                // update the first time the app becomes active
+                self?.updateStatusStream()
+                self?.updateWhenRequired()
+            }
+            .store(in: &disposeBag)
+
         networkStatusStream
             .networkStatusStream
             .sink { [weak self] _ in
-                self?.updateStatusStream()
-            }.store(in: &disposeBag)
+                self?.refreshStatus()
+                self?.updateWhenRequired()
+            }
+            .store(in: &disposeBag)
     }
 
     func refreshStatus() {
@@ -49,7 +69,8 @@ final class ExposureController: ExposureControlling {
     }
 
     func updateWhenRequired() {
-        guard case .active = mutableStateStream.currentExposureState?.activeState else { return }
+        // update when active, or when inactive due to no recent updates
+        guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else { return }
 
         fetchAndProcessExposureKeySets {
             // done
@@ -171,10 +192,16 @@ final class ExposureController: ExposureControlling {
             return
         }
 
+        let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 16) // 16 hours
+        let hasBeenTooLongSinceLastUpdate = dataController.lastSuccessfulFetchDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
+
         let currentNetworkStatus = networkStatusStream.currentStatus
         let activeState: ExposureActiveState
 
         switch exposureManager.getExposureNotificationStatus() {
+        case .active where hasBeenTooLongSinceLastUpdate:
+            // no need to worry about noRecentNotificationUpdates state when not active
+            activeState = .inactive(.noRecentNotificationUpdates)
         case .active where currentNetworkStatus == true:
             activeState = .active
         case .active:
@@ -262,6 +289,7 @@ final class ExposureController: ExposureControlling {
     private var disposeBag = Set<AnyCancellable>()
     private var exposureKeyUpdateCancellable: AnyCancellable?
     private let networkStatusStream: NetworkStatusStreaming
+    private var isActivated = false
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {

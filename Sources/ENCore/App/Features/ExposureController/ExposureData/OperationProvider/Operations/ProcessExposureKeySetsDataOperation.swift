@@ -389,13 +389,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         return Deferred {
             Future { promise in
                 self.storageController.requestExclusiveAccess { storageController in
-                    let date: Date
-
-                    if let storedDate = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate) {
-                        date = storedDate
-                    } else {
-                        date = Date()
-                    }
+                    let date = Date()
 
                     storageController.store(object: date,
                                             identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
