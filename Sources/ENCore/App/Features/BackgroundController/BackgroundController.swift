@@ -6,17 +6,18 @@
  */
 
 import BackgroundTasks
+import ExposureNotification
 import Foundation
 
 /// BackgroundController
 ///
 /// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `print("Done")` statement and background the application.
-/// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.refersh"]`
+/// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.background-update"]`
 /// and resume the application. The background task will be run.
 final class BackgroundController: BackgroundControlling {
 
     private struct Constants {
-        static let backgroundTask = "nl.rijksoverheid.en.background_task"
+        static let backgroundTask = "nl.rijksoverheid.en.background-update"
     }
 
     // MARK: - Init
@@ -38,6 +39,7 @@ final class BackgroundController: BackgroundControlling {
                 return print("🔥 Task is not of type `BGProcessingTask`")
             }
             handleUpdate(task: task)
+            scheduleUpdate()
         default:
             print("🔥 No Handler for: \(task.identifier)")
         }
@@ -48,8 +50,12 @@ final class BackgroundController: BackgroundControlling {
     private let exposureController: ExposureControlling
 
     private func scheduleUpdate() {
-        let request = BGAppRefreshTaskRequest(identifier: Constants.backgroundTask)
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // Fetch no earlier than 15 minutes from now
+        guard ENManager.authorizationStatus == .authorized else {
+            return print("🔥 `ENManager.authorizationStatus` not authorized")
+        }
+        let request = BGProcessingTaskRequest(identifier: Constants.backgroundTask)
+        request.requiresNetworkConnectivity = true
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // TODO: Should be updated with values from AppConfig
 
         do {
             try BGTaskScheduler.shared.submit(request)
@@ -60,18 +66,17 @@ final class BackgroundController: BackgroundControlling {
     }
 
     private func handleUpdate(task: BGProcessingTask) {
-        scheduleUpdate()
-
         // TODO: Order of operations `Refresh`, `Upload Pending Requests`, `Cleanup`
 
+        // Handle running out of time
         task.expirationHandler = {
             // TODO: `exposureController.fetchAndProcessExposureKeySets` should be cancelled
             print("🔥 Task should be cancelled")
         }
 
         exposureController.fetchAndProcessExposureKeySets {
-            task.setTaskCompleted(success: true)
             print("🐞 Fetched & Processed Exposure Keys")
+            task.setTaskCompleted(success: true)
         }
     }
 }
