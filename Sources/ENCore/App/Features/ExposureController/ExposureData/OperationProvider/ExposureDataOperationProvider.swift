@@ -25,6 +25,11 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                    configuration: configuration)
     }
 
+    var processPendingLabConfirmationUploadRequestsOperation: ProcessPendingLabConfirmationUploadRequestsDataOperation {
+        return ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
+                                                                        storageController: storageController)
+    }
+
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,

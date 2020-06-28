@@ -17,6 +17,9 @@ protocol ExposureDataOperation {
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
                                          configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation
+
+    var processPendingLabConfirmationUploadRequestsOperation: ProcessPendingLabConfirmationUploadRequestsDataOperation { get }
+
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
     func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
