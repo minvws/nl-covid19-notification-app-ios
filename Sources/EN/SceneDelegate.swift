@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import BackgroundTasks
 import UIKit
 
 @available(iOS 13, *)
@@ -67,6 +68,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+    }
+
+    func handle(backgroundTask: BGTask) {
+        // Let the bridge handle the background task
+        bridge?.handleBackgroundTask(backgroundTask)
     }
 
     // MARK: - Private

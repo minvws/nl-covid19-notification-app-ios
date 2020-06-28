@@ -10,7 +10,12 @@ import Foundation
 
 /// @mockable
 protocol BackgroundControlling {
-    func schedule(taskIdentifier: String, launchHandler: @escaping (BGTask) -> ())
+    func scheduleTasks()
+    func handle(task: BGTask)
+}
+
+protocol BackgroundDependency {
+    var exposureController: ExposureControlling { get }
 }
 
 /// @mockable
@@ -18,10 +23,11 @@ protocol BackgroundControllerBuildable {
     func build() -> BackgroundControlling
 }
 
-private final class BackgroundControllerDependencyProvider: DependencyProvider<EmptyDependency> {}
+private final class BackgroundControllerDependencyProvider: DependencyProvider<BackgroundDependency> {}
 
-final class BackgroundControllerBuilder: Builder<EmptyDependency>, BackgroundControllerBuildable {
+final class BackgroundControllerBuilder: Builder<BackgroundDependency>, BackgroundControllerBuildable {
     func build() -> BackgroundControlling {
-        return BackgroundController()
+        let dependencyProvider = BackgroundControllerDependencyProvider(dependency: dependency)
+        return BackgroundController(exposureController: dependencyProvider.dependency.exposureController)
     }
 }

@@ -62,6 +62,9 @@ targets:
                 UISceneConfigurationName: Default Configuration
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
+        BGTaskSchedulerPermittedIdentifiers:
+          - "nl.rijksoverheid.en.refersh"
+          - "nl.rijksoverheid.en.clean"
 
                 
     dependencies:

@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import BackgroundTasks
 import Foundation
 import UIKit
 
@@ -43,5 +44,10 @@ import UIKit
     @objc
     public func didEnterBackground() {
         appEntryPoint?.didEnterBackground()
+    }
+
+    @objc
+    public func handle(backgroundTask: BGTask) {
+        appEntryPoint?.handle(backgroundTask: backgroundTask)
     }
 }

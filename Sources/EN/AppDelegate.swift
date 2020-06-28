@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import BackgroundTasks
 import UIKit
 
 @UIApplicationMain
@@ -27,6 +28,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Note: This needs to be set before application:didFinishLaunchingWithOptions: returns
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
+
+        // Note: This needs to be set before application:didFinishLaunchingWithOptions: returns
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.refersh", using: nil) { task in
+            self.handle(backgroundTask: task)
+        }
+
+        // Note: This needs to be set before application:didFinishLaunchingWithOptions: returns
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.clean", using: nil) { task in
+            self.handle(backgroundTask: task)
+        }
+
         return true
     }
 
@@ -44,6 +56,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+    }
+
+    // MARK: - Private
+
+    @available(iOS 13, *)
+    private func handle(backgroundTask: BGTask) {
+        // Note: This needs to be run on the main thread
+        DispatchQueue.main.async {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                let sceneDelegate = windowScene.delegate as? SceneDelegate else {
+                return print("🔥 SceneDelegate is `nil`")
+            }
+            sceneDelegate.handle(backgroundTask: backgroundTask)
+        }
     }
 }
 

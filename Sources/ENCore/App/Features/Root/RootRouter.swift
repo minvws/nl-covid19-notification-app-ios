@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import BackgroundTasks
 import Combine
 import UIKit
 
@@ -43,7 +44,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          exposureStateStream: ExposureStateStreaming,
          developerMenuBuilder: DeveloperMenuBuildable,
          mutablePushNotificationStream: MutablePushNotificationStreaming,
-         networkController: NetworkControlling) {
+         networkController: NetworkControlling,
+         backgroundController: BackgroundControlling) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.messageBuilder = messageBuilder
@@ -55,6 +57,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.mutablePushNotificationStream = mutablePushNotificationStream
 
         self.networkController = networkController
+        self.backgroundController = backgroundController
 
         super.init(viewController: viewController)
 
@@ -110,6 +113,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didEnterBackground() {
         networkController.stopObservingNetworkReachability()
+        backgroundController.scheduleTasks()
+    }
+
+    func handle(backgroundTask: BGTask) {
+        backgroundController.handle(task: backgroundTask)
     }
 
     // MARK: - RootRouting
@@ -188,6 +196,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     private let networkController: NetworkControlling
+    private let backgroundController: BackgroundControlling
 
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
