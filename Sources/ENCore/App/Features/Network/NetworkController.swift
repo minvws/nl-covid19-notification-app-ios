@@ -104,9 +104,9 @@ final class NetworkController: NetworkControlling {
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError> {
         return Deferred {
             Future { promise in
-                let padding = self.cryptoUtility.randomBytes(ofLength: 32).base64EncodedString()
+                let padding = self.cryptoUtility.randomBytes(ofLength: 32)
                 let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
-                                              bucketID: labConfirmationKey.bucketIdentifier.base64EncodedString(),
+                                              bucketID: labConfirmationKey.bucketIdentifier,
                                               padding: padding)
 
                 guard let requestData = try? JSONEncoder().encode(request) else {

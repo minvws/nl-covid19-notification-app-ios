@@ -221,14 +221,20 @@ final class NetworkManager: NetworkManaging {
             request.addValue(value, forHTTPHeaderField: header.rawValue)
         }
 
-        if let body = body.map({ try? self.jsonEncoder.encode(AnyEncodable($0)) }) {
-            request.httpBody = body
+        if let body = body.flatMap({ try? self.jsonEncoder.encode(AnyEncodable($0)) }),
+            let bodyString = String(data: body, encoding: .utf8) {
+
+            // DataPower cannot handle escaped forward slashes in a JSON payload - so replace them
+            // This seems wrong given https://stackoverflow.com/questions/58815041/why-does-encoding-a-string-with-jsonencoder-adds-a-backslash
+            let unescapedBodyString = bodyString.replacingOccurrences(of: "\\/", with: "/")
+
+            request.httpBody = unescapedBodyString.data(using: .utf8)
         }
 
         #if DEBUG
             if let url = request.url { print(url) }
             if let allHTTPHeaderFields = request.allHTTPHeaderFields { print(allHTTPHeaderFields) }
-            if let httpBody = request.url { print(httpBody) }
+            if let httpBody = request.httpBody { print(String(data: httpBody, encoding: .utf8)!) }
         #endif
 
         return .success(request)

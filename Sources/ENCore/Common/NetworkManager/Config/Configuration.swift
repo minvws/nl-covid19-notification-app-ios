@@ -49,16 +49,16 @@ struct NetworkConfiguration {
         name: "ACC",
         api: .init(
             scheme: "https",
-            host: "mss-standalone-acc.azurewebsites.net",
+            host: "api-ota.alleensamenmelden.nl",
             port: nil,
-            path: ["v1"],
+            path: ["mss-acc", "v1"],
             certificate: nil
         ),
         cdn: .init(
             scheme: "https",
-            host: "mss-standalone-acc.azurewebsites.net",
+            host: "api-ota.alleensamenmelden.nl",
             port: nil,
-            path: ["v1"],
+            path: ["mss-acc", "v1"],
             certificate: nil
         )
     )
@@ -133,9 +133,8 @@ struct NetworkConfiguration {
     }
 
     private var urlQueryEncodedCharacterSet: CharacterSet = {
-        var characterSet = CharacterSet.urlQueryAllowed
-        characterSet.remove("+")
-
+        // specify characters which are allowed to be unespaced in the queryString, note the `inverted`
+        let characterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted
         return characterSet
     }()
 }
