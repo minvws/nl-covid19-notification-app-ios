@@ -25,17 +25,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             return true
         }
-        // Note: This needs to be set before application:didFinishLaunchingWithOptions: returns
+        // Note: The follwoing needs to be set before application:didFinishLaunchingWithOptions: returns
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
 
-        // Note: This needs to be set before application:didFinishLaunchingWithOptions: returns
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.refersh", using: nil) { task in
-            self.handle(backgroundTask: task)
-        }
-
-        // Note: This needs to be set before application:didFinishLaunchingWithOptions: returns
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.clean", using: nil) { task in
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.background_task", using: nil) { task in
             self.handle(backgroundTask: task)
         }
 

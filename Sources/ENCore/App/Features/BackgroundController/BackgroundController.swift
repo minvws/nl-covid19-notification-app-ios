@@ -16,8 +16,7 @@ import Foundation
 final class BackgroundController: BackgroundControlling {
 
     private struct Constants {
-        static let clean = "nl.rijksoverheid.en.clean"
-        static let refresh = "nl.rijksoverheid.en.refersh"
+        static let backgroundTask = "nl.rijksoverheid.en.background_task"
     }
 
     // MARK: - Init
@@ -29,22 +28,16 @@ final class BackgroundController: BackgroundControlling {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
-        scheduleRefresh()
-        scheduleDatabaseCleaningIfNeeded()
+        scheduleUpdate()
     }
 
     func handle(task: BGTask) {
         switch task.identifier {
-        case Constants.clean:
+        case Constants.backgroundTask:
             guard let task = task as? BGProcessingTask else {
                 return print("🔥 Task is not of type `BGProcessingTask`")
             }
-            handleClean(task: task)
-        case Constants.refresh:
-            guard let task = task as? BGAppRefreshTask else {
-                return print("🔥 Task is not of type `BGAppRefreshTask`")
-            }
-            handleRefresh(task: task)
+            handleUpdate(task: task)
         default:
             print("🔥 No Handler for: \(task.identifier)")
         }
@@ -54,8 +47,8 @@ final class BackgroundController: BackgroundControlling {
 
     private let exposureController: ExposureControlling
 
-    private func scheduleRefresh() {
-        let request = BGAppRefreshTaskRequest(identifier: Constants.refresh)
+    private func scheduleUpdate() {
+        let request = BGAppRefreshTaskRequest(identifier: Constants.backgroundTask)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // Fetch no earlier than 15 minutes from now
 
         do {
@@ -66,12 +59,10 @@ final class BackgroundController: BackgroundControlling {
         print("🐞 Done")
     }
 
-    private func scheduleDatabaseCleaningIfNeeded() {
-        // TODO:
-    }
+    private func handleUpdate(task: BGProcessingTask) {
+        scheduleUpdate()
 
-    private func handleRefresh(task: BGAppRefreshTask) {
-        scheduleRefresh()
+        // TODO: Order of operations `Refresh`, `Upload Pending Requests`, `Cleanup`
 
         task.expirationHandler = {
             // TODO: `exposureController.fetchAndProcessExposureKeySets` should be cancelled
@@ -82,9 +73,5 @@ final class BackgroundController: BackgroundControlling {
             task.setTaskCompleted(success: true)
             print("🐞 Fetched & Processed Exposure Keys")
         }
-    }
-
-    private func handleClean(task: BGProcessingTask) {
-        // TODO:
     }
 }

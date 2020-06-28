@@ -63,8 +63,7 @@ targets:
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         BGTaskSchedulerPermittedIdentifiers:
-          - "nl.rijksoverheid.en.refersh"
-          - "nl.rijksoverheid.en.clean"
+          - "nl.rijksoverheid.en.background_task"
 
                 
     dependencies:
