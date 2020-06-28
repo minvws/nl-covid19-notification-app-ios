@@ -169,7 +169,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Download and Process New KeySets",
                               subtitle: "Last time: \(getLastExposureFetchString())",
                               action: { [weak self] in self?.fetchAndProcessKeySets() },
-                              enabled: !isFetchingKeys)
+                              enabled: !isFetchingKeys),
+                DeveloperItem(title: "Process Pending Upload Requests",
+                              subtitle: "Pending Requests: \(getPendingUploadRequests())",
+                              action: { [weak self] in self?.processPendingUploadRequests() })
             ]),
             ("Networking", [
                 DeveloperItem(title: "Network Configuration",
@@ -345,7 +348,21 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         }
     }
 
+    private func processPendingUploadRequests() {
+        exposureController.processPendingUploadRequests { [weak self] in
+            self?.internalView.tableView.reloadData()
+        }
+    }
+
     // MARK: - Private
+
+    private func getPendingUploadRequests() -> String {
+        guard let pendingRequests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) else {
+            return "None"
+        }
+
+        return "\(pendingRequests.count)"
+    }
 
     private func getLastStoredConfirmationKey() -> String {
         storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)?.identifier ?? "None"

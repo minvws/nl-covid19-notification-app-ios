@@ -17,6 +17,7 @@ protocol ExposureControlling {
 
     func refreshStatus()
     func updateWhenRequired()
+    func processPendingUploadRequests(_ completion: @escaping () -> ())
 
     // MARK: - Permissions
 

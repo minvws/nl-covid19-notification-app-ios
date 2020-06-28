@@ -100,6 +100,12 @@ final class ExposureDataController: ExposureDataControlling {
 
     // MARK: - LabFlow
 
+    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
+        let operation = operationProvider.processPendingLabConfirmationUploadRequestsOperation
+
+        return operation.execute()
+    }
+
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
         let operation = operationProvider.requestLabConfirmationKeyOperation
 

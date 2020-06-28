@@ -29,6 +29,7 @@ protocol ExposureDataControlling {
 
     // MARK: - Lab Flow
 
+    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
 }

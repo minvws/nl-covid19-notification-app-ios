@@ -77,6 +77,16 @@ final class ExposureController: ExposureControlling {
         }
     }
 
+    func processPendingUploadRequests(_ completion: @escaping () -> ()) {
+        dataController
+            .processPendingUploadRequests()
+            .sink(receiveCompletion: { _ in
+                completion()
+            },
+            receiveValue: { _ in })
+            .store(in: &disposeBag)
+    }
+
     func requestExposureNotificationPermission() {
         exposureManager?.setExposureNotificationEnabled(true) { _ in
             self.updateStatusStream()
