@@ -3,6 +3,18 @@ name: EN
 options:
   developmentLanguage: $(DEVELOPMENT_LANGUAGE)
 
+packages:
+  Reachability:
+    path: vendor/Reachability.swift
+  SnapKit:
+    path: vendor/SnapKit
+  Lottie:
+    path: vendor/lottie-ios
+  SnapshotTesting:
+    path: vendor/swift-snapshot-testing
+  ZIPFoundation:
+    path: vendor/ZIPFoundation
+
 targets:
   EN:
     platform: iOS
@@ -92,10 +104,10 @@ targets:
         SWIFT_VERSION: 5.2
         OTHER_LDFLAGS: -weak_framework ExposureNotification
     dependencies:
-      - carthage: ZIPFoundation
-      - carthage: SnapKit
-      - carthage: Lottie
-      - carthage: Reachability
+      - package: ZIPFoundation
+      - package: SnapKit
+      - package: Lottie
+      - package: Reachability
       - sdk: ExposureNotification.framework
         optional: true
     scheme:
@@ -115,7 +127,7 @@ targets:
       - Sources/ENCoreUnitTests
     dependencies:
       - target: ENCore
-      - carthage: SnapshotTesting
+      - package: SnapshotTesting
     settings:
       base:
         SWIFT_VERSION: 5.2

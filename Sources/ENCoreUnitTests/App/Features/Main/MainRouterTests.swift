@@ -17,6 +17,7 @@ final class MainRouterTests: XCTestCase {
     private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
     private let requestTestBuilder = RequestTestBuildableMock()
     private let infectedBuilder = InfectedBuildableMock()
+    private let helpBuilder = HelpBuildableMock()
 
     private var router: MainRouter!
 
@@ -29,7 +30,8 @@ final class MainRouterTests: XCTestCase {
                             aboutBuilder: aboutBuilder,
                             receivedNotificationBuilder: receivedNotificationBuilder,
                             requestTestBuilder: requestTestBuilder,
-                            infectedBuilder: infectedBuilder)
+                            infectedBuilder: infectedBuilder,
+                            helpBuilder: helpBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
@@ -122,19 +124,19 @@ final class MainRouterTests: XCTestCase {
         XCTAssert(receivedListener === viewController)
     }
 
-    func test_routeToAboutApp_callsBuildAndPresent() {
-        aboutBuilder.buildHandler = { _ in AboutViewControllableMock() }
+    func test_routeToHelp_callsBuildAndPresent() {
+        helpBuilder.buildHandler = { _, _ in RoutingMock() }
 
-        XCTAssertEqual(aboutBuilder.buildCallCount, 0)
+        XCTAssertEqual(helpBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.presentCallCount, 0)
 
         router.routeToAboutApp()
 
         XCTAssertEqual(viewController.presentCallCount, 1)
-        XCTAssertEqual(aboutBuilder.buildCallCount, 1)
+        XCTAssertEqual(helpBuilder.buildCallCount, 1)
     }
 
-    func test_detachAboutApp_shouldHideViewController_callsViewController() {
+    func test_detachHelp_shouldHideViewController_callsViewController() {
         router.routeToAboutApp()
 
         XCTAssertEqual(viewController.dismissCallCount, 0)

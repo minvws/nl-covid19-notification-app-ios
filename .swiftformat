@@ -15,4 +15,4 @@
 --hexgrouping none 
 --semicolons inline 
 --disable isEmpty,typeSugar,redundantSelf,unusedArguments,redundantBackticks,redundantReturn,linebreakAtEndOfFile,blankLinesAtStartOfScope,blankLinesBetweenScopes 
---exclude Carthage
+--exclude vendor
