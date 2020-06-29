@@ -314,7 +314,7 @@ final class ExposureControllerTests: XCTestCase {
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
 
-        controller.updateWhenRequired()
+        controller.updateWhenRequired {}
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }

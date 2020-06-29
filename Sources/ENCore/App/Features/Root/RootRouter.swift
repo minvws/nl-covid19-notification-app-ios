@@ -108,7 +108,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didEnterForeground() {
         exposureController.refreshStatus()
-        exposureController.updateWhenRequired()
+        exposureController.updateWhenRequired {}
         networkController.startObservingNetworkReachability()
     }
 

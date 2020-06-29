@@ -6,6 +6,7 @@
  */
 
 import BackgroundTasks
+import Combine
 import ExposureNotification
 import Foundation
 
@@ -17,13 +18,17 @@ import Foundation
 final class BackgroundController: BackgroundControlling {
 
     private struct Constants {
-        static let backgroundTask = "nl.rijksoverheid.en.background-update"
+        static let backgroundUpdateTask = "nl.rijksoverheid.en.background-update"
     }
 
     // MARK: - Init
 
     init(exposureController: ExposureControlling) {
         self.exposureController = exposureController
+    }
+
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - BackgroundControlling
@@ -34,7 +39,7 @@ final class BackgroundController: BackgroundControlling {
 
     func handle(task: BGTask) {
         switch task.identifier {
-        case Constants.backgroundTask:
+        case Constants.backgroundUpdateTask:
             guard let task = task as? BGProcessingTask else {
                 return print("🔥 Task is not of type `BGProcessingTask`")
             }
@@ -48,12 +53,13 @@ final class BackgroundController: BackgroundControlling {
     // MARK: - Private
 
     private let exposureController: ExposureControlling
+    private var disposeBag = Set<AnyCancellable>()
 
     private func scheduleUpdate() {
         guard ENManager.authorizationStatus == .authorized else {
             return print("🔥 `ENManager.authorizationStatus` not authorized")
         }
-        let request = BGProcessingTaskRequest(identifier: Constants.backgroundTask)
+        let request = BGProcessingTaskRequest(identifier: Constants.backgroundUpdateTask)
         request.requiresNetworkConnectivity = true
         request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // TODO: Should be updated with values from AppConfig
 
@@ -66,17 +72,35 @@ final class BackgroundController: BackgroundControlling {
     }
 
     private func handleUpdate(task: BGProcessingTask) {
-        // TODO: Order of operations `Refresh`, `Upload Pending Requests`, `Cleanup`
+        let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
+            exposureController.updateWhenRequiredPublisher,
+            exposureController.processPendingUploadRequestsPublisher
+        ]
+
+        // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
+        let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.compactMap { $0() })
+            // execute them on by one
+            .flatMap(maxPublishers: .max(1)) { $0 }
+            // wait until all of them are done and collect them in an array
+            // subsicbe to the result
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .finished:
+                    print("🐞 Finished Background Updating")
+                    task.setTaskCompleted(success: true)
+                case let .failure(error):
+                    print("🔥 Error completiting sequence \(error.localizedDescription)")
+                    task.setTaskCompleted(success: false)
+                }
+            }, receiveValue: { _ in
+                print("🐞 Completed task")
+            })
 
         // Handle running out of time
         task.expirationHandler = {
-            // TODO: `exposureController.fetchAndProcessExposureKeySets` should be cancelled
-            print("🔥 Task should be cancelled")
+            cancellable.cancel()
         }
 
-        exposureController.fetchAndProcessExposureKeySets {
-            print("🐞 Fetched & Processed Exposure Keys")
-            task.setTaskCompleted(success: true)
-        }
+        cancellable.store(in: &disposeBag)
     }
 }

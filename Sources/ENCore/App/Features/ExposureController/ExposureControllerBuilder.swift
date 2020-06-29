@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
 
 /// @mockable
@@ -16,8 +17,12 @@ protocol ExposureControlling {
     // MARK: - Updates
 
     func refreshStatus()
-    func updateWhenRequired()
+
+    func updateWhenRequired(_ completion: @escaping () -> ())
+    func updateWhenRequiredPublisher() -> AnyPublisher<(), ExposureDataError>
+
     func processPendingUploadRequests(_ completion: @escaping () -> ())
+    func processPendingUploadRequestsPublisher() -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Permissions
 
@@ -27,6 +32,7 @@ protocol ExposureControlling {
     // MARK: - Exposure KeySets
 
     func fetchAndProcessExposureKeySets(_ completion: @escaping () -> ())
+    func fetchAndProcessExposureKeySetsPublisher() -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Exposure Notification
 

@@ -37,9 +37,9 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
 
         let helpOverviewViewController = helpOverviewBuilder.build(withListener: viewController,
                                                                    shouldShowEnableAppButton: shouldShowEnableAppButton)
-        
+
         self.helpOverviewViewController = helpOverviewViewController
-        
+
         viewController.push(viewController: helpOverviewViewController, animated: false)
     }
 
@@ -60,7 +60,7 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
             viewController.dismiss(viewController: helpOverviewViewController, animated: true)
         }
     }
-    
+
     func detachHelpDetail(shouldDismissViewController: Bool) {
         guard let helpDetailViewController = helpDetailViewController else { return }
         self.helpDetailViewController = nil
