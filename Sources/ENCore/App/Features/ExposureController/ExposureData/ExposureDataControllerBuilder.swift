@@ -22,10 +22,10 @@ protocol ExposureDataControlling {
 
     // MARK: - Exposure Detection
 
-    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
     var lastExposure: ExposureReport? { get }
     var lastSuccessfulFetchDate: Date { get }
     func removeLastExposure() -> Future<(), Never>
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Lab Flow
 

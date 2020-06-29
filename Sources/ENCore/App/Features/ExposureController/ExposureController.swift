@@ -51,7 +51,7 @@ final class ExposureController: ExposureControlling {
             .sink { [weak self] _ in
                 // update the first time the app becomes active
                 self?.updateStatusStream()
-                self?.updateWhenRequired()
+                self?.updateWhenRequired {}
             }
             .store(in: &disposeBag)
 
@@ -59,7 +59,7 @@ final class ExposureController: ExposureControlling {
             .networkStatusStream
             .sink { [weak self] _ in
                 self?.refreshStatus()
-                self?.updateWhenRequired()
+                self?.updateWhenRequired {}
             }
             .store(in: &disposeBag)
     }
@@ -68,18 +68,29 @@ final class ExposureController: ExposureControlling {
         updateStatusStream()
     }
 
-    func updateWhenRequired() {
+    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
         // update when active, or when inactive due to no recent updates
-        guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else { return }
-
-        fetchAndProcessExposureKeySets {
-            // done
+        guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else {
+            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+        return fetchAndProcessExposureKeySets()
+    }
+
+    func updateWhenRequired(_ completion: @escaping () -> ()) {
+        // update when active, or when inactive due to no recent updates
+        guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else {
+            return completion()
+        }
+        fetchAndProcessExposureKeySets(completion)
+    }
+
+    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
+        return dataController
+            .processPendingUploadRequests()
     }
 
     func processPendingUploadRequests(_ completion: @escaping () -> ()) {
-        dataController
-            .processPendingUploadRequests()
+        processPendingUploadRequests()
             .sink(receiveCompletion: { _ in
                 completion()
             },
@@ -111,25 +122,29 @@ final class ExposureController: ExposureControlling {
         }
     }
 
-    func fetchAndProcessExposureKeySets(_ completion: @escaping () -> ()) {
+    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
         guard let exposureManager = exposureManager else {
             // no exposureManager, nothing to do
-            completion()
-            return
+            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
         guard exposureKeyUpdateCancellable == nil else {
             // already fetching
-            completion()
-            return
+            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        exposureKeyUpdateCancellable = dataController
+        return dataController
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
-            .sink(receiveCompletion: { [weak self] _ in
+            .handleEvents(receiveOutput: { [weak self] _ in
                 self?.updateStatusStream()
                 self?.exposureKeyUpdateCancellable = nil
+            })
+            .eraseToAnyPublisher()
+    }
 
+    func fetchAndProcessExposureKeySets(_ completion: @escaping () -> ()) {
+        exposureKeyUpdateCancellable = fetchAndProcessExposureKeySets()
+            .sink(receiveCompletion: { _ in
                 completion()
             },
             receiveValue: { _ in })

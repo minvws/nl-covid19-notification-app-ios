@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
 
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.background-update", using: .main) { task in
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.background-update", using: nil) { task in
             self.handle(backgroundTask: task)
         }
 
