@@ -1,0 +1,327 @@
+name: Project
+include: [environments.yml]
+options:
+  bundleIdPrefix: com.project
+  usesTabs: false
+  indentWidth: 2
+  tabWidth: 2
+  transitivelyLinkDependencies: true
+  deploymentTarget:
+    watchOS: 4.0
+  groupSortPosition: top
+  preGenCommand: echo "This is a pre-gen command"
+  postGenCommand: scripts/script.sh
+fileGroups:
+  - Configs
+  - FileGroup
+  - SomeFile
+projectReferences:
+  AnotherProject:
+    path: ./AnotherProject/AnotherProject.xcodeproj
+configFiles:
+  Test Debug: Configs/config.xcconfig
+targets:
+  Legacy:
+    type: ""
+    platform: iOS
+    legacy:
+      toolPath: /usr/bin/true
+      passSettings: true
+
+  App_macOS:
+    type: application
+    platform: macOS
+    scheme: {}
+    info:
+      path: App_macOS/Info.plist
+      properties:
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        NSMainStoryboardFile: Main
+        NSPrincipalClass: NSApplication
+        CFBundleIconFile: ""
+        CustomSetting: $CUSTOM_SETTING
+    attributes:
+      ProvisioningStyle: Automatic
+    sources:
+      - path: App_macOS
+      - path: StandaloneFiles/Standalone.swift
+      - path: Vendor/SomeXPCService.xpc
+      - path: NonExisting
+        optional: true
+    dependencies:
+      - target: Framework_macOS
+      - target: XPC Service
+      - sdk: Contacts.framework
+      - sdk: libc++.tbd
+      - sdk: libz.dylib
+
+  App_iOS:
+    type: application
+    platform: iOS
+    attributes:
+      ProvisioningStyle: Automatic
+    sources:
+      - StandaloneFiles/StandaloneAssets.xcassets
+      - path: App_iOS
+        name: App
+        compilerFlags:
+          - "-Werror"
+        excludes:
+          - "**/excluded-file"
+          - "excluded-file"
+          - "Model.xcmappingmodel"
+      - path: App_iOS
+        name: App
+        includes:
+          - "Model.xcmappingmodel"
+      - path: StandaloneFiles/Standalone.swift
+      - FileGroup/UnderFileGroup
+      - Resources/MyBundle.bundle
+      - Resources/SceneKitCatalog.scnassets
+      - path: Resources/ResourceFolder
+        type: folder
+      - path: Folder
+        type: folder
+        buildPhase: none
+        group: CustomGroup
+      - path: Mintfile
+        type: file
+        buildPhase: none
+        group: CustomGroup
+      - path: Group/File1.swift
+        group: CustomGroup
+      - path: Group2/File2.swift
+        group: CustomGroup
+      - path: CopyFiles
+        buildPhase:
+          copyFiles:
+            destination: productsDirectory
+            subpath: include/$(PRODUCT_NAME)
+      - path: Resources/example.mp4
+        buildPhase: resources
+        resourceTags:
+          - tag1
+          - tag2
+    settings:
+      INFOPLIST_FILE: App_iOS/Info.plist
+      PRODUCT_BUNDLE_IDENTIFIER: com.project.app
+    dependencies:
+      - target: Framework_iOS
+      - target: StaticLibrary_ObjC_iOS
+      - carthage: Result
+      - carthage: SwiftyJSON
+        linkType: static
+      - target: Framework2_iOS
+        weak: true
+      - target: App_watchOS
+      - target: iMessageApp
+      - sdk: Contacts.framework
+      - bundle: BundleX.bundle
+      - target: AnotherProject/ExternalTarget
+    scheme:
+      testTargets:
+        - App_iOS_Tests
+        - App_iOS_UITests
+      gatherCoverageData: true
+      disableMainThreadChecker: true
+      stopOnEveryMainThreadCheckerIssue: true
+      configVariants:
+        - Test
+        - Staging
+        - Production
+      commandLineArguments:
+          MyEnabledArgument: true
+          MyDisabledArgument: false
+    postbuildScripts:
+      - path: scripts/strip-frameworks.sh
+        name: Strip Unused Architectures from Frameworks
+        runOnlyWhenInstalling: true
+      - name: MyScript
+        script: |
+          echo "You ran a script!"
+        inputFileLists:
+          - App_iOS/inputList.xcfilelist
+        outputFileLists:
+          - App_iOS/outputList.xcfilelist
+
+  EntitledApp:
+    type: application
+    platform: iOS
+    entitlements:
+      path: App_iOS/App.entitlements
+      properties:
+        com.apple.security.application-groups: group.com.app
+
+  App_watchOS:
+      type: application.watchapp2
+      platform: watchOS
+      deploymentTarget: 4.0
+      sources:
+        App_watchOS
+      settings:
+        PRODUCT_BUNDLE_IDENTIFIER: com.project.app.watch
+      dependencies:
+        - target: App_watchOS Extension
+      templates: [MyTemplate]
+
+  App_watchOS Extension:
+      type: watchkit2-extension
+      platform: watchOS
+      sources:
+        App_watchOS Extension
+      settings:
+        PRODUCT_BUNDLE_IDENTIFIER: com.project.app.watch.extension
+      dependencies:
+        - carthage: Result
+          link: false
+
+  iMessageApp:
+    type: application.messages
+    platform: iOS
+    sources: iMessageApp
+    scheme: {}
+    dependencies:
+      - target: iMessageExtension
+
+  iMessageExtension:
+    type: app-extension.messages
+    platform: iOS
+    sources: iMessageExtension
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.project.iMessageApp.extension
+
+  iMessageStickersExtension:
+    type: app-extension.messages-sticker-pack
+    platform: iOS
+    sources:       
+      - path: iMessageStickers
+
+  StaticLibrary_ObjC:
+    type: library.static
+    platform: [iOS, tvOS, watchOS, macOS]
+    sources: StaticLibrary_ObjC
+
+  StaticLibrary_Swift:
+    type: library.static
+    platform: iOS
+    sources: StaticLibrary_Swift
+
+  Framework:
+    type: framework
+    platform: [iOS, tvOS, watchOS, macOS]
+    sources:
+      - path: Framework
+        excludes:
+          - "*.xcodeproj"
+      - path: Headers
+        buildPhase: headers
+        type: folder
+        headerVisibility: public
+    postbuildScripts:
+      - name: MyScript
+        path: scripts/script.sh
+    dependencies:
+      - carthage: Result
+      - target: StaticLibrary_ObjC_${platform}
+
+  Framework2:
+    type: framework
+    platform: [iOS, tvOS, watchOS, macOS]
+    sources:
+      - path: Framework
+        excludes:
+          - "*.xcodeproj"
+  TestFramework:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Framework
+        excludes:
+          - "*.xcodeproj"
+    depencencies:
+      - sdk: Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework
+        root: DEVELOPER_DIR
+
+  App_iOS_Tests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: App_iOS_Tests
+    dependencies:
+      - target: App_iOS
+      - target: TestFramework
+      - carthage: swift-tagged
+        linkType: static
+  App_iOS_UITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: App_iOS_UITests
+    dependencies:
+      - target: App_iOS
+      
+  App_macOS_Tests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: App_macOS_Tests
+    dependencies:
+      - target: App_macOS
+
+  XPC Service:
+    type: xpc-service
+    platform: macOS
+    sources:
+      - path: XPC Service
+
+  Tool:
+    type: tool
+    platform: macOS
+    sources: [Tool]
+    scheme: {}
+
+schemes:
+  Framework:
+    build:
+      parallelizeBuild: false
+      buildImplicitDependencies: false
+      targets:
+        Framework_iOS: all
+      preActions:
+        - script: echo Starting Framework Build
+          settingsTarget: Framework_iOS
+    run:
+      commandLineArguments:
+        argument: YES
+        argument.with.dot: YES
+    test:
+      gatherCoverageData: true
+      language: ja
+      region: en
+  App_Scheme:
+    build:
+      targets:
+        App_iOS: all    
+    run:
+      simulateLocation:
+        allow: true
+        defaultLocation: Honolulu, HI, USA
+    test:
+      gatherCoverageData: true
+      targets:
+        - App_iOS_UITests
+        - name: App_iOS_Tests
+          parallelizable: true
+          randomExecutionOrder: true
+targetTemplates:
+  MyTemplate:
+    scheme: {}
+aggregateTargets:
+  SuperTarget:
+    attributes:
+      CUSTOM: value
+    targets:
+      - App_iOS
+      - Framework_iOS
+    settings:
+      MY_SETTING: hello
+    buildScripts:
+      - name: MyScript
+        script: echo "do the thing"

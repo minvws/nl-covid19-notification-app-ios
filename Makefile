@@ -6,7 +6,7 @@ XCODE_TEMPLATE_PATH_DST="${HOME}/Library/Developer/Xcode/Templates/File Template
 
 # Creates xcodeproj
 project:
-	xcodegen
+	vendor/XcodeGen/.build/release/xcodegen
 	open EN.xcodeproj
 
 # Initializes dev environment
@@ -20,7 +20,7 @@ install_xcode_templates:
 ignore_mocks_changes:
 	git update-index --skip-worktree Sources/ENCoreUnitTests/Mocks.swift 
 
-install_dev_deps: check_homebrew_installed install_xcodegen install_swiftformat build_mockolo
+install_dev_deps: check_homebrew_installed build_xcodegen build_swiftformat build_mockolo
 	@echo "All dependencies are installed"
 	@echo "You're ready to go"
 
@@ -29,23 +29,15 @@ ifeq (, $(shell which brew))
  $(error "Please install homebrew (https://brew.sh) to continue")
 endif
 
-install_xcodegen:
-# install xcodegen, used for project generation
-ifeq (, $(shell which xcodegen))
-	@echo "Installing xcodegen"
-	@brew install xcodegen
-endif
-
 build_mockolo:
 	cd vendor/mockolo && swift build -c release
 
-install_swiftformat:
-# install swiftformat - standardised formatting of the codebase
-ifeq (, $(shell which swiftformat))
-	@echo "Installing swiftformat"
-	@brew install swiftformat
-endif
-	@eval $(shell sh tools/scripts/pre-commit.sh)
+build_xcodegen:
+	cd vendor/XcodeGen && swift build -c release
+
+build_swiftformat:
+	cd vendor/SwiftFormat && swift build -c release
+	$(shell sh tools/scripts/pre-commit.sh)
 
 push_notification:
 	@xcrun simctl push booted nl.rijksoverheid.en tools/push/payload.apns

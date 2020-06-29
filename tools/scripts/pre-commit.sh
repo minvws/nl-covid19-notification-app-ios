@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SWIFTFORMAT_PATH=`which swiftformat`
+SWIFTFORMAT_PATH="vendor/SwiftFormat/.build/release/swiftformat"
 
 cat > .git/hooks/pre-commit << ENDOFFILE
 #!/bin/sh

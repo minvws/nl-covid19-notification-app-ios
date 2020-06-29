@@ -1,0 +1,39 @@
+include: recursive_test/recursive_test.yml
+configFiles:
+  IncludedConfig: config
+projectReferences:
+  ProjX: { path: ../TestProject/Project.xcodeproj }
+targets:
+  IncludedTarget:
+    type: application
+    platform: tvOS
+    configFiles:
+      Config: config
+    sources:
+      - simplesource
+      - path: source
+        excludes: [file]
+    dependencies:
+      - framework: Framework
+    info:
+      path: info
+    entitlements:
+      path: entitlements
+    preBuildScripts:
+    - path: preBuildScript
+    postCompileScripts:
+    - path: postCompileScript
+    postBuildScripts:
+    - path: postBuildScript
+aggregateTargets:
+  IncludedAggregateTarget:
+    targets:
+      - IncludedTarget
+    configFiles:
+      Config: config
+    buildScripts:
+    - path: buildScript
+targetTemplates:
+  Template1:
+    sources:
+      - template_source
