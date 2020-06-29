@@ -35,6 +35,8 @@ final class HelpDetailViewController: ViewController {
         internalView.contentTextView.attributedText = question.attributedAnswer
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
         internalView.acceptButton.isHidden = !shouldShowEnableAppButton
+
+        navigationItem.rightBarButtonItem = closeBarButtonItem
     }
 
     @objc func acceptButtonPressed() {
@@ -51,6 +53,9 @@ final class HelpDetailViewController: ViewController {
     private let shouldShowEnableAppButton: Bool
     private let question: HelpQuestion
     private lazy var internalView: HelpView = HelpView(theme: self.theme)
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                          target: self,
+                                                          action: #selector(closeButtonPressed))
 }
 
 private final class HelpView: View {

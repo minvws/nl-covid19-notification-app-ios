@@ -67,7 +67,6 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
 
         router?.detachHelpDetail(shouldDismissViewController: true)
         self.listener?.helpRequestsEnableApp()
-
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -80,8 +79,6 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        navigationItem.rightBarButtonItem = closeBarButtonItem
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -99,7 +96,4 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
     private weak var listener: HelpListener?
     private let shouldShowEnableAppButton: Bool
     private let exposureController: ExposureControlling
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-        target: self,
-        action: #selector(didTapClose))
 }
