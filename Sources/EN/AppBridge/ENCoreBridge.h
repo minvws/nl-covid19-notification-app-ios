@@ -11,6 +11,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
+#import <BackgroundTasks/BackgroundTasks.h>
 
 @interface ENCoreBridge: NSObject
 + (BOOL)isAppRootAvailable;
@@ -22,6 +23,7 @@
 - (void)didReceiveRemoteNotification:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler;
 - (void)didEnterForeground;
 - (void)didEnterBackground;
+- (void)handleBackgroundTask:(BGTask *)task API_AVAILABLE(ios(13.0));
 
 @end
 

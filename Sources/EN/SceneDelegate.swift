@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import BackgroundTasks
 import UIKit
 
 @available(iOS 13, *)
@@ -22,7 +23,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if ENCoreBridge.isAppRootAvailable() {
             bridge = ENCoreBridge()
             bridge?.attach(to: window)
-            setupPushNotificationHandler()
+
+            (UIApplication.shared.delegate as? AppDelegate)?.setBridge(bridge: bridge)
         } else {
             // Handle OS Update Case
             window.rootViewController = RequiresUpdateViewController()
@@ -67,19 +69,5 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-    }
-
-    // MARK: - Private
-
-    private func setupPushNotificationHandler() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return print("🔥 UIApplication.shared.delegate does not conform to AppDelegate")
-        }
-        guard let bridge = bridge else {
-            return print("🔥 ENCoreBridge is `nil`")
-        }
-        appDelegate.pushNotificationHandler = { center, response, completionHandler in
-            bridge.didReceiveRemoteNotification(center, didReceive: response, withCompletionHandler: completionHandler)
-        }
     }
 }

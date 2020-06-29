@@ -5,13 +5,13 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import BackgroundTasks
 import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var pushNotificationHandler: ((UNUserNotificationCenter, UNNotificationResponse, @escaping () -> ()) -> ())?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -24,9 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             return true
         }
-        // Note: This needs to be set before application:didFinishLaunchingWithOptions: returns
+        // Note: The following needs to be set before application:didFinishLaunchingWithOptions: returns
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
+
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.background-update", using: .main) { task in
+            self.handle(backgroundTask: task)
+        }
+
         return true
     }
 
@@ -45,6 +50,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
+
+    func setBridge(bridge: ENCoreBridge?) {
+        self.bridge = bridge
+    }
+
+    // MARK: - Private
+
+    private var bridge: ENCoreBridge?
+
+    @available(iOS 13, *)
+    private func handle(backgroundTask: BGTask) {
+        guard let bridge = bridge else {
+            return print("🔥 ENCoreBridge is `nil`")
+        }
+        bridge.handleBackgroundTask(backgroundTask)
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
@@ -54,8 +75,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> ()) {
-        if let pushNotificationHandler = pushNotificationHandler {
-            pushNotificationHandler(center, response, completionHandler)
-        }
+        bridge?.didReceiveRemoteNotification(center, didReceive: response, withCompletionHandler: completionHandler)
     }
 }

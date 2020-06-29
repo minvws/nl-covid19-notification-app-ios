@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import BackgroundTasks
 import UIKit
 
 /// The App's entry point.
@@ -26,10 +27,13 @@ protocol AppEntryPoint {
 
     /// Should be called when the app did enter the background
     func didEnterBackground()
+
+    // Should handle the background task
+    func handle(backgroundTask: BGTask)
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, BackgroundDependency {
 
     // MARK: - Child Builders
 
@@ -73,7 +77,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }()
 
     lazy var backgroundController: BackgroundControlling = {
-        return BackgroundControllerBuilder().build()
+        return BackgroundControllerBuilder(dependency: self).build()
     }()
 
     /// Local Storage
@@ -131,6 +135,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           exposureStateStream: dependencyProvider.exposureStateStream,
                           developerMenuBuilder: dependencyProvider.developerMenuBuilder,
                           mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
-                          networkController: dependencyProvider.networkController)
+                          networkController: dependencyProvider.networkController,
+                          backgroundController: dependencyProvider.backgroundController)
     }
 }

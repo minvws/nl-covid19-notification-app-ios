@@ -63,4 +63,8 @@
     [_appRoot didEnterBackground];
 }
 
+- (void)handleBackgroundTask:(BGTask *)task API_AVAILABLE(ios(13.0)) {
+    [_appRoot handleWithBackgroundTask:task];
+}
+
 @end
