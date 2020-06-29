@@ -64,7 +64,22 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }()
 
     lazy var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming = {
-        return NetworkConfigurationStream(configuration: .labtest)
+        let networkConfiguration: NetworkConfiguration
+
+        let configurations: [String: NetworkConfiguration] = [
+            NetworkConfiguration.development.name: NetworkConfiguration.development,
+            NetworkConfiguration.labtest.name: NetworkConfiguration.labtest,
+            NetworkConfiguration.acceptance.name: NetworkConfiguration.acceptance,
+            NetworkConfiguration.production.name: NetworkConfiguration.production
+        ]
+
+        if let networkConfigurationValue = Bundle.main.infoDictionary?["NETWORK_CONFIGURATION"] as? String {
+            networkConfiguration = configurations[networkConfigurationValue] ?? .production
+        } else {
+            networkConfiguration = .labtest
+        }
+
+        return NetworkConfigurationStream(configuration: networkConfiguration)
     }()
 
     var networkConfigurationProvider: NetworkConfigurationProvider {

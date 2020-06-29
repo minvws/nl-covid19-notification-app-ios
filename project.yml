@@ -1,8 +1,6 @@
 name: EN
-
 options:
   developmentLanguage: $(DEVELOPMENT_LANGUAGE)
-
 packages:
   Reachability:
     path: vendor/Reachability.swift
@@ -14,7 +12,6 @@ packages:
     path: vendor/swift-snapshot-testing
   ZIPFoundation:
     path: vendor/ZIPFoundation
-
 targets:
   EN:
     platform: iOS
@@ -22,7 +19,6 @@ targets:
     deploymentTarget: "11.0"
     sources:
       - path: Sources/EN
-
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en
@@ -35,6 +31,7 @@ targets:
         DEVELOPMENT_TEAM: C2H38GV99H
         SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
         OTHER_LDFLAGS: -weak_framework ENCore
+        NETWORK_CONFIGURATION: Production
       configs:
         Debug:
           CODE_SIGN_IDENTITY: "Apple Development"
@@ -44,12 +41,10 @@ targets:
           CODE_SIGN_IDENTITY: "Apple Distribution"
           CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Release.entitlements
           PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
-
     info:
       path: Sources/EN/Resources/Info.plist
       properties:
-        BGTaskSchedulerPermittedIdentifiers:
-          [$(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification]
+        BGTaskSchedulerPermittedIdentifiers: [$(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification]
         CFBundleName: EN
         CFBundleDisplayName: EN
         CFBundleShortVersionString: "0.1"
@@ -75,19 +70,16 @@ targets:
           NSAllowsArbitraryLoads: true
         BGTaskSchedulerPermittedIdentifiers:
           - "nl.rijksoverheid.en.background-update"
-
-                
+        NETWORK_CONFIGURATION: ${NETWORK_CONFIGURATION}
     dependencies:
       - target: ENCore
         optional: true
-
     scheme:
       gatherCoverageData: true
       testTargets:
         - name: ENCoreTests
           parallelizable: false
           randomExecutionOrder: true
-
   ENCore:
     platform: iOS
     type: framework
@@ -100,6 +92,13 @@ targets:
         TARGETED_DEVICE_FAMILY: 1
         SWIFT_VERSION: 5.2
         OTHER_LDFLAGS: -weak_framework ExposureNotification
+        USE_DEVELOPER_MENU: false
+      configs:
+        Debug:
+          GCC_PREPROCESSOR_DEFINITIONS: 
+            $(inherited)
+            DEBUG=1
+            USE_DEVELOPER_MENU=$(USE_DEVELOPER_MENU)
     dependencies:
       - package: ZIPFoundation
       - package: SnapKit
@@ -113,7 +112,6 @@ targets:
         - name: ENCoreTests
           parallelizable: false
           randomExecutionOrder: true
-
   ENCoreTests:
     platform: iOS
     type: bundle.unit-test
