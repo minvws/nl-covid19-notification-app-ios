@@ -207,7 +207,7 @@ final class NetworkManager: NetworkManaging {
         }
 
         var request = URLRequest(url: url,
-                                 cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
+                                 cachePolicy: .useProtocolCachePolicy,
                                  timeoutInterval: 10)
         request.httpMethod = method.rawValue
 
@@ -254,30 +254,39 @@ final class NetworkManager: NetworkManaging {
     fileprivate func download(request: URLRequest, completion: @escaping (Result<(URLResponse, URL), NetworkError>) -> ()) {
 
         var request = request
-
         var etagStore = self.storageController.retrieveObject(identifiedBy: ETagStore.key) ?? ETagStore()
 
-        let key = "\(request.hashValue)"
-        if let etag = etagStore.etags[key] {
-            request.addValue(etag, forHTTPHeaderField: HTTPHeaderKey.ifNoneMatch.rawValue)
-        }
+//        let key = "\(request.hashValue)"
+//        if let etag = etagStore.etags[key] {
+//            request.addValue(etag, forHTTPHeaderField: HTTPHeaderKey.ifNoneMatch.rawValue)
+//        }
+
+//        let c: (Result<(URLResponse, URL), NetworkError>) -> () = { result in
+//            guard case let .success(value) = result else {
+//                completion(result)
+//                return
+//            }
+//
+//            let (response, _) = value
+//
+//            guard
+//                let httpResponse = response as? HTTPURLResponse,
+//                httpResponse.statusCode == 200,
+//                let etag = httpResponse.allHeaderFields[HTTPHeaderKey.etag.rawValue] as? String
+//            else {
+//                completion(result)
+//                return
+//            }
+//
+//            // store etag
+        ////            etagStore.etags[key] = etag
+//            self.storageController.store(object: etagStore, identifiedBy: ETagStore.key) { error in
+//                completion(result)
+//                return
+//            }
+//        }
 
         session.downloadTask(with: request) { localUrl, response, error in
-
-            guard let httpUrlResponse = response as? HTTPURLResponse else {
-                self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
-                return
-            }
-
-            let etag = httpUrlResponse.allHeaderFields[HTTPHeaderKey.etag.rawValue] as? String
-            if let etag = etag {
-                // store etag
-                etagStore.etags[key] = etag
-                self.storageController.store(object: etagStore, identifiedBy: ETagStore.key) { error in
-                    self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
-                    return
-                }
-            }
             self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
         }.resume()
     }

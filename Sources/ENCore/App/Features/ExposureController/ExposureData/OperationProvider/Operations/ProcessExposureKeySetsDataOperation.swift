@@ -107,6 +107,14 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                     .filter { result in result.processedCorrectly }
                     .flatMap { result in [result.keySetHolder.signatureFileUrl, result.keySetHolder.binaryFileUrl] }
 
+                guard urls.count > 0 else {
+                    let result = ExposureDetectionResult(keySetDetectionResults: previousResults,
+                                                         exposureSummary: nil)
+
+                    promise(.success(result))
+                    return
+                }
+
                 // detect exposures
                 self.exposureManager.detectExposures(configuration: self.configuration,
                                                      diagnosisKeyURLs: urls) { result in
@@ -237,7 +245,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
             .keySetDetectionResults
             .filter { $0.processedCorrectly }
             .compactMap { $0.exposureSummary }
-            .filter { $0.daysSinceLastExposure > 0 }
+            .filter { $0.matchedKeyCount > 0 }
 
         // find most recent exposure day
         guard let mostRecentDaysSinceLastExposure = summaries
@@ -404,13 +412,17 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
 
     /// Returns whether a user has given permission to trigger push notifications
     private var hasAccessToShowLocalNotification: AnyPublisher<Bool, Never> {
-        return Future { promise in
-            UNUserNotificationCenter.current().getNotificationSettings { settings in
-                promise(.success(settings.authorizationStatus == .authorized))
-            }
-        }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
+        // Hardcode to false for now - Always let the getExposureInfo call generate
+        // the local notification
+        return Just(false).eraseToAnyPublisher()
+
+//        return Future { promise in
+//            UNUserNotificationCenter.current().getNotificationSettings { settings in
+//                promise(.success(settings.authorizationStatus == .authorized))
+//            }
+//        }
+//        .receive(on: DispatchQueue.main)
+//        .eraseToAnyPublisher()
     }
 
     /// Schedules a local notification for the given exposureReport

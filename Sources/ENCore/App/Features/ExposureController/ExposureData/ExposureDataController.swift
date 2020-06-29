@@ -44,7 +44,8 @@ final class ExposureDataController: ExposureDataControlling {
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
-        return fetchAndStoreExposureKeySets()
+        return requestApplicationConfiguration()
+            .flatMap { _ in self.fetchAndStoreExposureKeySets() }
             .flatMap { self.processStoredExposureKeySets(exposureManager: exposureManager) }
             .eraseToAnyPublisher()
     }
@@ -120,6 +121,17 @@ final class ExposureDataController: ExposureDataControlling {
     }
 
     // MARK: - Private
+
+    private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+        requestApplicationManifest()
+            .flatMap { manifest in
+                return self
+                    .operationProvider
+                    .requestAppConfigurationOperation(identifier: manifest.appConfigurationIdentifier)
+                    .execute()
+            }
+            .eraseToAnyPublisher()
+    }
 
     private func requestApplicationManifest() -> AnyPublisher<ApplicationManifest, ExposureDataError> {
         return operationProvider
