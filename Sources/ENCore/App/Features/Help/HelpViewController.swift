@@ -73,6 +73,7 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         router?.detachHelpDetail(shouldDismissViewController: false)
+        listener?.helpRequestsDismissal(shouldHideViewController: false)
     }
 
     // MARK: - ViewController Lifecycle
@@ -96,4 +97,7 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
     private weak var listener: HelpListener?
     private let shouldShowEnableAppButton: Bool
     private let exposureController: ExposureControlling
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                          target: self,
+                                                          action: #selector(didTapClose))
 }

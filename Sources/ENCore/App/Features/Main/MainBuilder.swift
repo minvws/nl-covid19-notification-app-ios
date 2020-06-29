@@ -16,7 +16,7 @@ protocol MainDependency {
     var exposureController: ExposureControlling { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -53,6 +53,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var exposureController: ExposureControlling {
         return dependency.exposureController
     }
+
+    var helpBuilder: HelpBuildable {
+        return HelpBuilder(dependency: self)
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -68,6 +72,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           aboutBuilder: dependencyProvider.aboutBuilder,
                           receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder,
                           requestTestBuilder: dependencyProvider.requestTestBuilder,
-                          infectedBuilder: dependencyProvider.infectedBuilder)
+                          infectedBuilder: dependencyProvider.infectedBuilder,
+                          helpBuilder: dependencyProvider.helpBuilder)
     }
 }

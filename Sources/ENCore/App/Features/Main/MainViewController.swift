@@ -25,8 +25,7 @@ protocol MainRouting: Routing {
     func detachInfected(shouldDismissViewController: Bool)
 }
 
-final class MainViewController: ViewController, MainViewControllable, StatusListener, MoreInformationListener {
-
+final class MainViewController: ViewController, MainViewControllable, StatusListener {
     weak var router: MainRouting?
 
     // MARK: - Init
@@ -66,7 +65,14 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     }
 
     func present(viewController: ViewControllable, animated: Bool) {
-        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
+
+        let navigationController: NavigationController
+
+        if let navController = viewController as? NavigationController {
+            navigationController = navController
+        } else {
+            navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
+        }
 
         if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
             navigationController.presentationController?.delegate = presentationDelegate
@@ -128,6 +134,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func requestTestWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachRequestTest(shouldDismissViewController: shouldDismissViewController)
+    }
+
+    func helpRequestsEnableApp() {}
+
+    func helpRequestsDismissal(shouldHideViewController: Bool) {
+        router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
     }
 
     // MARK: - InfectedListener

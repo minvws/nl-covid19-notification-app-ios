@@ -10,6 +10,7 @@ import Foundation
 /// @mockable
 protocol HelpListener: AnyObject {
     func helpRequestsEnableApp()
+    func helpRequestsDismissal(shouldHideViewController: Bool)
 }
 
 /// @mockable

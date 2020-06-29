@@ -65,6 +65,10 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         router?.routeToHelp()
     }
 
+    func helpRequestsDismissal(shouldHideViewController: Bool) {
+        // empty body
+    }
+
     func helpRequestsEnableApp() {
         onboardingConsentManager.askEnableExposureNotifications { activeState in
             switch activeState {

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener {
     var router: MainRouting? { get set }
 
     func embed(stackedViewController: ViewControllable)
@@ -25,13 +25,15 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          aboutBuilder: AboutBuildable,
          receivedNotificationBuilder: ReceivedNotificationBuildable,
          requestTestBuilder: RequestTestBuildable,
-         infectedBuilder: InfectedBuildable) {
+         infectedBuilder: InfectedBuildable,
+         helpBuilder: HelpBuildable) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
         self.receivedNotificationBuilder = receivedNotificationBuilder
         self.requestTestBuilder = requestTestBuilder
         self.infectedBuilder = infectedBuilder
+        self.helpBuilder = helpBuilder
 
         super.init(viewController: viewController)
 
@@ -59,20 +61,23 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     }
 
     func routeToAboutApp() {
-        guard aboutViewController == nil else { return }
+        guard helpRouter == nil else {
+            return
+        }
 
-        let aboutViewController = aboutBuilder.build(withListener: viewController)
-        self.aboutViewController = aboutViewController
+        let helpRouter = helpBuilder.build(withListener: viewController, shouldShowEnableAppButton: false)
+        self.helpRouter = helpRouter
 
-        viewController.present(viewController: aboutViewController, animated: true)
+        viewController.present(viewController: helpRouter.viewControllable,
+                               animated: true)
     }
 
     func detachAboutApp(shouldHideViewController: Bool) {
-        guard let aboutViewController = aboutViewController else { return }
-        self.aboutViewController = nil
+        guard let helpRouter = helpRouter else { return }
+        self.helpRouter = nil
 
         if shouldHideViewController {
-            viewController.dismiss(viewController: aboutViewController, animated: true)
+            viewController.dismiss(viewController: helpRouter.viewControllable, animated: true)
         }
     }
 
@@ -161,4 +166,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let infectedBuilder: InfectedBuildable
     private var infectedRouter: Routing?
+
+    private let helpBuilder: HelpBuildable
+    private var helpRouter: Routing?
 }
