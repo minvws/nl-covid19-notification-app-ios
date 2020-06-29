@@ -40,6 +40,8 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
 
         internalView.tableView.delegate = self
         internalView.tableView.dataSource = self
+
+        navigationItem.rightBarButtonItem = closeBarButtonItem
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -96,6 +98,9 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     private let shouldShowEnableAppButton: Bool
     private let helpManager: HelpManaging
     private lazy var internalView: HelpView = HelpView(theme: self.theme)
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                          target: self,
+                                                          action: #selector(closeButtonPressed))
 }
 
 private final class HelpView: View {
