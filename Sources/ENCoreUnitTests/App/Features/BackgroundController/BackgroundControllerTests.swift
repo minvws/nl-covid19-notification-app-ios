@@ -12,8 +12,10 @@ import XCTest
 final class BackgroundControllerTests: XCTestCase {
     private var controller: BackgroundController!
 
+    private var exposureController = ExposureControllingMock()
+
     override func setUp() {
         super.setUp()
-        controller = BackgroundController()
+        controller = BackgroundController(exposureController: exposureController)
     }
 }
