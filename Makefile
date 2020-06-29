@@ -1,6 +1,5 @@
 # COVID-NL APP iOS Makefile
 
-BREW_PATH=`which brew`
 XCODE_TEMPLATE_PATH_SRC="tools/Xcode Templates/Component.xctemplate"
 XCODE_TEMPLATE_PATH_DST="${HOME}/Library/Developer/Xcode/Templates/File Templates/COVID-NL"
 
@@ -20,14 +19,9 @@ install_xcode_templates:
 ignore_mocks_changes:
 	git update-index --skip-worktree Sources/ENCoreUnitTests/Mocks.swift 
 
-install_dev_deps: check_homebrew_installed build_xcodegen build_swiftformat build_mockolo
+install_dev_deps: build_xcodegen build_swiftformat build_mockolo
 	@echo "All dependencies are installed"
 	@echo "You're ready to go"
-
-check_homebrew_installed:
-ifeq (, $(shell which brew))
- $(error "Please install homebrew (https://brew.sh) to continue")
-endif
 
 build_mockolo:
 	cd vendor/mockolo && swift build -c release
