@@ -28,7 +28,7 @@ protocol OnboardingConsentDependency {
     var onboardingConsentManager: OnboardingConsentManaging { get }
 }
 
-private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> { }
+private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> {}
 
 final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, OnboardingConsentBuildable {
     func build(withListener listener: OnboardingConsentListener) -> ViewControllable {

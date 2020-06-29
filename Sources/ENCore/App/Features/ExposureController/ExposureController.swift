@@ -68,29 +68,29 @@ final class ExposureController: ExposureControlling {
         updateStatusStream()
     }
 
-    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
+    func updateWhenRequiredPublisher() -> AnyPublisher<(), ExposureDataError> {
         // update when active, or when inactive due to no recent updates
         guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
-        return fetchAndProcessExposureKeySets()
+        return fetchAndProcessExposureKeySetsPublisher()
     }
 
     func updateWhenRequired(_ completion: @escaping () -> ()) {
-        // update when active, or when inactive due to no recent updates
-        guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else {
-            return completion()
-        }
-        fetchAndProcessExposureKeySets(completion)
+        updateWhenRequiredPublisher()
+            .sink(receiveCompletion: { _ in
+                completion()
+            }, receiveValue: { _ in })
+            .store(in: &disposeBag)
     }
 
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
+    func processPendingUploadRequestsPublisher() -> AnyPublisher<(), ExposureDataError> {
         return dataController
             .processPendingUploadRequests()
     }
 
     func processPendingUploadRequests(_ completion: @escaping () -> ()) {
-        processPendingUploadRequests()
+        processPendingUploadRequestsPublisher()
             .sink(receiveCompletion: { _ in
                 completion()
             },
@@ -122,7 +122,7 @@ final class ExposureController: ExposureControlling {
         }
     }
 
-    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
+    func fetchAndProcessExposureKeySetsPublisher() -> AnyPublisher<(), ExposureDataError> {
         guard let exposureManager = exposureManager else {
             // no exposureManager, nothing to do
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
@@ -143,7 +143,7 @@ final class ExposureController: ExposureControlling {
     }
 
     func fetchAndProcessExposureKeySets(_ completion: @escaping () -> ()) {
-        exposureKeyUpdateCancellable = fetchAndProcessExposureKeySets()
+        exposureKeyUpdateCancellable = fetchAndProcessExposureKeySetsPublisher()
             .sink(receiveCompletion: { _ in
                 completion()
             },
