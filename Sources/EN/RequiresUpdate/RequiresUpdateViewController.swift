@@ -65,6 +65,7 @@ final class RequiresUpdateViewController: UIViewController {
         let alertController = UIAlertController(title: localizedString(for: "alertTitle"),
                                                 message: localizedString(for: "alertMessage"),
                                                 preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: localizedString(for: "alertButton"), style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
 

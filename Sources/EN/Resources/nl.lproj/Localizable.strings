@@ -12,4 +12,4 @@
 
 "alertTitle" = "Waarschuwing";
 "alertMessage" = "Instellingen kunnen niet geopend worden.";
-    
+"alertButton" = "Ok";
