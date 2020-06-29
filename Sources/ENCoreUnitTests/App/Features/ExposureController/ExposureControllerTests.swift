@@ -320,7 +320,7 @@ final class ExposureControllerTests: XCTestCase {
     }
 
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
-        dataController.lastSuccessfulFetchDate = Date().addingTimeInterval(-26 * 60 * 60 - 1)
+        dataController.lastSuccessfulFetchDate = Date().addingTimeInterval(-24 * 60 * 60 - 1)
 
         controller.refreshStatus()
 
