@@ -36,15 +36,11 @@ final class HelpDetailViewController: ViewController {
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
         internalView.acceptButton.isHidden = !shouldShowEnableAppButton
 
-        navigationItem.rightBarButtonItem = closeBarButtonItem
+        navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
     }
 
     @objc func acceptButtonPressed() {
         listener?.helpDetailDidTapEnableAppButton()
-    }
-
-    @objc func closeButtonPressed() {
-        listener?.helpDetailRequestsDismissal(shouldDismissViewController: true)
     }
 
     // MARK: - Private
@@ -53,9 +49,6 @@ final class HelpDetailViewController: ViewController {
     private let shouldShowEnableAppButton: Bool
     private let question: HelpQuestion
     private lazy var internalView: HelpView = HelpView(theme: self.theme)
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                          target: self,
-                                                          action: #selector(closeButtonPressed))
 }
 
 private final class HelpView: View {

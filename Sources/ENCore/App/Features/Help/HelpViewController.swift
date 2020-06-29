@@ -26,6 +26,8 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
         self.exposureController = exposureController
         super.init(theme: theme)
         modalPresentationStyle = .popover
+
+        navigationItem.rightBarButtonItem = closeBarButtonItem
     }
 
     // MARK: - HelpViewControllable
@@ -84,12 +86,12 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         router?.routeToOverview(shouldShowEnableAppButton: shouldShowEnableAppButton)
     }
 
     @objc func didTapClose() {
         router?.detachHelpOverview(shouldDismissViewController: true)
+        listener?.helpRequestsDismissal(shouldHideViewController: true)
     }
 
     // MARK: - Private
