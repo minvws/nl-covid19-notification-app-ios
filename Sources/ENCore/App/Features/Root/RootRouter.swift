@@ -9,20 +9,13 @@ import BackgroundTasks
 import Combine
 import UIKit
 
-#if DEBUG
-    /// Use this to skip the onboarding flow
-    let skipOnboarding = false
-#else
-    let skipOnboarding = false
-#endif
-
 /// Describes internal `RootViewController` functionality. Contains functions
 /// that can be called from `RootRouter`. Should not be exposed
 /// from `RootBuilder`. `RootBuilder` returns an `AppEntryPoint` instance instead
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, UpdateAppListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool)
@@ -45,7 +38,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          developerMenuBuilder: DeveloperMenuBuildable,
          mutablePushNotificationStream: MutablePushNotificationStreaming,
          networkController: NetworkControlling,
-         backgroundController: BackgroundControlling) {
+         backgroundController: BackgroundControlling,
+         updateAppBuilder: UpdateAppBuildable) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.messageBuilder = messageBuilder
@@ -58,6 +52,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         self.networkController = networkController
         self.backgroundController = backgroundController
+
+        self.updateAppBuilder = updateAppBuilder
 
         super.init(viewController: viewController)
 
@@ -83,6 +79,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
 
         exposureStateStream.exposureState.sink { [weak self] state in
+
             if state.activeState.isAuthorized {
                 self?.routeToMain()
             } else {
@@ -163,6 +160,16 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
 
+    func routeToUpdateApp() {
+        guard updateAppViewController == nil else {
+            return
+        }
+        let updateAppViewController = updateAppBuilder.build(withListener: viewController)
+        self.updateAppViewController = updateAppViewController
+
+        viewController.present(viewController: updateAppViewController, animated: false, completion: nil)
+    }
+
     // MARK: - Private
 
     private func routeToMain() {
@@ -215,6 +222,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let developerMenuBuilder: DeveloperMenuBuildable
     private var developerMenuViewController: ViewControllable?
+
+    private let updateAppBuilder: UpdateAppBuildable
+    private var updateAppViewController: ViewControllable?
 }
 
 private extension ExposureActiveState {

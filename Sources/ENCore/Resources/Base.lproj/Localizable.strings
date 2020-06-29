@@ -17,6 +17,11 @@
 "close" = "Sluiten";
 "error.title" = "Something went wrong";
 
+// MARK: - Update App
+"updateApp.error.message" = "App Store kan niet geopend worden.";
+"updateApp.title" = "Update de app op je telefoon om te zorgen dat deze weer werkt.";
+"updateApp.content" = "Update de app op je telefoon om te zorgen dat deze weer werkt.";
+
 // MARK: - Onboarding Steps
 "step1Title" = "Bescherm je vrienden, familie en de rest van Nederland";
 "step1Content" = "[Naam app] waarschuwt nadat je in de buurt bent geweest van iemand met het coronavirus. Zo kunnen we samen de verspreiding stoppen.";
