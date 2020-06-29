@@ -45,6 +45,24 @@ struct NetworkConfiguration {
         )
     )
 
+    static let labtest = NetworkConfiguration(
+        name: "LabTest",
+        api: .init(
+            scheme: "https",
+            host: "mss-standalone-acc.azurewebsites.net",
+            port: nil,
+            path: ["v1"],
+            certificate: nil
+        ),
+        cdn: .init(
+            scheme: "https",
+            host: "mss-standalone-acc.azurewebsites.net",
+            port: nil,
+            path: ["v1"],
+            certificate: nil
+        )
+    )
+
     static let acceptance = NetworkConfiguration(
         name: "ACC",
         api: .init(

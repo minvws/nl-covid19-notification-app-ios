@@ -60,7 +60,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }()
 
     lazy var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming = {
-        return NetworkConfigurationStream(configuration: .acceptance)
+        return NetworkConfigurationStream(configuration: .labtest)
     }()
 
     var networkConfigurationProvider: NetworkConfigurationProvider {
