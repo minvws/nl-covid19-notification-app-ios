@@ -53,12 +53,19 @@ final class RequiresUpdateViewController: UIViewController {
     // MARK: - Functions
 
     @objc func buttonPressed() {
-
-        if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
-            if UIApplication.shared.canOpenURL(settingsUrl) {
-                UIApplication.shared.open(settingsUrl)
-            }
+        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString),
+            UIApplication.shared.canOpenURL(settingsUrl) else {
+            showCannotOpenSettingsAlert()
+            return
         }
+        UIApplication.shared.open(settingsUrl)
+    }
+
+    private func showCannotOpenSettingsAlert() {
+        let alertController = UIAlertController(title: localizedString(for: "alertTitle"),
+                                                message: localizedString(for: "alertMessage"),
+                                                preferredStyle: .alert)
+        present(alertController, animated: true, completion: nil)
     }
 
     /// Get the scaled font
@@ -74,11 +81,7 @@ final class RequiresUpdateViewController: UIViewController {
         guard value == key else {
             return String(format: value, arguments: arguments)
         }
-        guard
-            let path = Bundle(for: RequiresUpdateViewController.self).path(forResource: "Base", ofType: "lproj"),
-            let bundle = Bundle(path: path) else {
-            return String(format: value, arguments: arguments)
-        }
+        let bundle = Bundle.main
         let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
         return String(format: localizedString, arguments: arguments)
     }
