@@ -28,6 +28,9 @@ protocol RootRouting: Routing {
     ///
     /// - Parameter shouldDismissViewController: should the viewController actually be dismissed.
     func detachMessage(shouldDismissViewController: Bool)
+
+    /// Presents the update app screen
+    func routeToUpdateApp()
 }
 
 final class RootViewController: ViewController, RootViewControllable {
