@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+echo $USE_DEVELOPER_MENU
+echo $NETWORK_CONFIGURATION
+
+env
+
 if [ -z "$USE_DEVELOPER_MENU" ]
 then
       USE_DEVELOPER_MENU=true
