@@ -19,8 +19,6 @@ final class OnboardingStepViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        SnapshotTesting.record = false
-
         let theme = ENTheme()
 
         manager.getStepHandler = { index in

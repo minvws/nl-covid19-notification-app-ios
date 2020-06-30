@@ -18,7 +18,6 @@ final class MessageViewControllerTests: XCTestCase {
         super.setUp()
 
         let theme = ENTheme()
-        SnapshotTesting.record = false
 
         viewController = MessageViewController(listener: listern,
                                                theme: theme,
@@ -29,7 +28,7 @@ final class MessageViewControllerTests: XCTestCase {
     // MARK: - Tests
 
     func testSnapshotMessageViewController() {
-        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 1250)))
+        assertSnapshot(matching: viewController, as: .image())
     }
 
     func testPresentationControllerDidDismissCallsListener() {
