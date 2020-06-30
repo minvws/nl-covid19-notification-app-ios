@@ -25,7 +25,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: Localization.string(for: "step1Title"),
                 content: Localization.string(for: "step1Content"),
-                illustration: .animation(named: "ontheway"),
+                illustration: .image(named: "Step1"),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
             )

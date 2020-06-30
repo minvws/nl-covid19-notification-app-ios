@@ -23,7 +23,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     }()
 
     static let onboardingConsentSummaryStepsViewLeadingMargin: CGFloat = 20
-    static let onboardingConsentSummaryStepsViewTrailingMargin: CGFloat = 20
+    static let onboardingConsentSummaryStepsViewTrailingMargin: CGFloat = 10
 
     private let onboardingConsentManager: OnboardingConsentManaging
 
@@ -213,21 +213,21 @@ final class OnboardingConsentView: View {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
+            imageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.7, constant: 1)
         ])
 
         constraints.append([
             animationView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
             animationView.leadingAnchor.constraint(equalTo: leadingAnchor),
             animationView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            animationView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
+            animationView.heightAnchor.constraint(equalTo: animationView.widthAnchor, multiplier: 0.7, constant: 1)
         ])
 
         constraints.append([
-            primaryButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
+            primaryButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
             primaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             primaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             primaryButton.heightAnchor.constraint(equalToConstant: 50)
@@ -313,7 +313,7 @@ final class OnboardingConsentView: View {
             if step.hasSummarySteps {
 
                 constraints.append([
-                    consentSummaryStepsView.topAnchor.constraint(equalTo: contentLabel.bottomAnchor, constant: 20),
+                    consentSummaryStepsView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
                     consentSummaryStepsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin),
                     consentSummaryStepsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin),
                     consentSummaryStepsView.bottomAnchor.constraint(equalTo: secondaryButton.topAnchor, constant: -20)

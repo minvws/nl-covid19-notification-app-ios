@@ -48,7 +48,7 @@ class Button: UIButton, Themeable {
         super.init(frame: .zero)
 
         self.setTitle(title, for: .normal)
-        self.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
+        self.titleLabel?.font = theme.fonts.headline
 
         self.layer.cornerRadius = 10
         self.clipsToBounds = true

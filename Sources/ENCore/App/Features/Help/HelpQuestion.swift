@@ -16,7 +16,7 @@ final class HelpQuestion {
     init(theme: Theme, question: String, answer: String) {
 
         self.question = question
-        self.attributedTitle = .makeFromHtml(text: question, font: .boldSystemFont(ofSize: 22), textColor: theme.colors.gray)
-        self.attributedAnswer = .makeFromHtml(text: answer, font: .systemFont(ofSize: 17), textColor: theme.colors.gray)
+        self.attributedTitle = .makeFromHtml(text: question, font: theme.fonts.largeTitle, textColor: theme.colors.gray)
+        self.attributedAnswer = .makeFromHtml(text: answer, font: theme.fonts.body, textColor: theme.colors.gray)
     }
 }

@@ -29,7 +29,7 @@ final class OnboardingConsentSummaryStepView: View {
     private var consentSummaryStep: OnboardingConsentSummaryStep
 
     var estimateHeight: CGFloat {
-        return (UIScreen.main.bounds.size.width - (OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin + OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin)) / 4
+        return (UIScreen.main.bounds.size.width - (OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin + OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin)) / 3.75
     }
 
     // MARK: - Lifecycle
