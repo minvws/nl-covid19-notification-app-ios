@@ -5,22 +5,16 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
 
 final class VerifySignatureResponseHandler: NetworkResponseHandler {
+    private let signatureFilename = "content.sig"
+    private let contentFilename = "content.bin"
+    private let tekFilename = "export.bin"
 
-    typealias Input = URL
-    typealias Output = URL
-
-    enum TEKFiles: String {
-        case binary = "export.bin"
-        case signatureApple = "export.sig"
-        case signatureRijksoverheid = "content.sig"
-    }
-
-    enum ContentFiles: String {
-        case binary = "content.bin"
-        case signatureRijksoverheid = "content.sig"
+    init(cryptoUtility: CryptoUtility) {
+        self.cryptoUtility = cryptoUtility
     }
 
     // MARK: - NetworkResponseHandler
@@ -29,37 +23,51 @@ final class VerifySignatureResponseHandler: NetworkResponseHandler {
         return true
     }
 
-    func process(response: URLResponse, input: URL) throws -> URL {
-        guard verifySignature() else {
-            throw NetworkResponseHandleError.invalidSignature
+    func process(response: URLResponse, input: URL) -> AnyPublisher<URL, NetworkResponseHandleError> {
+        guard let fileURLs = getFileURLs(from: input) else {
+            return Fail(error: .invalidSignature).eraseToAnyPublisher()
         }
 
-        return input
-    }
+        let (signatureFileUrl, binaryFileUrl) = fileURLs
 
-    /// Methods to verify file signature, returns true for now (signature check disabled)
-    /// - Parameter urls: unzipped file urls
-    /// - Returns: signature match
-    func handle(urls: [URL]) -> Bool {
-
-        let fileNames = urls.map { $0.lastPathComponent }
-
-        // Apple TEK file
-        if fileNames.contains(TEKFiles.binary.rawValue),
-            fileNames.contains(TEKFiles.signatureApple.rawValue),
-            fileNames.contains(TEKFiles.signatureRijksoverheid.rawValue) {
-            return self.verifySignature()
-            // Self signed files
-        } else if fileNames.contains(ContentFiles.binary.rawValue),
-            fileNames.contains(ContentFiles.signatureRijksoverheid.rawValue) {
-            return self.verifySignature()
+        guard
+            let signatureData = try? Data(contentsOf: signatureFileUrl),
+            let binaryData = try? Data(contentsOf: binaryFileUrl) else {
+            return Fail(error: .invalidSignature).eraseToAnyPublisher()
         }
 
-        // true is the files didnt match, no signature
-        return true
+        return Future { promise in
+            self.cryptoUtility.validate(data: binaryData,
+                                        signature: signatureData) { isValid in
+                promise(isValid ? Result.success(input) : Result.failure(.invalidSignature))
+            }
+        }
+        .eraseToAnyPublisher()
     }
 
-    private func verifySignature() -> Bool {
-        return true
+    // MARK: - Private
+
+    private func getFileURLs(from url: URL) -> (signatureFileUrl: URL, contentFileUrl: URL)? {
+        var isFolder = ObjCBool(false)
+
+        // verify signature file
+        let signatureFileUrl = url.appendingPathComponent(signatureFilename)
+        guard FileManager.default.fileExists(atPath: signatureFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false else {
+            return nil
+        }
+
+        var binaryFileUrl = url.appendingPathComponent(contentFilename)
+        if FileManager.default.fileExists(atPath: binaryFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false {
+            return (signatureFileUrl, binaryFileUrl)
+        }
+
+        binaryFileUrl = url.appendingPathComponent(tekFilename)
+        if FileManager.default.fileExists(atPath: binaryFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false {
+            return (signatureFileUrl, binaryFileUrl)
+        }
+
+        return nil
     }
+
+    private let cryptoUtility: CryptoUtility
 }

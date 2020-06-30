@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
 
 /// mockable
@@ -13,7 +14,7 @@ protocol NetworkResponseHandler {
     associatedtype Output
 
     func isApplicable(for response: URLResponse, input: Input) -> Bool
-    func process(response: URLResponse, input: Input) throws -> Output
+    func process(response: URLResponse, input: Input) -> AnyPublisher<Output, NetworkResponseHandleError>
 }
 
 protocol NetworkResponseHandlerProvider {

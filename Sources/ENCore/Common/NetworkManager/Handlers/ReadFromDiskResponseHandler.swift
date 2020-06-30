@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
 
 final class ReadFromDiskResponseHandler: NetworkResponseHandler {
@@ -21,14 +22,16 @@ final class ReadFromDiskResponseHandler: NetworkResponseHandler {
         return contentFileUrl(from: input) != nil
     }
 
-    func process(response: URLResponse, input: URL) throws -> Data {
+    func process(response: URLResponse, input: Input) -> AnyPublisher<Output, NetworkResponseHandleError> {
         guard
             let url = contentFileUrl(from: input),
             let data = try? Data(contentsOf: url) else {
-            throw NetworkResponseHandleError.cannotDeserialize
+            return Fail(error: .cannotDeserialize).eraseToAnyPublisher()
         }
 
-        return data
+        return Just(data)
+            .setFailureType(to: NetworkResponseHandleError.self)
+            .eraseToAnyPublisher()
     }
 
     // MARK: - Private

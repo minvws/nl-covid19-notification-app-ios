@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
 import ZIPFoundation
 
@@ -26,19 +27,21 @@ final class UnzipNetworkResponseHandler: NetworkResponseHandler {
         return response.value(forHTTPHeaderField: HTTPHeaderKey.contentType.rawValue) == HTTPContentType.zip.rawValue
     }
 
-    func process(response: URLResponse, input: URL) throws -> URL {
+    func process(response: URLResponse, input: URL) -> AnyPublisher<URL, NetworkResponseHandleError> {
         guard let destinationURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString) else {
-            throw NetworkResponseHandleError.cannotUnzip
+            return Fail(error: .cannotUnzip).eraseToAnyPublisher()
         }
 
         do {
             try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
             try fileManager.unzipItem(at: input, to: destinationURL)
         } catch {
-            throw NetworkResponseHandleError.cannotUnzip
+            return Fail(error: .cannotUnzip).eraseToAnyPublisher()
         }
 
-        return destinationURL
+        return Just(destinationURL)
+            .setFailureType(to: NetworkResponseHandleError.self)
+            .eraseToAnyPublisher()
     }
 
     // MARK: - Private

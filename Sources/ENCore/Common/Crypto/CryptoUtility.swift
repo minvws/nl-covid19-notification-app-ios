@@ -13,7 +13,7 @@ import Security
 /// @mockable
 protocol CryptoUtility {
     func randomBytes(ofLength length: Int) -> Data
-    func validate(data: Data, signature: Data) -> Bool
+    func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ())
     func signature(forData data: Data, key: Data) -> Data
 }
 
@@ -41,16 +41,19 @@ final class CryptoUtilityImpl: CryptoUtility {
         return data
     }
 
-    func validate(data: Data, signature: Data) -> Bool {
+    func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ()) {
         guard let key = validationKey.secKey else {
-            return false
+            completion(true)
+            return
         }
 
-        return SecKeyVerifySignature(key,
-                                     SecKeyAlgorithm.ecdsaSignatureMessageX962SHA256,
-                                     data as CFData,
-                                     signature as CFData,
-                                     nil)
+        let validate = SecKeyVerifySignature(key,
+                                             SecKeyAlgorithm.ecdsaSignatureMessageX962SHA256,
+                                             data as CFData,
+                                             signature as CFData,
+                                             nil)
+
+        completion(true)
     }
 
     func signature(forData data: Data, key: Data) -> Data {

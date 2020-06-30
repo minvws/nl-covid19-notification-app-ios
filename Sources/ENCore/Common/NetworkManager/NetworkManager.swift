@@ -41,13 +41,20 @@ final class NetworkManager: NetworkManaging {
             case let .failure(error):
                 completion(.failure(error))
             case let .success(result):
-                let dataResult = self
+                self
                     .responseToData(for: result.0, url: result.1)
-
-                completion(dataResult
                     .flatMap(self.decodeJson(data:))
                     .mapError { $0.asNetworkError }
-                )
+                    .sink(
+                        receiveCompletion: { result in
+                            if case let .failure(error) = result {
+                                completion(.failure(error))
+                            }
+                        },
+                        receiveValue: { data in
+                            completion(.success(data))
+                    })
+                    .store(in: &self.disposeBag)
             }
         }
     }
@@ -67,13 +74,20 @@ final class NetworkManager: NetworkManaging {
             case let .failure(error):
                 completion(.failure(error))
             case let .success(result):
-                let dataResult = self
+                self
                     .responseToData(for: result.0, url: result.1)
-
-                completion(dataResult
                     .flatMap(self.decodeJson(data:))
                     .mapError { $0.asNetworkError }
-                )
+                    .sink(
+                        receiveCompletion: { result in
+                            if case let .failure(error) = result {
+                                completion(.failure(error))
+                            }
+                        },
+                        receiveValue: { data in
+                            completion(.success(data))
+                    })
+                    .store(in: &self.disposeBag)
             }
         }
     }
@@ -93,13 +107,20 @@ final class NetworkManager: NetworkManaging {
             case let .failure(error):
                 completion(.failure(error))
             case let .success(result):
-                let dataResult = self
+                self
                     .responseToData(for: result.0, url: result.1)
-
-                completion(dataResult
                     .flatMap(self.decodeJson(data:))
                     .mapError { $0.asNetworkError }
-                )
+                    .sink(
+                        receiveCompletion: { result in
+                            if case let .failure(error) = result {
+                                completion(.failure(error))
+                            }
+                        },
+                        receiveValue: { data in
+                            completion(.success(data))
+                    })
+                    .store(in: &self.disposeBag)
             }
         }
     }
@@ -121,12 +142,19 @@ final class NetworkManager: NetworkManaging {
             case let .failure(error):
                 completion(.failure(error))
             case let .success(result):
-                let urlResponse = self
+                self
                     .responseToLocalUrl(for: result.0, url: result.1)
-
-                completion(urlResponse
                     .mapError { $0.asNetworkError }
-                )
+                    .sink(
+                        receiveCompletion: { result in
+                            if case let .failure(error) = result {
+                                completion(.failure(error))
+                            }
+                        },
+                        receiveValue: { url in
+                            completion(.success(url))
+                    })
+                    .store(in: &self.disposeBag)
             }
         }
     }
@@ -192,7 +220,18 @@ final class NetworkManager: NetworkManaging {
                                           headers: headers)
 
         data(request: urlRequest) { result in
-            completion(self.jsonResponseHandler(result: result))
+            self.jsonResponseHandler(result: result)
+                .sink(
+                    receiveCompletion: { result in
+                        if case let .failure(error) = result {
+                            completion(.failure(error))
+                        }
+
+                    },
+                    receiveValue: { value in
+                        completion(.success(value))
+                })
+                .store(in: &self.disposeBag)
         }
     }
 
@@ -339,76 +378,67 @@ final class NetworkManager: NetworkManaging {
         completion(.success((response, object)))
     }
 
-    private func responseToLocalUrl(for response: URLResponse, url: URL) -> Result<URL, NetworkResponseHandleError> {
-        var localUrl = url
+    private func responseToLocalUrl(for response: URLResponse, url: URL) -> AnyPublisher<URL, NetworkResponseHandleError> {
+        var localUrl = Just(url)
+            .setFailureType(to: NetworkResponseHandleError.self)
+            .eraseToAnyPublisher()
 
         // unzip
         let unzipResponseHandler = responseHandlerProvider.unzipNetworkResponseHandler
         if unzipResponseHandler.isApplicable(for: response, input: url) {
-            do {
-                localUrl = try unzipResponseHandler.process(response: response, input: localUrl)
-            } catch {
-                return .failure((error as? NetworkResponseHandleError) ?? .cannotDeserialize)
-            }
+
+            localUrl = localUrl
+                .flatMap { localUrl in unzipResponseHandler.process(response: response, input: localUrl) }
+                .eraseToAnyPublisher()
         }
 
         // verify signature
         let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler
         if verifySignatureResponseHandler.isApplicable(for: response, input: url) {
-            do {
-                localUrl = try verifySignatureResponseHandler.process(response: response, input: localUrl)
-            } catch {
-                return .failure((error as? NetworkResponseHandleError) ?? .cannotDeserialize)
-            }
+            localUrl = localUrl
+                .flatMap { localUrl in verifySignatureResponseHandler.process(response: response, input: localUrl) }
+                .eraseToAnyPublisher()
         }
 
-        return .success(localUrl)
+        return localUrl
     }
 
     /// Unzips, verifies signature and reads response in memory
-    private func responseToData(for response: URLResponse, url: URL) -> Result<Data, NetworkResponseHandleError> {
-        let localUrl: URL
-
-        switch responseToLocalUrl(for: response, url: url) {
-        case let .failure(error):
-            return .failure(error)
-        case let .success(url):
-            localUrl = url
-        }
-
-        // read from disk
-        let localData: Data
+    private func responseToData(for response: URLResponse, url: URL) -> AnyPublisher<Data, NetworkResponseHandleError> {
+        let localUrl = responseToLocalUrl(for: response, url: url)
 
         let readFromDiskResponseHandler = responseHandlerProvider.readFromDiskResponseHandler
         if readFromDiskResponseHandler.isApplicable(for: response, input: url) {
-            do {
-                localData = try readFromDiskResponseHandler.process(response: response, input: localUrl)
-            } catch {
-                return .failure((error as? NetworkResponseHandleError) ?? .cannotDeserialize)
-            }
+            return localUrl
+                .flatMap { localUrl in readFromDiskResponseHandler.process(response: response, input: localUrl) }
+                .eraseToAnyPublisher()
         } else {
-            return .failure(.cannotDeserialize)
+            return Fail(error: .cannotDeserialize).eraseToAnyPublisher()
         }
-
-        return .success(localData)
     }
 
     /// Utility function to decode JSON
-    private func decodeJson<Object: Decodable>(data: Data) -> Result<Object, NetworkResponseHandleError> {
-        do {
-            return .success(try jsonDecoder.decode(Object.self, from: data))
-        } catch {
-            return .failure(.cannotDeserialize)
+    private func decodeJson<Object: Decodable>(data: Data) -> AnyPublisher<Object, NetworkResponseHandleError> {
+        return Future { promise in
+            do {
+                promise(.success(try self.jsonDecoder.decode(Object.self, from: data)))
+            } catch {
+                promise(.failure(.cannotDeserialize))
+            }
         }
+        .eraseToAnyPublisher()
     }
 
     /// Response handler which decodes JSON
-    private func jsonResponseHandler<Object: Decodable>(result: Result<(URLResponse, Data), NetworkError>) -> Result<Object, NetworkError> {
-        return result
-            .flatMap { result in
-                self.decodeJson(data: result.1)
-                    .mapError { $0.asNetworkError }
-            }
+    private func jsonResponseHandler<Object: Decodable>(result: Result<(URLResponse, Data), NetworkError>) -> AnyPublisher<Object, NetworkError> {
+        switch result {
+        case let .success(result):
+            return decodeJson(data: result.1)
+                .mapError { $0.asNetworkError }
+                .eraseToAnyPublisher()
+        case let .failure(error):
+            return Fail(error: error).eraseToAnyPublisher()
+        }
     }
 
     /// Checks for valid HTTPResponse and status codes
@@ -453,6 +483,7 @@ final class NetworkManager: NetworkManaging {
     }()
 
     private lazy var jsonEncoder = JSONEncoder()
+    private var disposeBag = Set<AnyCancellable>()
 }
 
 extension NetworkResponseHandleError {
