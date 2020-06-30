@@ -102,7 +102,7 @@ private final class HelpView: View {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = theme.fonts.title2
+        label.font = theme.fonts.largeTitle
         return label
     }()
 
@@ -110,7 +110,7 @@ private final class HelpView: View {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = theme.fonts.body
+        label.font = theme.fonts.subheadBold
         label.textColor = self.theme.colors.primary
         return label
     }()
@@ -177,7 +177,7 @@ private final class HelpView: View {
         ])
 
         constraints.append([
-            acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
+            acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)

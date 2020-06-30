@@ -18,8 +18,6 @@ final class InfectedViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        SnapshotTesting.record = false
-
         let theme = ENTheme()
 
         viewController = InfectedViewController(theme: theme, exposureController: exposureController)

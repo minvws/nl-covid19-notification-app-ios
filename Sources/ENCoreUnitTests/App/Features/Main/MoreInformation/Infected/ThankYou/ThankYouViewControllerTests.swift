@@ -19,8 +19,6 @@ final class ThankYouViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        SnapshotTesting.record = false
-
         let theme = ENTheme()
 
         let key = LabConfirmationKey(identifier: "Key Here",

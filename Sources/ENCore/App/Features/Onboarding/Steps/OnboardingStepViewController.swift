@@ -96,7 +96,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             button.heightAnchor.constraint(equalToConstant: 50)
@@ -174,17 +174,17 @@ final class OnboardingStepView: View {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            imageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
+            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.7, constant: 1)
         ])
 
         constraints.append([
-            animationView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            animationView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
             animationView.leadingAnchor.constraint(equalTo: leadingAnchor),
             animationView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            animationView.heightAnchor.constraint(equalTo: animationView.widthAnchor, multiplier: 0.83, constant: 1)
+            animationView.heightAnchor.constraint(equalTo: animationView.widthAnchor, multiplier: 0.7, constant: 1)
         ])
 
         constraints.append([
@@ -195,7 +195,7 @@ final class OnboardingStepView: View {
         ])
 
         constraints.append([
-            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
             contentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             contentLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)

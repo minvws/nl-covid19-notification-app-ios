@@ -18,7 +18,6 @@ final class UpdateAppViewControllerTests: XCTestCase {
         super.setUp()
 
         let theme = ENTheme()
-        SnapshotTesting.record = false
 
         viewController = UpdateAppViewController(listener: listern, theme: theme)
     }

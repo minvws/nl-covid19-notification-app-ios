@@ -98,7 +98,7 @@ private final class HelpView: View {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
@@ -106,8 +106,8 @@ private final class HelpView: View {
 
         constraints.append([
             contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
+            contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
             contentTextView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
         ])
 
@@ -119,7 +119,7 @@ private final class HelpView: View {
         ])
 
         constraints.append([
-            acceptButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
+            acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
             acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 50)
