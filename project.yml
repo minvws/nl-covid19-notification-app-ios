@@ -91,12 +91,10 @@ targets:
         TARGETED_DEVICE_FAMILY: 1
         SWIFT_VERSION: 5.2
         OTHER_LDFLAGS: -weak_framework ExposureNotification
-      configs:
-        Debug:
-          GCC_PREPROCESSOR_DEFINITIONS: 
-            $(inherited)
-            DEBUG=1
-            USE_DEVELOPER_MENU=$(USE_DEVELOPER_MENU)
+        GCC_PREPROCESSOR_DEFINITIONS: 
+          $(inherited)
+          DEBUG=1
+          USE_DEVELOPER_MENU=$(USE_DEVELOPER_MENU)
     dependencies:
       - package: ZIPFoundation
       - package: SnapKit
