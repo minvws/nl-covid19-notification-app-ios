@@ -164,11 +164,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     // MARK: - Private
 
-    private enum Settings: String {
-        case airplaneMode = "AIRPLANE_MODE"
-        case bluetooth = "Bluetooth"
-    }
-
     private lazy var mainView: MainView = MainView(theme: self.theme)
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming

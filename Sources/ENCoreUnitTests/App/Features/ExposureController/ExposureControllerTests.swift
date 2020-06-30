@@ -103,15 +103,6 @@ final class ExposureControllerTests: XCTestCase {
         XCTAssertTrue(expectation.evaluate())
     }
 
-    func test_managerIsActive_noNetwork() {
-        networkStatusStream.currentStatus = false
-        let expectation = expect(activeState: .inactive(.airplaneMode))
-
-        triggerUpdateStream()
-
-        XCTAssertTrue(expectation.evaluate())
-    }
-
     func test_managerIsInactiveBecauseBluetoothOff_updatesStreamWithInactiveBluetoothOff() {
         exposureManager.getExposureNotificationStatusHandler = { .inactive(.bluetoothOff) }
 

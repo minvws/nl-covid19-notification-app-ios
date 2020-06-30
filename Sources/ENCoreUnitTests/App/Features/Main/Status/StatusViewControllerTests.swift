@@ -46,16 +46,6 @@ final class StatusViewControllerTests: XCTestCase {
         assertSnapshot(matching: viewController, as: .image())
     }
 
-    func test_snapshot_inactive_notified() {
-        set(activeState: .inactive(.paused), notified: true)
-        assertSnapshot(matching: viewController, as: .image())
-    }
-
-    func test_snapshot_inactive_not_notified() {
-        set(activeState: .inactive(.paused), notified: false)
-        assertSnapshot(matching: viewController, as: .image())
-    }
-
     func test_snapshot_authorized_denied_notNotified() {
         set(activeState: .authorizationDenied, notified: true)
         assertSnapshot(matching: viewController, as: .image())
