@@ -22,6 +22,6 @@ final class RequiresUpdateViewControllerTest: XCTestCase {
     // MARK: - Tests
 
     func testSnapshotRequiresUpdateViewController() {
-        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 1250)))
+        assertSnapshot(matching: viewController, as: .image())
     }
 }
