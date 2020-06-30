@@ -25,7 +25,7 @@ final class UpdateAppViewControllerTests: XCTestCase {
 
     // MARK: - Tests
 
-    func testSnapshotMessageViewController() {
+    func testSnapshotUpdateAppViewController() {
         assertSnapshot(matching: viewController, as: .image())
     }
 }
