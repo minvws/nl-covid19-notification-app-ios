@@ -2,13 +2,13 @@
 
 if [ -z "$USE_DEVELOPER_MENU" ]
 then
-      USE_DEVELOPER_MENU=false
+      USE_DEVELOPER_MENU=true
 fi
 
 
 if [ -z "$NETWORK_CONFIGURATION" ]
 then
-      NETWORK_CONFIGURATION="Production"
+      NETWORK_CONFIGURATION="LabTest"
 fi
 
 brew install yq
