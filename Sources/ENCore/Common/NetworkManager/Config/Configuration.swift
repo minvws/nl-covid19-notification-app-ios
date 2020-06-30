@@ -70,13 +70,13 @@ struct NetworkConfiguration {
             host: "api-ota.alleensamenmelden.nl",
             port: nil,
             path: ["mss-acc", "v1"],
-            certificate: nil
+            certificate: Certificate.SSL.root
         ),
         cdn: .init(
             scheme: "https",
             host: "mss-content-acc.azurewebsites.net",
             port: nil,
-            path: ["mss-acc", "v1"],
+            path: ["v1"],
             certificate: nil
         )
     )

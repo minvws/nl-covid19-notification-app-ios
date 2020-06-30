@@ -93,7 +93,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.activate()
 
-        #if USE_DEVELOPER_MENU // || DEBUG
+        #if USE_DEVELOPER_MENU || DEBUG
             attachDeveloperMenu()
         #endif
 

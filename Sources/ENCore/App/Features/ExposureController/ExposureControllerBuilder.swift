@@ -14,6 +14,8 @@ protocol ExposureControlling {
 
     func activate()
 
+    func getMinimumiOSVersion(_ completion: @escaping (String?) -> ())
+
     // MARK: - Updates
 
     func refreshStatus()
@@ -31,8 +33,7 @@ protocol ExposureControlling {
 
     // MARK: - Exposure KeySets
 
-    func fetchAndProcessExposureKeySets(_ completion: @escaping () -> ())
-    func fetchAndProcessExposureKeySetsPublisher() -> AnyPublisher<(), ExposureDataError>
+    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Exposure Notification
 

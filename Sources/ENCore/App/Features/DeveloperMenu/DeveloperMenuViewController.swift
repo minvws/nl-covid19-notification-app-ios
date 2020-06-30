@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import Foundation
 import UIKit
 
@@ -42,6 +43,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         super.init(theme: theme)
 
         attach()
+    }
+
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - ViewController Lifecycle
@@ -352,13 +357,18 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         isFetchingKeys = true
         internalView.tableView.reloadData()
 
-        exposureController.fetchAndProcessExposureKeySets { [weak self] in
-            // done
-            self?.isFetchingKeys = false
+        exposureController
+            .fetchAndProcessExposureKeySets()
+            .sink(
+                receiveCompletion: { [weak self] _ in
+                    // done
+                    self?.isFetchingKeys = false
 
-            assert(Thread.isMainThread)
-            self?.internalView.tableView.reloadData()
-        }
+                    assert(Thread.isMainThread)
+                    self?.internalView.tableView.reloadData()
+                },
+                receiveValue: { _ in })
+            .store(in: &disposeBag)
     }
 
     private func processPendingUploadRequests() {
@@ -517,6 +527,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private let mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
+    private var disposeBag = Set<AnyCancellable>()
 
     private var isFetchingKeys = false
 

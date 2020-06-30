@@ -120,6 +120,14 @@ final class ExposureDataController: ExposureDataControlling {
         return operation.execute()
     }
 
+    // MARK: - Misc
+
+    func getMinimumiOSVersion() -> AnyPublisher<String?, ExposureDataError> {
+        return requestApplicationManifest()
+            .map { $0.iOSMinimumKillVersion }
+            .eraseToAnyPublisher()
+    }
+
     // MARK: - Private
 
     private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {

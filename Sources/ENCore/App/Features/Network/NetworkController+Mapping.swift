@@ -36,7 +36,8 @@ extension Manifest {
                                    resourceBundleIdentifier: resourceBundle,
                                    riskCalculationParametersIdentifier: riskCalculationParameters,
                                    appConfigurationIdentifier: appConfig,
-                                   creationDate: Date())
+                                   creationDate: Date(),
+                                   iOSMinimumKillVersion: iOSMinimumKillVersion)
     }
 }
 

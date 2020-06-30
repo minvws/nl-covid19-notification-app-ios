@@ -73,10 +73,12 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
             NetworkConfiguration.production.name: NetworkConfiguration.production
         ]
 
+        let fallbackConfiguration = NetworkConfiguration.acceptance
+
         if let networkConfigurationValue = Bundle.main.infoDictionary?["NETWORK_CONFIGURATION"] as? String {
-            networkConfiguration = configurations[networkConfigurationValue] ?? .production
+            networkConfiguration = configurations[networkConfigurationValue] ?? fallbackConfiguration
         } else {
-            networkConfiguration = .labtest
+            networkConfiguration = fallbackConfiguration
         }
 
         return NetworkConfigurationStream(configuration: networkConfiguration)

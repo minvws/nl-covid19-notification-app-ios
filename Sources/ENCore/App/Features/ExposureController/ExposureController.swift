@@ -64,6 +64,18 @@ final class ExposureController: ExposureControlling {
             .store(in: &disposeBag)
     }
 
+    func getMinimumiOSVersion(_ completion: @escaping (String?) -> ()) {
+        return dataController
+            .getMinimumiOSVersion()
+            .sink(receiveCompletion: { result in
+                guard case .failure = result else { return }
+
+                completion(nil)
+            },
+            receiveValue: completion)
+            .store(in: &disposeBag)
+    }
+
     func refreshStatus() {
         updateStatusStream()
     }
@@ -73,7 +85,7 @@ final class ExposureController: ExposureControlling {
         guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
-        return fetchAndProcessExposureKeySetsPublisher()
+        return fetchAndProcessExposureKeySets()
     }
 
     func updateWhenRequired(_ completion: @escaping () -> ()) {
@@ -122,7 +134,7 @@ final class ExposureController: ExposureControlling {
         }
     }
 
-    func fetchAndProcessExposureKeySetsPublisher() -> AnyPublisher<(), ExposureDataError> {
+    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
         guard let exposureManager = exposureManager else {
             // no exposureManager, nothing to do
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
@@ -140,14 +152,6 @@ final class ExposureController: ExposureControlling {
                 self?.exposureKeyUpdateCancellable = nil
             })
             .eraseToAnyPublisher()
-    }
-
-    func fetchAndProcessExposureKeySets(_ completion: @escaping () -> ()) {
-        exposureKeyUpdateCancellable = fetchAndProcessExposureKeySetsPublisher()
-            .sink(receiveCompletion: { _ in
-                completion()
-            },
-            receiveValue: { _ in })
     }
 
     func confirmExposureNotification() {
