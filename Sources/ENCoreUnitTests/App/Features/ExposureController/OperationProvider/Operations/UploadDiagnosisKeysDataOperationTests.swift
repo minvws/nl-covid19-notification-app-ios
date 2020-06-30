@@ -167,7 +167,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
 
         let currentDay = Calendar.current.dateComponents([.day], from: Date()).day!
         let dateComponents = Calendar.current.dateComponents([.day, .hour, .minute, .second], from: receivedPendingRequests[1].expiryDate)
-        XCTAssertEqual(dateComponents.day, currentDay + 1)
+        XCTAssert(dateComponents.day == currentDay + 1 || dateComponents.day == 1)
         XCTAssertEqual(dateComponents.hour, 3)
         XCTAssertEqual(dateComponents.minute, 59)
         XCTAssertEqual(dateComponents.second, 0)

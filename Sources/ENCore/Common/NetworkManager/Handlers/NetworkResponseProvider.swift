@@ -16,8 +16,6 @@ enum NetworkResponseHandleError: Error {
 enum HTTPHeaderKey: String {
     case contentType = "Content-Type"
     case acceptedContentType = "Accept"
-    case etag = "Etag"
-    case ifNoneMatch = "If-None-Match"
 }
 
 enum HTTPContentType: String {

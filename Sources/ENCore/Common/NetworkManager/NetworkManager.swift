@@ -212,10 +212,12 @@ final class NetworkManager: NetworkManaging {
         request.httpMethod = method.rawValue
 
         let defaultHeaders = [
-            HTTPHeaderKey.contentType.rawValue: HTTPContentType.json.rawValue
+            HTTPHeaderKey.contentType: HTTPContentType.json.rawValue
         ]
 
-        request.allHTTPHeaderFields = defaultHeaders
+        defaultHeaders.forEach { header, value in
+            request.addValue(value, forHTTPHeaderField: header.rawValue)
+        }
 
         headers.forEach { header, value in
             request.addValue(value, forHTTPHeaderField: header.rawValue)
@@ -232,9 +234,11 @@ final class NetworkManager: NetworkManaging {
         }
 
         #if DEBUG
+            print("--REQUEST--")
             if let url = request.url { print(url) }
             if let allHTTPHeaderFields = request.allHTTPHeaderFields { print(allHTTPHeaderFields) }
             if let httpBody = request.httpBody { print(String(data: httpBody, encoding: .utf8)!) }
+            print("--END REQUEST--")
         #endif
 
         return .success(request)
@@ -252,43 +256,29 @@ final class NetworkManager: NetworkManaging {
     }
 
     fileprivate func download(request: URLRequest, completion: @escaping (Result<(URLResponse, URL), NetworkError>) -> ()) {
+        session.dataTask(with: request) { data, response, error in
+            let localUrl: URL?
 
-        var request = request
-        var etagStore = self.storageController.retrieveObject(identifiedBy: ETagStore.key) ?? ETagStore()
+            if let data = data {
+                localUrl = self.write(data: data)
+            } else {
+                localUrl = nil
+            }
 
-//        let key = "\(request.hashValue)"
-//        if let etag = etagStore.etags[key] {
-//            request.addValue(etag, forHTTPHeaderField: HTTPHeaderKey.ifNoneMatch.rawValue)
-//        }
-
-//        let c: (Result<(URLResponse, URL), NetworkError>) -> () = { result in
-//            guard case let .success(value) = result else {
-//                completion(result)
-//                return
-//            }
-//
-//            let (response, _) = value
-//
-//            guard
-//                let httpResponse = response as? HTTPURLResponse,
-//                httpResponse.statusCode == 200,
-//                let etag = httpResponse.allHeaderFields[HTTPHeaderKey.etag.rawValue] as? String
-//            else {
-//                completion(result)
-//                return
-//            }
-//
-//            // store etag
-        ////            etagStore.etags[key] = etag
-//            self.storageController.store(object: etagStore, identifiedBy: ETagStore.key) { error in
-//                completion(result)
-//                return
-//            }
-//        }
-
-        session.downloadTask(with: request) { localUrl, response, error in
             self.handleNetworkResponse(localUrl, response: response, error: error, completion: completion)
         }.resume()
+    }
+
+    private func write(data: Data) -> URL? {
+        let uuid = UUID().uuidString
+        let temporaryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(uuid)
+
+        do {
+            try data.write(to: temporaryUrl)
+            return temporaryUrl
+        } catch {
+            return nil
+        }
     }
 
     // MARK: - Download Data
@@ -303,7 +293,6 @@ final class NetworkManager: NetworkManaging {
     }
 
     private func data(request: URLRequest, completion: @escaping (Result<(URLResponse, Data), NetworkError>) -> ()) {
-        print(request)
         session.dataTask(with: request) { data, response, error in
             self.handleNetworkResponse(data,
                                        response: response,
@@ -326,11 +315,14 @@ final class NetworkManager: NetworkManaging {
         }
 
         #if DEBUG
+            print("--RESPONSE--")
             if let response = response { print(response) }
 
             if let object = object as? Data {
                 print(String(data: object, encoding: .utf8)!)
             }
+
+            print("--END RESPONSE--")
         #endif
 
         guard let response = response,
