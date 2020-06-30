@@ -8,7 +8,7 @@ project:
 	vendor/XcodeGen/.build/release/xcodegen
 	open EN.xcodeproj
 
-project_ci:
+generate_project:
 	vendor/XcodeGen/.build/release/xcodegen
 
 # Initializes dev environment
