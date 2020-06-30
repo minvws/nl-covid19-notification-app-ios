@@ -13,16 +13,16 @@ struct NetworkConfiguration {
         let host: String
         let port: Int?
         let path: [String]
-        let certificate: Certificate? // SSL pinning certificate, nil = no pinning
+        let sslSignature: Certificate.Signature? // SSL pinning certificate, nil = no pinning
     }
 
     let name: String
     let api: EndpointConfiguration
     let cdn: EndpointConfiguration
 
-    func certificate(forHost host: String) -> Certificate? {
-        if api.host == host { return api.certificate }
-        if cdn.host == host { return cdn.certificate }
+    func sslSignature(forHost host: String) -> Certificate.Signature? {
+        if api.host == host { return api.sslSignature }
+        if cdn.host == host { return cdn.sslSignature }
 
         return nil
     }
@@ -34,14 +34,14 @@ struct NetworkConfiguration {
             host: "localhost",
             port: 5004,
             path: ["v1"],
-            certificate: nil
+            sslSignature: nil
         ),
         cdn: .init(
             scheme: "http",
             host: "localhost",
             port: 5004,
             path: ["v1"],
-            certificate: nil
+            sslSignature: nil
         )
     )
 
@@ -52,14 +52,14 @@ struct NetworkConfiguration {
             host: "mss-standalone-acc.azurewebsites.net",
             port: nil,
             path: ["v1"],
-            certificate: nil
+            sslSignature: nil
         ),
         cdn: .init(
             scheme: "https",
             host: "mss-standalone-acc.azurewebsites.net",
             port: nil,
             path: ["v1"],
-            certificate: nil
+            sslSignature: nil
         )
     )
 
@@ -70,14 +70,14 @@ struct NetworkConfiguration {
             host: "api-ota.alleensamenmelden.nl",
             port: nil,
             path: ["mss-acc", "v1"],
-            certificate: Certificate.SSL.root
+            sslSignature: Certificate.SSL.rootSignature
         ),
         cdn: .init(
             scheme: "https",
             host: "mss-content-acc.azurewebsites.net",
             port: nil,
             path: ["v1"],
-            certificate: nil
+            sslSignature: nil
         )
     )
 
@@ -88,14 +88,14 @@ struct NetworkConfiguration {
             host: "notknown",
             port: nil,
             path: [],
-            certificate: nil
+            sslSignature: nil
         ),
         cdn: .init(
             scheme: "https",
             host: "notknown",
             port: nil,
             path: [],
-            certificate: nil
+            sslSignature: nil
         )
     )
 
