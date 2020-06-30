@@ -6,7 +6,6 @@ XCODE_TEMPLATE_PATH_DST="${HOME}/Library/Developer/Xcode/Templates/File Template
 # Creates xcodeproj
 project:
 	vendor/XcodeGen/.build/release/xcodegen
-	open EN.xcodeproj
 
 # Initializes dev environment
 dev: install_xcode_templates install_dev_deps ignore_mocks_changes
