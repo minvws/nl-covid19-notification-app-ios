@@ -61,16 +61,16 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
             .flatMap(self.createReportAndTriggerNotification(forResult:))
+            // persist the ExposureReport
+            .flatMap(self.persist(exposureReport:))
+            // update last processing date
+            .flatMap(self.updateLastProcessingDate)
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
             .handleEvents(receiveOutput: removeBlobs(forResult:))
-            // remove the exposureDetectionResult and return only the ExposureReport
-            .map { value in value.1 }
-            // persist the ExposureReport
-            .flatMap(self.persist(exposureReport:))
-            // update last processing date
-            .flatMap { _ in self.updateLastProcessingDate() }
+            // ignore result
+            .map { _ in () }
             .eraseToAnyPublisher()
     }
 
@@ -266,63 +266,27 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
     /// If no push notification permission is given the EN framework is used to trigger a local notification.
     /// If push notification permission is given a local notification is scheduled
     private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
+        // no access to local notifications, call the framework to show a notification using
+        // the overall exposureSummary
+        guard let summary = result.exposureSummary else {
+            return Just((result, nil))
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
 
-        // figure out whether push notification permission was given
-        hasAccessToShowLocalNotification
-            .setFailureType(to: ExposureDataError.self)
-            .flatMap { (hasAccessToShowLocalNotification: Bool) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> in
-                if hasAccessToShowLocalNotification {
-                    // user has given permission for push notifications
-                    // no need to call API to get ExposureInformations, show local notification and move on
-
-                    // select a most recent summary
-                    guard let latestSummary = self.selectLastSummaryFrom(result: result) else {
-                        return Just((result, nil))
-                            .setFailureType(to: ExposureDataError.self)
-                            .eraseToAnyPublisher()
-                    }
-
-                    // calculate exposure date
-                    let calendar = Calendar.current
-                    guard let exposureDate = calendar.date(byAdding: .day, value: -latestSummary.daysSinceLastExposure, to: Date()) else {
-                        return Just((result, nil))
-                            .setFailureType(to: ExposureDataError.self)
-                            .eraseToAnyPublisher()
-                    }
-
-                    let exposureReport = ExposureReport(date: exposureDate, duration: nil)
-
-                    // show notification
-                    self.showLocalPushNotification(for: exposureReport)
-
-                    return Just((result, exposureReport))
-                        .setFailureType(to: ExposureDataError.self)
-                        .eraseToAnyPublisher()
+        return self
+            .getExposureInformations(forSummary: summary,
+                                     userExplanation: Localization.string(for: "exposure.notification.userExplanation"))
+            .map { (exposureInformations) -> (ExposureDetectionResult, ExposureReport?) in
+                // get most recent exposureInformation
+                guard let exposureInformation = self.getLastExposureInformation(for: exposureInformations) else {
+                    return (result, nil)
                 }
 
-                // no access to local notifications, call the framework to show a notification using
-                // the overall exposureSummary
-                guard let summary = result.exposureSummary else {
-                    return Just((result, nil))
-                        .setFailureType(to: ExposureDataError.self)
-                        .eraseToAnyPublisher()
-                }
+                let exposureReport = ExposureReport(date: exposureInformation.date,
+                                                    duration: exposureInformation.duration)
 
-                return self
-                    .getExposureInformations(forSummary: summary,
-                                             userExplanation: Localization.string(for: "exposure.notification.userExplanation"))
-                    .map { (exposureInformations) -> (ExposureDetectionResult, ExposureReport?) in
-                        // get most recent exposureInformation
-                        guard let exposureInformation = self.getLastExposureInformation(for: exposureInformations) else {
-                            return (result, nil)
-                        }
-
-                        let exposureReport = ExposureReport(date: exposureInformation.date,
-                                                            duration: exposureInformation.duration)
-
-                        return (result, exposureReport)
-                    }
-                    .eraseToAnyPublisher()
+                return (result, exposureReport)
             }
             .eraseToAnyPublisher()
     }
@@ -365,11 +329,11 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
     }
 
     /// Stores the exposureReport in local storage (which triggers the 'notified' state)
-    private func persist(exposureReport: ExposureReport?) -> AnyPublisher<(), ExposureDataError> {
+    private func persist(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
         return Deferred {
             Future { promise in
-                guard let exposureReport = exposureReport else {
-                    promise(.success(()))
+                guard let exposureReport = value.1 else {
+                    promise(.success(value))
                     return
                 }
 
@@ -378,12 +342,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
 
                     if let lastExposureReport = lastExposureReport, lastExposureReport.date > exposureReport.date {
                         // already stored a newer report, ignore this one
-                        promise(.success(()))
+                        promise(.success(value))
                     } else {
                         // store the new report
                         storageController.store(object: exposureReport,
                                                 identifiedBy: ExposureDataStorageKey.lastExposureReport) { _ in
-                            promise(.success(()))
+                            promise(.success(value))
                         }
                     }
                 }
@@ -393,7 +357,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
     }
 
     /// Updates the date when this operation has last run
-    private func updateLastProcessingDate() -> AnyPublisher<(), ExposureDataError> {
+    private func updateLastProcessingDate(_ value: (ExposureDetectionResult, ExposureReport?)) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
         return Deferred {
             Future { promise in
                 self.storageController.requestExclusiveAccess { storageController in
@@ -402,51 +366,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                     storageController.store(object: date,
                                             identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
                                             completion: { _ in
-                                                promise(.success(()))
+                                                promise(.success(value))
                     })
                 }
             }
         }
         .eraseToAnyPublisher()
-    }
-
-    /// Returns whether a user has given permission to trigger push notifications
-    private var hasAccessToShowLocalNotification: AnyPublisher<Bool, Never> {
-        // Hardcode to false for now - Always let the getExposureInfo call generate
-        // the local notification
-        return Just(false).eraseToAnyPublisher()
-
-//        return Future { promise in
-//            UNUserNotificationCenter.current().getNotificationSettings { settings in
-//                promise(.success(settings.authorizationStatus == .authorized))
-//            }
-//        }
-//        .receive(on: DispatchQueue.main)
-//        .eraseToAnyPublisher()
-    }
-
-    /// Schedules a local notification for the given exposureReport
-    private func showLocalPushNotification(for exposureReport: ExposureReport) {
-        // TODO: Implement properly
-        let content = UNMutableNotificationContent()
-        content.title = "Local Notification"
-        content.body = "The body of the message which was scheduled from the Developer Menu"
-        content.sound = UNNotificationSound.default
-        content.badge = 0
-
-        let date = Date(timeIntervalSinceNow: 1)
-        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-
-        let identifier = "Local Notification"
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-
-        let unc = UNUserNotificationCenter.current()
-        unc.add(request) { error in
-            if let error = error {
-                print("🔥 Error \(error.localizedDescription)")
-            }
-        }
     }
 
     private let networkController: NetworkControlling

@@ -31,7 +31,6 @@ targets:
         DEVELOPMENT_TEAM: C2H38GV99H
         SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
         OTHER_LDFLAGS: -weak_framework ENCore
-        NETWORK_CONFIGURATION: Production
       configs:
         Debug:
           CODE_SIGN_IDENTITY: "Apple Development"
@@ -92,7 +91,6 @@ targets:
         TARGETED_DEVICE_FAMILY: 1
         SWIFT_VERSION: 5.2
         OTHER_LDFLAGS: -weak_framework ExposureNotification
-        USE_DEVELOPER_MENU: false
       configs:
         Debug:
           GCC_PREPROCESSOR_DEFINITIONS: 

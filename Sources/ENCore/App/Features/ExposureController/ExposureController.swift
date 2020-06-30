@@ -46,7 +46,11 @@ final class ExposureController: ExposureControlling {
 
         mutableStateStream
             .exposureState
-            .filter { [.active, .inactive(.noRecentNotificationUpdates)].contains($0.activeState) }
+            .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in
+                return [.active, .inactive(.noRecentNotificationUpdates)].contains(exposureState.activeState)
+                    && networkState
+            }
+            .filter { $0 }
             .first()
             .sink { [weak self] _ in
                 // update the first time the app becomes active
@@ -147,9 +151,14 @@ final class ExposureController: ExposureControlling {
 
         return dataController
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
-            .handleEvents(receiveOutput: { [weak self] _ in
-                self?.updateStatusStream()
-                self?.exposureKeyUpdateCancellable = nil
+            .handleEvents(
+                receiveCompletion: { completion in
+                    self.updateStatusStream()
+                    self.exposureKeyUpdateCancellable = nil
+                },
+                receiveCancel: {
+                    self.updateStatusStream()
+                    self.exposureKeyUpdateCancellable = nil
             })
             .eraseToAnyPublisher()
     }

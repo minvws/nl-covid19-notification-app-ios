@@ -122,10 +122,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         cell.textLabel?.numberOfLines = 0
         cell.detailTextLabel?.text = item.subtitle
         cell.detailTextLabel?.numberOfLines = 0
-        cell.isUserInteractionEnabled = item.enabled
 
         if item.enabled == false {
-            cell.detailTextLabel?.text = "Busy ..."
+            cell.detailTextLabel?.text = "Busy ... tap to cancel"
         }
 
         return cell
@@ -351,24 +350,28 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         internalView.tableView.reloadData()
     }
 
-    private func fetchAndProcessKeySets() {
-        guard isFetchingKeys == false else { return }
+    private var fetchAndProcessCancellable: AnyCancellable?
 
-        isFetchingKeys = true
+    private func fetchAndProcessKeySets() {
+        guard fetchAndProcessCancellable == nil else {
+            fetchAndProcessCancellable?.cancel()
+            fetchAndProcessCancellable = nil
+
+            return
+        }
+
         internalView.tableView.reloadData()
 
-        exposureController
+        fetchAndProcessCancellable = exposureController
             .fetchAndProcessExposureKeySets()
             .sink(
                 receiveCompletion: { [weak self] _ in
-                    // done
-                    self?.isFetchingKeys = false
+                    self?.fetchAndProcessCancellable = nil
 
                     assert(Thread.isMainThread)
                     self?.internalView.tableView.reloadData()
                 },
                 receiveValue: { _ in })
-            .store(in: &disposeBag)
     }
 
     private func processPendingUploadRequests() {
@@ -529,7 +532,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private let storageController: StorageControlling
     private var disposeBag = Set<AnyCancellable>()
 
-    private var isFetchingKeys = false
+    private var isFetchingKeys: Bool {
+        return fetchAndProcessCancellable != nil
+    }
 
     private var window: UIWindow? {
         if #available(iOS 13.0, *) {
