@@ -26,6 +26,6 @@ final class UpdateAppViewControllerTests: XCTestCase {
     // MARK: - Tests
 
     func testSnapshotMessageViewController() {
-        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 1250)))
+        assertSnapshot(matching: viewController, as: .image())
     }
 }

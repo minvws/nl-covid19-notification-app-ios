@@ -21,6 +21,7 @@
 "updateApp.error.message" = "App Store kan niet geopend worden.";
 "updateApp.title" = "Update de app op je telefoon om te zorgen dat deze weer werkt.";
 "updateApp.content" = "Update de app op je telefoon om te zorgen dat deze weer werkt.";
+"updateApp.button" = "Updaten";
 
 // MARK: - Onboarding Steps
 "step1Title" = "Bescherm je vrienden, familie en de rest van Nederland";

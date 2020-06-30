@@ -20,6 +20,8 @@ final class RootRouterTests: XCTestCase {
     private let exposureStateStream = ExposureStateStreamingMock()
     private let mutablePushNotificationStream = MutablePushNotificationStreamingMock()
     private let networkController = NetworkControllingMock()
+    private let backgroundController = BackgroundControllingMock()
+    private let updateAppBuilder = UpdateAppBuildableMock()
     private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     private var router: RootRouter!
@@ -38,8 +40,8 @@ final class RootRouterTests: XCTestCase {
                             developerMenuBuilder: developerMenuBuilder,
                             mutablePushNotificationStream: mutablePushNotificationStream,
                             networkController: networkController,
-                            backgroundController: BackgroundControllingMock())
-
+                            backgroundController: backgroundController,
+                            updateAppBuilder: updateAppBuilder)
         set(activeState: .notAuthorized)
     }
 
