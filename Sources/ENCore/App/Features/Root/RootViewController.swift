@@ -30,7 +30,7 @@ protocol RootRouting: Routing {
     func detachMessage(shouldDismissViewController: Bool)
 
     /// Presents the update app screen
-    func routeToUpdateApp()
+    func routeToUpdateApp(animated: Bool)
 }
 
 final class RootViewController: ViewController, RootViewControllable {

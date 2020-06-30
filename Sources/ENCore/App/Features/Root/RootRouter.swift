@@ -78,6 +78,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             return
         }
 
+        /// Check if the app is the minimum version. If not, show the app update screen
+        if let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            exposureController.getMinimumiOSVersion { version in
+                if version?.compare(currentAppVersion, options: .numeric) == .orderedDescending {
+                    self.routeToUpdateApp(animated: true)
+                }
+            }
+        }
+
         exposureStateStream.exposureState.sink { [weak self] state in
 
             if state.activeState.isAuthorized {
@@ -160,14 +169,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
 
-    func routeToUpdateApp() {
+    func routeToUpdateApp(animated: Bool) {
         guard updateAppViewController == nil else {
             return
         }
         let updateAppViewController = updateAppBuilder.build(withListener: viewController)
         self.updateAppViewController = updateAppViewController
 
-        viewController.present(viewController: updateAppViewController, animated: false, completion: nil)
+        viewController.present(viewController: updateAppViewController, animated: animated, completion: nil)
     }
 
     // MARK: - Private
