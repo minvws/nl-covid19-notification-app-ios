@@ -14,13 +14,6 @@ protocol UpdateAppViewControllable: ViewControllable {}
 
 final class UpdateAppViewController: ViewController, UpdateAppViewControllable, UIAdaptivePresentationControllerDelegate {
 
-    private lazy var button: Button = {
-        let button = Button(theme: self.theme)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        return button
-    }()
-
     // MARK: - Init
 
     init(listener: UpdateAppListener, theme: Theme) {
@@ -34,8 +27,13 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
+
         self.view = internalView
         self.view.frame = UIScreen.main.bounds
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
         internalView.imageView.image = Image.named("UpdateApp")
         internalView.titleLabel.attributedText = .makeFromHtml(
@@ -46,33 +44,12 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
             text: Localization.string(for: "updateApp.content"),
             font: theme.fonts.body,
             textColor: theme.colors.gray)
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.button.title = "Updaten"
-        view.addSubview(button)
-
-        setupConstraints()
+        internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
 
     // MARK: - Functions
 
-    private func setupConstraints() {
-
-        var constraints = [[NSLayoutConstraint]()]
-
-        constraints.append([
-            button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            button.heightAnchor.constraint(equalToConstant: 50)
-        ])
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
-    }
-
+    // TODO: Add the correct store url
     @objc func buttonPressed() {
         guard let storeUrl = URL(string: "@TODO"),
             UIApplication.shared.canOpenURL(storeUrl) else {
@@ -100,6 +77,13 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
 private final class UpdateAppView: View {
 
+    lazy var button: Button = {
+        let button = Button(theme: self.theme)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.title = Localization.string(for: "updateApp.button")
+        return button
+    }()
+
     lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -122,7 +106,7 @@ private final class UpdateAppView: View {
         return label
     }()
 
-    private lazy var viewsInDisplayOrder = [imageView, titleLabel, contentLabel]
+    private lazy var viewsInDisplayOrder = [button, imageView, titleLabel, contentLabel]
 
     // MARK: - Init
 
@@ -143,6 +127,13 @@ private final class UpdateAppView: View {
         super.setupConstraints()
 
         var constraints = [[NSLayoutConstraint]()]
+
+        constraints.append([
+            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
+            button.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            button.heightAnchor.constraint(equalToConstant: 50)
+        ])
 
         constraints.append([
             imageView.topAnchor.constraint(equalTo: topAnchor, constant: 75),
