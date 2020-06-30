@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import CoreBluetooth
 import UIKit
 
 /// @mockable
@@ -194,18 +195,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
 
         switch reason {
-        case .airplaneMode:
-            openSettings(with: .airplaneMode)
         case .bluetoothOff:
-            openSettings(with: .bluetooth)
+            openBluetooth()
         case .disabled:
             openAppSettings()
         case .noRecentNotificationUpdates:
-            // FIXME: This is a temporary solution while design is being updated
-            presentAlert(message: "No Recenet Notification Updates")
-        case .paused:
-            // FIXME: This is a temporary solution while design is being updated
-            presentAlert(message: "The Application has been paused")
+            exposureController.updateWhenRequired {}
         case .requiresOSUpdate:
             // FIXME: This is a temporary solution while design is being updated
             presentAlert(message: "Please update your operating system")
@@ -227,11 +222,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 
-    private func openSettings(with scheme: Settings) {
-        guard let url = URL(string: "App-prefs:root=\(scheme.rawValue)") else {
-            return print("🔥 Settings URL string problem: \(scheme.rawValue)")
-        }
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    private func openBluetooth() {
+        // We need to navigate to the Bluetooth settings page, using `App-Perfs:root=Bluetooth`
+        // is a private api and risks getting the app rejected during review.
+        _ = CBCentralManager(delegate: nil, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
     }
 }
 

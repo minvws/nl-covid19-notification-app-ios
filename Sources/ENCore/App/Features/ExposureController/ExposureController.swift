@@ -230,31 +230,29 @@ final class ExposureController: ExposureControlling {
             return
         }
 
-        let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
+        let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 16) // 16 hours
         let hasBeenTooLongSinceLastUpdate = dataController.lastSuccessfulFetchDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
 
-        let currentNetworkStatus = networkStatusStream.currentStatus
         let activeState: ExposureActiveState
 
         switch exposureManager.getExposureNotificationStatus() {
         case .active where hasBeenTooLongSinceLastUpdate:
-            // no need to worry about noRecentNotificationUpdates state when not active
             activeState = .inactive(.noRecentNotificationUpdates)
-        case .active where currentNetworkStatus == true:
-            activeState = .active
         case .active:
-            activeState = .inactive(.airplaneMode)
-        case let .inactive(error) where error == .bluetoothOff && currentNetworkStatus == true:
+            activeState = .active
+        case .inactive(_) where hasBeenTooLongSinceLastUpdate:
+            activeState = .inactive(.noRecentNotificationUpdates)
+        case let .inactive(error) where error == .bluetoothOff:
             activeState = .inactive(.bluetoothOff)
-        case let .inactive(error) where error == .disabled || error == .restricted && currentNetworkStatus == true:
+        case let .inactive(error) where error == .disabled || error == .restricted:
             activeState = .inactive(.disabled)
-        case let .inactive(error) where error == .notAuthorized && currentNetworkStatus == true:
+        case let .inactive(error) where error == .notAuthorized:
             activeState = .notAuthorized
-        case let .inactive(error) where error == .unknown && currentNetworkStatus == true:
+        case let .inactive(error) where error == .unknown || error == .internalTypeMismatch:
             // Most likely due to code signing issues
             activeState = .inactive(.disabled)
         case .inactive:
-            activeState = !currentNetworkStatus ? .inactive(.airplaneMode) : .inactive(.disabled)
+            activeState = .inactive(.disabled)
         case .notAuthorized:
             activeState = .notAuthorized
         case .authorizationDenied:
