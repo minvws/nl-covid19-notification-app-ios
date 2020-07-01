@@ -46,8 +46,8 @@ targets:
       path: Sources/EN/Resources/Info.plist
       properties:
         BGTaskSchedulerPermittedIdentifiers: [$(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification]
-        CFBundleName: EN
-        CFBundleDisplayName: EN
+        CFBundleName: CoronaMelder
+        CFBundleDisplayName: CoronaMelder
         CFBundleShortVersionString: "0.1"
         CFBundleVersion: "1.0"
         CFBundleIconName: "Media.xcassets/AppIcon.appiconset"
