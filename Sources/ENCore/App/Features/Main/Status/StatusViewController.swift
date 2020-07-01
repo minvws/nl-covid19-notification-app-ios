@@ -100,7 +100,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
 private final class StatusView: View {
 
-    fileprivate weak var listener: StatusListener?
+    fileprivate weak var listener: StatusListener? {
+        didSet { cardView.listener = listener }
+    }
 
     fileprivate let stretchGuide = UILayoutGuide() // grows larger while stretching, grows all visible elements
     fileprivate let contentStretchGuide = UILayoutGuide() // grows larger while stretching, used to center the content
