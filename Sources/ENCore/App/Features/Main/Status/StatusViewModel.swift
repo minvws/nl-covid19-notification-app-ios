@@ -100,7 +100,7 @@ struct StatusViewModel {
     static let activeWithNotNotified = StatusViewModel(
         icon: .ok,
         title: .init(string: Localization.string(for: "status.appState")),
-        description: .init(string: Localization.string(for: "status.active.description")),
+        description: .init(string: Localization.string(for: "status.active.description", ["[Name app]"])),
         buttons: [],
         footer: nil,
         shouldShowHideMessage: false,
