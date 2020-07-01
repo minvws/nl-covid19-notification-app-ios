@@ -10,14 +10,14 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class MessageViewControllerTests: XCTestCase {
+final class MessageViewControllerTests: TestCase {
     private var viewController: MessageViewController!
     private let listern = MessageListenerMock()
 
     override func setUp() {
         super.setUp()
 
-        let theme = ENTheme()
+        recordSnapshots = false
 
         viewController = MessageViewController(listener: listern,
                                                theme: theme,

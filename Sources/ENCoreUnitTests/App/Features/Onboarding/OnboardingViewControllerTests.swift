@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-final class OnboardingViewControllerTests: XCTestCase {
+final class OnboardingViewControllerTests: TestCase {
     private var viewController: OnboardingViewController!
     private let router = OnboardingRoutingMock()
     private let listener = OnboardingListenerMock()
@@ -17,8 +17,6 @@ final class OnboardingViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
-        let theme = ENTheme()
 
         viewController = OnboardingViewController(onboardingConsentManager: consentManager,
                                                   listener: listener,

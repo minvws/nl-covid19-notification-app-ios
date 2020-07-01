@@ -10,7 +10,7 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class OnboardingStepViewControllerTests: XCTestCase {
+final class OnboardingStepViewControllerTests: TestCase {
     private var viewController: OnboardingStepViewController!
     private let manager = OnboardingManagingMock()
     private let stepBuilder = OnboardingStepBuildableMock()
@@ -19,10 +19,8 @@ final class OnboardingStepViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let theme = ENTheme()
-
         manager.getStepHandler = { index in
-            return OnboardingStep(theme: theme,
+            return OnboardingStep(theme: self.theme,
                                   title: "Title",
                                   content: "Content",
                                   illustration: .image(named: "Step5"),

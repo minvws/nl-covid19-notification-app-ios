@@ -10,7 +10,8 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class MoreInformationViewControllerTests: XCTestCase {
+final class MoreInformationViewControllerTests: TestCase {
+
     private var viewController: MoreInformationViewController!
     private let listener = MoreInformationListenerMock()
     private let tableViewDelegate = UITableViewDelegateMock()
@@ -21,9 +22,8 @@ final class MoreInformationViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        SnapshotTesting.record = false
+        recordSnapshots = false
 
-        let theme = ENTheme()
         viewController = MoreInformationViewController(listener: listener,
                                                        theme: theme)
     }

@@ -10,7 +10,7 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class InfectedViewControllerTests: XCTestCase {
+final class InfectedViewControllerTests: TestCase {
     private var viewController: InfectedViewController!
     private let router = InfectedRoutingMock()
     private let exposureController = ExposureControllingMock()
@@ -18,7 +18,7 @@ final class InfectedViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let theme = ENTheme()
+        recordSnapshots = false
 
         viewController = InfectedViewController(theme: theme, exposureController: exposureController)
         viewController.router = router

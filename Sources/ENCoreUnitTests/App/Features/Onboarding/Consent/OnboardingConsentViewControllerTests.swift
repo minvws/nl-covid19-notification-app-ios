@@ -9,15 +9,13 @@
 import Foundation
 import XCTest
 
-final class OnboardingConsentViewControllerTests: XCTestCase {
+final class OnboardingConsentViewControllerTests: TestCase {
     private var viewController: OnboardingConsentStepViewController!
     private let listener = OnboardingConsentListenerMock()
     private let manager = OnboardingConsentManagingMock()
 
     override func setUp() {
         super.setUp()
-
-        let theme = ENTheme()
 
         viewController = OnboardingConsentStepViewController(onboardingConsentManager: manager,
                                                              listener: listener,

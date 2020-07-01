@@ -10,14 +10,17 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class UpdateAppViewControllerTests: XCTestCase {
+final class UpdateAppViewControllerTests: TestCase {
+
     private var viewController: UpdateAppViewController!
     private let listern = UpdateAppListenerMock()
+
+    // MARK: - Setup
 
     override func setUp() {
         super.setUp()
 
-        let theme = ENTheme()
+        recordSnapshots = false
 
         viewController = UpdateAppViewController(listener: listern, theme: theme)
     }

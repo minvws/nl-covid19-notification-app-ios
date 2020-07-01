@@ -6,13 +6,25 @@
  */
 
 import Combine
+@testable import ENCore
+import SnapshotTesting
 import XCTest
 
 class TestCase: XCTestCase {
-    fileprivate var disposeBag = Set<AnyCancellable>()
+
+    var recordSnapshots: Bool {
+        get { SnapshotTesting.record }
+        set { SnapshotTesting.record = newValue }
+    }
+
+    let theme = ENTheme()
+
+    // MARK: - Overrides
 
     override func setUp() {
         super.setUp()
+
+        SnapshotTesting.diffTool = "ksdiff"
     }
 
     override func tearDown() {
@@ -20,6 +32,10 @@ class TestCase: XCTestCase {
 
         super.tearDown()
     }
+
+    // MARK: - Private
+
+    fileprivate var disposeBag = Set<AnyCancellable>()
 }
 
 extension AnyCancellable {
