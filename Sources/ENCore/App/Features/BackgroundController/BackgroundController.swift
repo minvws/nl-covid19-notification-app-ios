@@ -73,8 +73,8 @@ final class BackgroundController: BackgroundControlling {
 
     private func handleUpdate(task: BGProcessingTask) {
         let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
-            exposureController.updateWhenRequiredPublisher,
-            exposureController.processPendingUploadRequestsPublisher
+            exposureController.updateWhenRequired,
+            exposureController.processPendingUploadRequests
         ]
 
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array

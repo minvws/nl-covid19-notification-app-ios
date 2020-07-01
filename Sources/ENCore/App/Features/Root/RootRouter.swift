@@ -114,7 +114,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didEnterForeground() {
         exposureController.refreshStatus()
-        exposureController.updateWhenRequired {}
+        exposureController
+            .updateWhenRequired()
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { _ in })
+            .store(in: &disposeBag)
+
         networkController.startObservingNetworkReachability()
     }
 

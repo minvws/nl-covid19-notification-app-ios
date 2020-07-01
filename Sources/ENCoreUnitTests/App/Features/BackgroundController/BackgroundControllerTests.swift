@@ -27,10 +27,10 @@ final class BackgroundControllerTests: XCTestCase {
     // MARK: - Tests
 
     func test_handleBackgroundTask_success() {
-        exposureController.updateWhenRequiredPublisherHandler = {
+        exposureController.updateWhenRequiredHandler = {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
-        exposureController.processPendingUploadRequestsPublisherHandler = {
+        exposureController.processPendingUploadRequestsHandler = {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
@@ -43,10 +43,10 @@ final class BackgroundControllerTests: XCTestCase {
     }
 
     func test_handleBackgroundTask_failure() {
-        exposureController.updateWhenRequiredPublisherHandler = {
+        exposureController.updateWhenRequiredHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
-        exposureController.processPendingUploadRequestsPublisherHandler = {
+        exposureController.processPendingUploadRequestsHandler = {
             Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
         }
 
@@ -59,7 +59,7 @@ final class BackgroundControllerTests: XCTestCase {
     }
 
     func test_handleBackgroundTask_cancel() {
-        exposureController.updateWhenRequiredPublisherHandler = {
+        exposureController.updateWhenRequiredHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
         var cancelled = false
@@ -68,7 +68,7 @@ final class BackgroundControllerTests: XCTestCase {
                 cancelled = true
             })
             .eraseToAnyPublisher()
-        exposureController.processPendingUploadRequestsPublisherHandler = {
+        exposureController.processPendingUploadRequestsHandler = {
             return stream
         }
 

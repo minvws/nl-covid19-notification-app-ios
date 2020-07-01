@@ -20,11 +20,8 @@ protocol ExposureControlling {
 
     func refreshStatus()
 
-    func updateWhenRequired(_ completion: @escaping () -> ())
-    func updateWhenRequiredPublisher() -> AnyPublisher<(), ExposureDataError>
-
-    func processPendingUploadRequests(_ completion: @escaping () -> ())
-    func processPendingUploadRequestsPublisher() -> AnyPublisher<(), ExposureDataError>
+    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
+    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Permissions
 

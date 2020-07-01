@@ -10,7 +10,7 @@ import Combine
 import Foundation
 import XCTest
 
-final class ExposureControllerTests: XCTestCase {
+final class ExposureControllerTests: TestCase {
     private var controller: ExposureController!
     private let mutableStateStream = MutableExposureStateStreamingMock()
     private let exposureManager = ExposureManagingMock()
@@ -305,7 +305,10 @@ final class ExposureControllerTests: XCTestCase {
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
 
-        controller.updateWhenRequired {}
+        controller
+            .updateWhenRequired()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }

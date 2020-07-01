@@ -375,9 +375,11 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     private func processPendingUploadRequests() {
-        exposureController.processPendingUploadRequests { [weak self] in
-            self?.internalView.tableView.reloadData()
-        }
+        exposureController
+            .processPendingUploadRequests()
+            .sink(receiveCompletion: { [weak self] _ in self?.internalView.tableView.reloadData() },
+                  receiveValue: { _ in })
+            .store(in: &disposeBag)
     }
 
     // MARK: - Private
