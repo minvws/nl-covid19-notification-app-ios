@@ -173,6 +173,12 @@ final class NetworkManager: NetworkManaging {
                                           body: request,
                                           headers: headers)
 
+        if configuration.api.host == "localhost", configuration.api.port == nil {
+            // FIXME: This is stubbed for the region test
+            completion(nil)
+            return
+        }
+
         data(request: urlRequest) { result in
             switch result {
             case .success:
@@ -218,6 +224,12 @@ final class NetworkManager: NetworkManaging {
                                           method: .POST,
                                           body: request,
                                           headers: headers)
+
+        if configuration.api.host == "localhost", configuration.api.port == nil {
+            // FIXME: This is stubbed for the region test
+            completion(.success(LabInformation(labConfirmationId: "7V-YR-V3", bucketId: "tbWbzHx1CSvOeTJT+bL4Ij/vBBJYvt3GQ4/EJYWMY8U=", confirmationKey: "UND1tvcl9q2HTS+jdwugCeMSUb17Kndpor9BJ/oxtAc=", validity: 40956)))
+            return
+        }
 
         data(request: urlRequest) { result in
             self.jsonResponseHandler(result: result)
