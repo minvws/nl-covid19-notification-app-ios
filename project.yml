@@ -12,6 +12,8 @@ packages:
     path: vendor/swift-snapshot-testing
   ZIPFoundation:
     path: vendor/ZIPFoundation
+  CocoaLumberjack:
+    path: vendor/CocoaLumberjack
 targets:
   EN:
     platform: iOS
@@ -92,6 +94,10 @@ targets:
         SWIFT_VERSION: 5.2
         OTHER_LDFLAGS: -weak_framework ExposureNotification
     dependencies:
+      - package: CocoaLumberjack
+        product: CocoaLumberjack
+      - package: CocoaLumberjack
+        product: CocoaLumberjackSwift
       - package: ZIPFoundation
       - package: SnapKit
       - package: Lottie

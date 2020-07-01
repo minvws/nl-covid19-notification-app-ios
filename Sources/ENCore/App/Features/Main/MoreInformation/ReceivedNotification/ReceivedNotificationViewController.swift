@@ -12,7 +12,7 @@ import UIKit
 /// @mockable
 protocol ReceivedNotificationViewControllable: ViewControllable {}
 
-final class ReceivedNotificationViewController: ViewController, ReceivedNotificationViewControllable, UIAdaptivePresentationControllerDelegate {
+final class ReceivedNotificationViewController: ViewController, ReceivedNotificationViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
     // MARK: - Init
 
@@ -37,12 +37,12 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
-        internalView.contactButtonActionHandler = {
+        internalView.contactButtonActionHandler = { [weak self] in
             let urlString = "tel://08001202"
             if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                print("🔥 Unable to open \(urlString)")
+                self?.logError("Unable to open \(urlString)")
             }
         }
     }

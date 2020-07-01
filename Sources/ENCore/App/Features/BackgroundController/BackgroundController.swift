@@ -15,7 +15,7 @@ import Foundation
 /// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `print("🐞 Scheduled Update")` statement and background the application.
 /// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.background-update"]`
 /// and resume the application. The background task will be run.
-final class BackgroundController: BackgroundControlling {
+final class BackgroundController: BackgroundControlling, Logging {
 
     private struct Constants {
         static let backgroundUpdateTask = "nl.rijksoverheid.en.background-update"
@@ -41,12 +41,12 @@ final class BackgroundController: BackgroundControlling {
         switch task.identifier {
         case Constants.backgroundUpdateTask:
             guard let task = task as? BGProcessingTask else {
-                return print("🔥 Task is not of type `BGProcessingTask`")
+                return logError("Task is not of type `BGProcessingTask`")
             }
             handleUpdate(task: task)
             scheduleUpdate()
         default:
-            print("🔥 No Handler for: \(task.identifier)")
+            logError(" No Handler for: \(task.identifier)")
         }
     }
 
@@ -57,7 +57,7 @@ final class BackgroundController: BackgroundControlling {
 
     private func scheduleUpdate() {
         guard ENManager.authorizationStatus == .authorized else {
-            return print("🔥 `ENManager.authorizationStatus` not authorized")
+            return logError("`ENManager.authorizationStatus` not authorized")
         }
         let request = BGProcessingTaskRequest(identifier: Constants.backgroundUpdateTask)
         request.requiresNetworkConnectivity = true
@@ -65,9 +65,9 @@ final class BackgroundController: BackgroundControlling {
 
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("🐞 Scheduled Update")
+            logDebug("Scheduled Update")
         } catch {
-            print("Could not schedule app refresh: \(error)")
+            logWarning("Could not schedule app refresh: \(error)")
         }
     }
 
@@ -83,17 +83,17 @@ final class BackgroundController: BackgroundControlling {
             .flatMap(maxPublishers: .max(1)) { $0 }
             // wait until all of them are done and collect them in an array
             // subsicbe to the result
-            .sink(receiveCompletion: { result in
+            .sink(receiveCompletion: { [weak self] result in
                 switch result {
                 case .finished:
-                    print("🐞 Finished Background Updating")
+                    self?.logDebug("Finished Background Updating")
                     task.setTaskCompleted(success: true)
                 case let .failure(error):
-                    print("🔥 Error completiting sequence \(error.localizedDescription)")
+                    self?.logError("Error completiting sequence \(error.localizedDescription)")
                     task.setTaskCompleted(success: false)
                 }
-            }, receiveValue: { _ in
-                print("🐞 Completed task")
+            }, receiveValue: { [weak self] _ in
+                self?.logDebug("Completed task")
             })
 
         // Handle running out of time

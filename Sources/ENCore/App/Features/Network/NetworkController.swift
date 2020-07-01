@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import Reachability
 
-final class NetworkController: NetworkControlling {
+final class NetworkController: NetworkControlling, Logging {
 
     // MARK: - Init
 
@@ -141,7 +141,7 @@ final class NetworkController: NetworkControlling {
             do {
                 self.reachability = try Reachability()
             } catch {
-                print("🔥 Unable to instantiate Reachability")
+                logError("Unable to instantiate Reachability")
             }
         }
         reachability?.whenReachable = { [weak self] status in
@@ -154,7 +154,7 @@ final class NetworkController: NetworkControlling {
         do {
             try reachability?.startNotifier()
         } catch {
-            print("🔥 Unable to start Reachability")
+            logError("Unable to start Reachability")
         }
     }
 

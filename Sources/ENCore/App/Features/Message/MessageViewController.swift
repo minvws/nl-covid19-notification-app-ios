@@ -12,7 +12,7 @@ import UIKit
 /// @mockable
 protocol MessageViewControllable: ViewControllable {}
 
-final class MessageViewController: ViewController, MessageViewControllable, UIAdaptivePresentationControllerDelegate {
+final class MessageViewController: ViewController, MessageViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
     struct Message {
         let title: String
@@ -43,12 +43,12 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
-        internalView.infoView.actionHandler = {
+        internalView.infoView.actionHandler = { [weak self] in
             let urlString = "tel://08001202"
             if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                print("🔥 Unable to open \(urlString)")
+                self?.logError("Unable to open \(urlString)")
             }
         }
     }

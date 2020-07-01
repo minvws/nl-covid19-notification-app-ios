@@ -11,7 +11,7 @@ import UIKit
 /// @mockable
 protocol RequestTestViewControllable: ViewControllable {}
 
-final class RequestTestViewController: ViewController, RequestTestViewControllable, UIAdaptivePresentationControllerDelegate {
+final class RequestTestViewController: ViewController, RequestTestViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
     // MARK: - Init
 
@@ -36,12 +36,12 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
-        internalView.contactButtonActionHandler = {
+        internalView.contactButtonActionHandler = { [weak self] in
             let urlString = "tel://08001202"
             if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                print("🔥 Unable to open \(urlString)")
+                self?.logError("Unable to open \(urlString)")
             }
         }
     }
