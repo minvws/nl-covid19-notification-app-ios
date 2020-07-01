@@ -7,8 +7,8 @@
 
 import Combine
 import Foundation
-import UIKit
 import MessageUI
+import UIKit
 
 /// @mockable
 protocol DeveloperMenuViewControllable: ViewControllable {}
@@ -199,8 +199,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             ]),
             ("Logging", [
                 DeveloperItem(title: "Log Files",
-                                             subtitle: "Share the log files",
-                                             action: { [weak self] in self?.emailLogFiles() })
+                              subtitle: "Share the log files",
+                              action: { [weak self] in self?.emailLogFiles() })
             ])
         ]
     }
@@ -355,7 +355,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         exposureController.refreshStatus()
         internalView.tableView.reloadData()
     }
-    
+
     private func emailLogFiles() {
         let activityViewController = UIActivityViewController(activityItems: LogHandler.logFiles(),
                                                               applicationActivities: nil)
