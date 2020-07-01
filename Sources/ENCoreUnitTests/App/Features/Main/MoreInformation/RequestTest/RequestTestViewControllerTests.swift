@@ -18,6 +18,7 @@ final class RequestTestViewControllerTests: XCTestCase {
         super.setUp()
 
         let theme = ENTheme()
+        SnapshotTesting.diffTool = "ksdiff"
         SnapshotTesting.record = false
 
         viewController = RequestTestViewController(listener: listern, theme: theme)
