@@ -24,6 +24,7 @@ final class StatusViewControllerTests: XCTestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
 
         SnapshotTesting.diffTool = "ksdiff"
+        SnapshotTesting.record = false
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), theme: theme, topAnchor: nil)
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
