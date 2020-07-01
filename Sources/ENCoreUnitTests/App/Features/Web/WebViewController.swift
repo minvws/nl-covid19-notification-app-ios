@@ -9,15 +9,13 @@
 import Foundation
 import XCTest
 
-final class WebViewControllerTests: XCTestCase {
+final class WebViewControllerTests: TestCase {
     private var viewController: WebViewController!
     private let listener = WebListenerMock()
     private let webView = WebViewingMock()
 
     override func setUp() {
         super.setUp()
-
-        let theme = ENTheme()
 
         let request = URLRequest(url: URL(string: "https://www.rijksoverheid.nl")!)
         viewController = WebViewController(listener: listener,

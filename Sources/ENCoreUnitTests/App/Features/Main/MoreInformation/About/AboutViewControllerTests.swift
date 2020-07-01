@@ -9,15 +9,13 @@
 import Foundation
 import XCTest
 
-final class AboutViewControllerTests: XCTestCase {
+final class AboutViewControllerTests: TestCase {
     private var viewController: AboutViewController!
     private let listener = AboutListenerMock()
     private let webBuilder = WebBuildableMock()
 
     override func setUp() {
         super.setUp()
-
-        let theme = ENTheme()
 
         viewController = AboutViewController(listener: listener,
                                              theme: theme,

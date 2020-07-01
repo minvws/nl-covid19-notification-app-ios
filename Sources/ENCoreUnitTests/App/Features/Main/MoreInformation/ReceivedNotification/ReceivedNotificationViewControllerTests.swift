@@ -10,15 +10,14 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class ReceivedNotificationViewControllerTests: XCTestCase {
+final class ReceivedNotificationViewControllerTests: TestCase {
     private var viewController: ReceivedNotificationViewController!
     private let listern = ReceivedNotificationListenerMock()
 
     override func setUp() {
         super.setUp()
 
-        let theme = ENTheme()
-        SnapshotTesting.record = false
+        recordSnapshots = false
 
         viewController = ReceivedNotificationViewController(listener: listern, theme: theme)
     }

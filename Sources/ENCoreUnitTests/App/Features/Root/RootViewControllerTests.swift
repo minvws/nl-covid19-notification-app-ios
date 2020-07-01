@@ -9,14 +9,12 @@
 import Foundation
 import XCTest
 
-final class RootViewControllerTests: XCTestCase {
+final class RootViewControllerTests: TestCase {
     private var viewController: RootViewController!
     private let router = RootRoutingMock()
 
     override func setUp() {
         super.setUp()
-
-        let theme = ENTheme()
 
         viewController = RootViewController(theme: theme)
         viewController.router = router

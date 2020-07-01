@@ -11,7 +11,7 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class StatusViewControllerTests: XCTestCase {
+final class StatusViewControllerTests: TestCase {
     private var exposureStateStream = ExposureStateStreamingMock()
     private var viewController: StatusViewController!
     private let router = StatusRoutingMock()
@@ -19,12 +19,8 @@ final class StatusViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let theme = ENTheme()
-
+        recordSnapshots = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
-
-        SnapshotTesting.diffTool = "ksdiff"
-        SnapshotTesting.record = false
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), theme: theme, topAnchor: nil)
         viewController.view.translatesAutoresizingMaskIntoConstraints = false

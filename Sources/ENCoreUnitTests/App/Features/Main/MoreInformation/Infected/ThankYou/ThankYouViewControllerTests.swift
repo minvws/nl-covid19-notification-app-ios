@@ -10,7 +10,7 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class ThankYouViewControllerTests: XCTestCase {
+final class ThankYouViewControllerTests: TestCase {
     private var viewController: ThankYouViewController!
     private let listenr = ThankYouListenerMock()
 
@@ -19,7 +19,7 @@ final class ThankYouViewControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let theme = ENTheme()
+        recordSnapshots = false
 
         let key = LabConfirmationKey(identifier: "Key Here",
                                      bucketIdentifier: Data(),

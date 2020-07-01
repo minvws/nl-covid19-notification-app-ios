@@ -10,16 +10,14 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class RequestTestViewControllerTests: XCTestCase {
+final class RequestTestViewControllerTests: TestCase {
     private var viewController: RequestTestViewController!
     private let listern = RequestTestListenerMock()
 
     override func setUp() {
         super.setUp()
 
-        let theme = ENTheme()
-        SnapshotTesting.diffTool = "ksdiff"
-        SnapshotTesting.record = false
+        recordSnapshots = false
 
         viewController = RequestTestViewController(listener: listern, theme: theme)
     }

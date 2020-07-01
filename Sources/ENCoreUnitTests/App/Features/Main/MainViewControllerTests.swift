@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-final class MainViewControllerTests: XCTestCase {
+final class MainViewControllerTests: TestCase {
     private var viewController: MainViewController!
     private let router = MainRoutingMock()
     private let statusBuilder = StatusBuildableMock()
@@ -19,8 +19,6 @@ final class MainViewControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
-        let theme = ENTheme()
 
         viewController = MainViewController(theme: theme,
                                             exposureController: exposureController,
