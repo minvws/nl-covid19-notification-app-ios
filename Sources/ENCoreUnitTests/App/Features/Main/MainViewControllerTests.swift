@@ -87,9 +87,9 @@ final class MainViewControllerTests: TestCase {
     }
 
     func test_handleButtonAction_explainRisk() {
-        XCTAssertEqual(router.routeToReceivedNotificationCallCount, 0)
-        viewController.handleButtonAction(.explainRisk)
-        XCTAssertEqual(router.routeToReceivedNotificationCallCount, 1)
+        XCTAssertEqual(router.routeToMessageCallCount, 0)
+        viewController.handleButtonAction(.explainRisk(Date()))
+        XCTAssertEqual(router.routeToMessageCallCount, 1)
     }
 
     func test_handleButtonAction_removeNotification() {
