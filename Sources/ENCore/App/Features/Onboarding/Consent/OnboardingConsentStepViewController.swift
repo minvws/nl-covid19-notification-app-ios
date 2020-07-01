@@ -186,7 +186,7 @@ final class OnboardingConsentView: View {
     lazy var secondaryButton: Button = {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.style = .tertiary
+        button.style = .secondary
         return button
     }()
 
