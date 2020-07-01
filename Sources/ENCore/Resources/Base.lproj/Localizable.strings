@@ -94,9 +94,9 @@
 
 "status.appState" = "De app is actief";
 "status.appState.inactive.title" = "De app is niet actief";
-"status.appState.inactive.description" = "Zet de instellingen aan die de app nodig heeft om te werken";
+"status.appState.inactive.description" = " %@ werkt alleen als de noodzakelijke instellingen aanstaan.";
 "status.appState.card.title" = "App is niet actief";
-"status.appState.card.description" = "Zet de instellingen aan die de app nodig heeft om te werken.";
+"status.appState.card.description" = " %@ werkt alleen als de noodzakelijke instellingen aanstaan.";
 "status.appState.card.button" = "Instellingen aanzetten";
 "status.active.description" = "Ook als je de app sluit, blijft %@ actief";
 /* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
