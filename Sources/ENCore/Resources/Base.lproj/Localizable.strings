@@ -1,3 +1,10 @@
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
+
 "ok" = "Ok";
 "yes" = "Ja";
 "no" = "Nee";
@@ -79,12 +86,12 @@
 // MARK: - Status
 
 "status.appState" = "De app is actief";
-"status.active.description" = "Ook als je de app sluit, blijft %1$s actief";
+"status.active.description" = "Ook als je de app sluit, blijft %@ actief";
 /* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
 "status.notified.description_days" = "%@ dagen geleden (%@)";
 "status.notified.description_hours" = "%@ uur geleden (%@)";
 "status.notified.description_none" = "op %@";
-"status.notified.description" = "Je hebt %1$s geleden (%2$s) extra kans op besmetting gelopen";
+"status.notified.description" = "Je hebt %@ geleden (%@) extra kans op besmetting gelopen";
 "status.notified.moreInfo" = "Wat kan ik nu doen?";
 "status.notified.removeNotification" = "Melding verwijderen";
 
