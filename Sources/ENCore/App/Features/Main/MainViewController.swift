@@ -187,20 +187,24 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         guard let exposureState = exposureStateStream.currentExposureState else {
             return logError("Exposure State is `nil`")
         }
-        guard case let .inactive(reason) = exposureState.activeState else {
-            return logError("Exposure State not handled")
-        }
-
-        switch reason {
-        case .bluetoothOff:
-            openBluetooth()
-        case .disabled:
+        switch exposureState.activeState {
+        case .authorizationDenied:
             openAppSettings()
-        case .noRecentNotificationUpdates:
+        case .notAuthorized:
+            openAppSettings()
+        case let .inactive(reason) where reason == .bluetoothOff:
+            openBluetooth()
+        case let .inactive(reason) where reason == .disabled:
+            openAppSettings()
+        case let .inactive(reason) where reason == .noRecentNotificationUpdates:
             updateWhenRequired()
-        case .requiresOSUpdate:
+        case let .inactive(reason) where reason == .requiresOSUpdate:
             // FIXME: This is a temporary solution while design is being updated
             presentAlert(message: "Please update your operating system")
+        case .inactive:
+            logError("Unhandled case")
+        case .active:
+            logError("Active state = noting nothing to do")
         }
     }
 
@@ -228,8 +232,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private func updateWhenRequired() {
         exposureController
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in
-                print("🐞 Finished `updateWhenRequired`")
+            .sink(receiveCompletion: { [weak self] _ in
+                self?.logDebug("Finished `updateWhenRequired`")
             }, receiveValue: { _ in
                 // Do nothing
             }).store(in: &disposeBag)

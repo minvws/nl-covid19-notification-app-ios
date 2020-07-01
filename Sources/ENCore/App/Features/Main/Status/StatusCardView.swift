@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 final class StatusCardView: View {
+    weak var listener: StatusListener?
+
     private let container = UIStackView()
     private let header = UIStackView()
 
@@ -89,5 +91,9 @@ final class StatusCardView: View {
 
         button.setTitle(viewModel.button.title, for: .normal)
         button.style = viewModel.button.style
+
+        button.action = { [weak self] in
+            self?.listener?.handleButtonAction(viewModel.button.action)
+        }
     }
 }
