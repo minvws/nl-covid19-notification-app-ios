@@ -78,6 +78,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             return
         }
 
+        LogHandler.setup()
+
         /// Check if the app is the minimum version. If not, show the app update screen
         if let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
             exposureController.getMinimumiOSVersion { version in

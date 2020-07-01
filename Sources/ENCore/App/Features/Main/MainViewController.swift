@@ -27,7 +27,7 @@ protocol MainRouting: Routing {
     func detachInfected(shouldDismissViewController: Bool)
 }
 
-final class MainViewController: ViewController, MainViewControllable, StatusListener {
+final class MainViewController: ViewController, MainViewControllable, StatusListener, Logging {
     weak var router: MainRouting?
 
     // MARK: - Init
@@ -185,10 +185,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     private func handleUpdateAppSettings() {
         guard let exposureState = exposureStateStream.currentExposureState else {
-            return print("🔥 Exposure State is `nil`")
+            return logError("Exposure State is `nil`")
         }
         guard case let .inactive(reason) = exposureState.activeState else {
-            return print("🔥 Exposure State not handled")
+            return logError("Exposure State not handled")
         }
 
         switch reason {
@@ -214,7 +214,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     private func openAppSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString) else {
-            return print("🔥 Settings URL string problem")
+            return logError("Settings URL string problem")
         }
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }

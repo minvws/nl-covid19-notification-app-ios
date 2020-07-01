@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import MessageUI
 import UIKit
 
 /// @mockable
@@ -26,7 +27,7 @@ private struct DeveloperItem {
     }
 }
 
-final class DeveloperMenuViewController: ViewController, DeveloperMenuViewControllable, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
+final class DeveloperMenuViewController: ViewController, DeveloperMenuViewControllable, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource, Logging {
 
     init(listener: DeveloperMenuListener,
          theme: Theme,
@@ -195,6 +196,11 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Schedule Message Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
                               action: { [weak self] in self?.wantsScheduleNotification() })
+            ]),
+            ("Logging", [
+                DeveloperItem(title: "Log Files",
+                              subtitle: "Share the log files",
+                              action: { [weak self] in self?.emailLogFiles() })
             ])
         ]
     }
@@ -350,6 +356,12 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         internalView.tableView.reloadData()
     }
 
+    private func emailLogFiles() {
+        let activityViewController = UIActivityViewController(activityItems: LogHandler.logFiles(),
+                                                              applicationActivities: nil)
+        present(activityViewController, animated: true, completion: nil)
+    }
+
     private var fetchAndProcessCancellable: AnyCancellable?
 
     private func fetchAndProcessKeySets() {
@@ -468,7 +480,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         let unc = UNUserNotificationCenter.current()
         unc.add(request) { error in
             if let error = error {
-                print("🔥 Error \(error.localizedDescription)")
+                self.logError("\(error.localizedDescription)")
             }
         }
         hide()

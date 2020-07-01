@@ -26,7 +26,7 @@ public protocol Colors: AnyObject {
     var viewControllerBackground: UIColor { get }
 }
 
-final class ENColors: Colors {
+final class ENColors: Colors, Logging {
     var primary: UIColor {
         return color(for: "PrimaryColor")
     }
@@ -78,7 +78,7 @@ final class ENColors: Colors {
         if let color = UIColor(named: name, in: bundle, compatibleWith: nil) {
             return color
         }
-        print("🔥 Color: \(name) not found")
+        logError("Color: \(name) not found")
         return .clear
     }
 }
