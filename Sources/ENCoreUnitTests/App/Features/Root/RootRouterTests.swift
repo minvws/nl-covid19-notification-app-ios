@@ -119,6 +119,10 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_didEnterForeground_startsObservingNetworkReachability() {
+        exposureController.updateWhenRequiredHandler = {
+            Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
         XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 0)
 
         router.didEnterForeground()

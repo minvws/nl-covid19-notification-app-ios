@@ -52,19 +52,26 @@ final class ExposureController: ExposureControlling {
             }
             .filter { $0 }
             .first()
-            .sink { [weak self] _ in
-                // update the first time the app becomes active
-                self?.updateStatusStream()
-                self?.updateWhenRequired {}
+            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
+            .flatMap { [weak self] _ in
+                self?
+                    .updateWhenRequired()
+                    .replaceError(with: ())
+                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
             }
+            .sink(receiveValue: { _ in })
             .store(in: &disposeBag)
 
         networkStatusStream
             .networkStatusStream
-            .sink { [weak self] _ in
-                self?.refreshStatus()
-                self?.updateWhenRequired {}
+            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
+            .flatMap { [weak self] _ in
+                self?
+                    .updateWhenRequired()
+                    .replaceError(with: ())
+                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
             }
+            .sink(receiveValue: { _ in })
             .store(in: &disposeBag)
     }
 
@@ -84,7 +91,7 @@ final class ExposureController: ExposureControlling {
         updateStatusStream()
     }
 
-    func updateWhenRequiredPublisher() -> AnyPublisher<(), ExposureDataError> {
+    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
         // update when active, or when inactive due to no recent updates
         guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
@@ -92,26 +99,9 @@ final class ExposureController: ExposureControlling {
         return fetchAndProcessExposureKeySets()
     }
 
-    func updateWhenRequired(_ completion: @escaping () -> ()) {
-        updateWhenRequiredPublisher()
-            .sink(receiveCompletion: { _ in
-                completion()
-            }, receiveValue: { _ in })
-            .store(in: &disposeBag)
-    }
-
-    func processPendingUploadRequestsPublisher() -> AnyPublisher<(), ExposureDataError> {
+    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
         return dataController
             .processPendingUploadRequests()
-    }
-
-    func processPendingUploadRequests(_ completion: @escaping () -> ()) {
-        processPendingUploadRequestsPublisher()
-            .sink(receiveCompletion: { _ in
-                completion()
-            },
-            receiveValue: { _ in })
-            .store(in: &disposeBag)
     }
 
     func requestExposureNotificationPermission() {
@@ -144,23 +134,27 @@ final class ExposureController: ExposureControlling {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        guard exposureKeyUpdateCancellable == nil else {
+        if let exposureKeyUpdateStream = exposureKeyUpdateStream {
             // already fetching
-            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            return exposureKeyUpdateStream.share().eraseToAnyPublisher()
         }
 
-        return dataController
+        let stream = dataController
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
             .handleEvents(
                 receiveCompletion: { completion in
                     self.updateStatusStream()
-                    self.exposureKeyUpdateCancellable = nil
+                    self.exposureKeyUpdateStream = nil
                 },
                 receiveCancel: {
                     self.updateStatusStream()
-                    self.exposureKeyUpdateCancellable = nil
+                    self.exposureKeyUpdateStream = nil
             })
             .eraseToAnyPublisher()
+
+        exposureKeyUpdateStream = stream
+
+        return stream.share().eraseToAnyPublisher()
     }
 
     func confirmExposureNotification() {
@@ -323,7 +317,7 @@ final class ExposureController: ExposureControlling {
     private let exposureManager: ExposureManaging?
     private let dataController: ExposureDataControlling
     private var disposeBag = Set<AnyCancellable>()
-    private var exposureKeyUpdateCancellable: AnyCancellable?
+    private var exposureKeyUpdateStream: AnyPublisher<(), ExposureDataError>?
     private let networkStatusStream: NetworkStatusStreaming
     private var isActivated = false
 }

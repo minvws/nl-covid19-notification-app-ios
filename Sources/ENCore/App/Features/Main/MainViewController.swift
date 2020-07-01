@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import CoreBluetooth
 import UIKit
 
@@ -167,6 +168,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private lazy var mainView: MainView = MainView(theme: self.theme)
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
+    private var disposeBag = Set<AnyCancellable>()
 
     private func confirmNotificationRemoval() {
         let alertController = UIAlertController(title: Localization.string(for: "main.confirmNotificationRemoval.title"),
@@ -195,7 +197,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case .disabled:
             openAppSettings()
         case .noRecentNotificationUpdates:
-            exposureController.updateWhenRequired {}
+            updateWhenRequired()
         case .requiresOSUpdate:
             // FIXME: This is a temporary solution while design is being updated
             presentAlert(message: "Please update your operating system")
@@ -221,6 +223,16 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         // We need to navigate to the Bluetooth settings page, using `App-Perfs:root=Bluetooth`
         // is a private api and risks getting the app rejected during review.
         _ = CBCentralManager(delegate: nil, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
+    }
+
+    private func updateWhenRequired() {
+        exposureController
+            .updateWhenRequired()
+            .sink(receiveCompletion: { _ in
+                print("🐞 Finished `updateWhenRequired`")
+            }, receiveValue: { _ in
+                // Do nothing
+            }).store(in: &disposeBag)
     }
 }
 
