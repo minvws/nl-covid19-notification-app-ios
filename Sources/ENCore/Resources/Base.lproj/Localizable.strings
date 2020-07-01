@@ -15,6 +15,13 @@
 "close" = "Sluiten";
 "error.title" = "Er ging iets mis";
 
+// MARK: - Update App
+"updateApp.error.message" = "App Store kan niet geopend worden.";
+"updateApp.title" = "Update de app op je telefoon om te zorgen dat deze weer werkt.";
+
+"updateApp.content" = "Update de app op je telefoon om te zorgen dat deze weer werkt.";
+"updateApp.button" = "Updaten";
+
 // MARK: - Onboarding Steps
 "step1Title" = "Bescherm je vrienden, familie en de rest van Nederland";
 "step1Content" = "Deze app waarschuwt nadat je in de buurt bent geweest van iemand met het coronavirus. Zo kunnen we samen de verspreiding stoppen.";
@@ -91,7 +98,7 @@
 "status.notified.description_days" = "%@ dagen geleden (%@)";
 "status.notified.description_hours" = "%@ uur geleden (%@)";
 "status.notified.description_none" = "op %@";
-"status.notified.description" = "Je hebt %@ geleden (%@) extra kans op besmetting gelopen";
+"status.notified.description" = "Je hebt %@ extra kans op besmetting gelopen";
 "status.notified.moreInfo" = "Wat kan ik nu doen?";
 "status.notified.removeNotification" = "Melding verwijderen";
 
