@@ -33,12 +33,10 @@ enum ExposureActiveState: Equatable {
 }
 
 enum ExposureStateInactiveState: Equatable {
-    case paused
     case disabled
     case requiresOSUpdate
     case bluetoothOff
     case noRecentNotificationUpdates
-    case airplaneMode
 }
 
 /// @mockable

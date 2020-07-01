@@ -24,6 +24,7 @@ final class StatusViewControllerTests: XCTestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
 
         SnapshotTesting.diffTool = "ksdiff"
+        SnapshotTesting.record = false
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), theme: theme, topAnchor: nil)
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -43,16 +44,6 @@ final class StatusViewControllerTests: XCTestCase {
     func test_snapshot_active_notified_days_ago() {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593000030)
         set(activeState: .active, notified: true)
-        assertSnapshot(matching: viewController, as: .image())
-    }
-
-    func test_snapshot_inactive_notified() {
-        set(activeState: .inactive(.paused), notified: true)
-        assertSnapshot(matching: viewController, as: .image())
-    }
-
-    func test_snapshot_inactive_not_notified() {
-        set(activeState: .inactive(.paused), notified: false)
         assertSnapshot(matching: viewController, as: .image())
     }
 

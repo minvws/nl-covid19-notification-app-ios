@@ -657,12 +657,8 @@ private extension ExposureActiveState {
                 return "Inactive - Disabled"
             case .noRecentNotificationUpdates:
                 return "Inactive - No Recent Updates"
-            case .paused:
-                return "Inactive - Paused"
             case .requiresOSUpdate:
                 return "Inactive - Requires OS Update"
-            case .airplaneMode:
-                return "Inactive - Airplane Mode"
             }
         }
     }
