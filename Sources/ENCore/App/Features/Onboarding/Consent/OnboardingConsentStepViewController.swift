@@ -22,8 +22,8 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         return button
     }()
 
-    static let onboardingConsentSummaryStepsViewLeadingMargin: CGFloat = 20
-    static let onboardingConsentSummaryStepsViewTrailingMargin: CGFloat = 10
+    static let onboardingConsentSummaryStepsViewLeadingMargin: CGFloat = 16
+    static let onboardingConsentSummaryStepsViewTrailingMargin: CGFloat = 16
 
     private let onboardingConsentManager: OnboardingConsentManaging
 
