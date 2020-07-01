@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener {
     var router: MainRouting? { get set }
 
     func embed(stackedViewController: ViewControllable)
@@ -26,7 +26,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          receivedNotificationBuilder: ReceivedNotificationBuildable,
          requestTestBuilder: RequestTestBuildable,
          infectedBuilder: InfectedBuildable,
-         helpBuilder: HelpBuildable) {
+         helpBuilder: HelpBuildable,
+         messageBuilder: MessageBuildable) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
@@ -34,6 +35,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.requestTestBuilder = requestTestBuilder
         self.infectedBuilder = infectedBuilder
         self.helpBuilder = helpBuilder
+        self.messageBuilder = messageBuilder
 
         super.init(viewController: viewController)
 
@@ -147,6 +149,27 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         }
     }
 
+    func routeToMessage(title: String, body: String) {
+        guard messageViewController == nil else {
+            return
+        }
+        let messageViewController = messageBuilder.build(withListener: viewController, title: title, body: body)
+        self.messageViewController = messageViewController
+
+        viewController.present(viewController: messageViewController, animated: true)
+    }
+
+    func detachMessage(shouldDismissViewController: Bool) {
+        guard let messageViewController = messageViewController else {
+            return
+        }
+        self.messageViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: messageViewController, animated: true)
+        }
+    }
+
     // MARK: - Private
 
     private let statusBuilder: StatusBuildable
@@ -169,4 +192,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let helpBuilder: HelpBuildable
     private var helpRouter: Routing?
+
+    private let messageBuilder: MessageBuildable
+    private var messageViewController: ViewControllable?
 }

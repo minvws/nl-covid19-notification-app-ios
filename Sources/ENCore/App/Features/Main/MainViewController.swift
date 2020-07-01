@@ -25,9 +25,13 @@ protocol MainRouting: Routing {
 
     func routeToInfected()
     func detachInfected(shouldDismissViewController: Bool)
+
+    func routeToMessage(title: String, body: String)
+    func detachMessage(shouldDismissViewController: Bool)
 }
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, Logging {
+
     weak var router: MainRouting?
 
     // MARK: - Init
@@ -150,12 +154,19 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachInfected(shouldDismissViewController: shouldDismissViewController)
     }
 
+    // MARK: - MessageListener
+
+    func messageWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachMessage(shouldDismissViewController: shouldDismissViewController)
+    }
+
     // MARK: - StatusListener
 
     func handleButtonAction(_ action: StatusViewButtonModel.Action) {
         switch action {
-        case .explainRisk:
-            router?.routeToReceivedNotification()
+        case let .explainRisk(date):
+            router?.routeToMessage(title: Localization.string(for: "message.default.title"),
+                                   body: Localization.string(for: "message.default.body", [StatusViewModel.timeAgo(from: date)]))
         case .removeNotification:
             confirmNotificationRemoval()
         case .updateAppSettings:

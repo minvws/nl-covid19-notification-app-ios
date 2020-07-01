@@ -23,16 +23,18 @@ struct StatusViewButtonModel {
     let action: Action
 
     enum Action {
-        case explainRisk
+        case explainRisk(Date)
         case removeNotification
         case updateAppSettings
     }
 
-    static let moreInfo = StatusViewButtonModel(
-        title: Localization.string(for: "status.notified.moreInfo"),
-        style: .secondary,
-        action: .explainRisk
-    )
+    static func moreInfo(date: Date) -> StatusViewButtonModel {
+        StatusViewButtonModel(
+            title: Localization.string(for: "status.notified.moreInfo"),
+            style: .secondary,
+            action: .explainRisk(date)
+        )
+    }
 
     static let removeNotification = StatusViewButtonModel(
         title: Localization.string(for: "status.notified.removeNotification"),
@@ -89,7 +91,7 @@ struct StatusViewModel {
             icon: .notified,
             title: .init(string: Localization.string(for: "status.appState")),
             description: .init(string: Localization.string(for: "status.notified.description", [timeAgo(from: date)])),
-            buttons: [.moreInfo, .removeNotification],
+            buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
@@ -113,7 +115,7 @@ struct StatusViewModel {
             icon: .notified,
             title: .init(string: Localization.string(for: "status.appState")),
             description: .init(string: Localization.string(for: "status.notified.description", [timeAgo(from: date)])),
-            buttons: [.moreInfo, .removeNotification],
+            buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
@@ -132,7 +134,7 @@ struct StatusViewModel {
         showScene: false
     )
 
-    private static func timeAgo(from: Date) -> String {
+    static func timeAgo(from: Date) -> String {
         let now = currentDate()
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .long

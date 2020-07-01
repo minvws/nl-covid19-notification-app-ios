@@ -81,6 +81,9 @@
 
 // MARK: - Message
 
+"message.default.title" = "Je bent in de buurt geweest van iemand met het coronavirus [DIT IS EEN TEST BERICHT]";
+"message.default.body" = "Je was %@ dicht bij iemand die daarna positief is getest op het coronavirus. Het RIVM en de GGD zien dit als een situatie waarin je extra kans op besmetting hebt gelopen. Als je inderdaad besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
+
 "message.title" = "Melding gekregen";
 "message.button.title" = "Bel voor coronatest";
 
