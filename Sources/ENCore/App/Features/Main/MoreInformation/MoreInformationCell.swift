@@ -17,7 +17,9 @@ final class MoreInformationCell: UIControl, Themeable {
 
     override var isHighlighted: Bool {
         didSet {
-            Haptic.light()
+            if isHighlighted {
+                Haptic.light()
+            }
             // TODO: Should actually to proper UITableView touch styling
             UIView.animate(withDuration: 0.25) {
                 self.alpha = self.isHighlighted ? 0.6 : 1.0
