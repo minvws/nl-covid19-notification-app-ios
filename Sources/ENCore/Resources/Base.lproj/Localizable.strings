@@ -25,7 +25,7 @@
 
 // MARK: - Onboarding Steps
 "step1Title" = "Bescherm je vrienden, familie en de rest van Nederland";
-"step1Content" = "[Naam app] waarschuwt nadat je in de buurt bent geweest van iemand met het coronavirus. Zo kunnen we samen de verspreiding stoppen.";
+"step1Content" = "CoronaMelder waarschuwt nadat je in de buurt bent geweest van iemand met het coronavirus. Zo kunnen we samen de verspreiding stoppen.";
 
 "step2Title" = "Je krijgt een melding <u>nadat</u> je extra kans op besmetting hebt gelopen";
 "step2Content" = "Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die daarna positief is getest. Deze persoon moet ook de app gebruiken.";
