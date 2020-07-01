@@ -230,7 +230,7 @@ final class ExposureController: ExposureControlling {
             return
         }
 
-        let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 16) // 16 hours
+        let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
         let hasBeenTooLongSinceLastUpdate = dataController.lastSuccessfulFetchDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
 
         let activeState: ExposureActiveState
