@@ -202,9 +202,9 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             // FIXME: This is a temporary solution while design is being updated
             presentAlert(message: "Please update your operating system")
         case .inactive:
-            print("🔥 Unhandled case")
+            logError("Unhandled case")
         case .active:
-            print("🐞 Active state = noting nothing to do")
+            logError("Active state = noting nothing to do")
         }
     }
 
@@ -232,8 +232,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private func updateWhenRequired() {
         exposureController
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in
-                print("🐞 Finished `updateWhenRequired`")
+            .sink(receiveCompletion: { [weak self] _ in
+                self?.logDebug("Finished `updateWhenRequired`")
             }, receiveValue: { _ in
                 // Do nothing
             }).store(in: &disposeBag)

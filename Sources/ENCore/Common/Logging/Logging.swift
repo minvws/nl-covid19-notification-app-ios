@@ -56,6 +56,9 @@ final class LogHandler: Logging {
 
     static func logFiles() -> [URL] {
         guard let fileLogger = DDLog.allLoggers.filter({ $0 is DDFileLogger }).first as? DDFileLogger else {
+            #if DEBUG
+                assertionFailure("File Logger Not Found")
+            #endif
             print("File Logger not Found")
             return []
         }
