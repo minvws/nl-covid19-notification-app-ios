@@ -72,7 +72,11 @@ final class EmitterStatusIconView: View {
     }
 
     private func updateEmitterCell() {
-        emitterCell.contents = particle(
+
+        emitterLayer.emitterCells?.removeAll()
+        buildEmitterLayer()
+
+        self.emitterCell.contents = particle(
             size: CGSize(width: bounds.width * 2, height: bounds.height * 2),
             color: backgroundColor ?? .clear
         ).cgImage
