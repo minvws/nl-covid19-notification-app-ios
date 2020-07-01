@@ -14,8 +14,6 @@ final class EmitterStatusIconView: View {
     private var emitterLayer = CAEmitterLayer()
     private var emitterCell = CAEmitterCell()
 
-    private var oldBackgroundColor: UIColor?
-
     override func build() {
         super.build()
 
