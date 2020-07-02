@@ -83,7 +83,7 @@ final class ExposureController: ExposureControlling {
 
                 completion(nil)
             },
-            receiveValue: { _ in })
+            receiveValue: completion)
             .store(in: &disposeBag)
     }
 
@@ -107,7 +107,7 @@ final class ExposureController: ExposureControlling {
 
                 completion(nil)
             },
-            receiveValue: completion)
+            receiveValue: { _ in })
             .store(in: &disposeBag)
     }
 
