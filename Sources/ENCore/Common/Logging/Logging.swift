@@ -44,7 +44,19 @@ extension Logging {
 final class LogHandler: Logging {
 
     static func setup() {
-        dynamicLogLevel = .debug
+        let level = Bundle.main.infoDictionary?["LOG_LEVEL"] as? String ?? "debug"
+        switch level {
+        case "debug":
+            dynamicLogLevel = .debug
+        case "info":
+            dynamicLogLevel = .info
+        case "warn":
+            dynamicLogLevel = .warning
+        case "error":
+            dynamicLogLevel = .error
+        default:
+            dynamicLogLevel = .debug
+        }
 
         DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
 

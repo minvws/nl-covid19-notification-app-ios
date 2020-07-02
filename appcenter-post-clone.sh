@@ -13,8 +13,14 @@ then
       NETWORK_CONFIGURATION="LabTest"
 fi
 
+if [ -z "$LOG_LEVEL" ]
+then
+      LOG_LEVEL="debug"
+fi
+
 brew install yq
 yq w -i project.yml "targets.EN.settings.base.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
+yq w -i project.yml "targets.EN.settings.base.LOG_LEVEL" ${LOG_LEVEL}
 
 if [ -n "$USE_DEVELOPER_MENU" ]
 then
