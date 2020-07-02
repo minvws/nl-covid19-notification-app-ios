@@ -80,7 +80,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         let fallbackConfiguration = NetworkConfiguration.labtest
 
         if let networkConfigurationValue = Bundle.main.infoDictionary?["NETWORK_CONFIGURATION"] as? String {
-            networkConfiguration = NetworkConfiguration.acceptance // configurations[networkConfigurationValue] ?? fallbackConfiguration
+            networkConfiguration = configurations[networkConfigurationValue] ?? fallbackConfiguration
         } else {
             networkConfiguration = fallbackConfiguration
         }
