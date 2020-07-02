@@ -206,7 +206,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case let .inactive(reason) where reason == .bluetoothOff:
             openBluetooth()
         case let .inactive(reason) where reason == .disabled:
-            openAppSettings()
+            exposureController.requestExposureNotificationPermission()
         case let .inactive(reason) where reason == .noRecentNotificationUpdates:
             updateWhenRequired()
         case let .inactive(reason) where reason == .requiresOSUpdate:
