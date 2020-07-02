@@ -22,7 +22,11 @@ final class UpdateAppViewControllerTests: TestCase {
 
         recordSnapshots = false
 
-        viewController = UpdateAppViewController(listener: listern, theme: theme)
+        viewController = UpdateAppViewController(
+            listener: listern,
+            theme: theme,
+            iOSAppStoreURL: "",
+            iOSMinimumVersionMessage: "")
     }
 
     // MARK: - Tests
