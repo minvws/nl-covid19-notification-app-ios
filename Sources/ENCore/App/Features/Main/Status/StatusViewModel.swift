@@ -58,7 +58,7 @@ struct StatusCardViewModel {
     static let inactive = StatusCardViewModel(
         icon: StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive")),
         title: .init(string: Localization.string(for: "status.appState.card.title")),
-        description: .init(string: Localization.string(for: "status.appState.card.description", ["CoronaMelder"])),
+        description: .init(string: Localization.string(for: "status.appState.card.description", ["[App name]"])),
         button: StatusViewButtonModel(
             title: Localization.string(for: "status.appState.card.button"),
             style: .primary,
@@ -102,7 +102,7 @@ struct StatusViewModel {
     static let activeWithNotNotified = StatusViewModel(
         icon: .ok,
         title: .init(string: Localization.string(for: "status.appState")),
-        description: .init(string: Localization.string(for: "status.active.description", ["CoronaMelder"])),
+        description: .init(string: Localization.string(for: "status.active.description", ["[App name]"])),
         buttons: [],
         footer: nil,
         shouldShowHideMessage: false,
@@ -126,7 +126,7 @@ struct StatusViewModel {
     static let inactiveWithNotNotified = StatusViewModel(
         icon: .inactive,
         title: .init(string: Localization.string(for: "status.appState.inactive.title")),
-        description: .init(string: Localization.string(for: "status.appState.inactive.description", ["CoronaMelder"])),
+        description: .init(string: Localization.string(for: "status.appState.inactive.description", ["[App name]"])),
         buttons: [.enableSettings],
         footer: nil,
         shouldShowHideMessage: false,
