@@ -55,6 +55,10 @@
     completionHandler();
 }
 
+- (void)didBecomeActive {
+    [_appRoot didBecomeActive];
+}
+
 - (void)didEnterForeground {
     [_appRoot didEnterForeground];
 }
