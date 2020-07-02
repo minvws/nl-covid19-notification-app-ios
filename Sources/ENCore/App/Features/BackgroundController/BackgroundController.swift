@@ -77,6 +77,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             exposureController.processPendingUploadRequests
         ]
 
+        exposureController.notifiyUserIfRequired()
+
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
         let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.compactMap { $0() })
             // execute them on by one

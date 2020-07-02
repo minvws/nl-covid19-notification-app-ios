@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import UIKit
 
-final class ExposureController: ExposureControlling {
+final class ExposureController: ExposureControlling, Logging {
 
     init(mutableStateStream: MutableExposureStateStreaming,
          exposureManager: ExposureManaging?,
@@ -102,6 +102,21 @@ final class ExposureController: ExposureControlling {
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
         return dataController
             .processPendingUploadRequests()
+    }
+
+    func notifiyUserIfRequired() {
+        let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
+        guard dataController.lastSuccessfulFetchDate.advanced(by: timeInterval) < Date() else {
+            return
+        }
+        guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
+            // We haven't shown a notification to the user before so we should show one now
+            return notifyUserAppNeedsUpdate()
+        }
+        guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
+            return
+        }
+        notifyUserAppNeedsUpdate()
     }
 
     func requestExposureNotificationPermission() {
@@ -312,6 +327,31 @@ final class ExposureController: ExposureControlling {
             .sink(receiveCompletion: receiveCompletion,
                   receiveValue: completion)
             .store(in: &disposeBag)
+    }
+
+    private func notifyUserAppNeedsUpdate() {
+        let unc = UNUserNotificationCenter.current()
+        unc.getNotificationSettings { settings in
+            guard settings.authorizationStatus == .authorized else {
+                return
+            }
+            let content = UNMutableNotificationContent()
+            content.title = Localization.string(for: "status.appState.inactive.title")
+            content.body = Localization.string(for: "status.appState.inactive.description", ["CoronaMelder"])
+            content.sound = UNNotificationSound.default
+            content.badge = 0
+
+            let identifier = "nl.rijksoverheid.en.inactive"
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+            unc.add(request) { [weak self] error in
+                if let error = error {
+                    self?.logError("\(error.localizedDescription)")
+                } else {
+                    self?.dataController.updateLastLocalNotificationExposureDate(Date())
+                }
+            }
+        }
     }
 
     private let mutableStateStream: MutableExposureStateStreaming
