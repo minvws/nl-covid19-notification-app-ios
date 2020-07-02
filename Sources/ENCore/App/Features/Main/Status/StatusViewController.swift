@@ -160,6 +160,7 @@ private final class StatusView: View {
         titleLabel.font = theme.fonts.title2
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
+        titleLabel.accessibilityTraits = .header
 
         descriptionLabel.adjustsFontForContentSizeCategory = true
         descriptionLabel.font = theme.fonts.body

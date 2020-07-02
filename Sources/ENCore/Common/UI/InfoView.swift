@@ -123,6 +123,8 @@ final class InfoSectionTextView: View {
 
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
+        titleLabel.accessibilityTraits = .header
+
         contentLabel.numberOfLines = 0
         contentLabel.lineBreakMode = .byWordWrapping
         contentLabel.font = theme.fonts.body
@@ -230,6 +232,7 @@ final class InfoSectionDynamicCalloutView: View {
 
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
+        titleLabel.accessibilityTraits = .header
 
         addSubview(titleLabel)
         addSubview(contentView)
@@ -353,6 +356,7 @@ private final class InfoSectionDynamicSuccessView: View {
 
         titleLabel.textAlignment = .center
         titleLabel.font = theme.fonts.largeTitle
+        titleLabel.accessibilityTraits = .header
 
         addSubview(titleLabel)
     }
@@ -393,6 +397,7 @@ private final class InfoSectionDynamicErrorView: View {
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
         titleLabel.font = theme.fonts.subhead
+        titleLabel.accessibilityTraits = .header
 
         actionButton.style = .secondary
         actionButton.setTitle("Probeer opnieuw", for: .normal)

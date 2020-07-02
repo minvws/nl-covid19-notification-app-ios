@@ -64,6 +64,7 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
         cell.textLabel?.text = question.question
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
+        cell.textLabel?.accessibilityTraits = .header
 
         cell.accessoryType = .disclosureIndicator
 
@@ -103,6 +104,7 @@ private final class HelpView: View {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.font = theme.fonts.largeTitle
+        label.accessibilityTraits = .header
         return label
     }()
 
@@ -112,6 +114,7 @@ private final class HelpView: View {
         label.numberOfLines = 0
         label.font = theme.fonts.subheadBold
         label.textColor = self.theme.colors.primary
+        label.accessibilityTraits = .header
         return label
     }()
 

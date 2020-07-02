@@ -125,6 +125,7 @@ private final class MoreInformationView: View {
 
         headerLabel.text = Localization.string(for: "moreInformation.headerTitle").uppercased()
         headerLabel.font = theme.fonts.footnote // TODO: Should actually be bold
+        headerLabel.accessibilityTraits = .header
 
         stackView.axis = .vertical
         stackView.distribution = .fill
