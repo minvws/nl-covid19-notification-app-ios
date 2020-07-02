@@ -25,7 +25,18 @@ public final class Localization {
         return String(format: localizedString, arguments: arguments)
     }
 
-    public static func attributedString(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> NSAttributedString {
-        return NSAttributedString(string: string(for: key, arguments))
+    public static func attributedString(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> NSMutableAttributedString {
+        return NSMutableAttributedString(string: string(for: key, arguments))
+    }
+
+    public static func attributedStrings(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> [NSMutableAttributedString] {
+        let value = string(for: key, arguments)
+        let paragraph = "\n\n"
+        let strings = value.components(separatedBy: paragraph)
+
+        return strings.enumerated().map { (index, element) -> NSMutableAttributedString in
+            let value = index < strings.count - 1 ? element + paragraph : element
+            return NSMutableAttributedString(string: value)
+        }
     }
 }

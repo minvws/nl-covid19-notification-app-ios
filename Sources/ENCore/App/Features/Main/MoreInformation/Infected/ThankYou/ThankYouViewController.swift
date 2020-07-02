@@ -89,17 +89,18 @@ private final class ThankYouView: View {
         ]
 
         let header = Localization.attributedString(for: "moreInformation.thankyou.section.header")
+        header.append(NSAttributedString(string: "\n\n"))
+
         let list = NSAttributedString.bulletList(bulletPoints,
                                                  theme: theme,
                                                  font: theme.fonts.body)
 
-        let footer = Localization.attributedString(for: "moreInformation.thankyou.section.footer", [exposureConfirmationKey.key])
+        let footer = NSMutableAttributedString(string: "\n")
+        footer.append(Localization.attributedString(for: "moreInformation.thankyou.section.footer", [exposureConfirmationKey.key]))
 
         var string = [NSAttributedString]()
         string.append(header)
-        // string.append(NSAttributedString(string: "\n\n"))
         string.append(contentsOf: list)
-        // string.append(NSAttributedString(string: "\n"))
         string.append(footer)
 
         let view = InfoSectionTextView(theme: theme,

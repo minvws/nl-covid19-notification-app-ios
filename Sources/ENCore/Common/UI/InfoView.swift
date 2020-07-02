@@ -104,51 +104,37 @@ final class InfoSectionTextView: View {
 
     private let titleLabel: Label
     private let contentStack: UIStackView
-    private let contentLabel: Label
+    private let content: [NSAttributedString]
 
     // MARK: - Init
 
-//    init(theme: Theme, title: String, content: NSAttributedString) {
-//        self.titleLabel = Label(frame: .zero)
-//        self.contentLabel = Label(frame: .zero)
-//        self.contentStack = UIStackView()
-//
-//        contentStack.axis = .vertical
-//        contentStack.alignment = .top
-//        contentStack.distribution = .fill
-//
-//
-//        super.init(theme: theme)
-//
-//        titleLabel.text = title
-//        contentLabel.attributedText = content
-//    }
-
     init(theme: Theme, title: String, content: [NSAttributedString]) {
         self.titleLabel = Label(frame: .zero)
-        self.contentLabel = Label(frame: .zero)
         self.contentStack = UIStackView()
+        self.content = content
+
+        super.init(theme: theme)
+
+        titleLabel.text = title
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        titleLabel.numberOfLines = 0
+        titleLabel.font = theme.fonts.title2
+        titleLabel.accessibilityTraits = .header
 
         contentStack.axis = .vertical
         contentStack.alignment = .top
         contentStack.distribution = .fill
 
-        super.init(theme: theme)
-
-        titleLabel.text = title
-
-        titleLabel.numberOfLines = 0
-        titleLabel.font = theme.fonts.title2
-
-        contentLabel.numberOfLines = 0
-        contentLabel.lineBreakMode = .byWordWrapping
-        contentLabel.font = theme.fonts.body
-
         addSubview(titleLabel)
         addSubview(contentStack)
-        // contentStack.addArrangedSubview(contentLabel)
 
-        for text in content {
+        for text in self.content {
             let label = Label(frame: .zero)
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
@@ -156,6 +142,10 @@ final class InfoSectionTextView: View {
             label.attributedText = text
             contentStack.addArrangedSubview(label)
         }
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
 
         titleLabel.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
@@ -166,32 +156,6 @@ final class InfoSectionTextView: View {
             maker.leading.trailing.equalTo(titleLabel)
             maker.bottom.equalToSuperview()
         }
-        // contentLabel.attributedText = content
-    }
-
-    // MARK: - Overrides
-
-    override func build() {
-        super.build()
-    }
-
-    override func setupConstraints() {
-        super.setupConstraints()
-
-//        titleLabel.snp.makeConstraints { maker in
-//            maker.top.equalToSuperview()
-//            maker.leading.trailing.equalToSuperview().inset(16)
-//        }
-//        contentStack.snp.makeConstraints { maker in
-//            maker.top.equalTo(titleLabel.snp.bottom).offset(10)
-//            maker.leading.trailing.equalTo(titleLabel)
-//            maker.bottom.equalToSuperview()
-//        }
-
-//        contentLabel.snp.makeConstraints { maker in
-//            maker.top.equalTo(contentStack.snp.top).offset(10)
-//            maker.leading.trailing.equalTo(contentStack)
-//        }
     }
 }
 

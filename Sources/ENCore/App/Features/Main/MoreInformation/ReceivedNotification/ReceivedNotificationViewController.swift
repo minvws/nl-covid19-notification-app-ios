@@ -120,7 +120,8 @@ private final class ReceivedNotificationView: View {
             Localization.string(for: "moreInformation.complaints.item4")
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-        let content = Localization.attributedString(for: "moreInformation.complaints.content")
+        let content = NSMutableAttributedString(string: "\n")
+        content.append(Localization.attributedString(for: "moreInformation.complaints.content"))
 
         var string = [NSAttributedString]()
         string.append(contentsOf: bulletList)
@@ -133,7 +134,7 @@ private final class ReceivedNotificationView: View {
     private func doCoronaTest() -> View {
         InfoSectionTextView(theme: theme,
                             title: Localization.string(for: "moreInformation.receivedNotification.doCoronaTest.title"),
-                            content: [Localization.attributedString(for: "moreInformation.receivedNotification.doCoronaTest.content")])
+                            content: Localization.attributedStrings(for: "moreInformation.receivedNotification.doCoronaTest.content"))
     }
 
     private func info() -> View {

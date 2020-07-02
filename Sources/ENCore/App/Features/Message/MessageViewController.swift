@@ -140,7 +140,7 @@ private final class MessageView: View {
     private func doCoronaTest() -> View {
         InfoSectionTextView(theme: theme,
                             title: Localization.string(for: "moreInformation.receivedNotification.doCoronaTest.title"),
-                            content: [Localization.attributedString(for: "moreInformation.receivedNotification.doCoronaTest.content")])
+                            content: Localization.attributedStrings(for: "moreInformation.receivedNotification.doCoronaTest.content"))
     }
 
     private func info() -> View {
