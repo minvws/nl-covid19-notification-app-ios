@@ -228,8 +228,9 @@ final class ExposureController: ExposureControlling {
         let hasBeenTooLongSinceLastUpdate = dataController.lastSuccessfulFetchDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
 
         let activeState: ExposureActiveState
+        let exposureManagerStatus = exposureManager.getExposureNotificationStatus()
 
-        switch exposureManager.getExposureNotificationStatus() {
+        switch exposureManagerStatus {
         case .active where hasBeenTooLongSinceLastUpdate:
             activeState = .inactive(.noRecentNotificationUpdates)
         case .active:
