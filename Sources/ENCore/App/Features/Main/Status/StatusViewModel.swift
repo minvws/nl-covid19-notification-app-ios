@@ -58,7 +58,7 @@ struct StatusCardViewModel {
     static let inactive = StatusCardViewModel(
         icon: StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive")),
         title: .init(string: Localization.string(for: "status.appState.card.title")),
-        description: .init(string: Localization.string(for: "status.appState.card.description", ["[App name]"])),
+        description: .init(string: Localization.string(for: "status.appState.card.description", ["[App Name]"])),
         button: StatusViewButtonModel(
             title: Localization.string(for: "status.appState.card.button"),
             style: .primary,
