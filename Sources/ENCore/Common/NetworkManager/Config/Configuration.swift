@@ -14,6 +14,7 @@ struct NetworkConfiguration {
         let port: Int?
         let path: [String]
         let sslSignature: Certificate.Signature? // SSL pinning certificate, nil = no pinning
+        let tokenParams: [String: String]
     }
 
     let name: String
@@ -34,14 +35,16 @@ struct NetworkConfiguration {
             host: "localhost",
             port: 5004,
             path: ["v1"],
-            sslSignature: nil
+            sslSignature: nil,
+            tokenParams: [:]
         ),
         cdn: .init(
             scheme: "http",
             host: "localhost",
             port: 5004,
             path: ["v1"],
-            sslSignature: nil
+            sslSignature: nil,
+            tokenParams: [:]
         )
     )
 
@@ -52,14 +55,16 @@ struct NetworkConfiguration {
             host: "mss-standalone-acc.azurewebsites.net",
             port: nil,
             path: ["v1"],
-            sslSignature: nil
+            sslSignature: nil,
+            tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
             host: "mss-standalone-acc.azurewebsites.net",
             port: nil,
             path: ["v1"],
-            sslSignature: nil
+            sslSignature: nil,
+            tokenParams: [:]
         )
     )
 
@@ -67,17 +72,26 @@ struct NetworkConfiguration {
         name: "ACC",
         api: .init(
             scheme: "https",
-            host: "api-ota.alleensamenmelden.nl",
+            host: "localhost",
             port: nil,
             path: ["mss-acc", "v1"],
-            sslSignature: Certificate.SSL.rootSignature
+            sslSignature: Certificate.SSL.apiAccSignature,
+            tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
-            host: "mss-content-acc.azurewebsites.net",
+            host: "vwspa-cdn-blob.azureedge.net",
             port: nil,
-            path: ["v1"],
-            sslSignature: nil
+            path: ["vws", "v01"],
+            sslSignature: Certificate.SSL.cdnAccSignature,
+            tokenParams: [
+                "sv": "2019-02-02",
+                "st": "2020-06-26T14:13:35Z",
+                "se": "2025-06-27T14:13:00Z",
+                "sr": "c",
+                "sp": "rl",
+                "sig": "fCwrecfbx6JNp5RlTzw5mmnRCna6hne92Khb8Gk4+Rw="
+            ]
         )
     )
 
@@ -88,31 +102,33 @@ struct NetworkConfiguration {
             host: "notknown",
             port: nil,
             path: [],
-            sslSignature: nil
+            sslSignature: nil,
+            tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
             host: "notknown",
             port: nil,
             path: [],
-            sslSignature: nil
+            sslSignature: nil,
+            tokenParams: [:]
         )
     )
 
     var manifestUrl: URL? {
-        return self.combine(path: Endpoint.manifest, fromCdn: true)
+        return self.combine(path: Endpoint.manifest, fromCdn: true, params: cdn.tokenParams)
     }
 
     func exposureKeySetUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.exposureKeySet(identifier: identifier), fromCdn: true)
+        return self.combine(path: Endpoint.exposureKeySet(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     func riskCalculationParametersUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.riskCalculationParameters(identifier: identifier), fromCdn: true)
+        return self.combine(path: Endpoint.riskCalculationParameters(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     func appConfigUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.appConfig(identifier: identifier), fromCdn: true)
+        return self.combine(path: Endpoint.appConfig(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     var registerUrl: URL? {
