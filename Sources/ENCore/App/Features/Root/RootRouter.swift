@@ -85,9 +85,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
             exposureController.getMinimumiOSVersion { version in
                 if version?.compare(currentAppVersion, options: .numeric) == .orderedDescending {
-                    self.exposureController.getIOSAppStoreURL { iOSAppStoreURL in
-                        self.exposureController.getiOSMinimumVersionMessage { iOSMinimumVersionMessage in
-                            self.routeToUpdateApp(animated: true, iOSAppStoreURL: iOSAppStoreURL, iOSMinimumVersionMessage: iOSMinimumVersionMessage)
+                    self.exposureController.getAppStoreURL { appStoreURL in
+                        self.exposureController.getMinimumVersionMessage { minimumVersionMessage in
+                            self.routeToUpdateApp(animated: true, appStoreURL: appStoreURL, minimumVersionMessage: minimumVersionMessage)
                         }
                     }
                 }
@@ -181,13 +181,13 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
 
-    func routeToUpdateApp(animated: Bool, iOSAppStoreURL: String?, iOSMinimumVersionMessage: String?) {
+    func routeToUpdateApp(animated: Bool, appStoreURL: String?, minimumVersionMessage: String?) {
         guard updateAppViewController == nil else {
             return
         }
         let updateAppViewController = updateAppBuilder.build(withListener: viewController,
-                                                             iOSAppStoreURL: iOSAppStoreURL,
-                                                             iOSMinimumVersionMessage: iOSMinimumVersionMessage)
+                                                             appStoreURL: appStoreURL,
+                                                             minimumVersionMessage: minimumVersionMessage)
         self.updateAppViewController = updateAppViewController
 
         viewController.present(viewController: updateAppViewController, animated: animated, completion: nil)

@@ -15,8 +15,8 @@ protocol ExposureControlling {
     func activate()
 
     func getMinimumiOSVersion(_ completion: @escaping (String?) -> ())
-    func getIOSAppStoreURL(_ completion: @escaping (String?) -> ())
-    func getiOSMinimumVersionMessage(_ completion: @escaping (String?) -> ())
+    func getAppStoreURL(_ completion: @escaping (String?) -> ())
+    func getMinimumVersionMessage(_ completion: @escaping (String?) -> ())
 
     // MARK: - Updates
 

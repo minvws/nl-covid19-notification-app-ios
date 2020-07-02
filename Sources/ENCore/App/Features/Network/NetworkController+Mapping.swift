@@ -48,8 +48,8 @@ extension AppConfig {
                                         decoyProbability: decoyProbability,
                                         creationDate: Date(),
                                         identifier: identifier,
-                                        iOSMinimumVersionMessage: iOSMinimumVersionMessage,
-                                        iOSAppStoreURL: iOSAppStoreURL
+                                        minimumVersionMessage: minimumVersionMessage,
+                                        appStoreURL: appStoreURL
         )
     }
 }

@@ -87,9 +87,9 @@ final class ExposureController: ExposureControlling {
             .store(in: &disposeBag)
     }
 
-    func getIOSAppStoreURL(_ completion: @escaping (String?) -> ()) {
+    func getAppStoreURL(_ completion: @escaping (String?) -> ()) {
         return dataController
-            .getiOSAppStoreURL()
+            .getAppStoreURL()
             .sink(receiveCompletion: { result in
                 guard case .failure = result else { return }
 
@@ -99,9 +99,9 @@ final class ExposureController: ExposureControlling {
             .store(in: &disposeBag)
     }
 
-    func getiOSMinimumVersionMessage(_ completion: @escaping (String?) -> ()) {
+    func getMinimumVersionMessage(_ completion: @escaping (String?) -> ()) {
         return dataController
-            .getiOSMinimumVersionMessage()
+            .getMinimumVersionMessage()
             .sink(receiveCompletion: { result in
                 guard case .failure = result else { return }
 

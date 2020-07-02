@@ -25,8 +25,8 @@ final class UpdateAppViewControllerTests: TestCase {
         viewController = UpdateAppViewController(
             listener: listern,
             theme: theme,
-            iOSAppStoreURL: "",
-            iOSMinimumVersionMessage: "")
+            appStoreURL: "",
+            minimumVersionMessage: nil)
     }
 
     // MARK: - Tests

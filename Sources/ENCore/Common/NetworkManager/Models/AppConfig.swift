@@ -9,6 +9,6 @@ import Foundation
 
 struct AppConfig: Decodable {
     let version, manifestFrequency, decoyProbability: Int
-    let iOSMinimumVersionMessage: String?
-    let iOSAppStoreURL: String?
+    let minimumVersionMessage: String?
+    let appStoreURL: String?
 }
