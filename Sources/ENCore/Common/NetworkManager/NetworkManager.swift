@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-final class NetworkManager: NetworkManaging {
+final class NetworkManager: NetworkManaging, Logging {
 
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
@@ -289,13 +289,11 @@ final class NetworkManager: NetworkManaging {
             request.httpBody = unescapedBodyString.data(using: .utf8)
         }
 
-        #if DEBUG
-            print("--REQUEST--")
-            if let url = request.url { print(url) }
-            if let allHTTPHeaderFields = request.allHTTPHeaderFields { print(allHTTPHeaderFields) }
-            if let httpBody = request.httpBody { print(String(data: httpBody, encoding: .utf8)!) }
-            print("--END REQUEST--")
-        #endif
+        logDebug("--REQUEST--")
+        if let url = request.url { logDebug(url.debugDescription) }
+        if let allHTTPHeaderFields = request.allHTTPHeaderFields { logDebug(allHTTPHeaderFields.debugDescription) }
+        if let httpBody = request.httpBody { logDebug(String(data: httpBody, encoding: .utf8)!) }
+        logDebug("--END REQUEST--")
 
         return .success(request)
     }
@@ -370,16 +368,13 @@ final class NetworkManager: NetworkManaging {
             return
         }
 
-        #if DEBUG
-            print("--RESPONSE--")
-            if let response = response { print(response) }
+        logDebug("--RESPONSE--")
+        if let response = response { logDebug(response.debugDescription) }
 
-            if let object = object as? Data {
-                print(String(data: object, encoding: .utf8)!)
-            }
-
-            print("--END RESPONSE--")
-        #endif
+        if let object = object as? Data {
+            logDebug(String(data: object, encoding: .utf8)!)
+        }
+        logDebug("--END RESPONSE--")
 
         guard let response = response,
             let object = object else {
