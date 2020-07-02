@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+touch Cartfile
 env
 
 if [ -z "$USE_DEVELOPER_MENU" ]
