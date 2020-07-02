@@ -95,11 +95,11 @@ private final class ThankYouView: View {
 
         let footer = Localization.attributedString(for: "moreInformation.thankyou.section.footer", [exposureConfirmationKey.key])
 
-        let string = NSMutableAttributedString()
+        var string = [NSAttributedString]()
         string.append(header)
-        string.append(NSAttributedString(string: "\n\n"))
-        string.append(list)
-        string.append(NSAttributedString(string: "\n"))
+        // string.append(NSAttributedString(string: "\n\n"))
+        string.append(contentsOf: list)
+        // string.append(NSAttributedString(string: "\n"))
         string.append(footer)
 
         let view = InfoSectionTextView(theme: theme,

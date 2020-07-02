@@ -108,7 +108,7 @@ private final class RequestTestView: View {
         // TODO: Bold Phone Number
         InfoSectionTextView(theme: theme,
                             title: Localization.string(for: "moreInformation.requestTest.receivedNotification.title"),
-                            content: Localization.attributedString(for: "moreInformation.requestTest.receivedNotification.content"))
+                            content: [Localization.attributedString(for: "moreInformation.requestTest.receivedNotification.content")])
     }
 
     private func complaints() -> View {
@@ -121,8 +121,8 @@ private final class RequestTestView: View {
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
         let content = Localization.attributedString(for: "moreInformation.complaints.content")
 
-        let string = NSMutableAttributedString()
-        string.append(bulletList)
+        var string = [NSAttributedString]()
+        string.append(contentsOf: bulletList)
         string.append(content)
         return InfoSectionTextView(theme: theme,
                                    title: Localization.string(for: "moreInformation.complaints.title"),

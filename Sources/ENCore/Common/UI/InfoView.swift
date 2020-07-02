@@ -103,48 +103,95 @@ final class InfoView: View {
 final class InfoSectionTextView: View {
 
     private let titleLabel: Label
+    private let contentStack: UIStackView
     private let contentLabel: Label
 
     // MARK: - Init
 
-    init(theme: Theme, title: String, content: NSAttributedString) {
+//    init(theme: Theme, title: String, content: NSAttributedString) {
+//        self.titleLabel = Label(frame: .zero)
+//        self.contentLabel = Label(frame: .zero)
+//        self.contentStack = UIStackView()
+//
+//        contentStack.axis = .vertical
+//        contentStack.alignment = .top
+//        contentStack.distribution = .fill
+//
+//
+//        super.init(theme: theme)
+//
+//        titleLabel.text = title
+//        contentLabel.attributedText = content
+//    }
+
+    init(theme: Theme, title: String, content: [NSAttributedString]) {
         self.titleLabel = Label(frame: .zero)
         self.contentLabel = Label(frame: .zero)
+        self.contentStack = UIStackView()
+
+        contentStack.axis = .vertical
+        contentStack.alignment = .top
+        contentStack.distribution = .fill
+
         super.init(theme: theme)
 
         titleLabel.text = title
-        contentLabel.attributedText = content
-    }
-
-    // MARK: - Overrides
-
-    override func build() {
-        super.build()
 
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
-        titleLabel.accessibilityTraits = .header
 
         contentLabel.numberOfLines = 0
         contentLabel.lineBreakMode = .byWordWrapping
         contentLabel.font = theme.fonts.body
 
         addSubview(titleLabel)
-        addSubview(contentLabel)
-    }
+        addSubview(contentStack)
+        // contentStack.addArrangedSubview(contentLabel)
 
-    override func setupConstraints() {
-        super.setupConstraints()
+        for text in content {
+            let label = Label(frame: .zero)
+            label.numberOfLines = 0
+            label.lineBreakMode = .byWordWrapping
+            label.font = theme.fonts.body
+            label.attributedText = text
+            contentStack.addArrangedSubview(label)
+        }
 
         titleLabel.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
             maker.leading.trailing.equalToSuperview().inset(16)
         }
-        contentLabel.snp.makeConstraints { maker in
+        contentStack.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(10)
             maker.leading.trailing.equalTo(titleLabel)
             maker.bottom.equalToSuperview()
         }
+        // contentLabel.attributedText = content
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+//        titleLabel.snp.makeConstraints { maker in
+//            maker.top.equalToSuperview()
+//            maker.leading.trailing.equalToSuperview().inset(16)
+//        }
+//        contentStack.snp.makeConstraints { maker in
+//            maker.top.equalTo(titleLabel.snp.bottom).offset(10)
+//            maker.leading.trailing.equalTo(titleLabel)
+//            maker.bottom.equalToSuperview()
+//        }
+
+//        contentLabel.snp.makeConstraints { maker in
+//            maker.top.equalTo(contentStack.snp.top).offset(10)
+//            maker.leading.trailing.equalTo(contentStack)
+//        }
     }
 }
 
@@ -232,7 +279,6 @@ final class InfoSectionDynamicCalloutView: View {
 
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
-        titleLabel.accessibilityTraits = .header
 
         addSubview(titleLabel)
         addSubview(contentView)
@@ -356,7 +402,6 @@ private final class InfoSectionDynamicSuccessView: View {
 
         titleLabel.textAlignment = .center
         titleLabel.font = theme.fonts.largeTitle
-        titleLabel.accessibilityTraits = .header
 
         addSubview(titleLabel)
     }
@@ -397,7 +442,6 @@ private final class InfoSectionDynamicErrorView: View {
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
         titleLabel.font = theme.fonts.subhead
-        titleLabel.accessibilityTraits = .header
 
         actionButton.style = .secondary
         actionButton.setTitle("Probeer opnieuw", for: .normal)

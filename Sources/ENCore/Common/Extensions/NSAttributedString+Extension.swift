@@ -61,7 +61,7 @@ extension NSAttributedString {
                            font: UIFont,
                            bullet: String = "\u{2022}",
                            indentation: CGFloat = 16,
-                           paragraphSpacing: CGFloat = 12) -> NSAttributedString {
+                           paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
 
         let textAttributes = [
             NSAttributedString.Key.font: font,
@@ -81,9 +81,9 @@ extension NSAttributedString {
         paragraphStyle.paragraphSpacing = paragraphSpacing
         paragraphStyle.headIndent = indentation
 
-        let bulletList = NSMutableAttributedString()
+        var bulletList = [NSMutableAttributedString]()
         for string in stringList {
-            let formattedString = "\(bullet)\t\(string)\n"
+            let formattedString = "\(bullet)\t\(string)"
             let attributedString = NSMutableAttributedString(string: formattedString)
 
             attributedString.addAttributes(
