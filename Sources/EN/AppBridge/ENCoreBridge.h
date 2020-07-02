@@ -21,6 +21,7 @@
 - (void)attachToWindow:(UIWindow *)window;
 - (void)start;
 - (void)didReceiveRemoteNotification:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler;
+- (void)didBecomeActive;
 - (void)didEnterForeground;
 - (void)didEnterBackground;
 - (void)handleBackgroundTask:(BGTask *)task API_AVAILABLE(ios(13.0));

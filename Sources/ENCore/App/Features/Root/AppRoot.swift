@@ -37,6 +37,11 @@ import UIKit
     }
 
     @objc
+    public func didBecomeActive() {
+        appEntryPoint?.didBecomeActive()
+    }
+
+    @objc
     public func didEnterForeground() {
         appEntryPoint?.didEnterForeground()
     }

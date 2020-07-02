@@ -22,6 +22,9 @@ protocol AppEntryPoint {
     /// the `SceneDelegate`'s `sceneDidBecomeActive` method is called.
     func start()
 
+    /// Should be called when the app becomes active
+    func didBecomeActive()
+
     /// Should be called when the app did enter the foreground
     func didEnterForeground()
 

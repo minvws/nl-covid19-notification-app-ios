@@ -115,13 +115,13 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
 
     // MARK: - Private Dependencies
 
-    lazy var exposureManager: ExposureManaging? = {
+    fileprivate lazy var exposureManager: ExposureManaging? = {
         let builder = ExposureManagerBuilder()
 
         return builder.build()
     }()
 
-    var dataController: ExposureDataControlling {
+    fileprivate var dataController: ExposureDataControlling {
         return ExposureDataControllerBuilder(dependency: self).build()
     }
 }
