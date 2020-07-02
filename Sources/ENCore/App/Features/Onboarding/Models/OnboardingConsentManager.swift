@@ -36,7 +36,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 step: .en,
                 theme: theme,
                 title: Localization.string(for: "consentStep1Title"),
-                content: Localization.string(for: "consentStep1Content"),
+                content: "",
                 image: nil,
                 animationName: nil,
                 summarySteps: [

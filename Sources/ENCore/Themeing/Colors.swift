@@ -10,8 +10,8 @@ import UIKit
 
 public protocol Colors: AnyObject {
     var primary: UIColor { get }
-    var secondary: UIColor { get }
     var tertiary: UIColor { get }
+    var warning: UIColor { get }
 
     var gray: UIColor { get }
 
@@ -31,12 +31,12 @@ final class ENColors: Colors, Logging {
         return color(for: "PrimaryColor")
     }
 
-    var secondary: UIColor {
-        return color(for: "SecondaryColor")
-    }
-
     var tertiary: UIColor {
         return color(for: "TertiaryColor")
+    }
+
+    var warning: UIColor {
+        return color(for: "WarningColor")
     }
 
     var gray: UIColor {

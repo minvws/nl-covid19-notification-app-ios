@@ -31,7 +31,7 @@ struct StatusViewButtonModel {
     static func moreInfo(date: Date) -> StatusViewButtonModel {
         StatusViewButtonModel(
             title: Localization.string(for: "status.notified.moreInfo"),
-            style: .secondary,
+            style: .warning,
             action: .explainRisk(date)
         )
     }

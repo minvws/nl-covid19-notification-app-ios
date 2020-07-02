@@ -19,6 +19,8 @@ final class OnboardingStepViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
+        recordSnapshots = false
+
         manager.getStepHandler = { index in
             return OnboardingStep(theme: self.theme,
                                   title: "Title",

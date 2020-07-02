@@ -394,7 +394,7 @@ private final class InfoSectionDynamicErrorView: View {
         titleLabel.textAlignment = .center
         titleLabel.font = theme.fonts.subhead
 
-        actionButton.style = .tertiary
+        actionButton.style = .secondary
         actionButton.setTitle("Probeer opnieuw", for: .normal)
         actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
 

@@ -10,7 +10,10 @@ import UIKit
 class Button: UIButton, Themeable {
 
     enum ButtonType {
-        case primary, secondary, tertiary
+        case primary
+        case secondary
+        case tertiary
+        case warning
     }
 
     var style = ButtonType.primary {
@@ -86,11 +89,14 @@ class Button: UIButton, Themeable {
                 setTitleColor(.gray, for: .normal)
             }
         case .secondary:
-            self.backgroundColor = theme.colors.secondary
-            self.setTitleColor(.white, for: .normal)
+            self.backgroundColor = theme.colors.tertiary
+            self.setTitleColor(theme.colors.primary, for: .normal)
         case .tertiary:
             self.backgroundColor = theme.colors.tertiary
             self.setTitleColor(.black, for: .normal)
+        case .warning:
+            self.backgroundColor = theme.colors.warning
+            self.setTitleColor(.white, for: .normal)
         }
 
         self.tintColor = .white
