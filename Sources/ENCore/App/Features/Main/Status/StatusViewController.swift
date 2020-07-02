@@ -6,6 +6,7 @@
  */
 
 import Combine
+import SnapKit
 import UIKit
 
 /// @mockable
@@ -105,75 +106,80 @@ private final class StatusView: View {
     }
 
     fileprivate let stretchGuide = UILayoutGuide() // grows larger while stretching, grows all visible elements
-    fileprivate let contentStretchGuide = UILayoutGuide() // grows larger while stretching, used to center the content
+    private let contentStretchGuide = UILayoutGuide() // grows larger while stretching, used to center the content
 
-    fileprivate let contentContainer = UIStackView()
-    fileprivate let textContainer = UIStackView()
-    fileprivate let buttonContainer = UIStackView()
-    fileprivate lazy var cardView: StatusCardView = {
+    private let contentContainer = UIStackView()
+    private let textContainer = UIStackView()
+    private let buttonContainer = UIStackView()
+    private lazy var cardView: StatusCardView = {
         return StatusCardView(theme: self.theme)
     }()
-    fileprivate lazy var iconView: EmitterStatusIconView = {
+    private lazy var iconView: EmitterStatusIconView = {
         EmitterStatusIconView(theme: self.theme)
     }()
 
-    fileprivate let titleLabel = Label()
-    fileprivate let descriptionLabel = Label()
+    private let testingContainer = UIView(frame: .zero)
+    private let testingTitleLabel = Label()
 
-    fileprivate let gradientLayer = CAGradientLayer()
-    fileprivate let cloudsImageView = UIImageView()
-    fileprivate let sceneImageView = UIImageView()
+    private let titleLabel = Label()
+    private let descriptionLabel = Label()
 
-    fileprivate var containerToSceneVerticalConstraint: NSLayoutConstraint?
-    fileprivate var heightConstraint: NSLayoutConstraint?
+    private let gradientLayer = CAGradientLayer()
+    private let cloudsImageView = UIImageView()
+    private let sceneImageView = UIImageView()
+
+    private var containerToSceneVerticalConstraint: NSLayoutConstraint?
+    private var heightConstraint: NSLayoutConstraint?
+
+    // MARK: - Overrides
 
     override func build() {
         super.build()
 
-        // background
-        layer.addSublayer(gradientLayer)
-
         cloudsImageView.image = Image.named("StatusClouds")
-        addSubview(cloudsImageView)
 
         sceneImageView.contentMode = .scaleAspectFit
         sceneImageView.image = Image.named("StatusScene")
-        addSubview(sceneImageView)
 
-        // container
         contentContainer.axis = .vertical
-        contentContainer.spacing = 24
+        contentContainer.spacing = 32
         contentContainer.alignment = .center
 
-        // iconView
-        contentContainer.addArrangedSubview(iconView)
+        testingTitleLabel.font = theme.fonts.subhead
+        testingTitleLabel.textColor = .white
+        testingTitleLabel.text = "Dit is een test versie"
 
-        // textContainer
+        testingContainer.backgroundColor = .black
+        testingContainer.layer.cornerRadius = 16
+        testingContainer.layer.masksToBounds = true
+
         textContainer.axis = .vertical
         textContainer.spacing = 16
-        //   titleLabel
+
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.font = theme.fonts.title2
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
-        textContainer.addArrangedSubview(titleLabel)
-        //   descriptionLabel
+
         descriptionLabel.adjustsFontForContentSizeCategory = true
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
-        textContainer.addArrangedSubview(descriptionLabel)
 
-        contentContainer.addArrangedSubview(textContainer)
-
-        // buttonContainer
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
+
+        layer.addSublayer(gradientLayer)
+        testingContainer.addSubview(testingTitleLabel)
+        textContainer.addArrangedSubview(titleLabel)
+        textContainer.addArrangedSubview(descriptionLabel)
+        contentContainer.addArrangedSubview(testingContainer)
+        contentContainer.addArrangedSubview(iconView)
+        contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
-
-        // cardView
         contentContainer.addArrangedSubview(cardView)
-
+        addSubview(cloudsImageView)
+        addSubview(sceneImageView)
         addSubview(contentContainer)
         addLayoutGuide(contentStretchGuide)
         addLayoutGuide(stretchGuide)
@@ -187,39 +193,37 @@ private final class StatusView: View {
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
 
         containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor)
-        self.heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
+        heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
         let sceneImageAspectRatio = sceneImageView.image.map { $0.size.width / $0.size.height } ?? 1
 
-        NSLayoutConstraint.activate([
-            cloudsImageView.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
-            cloudsImageView.leadingAnchor.constraint(equalTo: stretchGuide.leadingAnchor),
-            cloudsImageView.trailingAnchor.constraint(equalTo: stretchGuide.trailingAnchor),
-
-            sceneImageView.leadingAnchor.constraint(equalTo: stretchGuide.leadingAnchor),
-            sceneImageView.trailingAnchor.constraint(equalTo: stretchGuide.trailingAnchor),
-            sceneImageView.bottomAnchor.constraint(equalTo: stretchGuide.bottomAnchor),
-            sceneImageView.widthAnchor.constraint(equalTo: sceneImageView.heightAnchor, multiplier: sceneImageAspectRatio),
-
-            stretchGuide.leadingAnchor.constraint(equalTo: contentStretchGuide.leadingAnchor, constant: -24),
-            stretchGuide.trailingAnchor.constraint(equalTo: contentStretchGuide.trailingAnchor, constant: 24),
-            stretchGuide.topAnchor.constraint(equalTo: contentStretchGuide.topAnchor, constant: -70),
-            stretchGuide.bottomAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor),
-
-            contentStretchGuide.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
-            contentStretchGuide.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
-            contentStretchGuide.centerYAnchor.constraint(equalTo: contentContainer.centerYAnchor),
-            contentStretchGuide.heightAnchor.constraint(greaterThanOrEqualTo: contentContainer.heightAnchor),
-            contentStretchGuide.bottomAnchor.constraint(equalTo: stretchGuide.bottomAnchor).withPriority(.defaultHigh),
-
-            stretchGuide.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stretchGuide.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stretchGuide.topAnchor.constraint(equalTo: topAnchor).withPriority(.defaultLow),
-            stretchGuide.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            iconView.widthAnchor.constraint(equalToConstant: 48),
-            iconView.heightAnchor.constraint(equalToConstant: 48)
-        ])
+        cloudsImageView.snp.makeConstraints { maker in
+            maker.centerY.equalTo(iconView.snp.centerY)
+            maker.leading.trailing.equalTo(stretchGuide)
+        }
+        sceneImageView.snp.makeConstraints { maker in
+            maker.leading.trailing.bottom.equalTo(stretchGuide)
+            maker.width.equalTo(sceneImageView.snp.height).multipliedBy(sceneImageAspectRatio)
+        }
+        testingTitleLabel.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.top.bottom.equalToSuperview().inset(6)
+        }
+        stretchGuide.snp.makeConstraints { maker in
+            maker.leading.trailing.equalTo(contentStretchGuide).inset(-24)
+            maker.top.equalTo(contentStretchGuide).inset(-70)
+            maker.bottom.greaterThanOrEqualTo(contentStretchGuide.snp.bottom)
+            maker.leading.trailing.bottom.equalToSuperview()
+            maker.top.equalToSuperview().priority(.low)
+        }
+        contentStretchGuide.snp.makeConstraints { maker in
+            maker.leading.trailing.centerY.equalTo(contentContainer)
+            maker.height.greaterThanOrEqualTo(contentContainer.snp.height)
+            maker.bottom.equalTo(stretchGuide.snp.bottom).priority(.high)
+        }
+        iconView.snp.makeConstraints { maker in
+            maker.width.height.equalTo(48)
+        }
     }
 
     override func layoutSubviews() {
@@ -232,6 +236,8 @@ private final class StatusView: View {
 
         evaluateHeight()
     }
+
+    // MARK: - Internal
 
     func update(with viewModel: StatusViewModel) {
         iconView.update(with: viewModel.icon)
@@ -266,6 +272,8 @@ private final class StatusView: View {
 
         evaluateHeight()
     }
+
+    // MARK: - Private
 
     /// Calculates the desired height for the current content
     /// This is required for stretching
