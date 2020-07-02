@@ -47,7 +47,10 @@ extension AppConfig {
                                         manifestRefreshFrequency: manifestFrequency,
                                         decoyProbability: decoyProbability,
                                         creationDate: Date(),
-                                        identifier: identifier)
+                                        identifier: identifier,
+                                        iOSMinimumVersionMessage: iOSMinimumVersionMessage,
+                                        iOSAppStoreURL: iOSAppStoreURL
+        )
     }
 }
 

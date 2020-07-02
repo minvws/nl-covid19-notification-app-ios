@@ -14,6 +14,8 @@ struct ApplicationConfiguration: Codable {
     let decoyProbability: Int
     let creationDate: Date
     let identifier: String
+    let iOSMinimumVersionMessage: String?
+    let iOSAppStoreURL: String?
 }
 
 final class RequestAppConfigurationDataOperation: ExposureDataOperation {

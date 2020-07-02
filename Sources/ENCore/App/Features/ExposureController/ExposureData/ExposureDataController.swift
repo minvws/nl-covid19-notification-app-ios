@@ -128,6 +128,18 @@ final class ExposureDataController: ExposureDataControlling {
             .eraseToAnyPublisher()
     }
 
+    func getiOSAppStoreURL() -> AnyPublisher<String?, ExposureDataError> {
+        return requestApplicationConfiguration()
+            .map { $0.iOSAppStoreURL }
+            .eraseToAnyPublisher()
+    }
+
+    func getiOSMinimumVersionMessage() -> AnyPublisher<String?, ExposureDataError> {
+        return requestApplicationConfiguration()
+            .map { $0.iOSMinimumVersionMessage }
+            .eraseToAnyPublisher()
+    }
+
     // MARK: - Private
 
     private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {

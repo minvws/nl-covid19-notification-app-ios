@@ -15,7 +15,7 @@ protocol UpdateAppBuildable {
     /// Builds UpdateApp
     ///
     /// - Parameter listener: Listener of created UpdateAppViewController
-    func build(withListener listener: UpdateAppListener) -> ViewControllable
+    func build(withListener listener: UpdateAppListener, iOSAppStoreURL: String?, iOSMinimumVersionMessage: String?) -> ViewControllable
 }
 
 protocol UpdateAppDependency {
@@ -25,9 +25,11 @@ protocol UpdateAppDependency {
 private final class UpdateAppDependencyProvider: DependencyProvider<UpdateAppDependency> {}
 
 final class UpdateAppBuilder: Builder<UpdateAppDependency>, UpdateAppBuildable {
-    func build(withListener listener: UpdateAppListener) -> ViewControllable {
+    func build(withListener listener: UpdateAppListener, iOSAppStoreURL: String?, iOSMinimumVersionMessage: String?) -> ViewControllable {
         let dependencyProvider = UpdateAppDependencyProvider(dependency: dependency)
         return UpdateAppViewController(listener: listener,
-                                       theme: dependencyProvider.dependency.theme)
+                                       theme: dependencyProvider.dependency.theme,
+                                       iOSAppStoreURL: iOSAppStoreURL,
+                                       iOSMinimumVersionMessage: iOSMinimumVersionMessage)
     }
 }

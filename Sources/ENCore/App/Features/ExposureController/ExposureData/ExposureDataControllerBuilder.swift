@@ -36,6 +36,8 @@ protocol ExposureDataControlling {
     // MARK: - Misc
 
     func getMinimumiOSVersion() -> AnyPublisher<String?, ExposureDataError>
+    func getiOSAppStoreURL() -> AnyPublisher<String?, ExposureDataError>
+    func getiOSMinimumVersionMessage() -> AnyPublisher<String?, ExposureDataError>
 }
 
 protocol ExposureDataControllerBuildable {

@@ -16,8 +16,14 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
     // MARK: - Init
 
-    init(listener: UpdateAppListener, theme: Theme) {
+    init(listener: UpdateAppListener,
+         theme: Theme,
+         iOSAppStoreURL: String?,
+         iOSMinimumVersionMessage: String?) {
+
         self.listener = listener
+        self.iOSAppStoreURL = iOSAppStoreURL
+        self.iOSMinimumVersionMessage = iOSMinimumVersionMessage
 
         super.init(theme: theme)
 
@@ -41,7 +47,7 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
             font: theme.fonts.title2,
             textColor: .black)
         internalView.contentLabel.attributedText = .makeFromHtml(
-            text: Localization.string(for: "updateApp.content"),
+            text: iOSMinimumVersionMessage ?? Localization.string(for: "updateApp.content"),
             font: theme.fonts.body,
             textColor: theme.colors.gray)
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
@@ -49,9 +55,8 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
     // MARK: - Functions
 
-    // TODO: Add the correct store url
     @objc func buttonPressed() {
-        guard let storeUrl = URL(string: "@TODO"),
+        guard let storeUrl = URL(string: iOSAppStoreURL ?? ""),
             UIApplication.shared.canOpenURL(storeUrl) else {
             showCannotOpenSettingsAlert()
             return
@@ -73,6 +78,8 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
     private lazy var internalView: UpdateAppView = {
         UpdateAppView(theme: self.theme)
     }()
+    private var iOSAppStoreURL: String?
+    private var iOSMinimumVersionMessage: String?
 }
 
 private final class UpdateAppView: View {
