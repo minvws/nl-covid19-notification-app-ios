@@ -1,6 +1,6 @@
 name: EN
 options:
-  developmentLanguage: $(DEVELOPMENT_LANGUAGE)
+  developmentLanguage: "en"
 packages:
   Reachability:
     path: vendor/Reachability.swift
@@ -45,6 +45,7 @@ targets:
     info:
       path: Sources/EN/Resources/Info.plist
       properties:
+        NSBluetoothPeripheralUsageDescription: "To securely exchange unique id's"
         BGTaskSchedulerPermittedIdentifiers: [$(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification]
         CFBundleName: CoronaMelder
         CFBundleDisplayName: CoronaMelder
