@@ -16,8 +16,7 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate {
 
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> ()) {
 
-        guard
-            let localSignature = configurationProvider.configuration.sslSignature(forHost: challenge.protectionSpace.host),
+        guard let localSignature = configurationProvider.configuration.sslSignature(forHost: challenge.protectionSpace.host),
             challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
             let serverTrust = challenge.protectionSpace.serverTrust else {
             // no pinning
@@ -25,10 +24,15 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate {
             return
         }
 
+        let policies = [SecPolicyCreateSSL(true, challenge.protectionSpace.host as CFString)]
+        SecTrustSetPolicies(serverTrust, policies as CFTypeRef)
+
+        let certificateCount = SecTrustGetCertificateCount(serverTrust)
+
         guard
             SecTrustEvaluateWithError(serverTrust, nil),
-            SecTrustGetCertificateCount(serverTrust) > 0,
-            let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0),
+            certificateCount > 0,
+            let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, certificateCount - 1), // get topmost certificate in chain
             let signature = Certificate(certificate: serverCertificate).signature else {
             // invalid server trust
             completionHandler(.cancelAuthenticationChallenge, nil)

@@ -75,7 +75,7 @@ struct NetworkConfiguration {
             host: "localhost",
             port: nil,
             path: ["mss-acc", "v1"],
-            sslSignature: Certificate.SSL.rootSignature,
+            sslSignature: Certificate.SSL.apiAccSignature,
             tokenParams: [:]
         ),
         cdn: .init(
@@ -83,7 +83,7 @@ struct NetworkConfiguration {
             host: "vwspa-cdn-blob.azureedge.net",
             port: nil,
             path: ["vws", "v01"],
-            sslSignature: nil,
+            sslSignature: Certificate.SSL.cdnAccSignature,
             tokenParams: [
                 "sv": "2019-02-02",
                 "st": "2020-06-26T14:13:35Z",

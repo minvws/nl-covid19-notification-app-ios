@@ -30,17 +30,14 @@ struct Certificate {
     }
 
     var signature: Signature? {
-        guard let key = SecCertificateCopyKey(secCertificate),
-            let data = SecKeyCopyExternalRepresentation(key, nil) else {
-            return nil
-        }
-
+        let data = SecCertificateCopyData(secCertificate)
         return Data(SHA256.hash(data: data as Data)).base64EncodedString()
     }
 }
 
 extension Certificate {
     struct SSL {
-        static let rootSignature: Certificate.Signature = "xblTCeUhNLA8ALWn2MSgGLCzINiTAuiJglCtNcw4YOE="
+        static let apiAccSignature: Certificate.Signature = "xblTCeUhNLA8ALWn2MSgGLCzINiTAuiJglCtNcw4YOE="
+        static let cdnAccSignature: Certificate.Signature = "Fq9XqfZ2sKsSYJWqXrre8iqzERnWRKyVzUuT2/Pyaus="
     }
 }
