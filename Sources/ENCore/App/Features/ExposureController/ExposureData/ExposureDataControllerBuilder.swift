@@ -38,6 +38,8 @@ protocol ExposureDataControlling {
 
     func getMinimumiOSVersion() -> AnyPublisher<String?, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
+    func getAppStoreURL() -> AnyPublisher<String?, ExposureDataError>
+    func getMinimumVersionMessage() -> AnyPublisher<String?, ExposureDataError>
 }
 
 protocol ExposureDataControllerBuildable {

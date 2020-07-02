@@ -12,12 +12,18 @@ import UIKit
 /// @mockable
 protocol UpdateAppViewControllable: ViewControllable {}
 
-final class UpdateAppViewController: ViewController, UpdateAppViewControllable, UIAdaptivePresentationControllerDelegate {
+final class UpdateAppViewController: ViewController, UpdateAppViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
     // MARK: - Init
 
-    init(listener: UpdateAppListener, theme: Theme) {
+    init(listener: UpdateAppListener,
+         theme: Theme,
+         appStoreURL: String?,
+         minimumVersionMessage: String?) {
+
         self.listener = listener
+        self.appStoreURL = appStoreURL
+        self.minimumVersionMessage = minimumVersionMessage
 
         super.init(theme: theme)
 
@@ -41,7 +47,7 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
             font: theme.fonts.title2,
             textColor: .black)
         internalView.contentLabel.attributedText = .makeFromHtml(
-            text: Localization.string(for: "updateApp.content"),
+            text: minimumVersionMessage ?? Localization.string(for: "updateApp.content"),
             font: theme.fonts.body,
             textColor: theme.colors.gray)
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
@@ -49,11 +55,11 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
     // MARK: - Functions
 
-    // TODO: Add the correct store url
     @objc func buttonPressed() {
-        guard let storeUrl = URL(string: "@TODO"),
+        guard let storeUrl = URL(string: appStoreURL ?? ""),
             UIApplication.shared.canOpenURL(storeUrl) else {
             showCannotOpenSettingsAlert()
+            logError("Can't open: \(appStoreURL ?? "")")
             return
         }
         UIApplication.shared.open(storeUrl)
@@ -73,6 +79,8 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
     private lazy var internalView: UpdateAppView = {
         UpdateAppView(theme: self.theme)
     }()
+    private var appStoreURL: String?
+    private var minimumVersionMessage: String?
 }
 
 private final class UpdateAppView: View {

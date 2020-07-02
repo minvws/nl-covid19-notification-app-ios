@@ -134,6 +134,18 @@ final class ExposureDataController: ExposureDataControlling {
             .eraseToAnyPublisher()
     }
 
+    func getAppStoreURL() -> AnyPublisher<String?, ExposureDataError> {
+        return requestApplicationConfiguration()
+            .map { $0.appStoreURL }
+            .eraseToAnyPublisher()
+    }
+
+    func getMinimumVersionMessage() -> AnyPublisher<String?, ExposureDataError> {
+        return requestApplicationConfiguration()
+            .map { $0.minimumVersionMessage }
+            .eraseToAnyPublisher()
+    }
+
     func updateLastLocalNotificationExposureDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
     }
