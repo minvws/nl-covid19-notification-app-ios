@@ -23,6 +23,8 @@ protocol ExposureControlling {
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
+    func notifiyUserIfRequired()
+
     // MARK: - Permissions
 
     func requestExposureNotificationPermission()

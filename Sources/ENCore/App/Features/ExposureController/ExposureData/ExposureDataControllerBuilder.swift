@@ -24,6 +24,7 @@ protocol ExposureDataControlling {
 
     var lastExposure: ExposureReport? { get }
     var lastSuccessfulFetchDate: Date { get }
+    var lastLocalNotificationExposureDate: Date? { get }
     func removeLastExposure() -> Future<(), Never>
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
 
@@ -36,6 +37,7 @@ protocol ExposureDataControlling {
     // MARK: - Misc
 
     func getMinimumiOSVersion() -> AnyPublisher<String?, ExposureDataError>
+    func updateLastLocalNotificationExposureDate(_ date: Date)
 }
 
 protocol ExposureDataControllerBuildable {

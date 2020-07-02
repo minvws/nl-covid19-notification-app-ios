@@ -108,6 +108,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         mutablePushNotificationStream
             .pushNotificationStream
             .sink { [weak self] (notificationRespone: UNNotificationResponse) in
+                guard !["nl.rijksoverheid.en.inactive"].contains(notificationRespone.notification.request.identifier) else {
+                    return
+                }
                 // TODO: Use the identifier to know which flow to launch
                 let content = notificationRespone.notification.request.content
                 self?.routeToMessage(title: content.title, body: content.body)
