@@ -79,6 +79,19 @@
 <p>De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.</p>
 ";
 
+"help.faq.location.title" = "Kan de app mijn locatie zien?";
+"help.faq.location.description" = "Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die de app ook op hun telefoon hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen 2 apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.";
+"help.faq.anonymous.title" = "Hoe kan de app anoniem zijn?";
+"help.faq.anonymous.description_1" = "De app wisselt codes uit met andere telefoons. In deze codes staan geen persoonsgegevens of locatiegegevens van je. Ze zijn helemaal willekeurig. Het uitwisselen van codes gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.";
+"help.faq.anonymous.description_2" = "Blijkt deze persoon later corona te hebben? Dan kan diegene in de app zijn of haar codes naar de GGD sturen. Die maakt een lijst waarop alleen de codes van besmette personen staan. Het delen van codes kan alleen nadat de besmette persoon een tijdelijk wachtwoord aan de GGD heeft doorgegeven. Daarna krijgen jij en alle andere mensen die deze codes op hun telefoon hebben een melding. In deze melding staat alleen wanneer je in de buurt bent geweest van een besmet persoon. Niet wie dit is en waar je die persoon bent tegengekomen.";
+"help.faq.notification.title" = "Wanneer krijg ik een melding van de app?";
+"help.faq.notification.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. En natuurlijk alleen als die persoon ook de app gebruikt. Of je een melding krijgt hangt af van de sterkte van het Bluetooth-signaal. En van de duur van jullie contact. Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Jullie waren wel dicht bij elkaar, dus het Bluetooth-signaal was sterk. Maar het contact duurde zo kort dat je geen extra kans op besmetting hebt. Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
+"help.faq.bluetooth.title" = "Werkt Bluetooth door muren heen?";
+"help.faq.bluetooth.description" = "Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon. De kans is bijvoorbeeld heel klein dat je app het Bluetooth-signaal van je buren ontvangt. En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman positief test en jullie niet in dezelfde ruimte zijn geweest.";
+"help.faq.power_usage.title" = "Hoeveel stroom gebruikt de app?";
+"help.faq.power_usage.description" = "De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.";
+
+
 // MARK: - Message
 
 "message.default.title" = "Je bent in de buurt geweest van iemand met het coronavirus [DIT IS EEN TEST BERICHT]";

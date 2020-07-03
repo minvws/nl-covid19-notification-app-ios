@@ -43,7 +43,7 @@ struct StatusViewButtonModel {
     )
 
     static let enableSettings = StatusViewButtonModel(
-        title: "Instellingen aanzetten",
+        title: Localization.string(for: "status.appState.card.button"),
         style: .primary,
         action: .updateAppSettings
     )

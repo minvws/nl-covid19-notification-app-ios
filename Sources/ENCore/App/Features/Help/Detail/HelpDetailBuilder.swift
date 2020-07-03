@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// @mockable
 protocol HelpDetailListener: AnyObject {
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool)
     func helpDetailDidTapEnableAppButton()
