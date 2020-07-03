@@ -35,7 +35,7 @@ public final class Localization {
         let strings = value.components(separatedBy: paragraph)
 
         return strings.enumerated().map { (index, element) -> NSMutableAttributedString in
-            let value = index < strings.count - 1 ? element + paragraph : element
+            let value = index < strings.count - 1 ? element + "\n" : element
             return NSMutableAttributedString(string: value)
         }
     }

@@ -130,6 +130,7 @@ final class InfoSectionTextView: View {
         contentStack.axis = .vertical
         contentStack.alignment = .top
         contentStack.distribution = .fill
+        contentStack.spacing = 5
 
         addSubview(titleLabel)
         addSubview(contentStack)
