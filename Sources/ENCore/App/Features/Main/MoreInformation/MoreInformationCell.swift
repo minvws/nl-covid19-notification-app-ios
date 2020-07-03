@@ -17,9 +17,6 @@ final class MoreInformationCell: UIControl, Themeable {
 
     override var isHighlighted: Bool {
         didSet {
-            if isHighlighted {
-                Haptic.light()
-            }
             // TODO: Should actually to proper UITableView touch styling
             UIView.animate(withDuration: 0.25) {
                 self.alpha = self.isHighlighted ? 0.6 : 1.0
@@ -31,7 +28,7 @@ final class MoreInformationCell: UIControl, Themeable {
 
     // MARK: - Init
 
-    init(listener: MoreInformationCellListner, theme: Theme, data: MoreInformation) {
+    init(listener: MoreInformationCellListner, theme: Theme, data: MoreInformation, borderIsHidden: Bool = false) {
         self.listener = listener
         self.identifier = data.identifier
         self.theme = theme
@@ -52,6 +49,7 @@ final class MoreInformationCell: UIControl, Themeable {
         iconImageView.image = data.icon
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
+        borderView.isHidden = borderIsHidden
     }
 
     @available(*, unavailable, message: "NSCoder and Interface Builder is not supported. Use Programmatic layout.")
@@ -71,6 +69,7 @@ final class MoreInformationCell: UIControl, Themeable {
     private let subtitleLabel: Label
 
     @objc private func didTap() {
+        Haptic.light()
         listener?.didSelect(identifier: identifier)
     }
 
