@@ -23,11 +23,10 @@ final class StatusViewControllerTests: TestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), theme: theme, topAnchor: nil)
-        viewController.view.translatesAutoresizingMaskIntoConstraints = false
         viewController.router = router
     }
 
-    func test_snapshot_active_not_notified() {
+    func test_snapshot_active_not_notified_() {
         set(activeState: .active, notified: false)
         assertSnapshot(matching: viewController, as: .image())
     }
