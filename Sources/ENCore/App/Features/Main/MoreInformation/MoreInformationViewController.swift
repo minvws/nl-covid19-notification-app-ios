@@ -50,6 +50,12 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         super.viewDidLoad()
 
         moreInformationView.set(data: objects, listener: self)
+
+        if let dictionary = Bundle.main.infoDictionary,
+            let version = dictionary["CFBundleShortVersionString"] as? String,
+            let build = dictionary["CFBundleVersion"] as? String {
+            moreInformationView.version = "v\(version) (\(build))"
+        }
     }
 
     // MARK: - MoreInformationCellListner
@@ -105,16 +111,22 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
 private final class MoreInformationView: View {
 
+    fileprivate var version: String? {
+        get { versionLabel.text }
+        set { versionLabel.text = newValue }
+    }
     var didSelectItem: ((MoreInformationIdentifier) -> ())?
 
     private let headerLabel: Label
     private let stackView: UIStackView
+    private let versionLabel: Label
 
     // MARK: - Init
 
     override init(theme: Theme) {
         self.headerLabel = Label()
         self.stackView = UIStackView(frame: .zero)
+        self.versionLabel = Label()
         super.init(theme: theme)
     }
 
@@ -129,8 +141,12 @@ private final class MoreInformationView: View {
         stackView.axis = .vertical
         stackView.distribution = .fill
 
+        versionLabel.textAlignment = .center
+        headerLabel.font = theme.fonts.footnote
+
         addSubview(headerLabel)
         addSubview(stackView)
+        addSubview(versionLabel)
     }
 
     override func setupConstraints() {
@@ -142,6 +158,10 @@ private final class MoreInformationView: View {
         }
         stackView.snp.makeConstraints { maker in
             maker.top.equalTo(headerLabel.snp.bottom).offset(16)
+            maker.leading.trailing.equalToSuperview()
+            maker.bottom.equalTo(versionLabel.snp.top).offset(-16)
+        }
+        versionLabel.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalToSuperview()
         }
     }
@@ -149,8 +169,10 @@ private final class MoreInformationView: View {
     // MARK: - Private
 
     fileprivate func set(data: [MoreInformation], listener: MoreInformationCellListner) {
-        for object in data {
-            let view = MoreInformationCell(listener: listener, theme: theme, data: object)
+        let lastIndex = data.count - 1
+        for (index, object) in data.enumerated() {
+            let borderIsHidden = index == lastIndex
+            let view = MoreInformationCell(listener: listener, theme: theme, data: object, borderIsHidden: borderIsHidden)
             stackView.addArrangedSubview(view)
         }
     }

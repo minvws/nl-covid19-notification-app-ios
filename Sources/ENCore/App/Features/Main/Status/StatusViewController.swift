@@ -235,6 +235,12 @@ private final class StatusView: View {
         CATransaction.commit()
 
         evaluateHeight()
+
+        let height = testingContainer.frame.height
+        let cornerRadius = ceil(height / 2)
+        if cornerRadius != testingContainer.layer.cornerRadius {
+            testingContainer.layer.cornerRadius = cornerRadius
+        }
     }
 
     // MARK: - Internal
