@@ -26,7 +26,7 @@ final class StatusViewControllerTests: TestCase {
         viewController.router = router
     }
 
-    func test_snapshot_active_not_notified_() {
+    func test_snapshot_active_not_notified() {
         set(activeState: .active, notified: false)
         assertSnapshot(matching: viewController, as: .image())
     }

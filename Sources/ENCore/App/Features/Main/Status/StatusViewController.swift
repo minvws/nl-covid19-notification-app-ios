@@ -235,12 +235,7 @@ private final class StatusView: View {
         CATransaction.commit()
 
         evaluateHeight()
-
-        let height = testingContainer.frame.height
-        let cornerRadius = ceil(height / 2)
-        if cornerRadius != testingContainer.layer.cornerRadius {
-            testingContainer.layer.cornerRadius = cornerRadius
-        }
+        updateTestingContainerCornerRadius()
     }
 
     // MARK: - Internal
@@ -290,5 +285,16 @@ private final class StatusView: View {
         let size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         heightConstraint?.constant = size.height
         heightConstraint?.isActive = true
+    }
+
+    private func updateTestingContainerCornerRadius() {
+        guard bounds.width > 0 else {
+            return
+        }
+        let height = testingContainer.frame.height
+        let cornerRadius = ceil(height / 2)
+        if cornerRadius != testingContainer.layer.cornerRadius {
+            testingContainer.layer.cornerRadius = cornerRadius
+        }
     }
 }
