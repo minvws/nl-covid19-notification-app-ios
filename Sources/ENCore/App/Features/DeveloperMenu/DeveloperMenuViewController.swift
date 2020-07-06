@@ -671,8 +671,6 @@ private extension ExposureActiveState {
                 return "Inactive - Disabled"
             case .noRecentNotificationUpdates:
                 return "Inactive - No Recent Updates"
-            case .requiresOSUpdate:
-                return "Inactive - Requires OS Update"
             }
         }
     }

@@ -69,20 +69,12 @@ protocol ExposureManaging {
 protocol ExposureManagerBuildable {
     /// Builds an ExposureManager instance.
     /// Returns nil if the OS does not support Exposure Notifications
-    func build() -> ExposureManaging?
+    func build() -> ExposureManaging
 }
 
 final class ExposureManagerBuilder: Builder<EmptyDependency>, ExposureManagerBuildable {
 
-    func build() -> ExposureManaging? {
-        if #available(iOS 13.5, *) {
-            #if targetEnvironment(simulator)
-                return StubExposureManager()
-            #else
-                return ExposureManager(manager: ENManager())
-            #endif
-        }
-
-        return nil
+    func build() -> ExposureManaging {
+        return ExposureManager(manager: ENManager())
     }
 }

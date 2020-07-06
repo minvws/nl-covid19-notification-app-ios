@@ -34,7 +34,6 @@ enum ExposureActiveState: Equatable {
 
 enum ExposureStateInactiveState: Equatable {
     case disabled
-    case requiresOSUpdate
     case bluetoothOff
     case noRecentNotificationUpdates
 }
