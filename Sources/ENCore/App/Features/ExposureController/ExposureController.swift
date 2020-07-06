@@ -361,7 +361,7 @@ final class ExposureController: ExposureControlling, Logging {
             }
             let content = UNMutableNotificationContent()
             content.title = Localization.string(for: "status.appState.inactive.title")
-            content.body = Localization.string(for: "status.appState.inactive.description", ["[App name]"])
+            content.body = Localization.string(for: "status.appState.inactive.description", ["CoronaMelder"])
             content.sound = UNNotificationSound.default
             content.badge = 0
 
