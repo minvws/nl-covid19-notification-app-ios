@@ -220,14 +220,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
     }
 
-    private func presentAlert(message: String) {
-        let alertController = UIAlertController(title: "Update App Settings", message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: Localization.string(for: "ok"), style: .default) { [weak self] _ in
-            self?.dismiss(animated: true, completion: nil)
-        })
-        present(alertController, animated: true, completion: nil)
-    }
-
     private func openAppSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString) else {
             return logError("Settings URL string problem")
