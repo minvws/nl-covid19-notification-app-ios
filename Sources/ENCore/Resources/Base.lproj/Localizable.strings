@@ -68,11 +68,11 @@
 "helpAcceptButtonTitle" = "Toestemming geven";
 "helpContent" = "
 <h1>Kan de app mijn locatie zien?</h1>
-<p>Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die de app ook op hun telefoon hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen twee apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.</p>
+<p>Nee. De app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die de app ook hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen 2 apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.</p>
 <h1>Hoe kan de app anoniem zijn?</h1>
 <p>De app wisselt codes uit met andere telefoons. In deze codes staan geen persoonsgegevens of locatiegegevens van je. Ze zijn helemaal willekeurig. Het uitwisselen van codes gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.</br></br>Blijkt deze persoon later corona te hebben? Dan kan diegene in de app zijn of haar codes naar de GGD sturen. Die maakt een lijst waarop alleen de codes van besmette personen staan. Het delen van codes kan alleen nadat de besmette persoon een tijdelijk wachtwoord aan de GGD heeft doorgegeven. Daarna krijgen jij en alle andere mensen die deze codes op hun telefoon hebben een melding. In deze melding staat alleen wanneer je in de buurt bent geweest van een besmet persoon. Niet wie dit is en waar je die persoon bent tegengekomen.</p>
 <h1>Wanneer krijg ik een melding van de app? </h1>
-<p>Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. En natuurlijk alleen als die persoon ook de app gebruikt. In deze situatie is er sprake van extra kans dat je besmet kunt raken.</br></br>Of je dichtbij genoeg bent geweest hangt af van de sterkte van het Bluetooth-signaal. Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Het Bluetooth-signaal was sterk genoeg omdat jullie dicht bij elkaar waren. Alleen duurde dit zo kort dat de kans op besmetting heel laag is. Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.</p>
+<p>Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je 10 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. En natuurlijk alleen als die persoon ook de app gebruikt. Of je een melding krijgt hangt af van de sterkte van het Bluetooth-signaal. En van de duur van jullie contact. Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Jullie waren wel dicht bij elkaar, dus het Bluetooth-signaal was sterk. Maar het contact duurde zo kort dat je geen extra kans op besmetting hebt. Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.</p>
 <h1>Werkt Bluetooth ook door muren heen?</h1>
 <p>Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon. De kans is bijvoorbeeld heel klein dat je app het Bluetooth-signaal van je buren ontvangt. En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman positief test en jullie niet in dezelfde ruimte zijn geweest.</p>
 <h1>Hoeveel stroom gebruikt Bluetooth?</h1>
@@ -91,12 +91,12 @@
 "help.faq.power_usage.title" = "Hoeveel stroom gebruikt de app?";
 "help.faq.power_usage.description" = "De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.";
 
-
 // MARK: - Message
 
-"message.default.title" = "Je bent in de buurt geweest van iemand met het coronavirus [DIT IS EEN TEST BERICHT]";
-"message.default.body" = "Je was %@ dicht bij iemand die later corona bleek te hebben. Het RIVM en de GGD zien dit als een situatie waarin je extra kans op besmetting hebt gelopen. Als je besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
+"message.default.title" = "Je bent in de buurt geweest van iemand met het coronavirus [DIT IS EEN TESTBERICHT]";
+"message.default.body" = "Je was %@ dicht bij iemand die later corona bleek te hebben. Volgens het RIVM en de GGD heb je in deze situatie extra kans op besmetting gelopen. Als je besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
 
+/* MARK: - Message */
 "message.title" = "Melding gekregen";
 "message.button.title" = "Bel voor coronatest";
 
@@ -130,7 +130,7 @@
 "moreInformation.cell.about.subtitle" = "Bekijk hoe de app werkt en wat dit voor je privacy betekent";
 
 "moreInformation.cell.receivedNotification.title" = "Ik heb een melding gekregen";
-"moreInformation.cell.receivedNotification.subtitle" = "Lees wat je kunt doen nadat iemand anders het virus blijkt te hebben";
+"moreInformation.cell.receivedNotification.subtitle" = "Lees wat je kunt doen nadat iemand anders corona blijkt te hebben";
 
 "moreInformation.cell.requestTest.title" = "Coronatest aanvragen";
 "moreInformation.cell.requestTest.subtitle" = "Ontdek zo snel mogelijk of je zelf besmet bent";
@@ -183,7 +183,7 @@
 "moreInformation.receivedNotification.title" = "Melding gekregen";
 "moreInformation.receivedNotification.button.title" = "Bel voor coronatest";
 "moreInformation.receivedNotification.notificationExplanation.title" = "Wat betekent het als je een melding krijgt?";
-"moreInformation.receivedNotification.notificationExplanation.content" = "De app stuurt een melding als je 10 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. Het RIVM en de GGD zien dit als een situatie waarin je extra kans op besmetting hebt gelopen.  Als je besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
+"moreInformation.receivedNotification.notificationExplanation.content" = "De app stuurt een melding als je 10 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. Volgens het RIVM en de GGD heb je in deze situatie extra kans op besmetting gelopen. Als je besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Doe een coronatest";
 "moreInformation.receivedNotification.doCoronaTest.content" = "Heb je klachten? Doe dan een coronatest.\n\nTesten is gratis. Het duurt niet lang en kan meestal snel gebeuren. De uitslag is binnen 48 uur bekend. Blijf in die tijd zo veel mogelijk thuis.\n\nBel gratis 0800-1202 om een coranatest aan te vragen.";
 
