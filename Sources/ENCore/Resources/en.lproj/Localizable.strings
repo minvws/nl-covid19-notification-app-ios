@@ -151,7 +151,7 @@
 "moreInformation.infected.section.anonomuslyWarnOthers.title" = "Send others an anonymous notification that you're infected";
 "moreInformation.infected.section.anonomuslyWarnOthers.content" = "The GGD phones you if you've tested positive. Immediately after, you can send an anonymous notification to others. Only people who've been near you for longer than 10 minutes while you were contagious will get the notification.";
 "moreInformation.infected.section.controlCode.title" = "1. Give this temporary password to the GGD employee:";
-"moreInformation.infected.section.uploadCodes.title" = "Share your codes of the past 14 days";
+"moreInformation.infected.section.uploadCodes.title" = "2. Share your codes of the past 14 days";
 "moreInformation.infected.section.controlCode.content" = "The people who have the app and have been near you while you were contagious get a notification. They won't know you sent this notification.";
 
 // MARK: - MoreInformation | Infected | Thank You
