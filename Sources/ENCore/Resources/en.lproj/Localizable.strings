@@ -26,7 +26,7 @@
 "step1Title" = "Protect your friends, family and the rest of the Netherlands";
 "step1Content" = "This app warns you when you've been near someone who has coronavirus. This way, we can stop the spread together.";
 
-"step2Title" = "You get a notification after you’ve experienced a higher risk of infection";
+"step2Title" = "You get a notification after you've experienced a higher risk of infection";
 "step2Content" = "This happens when you've spent 10 minutes near someone who later tested positive. This person must be using the app as well.";
 
 "step3Title" = "The app uses Bluetooth. <u>No</u> location data";

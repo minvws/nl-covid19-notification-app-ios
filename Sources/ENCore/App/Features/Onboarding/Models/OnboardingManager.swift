@@ -16,11 +16,12 @@ protocol OnboardingManaging {
 
 final class OnboardingManager: OnboardingManaging {
 
-    var onboardingSteps: [OnboardingStep] = []
+    let onboardingSteps: [OnboardingStep]
+
+    // MARK: -
 
     init(theme: Theme) {
-
-        onboardingSteps.append(
+        self.onboardingSteps = [
             OnboardingStep(
                 theme: theme,
                 title: Localization.string(for: "step1Title"),
@@ -28,10 +29,7 @@ final class OnboardingManager: OnboardingManaging {
                 illustration: .image(named: "Step1"),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
-            )
-        )
-
-        onboardingSteps.append(
+            ),
             OnboardingStep(
                 theme: theme,
                 title: Localization.string(for: "step2Title"),
@@ -39,10 +37,7 @@ final class OnboardingManager: OnboardingManaging {
                 illustration: .animation(named: "popup", repeatFromFrame: 94),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
-            )
-        )
-
-        onboardingSteps.append(
+            ),
             OnboardingStep(
                 theme: theme,
                 title: Localization.string(for: "step3Title"),
@@ -50,10 +45,7 @@ final class OnboardingManager: OnboardingManaging {
                 illustration: .animation(named: "bluetooth"),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: false
-            )
-        )
-
-        onboardingSteps.append(
+            ),
             OnboardingStep(
                 theme: theme,
                 title: Localization.string(for: "step4Title"),
@@ -61,10 +53,7 @@ final class OnboardingManager: OnboardingManaging {
                 illustration: .animation(named: "ontheway"),
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: true
-            )
-        )
-
-        onboardingSteps.append(
+            ),
             OnboardingStep(
                 theme: theme,
                 title: Localization.string(for: "step5Title"),
@@ -73,7 +62,7 @@ final class OnboardingManager: OnboardingManaging {
                 buttonTitle: Localization.string(for: "nextButtonTitle"),
                 isExample: true
             )
-        )
+        ]
     }
 
     func getStep(_ index: Int) -> OnboardingStep? {

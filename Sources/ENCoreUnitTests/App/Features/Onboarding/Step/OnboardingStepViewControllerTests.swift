@@ -11,34 +11,28 @@ import SnapshotTesting
 import XCTest
 
 final class OnboardingStepViewControllerTests: TestCase {
-    private var viewController: OnboardingStepViewController!
-    private let manager = OnboardingManagingMock()
     private let stepBuilder = OnboardingStepBuildableMock()
     private let listener = OnboardingStepListenerMock()
+
+    private var manager: OnboardingManager!
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
-
-        manager.getStepHandler = { index in
-            return OnboardingStep(theme: self.theme,
-                                  title: "Title",
-                                  content: "Content",
-                                  illustration: .image(named: "Step5"),
-                                  buttonTitle: "Button",
-                                  isExample: true)
-        }
-
-        viewController = OnboardingStepViewController(onboardingManager: manager,
-                                                      onboardingStepBuilder: stepBuilder,
-                                                      listener: listener,
-                                                      theme: theme,
-                                                      index: 0)
+        manager = OnboardingManager(theme: theme)
     }
 
-    // TODO: Write test cases
-    func test_case() {
-        assertSnapshot(matching: viewController, as: .image())
+    // MARK: - Tests
+
+    func test_snapshot_onboardingStepViewController() {
+        for (index, _) in manager.onboardingSteps.enumerated() {
+            let viewController = OnboardingStepViewController(onboardingManager: manager,
+                                                              onboardingStepBuilder: stepBuilder,
+                                                              listener: listener,
+                                                              theme: theme,
+                                                              index: index)
+            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)")
+        }
     }
 }
