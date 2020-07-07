@@ -669,6 +669,8 @@ private extension ExposureActiveState {
                 return "Inactive - Bluetooth off"
             case .disabled:
                 return "Inactive - Disabled"
+            case .pushNotifications:
+                return "Inactive - Push Notifications"
             case .noRecentNotificationUpdates:
                 return "Inactive - No Recent Updates"
             }

@@ -15,6 +15,7 @@ final class ExposureControllerTests: TestCase {
     private let mutableStateStream = MutableExposureStateStreamingMock()
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
+    private let userNotificationCenter = UserNotificationCenterMock()
     private let networkStatusStream = NetworkStatusStreamingMock(networkStatusStream: CurrentValueSubject<Bool, Never>(true).eraseToAnyPublisher())
 
     override func setUp() {
@@ -24,7 +25,8 @@ final class ExposureControllerTests: TestCase {
         controller = ExposureController(mutableStateStream: mutableStateStream,
                                         exposureManager: exposureManager,
                                         dataController: dataController,
-                                        networkStatusStream: networkStatusStream)
+                                        networkStatusStream: networkStatusStream,
+                                        userNotificationCenter: userNotificationCenter)
 
         exposureManager.activateCallCount = 0
         mutableStateStream.updateCallCount = 0
@@ -40,6 +42,10 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.exposureState = stream.eraseToAnyPublisher()
 
         exposureManager.getExposureNotificationStatusHandler = { .active }
+
+        userNotificationCenter.getAuthorizationStatusHandler = { handler in
+            handler(.authorized)
+        }
     }
 
     func test_activate_activesAndUpdatesStream() {
@@ -339,6 +345,8 @@ final class ExposureControllerTests: TestCase {
     }
 
     private func triggerUpdateStream() {
+        controller.requestPushNotificationPermission {}
+
         // trigger status update by mocking enabling notifications
         exposureManager.setExposureNotificationEnabledHandler = { _, completion in completion(.success(())) }
 

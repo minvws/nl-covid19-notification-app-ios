@@ -8,6 +8,7 @@
 import Combine
 import CoreBluetooth
 import UIKit
+import UserNotifications
 
 /// @mockable
 protocol MainRouting: Routing {
@@ -213,6 +214,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             exposureController.requestExposureNotificationPermission()
         case let .inactive(reason) where reason == .noRecentNotificationUpdates:
             updateWhenRequired()
+        case let .inactive(reason) where reason == .pushNotifications:
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                DispatchQueue.main.async {
+                    self.handlePushNotificationSettings(authorizationStatus: settings.authorizationStatus)
+                }
+            }
         case .inactive:
             logError("Unhandled case")
         case .active:
@@ -231,6 +238,17 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         // We need to navigate to the Bluetooth settings page, using `App-Perfs:root=Bluetooth`
         // is a private api and risks getting the app rejected during review.
         _ = CBCentralManager(delegate: nil, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
+    }
+
+    private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {
+        switch authorizationStatus {
+        case .notDetermined:
+            self.exposureController.requestPushNotificationPermission {}
+        case .denied:
+            self.openAppSettings()
+        default:
+            self.logError("Unhandled case")
+        }
     }
 
     private func updateWhenRequired() {

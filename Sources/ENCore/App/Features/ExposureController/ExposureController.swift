@@ -14,11 +14,13 @@ final class ExposureController: ExposureControlling, Logging {
     init(mutableStateStream: MutableExposureStateStreaming,
          exposureManager: ExposureManaging,
          dataController: ExposureDataControlling,
-         networkStatusStream: NetworkStatusStreaming) {
+         networkStatusStream: NetworkStatusStreaming,
+         userNotificationCenter: UserNotificationCenter) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
         self.networkStatusStream = networkStatusStream
+        self.userNotificationCenter = userNotificationCenter
     }
 
     deinit {
@@ -38,6 +40,8 @@ final class ExposureController: ExposureControlling, Logging {
             self.postExposureManagerActivation()
             self.updateStatusStream()
         }
+
+        updatePushNotificationState()
     }
 
     func getMinimumiOSVersion(_ completion: @escaping (String?) -> ()) {
@@ -78,6 +82,7 @@ final class ExposureController: ExposureControlling, Logging {
 
     func refreshStatus() {
         updateStatusStream()
+        updatePushNotificationState()
     }
 
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
@@ -115,17 +120,13 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestPushNotificationPermission(_ completion: @escaping (() -> ())) {
-        let uncc = UNUserNotificationCenter.current()
-
-        uncc.getNotificationSettings { settings in
-            if settings.authorizationStatus == .authorized {
-                DispatchQueue.main.async {
-                    completion()
-                }
+        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
+            if authorizationStatus == .authorized {
+                completion()
             }
         }
 
-        uncc.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
+        userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
             DispatchQueue.main.async {
                 completion()
             }
@@ -264,6 +265,8 @@ final class ExposureController: ExposureControlling, Logging {
         switch exposureManagerStatus {
         case .active where hasBeenTooLongSinceLastUpdate:
             activeState = .inactive(.noRecentNotificationUpdates)
+        case .active where !isPushNotificationsEnabled:
+            activeState = .inactive(.pushNotifications)
         case .active:
             activeState = .active
         case .inactive(_) where hasBeenTooLongSinceLastUpdate:
@@ -277,6 +280,8 @@ final class ExposureController: ExposureControlling, Logging {
         case let .inactive(error) where error == .unknown || error == .internalTypeMismatch:
             // Most likely due to code signing issues
             activeState = .inactive(.disabled)
+        case .inactive where !isPushNotificationsEnabled:
+            activeState = .inactive(.pushNotifications)
         case .inactive:
             activeState = .inactive(.disabled)
         case .notAuthorized:
@@ -364,6 +369,13 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
+    private func updatePushNotificationState() {
+        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
+            self.isPushNotificationsEnabled = authorizationStatus == .authorized
+            self.updateStatusStream()
+        }
+    }
+
     private let mutableStateStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling
@@ -371,6 +383,8 @@ final class ExposureController: ExposureControlling, Logging {
     private var exposureKeyUpdateStream: AnyPublisher<(), ExposureDataError>?
     private let networkStatusStream: NetworkStatusStreaming
     private var isActivated = false
+    private var isPushNotificationsEnabled = false
+    private let userNotificationCenter: UserNotificationCenter
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {
