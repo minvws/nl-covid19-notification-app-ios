@@ -14,11 +14,13 @@ final class ExposureController: ExposureControlling, Logging {
     init(mutableStateStream: MutableExposureStateStreaming,
          exposureManager: ExposureManaging,
          dataController: ExposureDataControlling,
-         networkStatusStream: NetworkStatusStreaming) {
+         networkStatusStream: NetworkStatusStreaming,
+         userNotificationCenter: UserNotificationCenter) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
         self.networkStatusStream = networkStatusStream
+        self.userNotificationCenter = userNotificationCenter
     }
 
     deinit {
@@ -118,9 +120,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestPushNotificationPermission(_ completion: @escaping (() -> ())) {
-        let uncc = UNUserNotificationCenter.current()
-
-        uncc.getNotificationSettings { settings in
+        userNotificationCenter.getNotificationSettings { settings in
             if settings.authorizationStatus == .authorized {
                 DispatchQueue.main.async {
                     completion()
@@ -128,7 +128,7 @@ final class ExposureController: ExposureControlling, Logging {
             }
         }
 
-        uncc.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
+        userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
             DispatchQueue.main.async {
                 completion()
             }
@@ -372,7 +372,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private func updatePushNotificationState() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
+        userNotificationCenter.getNotificationSettings { settings in
             DispatchQueue.main.async {
                 self.isPushNotificationsEnabled = settings.authorizationStatus == .authorized
                 self.updateStatusStream()
@@ -388,6 +388,7 @@ final class ExposureController: ExposureControlling, Logging {
     private let networkStatusStream: NetworkStatusStreaming
     private var isActivated = false
     private var isPushNotificationsEnabled = false
+    private let userNotificationCenter: UserNotificationCenter
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {

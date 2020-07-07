@@ -15,6 +15,7 @@ final class ExposureControllerTests: TestCase {
     private let mutableStateStream = MutableExposureStateStreamingMock()
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
+    private let userNotificationCenter = UserNotificationCenterMock()
     private let networkStatusStream = NetworkStatusStreamingMock(networkStatusStream: CurrentValueSubject<Bool, Never>(true).eraseToAnyPublisher())
 
     override func setUp() {
@@ -24,7 +25,8 @@ final class ExposureControllerTests: TestCase {
         controller = ExposureController(mutableStateStream: mutableStateStream,
                                         exposureManager: exposureManager,
                                         dataController: dataController,
-                                        networkStatusStream: networkStatusStream)
+                                        networkStatusStream: networkStatusStream,
+                                        userNotificationCenter: userNotificationCenter)
 
         exposureManager.activateCallCount = 0
         mutableStateStream.updateCallCount = 0

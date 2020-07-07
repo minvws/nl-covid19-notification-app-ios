@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import UserNotifications
 
 /// @mockable
 protocol ExposureControlling {
@@ -128,6 +129,10 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     fileprivate var dataController: ExposureDataControlling {
         return ExposureDataControllerBuilder(dependency: self).build()
     }
+
+    fileprivate var userNotificationCenter: UserNotificationCenter {
+        return UNUserNotificationCenter.current()
+    }
 }
 
 final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, ExposureControllerBuildable {
@@ -137,6 +142,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
         return ExposureController(mutableStateStream: dependencyProvider.dependency.mutableExposureStateStream,
                                   exposureManager: dependencyProvider.exposureManager,
                                   dataController: dependencyProvider.dataController,
-                                  networkStatusStream: dependencyProvider.dependency.networkStatusStream)
+                                  networkStatusStream: dependencyProvider.dependency.networkStatusStream,
+                                  userNotificationCenter: dependencyProvider.userNotificationCenter)
     }
 }
