@@ -10,8 +10,17 @@ import NotificationCenter
 
 /// @mockable
 protocol UserNotificationCenter {
-    func getNotificationSettings(completionHandler: @escaping (UNNotificationSettings) -> ())
+    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ())
     func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> ())
 }
 
-extension UNUserNotificationCenter: UserNotificationCenter {}
+extension UNUserNotificationCenter: UserNotificationCenter {
+
+    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ()) {
+        getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                completionHandler(settings.authorizationStatus)
+            }
+        }
+    }
+}

@@ -42,6 +42,10 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.exposureState = stream.eraseToAnyPublisher()
 
         exposureManager.getExposureNotificationStatusHandler = { .active }
+
+        userNotificationCenter.getAuthorizationStatusHandler = { handler in
+            handler(.authorized)
+        }
     }
 
     func test_activate_activesAndUpdatesStream() {
@@ -341,6 +345,8 @@ final class ExposureControllerTests: TestCase {
     }
 
     private func triggerUpdateStream() {
+        controller.requestPushNotificationPermission {}
+
         // trigger status update by mocking enabling notifications
         exposureManager.setExposureNotificationEnabledHandler = { _, completion in completion(.success(())) }
 

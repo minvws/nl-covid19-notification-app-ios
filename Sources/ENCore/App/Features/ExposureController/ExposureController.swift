@@ -120,11 +120,9 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestPushNotificationPermission(_ completion: @escaping (() -> ())) {
-        userNotificationCenter.getNotificationSettings { settings in
-            if settings.authorizationStatus == .authorized {
-                DispatchQueue.main.async {
-                    completion()
-                }
+        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
+            if authorizationStatus == .authorized {
+                completion()
             }
         }
 
@@ -372,11 +370,9 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private func updatePushNotificationState() {
-        userNotificationCenter.getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                self.isPushNotificationsEnabled = settings.authorizationStatus == .authorized
-                self.updateStatusStream()
-            }
+        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
+            self.isPushNotificationsEnabled = authorizationStatus == .authorized
+            self.updateStatusStream()
         }
     }
 
