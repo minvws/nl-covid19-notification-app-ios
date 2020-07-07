@@ -55,6 +55,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
         router?.attachStatus(topAnchor: view.topAnchor)
         router?.attachMoreInformation()
+
+        if let activeState = exposureStateStream.currentExposureState?.activeState, activeState == .inactive(.disabled) {
+            exposureController.requestExposureNotificationPermission()
+        }
     }
 
     // MARK: - Internal
@@ -209,22 +213,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             exposureController.requestExposureNotificationPermission()
         case let .inactive(reason) where reason == .noRecentNotificationUpdates:
             updateWhenRequired()
-        case let .inactive(reason) where reason == .requiresOSUpdate:
-            // FIXME: This is a temporary solution while design is being updated
-            presentAlert(message: "Please update your operating system")
         case .inactive:
             logError("Unhandled case")
         case .active:
             logError("Active state = noting nothing to do")
         }
-    }
-
-    private func presentAlert(message: String) {
-        let alertController = UIAlertController(title: "Update App Settings", message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: Localization.string(for: "ok"), style: .default) { [weak self] _ in
-            self?.dismiss(animated: true, completion: nil)
-        })
-        present(alertController, animated: true, completion: nil)
     }
 
     private func openAppSettings() {

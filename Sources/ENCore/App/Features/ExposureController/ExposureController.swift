@@ -12,7 +12,7 @@ import UIKit
 final class ExposureController: ExposureControlling, Logging {
 
     init(mutableStateStream: MutableExposureStateStreaming,
-         exposureManager: ExposureManaging?,
+         exposureManager: ExposureManaging,
          dataController: ExposureDataControlling,
          networkStatusStream: NetworkStatusStreaming) {
         self.mutableStateStream = mutableStateStream
@@ -33,46 +33,11 @@ final class ExposureController: ExposureControlling, Logging {
             return
         }
 
-        isActivated = true
-
-        guard let exposureManager = exposureManager else {
-            updateStatusStream()
-            return
-        }
-
         exposureManager.activate { _ in
+            self.isActivated = true
+            self.postExposureManagerActivation()
             self.updateStatusStream()
         }
-
-        mutableStateStream
-            .exposureState
-            .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in
-                return [.active, .inactive(.noRecentNotificationUpdates)].contains(exposureState.activeState)
-                    && networkState
-            }
-            .filter { $0 }
-            .first()
-            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
-            .flatMap { [weak self] _ in
-                self?
-                    .updateWhenRequired()
-                    .replaceError(with: ())
-                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
-            }
-            .sink(receiveValue: { _ in })
-            .store(in: &disposeBag)
-
-        networkStatusStream
-            .networkStatusStream
-            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
-            .flatMap { [weak self] _ in
-                self?
-                    .updateWhenRequired()
-                    .replaceError(with: ())
-                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
-            }
-            .sink(receiveValue: { _ in })
-            .store(in: &disposeBag)
     }
 
     func getMinimumiOSVersion(_ completion: @escaping (String?) -> ()) {
@@ -144,7 +109,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestExposureNotificationPermission() {
-        exposureManager?.setExposureNotificationEnabled(true) { _ in
+        exposureManager.setExposureNotificationEnabled(true) { _ in
             self.updateStatusStream()
         }
     }
@@ -168,11 +133,6 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
-        guard let exposureManager = exposureManager else {
-            // no exposureManager, nothing to do
-            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-        }
-
         if let exposureKeyUpdateStream = exposureKeyUpdateStream {
             // already fetching
             return exposureKeyUpdateStream.share().eraseToAnyPublisher()
@@ -256,10 +216,42 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
+    // MARK: - Private
+
+    private func postExposureManagerActivation() {
+        mutableStateStream
+            .exposureState
+            .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in
+                return [.active, .inactive(.noRecentNotificationUpdates)].contains(exposureState.activeState)
+                    && networkState
+            }
+            .filter { $0 }
+            .first()
+            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
+            .flatMap { [weak self] _ in
+                self?
+                    .updateWhenRequired()
+                    .replaceError(with: ())
+                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
+            }
+            .sink(receiveValue: { _ in })
+            .store(in: &disposeBag)
+
+        networkStatusStream
+            .networkStatusStream
+            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
+            .flatMap { [weak self] _ in
+                self?
+                    .updateWhenRequired()
+                    .replaceError(with: ())
+                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
+            }
+            .sink(receiveValue: { _ in })
+            .store(in: &disposeBag)
+    }
+
     private func updateStatusStream() {
-        guard let exposureManager = exposureManager else {
-            mutableStateStream.update(state: .init(notifiedState: notifiedState,
-                                                   activeState: .inactive(.requiresOSUpdate)))
+        guard isActivated else {
             return
         }
 
@@ -306,13 +298,7 @@ final class ExposureController: ExposureControlling, Logging {
 
     private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {
         return Future { promise in
-            guard let exposureManager = self.exposureManager else {
-                // ExposureController not activated, mark flow as failure
-                promise(.failure(.unknown))
-                return
-            }
-
-            exposureManager.getDiagnonisKeys(completion: promise)
+            self.exposureManager.getDiagnonisKeys(completion: promise)
         }
         .eraseToAnyPublisher()
     }
@@ -379,7 +365,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private let mutableStateStream: MutableExposureStateStreaming
-    private let exposureManager: ExposureManaging?
+    private let exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling
     private var disposeBag = Set<AnyCancellable>()
     private var exposureKeyUpdateStream: AnyPublisher<(), ExposureDataError>?
