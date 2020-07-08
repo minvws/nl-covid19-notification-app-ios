@@ -75,6 +75,10 @@ protocol ExposureManagerBuildable {
 final class ExposureManagerBuilder: Builder<EmptyDependency>, ExposureManagerBuildable {
 
     func build() -> ExposureManaging {
-        return ExposureManager(manager: ENManager())
+        #if targetEnvironment(simulator)
+            return StubExposureManager()
+        #else
+            return ExposureManager(manager: ENManager())
+        #endif
     }
 }

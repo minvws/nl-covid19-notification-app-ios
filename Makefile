@@ -30,7 +30,7 @@ build_mockolo:
 	cd vendor/mockolo && swift build -c release
 
 build_xcodegen:
-	cd vendor/XcodeGen && swift build -c release
+	cd vendor/XcodeGen && swift build -c release -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.13"
 
 build_swiftformat:
 	cd vendor/SwiftFormat && swift build -c release
