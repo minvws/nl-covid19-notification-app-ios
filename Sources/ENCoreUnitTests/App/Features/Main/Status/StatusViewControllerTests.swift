@@ -62,6 +62,16 @@ final class StatusViewControllerTests: TestCase {
         assertSnapshot(matching: viewController, as: .image())
     }
 
+    func test_snapshot_no_recent_updates_notified() {
+        set(activeState: .inactive(.noRecentNotificationUpdates), notified: true)
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func test_snapshot_no_recent_updates_not_notified() {
+        set(activeState: .inactive(.noRecentNotificationUpdates), notified: false)
+        assertSnapshot(matching: viewController, as: .image())
+    }
+
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState, notified: Bool) {
