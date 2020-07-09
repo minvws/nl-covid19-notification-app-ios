@@ -126,10 +126,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
-
-    fileprivate lazy var currentAppVersion: String? = {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-    }()
 }
 
 /// Interface describing the builder that builds
@@ -155,6 +151,8 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
         let dependencyProvider = RootDependencyProvider()
         let viewController = RootViewController(theme: dependencyProvider.theme)
 
+        let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
@@ -166,6 +164,6 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           networkController: dependencyProvider.networkController,
                           backgroundController: dependencyProvider.backgroundController,
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
-                          currentAppVersion: dependencyProvider.currentAppVersion)
+                          currentAppVersion: currentAppVersion)
     }
 }
