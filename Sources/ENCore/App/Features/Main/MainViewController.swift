@@ -58,7 +58,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.attachMoreInformation()
 
         if let activeState = exposureStateStream.currentExposureState?.activeState, activeState == .inactive(.disabled) {
-            exposureController.requestExposureNotificationPermission()
+            exposureController.requestExposureNotificationPermission(nil)
         }
     }
 
@@ -209,11 +209,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case .authorizationDenied:
             openAppSettings()
         case .notAuthorized:
-            exposureController.requestExposureNotificationPermission()
+            requestExposureNotificationPermission()
         case let .inactive(reason) where reason == .bluetoothOff:
             openBluetooth()
         case let .inactive(reason) where reason == .disabled:
-            exposureController.requestExposureNotificationPermission()
+            requestExposureNotificationPermission()
         case let .inactive(reason) where reason == .pushNotifications:
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 DispatchQueue.main.async {
@@ -259,6 +259,16 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             }, receiveValue: { _ in
                 // Do nothing
             }).store(in: &disposeBag)
+    }
+
+    private func requestExposureNotificationPermission() {
+        exposureController.requestExposureNotificationPermission { error in
+            guard let error = error else {
+                return
+            }
+            self.logError("Error `requestExposureNotificationPermission`: \(error.localizedDescription)")
+            self.openAppSettings()
+        }
     }
 }
 
