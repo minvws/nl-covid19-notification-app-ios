@@ -96,7 +96,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: hasHomeButton ? -16 : 0),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             button.heightAnchor.constraint(equalToConstant: 50)
