@@ -38,3 +38,8 @@ build_swiftformat:
 
 push_notification:
 	@xcrun simctl push booted nl.rijksoverheid.en tools/push/payload.apns
+
+clean_snapshots:
+	@echo "Removing all __Snapshot__ folders"
+	@rm -rf `find Sources/ -type d -name __Snapshots__`
+	@echo "Re-run tests for current Snapshot tests to be generated"
