@@ -48,4 +48,15 @@ open class View: UIView, Themeable {
     }
 
     open func setupConstraints() {}
+
+    var hasHomeButton: Bool {
+        var key: UIWindow? {
+            if #available(iOS 13, *) {
+                return UIApplication.shared.windows.first { $0.isKeyWindow }
+            } else {
+                return UIApplication.shared.keyWindow
+            }
+        }
+        return key?.safeAreaInsets.bottom ?? 0 == CGFloat(0)
+    }
 }

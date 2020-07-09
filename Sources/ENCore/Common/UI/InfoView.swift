@@ -81,7 +81,7 @@ final class InfoView: View {
             maker.height.equalTo(48)
             maker.top.equalTo(stackView.snp.bottom).offset(16)
             maker.leading.trailing.equalToSuperview().inset(16)
-            maker.bottom.equalToSuperview()
+            maker.bottom.equalTo(safeAreaInsets.bottom).inset(hasHomeButton ? 16 : 0)
         }
     }
 
