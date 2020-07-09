@@ -163,7 +163,7 @@ private final class MoreInformationView: View {
             maker.bottom.equalTo(versionLabel.snp.top).offset(-16)
         }
         versionLabel.snp.makeConstraints { maker in
-            maker.leading.trailing.bottom.equalToSuperview().inset(hasHomeButton ? 16 : 0)
+            maker.leading.trailing.bottom.equalToSuperview().inset(View.deviceHasHomeButton() ? 16 : 0)
         }
     }
 

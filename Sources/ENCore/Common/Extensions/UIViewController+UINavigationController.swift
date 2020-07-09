@@ -46,15 +46,4 @@ extension ViewControllable where Self: ViewController {
 
         shouldHideBackTitle ? hideNavigationBarBackTitle() : showNavigationBarBackTitle()
     }
-
-    var hasHomeButton: Bool {
-        var key: UIWindow? {
-            if #available(iOS 13, *) {
-                return UIApplication.shared.windows.first { $0.isKeyWindow }
-            } else {
-                return UIApplication.shared.keyWindow
-            }
-        }
-        return key?.safeAreaInsets.bottom ?? 0 == CGFloat(0)
-    }
 }

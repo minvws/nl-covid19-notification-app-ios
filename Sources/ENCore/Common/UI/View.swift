@@ -49,7 +49,9 @@ open class View: UIView, Themeable {
 
     open func setupConstraints() {}
 
-    var hasHomeButton: Bool {
+    // MARK: - Utility
+
+    class func deviceHasHomeButton() -> Bool {
         var key: UIWindow? {
             if #available(iOS 13, *) {
                 return UIApplication.shared.windows.first { $0.isKeyWindow }
