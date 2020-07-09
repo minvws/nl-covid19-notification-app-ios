@@ -39,7 +39,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          mutablePushNotificationStream: MutablePushNotificationStreaming,
          networkController: NetworkControlling,
          backgroundController: BackgroundControlling,
-         updateAppBuilder: UpdateAppBuildable) {
+         updateAppBuilder: UpdateAppBuildable,
+         currentAppVersion: String?) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.messageBuilder = messageBuilder
@@ -54,6 +55,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.backgroundController = backgroundController
 
         self.updateAppBuilder = updateAppBuilder
+        self.currentAppVersion = currentAppVersion
 
         super.init(viewController: viewController)
 
@@ -81,14 +83,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         LogHandler.setup()
 
         /// Check if the app is the minimum version. If not, show the app update screen
-        if let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-
-            exposureController.getMinimumiOSVersion { version in
-                if version?.compare(currentAppVersion, options: .numeric) == .orderedDescending {
+        if let currentAppVersion = currentAppVersion {
+            exposureController.getMinimumVersionMessage { minimumVersionMessage in
+                guard let minimumVersionMessage = minimumVersionMessage else {
+                    return
+                }
+                if currentAppVersion.compare(minimumVersionMessage, options: .numeric) == .orderedDescending {
                     self.exposureController.getAppStoreURL { appStoreURL in
-                        self.exposureController.getMinimumVersionMessage { minimumVersionMessage in
-                            self.routeToUpdateApp(animated: true, appStoreURL: appStoreURL, minimumVersionMessage: minimumVersionMessage)
-                        }
+                        self.routeToUpdateApp(animated: true, appStoreURL: appStoreURL, minimumVersionMessage: minimumVersionMessage)
                     }
                 }
             }
@@ -232,6 +234,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let developerMenuViewController = developerMenuBuilder.build(listener: viewController)
         self.developerMenuViewController = developerMenuViewController
     }
+
+    private let currentAppVersion: String?
 
     private let networkController: NetworkControlling
     private let backgroundController: BackgroundControlling

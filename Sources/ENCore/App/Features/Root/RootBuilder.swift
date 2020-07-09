@@ -151,6 +151,8 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
         let dependencyProvider = RootDependencyProvider()
         let viewController = RootViewController(theme: dependencyProvider.theme)
 
+        let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
@@ -161,6 +163,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
                           networkController: dependencyProvider.networkController,
                           backgroundController: dependencyProvider.backgroundController,
-                          updateAppBuilder: dependencyProvider.updateAppBuilder)
+                          updateAppBuilder: dependencyProvider.updateAppBuilder,
+                          currentAppVersion: currentAppVersion)
     }
 }
