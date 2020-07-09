@@ -72,8 +72,12 @@ final class StatusViewController: ViewController, StatusViewControllable {
                 strongSelf.statusView.update(with: .activeWithNotNotified)
             case let (.active, .notified(date)):
                 strongSelf.statusView.update(with: .activeWithNotified(date: date))
+            case let (.inactive(reason), .notified(date)) where reason == .noRecentNotificationUpdates:
+                strongSelf.statusView.update(with: StatusViewModel.activeWithNotified(date: date).with(card: StatusCardViewModel.inactiveTryAgain))
             case let (.inactive(_), .notified(date)):
                 strongSelf.statusView.update(with: StatusViewModel.activeWithNotified(date: date).with(card: StatusCardViewModel.inactive))
+            case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
+                strongSelf.statusView.update(with: .inactiveTryAgainWithNotNotified)
             case (.inactive(_), .notNotified):
                 strongSelf.statusView.update(with: .inactiveWithNotNotified)
             case let (.authorizationDenied, .notified(date)):

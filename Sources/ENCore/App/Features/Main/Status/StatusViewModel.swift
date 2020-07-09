@@ -26,6 +26,7 @@ struct StatusViewButtonModel {
         case explainRisk(Date)
         case removeNotification
         case updateAppSettings
+        case tryAgain
     }
 
     static func moreInfo(date: Date) -> StatusViewButtonModel {
@@ -47,6 +48,12 @@ struct StatusViewButtonModel {
         style: .primary,
         action: .updateAppSettings
     )
+
+    static let tryAgain = StatusViewButtonModel(
+        title: Localization.string(for: "status.appState.card.try_again"),
+        style: .primary,
+        action: .updateAppSettings
+    )
 }
 
 struct StatusCardViewModel {
@@ -59,11 +66,14 @@ struct StatusCardViewModel {
         icon: StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive")),
         title: .init(string: Localization.string(for: "status.appState.card.title")),
         description: .init(string: Localization.string(for: "status.appState.card.description", ["CoronaMelder"])),
-        button: StatusViewButtonModel(
-            title: Localization.string(for: "status.appState.card.button"),
-            style: .primary,
-            action: .updateAppSettings
-        )
+        button: StatusViewButtonModel.enableSettings
+    )
+
+    static let inactiveTryAgain = StatusCardViewModel(
+        icon: StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive")),
+        title: .init(string: Localization.string(for: "status.appState.card.title")),
+        description: .init(string: Localization.string(for: "status.appState.inactive.no_recent_updates.description")),
+        button: StatusViewButtonModel.tryAgain
     )
 }
 
@@ -128,6 +138,17 @@ struct StatusViewModel {
         title: .init(string: Localization.string(for: "status.appState.inactive.title")),
         description: .init(string: Localization.string(for: "status.appState.inactive.description", ["CoronaMelder"])),
         buttons: [.enableSettings],
+        footer: nil,
+        shouldShowHideMessage: false,
+        gradientColor: \.inactive,
+        showScene: false
+    )
+
+    static let inactiveTryAgainWithNotNotified = StatusViewModel(
+        icon: .inactive,
+        title: .init(string: Localization.string(for: "status.appState.inactive.title")),
+        description: .init(string: Localization.string(for: "status.appState.inactive.no_recent_updates.description")),
+        buttons: [.tryAgain],
         footer: nil,
         shouldShowHideMessage: false,
         gradientColor: \.inactive,

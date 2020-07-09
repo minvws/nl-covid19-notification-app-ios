@@ -176,6 +176,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             confirmNotificationRemoval()
         case .updateAppSettings:
             handleUpdateAppSettings()
+        case .tryAgain:
+            updateWhenRequired()
         }
     }
 
@@ -212,8 +214,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             openBluetooth()
         case let .inactive(reason) where reason == .disabled:
             exposureController.requestExposureNotificationPermission()
-        case let .inactive(reason) where reason == .noRecentNotificationUpdates:
-            updateWhenRequired()
         case let .inactive(reason) where reason == .pushNotifications:
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 DispatchQueue.main.async {

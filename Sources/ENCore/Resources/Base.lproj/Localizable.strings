@@ -110,10 +110,13 @@
 
 "status.appState" = "De app is actief";
 "status.appState.inactive.title" = "De app is niet actief";
-"status.appState.inactive.description" = " %@ werkt alleen als de noodzakelijke instellingen aanstaan.";
+"status.appState.inactive.description" = "%@ werkt alleen als de noodzakelijke instellingen aanstaan.";
+"status.appState.inactive.no_recent_updates.description" = "De app kon de afgelopen 24 uur geen internetverbinding maken. Controleer of je wifi of mobiele data aanstaan en probeer het opnieuw.";
 "status.appState.card.title" = "App is niet actief";
-"status.appState.card.description" = " %@ werkt alleen als de noodzakelijke instellingen aanstaan.";
+"status.appState.card.description" = "%@ werkt alleen als de noodzakelijke instellingen aanstaan.";
+"status.appState.card.no_recent_updates.description" = "De app kon de afgelopen 24 uur geen internetverbinding maken. Controleer of je wifi of mobiele data aanstaan en probeer het opnieuw.";
 "status.appState.card.button" = "Instellingen aanzetten";
+"status.appState.card.try_again" = "Probeer opnieuw";
 "status.active.description" = "Ook als je de app sluit, blijft %@ actief";
 /* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
 "status.notified.description_days" = "%@ dagen geleden (%@)";
