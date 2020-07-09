@@ -71,7 +71,7 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 0)
         XCTAssertEqual(mutableStateStream.updateCallCount, 0)
 
-        controller.requestExposureNotificationPermission()
+        controller.requestExposureNotificationPermission(nil)
 
         XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
         XCTAssertNotNil(receivedEnabled)
@@ -350,7 +350,7 @@ final class ExposureControllerTests: TestCase {
         // trigger status update by mocking enabling notifications
         exposureManager.setExposureNotificationEnabledHandler = { _, completion in completion(.success(())) }
 
-        controller.requestExposureNotificationPermission()
+        controller.requestExposureNotificationPermission(nil)
     }
 
     private func expect(activeState: ExposureActiveState? = nil, notifiedState: ExposureNotificationState? = nil) -> ExpectStatusEvaluator {

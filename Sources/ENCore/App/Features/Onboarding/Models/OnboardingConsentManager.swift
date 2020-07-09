@@ -138,7 +138,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 completion(state.activeState)
             }
 
-        exposureController.requestExposureNotificationPermission()
+        exposureController.requestExposureNotificationPermission(nil)
     }
 
     func goToBluetoothSettings(_ completion: @escaping (() -> ())) {
