@@ -41,7 +41,8 @@ final class RootRouterTests: XCTestCase {
                             mutablePushNotificationStream: mutablePushNotificationStream,
                             networkController: networkController,
                             backgroundController: backgroundController,
-                            updateAppBuilder: updateAppBuilder)
+                            updateAppBuilder: updateAppBuilder,
+                            currentAppVersion: "1.0")
         set(activeState: .notAuthorized)
     }
 
@@ -116,6 +117,20 @@ final class RootRouterTests: XCTestCase {
         router.start()
 
         XCTAssertEqual(exposureController.activateCallCount, 1)
+    }
+
+    func test_start_getMinimumVersion_showsUpdateAppViewController() {
+        exposureController.getMinimumVersionMessageHandler = { handler in
+            handler("0.9")
+        }
+        exposureController.getAppStoreURLHandler = { handler in
+            handler("appstore://url")
+        }
+
+        router.start()
+
+        XCTAssertEqual(updateAppBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 2)
     }
 
     func test_didEnterForeground_startsObservingNetworkReachability() {

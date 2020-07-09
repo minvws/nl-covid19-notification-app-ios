@@ -126,6 +126,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
+
+    fileprivate lazy var currentAppVersion: String? = {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }()
 }
 
 /// Interface describing the builder that builds
@@ -161,6 +165,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
                           networkController: dependencyProvider.networkController,
                           backgroundController: dependencyProvider.backgroundController,
-                          updateAppBuilder: dependencyProvider.updateAppBuilder)
+                          updateAppBuilder: dependencyProvider.updateAppBuilder,
+                          currentAppVersion: dependencyProvider.currentAppVersion)
     }
 }
