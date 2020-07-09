@@ -113,12 +113,12 @@ final class ExposureController: ExposureControlling, Logging {
         notifyUserAppNeedsUpdate()
     }
 
-    func requestExposureNotificationPermission(_ completition: ((ExposureManagerError?) -> ())?) {
+    func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
         exposureManager.setExposureNotificationEnabled(true) { result in
             if case let .failure(error) = result {
-                completition?(error)
+                completion?(error)
             } else {
-                completition?(nil)
+                completion?(nil)
             }
             self.updateStatusStream()
         }

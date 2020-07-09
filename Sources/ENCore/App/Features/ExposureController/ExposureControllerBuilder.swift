@@ -30,7 +30,7 @@ protocol ExposureControlling {
 
     // MARK: - Permissions
 
-    func requestExposureNotificationPermission(_ completition: ((ExposureManagerError?) -> ())?)
+    func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?)
     func requestPushNotificationPermission(_ completion: @escaping () -> ())
 
     // MARK: - Exposure KeySets
