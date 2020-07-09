@@ -227,7 +227,7 @@ final class OnboardingConsentView: View {
         ])
 
         constraints.append([
-            primaryButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: View.deviceHasHomeButton() ? -16 : 0),
+            primaryButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: ViewController.deviceHasHomeButton() ? -16 : 0),
             primaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             primaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             primaryButton.heightAnchor.constraint(equalToConstant: 50)
