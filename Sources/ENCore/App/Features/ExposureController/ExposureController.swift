@@ -141,7 +141,7 @@ final class ExposureController: ExposureControlling, Logging {
     func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
         if let exposureKeyUpdateStream = exposureKeyUpdateStream {
             // already fetching
-            return exposureKeyUpdateStream.share().eraseToAnyPublisher()
+            return exposureKeyUpdateStream.eraseToAnyPublisher()
         }
 
         let stream = dataController
@@ -159,7 +159,7 @@ final class ExposureController: ExposureControlling, Logging {
 
         exposureKeyUpdateStream = stream
 
-        return stream.share().eraseToAnyPublisher()
+        return stream
     }
 
     func confirmExposureNotification() {
@@ -234,8 +234,8 @@ final class ExposureController: ExposureControlling, Logging {
             .filter { $0 }
             .first()
             .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
-            .flatMap { [weak self] _ in
-                self?
+            .flatMap { [weak self] (_) -> AnyPublisher<(), Never> in
+                return self?
                     .updateWhenRequired()
                     .replaceError(with: ())
                     .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
@@ -246,8 +246,9 @@ final class ExposureController: ExposureControlling, Logging {
         networkStatusStream
             .networkStatusStream
             .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
-            .flatMap { [weak self] _ in
-                self?
+            .filter { networkStatus in return true } // only update when internet is active
+            .flatMap { [weak self] (_) -> AnyPublisher<(), Never> in
+                return self?
                     .updateWhenRequired()
                     .replaceError(with: ())
                     .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
@@ -310,6 +311,7 @@ final class ExposureController: ExposureControlling, Logging {
         return Future { promise in
             self.exposureManager.getDiagnonisKeys(completion: promise)
         }
+        .share()
         .eraseToAnyPublisher()
     }
 

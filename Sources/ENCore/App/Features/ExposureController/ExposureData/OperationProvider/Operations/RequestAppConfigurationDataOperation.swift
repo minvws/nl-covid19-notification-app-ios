@@ -18,7 +18,7 @@ struct ApplicationConfiguration: Codable {
     let appStoreURL: String?
 }
 
-final class RequestAppConfigurationDataOperation: ExposureDataOperation {
+final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {
     typealias Result = ApplicationConfiguration
 
     init(networkController: NetworkControlling,
@@ -42,6 +42,7 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation {
             .applicationConfiguration(identifier: appConfigurationIdentifier)
             .mapError { $0.asExposureDataError }
             .flatMap(store(appConfiguration:))
+            .share()
             .eraseToAnyPublisher()
     }
 

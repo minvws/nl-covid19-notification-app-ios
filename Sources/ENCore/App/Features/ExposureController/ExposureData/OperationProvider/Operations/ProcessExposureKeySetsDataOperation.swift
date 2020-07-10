@@ -26,7 +26,7 @@ struct ExposureReport: Codable {
     let duration: TimeInterval?
 }
 
-final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
+final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
@@ -39,6 +39,8 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
+        self.logDebug("--- START PROCESSING KEYSETS ---")
+
         // get all keySets that have not been processed before
         let exposureKeySets = getStoredKeySetsHolders()
             .filter { $0.processed == false }
@@ -47,6 +49,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
         let exposures = exposureKeySets.map {
             self.detectExposures(for: $0)
                 .eraseToAnyPublisher()
+        }
+
+        if exposures.count > 0 {
+            logDebug("Processing KeySets: \(exposureKeySets.map { $0.identifier }.joined(separator: "\n"))")
+        } else {
+            logDebug("No additional keysets to process")
         }
 
         // Combine all streams into an array of streams
@@ -71,6 +79,11 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
             .handleEvents(receiveOutput: removeBlobs(forResult:))
             // ignore result
             .map { _ in () }
+            .handleEvents(
+                receiveCompletion: { _ in self.logDebug("--- END PROCESSING KEYSETS ---") },
+                receiveCancel: { self.logDebug("--- PROCESSING KEYSETS CANCELLED ---") }
+            )
+            .share()
             .eraseToAnyPublisher()
     }
 
@@ -115,15 +128,21 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation {
                     return
                 }
 
+                self.logDebug("Detecting exposures with configuration \(String(describing: self.configuration))")
+
                 // detect exposures
                 self.exposureManager.detectExposures(configuration: self.configuration,
                                                      diagnosisKeyURLs: urls) { result in
                     switch result {
                     case let .success(summary):
+                        self.logDebug("Successfully detected exposures \(String(describing: summary))")
+
                         let result = ExposureDetectionResult(keySetDetectionResults: previousResults,
                                                              exposureSummary: summary)
                         promise(.success(result))
                     case let .failure(error):
+                        self.logDebug("Failed to detect exposures \(String(describing: error))")
+
                         switch error {
                         case .bluetoothOff, .disabled, .notAuthorized, .restricted:
                             promise(.failure(error.asExposureDataError))

@@ -51,6 +51,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
             }
             // we cannot fail, but error type has to match
             .setFailureType(to: ExposureDataError.self)
+            .share()
             .eraseToAnyPublisher()
     }
 

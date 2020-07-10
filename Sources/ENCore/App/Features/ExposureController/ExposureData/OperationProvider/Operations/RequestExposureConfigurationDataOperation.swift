@@ -41,6 +41,7 @@ final class RequestExposureConfigurationDataOperation: ExposureDataOperation {
             .exposureRiskConfigurationParameters(identifier: exposureConfigurationIdentifier)
             .mapError { $0.asExposureDataError }
             .flatMap(store(exposureConfiguration:))
+            .share()
             .eraseToAnyPublisher()
     }
 

@@ -31,7 +31,7 @@ struct ExposureDataStorageKey {
                                                                                                    storeType: .secure)
 }
 
-final class ExposureDataController: ExposureDataControlling {
+final class ExposureDataController: ExposureDataControlling, Logging {
 
     private var disposeBag = Set<AnyCancellable>()
 
@@ -49,6 +49,7 @@ final class ExposureDataController: ExposureDataControlling {
         return requestApplicationConfiguration()
             .flatMap { _ in self.fetchAndStoreExposureKeySets() }
             .flatMap { self.processStoredExposureKeySets(exposureManager: exposureManager) }
+            .share()
             .eraseToAnyPublisher()
     }
 
@@ -75,12 +76,14 @@ final class ExposureDataController: ExposureDataControlling {
         return date
     }
 
-    func removeLastExposure() -> Future<(), Never> {
+    func removeLastExposure() -> AnyPublisher<(), Never> {
         return Future { promise in
             self.storageController.removeData(for: ExposureDataStorageKey.lastExposureReport) { _ in
                 promise(.success(()))
             }
         }
+        .share()
+        .eraseToAnyPublisher()
     }
 
     func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
@@ -153,7 +156,7 @@ final class ExposureDataController: ExposureDataControlling {
     // MARK: - Private
 
     private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        requestApplicationManifest()
+        return requestApplicationManifest()
             .flatMap { manifest in
                 return self
                     .operationProvider

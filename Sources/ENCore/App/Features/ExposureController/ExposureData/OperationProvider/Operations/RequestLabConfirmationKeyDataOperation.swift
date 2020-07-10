@@ -62,6 +62,7 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
                                              promise(.success(key))
             })
         }
+        .share()
         .eraseToAnyPublisher()
     }
 

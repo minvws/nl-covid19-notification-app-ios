@@ -51,7 +51,7 @@ final class NetworkManager: NetworkManaging, Logging {
                                 completion(.failure(error))
                             }
                         },
-                        receiveValue: { data in
+                        receiveValue: { (data: Manifest) in
                             completion(.success(data))
                     })
                     .store(in: &self.disposeBag)
@@ -369,7 +369,17 @@ final class NetworkManager: NetworkManaging, Logging {
         }
 
         logDebug("--RESPONSE--")
-        if let response = response { logDebug(response.debugDescription) }
+        if let response = response as? HTTPURLResponse {
+            logDebug("Finished response to URL \(response.url?.absoluteString ?? "") with status \(response.statusCode)")
+
+            let headers = response.allHeaderFields.map { header, value in
+                return String("\(header): \(value)")
+            }.joined(separator: "\n")
+
+            logDebug("Response headers: \n\(headers)")
+        } else if let error = error {
+            logDebug("Error with response: \(error)")
+        }
 
         if let object = object as? Data {
             logDebug(String(data: object, encoding: .utf8)!)
@@ -438,6 +448,7 @@ final class NetworkManager: NetworkManaging, Logging {
                 promise(.failure(.cannotDeserialize))
             }
         }
+        .share()
         .eraseToAnyPublisher()
     }
 

@@ -42,6 +42,7 @@ final class VerifySignatureResponseHandler: NetworkResponseHandler {
                 promise(isValid ? Result.success(input) : Result.failure(.invalidSignature))
             }
         }
+        .share()
         .eraseToAnyPublisher()
     }
 

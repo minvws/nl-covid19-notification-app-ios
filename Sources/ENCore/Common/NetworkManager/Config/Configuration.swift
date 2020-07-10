@@ -34,7 +34,7 @@ struct NetworkConfiguration {
             scheme: "http",
             host: "localhost",
             port: 5004,
-            path: ["v1"],
+            path: ["v01"],
             sslSignature: nil,
             tokenParams: [:]
         ),
@@ -42,7 +42,7 @@ struct NetworkConfiguration {
             scheme: "http",
             host: "localhost",
             port: 5004,
-            path: ["v1"],
+            path: ["v01"],
             sslSignature: nil,
             tokenParams: [:]
         )

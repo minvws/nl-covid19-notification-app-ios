@@ -16,7 +16,7 @@ struct ExposureKeySetHolder: Codable {
     let creationDate: Date
 }
 
-final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
+final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging {
     private let signatureFilename = "export.sig"
     private let binaryFilename = "export.bin"
 
@@ -33,9 +33,22 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
     // MARK: - ExposureDataOperation
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
+        logDebug("--- START REQUESTING KEYSETS ---")
+
         let storedKeySetsHolders = getStoredKeySetsHolders()
         let identifiers = removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from: exposureKeySetIdentifiers,
                                                                               storedKeySetsHolders: storedKeySetsHolders)
+
+        guard identifiers.count > 0 else {
+            logDebug("No additional key sets to download")
+            logDebug("--- END REQUESTING KEYSETS ---")
+
+            return Just(())
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
+        logDebug("Requesting Exposure KeySets: \(identifiers.joined(separator: "\n"))")
 
         // download remaining keysets
         let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = identifiers.map { identifier in
@@ -52,6 +65,11 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
             .collect()
             .flatMap(createKeySetHolders)
             .flatMap(storeDownloadedKeySetsHolders)
+            .handleEvents(
+                receiveCompletion: { _ in self.logDebug("--- END REQUESTING KEYSETS ---") },
+                receiveCancel: { self.logDebug("--- REQUESTING KEYSETS CANCELLED ---") }
+            )
+            .share()
             .eraseToAnyPublisher()
     }
 
@@ -97,6 +115,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
                         try FileManager.default.moveItem(at: srcSignatureUrl, to: dstSignatureUrl)
                         try FileManager.default.moveItem(at: srcBinaryUrl, to: dstBinaryUrl)
                     } catch {
+                        self.logDebug("Error while moving KeySet \(identifier) to final destination: \(error)")
                         // do nothing, just ignore this keySetHolder
                         return
                     }
@@ -130,6 +149,8 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
                         }
                     }
 
+                    self.logDebug("Storing final keySets to process: \(keySetHolders.map { $0.identifier }.joined(separator: "\n"))")
+
                     storageController.store(object: keySetHolders,
                                             identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
                         // ignore any storage error - in that case the keyset will be downloaded and processed again
@@ -138,6 +159,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
                 }
             }
         }
+        .share()
         .eraseToAnyPublisher()
     }
 

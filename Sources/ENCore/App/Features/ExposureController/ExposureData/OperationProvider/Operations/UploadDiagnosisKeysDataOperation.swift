@@ -48,6 +48,7 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
                 promise(.success(()))
             }
         }
+        .share()
         .eraseToAnyPublisher()
     }
 
@@ -83,6 +84,7 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
                 }
             }
         }
+        .share()
         .eraseToAnyPublisher()
     }
 

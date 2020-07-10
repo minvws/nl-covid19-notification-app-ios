@@ -17,7 +17,7 @@ struct ApplicationManifest: Codable {
     let iOSMinimumKillVersion: String?
 }
 
-final class RequestAppManifestDataOperation: ExposureDataOperation {
+final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
     typealias Result = ApplicationManifest
 
     private let defaultRefreshFrequency = 60 * 60 * 4 // 4 hours
@@ -43,6 +43,7 @@ final class RequestAppManifestDataOperation: ExposureDataOperation {
             .applicationManifest
             .mapError { $0.asExposureDataError }
             .flatMap(store(manifest:))
+            .share()
             .eraseToAnyPublisher()
     }
 
@@ -68,6 +69,7 @@ final class RequestAppManifestDataOperation: ExposureDataOperation {
                                              promise(.success(manifest))
             })
         }
+        .share()
         .eraseToAnyPublisher()
     }
 
