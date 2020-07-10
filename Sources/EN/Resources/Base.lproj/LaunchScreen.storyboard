@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -34,11 +35,11 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="Hg8-Ye-iih" firstAttribute="bottom" secondItem="cQK-i3-0Vc" secondAttribute="bottom" id="0oO-X6-sQU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="cQK-i3-0Vc" secondAttribute="top" constant="15" id="1p1-Yo-JBJ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Hg8-Ye-iih" secondAttribute="trailing" constant="57" id="68O-Fn-mZZ"/>
                             <constraint firstItem="dwN-AK-VoD" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="FQ8-51-wS5"/>
                             <constraint firstItem="cQK-i3-0Vc" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="R6I-EI-df8"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dwN-AK-VoD" secondAttribute="trailing" constant="20" id="ZGK-FH-ibq"/>
-                            <constraint firstItem="cQK-i3-0Vc" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" constant="-15" id="dIl-ex-97f"/>
                             <constraint firstItem="dwN-AK-VoD" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="daz-2I-7UE"/>
                             <constraint firstItem="Hg8-Ye-iih" firstAttribute="leading" secondItem="cQK-i3-0Vc" secondAttribute="trailing" constant="8" id="eaw-wf-84Y"/>
                             <constraint firstItem="dwN-AK-VoD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="tTr-bT-iIx"/>
