@@ -8,12 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "ENCoreBridge.h"
-
-@import ENCore;
+#import <dlfcn.h>
 
 @interface ENCoreBridge() {
-    NS_AVAILABLE_IOS(13_5)
-    ENAppRoot *_appRoot;
+    id _appRoot;
 }
 
 @end
@@ -21,7 +19,7 @@
 @implementation ENCoreBridge
 + (BOOL)isAppRootAvailable {
     if (@available(iOS 13.5, *)) {
-        return [ENAppRoot class] != nil;
+        return YES;
     } else {
         return NO;
     }
@@ -31,8 +29,8 @@
     self = [super init];
     
     if (self) {
-        if (@available(iOS 13.5, *)) {
-            _appRoot = [[ENAppRoot alloc] init];
+        if ([[self class] isAppRootAvailable]) {
+            [self loadENCore];
         } else {
             return nil;
         }
@@ -42,16 +40,33 @@
     return nil;
 }
 
+- (void)loadENCore {
+    void * handle = dlopen("ENCore.framework/ENCore", RTLD_NOW);
+    if (handle != NULL) {
+        Class appRootClass = NSClassFromString(@"ENCore.ENAppRoot");
+        _appRoot = [[appRootClass alloc] init];
+    }
+}
+
 - (void)attachToWindow:(UIWindow *)window {
     [_appRoot attachToWindow: window];
 }
 
 - (void)start {
-    [_appRoot start];
+    [_appRoot performSelector:@selector(start)];
 }
 
 - (void)didReceiveRemoteNotification:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
-    [_appRoot receiveRemoteNotificationWithResponse:response];
+    
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
+    SEL selector = @selector(receiveRemoteNotificationWithResponse:);
+    
+    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    [_appRoot performSelector:selector withObject:response];
+    
+    #pragma clang diagnostic pop
+    
     completionHandler();
 }
 
@@ -68,7 +83,15 @@
 }
 
 - (void)handleBackgroundTask:(BGTask *)task API_AVAILABLE(ios(13.0)) {
-    [_appRoot handleWithBackgroundTask:task];
+    #pragma clang diagnostic push
+    
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
+    SEL selector = @selector(handleWithBackgroundTask:);
+    
+    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    [_appRoot performSelector:selector withObject:task];
+    
+    #pragma clang diagnostic pop
 }
 
 @end

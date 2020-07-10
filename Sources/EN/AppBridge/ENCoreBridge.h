@@ -11,7 +11,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
-#import <BackgroundTasks/BackgroundTasks.h>
+
+@import BackgroundTasks;
 
 @interface ENCoreBridge: NSObject
 + (BOOL)isAppRootAvailable;

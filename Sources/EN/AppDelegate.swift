@@ -5,7 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import BackgroundTasks
+#if canImport(BackgroundTasks)
+    import BackgroundTasks
+#endif
+
 import UIKit
 
 @UIApplicationMain
@@ -28,8 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
 
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.background-update", using: nil) { task in
-            self.handle(backgroundTask: task)
+        if #available(iOS 13.5, *) {
+            BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.background-update", using: nil) { task in
+                self.handle(backgroundTask: task)
+            }
         }
 
         return true

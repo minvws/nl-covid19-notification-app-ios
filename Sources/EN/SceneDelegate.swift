@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import BackgroundTasks
 import UIKit
 
 @available(iOS 13, *)
