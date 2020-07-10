@@ -86,6 +86,14 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation {
                     let dstBinaryUrl = keySetStorageUrl.appendingPathComponent(identifier).appendingPathExtension("bin")
 
                     do {
+                        if FileManager.default.fileExists(atPath: dstSignatureUrl.path) {
+                            try FileManager.default.removeItem(atPath: dstSignatureUrl.path)
+                        }
+
+                        if FileManager.default.fileExists(atPath: dstBinaryUrl.path) {
+                            try FileManager.default.removeItem(atPath: dstBinaryUrl.path)
+                        }
+
                         try FileManager.default.moveItem(at: srcSignatureUrl, to: dstSignatureUrl)
                         try FileManager.default.moveItem(at: srcBinaryUrl, to: dstBinaryUrl)
                     } catch {
