@@ -78,11 +78,15 @@ final class RequiresUpdateViewController: UIViewController {
 
     /// Get the Localized string for the current bundle.
     private func localizedString(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> String {
-        let value = NSLocalizedString(key, bundle: Bundle(for: RequiresUpdateViewController.self), comment: comment)
+        let value = NSLocalizedString(key, comment: comment)
         guard value == key else {
             return String(format: value, arguments: arguments)
         }
-        let bundle = Bundle.main
+        guard
+            let path = Bundle.main.path(forResource: "Base", ofType: "lproj"),
+            let bundle = Bundle(path: path) else {
+            return String(format: value, arguments: arguments)
+        }
         let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
         return String(format: localizedString, arguments: arguments)
     }
