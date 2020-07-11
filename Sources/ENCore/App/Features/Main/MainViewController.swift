@@ -220,6 +220,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                     self.handlePushNotificationSettings(authorizationStatus: settings.authorizationStatus)
                 }
             }
+        case let .inactive(reason) where reason == .noRecentNotificationUpdates:
+            updateWhenRequired()
         case .inactive:
             logError("Unhandled case")
         case .active:
