@@ -173,6 +173,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                                                exposureSummary: nil,
                                                                processedCorrectly: false,
                                                                exposureReport: nil)
+                    self.logDebug("Missing local files for \(keySetHolder.identifier)")
                     promise(.success(result))
                     return
                 }
@@ -183,11 +184,15 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                                      diagnosisKeyURLs: diagnosisKeyURLs) { result in
                     switch result {
                     case let .success(summary):
+                        self.logDebug("Success for \(keySetHolder.identifier): \(summary)")
+
                         promise(.success(ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
                                                                        exposureSummary: summary,
                                                                        processedCorrectly: true,
                                                                        exposureReport: nil)))
                     case let .failure(error):
+                        self.logDebug("Failure for \(keySetHolder.identifier): \(error)")
+
                         switch error {
                         case .bluetoothOff, .disabled, .notAuthorized, .restricted:
                             promise(.failure(error.asExposureDataError))
