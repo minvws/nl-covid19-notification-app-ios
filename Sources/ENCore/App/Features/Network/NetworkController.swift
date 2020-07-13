@@ -106,7 +106,7 @@ final class NetworkController: NetworkControlling, Logging {
             Future { promise in
                 let padding = self.cryptoUtility.randomBytes(ofLength: 32)
                 let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
-                                              bucketID: labConfirmationKey.bucketIdentifier,
+                                              bucketId: labConfirmationKey.bucketIdentifier,
                                               padding: padding)
 
                 guard let requestData = try? JSONEncoder().encode(request) else {

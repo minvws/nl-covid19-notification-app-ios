@@ -9,7 +9,7 @@ import Foundation
 
 struct PostKeysRequest: Codable {
     let keys: [TemporaryKey]
-    let bucketID: Data
+    let bucketId: Data
     let padding: Data
 }
 
