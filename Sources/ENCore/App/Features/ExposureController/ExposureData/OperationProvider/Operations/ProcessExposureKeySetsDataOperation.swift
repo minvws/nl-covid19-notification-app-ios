@@ -63,8 +63,10 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .flatMap(maxPublishers: .max(1)) { $0 }
             // wait until all of them are done and collect them in an array again
             .collect()
-            // batch detect the correctly processed results to get a single exposureSummary
-            .flatMap(self.batchDetectExposures(for:))
+            // select an exposure summary from the results
+            .map { results in
+                self.selectExposureSummaryFrom(results: results, configuration: self.configuration)
+            }
             // persist keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
@@ -110,56 +112,6 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         return true
     }
 
-    /// Batch processes the previous results to result in a single exposure summary.
-    /// Will filter out unsuccessfully processed results before batch processing them
-    private func batchDetectExposures(for previousResults: [ExposureKeySetDetectionResult]) -> AnyPublisher<ExposureDetectionResult, ExposureDataError> {
-        return Deferred {
-            return Future { promise in
-                // combine all urls into a single collection
-                let urls = previousResults
-                    .filter { result in result.processedCorrectly }
-                    .flatMap { result in [result.keySetHolder.signatureFileUrl, result.keySetHolder.binaryFileUrl] }
-
-                guard urls.count > 0 else {
-                    let result = ExposureDetectionResult(keySetDetectionResults: previousResults,
-                                                         exposureSummary: nil)
-
-                    promise(.success(result))
-                    return
-                }
-
-                self.logDebug("Detecting exposures with configuration \(String(describing: self.configuration))")
-
-                // detect exposures
-                self.exposureManager.detectExposures(configuration: self.configuration,
-                                                     diagnosisKeyURLs: urls) { result in
-                    switch result {
-                    case let .success(summary):
-                        self.logDebug("Successfully detected exposures \(String(describing: summary))")
-
-                        let result = ExposureDetectionResult(keySetDetectionResults: previousResults,
-                                                             exposureSummary: summary)
-                        promise(.success(result))
-                    case let .failure(error):
-                        self.logDebug("Failed to detect exposures \(String(describing: error))")
-
-                        switch error {
-                        case .bluetoothOff, .disabled, .notAuthorized, .restricted:
-                            promise(.failure(error.asExposureDataError))
-                        case .internalTypeMismatch:
-                            promise(.failure(.internalError))
-                        default:
-                            let result = ExposureDetectionResult(keySetDetectionResults: previousResults,
-                                                                 exposureSummary: nil)
-                            promise(.success(result))
-                        }
-                    }
-                }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-
     /// Returns ExposureKeySetDetectionResult in case of a success, or in case of an error that's
     /// not related to the framework's inactiveness. When an error is thrown from here exposure detection
     /// should be stopped until the user enables the framework
@@ -184,7 +136,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                                      diagnosisKeyURLs: diagnosisKeyURLs) { result in
                     switch result {
                     case let .success(summary):
-                        self.logDebug("Success for \(keySetHolder.identifier): \(summary)")
+                        self.logDebug("Success for \(keySetHolder.identifier): \(String(describing: summary))")
 
                         promise(.success(ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
                                                                        exposureSummary: summary,
@@ -263,13 +215,18 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     /// Select a most recent exposure summary
-    private func selectLastSummaryFrom(result: ExposureDetectionResult) -> ExposureDetectionSummary? {
+    private func selectExposureSummaryFrom(results: [ExposureKeySetDetectionResult],
+                                           configuration: ExposureConfiguration) -> ExposureDetectionResult {
+        logDebug("Picking the correct summary from \(results.count) results")
+
         // filter out unprocessed results
-        let summaries = result
-            .keySetDetectionResults
+        let summaries = results
             .filter { $0.processedCorrectly }
             .compactMap { $0.exposureSummary }
+            .filter { $0.maximumRiskScore >= configuration.minimumRiskScope }
             .filter { $0.matchedKeyCount > 0 }
+
+        logDebug("Filtered based on maximumRiskScore, matchedKeyCount and processedCorrectly: \(summaries.count) results left")
 
         // find most recent exposure day
         guard let mostRecentDaysSinceLastExposure = summaries
@@ -277,38 +234,56 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .last?
             .daysSinceLastExposure
         else {
-            return nil
+            logDebug("Cannot find most recent days since last exposure")
+
+            return ExposureDetectionResult(keySetDetectionResults: results,
+                                           exposureSummary: nil)
         }
 
+        logDebug("Most recent days since last exposure: \(mostRecentDaysSinceLastExposure)")
+
         // take only most recent exposures and select first (doesn't matter which one)
-        return summaries
+        let summary = summaries
             .filter { $0.daysSinceLastExposure == mostRecentDaysSinceLastExposure }
             .first
+
+        logDebug("Final summary: \(String(describing: summary))")
+
+        return ExposureDetectionResult(keySetDetectionResults: results,
+                                       exposureSummary: summary)
     }
 
-    /// Creates the final ExposureReport and triggers a local notification.
-    /// If no push notification permission is given the EN framework is used to trigger a local notification.
-    /// If push notification permission is given a local notification is scheduled
+    /// Creates the final ExposureReport and triggers a local notification using the EN framework
     private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
-        // no access to local notifications, call the framework to show a notification using
-        // the overall exposureSummary
+
+        logDebug("Triggering local notification")
+
         guard let summary = result.exposureSummary else {
+            logDebug("No summary to trigger notification for")
             return Just((result, nil))
                 .setFailureType(to: ExposureDataError.self)
                 .eraseToAnyPublisher()
         }
 
+        logDebug("Triggering notification for \(summary)")
+
         return self
             .getExposureInformations(forSummary: summary,
                                      userExplanation: Localization.string(for: "exposure.notification.userExplanation"))
             .map { (exposureInformations) -> (ExposureDetectionResult, ExposureReport?) in
+                self.logDebug("Got back exposure info \(String(describing: exposureInformations))")
+
                 // get most recent exposureInformation
                 guard let exposureInformation = self.getLastExposureInformation(for: exposureInformations) else {
+                    self.logDebug("Cannot get last exposure info")
+
                     return (result, nil)
                 }
 
                 let exposureReport = ExposureReport(date: exposureInformation.date,
                                                     duration: exposureInformation.duration)
+
+                self.logDebug("Final exposure report: \(exposureReport)")
 
                 return (result, exposureReport)
             }
