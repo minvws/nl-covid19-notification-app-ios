@@ -18,6 +18,10 @@ This increases the chance that we might be able to use your contribution (or it 
 
 Run `make dev` && `make project` to get started. Homebrew (https://brew.sh) is a requirement to install dependencies.
 
+## Continuous Integration & reproducible builds
+
+In order to facilitate CI and reproducible builds (https://github.com/minvws/nl-covid19-notification-app-coordination/issues/6) this codebase can be build using Travis CI (see .travis.yml file).
+
 ## Disclaimer
 
 Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.

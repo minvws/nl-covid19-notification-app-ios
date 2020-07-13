@@ -1,0 +1,48 @@
+<<<<<<< HEAD
+---
+before_script:
+  - chmod +x ./tools/scripts/ci/add-key.sh
+  - chmod +x ./tools/scripts/ci/cibuild
+  - chmod +x ./tools/scripts/ci/citest
+  - chmod +x ./tools/scripts/ci/remove-key.sh
+  - gem install cocoapods -v '0.32.1'
+
+# branch whitelist
+branches:
+  only:
+    - master     # test the master branch
+    - /patch-(.*)/  # test every branch which starts with "patch-"
+
+language: objective-c
+os: osx
+osx_image: xcode11  # Xcode 11.0	macOS 10.14.6
+xcode_project: EN.xcodeproj  # path to your xcodeproj folder
+xcode_scheme: ENCoreTests
+xcode_destination: platform=iOS Simulator,OS=10.14.6,name=iPhone X
+env:
+  global:
+    - |
+      - APP_NAME="CoronaMelder"
+      - 'DEVELOPER_NAME="nl.rijksoverheid.en"'
+      - PROFILE_NAME="Distribution"
+      - SWIFT_VERSION=5.2
+
+# pod install
+install:
+  - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+
+script:
+  - ./tools/scripts/ci/add-key.sh
+  - ./tools/scripts/ci/cibuild
+  - ./tools/scripts/ci/citest
+  - ./tools/scripts/ci/remove-key.sh
+
+addons:
+  homebrew
+
+# Optional: disable email notifications about the outcome of your builds
+notifications:
+  email: false
+=======
+language: objective-c
+>>>>>>> 8d41718... patch-travis-ci initial commit
