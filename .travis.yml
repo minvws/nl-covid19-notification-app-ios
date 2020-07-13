@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 before_script:
   - chmod +x ./tools/scripts/ci/add-key.sh
@@ -43,6 +42,3 @@ addons:
 # Optional: disable email notifications about the outcome of your builds
 notifications:
   email: false
-=======
-language: objective-c
->>>>>>> 8d41718... patch-travis-ci initial commit
