@@ -27,7 +27,7 @@ final class OnboardingStepViewControllerTests: TestCase {
 
     // MARK: - Tests
 
-    func _test_snapshot_onboardingStepViewController() {
+    func test_snapshot_onboardingStepViewController() {
         for (index, _) in manager.onboardingSteps.enumerated() {
             let viewController = OnboardingStepViewController(onboardingManager: manager,
                                                               onboardingStepBuilder: stepBuilder,
