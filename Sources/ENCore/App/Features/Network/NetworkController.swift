@@ -104,7 +104,11 @@ final class NetworkController: NetworkControlling, Logging {
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError> {
         return Deferred {
             Future { promise in
-                let padding = self.cryptoUtility.randomBytes(ofLength: 32)
+
+                let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
+                let paddingSize = self.calculatePadding(forObject: preRequest)
+
+                let padding = self.cryptoUtility.randomBytes(ofLength: paddingSize)
                 let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
                                               bucketId: labConfirmationKey.bucketIdentifier,
                                               padding: padding)
@@ -171,4 +175,25 @@ final class NetworkController: NetworkControlling, Logging {
     private let cryptoUtility: CryptoUtility
     private var reachability: Reachability?
     private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
+
+    private func calculatePadding<T: Encodable>(forObject object: T) -> Int {
+        let minimumRequestSize = 1800
+        let maximumReequestSize = 17000
+
+        let randomInt = Int.random(in: 0 ... 100)
+        let messageSize: Int
+        if randomInt == 0 {
+            messageSize = Int.random(in: minimumRequestSize ... maximumReequestSize)
+        } else {
+            messageSize = Int.random(in: minimumRequestSize ... (minimumRequestSize + (maximumReequestSize - minimumRequestSize) / 100))
+        }
+
+        do {
+            let length = try JSONEncoder().encode(object).count
+            return messageSize - length
+        } catch {
+            self.logError("Error encoding: \(error.localizedDescription)")
+        }
+        return minimumRequestSize
+    }
 }
