@@ -27,16 +27,14 @@ final class OnboardingStepViewControllerTests: TestCase {
 
     // MARK: - Tests
 
-    func test_snapshot_onboardingStepViewController() {
+    func _test_snapshot_onboardingStepViewController() {
         for (index, _) in manager.onboardingSteps.enumerated() {
             let viewController = OnboardingStepViewController(onboardingManager: manager,
                                                               onboardingStepBuilder: stepBuilder,
                                                               listener: listener,
                                                               theme: theme,
                                                               index: index)
-            if let result = verifySnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)") {
-                XCTFail(result)
-            }
+            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)")
         }
     }
 }
