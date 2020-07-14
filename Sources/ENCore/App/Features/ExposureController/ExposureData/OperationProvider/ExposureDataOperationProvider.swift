@@ -25,9 +25,10 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                    configuration: configuration)
     }
 
-    var processPendingLabConfirmationUploadRequestsOperation: ProcessPendingLabConfirmationUploadRequestsDataOperation {
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
         return ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
-                                                                        storageController: storageController)
+                                                                        storageController: storageController,
+                                                                        padding: padding)
     }
 
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
@@ -60,11 +61,13 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     }
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
-                                      labConfirmationKey: LabConfirmationKey) -> UploadDiagnosisKeysDataOperation {
+                                      labConfirmationKey: LabConfirmationKey,
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperation {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: diagnosisKeys,
-                                                labConfirmationKey: labConfirmationKey)
+                                                labConfirmationKey: labConfirmationKey,
+                                                padding: padding)
     }
 
     // MARK: - Private

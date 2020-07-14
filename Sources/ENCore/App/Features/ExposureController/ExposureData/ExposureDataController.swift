@@ -111,9 +111,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - LabFlow
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
-        let operation = operationProvider.processPendingLabConfirmationUploadRequestsOperation
-
-        return operation.execute()
+        return requestApplicationConfiguration()
+            .map { (configuration: ApplicationConfiguration) in
+                Padding(minimumRequestSize: 1800, maximumReequestSize: 17000) // FIXME: This Should be values from the `configuration: ApplicationConfiguration`
+            }.flatMap { (padding: Padding) in
+                return self.operationProvider
+                    .processPendingLabConfirmationUploadRequestsOperation(padding: Padding(minimumRequestSize: 1800, maximumReequestSize: 17000))
+                    .execute()
+            }.eraseToAnyPublisher()
     }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
@@ -123,10 +128,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
-        let operation = operationProvider.uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys,
-                                                                       labConfirmationKey: labConfirmationKey)
-
-        return operation.execute()
+        return requestApplicationConfiguration()
+            .map { (configuration: ApplicationConfiguration) in
+                Padding(minimumRequestSize: 1800, maximumReequestSize: 17000) // FIXME: This Should be values from the `configuration: ApplicationConfiguration`
+            }.flatMap { (padding: Padding) in
+                return self.operationProvider.uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys,
+                                                                           labConfirmationKey: labConfirmationKey,
+                                                                           padding: padding).execute()
+            }.eraseToAnyPublisher()
     }
 
     // MARK: - Misc

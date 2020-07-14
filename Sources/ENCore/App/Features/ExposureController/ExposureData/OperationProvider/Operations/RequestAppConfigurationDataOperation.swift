@@ -62,7 +62,7 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
                                          identifiedBy: ExposureDataStorageKey.appConfiguration,
                                          completion: { _ in
                                              promise(.success(appConfiguration))
-            })
+                                         })
         }
         .eraseToAnyPublisher()
     }

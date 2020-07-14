@@ -51,7 +51,7 @@ final class NetworkControllerTests: TestCase {
                 },
                 receiveValue: { value in
                     receivedValue = value
-            })
+                })
             .disposeOnTearDown(of: self)
 
         wait(for: [exp], timeout: 1)
@@ -88,7 +88,7 @@ final class NetworkControllerTests: TestCase {
                 },
                 receiveValue: { value in
                     receivedValue = value
-            })
+                })
             .disposeOnTearDown(of: self)
 
         wait(for: [exp], timeout: 1)

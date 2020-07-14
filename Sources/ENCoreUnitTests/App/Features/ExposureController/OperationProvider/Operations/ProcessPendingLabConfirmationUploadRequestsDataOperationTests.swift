@@ -19,7 +19,8 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         super.setUp()
 
         operation = ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
-                                                                             storageController: storageController)
+                                                                             storageController: storageController,
+                                                                             padding: Padding(minimumRequestSize: 0, maximumReequestSize: 0))
 
         storageController.requestExclusiveAccessHandler = { $0(self.storageController) }
     }
@@ -36,7 +37,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
 
         var receivedKeys: [DiagnosisKey]!
         var receivedLabConfirmationKey: LabConfirmationKey!
-        networkController.postKeysHandler = { keys, labConfirmationKey in
+        networkController.postKeysHandler = { keys, labConfirmationKey, padding in
             receivedKeys = keys
             receivedLabConfirmationKey = labConfirmationKey
 
@@ -80,7 +81,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
             return try! jsonEncoder.encode(pendingRequests)
         }
 
-        networkController.postKeysHandler = { keys, labConfirmationKey in
+        networkController.postKeysHandler = { keys, labConfirmationKey, padding in
             return Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher()
         }
 
@@ -130,7 +131,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
             return try! jsonEncoder.encode([request])
         }
 
-        networkController.postKeysHandler = { _, _ in Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher() }
+        networkController.postKeysHandler = { _, _, _ in Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher() }
 
         var receivedRequests: [PendingLabConfirmationUploadRequest]!
         storageController.storeHandler = { data, _, completion in

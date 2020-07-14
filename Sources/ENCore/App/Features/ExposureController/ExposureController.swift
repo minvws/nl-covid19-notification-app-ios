@@ -131,7 +131,7 @@ final class ExposureController: ExposureControlling, Logging {
                 receiveCancel: {
                     self.updateStatusStream()
                     self.exposureKeyUpdateStream = nil
-            })
+                })
             .eraseToAnyPublisher()
 
         exposureKeyUpdateStream = stream

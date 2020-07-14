@@ -18,7 +18,7 @@ protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
                                          configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation
 
-    var processPendingLabConfirmationUploadRequestsOperation: ProcessPendingLabConfirmationUploadRequestsDataOperation { get }
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
 
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
     func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
@@ -28,7 +28,8 @@ protocol ExposureDataOperationProvider {
     var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation { get }
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
-                                      labConfirmationKey: LabConfirmationKey) -> UploadDiagnosisKeysDataOperation
+                                      labConfirmationKey: LabConfirmationKey,
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperation
 }
 
 protocol ExposureDataOperationProviderBuildable {

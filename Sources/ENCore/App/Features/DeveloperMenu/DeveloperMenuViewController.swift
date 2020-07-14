@@ -79,7 +79,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                                        style: .destructive,
                                        handler: { [weak actionViewController] _ in
                                            actionViewController?.dismiss(animated: true, completion: nil)
-        })
+                                       })
         actionViewController.addAction(cancelItem)
 
         present(actionViewController, animated: true, completion: nil)
@@ -458,7 +458,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                                        style: .destructive,
                                        handler: { [weak alertController] _ in
                                            alertController?.dismiss(animated: true, completion: nil)
-        })
+                                       })
         alertController.addAction(cancelItem)
         present(alertController, animated: true, completion: nil)
     }

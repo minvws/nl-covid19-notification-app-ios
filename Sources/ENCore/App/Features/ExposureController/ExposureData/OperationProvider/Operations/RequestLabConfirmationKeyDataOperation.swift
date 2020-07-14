@@ -60,7 +60,7 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
                                          identifiedBy: ExposureDataStorageKey.labConfirmationKey,
                                          completion: { _ in
                                              promise(.success(key))
-            })
+                                         })
         }
         .share()
         .eraseToAnyPublisher()

@@ -101,12 +101,12 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError> {
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError> {
         return Deferred {
             Future { promise in
 
                 let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
-                let paddingSize = self.calculatePadding(forObject: preRequest)
+                let paddingSize = self.calculatePadding(forObject: preRequest, padding: padding)
 
                 let padding = self.cryptoUtility.randomBytes(ofLength: paddingSize)
                 let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
@@ -176,16 +176,16 @@ final class NetworkController: NetworkControlling, Logging {
     private var reachability: Reachability?
     private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
 
-    private func calculatePadding<T: Encodable>(forObject object: T) -> Int {
-        let minimumRequestSize = 1800
-        let maximumReequestSize = 17000
+    private func calculatePadding<T: Encodable>(forObject object: T, padding: Padding) -> Int {
+        let min = padding.minimumRequestSize
+        let max = padding.maximumReequestSize
 
         let randomInt = Int.random(in: 0 ... 100)
         let messageSize: Int
         if randomInt == 0 {
-            messageSize = Int.random(in: minimumRequestSize ... maximumReequestSize)
+            messageSize = Int.random(in: min ... max)
         } else {
-            messageSize = Int.random(in: minimumRequestSize ... (minimumRequestSize + (maximumReequestSize - minimumRequestSize) / 100))
+            messageSize = Int.random(in: min ... (min + (max - min) / 100))
         }
 
         do {
@@ -194,6 +194,6 @@ final class NetworkController: NetworkControlling, Logging {
         } catch {
             self.logError("Error encoding: \(error.localizedDescription)")
         }
-        return minimumRequestSize
+        return min
     }
 }

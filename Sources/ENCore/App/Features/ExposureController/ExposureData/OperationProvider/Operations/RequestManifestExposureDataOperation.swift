@@ -67,7 +67,7 @@ final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
                                          identifiedBy: ExposureDataStorageKey.appManifest,
                                          completion: { _ in
                                              promise(.success(manifest))
-            })
+                                         })
         }
         .share()
         .eraseToAnyPublisher()
