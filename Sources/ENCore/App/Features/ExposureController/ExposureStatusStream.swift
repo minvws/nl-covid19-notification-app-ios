@@ -59,7 +59,11 @@ final class ExposureStateStream: MutableExposureStateStreaming {
     // MARK: - ExposureStateStreaming
 
     var exposureState: AnyPublisher<ExposureState, Never> {
-        return subject.removeDuplicates(by: ==).compactMap { $0 }.eraseToAnyPublisher()
+        return subject
+            .removeDuplicates(by: ==)
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
     var currentExposureState: ExposureState?
