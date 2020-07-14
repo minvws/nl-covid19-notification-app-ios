@@ -34,7 +34,9 @@ final class OnboardingStepViewControllerTests: TestCase {
                                                               listener: listener,
                                                               theme: theme,
                                                               index: index)
-            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)")
+            if let result = verifySnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)") {
+                XCTFail(result)
+            }
         }
     }
 }

@@ -37,7 +37,9 @@ public func currentDate() -> Date {
 
 public func animationsEnabled() -> Bool {
     #if DEBUG
-        return AnimationTestingOverrides.animationsEnabled
+        if let enabled = AnimationTestingOverrides.animationsEnabled {
+            return enabled
+        }
     #endif
     return true
 }
@@ -51,6 +53,6 @@ public func animationsEnabled() -> Bool {
 
     /// Overrides animation
     public struct AnimationTestingOverrides {
-        public static var animationsEnabled: Bool = true
+        public static var animationsEnabled: Bool?
     }
 #endif
