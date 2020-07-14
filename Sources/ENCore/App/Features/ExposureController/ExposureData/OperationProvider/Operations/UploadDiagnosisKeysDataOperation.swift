@@ -55,24 +55,9 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
     private func scheduleRetryWhenFailed(error: ExposureDataError, diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
 
         return Future { promise in
-            guard
-                let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: Date()),
-                let expiryDate = Calendar.current.date(bySettingHour: 3,
-                                                       minute: 59,
-                                                       second: 0,
-                                                       of: nextDay,
-                                                       matchingPolicy: .nextTime,
-                                                       repeatedTimePolicy: .first,
-                                                       direction: .forward)
-            else {
-                // cannot calculate next day - skip request
-                promise(.success(()))
-                return
-            }
-
             let retryRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: labConfirmationKey,
                                                                    diagnosisKeys: diagnosisKeys,
-                                                                   expiryDate: expiryDate)
+                                                                   expiryDate: labConfirmationKey.expiration)
 
             self.storageController.requestExclusiveAccess { storageController in
                 var requests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []

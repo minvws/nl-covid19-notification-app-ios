@@ -122,9 +122,12 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     }
 
     func test_error_schedulesRetryRequest() {
-        let alreadyPendingRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
+        let expiryDate = Date().addingTimeInterval(60)
+        let alreadyPendingRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(validUntil: expiryDate),
                                                                         diagnosisKeys: [],
-                                                                        expiryDate: Date().addingTimeInterval(60))
+                                                                        expiryDate: expiryDate)
+
+        operation = createOperation(withKeys: createDiagnosisKeys(withHighestRollingStartNumber: 65), expiryDate: expiryDate)
 
         networkController.postKeysHandler = { keys, confirmationKey in
             return Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher()
@@ -164,13 +167,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(receivedPendingRequests.count, 2)
         XCTAssertEqual(receivedPendingRequests[0], alreadyPendingRequest)
         XCTAssertEqual(receivedPendingRequests[1].diagnosisKeys, createDiagnosisKeys(withHighestRollingStartNumber: 65))
-
-        let currentDay = Calendar.current.dateComponents([.day], from: Date()).day!
-        let dateComponents = Calendar.current.dateComponents([.day, .hour, .minute, .second], from: receivedPendingRequests[1].expiryDate)
-        XCTAssert(dateComponents.day == currentDay + 1 || dateComponents.day == 1)
-        XCTAssertEqual(dateComponents.hour, 3)
-        XCTAssertEqual(dateComponents.minute, 59)
-        XCTAssertEqual(dateComponents.second, 0)
+        XCTAssertEqual(receivedPendingRequests[1].expiryDate, expiryDate)
     }
 
     // MARK: - Private
@@ -188,17 +185,17 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         }
     }
 
-    private func createOperation(withKeys keys: [DiagnosisKey]) -> UploadDiagnosisKeysDataOperation {
+    private func createOperation(withKeys keys: [DiagnosisKey], expiryDate: Date = Date()) -> UploadDiagnosisKeysDataOperation {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: keys,
-                                                labConfirmationKey: createLabConfirmationKey())
+                                                labConfirmationKey: createLabConfirmationKey(validUntil: expiryDate))
     }
 
-    private func createLabConfirmationKey() -> LabConfirmationKey {
+    private func createLabConfirmationKey(validUntil: Date = Date()) -> LabConfirmationKey {
         LabConfirmationKey(identifier: "test",
                            bucketIdentifier: "bucket".data(using: .utf8)!,
                            confirmationKey: Data(),
-                           validUntil: Date())
+                           validUntil: validUntil)
     }
 }
