@@ -94,6 +94,7 @@ targets:
         TARGETED_DEVICE_FAMILY: 1
         SWIFT_VERSION: 5.2
         OTHER_LDFLAGS: -weak_framework ExposureNotification
+        SWIFT_OBJC_BRIDGING_HEADER: Sources/ENCore/ObjCBridge.h
     dependencies:
       - package: CocoaLumberjack
         product: CocoaLumberjack
@@ -103,8 +104,9 @@ targets:
       - package: SnapKit
       - package: Lottie
       - package: Reachability
-      - sdk: ExposureNotification.framework
+      - framework: ExposureNotification.framework
         optional: true
+      - framework: vendor/OpenSSL-for-iPhone/openssl.framework 
     scheme:
       gatherCoverageData: true
       testTargets:

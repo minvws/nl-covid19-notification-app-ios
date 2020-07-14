@@ -21,12 +21,10 @@ protocol CryptoUtility {
 /// This is all work in progress as there are currently no
 /// test samples available to validate the implementation
 ///
-// TODO: Validate and adjust implementation once examples are available
-///
 final class CryptoUtilityImpl: CryptoUtility {
 
-    init(validationKey: Key) {
-        self.validationKey = validationKey
+    init(signatureValidator: SignatureValidating) {
+        self.signatureValidator = signatureValidator
     }
 
     // MARK: - CryptoUtility
@@ -42,18 +40,13 @@ final class CryptoUtilityImpl: CryptoUtility {
     }
 
     func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ()) {
-        guard let key = validationKey.secKey else {
-            completion(true)
-            return
+        DispatchQueue.global().async {
+            let result = self.signatureValidator.validate(signature: signature, content: data)
+
+            DispatchQueue.main.async {
+                completion(result)
+            }
         }
-
-        let validate = SecKeyVerifySignature(key,
-                                             SecKeyAlgorithm.ecdsaSignatureMessageX962SHA256,
-                                             data as CFData,
-                                             signature as CFData,
-                                             nil)
-
-        completion(true)
     }
 
     func signature(forData data: Data, key: Data) -> Data {
@@ -66,5 +59,5 @@ final class CryptoUtilityImpl: CryptoUtility {
 
     // MARK: - Private
 
-    private let validationKey: Key
+    private let signatureValidator: SignatureValidating
 }

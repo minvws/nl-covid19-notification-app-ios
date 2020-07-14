@@ -18,6 +18,10 @@ This increases the chance that we might be able to use your contribution (or it 
 
 Run `make dev` && `make project` to get started. Homebrew (https://brew.sh) is a requirement to install dependencies.
 
+## OpenSSL
+
+Tihs project relies on OpenSSL to validate the KeySet signatures. OpenSSL binaries (v1.1.1d) are included and can be built using `make build_openssl`.
+
 ## Disclaimer
 
 Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.

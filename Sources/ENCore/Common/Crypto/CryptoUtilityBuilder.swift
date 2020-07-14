@@ -12,8 +12,8 @@ protocol CryptoUtilityBuildable {
 }
 
 private final class CryptoUtilityDependencyProvider: DependencyProvider<EmptyDependency> {
-    var validationKey: Key {
-        Key.random
+    var signatureValidator: SignatureValidating {
+        return SignatureValidator()
     }
 }
 
@@ -21,6 +21,6 @@ final class CryptoUtilityBuilder: CryptoUtilityBuildable {
     func build() -> CryptoUtility {
         let dependencyProvider = CryptoUtilityDependencyProvider()
 
-        return CryptoUtilityImpl(validationKey: dependencyProvider.validationKey)
+        return CryptoUtilityImpl(signatureValidator: dependencyProvider.signatureValidator)
     }
 }

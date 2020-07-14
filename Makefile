@@ -43,3 +43,6 @@ clean_snapshots:
 	@echo "Removing all __Snapshot__ folders"
 	@rm -rf `find Sources/ -type d -name __Snapshots__`
 	@echo "Re-run tests for current Snapshot tests to be generated"
+
+build_openssl:
+	cd vendor/OpenSSL-for-iPhone && ./build-libssl.sh && ./create-openssl-framework.sh
