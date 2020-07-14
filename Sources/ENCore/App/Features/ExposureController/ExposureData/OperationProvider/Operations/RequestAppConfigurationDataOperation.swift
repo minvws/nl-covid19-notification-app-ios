@@ -11,11 +11,15 @@ import Foundation
 struct ApplicationConfiguration: Codable {
     let version: Int
     let manifestRefreshFrequency: Int
-    let decoyProbability: Int
+    let decoyProbability: Double
     let creationDate: Date
     let identifier: String
-    let minimumVersionMessage: String?
-    let appStoreURL: String?
+    let minimumVersion: String
+    let minimumVersionMessage: String
+    let appStoreURL: String
+    let requestMinimumSize: Int
+    let requestMaximumSize: Int
+    let repeatedUploadDelay: Int
 }
 
 final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {

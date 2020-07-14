@@ -131,21 +131,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - Misc
 
-    func getMinimumiOSVersion() -> AnyPublisher<String?, ExposureDataError> {
-        return requestApplicationManifest()
-            .map { $0.iOSMinimumKillVersion }
-            .eraseToAnyPublisher()
-    }
-
-    func getAppStoreURL() -> AnyPublisher<String?, ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { $0.appStoreURL }
-            .eraseToAnyPublisher()
-    }
-
-    func getMinimumVersionMessage() -> AnyPublisher<String?, ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { $0.minimumVersionMessage }
+    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {
+        requestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return ExposureDataAppVersionInformation(minimumVersion: applicationConfiguration.minimumVersion,
+                                                         minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
+                                                         appStoreURL: applicationConfiguration.appStoreURL)
+            }
             .eraseToAnyPublisher()
     }
 

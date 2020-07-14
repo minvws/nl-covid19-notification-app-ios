@@ -17,6 +17,12 @@ enum ExposureDataError: Error, Equatable {
     case responseCached
 }
 
+struct ExposureDataAppVersionInformation {
+    let minimumVersion: String
+    let minimumVersionMessage: String
+    let appStoreURL: String
+}
+
 /// @mockable
 protocol ExposureDataControlling {
 
@@ -36,10 +42,8 @@ protocol ExposureDataControlling {
 
     // MARK: - Misc
 
-    func getMinimumiOSVersion() -> AnyPublisher<String?, ExposureDataError>
+    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
-    func getAppStoreURL() -> AnyPublisher<String?, ExposureDataError>
-    func getMinimumVersionMessage() -> AnyPublisher<String?, ExposureDataError>
 }
 
 protocol ExposureDataControllerBuildable {

@@ -43,14 +43,17 @@ extension Manifest {
 
 extension AppConfig {
     func asApplicationConfiguration(identifier: String) -> ApplicationConfiguration {
-        return ApplicationConfiguration(version: version,
-                                        manifestRefreshFrequency: manifestFrequency,
-                                        decoyProbability: decoyProbability,
+        return ApplicationConfiguration(version: version ?? 1,
+                                        manifestRefreshFrequency: manifestFrequency ?? 240,
+                                        decoyProbability: decoyProbability ?? 0.00118,
                                         creationDate: Date(),
                                         identifier: identifier,
-                                        minimumVersionMessage: minimumVersionMessage,
-                                        appStoreURL: appStoreURL
-        )
+                                        minimumVersion: (iOSMinimumKillVersion ?? iOSMinimumVersion) ?? "1.0.0",
+                                        minimumVersionMessage: iOSMinimumVersionMessage ?? "",
+                                        appStoreURL: iOSAppStoreURL ?? "",
+                                        requestMinimumSize: requestMinimumSize ?? 1800,
+                                        requestMaximumSize: requestMaximumSize ?? 17000,
+                                        repeatedUploadDelay: repeatedUploadDelay ?? 14400)
     }
 }
 

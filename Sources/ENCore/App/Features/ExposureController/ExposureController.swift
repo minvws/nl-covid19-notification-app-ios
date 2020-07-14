@@ -44,39 +44,16 @@ final class ExposureController: ExposureControlling, Logging {
         updatePushNotificationState()
     }
 
-    func getMinimumiOSVersion(_ completion: @escaping (String?) -> ()) {
+    func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
         return dataController
-            .getMinimumiOSVersion()
-            .sink(receiveCompletion: { result in
-                guard case .failure = result else { return }
+            .getAppVersionInformation()
+            .sink(
+                receiveCompletion: { result in
+                    guard case .failure = result else { return }
 
-                completion(nil)
-            },
-            receiveValue: completion)
-            .store(in: &disposeBag)
-    }
-
-    func getAppStoreURL(_ completion: @escaping (String?) -> ()) {
-        return dataController
-            .getAppStoreURL()
-            .sink(receiveCompletion: { result in
-                guard case .failure = result else { return }
-
-                completion(nil)
-            },
-            receiveValue: completion)
-            .store(in: &disposeBag)
-    }
-
-    func getMinimumVersionMessage(_ completion: @escaping (String?) -> ()) {
-        return dataController
-            .getMinimumVersionMessage()
-            .sink(receiveCompletion: { result in
-                guard case .failure = result else { return }
-
-                completion(nil)
-            },
-            receiveValue: completion)
+                    completion(nil)
+                },
+                receiveValue: completion)
             .store(in: &disposeBag)
     }
 

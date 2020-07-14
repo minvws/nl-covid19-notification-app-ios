@@ -22,7 +22,13 @@ extension StorageControlling {
             return nil
         }
 
-        return try? JSONDecoder().decode(key.objectType, from: data)
+        do {
+            return try JSONDecoder().decode(key.objectType, from: data)
+        } catch {
+            // data is corrupt / backwards incompatible - delete it
+            removeData(for: key, completion: { _ in })
+            return nil
+        }
     }
 }
 

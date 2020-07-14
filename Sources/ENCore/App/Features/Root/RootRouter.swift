@@ -84,14 +84,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         /// Check if the app is the minimum version. If not, show the app update screen
         if let currentAppVersion = currentAppVersion {
-            exposureController.getMinimumVersionMessage { minimumVersionMessage in
-                guard let minimumVersionMessage = minimumVersionMessage else {
+            exposureController.getAppVersionInformation { appVersionInformation in
+                guard let appVersionInformation = appVersionInformation else {
                     return
                 }
-                if currentAppVersion.compare(minimumVersionMessage, options: .numeric) == .orderedDescending {
-                    self.exposureController.getAppStoreURL { appStoreURL in
-                        self.routeToUpdateApp(animated: true, appStoreURL: appStoreURL, minimumVersionMessage: minimumVersionMessage)
-                    }
+                if currentAppVersion.compare(appVersionInformation.minimumVersion, options: .numeric) == .orderedDescending {
+                    self.routeToUpdateApp(animated: true,
+                                          appStoreURL: appVersionInformation.appStoreURL,
+                                          minimumVersionMessage: appVersionInformation.minimumVersionMessage)
                 }
             }
         }
