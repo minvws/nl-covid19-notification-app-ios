@@ -32,7 +32,7 @@ final class OnboardingStepViewControllerTests: TestCase {
                                                               listener: listener,
                                                               theme: theme,
                                                               index: index)
-            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)")
+            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)_\(index)")
         }
     }
 }
