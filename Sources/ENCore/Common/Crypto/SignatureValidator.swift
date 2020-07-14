@@ -13,7 +13,7 @@ protocol SignatureValidating {
 }
 
 final class SignatureValidator: SignatureValidating {
-    let openssl = OpenSSL()
+    private let openssl = OpenSSL()
 
     func validate(signature: Data, content: Data) -> Bool {
         guard let rootCertificateData = validatedRootCertificateData() else {

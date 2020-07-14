@@ -20,7 +20,7 @@ Run `make dev` && `make project` to get started. Homebrew (https://brew.sh) is a
 
 ## OpenSSL
 
-Tihs project relies on OpenSSL to validate the KeySet signatures. OpenSSL binaries (v1.1.1d) are included and can be built using `make build_openssl`.
+Tihs project relies on OpenSSL to validate the KeySet signatures. OpenSSL binaries (v1.1.1d) are included and can be built using `make build_openssl`. By default the compiled binaries are part of the repo to reduce CI build times. Feel free to compile the binaries yourself.
 
 ## Disclaimer
 
