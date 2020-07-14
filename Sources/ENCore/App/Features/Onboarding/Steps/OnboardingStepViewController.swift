@@ -55,7 +55,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if internalView.animationView.animation != nil {
+        if internalView.animationView.animation != nil, animationsEnabled() {
             self.internalView.animationView.play()
         }
     }

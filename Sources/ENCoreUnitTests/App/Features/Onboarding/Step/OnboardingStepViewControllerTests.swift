@@ -21,6 +21,8 @@ final class OnboardingStepViewControllerTests: TestCase {
 
         recordSnapshots = false
         manager = OnboardingManager(theme: theme)
+
+        AnimationTestingOverrides.animationsEnabled = false
     }
 
     // MARK: - Tests
@@ -32,7 +34,7 @@ final class OnboardingStepViewControllerTests: TestCase {
                                                               listener: listener,
                                                               theme: theme,
                                                               index: index)
-            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)_\(index)")
+            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)")
         }
     }
 }
