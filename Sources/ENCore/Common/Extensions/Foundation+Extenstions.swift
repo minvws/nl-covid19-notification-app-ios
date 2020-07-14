@@ -35,10 +35,24 @@ public func currentDate() -> Date {
     return Date()
 }
 
+public func animationsEnabled() -> Bool {
+    #if DEBUG
+        if let enabled = AnimationTestingOverrides.animationsEnabled {
+            return enabled
+        }
+    #endif
+    return true
+}
+
 #if DEBUG
     /// Overriden date and time related properties
     public struct DateTimeTestingOverrides {
         /// Overriden current date for testing
         public static var overriddenCurrentDate: Date?
+    }
+
+    /// Overrides animation
+    public struct AnimationTestingOverrides {
+        public static var animationsEnabled: Bool?
     }
 #endif

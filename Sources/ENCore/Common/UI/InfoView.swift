@@ -100,6 +100,86 @@ final class InfoView: View {
     }
 }
 
+final class InfoSectionContentView: View {
+
+    private let contentLabel: Label
+
+    // MARK: - Init
+
+    init(theme: Theme, content: NSAttributedString) {
+        self.contentLabel = Label(frame: .zero)
+        super.init(theme: theme)
+
+        contentLabel.attributedText = content
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        contentLabel.numberOfLines = 0
+        contentLabel.accessibilityTraits = .header
+
+        addSubview(contentLabel)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        contentLabel.snp.makeConstraints { maker in
+            maker.top.equalToSuperview().offset(24)
+            maker.bottom.equalToSuperview()
+            maker.leading.trailing.equalToSuperview().inset(16)
+        }
+    }
+}
+
+final class InfoSectionStepView: View {
+
+    private let iconImageView: UIImageView
+    private let titleLabel: Label
+
+    // MARK: - Init
+
+    init(theme: Theme, title: String, stepImage: UIImage?) {
+        self.iconImageView = UIImageView(image: stepImage)
+        self.titleLabel = Label(frame: .zero)
+        super.init(theme: theme)
+
+        titleLabel.text = title
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        titleLabel.numberOfLines = 0
+        titleLabel.font = theme.fonts.title3
+        titleLabel.accessibilityTraits = .header
+
+        addSubview(iconImageView)
+        addSubview(titleLabel)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        iconImageView.snp.makeConstraints { maker in
+            maker.leading.equalToSuperview().inset(16)
+            maker.top.equalToSuperview()
+            maker.width.height.equalTo(32)
+        }
+        titleLabel.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.trailing.equalToSuperview().inset(16)
+            maker.leading.equalTo(iconImageView.snp.trailing).offset(16)
+            maker.bottom.equalToSuperview()
+        }
+    }
+}
+
 final class InfoSectionTextView: View {
 
     private let titleLabel: Label
@@ -221,12 +301,14 @@ final class InfoSectionDynamicCalloutView: View {
         case error(String, () -> ())
     }
 
+    private let iconImageView: UIImageView
     private let titleLabel: Label
     private let contentView: View
 
     // MARK: - Init
 
-    init(theme: Theme, title: String) {
+    init(theme: Theme, title: String, stepImage: UIImage?) {
+        self.iconImageView = UIImageView(image: stepImage)
         self.titleLabel = Label(frame: .zero)
         self.contentView = View(theme: theme)
         super.init(theme: theme)
@@ -243,8 +325,9 @@ final class InfoSectionDynamicCalloutView: View {
         contentView.backgroundColor = theme.colors.tertiary
 
         titleLabel.numberOfLines = 0
-        titleLabel.font = theme.fonts.title2
+        titleLabel.font = theme.fonts.title3
 
+        addSubview(iconImageView)
         addSubview(titleLabel)
         addSubview(contentView)
     }
@@ -252,9 +335,15 @@ final class InfoSectionDynamicCalloutView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
+        iconImageView.snp.makeConstraints { maker in
+            maker.leading.equalToSuperview().inset(16)
+            maker.top.equalToSuperview()
+            maker.width.height.equalTo(32)
+        }
         titleLabel.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.trailing.equalToSuperview().inset(16)
+            maker.leading.equalTo(iconImageView.snp.trailing).offset(16)
         }
         contentView.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
