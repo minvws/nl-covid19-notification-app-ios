@@ -29,6 +29,8 @@ struct ExposureDataStorageKey {
                                                                                     storeType: .insecure(volatile: false))
     static let pendingLabUploadRequests = CodableStorageKey<[PendingLabConfirmationUploadRequest]>(name: "pendingLabUploadRequests",
                                                                                                    storeType: .secure)
+    static let firstRunIdentifier = CodableStorageKey<Bool>(name: "firstRunIdentifier",
+                                                            storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
@@ -39,6 +41,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
          storageController: StorageControlling) {
         self.operationProvider = operationProvider
         self.storageController = storageController
+
+        detectFirstRunAndEraseKeychainIfRequired()
     }
 
     // MARK: - ExposureDataControlling
@@ -146,6 +150,22 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     // MARK: - Private
+
+    private func detectFirstRunAndEraseKeychainIfRequired() {
+        guard storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.firstRunIdentifier) == nil else {
+            // nothing to do, not the first run
+            return
+        }
+
+        // clear all secure entries
+        storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.lastUploadedRollingStartNumber, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
+
+        // mark as successful first tun
+        storageController.store(object: true, identifiedBy: ExposureDataStorageKey.firstRunIdentifier, completion: { _ in })
+    }
 
     private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
         return requestApplicationManifest()
