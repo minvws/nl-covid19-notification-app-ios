@@ -92,11 +92,12 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     }
 
     private func setupConstraints() {
+        hasBottomMargin = true
 
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: ViewController.deviceHasHomeButton() ? -16 : 0),
+            button.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             button.heightAnchor.constraint(equalToConstant: 50)

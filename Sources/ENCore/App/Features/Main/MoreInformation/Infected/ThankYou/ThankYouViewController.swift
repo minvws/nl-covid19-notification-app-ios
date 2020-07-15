@@ -33,6 +33,8 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        hasBottomMargin = true
+
         title = Localization.string(for: "moreInformation.thankyou.title")
         navigationItem.hidesBackButton = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,

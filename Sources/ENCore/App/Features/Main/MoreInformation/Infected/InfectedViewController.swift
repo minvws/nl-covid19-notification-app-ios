@@ -46,6 +46,8 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        hasBottomMargin = true
+
         title = Localization.string(for: "moreInformation.infected.title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,

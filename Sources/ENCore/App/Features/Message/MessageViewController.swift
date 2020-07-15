@@ -38,6 +38,8 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        hasBottomMargin = true
+
         title = Localization.string(for: "message.title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,

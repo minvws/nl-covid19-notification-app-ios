@@ -50,6 +50,8 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        hasBottomMargin = true
+
         internalView.consentStep = consentStep
         internalView.primaryButton.addTarget(self, action: #selector(primaryButtonPressed), for: .touchUpInside)
         internalView.secondaryButton.addTarget(self, action: #selector(secondaryButtonPressed), for: .touchUpInside)
@@ -227,7 +229,7 @@ final class OnboardingConsentView: View {
         ])
 
         constraints.append([
-            primaryButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: ViewController.deviceHasHomeButton() ? -16 : 0),
+            primaryButton.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
             primaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             primaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             primaryButton.heightAnchor.constraint(equalToConstant: 50)

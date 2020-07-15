@@ -62,6 +62,8 @@ final class InfoView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
+        hasBottomMargin = true
+
         scrollView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.bottom.equalToSuperview()
         }
@@ -81,7 +83,8 @@ final class InfoView: View {
             maker.height.equalTo(48)
             maker.top.equalTo(stackView.snp.bottom).offset(16)
             maker.leading.trailing.equalToSuperview().inset(16)
-            maker.bottom.equalTo(safeAreaInsets.bottom).inset(ViewController.deviceHasHomeButton() ? 16 : 0)
+
+            constrainToSuperViewWithBottomMargin(maker: maker)
         }
     }
 
@@ -165,6 +168,8 @@ final class InfoSectionStepView: View {
 
     override func setupConstraints() {
         super.setupConstraints()
+
+        hasBottomMargin = true
 
         iconImageView.snp.makeConstraints { maker in
             maker.leading.equalToSuperview().inset(16)

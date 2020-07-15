@@ -31,6 +31,8 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        hasBottomMargin = true
+
         title = Localization.string(for: "moreInformation.requestTest.title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,

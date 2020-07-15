@@ -14,6 +14,11 @@ open class ViewController: UIViewController, ViewControllable, Themeable {
     }
 
     public let theme: Theme
+    public var hasBottomMargin: Bool = false {
+        didSet {
+            setBottomMargin()
+        }
+    }
 
     // MARK: - Init
 
@@ -36,16 +41,15 @@ open class ViewController: UIViewController, ViewControllable, Themeable {
         edgesForExtendedLayout = []
     }
 
-    // MARK: - Utility
+    override open func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
 
-    class func deviceHasHomeButton() -> Bool {
-        var key: UIWindow? {
-            if #available(iOS 13, *) {
-                return UIApplication.shared.windows.first { $0.isKeyWindow }
-            } else {
-                return UIApplication.shared.keyWindow
-            }
-        }
-        return key?.safeAreaInsets.bottom ?? 0 == CGFloat(0)
+        setBottomMargin()
+    }
+
+    // MARK: - Private
+
+    private func setBottomMargin() {
+        view.layoutMargins.bottom = view.safeAreaInsets.bottom == 0 ? 20 : 0
     }
 }

@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import SnapKit
 import UIKit
 
 open class View: UIView, Themeable {
@@ -33,6 +34,32 @@ open class View: UIView, Themeable {
     @available(*, unavailable, message: "NSCoder and Interface Builder is not supported. Use Programmatic layout.")
     public required init?(coder: NSCoder) {
         fatalError("Not Supported")
+    }
+
+    var hasBottomMargin: Bool = false {
+        didSet {
+            setBottomMargin()
+        }
+    }
+
+    private var bottomMargin: Float = 0
+    private var bottomConstraint: Constraint?
+
+    func constrainToSuperViewWithBottomMargin(maker: ConstraintMaker) {
+        bottomConstraint = maker.bottom.equalToSuperview().inset(bottomMargin).constraint
+    }
+
+    override open func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+
+        setBottomMargin()
+    }
+
+    private func setBottomMargin() {
+        guard hasBottomMargin else { return }
+
+        bottomMargin = safeAreaInsets.bottom == 0 ? 20 : 0
+        bottomConstraint?.update(inset: bottomMargin)
     }
 
     // MARK: - Internal

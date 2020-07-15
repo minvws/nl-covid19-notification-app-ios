@@ -295,24 +295,18 @@ private final class MainView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        hasBottomMargin = true
 
-        let constraints = [
-            // scrollView
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        scrollView.snp.makeConstraints { maker in
+            maker.leading.trailing.top.equalToSuperview()
 
-            // stackView
-            stackView.widthAnchor.constraint(equalTo: widthAnchor),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
-        ]
+            constrainToSuperViewWithBottomMargin(maker: maker)
+        }
 
-        NSLayoutConstraint.activate(constraints)
+        stackView.snp.makeConstraints { maker in
+            maker.width.leading.trailing.equalToSuperview()
+            maker.top.equalTo(scrollView.snp.top)
+            maker.bottom.equalTo(scrollView.snp.bottom)
+        }
     }
 }

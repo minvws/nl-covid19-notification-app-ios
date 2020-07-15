@@ -32,6 +32,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        hasBottomMargin = true
+
         title = Localization.string(for: "moreInformation.receivedNotification.title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
