@@ -20,7 +20,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
 
         operation = ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
                                                                              storageController: storageController,
-                                                                             padding: Padding(minimumRequestSize: 0, maximumReequestSize: 0))
+                                                                             padding: Padding(minimumRequestSize: 0, maximumRequestSize: 0))
 
         storageController.requestExclusiveAccessHandler = { $0(self.storageController) }
     }

@@ -178,7 +178,7 @@ final class NetworkController: NetworkControlling, Logging {
 
     private func calculatePadding<T: Encodable>(forObject object: T, padding: Padding) -> Int {
         let min = padding.minimumRequestSize
-        let max = padding.maximumReequestSize
+        let max = padding.maximumRequestSize
 
         let randomInt = Int.random(in: 0 ... 100)
         let messageSize: Int

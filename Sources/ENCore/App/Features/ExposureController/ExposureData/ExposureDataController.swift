@@ -113,10 +113,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
         return requestApplicationConfiguration()
             .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: 1800, maximumReequestSize: 17000) // FIXME: This Should be values from the `configuration: ApplicationConfiguration`
+                Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
             }.flatMap { (padding: Padding) in
                 return self.operationProvider
-                    .processPendingLabConfirmationUploadRequestsOperation(padding: Padding(minimumRequestSize: 1800, maximumReequestSize: 17000))
+                    .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
                     .execute()
             }.eraseToAnyPublisher()
     }
@@ -130,7 +130,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
         return requestApplicationConfiguration()
             .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: 1800, maximumReequestSize: 17000) // FIXME: This Should be values from the `configuration: ApplicationConfiguration`
+                Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
             }.flatMap { (padding: Padding) in
                 return self.operationProvider.uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys,
                                                                            labConfirmationKey: labConfirmationKey,

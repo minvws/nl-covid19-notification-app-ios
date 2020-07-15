@@ -9,5 +9,5 @@ import Foundation
 
 struct Padding {
     let minimumRequestSize: Int
-    let maximumReequestSize: Int
+    let maximumRequestSize: Int
 }
