@@ -48,7 +48,7 @@ extension AppConfig {
                                         decoyProbability: decoyProbability ?? 0.00118,
                                         creationDate: Date(),
                                         identifier: identifier,
-                                        minimumVersion: (iOSMinimumKillVersion ?? iOSMinimumVersion) ?? "1.0.0",
+                                        minimumVersion: (iOSMinimumKillVersion ?? iOSMinimumVersion) ?? "0.1",
                                         minimumVersionMessage: iOSMinimumVersionMessage ?? "",
                                         appStoreURL: iOSAppStoreURL ?? "",
                                         requestMinimumSize: requestMinimumSize ?? 1800,
