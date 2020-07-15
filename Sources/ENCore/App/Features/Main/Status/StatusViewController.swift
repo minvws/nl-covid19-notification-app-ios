@@ -24,13 +24,20 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     private var exposureStateStreamCancellable: AnyCancellable?
 
+    private let cardBuilder: CardBuildable
+    private let cardViewController: CardViewControllable
+
     init(exposureStateStream: ExposureStateStreaming,
+         cardBuilder: CardBuildable,
          listener: StatusListener,
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?) {
         self.exposureStateStream = exposureStateStream
         self.listener = listener
         self.topAnchor = topAnchor
+
+        self.cardBuilder = cardBuilder
+        self.cardViewController = cardBuilder.build(type: .bluetoothOff)
 
         super.init(theme: theme)
     }
@@ -46,6 +53,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
         super.viewDidLoad()
 
         statusView.listener = listener
+
+        addChild(cardViewController.uiviewController)
+        cardViewController.uiviewController.didMove(toParent: self)
     }
 
     override func didMove(toParent parent: UIViewController?) {
@@ -67,27 +77,43 @@ final class StatusViewController: ViewController, StatusViewControllable {
             guard let strongSelf = self else {
                 return
             }
+
+            let statusViewModel: StatusViewModel
+
             switch (status.activeState, status.notifiedState) {
             case (.active, .notNotified):
-                strongSelf.statusView.update(with: .activeWithNotNotified)
+                statusViewModel = .activeWithNotNotified
             case let (.active, .notified(date)):
-                strongSelf.statusView.update(with: .activeWithNotified(date: date))
-            case let (.inactive(reason), .notified(date)) where reason == .noRecentNotificationUpdates:
-                strongSelf.statusView.update(with: StatusViewModel.activeWithNotified(date: date).with(card: StatusCardViewModel.inactiveTryAgain))
-            case let (.inactive(_), .notified(date)):
-                strongSelf.statusView.update(with: StatusViewModel.activeWithNotified(date: date).with(card: StatusCardViewModel.inactive))
+                statusViewModel = .activeWithNotified(date: date)
+            case let (.inactive(reason), .notified(date)):
+                let cardType = reason.cardType(listener: self?.listener)
+
+                statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
             case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
-                strongSelf.statusView.update(with: .inactiveTryAgainWithNotNotified)
-            case (.inactive(_), .notNotified):
-                strongSelf.statusView.update(with: .inactiveWithNotNotified)
+                statusViewModel = .inactiveTryAgainWithNotNotified
+            case let (.inactive(reason), .notNotified):
+                let cardType = reason.cardType(listener: self?.listener)
+
+                statusViewModel = StatusViewModel.inactiveWithNotNotified.with(cardType: cardType)
             case let (.authorizationDenied, .notified(date)):
-                strongSelf.statusView.update(with: StatusViewModel.inactiveWithNotified(date: date).with(card: StatusCardViewModel.inactive))
+                statusViewModel = StatusViewModel.inactiveWithNotified(date: date).with(cardType: .exposureOff)
             case (.authorizationDenied, .notNotified):
-                strongSelf.statusView.update(with: .inactiveWithNotNotified)
+                statusViewModel = .inactiveWithNotNotified
             case let (.notAuthorized, .notified(date)):
-                strongSelf.statusView.update(with: StatusViewModel.inactiveWithNotified(date: date).with(card: StatusCardViewModel.inactive))
+                statusViewModel = StatusViewModel
+                    .inactiveWithNotified(date: date)
+                    .with(cardType: .exposureOff)
             case (.notAuthorized, .notNotified):
-                strongSelf.statusView.update(with: .inactiveWithNotNotified)
+                statusViewModel = .inactiveWithNotNotified
+            }
+
+            strongSelf.statusView.update(with: statusViewModel)
+
+            if let cardType = statusViewModel.cardType {
+                strongSelf.cardViewController.type = cardType
+                strongSelf.cardViewController.uiviewController.view.isHidden = false
+            } else {
+                strongSelf.cardViewController.uiviewController.view.isHidden = true
             }
         }
     }
@@ -100,14 +126,13 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     // MARK: - Private
 
-    private lazy var statusView: StatusView = StatusView(theme: self.theme)
+    private lazy var statusView: StatusView = StatusView(theme: self.theme,
+                                                         cardView: cardViewController.uiviewController.view)
 }
 
 private final class StatusView: View {
 
-    fileprivate weak var listener: StatusListener? {
-        didSet { cardView.listener = listener }
-    }
+    weak var listener: StatusListener?
 
     fileprivate let stretchGuide = UILayoutGuide() // grows larger while stretching, grows all visible elements
     private let contentStretchGuide = UILayoutGuide() // grows larger while stretching, used to center the content
@@ -115,9 +140,7 @@ private final class StatusView: View {
     private let contentContainer = UIStackView()
     private let textContainer = UIStackView()
     private let buttonContainer = UIStackView()
-    private lazy var cardView: StatusCardView = {
-        return StatusCardView(theme: self.theme)
-    }()
+    private let cardView: UIView
     private lazy var iconView: EmitterStatusIconView = {
         EmitterStatusIconView(theme: self.theme)
     }()
@@ -134,6 +157,12 @@ private final class StatusView: View {
 
     private var containerToSceneVerticalConstraint: NSLayoutConstraint?
     private var heightConstraint: NSLayoutConstraint?
+
+    init(theme: Theme, cardView: UIView) {
+        self.cardView = cardView
+
+        super.init(theme: theme)
+    }
 
     // MARK: - Overrides
 
@@ -264,13 +293,6 @@ private final class StatusView: View {
         }
         buttonContainer.isHidden = viewModel.buttons.isEmpty
 
-        if let cardViewModel = viewModel.card {
-            cardView.update(with: cardViewModel)
-            cardView.isHidden = false
-        } else {
-            cardView.isHidden = true
-        }
-
         gradientLayer.colors = [theme.colors[keyPath: viewModel.gradientColor].cgColor, UIColor.white.withAlphaComponent(0).cgColor]
 
         sceneImageView.isHidden = !viewModel.showScene
@@ -300,6 +322,23 @@ private final class StatusView: View {
         let cornerRadius = ceil(height / 2)
         if cornerRadius != testingContainer.layer.cornerRadius {
             testingContainer.layer.cornerRadius = cornerRadius
+        }
+    }
+}
+
+private extension ExposureStateInactiveState {
+    func cardType(listener: StatusListener?) -> CardType {
+        switch self {
+        case .bluetoothOff:
+            return .bluetoothOff
+        case .disabled:
+            return .exposureOff
+        case .noRecentNotificationUpdates:
+            return .noInternet(retryHandler: {
+                listener?.handleButtonAction(.tryAgain)
+            })
+        case .pushNotifications:
+            return .noLocalNotifications
         }
     }
 }

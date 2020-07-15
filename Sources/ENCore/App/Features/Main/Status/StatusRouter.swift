@@ -19,7 +19,6 @@ final class StatusRouter: Router<StatusViewControllable>, StatusRouting {
     init(listener: StatusListener,
          viewController: StatusViewControllable) {
         self.listener = listener
-        // self.childBuilder = childBuilder
 
         super.init(viewController: viewController)
 
@@ -28,10 +27,5 @@ final class StatusRouter: Router<StatusViewControllable>, StatusRouting {
 
     // MARK: - Private
 
-    // TODO: Add any private functions and instance variables here
-
     private weak var listener: StatusListener?
-
-    // private let childBuilder: ChildBuildable
-    // private var childViewController: ViewControllable?
 }

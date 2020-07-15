@@ -8,9 +8,43 @@
 import Foundation
 import UIKit
 
-final class StatusCardView: View {
-    weak var listener: StatusListener?
+final class CardViewController: ViewController, CardViewControllable {
 
+    init(theme: Theme, type: CardType) {
+        self.type = type
+
+        super.init(theme: theme)
+    }
+
+    // MARK: - ViewController Lifecycle
+
+    override func loadView() {
+        self.view = internalView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        internalView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
+        internalView.update(with: type.card(theme: theme))
+    }
+
+    // MARK: - CardViewControllable
+
+    var type: CardType {
+        didSet {
+            if isViewLoaded {
+                internalView.update(with: type.card(theme: theme))
+            }
+        }
+    }
+
+    // MARK: - Private
+
+    private lazy var internalView: CardView = CardView(theme: theme)
+}
+
+private final class CardView: View {
     private let container = UIStackView()
     private let header = UIStackView()
 
@@ -20,14 +54,13 @@ final class StatusCardView: View {
     private let headerTitleLabel = Label()
 
     private let descriptionLabel = Label()
-    private lazy var button: Button = {
+    fileprivate lazy var button: Button = {
         Button(theme: self.theme)
     }()
 
     override func build() {
         super.build()
 
-        backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
         layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         layer.cornerRadius = 12
 
@@ -84,16 +117,29 @@ final class StatusCardView: View {
         ])
     }
 
-    func update(with viewModel: StatusCardViewModel) {
-        headerIconView.image = viewModel.icon.icon
-        headerTitleLabel.attributedText = viewModel.title
-        descriptionLabel.attributedText = viewModel.description
+    func update(with card: Card) {
+        headerIconView.image = Image.named("StatusInactive")
+        headerTitleLabel.attributedText = card.title
+        descriptionLabel.attributedText = card.message
 
-        button.setTitle(viewModel.button.title, for: .normal)
-        button.style = viewModel.button.style
+        button.setTitle(card.actionTitle, for: .normal)
+        button.style = .primary
 
-        button.action = { [weak self] in
-            self?.listener?.handleButtonAction(viewModel.button.action)
+        button.action = card.action.action
+    }
+}
+
+private extension CardType {
+    func card(theme: Theme) -> Card {
+        switch self {
+        case .bluetoothOff:
+            return .bluetoothOff(theme: theme)
+        case .exposureOff:
+            return .exposureOff(theme: theme)
+        case let .noInternet(retryHandler: retryHandler):
+            return .noInternet(theme: theme, retryHandler: retryHandler)
+        case .noLocalNotifications:
+            return .noLocalNotifications(theme: theme)
         }
     }
 }

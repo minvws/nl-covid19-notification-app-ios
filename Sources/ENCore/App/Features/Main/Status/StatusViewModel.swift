@@ -82,16 +82,16 @@ struct StatusViewModel {
     var title: NSAttributedString
     var description: NSAttributedString
     var buttons: [StatusViewButtonModel]
-    var card: StatusCardViewModel?
+    var cardType: CardType?
     var footer: NSAttributedString?
     var shouldShowHideMessage: Bool
     var gradientColor: ThemeColor
     var showScene: Bool
 
-    func with(card: StatusCardViewModel?? = nil) -> Self {
+    func with(cardType: CardType?) -> Self {
         var result = self
-        if let card = card {
-            result.card = card
+        if let cardType = cardType {
+            result.cardType = cardType
         }
         return result
     }

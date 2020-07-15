@@ -27,9 +27,17 @@ protocol StatusDependency {
     var exposureStateStream: ExposureStateStreaming { get }
 }
 
-private final class StatusDependencyProvider: DependencyProvider<StatusDependency> {
+private final class StatusDependencyProvider: DependencyProvider<StatusDependency>, CardDependency {
     var exposureStateStream: ExposureStateStreaming {
         return dependency.exposureStateStream
+    }
+
+    var cardBuilder: CardBuildable {
+        return CardBuilder(dependency: self)
+    }
+
+    var theme: Theme {
+        return dependency.theme
     }
 }
 
@@ -39,6 +47,7 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
 
         let viewController = StatusViewController(
             exposureStateStream: dependencyProvider.exposureStateStream,
+            cardBuilder: dependencyProvider.cardBuilder,
             listener: listener,
             theme: dependencyProvider.dependency.theme,
             topAnchor: topAnchor
