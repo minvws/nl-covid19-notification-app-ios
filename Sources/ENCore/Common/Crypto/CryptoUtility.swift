@@ -12,7 +12,6 @@ import Security
 
 /// @mockable
 protocol CryptoUtility {
-    func randomBytes(ofLength length: Int) -> Data
     func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ())
     func signature(forData data: Data, key: Data) -> Data
 }
@@ -28,16 +27,6 @@ final class CryptoUtilityImpl: CryptoUtility {
     }
 
     // MARK: - CryptoUtility
-
-    func randomBytes(ofLength length: Int) -> Data {
-        var data = Data(count: length)
-
-        _ = data.withUnsafeMutableBytes {
-            SecRandomCopyBytes(kSecRandomDefault, length, $0.baseAddress!)
-        }
-
-        return data
-    }
 
     func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ()) {
         DispatchQueue.global().async {

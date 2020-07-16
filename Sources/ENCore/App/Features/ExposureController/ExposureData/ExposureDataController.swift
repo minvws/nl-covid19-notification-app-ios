@@ -122,9 +122,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        let operation = operationProvider.requestLabConfirmationKeyOperation
-
-        return operation.execute()
+        return requestApplicationConfiguration()
+            .map { (configuration: ApplicationConfiguration) in
+                Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
+            }.flatMap { (padding: Padding) in
+                return self.operationProvider
+                    .requestLabConfirmationKeyOperation(padding: padding)
+                    .execute()
+            }.eraseToAnyPublisher()
     }
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
@@ -132,9 +137,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .map { (configuration: ApplicationConfiguration) in
                 Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
             }.flatMap { (padding: Padding) in
-                return self.operationProvider.uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys,
-                                                                           labConfirmationKey: labConfirmationKey,
-                                                                           padding: padding).execute()
+                return self.operationProvider
+                    .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
+                    .execute()
             }.eraseToAnyPublisher()
     }
 

@@ -34,15 +34,13 @@ final class NetworkControllerTests: TestCase {
             completion(.success(key))
         }
 
-        cryptoUtility.randomBytesHandler = { _ in return Data() }
-
         var receivedValue: LabConfirmationKey!
         var receivedCompletion: Subscribers.Completion<NetworkError>!
 
         let exp = expectation(description: "wait")
 
         networkController
-            .requestLabConfirmationKey()
+            .requestLabConfirmationKey(padding: padding)
             .sink(
                 receiveCompletion: { completion in
                     receivedCompletion = completion
@@ -71,15 +69,13 @@ final class NetworkControllerTests: TestCase {
             completion(.failure(.invalidResponse))
         }
 
-        cryptoUtility.randomBytesHandler = { _ in return Data() }
-
         var receivedValue: LabConfirmationKey!
         var receivedCompletion: Subscribers.Completion<NetworkError>!
 
         let exp = expectation(description: "wait")
 
         networkController
-            .requestLabConfirmationKey()
+            .requestLabConfirmationKey(padding: padding)
             .sink(
                 receiveCompletion: { completion in
                     receivedCompletion = completion
@@ -97,5 +93,70 @@ final class NetworkControllerTests: TestCase {
 
         XCTAssertNotNil(receivedCompletion)
         XCTAssertEqual(receivedCompletion, Subscribers.Completion<NetworkError>.failure(.invalidResponse))
+    }
+
+    func test_requestLabConfirmationKey_addsCorrectPadding() {
+        networkManager.postRegisterHandler = { request, completion in
+            let length = self.requestLength(object: request)
+            XCTAssertEqual(length, 1812)
+            completion(.failure(.invalidResponse))
+        }
+
+        var receivedCompletion: Subscribers.Completion<NetworkError>!
+
+        let exp = expectation(description: "wait")
+
+        networkController
+            .requestLabConfirmationKey(padding: Padding(minimumRequestSize: 1800, maximumRequestSize: 1800))
+            .sink(receiveCompletion: { completion in
+                receivedCompletion = completion
+                exp.fulfill()
+            },
+            receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertNotNil(receivedCompletion)
+    }
+
+    func test_requestPostKeys_addsCorrectPadding() {
+        networkManager.postKeysHandler = { request, _, completion in
+            let length = self.requestLength(object: request)
+            XCTAssertEqual(length, 1813)
+            completion(.invalidRequest)
+        }
+
+        cryptoUtility.signatureHandler = { _, _ in Data() }
+
+        var receivedCompletion: Subscribers.Completion<NetworkError>!
+
+        let exp = expectation(description: "wait")
+        let key = LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: Date())
+
+        networkController
+            .postKeys(keys: [], labConfirmationKey: key, padding: padding)
+            .sink(receiveCompletion: { completion in
+                receivedCompletion = completion
+                exp.fulfill()
+            },
+            receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertNotNil(receivedCompletion)
+    }
+
+    // MARK: - Private
+
+    private let padding = Padding(minimumRequestSize: 1800, maximumRequestSize: 1800)
+
+    private func requestLength<T: Encodable>(object: T) -> Int {
+        do {
+            return try JSONEncoder().encode(object).count
+        } catch {
+            return 0
+        }
     }
 }

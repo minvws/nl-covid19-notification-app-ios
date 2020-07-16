@@ -16,7 +16,7 @@ protocol NetworkControlling {
     func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError>
     func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError>
 
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError>
+    func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError>
 
     func startObservingNetworkReachability()

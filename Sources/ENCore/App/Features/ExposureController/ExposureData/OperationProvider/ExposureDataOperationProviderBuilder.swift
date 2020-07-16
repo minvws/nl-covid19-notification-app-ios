@@ -25,7 +25,7 @@ protocol ExposureDataOperationProvider {
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
 
     var requestManifestOperation: RequestAppManifestDataOperation { get }
-    var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation { get }
+    func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,

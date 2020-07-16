@@ -15,7 +15,7 @@ struct PrePostKeysRequest: Encodable {
 struct PostKeysRequest: Codable {
     let keys: [TemporaryKey]
     let bucketId: Data
-    let padding: Data
+    let padding: String
 }
 
 struct TemporaryKey: Codable {

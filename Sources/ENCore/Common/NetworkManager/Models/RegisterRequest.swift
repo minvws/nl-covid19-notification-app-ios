@@ -7,6 +7,8 @@
 
 import Foundation
 
+struct PreRegisterRequest: Encodable {}
+
 struct RegisterRequest: Encodable {
     let padding: String
 }

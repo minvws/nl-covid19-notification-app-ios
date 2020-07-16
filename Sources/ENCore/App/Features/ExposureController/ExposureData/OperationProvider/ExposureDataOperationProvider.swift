@@ -55,9 +55,10 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                storageController: storageController)
     }
 
-    var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation {
+    func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation {
         return RequestLabConfirmationKeyDataOperation(networkController: networkController,
-                                                      storageController: storageController)
+                                                      storageController: storageController,
+                                                      padding: padding)
     }
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
