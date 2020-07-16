@@ -1,0 +1,15 @@
+---
+name: "build macOS-10.15"
+on: push
+jobs:
+  build_macos:
+    runs-on: macOS-10.15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: ciprep
+        run: ./tools/scripts/ci/010_ciprep
+      - name: cibuild
+        run: ./tools/scripts/ci/030_cibuild
+      - name: citest
+        run: ./tools/scripts/ci/050_citest

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+
+echo "*********************"
+echo "* install Homebrew  *"
+echo "*********************"
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+echo "*********************"
+echo "* install swift 5.2 *"
+echo "*********************"
+
+SWIFT_VERSION=5.2
+eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
