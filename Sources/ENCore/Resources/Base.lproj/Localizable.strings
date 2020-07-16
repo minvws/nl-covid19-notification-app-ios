@@ -114,7 +114,6 @@
 "status.appState.inactive.no_recent_updates.description" = "De app kon de afgelopen 24 uur geen internetverbinding maken. Controleer of je wifi of mobiele data aanstaan en probeer het opnieuw.";
 "status.appState.card.title" = "App is niet actief";
 "status.appState.card.description" = "%@ werkt alleen als de noodzakelijke instellingen aanstaan.";
-"status.appState.card.no_recent_updates.description" = "De app kon de afgelopen 24 uur geen internetverbinding maken. Controleer of je wifi of mobiele data aanstaan en probeer het opnieuw.";
 "status.appState.card.button" = "Instellingen aanzetten";
 "status.appState.card.try_again" = "Probeer opnieuw";
 "status.active.description" = "Ook als je de app sluit, blijft %@ actief";
@@ -224,6 +223,36 @@
 "cards.notificationsOff.title" = "Meldingen staan <u>uit</u>.";
 "cards.notificationsOff.content" = "Zet algemene meldingen aan zodat de app direct informatie kan delen wanneer dat nodig is.";
 "cards.notificationsOff.action" = "Instellingen aanzetten";
+
+// MARK: - Cards - Enable Settings
+
+"enableSettings.exposureNotifications.title" = "Contactmeldingen aanzetten";
+"enableSettings.exposureNotifications.action" = "Open Instellingen";
+
+// supports HTML
+"enableSettings.exposureNotifications.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
+// supports HTML
+"enableSettings.exposureNotifications.step2" = "Zet contactmeldingen aan";
+"enableSettings.exposureNotifications.step2.action.title" = "Meldingen over blootstelling aan COVID-19";
+
+"enableSettings.bluetooth.title" = "Bluetooth aanzetten";
+"enableSettings.bluetooth.action" = "Open Instellingen";
+// supports HTML
+"enableSettings.bluetooth.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
+// supports HTML
+"enableSettings.bluetooth.step2" = "Zet <b>&#96;Bluetooth&#96;</b> aan";
+"enableSettings.bluetooth.step2.action.title" = "Bluetooth";
+
+"enableSettings.localNotifications.title" = "Algemene meldingen aanzetten";
+"enableSettings.localNotifications.action" = "Open Instellingen";
+// supports HTML
+"enableSettings.localNotifications.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
+// supports HTML
+"enableSettings.localNotifications.step2" = "Ga naar <b>&#96;Notificaties&#96;</b>";
+"enableSettings.localNotifications.step2.action.title" = "Notificaties";
+// supports HTML
+"enableSettings.localNotifications.step3" = "Zet <b>&#96;Sta berichtgeving toe&#96;</b> aan";
+"enableSettings.localNotifications.step3.action.title" = "Sta berichtgeving toe";
 
 // MARK: - Exposure Notification Received - User Explanation
 "exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";

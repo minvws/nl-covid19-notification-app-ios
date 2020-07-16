@@ -30,7 +30,6 @@ extension NSAttributedString {
         paragraphStyle.alignment = textAlignment
         var attributes: [Key: Any] = [
             .foregroundColor: textColor,
-            .font: font,
             .paragraphStyle: paragraphStyle
         ]
         if let underlineColor = underlineColor {
@@ -49,6 +48,32 @@ extension NSAttributedString {
                     location: 0,
                     length:
                     attributedTitle.length))
+
+            let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitBold)
+            let boldFont = boldFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
+
+            // replace default font with desired font - maintain bold style if possible
+            let fullRange = NSRange(location: 0, length: attributedTitle.length)
+            attributedTitle.enumerateAttribute(NSAttributedString.Key.font,
+                                               in: fullRange,
+                                               options: [])
+            { value, range, finished in
+                guard let currentFont = value as? UIFont else {
+                    return
+                }
+
+                let newFont: UIFont
+
+                if let boldFont = boldFont,
+                    currentFont.fontDescriptor.symbolicTraits.contains(UIFontDescriptor.SymbolicTraits.traitBold) {
+                    newFont = boldFont
+                } else {
+                    newFont = font
+                }
+
+                attributedTitle.removeAttribute(.font, range: range)
+                attributedTitle.addAttribute(.font, value: newFont, range: range)
+            }
 
             return attributedTitle
         }

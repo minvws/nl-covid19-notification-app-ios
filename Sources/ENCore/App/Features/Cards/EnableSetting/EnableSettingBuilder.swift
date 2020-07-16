@@ -10,6 +10,7 @@ import Foundation
 /// @mockable
 protocol EnableSettingListener: AnyObject {
     func enableSettingRequestsDismiss(shouldDismissViewController: Bool)
+    func enableSettingDidTriggerAction()
 }
 
 protocol EnableSettingDependency {
@@ -27,13 +28,16 @@ protocol EnableSettingBuildable {
     /// Builds EnableSettingViewController
     ///
     /// - Parameter listener: Listener of created EnableSettingViewController
-    func build(withListener listener: EnableSettingListener) -> ViewControllable
+    func build(withListener listener: EnableSettingListener,
+               setting: EnableSetting) -> ViewControllable
 }
 
 final class EnableSettingBuilder: Builder<EnableSettingDependency>, EnableSettingBuildable {
-    func build(withListener listener: EnableSettingListener) -> ViewControllable {
+    func build(withListener listener: EnableSettingListener, setting: EnableSetting) -> ViewControllable {
         let dependencyProvider = EnableSettingDependencyProvider(dependency: dependency)
 
-        return EnableSettingViewController(listener: listener, theme: dependencyProvider.theme)
+        return EnableSettingViewController(listener: listener,
+                                           theme: dependencyProvider.theme,
+                                           setting: setting)
     }
 }

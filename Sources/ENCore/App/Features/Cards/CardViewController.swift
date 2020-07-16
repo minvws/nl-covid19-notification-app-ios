@@ -8,9 +8,16 @@
 import Foundation
 import UIKit
 
+/// @mockable
+protocol CardRouting: Routing {
+    func route(to enableSetting: EnableSetting)
+    func detachEnableSetting(hideViewController: Bool)
+}
+
 final class CardViewController: ViewController, CardViewControllable {
 
-    init(theme: Theme, type: CardType) {
+    init(theme: Theme,
+         type: CardType) {
         self.type = type
 
         super.init(theme: theme)
@@ -20,27 +27,67 @@ final class CardViewController: ViewController, CardViewControllable {
 
     override func loadView() {
         self.view = internalView
+        self.view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         internalView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
-        internalView.update(with: type.card(theme: theme))
+
+        let card = type.card(theme: theme)
+        internalView.update(with: card, action: buttonAction(for: card))
     }
 
     // MARK: - CardViewControllable
 
-    var type: CardType {
-        didSet {
-            if isViewLoaded {
-                internalView.update(with: type.card(theme: theme))
-            }
-        }
+    func update(cardType: CardType) {
+        self.type = cardType
+    }
+
+    func present(viewController: ViewControllable) {
+        uiviewController.present(viewController.uiviewController,
+                                 animated: true,
+                                 completion: nil)
+    }
+
+    func dismiss(viewController: ViewControllable) {
+        viewController.uiviewController.dismiss(animated: true, completion: nil)
+    }
+
+    // MARK: - EnableSettingListener
+
+    func enableSettingRequestsDismiss(shouldDismissViewController: Bool) {
+        router?.detachEnableSetting(hideViewController: shouldDismissViewController)
+    }
+
+    func enableSettingDidTriggerAction() {
+        router?.detachEnableSetting(hideViewController: true)
     }
 
     // MARK: - Private
 
+    private func buttonAction(for card: Card) -> () -> () {
+        return {
+            switch card.action {
+            case let .openEnableSetting(enableSetting):
+                self.router?.route(to: enableSetting)
+            case let .custom(action: action):
+                action()
+            }
+        }
+    }
+
+    private var type: CardType {
+        didSet {
+            if isViewLoaded {
+                let card = type.card(theme: theme)
+                internalView.update(with: card, action: buttonAction(for: card))
+            }
+        }
+    }
+
+    weak var router: CardRouting?
     private lazy var internalView: CardView = CardView(theme: theme)
 }
 
@@ -117,7 +164,7 @@ private final class CardView: View {
         ])
     }
 
-    func update(with card: Card) {
+    func update(with card: Card, action: @escaping () -> ()) {
         headerIconView.image = Image.named("StatusInactive")
         headerTitleLabel.attributedText = card.title
         descriptionLabel.attributedText = card.message
@@ -125,7 +172,7 @@ private final class CardView: View {
         button.setTitle(card.actionTitle, for: .normal)
         button.style = .primary
 
-        button.action = card.action.action
+        button.action = action
     }
 }
 

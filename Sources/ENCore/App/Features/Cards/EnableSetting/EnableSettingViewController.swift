@@ -6,11 +6,15 @@
  */
 
 import Foundation
+import UIKit
 
-final class EnableSettingViewController: ViewController {
+final class EnableSettingViewController: ViewController, UIAdaptivePresentationControllerDelegate {
 
-    init(listener: EnableSettingListener, theme: Theme) {
+    init(listener: EnableSettingListener,
+         theme: Theme,
+         setting: EnableSetting) {
         self.listener = listener
+        self.setting = .enableLocalNotifications
 
         super.init(theme: theme)
     }
@@ -19,30 +23,141 @@ final class EnableSettingViewController: ViewController {
 
     override func loadView() {
         self.view = internalView
+        self.view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // TODO: Implement or delete
+        internalView.update(model: setting.model(theme: theme), actionCompletion: { [weak self] in
+            self?.listener?.enableSettingDidTriggerAction()
+        })
+
+        internalView.navigationBar.topItem?.rightBarButtonItem?.target = self
+        internalView.navigationBar.topItem?.rightBarButtonItem?.action = #selector(didTapCloseButton)
+    }
+
+    // MARK: - UIAdaptivePresentationControllerDelegate
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        listener?.enableSettingRequestsDismiss(shouldDismissViewController: false)
     }
 
     // MARK: - Private
 
+    @objc
+    private func didTapCloseButton() {
+        listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+    }
+
     private weak var listener: EnableSettingListener?
-    private lazy var internalView: EnableSettingView = EnableSettingView()
+    private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
+    private let setting: EnableSetting
 }
 
 private final class EnableSettingView: View {
+    private lazy var scrollView = UIScrollView()
+    private lazy var titleLabel = Label()
+    fileprivate lazy var button = Button(theme: theme)
+    fileprivate lazy var navigationBar = UINavigationBar()
+
+    private var stepViews: [EnableSettingStepView] = []
+
     override func build() {
         super.build()
 
-        // TODO: Construct View here or delete this function
+        scrollView.contentInsetAdjustmentBehavior = .automatic
+        scrollView.alwaysBounceVertical = true
+
+        titleLabel.font = theme.fonts.title1
+        titleLabel.numberOfLines = 0
+        scrollView.addSubview(titleLabel)
+
+        let navigationItem = UINavigationItem()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                            target: nil,
+                                                            action: nil)
+        navigationBar.setItems([navigationItem], animated: false)
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        navigationBar.standardAppearance = appearance
+
+        addSubview(navigationBar)
+        addSubview(scrollView)
+        addSubview(button)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        // TODO: Setup constraints here or delete this function
+        navigationBar.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+        }
+
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(8)
+            make.leading.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview().inset(32)
+        }
+
+        button.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalTo(layoutMarginsGuide.snp.bottomMargin)
+            make.top.equalTo(scrollView.snp.bottom).offset(16)
+            make.height.equalTo(48)
+        }
+
+        scrollView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.width.equalToSuperview()
+            make.top.equalTo(navigationBar.snp.bottom).offset(8)
+        }
+    }
+
+    // MARK: - Private
+
+    fileprivate func update(model: EnableSettingModel, actionCompletion: @escaping () -> ()) {
+        titleLabel.text = model.title
+        button.setTitle(model.actionTitle, for: .normal)
+        button.action = {
+            model.action.action(actionCompletion)
+        }
+
+        stepViews.forEach { $0.removeFromSuperview() }
+
+        var stepIndex = 0
+
+        stepViews = model.steps.map { model in
+            stepIndex += 1
+
+            return EnableSettingStepView(theme: theme, step: model, stepIndex: stepIndex)
+        }
+
+        stepViews.forEach(scrollView.addSubview(_:))
+
+        updateStepViewConstraints()
+    }
+
+    private func updateStepViewConstraints() {
+        var isFirst = true
+
+        var yAnchor: View?
+
+        stepViews.forEach { view in
+            view.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview()
+                make.width.equalTo(scrollView)
+
+                if isFirst {
+                    make.top.equalTo(titleLabel.snp.bottom).offset(32)
+                } else if let yAnchor = yAnchor {
+                    make.top.equalTo(yAnchor.snp.bottom).offset(8)
+                }
+            }
+
+            yAnchor = view
+            isFirst = false
+        }
     }
 }

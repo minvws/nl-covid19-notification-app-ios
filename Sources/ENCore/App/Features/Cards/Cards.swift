@@ -6,26 +6,10 @@
  */
 
 import Foundation
-import UIKit
 
-struct CardAction {
-    let action: () -> ()
-
-    static var openSettings: CardAction {
-        return .init {
-            guard let url = URL(string: UIApplication.openSettingsURLString) else {
-                return
-            }
-
-            UIApplication.shared.open(url,
-                                      options: [:],
-                                      completionHandler: nil)
-        }
-    }
-
-    static func custom(action: @escaping () -> ()) -> CardAction {
-        return .init(action: action)
-    }
+enum CardAction {
+    case openEnableSetting(EnableSetting)
+    case custom(action: () -> ())
 }
 
 struct Card {
@@ -41,7 +25,7 @@ struct Card {
 
         return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
-                    action: .openSettings,
+                    action: .openEnableSetting(.enableBluetooth),
                     actionTitle: action)
     }
 
@@ -52,7 +36,7 @@ struct Card {
 
         return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
-                    action: .openSettings,
+                    action: .openEnableSetting(.enableExposureNotifications),
                     actionTitle: action)
     }
 
@@ -74,7 +58,7 @@ struct Card {
 
         return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
-                    action: .openSettings,
+                    action: .openEnableSetting(.enableLocalNotifications),
                     actionTitle: action)
     }
 }

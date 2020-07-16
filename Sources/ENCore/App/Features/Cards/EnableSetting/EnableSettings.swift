@@ -6,15 +6,115 @@
  */
 
 import Foundation
+import UIKit
 
-struct EnableSetting {
+struct EnableSettingAction {
+    typealias Completion = () -> ()
+    let action: (@escaping Completion) -> ()
+
+    static var openSettings: EnableSettingAction {
+        return .init { completion in
+            guard let url = URL(string: UIApplication.openSettingsURLString) else {
+                return
+            }
+
+            UIApplication.shared.open(url,
+                                      options: [:],
+                                      completionHandler: { _ in completion() })
+        }
+    }
+
+    static func custom(action: @escaping (Completion) -> ()) -> EnableSettingAction {
+        return EnableSettingAction(action: action)
+    }
+}
+
+enum EnableSetting {
+    case enableExposureNotifications
+    case enableBluetooth
+    case enableLocalNotifications
+
+    func model(theme: Theme) -> EnableSettingModel {
+        switch self {
+        case .enableExposureNotifications:
+            return EnableSettingModel.enableExposureNotifications(theme)
+        case .enableBluetooth:
+            return EnableSettingModel.enableBluetooth(theme)
+        case .enableLocalNotifications:
+            return EnableSettingModel.enableLocalNotifications(theme)
+        }
+    }
+}
+
+struct EnableSettingModel {
     let title: String
     let steps: [EnableSettingStep]
-    let action: () -> ()
+    let action: EnableSettingAction
     let actionTitle: String
+
+    static var enableExposureNotifications: (Theme) -> EnableSettingModel {
+        return { theme in
+            let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
+                                                                           font: theme.fonts.body,
+                                                                           textColor: .black) }
+
+            let step1 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.exposureNotifications.step1")),
+                                          action: nil)
+            let step2 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.exposureNotifications.step2")),
+                                          action: .toggle(description: Localization.string(for: "enableSettings.exposureNotifications.step2.action.title")))
+
+            return .init(title: Localization.string(for: "enableSettings.exposureNotifications.title"),
+                         steps: [step1, step2],
+                         action: .openSettings,
+                         actionTitle: Localization.string(for: "enableSettings.exposureNotifications.action"))
+        }
+    }
+
+    static var enableBluetooth: (Theme) -> EnableSettingModel {
+        return { theme in
+            let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
+                                                                           font: theme.fonts.body,
+                                                                           textColor: .black) }
+
+            let step1 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.bluetooth.step1")),
+                                          action: nil)
+            let step2 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.bluetooth.step2")),
+                                          action: .toggle(description: Localization.string(for: "enableSettings.bluetooth.step2.action.title")))
+
+            return .init(title: Localization.string(for: "enableSettings.bluetooth.title"),
+                         steps: [step1, step2],
+                         action: .openSettings,
+                         actionTitle: Localization.string(for: "enableSettings.bluetooth.action"))
+        }
+    }
+
+    static var enableLocalNotifications: (Theme) -> EnableSettingModel {
+        return { theme in
+            let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
+                                                                           font: theme.fonts.body,
+                                                                           textColor: .black) }
+
+            let step1 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.localNotifications.step1")),
+                                          action: nil)
+            let step2 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.localNotifications.step2")),
+                                          action: .cell(description: Localization.string(for: "enableSettings.localNotifications.step2.action.title")))
+            let step3 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.localNotifications.step3")),
+                                          action: .toggle(description: Localization.string(for: "enableSettings.localNotifications.step3.action.title")))
+
+            return .init(title: Localization.string(for: "enableSettings.localNotifications.title"),
+                         steps: [step1, step2, step3],
+                         action: .openSettings,
+                         actionTitle: Localization.string(for: "enableSettings.localNotifications.action"))
+        }
+    }
 }
 
 struct EnableSettingStep {
-    let description: String
-    let image: Image
+    enum Action {
+        case toggle(description: String)
+        case cell(description: String)
+    }
+
+    let description: NSAttributedString
+    let action: Action?
 }

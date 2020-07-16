@@ -25,7 +25,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
     private var exposureStateStreamCancellable: AnyCancellable?
 
     private let cardBuilder: CardBuildable
-    private let cardViewController: CardViewControllable
+    private var cardRouter: Routing & CardTypeSettable
 
     init(exposureStateStream: ExposureStateStreaming,
          cardBuilder: CardBuildable,
@@ -37,7 +37,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
         self.topAnchor = topAnchor
 
         self.cardBuilder = cardBuilder
-        self.cardViewController = cardBuilder.build(type: .bluetoothOff)
+        self.cardRouter = cardBuilder.build(type: .bluetoothOff)
 
         super.init(theme: theme)
     }
@@ -54,8 +54,8 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         statusView.listener = listener
 
-        addChild(cardViewController.uiviewController)
-        cardViewController.uiviewController.didMove(toParent: self)
+        addChild(cardRouter.viewControllable.uiviewController)
+        cardRouter.viewControllable.uiviewController.didMove(toParent: self)
     }
 
     override func didMove(toParent parent: UIViewController?) {
@@ -110,10 +110,10 @@ final class StatusViewController: ViewController, StatusViewControllable {
             strongSelf.statusView.update(with: statusViewModel)
 
             if let cardType = statusViewModel.cardType {
-                strongSelf.cardViewController.type = cardType
-                strongSelf.cardViewController.uiviewController.view.isHidden = false
+                strongSelf.cardRouter.type = cardType
+                strongSelf.cardRouter.viewControllable.uiviewController.view.isHidden = false
             } else {
-                strongSelf.cardViewController.uiviewController.view.isHidden = true
+                strongSelf.cardRouter.viewControllable.uiviewController.view.isHidden = true
             }
         }
     }
@@ -127,7 +127,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
     // MARK: - Private
 
     private lazy var statusView: StatusView = StatusView(theme: self.theme,
-                                                         cardView: cardViewController.uiviewController.view)
+                                                         cardView: cardRouter.viewControllable.uiviewController.view)
 }
 
 private final class StatusView: View {
@@ -244,7 +244,7 @@ private final class StatusView: View {
             maker.top.bottom.equalToSuperview().inset(6)
         }
         stretchGuide.snp.makeConstraints { maker in
-            maker.leading.trailing.equalTo(contentStretchGuide).inset(-24)
+            maker.leading.trailing.equalTo(contentStretchGuide).inset(-16)
             maker.top.equalTo(contentStretchGuide).inset(-70)
             maker.bottom.greaterThanOrEqualTo(contentStretchGuide.snp.bottom)
             maker.leading.trailing.bottom.equalToSuperview()

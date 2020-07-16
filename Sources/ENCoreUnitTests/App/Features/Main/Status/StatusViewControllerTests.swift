@@ -22,7 +22,11 @@ final class StatusViewControllerTests: TestCase {
         recordSnapshots = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
 
-        viewController = StatusViewController(exposureStateStream: exposureStateStream, listener: StatusListenerMock(), theme: theme, topAnchor: nil)
+        viewController = StatusViewController(exposureStateStream: exposureStateStream,
+                                              cardBuilder: CardBuildableMock(),
+                                              listener: StatusListenerMock(),
+                                              theme: theme,
+                                              topAnchor: nil)
         viewController.router = router
     }
 

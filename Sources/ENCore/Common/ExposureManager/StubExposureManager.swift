@@ -14,11 +14,11 @@ final class StubExposureManager: ExposureManaging {
 
     func activate(completion: @escaping (ExposureManagerStatus) -> ()) {
         // activation always succeed in stub-land
-        completion(.active)
+        completion(.inactive(.bluetoothOff))
     }
 
     func getExposureNotificationStatus() -> ExposureManagerStatus {
-        return isExposureNotificationEnabled() ? .active : .inactive(.unknown)
+        return isExposureNotificationEnabled() ? .inactive(.bluetoothOff) : .inactive(.unknown)
     }
 
     func isExposureNotificationEnabled() -> Bool {

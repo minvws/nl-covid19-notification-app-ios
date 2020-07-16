@@ -14,27 +14,38 @@ enum CardType {
     case noLocalNotifications
 }
 
-protocol CardViewControllable: ViewControllable {
+protocol CardTypeSettable {
     var type: CardType { get set }
 }
 
 /// @mockable
 protocol CardBuildable {
     /// Builds CardViewController
-    func build(type: CardType) -> CardViewControllable
+    func build(type: CardType) -> Routing & CardTypeSettable
 }
 
 protocol CardDependency {
     var theme: Theme { get }
 }
 
-private final class CardDependencyProvider: DependencyProvider<CardDependency> {}
+private final class CardDependencyProvider: DependencyProvider<CardDependency>, EnableSettingDependency {
+    var enableSettingBuilder: EnableSettingBuildable {
+        return EnableSettingBuilder(dependency: self)
+    }
+
+    var theme: Theme {
+        return dependency.theme
+    }
+}
 
 final class CardBuilder: Builder<CardDependency>, CardBuildable {
-    func build(type: CardType) -> CardViewControllable {
+    func build(type: CardType) -> Routing & CardTypeSettable {
         let dependencyProvider = CardDependencyProvider(dependency: dependency)
 
-        return CardViewController(theme: dependencyProvider.dependency.theme,
-                                  type: type)
+        let viewController = CardViewController(theme: dependencyProvider.dependency.theme,
+                                                type: type)
+
+        return CardRouter(viewController: viewController,
+                          enableSettingBuilder: dependencyProvider.enableSettingBuilder)
     }
 }
