@@ -366,7 +366,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                             identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
                                             completion: { _ in
                                                 promise(.success(value))
-                    })
+                                            })
                 }
             }
         }

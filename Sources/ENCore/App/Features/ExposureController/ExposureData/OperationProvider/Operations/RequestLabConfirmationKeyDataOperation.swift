@@ -23,9 +23,11 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
     typealias Result = LabConfirmationKey
 
     init(networkController: NetworkControlling,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         padding: Padding) {
         self.networkController = networkController
         self.storageController = storageController
+        self.padding = padding
     }
 
     // MARK: - ExposureDataOperation
@@ -60,7 +62,7 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
                                          identifiedBy: ExposureDataStorageKey.labConfirmationKey,
                                          completion: { _ in
                                              promise(.success(key))
-            })
+                                         })
         }
         .share()
         .eraseToAnyPublisher()
@@ -68,7 +70,7 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
 
     private func requestNewKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
         return networkController
-            .requestLabConfirmationKey()
+            .requestLabConfirmationKey(padding: padding)
             .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
             .eraseToAnyPublisher()
     }
@@ -77,4 +79,5 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let padding: Padding
 }

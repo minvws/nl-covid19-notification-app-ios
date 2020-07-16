@@ -18,17 +18,18 @@ protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
                                          configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation
 
-    var processPendingLabConfirmationUploadRequestsOperation: ProcessPendingLabConfirmationUploadRequestsDataOperation { get }
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
 
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
     func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
 
     var requestManifestOperation: RequestAppManifestDataOperation { get }
-    var requestLabConfirmationKeyOperation: RequestLabConfirmationKeyDataOperation { get }
+    func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
-                                      labConfirmationKey: LabConfirmationKey) -> UploadDiagnosisKeysDataOperation
+                                      labConfirmationKey: LabConfirmationKey,
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperation
 }
 
 protocol ExposureDataOperationProviderBuildable {

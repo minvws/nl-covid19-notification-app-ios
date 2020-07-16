@@ -12,18 +12,20 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          diagnosisKeys: [DiagnosisKey],
-         labConfirmationKey: LabConfirmationKey) {
+         labConfirmationKey: LabConfirmationKey,
+         padding: Padding) {
         self.networkController = networkController
         self.storageController = storageController
         self.diagnosisKeys = diagnosisKeys
         self.labConfirmationKey = labConfirmationKey
+        self.padding = padding
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
         let keys = filterOutAlreadyUploadedKeys(diagnosisKeys)
 
         return networkController
-            .postKeys(keys: keys, labConfirmationKey: labConfirmationKey)
+            .postKeys(keys: keys, labConfirmationKey: labConfirmationKey, padding: padding)
             .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
             .catch { error in self.scheduleRetryWhenFailed(error: error, diagnosisKeys: keys, labConfirmationKey: self.labConfirmationKey) }
             .flatMap { self.storeLastRollingStartNumber(for: keys) }
@@ -92,4 +94,5 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
     private let storageController: StorageControlling
     private let diagnosisKeys: [DiagnosisKey]
     private let labConfirmationKey: LabConfirmationKey
+    private let padding: Padding
 }

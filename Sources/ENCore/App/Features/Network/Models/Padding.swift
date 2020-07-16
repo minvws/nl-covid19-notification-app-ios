@@ -7,8 +7,7 @@
 
 import Foundation
 
-struct PreRegisterRequest: Encodable {}
-
-struct RegisterRequest: Encodable {
-    let padding: String
+struct Padding {
+    let minimumRequestSize: Int
+    let maximumRequestSize: Int
 }

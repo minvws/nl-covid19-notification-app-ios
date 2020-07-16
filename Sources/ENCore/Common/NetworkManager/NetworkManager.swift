@@ -53,7 +53,7 @@ final class NetworkManager: NetworkManaging, Logging {
                         },
                         receiveValue: { (data: Manifest) in
                             completion(.success(data))
-                    })
+                        })
                     .store(in: &self.disposeBag)
             }
         }
@@ -86,7 +86,7 @@ final class NetworkManager: NetworkManaging, Logging {
                         },
                         receiveValue: { data in
                             completion(.success(data))
-                    })
+                        })
                     .store(in: &self.disposeBag)
             }
         }
@@ -119,7 +119,7 @@ final class NetworkManager: NetworkManaging, Logging {
                         },
                         receiveValue: { data in
                             completion(.success(data))
-                    })
+                        })
                     .store(in: &self.disposeBag)
             }
         }
@@ -153,7 +153,7 @@ final class NetworkManager: NetworkManaging, Logging {
                         },
                         receiveValue: { url in
                             completion(.success(url))
-                    })
+                        })
                     .store(in: &self.disposeBag)
             }
         }
@@ -230,7 +230,7 @@ final class NetworkManager: NetworkManaging, Logging {
                     },
                     receiveValue: { value in
                         completion(.success(value))
-                })
+                    })
                 .store(in: &self.disposeBag)
         }
     }

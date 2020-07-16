@@ -17,9 +17,11 @@ struct PendingLabConfirmationUploadRequest: Codable, Equatable {
 final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDataOperation {
 
     init(networkController: NetworkControlling,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         padding: Padding) {
         self.networkController = networkController
         self.storageController = storageController
+        self.padding = padding
     }
 
     // MARK: - ExposureDataOperation
@@ -63,7 +65,8 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
     private func uploadPendingRequest(_ request: PendingLabConfirmationUploadRequest) -> AnyPublisher<(PendingLabConfirmationUploadRequest, Bool), Never> {
         return networkController.postKeys(keys: request.diagnosisKeys,
-                                          labConfirmationKey: request.labConfirmationKey)
+                                          labConfirmationKey: request.labConfirmationKey,
+                                          padding: padding)
             // map results to include a boolean indicating success
             .map { _ in (request, true) }
             // convert errors into the sample tuple - with succuess = false
@@ -97,6 +100,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let padding: Padding
 }
 
 private extension PendingLabConfirmationUploadRequest {

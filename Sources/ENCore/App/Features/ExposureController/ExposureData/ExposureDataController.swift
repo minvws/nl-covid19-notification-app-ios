@@ -115,22 +115,42 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - LabFlow
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
-        let operation = operationProvider.processPendingLabConfirmationUploadRequestsOperation
-
-        return operation.execute()
+        return requestApplicationConfiguration()
+            .map { (configuration: ApplicationConfiguration) in
+                Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
+            }.flatMap { (padding: Padding) in
+                return self.operationProvider
+                    .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
+                    .execute()
+            }.eraseToAnyPublisher()
     }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        let operation = operationProvider.requestLabConfirmationKeyOperation
-
-        return operation.execute()
+        return requestApplicationConfiguration()
+            .map { (configuration: ApplicationConfiguration) in
+                Padding(minimumRequestSize: configuration.requestMinimumSize,
+                        maximumRequestSize: configuration.requestMaximumSize)
+            }
+            .flatMap { (padding: Padding) in
+                return self.operationProvider
+                    .requestLabConfirmationKeyOperation(padding: padding)
+                    .execute()
+            }
+            .eraseToAnyPublisher()
     }
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
-        let operation = operationProvider.uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys,
-                                                                       labConfirmationKey: labConfirmationKey)
-
-        return operation.execute()
+        return requestApplicationConfiguration()
+            .map { (configuration: ApplicationConfiguration) in
+                Padding(minimumRequestSize: configuration.requestMinimumSize,
+                        maximumRequestSize: configuration.requestMaximumSize)
+            }
+            .flatMap { (padding: Padding) in
+                return self.operationProvider
+                    .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
+                    .execute()
+            }
+            .eraseToAnyPublisher()
     }
 
     // MARK: - Misc

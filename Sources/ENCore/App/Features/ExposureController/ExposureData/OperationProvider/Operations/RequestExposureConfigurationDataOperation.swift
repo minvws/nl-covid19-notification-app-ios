@@ -57,7 +57,7 @@ final class RequestExposureConfigurationDataOperation: ExposureDataOperation {
                                          identifiedBy: ExposureDataStorageKey.exposureConfiguration,
                                          completion: { _ in
                                              promise(.success(exposureConfiguration))
-            })
+                                         })
         }
         .eraseToAnyPublisher()
     }

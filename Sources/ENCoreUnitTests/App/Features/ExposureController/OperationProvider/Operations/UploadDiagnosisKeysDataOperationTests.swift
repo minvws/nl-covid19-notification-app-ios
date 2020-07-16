@@ -24,7 +24,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     func test_execute_noPreviousSet_uploadsAll() {
         var receivedKeys: [DiagnosisKey]!
 
-        networkController.postKeysHandler = { keys, confirmationKey in
+        networkController.postKeysHandler = { keys, confirmationKey, padding in
             receivedKeys = keys
 
             return Just(())
@@ -47,7 +47,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     }
 
     func test_execute_stores_highestRollingNumberAfterSuccessfulUpload() {
-        networkController.postKeysHandler = { keys, confirmationKey in
+        networkController.postKeysHandler = { keys, confirmationKey, padding in
             return Just(())
                 .setFailureType(to: NetworkError.self)
                 .eraseToAnyPublisher()
@@ -78,7 +78,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
 
     func test_execute_readsHighestRollingNumberAndFiltersOutKeysBelowThat() {
         var receivedKeys: [DiagnosisKey]!
-        networkController.postKeysHandler = { keys, confirmationKey in
+        networkController.postKeysHandler = { keys, confirmationKey, padding in
             receivedKeys = keys
 
             return Just(())
@@ -129,7 +129,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
 
         operation = createOperation(withKeys: createDiagnosisKeys(withHighestRollingStartNumber: 65), expiryDate: expiryDate)
 
-        networkController.postKeysHandler = { keys, confirmationKey in
+        networkController.postKeysHandler = { keys, confirmationKey, padding in
             return Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher()
         }
 
@@ -189,7 +189,8 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: keys,
-                                                labConfirmationKey: createLabConfirmationKey(validUntil: expiryDate))
+                                                labConfirmationKey: createLabConfirmationKey(validUntil: expiryDate),
+                                                padding: Padding(minimumRequestSize: 0, maximumRequestSize: 0))
     }
 
     private func createLabConfirmationKey(validUntil: Date = Date()) -> LabConfirmationKey {

@@ -19,7 +19,9 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         super.setUp()
 
         operation = RequestLabConfirmationKeyDataOperation(networkController: networkController,
-                                                           storageController: storageController)
+                                                           storageController: storageController,
+                                                           padding: Padding(minimumRequestSize: 0,
+                                                                            maximumRequestSize: 0))
     }
 
     func test_execute_noPreviousKey() {
@@ -30,7 +32,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
             completion(nil)
         }
 
-        networkController.requestLabConfirmationKeyHandler = {
+        networkController.requestLabConfirmationKeyHandler = { _ in
             let labConfirmationKey = LabConfirmationKey(identifier: "id",
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
@@ -101,7 +103,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
             completion(nil)
         }
 
-        networkController.requestLabConfirmationKeyHandler = {
+        networkController.requestLabConfirmationKeyHandler = { _ in
             let labConfirmationKey = LabConfirmationKey(identifier: "id",
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),

@@ -75,11 +75,13 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, NetworkError> {
+    func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError> {
         return Deferred {
             Future { promise in
-                let padding = self.cryptoUtility.randomBytes(ofLength: 32).base64EncodedString()
-                let request = RegisterRequest(padding: padding)
+                let preRequest = PreRegisterRequest()
+
+                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+                let request = RegisterRequest(padding: generatedPadding)
 
                 self.networkManager.postRegister(request: request) { result in
 
@@ -101,13 +103,16 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), NetworkError> {
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError> {
         return Deferred {
             Future { promise in
-                let padding = self.cryptoUtility.randomBytes(ofLength: 32)
+
+                let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
+                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+
                 let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
                                               bucketId: labConfirmationKey.bucketIdentifier,
-                                              padding: padding)
+                                              padding: generatedPadding)
 
                 guard let requestData = try? JSONEncoder().encode(request) else {
                     promise(.failure(.encodingError))
@@ -171,4 +176,33 @@ final class NetworkController: NetworkControlling, Logging {
     private let cryptoUtility: CryptoUtility
     private var reachability: Reachability?
     private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
+
+    private func generatePadding<T: Encodable>(forObject object: T, padding: Padding) -> String {
+        func randomString(length: Int) -> String {
+            guard length > 0 else {
+                return ""
+            }
+            let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            return String((0 ..< length).map { _ in letters.randomElement() ?? "a" })
+        }
+
+        let min = padding.minimumRequestSize
+        let max = padding.maximumRequestSize
+
+        let randomInt = Int.random(in: 0 ... 100)
+        let messageSize: Int
+        if randomInt == 0 {
+            messageSize = Int.random(in: min ... max)
+        } else {
+            messageSize = Int.random(in: min ... (min + (max - min) / 100))
+        }
+
+        do {
+            let length = try JSONEncoder().encode(object).count
+            return randomString(length: messageSize - length)
+        } catch {
+            self.logError("Error encoding: \(error.localizedDescription)")
+        }
+        return randomString(length: min)
+    }
 }
