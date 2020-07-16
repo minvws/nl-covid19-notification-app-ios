@@ -1,5 +1,7 @@
 # Covid19 Notification App - iOS
 
+![build macOS-10.15](https://github.com/minvws/nl-covid19-notification-app-ios/workflows/build%20macOS-10.15/badge.svg)
+
 This repository contains the iOS App of the Proof of Concept for the Dutch exposure notification app. We provide this code in an early stage so that everyone can follow along as we develop the app, and to solicit feedback. Note that due to the early stage in which we are sharing this code, significant portions of the code might still change. We might add or remove features and code as needed, based on validation and user tests that are conducted partially in parallel to the development.
 
 * The iOS app is located in the repository you are currently viewing.
@@ -17,6 +19,10 @@ This increases the chance that we might be able to use your contribution (or it 
 ## Getting Started
 
 Run `make dev` && `make project` to get started. Homebrew (https://brew.sh) is a requirement to install dependencies.
+
+## Continuous Integration & reproducible builds
+
+In order to facilitate CI and reproducible builds (https://github.com/minvws/nl-covid19-notification-app-coordination/issues/6) this codebase can be build using Github Actions.
 
 ## OpenSSL
 

@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "*********************"
+echo "*     CI tests      *"
+echo "*********************"
+
+# swift test --enable-code-coverage
+
+exit 0

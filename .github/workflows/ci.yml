@@ -1,0 +1,17 @@
+---
+name: CI
+on:
+  [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: ciprep
+        run: ./tools/scripts/ci/010_ciprep
+      - name: cibuild
+        run: ./tools/scripts/ci/030_cibuild
+      - name: citest
+        run: xcodebuild clean test -project EN.xcodeproj -scheme ENCore CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO

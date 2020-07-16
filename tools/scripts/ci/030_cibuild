@@ -1,0 +1,9 @@
+#!/bin/sh
+echo "*********************"
+echo "*     Make dev      *"
+echo "*********************"
+make dev
+echo "*********************"
+echo "*     Make project  *"
+echo "*********************"
+make project
