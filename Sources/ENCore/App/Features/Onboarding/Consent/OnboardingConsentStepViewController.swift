@@ -120,23 +120,18 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     private func goToNextStepOrCloseConsent() {
         if let consentStep = consentStep {
-            if let nextStep = onboardingConsentManager.getNextConsentStep(consentStep.step) {
-                self.listener?.consentRequest(step: nextStep)
-            } else {
-                self.listener?.consentClose()
+            onboardingConsentManager.getNextConsentStep(consentStep.step) { nextStep in
+                if let nextStep = nextStep {
+                    self.listener?.consentRequest(step: nextStep)
+                } else {
+                    self.listener?.consentClose()
+                }
             }
         }
     }
 
     @objc func skipStepButtonPressed() {
-
-        if let consentStep = consentStep {
-            if let nextStep = onboardingConsentManager.getNextConsentStep(consentStep.step) {
-                self.listener?.consentRequest(step: nextStep)
-            } else {
-                self.listener?.consentClose()
-            }
-        }
+        goToNextStepOrCloseConsent()
     }
 
     // MARK: - Private

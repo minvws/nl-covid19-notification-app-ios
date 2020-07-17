@@ -92,12 +92,18 @@ final class ExposureController: ExposureControlling, Logging {
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
         exposureManager.setExposureNotificationEnabled(true) { result in
-            if case let .failure(error) = result {
-                completion?(error)
-            } else {
-                completion?(nil)
+            // wait for 0.2s, there seems to be a glitch in the framework
+            // where after successful activation it returns '.disabled' for a
+            // split second
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                if case let .failure(error) = result {
+                    completion?(error)
+                } else {
+                    completion?(nil)
+                }
+
+                self.updateStatusStream()
             }
-            self.updateStatusStream()
         }
     }
 

@@ -345,12 +345,7 @@ final class ExposureControllerTests: TestCase {
     }
 
     private func triggerUpdateStream() {
-        controller.requestPushNotificationPermission {}
-
-        // trigger status update by mocking enabling notifications
-        exposureManager.setExposureNotificationEnabledHandler = { _, completion in completion(.success(())) }
-
-        controller.requestExposureNotificationPermission(nil)
+        controller.refreshStatus()
     }
 
     private func expect(activeState: ExposureActiveState? = nil, notifiedState: ExposureNotificationState? = nil) -> ExpectStatusEvaluator {

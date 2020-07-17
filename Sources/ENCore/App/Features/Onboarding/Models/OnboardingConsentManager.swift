@@ -13,7 +13,7 @@ protocol OnboardingConsentManaging {
     var onboardingConsentSteps: [OnboardingConsentStep] { get }
 
     func getStep(_ index: Int) -> OnboardingConsentStep?
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex) -> OnboardingConsentStepIndex?
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ())
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
@@ -23,6 +23,7 @@ protocol OnboardingConsentManaging {
 final class OnboardingConsentManager: OnboardingConsentManaging {
 
     var onboardingConsentSteps: [OnboardingConsentStep] = []
+    private var disposeBag = Set<AnyCancellable>()
 
     init(exposureStateStream: ExposureStateStreaming,
          exposureController: ExposureControlling,
@@ -93,6 +94,10 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         )
     }
 
+    deinit {
+        disposeBag.forEach { $0.cancel() }
+    }
+
     // MARK: - Functions
 
     func getStep(_ index: Int) -> OnboardingConsentStep? {
@@ -100,19 +105,26 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         return nil
     }
 
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex) -> OnboardingConsentStepIndex? {
-
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
         switch currentStep {
         case .en:
-            if let exposureActiveState = exposureStateStream.currentExposureState?.activeState,
-                exposureActiveState == .inactive(.bluetoothOff) {
-                return .bluetooth
-            }
-            return .notifications
+            exposureStateStream
+                .exposureState
+                .filter { $0.activeState != .notAuthorized }
+                .first()
+                .sink { value in
+                    switch value.activeState {
+                    case .inactive(.bluetoothOff):
+                        completion(.bluetooth)
+                    default:
+                        completion(.notifications)
+                    }
+                }
+                .store(in: &disposeBag)
         case .bluetooth:
-            return .notifications
+            completion(.notifications)
         case .notifications:
-            return nil
+            completion(nil)
         }
     }
 
@@ -130,8 +142,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
 
         exposureStateSubscription = exposureStateStream
             .exposureState
-            // drop first as as soon as one subscribes the current state is returned
-            .dropFirst()
+            .filter { $0.activeState != .notAuthorized }
             .sink { [weak self] state in
                 self?.exposureStateSubscription = nil
 
