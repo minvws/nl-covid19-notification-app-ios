@@ -92,11 +92,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
         return requestExposureRiskConfiguration()
-            .flatMap { configuration in
-                return self.operationProvider
+            .flatMap { (configuration) -> AnyPublisher<(), ExposureDataError> in
+                guard let operation = self.operationProvider
                     .processExposureKeySetsOperation(exposureManager: exposureManager,
-                                                     configuration: configuration)
-                    .execute()
+                                                     configuration: configuration) else {
+                    return Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
+                }
+
+                return operation.execute()
             }
             .eraseToAnyPublisher()
     }

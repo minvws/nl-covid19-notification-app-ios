@@ -172,12 +172,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Will redownload them next time",
                               action: { [weak self] in self?.removeAllExposureKeySets() }),
                 DeveloperItem(title: "Download and Process New KeySets",
-                              subtitle: "Last time: \(getLastExposureFetchString())",
+                              subtitle: "Last time: \(getLastExposureFetchString()), total processed last 24h: \(getNumberOfProcessedKeySetsInLast24Hours()), total unprocessed left: \(getNumberOfUnprocessedKeySets())",
                               action: { [weak self] in self?.fetchAndProcessKeySets() },
                               enabled: !isFetchingKeys),
                 DeveloperItem(title: "Process Pending Upload Requests",
                               subtitle: "Pending Requests: \(getPendingUploadRequests())",
-                              action: { [weak self] in self?.processPendingUploadRequests() })
+                              action: { [weak self] in self?.processPendingUploadRequests() }),
+                DeveloperItem(title: "Ignore 24h limit of 15 keysets",
+                              subtitle: "Only works with test entitlements, currently set: \(getDailyLimit())",
+                              action: { [weak self] in self?.toggleDailyLimit() })
             ]),
             ("Storage", [
                 DeveloperItem(title: "Erase Local Storage",
@@ -394,7 +397,39 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             .store(in: &disposeBag)
     }
 
+    private func toggleDailyLimit() {
+        ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets.toggle()
+    }
+
     // MARK: - Private
+
+    private func getDailyLimit() -> String {
+        return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
+    }
+
+    private func getNumberOfProcessedKeySetsInLast24Hours() -> Int {
+        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) else {
+            return 0
+        }
+
+        let wasProcessedInLast24h: (ExposureKeySetHolder) -> Bool = { keySetHolder in
+            guard let processDate = keySetHolder.processDate else {
+                return false
+            }
+
+            return processDate > cutOffDate
+        }
+
+        return (storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? [])
+            .filter(wasProcessedInLast24h)
+            .count
+    }
+
+    private func getNumberOfUnprocessedKeySets() -> Int {
+        return (storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? [])
+            .filter { $0.processed == false }
+            .count
+    }
 
     private func getPendingUploadRequests() -> String {
         guard let pendingRequests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) else {

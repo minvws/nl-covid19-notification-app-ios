@@ -187,6 +187,8 @@ extension Error {
                 status = .notAuthorized
             case .notEnabled:
                 status = .disabled
+            case .rateLimited:
+                status = .rateLimited
             default:
                 status = .unknown
             }

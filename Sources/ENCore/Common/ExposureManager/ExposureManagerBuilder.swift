@@ -29,6 +29,7 @@ enum ExposureManagerError: Error {
     case bluetoothOff
     case restricted
     case notAuthorized
+    case rateLimited
     case internalTypeMismatch // programmers error
 }
 

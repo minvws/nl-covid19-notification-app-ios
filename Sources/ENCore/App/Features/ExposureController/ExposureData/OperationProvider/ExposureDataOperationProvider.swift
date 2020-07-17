@@ -18,10 +18,15 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     // MARK: - ExposureDataOperationProvider
 
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation {
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation? {
+        guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
+            return nil
+        }
+
         return ProcessExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    exposureManager: exposureManager,
+                                                   exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
                                                    configuration: configuration)
     }
 
@@ -119,7 +124,7 @@ extension ExposureManagerError {
             return .inactive(.disabled)
         case .notAuthorized:
             return .notAuthorized
-        case .internalTypeMismatch, .unknown:
+        case .internalTypeMismatch, .unknown, .rateLimited:
             return .internalError
         }
     }

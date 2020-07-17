@@ -56,3 +56,9 @@ public func animationsEnabled() -> Bool {
         public static var animationsEnabled: Bool?
     }
 #endif
+
+extension String {
+    var capitalizedFirstLetterOnly: String {
+        return prefix(1).capitalized + dropFirst()
+    }
+}

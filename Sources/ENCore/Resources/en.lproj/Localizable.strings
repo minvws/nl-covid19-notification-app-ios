@@ -106,7 +106,7 @@
 "status.notified.description_days" = "%@ day(s) ago (%@)";
 "status.notified.description_hours" = "%@ hour(s) ago (%@)";
 "status.notified.description_none" = "on %@";
-"status.notified.description" = "You experienced a %@ higher risk of infection";
+"status.notified.description" = "%@ you experienced a higher risk of infection";
 "status.notified.moreInfo" = "What can I do now?";
 "status.notified.removeNotification" = "Delete notification";
 
@@ -182,4 +182,6 @@
 "moreInformation.requestTest.receivedNotification.content" = "Got a notification? Then the GGD recommends you get tested for coronavirus. Even if you don't feel sick yet. If you didn't get a notification but do have coronavirus symptoms, request a test too.\n\nTesting is free and doesn't take much time. And you probably won't have to wait long to get tested. You get the results within 48 hours. In the meantime, try to stay home.";
 
 // MARK: - Exposure Notification Received - User Explanation
-"exposure.notification.userExplanation" = "You've been near someone with coronavirus. Read more in the app.";
+
+// dot (.) is added by the Apple API at the end of the sentence
+"exposure.notification.userExplanation" = "You've been near someone with coronavirus. Read more in the app";

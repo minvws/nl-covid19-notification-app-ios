@@ -97,10 +97,14 @@ struct StatusViewModel {
     }
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
-        StatusViewModel(
+        let description = Localization
+            .string(for: "status.notified.description", [timeAgo(from: date)])
+            .capitalizedFirstLetterOnly
+
+        return StatusViewModel(
             icon: .notified,
             title: .init(string: Localization.string(for: "status.appState")),
-            description: .init(string: Localization.string(for: "status.notified.description", [timeAgo(from: date)])),
+            description: .init(string: description),
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
@@ -121,10 +125,14 @@ struct StatusViewModel {
     )
 
     static func inactiveWithNotified(date: Date) -> StatusViewModel {
-        StatusViewModel(
+        let description = Localization
+            .string(for: "status.notified.description", [timeAgo(from: date)])
+            .capitalizedFirstLetterOnly
+
+        return StatusViewModel(
             icon: .notified,
             title: .init(string: Localization.string(for: "status.appState")),
-            description: .init(string: Localization.string(for: "status.notified.description", [timeAgo(from: date)])),
+            description: .init(string: description),
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,

@@ -10,10 +10,12 @@ import Foundation
 
 struct ExposureKeySetHolder: Codable {
     let identifier: String
-    let signatureFileUrl: URL
-    let binaryFileUrl: URL
-    let processed: Bool
+    let signatureFilename: String
+    let binaryFilename: String
+    let processDate: Date?
     let creationDate: Date
+
+    var processed: Bool { processDate != nil }
 }
 
 final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging {
@@ -100,8 +102,10 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                     let srcSignatureUrl = localUrl.appendingPathComponent(self.signatureFilename)
                     let srcBinaryUrl = localUrl.appendingPathComponent(self.binaryFilename)
 
-                    let dstSignatureUrl = keySetStorageUrl.appendingPathComponent(identifier).appendingPathExtension("sig")
-                    let dstBinaryUrl = keySetStorageUrl.appendingPathComponent(identifier).appendingPathExtension("bin")
+                    let dstSignatureFilename = [identifier, "sig"].joined(separator: ".")
+                    let dstSignatureUrl = keySetStorageUrl.appendingPathComponent(dstSignatureFilename)
+                    let dstBinaryFilename = [identifier, "bin"].joined(separator: ".")
+                    let dstBinaryUrl = keySetStorageUrl.appendingPathComponent(dstBinaryFilename)
 
                     do {
                         if FileManager.default.fileExists(atPath: dstSignatureUrl.path) {
@@ -121,9 +125,9 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                     }
 
                     let keySetHolder = ExposureKeySetHolder(identifier: identifier,
-                                                            signatureFileUrl: dstSignatureUrl,
-                                                            binaryFileUrl: dstBinaryUrl,
-                                                            processed: false,
+                                                            signatureFilename: dstSignatureFilename,
+                                                            binaryFilename: dstBinaryFilename,
+                                                            processDate: nil,
                                                             creationDate: Date())
                     keySetHolders.append(keySetHolder)
                 }
