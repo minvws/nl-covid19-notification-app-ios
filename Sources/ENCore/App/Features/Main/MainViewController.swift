@@ -297,12 +297,8 @@ private final class MainView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        hasBottomMargin = true
-
         scrollView.snp.makeConstraints { maker in
-            maker.leading.trailing.top.equalToSuperview()
-
-            constrainToSuperViewWithBottomMargin(maker: maker)
+            maker.leading.trailing.top.bottom.equalToSuperview()
         }
 
         stackView.snp.makeConstraints { maker in

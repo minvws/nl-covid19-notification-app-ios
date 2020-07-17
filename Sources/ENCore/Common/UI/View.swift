@@ -46,7 +46,7 @@ open class View: UIView, Themeable {
     private var bottomConstraint: Constraint?
 
     func constrainToSuperViewWithBottomMargin(maker: ConstraintMaker) {
-        bottomConstraint = maker.bottom.equalToSuperview().inset(bottomMargin).constraint
+        bottomConstraint = maker.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(bottomMargin).constraint
     }
 
     override open func safeAreaInsetsDidChange() {

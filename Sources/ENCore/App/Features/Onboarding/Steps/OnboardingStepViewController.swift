@@ -12,13 +12,6 @@ protocol OnboardingStepViewControllable: ViewControllable {}
 
 final class OnboardingStepViewController: ViewController, OnboardingStepViewControllable {
 
-    private lazy var button: Button = {
-        let button = Button(theme: self.theme)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        return button
-    }()
-
     // MARK: - Lifecycle
 
     init(onboardingManager: OnboardingManaging,
@@ -46,10 +39,8 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
         setThemeNavigationBar()
 
-        self.button.title = self.onboardingStep.buttonTitle
-        view.addSubview(button)
-
-        setupConstraints()
+        internalView.button.title = self.onboardingStep.buttonTitle
+        internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -77,7 +68,6 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
     private weak var listener: OnboardingStepListener?
     private lazy var internalView: OnboardingStepView = OnboardingStepView(theme: self.theme)
-    private lazy var viewsInDisplayOrder = [button]
     private var index: Int
     private var onboardingStep: OnboardingStep
     private let onboardingManager: OnboardingManaging
@@ -87,23 +77,6 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
     private func setupViews() {
         setThemeNavigationBar()
-
-        viewsInDisplayOrder.forEach { view.addSubview($0) }
-    }
-
-    private func setupConstraints() {
-        hasBottomMargin = true
-
-        var constraints = [[NSLayoutConstraint]()]
-
-        constraints.append([
-            button.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            button.heightAnchor.constraint(equalToConstant: 50)
-        ])
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
 
     // MARK: - Functions
@@ -121,24 +94,27 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
 final class OnboardingStepView: View {
 
+    private lazy var scrollView = UIScrollView()
+
+    fileprivate lazy var button: Button = {
+        return Button(theme: self.theme)
+    }()
+
     lazy var animationView: AnimationView = {
         let animationView = AnimationView()
-        animationView.translatesAutoresizingMaskIntoConstraints = false
-        animationView.contentMode = .scaleAspectFill
+        animationView.contentMode = .scaleToFill
         return animationView
     }()
 
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .clear
         return imageView
     }()
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.accessibilityTraits = .header
         return label
@@ -146,7 +122,6 @@ final class OnboardingStepView: View {
 
     private lazy var contentLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         return label
     }()
@@ -167,43 +142,41 @@ final class OnboardingStepView: View {
     override func build() {
         super.build()
 
-        viewsInDisplayOrder.forEach { addSubview($0) }
+        addSubview(scrollView)
+        addSubview(button)
+        viewsInDisplayOrder.forEach { scrollView.addSubview($0) }
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        var constraints = [[NSLayoutConstraint]()]
+        hasBottomMargin = true
 
-        constraints.append([
-            imageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.7, constant: 1)
-        ])
+        scrollView.alwaysBounceVertical = true
 
-        constraints.append([
-            animationView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
-            animationView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            animationView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            animationView.heightAnchor.constraint(equalTo: animationView.widthAnchor, multiplier: 0.7, constant: 1)
-        ])
+        scrollView.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.bottom.equalTo(button.snp.top).offset(-16)
+        }
 
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-        ])
+        button.snp.makeConstraints { maker in
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+            maker.height.equalTo(50)
 
-        constraints.append([
-            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            contentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            contentLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-        ])
+            constrainToSuperViewWithBottomMargin(maker: maker)
+        }
 
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        titleLabel.snp.makeConstraints { maker in
+            maker.top.greaterThanOrEqualTo(imageView.snp.bottom).offset(16)
+            maker.top.greaterThanOrEqualTo(animationView.snp.bottom).offset(16)
+            maker.leading.trailing.equalTo(self).inset(16)
+        }
+
+        contentLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
+            maker.leading.trailing.equalTo(self).inset(16)
+            maker.bottom.lessThanOrEqualTo(scrollView)
+        }
 
         self.contentLabel.sizeToFit()
     }
@@ -234,6 +207,38 @@ final class OnboardingStepView: View {
                 loopAnimation(fromFrame: repeatFromFrame)
             } else {
                 animationView.loopMode = .loop
+            }
+        }
+
+        imageView.sizeToFit()
+
+        if let width = imageView.image?.size.width,
+            let height = imageView.image?.size.height,
+            width > 0, height > 0 {
+
+            let aspectRatio = height / width
+
+            imageView.snp.makeConstraints { maker in
+                maker.top.equalToSuperview()
+                maker.leading.trailing.equalToSuperview()
+                maker.width.equalTo(scrollView).inset(16)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
+            }
+        }
+
+        animationView.sizeToFit()
+
+        if let width = animationView.animation?.size.width,
+            let height = animationView.animation?.size.height,
+            width > 0, height > 0 {
+
+            let aspectRatio = height / width
+
+            animationView.snp.makeConstraints { maker in
+                maker.top.equalToSuperview()
+                maker.centerX.equalToSuperview()
+                maker.width.equalTo(scrollView).multipliedBy(1.5)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio * 1.5)
             }
         }
     }

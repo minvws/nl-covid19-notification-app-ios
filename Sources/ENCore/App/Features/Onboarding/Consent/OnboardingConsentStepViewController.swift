@@ -142,6 +142,8 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
 final class OnboardingConsentView: View {
 
+    private lazy var scrollView = UIScrollView()
+
     lazy var animationView: AnimationView = {
         let animationView = AnimationView()
         animationView.translatesAutoresizingMaskIntoConstraints = false
@@ -187,7 +189,7 @@ final class OnboardingConsentView: View {
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [imageView, animationView, primaryButton, secondaryButton, titleLabel, contentLabel]
+    private lazy var viewsInDisplayOrder = [imageView, animationView, titleLabel, contentLabel]
 
     private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?
 
@@ -201,43 +203,43 @@ final class OnboardingConsentView: View {
     override func build() {
         super.build()
 
-        viewsInDisplayOrder.forEach { addSubview($0) }
+        addSubview(scrollView)
+        scrollView.alwaysBounceVertical = true
+
+        addSubview(primaryButton)
+        addSubview(secondaryButton)
+
+        viewsInDisplayOrder.forEach { scrollView.addSubview($0) }
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        var constraints = [[NSLayoutConstraint]()]
+        hasBottomMargin = true
 
-        constraints.append([
-            imageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.7, constant: 1)
-        ])
+        scrollView.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.width.equalToSuperview()
+            maker.bottom.equalTo(secondaryButton.snp.top).inset(-16)
+        }
 
-        constraints.append([
-            animationView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            animationView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            animationView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            animationView.heightAnchor.constraint(equalTo: animationView.widthAnchor, multiplier: 0.7, constant: 1)
-        ])
+        animationView.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalTo(self)
+        }
 
-        constraints.append([
-            primaryButton.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
-            primaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            primaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            primaryButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
+        primaryButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.height.equalTo(50)
 
-        constraints.append([
-            secondaryButton.bottomAnchor.constraint(equalTo: primaryButton.topAnchor, constant: -20),
-            secondaryButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            secondaryButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            secondaryButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
+            constrainToSuperViewWithBottomMargin(maker: maker)
+        }
 
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        secondaryButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.height.equalTo(50)
+
+            maker.bottom.equalTo(primaryButton.snp.top).inset(-16)
+        }
     }
 
     private func updateView() {
@@ -260,6 +262,25 @@ final class OnboardingConsentView: View {
             self.imageView.isHidden = false
         }
 
+        if let width = imageView.image?.size.width,
+            let height = imageView.image?.size.height,
+            width > 0, height > 0 {
+
+            let aspectRatio = height / width
+
+            imageView.snp.makeConstraints { maker in
+                maker.top.equalToSuperview()
+                maker.leading.trailing.equalToSuperview()
+                maker.width.lessThanOrEqualTo(scrollView).inset(16)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
+            }
+        }
+
+        imageView.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.width.equalTo(self)
+        }
+
         guard let summarySteps = step.summarySteps else {
             return
         }
@@ -275,7 +296,7 @@ final class OnboardingConsentView: View {
             }
 
             if let consentSummaryStepsView = consentSummaryStepsView {
-                addSubview(consentSummaryStepsView)
+                scrollView.addSubview(consentSummaryStepsView)
             }
         }
     }
@@ -284,42 +305,29 @@ final class OnboardingConsentView: View {
 
         guard let step = self.consentStep else { return }
 
-        var constraints = [[NSLayoutConstraint]()]
+        titleLabel.snp.remakeConstraints { maker in
+            maker.leading.trailing.equalTo(self).inset(16)
+            maker.height.greaterThanOrEqualTo(50)
+            maker.top.equalTo(step.hasImage ? imageView.snp.bottom : scrollView.snp.top).offset(25)
+        }
 
-        titleLabel.constraints.forEach { titleLabel.removeConstraint($0) }
-        contentLabel.constraints.forEach { contentLabel.removeConstraint($0) }
-
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: step.hasImage ? imageView.bottomAnchor : topAnchor, constant: 25),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-        ])
-
-        constraints.append([
-            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            contentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            contentLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-        ])
+        contentLabel.snp.remakeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
+            maker.leading.trailing.equalTo(self).inset(16)
+            maker.height.greaterThanOrEqualTo(50)
+            maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
+        }
 
         if let consentSummaryStepsView = consentSummaryStepsView {
 
-            consentSummaryStepsView.constraints.forEach { consentSummaryStepsView.removeConstraint($0) }
-
             if step.hasSummarySteps {
 
-                constraints.append([
-                    consentSummaryStepsView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-                    consentSummaryStepsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin),
-                    consentSummaryStepsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin),
-                    consentSummaryStepsView.bottomAnchor.constraint(equalTo: secondaryButton.topAnchor, constant: -20)
-                ])
-
-                consentSummaryStepsView.setupConstraints()
+                consentSummaryStepsView.snp.remakeConstraints { maker in
+                    maker.top.equalTo(titleLabel.snp.bottom).offset(20)
+                    maker.leading.trailing.equalTo(self).inset(16)
+                    maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
+                }
             }
         }
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
 }

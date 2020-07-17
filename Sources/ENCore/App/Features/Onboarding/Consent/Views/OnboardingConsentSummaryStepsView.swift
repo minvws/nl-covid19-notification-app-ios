@@ -10,13 +10,13 @@ import UIKit
 final class OnboardingConsentSummaryStepsView: View {
 
     private let consentSummarySteps: [OnboardingConsentSummaryStep]
-    var consentSummaryStepViews: [OnboardingConsentSummaryStepView] = []
+    private let contentView = UIStackView()
 
     // MARK: - Lifecycle
 
     required init(with steps: [OnboardingConsentSummaryStep], theme: Theme) {
         self.consentSummarySteps = steps
-        self.consentSummaryStepViews = consentSummarySteps.map { OnboardingConsentSummaryStepView(with: $0, theme: theme) }
+
         super.init(theme: theme)
     }
 
@@ -27,28 +27,19 @@ final class OnboardingConsentSummaryStepsView: View {
         clipsToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
 
-        consentSummaryStepViews.forEach { addSubview($0) }
+        contentView.axis = .vertical
+        addSubview(contentView)
+
+        consentSummarySteps
+            .map { step in OnboardingConsentSummaryStepView(with: step, theme: theme) }
+            .forEach(contentView.addArrangedSubview(_:))
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        var constraints = [[NSLayoutConstraint]()]
-
-        for (index, consentSummaryStepView) in self.consentSummaryStepViews.enumerated() {
-
-            consentSummaryStepView.constraints.forEach { consentSummaryStepView.removeConstraint($0) }
-
-            constraints.append([
-                consentSummaryStepView.topAnchor.constraint(equalTo: index == 0 ? topAnchor : self.consentSummaryStepViews[index - 1].bottomAnchor, constant: 0),
-                consentSummaryStepView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-                consentSummaryStepView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-                consentSummaryStepView.heightAnchor.constraint(greaterThanOrEqualToConstant: self.consentSummaryStepViews[index].estimateHeight)
-            ])
-
-            consentSummaryStepView.setupConstraints()
+        contentView.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
         }
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
 }

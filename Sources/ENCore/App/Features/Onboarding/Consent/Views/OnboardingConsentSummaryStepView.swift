@@ -57,25 +57,16 @@ final class OnboardingConsentSummaryStepView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        var constraints = [[NSLayoutConstraint]()]
+        imageView.snp.makeConstraints { maker in
+            maker.top.leading.equalToSuperview()
+            maker.size.equalTo(CGSize(width: 42, height: 51))
+        }
 
-        imageView.constraints.forEach { imageView.removeConstraint($0) }
-        label.constraints.forEach { label.removeConstraint($0) }
-
-        constraints.append([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            imageView.widthAnchor.constraint(equalToConstant: 28),
-            imageView.heightAnchor.constraint(equalToConstant: 34)
-        ])
-
-        constraints.append([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 20),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            label.heightAnchor.constraint(greaterThanOrEqualToConstant: 1)
-        ])
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        label.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.leading.equalTo(imageView.snp.trailing).offset(16)
+            maker.trailing.equalToSuperview()
+            maker.bottom.equalToSuperview().inset(16)
+        }
     }
 }

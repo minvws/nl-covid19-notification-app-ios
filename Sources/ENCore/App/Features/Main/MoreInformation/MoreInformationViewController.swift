@@ -153,6 +153,8 @@ private final class MoreInformationView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
+        hasBottomMargin = true
+
         headerLabel.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalToSuperview().offset(16)
             maker.leading.trailing.equalToSuperview().inset(16)
@@ -163,7 +165,9 @@ private final class MoreInformationView: View {
             maker.bottom.equalTo(versionLabel.snp.top).offset(-16)
         }
         versionLabel.snp.makeConstraints { maker in
-            maker.leading.trailing.bottom.equalToSuperview()
+            maker.leading.trailing.equalToSuperview()
+
+            constrainToSuperViewWithBottomMargin(maker: maker)
         }
     }
 
