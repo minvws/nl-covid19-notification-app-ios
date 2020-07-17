@@ -71,8 +71,6 @@ final class ExposureStateStream: MutableExposureStateStreaming {
     // MARK: - MutableExposureStateStreaming
 
     func update(state: ExposureState) {
-        let s = ExposureState(notifiedState: .notified(Date()), activeState: .inactive(.bluetoothOff))
-
         currentExposureState = state
 
         subject.send(state)
