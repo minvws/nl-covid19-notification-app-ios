@@ -15,6 +15,7 @@ final class StatusViewControllerTests: TestCase {
     private var exposureStateStream = ExposureStateStreamingMock()
     private var viewController: StatusViewController!
     private let router = StatusRoutingMock()
+    private let cardBuilder = CardBuildableMock()
 
     override func setUp() {
         super.setUp()
@@ -22,8 +23,13 @@ final class StatusViewControllerTests: TestCase {
         recordSnapshots = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
 
+        cardBuilder.buildHandler = { type in
+            return CardRouter(viewController: CardViewControllableMock(),
+                              enableSettingBuilder: EnableSettingBuildableMock())
+        }
+
         viewController = StatusViewController(exposureStateStream: exposureStateStream,
-                                              cardBuilder: CardBuildableMock(),
+                                              cardBuilder: cardBuilder,
                                               listener: StatusListenerMock(),
                                               theme: theme,
                                               topAnchor: nil)
