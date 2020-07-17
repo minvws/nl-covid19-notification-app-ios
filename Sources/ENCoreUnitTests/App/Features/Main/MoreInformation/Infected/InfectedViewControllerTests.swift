@@ -62,6 +62,8 @@ final class InfectedViewControllerTests: TestCase {
         let cardViewController = CardViewController(theme: theme,
                                                     type: .exposureOff)
         viewController.set(cardViewController: cardViewController)
+
+        assertSnapshot(matching: viewController, as: .image())
     }
 
     func test_viewDidLoad_calls_exposureController() {
