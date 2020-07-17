@@ -24,7 +24,7 @@ final class StatusViewControllerTests: TestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
 
         cardBuilder.buildHandler = { type in
-            return CardRouter(viewController: CardViewControllableMock(),
+            return CardRouter(viewController: CardViewController(theme: self.theme, type: type),
                               enableSettingBuilder: EnableSettingBuildableMock())
         }
 
@@ -53,12 +53,12 @@ final class StatusViewControllerTests: TestCase {
     }
 
     func test_snapshot_authorized_denied_notNotified() {
-        set(activeState: .authorizationDenied, notified: true)
+        set(activeState: .authorizationDenied, notified: false)
         assertSnapshot(matching: viewController, as: .image())
     }
 
     func test_snapshot_authorized_denied_notified() {
-        set(activeState: .authorizationDenied, notified: false)
+        set(activeState: .authorizationDenied, notified: true)
         assertSnapshot(matching: viewController, as: .image())
     }
 

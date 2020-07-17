@@ -96,7 +96,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
                 statusViewModel = StatusViewModel.inactiveWithNotNotified.with(cardType: cardType)
             case let (.authorizationDenied, .notified(date)):
-                statusViewModel = StatusViewModel.inactiveWithNotified(date: date).with(cardType: .exposureOff)
+                statusViewModel = StatusViewModel
+                    .inactiveWithNotified(date: date)
+                    .with(cardType: .exposureOff)
             case (.authorizationDenied, .notNotified):
                 statusViewModel = .inactiveWithNotNotified
             case let (.notAuthorized, .notified(date)):
