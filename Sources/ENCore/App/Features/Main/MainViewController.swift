@@ -277,12 +277,14 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 private final class MainView: View {
     fileprivate let scrollView = UIScrollView()
     fileprivate let stackView = UIStackView()
+    fileprivate let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
 
     override func build() {
         super.build()
 
         addSubview(scrollView)
         scrollView.addSubview(stackView)
+        addSubview(blurView)
 
         scrollView.contentInsetAdjustmentBehavior = .automatic
         scrollView.alwaysBounceVertical = true
@@ -307,6 +309,15 @@ private final class MainView: View {
             maker.width.leading.trailing.equalToSuperview()
             maker.top.equalTo(scrollView.snp.top)
             maker.bottom.equalTo(scrollView.snp.bottom)
+        }
+    }
+
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+
+        blurView.snp.remakeConstraints { make in
+            make.leading.trailing.top.equalToSuperview()
+            make.height.equalTo(safeAreaInsets.top)
         }
     }
 }
