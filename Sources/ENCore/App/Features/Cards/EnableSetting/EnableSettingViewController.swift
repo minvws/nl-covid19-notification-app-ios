@@ -14,7 +14,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
          theme: Theme,
          setting: EnableSetting) {
         self.listener = listener
-        self.setting = .enableLocalNotifications
+        self.setting = setting
 
         super.init(theme: theme)
     }

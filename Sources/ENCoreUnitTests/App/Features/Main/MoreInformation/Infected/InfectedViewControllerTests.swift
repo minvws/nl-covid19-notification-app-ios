@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import SnapshotTesting
@@ -14,13 +15,22 @@ final class InfectedViewControllerTests: TestCase {
     private var viewController: InfectedViewController!
     private let router = InfectedRoutingMock()
     private let exposureController = ExposureControllingMock()
+    private let exposureStateStream = ExposureStateStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        viewController = InfectedViewController(theme: theme, exposureController: exposureController)
+        exposureStateStream.exposureState = Just(ExposureState(
+            notifiedState: .notNotified,
+            activeState: .active
+        ))
+            .eraseToAnyPublisher()
+
+        viewController = InfectedViewController(theme: theme,
+                                                exposureController: exposureController,
+                                                exposureStateStream: exposureStateStream)
         viewController.router = router
     }
 
@@ -42,6 +52,16 @@ final class InfectedViewControllerTests: TestCase {
     func test_infected_snapshotStateError() {
         viewController.state = .error
         assertSnapshot(matching: viewController, as: .image())
+    }
+
+    func test_infected_errorCard() {
+        viewController.state = .success(confirmationKey: LabConfirmationKey(identifier: "key here",
+                                                                            bucketIdentifier: Data(),
+                                                                            confirmationKey: Data(),
+                                                                            validUntil: Date()))
+        let cardViewController = CardViewController(theme: theme,
+                                                    type: .exposureOff)
+        viewController.set(cardViewController: cardViewController)
     }
 
     func test_viewDidLoad_calls_exposureController() {

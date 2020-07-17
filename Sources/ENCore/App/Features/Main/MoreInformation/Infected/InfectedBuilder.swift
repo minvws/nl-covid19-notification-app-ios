@@ -24,9 +24,10 @@ protocol InfectedBuildable {
 protocol InfectedDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
+    var exposureStateStream: ExposureStateStreaming { get }
 }
 
-private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency {
+private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency {
 
     var theme: Theme {
         dependency.theme
@@ -35,16 +36,22 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
     var thankYouBuilder: ThankYouBuildable {
         ThankYouBuilder(dependency: self)
     }
+
+    var cardBuilder: CardBuildable {
+        return CardBuilder(dependency: self)
+    }
 }
 
 final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
     func build(withListener listener: InfectedListener) -> Routing {
         let dependencyProvider = InfectedDependencyProvider(dependency: dependency)
         let viewController = InfectedViewController(theme: dependencyProvider.dependency.theme,
-                                                    exposureController: dependencyProvider.dependency.exposureController)
+                                                    exposureController: dependencyProvider.dependency.exposureController,
+                                                    exposureStateStream: dependencyProvider.dependency.exposureStateStream)
 
         return InfectedRouter(listener: listener,
                               viewController: viewController,
-                              thankYouBuilder: dependencyProvider.thankYouBuilder)
+                              thankYouBuilder: dependencyProvider.thankYouBuilder,
+                              cardBuilder: dependencyProvider.cardBuilder)
     }
 }

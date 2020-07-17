@@ -20,7 +20,8 @@ final class InfectedRouterTests: XCTestCase {
 
         router = InfectedRouter(listener: listener,
                                 viewController: viewController,
-                                thankYouBuilder: ThankYouBuildableMock())
+                                thankYouBuilder: ThankYouBuildableMock(),
+                                cardBuilder: CardBuildableMock())
     }
 
     func test_init_setsRouterOnViewController() {

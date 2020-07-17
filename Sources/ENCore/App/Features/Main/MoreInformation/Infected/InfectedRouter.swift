@@ -12,6 +12,7 @@ protocol InfectedViewControllable: ViewControllable, ThankYouListener {
     var router: InfectedRouting? { get set }
 
     func push(viewController: ViewControllable)
+    func set(cardViewController: ViewControllable?)
 }
 
 final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
@@ -20,9 +21,12 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
 
     init(listener: InfectedListener,
          viewController: InfectedViewControllable,
-         thankYouBuilder: ThankYouBuildable) {
+         thankYouBuilder: ThankYouBuildable,
+         cardBuilder: CardBuildable) {
         self.listener = listener
         self.thankYouBuilder = thankYouBuilder
+        self.cardBuilder = cardBuilder
+
         super.init(viewController: viewController)
 
         viewController.router = self
@@ -46,10 +50,29 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
         viewController.push(viewController: thankYouViewController)
     }
 
+    func showInactiveCard() {
+        let cardRouter = cardBuilder.build(type: .exposureOff)
+        self.cardRouter = cardRouter
+
+        viewController.set(cardViewController: cardRouter.viewControllable)
+    }
+
+    func removeInactiveCard() {
+        guard cardRouter != nil else {
+            return
+        }
+
+        viewController.set(cardViewController: nil)
+        cardRouter = nil
+    }
+
     // MARK: - Private
 
     private weak var listener: InfectedListener?
 
     private let thankYouBuilder: ThankYouBuildable
     private var thankYouViewController: ViewControllable?
+
+    private let cardBuilder: CardBuildable
+    private var cardRouter: (Routing & CardTypeSettable)?
 }

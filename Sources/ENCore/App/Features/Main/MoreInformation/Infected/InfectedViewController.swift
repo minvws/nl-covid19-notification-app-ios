@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import SnapKit
 import UIKit
 
@@ -12,6 +13,8 @@ import UIKit
 protocol InfectedRouting: Routing {
     func didUploadCodes(withKey key: ExposureConfirmationKey)
     func infectedWantsDismissal(shouldDismissViewController: Bool)
+    func showInactiveCard()
+    func removeInactiveCard()
 }
 
 final class InfectedViewController: ViewController, InfectedViewControllable, UIAdaptivePresentationControllerDelegate {
@@ -30,10 +33,17 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         }
     }
 
-    init(theme: Theme, exposureController: ExposureControlling) {
+    init(theme: Theme,
+         exposureController: ExposureControlling,
+         exposureStateStream: ExposureStateStreaming) {
         self.exposureController = exposureController
+        self.exposureStateStream = exposureStateStream
 
         super.init(theme: theme)
+    }
+
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - Overrides
@@ -56,7 +66,13 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         internalView.infoView.actionHandler = { [weak self] in
             self?.uploadCodes()
         }
-        requestLabConfirmationKey()
+
+        exposureStateStream
+            .exposureState
+            .sink { state in
+                self.update(exposureState: state)
+            }
+            .store(in: &disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -77,7 +93,35 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         navigationController?.dismiss(animated: true, completion: nil)
     }
 
+    func set(cardViewController: ViewControllable?) {
+        internalView.infoView.isActionButtonEnabled = cardViewController == nil
+
+        if let current = self.cardViewController {
+            current.uiviewController.willMove(toParent: nil)
+            internalView.set(cardView: nil)
+            current.uiviewController.removeFromParent()
+        }
+
+        if let cardViewController = cardViewController {
+            addChild(cardViewController.uiviewController)
+            internalView.set(cardView: cardViewController.uiviewController.view)
+            cardViewController.uiviewController.didMove(toParent: self)
+
+            self.cardViewController = cardViewController
+        }
+    }
+
     // MARK: - Private
+
+    private func update(exposureState: ExposureState) {
+        switch exposureState.activeState {
+        case .authorizationDenied, .notAuthorized, .inactive(.disabled):
+            router?.showInactiveCard()
+        default:
+            requestLabConfirmationKey()
+            router?.removeInactiveCard()
+        }
+    }
 
     private func uploadCodes() {
         guard case let .success(key) = state else { return }
@@ -105,6 +149,10 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
     private lazy var internalView: InfectedView = InfectedView(theme: self.theme)
     private let exposureController: ExposureControlling
+    private let exposureStateStream: ExposureStateStreaming
+    private var disposeBag = Set<AnyCancellable>()
+
+    private var cardViewController: ViewControllable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         router?.infectedWantsDismissal(shouldDismissViewController: true)
@@ -184,6 +232,8 @@ private final class InfectedView: View {
                             stepImage: Image.named("MoreInformation.Step3"))
     }()
 
+    private lazy var cardContentView: View = View(theme: theme)
+
     // MARK: - Init
 
     override init(theme: Theme) {
@@ -202,7 +252,8 @@ private final class InfectedView: View {
             contentView,
             controlCode,
             waitForTheGGD,
-            shareYourCodes
+            shareYourCodes,
+            cardContentView
         ])
 
         addSubview(infoView)
@@ -213,6 +264,21 @@ private final class InfectedView: View {
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.bottom.leading.trailing.equalToSuperview()
+        }
+    }
+
+    // MARK: - Private
+
+    fileprivate func set(cardView: UIView?) {
+        cardContentView.subviews.forEach { $0.removeFromSuperview() }
+
+        if let cardView = cardView {
+            cardContentView.addSubview(cardView)
+
+            cardView.snp.makeConstraints { make in
+                make.top.bottom.equalToSuperview()
+                make.trailing.leading.equalToSuperview().inset(16)
+            }
         }
     }
 }
