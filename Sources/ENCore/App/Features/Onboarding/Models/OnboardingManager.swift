@@ -24,42 +24,42 @@ final class OnboardingManager: OnboardingManaging {
         self.onboardingSteps = [
             OnboardingStep(
                 theme: theme,
-                title: Localization.string(for: "step1Title"),
-                content: Localization.string(for: "step1Content"),
+                title: .step1Title,
+                content: .step1Content,
                 illustration: .image(named: "Step1"),
-                buttonTitle: Localization.string(for: "nextButtonTitle"),
+                buttonTitle: .nextButtonTitle,
                 isExample: false
             ),
             OnboardingStep(
                 theme: theme,
-                title: Localization.string(for: "step2Title"),
-                content: Localization.string(for: "step2Content"),
+                title: .step2Title,
+                content: .step2Content,
                 illustration: .animation(named: "popup", repeatFromFrame: 94),
-                buttonTitle: Localization.string(for: "nextButtonTitle"),
+                buttonTitle: .nextButtonTitle,
                 isExample: false
             ),
             OnboardingStep(
                 theme: theme,
-                title: Localization.string(for: "step3Title"),
-                content: Localization.string(for: "step3Content"),
+                title: .step3Title,
+                content: .step3Content,
                 illustration: .animation(named: "bluetooth"),
-                buttonTitle: Localization.string(for: "nextButtonTitle"),
+                buttonTitle: .nextButtonTitle,
                 isExample: false
             ),
             OnboardingStep(
                 theme: theme,
-                title: Localization.string(for: "step4Title"),
-                content: Localization.string(for: "step4Content"),
+                title: .step4Title,
+                content: .step4Content,
                 illustration: .animation(named: "ontheway"),
-                buttonTitle: Localization.string(for: "nextButtonTitle"),
+                buttonTitle: .nextButtonTitle,
                 isExample: true
             ),
             OnboardingStep(
                 theme: theme,
-                title: Localization.string(for: "step5Title"),
-                content: Localization.string(for: "step5Content"),
+                title: .step5Title,
+                content: .step5Content,
                 illustration: .image(named: "Step5"),
-                buttonTitle: Localization.string(for: "nextButtonTitle"),
+                buttonTitle: .nextButtonTitle,
                 isExample: true
             )
         ]

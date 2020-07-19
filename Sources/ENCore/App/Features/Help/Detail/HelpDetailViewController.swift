@@ -72,7 +72,7 @@ private final class HelpView: View {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .clear
-        imageView.image = Image.named("Gradient") ?? UIImage()
+        imageView.image = .gradient ?? UIImage()
         return imageView
     }()
 
@@ -80,7 +80,7 @@ private final class HelpView: View {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .primary
-        button.title = Localization.string(for: "helpAcceptButtonTitle")
+        button.title = .helpAcceptButtonTitle
         return button
     }()
 

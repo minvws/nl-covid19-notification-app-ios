@@ -22,24 +22,24 @@ final class HelpManager: HelpManaging {
         questions = [
             HelpQuestion(
                 theme: theme,
-                question: Localization.string(for: "help.faq.location.title"),
-                answer: Localization.string(for: "help.faq.location.description")),
+                question: .helpFaqLocationTitle,
+                answer: .helpFaqLocationDescription),
             HelpQuestion(
                 theme: theme,
-                question: Localization.string(for: "help.faq.anonymous.title"),
-                answer: Localization.string(for: "help.faq.anonymous.description_1") + "\n\n" + Localization.string(for: "help.faq.anonymous.description_2")),
+                question: .helpFaqAnonymousTitle,
+                answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2),
             HelpQuestion(
                 theme: theme,
-                question: Localization.string(for: "help.faq.notification.title"),
-                answer: Localization.string(for: "help.faq.notification.description")),
+                question: .helpFaqNotificationTitle,
+                answer: .helpFaqNotificationDescription),
             HelpQuestion(
                 theme: theme,
-                question: Localization.string(for: "help.faq.bluetooth.title"),
-                answer: Localization.string(for: "help.faq.bluetooth.description")),
+                question: .helpFaqBluetoothTitle,
+                answer: .helpFaqBluetoothDescription),
             HelpQuestion(
                 theme: theme,
-                question: Localization.string(for: "help.faq.power_usage.title"),
-                answer: Localization.string(for: "help.faq.power_usage.description"))
+                question: .helpFaqPowerUsageTitle,
+                answer: .helpFaqPowerUsageDescription)
         ]
     }
 }

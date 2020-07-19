@@ -32,7 +32,7 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = Localization.string(for: "moreInformation.receivedNotification.title")
+        title = .moreInformationReceivedNotificationTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
@@ -75,8 +75,8 @@ private final class ReceivedNotificationView: View {
     // MARK: - Init
 
     override init(theme: Theme) {
-        let config = InfoViewConfig(actionButtonTitle: Localization.string(for: "moreInformation.receivedNotification.button.title"),
-                                    headerImage: Image.named("ReceivedNotificationHeader"))
+        let config = InfoViewConfig(actionButtonTitle: .moreInformationReceivedNotificationButtonTitle,
+                                    headerImage: .receivedNotificationHeader)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }
@@ -108,37 +108,37 @@ private final class ReceivedNotificationView: View {
 
     private func notificationExplanation() -> View {
         InfoSectionTextView(theme: theme,
-                            title: Localization.string(for: "moreInformation.receivedNotification.notificationExplanation.title"),
-                            content: [Localization.attributedString(for: "moreInformation.receivedNotification.notificationExplanation.content")])
+                            title: .moreInformationReceivedNotificationNotificationExplanationTitle,
+                            content: [String.moreInformationReceivedNotificationNotificationExplanationContent.attributed()])
     }
 
     private func complaints() -> View {
-        let list = [
-            Localization.string(for: "moreInformation.complaints.item1"),
-            Localization.string(for: "moreInformation.complaints.item2"),
-            Localization.string(for: "moreInformation.complaints.item3"),
-            Localization.string(for: "moreInformation.complaints.item4")
+        let list: [String] = [
+            .moreInformationComplaintsItem1,
+            .moreInformationComplaintsItem2,
+            .moreInformationComplaintsItem3,
+            .moreInformationComplaintsItem4
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
         let content = NSMutableAttributedString(string: "\n")
-        content.append(Localization.attributedString(for: "moreInformation.complaints.content"))
+        content.append(String.moreInformationComplaintsContent.attributed())
 
         var string = [NSAttributedString]()
         string.append(contentsOf: bulletList)
         string.append(content)
         return InfoSectionTextView(theme: theme,
-                                   title: Localization.string(for: "moreInformation.complaints.title"),
+                                   title: .moreInformationComplaintsTitle,
                                    content: string)
     }
 
     private func doCoronaTest() -> View {
         InfoSectionTextView(theme: theme,
-                            title: Localization.string(for: "moreInformation.receivedNotification.doCoronaTest.title"),
-                            content: Localization.attributedStrings(for: "moreInformation.receivedNotification.doCoronaTest.content"))
+                            title: .moreInformationReceivedNotificationDoCoronaTestTitle,
+                            content: String.moreInformationReceivedNotificationDoCoronaTestContent.attributedStrings())
     }
 
     private func info() -> View {
-        let string = Localization.attributedString(for: "moreInformation.info.title")
+        let string = String.moreInformationInfoTitle.attributed()
         return InfoSectionCalloutView(theme: theme, content: string)
     }
 }

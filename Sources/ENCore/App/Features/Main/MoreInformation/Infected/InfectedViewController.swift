@@ -46,7 +46,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = Localization.string(for: "moreInformation.infected.title")
+        title = .moreInformationInfectedTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
@@ -86,11 +86,11 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
                 self?.router?.didUploadCodes(withKey: key)
             default:
                 // TODO: Error Handling
-                let alertController = UIAlertController(title: Localization.string(for: "error.title"),
-                                                        message: Localization.string(for: "moreInformation.infected.error.uploadingCodes", ["\(result)"]),
+                let alertController = UIAlertController(title: .errorTitle,
+                                                        message: String(format: .moreInformationInfectedErrorUploadingCodes, "\(result)"),
                                                         preferredStyle: .alert)
 
-                let alertAction = UIAlertAction(title: Localization.string(for: "ok"), style: .default) { _ in
+                let alertAction = UIAlertAction(title: .ok, style: .default) { _ in
                     alertController.dismiss(animated: true, completion: nil)
                 }
 
@@ -112,13 +112,13 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         switch state {
         case .loading:
             internalView.infoView.isActionButtonEnabled = false
-            internalView.controlCode.set(state: .loading(Localization.string(for: "moreInformation.infected.loading")))
+            internalView.controlCode.set(state: .loading(.moreInformationInfectedLoading))
         case let .success(key):
             internalView.infoView.isActionButtonEnabled = true
             internalView.controlCode.set(state: .success(key.key))
         case .error:
             internalView.infoView.isActionButtonEnabled = false
-            internalView.controlCode.set(state: .error(Localization.string(for: "moreInformation.infected.error")) { [weak self] in
+            internalView.controlCode.set(state: .error(.moreInformationInfectedError) { [weak self] in
                 self?.requestLabConfirmationKey()
             })
         }
@@ -142,12 +142,12 @@ private final class InfectedView: View {
     fileprivate let infoView: InfoView
 
     private var content: NSAttributedString {
-        let header = NSAttributedString(string: Localization.string(for: "moreInformation.infected.header"),
+        let header = NSAttributedString(string: .moreInformationInfectedHeader,
                                         attributes: [
                                             NSAttributedString.Key.foregroundColor: UIColor.black,
                                             NSAttributedString.Key.font: theme.fonts.body
                                         ])
-        let howDoesItWork = NSAttributedString(string: Localization.string(for: "moreInformation.infected.how_does_it_work"),
+        let howDoesItWork = NSAttributedString(string: .moreInformationInfectedHowDoesItWork,
                                                attributes: [
                                                    NSAttributedString.Key.foregroundColor: theme.colors.primary,
                                                    NSAttributedString.Key.font: theme.fonts.bodyBold
@@ -166,27 +166,27 @@ private final class InfectedView: View {
 
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
-                                      title: Localization.string(for: "moreInformation.infected.step1"),
-                                      stepImage: Image.named("MoreInformation.Step1"))
+                                      title: .moreInformationInfectedStep1,
+                                      stepImage: .moreInformationStep1)
     }()
 
     private lazy var waitForTheGGD: View = {
         InfoSectionStepView(theme: theme,
-                            title: Localization.string(for: "moreInformation.infected.step2"),
-                            stepImage: Image.named("MoreInformation.Step2"))
+                            title: .moreInformationInfectedStep2,
+                            stepImage: .moreInformationStep2)
     }()
 
     private lazy var shareYourCodes: View = {
         InfoSectionStepView(theme: theme,
-                            title: Localization.string(for: "moreInformation.infected.step3"),
-                            stepImage: Image.named("MoreInformation.Step3"))
+                            title: .moreInformationInfectedStep3,
+                            stepImage: .moreInformationStep3)
     }()
 
     // MARK: - Init
 
     override init(theme: Theme) {
-        let config = InfoViewConfig(actionButtonTitle: Localization.string(for: "moreInformation.infected.upload"),
-                                    headerImage: Image.named("InfectedHeader"))
+        let config = InfoViewConfig(actionButtonTitle: .moreInformationInfectedUpload,
+                                    headerImage: .infectedHeader)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }
