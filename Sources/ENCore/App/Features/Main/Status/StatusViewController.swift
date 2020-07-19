@@ -171,10 +171,10 @@ private final class StatusView: View {
     override func build() {
         super.build()
 
-        cloudsImageView.image = Image.named("StatusClouds")
+        cloudsImageView.image = .statusClouds
 
         sceneImageView.contentMode = .scaleAspectFit
-        sceneImageView.image = Image.named("StatusScene")
+        sceneImageView.image = .statusScene
 
         contentContainer.axis = .vertical
         contentContainer.spacing = 32

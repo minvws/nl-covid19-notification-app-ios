@@ -34,8 +34,7 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
         super.viewDidLoad()
 
         hasBottomMargin = true
-
-        title = Localization.string(for: "moreInformation.thankyou.title")
+        title = .moreInformationThankYouTitle
         navigationItem.hidesBackButton = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
@@ -72,8 +71,8 @@ private final class ThankYouView: View {
 
     // TODO: Remove exposureConfirmationKey from init and make it settable
     init(theme: Theme, exposureConfirmationKey: ExposureConfirmationKey) {
-        let config = InfoViewConfig(actionButtonTitle: Localization.string(for: "close"),
-                                    headerImage: Image.named("ThankYouHeader"))
+        let config = InfoViewConfig(actionButtonTitle: .close,
+                                    headerImage: .thankYouHeader)
         self.infoView = InfoView(theme: theme, config: config)
         self.exposureConfirmationKey = exposureConfirmationKey
         super.init(theme: theme)
@@ -84,13 +83,13 @@ private final class ThankYouView: View {
     override func build() {
         super.build()
 
-        let bulletPoints = [
-            Localization.string(for: "moreInformation.thankyou.list.item1"),
-            Localization.string(for: "moreInformation.thankyou.list.item2"),
-            Localization.string(for: "moreInformation.thankyou.list.item3")
+        let bulletPoints: [String] = [
+            .moreInformationThankYouListItem1,
+            .moreInformationThankYouListItem2,
+            .moreInformationThankYouListItem3
         ]
 
-        let header = Localization.attributedString(for: "moreInformation.thankyou.section.header")
+        let header = String.moreInformationThankYouSectionHeader.attributed()
         header.append(NSAttributedString(string: "\n\n"))
 
         let list = NSAttributedString.bulletList(bulletPoints,
@@ -98,7 +97,7 @@ private final class ThankYouView: View {
                                                  font: theme.fonts.body)
 
         let footer = NSMutableAttributedString(string: "\n")
-        footer.append(Localization.attributedString(for: "moreInformation.thankyou.section.footer", [exposureConfirmationKey.key]))
+        footer.append(String(format: .moreInformationThankYouSectionFooter, exposureConfirmationKey.key).attributed())
 
         var string = [NSAttributedString]()
         string.append(header)
@@ -106,7 +105,7 @@ private final class ThankYouView: View {
         string.append(footer)
 
         let view = InfoSectionTextView(theme: theme,
-                                       title: Localization.string(for: "moreInformation.thankyou.section.title"),
+                                       title: .moreInformationThankYouSectionTitle,
                                        content: string)
 
         infoView.addSections([view])

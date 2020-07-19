@@ -31,8 +31,8 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.titleLabel.text = Localization.string(for: "helpTitle")
-        internalView.subtitleLabel.text = Localization.string(for: "helpSubtitle")
+        internalView.titleLabel.text = .helpTitle
+        internalView.subtitleLabel.text = .helpSubtitle
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
 
@@ -141,7 +141,7 @@ private final class HelpView: View {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .primary
-        button.title = Localization.string(for: "helpAcceptButtonTitle")
+        button.title = .helpAcceptButtonTitle
         return button
     }()
 

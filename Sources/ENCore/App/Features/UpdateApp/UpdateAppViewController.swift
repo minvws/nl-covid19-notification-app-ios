@@ -41,13 +41,13 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.imageView.image = Image.named("UpdateApp")
+        internalView.imageView.image = .updateApp
         internalView.titleLabel.attributedText = .makeFromHtml(
-            text: Localization.string(for: "updateApp.title"),
+            text: .updateAppTitle,
             font: theme.fonts.title2,
             textColor: .black)
         internalView.contentLabel.attributedText = .makeFromHtml(
-            text: minimumVersionMessage ?? Localization.string(for: "updateApp.content"),
+            text: minimumVersionMessage ?? String.updateAppContent,
             font: theme.fonts.body,
             textColor: theme.colors.gray)
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
@@ -66,10 +66,10 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
     }
 
     private func showCannotOpenSettingsAlert() {
-        let alertController = UIAlertController(title: Localization.string(for: "error.title"),
-                                                message: Localization.string(for: "updateApp.error.message"),
+        let alertController = UIAlertController(title: .errorTitle,
+                                                message: .updateAppErrorMessage,
                                                 preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: Localization.string(for: "ok"), style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: .ok, style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
 
@@ -88,7 +88,7 @@ private final class UpdateAppView: View {
     lazy var button: Button = {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.title = Localization.string(for: "updateApp.button")
+        button.title = .updateAppButton
         return button
     }()
 

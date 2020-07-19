@@ -332,7 +332,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         return self
             .getExposureInformations(forSummary: summary,
-                                     userExplanation: Localization.string(for: "exposure.notification.userExplanation"))
+                                     userExplanation: .exposureNotificationUserExplanation)
             .map { (exposureInformations) -> (ExposureDetectionResult, ExposureReport?) in
                 self.logDebug("Got back exposure info \(String(describing: exposureInformations))")
 

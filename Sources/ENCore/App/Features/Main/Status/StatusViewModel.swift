@@ -12,9 +12,9 @@ struct StatusViewIcon {
     let color: ThemeColor
     let icon: UIImage?
 
-    static let ok = StatusViewIcon(color: \.ok, icon: Image.named("StatusIconOk"))
-    static let notified = StatusViewIcon(color: \.notified, icon: Image.named("StatusIconNotified"))
-    static let inactive = StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive"))
+    static let ok = StatusViewIcon(color: \.ok, icon: .statusIconOk)
+    static let notified = StatusViewIcon(color: \.notified, icon: .statusIconNotified)
+    static let inactive = StatusViewIcon(color: \.inactive, icon: .statusInactive)
 }
 
 struct StatusViewButtonModel {
@@ -31,26 +31,26 @@ struct StatusViewButtonModel {
 
     static func moreInfo(date: Date) -> StatusViewButtonModel {
         StatusViewButtonModel(
-            title: Localization.string(for: "status.notified.moreInfo"),
+            title: .statusNotifiedMoreInfo,
             style: .warning,
             action: .explainRisk(date)
         )
     }
 
     static let removeNotification = StatusViewButtonModel(
-        title: Localization.string(for: "status.notified.removeNotification"),
+        title: .statusNotifiedRemoveNotification,
         style: .tertiary,
         action: .removeNotification
     )
 
     static let enableSettings = StatusViewButtonModel(
-        title: Localization.string(for: "status.appState.card.button"),
+        title: .statusAppStateCardButton,
         style: .primary,
         action: .updateAppSettings
     )
 
     static let tryAgain = StatusViewButtonModel(
-        title: Localization.string(for: "status.appState.card.try_again"),
+        title: .statusAppStateCardTryAgain,
         style: .primary,
         action: .updateAppSettings
     )
@@ -63,16 +63,16 @@ struct StatusCardViewModel {
     let button: StatusViewButtonModel
 
     static let inactive = StatusCardViewModel(
-        icon: StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive")),
-        title: .init(string: Localization.string(for: "status.appState.card.title")),
-        description: .init(string: Localization.string(for: "status.appState.card.description", ["CoronaMelder"])),
+        icon: StatusViewIcon(color: \.inactive, icon: .statusInactive),
+        title: .init(string: .statusAppStateCardTitle),
+        description: .init(string: String(format: .statusAppStateCardDescription, "CoronaMelder")),
         button: StatusViewButtonModel.enableSettings
     )
 
     static let inactiveTryAgain = StatusCardViewModel(
-        icon: StatusViewIcon(color: \.inactive, icon: Image.named("StatusInactive")),
-        title: .init(string: Localization.string(for: "status.appState.card.title")),
-        description: .init(string: Localization.string(for: "status.appState.inactive.no_recent_updates.description")),
+        icon: StatusViewIcon(color: \.inactive, icon: .statusInactive),
+        title: .init(string: .statusAppStateCardTitle),
+        description: .init(string: .statusAppStateInactiveNoRecentUpdatesDescription),
         button: StatusViewButtonModel.tryAgain
     )
 }
@@ -97,14 +97,13 @@ struct StatusViewModel {
     }
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
-        let description = Localization
-            .string(for: "status.notified.description", [timeAgo(from: date)])
+        let description = String(format: .statusNotifiedDescription, [timeAgo(from: date)])
             .capitalizedFirstLetterOnly
 
         return StatusViewModel(
             icon: .notified,
-            title: .init(string: Localization.string(for: "status.appState")),
-            description: .init(string: description),
+            title: .init(string: .statusAppState),
+            description: description,
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
@@ -115,8 +114,8 @@ struct StatusViewModel {
 
     static let activeWithNotNotified = StatusViewModel(
         icon: .ok,
-        title: .init(string: Localization.string(for: "status.appState")),
-        description: .init(string: Localization.string(for: "status.active.description", ["CoronaMelder"])),
+        title: .init(string: .statusAppState),
+        description: .init(string: String(format: .statusActiveDescription , "CoronaMelder")),
         buttons: [],
         footer: nil,
         shouldShowHideMessage: false,
@@ -125,14 +124,13 @@ struct StatusViewModel {
     )
 
     static func inactiveWithNotified(date: Date) -> StatusViewModel {
-        let description = Localization
-            .string(for: "status.notified.description", [timeAgo(from: date)])
+        let description = String(string: String(format: .statusNotifiedDescription, timeAgo(from: date)))
             .capitalizedFirstLetterOnly
 
         return StatusViewModel(
             icon: .notified,
-            title: .init(string: Localization.string(for: "status.appState")),
-            description: .init(string: description),
+            title: .init(string: .statusAppState),
+            description: description,
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
@@ -143,8 +141,8 @@ struct StatusViewModel {
 
     static let inactiveWithNotNotified = StatusViewModel(
         icon: .inactive,
-        title: .init(string: Localization.string(for: "status.appState.inactive.title")),
-        description: .init(string: Localization.string(for: "status.appState.inactive.description", ["CoronaMelder"])),
+        title: .init(string: .statusAppStateInactiveTitle),
+        description: .init(string: String(format: .statusAppStateInactiveDescription, "CoronaMelder")),
         buttons: [.enableSettings],
         footer: nil,
         shouldShowHideMessage: false,
@@ -154,8 +152,8 @@ struct StatusViewModel {
 
     static let inactiveTryAgainWithNotNotified = StatusViewModel(
         icon: .inactive,
-        title: .init(string: Localization.string(for: "status.appState.inactive.title")),
-        description: .init(string: Localization.string(for: "status.appState.inactive.no_recent_updates.description")),
+        title: .init(string: .statusAppStateInactiveTitle),
+        description: .init(string: .statusAppStateInactiveNoRecentUpdatesDescription),
         buttons: [.tryAgain],
         footer: nil,
         shouldShowHideMessage: false,
@@ -171,11 +169,11 @@ struct StatusViewModel {
         let dateString = dateFormatter.string(from: from)
 
         if let days = from.days(sinceDate: now), days > 0 {
-            return Localization.string(for: "status.notified.description_days", ["\(days)", dateString])
+            return String(format: .statusNotifiedDescriptionDays, "\(days)", dateString)
         }
         if let hours = from.hours(sinceDate: now), hours > 0 {
-            return Localization.string(for: "status.notified.description_hours", ["\(hours)", dateString])
+            return String(format: .statusNotifiedDescriptionHours, "\(hours)", dateString)
         }
-        return Localization.string(for: "status.notified.description_none", [dateString])
+        return String(format: .statusNotifiedDescriptionNone, dateString)
     }
 }

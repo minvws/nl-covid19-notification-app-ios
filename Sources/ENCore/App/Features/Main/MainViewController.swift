@@ -170,8 +170,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     func handleButtonAction(_ action: StatusViewButtonModel.Action) {
         switch action {
         case let .explainRisk(date):
-            router?.routeToMessage(title: Localization.string(for: "message.default.title"),
-                                   body: Localization.string(for: "message.default.body", [StatusViewModel.timeAgo(from: date)]))
+            router?.routeToMessage(title: .messageDefaultTitle,
+                                   body: String(format: .messageDefaultBody, StatusViewModel.timeAgo(from: date)))
         case .removeNotification:
             confirmNotificationRemoval()
         case .updateAppSettings:
@@ -189,13 +189,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private var disposeBag = Set<AnyCancellable>()
 
     private func confirmNotificationRemoval() {
-        let alertController = UIAlertController(title: Localization.string(for: "main.confirmNotificationRemoval.title"),
-                                                message: Localization.string(for: "main.confirmNotificationRemoval.title"),
+        let alertController = UIAlertController(title: .mainConfirmNotificationRemovalTitle,
+                                                message: .mainConfirmNotificationRemovalTitle,
                                                 preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: Localization.string(for: "cancel"), style: .default) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: .cancel, style: .default) { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
         })
-        alertController.addAction(UIAlertAction(title: Localization.string(for: "main.confirmNotificationRemoval.confirm"), style: .default) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: .mainConfirmNotificationRemovalConfirm, style: .default) { [weak self] _ in
             self?.exposureController.confirmExposureNotification()
         })
         present(alertController, animated: true, completion: nil)

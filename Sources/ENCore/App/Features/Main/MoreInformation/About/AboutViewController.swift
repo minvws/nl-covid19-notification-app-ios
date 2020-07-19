@@ -33,7 +33,7 @@ final class AboutViewController: ViewController, AboutViewControllable, WebListe
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = Localization.string(for: "moreInformation.about.title")
+        title = .moreInformationAboutTitle
         navigationItem.rightBarButtonItem = closeBarButtonItem
 
         loadWebView()

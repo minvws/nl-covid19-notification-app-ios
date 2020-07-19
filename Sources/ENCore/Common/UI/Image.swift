@@ -14,3 +14,32 @@ final class Image: UIImage {
         return UIImage(named: name, in: bundle, compatibleWith: nil)
     }
 }
+
+extension UIImage {
+    static var gradient: UIImage? { return Image.named("Gradient") }
+    static var chevron: UIImage? { return Image.named("Chevron") }
+    static var about: UIImage? { return Image.named("About") }
+    static var warning: UIImage? { return Image.named("Warning") }
+    static var coronatest: UIImage? { return Image.named("Coronatest") }
+    static var coronatestHeader: UIImage? { return Image.named("CoronatestHeader") }
+    static var infected: UIImage? { return Image.named("Infected") }
+    static var moreInformationStep1: UIImage? { return Image.named("MoreInformation.Step1") }
+    static var moreInformationStep2: UIImage? { return Image.named("MoreInformation.Step2") }
+    static var moreInformationStep3: UIImage? { return Image.named("MoreInformation.Step3") }
+    static var infectedHeader: UIImage? { return Image.named("InfectedHeader") }
+    static var thankYouHeader: UIImage? { return Image.named("ThankYouHeader") }
+    static var receivedNotificationHeader: UIImage? { return Image.named("ReceivedNotificationHeader") }
+    static var coronaTestHeader: UIImage? { return Image.named("CoronatestHeader") }
+    static var statusClouds: UIImage? { return Image.named("StatusClouds") }
+    static var statusScene: UIImage? { return Image.named("StatusScene") }
+    static var statusIconOk: UIImage? { return Image.named("StatusIconOk") }
+    static var statusIconNotified: UIImage? { return Image.named("StatusIconNotified") }
+    static var statusInactive: UIImage? { return Image.named("StatusInactive") }
+    static var messageHeader: UIImage? { return Image.named("MessageHeader") }
+    static var bluetoothShield: UIImage? { return Image.named("BluetoothShield") }
+    static var lockShield: UIImage? { return Image.named("LockShield") }
+    static var pleaseTurnOnBluetooth: UIImage? { return Image.named("PleaseTurnOnBluetooth") }
+    static var pleaseTurnOnNotifications: UIImage? { return Image.named("PleaseTurnOnNotifications") }
+    static var updateApp: UIImage? { return Image.named("UpdateApp") }
+    static var info: UIImage? { return Image.named("Info") }
+}
