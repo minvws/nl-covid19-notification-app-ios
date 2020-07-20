@@ -170,6 +170,18 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(receivedPendingRequests[1].expiryDate, expiryDate)
     }
 
+    func test_noKeys_doesNotReachOutToNetwork() {
+        operation = createOperation(withKeys: [])
+
+        XCTAssertEqual(networkController.postKeysCallCount, 0)
+
+        operation.execute()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(networkController.postKeysCallCount, 0)
+    }
+
     // MARK: - Private
 
     private func createDiagnosisKeys(withHighestRollingStartNumber highestRollingStartNumber: Int32) -> [DiagnosisKey] {
