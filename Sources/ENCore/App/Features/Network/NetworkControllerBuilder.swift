@@ -18,6 +18,7 @@ protocol NetworkControlling {
 
     func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError>
+    func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError>
 
     func startObservingNetworkReachability()
     func stopObservingNetworkReachability()

@@ -76,6 +76,11 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                 padding: padding)
     }
 
+    func requestStopKeysOperation(padding: Padding) -> RequestStopKeysDataOperation {
+        return RequestStopKeysDataOperation(networkController: networkController,
+                                            padding: padding)
+    }
+
     // MARK: - Private
 
     private let networkController: NetworkControlling

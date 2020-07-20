@@ -21,12 +21,18 @@ final class BackgroundControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        controller = BackgroundController(exposureController: exposureController)
+        let configuration = Configuration(decoyProbabilityRange: 0 ..< 1,
+                                          decoyHourRange: 0 ... 1,
+                                          decoyMinuteRange: 0 ... 1,
+                                          decoyDelayRange: 0 ... 1)
+
+        controller = BackgroundController(exposureController: exposureController,
+                                          configuration: configuration)
     }
 
     // MARK: - Tests
 
-    func test_handleBackgroundTask_success() {
+    func test_handleBackgroundUpdateTask_success() {
         exposureController.updateWhenRequiredHandler = {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
@@ -34,7 +40,7 @@ final class BackgroundControllerTests: XCTestCase {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        let task = MockBGProcessingTask(identifier: "nl.rijksoverheid.en.background-update")
+        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.update)
 
         controller.handle(task: task)
 
@@ -42,7 +48,7 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssert(task.completed!)
     }
 
-    func test_handleBackgroundTask_failure() {
+    func test_handleBackgroundUpdateTask_failure() {
         exposureController.updateWhenRequiredHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
@@ -50,7 +56,7 @@ final class BackgroundControllerTests: XCTestCase {
             Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
         }
 
-        let task = MockBGProcessingTask(identifier: "nl.rijksoverheid.en.background-update")
+        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.update)
 
         controller.handle(task: task)
 
@@ -72,11 +78,41 @@ final class BackgroundControllerTests: XCTestCase {
             return stream
         }
 
-        let task = MockBGProcessingTask(identifier: "nl.rijksoverheid.en.background-update")
+        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.update)
         controller.handle(task: task)
         task.expirationHandler?()
 
         XCTAssert(cancelled)
+    }
+
+    func test_handleBackgroundDecoy() {
+        let exp = expectation(description: "HandleBackgroundDecoy")
+
+        exposureController.requestLabConfirmationKeyHandler = { completion in
+            completion(.success(self.labConfirmationKey))
+        }
+
+        exposureController.requestStopKeysHandler = { completion in
+            completion(.success(()))
+            exp.fulfill()
+        }
+
+        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.decoy)
+
+        controller.handle(task: task)
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
+        XCTAssertEqual(exposureController.requestStopKeysCallCount, 1)
+
+        XCTAssertNotNil(task.completed)
+        XCTAssert(task.completed!)
+    }
+
+    // MARK: - Private
+
+    private var labConfirmationKey: LabConfirmationKey {
+        LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: Date())
     }
 }
 

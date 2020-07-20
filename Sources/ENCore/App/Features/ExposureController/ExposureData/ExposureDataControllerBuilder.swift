@@ -39,6 +39,7 @@ protocol ExposureDataControlling {
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
+    func requestStopKeys() -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Misc
 

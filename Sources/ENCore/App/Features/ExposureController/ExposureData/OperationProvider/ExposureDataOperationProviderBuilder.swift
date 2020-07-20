@@ -30,6 +30,8 @@ protocol ExposureDataOperationProvider {
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
                                       padding: Padding) -> UploadDiagnosisKeysDataOperation
+
+    func requestStopKeysOperation(padding: Padding) -> RequestStopKeysDataOperation
 }
 
 protocol ExposureDataOperationProviderBuildable {

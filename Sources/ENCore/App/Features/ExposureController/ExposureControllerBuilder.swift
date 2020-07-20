@@ -56,6 +56,11 @@ protocol ExposureControlling {
     /// - Parameter result: Result of the request
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
                            completion: @escaping (_ result: ExposureControllerUploadKeysResult) -> ())
+
+    /// Makes a decoy request to the `/stopkeys` endpoint
+    ///
+    /// - Parameter completion: Executed when request completes.
+    func requestStopKeys(completion: @escaping (_ result: Result<(), ExposureDataError>) -> ())
 }
 
 /// Represents a ConfirmationKey for the Lab Flow

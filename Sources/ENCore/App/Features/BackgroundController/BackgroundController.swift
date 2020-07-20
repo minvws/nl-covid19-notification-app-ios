@@ -10,6 +10,19 @@ import Combine
 import ExposureNotification
 import Foundation
 
+struct BackgroundTaskIdentifiers {
+    static let decoySequence = "nl.rijksoverheid.en.background-decoy-sequence"
+    static let decoy = "nl.rijksoverheid.en.background-decoy"
+    static let update = "nl.rijksoverheid.en.background-update"
+}
+
+struct Configuration {
+    let decoyProbabilityRange: Range<Float>
+    let decoyHourRange: ClosedRange<Int>
+    let decoyMinuteRange: ClosedRange<Int>
+    let decoyDelayRange: ClosedRange<Int>
+}
+
 /// BackgroundController
 ///
 /// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `print("🐞 Scheduled Update")` statement and background the application.
@@ -18,13 +31,14 @@ import Foundation
 final class BackgroundController: BackgroundControlling, Logging {
 
     private struct Constants {
-        static let backgroundUpdateTask = "nl.rijksoverheid.en.background-update"
+        static let defaultDecoyProbability: Float = 0.00118
     }
 
     // MARK: - Init
 
-    init(exposureController: ExposureControlling) {
+    init(exposureController: ExposureControlling, configuration: Configuration) {
         self.exposureController = exposureController
+        self.configuration = configuration
     }
 
     deinit {
@@ -35,14 +49,19 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     func scheduleTasks() {
         scheduleUpdate()
+        scheduleDeocySequence()
     }
 
     func handle(task: BGTask) {
+        guard let task = task as? BGProcessingTask else {
+            return logError("Task is not of type `BGProcessingTask`")
+        }
         switch task.identifier {
-        case Constants.backgroundUpdateTask:
-            guard let task = task as? BGProcessingTask else {
-                return logError("Task is not of type `BGProcessingTask`")
-            }
+        case BackgroundTaskIdentifiers.decoySequence:
+            handleDecoySequence(task: task)
+        case BackgroundTaskIdentifiers.decoy:
+            handleDecoy(task: task)
+        case BackgroundTaskIdentifiers.update:
             handleUpdate(task: task)
             scheduleUpdate()
         default:
@@ -53,21 +72,97 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Private
 
     private let exposureController: ExposureControlling
+    private let configuration: Configuration
     private var disposeBag = Set<AnyCancellable>()
+
+    private func scheduleDeocySequence() {
+        guard let date = date(hour: 1, minute: 0) else {
+            return logError("Error creating date")
+        }
+
+        let request = BGProcessingTaskRequest(identifier: BackgroundTaskIdentifiers.decoySequence)
+        request.earliestBeginDate = date
+
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            logDebug("`scheduleDeocySequence` ✅")
+        } catch {
+            logError("Could not schedule decoy sequence: \(error)")
+        }
+    }
+
+    private func handleDecoySequence(task: BGProcessingTask) {
+        let r = Float.random(in: configuration.decoyProbabilityRange)
+        let decoyProbability = Constants.defaultDecoyProbability
+        guard r < decoyProbability else {
+            task.setTaskCompleted(success: true)
+            return logDebug("Not scheduling decoy \(r) < \(decoyProbability)")
+        }
+        scheduleDecoy(task: task)
+    }
+
+    private func scheduleDecoy(task: BGProcessingTask) {
+        let hour = Int.random(in: configuration.decoyHourRange)
+        let minute = Int.random(in: configuration.decoyMinuteRange)
+
+        guard let date = date(hour: hour, minute: minute) else {
+            task.setTaskCompleted(success: false)
+            return logError("Error creating date")
+        }
+
+        let request = BGProcessingTaskRequest(identifier: BackgroundTaskIdentifiers.decoy)
+        request.earliestBeginDate = date
+        request.requiresNetworkConnectivity = true
+
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            logDebug("`scheduleDecoy` ✅")
+            task.setTaskCompleted(success: true)
+        } catch {
+            logError("Could not schedule decoy: \(error)")
+            task.setTaskCompleted(success: false)
+        }
+    }
+
+    private func handleDecoy(task: BGProcessingTask) {
+        // TODO: `requestLabConfirmationKey` & `requestStopKeys` should return Publishers so we can cancel the requests
+        var cancelled = false
+
+        exposureController.requestLabConfirmationKey { _ in
+            // Note: We ignore the response
+            self.logDebug("Decoy `/register` complete")
+        }
+
+        let delay = Double(Int.random(in: configuration.decoyDelayRange))
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            self.exposureController.requestStopKeys { _ in
+                // Note: We ignore the response
+                self.logDebug("Decoy `/postkeys` complete")
+                if !cancelled {
+                    task.setTaskCompleted(success: true)
+                }
+            }
+        }
+
+        // Handle running out of time
+        task.expirationHandler = {
+            cancelled = true
+        }
+    }
 
     private func scheduleUpdate() {
         guard ENManager.authorizationStatus == .authorized else {
             return logError("`ENManager.authorizationStatus` not authorized")
         }
-        let request = BGProcessingTaskRequest(identifier: Constants.backgroundUpdateTask)
+        let request = BGProcessingTaskRequest(identifier: BackgroundTaskIdentifiers.update)
         request.requiresNetworkConnectivity = true
         request.earliestBeginDate = Date(timeIntervalSinceNow: refreshInterval * 60)
 
         do {
             try BGTaskScheduler.shared.submit(request)
-            logDebug("Scheduled Update")
+            logDebug("`scheduleUpdate` ✅")
         } catch {
-            logWarning("Could not schedule app refresh: \(error)")
+            logError("Could not schedule app refresh: \(error)")
         }
     }
 
@@ -82,6 +177,8 @@ final class BackgroundController: BackgroundControlling, Logging {
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
         let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
             // execute them on by one
+        let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.compactMap { $0() })
+            // execute them one by one
             .flatMap(maxPublishers: .max(1)) { $0 }
             // collect them
             .collect()
@@ -111,18 +208,23 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private let defaultRefreshInterval: TimeInterval = 60 // minutes
+    private func date(hour: Int, minute: Int) -> Date? {
     private var receivedRefreshInterval: TimeInterval?
 
     /// Returns the refresh interval in minutes
     private var refreshInterval: TimeInterval {
         return receivedRefreshInterval ?? defaultRefreshInterval
+        var components = DateComponents()
     }
 
     private func getAndSetRefreshInterval() {
         exposureController
+        components.hour = hour
             .getAppRefreshInterval()
             .sink(receiveCompletion: { _ in },
                   receiveValue: { [weak self] value in self?.receivedRefreshInterval = TimeInterval(value) })
             .store(in: &disposeBag)
+        components.minute = minute
+        return Calendar.current.date(from: components)
     }
 }
