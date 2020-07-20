@@ -29,10 +29,10 @@ final class RequiresUpdateViewController: UIViewController {
 
         self.view.addSubview(button)
 
-        internalView.titleLabel.text = localizedString(for: "title")
+        internalView.titleLabel.text = localizedString(for: "update.hardware.title")
         internalView.titleLabel.font = font(size: 22, weight: .bold, textStyle: .title2)
 
-        internalView.contentLabel.text = localizedString(for: "content")
+        internalView.contentLabel.text = localizedString(for: "update.hardware.description")
         internalView.contentLabel.font = font(size: 17, weight: .regular, textStyle: .body)
     }
 
@@ -98,7 +98,7 @@ final class RequiresUpdateViewController: UIViewController {
     private lazy var button: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(localizedString(for: "button"), for: .normal)
+        button.setTitle(localizedString(for: "update.button.update"), for: .normal)
         button.titleLabel?.font = font(size: 17, weight: .bold, textStyle: .body)
         button.layer.cornerRadius = 10
         button.clipsToBounds = true

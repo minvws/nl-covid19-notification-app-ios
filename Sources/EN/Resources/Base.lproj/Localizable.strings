@@ -5,10 +5,26 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"title" = "Je moet de software op je telefoon updaten";
-"content" = "CoronaMelder heeft iOS 13.5 of hoger nodig om te werken. Het updaten doe je zelf in een paar simpele stappen.";
-"button" = "Updaten";
-
 "alertTitle" = "Waarschuwing";
 "alertMessage" = "Instellingen kunnen niet geopend worden.";
 "alertButton" = "Ok";
+
+"update.button.update" = "Updaten";
+"update.button.openSettings" = "Open Instellingen";
+
+"update.software.app.title" = "Deze versie van CoronaMelder werkt niet meer";
+"update.software.app.description" = "Update de app op je telefoon om te zorgen dat CoronaMelder weer werkt.";
+"update.software.app.detail.title" = "Update de app";
+"update.software.app.detail.step1" = "1. Open Instellingen op je telefoon via de knop hieronder";
+"update.software.app.detail.step2" = "2. Klik op ‘Werk bij’ om de app te updaten.";
+
+"update.software.os.title" = "Je moet de software op je telefoon updaten";
+"update.software.os.description" = "CoronaMelder heeft de nieuwste versie van iOS nodig om goed te blijven werken op je telefoon.";
+"update.software.os.detail.title" = "Update je telefoon";
+"update.software.os.detail.step1" = "1. Open Instellingen op je telefoon via de knop hieronder";
+"update.software.os.detail.step2" = "2. Ga naar ‘Algemeen’";
+"update.software.os.detail.step3" = "3. Ga naar ‘Software-update’";
+"update.software.os.detail.step4" = "4. Kies ‘Download en installeer’";
+
+"update.hardware.title" = "Om de app te kunnen gebruiken heb je een nieuwere telefoon nodig";
+"update.hardware.description" = "CoronaMelder heeft iOS 13.5 of hoger nodig om te werken. Helaas kan deze versie niet op jouw telefoon worden geinstalleerd.";
