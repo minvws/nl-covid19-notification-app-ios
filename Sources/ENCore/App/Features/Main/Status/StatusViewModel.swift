@@ -65,7 +65,7 @@ struct StatusCardViewModel {
     static let inactive = StatusCardViewModel(
         icon: StatusViewIcon(color: \.inactive, icon: .statusInactive),
         title: .init(string: .statusAppStateCardTitle),
-        description: .init(string: String(format: .statusAppStateCardDescription, "CoronaMelder")),
+        description: .init(string: String(format: .statusAppStateCardDescription)),
         button: StatusViewButtonModel.enableSettings
     )
 
@@ -115,7 +115,7 @@ struct StatusViewModel {
     static let activeWithNotNotified = StatusViewModel(
         icon: .ok,
         title: .init(string: .statusAppState),
-        description: .init(string: String(format: .statusActiveDescription, "CoronaMelder")),
+        description: .init(string: String(format: .statusActiveDescription)),
         buttons: [],
         footer: nil,
         shouldShowHideMessage: false,
@@ -142,7 +142,7 @@ struct StatusViewModel {
     static let inactiveWithNotNotified = StatusViewModel(
         icon: .inactive,
         title: .init(string: .statusAppStateInactiveTitle),
-        description: .init(string: String(format: .statusAppStateInactiveDescription, "CoronaMelder")),
+        description: .init(string: String(format: .statusAppStateInactiveDescription)),
         buttons: [.enableSettings],
         footer: nil,
         shouldShowHideMessage: false,
