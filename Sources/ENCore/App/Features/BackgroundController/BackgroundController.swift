@@ -176,8 +176,6 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
         let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
-            // execute them on by one
-        let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.compactMap { $0() })
             // execute them one by one
             .flatMap(maxPublishers: .max(1)) { $0 }
             // collect them
@@ -208,22 +206,24 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private let defaultRefreshInterval: TimeInterval = 60 // minutes
-    private func date(hour: Int, minute: Int) -> Date? {
     private var receivedRefreshInterval: TimeInterval?
 
     /// Returns the refresh interval in minutes
     private var refreshInterval: TimeInterval {
         return receivedRefreshInterval ?? defaultRefreshInterval
-        var components = DateComponents()
     }
 
     private func getAndSetRefreshInterval() {
         exposureController
-        components.hour = hour
             .getAppRefreshInterval()
             .sink(receiveCompletion: { _ in },
                   receiveValue: { [weak self] value in self?.receivedRefreshInterval = TimeInterval(value) })
             .store(in: &disposeBag)
+    }
+
+    private func date(hour: Int, minute: Int) -> Date? {
+        var components = DateComponents()
+        components.hour = hour
         components.minute = minute
         return Calendar.current.date(from: components)
     }
