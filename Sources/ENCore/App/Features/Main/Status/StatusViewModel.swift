@@ -97,7 +97,7 @@ struct StatusViewModel {
     }
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
-        let description = String(format: .statusNotifiedDescription, [timeAgo(from: date)])
+        let description = String(format: .statusNotifiedDescription, timeAgo(from: date))
             .capitalizedFirstLetterOnly
 
         return StatusViewModel(
