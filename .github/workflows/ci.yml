@@ -13,5 +13,5 @@ jobs:
         run: ./tools/scripts/ci/010_ciprep
       - name: cibuild
         run: ./tools/scripts/ci/030_cibuild
-      - name: citest
-        run: xcodebuild clean test -project EN.xcodeproj -scheme ENCore -destination "platform:iOS Simulator,OS:13.5,name:iPhone 11"
+      - name: citest-iphone11
+        run: xcodebuild clean test -project EN.xcodeproj -scheme ENCore -destination "platform=iOS Simulator,OS=latest,name=iPhone 11"
