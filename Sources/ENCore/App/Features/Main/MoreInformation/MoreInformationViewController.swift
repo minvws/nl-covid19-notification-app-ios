@@ -167,7 +167,7 @@ private final class MoreInformationView: View {
         versionLabel.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview()
 
-            constrainToSuperViewWithBottomMargin(maker: maker)
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }
 

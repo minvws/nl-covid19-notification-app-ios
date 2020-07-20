@@ -231,7 +231,7 @@ final class OnboardingConsentView: View {
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.height.equalTo(50)
 
-            constrainToSuperViewWithBottomMargin(maker: maker)
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
 
         secondaryButton.snp.makeConstraints { maker in

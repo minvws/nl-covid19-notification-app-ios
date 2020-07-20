@@ -163,12 +163,13 @@ final class OnboardingStepView: View {
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(50)
 
-            constrainToSuperViewWithBottomMargin(maker: maker)
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
 
         titleLabel.snp.makeConstraints { maker in
-            maker.top.greaterThanOrEqualTo(imageView.snp.bottom).offset(16)
-            maker.top.greaterThanOrEqualTo(animationView.snp.bottom).offset(16)
+            // no need for offset as the images include whitespace
+            maker.top.greaterThanOrEqualTo(imageView.snp.bottom)
+            maker.top.greaterThanOrEqualTo(animationView.snp.bottom)
             maker.leading.trailing.equalTo(self).inset(16)
         }
 
