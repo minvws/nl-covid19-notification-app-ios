@@ -16,58 +16,55 @@ final class InfectedViewControllerTests: TestCase {
     private let router = InfectedRoutingMock()
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
+    private let exposureStateSubject = PassthroughSubject<ExposureState, Never>()
 
     override func setUp() {
         super.setUp()
-
-        recordSnapshots = false
-
-        exposureStateStream.exposureState = Just(ExposureState(
-            notifiedState: .notNotified,
-            activeState: .active
-        ))
-            .eraseToAnyPublisher()
 
         viewController = InfectedViewController(theme: theme,
                                                 exposureController: exposureController,
                                                 exposureStateStream: exposureStateStream)
         viewController.router = router
+
+        exposureStateStream.exposureState = exposureStateSubject.eraseToAnyPublisher()
+
+        // force viewDidLoad
+        _ = viewController.view
     }
 
-    // MARK: - Tests
+    func test_inactiveState_callsRouterToShowCard() {
+        XCTAssertEqual(router.showInactiveCardCallCount, 0)
 
-    func test_infected_snapshotStateLoading() {
-        viewController.state = .loading
-        assertSnapshot(matching: viewController, as: .image())
+        exposureStateSubject.send(.init(notifiedState: .notNotified,
+                                        activeState: .authorizationDenied))
+
+        XCTAssertEqual(router.showInactiveCardCallCount, 1)
     }
 
-    func test_infected_snapshotStateSuccess() {
-        viewController.state = .success(confirmationKey: LabConfirmationKey(identifier: "key here",
-                                                                            bucketIdentifier: Data(),
-                                                                            confirmationKey: Data(),
-                                                                            validUntil: Date()))
-        assertSnapshot(matching: viewController, as: .image())
+    func test_activeState_callsRouterToRemoveAnyCard() {
+        XCTAssertEqual(router.removeInactiveCardCallCount, 0)
+
+        exposureStateSubject.send(.init(notifiedState: .notNotified,
+                                        activeState: .active))
+
+        XCTAssertEqual(router.removeInactiveCardCallCount, 1)
     }
 
-    func test_infected_snapshotStateError() {
-        viewController.state = .error
-        assertSnapshot(matching: viewController, as: .image())
-    }
+    func test_activeState_requestsLabConfirmationKey() {
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
 
-    func test_infected_errorCard() {
-        viewController.state = .success(confirmationKey: LabConfirmationKey(identifier: "key here",
-                                                                            bucketIdentifier: Data(),
-                                                                            confirmationKey: Data(),
-                                                                            validUntil: Date()))
-        let cardViewController = CardViewController(theme: theme,
-                                                    type: .exposureOff)
-        viewController.set(cardViewController: cardViewController)
+        exposureStateSubject.send(.init(notifiedState: .notNotified,
+                                        activeState: .active))
 
-        assertSnapshot(matching: viewController, as: .image())
-    }
-
-    func test_viewDidLoad_calls_exposureController() {
-        XCTAssertNotNil(viewController.view)
         XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
+    }
+
+    func test_inactiveState_doesNotRequestLabConfirmationKey() {
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
+
+        exposureStateSubject.send(.init(notifiedState: .notNotified,
+                                        activeState: .authorizationDenied))
+
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
     }
 }
