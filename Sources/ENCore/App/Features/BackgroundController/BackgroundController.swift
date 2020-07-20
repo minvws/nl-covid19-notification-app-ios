@@ -61,7 +61,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
         let request = BGProcessingTaskRequest(identifier: Constants.backgroundUpdateTask)
         request.requiresNetworkConnectivity = true
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // TODO: Should be updated with values from AppConfig
+        request.earliestBeginDate = Date(timeIntervalSinceNow: refreshInterval * 60)
 
         do {
             try BGTaskScheduler.shared.submit(request)
@@ -77,18 +77,22 @@ final class BackgroundController: BackgroundControlling, Logging {
             exposureController.processPendingUploadRequests
         ]
 
-        exposureController.notifiyUserIfRequired()
+        logDebug("--- Start Background Updating ---")
 
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
-        let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.compactMap { $0() })
+        let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
             // execute them on by one
             .flatMap(maxPublishers: .max(1)) { $0 }
-            // wait until all of them are done and collect them in an array
-            // subsicbe to the result
+            // collect them
+            .collect()
+            // notify the user if required
+            .handleEvents(receiveCompletion: { [weak self] _ in
+                self?.exposureController.notifyUserIfRequired()
+            })
             .sink(receiveCompletion: { [weak self] result in
                 switch result {
                 case .finished:
-                    self?.logDebug("Finished Background Updating")
+                    self?.logDebug("--- Finished Background Updating ---")
                     task.setTaskCompleted(success: true)
                 case let .failure(error):
                     self?.logError("Error completiting sequence \(error.localizedDescription)")
@@ -104,5 +108,21 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         cancellable.store(in: &disposeBag)
+    }
+
+    private let defaultRefreshInterval: TimeInterval = 60 // minutes
+    private var receivedRefreshInterval: TimeInterval?
+
+    /// Returns the refresh interval in minutes
+    private var refreshInterval: TimeInterval {
+        return receivedRefreshInterval ?? defaultRefreshInterval
+    }
+
+    private func getAndSetRefreshInterval() {
+        exposureController
+            .getAppRefreshInterval()
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { [weak self] value in self?.receivedRefreshInterval = TimeInterval(value) })
+            .store(in: &disposeBag)
     }
 }

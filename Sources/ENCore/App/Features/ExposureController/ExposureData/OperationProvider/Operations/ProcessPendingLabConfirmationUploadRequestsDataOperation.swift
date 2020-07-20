@@ -14,7 +14,7 @@ struct PendingLabConfirmationUploadRequest: Codable, Equatable {
     let expiryDate: Date
 }
 
-final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDataOperation {
+final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDataOperation, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
@@ -29,6 +29,9 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
     func execute() -> AnyPublisher<(), ExposureDataError> {
         let allRequests = getPendingRequests()
 
+        logDebug("--- START PROCESSING PENDING UPLOAD REQUESTS ---")
+        logDebug("All requests: \(allRequests)")
+
         let requests = allRequests
             // filter out the expired ones
             .filter { $0.isExpired == false }
@@ -36,6 +39,8 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
             .map(self.uploadPendingRequest(_:))
 
         let expiredRequests = allRequests.filter { $0.isExpired }
+
+        logDebug("Expired requests: \(expiredRequests)")
 
         // bundle all streams
         return Publishers.Sequence<[AnyPublisher<(PendingLabConfirmationUploadRequest, Bool), Never>], Never>(sequence: requests)
@@ -53,6 +58,13 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
             }
             // we cannot fail, but error type has to match
             .setFailureType(to: ExposureDataError.self)
+            .handleEvents(
+                receiveCompletion: { [weak self] _ in
+                    self?.logDebug("--- ENDED PROCESSING PENDING UPLOAD REQUESTS ---")
+                },
+                receiveCancel: { [weak self] in
+                    self?.logDebug("--- PROCESSING PENDING UPLOAD REQUESTS WAS CANCELLED ---")
+            })
             .share()
             .eraseToAnyPublisher()
     }
@@ -64,9 +76,18 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
     }
 
     private func uploadPendingRequest(_ request: PendingLabConfirmationUploadRequest) -> AnyPublisher<(PendingLabConfirmationUploadRequest, Bool), Never> {
+        logDebug("Uploading pending request with key: \(request.labConfirmationKey.key)")
+
         return networkController.postKeys(keys: request.diagnosisKeys,
                                           labConfirmationKey: request.labConfirmationKey,
                                           padding: padding)
+            .handleEvents(receiveCompletion: { [weak self] completion in
+                if case .finished = completion {
+                    self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")
+                } else {
+                    self?.logDebug("Request with key: \(request.labConfirmationKey.key) failed")
+                }
+            })
             // map results to include a boolean indicating success
             .map { _ in (request, true) }
             // convert errors into the sample tuple - with succuess = false
@@ -87,6 +108,8 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
                     requestsToStore = requestsToStore.filter { request in
                         requests.contains(request) == false && expiredRequests.contains(request) == false
                     }
+
+                    self.logDebug("Storing new pending requests: \(requestsToStore)")
 
                     // store back
                     storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in

@@ -57,6 +57,10 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
+    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
+        return dataController.getAppRefreshInterval()
+    }
+
     func refreshStatus() {
         updateStatusStream()
         updatePushNotificationState()
@@ -75,7 +79,7 @@ final class ExposureController: ExposureControlling, Logging {
             .processPendingUploadRequests()
     }
 
-    func notifiyUserIfRequired() {
+    func notifyUserIfRequired() {
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
         guard dataController.lastSuccessfulFetchDate.advanced(by: timeInterval) < Date() else {
             return

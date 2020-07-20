@@ -16,6 +16,7 @@ protocol ExposureControlling {
     func activate()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
+    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
 
     // MARK: - Updates
 
@@ -24,7 +25,7 @@ protocol ExposureControlling {
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
-    func notifiyUserIfRequired()
+    func notifyUserIfRequired()
 
     // MARK: - Permissions
 

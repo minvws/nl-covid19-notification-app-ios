@@ -43,6 +43,7 @@ protocol ExposureDataControlling {
     // MARK: - Misc
 
     func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
+    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
 }
 
