@@ -22,5 +22,4 @@ struct TemporaryKey: Codable {
     let keyData: String
     let rollingStartNumber: Int
     let rollingPeriod: Int
-    var regionsOfInterest: [String] = []
 }
