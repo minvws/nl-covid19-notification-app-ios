@@ -103,7 +103,7 @@ struct StatusViewModel {
         return StatusViewModel(
             icon: .notified,
             title: .init(string: .statusAppState),
-            description: description,
+            description: .init(string: description),
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
@@ -115,7 +115,7 @@ struct StatusViewModel {
     static let activeWithNotNotified = StatusViewModel(
         icon: .ok,
         title: .init(string: .statusAppState),
-        description: .init(string: String(format: .statusActiveDescription , "CoronaMelder")),
+        description: .init(string: String(format: .statusActiveDescription, "CoronaMelder")),
         buttons: [],
         footer: nil,
         shouldShowHideMessage: false,
@@ -124,13 +124,13 @@ struct StatusViewModel {
     )
 
     static func inactiveWithNotified(date: Date) -> StatusViewModel {
-        let description = String(string: String(format: .statusNotifiedDescription, timeAgo(from: date)))
+        let description = String(format: .statusNotifiedDescription, timeAgo(from: date))
             .capitalizedFirstLetterOnly
 
         return StatusViewModel(
             icon: .notified,
             title: .init(string: .statusAppState),
-            description: description,
+            description: .init(string: description),
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
