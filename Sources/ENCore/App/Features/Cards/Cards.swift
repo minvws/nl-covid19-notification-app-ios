@@ -19,9 +19,9 @@ struct Card {
     let actionTitle: String
 
     static func bluetoothOff(theme: Theme) -> Card {
-        let title = Localization.string(for: "cards.bluetoothOff.title")
-        let content = Localization.string(for: "cards.bluetoothOff.content")
-        let action = Localization.string(for: "cards.bluetoothOff.action")
+        let title: String = .cardsBluetoothOffTitle
+        let content: String = .cardsBluetoothOffContent
+        let action: String = .cardsBluetoothOffAction
 
         return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
@@ -30,9 +30,9 @@ struct Card {
     }
 
     static func exposureOff(theme: Theme) -> Card {
-        let title = Localization.string(for: "cards.exposureOff.title")
-        let content = Localization.string(for: "cards.exposureOff.content")
-        let action = Localization.string(for: "cards.exposureOff.action")
+        let title: String = .cardsExposureOffTitle
+        let content: String = .cardsExposureOffContent
+        let action: String = .cardsExposureOffAction
 
         return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
@@ -41,9 +41,9 @@ struct Card {
     }
 
     static func noInternet(theme: Theme, retryHandler: @escaping () -> ()) -> Card {
-        let title = Localization.string(for: "cards.noInternet.title")
-        let content = Localization.string(for: "cards.noInternet.content")
-        let action = Localization.string(for: "cards.noInternet.action")
+        let title: String = .cardsNoInternetTitle
+        let content: String = .cardsNoInternetContent
+        let action: String = .cardsNoInternetAction
 
         return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
@@ -52,9 +52,9 @@ struct Card {
     }
 
     static func noLocalNotifications(theme: Theme) -> Card {
-        let title = Localization.string(for: "cards.notificationsOff.title")
-        let content = Localization.string(for: "cards.notificationsOff.content")
-        let action = Localization.string(for: "cards.notificationsOff.action")
+        let title: String = .cardsNotificationsOffTitle
+        let content: String = .cardsNotificationsOffContent
+        let action: String = .cardsNotificationsOffAction
 
         return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),

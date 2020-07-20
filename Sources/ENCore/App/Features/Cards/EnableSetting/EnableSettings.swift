@@ -58,15 +58,15 @@ struct EnableSettingModel {
                                                                            font: theme.fonts.body,
                                                                            textColor: .black) }
 
-            let step1 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.exposureNotifications.step1")),
+            let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
                                           action: nil)
-            let step2 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.exposureNotifications.step2")),
-                                          action: .toggle(description: Localization.string(for: "enableSettings.exposureNotifications.step2.action.title")))
+            let step2 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep2),
+                                          action: .toggle(description: .enableSettingsExposureNotificationsStep2ActionTitle))
 
-            return .init(title: Localization.string(for: "enableSettings.exposureNotifications.title"),
+            return .init(title: .enableSettingsExposureNotificationsTitle,
                          steps: [step1, step2],
                          action: .openSettings,
-                         actionTitle: Localization.string(for: "enableSettings.exposureNotifications.action"))
+                         actionTitle: .enableSettingsExposureNotificationsAction)
         }
     }
 
@@ -76,15 +76,15 @@ struct EnableSettingModel {
                                                                            font: theme.fonts.body,
                                                                            textColor: .black) }
 
-            let step1 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.bluetooth.step1")),
+            let step1 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep1),
                                           action: nil)
-            let step2 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.bluetooth.step2")),
-                                          action: .toggle(description: Localization.string(for: "enableSettings.bluetooth.step2.action.title")))
+            let step2 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep2),
+                                          action: .toggle(description: .enableSettingsBluetoothStep2ActionTitle))
 
-            return .init(title: Localization.string(for: "enableSettings.bluetooth.title"),
+            return .init(title: .enableSettingsBluetoothTitle,
                          steps: [step1, step2],
                          action: .openSettings,
-                         actionTitle: Localization.string(for: "enableSettings.bluetooth.action"))
+                         actionTitle: .enableSettingsBluetoothAction)
         }
     }
 
@@ -94,17 +94,17 @@ struct EnableSettingModel {
                                                                            font: theme.fonts.body,
                                                                            textColor: .black) }
 
-            let step1 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.localNotifications.step1")),
+            let step1 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep1),
                                           action: nil)
-            let step2 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.localNotifications.step2")),
-                                          action: .cell(description: Localization.string(for: "enableSettings.localNotifications.step2.action.title")))
-            let step3 = EnableSettingStep(description: fromHtml(Localization.string(for: "enableSettings.localNotifications.step3")),
-                                          action: .toggle(description: Localization.string(for: "enableSettings.localNotifications.step3.action.title")))
+            let step2 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep2),
+                                          action: .cell(description: .enableSettingsLocalNotificationsStep2ActionTitle))
+            let step3 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep3),
+                                          action: .toggle(description: .enableSettingsLocalNotificationsStep3ActionTitle))
 
-            return .init(title: Localization.string(for: "enableSettings.localNotifications.title"),
+            return .init(title: .enableSettingsLocalNotificationsTitle,
                          steps: [step1, step2, step3],
                          action: .openSettings,
-                         actionTitle: Localization.string(for: "enableSettings.localNotifications.action"))
+                         actionTitle: .enableSettingsLocalNotificationsAction)
         }
     }
 }

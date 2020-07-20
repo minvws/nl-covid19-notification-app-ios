@@ -18,7 +18,7 @@ extension ViewControllable where Self: ViewController {
     }
 
     func showNavigationBarBackTitle() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: Localization.string(for: "back"), style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: .back, style: .plain, target: nil, action: nil)
     }
 
     func setNavigationRightBarButtonItems(_ items: [UIBarButtonItem]) {
