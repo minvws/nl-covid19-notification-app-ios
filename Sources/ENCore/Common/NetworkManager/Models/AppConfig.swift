@@ -9,7 +9,7 @@ import Foundation
 
 struct AppConfig: Decodable {
     let version, manifestFrequency: Int?
-    let decoyProbability: Double?
+    let decoyProbability: Float?
     let appStoreURL: String?
     let iOSMinimumVersion: String?
     let iOSMinimumVersionMessage: String?

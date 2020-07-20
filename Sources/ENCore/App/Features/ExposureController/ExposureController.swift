@@ -61,6 +61,10 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.getAppRefreshInterval()
     }
 
+    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
+        return dataController.getDecoyProbability()
+    }
+
     func refreshStatus() {
         updateStatusStream()
         updatePushNotificationState()

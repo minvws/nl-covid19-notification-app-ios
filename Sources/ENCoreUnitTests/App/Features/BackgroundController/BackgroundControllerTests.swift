@@ -21,10 +21,10 @@ final class BackgroundControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let configuration = Configuration(decoyProbabilityRange: 0 ..< 1,
-                                          decoyHourRange: 0 ... 1,
-                                          decoyMinuteRange: 0 ... 1,
-                                          decoyDelayRange: 0 ... 1)
+        let configuration = BackgroundTaskConfiguration(decoyProbabilityRange: 0 ..< 1,
+                                                        decoyHourRange: 0 ... 1,
+                                                        decoyMinuteRange: 0 ... 1,
+                                                        decoyDelayRange: 0 ... 1)
 
         controller = BackgroundController(exposureController: exposureController,
                                           configuration: configuration)

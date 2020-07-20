@@ -16,7 +16,7 @@ struct BackgroundTaskIdentifiers {
     static let update = "nl.rijksoverheid.en.background-update"
 }
 
-struct Configuration {
+struct BackgroundTaskConfiguration {
     let decoyProbabilityRange: Range<Float>
     let decoyHourRange: ClosedRange<Int>
     let decoyMinuteRange: ClosedRange<Int>
@@ -30,13 +30,9 @@ struct Configuration {
 /// and resume the application. The background task will be run.
 final class BackgroundController: BackgroundControlling, Logging {
 
-    private struct Constants {
-        static let defaultDecoyProbability: Float = 0.00118
-    }
-
     // MARK: - Init
 
-    init(exposureController: ExposureControlling, configuration: Configuration) {
+    init(exposureController: ExposureControlling, configuration: BackgroundTaskConfiguration) {
         self.exposureController = exposureController
         self.configuration = configuration
     }
@@ -49,7 +45,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     func scheduleTasks() {
         scheduleUpdate()
-        scheduleDeocySequence()
+        scheduleDecoySequence()
     }
 
     func handle(task: BGTask) {
@@ -72,10 +68,23 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Private
 
     private let exposureController: ExposureControlling
-    private let configuration: Configuration
+    private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
 
-    private func scheduleDeocySequence() {
+    // MARK: - Decoy Scheduling
+
+    /// Review document at https://github.com/minvws/nl-covid19-notification-app-coordination-private/blob/master/architecture/Traffic%20Analysis%20Mitigation%20With%20Decoys.md
+    ///
+    /// Sequence of scheduling a decoy
+    ///
+    /// 1. Every day at 1:00 AM, determine whether a decoy traffic sequence is to be scheduled with a probability of Appconfig.decoyProbability (taken from the `/appconfig` response). This is a value between `0` and `1`. The default value when the app has not successfully retrieved Appconfig yet, is the aforementioned `0.00118`. So take a number `R = random_float(0..1)` and only if `R < Appconfig.decoyProbability`, continue with the next step. Otherwise, stop this procedure and wait for the next round (in 24 hours).
+    /// 2. Pick a random time decoyTime between `7AM` and `7PM` of the current day. (Note: we do not take into account Sundays and holidays that may have no genuine upload traffic since health authority offices may be closed.)
+    /// 3. Schedule a decoy transmission job (simulating a `/register` call) at decoyTime.
+    /// 4. Pick a random number of seconds `decoyInterval = random_int(5..900)` (interval between first and second decoy call).
+    /// 5. Schedule a second decoy transmission job (simulating a `/postkeys` call) for time decoyTime + decoyInterval.
+
+    private func scheduleDecoySequence() {
+        // The decoy sequence should be run at 1am.
         guard let date = date(hour: 1, minute: 0) else {
             return logError("Error creating date")
         }
@@ -85,20 +94,29 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         do {
             try BGTaskScheduler.shared.submit(request)
-            logDebug("`scheduleDeocySequence` ✅")
+            logDebug("`scheduleDecoySequence` ✅")
         } catch {
             logError("Could not schedule decoy sequence: \(error)")
         }
     }
 
     private func handleDecoySequence(task: BGProcessingTask) {
-        let r = Float.random(in: configuration.decoyProbabilityRange)
-        let decoyProbability = Constants.defaultDecoyProbability
-        guard r < decoyProbability else {
-            task.setTaskCompleted(success: true)
-            return logDebug("Not scheduling decoy \(r) < \(decoyProbability)")
+        func execute(decoyProbability: Float) {
+            let r = Float.random(in: configuration.decoyProbabilityRange)
+            guard r < decoyProbability else {
+                task.setTaskCompleted(success: true)
+                return logDebug("Not scheduling decoy \(r) < \(decoyProbability)")
+            }
+            scheduleDecoy(task: task)
         }
-        scheduleDecoy(task: task)
+
+        exposureController
+            .getDecoyProbability()
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { value in
+                execute(decoyProbability: value)
+            })
+            .store(in: &disposeBag)
     }
 
     private func scheduleDecoy(task: BGProcessingTask) {
@@ -149,6 +167,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             cancelled = true
         }
     }
+
+    // MARK: - Background Updates
 
     private func scheduleUpdate() {
         guard ENManager.authorizationStatus == .authorized else {
