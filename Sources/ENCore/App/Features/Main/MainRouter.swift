@@ -9,11 +9,12 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener {
     var router: MainRouting? { get set }
 
     func embed(stackedViewController: ViewControllable)
     func present(viewController: ViewControllable, animated: Bool)
+    func present(viewController: ViewControllable, animated: Bool, inNavigationController: Bool)
     func dismiss(viewController: ViewControllable, animated: Bool)
 }
 
@@ -27,7 +28,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          requestTestBuilder: RequestTestBuildable,
          infectedBuilder: InfectedBuildable,
          helpBuilder: HelpBuildable,
-         messageBuilder: MessageBuildable) {
+         messageBuilder: MessageBuildable,
+         enableSettingBuilder: EnableSettingBuildable) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
@@ -36,6 +38,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.infectedBuilder = infectedBuilder
         self.helpBuilder = helpBuilder
         self.messageBuilder = messageBuilder
+        self.enableSettingBuilder = enableSettingBuilder
 
         super.init(viewController: viewController)
 
@@ -170,6 +173,32 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         }
     }
 
+    func routeToEnableSetting(_ setting: EnableSetting) {
+        guard enableSettingViewController == nil else {
+            return
+        }
+
+        let enableSettingViewController = enableSettingBuilder.build(withListener: viewController, setting: setting)
+        self.enableSettingViewController = enableSettingViewController
+
+        viewController.present(viewController: enableSettingViewController,
+                               animated: true,
+                               inNavigationController: false)
+    }
+
+    func detachEnableSetting(shouldDismissViewController: Bool) {
+        guard let enableSettingViewController = enableSettingViewController else {
+            return
+        }
+
+        self.enableSettingViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: enableSettingViewController,
+                                   animated: true)
+        }
+    }
+
     // MARK: - Private
 
     private let statusBuilder: StatusBuildable
@@ -195,4 +224,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let messageBuilder: MessageBuildable
     private var messageViewController: ViewControllable?
+
+    private let enableSettingBuilder: EnableSettingBuildable
+    private var enableSettingViewController: ViewControllable?
 }

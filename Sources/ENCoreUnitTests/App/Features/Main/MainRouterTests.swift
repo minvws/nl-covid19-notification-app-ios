@@ -19,6 +19,7 @@ final class MainRouterTests: XCTestCase {
     private let infectedBuilder = InfectedBuildableMock()
     private let helpBuilder = HelpBuildableMock()
     private let messageBuilder = MessageBuildableMock()
+    private let enableSettingBuilder = EnableSettingBuildableMock()
 
     private var router: MainRouter!
 
@@ -33,7 +34,8 @@ final class MainRouterTests: XCTestCase {
                             requestTestBuilder: requestTestBuilder,
                             infectedBuilder: infectedBuilder,
                             helpBuilder: helpBuilder,
-                            messageBuilder: messageBuilder)
+                            messageBuilder: messageBuilder,
+                            enableSettingBuilder: enableSettingBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
@@ -156,5 +158,35 @@ final class MainRouterTests: XCTestCase {
         router.detachAboutApp(shouldHideViewController: false)
 
         XCTAssertEqual(viewController.dismissCallCount, 0)
+    }
+
+    func test_routeToEnableSetting_callsBuilderAndPresents() {
+        enableSettingBuilder.buildHandler = { _, _ in ViewControllableMock() }
+
+        XCTAssertEqual(enableSettingBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.presentViewControllerCallCount, 0)
+
+        router.routeToEnableSetting(.enableBluetooth)
+
+        XCTAssertEqual(enableSettingBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentViewControllerCallCount, 1)
+    }
+
+    func test_detachEnableSetting_callsViewControllerWhenRequired() {
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.detachEnableSetting(shouldDismissViewController: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.routeToEnableSetting(.enableBluetooth)
+        router.detachEnableSetting(shouldDismissViewController: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.routeToEnableSetting(.enableBluetooth)
+        router.detachEnableSetting(shouldDismissViewController: true)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
     }
 }

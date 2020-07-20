@@ -29,6 +29,9 @@ protocol MainRouting: Routing {
 
     func routeToMessage(title: String, body: String)
     func detachMessage(shouldDismissViewController: Bool)
+
+    func routeToEnableSetting(_ setting: EnableSetting)
+    func detachEnableSetting(shouldDismissViewController: Bool)
 }
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, Logging {
@@ -76,6 +79,14 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     }
 
     func present(viewController: ViewControllable, animated: Bool) {
+        present(viewController: viewController, animated: animated, inNavigationController: true)
+    }
+
+    func present(viewController: ViewControllable, animated: Bool, inNavigationController: Bool) {
+        guard inNavigationController else {
+            present(viewController.uiviewController, animated: true, completion: nil)
+            return
+        }
 
         let navigationController: NavigationController
 
@@ -181,11 +192,22 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
     }
 
+    // MARK: - EnableSettingListener
+
+    func enableSettingRequestsDismiss(shouldDismissViewController: Bool) {
+        router?.detachEnableSetting(shouldDismissViewController: shouldDismissViewController)
+    }
+
+    func enableSettingDidTriggerAction() {
+        router?.detachEnableSetting(shouldDismissViewController: true)
+    }
+
     // MARK: - Private
 
     private lazy var mainView: MainView = MainView(theme: self.theme)
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
+
     private var disposeBag = Set<AnyCancellable>()
 
     private func confirmNotificationRemoval() {
@@ -207,13 +229,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
         switch exposureState.activeState {
         case .authorizationDenied:
-            openAppSettings()
+            router?.routeToEnableSetting(.enableExposureNotifications)
         case .notAuthorized:
             requestExposureNotificationPermission()
         case let .inactive(reason) where reason == .bluetoothOff:
-            openBluetooth()
+            router?.routeToEnableSetting(.enableBluetooth)
         case let .inactive(reason) where reason == .disabled:
-            requestExposureNotificationPermission()
+            router?.routeToEnableSetting(.enableExposureNotifications)
         case let .inactive(reason) where reason == .pushNotifications:
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 DispatchQueue.main.async {
@@ -247,7 +269,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case .notDetermined:
             self.exposureController.requestPushNotificationPermission {}
         case .denied:
-            self.openAppSettings()
+            router?.routeToEnableSetting(.enableLocalNotifications)
         default:
             self.logError("Unhandled case")
         }

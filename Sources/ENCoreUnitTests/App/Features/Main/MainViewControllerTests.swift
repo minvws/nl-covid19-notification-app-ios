@@ -96,4 +96,28 @@ final class MainViewControllerTests: TestCase {
         // TODO: Internally this calls a `UIAlertController` which has a cancel & accept button
         // we should create a mock for the controller and handle the desired button clicks.
     }
+
+    func test_enableSettingShouldDismiss_callsRouter() {
+        var shouldDismissViewController: Bool!
+        router.detachEnableSettingHandler = { shouldDismissViewController = $0 }
+
+        XCTAssertEqual(router.detachEnableSettingCallCount, 0)
+
+        viewController.enableSettingRequestsDismiss(shouldDismissViewController: true)
+
+        XCTAssertEqual(router.detachEnableSettingCallCount, 1)
+        XCTAssertTrue(shouldDismissViewController)
+    }
+
+    func test_enableSettingDidCompleteAction_callsRouter() {
+        var shouldDismissViewController: Bool!
+        router.detachEnableSettingHandler = { shouldDismissViewController = $0 }
+
+        XCTAssertEqual(router.detachEnableSettingCallCount, 0)
+
+        viewController.enableSettingDidTriggerAction()
+
+        XCTAssertEqual(router.detachEnableSettingCallCount, 1)
+        XCTAssertTrue(shouldDismissViewController)
+    }
 }

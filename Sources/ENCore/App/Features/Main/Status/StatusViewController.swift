@@ -91,10 +91,8 @@ final class StatusViewController: ViewController, StatusViewControllable {
                 statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
             case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
                 statusViewModel = .inactiveTryAgainWithNotNotified
-            case let (.inactive(reason), .notNotified):
-                let cardType = reason.cardType(listener: self?.listener)
-
-                statusViewModel = StatusViewModel.inactiveWithNotNotified.with(cardType: cardType)
+            case (.inactive, .notNotified):
+                statusViewModel = .inactiveWithNotNotified
             case let (.authorizationDenied, .notified(date)):
                 statusViewModel = StatusViewModel
                     .inactiveWithNotified(date: date)
