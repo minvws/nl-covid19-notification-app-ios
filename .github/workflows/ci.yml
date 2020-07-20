@@ -14,4 +14,4 @@ jobs:
       - name: cibuild
         run: ./tools/scripts/ci/030_cibuild
       - name: citest
-        run: xcodebuild clean test -project EN.xcodeproj -scheme ENCore CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
+        run: xcodebuild clean test -project EN.xcodeproj -scheme ENCore -destination "name=iPhone X,OS=12.1" 
