@@ -23,6 +23,7 @@ final class InfoView: View {
 
     private let scrollView: UIScrollView
     private let contentView: UIView
+    private let headerBackgroundView: UIView
 
     private let headerImageView: UIImageView
     private let stackView: UIStackView
@@ -35,6 +36,7 @@ final class InfoView: View {
         self.headerImageView = UIImageView(image: config.headerImage)
         self.stackView = UIStackView(frame: .zero)
         self.scrollView = UIScrollView(frame: .zero)
+        self.headerBackgroundView = UIView(frame: .zero)
         self.actionButton = Button(title: config.actionButtonTitle, theme: theme)
         super.init(theme: theme)
     }
@@ -51,8 +53,10 @@ final class InfoView: View {
         stackView.spacing = 40
         stackView.distribution = .equalSpacing
         contentView.backgroundColor = .clear
+        headerBackgroundView.backgroundColor = theme.colors.infoHeaderBackground
 
         addSubview(scrollView)
+        scrollView.addSubview(headerBackgroundView)
         scrollView.addSubview(contentView)
         contentView.addSubview(headerImageView)
         contentView.addSubview(stackView)
@@ -67,6 +71,13 @@ final class InfoView: View {
         scrollView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.bottom.equalToSuperview()
         }
+
+        headerBackgroundView.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.top.equalTo(self.snp.top)
+            maker.bottom.greaterThanOrEqualTo(scrollView.snp.top)
+            maker.leading.trailing.equalTo(self)
+        }
+
         contentView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(scrollView)
             maker.bottom.equalTo(scrollView)
