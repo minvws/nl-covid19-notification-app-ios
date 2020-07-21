@@ -9,9 +9,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: ciprep
+      - name: CIprep
         run: ./tools/scripts/ci/010_ciprep
-      - name: cibuild
+      - name: CIbuild
         run: ./tools/scripts/ci/030_cibuild
-      - name: citest-iphone11
-        run: xcodebuild clean test -project EN.xcodeproj -scheme ENCore -destination "platform=iOS Simulator,OS=latest,name=iPhone 11"
+      - name: CItest-iphone7
+        run: |
+          xcodebuild clean test \
+          -project EN.xcodeproj \
+          -scheme ENCore \
+          -destination "platform=iOS Simulator,OS=latest,name=iPhone 7" \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          ONLY_ACTIVE_ARCH=NO
+      - name: CItest-iphone11
+        run: |
+          xcodebuild clean test \
+          -project EN.xcodeproj \
+          -scheme ENCore \
+          -destination "platform=iOS Simulator,OS=latest,name=iPhone 11" \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          ONLY_ACTIVE_ARCH=NO
