@@ -21,27 +21,31 @@
     BIO *certificateBlob = BIO_new_mem_buf(certificateData.bytes, (int)certificateData.length);
     
     if (certificateBlob == NULL) {
-        return false;
+        return NO;
     }
     
     X509 *certificate = PEM_read_bio_X509(certificateBlob, NULL, 0, NULL);
     BIO_free(certificateBlob); certificateBlob = NULL;
     
     if (certificate == NULL) {
-        return false;
+        return NO;
     }
     
     ASN1_INTEGER *expectedSerial = ASN1_INTEGER_new();
     
     if (expectedSerial == NULL) {
-        return false;
+        return NO;
     }
     
-    ASN1_INTEGER_set_uint64(expectedSerial, serialNumber);
-    ASN1_INTEGER *certificateSerial = X509_get_serialNumber(certificate);
+    if (ASN1_INTEGER_set_uint64(expectedSerial, serialNumber) != 1) {
+        ASN1_INTEGER_free(expectedSerial); expectedSerial = NULL;
+        
+        return NO;
+    }
     
+    ASN1_INTEGER *certificateSerial = X509_get_serialNumber(certificate);
     if (certificateSerial == NULL) {
-        return false;
+        return NO;
     }
     
     BOOL isMatch = ASN1_INTEGER_cmp(certificateSerial, expectedSerial) == 0;
@@ -55,26 +59,26 @@
     BIO *certificateBlob = BIO_new_mem_buf(certificateData.bytes, (int)certificateData.length);
     
     if (certificateBlob == NULL) {
-        return false;
+        return NO;
     }
     
     X509 *certificate = PEM_read_bio_X509(certificateBlob, NULL, 0, NULL);
     BIO_free(certificateBlob); certificateBlob = NULL;
     
     if (certificate == NULL) {
-        return false;
+        return NO;
     }
     
     const unsigned char *bytes = subjectKeyIdentifier.bytes;
     ASN1_OCTET_STRING *expectedSubjectKeyIdentifier = d2i_ASN1_OCTET_STRING(NULL, &bytes, (int)subjectKeyIdentifier.length);
     
     if (expectedSubjectKeyIdentifier == NULL) {
-        return false;
+        return NO;
     }
     
     const ASN1_OCTET_STRING *certificateSubjectKeyIdentifier = X509_get0_subject_key_id(certificate);
     if (certificateSubjectKeyIdentifier == NULL) {
-        return false;
+        return NO;
     }
     
     BOOL isMatch = ASN1_OCTET_STRING_cmp(expectedSubjectKeyIdentifier, certificateSubjectKeyIdentifier) == 0;
@@ -89,25 +93,82 @@
                    contentData:(NSData *)contentData
                certificateData:(NSData *)certificateData {
     BIO *signatureBlob = BIO_new_mem_buf(signatureData.bytes, (int)signatureData.length);
+    if (signatureBlob == NULL) {
+        return NO;
+    }
+    
     BIO *contentBlob = BIO_new_mem_buf(contentData.bytes, (int)contentData.length);
+    if (contentBlob == NULL) {
+        BIO_free(signatureBlob); signatureBlob = NULL;
+        
+        return NO;
+    }
+    
     BIO *certificateBlob = BIO_new_mem_buf(certificateData.bytes, (int)certificateData.length);
+    if (certificateBlob == NULL) {
+        BIO_free(signatureBlob); signatureBlob = NULL;
+        BIO_free(contentBlob); contentBlob = NULL;
+        
+        return NO;
+    }
     
     PKCS7 *p7 = d2i_PKCS7_bio(signatureBlob, NULL);
+    if (p7 == NULL) {
+        BIO_free(signatureBlob); signatureBlob = NULL;
+        BIO_free(contentBlob); contentBlob = NULL;
+        BIO_free(certificateBlob); certificateBlob = NULL;
+        
+        return NO;
+    }
+    
     X509 *cert = PEM_read_bio_X509(certificateBlob, NULL, 0, NULL);
+    if (cert == NULL) {
+        BIO_free(signatureBlob); signatureBlob = NULL;
+        BIO_free(contentBlob); contentBlob = NULL;
+        BIO_free(certificateBlob); certificateBlob = NULL;
+        
+        return NO;
+    }
     
     BIO_free(signatureBlob); signatureBlob = NULL;
     BIO_free(certificateBlob); certificateBlob = NULL;
         
     X509_STORE *store = X509_STORE_new();
-    X509_STORE_add_cert(store, cert);
+    if (store == NULL) {
+        BIO_free(contentBlob); contentBlob = NULL;
+        
+        return NO;
+    }
+    
+    if (X509_STORE_add_cert(store, cert) != 1) {
+        X509_STORE_free(store); store = NULL;
+        
+        return NO;
+    }
     
     X509_VERIFY_PARAM *verifyParameters = X509_VERIFY_PARAM_new();
-    X509_VERIFY_PARAM_set_flags(verifyParameters, X509_V_FLAG_CRL_CHECK_ALL | X509_V_FLAG_POLICY_CHECK);
-    X509_VERIFY_PARAM_set_purpose(verifyParameters, X509_PURPOSE_ANY);
+    if (verifyParameters == NULL) {
+        X509_STORE_free(store); store = NULL;
+        
+        return NO;
+    }
+    
+    if (X509_VERIFY_PARAM_set_flags(verifyParameters, X509_V_FLAG_CRL_CHECK_ALL | X509_V_FLAG_POLICY_CHECK) != 1
+        || X509_VERIFY_PARAM_set_purpose(verifyParameters, X509_PURPOSE_ANY) != 1) {
+        X509_STORE_free(store); store = NULL;
+        X509_VERIFY_PARAM_free(verifyParameters); verifyParameters = NULL;
+        
+        return NO;
+    }
 
-    X509_STORE_set1_param(store, verifyParameters);
-    X509_VERIFY_PARAM_free(verifyParameters);
-    verifyParameters = NULL;
+    if (X509_STORE_set1_param(store, verifyParameters) != 1) {
+        X509_STORE_free(store); store = NULL;
+        X509_VERIFY_PARAM_free(verifyParameters); verifyParameters = NULL;
+        
+        return NO;
+    }
+    
+    X509_VERIFY_PARAM_free(verifyParameters); verifyParameters = NULL;
     
     int result = PKCS7_verify(p7, NULL, store, contentBlob, NULL, PKCS7_BINARY);
     
