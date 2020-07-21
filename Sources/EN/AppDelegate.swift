@@ -32,8 +32,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         unc.delegate = self
 
         if #available(iOS 13.5, *) {
-            BGTaskScheduler.shared.register(forTaskWithIdentifier: "nl.rijksoverheid.en.background-update", using: nil) { task in
-                self.handle(backgroundTask: task)
+            [
+                "nl.rijksoverheid.en.background-update",
+                "nl.rijksoverheid.en.background-decoy-stop-keys",
+                "nl.rijksoverheid.en.background-decoy-sequence",
+                "nl.rijksoverheid.en.background-decoy-register"
+            ]
+            .forEach { identifier in
+                BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { task in
+                    self.handle(backgroundTask: task)
+                }
             }
         }
 

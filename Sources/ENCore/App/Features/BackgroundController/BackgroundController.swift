@@ -259,7 +259,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 logDebug("Scheduled `\(identifier)` ✅")
                 completion?(true)
             } catch {
-                logError("Could not schedule \(identifier): \(error)")
+                logError("Could not schedule \(identifier): \(error.localizedDescription)")
                 completion?(true)
             }
         }
