@@ -181,7 +181,6 @@ extension String {
     static var moreInformationComplaintsItem4: String { return Localization.string(for: "moreInformation.complaints.item4") }
     static var moreInformationComplaintsItem5: String { return Localization.string(for: "moreInformation.complaints.item5") }
     static var moreInformationComplaintsTitle: String { return Localization.string(for: "moreInformation.complaints.title") }
-    static var moreInformationComplaintsContent: String { return Localization.string(for: "moreInformation.complaints.content") }
 
     // MARK: - MoreInformation | About
 
