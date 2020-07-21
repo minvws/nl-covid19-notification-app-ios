@@ -13,12 +13,12 @@ jobs:
         run: ./tools/scripts/ci/010_ciprep
       - name: CIbuild
         run: ./tools/scripts/ci/030_cibuild
-      - name: CItest-iphone7
+      - name: CItest-iphone8
         run: |
           xcodebuild clean test \
           -project EN.xcodeproj \
           -scheme ENCore \
-          -destination "platform=iOS Simulator,OS=latest,name=iPhone 7" \
+          -destination "platform=iOS Simulator,OS=latest,name=iPhone 8" \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           ONLY_ACTIVE_ARCH=NO
