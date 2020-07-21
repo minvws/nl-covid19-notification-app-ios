@@ -15,7 +15,7 @@ public protocol Theme: AnyObject {
     init()
 }
 
-typealias ThemeColor = KeyPath<Colors, UIColor>
+public typealias ThemeColor = KeyPath<Colors, UIColor>
 
 public protocol Themeable {
     var theme: Theme { get }
@@ -25,11 +25,11 @@ public protocol ReusableThemable: Themeable {
     func configure(with theme: Theme)
 }
 
-final class ENTheme: Theme {
-    let fonts: Fonts
-    let colors: Colors
+public final class ENTheme: Theme {
+    public let fonts: Fonts
+    public let colors: Colors
 
-    init() {
+    public init() {
         self.fonts = ENFonts()
         self.colors = ENColors()
     }

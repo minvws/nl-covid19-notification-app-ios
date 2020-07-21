@@ -8,7 +8,7 @@
 import CocoaLumberjackSwift
 import Foundation
 
-protocol Logging {
+public protocol Logging {
     var loggingCategory: String { get }
 
     func logDebug(_ message: String, function: StaticString, file: StaticString, line: UInt)
@@ -17,7 +17,7 @@ protocol Logging {
     func logError(_ message: String, function: StaticString, file: StaticString, line: UInt)
 }
 
-extension Logging {
+public extension Logging {
 
     /// The category with which the class that conforms to the `Logging`-protocol is logging.
     var loggingCategory: String {
@@ -41,9 +41,9 @@ extension Logging {
     }
 }
 
-final class LogHandler: Logging {
+public final class LogHandler: Logging {
 
-    static func setup() {
+    public static func setup() {
         let level = Bundle.main.infoDictionary?["LOG_LEVEL"] as? String ?? "debug"
         switch level {
         case "debug":
@@ -66,7 +66,7 @@ final class LogHandler: Logging {
         DDLog.add(fileLogger)
     }
 
-    static func logFiles() -> [URL] {
+    public static func logFiles() -> [URL] {
         guard let fileLogger = DDLog.allLoggers.filter({ $0 is DDFileLogger }).first as? DDFileLogger else {
             #if DEBUG
                 assertionFailure("File Logger Not Found")

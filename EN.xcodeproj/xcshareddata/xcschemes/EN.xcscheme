@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1020"
+   LastUpgradeVersion = "1160"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -35,9 +35,31 @@
             testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F5B0ED60414C6DE1E7E9FE04"
+               BuildableName = "ENTests.xctest"
+               BlueprintName = "ENTests"
+               ReferencedContainer = "container:EN.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "39B6B33AA5525CAE90F2519E"
                BuildableName = "ENCoreTests.xctest"
                BlueprintName = "ENCoreTests"
+               ReferencedContainer = "container:EN.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4E660180CE81C53C45AA66A4"
+               BuildableName = "ENFoundationTests.xctest"
+               BlueprintName = "ENFoundationTests"
                ReferencedContainer = "container:EN.xcodeproj">
             </BuildableReference>
          </TestableReference>
