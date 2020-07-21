@@ -93,9 +93,11 @@ final class CloudView: View {
     }
 
     private func startDisplayLink() {
-        if let animationsEnabled = AnimationTestingOverrides.animationsEnabled, animationsEnabled == false {
-            return
-        }
+        #if DEBUG
+            if let animationsEnabled = AnimationTestingOverrides.animationsEnabled, animationsEnabled == false {
+                return
+            }
+        #endif
 
         guard displayLink == nil else { return }
 
