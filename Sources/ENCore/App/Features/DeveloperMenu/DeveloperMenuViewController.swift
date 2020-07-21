@@ -398,13 +398,19 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     private func toggleDailyLimit() {
-        ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets.toggle()
+        #if DEBUG
+            ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets.toggle()
+        #endif
     }
 
     // MARK: - Private
 
     private func getDailyLimit() -> String {
-        return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
+        #if DEBUG
+            return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
+        #else
+            return "None"
+        #endif
     }
 
     private func getNumberOfProcessedKeySetsInLast24Hours() -> Int {

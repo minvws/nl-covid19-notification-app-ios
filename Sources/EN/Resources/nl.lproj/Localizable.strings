@@ -26,5 +26,5 @@
 "update.software.os.detail.step3" = "3. Ga naar ‘Software-update’";
 "update.software.os.detail.step4" = "4. Kies ‘Download en installeer’";
 
-"update.hardware.title" = "Om de app te kunnen gebruiken heb je een nieuwere telefoon nodig";
-"update.hardware.description" = "CoronaMelder heeft iOS 13.5 of hoger nodig om te werken. Helaas kan deze versie niet op jouw telefoon worden geinstalleerd.";
+"update.hardware.title" = "De app werkt helaas niet op je telefoon";
+"update.hardware.description" = "CoronaMelder werkt alleen op telefoons met iOS 13.5 of hoger. Je telefoon is niet geschikt voor deze software.";
