@@ -152,7 +152,7 @@ private final class StatusView: View {
     private let descriptionLabel = Label()
 
     private let gradientLayer = CAGradientLayer()
-    private let cloudsImageView = UIImageView()
+    private lazy var cloudsView = CloudView(theme: theme)
     private let sceneImageView = UIImageView()
 
     private var containerToSceneVerticalConstraint: NSLayoutConstraint?
@@ -168,8 +168,6 @@ private final class StatusView: View {
 
     override func build() {
         super.build()
-
-        cloudsImageView.image = .statusClouds
 
         sceneImageView.contentMode = .scaleAspectFit
         sceneImageView.image = .statusScene
@@ -212,7 +210,7 @@ private final class StatusView: View {
         contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
         contentContainer.addArrangedSubview(cardView)
-        addSubview(cloudsImageView)
+        addSubview(cloudsView)
         addSubview(sceneImageView)
         addSubview(contentContainer)
         addLayoutGuide(contentStretchGuide)
@@ -222,7 +220,7 @@ private final class StatusView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        cloudsImageView.translatesAutoresizingMaskIntoConstraints = false
+        cloudsView.translatesAutoresizingMaskIntoConstraints = false
         sceneImageView.translatesAutoresizingMaskIntoConstraints = false
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
 
@@ -231,7 +229,7 @@ private final class StatusView: View {
 
         let sceneImageAspectRatio = sceneImageView.image.map { $0.size.width / $0.size.height } ?? 1
 
-        cloudsImageView.snp.makeConstraints { maker in
+        cloudsView.snp.makeConstraints { maker in
             maker.centerY.equalTo(iconView.snp.centerY)
             maker.leading.trailing.equalTo(stretchGuide)
         }
