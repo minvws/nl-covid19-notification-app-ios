@@ -22,7 +22,7 @@ install_xcode_templates:
 ignore_mocks_changes:
 	git update-index --skip-worktree Sources/ENCoreUnitTests/Mocks.swift 
 
-install_dev_deps: build_xcodegen build_swiftformat build_mockolo build_openssl
+install_dev_deps: build_xcodegen build_swiftformat build_mockolo
 	@echo "All dependencies are installed"
 	@echo "You're ready to go"
 
