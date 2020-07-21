@@ -15,6 +15,7 @@ final class BackgroundControllerTests: XCTestCase {
     private var controller: BackgroundController!
 
     private let exposureController = ExposureControllingMock()
+    private let networkController = NetworkControllingMock()
 
     // MARK: - Setup
 
@@ -27,6 +28,7 @@ final class BackgroundControllerTests: XCTestCase {
                                                         decoyDelayRange: 0 ... 1)
 
         controller = BackgroundController(exposureController: exposureController,
+                                          networkController: networkController,
                                           configuration: configuration)
     }
 
@@ -56,7 +58,7 @@ final class BackgroundControllerTests: XCTestCase {
             Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
         }
 
-        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.update)
+        let task = MockBGProcessingTask(identifier: .update)
 
         controller.handle(task: task)
 
@@ -78,32 +80,55 @@ final class BackgroundControllerTests: XCTestCase {
             return stream
         }
 
-        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.update)
+        let task = MockBGProcessingTask(identifier: .update)
         controller.handle(task: task)
         task.expirationHandler?()
 
         XCTAssert(cancelled)
     }
 
-    func test_handleBackgroundDecoy() {
-        let exp = expectation(description: "HandleBackgroundDecoy")
+    func test_handleBackgroundDecoyRegister() {
+        let exp = expectation(description: "HandleBackgroundDecoyRegister")
 
         exposureController.requestLabConfirmationKeyHandler = { completion in
             completion(.success(self.labConfirmationKey))
+            // Async magic, no one likes it, but sometimes we have to do it.
+            // Internally when scheduling an async process runs so we need to
+            // have a delay here before we can fulfill the expectation
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                exp.fulfill()
+            }
         }
 
-        exposureController.requestStopKeysHandler = { completion in
-            completion(.success(()))
+        let task = MockBGProcessingTask(identifier: .decoyRegister)
+
+        controller.handle(task: task)
+        wait(for: [exp], timeout: 2)
+
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
+
+        XCTAssertNotNil(task.completed)
+        XCTAssert(task.completed!)
+    }
+
+    func test_handleBackgroundDecoyStopKeys() {
+        let exp = expectation(description: "HandleBackgroundDecoyStopKeys")
+
+        exposureController.getPaddingHandler = {
+            return Just(Padding(minimumRequestSize: 0, maximumRequestSize: 1)).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
+        networkController.stopKeysHandler = { _ in
             exp.fulfill()
+            return Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher()
         }
 
-        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.decoy)
+        let task = MockBGProcessingTask(identifier: .decoyStopKeys)
 
         controller.handle(task: task)
         wait(for: [exp], timeout: 1)
 
-        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
-        XCTAssertEqual(exposureController.requestStopKeysCallCount, 1)
+        XCTAssertEqual(networkController.stopKeysCallCount, 1)
 
         XCTAssertNotNil(task.completed)
         XCTAssert(task.completed!)
@@ -126,8 +151,8 @@ private final class MockBGProcessingTask: BGProcessingTask {
 
     private let _identifier: String
 
-    init(identifier: String) {
-        self._identifier = identifier
+    init(identifier: BackgroundTaskIdentifiers) {
+        self._identifier = identifier.rawValue
     }
 
     override func setTaskCompleted(success: Bool) {

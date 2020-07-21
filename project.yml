@@ -71,6 +71,10 @@ targets:
           NSAllowsArbitraryLoads: true
         BGTaskSchedulerPermittedIdentifiers:
           - "nl.rijksoverheid.en.background-update"
+          - "nl.rijksoverheid.en.background-decoy-stop-keys"
+          - "nl.rijksoverheid.en.background-decoy-stop-keys"
+          - "nl.rijksoverheid.en.background-decoy-sequence"
+          - "nl.rijksoverheid.en.background-decoy-register"
         NETWORK_CONFIGURATION: ${NETWORK_CONFIGURATION}
         LOG_LEVEL: ${LOG_LEVEL}
     dependencies:

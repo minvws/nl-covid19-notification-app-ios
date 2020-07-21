@@ -65,6 +65,10 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.getDecoyProbability()
     }
 
+    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
+        return dataController.getPadding()
+    }
+
     func refreshStatus() {
         updateStatusStream()
         updatePushNotificationState()
@@ -210,24 +214,6 @@ final class ExposureController: ExposureControlling, Logging {
         requestDiagnosisKeys()
             .sink(receiveCompletion: receiveCompletion,
                   receiveValue: receiveValue)
-            .store(in: &disposeBag)
-    }
-
-    func requestStopKeys(completion: @escaping (_ result: Result<(), ExposureDataError>) -> ()) {
-        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
-            if case let .failure(error) = result {
-                completion(.failure(error))
-            }
-        }
-
-        let receiveValue: () -> () = {
-            completion(.success(()))
-        }
-
-        dataController
-            .requestStopKeys()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
             .store(in: &disposeBag)
     }
 

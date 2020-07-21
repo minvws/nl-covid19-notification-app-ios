@@ -16,6 +16,7 @@ protocol BackgroundControlling {
 
 protocol BackgroundDependency {
     var exposureController: ExposureControlling { get }
+    var networkController: NetworkControlling { get }
 }
 
 /// @mockable
@@ -33,6 +34,7 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
                                                         decoyMinuteRange: 0 ... 59,
                                                         decoyDelayRange: 5 ... 900)
         return BackgroundController(exposureController: dependencyProvider.dependency.exposureController,
+                                    networkController: dependencyProvider.dependency.networkController,
                                     configuration: configuration)
     }
 }

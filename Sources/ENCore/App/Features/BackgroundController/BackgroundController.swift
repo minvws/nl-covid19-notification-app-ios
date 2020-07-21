@@ -10,10 +10,11 @@ import Combine
 import ExposureNotification
 import Foundation
 
-struct BackgroundTaskIdentifiers {
-    static let decoySequence = "nl.rijksoverheid.en.background-decoy-sequence"
-    static let decoy = "nl.rijksoverheid.en.background-decoy"
-    static let update = "nl.rijksoverheid.en.background-update"
+enum BackgroundTaskIdentifiers: String {
+    case update = "nl.rijksoverheid.en.background-update"
+    case decoyStopKeys = "nl.rijksoverheid.en.background-decoy-stop-keys"
+    case decoySequence = "nl.rijksoverheid.en.background-decoy-sequence"
+    case decoyRegister = "nl.rijksoverheid.en.background-decoy-register"
 }
 
 struct BackgroundTaskConfiguration {
@@ -32,9 +33,12 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     // MARK: - Init
 
-    init(exposureController: ExposureControlling, configuration: BackgroundTaskConfiguration) {
+    init(exposureController: ExposureControlling,
+         networkController: NetworkControlling,
+         configuration: BackgroundTaskConfiguration) {
         self.exposureController = exposureController
         self.configuration = configuration
+        self.networkController = networkController
     }
 
     deinit {
@@ -52,22 +56,35 @@ final class BackgroundController: BackgroundControlling, Logging {
         guard let task = task as? BGProcessingTask else {
             return logError("Task is not of type `BGProcessingTask`")
         }
-        switch task.identifier {
-        case BackgroundTaskIdentifiers.decoySequence:
+        guard let identifier = BackgroundTaskIdentifiers(rawValue: task.identifier) else {
+            return logError("No Handler for: \(task.identifier)")
+        }
+
+        switch identifier {
+        case .decoySequence:
             handleDecoySequence(task: task)
-        case BackgroundTaskIdentifiers.decoy:
-            handleDecoy(task: task)
-        case BackgroundTaskIdentifiers.update:
+            scheduleDecoySequence()
+        case .decoyRegister:
+            handleDecoyRegister(task: task)
+        case .decoyStopKeys:
+            handleDecoyStopkeys(task: task)
+        case .update:
             handleUpdate(task: task)
             scheduleUpdate()
-        default:
-            logError(" No Handler for: \(task.identifier)")
         }
     }
 
     // MARK: - Private
 
+    /// Returns the refresh interval in minutes
+    private var refreshInterval: TimeInterval {
+        return receivedRefreshInterval ?? defaultRefreshInterval
+    }
+
+    private let defaultRefreshInterval: TimeInterval = 60 // minutes
+    private var receivedRefreshInterval: TimeInterval?
     private let exposureController: ExposureControlling
+    private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
 
@@ -89,14 +106,29 @@ final class BackgroundController: BackgroundControlling, Logging {
             return logError("Error creating date")
         }
 
-        let request = BGProcessingTaskRequest(identifier: BackgroundTaskIdentifiers.decoySequence)
-        request.earliestBeginDate = date
+        schedule(identifier: BackgroundTaskIdentifiers.decoySequence, date: date)
+    }
 
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            logDebug("`scheduleDecoySequence` ✅")
-        } catch {
-            logError("Could not schedule decoy sequence: \(error)")
+    private func scheduleDecoyRegister(task: BGProcessingTask) {
+        let hour = Int.random(in: configuration.decoyHourRange)
+        let minute = Int.random(in: configuration.decoyMinuteRange)
+
+        guard let date = date(hour: hour, minute: minute) else {
+            task.setTaskCompleted(success: false)
+            return logError("Error creating date")
+        }
+
+        schedule(identifier: .decoyRegister, date: date, requiresNetworkConnectivity: true) { result in
+            task.setTaskCompleted(success: result)
+        }
+    }
+
+    private func scheduleDecoyStopKeys(task: BGProcessingTask) {
+        let delay = Double(Int.random(in: configuration.decoyDelayRange))
+        let date = Date().addingTimeInterval(delay)
+
+        schedule(identifier: .decoyRegister, date: date, requiresNetworkConnectivity: true) { result in
+            task.setTaskCompleted(success: result)
         }
     }
 
@@ -107,7 +139,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 task.setTaskCompleted(success: true)
                 return logDebug("Not scheduling decoy \(r) < \(decoyProbability)")
             }
-            scheduleDecoy(task: task)
+            scheduleDecoyRegister(task: task)
         }
 
         exposureController
@@ -119,52 +151,35 @@ final class BackgroundController: BackgroundControlling, Logging {
             .store(in: &disposeBag)
     }
 
-    private func scheduleDecoy(task: BGProcessingTask) {
-        let hour = Int.random(in: configuration.decoyHourRange)
-        let minute = Int.random(in: configuration.decoyMinuteRange)
-
-        guard let date = date(hour: hour, minute: minute) else {
-            task.setTaskCompleted(success: false)
-            return logError("Error creating date")
-        }
-
-        let request = BGProcessingTaskRequest(identifier: BackgroundTaskIdentifiers.decoy)
-        request.earliestBeginDate = date
-        request.requiresNetworkConnectivity = true
-
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            logDebug("`scheduleDecoy` ✅")
-            task.setTaskCompleted(success: true)
-        } catch {
-            logError("Could not schedule decoy: \(error)")
-            task.setTaskCompleted(success: false)
-        }
-    }
-
-    private func handleDecoy(task: BGProcessingTask) {
-        // TODO: `requestLabConfirmationKey` & `requestStopKeys` should return Publishers so we can cancel the requests
-        var cancelled = false
-
+    private func handleDecoyRegister(task: BGProcessingTask) {
         exposureController.requestLabConfirmationKey { _ in
             // Note: We ignore the response
             self.logDebug("Decoy `/register` complete")
-        }
-
-        let delay = Double(Int.random(in: configuration.decoyDelayRange))
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            self.exposureController.requestStopKeys { _ in
-                // Note: We ignore the response
-                self.logDebug("Decoy `/postkeys` complete")
-                if !cancelled {
-                    task.setTaskCompleted(success: true)
-                }
-            }
+            self.scheduleDecoyStopKeys(task: task)
         }
 
         // Handle running out of time
         task.expirationHandler = {
-            cancelled = true
+            // TODO: We need to actually stop the `requestLabConfirmationKey` request
+        }
+    }
+
+    private func handleDecoyStopkeys(task: BGProcessingTask) {
+        let cancellable = exposureController
+            .getPadding()
+            .flatMap { padding in
+                self.networkController
+                    .stopKeys(padding: padding)
+                    .mapError { $0.asExposureDataError }
+            }.sink(receiveCompletion: { _ in
+                // Note: We ignore the response
+                self.logDebug("Decoy `/postkeys` complete")
+                task.setTaskCompleted(success: true)
+            }, receiveValue: { _ in })
+
+        // Handle running out of time
+        task.expirationHandler = {
+            cancellable.cancel()
         }
     }
 
@@ -174,16 +189,9 @@ final class BackgroundController: BackgroundControlling, Logging {
         guard ENManager.authorizationStatus == .authorized else {
             return logError("`ENManager.authorizationStatus` not authorized")
         }
-        let request = BGProcessingTaskRequest(identifier: BackgroundTaskIdentifiers.update)
-        request.requiresNetworkConnectivity = true
-        request.earliestBeginDate = Date(timeIntervalSinceNow: refreshInterval * 60)
+        let date = Date(timeIntervalSinceNow: refreshInterval * 60)
 
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            logDebug("`scheduleUpdate` ✅")
-        } catch {
-            logError("Could not schedule app refresh: \(error)")
-        }
+        schedule(identifier: .update, date: date, requiresNetworkConnectivity: true)
     }
 
     private func handleUpdate(task: BGProcessingTask) {
@@ -225,14 +233,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         cancellable.store(in: &disposeBag)
     }
 
-    private let defaultRefreshInterval: TimeInterval = 60 // minutes
-    private var receivedRefreshInterval: TimeInterval?
-
-    /// Returns the refresh interval in minutes
-    private var refreshInterval: TimeInterval {
-        return receivedRefreshInterval ?? defaultRefreshInterval
-    }
-
     private func getAndSetRefreshInterval() {
         exposureController
             .getAppRefreshInterval()
@@ -246,5 +246,30 @@ final class BackgroundController: BackgroundControlling, Logging {
         components.hour = hour
         components.minute = minute
         return Calendar.current.date(from: components)
+    }
+
+    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date, requiresNetworkConnectivity: Bool = false, completion: ((Bool) -> ())? = nil) {
+        func execute() {
+            let request = BGProcessingTaskRequest(identifier: identifier.rawValue)
+            request.requiresNetworkConnectivity = requiresNetworkConnectivity
+            request.earliestBeginDate = date
+
+            do {
+                try BGTaskScheduler.shared.submit(request)
+                logDebug("Scheduled `\(identifier)` ✅")
+                completion?(true)
+            } catch {
+                logError("Could not schedule \(identifier): \(error)")
+                completion?(true)
+            }
+        }
+
+        BGTaskScheduler.shared.getPendingTaskRequests { tasks in
+            guard tasks.filter({ $0.identifier == identifier.rawValue }).isEmpty else {
+                completion?(true)
+                return
+            }
+            execute()
+        }
     }
 }

@@ -156,20 +156,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .eraseToAnyPublisher()
     }
 
-    func requestStopKeys() -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize,
-                        maximumRequestSize: configuration.requestMaximumSize)
-            }
-            .flatMap { (padding: Padding) in
-                return self.operationProvider
-                    .requestStopKeysOperation(padding: padding)
-                    .execute()
-            }
-            .eraseToAnyPublisher()
-    }
-
     // MARK: - Misc
 
     func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {
@@ -194,6 +180,15 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decoyProbability
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
+        requestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
+                               maximumRequestSize: applicationConfiguration.requestMaximumSize)
             }
             .eraseToAnyPublisher()
     }
