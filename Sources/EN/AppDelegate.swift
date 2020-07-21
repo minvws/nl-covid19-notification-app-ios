@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         unc.delegate = self
 
         if #available(iOS 13.5, *) {
-            let identifiers = [
+            [
                 "nl.rijksoverheid.en.background-update",
                 "nl.rijksoverheid.en.background-decoy-stop-keys",
                 "nl.rijksoverheid.en.background-decoy-sequence",
