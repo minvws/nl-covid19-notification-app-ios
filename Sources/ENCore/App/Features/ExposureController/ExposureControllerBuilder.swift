@@ -17,6 +17,8 @@ protocol ExposureControlling {
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
+    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
+    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
 
     // MARK: - Updates
 

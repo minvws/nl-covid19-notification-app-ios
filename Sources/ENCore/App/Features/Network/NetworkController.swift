@@ -141,6 +141,44 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
+    func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError> {
+        return Deferred {
+            Future { promise in
+
+                let preRequest = PrePostKeysRequest(keys: [], bucketId: Data())
+                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+
+                let request = PostKeysRequest(keys: [],
+                                              bucketId: Data(),
+                                              padding: generatedPadding)
+
+                guard let requestData = try? JSONEncoder().encode(request) else {
+                    promise(.failure(.encodingError))
+                    return
+                }
+
+                let signature = self.cryptoUtility
+                    .signature(forData: requestData, key: Data())
+                    .base64EncodedString()
+
+                let completion: (NetworkError?) -> () = { error in
+                    if let error = error {
+                        promise(.failure(error))
+                        return
+                    }
+
+                    promise(.success(()))
+                }
+
+                self.networkManager.postStopKeys(request: request,
+                                                 signature: signature,
+                                                 completion: completion)
+            }
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
+
     func startObservingNetworkReachability() {
         if reachability == nil {
             do {

@@ -16,6 +16,7 @@ protocol BackgroundControlling {
 
 protocol BackgroundDependency {
     var exposureController: ExposureControlling { get }
+    var networkController: NetworkControlling { get }
 }
 
 /// @mockable
@@ -28,6 +29,12 @@ private final class BackgroundControllerDependencyProvider: DependencyProvider<B
 final class BackgroundControllerBuilder: Builder<BackgroundDependency>, BackgroundControllerBuildable {
     func build() -> BackgroundControlling {
         let dependencyProvider = BackgroundControllerDependencyProvider(dependency: dependency)
-        return BackgroundController(exposureController: dependencyProvider.dependency.exposureController)
+        let configuration = BackgroundTaskConfiguration(decoyProbabilityRange: 0 ..< 1,
+                                                        decoyHourRange: 7 ... 18,
+                                                        decoyMinuteRange: 0 ... 59,
+                                                        decoyDelayRange: 5 ... 900)
+        return BackgroundController(exposureController: dependencyProvider.dependency.exposureController,
+                                    networkController: dependencyProvider.dependency.networkController,
+                                    configuration: configuration)
     }
 }

@@ -11,7 +11,7 @@ import Foundation
 struct ApplicationConfiguration: Codable {
     let version: Int
     let manifestRefreshFrequency: Int
-    let decoyProbability: Double
+    let decoyProbability: Float
     let creationDate: Date
     let identifier: String
     let minimumVersion: String

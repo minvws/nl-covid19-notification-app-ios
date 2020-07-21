@@ -44,6 +44,8 @@ protocol ExposureDataControlling {
 
     func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
+    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
+    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
 }
 

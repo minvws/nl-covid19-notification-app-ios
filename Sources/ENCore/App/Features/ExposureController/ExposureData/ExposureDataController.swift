@@ -176,6 +176,23 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .eraseToAnyPublisher()
     }
 
+    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
+        requestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return applicationConfiguration.decoyProbability
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
+        requestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
+                               maximumRequestSize: applicationConfiguration.requestMaximumSize)
+            }
+            .eraseToAnyPublisher()
+    }
+
     func updateLastLocalNotificationExposureDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
     }
