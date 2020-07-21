@@ -121,15 +121,10 @@ private final class ReceivedNotificationView: View {
             .moreInformationComplaintsItem4
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-        let content = NSMutableAttributedString(string: "\n")
-        content.append(String.moreInformationComplaintsContent.attributed())
 
-        var string = [NSAttributedString]()
-        string.append(contentsOf: bulletList)
-        string.append(content)
         return InfoSectionTextView(theme: theme,
                                    title: .moreInformationComplaintsTitle,
-                                   content: string)
+                                   content: bulletList)
     }
 
     private func doCoronaTest() -> View {

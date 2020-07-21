@@ -72,7 +72,7 @@ struct NetworkConfiguration {
         name: "ACC",
         api: .init(
             scheme: "https",
-            host: "api-ota.alleensamenmelden.nl",
+            host: "localhost",
             port: nil,
             path: ["mss-acc", "v1"],
             sslSignature: Certificate.SSL.apiAccSignature,
