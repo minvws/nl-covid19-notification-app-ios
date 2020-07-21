@@ -72,8 +72,6 @@ targets:
           randomExecutionOrder: true
         - name: ENCoreTests
           randomExecutionOrder: true
-        - name: ENFoundationTests
-          randomExecutionOrder: true
     settings:
       base:
         CODE_SIGN_STYLE: Manual
@@ -145,11 +143,6 @@ targets:
       - package: CocoaLumberjack
         product: CocoaLumberjackSwift
     platform: iOS
-    scheme:
-      gatherCoverageData: true
-      testTargets:
-        - name: ENFoundationTests
-          randomExecutionOrder: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.foundation
@@ -158,20 +151,6 @@ targets:
     sources:
       - Sources/ENFoundation
     type: framework
-  ENFoundationTests:
-    dependencies:
-      - target: ENFoundation
-    deploymentTarget: '11.0'
-    platform: iOS
-    preBuildScripts:
-      - name: Generate Mocks
-        path: tools/scripts/generate-mocks.sh
-    settings:
-      base:
-        SWIFT_VERSION: 5.2
-    sources:
-      - Sources/ENFoundationTests
-    type: bundle.unit-test
   ENTests:
     dependencies:
       - target: EN
