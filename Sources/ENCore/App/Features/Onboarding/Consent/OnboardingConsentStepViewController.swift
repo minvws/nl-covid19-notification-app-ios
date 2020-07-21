@@ -204,8 +204,6 @@ final class OnboardingConsentView: View {
         super.build()
 
         addSubview(scrollView)
-        scrollView.alwaysBounceVertical = true
-
         addSubview(primaryButton)
         addSubview(secondaryButton)
 

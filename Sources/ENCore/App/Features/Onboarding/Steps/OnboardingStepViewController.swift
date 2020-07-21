@@ -152,8 +152,6 @@ final class OnboardingStepView: View {
 
         hasBottomMargin = true
 
-        scrollView.alwaysBounceVertical = true
-
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.bottom.equalTo(button.snp.top).offset(-16)

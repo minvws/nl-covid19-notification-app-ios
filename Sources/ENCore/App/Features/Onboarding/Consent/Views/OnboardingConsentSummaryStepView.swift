@@ -28,10 +28,6 @@ final class OnboardingConsentSummaryStepView: View {
 
     private var consentSummaryStep: OnboardingConsentSummaryStep
 
-    var estimateHeight: CGFloat {
-        return (UIScreen.main.bounds.size.width - (OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin + OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin)) / 3.75
-    }
-
     // MARK: - Lifecycle
 
     init(with step: OnboardingConsentSummaryStep, theme: Theme) {
@@ -58,7 +54,8 @@ final class OnboardingConsentSummaryStepView: View {
         super.setupConstraints()
 
         imageView.snp.makeConstraints { maker in
-            maker.top.leading.equalToSuperview()
+            maker.top.equalToSuperview().offset(-4)
+            maker.leading.equalToSuperview()
             maker.size.equalTo(CGSize(width: 42, height: 51))
         }
 
@@ -66,7 +63,7 @@ final class OnboardingConsentSummaryStepView: View {
             maker.top.equalToSuperview()
             maker.leading.equalTo(imageView.snp.trailing).offset(16)
             maker.trailing.equalToSuperview()
-            maker.bottom.equalToSuperview().inset(16)
+            maker.bottom.equalToSuperview().inset(24)
         }
     }
 }
