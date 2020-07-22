@@ -15,6 +15,7 @@ final class RootRouterTests: XCTestCase {
     private let onboardingBuilder = OnboardingBuildableMock()
     private let mainBuilder = MainBuildableMock()
     private let messageBuilder = MessageBuildableMock()
+    private let callGGDBuilder = CallGGDBuildableMock()
     private let developerMenuBuilder = DeveloperMenuBuildableMock()
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
@@ -35,6 +36,7 @@ final class RootRouterTests: XCTestCase {
                             onboardingBuilder: onboardingBuilder,
                             mainBuilder: mainBuilder,
                             messageBuilder: messageBuilder,
+                            callGGDBuilder: callGGDBuilder,
                             exposureController: exposureController,
                             exposureStateStream: exposureStateStream,
                             developerMenuBuilder: developerMenuBuilder,

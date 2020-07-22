@@ -117,7 +117,9 @@
 
 // MARK: - Notifications
 
+
 "notification.upload.failed.notification" = "Het is niet gelukt anderen een melding te sturen. Bel daarom de GGD. Lees meer in de app.";
+"notification.upload.failed.header" = "Bel de GGD";
 "notification.upload.failed.title" = "Het is niet gelukt anderen een melding te sturen";
 "notification.upload.failed.content" = "We hebben geprobeerd je codes te delen met de GGD, maar dit is niet gelukt. Bel de GGD om dit opnieuw te doen. Het is heel belangrijk dat je dit snel doet. Anders kunnen er meer mensen besmet raken.";
 

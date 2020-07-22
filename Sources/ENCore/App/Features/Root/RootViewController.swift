@@ -29,6 +29,11 @@ protocol RootRouting: Routing {
     /// - Parameter shouldDismissViewController: should the viewController actually be dismissed.
     func detachMessage(shouldDismissViewController: Bool)
 
+    /// Detaches the message flow
+    ///
+    /// - Parameter shouldDismissViewController: should the viewController actually be dismissed.
+    func detachCallGGD(shouldDismissViewController: Bool)
+
     /// Presents the update app screen
     func routeToUpdateApp(animated: Bool, appStoreURL: String?, minimumVersionMessage: String?)
 }
@@ -80,6 +85,12 @@ final class RootViewController: ViewController, RootViewControllable {
 
     func messageWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachMessage(shouldDismissViewController: shouldDismissViewController)
+    }
+
+    // MARK: - CallGGDListener
+
+    func callGGDWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachCallGGD(shouldDismissViewController: shouldDismissViewController)
     }
 
     // MARK: - DeveloperMenu Listener
