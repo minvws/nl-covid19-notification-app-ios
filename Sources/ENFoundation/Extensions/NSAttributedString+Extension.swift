@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension NSAttributedString {
+public extension NSAttributedString {
 
     static func make(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()

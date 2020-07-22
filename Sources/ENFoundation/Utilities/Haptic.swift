@@ -7,21 +7,21 @@
 
 import UIKit
 
-class Haptic {
+public final class Haptic {
 
-    static func light() {
+    public static func light() {
         let ifg = UIImpactFeedbackGenerator(style: .light)
         ifg.prepare()
         ifg.impactOccurred()
     }
 
-    static func medium() {
+    public static func medium() {
         let ifg = UIImpactFeedbackGenerator(style: .medium)
         ifg.prepare()
         ifg.impactOccurred()
     }
 
-    static func heavy() {
+    public static func heavy() {
         let ifg = UIImpactFeedbackGenerator(style: .heavy)
         ifg.prepare()
         ifg.impactOccurred()

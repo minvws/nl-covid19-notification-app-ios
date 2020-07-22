@@ -5,7 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-@testable import ENCore
+@testable import EN
 import Foundation
 import SnapshotTesting
 import XCTest
@@ -17,6 +17,7 @@ final class RequiresUpdateViewControllerTest: XCTestCase {
         super.setUp()
 
         SnapshotTesting.record = false
+        SnapshotTesting.diffTool = "ksdiff"
 
         viewController = RequiresUpdateViewController()
     }

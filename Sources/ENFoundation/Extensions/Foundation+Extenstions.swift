@@ -57,7 +57,7 @@ public func animationsEnabled() -> Bool {
     }
 #endif
 
-extension String {
+public extension String {
     var capitalizedFirstLetterOnly: String {
         return prefix(1).capitalized + dropFirst()
     }

@@ -7,6 +7,7 @@
 
 import BackgroundTasks
 import Combine
+import ENFoundation
 import UIKit
 
 /// Describes internal `RootViewController` functionality. Contains functions

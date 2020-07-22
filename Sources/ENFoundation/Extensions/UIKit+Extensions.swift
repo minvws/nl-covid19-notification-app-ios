@@ -7,7 +7,15 @@
 
 import UIKit
 
-extension NSLayoutConstraint {
+public extension UIViewController {
+    func embed(childViewController: UIViewController) {
+        addChild(childViewController)
+        view.addSubview(childViewController.view)
+        childViewController.didMove(toParent: self)
+    }
+}
+
+public extension NSLayoutConstraint {
     func withPriority(_ priority: UILayoutPriority) -> Self {
         self.priority = priority
         return self

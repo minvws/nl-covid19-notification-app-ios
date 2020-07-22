@@ -6,6 +6,7 @@
  */
 
 import Combine
+import ENFoundation
 import Foundation
 
 final class NetworkManager: NetworkManaging, Logging {

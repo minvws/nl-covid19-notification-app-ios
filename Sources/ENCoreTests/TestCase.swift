@@ -7,6 +7,7 @@
 
 import Combine
 @testable import ENCore
+import ENFoundation
 import SnapshotTesting
 import XCTest
 
