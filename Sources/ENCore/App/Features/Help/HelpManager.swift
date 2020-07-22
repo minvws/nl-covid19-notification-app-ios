@@ -45,7 +45,11 @@ final class HelpManager: HelpManaging {
                 theme: theme,
                 question: .helpPrivacyPolicyTitle,
                 answer: "",
-                link: .helpPrivacyPolicyLink)
+                link: .helpPrivacyPolicyLink),
+            HelpQuestion(
+                theme: theme,
+                question: .helpColofonTitle,
+                answer: .helpColofonDescription)
         ]
     }
 }

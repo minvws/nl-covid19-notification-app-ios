@@ -126,6 +126,8 @@ extension String {
     static var helpFaqPowerUsageDescription: String { return Localization.string(for: "help.faq.power_usage.description") }
     static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
     static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link") }
+    static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
+    static var helpColofonDescription: String { return Localization.string(for: "help.faq.colofon.description") }
 
     // MARK: - Message
 
