@@ -199,15 +199,16 @@ def diff_files(ipa1, files1, ipa2, files2):
     if len(only_in_ipa1) == 0 and len(only_in_ipa2) == 0:
         return
     if len(only_in_ipa1) != 0:
-        print('Files not present in ' + ipa2)
+        print('IPAs are not equal')
+        print('  Files not present in ' + ipa2)
         for f in only_in_ipa1:
             print('    ' + f)
     if len(only_in_ipa2) != 0:
-        print('Files not present in ' + ipa1)
+        print('IPAs are not equal')
+        print('  Files not present in ' + ipa1)
         for f in only_in_ipa2:
             print('    ' + f)
 
-    print('IPAs are not equal')
     sys.exit(1)
 
 
