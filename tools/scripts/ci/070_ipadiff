@@ -43,3 +43,5 @@ echo "***************************************"
 echo
 python2 tools/scripts/ipadiff/ipadiff.py $ARTIFACT_FROM_BUILD_IPA $FILE_FROM_APPSTORE_IPA_EVIL
 
+
+exit 0
