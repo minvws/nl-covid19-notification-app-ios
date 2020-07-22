@@ -78,6 +78,8 @@
 "help.faq.bluetooth.description" = "Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon. De kans is bijvoorbeeld heel klein dat je app het Bluetooth-signaal van je buren ontvangt. En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman corona blijkt te hebben en jullie niet in dezelfde ruimte zijn geweest.";
 "help.faq.power_usage.title" = "Hoeveel stroom gebruikt de app?";
 "help.faq.power_usage.description" = "De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.";
+"help.faq.privacy_policy.title" = "Privacyverklaring";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
 
 "help.what_does_the_app_do.title" = "Wat doet CoronaMelder?";
 "help.what_does_the_app_do.protect.title" = "Help de verspreiding van het coronavirus te stoppen";

@@ -33,7 +33,18 @@ final class HelpDetailViewController: ViewController {
         super.viewDidLoad()
 
         internalView.titleLabel.attributedText = question.attributedTitle
-        internalView.contentTextView.attributedText = question.attributedAnswer
+
+        if let link = question.link, let url = URL(string: link) {
+            if let webViewEnabled = WebViewTestingOverrides.webViewsEnabled, webViewEnabled == false {
+                return
+            }
+            internalView.webView.isHidden = false
+            internalView.webView.load(URLRequest(url: url))
+        } else {
+            internalView.contentTextView.isHidden = false
+            internalView.contentTextView.attributedText = question.attributedAnswer
+        }
+
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
         internalView.acceptButton.isHidden = !shouldShowEnableAppButton
 
@@ -64,8 +75,17 @@ private final class HelpView: View {
     lazy var contentTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isHidden = true
         textView.isEditable = false
         return textView
+    }()
+
+    lazy var webView: WKWebView = {
+        let webView = WKWebView()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.isHidden = true
+        webView.allowsBackForwardNavigationGestures = false
+        return webView
     }()
 
     private lazy var gradientImageView: UIImageView = {
@@ -85,7 +105,7 @@ private final class HelpView: View {
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [titleLabel, contentTextView, gradientImageView, acceptButton]
+    private lazy var viewsInDisplayOrder = [titleLabel, contentTextView, webView, gradientImageView, acceptButton]
 
     override func build() {
         super.build()
@@ -110,6 +130,13 @@ private final class HelpView: View {
             contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
             contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
             contentTextView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
+        ])
+
+        constraints.append([
+            webView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
+            webView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+            webView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+            webView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
         ])
 
         constraints.append([
