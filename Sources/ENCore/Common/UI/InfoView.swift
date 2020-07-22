@@ -13,6 +13,13 @@ import UIKit
 struct InfoViewConfig {
     let actionButtonTitle: String
     let headerImage: UIImage?
+    let showActionButton: Bool
+
+    init(actionButtonTitle: String = "", headerImage: UIImage? = nil, showActionButton: Bool = true) {
+        self.actionButtonTitle = actionButtonTitle
+        self.headerImage = headerImage
+        self.showActionButton = showActionButton
+    }
 }
 
 final class InfoView: View {
@@ -30,6 +37,8 @@ final class InfoView: View {
     private let stackView: UIStackView
     private let actionButton: Button
 
+    private let showActionButton: Bool
+
     // MARK: - Init
 
     init(theme: Theme, config: InfoViewConfig) {
@@ -39,6 +48,7 @@ final class InfoView: View {
         self.scrollView = UIScrollView(frame: .zero)
         self.headerBackgroundView = UIView(frame: .zero)
         self.actionButton = Button(title: config.actionButtonTitle, theme: theme)
+        self.showActionButton = config.showActionButton
         super.init(theme: theme)
     }
 
@@ -46,8 +56,6 @@ final class InfoView: View {
 
     override func build() {
         super.build()
-
-        actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
 
         headerImageView.contentMode = .scaleAspectFill
         stackView.axis = .vertical
@@ -61,7 +69,11 @@ final class InfoView: View {
         scrollView.addSubview(contentView)
         contentView.addSubview(headerImageView)
         contentView.addSubview(stackView)
-        contentView.addSubview(actionButton)
+
+        if showActionButton {
+            actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
+            contentView.addSubview(actionButton)
+        }
     }
 
     override func setupConstraints() {
@@ -90,13 +102,19 @@ final class InfoView: View {
         stackView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(headerImageView.snp.bottom).offset(32)
             maker.leading.trailing.equalToSuperview()
-        }
-        actionButton.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.height.equalTo(48)
-            maker.top.equalTo(stackView.snp.bottom).offset(16)
-            maker.leading.trailing.equalToSuperview().inset(16)
 
-            constrainToSuperViewWithBottomMargin(maker: maker)
+            if !showActionButton {
+                constrainToSuperViewWithBottomMargin(maker: maker)
+            }
+        }
+        if showActionButton {
+            actionButton.snp.makeConstraints { (maker: ConstraintMaker) in
+                maker.height.equalTo(48)
+                maker.top.equalTo(stackView.snp.bottom).offset(16)
+                maker.leading.trailing.equalToSuperview().inset(16)
+
+                constrainToSuperViewWithBottomMargin(maker: maker)
+            }
         }
     }
 

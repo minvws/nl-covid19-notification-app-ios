@@ -16,7 +16,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, UpdateAppListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool)
@@ -26,7 +26,7 @@ protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMe
     func embed(viewController: ViewControllable)
 }
 
-final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint {
+final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint, Logging {
 
     // MARK: - Initialisation
 
@@ -34,6 +34,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          onboardingBuilder: OnboardingBuildable,
          mainBuilder: MainBuildable,
          messageBuilder: MessageBuildable,
+         callGGDBuilder: CallGGDBuildable,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
          developerMenuBuilder: DeveloperMenuBuildable,
@@ -45,6 +46,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.messageBuilder = messageBuilder
+        self.callGGDBuilder = callGGDBuilder
         self.developerMenuBuilder = developerMenuBuilder
 
         self.exposureController = exposureController
@@ -116,12 +118,21 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         mutablePushNotificationStream
             .pushNotificationStream
             .sink { [weak self] (notificationRespone: UNNotificationResponse) in
-                guard !["nl.rijksoverheid.en.inactive"].contains(notificationRespone.notification.request.identifier) else {
+                guard let strongSelf = self else {
                     return
                 }
-                // TODO: Use the identifier to know which flow to launch
-                let content = notificationRespone.notification.request.content
-                self?.routeToMessage(title: content.title, body: content.body)
+
+                guard let identifier = PushNotificationIdentifier(rawValue: notificationRespone.notification.request.identifier) else {
+                    return strongSelf.logError("Push notification for \(notificationRespone.notification.request.identifier) not handled")
+                }
+
+                switch identifier {
+                case .inactive:
+                    let content = notificationRespone.notification.request.content
+                    strongSelf.routeToMessage(title: content.title, body: content.body)
+                case .uploadFailed:
+                    strongSelf.routeToCallGGD()
+                }
             }.store(in: &disposeBag)
     }
 
@@ -191,6 +202,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
 
+    func detachCallGGD(shouldDismissViewController: Bool) {
+        guard let callGGDViewController = callGGDViewController else {
+            return
+        }
+        self.callGGDViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: callGGDViewController, animated: true, completion: nil)
+        }
+    }
+
     func routeToUpdateApp(animated: Bool, appStoreURL: String?, minimumVersionMessage: String?) {
         guard updateAppViewController == nil else {
             return
@@ -215,6 +237,16 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.mainRouter = mainRouter
 
         self.viewController.embed(viewController: mainRouter.viewControllable)
+    }
+
+    private func routeToCallGGD() {
+        guard callGGDViewController == nil else {
+            return
+        }
+        let callGGDViewController = callGGDBuilder.build(withListener: viewController)
+        self.callGGDViewController = callGGDViewController
+
+        viewController.presentInNavigationController(viewController: callGGDViewController, animated: true)
     }
 
     private func detachOnboarding(animated: Bool) {
@@ -252,6 +284,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let messageBuilder: MessageBuildable
     private var messageViewController: ViewControllable?
+
+    private let callGGDBuilder: CallGGDBuildable
+    private var callGGDViewController: ViewControllable?
 
     private var disposeBag = Set<AnyCancellable>()
 

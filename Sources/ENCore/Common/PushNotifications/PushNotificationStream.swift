@@ -9,6 +9,18 @@ import Combine
 import Foundation
 import NotificationCenter
 
+enum PushNotificationIdentifier: String {
+    case inactive = "nl.rijksoverheid.en.inactive"
+    case uploadFailed = "nl.rijksoverheid.en.uploadFailed"
+
+    static func allIdentifiers() -> [PushNotificationIdentifier] {
+        return [
+            .inactive,
+            .uploadFailed
+        ]
+    }
+}
+
 /// @mockable
 protocol PushNotificationStreaming {
     var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> { get }

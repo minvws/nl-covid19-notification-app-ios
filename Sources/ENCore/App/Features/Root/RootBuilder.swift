@@ -37,7 +37,7 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, BackgroundDependency, UpdateAppDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency {
 
     // MARK: - Child Builders
 
@@ -53,6 +53,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     var messageBuilder: MessageBuildable {
         return MessageBuilder(dependency: self)
+    }
+
+    var callGGDBuilder: CallGGDBuildable {
+        return CallGGDBuilder(dependency: self)
     }
 
     var developerMenuBuilder: DeveloperMenuBuildable {
@@ -158,6 +162,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
+                          callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,
                           developerMenuBuilder: dependencyProvider.developerMenuBuilder,

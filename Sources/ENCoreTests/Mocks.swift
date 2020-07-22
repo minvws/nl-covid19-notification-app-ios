@@ -3,12 +3,12 @@
 ///
 
 import BackgroundTasks
-import CocoaLumberjackSwift
 import Combine
 import CommonCrypto
 import CoreBluetooth
 import CryptoKit
 @testable import ENCore
+import ENFoundation
 import ExposureNotification
 import Foundation
 import Lottie
@@ -19,20 +19,6 @@ import SnapKit
 import UIKit
 import UserNotifications
 import WebKit
-
-class MainBuildableMock: MainBuildable {
-    init() {}
-
-    var buildCallCount = 0
-    var buildHandler: (() -> (Routing))?
-    func build() -> Routing {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler()
-        }
-        return RoutingMock()
-    }
-}
 
 class InfectedViewControllableMock: InfectedViewControllable {
     init() {}
@@ -73,26 +59,6 @@ class InfectedViewControllableMock: InfectedViewControllable {
 
     var uiviewControllerSetCallCount = 0
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class OnboardingManagingMock: OnboardingManaging {
-    init() {}
-    init(onboardingSteps: [OnboardingStep] = [OnboardingStep]()) {
-        self.onboardingSteps = onboardingSteps
-    }
-
-    var onboardingStepsSetCallCount = 0
-    var onboardingSteps: [OnboardingStep] = [OnboardingStep]() { didSet { onboardingStepsSetCallCount += 1 } }
-
-    var getStepCallCount = 0
-    var getStepHandler: ((Int) -> (OnboardingStep?))?
-    func getStep(_ index: Int) -> OnboardingStep? {
-        getStepCallCount += 1
-        if let getStepHandler = getStepHandler {
-            return getStepHandler(index)
-        }
-        return nil
-    }
 }
 
 class RootRoutingMock: RootRouting {
@@ -140,6 +106,15 @@ class RootRoutingMock: RootRouting {
         }
     }
 
+    var detachCallGGDCallCount = 0
+    var detachCallGGDHandler: ((Bool) -> ())?
+    func detachCallGGD(shouldDismissViewController: Bool) {
+        detachCallGGDCallCount += 1
+        if let detachCallGGDHandler = detachCallGGDHandler {
+            detachCallGGDHandler(shouldDismissViewController)
+        }
+    }
+
     var routeToUpdateAppCallCount = 0
     var routeToUpdateAppHandler: ((Bool, String?, String?) -> ())?
     func routeToUpdateApp(animated: Bool, appStoreURL: String?, minimumVersionMessage: String?) {
@@ -172,19 +147,6 @@ class ViewControllableMock: ViewControllable {
 
     var uiviewControllerSetCallCount = 0
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class AboutListenerMock: AboutListener {
-    init() {}
-
-    var aboutRequestsDismissalCallCount = 0
-    var aboutRequestsDismissalHandler: ((Bool) -> ())?
-    func aboutRequestsDismissal(shouldHideViewController: Bool) {
-        aboutRequestsDismissalCallCount += 1
-        if let aboutRequestsDismissalHandler = aboutRequestsDismissalHandler {
-            aboutRequestsDismissalHandler(shouldHideViewController)
-        }
-    }
 }
 
 class CardViewControllableMock: CardViewControllable {
@@ -246,28 +208,6 @@ class CardViewControllableMock: CardViewControllable {
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
-class EnableSettingListenerMock: EnableSettingListener {
-    init() {}
-
-    var enableSettingRequestsDismissCallCount = 0
-    var enableSettingRequestsDismissHandler: ((Bool) -> ())?
-    func enableSettingRequestsDismiss(shouldDismissViewController: Bool) {
-        enableSettingRequestsDismissCallCount += 1
-        if let enableSettingRequestsDismissHandler = enableSettingRequestsDismissHandler {
-            enableSettingRequestsDismissHandler(shouldDismissViewController)
-        }
-    }
-
-    var enableSettingDidTriggerActionCallCount = 0
-    var enableSettingDidTriggerActionHandler: (() -> ())?
-    func enableSettingDidTriggerAction() {
-        enableSettingDidTriggerActionCallCount += 1
-        if let enableSettingDidTriggerActionHandler = enableSettingDidTriggerActionHandler {
-            enableSettingDidTriggerActionHandler()
-        }
-    }
-}
-
 class ExposureConfigurationMock: ExposureConfiguration {
     init() {}
     init(minimumRiskScope: UInt8 = 0, attenuationLevelValues: [UInt8] = [UInt8](), daysSinceLastExposureLevelValues: [UInt8] = [UInt8](), durationLevelValues: [UInt8] = [UInt8](), transmissionRiskLevelValues: [UInt8] = [UInt8](), attenuationDurationThresholds: [Int] = [Int]()) {
@@ -296,81 +236,6 @@ class ExposureConfigurationMock: ExposureConfiguration {
 
     var attenuationDurationThresholdsSetCallCount = 0
     var attenuationDurationThresholds: [Int] = [Int]() { didSet { attenuationDurationThresholdsSetCallCount += 1 } }
-}
-
-class HelpDetailListenerMock: HelpDetailListener {
-    init() {}
-
-    var helpDetailRequestsDismissalCallCount = 0
-    var helpDetailRequestsDismissalHandler: ((Bool) -> ())?
-    func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
-        helpDetailRequestsDismissalCallCount += 1
-        if let helpDetailRequestsDismissalHandler = helpDetailRequestsDismissalHandler {
-            helpDetailRequestsDismissalHandler(shouldDismissViewController)
-        }
-    }
-
-    var helpDetailDidTapEnableAppButtonCallCount = 0
-    var helpDetailDidTapEnableAppButtonHandler: (() -> ())?
-    func helpDetailDidTapEnableAppButton() {
-        helpDetailDidTapEnableAppButtonCallCount += 1
-        if let helpDetailDidTapEnableAppButtonHandler = helpDetailDidTapEnableAppButtonHandler {
-            helpDetailDidTapEnableAppButtonHandler()
-        }
-    }
-}
-
-class HelpListenerMock: HelpListener {
-    init() {}
-
-    var helpRequestsEnableAppCallCount = 0
-    var helpRequestsEnableAppHandler: (() -> ())?
-    func helpRequestsEnableApp() {
-        helpRequestsEnableAppCallCount += 1
-        if let helpRequestsEnableAppHandler = helpRequestsEnableAppHandler {
-            helpRequestsEnableAppHandler()
-        }
-    }
-
-    var helpRequestsDismissalCallCount = 0
-    var helpRequestsDismissalHandler: ((Bool) -> ())?
-    func helpRequestsDismissal(shouldHideViewController: Bool) {
-        helpRequestsDismissalCallCount += 1
-        if let helpRequestsDismissalHandler = helpRequestsDismissalHandler {
-            helpRequestsDismissalHandler(shouldHideViewController)
-        }
-    }
-}
-
-class HelpOverviewListenerMock: HelpOverviewListener {
-    init() {}
-
-    var helpOverviewRequestsDismissalCallCount = 0
-    var helpOverviewRequestsDismissalHandler: ((Bool) -> ())?
-    func helpOverviewRequestsDismissal(shouldDismissViewController: Bool) {
-        helpOverviewRequestsDismissalCallCount += 1
-        if let helpOverviewRequestsDismissalHandler = helpOverviewRequestsDismissalHandler {
-            helpOverviewRequestsDismissalHandler(shouldDismissViewController)
-        }
-    }
-
-    var helpOverviewRequestsRouteToCallCount = 0
-    var helpOverviewRequestsRouteToHandler: ((HelpQuestion) -> ())?
-    func helpOverviewRequestsRouteTo(question: HelpQuestion) {
-        helpOverviewRequestsRouteToCallCount += 1
-        if let helpOverviewRequestsRouteToHandler = helpOverviewRequestsRouteToHandler {
-            helpOverviewRequestsRouteToHandler(question)
-        }
-    }
-
-    var helpOverviewDidTapEnableAppButtonCallCount = 0
-    var helpOverviewDidTapEnableAppButtonHandler: (() -> ())?
-    func helpOverviewDidTapEnableAppButton() {
-        helpOverviewDidTapEnableAppButtonCallCount += 1
-        if let helpOverviewDidTapEnableAppButtonHandler = helpOverviewDidTapEnableAppButtonHandler {
-            helpOverviewDidTapEnableAppButtonHandler()
-        }
-    }
 }
 
 class HelpViewControllableMock: HelpViewControllable {
@@ -410,21 +275,21 @@ class HelpViewControllableMock: HelpViewControllable {
         }
     }
 
-    var helpOverviewRequestsRouteToCallCount = 0
-    var helpOverviewRequestsRouteToHandler: ((HelpQuestion) -> ())?
-    func helpOverviewRequestsRouteTo(question: HelpQuestion) {
-        helpOverviewRequestsRouteToCallCount += 1
-        if let helpOverviewRequestsRouteToHandler = helpOverviewRequestsRouteToHandler {
-            helpOverviewRequestsRouteToHandler(question)
-        }
-    }
-
     var pushCallCount = 0
     var pushHandler: ((ViewControllable, Bool) -> ())?
     func push(viewController: ViewControllable, animated: Bool) {
         pushCallCount += 1
         if let pushHandler = pushHandler {
             pushHandler(viewController, animated)
+        }
+    }
+
+    var helpOverviewRequestsRouteToCallCount = 0
+    var helpOverviewRequestsRouteToHandler: ((HelpQuestion) -> ())?
+    func helpOverviewRequestsRouteTo(question: HelpQuestion) {
+        helpOverviewRequestsRouteToCallCount += 1
+        if let helpOverviewRequestsRouteToHandler = helpOverviewRequestsRouteToHandler {
+            helpOverviewRequestsRouteToHandler(question)
         }
     }
 
@@ -456,158 +321,6 @@ class HelpViewControllableMock: HelpViewControllable {
         if let dismissHandler = dismissHandler {
             dismissHandler(viewController, animated)
         }
-    }
-}
-
-class InfectedListenerMock: InfectedListener {
-    init() {}
-
-    var infectedWantsDismissalCallCount = 0
-    var infectedWantsDismissalHandler: ((Bool) -> ())?
-    func infectedWantsDismissal(shouldDismissViewController: Bool) {
-        infectedWantsDismissalCallCount += 1
-        if let infectedWantsDismissalHandler = infectedWantsDismissalHandler {
-            infectedWantsDismissalHandler(shouldDismissViewController)
-        }
-    }
-}
-
-class MessageListenerMock: MessageListener {
-    init() {}
-
-    var messageWantsDismissalCallCount = 0
-    var messageWantsDismissalHandler: ((Bool) -> ())?
-    func messageWantsDismissal(shouldDismissViewController: Bool) {
-        messageWantsDismissalCallCount += 1
-        if let messageWantsDismissalHandler = messageWantsDismissalHandler {
-            messageWantsDismissalHandler(shouldDismissViewController)
-        }
-    }
-}
-
-class MoreInformationViewControllableMock: MoreInformationViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class OnboardingConsentBuildableMock: OnboardingConsentBuildable {
-    init() {}
-
-    var buildCallCount = 0
-    var buildHandler: ((OnboardingConsentListener) -> (ViewControllable))?
-    func build(withListener listener: OnboardingConsentListener) -> ViewControllable {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler(listener)
-        }
-        return ViewControllableMock()
-    }
-
-    var buildWithListenerCallCount = 0
-    var buildWithListenerHandler: ((OnboardingConsentListener, Int) -> (ViewControllable))?
-    func build(withListener listener: OnboardingConsentListener, initialIndex: Int) -> ViewControllable {
-        buildWithListenerCallCount += 1
-        if let buildWithListenerHandler = buildWithListenerHandler {
-            return buildWithListenerHandler(listener, initialIndex)
-        }
-        return ViewControllableMock()
-    }
-}
-
-class OnboardingListenerMock: OnboardingListener {
-    init() {}
-
-    var didCompleteOnboardingCallCount = 0
-    var didCompleteOnboardingHandler: (() -> ())?
-    func didCompleteOnboarding() {
-        didCompleteOnboardingCallCount += 1
-        if let didCompleteOnboardingHandler = didCompleteOnboardingHandler {
-            didCompleteOnboardingHandler()
-        }
-    }
-}
-
-class OnboardingRoutingMock: OnboardingRouting {
-    init() {}
-    init(viewControllable: ViewControllable = ViewControllableMock()) {
-        self.viewControllable = viewControllable
-    }
-
-    var routeToStepsCallCount = 0
-    var routeToStepsHandler: (() -> ())?
-    func routeToSteps() {
-        routeToStepsCallCount += 1
-        if let routeToStepsHandler = routeToStepsHandler {
-            routeToStepsHandler()
-        }
-    }
-
-    var viewControllableSetCallCount = 0
-    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
-
-    var routeToStepCallCount = 0
-    var routeToStepHandler: ((Int, Bool) -> ())?
-    func routeToStep(withIndex index: Int, animated: Bool) {
-        routeToStepCallCount += 1
-        if let routeToStepHandler = routeToStepHandler {
-            routeToStepHandler(index, animated)
-        }
-    }
-
-    var routeToConsentCallCount = 0
-    var routeToConsentHandler: ((Bool) -> ())?
-    func routeToConsent(animated: Bool) {
-        routeToConsentCallCount += 1
-        if let routeToConsentHandler = routeToConsentHandler {
-            routeToConsentHandler(animated)
-        }
-    }
-
-    var routeToConsentWithIndexCallCount = 0
-    var routeToConsentWithIndexHandler: ((Int, Bool) -> ())?
-    func routeToConsent(withIndex index: Int, animated: Bool) {
-        routeToConsentWithIndexCallCount += 1
-        if let routeToConsentWithIndexHandler = routeToConsentWithIndexHandler {
-            routeToConsentWithIndexHandler(index, animated)
-        }
-    }
-
-    var routeToHelpCallCount = 0
-    var routeToHelpHandler: (() -> ())?
-    func routeToHelp() {
-        routeToHelpCallCount += 1
-        if let routeToHelpHandler = routeToHelpHandler {
-            routeToHelpHandler()
-        }
-    }
-}
-
-class OnboardingStepBuildableMock: OnboardingStepBuildable {
-    init() {}
-
-    var buildCallCount = 0
-    var buildHandler: ((OnboardingStepListener) -> (ViewControllable))?
-    func build(withListener listener: OnboardingStepListener) -> ViewControllable {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler(listener)
-        }
-        return ViewControllableMock()
-    }
-
-    var buildWithListenerCallCount = 0
-    var buildWithListenerHandler: ((OnboardingStepListener, Int) -> (ViewControllable))?
-    func build(withListener listener: OnboardingStepListener, initialIndex: Int) -> ViewControllable {
-        buildWithListenerCallCount += 1
-        if let buildWithListenerHandler = buildWithListenerHandler {
-            return buildWithListenerHandler(listener, initialIndex)
-        }
-        return ViewControllableMock()
     }
 }
 
@@ -706,32 +419,6 @@ class OnboardingViewControllableMock: OnboardingViewControllable {
     }
 }
 
-class ReceivedNotificationListenerMock: ReceivedNotificationListener {
-    init() {}
-
-    var receivedNotificationWantsDismissalCallCount = 0
-    var receivedNotificationWantsDismissalHandler: ((Bool) -> ())?
-    func receivedNotificationWantsDismissal(shouldDismissViewController: Bool) {
-        receivedNotificationWantsDismissalCallCount += 1
-        if let receivedNotificationWantsDismissalHandler = receivedNotificationWantsDismissalHandler {
-            receivedNotificationWantsDismissalHandler(shouldDismissViewController)
-        }
-    }
-}
-
-class RequestTestListenerMock: RequestTestListener {
-    init() {}
-
-    var requestTestWantsDismissalCallCount = 0
-    var requestTestWantsDismissalHandler: ((Bool) -> ())?
-    func requestTestWantsDismissal(shouldDismissViewController: Bool) {
-        requestTestWantsDismissalCallCount += 1
-        if let requestTestWantsDismissalHandler = requestTestWantsDismissalHandler {
-            requestTestWantsDismissalHandler(shouldDismissViewController)
-        }
-    }
-}
-
 class RoutingMock: Routing {
     init() {}
     init(viewControllable: ViewControllable = ViewControllableMock()) {
@@ -754,79 +441,6 @@ class SignatureValidatingMock: SignatureValidating {
         }
         return false
     }
-}
-
-class ThankYouListenerMock: ThankYouListener {
-    init() {}
-
-    var thankYouWantsDismissalCallCount = 0
-    var thankYouWantsDismissalHandler: (() -> ())?
-    func thankYouWantsDismissal() {
-        thankYouWantsDismissalCallCount += 1
-        if let thankYouWantsDismissalHandler = thankYouWantsDismissalHandler {
-            thankYouWantsDismissalHandler()
-        }
-    }
-}
-
-class UpdateAppListenerMock: UpdateAppListener {
-    init() {}
-}
-
-class HelpRoutingMock: HelpRouting {
-    init() {}
-    init(viewControllable: ViewControllable = ViewControllableMock()) {
-        self.viewControllable = viewControllable
-    }
-
-    var viewControllableSetCallCount = 0
-    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
-
-    var routeToOverviewCallCount = 0
-    var routeToOverviewHandler: ((Bool) -> ())?
-    func routeToOverview(shouldShowEnableAppButton: Bool) {
-        routeToOverviewCallCount += 1
-        if let routeToOverviewHandler = routeToOverviewHandler {
-            routeToOverviewHandler(shouldShowEnableAppButton)
-        }
-    }
-
-    var routeToCallCount = 0
-    var routeToHandler: ((HelpQuestion, Bool) -> ())?
-    func routeTo(question: HelpQuestion, shouldShowEnableAppButton: Bool) {
-        routeToCallCount += 1
-        if let routeToHandler = routeToHandler {
-            routeToHandler(question, shouldShowEnableAppButton)
-        }
-    }
-
-    var detachHelpOverviewCallCount = 0
-    var detachHelpOverviewHandler: ((Bool) -> ())?
-    func detachHelpOverview(shouldDismissViewController: Bool) {
-        detachHelpOverviewCallCount += 1
-        if let detachHelpOverviewHandler = detachHelpOverviewHandler {
-            detachHelpOverviewHandler(shouldDismissViewController)
-        }
-    }
-
-    var detachHelpDetailCallCount = 0
-    var detachHelpDetailHandler: ((Bool) -> ())?
-    func detachHelpDetail(shouldDismissViewController: Bool) {
-        detachHelpDetailCallCount += 1
-        if let detachHelpDetailHandler = detachHelpDetailHandler {
-            detachHelpDetailHandler(shouldDismissViewController)
-        }
-    }
-}
-
-class OnboardingConsentViewControllableMock: OnboardingConsentViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
 class ENManagingMock: ENManaging {
@@ -919,120 +533,6 @@ class ENManagingMock: ENManaging {
             return getExposureInfoHandler(summary, userExplanation, completionHandler)
         }
         fatalError("getExposureInfoHandler returns can't have a default value thus its handler must be set")
-    }
-}
-
-class HelpManagingMock: HelpManaging {
-    init() {}
-    init(questions: [HelpQuestion] = [HelpQuestion]()) {
-        self.questions = questions
-    }
-
-    var questionsSetCallCount = 0
-    var questions: [HelpQuestion] = [HelpQuestion]() { didSet { questionsSetCallCount += 1 } }
-}
-
-class OnboardingConsentManagingMock: OnboardingConsentManaging {
-    init() {}
-    init(onboardingConsentSteps: [OnboardingConsentStep] = [OnboardingConsentStep]()) {
-        self.onboardingConsentSteps = onboardingConsentSteps
-    }
-
-    var onboardingConsentStepsSetCallCount = 0
-    var onboardingConsentSteps: [OnboardingConsentStep] = [OnboardingConsentStep]() { didSet { onboardingConsentStepsSetCallCount += 1 } }
-
-    var getStepCallCount = 0
-    var getStepHandler: ((Int) -> (OnboardingConsentStep?))?
-    func getStep(_ index: Int) -> OnboardingConsentStep? {
-        getStepCallCount += 1
-        if let getStepHandler = getStepHandler {
-            return getStepHandler(index)
-        }
-        return nil
-    }
-
-    var getNextConsentStepCallCount = 0
-    var getNextConsentStepHandler: ((OnboardingConsentStepIndex, @escaping (OnboardingConsentStepIndex?) -> ()) -> ())?
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
-        getNextConsentStepCallCount += 1
-        if let getNextConsentStepHandler = getNextConsentStepHandler {
-            getNextConsentStepHandler(currentStep, completion)
-        }
-    }
-
-    var askEnableExposureNotificationsCallCount = 0
-    var askEnableExposureNotificationsHandler: ((@escaping ((_ exposureActiveState: ExposureActiveState) -> ())) -> ())?
-    func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ())) {
-        askEnableExposureNotificationsCallCount += 1
-        if let askEnableExposureNotificationsHandler = askEnableExposureNotificationsHandler {
-            askEnableExposureNotificationsHandler(completion)
-        }
-    }
-
-    var goToBluetoothSettingsCallCount = 0
-    var goToBluetoothSettingsHandler: ((@escaping (() -> ())) -> ())?
-    func goToBluetoothSettings(_ completion: @escaping (() -> ())) {
-        goToBluetoothSettingsCallCount += 1
-        if let goToBluetoothSettingsHandler = goToBluetoothSettingsHandler {
-            goToBluetoothSettingsHandler(completion)
-        }
-    }
-
-    var askNotificationsAuthorizationCallCount = 0
-    var askNotificationsAuthorizationHandler: ((@escaping (() -> ())) -> ())?
-    func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
-        askNotificationsAuthorizationCallCount += 1
-        if let askNotificationsAuthorizationHandler = askNotificationsAuthorizationHandler {
-            askNotificationsAuthorizationHandler(completion)
-        }
-    }
-}
-
-class RequestTestViewControllableMock: RequestTestViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class AboutViewControllableMock: AboutViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class CardRoutingMock: CardRouting {
-    init() {}
-    init(viewControllable: ViewControllable = ViewControllableMock()) {
-        self.viewControllable = viewControllable
-    }
-
-    var viewControllableSetCallCount = 0
-    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
-
-    var routeCallCount = 0
-    var routeHandler: ((EnableSetting) -> ())?
-    func route(to enableSetting: EnableSetting) {
-        routeCallCount += 1
-        if let routeHandler = routeHandler {
-            routeHandler(enableSetting)
-        }
-    }
-
-    var detachEnableSettingCallCount = 0
-    var detachEnableSettingHandler: ((Bool) -> ())?
-    func detachEnableSetting(hideViewController: Bool) {
-        detachEnableSettingCallCount += 1
-        if let detachEnableSettingHandler = detachEnableSettingHandler {
-            detachEnableSettingHandler(hideViewController)
-        }
     }
 }
 
@@ -1212,65 +712,6 @@ class MainViewControllableMock: MainViewControllable {
     }
 }
 
-class ShareSheetListenerMock: ShareSheetListener {
-    init() {}
-
-    var shareSheetDidCompleteCallCount = 0
-    var shareSheetDidCompleteHandler: (() -> ())?
-    func shareSheetDidComplete() {
-        shareSheetDidCompleteCallCount += 1
-        if let shareSheetDidCompleteHandler = shareSheetDidCompleteHandler {
-            shareSheetDidCompleteHandler()
-        }
-    }
-}
-
-class ShareSheetViewControllableMock: ShareSheetViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class StatusListenerMock: StatusListener {
-    init() {}
-
-    var handleButtonActionCallCount = 0
-    var handleButtonActionHandler: ((StatusViewButtonModel.Action) -> ())?
-    func handleButtonAction(_ action: StatusViewButtonModel.Action) {
-        handleButtonActionCallCount += 1
-        if let handleButtonActionHandler = handleButtonActionHandler {
-            handleButtonActionHandler(action)
-        }
-    }
-}
-
-class WebViewingMock: WebViewing {
-    init() {}
-    init(uiview: UIView = UIView(frame: .zero)) {
-        self.uiview = uiview
-    }
-
-    var uiviewSetCallCount = 0
-    var uiview: UIView = UIView(frame: .zero) { didSet { uiviewSetCallCount += 1 } }
-
-    var loadCallCount = 0
-    var loadHandler: ((URLRequest) -> ())?
-    func load(request: URLRequest) {
-        loadCallCount += 1
-        if let loadHandler = loadHandler {
-            loadHandler(request)
-        }
-    }
-}
-
-class WebListenerMock: WebListener {
-    init() {}
-}
-
 class NetworkControllingMock: NetworkControlling {
     init() {}
     init(applicationManifest: AnyPublisher<ApplicationManifest, NetworkError>) {
@@ -1381,6 +822,631 @@ class NetworkStatusStreamingMock: NetworkStatusStreaming {
     }
 }
 
+class OnboardingManagingMock: OnboardingManaging {
+    init() {}
+    init(onboardingSteps: [OnboardingStep] = [OnboardingStep]()) {
+        self.onboardingSteps = onboardingSteps
+    }
+
+    var onboardingStepsSetCallCount = 0
+    var onboardingSteps: [OnboardingStep] = [OnboardingStep]() { didSet { onboardingStepsSetCallCount += 1 } }
+
+    var getStepCallCount = 0
+    var getStepHandler: ((Int) -> (OnboardingStep?))?
+    func getStep(_ index: Int) -> OnboardingStep? {
+        getStepCallCount += 1
+        if let getStepHandler = getStepHandler {
+            return getStepHandler(index)
+        }
+        return nil
+    }
+}
+
+class AboutListenerMock: AboutListener {
+    init() {}
+
+    var aboutRequestsDismissalCallCount = 0
+    var aboutRequestsDismissalHandler: ((Bool) -> ())?
+    func aboutRequestsDismissal(shouldHideViewController: Bool) {
+        aboutRequestsDismissalCallCount += 1
+        if let aboutRequestsDismissalHandler = aboutRequestsDismissalHandler {
+            aboutRequestsDismissalHandler(shouldHideViewController)
+        }
+    }
+}
+
+class CallGGDListenerMock: CallGGDListener {
+    init() {}
+
+    var callGGDWantsDismissalCallCount = 0
+    var callGGDWantsDismissalHandler: ((Bool) -> ())?
+    func callGGDWantsDismissal(shouldDismissViewController: Bool) {
+        callGGDWantsDismissalCallCount += 1
+        if let callGGDWantsDismissalHandler = callGGDWantsDismissalHandler {
+            callGGDWantsDismissalHandler(shouldDismissViewController)
+        }
+    }
+}
+
+class EnableSettingListenerMock: EnableSettingListener {
+    init() {}
+
+    var enableSettingRequestsDismissCallCount = 0
+    var enableSettingRequestsDismissHandler: ((Bool) -> ())?
+    func enableSettingRequestsDismiss(shouldDismissViewController: Bool) {
+        enableSettingRequestsDismissCallCount += 1
+        if let enableSettingRequestsDismissHandler = enableSettingRequestsDismissHandler {
+            enableSettingRequestsDismissHandler(shouldDismissViewController)
+        }
+    }
+
+    var enableSettingDidTriggerActionCallCount = 0
+    var enableSettingDidTriggerActionHandler: (() -> ())?
+    func enableSettingDidTriggerAction() {
+        enableSettingDidTriggerActionCallCount += 1
+        if let enableSettingDidTriggerActionHandler = enableSettingDidTriggerActionHandler {
+            enableSettingDidTriggerActionHandler()
+        }
+    }
+}
+
+class HelpDetailListenerMock: HelpDetailListener {
+    init() {}
+
+    var helpDetailRequestsDismissalCallCount = 0
+    var helpDetailRequestsDismissalHandler: ((Bool) -> ())?
+    func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
+        helpDetailRequestsDismissalCallCount += 1
+        if let helpDetailRequestsDismissalHandler = helpDetailRequestsDismissalHandler {
+            helpDetailRequestsDismissalHandler(shouldDismissViewController)
+        }
+    }
+
+    var helpDetailDidTapEnableAppButtonCallCount = 0
+    var helpDetailDidTapEnableAppButtonHandler: (() -> ())?
+    func helpDetailDidTapEnableAppButton() {
+        helpDetailDidTapEnableAppButtonCallCount += 1
+        if let helpDetailDidTapEnableAppButtonHandler = helpDetailDidTapEnableAppButtonHandler {
+            helpDetailDidTapEnableAppButtonHandler()
+        }
+    }
+}
+
+class HelpListenerMock: HelpListener {
+    init() {}
+
+    var helpRequestsEnableAppCallCount = 0
+    var helpRequestsEnableAppHandler: (() -> ())?
+    func helpRequestsEnableApp() {
+        helpRequestsEnableAppCallCount += 1
+        if let helpRequestsEnableAppHandler = helpRequestsEnableAppHandler {
+            helpRequestsEnableAppHandler()
+        }
+    }
+
+    var helpRequestsDismissalCallCount = 0
+    var helpRequestsDismissalHandler: ((Bool) -> ())?
+    func helpRequestsDismissal(shouldHideViewController: Bool) {
+        helpRequestsDismissalCallCount += 1
+        if let helpRequestsDismissalHandler = helpRequestsDismissalHandler {
+            helpRequestsDismissalHandler(shouldHideViewController)
+        }
+    }
+}
+
+class HelpOverviewListenerMock: HelpOverviewListener {
+    init() {}
+
+    var helpOverviewRequestsDismissalCallCount = 0
+    var helpOverviewRequestsDismissalHandler: ((Bool) -> ())?
+    func helpOverviewRequestsDismissal(shouldDismissViewController: Bool) {
+        helpOverviewRequestsDismissalCallCount += 1
+        if let helpOverviewRequestsDismissalHandler = helpOverviewRequestsDismissalHandler {
+            helpOverviewRequestsDismissalHandler(shouldDismissViewController)
+        }
+    }
+
+    var helpOverviewRequestsRouteToCallCount = 0
+    var helpOverviewRequestsRouteToHandler: ((HelpQuestion) -> ())?
+    func helpOverviewRequestsRouteTo(question: HelpQuestion) {
+        helpOverviewRequestsRouteToCallCount += 1
+        if let helpOverviewRequestsRouteToHandler = helpOverviewRequestsRouteToHandler {
+            helpOverviewRequestsRouteToHandler(question)
+        }
+    }
+
+    var helpOverviewDidTapEnableAppButtonCallCount = 0
+    var helpOverviewDidTapEnableAppButtonHandler: (() -> ())?
+    func helpOverviewDidTapEnableAppButton() {
+        helpOverviewDidTapEnableAppButtonCallCount += 1
+        if let helpOverviewDidTapEnableAppButtonHandler = helpOverviewDidTapEnableAppButtonHandler {
+            helpOverviewDidTapEnableAppButtonHandler()
+        }
+    }
+}
+
+class InfectedListenerMock: InfectedListener {
+    init() {}
+
+    var infectedWantsDismissalCallCount = 0
+    var infectedWantsDismissalHandler: ((Bool) -> ())?
+    func infectedWantsDismissal(shouldDismissViewController: Bool) {
+        infectedWantsDismissalCallCount += 1
+        if let infectedWantsDismissalHandler = infectedWantsDismissalHandler {
+            infectedWantsDismissalHandler(shouldDismissViewController)
+        }
+    }
+}
+
+class MainBuildableMock: MainBuildable {
+    init() {}
+
+    var buildCallCount = 0
+    var buildHandler: (() -> (Routing))?
+    func build() -> Routing {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler()
+        }
+        return RoutingMock()
+    }
+}
+
+class MessageListenerMock: MessageListener {
+    init() {}
+
+    var messageWantsDismissalCallCount = 0
+    var messageWantsDismissalHandler: ((Bool) -> ())?
+    func messageWantsDismissal(shouldDismissViewController: Bool) {
+        messageWantsDismissalCallCount += 1
+        if let messageWantsDismissalHandler = messageWantsDismissalHandler {
+            messageWantsDismissalHandler(shouldDismissViewController)
+        }
+    }
+}
+
+class MoreInformationViewControllableMock: MoreInformationViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class OnboardingConsentBuildableMock: OnboardingConsentBuildable {
+    init() {}
+
+    var buildCallCount = 0
+    var buildHandler: ((OnboardingConsentListener) -> (ViewControllable))?
+    func build(withListener listener: OnboardingConsentListener) -> ViewControllable {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener)
+        }
+        return ViewControllableMock()
+    }
+
+    var buildWithListenerCallCount = 0
+    var buildWithListenerHandler: ((OnboardingConsentListener, Int) -> (ViewControllable))?
+    func build(withListener listener: OnboardingConsentListener, initialIndex: Int) -> ViewControllable {
+        buildWithListenerCallCount += 1
+        if let buildWithListenerHandler = buildWithListenerHandler {
+            return buildWithListenerHandler(listener, initialIndex)
+        }
+        return ViewControllableMock()
+    }
+}
+
+class OnboardingListenerMock: OnboardingListener {
+    init() {}
+
+    var didCompleteOnboardingCallCount = 0
+    var didCompleteOnboardingHandler: (() -> ())?
+    func didCompleteOnboarding() {
+        didCompleteOnboardingCallCount += 1
+        if let didCompleteOnboardingHandler = didCompleteOnboardingHandler {
+            didCompleteOnboardingHandler()
+        }
+    }
+}
+
+class OnboardingRoutingMock: OnboardingRouting {
+    init() {}
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+
+    var routeToStepsCallCount = 0
+    var routeToStepsHandler: (() -> ())?
+    func routeToSteps() {
+        routeToStepsCallCount += 1
+        if let routeToStepsHandler = routeToStepsHandler {
+            routeToStepsHandler()
+        }
+    }
+
+    var routeToStepCallCount = 0
+    var routeToStepHandler: ((Int, Bool) -> ())?
+    func routeToStep(withIndex index: Int, animated: Bool) {
+        routeToStepCallCount += 1
+        if let routeToStepHandler = routeToStepHandler {
+            routeToStepHandler(index, animated)
+        }
+    }
+
+    var routeToConsentCallCount = 0
+    var routeToConsentHandler: ((Bool) -> ())?
+    func routeToConsent(animated: Bool) {
+        routeToConsentCallCount += 1
+        if let routeToConsentHandler = routeToConsentHandler {
+            routeToConsentHandler(animated)
+        }
+    }
+
+    var routeToConsentWithIndexCallCount = 0
+    var routeToConsentWithIndexHandler: ((Int, Bool) -> ())?
+    func routeToConsent(withIndex index: Int, animated: Bool) {
+        routeToConsentWithIndexCallCount += 1
+        if let routeToConsentWithIndexHandler = routeToConsentWithIndexHandler {
+            routeToConsentWithIndexHandler(index, animated)
+        }
+    }
+
+    var routeToHelpCallCount = 0
+    var routeToHelpHandler: (() -> ())?
+    func routeToHelp() {
+        routeToHelpCallCount += 1
+        if let routeToHelpHandler = routeToHelpHandler {
+            routeToHelpHandler()
+        }
+    }
+}
+
+class OnboardingStepBuildableMock: OnboardingStepBuildable {
+    init() {}
+
+    var buildCallCount = 0
+    var buildHandler: ((OnboardingStepListener) -> (ViewControllable))?
+    func build(withListener listener: OnboardingStepListener) -> ViewControllable {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener)
+        }
+        return ViewControllableMock()
+    }
+
+    var buildWithListenerCallCount = 0
+    var buildWithListenerHandler: ((OnboardingStepListener, Int) -> (ViewControllable))?
+    func build(withListener listener: OnboardingStepListener, initialIndex: Int) -> ViewControllable {
+        buildWithListenerCallCount += 1
+        if let buildWithListenerHandler = buildWithListenerHandler {
+            return buildWithListenerHandler(listener, initialIndex)
+        }
+        return ViewControllableMock()
+    }
+}
+
+class ReceivedNotificationListenerMock: ReceivedNotificationListener {
+    init() {}
+
+    var receivedNotificationWantsDismissalCallCount = 0
+    var receivedNotificationWantsDismissalHandler: ((Bool) -> ())?
+    func receivedNotificationWantsDismissal(shouldDismissViewController: Bool) {
+        receivedNotificationWantsDismissalCallCount += 1
+        if let receivedNotificationWantsDismissalHandler = receivedNotificationWantsDismissalHandler {
+            receivedNotificationWantsDismissalHandler(shouldDismissViewController)
+        }
+    }
+}
+
+class RequestTestListenerMock: RequestTestListener {
+    init() {}
+
+    var requestTestWantsDismissalCallCount = 0
+    var requestTestWantsDismissalHandler: ((Bool) -> ())?
+    func requestTestWantsDismissal(shouldDismissViewController: Bool) {
+        requestTestWantsDismissalCallCount += 1
+        if let requestTestWantsDismissalHandler = requestTestWantsDismissalHandler {
+            requestTestWantsDismissalHandler(shouldDismissViewController)
+        }
+    }
+}
+
+class ThankYouListenerMock: ThankYouListener {
+    init() {}
+
+    var thankYouWantsDismissalCallCount = 0
+    var thankYouWantsDismissalHandler: (() -> ())?
+    func thankYouWantsDismissal() {
+        thankYouWantsDismissalCallCount += 1
+        if let thankYouWantsDismissalHandler = thankYouWantsDismissalHandler {
+            thankYouWantsDismissalHandler()
+        }
+    }
+}
+
+class UpdateAppListenerMock: UpdateAppListener {
+    init() {}
+}
+
+class BackgroundControllingMock: BackgroundControlling {
+    init() {}
+
+    var scheduleTasksCallCount = 0
+    var scheduleTasksHandler: (() -> ())?
+    func scheduleTasks() {
+        scheduleTasksCallCount += 1
+        if let scheduleTasksHandler = scheduleTasksHandler {
+            scheduleTasksHandler()
+        }
+    }
+
+    var handleCallCount = 0
+    var handleHandler: ((BGTask) -> ())?
+    func handle(task: BGTask) {
+        handleCallCount += 1
+        if let handleHandler = handleHandler {
+            handleHandler(task)
+        }
+    }
+}
+
+class UserNotificationCenterMock: UserNotificationCenter {
+    init() {}
+
+    var getAuthorizationStatusCallCount = 0
+    var getAuthorizationStatusHandler: ((@escaping (UNAuthorizationStatus) -> ()) -> ())?
+    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ()) {
+        getAuthorizationStatusCallCount += 1
+        if let getAuthorizationStatusHandler = getAuthorizationStatusHandler {
+            getAuthorizationStatusHandler(completionHandler)
+        }
+    }
+
+    var requestAuthorizationCallCount = 0
+    var requestAuthorizationHandler: ((UNAuthorizationOptions, @escaping (Bool, Error?) -> ()) -> ())?
+    func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> ()) {
+        requestAuthorizationCallCount += 1
+        if let requestAuthorizationHandler = requestAuthorizationHandler {
+            requestAuthorizationHandler(options, completionHandler)
+        }
+    }
+}
+
+class HelpRoutingMock: HelpRouting {
+    init() {}
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+
+    var routeToOverviewCallCount = 0
+    var routeToOverviewHandler: ((Bool) -> ())?
+    func routeToOverview(shouldShowEnableAppButton: Bool) {
+        routeToOverviewCallCount += 1
+        if let routeToOverviewHandler = routeToOverviewHandler {
+            routeToOverviewHandler(shouldShowEnableAppButton)
+        }
+    }
+
+    var routeToCallCount = 0
+    var routeToHandler: ((HelpQuestion, Bool) -> ())?
+    func routeTo(question: HelpQuestion, shouldShowEnableAppButton: Bool) {
+        routeToCallCount += 1
+        if let routeToHandler = routeToHandler {
+            routeToHandler(question, shouldShowEnableAppButton)
+        }
+    }
+
+    var detachHelpOverviewCallCount = 0
+    var detachHelpOverviewHandler: ((Bool) -> ())?
+    func detachHelpOverview(shouldDismissViewController: Bool) {
+        detachHelpOverviewCallCount += 1
+        if let detachHelpOverviewHandler = detachHelpOverviewHandler {
+            detachHelpOverviewHandler(shouldDismissViewController)
+        }
+    }
+
+    var detachHelpDetailCallCount = 0
+    var detachHelpDetailHandler: ((Bool) -> ())?
+    func detachHelpDetail(shouldDismissViewController: Bool) {
+        detachHelpDetailCallCount += 1
+        if let detachHelpDetailHandler = detachHelpDetailHandler {
+            detachHelpDetailHandler(shouldDismissViewController)
+        }
+    }
+}
+
+class OnboardingConsentViewControllableMock: OnboardingConsentViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class HelpManagingMock: HelpManaging {
+    init() {}
+    init(questions: [HelpQuestion] = [HelpQuestion]()) {
+        self.questions = questions
+    }
+
+    var questionsSetCallCount = 0
+    var questions: [HelpQuestion] = [HelpQuestion]() { didSet { questionsSetCallCount += 1 } }
+}
+
+class OnboardingConsentManagingMock: OnboardingConsentManaging {
+    init() {}
+    init(onboardingConsentSteps: [OnboardingConsentStep] = [OnboardingConsentStep]()) {
+        self.onboardingConsentSteps = onboardingConsentSteps
+    }
+
+    var onboardingConsentStepsSetCallCount = 0
+    var onboardingConsentSteps: [OnboardingConsentStep] = [OnboardingConsentStep]() { didSet { onboardingConsentStepsSetCallCount += 1 } }
+
+    var getStepCallCount = 0
+    var getStepHandler: ((Int) -> (OnboardingConsentStep?))?
+    func getStep(_ index: Int) -> OnboardingConsentStep? {
+        getStepCallCount += 1
+        if let getStepHandler = getStepHandler {
+            return getStepHandler(index)
+        }
+        return nil
+    }
+
+    var getNextConsentStepCallCount = 0
+    var getNextConsentStepHandler: ((OnboardingConsentStepIndex, @escaping (OnboardingConsentStepIndex?) -> ()) -> ())?
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
+        getNextConsentStepCallCount += 1
+        if let getNextConsentStepHandler = getNextConsentStepHandler {
+            getNextConsentStepHandler(currentStep, completion)
+        }
+    }
+
+    var askEnableExposureNotificationsCallCount = 0
+    var askEnableExposureNotificationsHandler: ((@escaping ((_ exposureActiveState: ExposureActiveState) -> ())) -> ())?
+    func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ())) {
+        askEnableExposureNotificationsCallCount += 1
+        if let askEnableExposureNotificationsHandler = askEnableExposureNotificationsHandler {
+            askEnableExposureNotificationsHandler(completion)
+        }
+    }
+
+    var goToBluetoothSettingsCallCount = 0
+    var goToBluetoothSettingsHandler: ((@escaping (() -> ())) -> ())?
+    func goToBluetoothSettings(_ completion: @escaping (() -> ())) {
+        goToBluetoothSettingsCallCount += 1
+        if let goToBluetoothSettingsHandler = goToBluetoothSettingsHandler {
+            goToBluetoothSettingsHandler(completion)
+        }
+    }
+
+    var askNotificationsAuthorizationCallCount = 0
+    var askNotificationsAuthorizationHandler: ((@escaping (() -> ())) -> ())?
+    func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
+        askNotificationsAuthorizationCallCount += 1
+        if let askNotificationsAuthorizationHandler = askNotificationsAuthorizationHandler {
+            askNotificationsAuthorizationHandler(completion)
+        }
+    }
+}
+
+class RequestTestViewControllableMock: RequestTestViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class AboutViewControllableMock: AboutViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class CardRoutingMock: CardRouting {
+    init() {}
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+
+    var routeCallCount = 0
+    var routeHandler: ((EnableSetting) -> ())?
+    func route(to enableSetting: EnableSetting) {
+        routeCallCount += 1
+        if let routeHandler = routeHandler {
+            routeHandler(enableSetting)
+        }
+    }
+
+    var detachEnableSettingCallCount = 0
+    var detachEnableSettingHandler: ((Bool) -> ())?
+    func detachEnableSetting(hideViewController: Bool) {
+        detachEnableSettingCallCount += 1
+        if let detachEnableSettingHandler = detachEnableSettingHandler {
+            detachEnableSettingHandler(hideViewController)
+        }
+    }
+}
+
+class ShareSheetListenerMock: ShareSheetListener {
+    init() {}
+
+    var shareSheetDidCompleteCallCount = 0
+    var shareSheetDidCompleteHandler: (() -> ())?
+    func shareSheetDidComplete() {
+        shareSheetDidCompleteCallCount += 1
+        if let shareSheetDidCompleteHandler = shareSheetDidCompleteHandler {
+            shareSheetDidCompleteHandler()
+        }
+    }
+}
+
+class ShareSheetViewControllableMock: ShareSheetViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class StatusListenerMock: StatusListener {
+    init() {}
+
+    var handleButtonActionCallCount = 0
+    var handleButtonActionHandler: ((StatusViewButtonModel.Action) -> ())?
+    func handleButtonAction(_ action: StatusViewButtonModel.Action) {
+        handleButtonActionCallCount += 1
+        if let handleButtonActionHandler = handleButtonActionHandler {
+            handleButtonActionHandler(action)
+        }
+    }
+}
+
+class WebViewingMock: WebViewing {
+    init() {}
+    init(uiview: UIView = UIView(frame: .zero)) {
+        self.uiview = uiview
+    }
+
+    var uiviewSetCallCount = 0
+    var uiview: UIView = UIView(frame: .zero) { didSet { uiviewSetCallCount += 1 } }
+
+    var loadCallCount = 0
+    var loadHandler: ((URLRequest) -> ())?
+    func load(request: URLRequest) {
+        loadCallCount += 1
+        if let loadHandler = loadHandler {
+            loadHandler(request)
+        }
+    }
+}
+
+class WebListenerMock: WebListener {
+    init() {}
+}
+
 class AppEntryPointMock: AppEntryPoint {
     init() {}
     init(uiviewController: UIViewController = UIViewController(), mutablePushNotificationStream: MutablePushNotificationStreaming = MutablePushNotificationStreamingMock()) {
@@ -1436,232 +1502,6 @@ class AppEntryPointMock: AppEntryPoint {
         handleCallCount += 1
         if let handleHandler = handleHandler {
             handleHandler(backgroundTask)
-        }
-    }
-}
-
-class BackgroundControllingMock: BackgroundControlling {
-    init() {}
-
-    var scheduleTasksCallCount = 0
-    var scheduleTasksHandler: (() -> ())?
-    func scheduleTasks() {
-        scheduleTasksCallCount += 1
-        if let scheduleTasksHandler = scheduleTasksHandler {
-            scheduleTasksHandler()
-        }
-    }
-
-    var handleCallCount = 0
-    var handleHandler: ((BGTask) -> ())?
-    func handle(task: BGTask) {
-        handleCallCount += 1
-        if let handleHandler = handleHandler {
-            handleHandler(task)
-        }
-    }
-}
-
-class InfectedRoutingMock: InfectedRouting {
-    init() {}
-    init(viewControllable: ViewControllable = ViewControllableMock()) {
-        self.viewControllable = viewControllable
-    }
-
-    var viewControllableSetCallCount = 0
-    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
-
-    var didUploadCodesCallCount = 0
-    var didUploadCodesHandler: ((ExposureConfirmationKey) -> ())?
-    func didUploadCodes(withKey key: ExposureConfirmationKey) {
-        didUploadCodesCallCount += 1
-        if let didUploadCodesHandler = didUploadCodesHandler {
-            didUploadCodesHandler(key)
-        }
-    }
-
-    var infectedWantsDismissalCallCount = 0
-    var infectedWantsDismissalHandler: ((Bool) -> ())?
-    func infectedWantsDismissal(shouldDismissViewController: Bool) {
-        infectedWantsDismissalCallCount += 1
-        if let infectedWantsDismissalHandler = infectedWantsDismissalHandler {
-            infectedWantsDismissalHandler(shouldDismissViewController)
-        }
-    }
-
-    var showInactiveCardCallCount = 0
-    var showInactiveCardHandler: (() -> ())?
-    func showInactiveCard() {
-        showInactiveCardCallCount += 1
-        if let showInactiveCardHandler = showInactiveCardHandler {
-            showInactiveCardHandler()
-        }
-    }
-
-    var removeInactiveCardCallCount = 0
-    var removeInactiveCardHandler: (() -> ())?
-    func removeInactiveCard() {
-        removeInactiveCardCallCount += 1
-        if let removeInactiveCardHandler = removeInactiveCardHandler {
-            removeInactiveCardHandler()
-        }
-    }
-}
-
-class StatusRoutingMock: StatusRouting {
-    init() {}
-    init(viewControllable: ViewControllable = ViewControllableMock()) {
-        self.viewControllable = viewControllable
-    }
-
-    var viewControllableSetCallCount = 0
-    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
-}
-
-class UserNotificationCenterMock: UserNotificationCenter {
-    init() {}
-
-    var getAuthorizationStatusCallCount = 0
-    var getAuthorizationStatusHandler: ((@escaping (UNAuthorizationStatus) -> ()) -> ())?
-    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ()) {
-        getAuthorizationStatusCallCount += 1
-        if let getAuthorizationStatusHandler = getAuthorizationStatusHandler {
-            getAuthorizationStatusHandler(completionHandler)
-        }
-    }
-
-    var requestAuthorizationCallCount = 0
-    var requestAuthorizationHandler: ((UNAuthorizationOptions, @escaping (Bool, Error?) -> ()) -> ())?
-    func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> ()) {
-        requestAuthorizationCallCount += 1
-        if let requestAuthorizationHandler = requestAuthorizationHandler {
-            requestAuthorizationHandler(options, completionHandler)
-        }
-    }
-}
-
-class MessageViewControllableMock: MessageViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class ReceivedNotificationViewControllableMock: ReceivedNotificationViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class ThankYouViewControllableMock: ThankYouViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class UpdateAppViewControllableMock: UpdateAppViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class RootViewControllableMock: RootViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController(), router: RootRouting? = nil) {
-        self.uiviewController = uiviewController
-        self.router = router
-    }
-
-    var developerMenuRequestsOnboardingFlowCallCount = 0
-    var developerMenuRequestsOnboardingFlowHandler: (() -> ())?
-    func developerMenuRequestsOnboardingFlow() {
-        developerMenuRequestsOnboardingFlowCallCount += 1
-        if let developerMenuRequestsOnboardingFlowHandler = developerMenuRequestsOnboardingFlowHandler {
-            developerMenuRequestsOnboardingFlowHandler()
-        }
-    }
-
-    var messageWantsDismissalCallCount = 0
-    var messageWantsDismissalHandler: ((Bool) -> ())?
-    func messageWantsDismissal(shouldDismissViewController: Bool) {
-        messageWantsDismissalCallCount += 1
-        if let messageWantsDismissalHandler = messageWantsDismissalHandler {
-            messageWantsDismissalHandler(shouldDismissViewController)
-        }
-    }
-
-    var didCompleteOnboardingCallCount = 0
-    var didCompleteOnboardingHandler: (() -> ())?
-    func didCompleteOnboarding() {
-        didCompleteOnboardingCallCount += 1
-        if let didCompleteOnboardingHandler = didCompleteOnboardingHandler {
-            didCompleteOnboardingHandler()
-        }
-    }
-
-    var developerMenuRequestMessageCallCount = 0
-    var developerMenuRequestMessageHandler: ((String, String) -> ())?
-    func developerMenuRequestMessage(title: String, body: String) {
-        developerMenuRequestMessageCallCount += 1
-        if let developerMenuRequestMessageHandler = developerMenuRequestMessageHandler {
-            developerMenuRequestMessageHandler(title, body)
-        }
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-
-    var routerSetCallCount = 0
-    var router: RootRouting? { didSet { routerSetCallCount += 1 } }
-
-    var presentInNavigationControllerCallCount = 0
-    var presentInNavigationControllerHandler: ((ViewControllable, Bool) -> ())?
-    func presentInNavigationController(viewController: ViewControllable, animated: Bool) {
-        presentInNavigationControllerCallCount += 1
-        if let presentInNavigationControllerHandler = presentInNavigationControllerHandler {
-            presentInNavigationControllerHandler(viewController, animated)
-        }
-    }
-
-    var presentCallCount = 0
-    var presentHandler: ((ViewControllable, Bool, (() -> ())?) -> ())?
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        presentCallCount += 1
-        if let presentHandler = presentHandler {
-            presentHandler(viewController, animated, completion)
-        }
-    }
-
-    var dismissCallCount = 0
-    var dismissHandler: ((ViewControllable, Bool, (() -> ())?) -> ())?
-    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        dismissCallCount += 1
-        if let dismissHandler = dismissHandler {
-            dismissHandler(viewController, animated, completion)
-        }
-    }
-
-    var embedCallCount = 0
-    var embedHandler: ((ViewControllable) -> ())?
-    func embed(viewController: ViewControllable) {
-        embedCallCount += 1
-        if let embedHandler = embedHandler {
-            embedHandler(viewController)
         }
     }
 }
@@ -1811,21 +1651,103 @@ class ExposureControllingMock: ExposureControlling {
     }
 }
 
-class PushNotificationStreamingMock: PushNotificationStreaming {
+class InfectedRoutingMock: InfectedRouting {
     init() {}
-    init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
-        self._pushNotificationStream = pushNotificationStream
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
     }
 
-    var pushNotificationStreamSetCallCount = 0
-    private var _pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>! { didSet { pushNotificationStreamSetCallCount += 1 } }
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
-        get { return _pushNotificationStream }
-        set { _pushNotificationStream = newValue }
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+
+    var didUploadCodesCallCount = 0
+    var didUploadCodesHandler: ((ExposureConfirmationKey) -> ())?
+    func didUploadCodes(withKey key: ExposureConfirmationKey) {
+        didUploadCodesCallCount += 1
+        if let didUploadCodesHandler = didUploadCodesHandler {
+            didUploadCodesHandler(key)
+        }
+    }
+
+    var infectedWantsDismissalCallCount = 0
+    var infectedWantsDismissalHandler: ((Bool) -> ())?
+    func infectedWantsDismissal(shouldDismissViewController: Bool) {
+        infectedWantsDismissalCallCount += 1
+        if let infectedWantsDismissalHandler = infectedWantsDismissalHandler {
+            infectedWantsDismissalHandler(shouldDismissViewController)
+        }
+    }
+
+    var showInactiveCardCallCount = 0
+    var showInactiveCardHandler: (() -> ())?
+    func showInactiveCard() {
+        showInactiveCardCallCount += 1
+        if let showInactiveCardHandler = showInactiveCardHandler {
+            showInactiveCardHandler()
+        }
+    }
+
+    var removeInactiveCardCallCount = 0
+    var removeInactiveCardHandler: (() -> ())?
+    func removeInactiveCard() {
+        removeInactiveCardCallCount += 1
+        if let removeInactiveCardHandler = removeInactiveCardHandler {
+            removeInactiveCardHandler()
+        }
     }
 }
 
-class DeveloperMenuViewControllableMock: DeveloperMenuViewControllable {
+class StatusRoutingMock: StatusRouting {
+    init() {}
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+}
+
+class CallGGDViewControllableMock: CallGGDViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class MessageViewControllableMock: MessageViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class ReceivedNotificationViewControllableMock: ReceivedNotificationViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class ThankYouViewControllableMock: ThankYouViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class UpdateAppViewControllableMock: UpdateAppViewControllable {
     init() {}
     init(uiviewController: UIViewController = UIViewController()) {
         self.uiviewController = uiviewController
@@ -1856,6 +1778,111 @@ class CryptoUtilityMock: CryptoUtility {
         }
         fatalError("signatureHandler returns can't have a default value thus its handler must be set")
     }
+}
+
+class RootViewControllableMock: RootViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController(), router: RootRouting? = nil) {
+        self.uiviewController = uiviewController
+        self.router = router
+    }
+
+    var developerMenuRequestsOnboardingFlowCallCount = 0
+    var developerMenuRequestsOnboardingFlowHandler: (() -> ())?
+    func developerMenuRequestsOnboardingFlow() {
+        developerMenuRequestsOnboardingFlowCallCount += 1
+        if let developerMenuRequestsOnboardingFlowHandler = developerMenuRequestsOnboardingFlowHandler {
+            developerMenuRequestsOnboardingFlowHandler()
+        }
+    }
+
+    var callGGDWantsDismissalCallCount = 0
+    var callGGDWantsDismissalHandler: ((Bool) -> ())?
+    func callGGDWantsDismissal(shouldDismissViewController: Bool) {
+        callGGDWantsDismissalCallCount += 1
+        if let callGGDWantsDismissalHandler = callGGDWantsDismissalHandler {
+            callGGDWantsDismissalHandler(shouldDismissViewController)
+        }
+    }
+
+    var messageWantsDismissalCallCount = 0
+    var messageWantsDismissalHandler: ((Bool) -> ())?
+    func messageWantsDismissal(shouldDismissViewController: Bool) {
+        messageWantsDismissalCallCount += 1
+        if let messageWantsDismissalHandler = messageWantsDismissalHandler {
+            messageWantsDismissalHandler(shouldDismissViewController)
+        }
+    }
+
+    var didCompleteOnboardingCallCount = 0
+    var didCompleteOnboardingHandler: (() -> ())?
+    func didCompleteOnboarding() {
+        didCompleteOnboardingCallCount += 1
+        if let didCompleteOnboardingHandler = didCompleteOnboardingHandler {
+            didCompleteOnboardingHandler()
+        }
+    }
+
+    var developerMenuRequestMessageCallCount = 0
+    var developerMenuRequestMessageHandler: ((String, String) -> ())?
+    func developerMenuRequestMessage(title: String, body: String) {
+        developerMenuRequestMessageCallCount += 1
+        if let developerMenuRequestMessageHandler = developerMenuRequestMessageHandler {
+            developerMenuRequestMessageHandler(title, body)
+        }
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+
+    var routerSetCallCount = 0
+    var router: RootRouting? { didSet { routerSetCallCount += 1 } }
+
+    var presentInNavigationControllerCallCount = 0
+    var presentInNavigationControllerHandler: ((ViewControllable, Bool) -> ())?
+    func presentInNavigationController(viewController: ViewControllable, animated: Bool) {
+        presentInNavigationControllerCallCount += 1
+        if let presentInNavigationControllerHandler = presentInNavigationControllerHandler {
+            presentInNavigationControllerHandler(viewController, animated)
+        }
+    }
+
+    var presentCallCount = 0
+    var presentHandler: ((ViewControllable, Bool, (() -> ())?) -> ())?
+    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
+        presentCallCount += 1
+        if let presentHandler = presentHandler {
+            presentHandler(viewController, animated, completion)
+        }
+    }
+
+    var dismissCallCount = 0
+    var dismissHandler: ((ViewControllable, Bool, (() -> ())?) -> ())?
+    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
+        dismissCallCount += 1
+        if let dismissHandler = dismissHandler {
+            dismissHandler(viewController, animated, completion)
+        }
+    }
+
+    var embedCallCount = 0
+    var embedHandler: ((ViewControllable) -> ())?
+    func embed(viewController: ViewControllable) {
+        embedCallCount += 1
+        if let embedHandler = embedHandler {
+            embedHandler(viewController)
+        }
+    }
+}
+
+class DeveloperMenuViewControllableMock: DeveloperMenuViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 }
 
 class MainRoutingMock: MainRouting {
@@ -2090,30 +2117,6 @@ class OnboardingBuildableMock: OnboardingBuildable {
     }
 }
 
-class WebViewControllableMock: WebViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class MessageBuildableMock: MessageBuildable {
-    init() {}
-
-    var buildCallCount = 0
-    var buildHandler: ((MessageListener, String, String) -> (ViewControllable))?
-    func build(withListener listener: MessageListener, title: String, body: String) -> ViewControllable {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler(listener, title, body)
-        }
-        return ViewControllableMock()
-    }
-}
-
 class ExposureDataOperationProviderMock: ExposureDataOperationProvider {
     init() {}
     init(requestManifestOperation: RequestAppManifestDataOperation) {
@@ -2198,6 +2201,44 @@ class ExposureDataOperationProviderMock: ExposureDataOperationProvider {
     }
 }
 
+class WebViewControllableMock: WebViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class CallGGDBuildableMock: CallGGDBuildable {
+    init() {}
+
+    var buildCallCount = 0
+    var buildHandler: ((CallGGDListener) -> (ViewControllable))?
+    func build(withListener listener: CallGGDListener) -> ViewControllable {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener)
+        }
+        return ViewControllableMock()
+    }
+}
+
+class MessageBuildableMock: MessageBuildable {
+    init() {}
+
+    var buildCallCount = 0
+    var buildHandler: ((MessageListener, String, String) -> (ViewControllable))?
+    func build(withListener listener: MessageListener, title: String, body: String) -> ViewControllable {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener, title, body)
+        }
+        return ViewControllableMock()
+    }
+}
+
 class InfectedBuildableMock: InfectedBuildable {
     init() {}
 
@@ -2237,6 +2278,33 @@ class StatusBuildableMock: StatusBuildable {
             return buildHandler(listener, topAnchor)
         }
         return RoutingMock()
+    }
+}
+
+class MutableNetworkStatusStreamingMock: MutableNetworkStatusStreaming {
+    init() {}
+    init(currentStatus: Bool = false, networkStatusStream: AnyPublisher<Bool, Never>) {
+        self.currentStatus = currentStatus
+        self._networkStatusStream = networkStatusStream
+    }
+
+    var currentStatusSetCallCount = 0
+    var currentStatus: Bool = false { didSet { currentStatusSetCallCount += 1 } }
+
+    var networkStatusStreamSetCallCount = 0
+    private var _networkStatusStream: AnyPublisher<Bool, Never>! { didSet { networkStatusStreamSetCallCount += 1 } }
+    var networkStatusStream: AnyPublisher<Bool, Never> {
+        get { return _networkStatusStream }
+        set { _networkStatusStream = newValue }
+    }
+
+    var updateCallCount = 0
+    var updateHandler: ((Bool) -> ())?
+    func update(isReachable: Bool) {
+        updateCallCount += 1
+        if let updateHandler = updateHandler {
+            updateHandler(isReachable)
+        }
     }
 }
 
@@ -2282,33 +2350,6 @@ class DeveloperMenuBuildableMock: DeveloperMenuBuildable {
     }
 }
 
-class MutableNetworkStatusStreamingMock: MutableNetworkStatusStreaming {
-    init() {}
-    init(currentStatus: Bool = false, networkStatusStream: AnyPublisher<Bool, Never>) {
-        self.currentStatus = currentStatus
-        self._networkStatusStream = networkStatusStream
-    }
-
-    var currentStatusSetCallCount = 0
-    var currentStatus: Bool = false { didSet { currentStatusSetCallCount += 1 } }
-
-    var networkStatusStreamSetCallCount = 0
-    private var _networkStatusStream: AnyPublisher<Bool, Never>! { didSet { networkStatusStreamSetCallCount += 1 } }
-    var networkStatusStream: AnyPublisher<Bool, Never> {
-        get { return _networkStatusStream }
-        set { _networkStatusStream = newValue }
-    }
-
-    var updateCallCount = 0
-    var updateHandler: ((Bool) -> ())?
-    func update(isReachable: Bool) {
-        updateCallCount += 1
-        if let updateHandler = updateHandler {
-            updateHandler(isReachable)
-        }
-    }
-}
-
 class ShareSheetBuildableMock: ShareSheetBuildable {
     init() {}
 
@@ -2334,29 +2375,6 @@ class AboutBuildableMock: AboutBuildable {
             return buildHandler(listener)
         }
         return ViewControllableMock()
-    }
-}
-
-class MutablePushNotificationStreamingMock: MutablePushNotificationStreaming {
-    init() {}
-    init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
-        self._pushNotificationStream = pushNotificationStream
-    }
-
-    var pushNotificationStreamSetCallCount = 0
-    private var _pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>! { didSet { pushNotificationStreamSetCallCount += 1 } }
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
-        get { return _pushNotificationStream }
-        set { _pushNotificationStream = newValue }
-    }
-
-    var updateCallCount = 0
-    var updateHandler: ((UNNotificationResponse) -> ())?
-    func update(response: UNNotificationResponse) {
-        updateCallCount += 1
-        if let updateHandler = updateHandler {
-            updateHandler(response)
-        }
     }
 }
 
@@ -2455,6 +2473,20 @@ class BackgroundControllerBuildableMock: BackgroundControllerBuildable {
     }
 }
 
+class PushNotificationStreamingMock: PushNotificationStreaming {
+    init() {}
+    init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
+        self._pushNotificationStream = pushNotificationStream
+    }
+
+    var pushNotificationStreamSetCallCount = 0
+    private var _pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>! { didSet { pushNotificationStreamSetCallCount += 1 } }
+    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
+        get { return _pushNotificationStream }
+        set { _pushNotificationStream = newValue }
+    }
+}
+
 class MoreInformationBuildableMock: MoreInformationBuildable {
     init() {}
 
@@ -2466,59 +2498,6 @@ class MoreInformationBuildableMock: MoreInformationBuildable {
             return buildHandler(listener)
         }
         return MoreInformationViewControllableMock()
-    }
-}
-
-class OnboardingStepListenerMock: OnboardingStepListener {
-    init() {}
-
-    var onboardingStepsDidCompleteCallCount = 0
-    var onboardingStepsDidCompleteHandler: (() -> ())?
-    func onboardingStepsDidComplete() {
-        onboardingStepsDidCompleteCallCount += 1
-        if let onboardingStepsDidCompleteHandler = onboardingStepsDidCompleteHandler {
-            onboardingStepsDidCompleteHandler()
-        }
-    }
-
-    var nextStepAtIndexCallCount = 0
-    var nextStepAtIndexHandler: ((Int) -> ())?
-    func nextStepAtIndex(_ index: Int) {
-        nextStepAtIndexCallCount += 1
-        if let nextStepAtIndexHandler = nextStepAtIndexHandler {
-            nextStepAtIndexHandler(index)
-        }
-    }
-}
-
-class OnboardingConsentListenerMock: OnboardingConsentListener {
-    init() {}
-
-    var consentCloseCallCount = 0
-    var consentCloseHandler: (() -> ())?
-    func consentClose() {
-        consentCloseCallCount += 1
-        if let consentCloseHandler = consentCloseHandler {
-            consentCloseHandler()
-        }
-    }
-
-    var consentRequestCallCount = 0
-    var consentRequestHandler: ((OnboardingConsentStepIndex) -> ())?
-    func consentRequest(step: OnboardingConsentStepIndex) {
-        consentRequestCallCount += 1
-        if let consentRequestHandler = consentRequestHandler {
-            consentRequestHandler(step)
-        }
-    }
-
-    var displayHelpCallCount = 0
-    var displayHelpHandler: (() -> ())?
-    func displayHelp() {
-        displayHelpCallCount += 1
-        if let displayHelpHandler = displayHelpHandler {
-            displayHelpHandler()
-        }
     }
 }
 
@@ -2639,6 +2618,59 @@ class ExposureDataControllingMock: ExposureDataControlling {
     }
 }
 
+class OnboardingStepListenerMock: OnboardingStepListener {
+    init() {}
+
+    var onboardingStepsDidCompleteCallCount = 0
+    var onboardingStepsDidCompleteHandler: (() -> ())?
+    func onboardingStepsDidComplete() {
+        onboardingStepsDidCompleteCallCount += 1
+        if let onboardingStepsDidCompleteHandler = onboardingStepsDidCompleteHandler {
+            onboardingStepsDidCompleteHandler()
+        }
+    }
+
+    var nextStepAtIndexCallCount = 0
+    var nextStepAtIndexHandler: ((Int) -> ())?
+    func nextStepAtIndex(_ index: Int) {
+        nextStepAtIndexCallCount += 1
+        if let nextStepAtIndexHandler = nextStepAtIndexHandler {
+            nextStepAtIndexHandler(index)
+        }
+    }
+}
+
+class OnboardingConsentListenerMock: OnboardingConsentListener {
+    init() {}
+
+    var consentCloseCallCount = 0
+    var consentCloseHandler: (() -> ())?
+    func consentClose() {
+        consentCloseCallCount += 1
+        if let consentCloseHandler = consentCloseHandler {
+            consentCloseHandler()
+        }
+    }
+
+    var consentRequestCallCount = 0
+    var consentRequestHandler: ((OnboardingConsentStepIndex) -> ())?
+    func consentRequest(step: OnboardingConsentStepIndex) {
+        consentRequestCallCount += 1
+        if let consentRequestHandler = consentRequestHandler {
+            consentRequestHandler(step)
+        }
+    }
+
+    var displayHelpCallCount = 0
+    var displayHelpHandler: (() -> ())?
+    func displayHelp() {
+        displayHelpCallCount += 1
+        if let displayHelpHandler = displayHelpHandler {
+            displayHelpHandler()
+        }
+    }
+}
+
 class EnableSettingBuildableMock: EnableSettingBuildable {
     init() {}
 
@@ -2650,6 +2682,29 @@ class EnableSettingBuildableMock: EnableSettingBuildable {
             return buildHandler(listener, setting)
         }
         return ViewControllableMock()
+    }
+}
+
+class MutablePushNotificationStreamingMock: MutablePushNotificationStreaming {
+    init() {}
+    init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
+        self._pushNotificationStream = pushNotificationStream
+    }
+
+    var pushNotificationStreamSetCallCount = 0
+    private var _pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>! { didSet { pushNotificationStreamSetCallCount += 1 } }
+    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
+        get { return _pushNotificationStream }
+        set { _pushNotificationStream = newValue }
+    }
+
+    var updateCallCount = 0
+    var updateHandler: ((UNNotificationResponse) -> ())?
+    func update(response: UNNotificationResponse) {
+        updateCallCount += 1
+        if let updateHandler = updateHandler {
+            updateHandler(response)
+        }
     }
 }
 
