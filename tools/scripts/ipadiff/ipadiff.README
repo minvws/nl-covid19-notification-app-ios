@@ -1,0 +1,9 @@
+ipadiff.py from telegram-ios
+----------------------------
+
+github repository: https://github.com/TelegramMessenger/telegram-ios.git
+writeup: https://core.telegram.org/reproducible-builds#reproducible-builds-for-ios
+
+Modified by jsoeterbroek to import bindiff.py 
+
+github repository: https://github.com/dadadel/bindiff

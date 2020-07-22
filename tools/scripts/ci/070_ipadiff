@@ -1,0 +1,45 @@
+#!/bin/bash
+echo "*********************"
+echo "*     CI ipadiff    *"
+echo "*********************"
+
+
+ARTIFACT_FROM_BUILD_PATH=path/to/artifact/build
+IPA_FILE_FROM_APPSTORE_PATH=path/to/artifact/appstore
+ARTIFACT_FROM_BUILD_IPA=$ARTIFACT_FROM_BUILD_PATH/artifact.ipa
+FILE_FROM_APPSTORE_IPA_GOOD=$IPA_FILE_FROM_APPSTORE_PATH/test-good.ipa
+FILE_FROM_APPSTORE_IPA_EVIL=$IPA_FILE_FROM_APPSTORE_PATH/test-evil.ipa
+
+#if ! type brew > /dev/null; then /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; fi && brew install python3
+
+mkdir -p $ARTIFACT_FROM_BUILD_PATH
+mkdir -p $IPA_FILE_FROM_APPSTORE_PATH
+
+
+# FOR TESTING ONLY
+# download dummy ipa file(s)
+/usr/bin/ruby -e "$(curl https://raw.githubusercontent.com/jsoeterbroek/testipa/master/ipa/calculator.ipa -o $ARTIFACT_FROM_BUILD_IPA)"
+/usr/bin/ruby -e "$(curl https://raw.githubusercontent.com/jsoeterbroek/testipa/master/ipa/test-good.ipa -o $FILE_FROM_APPSTORE_IPA_GOOD)"
+/usr/bin/ruby -e "$(curl https://raw.githubusercontent.com/jsoeterbroek/testipa/master/ipa/test-evil.ipa -o $FILE_FROM_APPSTORE_IPA_EVIL)"
+
+
+# run ipadiff on build ipa artifact and compare to ipafile decrypted version of the app from the App Store
+# This step requires a jailbroken device equipped with tools for decrypting apps.
+echo
+echo "***************************************"
+echo "* ipadiff good versus good..."
+echo "*  - ARTIFACT_FROM_BUILD_IPA $ARTIFACT_FROM_BUILD_IPA"
+echo "*  - FILE_FROM_APPSTORE_IPA_GOOD $FILE_FROM_APPSTORE_IPA_GOOD"
+echo "***************************************"
+echo
+python2 tools/scripts/ipadiff/ipadiff.py $ARTIFACT_FROM_BUILD_IPA $FILE_FROM_APPSTORE_IPA_GOOD
+
+echo
+echo "***************************************"
+echo "* ipadiff good versus evil..."
+echo "*  - ARTIFACT_FROM_BUILD_IPA $ARTIFACT_FROM_BUILD_IPA"
+echo "*  - FILE_FROM_APPSTORE_IPA_GOOD $FILE_FROM_APPSTORE_IPA_EVIL"
+echo "***************************************"
+echo
+python2 tools/scripts/ipadiff/ipadiff.py $ARTIFACT_FROM_BUILD_IPA $FILE_FROM_APPSTORE_IPA_EVIL
+
