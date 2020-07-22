@@ -53,7 +53,7 @@ final class InfoView: View {
         stackView.spacing = 40
         stackView.distribution = .equalSpacing
         contentView.backgroundColor = .clear
-        headerBackgroundView.backgroundColor = theme.colors.infoHeaderBackground
+        headerBackgroundView.backgroundColor = theme.colors.headerBackgroundBlue
 
         addSubview(scrollView)
         scrollView.addSubview(headerBackgroundView)
