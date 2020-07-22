@@ -124,6 +124,8 @@ extension String {
     static var helpFaqBluetoothDescription: String { return Localization.string(for: "help.faq.bluetooth.description") }
     static var helpFaqPowerUsageTitle: String { return Localization.string(for: "help.faq.power_usage.title") }
     static var helpFaqPowerUsageDescription: String { return Localization.string(for: "help.faq.power_usage.description") }
+    static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
+    static var helpColofonDescription: String { return Localization.string(for: "help.faq.colofon.description") }
 
     // MARK: - Message
 
