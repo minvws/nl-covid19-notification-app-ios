@@ -128,6 +128,8 @@ extension String {
     static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link") }
     static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
     static var helpColofonDescription: String { return Localization.string(for: "help.faq.colofon.description") }
+    static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
+    static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
 
     // MARK: - Message
 

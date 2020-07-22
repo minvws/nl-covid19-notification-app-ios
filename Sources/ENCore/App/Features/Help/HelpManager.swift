@@ -48,6 +48,11 @@ final class HelpManager: HelpManaging {
                 link: .helpPrivacyPolicyLink),
             HelpQuestion(
                 theme: theme,
+                question: .helpAccessibilityTitle,
+                answer: "",
+                link: .helpAccessibilityLink),
+            HelpQuestion(
+                theme: theme,
                 question: .helpColofonTitle,
                 answer: .helpColofonDescription)
         ]
