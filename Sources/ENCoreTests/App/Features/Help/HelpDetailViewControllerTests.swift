@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
@@ -21,6 +22,11 @@ final class HelpDetailViewControllerTests: TestCase {
         super.setUp()
 
         recordSnapshots = false
+
+        #if DEBUG
+            WebViewTestingOverrides.webViewsEnabled = false
+        #endif
+
         helpManager = HelpManager(theme: theme)
     }
 

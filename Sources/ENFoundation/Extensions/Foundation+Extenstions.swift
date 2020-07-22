@@ -55,6 +55,11 @@ public func animationsEnabled() -> Bool {
     public struct AnimationTestingOverrides {
         public static var animationsEnabled: Bool?
     }
+
+    /// Overrides animation
+    public struct WebViewTestingOverrides {
+        public static var webViewsEnabled: Bool?
+    }
 #endif
 
 public extension String {

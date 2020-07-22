@@ -35,6 +35,9 @@ final class HelpDetailViewController: ViewController {
         internalView.titleLabel.attributedText = question.attributedTitle
 
         if let link = question.link, let url = URL(string: link) {
+            if let webViewEnabled = WebViewTestingOverrides.webViewsEnabled, webViewEnabled == false {
+                return
+            }
             internalView.webView.isHidden = false
             internalView.webView.load(URLRequest(url: url))
         } else {
