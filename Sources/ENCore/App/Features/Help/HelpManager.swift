@@ -40,7 +40,12 @@ final class HelpManager: HelpManaging {
             HelpQuestion(
                 theme: theme,
                 question: .helpFaqPowerUsageTitle,
-                answer: .helpFaqPowerUsageDescription)
+                answer: .helpFaqPowerUsageDescription),
+            HelpQuestion(
+                theme: theme,
+                question: .helpPrivacyPolicyTitle,
+                answer: "",
+                link: .helpPrivacyPolicyLink)
         ]
     }
 }
