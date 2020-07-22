@@ -24,6 +24,8 @@ public protocol Colors: AnyObject {
 
     var navigationControllerBackground: UIColor { get }
     var viewControllerBackground: UIColor { get }
+
+    var headerBackgroundBlue: UIColor { get }
 }
 
 final class ENColors: Colors, Logging {
@@ -69,6 +71,10 @@ final class ENColors: Colors, Logging {
 
     var viewControllerBackground: UIColor {
         return color(for: "ViewControllerBackgroundColor")
+    }
+
+    var headerBackgroundBlue: UIColor {
+        return color(for: "HeaderBackgroundBlue")
     }
 
     // MARK: - Private
