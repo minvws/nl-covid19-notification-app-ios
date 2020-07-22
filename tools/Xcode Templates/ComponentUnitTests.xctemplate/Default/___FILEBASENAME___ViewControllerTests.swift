@@ -6,6 +6,7 @@
  */
 
 @testable import EN
+import ENFoundation
 import Foundation
 import XCTest
 
