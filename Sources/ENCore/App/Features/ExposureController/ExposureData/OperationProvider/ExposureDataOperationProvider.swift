@@ -5,14 +5,18 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Foundation
+
 final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
-         localPathProvider: LocalPathProviding) {
+         localPathProvider: LocalPathProviding,
+         userNotificationCenter: UserNotificationCenter) {
         self.networkController = networkController
         self.storageController = storageController
         self.localPathProvider = localPathProvider
+        self.userNotificationCenter = userNotificationCenter
     }
 
     // MARK: - ExposureDataOperationProvider
@@ -33,6 +37,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
         return ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
                                                                         storageController: storageController,
+                                                                        userNotificationCenter: userNotificationCenter,
                                                                         padding: padding)
     }
 
@@ -81,6 +86,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let localPathProvider: LocalPathProviding
+    private let userNotificationCenter: UserNotificationCenter
 }
 
 extension NetworkError {

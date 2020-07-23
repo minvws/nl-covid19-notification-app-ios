@@ -6,6 +6,7 @@
  */
 
 import Combine
+import NotificationCenter
 
 protocol ExposureDataOperation {
     associatedtype Result
@@ -45,6 +46,10 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
     var localPathProvider: LocalPathProviding {
         return LocalPathProvider()
     }
+
+    var userNotificationCenter: UserNotificationCenter {
+        return UNUserNotificationCenter.current()
+    }
 }
 
 final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationProviderDependency>, ExposureDataOperationProviderBuildable {
@@ -53,6 +58,7 @@ final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationP
 
         return ExposureDataOperationProviderImpl(networkController: dependencyProvider.dependency.networkController,
                                                  storageController: dependencyProvider.dependency.storageController,
-                                                 localPathProvider: dependencyProvider.localPathProvider)
+                                                 localPathProvider: dependencyProvider.localPathProvider,
+                                                 userNotificationCenter: dependencyProvider.userNotificationCenter)
     }
 }
