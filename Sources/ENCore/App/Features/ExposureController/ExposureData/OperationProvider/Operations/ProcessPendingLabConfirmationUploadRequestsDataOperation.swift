@@ -46,7 +46,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
         // All requests have expired we need to notify the user
         // so they can manually try the upload again with the GGD
-        if requests.isEmpty, !expiredRequests.isEmpty {
+        if !expiredRequests.isEmpty {
             notifyUser()
         }
 
