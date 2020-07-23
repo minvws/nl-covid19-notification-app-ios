@@ -19,6 +19,7 @@ protocol OnboardingConsentManaging {
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
+    func getAppStoreUrl(_ completion: @escaping ((String?) -> ()))
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -93,6 +94,21 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 hasNavigationBarSkipButton: true
             )
         )
+
+        onboardingConsentSteps.append(
+            OnboardingConsentStep(
+                step: .share,
+                theme: theme,
+                title: .consentStep4Title,
+                content: .consentStep4Content,
+                image: .shareApp,
+                animationName: nil,
+                summarySteps: nil,
+                primaryButtonTitle: .consentStep4PrimaryButton,
+                secondaryButtonTitle: .consentStep4SecondaryButton,
+                hasNavigationBarSkipButton: true
+            )
+        )
     }
 
     deinit {
@@ -125,6 +141,8 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         case .bluetooth:
             completion(.notifications)
         case .notifications:
+            completion(.share)
+        case .share:
             completion(nil)
         }
     }
@@ -167,6 +185,12 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
     func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
         exposureController.requestPushNotificationPermission {
             completion()
+        }
+    }
+
+    func getAppStoreUrl(_ completion: @escaping ((String?) -> ())) {
+        exposureController.getAppVersionInformation { data in
+            completion(data?.appStoreURL)
         }
     }
 

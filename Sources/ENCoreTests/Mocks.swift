@@ -417,6 +417,15 @@ class OnboardingViewControllableMock: OnboardingViewControllable {
             displayHelpHandler()
         }
     }
+
+    var displayShareAppCallCount = 0
+    var displayShareAppHandler: ((@escaping (() -> ())) -> ())?
+    func displayShareApp(completion: @escaping (() -> ())) {
+        displayShareAppCallCount += 1
+        if let displayShareAppHandler = displayShareAppHandler {
+            displayShareAppHandler(completion)
+        }
+    }
 }
 
 class RoutingMock: Routing {
@@ -1052,61 +1061,6 @@ class OnboardingListenerMock: OnboardingListener {
     }
 }
 
-class OnboardingRoutingMock: OnboardingRouting {
-    init() {}
-    init(viewControllable: ViewControllable = ViewControllableMock()) {
-        self.viewControllable = viewControllable
-    }
-
-    var viewControllableSetCallCount = 0
-    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
-
-    var routeToStepsCallCount = 0
-    var routeToStepsHandler: (() -> ())?
-    func routeToSteps() {
-        routeToStepsCallCount += 1
-        if let routeToStepsHandler = routeToStepsHandler {
-            routeToStepsHandler()
-        }
-    }
-
-    var routeToStepCallCount = 0
-    var routeToStepHandler: ((Int, Bool) -> ())?
-    func routeToStep(withIndex index: Int, animated: Bool) {
-        routeToStepCallCount += 1
-        if let routeToStepHandler = routeToStepHandler {
-            routeToStepHandler(index, animated)
-        }
-    }
-
-    var routeToConsentCallCount = 0
-    var routeToConsentHandler: ((Bool) -> ())?
-    func routeToConsent(animated: Bool) {
-        routeToConsentCallCount += 1
-        if let routeToConsentHandler = routeToConsentHandler {
-            routeToConsentHandler(animated)
-        }
-    }
-
-    var routeToConsentWithIndexCallCount = 0
-    var routeToConsentWithIndexHandler: ((Int, Bool) -> ())?
-    func routeToConsent(withIndex index: Int, animated: Bool) {
-        routeToConsentWithIndexCallCount += 1
-        if let routeToConsentWithIndexHandler = routeToConsentWithIndexHandler {
-            routeToConsentWithIndexHandler(index, animated)
-        }
-    }
-
-    var routeToHelpCallCount = 0
-    var routeToHelpHandler: (() -> ())?
-    func routeToHelp() {
-        routeToHelpCallCount += 1
-        if let routeToHelpHandler = routeToHelpHandler {
-            routeToHelpHandler()
-        }
-    }
-}
-
 class OnboardingStepBuildableMock: OnboardingStepBuildable {
     init() {}
 
@@ -1347,6 +1301,15 @@ class OnboardingConsentManagingMock: OnboardingConsentManaging {
             askNotificationsAuthorizationHandler(completion)
         }
     }
+
+    var getAppStoreUrlCallCount = 0
+    var getAppStoreUrlHandler: ((@escaping ((String?) -> ())) -> ())?
+    func getAppStoreUrl(_ completion: @escaping ((String?) -> ())) {
+        getAppStoreUrlCallCount += 1
+        if let getAppStoreUrlHandler = getAppStoreUrlHandler {
+            getAppStoreUrlHandler(completion)
+        }
+    }
 }
 
 class RequestTestViewControllableMock: RequestTestViewControllable {
@@ -1393,6 +1356,61 @@ class CardRoutingMock: CardRouting {
         detachEnableSettingCallCount += 1
         if let detachEnableSettingHandler = detachEnableSettingHandler {
             detachEnableSettingHandler(hideViewController)
+        }
+    }
+}
+
+class OnboardingRoutingMock: OnboardingRouting {
+    init() {}
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+
+    var routeToStepsCallCount = 0
+    var routeToStepsHandler: (() -> ())?
+    func routeToSteps() {
+        routeToStepsCallCount += 1
+        if let routeToStepsHandler = routeToStepsHandler {
+            routeToStepsHandler()
+        }
+    }
+
+    var routeToStepCallCount = 0
+    var routeToStepHandler: ((Int, Bool) -> ())?
+    func routeToStep(withIndex index: Int, animated: Bool) {
+        routeToStepCallCount += 1
+        if let routeToStepHandler = routeToStepHandler {
+            routeToStepHandler(index, animated)
+        }
+    }
+
+    var routeToConsentCallCount = 0
+    var routeToConsentHandler: ((Bool) -> ())?
+    func routeToConsent(animated: Bool) {
+        routeToConsentCallCount += 1
+        if let routeToConsentHandler = routeToConsentHandler {
+            routeToConsentHandler(animated)
+        }
+    }
+
+    var routeToConsentWithIndexCallCount = 0
+    var routeToConsentWithIndexHandler: ((Int, Bool) -> ())?
+    func routeToConsent(withIndex index: Int, animated: Bool) {
+        routeToConsentWithIndexCallCount += 1
+        if let routeToConsentWithIndexHandler = routeToConsentWithIndexHandler {
+            routeToConsentWithIndexHandler(index, animated)
+        }
+    }
+
+    var routeToHelpCallCount = 0
+    var routeToHelpHandler: (() -> ())?
+    func routeToHelp() {
+        routeToHelpCallCount += 1
+        if let routeToHelpHandler = routeToHelpHandler {
+            routeToHelpHandler()
         }
     }
 }
@@ -2676,6 +2694,15 @@ class OnboardingConsentListenerMock: OnboardingConsentListener {
         displayHelpCallCount += 1
         if let displayHelpHandler = displayHelpHandler {
             displayHelpHandler()
+        }
+    }
+
+    var displayShareAppCallCount = 0
+    var displayShareAppHandler: ((@escaping (() -> ())) -> ())?
+    func displayShareApp(completion: @escaping (() -> ())) {
+        displayShareAppCallCount += 1
+        if let displayShareAppHandler = displayShareAppHandler {
+            displayShareAppHandler(completion)
         }
     }
 }

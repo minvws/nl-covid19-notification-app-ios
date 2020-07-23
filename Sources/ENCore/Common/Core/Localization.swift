@@ -107,6 +107,11 @@ extension String {
     static var consentStep3PrimaryButton: String { return Localization.string(for: "consentStep3PrimaryButton") }
     static var consentStep3SecondaryButton: String { return Localization.string(for: "consentStep3SecondaryButton") }
 
+    static var consentStep4Title: String { return Localization.string(for: "consentStep4Title") }
+    static var consentStep4Content: String { return Localization.string(for: "consentStep4Content") }
+    static var consentStep4PrimaryButton: String { return Localization.string(for: "consentStep4PrimaryButton") }
+    static var consentStep4SecondaryButton: String { return Localization.string(for: "consentStep4SecondaryButton") }
+
     // MARK: - Consent
 
     static var skipStep: String { return Localization.string(for: "skipStep") }

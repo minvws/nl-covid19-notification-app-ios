@@ -13,6 +13,7 @@ enum OnboardingConsentStepIndex: Int {
     case en = 0
     case bluetooth
     case notifications
+    case share
 }
 
 final class OnboardingConsentStep: NSObject {
