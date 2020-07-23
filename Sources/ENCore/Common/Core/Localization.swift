@@ -85,6 +85,11 @@ extension String {
 
     // MARK: - Consent Steps
 
+    static var consentSkipEnTitle: String { return Localization.string(for: "consentSkipEnTitle") }
+    static var consentSkipEnMessage: String { return Localization.string(for: "consentSkipEnMessage") }
+    static var consentSkipEnAcceptButton: String { return Localization.string(for: "consentSkipEnAcceptButton") }
+    static var consentSkipEnDeclineButton: String { return Localization.string(for: "consentSkipEnDeclineButton") }
+
     static var consentStep1Title: String { return Localization.string(for: "consentStep1Title") }
     static var consentStep1Summary1: String { return Localization.string(for: "consentStep1Summary1") }
     static var consentStep1Summary2: String { return Localization.string(for: "consentStep1Summary2") }

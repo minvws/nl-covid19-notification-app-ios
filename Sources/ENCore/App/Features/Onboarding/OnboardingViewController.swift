@@ -76,7 +76,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
             case .notAuthorized:
                 self.listener?.didCompleteOnboarding()
             default:
-                self.onboardingConsentManager.getNextConsentStep(.en) { nextStep in
+                self.onboardingConsentManager.getNextConsentStep(.en, skippedCurrentStep: false) { nextStep in
                     if let nextStep = nextStep {
                         self.router?.routeToConsent(withIndex: nextStep.rawValue, animated: true)
                     } else {

@@ -14,7 +14,7 @@ protocol OnboardingConsentManaging {
     var onboardingConsentSteps: [OnboardingConsentStep] { get }
 
     func getStep(_ index: Int) -> OnboardingConsentStep?
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ())
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ())
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
@@ -106,12 +106,12 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         return nil
     }
 
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
         switch currentStep {
         case .en:
             exposureStateStream
                 .exposureState
-                .filter { $0.activeState != .notAuthorized }
+                .filter { $0.activeState != .notAuthorized || skippedCurrentStep }
                 .first()
                 .sink { value in
                     switch value.activeState {

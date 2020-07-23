@@ -119,9 +119,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         self.listener?.consentClose()
     }
 
-    private func goToNextStepOrCloseConsent() {
+    private func goToNextStepOrCloseConsent(skipCurrentStep: Bool = false) {
         if let consentStep = consentStep {
-            onboardingConsentManager.getNextConsentStep(consentStep.step) { nextStep in
+            onboardingConsentManager.getNextConsentStep(consentStep.step, skippedCurrentStep: skipCurrentStep) { nextStep in
                 if let nextStep = nextStep {
                     self.listener?.consentRequest(step: nextStep)
                 } else {
@@ -132,7 +132,20 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     }
 
     @objc func skipStepButtonPressed() {
-        goToNextStepOrCloseConsent()
+        if let consentStep = consentStep, consentStep.step == .en {
+            let alertController = UIAlertController(title: .consentSkipEnTitle,
+                                                    message: .consentSkipEnMessage,
+                                                    preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: .consentSkipEnDeclineButton, style: .cancel, handler: { _ in
+                self.goToNextStepOrCloseConsent(skipCurrentStep: true)
+            }))
+            alertController.addAction(UIAlertAction(title: .consentSkipEnAcceptButton, style: .default, handler: { _ in
+                self.primaryButtonPressed()
+            }))
+            present(alertController, animated: true, completion: nil)
+            return
+        }
+        goToNextStepOrCloseConsent(skipCurrentStep: true)
     }
 
     // MARK: - Private

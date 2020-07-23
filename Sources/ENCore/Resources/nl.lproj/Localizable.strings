@@ -42,6 +42,11 @@
 "nextButtonTitle" = "Volgende";
 
 // MARK: - Consent Steps
+"consentSkipEnTitle" = "Weet je zeker dat je deze meldingen niet wilt aanzetten?";
+"consentSkipEnMessage" = "Zonder toestemming kan de app je geen meldingen sturen nadat je extra kans op besmetting hebt gelopen.";
+"consentSkipEnAcceptButton" = "Aanzetten";
+"consentSkipEnDeclineButton" = "Overslaan";
+
 "consentStep1Title" = "Meldingen over mogelijk contact met het coronavirus aanzetten";
 "consentStep1Summary1" = "Je Bluetooth-gegevens worden 14 dagen op je telefoon bewaard. Je kunt ze altijd zelf verwijderen.";
 "consentStep1Summary2" = "Je naam en andere persoonsgegevens worden <b>niet</b> gebruikt of bewaard.";
