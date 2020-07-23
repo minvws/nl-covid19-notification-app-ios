@@ -6,31 +6,32 @@ import re
 import filecmp
 import subprocess
 from zipfile import ZipFile
+sys.path.append(".")
+from bindiff import CompareFiles
 
-
-def get_file_list(dir):
+def get_file_list(directory):
     result_files = []
     result_dirs = []
-    for root, dirs, files in os.walk(dir, topdown=False):
+    for root, directories, files in os.walk(directory, topdown=False):
         for name in files:
-            result_files.append(os.path.relpath(os.path.join(root, name), dir))
-        for name in dirs:
-            result_dirs.append(os.path.relpath(os.path.join(root, name), dir))
+            result_files.append(os.path.relpath(os.path.join(root, name), directory))
+        for name in directories:
+            result_dirs.append(os.path.relpath(os.path.join(root, name), directory))
     return set(result_dirs), set(result_files)
 
 
-def remove_codesign_dirs(dirs):
+def remove_codesign_dirs(directories):
     result = set()
-    for dir in dirs:
-        if dir == 'SC_Info':
+    for directory in directories:
+        if directory == 'SC_Info':
             continue
-        if re.match('Watch/.*\\.appex/SC_Info', dir):
+        if re.match('Watch/.*\\.appex/SC_Info', directory):
             continue
-        if re.match('PlugIns/.*\\.appex/SC_Info', dir):
+        if re.match('PlugIns/.*\\.appex/SC_Info', directory):
             continue
-        if re.match('Frameworks/.*\\.framework/SC_Info', dir):
+        if re.match('Frameworks/.*\\.framework/SC_Info', directory):
             continue
-        result.add(dir)
+        result.add(directory)
     return result
 
 
@@ -107,13 +108,12 @@ def diff_dirs(ipa1, dir1, ipa2, dir2):
     print('Directory structure doesn\'t match in ' + ipa1 + ' and ' + ipa2)
     if len(only_in_ipa1) != 0:
         print('Directories not present in ' + ipa2)
-        for dir in only_in_ipa1:
-            print('    ' + dir)
+        for directory in only_in_ipa1:
+            print('    ' + directory)
     if len(only_in_ipa2) != 0:
         print('Directories not present in ' + ipa1)
-        for dir in only_in_ipa2:
-            print('    ' + dir)
-
+        for directory in only_in_ipa2:
+            print('    ' + directory)
     sys.exit(1)
 
 
@@ -127,14 +127,10 @@ def is_binary(file):
 def is_xcconfig(file):
     if re.match('.*\\.xcconfig', file):
         return True
-    else:
-        return False
+    return False
 
 
 def diff_binaries(tempdir, self_base_path, file1, file2):
-
-    sys.path.append(".")
-    from bindiff import CompareFiles
 
     f1 = os.path.join(tempdir, self_base_path, file1)
     f2 = os.path.join(tempdir, self_base_path, file2)
@@ -168,19 +164,18 @@ def diff_plists(file1, file2):
     clean2_properties = ''
 
     with open(os.devnull, 'w') as devnull:
-        for property in remove_properties:
-            if not subprocess.call(['plutil', '-extract', property, 'xml1', '-o', '-', file1], stderr=devnull, stdout=devnull):
-                clean1_properties += ' | plutil -remove ' + property + '  -r -o - -- -'
-            if not subprocess.call(['plutil', '-extract', property, 'xml1', '-o', '-', file2], stderr=devnull, stdout=devnull):
-                clean2_properties += ' | plutil -remove ' + property + '  -r -o - -- -'
+        for remove_property in remove_properties:
+            if not subprocess.call(['plutil', '-extract', remove_property, 'xml1', '-o', '-', file1], stderr=devnull, stdout=devnull):
+                clean1_properties += ' | plutil -remove ' + remove_property + '  -r -o - -- -'
+            if not subprocess.call(['plutil', '-extract', remove_property, 'xml1', '-o', '-', file2], stderr=devnull, stdout=devnull):
+                clean2_properties += ' | plutil -remove ' + remove_property + '  -r -o - -- -'
 
     data1 = os.popen('plutil -convert xml1 "' + file1 + '" -o -' + clean1_properties).read()
     data2 = os.popen('plutil -convert xml1 "' + file2 + '" -o -' + clean2_properties).read()
 
     if data1 == data2:
         return 'equal'
-    else:
-        return 'not_equal'
+    return 'not_equal'
 
 
 def diff_xcconfigs(file1, file2):
@@ -200,14 +195,14 @@ def diff_files(ipa1, files1, ipa2, files2):
         return
     if len(only_in_ipa1) != 0:
         print('IPAs are not equal')
-        print('  Files not present in ' + ipa2)
+        print('  Files not present in ' + ipa2 + ':')
         for f in only_in_ipa1:
-            print('    ' + f)
+            print('      ' + f)
     if len(only_in_ipa2) != 0:
         print('IPAs are not equal')
-        print('  Files not present in ' + ipa1)
+        print('  Files not present in ' + ipa1 + ':')
         for f in only_in_ipa2:
-            print('    ' + f)
+            print('      ' + f)
 
     sys.exit(1)
 
