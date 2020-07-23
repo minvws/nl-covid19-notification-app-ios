@@ -44,6 +44,15 @@ public func animationsEnabled() -> Bool {
     return true
 }
 
+public func webViewLoadingEnabled() -> Bool {
+    #if DEBUG
+        if let enabled = WebViewTestingOverrides.webViewLoadingEnabled {
+            return enabled
+        }
+    #endif
+    return true
+}
+
 #if DEBUG
     /// Overriden date and time related properties
     public struct DateTimeTestingOverrides {
@@ -58,7 +67,7 @@ public func animationsEnabled() -> Bool {
 
     /// Overrides animation
     public struct WebViewTestingOverrides {
-        public static var webViewsEnabled: Bool?
+        public static var webViewLoadingEnabled: Bool?
     }
 #endif
 

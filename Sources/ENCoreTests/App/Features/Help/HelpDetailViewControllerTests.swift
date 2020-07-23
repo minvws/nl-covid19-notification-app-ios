@@ -23,7 +23,7 @@ final class HelpDetailViewControllerTests: TestCase {
 
         recordSnapshots = false
 
-        WebViewTestingOverrides.webViewsEnabled = false
+        WebViewTestingOverrides.webViewLoadingEnabled = false
 
         helpManager = HelpManager(theme: theme)
     }

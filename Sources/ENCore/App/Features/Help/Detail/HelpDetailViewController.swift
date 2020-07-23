@@ -9,7 +9,7 @@ import ENFoundation
 import UIKit
 import WebKit
 
-final class HelpDetailViewController: ViewController {
+final class HelpDetailViewController: ViewController, Logging {
 
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
@@ -35,8 +35,8 @@ final class HelpDetailViewController: ViewController {
         internalView.titleLabel.attributedText = question.attributedTitle
 
         if let link = question.link, let url = URL(string: link) {
-            if let webViewEnabled = WebViewTestingOverrides.webViewsEnabled, webViewEnabled == false {
-                return
+            guard webViewLoadingEnabled() else {
+                return logDebug("`webViewLoading` disabled")
             }
             internalView.webView.isHidden = false
             internalView.webView.load(URLRequest(url: url))

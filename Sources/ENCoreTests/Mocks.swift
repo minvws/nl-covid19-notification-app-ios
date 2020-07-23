@@ -1313,11 +1313,11 @@ class OnboardingConsentManagingMock: OnboardingConsentManaging {
     }
 
     var getNextConsentStepCallCount = 0
-    var getNextConsentStepHandler: ((OnboardingConsentStepIndex, @escaping (OnboardingConsentStepIndex?) -> ()) -> ())?
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
+    var getNextConsentStepHandler: ((OnboardingConsentStepIndex, Bool, @escaping (OnboardingConsentStepIndex?) -> ()) -> ())?
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
         getNextConsentStepCallCount += 1
         if let getNextConsentStepHandler = getNextConsentStepHandler {
-            getNextConsentStepHandler(currentStep, completion)
+            getNextConsentStepHandler(currentStep, skippedCurrentStep, completion)
         }
     }
 
@@ -1706,16 +1706,6 @@ class InfectedRoutingMock: InfectedRouting {
     }
 }
 
-class StatusRoutingMock: StatusRouting {
-    init() {}
-    init(viewControllable: ViewControllable = ViewControllableMock()) {
-        self.viewControllable = viewControllable
-    }
-
-    var viewControllableSetCallCount = 0
-    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
-}
-
 class CallGGDViewControllableMock: CallGGDViewControllable {
     init() {}
     init(uiviewController: UIViewController = UIViewController()) {
@@ -1882,6 +1872,16 @@ class RootViewControllableMock: RootViewControllable {
             embedHandler(viewController)
         }
     }
+}
+
+class StatusRoutingMock: StatusRouting {
+    init() {}
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
 }
 
 class DeveloperMenuViewControllableMock: DeveloperMenuViewControllable {
