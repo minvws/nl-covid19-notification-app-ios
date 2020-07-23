@@ -7,6 +7,7 @@
 
 import Combine
 import ENFoundation
+import Lottie
 import SnapKit
 import UIKit
 
@@ -154,7 +155,7 @@ private final class StatusView: View {
 
     private let gradientLayer = CAGradientLayer()
     private lazy var cloudsView = CloudView(theme: theme)
-    private let sceneImageView = UIImageView()
+    private lazy var sceneImageView = StatusAnimationView(theme: theme)
 
     private var containerToSceneVerticalConstraint: NSLayoutConstraint?
     private var heightConstraint: NSLayoutConstraint?
@@ -169,9 +170,6 @@ private final class StatusView: View {
 
     override func build() {
         super.build()
-
-        sceneImageView.contentMode = .scaleAspectFit
-        sceneImageView.image = .statusScene
 
         contentContainer.axis = .vertical
         contentContainer.spacing = 32
@@ -228,7 +226,7 @@ private final class StatusView: View {
         containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor)
         heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
-        let sceneImageAspectRatio = sceneImageView.image.map { $0.size.width / $0.size.height } ?? 1
+        let sceneImageAspectRatio = sceneImageView.animation.map { $0.size.width / $0.size.height } ?? 1
 
         cloudsView.snp.makeConstraints { maker in
             maker.centerY.equalTo(iconView.snp.centerY)
@@ -237,6 +235,7 @@ private final class StatusView: View {
         sceneImageView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalTo(stretchGuide)
             maker.width.equalTo(sceneImageView.snp.height).multipliedBy(sceneImageAspectRatio)
+            maker.height.equalTo(300)
         }
         testingTitleLabel.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(16)
@@ -338,6 +337,64 @@ private extension ExposureStateInactiveState {
             })
         case .pushNotifications:
             return .noLocalNotifications
+        }
+    }
+}
+
+private final class StatusAnimationView: View {
+    private lazy var animationView = AnimationView()
+    fileprivate var animation: Animation? { animationView.animation }
+
+    deinit {
+        replayTimer?.invalidate()
+        replayTimer = nil
+    }
+
+    override func build() {
+        super.build()
+
+        animationView.animation = LottieAnimation.named("statusactive")
+        animationView.loopMode = .playOnce
+
+        playAnimation()
+
+        addSubview(animationView)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        animationView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+
+    // MARK: - Private
+
+    private var replayTimer: Timer?
+
+    private func scheduleReplayTimer() {
+        replayTimer?.invalidate()
+
+        let randomDelay = arc4random_uniform(5) + 10
+        replayTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(randomDelay),
+                                           repeats: false,
+                                           block: { [weak self] _ in
+                                               self?.playAnimation()
+        })
+    }
+
+    private func playAnimation() {
+        #if DEBUG
+
+            if let animationsEnabled = AnimationTestingOverrides.animationsEnabled, !animationsEnabled {
+                return
+            }
+
+        #endif
+
+        animationView.play { [weak self] _ in
+            self?.scheduleReplayTimer()
         }
     }
 }
