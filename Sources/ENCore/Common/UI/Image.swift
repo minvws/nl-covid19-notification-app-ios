@@ -51,4 +51,9 @@ extension UIImage {
     static var appInformationBluetooth: UIImage? { return Image.named("AppInfoBluetooth") }
     static var appInformationExampleCycle: UIImage? { return Image.named("AppInfoCycleExample") }
     static var appInformationExampleTrain: UIImage? { return Image.named("AppInfoTrainExample") }
+    static var technicalInformationStep1: UIImage? { return Image.named("TechnicalInfoStep1") }
+    static var technicalInformationStep2: UIImage? { return Image.named("TechnicalInfoStep2") }
+    static var technicalInformationStep3: UIImage? { return Image.named("TechnicalInfoStep3") }
+    static var technicalInformationStep4: UIImage? { return Image.named("TechnicalInfoStep4") }
+    static var technicalInformationStep5: UIImage? { return Image.named("TechnicalInfoStep5") }
 }

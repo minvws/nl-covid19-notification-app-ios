@@ -37,61 +37,30 @@ final class AppInformationViewController: ViewController {
 
 private final class AppInformationView: View {
 
-    private let scrollView = UIScrollView(frame: .zero)
-    private let stackView = UIStackView(frame: .zero)
+    private lazy var scrollableStackView = ScrollableStackView(theme: theme)
 
     override func build() {
         super.build()
 
-        stackView.axis = .vertical
-        stackView.alignment = .top
-        stackView.distribution = .fill
-        stackView.spacing = 40
-        stackView.backgroundColor = .clear
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(scrollableStackView)
 
-        addSubview(scrollView)
-        scrollView.addSubview(stackView)
-
-        titleLabel.attributedText = String.helpWhatAppDoesTitle.attributed()
-        addSections([titleView, protectView, notifyView, bluetoothView, cycleExampleView, trainExampleView])
+        scrollableStackView.attributedTitle = String.helpWhatAppDoesTitle.attributed()
+        scrollableStackView.addSections([
+            protectView,
+            notifyView,
+            bluetoothView,
+            cycleExampleView,
+            trainExampleView
+        ])
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        hasBottomMargin = true
-
-        scrollView.snp.makeConstraints { (maker: ConstraintMaker) in
+        scrollableStackView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.bottom.equalToSuperview()
         }
-
-        stackView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.bottom.leading.trailing.width.equalTo(scrollView)
-        }
     }
-
-    // MARK: - Private
-
-    private lazy var titleLabel: Label = {
-        let label = Label(frame: .zero)
-        label.textAlignment = .left
-        label.numberOfLines = 0
-        label.font = theme.fonts.largeTitle
-        label.accessibilityTraits = .header
-        return label
-    }()
-
-    private lazy var titleView: View = {
-        let view = View(theme: theme)
-        view.addSubview(titleLabel)
-
-        titleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.leading.trailing.equalToSuperview().inset(16)
-            maker.bottom.equalToSuperview()
-        }
-        return view
-    }()
 
     private lazy var protectView = InformationCardView(theme: theme,
                                                        image: UIImage.appInformationProtect,
@@ -119,84 +88,4 @@ private final class AppInformationView: View {
                                                             pretitle: String.example.attributed(),
                                                             title: String.helpWhatAppDoesExampleTrainTitle.attributed(),
                                                             message: String.helpWhatAppDoesExampleTrainDescription.attributed())
-
-    private func addSections(_ views: [UIView]) {
-        for view in views {
-            stackView.addArrangedSubview(view)
-        }
-    }
-}
-
-private class InformationCardView: View {
-
-    private let imageView: UIImageView
-    private let titleLabel: Label
-    private let messageLabel: Label
-    private let pretitleLabel: Label
-
-    init(theme: Theme, image: UIImage?, pretitle: NSAttributedString? = nil, title: NSAttributedString, message: NSAttributedString) {
-        self.pretitleLabel = Label(frame: .zero)
-        self.titleLabel = Label(frame: .zero)
-        self.messageLabel = Label(frame: .zero)
-        self.imageView = UIImageView(image: image)
-        super.init(theme: theme)
-
-        pretitleLabel.attributedText = pretitle
-        pretitleLabel.font = theme.fonts.subheadBold
-        pretitleLabel.textColor = theme.colors.notified
-
-        titleLabel.attributedText = title
-        titleLabel.font = theme.fonts.title3
-
-        messageLabel.attributedText = message
-        messageLabel.font = theme.fonts.body
-    }
-
-    // MARK: - Overrides
-
-    override func build() {
-        super.build()
-
-        imageView.contentMode = .scaleAspectFit
-        titleLabel.numberOfLines = 0
-        messageLabel.numberOfLines = 0
-
-        addSubview(imageView)
-        addSubview(pretitleLabel)
-        addSubview(titleLabel)
-        addSubview(messageLabel)
-    }
-
-    override func setupConstraints() {
-        super.setupConstraints()
-
-        var imageAspectRatio: CGFloat = 0.0
-
-        if let width = imageView.image?.size.width, let height = imageView.image?.size.height, width > 0, height > 0 {
-            imageAspectRatio = height / width
-        }
-
-        imageView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalToSuperview()
-            maker.height.equalTo(snp.width).multipliedBy(imageAspectRatio)
-        }
-
-        pretitleLabel.snp.makeConstraints { maker in
-            let offset = pretitleLabel.attributedText?.length == 0 ? 0 : 8
-            maker.top.equalTo(imageView.snp.bottom).offset(offset)
-            maker.leading.trailing.equalToSuperview().inset(16)
-        }
-
-        titleLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(pretitleLabel.snp.bottom).offset(8)
-            maker.leading.trailing.equalToSuperview().inset(16)
-        }
-
-        messageLabel.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
-            maker.leading.trailing.equalToSuperview().inset(16)
-
-            constrainToSuperViewWithBottomMargin(maker: maker)
-        }
-    }
 }
