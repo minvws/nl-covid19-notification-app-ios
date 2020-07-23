@@ -157,9 +157,6 @@ targets:
       - package: SnapshotTesting
     deploymentTarget: '11.0'
     platform: iOS
-    preBuildScripts:
-      - name: Generate Mocks
-        path: tools/scripts/generate-mocks.sh
     settings:
       base:
         SWIFT_VERSION: 5.2
