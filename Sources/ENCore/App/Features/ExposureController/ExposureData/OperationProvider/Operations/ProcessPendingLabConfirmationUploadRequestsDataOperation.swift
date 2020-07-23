@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Foundation
+import UserNotifications
 
 struct PendingLabConfirmationUploadRequest: Codable, Equatable {
     let labConfirmationKey: LabConfirmationKey
@@ -19,9 +20,11 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
+         userNotificationCenter: UserNotificationCenter,
          padding: Padding) {
         self.networkController = networkController
         self.storageController = storageController
+        self.userNotificationCenter = userNotificationCenter
         self.padding = padding
     }
 
@@ -40,6 +43,12 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
             .map(self.uploadPendingRequest(_:))
 
         let expiredRequests = allRequests.filter { $0.isExpired }
+
+        // All requests have expired we need to notify the user
+        // so they can manually try the upload again with the GGD
+        if !expiredRequests.isEmpty {
+            notifyUser()
+        }
 
         logDebug("Expired requests: \(expiredRequests)")
 
@@ -122,8 +131,36 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
         .eraseToAnyPublisher()
     }
 
+    private func notifyUser() {
+        func notify() {
+            let content = UNMutableNotificationContent()
+            content.sound = UNNotificationSound.default
+            content.body = .notificationUploadFailedNotification
+            content.badge = 0
+
+            let request = UNNotificationRequest(identifier: PushNotificationIdentifier.uploadFailed.rawValue,
+                                                content: content,
+                                                trigger: nil)
+
+            userNotificationCenter.add(request) { error in
+                if let error = error {
+                    self.logError("\(error.localizedDescription)")
+                }
+            }
+        }
+
+        userNotificationCenter.getAuthorizationStatus { status in
+            guard status == .authorized else {
+                self.logError("Cannot notify user `authorizationStatus`: \(status)")
+                return
+            }
+            notify()
+        }
+    }
+
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let userNotificationCenter: UserNotificationCenter
     private let padding: Padding
 }
 

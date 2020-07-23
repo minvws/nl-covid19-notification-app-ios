@@ -1216,6 +1216,15 @@ class UserNotificationCenterMock: UserNotificationCenter {
             requestAuthorizationHandler(options, completionHandler)
         }
     }
+
+    var addCallCount = 0
+    var addHandler: ((UNNotificationRequest, ((Error?) -> ())?) -> ())?
+    func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> ())?) {
+        addCallCount += 1
+        if let addHandler = addHandler {
+            addHandler(request, completionHandler)
+        }
+    }
 }
 
 class HelpRoutingMock: HelpRouting {
@@ -2117,6 +2126,58 @@ class OnboardingBuildableMock: OnboardingBuildable {
     }
 }
 
+class WebViewControllableMock: WebViewControllable {
+    init() {}
+    init(uiviewController: UIViewController = UIViewController()) {
+        self.uiviewController = uiviewController
+    }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
+class CallGGDBuildableMock: CallGGDBuildable {
+    init() {}
+
+    var buildCallCount = 0
+    var buildHandler: ((CallGGDListener) -> (ViewControllable))?
+    func build(withListener listener: CallGGDListener) -> ViewControllable {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener)
+        }
+        return ViewControllableMock()
+    }
+}
+
+class MessageBuildableMock: MessageBuildable {
+    init() {}
+
+    var buildCallCount = 0
+    var buildHandler: ((MessageListener, String, String) -> (ViewControllable))?
+    func build(withListener listener: MessageListener, title: String, body: String) -> ViewControllable {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener, title, body)
+        }
+        return ViewControllableMock()
+    }
+}
+
+class InfectedBuildableMock: InfectedBuildable {
+    init() {}
+
+    var buildCallCount = 0
+    var buildHandler: ((InfectedListener) -> (Routing))?
+    func build(withListener listener: InfectedListener) -> Routing {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler(listener)
+        }
+        return RoutingMock()
+    }
+}
+
 class ExposureDataOperationProviderMock: ExposureDataOperationProvider {
     init() {}
     init(requestManifestOperation: RequestAppManifestDataOperation) {
@@ -2198,58 +2259,6 @@ class ExposureDataOperationProviderMock: ExposureDataOperationProvider {
             return uploadDiagnosisKeysOperationHandler(diagnosisKeys, labConfirmationKey, padding)
         }
         fatalError("uploadDiagnosisKeysOperationHandler returns can't have a default value thus its handler must be set")
-    }
-}
-
-class WebViewControllableMock: WebViewControllable {
-    init() {}
-    init(uiviewController: UIViewController = UIViewController()) {
-        self.uiviewController = uiviewController
-    }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
-}
-
-class CallGGDBuildableMock: CallGGDBuildable {
-    init() {}
-
-    var buildCallCount = 0
-    var buildHandler: ((CallGGDListener) -> (ViewControllable))?
-    func build(withListener listener: CallGGDListener) -> ViewControllable {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler(listener)
-        }
-        return ViewControllableMock()
-    }
-}
-
-class MessageBuildableMock: MessageBuildable {
-    init() {}
-
-    var buildCallCount = 0
-    var buildHandler: ((MessageListener, String, String) -> (ViewControllable))?
-    func build(withListener listener: MessageListener, title: String, body: String) -> ViewControllable {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler(listener, title, body)
-        }
-        return ViewControllableMock()
-    }
-}
-
-class InfectedBuildableMock: InfectedBuildable {
-    init() {}
-
-    var buildCallCount = 0
-    var buildHandler: ((InfectedListener) -> (Routing))?
-    func build(withListener listener: InfectedListener) -> Routing {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler(listener)
-        }
-        return RoutingMock()
     }
 }
 
@@ -2473,20 +2482,6 @@ class BackgroundControllerBuildableMock: BackgroundControllerBuildable {
     }
 }
 
-class PushNotificationStreamingMock: PushNotificationStreaming {
-    init() {}
-    init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
-        self._pushNotificationStream = pushNotificationStream
-    }
-
-    var pushNotificationStreamSetCallCount = 0
-    private var _pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>! { didSet { pushNotificationStreamSetCallCount += 1 } }
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
-        get { return _pushNotificationStream }
-        set { _pushNotificationStream = newValue }
-    }
-}
-
 class MoreInformationBuildableMock: MoreInformationBuildable {
     init() {}
 
@@ -2498,6 +2493,20 @@ class MoreInformationBuildableMock: MoreInformationBuildable {
             return buildHandler(listener)
         }
         return MoreInformationViewControllableMock()
+    }
+}
+
+class PushNotificationStreamingMock: PushNotificationStreaming {
+    init() {}
+    init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
+        self._pushNotificationStream = pushNotificationStream
+    }
+
+    var pushNotificationStreamSetCallCount = 0
+    private var _pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>! { didSet { pushNotificationStreamSetCallCount += 1 } }
+    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
+        get { return _pushNotificationStream }
+        set { _pushNotificationStream = newValue }
     }
 }
 

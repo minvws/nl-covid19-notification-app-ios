@@ -10,8 +10,11 @@ import NotificationCenter
 
 /// @mockable
 protocol UserNotificationCenter {
+    /// Gets the authroization status and returns the result on the main thread.
     func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ())
     func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> ())
+
+    func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> ())?)
 }
 
 extension UNUserNotificationCenter: UserNotificationCenter {
