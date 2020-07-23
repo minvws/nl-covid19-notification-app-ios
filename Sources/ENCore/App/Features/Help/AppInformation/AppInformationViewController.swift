@@ -22,7 +22,6 @@ final class AppInformationViewController: ViewController {
     override func loadView() {
         self.view = internalView
         self.view.frame = UIScreen.main.bounds
-        self.view.backgroundColor = .yellow
     }
 
     override func viewDidLoad() {
