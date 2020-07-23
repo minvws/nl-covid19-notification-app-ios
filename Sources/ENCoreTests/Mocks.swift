@@ -275,21 +275,21 @@ class HelpViewControllableMock: HelpViewControllable {
         }
     }
 
-    var pushCallCount = 0
-    var pushHandler: ((ViewControllable, Bool) -> ())?
-    func push(viewController: ViewControllable, animated: Bool) {
-        pushCallCount += 1
-        if let pushHandler = pushHandler {
-            pushHandler(viewController, animated)
-        }
-    }
-
     var helpOverviewRequestsRouteToCallCount = 0
     var helpOverviewRequestsRouteToHandler: ((HelpQuestion) -> ())?
     func helpOverviewRequestsRouteTo(question: HelpQuestion) {
         helpOverviewRequestsRouteToCallCount += 1
         if let helpOverviewRequestsRouteToHandler = helpOverviewRequestsRouteToHandler {
             helpOverviewRequestsRouteToHandler(question)
+        }
+    }
+
+    var pushCallCount = 0
+    var pushHandler: ((ViewControllable, Bool) -> ())?
+    func push(viewController: ViewControllable, animated: Bool) {
+        pushCallCount += 1
+        if let pushHandler = pushHandler {
+            pushHandler(viewController, animated)
         }
     }
 
@@ -862,6 +862,10 @@ class AboutListenerMock: AboutListener {
             aboutRequestsDismissalHandler(shouldHideViewController)
         }
     }
+}
+
+class AppInformationListenerMock: AppInformationListener {
+    init() {}
 }
 
 class CallGGDListenerMock: CallGGDListener {

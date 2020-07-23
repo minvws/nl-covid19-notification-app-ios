@@ -45,8 +45,8 @@ private final class AppInformationView: View {
         super.build()
 
         stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.distribution = .fillEqually
+        stackView.alignment = .top
+        stackView.distribution = .fill
         stackView.spacing = 40
         stackView.backgroundColor = .clear
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -54,7 +54,8 @@ private final class AppInformationView: View {
         addSubview(scrollView)
         scrollView.addSubview(stackView)
 
-        addSections([protectView, notifyView, bluetoothView, cycleExampleView, trainExampleView])
+        titleLabel.attributedText = String.helpWhatAppDoesTitle.attributed()
+        addSections([titleView, protectView, notifyView, bluetoothView, cycleExampleView, trainExampleView])
     }
 
     override func setupConstraints() {
@@ -73,6 +74,26 @@ private final class AppInformationView: View {
 
     // MARK: - Private
 
+    private lazy var titleLabel: Label = {
+        let label = Label(frame: .zero)
+        label.textAlignment = .left
+        label.numberOfLines = 0
+        label.font = theme.fonts.largeTitle
+        label.accessibilityTraits = .header
+        return label
+    }()
+
+    private lazy var titleView: View = {
+        let view = View(theme: theme)
+        view.addSubview(titleLabel)
+
+        titleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.top.leading.trailing.equalToSuperview().inset(16)
+            maker.bottom.equalToSuperview()
+        }
+        return view
+    }()
+
     private lazy var protectView = InformationCardView(theme: theme,
                                                        image: UIImage.appInformationProtect,
                                                        title: String.helpWhatAppDoesProtectTitle.attributed(),
@@ -90,11 +111,13 @@ private final class AppInformationView: View {
 
     private lazy var cycleExampleView = InformationCardView(theme: theme,
                                                             image: UIImage.appInformationExampleCycle,
+                                                            pretitle: String.example.attributed(),
                                                             title: String.helpWhatAppDoesExampleCycleTitle.attributed(),
                                                             message: String.helpWhatAppDoesExampleCycleDescription.attributed())
 
     private lazy var trainExampleView = InformationCardView(theme: theme,
                                                             image: UIImage.appInformationExampleTrain,
+                                                            pretitle: String.example.attributed(),
                                                             title: String.helpWhatAppDoesExampleTrainTitle.attributed(),
                                                             message: String.helpWhatAppDoesExampleTrainDescription.attributed())
 
@@ -106,18 +129,25 @@ private final class AppInformationView: View {
 }
 
 private class InformationCardView: View {
+
     private let imageView: UIImageView
     private let titleLabel: Label
     private let messageLabel: Label
+    private let pretitleLabel: Label
 
-    init(theme: Theme, image: UIImage?, title: NSAttributedString, message: NSAttributedString) {
+    init(theme: Theme, image: UIImage?, pretitle: NSAttributedString? = nil, title: NSAttributedString, message: NSAttributedString) {
+        self.pretitleLabel = Label(frame: .zero)
         self.titleLabel = Label(frame: .zero)
         self.messageLabel = Label(frame: .zero)
         self.imageView = UIImageView(image: image)
         super.init(theme: theme)
 
+        pretitleLabel.attributedText = pretitle
+        pretitleLabel.font = theme.fonts.subheadBold
+        pretitleLabel.textColor = theme.colors.notified
+
         titleLabel.attributedText = title
-        titleLabel.font = theme.fonts.headline
+        titleLabel.font = theme.fonts.title3
 
         messageLabel.attributedText = message
         messageLabel.font = theme.fonts.body
@@ -133,6 +163,7 @@ private class InformationCardView: View {
         messageLabel.numberOfLines = 0
 
         addSubview(imageView)
+        addSubview(pretitleLabel)
         addSubview(titleLabel)
         addSubview(messageLabel)
     }
@@ -146,13 +177,19 @@ private class InformationCardView: View {
             imageAspectRatio = height / width
         }
 
-        imageView.snp.makeConstraints { (maker: ConstraintMaker) in
+        imageView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalToSuperview()
             maker.height.equalTo(snp.width).multipliedBy(imageAspectRatio)
         }
 
-        titleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.equalTo(imageView.snp.bottom).offset(16)
+        pretitleLabel.snp.makeConstraints { maker in
+            let offset = pretitleLabel.attributedText?.length == 0 ? 0 : 8
+            maker.top.equalTo(imageView.snp.bottom).offset(offset)
+            maker.leading.trailing.equalToSuperview().inset(16)
+        }
+
+        titleLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(pretitleLabel.snp.bottom).offset(8)
             maker.leading.trailing.equalToSuperview().inset(16)
         }
 

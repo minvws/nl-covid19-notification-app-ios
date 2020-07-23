@@ -9,9 +9,7 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol AppInformationListener: AnyObject {
-    func appInformationRequestsDismissal(shouldDismissViewController: Bool)
-}
+protocol AppInformationListener: AnyObject {}
 
 protocol AppInformationBuildable {
     func build(withListener listener: AppInformationListener) -> ViewControllable
