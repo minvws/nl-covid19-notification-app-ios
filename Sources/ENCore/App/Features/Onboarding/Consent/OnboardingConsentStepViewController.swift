@@ -27,7 +27,6 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     static let onboardingConsentSummaryStepsViewTrailingMargin: CGFloat = 16
 
     private let onboardingConsentManager: OnboardingConsentManaging
-
     private let consentStep: OnboardingConsentStep?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
@@ -100,6 +99,10 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                 onboardingConsentManager.askNotificationsAuthorization {
                     self.goToNextStepOrCloseConsent()
                 }
+            case .share:
+                self.listener?.displayShareApp {
+                    self.goToNextStepOrCloseConsent()
+                }
             }
         }
     }
@@ -109,7 +112,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             switch consentStep.step {
             case .en:
                 self.listener?.displayHelp()
-            case .bluetooth, .notifications:
+            case .bluetooth, .notifications, .share:
                 self.goToNextStepOrCloseConsent()
             }
         }

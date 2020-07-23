@@ -22,6 +22,7 @@ protocol OnboardingConsentListener: AnyObject {
     func consentClose()
     func consentRequest(step: OnboardingConsentStepIndex)
     func displayHelp()
+    func displayShareApp(completion: @escaping (() -> ()))
 }
 
 protocol OnboardingConsentDependency {

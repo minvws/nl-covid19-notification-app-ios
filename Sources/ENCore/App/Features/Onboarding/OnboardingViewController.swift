@@ -7,6 +7,7 @@
 
 import ENFoundation
 import Foundation
+import UIKit
 
 /// @mockable
 protocol OnboardingRouting: Routing {
@@ -83,6 +84,18 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
                         self.listener?.didCompleteOnboarding()
                     }
                 }
+            }
+        }
+    }
+
+    func displayShareApp(completion: @escaping (() -> ())) {
+        onboardingConsentManager.getAppStoreUrl { url in
+            if let url = url, let storeLink = URL(string: url) {
+                let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
+                activityVC.completionWithItemsHandler = { _, _, _, _ in
+                    completion()
+                }
+                self.present(activityVC, animated: true)
             }
         }
     }

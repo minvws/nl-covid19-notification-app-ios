@@ -64,6 +64,10 @@
 "consentStep3PrimaryButton" = "Toestemming geven";
 "consentStep3SecondaryButton" = "Misschien later";
 
+"consentStep4Title" = "Laat anderen weten dat jij helpt het virus te stoppen";
+"consentStep4Content" = "Hoe meer mensen CoronaMelder gebruiken, hoe beter deze werkt. Alleen samen kunnen we de verspreiding van het virus stoppen. Deel de app dus met zo veel mogelijk anderen.";
+"consentStep4PrimaryButton" = "App delen";
+"consentStep4SecondaryButton" = "Ga door";
 // MARK: - Consent
 "skipStep" = "Sla over";
 
