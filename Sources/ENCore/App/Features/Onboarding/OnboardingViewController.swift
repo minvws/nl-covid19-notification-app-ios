@@ -18,7 +18,7 @@ protocol OnboardingRouting: Routing {
     func routeToHelp()
 }
 
-final class OnboardingViewController: NavigationController, OnboardingViewControllable {
+final class OnboardingViewController: NavigationController, OnboardingViewControllable, Logging {
 
     weak var router: OnboardingRouting?
 
@@ -96,6 +96,8 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
                     completion()
                 }
                 self.present(activityVC, animated: true)
+            } else {
+                self.logError("Could retreive a AppStoreUrl")
             }
         }
     }
