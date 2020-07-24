@@ -46,7 +46,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
                                                             action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.actionHandler = { [weak self] in
-            let urlString = "tel://08001202"
+            let urlString = "tel://08001280"
             if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
