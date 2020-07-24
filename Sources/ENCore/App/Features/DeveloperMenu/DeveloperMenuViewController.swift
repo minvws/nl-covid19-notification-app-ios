@@ -519,6 +519,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             content.body = .messageDefaultBody
         case .uploadFailed:
             content.body = .notificationUploadFailedNotification
+        case .enStatusDisabled:
+            return
         }
 
         let date = Date(timeIntervalSinceNow: 5)

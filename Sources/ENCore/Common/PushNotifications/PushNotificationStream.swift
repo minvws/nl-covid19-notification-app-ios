@@ -12,11 +12,13 @@ import NotificationCenter
 enum PushNotificationIdentifier: String {
     case inactive = "nl.rijksoverheid.en.inactive"
     case uploadFailed = "nl.rijksoverheid.en.uploadFailed"
+    case enStatusDisabled = "nl.rijksoverheid.en.statusDisabled"
 
     static func allIdentifiers() -> [PushNotificationIdentifier] {
         return [
             .inactive,
-            .uploadFailed
+            .uploadFailed,
+            .enStatusDisabled
         ]
     }
 }

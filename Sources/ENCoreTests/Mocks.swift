@@ -1128,28 +1128,6 @@ class UpdateAppListenerMock: UpdateAppListener {
     init() {}
 }
 
-class BackgroundControllingMock: BackgroundControlling {
-    init() {}
-
-    var scheduleTasksCallCount = 0
-    var scheduleTasksHandler: (() -> ())?
-    func scheduleTasks() {
-        scheduleTasksCallCount += 1
-        if let scheduleTasksHandler = scheduleTasksHandler {
-            scheduleTasksHandler()
-        }
-    }
-
-    var handleCallCount = 0
-    var handleHandler: ((BGTask) -> ())?
-    func handle(task: BGTask) {
-        handleCallCount += 1
-        if let handleHandler = handleHandler {
-            handleHandler(task)
-        }
-    }
-}
-
 class UserNotificationCenterMock: UserNotificationCenter {
     init() {}
 
@@ -1535,6 +1513,21 @@ class AppEntryPointMock: AppEntryPoint {
 
 class ExposureControllingMock: ExposureControlling {
     init() {}
+    init(lastENStatusCheckDate: Date? = nil) {
+        self.lastENStatusCheckDate = lastENStatusCheckDate
+    }
+
+    var lastENStatusCheckDateSetCallCount = 0
+    var lastENStatusCheckDate: Date? { didSet { lastENStatusCheckDateSetCallCount += 1 } }
+
+    var setLastEndStatusCheckDateCallCount = 0
+    var setLastEndStatusCheckDateHandler: ((Date) -> ())?
+    func setLastEndStatusCheckDate(_ date: Date) {
+        setLastEndStatusCheckDateCallCount += 1
+        if let setLastEndStatusCheckDateHandler = setLastEndStatusCheckDateHandler {
+            setLastEndStatusCheckDateHandler(date)
+        }
+    }
 
     var activateCallCount = 0
     var activateHandler: (() -> ())?
@@ -1720,6 +1713,28 @@ class InfectedRoutingMock: InfectedRouting {
         removeInactiveCardCallCount += 1
         if let removeInactiveCardHandler = removeInactiveCardHandler {
             removeInactiveCardHandler()
+        }
+    }
+}
+
+class BackgroundControllingMock: BackgroundControlling {
+    init() {}
+
+    var scheduleTasksCallCount = 0
+    var scheduleTasksHandler: (() -> ())?
+    func scheduleTasks() {
+        scheduleTasksCallCount += 1
+        if let scheduleTasksHandler = scheduleTasksHandler {
+            scheduleTasksHandler()
+        }
+    }
+
+    var handleCallCount = 0
+    var handleHandler: ((BGTask) -> ())?
+    func handle(task: BGTask) {
+        handleCallCount += 1
+        if let handleHandler = handleHandler {
+            handleHandler(task)
         }
     }
 }
@@ -2486,20 +2501,6 @@ class NetworkManagingMock: NetworkManaging {
     }
 }
 
-class BackgroundControllerBuildableMock: BackgroundControllerBuildable {
-    init() {}
-
-    var buildCallCount = 0
-    var buildHandler: (() -> (BackgroundControlling))?
-    func build() -> BackgroundControlling {
-        buildCallCount += 1
-        if let buildHandler = buildHandler {
-            return buildHandler()
-        }
-        return BackgroundControllingMock()
-    }
-}
-
 class MoreInformationBuildableMock: MoreInformationBuildable {
     init() {}
 
@@ -2514,26 +2515,27 @@ class MoreInformationBuildableMock: MoreInformationBuildable {
     }
 }
 
-class PushNotificationStreamingMock: PushNotificationStreaming {
+class BackgroundControllerBuildableMock: BackgroundControllerBuildable {
     init() {}
-    init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
-        self._pushNotificationStream = pushNotificationStream
-    }
 
-    var pushNotificationStreamSetCallCount = 0
-    private var _pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>! { didSet { pushNotificationStreamSetCallCount += 1 } }
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
-        get { return _pushNotificationStream }
-        set { _pushNotificationStream = newValue }
+    var buildCallCount = 0
+    var buildHandler: (() -> (BackgroundControlling))?
+    func build() -> BackgroundControlling {
+        buildCallCount += 1
+        if let buildHandler = buildHandler {
+            return buildHandler()
+        }
+        return BackgroundControllingMock()
     }
 }
 
 class ExposureDataControllingMock: ExposureDataControlling {
     init() {}
-    init(lastExposure: ExposureReport? = nil, lastSuccessfulFetchDate: Date = Date(), lastLocalNotificationExposureDate: Date? = nil) {
+    init(lastExposure: ExposureReport? = nil, lastSuccessfulFetchDate: Date = Date(), lastLocalNotificationExposureDate: Date? = nil, lastENStatusCheckDate: Date? = nil) {
         self.lastExposure = lastExposure
         self.lastSuccessfulFetchDate = lastSuccessfulFetchDate
         self.lastLocalNotificationExposureDate = lastLocalNotificationExposureDate
+        self.lastENStatusCheckDate = lastENStatusCheckDate
     }
 
     var lastExposureSetCallCount = 0
@@ -2544,6 +2546,9 @@ class ExposureDataControllingMock: ExposureDataControlling {
 
     var lastLocalNotificationExposureDateSetCallCount = 0
     var lastLocalNotificationExposureDate: Date? { didSet { lastLocalNotificationExposureDateSetCallCount += 1 } }
+
+    var lastENStatusCheckDateSetCallCount = 0
+    var lastENStatusCheckDate: Date? { didSet { lastENStatusCheckDateSetCallCount += 1 } }
 
     var removeLastExposureCallCount = 0
     var removeLastExposureHandler: (() -> (AnyPublisher<(), Never>))?
@@ -2563,6 +2568,15 @@ class ExposureDataControllingMock: ExposureDataControlling {
             return fetchAndProcessExposureKeySetsHandler(exposureManager)
         }
         fatalError("fetchAndProcessExposureKeySetsHandler returns can't have a default value thus its handler must be set")
+    }
+
+    var setLastEndStatusCheckDateCallCount = 0
+    var setLastEndStatusCheckDateHandler: ((Date) -> ())?
+    func setLastEndStatusCheckDate(_ date: Date) {
+        setLastEndStatusCheckDateCallCount += 1
+        if let setLastEndStatusCheckDateHandler = setLastEndStatusCheckDateHandler {
+            setLastEndStatusCheckDateHandler(date)
+        }
     }
 
     var processPendingUploadRequestsCallCount = 0
@@ -2721,7 +2735,7 @@ class EnableSettingBuildableMock: EnableSettingBuildable {
     }
 }
 
-class MutablePushNotificationStreamingMock: MutablePushNotificationStreaming {
+class PushNotificationStreamingMock: PushNotificationStreaming {
     init() {}
     init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
         self._pushNotificationStream = pushNotificationStream
@@ -2732,15 +2746,6 @@ class MutablePushNotificationStreamingMock: MutablePushNotificationStreaming {
     var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
         get { return _pushNotificationStream }
         set { _pushNotificationStream = newValue }
-    }
-
-    var updateCallCount = 0
-    var updateHandler: ((UNNotificationResponse) -> ())?
-    func update(response: UNNotificationResponse) {
-        updateCallCount += 1
-        if let updateHandler = updateHandler {
-            updateHandler(response)
-        }
     }
 }
 
@@ -2823,6 +2828,29 @@ class ExposureManagingMock: ExposureManaging {
         getExposureInfoCallCount += 1
         if let getExposureInfoHandler = getExposureInfoHandler {
             getExposureInfoHandler(summary, userExplanation, completionHandler)
+        }
+    }
+}
+
+class MutablePushNotificationStreamingMock: MutablePushNotificationStreaming {
+    init() {}
+    init(pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>) {
+        self._pushNotificationStream = pushNotificationStream
+    }
+
+    var pushNotificationStreamSetCallCount = 0
+    private var _pushNotificationStream: AnyPublisher<UNNotificationResponse, Never>! { didSet { pushNotificationStreamSetCallCount += 1 } }
+    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
+        get { return _pushNotificationStream }
+        set { _pushNotificationStream = newValue }
+    }
+
+    var updateCallCount = 0
+    var updateHandler: ((UNNotificationResponse) -> ())?
+    func update(response: UNNotificationResponse) {
+        updateCallCount += 1
+        if let updateHandler = updateHandler {
+            updateHandler(response)
         }
     }
 }

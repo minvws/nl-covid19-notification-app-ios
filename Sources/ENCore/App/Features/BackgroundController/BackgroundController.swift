@@ -10,9 +10,11 @@ import Combine
 import ENFoundation
 import ExposureNotification
 import Foundation
+import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
     case update = "nl.rijksoverheid.en.background-update"
+    case statusCheck = "nl.rijksoverheid.en.background-status-check"
     case decoyStopKeys = "nl.rijksoverheid.en.background-decoy-stop-keys"
     case decoySequence = "nl.rijksoverheid.en.background-decoy-sequence"
     case decoyRegister = "nl.rijksoverheid.en.background-decoy-register"
@@ -36,10 +38,14 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     init(exposureController: ExposureControlling,
          networkController: NetworkControlling,
-         configuration: BackgroundTaskConfiguration) {
+         configuration: BackgroundTaskConfiguration,
+         exposureManager: ExposureManaging,
+         userNotificationCenter: UserNotificationCenter) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
+        self.exposureManager = exposureManager
+        self.userNotificationCenter = userNotificationCenter
     }
 
     deinit {
@@ -49,6 +55,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
+        scheduleENStatusCheck()
         scheduleUpdate()
         scheduleDecoySequence()
     }
@@ -72,6 +79,9 @@ final class BackgroundController: BackgroundControlling, Logging {
         case .update:
             handleUpdate(task: task)
             scheduleUpdate()
+        case .statusCheck:
+            handleENStatusCheck(task: task)
+            scheduleENStatusCheck()
         }
     }
 
@@ -84,6 +94,9 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private let defaultRefreshInterval: TimeInterval = 60 // minutes
     private var receivedRefreshInterval: TimeInterval?
+
+    private let exposureManager: ExposureManaging
+    private let userNotificationCenter: UserNotificationCenter
     private let exposureController: ExposureControlling
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
@@ -184,12 +197,68 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
+    // MARK: - ENStatusCheck
+
+    private func scheduleENStatusCheck() {
+        guard let date = date(hour: 1, minute: 0) else {
+            return logError("Error creating date")
+        }
+        schedule(identifier: .statusCheck, date: date)
+    }
+
+    private func handleENStatusCheck(task: BGProcessingTask) {
+        guard exposureManager.getExposureNotificationStatus() != .active else {
+            task.setTaskCompleted(success: true)
+            return logDebug("`handleENStatusCheck` skipped as it is `active`")
+        }
+        guard let lastENStatusCheck = exposureController.lastENStatusCheckDate else {
+            return notifyUserENFrameworkDisabled(task: task)
+        }
+        let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
+
+        guard lastENStatusCheck.advanced(by: timeInterval) < Date() else {
+            task.setTaskCompleted(success: true)
+            return logDebug("`handleENStatusCheck` skipped as it hasn't been 24h")
+        }
+        notifyUserENFrameworkDisabled(task: task)
+    }
+
+    private func notifyUserENFrameworkDisabled(task: BGProcessingTask) {
+        let content = UNMutableNotificationContent()
+        content.body = .notificationEnStatusNotActive
+        content.sound = .default
+        content.badge = 0
+
+        func notify() {
+            let request = UNNotificationRequest(identifier: PushNotificationIdentifier.enStatusDisabled.rawValue,
+                                                content: content,
+                                                trigger: nil)
+            userNotificationCenter.add(request) { error in
+                guard let error = error else {
+                    return task.setTaskCompleted(success: true)
+                }
+                self.logError("Error posting notification: \(error.localizedDescription)")
+                task.setTaskCompleted(success: false)
+            }
+            exposureController.setLastEndStatusCheckDate(Date())
+        }
+
+        userNotificationCenter.getAuthorizationStatus { status in
+            guard status == .authorized else {
+                task.setTaskCompleted(success: true)
+                return self.logError("Not authorized to post notifications")
+            }
+            notify()
+        }
+    }
+
     // MARK: - Background Updates
 
     private func scheduleUpdate() {
         guard ENManager.authorizationStatus == .authorized else {
             return logError("`ENManager.authorizationStatus` not authorized")
         }
+
         let date = Date(timeIntervalSinceNow: refreshInterval * 60)
 
         schedule(identifier: .update, date: date, requiresNetworkConnectivity: true)
