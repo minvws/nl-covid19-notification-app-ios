@@ -141,6 +141,20 @@ extension String {
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
     static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
 
+    // MARK: - Help - What the app do
+
+    static var helpWhatAppDoesTitle: String { return Localization.string(for: "help.what_does_the_app_do.title") }
+    static var helpWhatAppDoesProtectTitle: String { return Localization.string(for: "help.what_does_the_app_do.protect.title") }
+    static var helpWhatAppDoesProtectDescription: String { return Localization.string(for: "help.what_does_the_app_do.protect.description") }
+    static var helpWhatAppDoesNotifyTitle: String { return Localization.string(for: "help.what_does_the_app_do.notify.title") }
+    static var helpWhatAppDoesNotifyDescription: String { return Localization.string(for: "help.what_does_the_app_do.notify.description") }
+    static var helpWhatAppDoesBluetoothTitle: String { return Localization.string(for: "help.what_does_the_app_do.bluetooth.title") }
+    static var helpWhatAppDoesBluetoothDescription: String { return Localization.string(for: "help.what_does_the_app_do.bluetooth.description") }
+    static var helpWhatAppDoesExampleCycleTitle: String { return Localization.string(for: "help.what_does_the_app_do.example.cycle.title") }
+    static var helpWhatAppDoesExampleCycleDescription: String { return Localization.string(for: "help.what_does_the_app_do.example.cycle.description") }
+    static var helpWhatAppDoesExampleTrainTitle: String { return Localization.string(for: "help.what_does_the_app_do.example.train.title") }
+    static var helpWhatAppDoesExampleTrainDescription: String { return Localization.string(for: "help.what_does_the_app_do.example.train.description") }
+
     // MARK: - Message
 
     static var messageDefaultTitle: String { return Localization.string(for: "message.default.title") }

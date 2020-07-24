@@ -46,4 +46,9 @@ extension UIImage {
     static var shareApp: UIImage? { return Image.named("ShareApp") }
     static var updateApp: UIImage? { return Image.named("UpdateApp") }
     static var info: UIImage? { return Image.named("Info") }
+    static var appInformationProtect: UIImage? { return Image.named("AppInfoProtect") }
+    static var appInformationNotify: UIImage? { return Image.named("AppInfoNotify") }
+    static var appInformationBluetooth: UIImage? { return Image.named("AppInfoBluetooth") }
+    static var appInformationExampleCycle: UIImage? { return Image.named("AppInfoCycleExample") }
+    static var appInformationExampleTrain: UIImage? { return Image.named("AppInfoTrainExample") }
 }

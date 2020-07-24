@@ -864,6 +864,10 @@ class AboutListenerMock: AboutListener {
     }
 }
 
+class AppInformationListenerMock: AppInformationListener {
+    init() {}
+}
+
 class CallGGDListenerMock: CallGGDListener {
     init() {}
 
