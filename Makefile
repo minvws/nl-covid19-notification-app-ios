@@ -9,7 +9,7 @@ EN_CORE_MOCKS_PATH="Sources/ENCoreTests/Mocks.swift"
 # Creates xcodeproj
 project: touch_mock_files_if_needed
 	vendor/XcodeGen/.build/release/xcodegen
-	# open EN.xcodeproj
+	open EN.xcodeproj
 
 generate_project:
 	vendor/XcodeGen/.build/release/x codegen
