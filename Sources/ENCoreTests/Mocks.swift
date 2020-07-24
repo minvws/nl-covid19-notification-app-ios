@@ -1115,6 +1115,10 @@ class RequestTestListenerMock: RequestTestListener {
     }
 }
 
+class TechnicalInformationListenerMock: TechnicalInformationListener {
+    init() {}
+}
+
 class ThankYouListenerMock: ThankYouListener {
     init() {}
 

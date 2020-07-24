@@ -155,6 +155,20 @@ extension String {
     static var helpWhatAppDoesExampleTrainTitle: String { return Localization.string(for: "help.what_does_the_app_do.example.train.title") }
     static var helpWhatAppDoesExampleTrainDescription: String { return Localization.string(for: "help.what_does_the_app_do.example.train.description") }
 
+    // MARK: - Help - TechnicalInformation
+
+    static var helpTechnicalInformationTitle: String { return Localization.string(for: "help.technical_explanation.title") }
+    static var helpTechnicalInformationStep1Title: String { return Localization.string(for: "help.technical_explanation.step1.title") }
+    static var helpTechnicalInformationStep1Description: String { return Localization.string(for: "help.technical_explanation.step1.description") }
+    static var helpTechnicalInformationStep2Title: String { return Localization.string(for: "help.technical_explanation.step2.title") }
+    static var helpTechnicalInformationStep2Description: String { return Localization.string(for: "help.technical_explanation.step2.description") }
+    static var helpTechnicalInformationStep3Title: String { return Localization.string(for: "help.technical_explanation.step3.title") }
+    static var helpTechnicalInformationStep3Description: String { return Localization.string(for: "help.technical_explanation.step3.description") }
+    static var helpTechnicalInformationStep4Title: String { return Localization.string(for: "help.technical_explanation.step4.title") }
+    static var helpTechnicalInformationStep4Description: String { return Localization.string(for: "help.technical_explanation.step4.description") }
+    static var helpTechnicalInformationStep5Title: String { return Localization.string(for: "help.technical_explanation.step5.title") }
+    static var helpTechnicalInformationStep5Description: String { return Localization.string(for: "help.technical_explanation.step5.description") }
+
     // MARK: - Message
 
     static var messageDefaultTitle: String { return Localization.string(for: "message.default.title") }
