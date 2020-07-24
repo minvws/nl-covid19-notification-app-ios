@@ -12,7 +12,7 @@ import Foundation
 protocol TechnicalInformationListener: AnyObject {}
 
 protocol TechnicalInformationBuildable {
-    func build(withListener listener: TechnicalInformationListener) -> ViewControllable
+    func build(withListener listener: TechnicalInformationListener) -> Routing
 }
 
 protocol TechnicalInformationDependency {
@@ -23,9 +23,9 @@ private final class TechnicalInformationDependencyProvider: DependencyProvider<T
 
 final class TechnicalInformationBuilder: Builder<TechnicalInformationDependency>, TechnicalInformationBuildable {
 
-    func build(withListener listener: TechnicalInformationListener) -> ViewControllable {
+    func build(withListener listener: TechnicalInformationListener) -> Routing {
         let dependencyProvider = TechnicalInformationDependencyProvider(dependency: dependency)
-
-        return TechnicalInformationViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        let viewController = TechnicalInformationViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        return TechnicalInformationRouter(viewController: viewController)
     }
 }

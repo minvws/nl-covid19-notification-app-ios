@@ -20,6 +20,20 @@ import UIKit
 import UserNotifications
 import WebKit
 
+class TechnicalInformationViewControllableMock: TechnicalInformationViewControllable {
+    init() {}
+    init(router: TechnicalInformationRouting? = nil, uiviewController: UIViewController = UIViewController()) {
+        self.router = router
+        self.uiviewController = uiviewController
+    }
+
+    var routerSetCallCount = 0
+    var router: TechnicalInformationRouting? { didSet { routerSetCallCount += 1 } }
+
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+}
+
 class InfectedViewControllableMock: InfectedViewControllable {
     init() {}
     init(router: InfectedRouting? = nil, uiviewController: UIViewController = UIViewController()) {
@@ -263,24 +277,12 @@ class HelpViewControllableMock: HelpViewControllable {
         }
     }
 
-    var routerSetCallCount = 0
-    var router: HelpRouting? { didSet { routerSetCallCount += 1 } }
-
     var helpDetailDidTapEnableAppButtonCallCount = 0
     var helpDetailDidTapEnableAppButtonHandler: (() -> ())?
     func helpDetailDidTapEnableAppButton() {
         helpDetailDidTapEnableAppButtonCallCount += 1
         if let helpDetailDidTapEnableAppButtonHandler = helpDetailDidTapEnableAppButtonHandler {
             helpDetailDidTapEnableAppButtonHandler()
-        }
-    }
-
-    var pushCallCount = 0
-    var pushHandler: ((ViewControllable, Bool) -> ())?
-    func push(viewController: ViewControllable, animated: Bool) {
-        pushCallCount += 1
-        if let pushHandler = pushHandler {
-            pushHandler(viewController, animated)
         }
     }
 
@@ -293,6 +295,18 @@ class HelpViewControllableMock: HelpViewControllable {
         }
     }
 
+    var routerSetCallCount = 0
+    var router: HelpRouting? { didSet { routerSetCallCount += 1 } }
+
+    var pushCallCount = 0
+    var pushHandler: ((ViewControllable, Bool) -> ())?
+    func push(viewController: ViewControllable, animated: Bool) {
+        pushCallCount += 1
+        if let pushHandler = pushHandler {
+            pushHandler(viewController, animated)
+        }
+    }
+
     var helpOverviewDidTapEnableAppButtonCallCount = 0
     var helpOverviewDidTapEnableAppButtonHandler: (() -> ())?
     func helpOverviewDidTapEnableAppButton() {
@@ -302,6 +316,9 @@ class HelpViewControllableMock: HelpViewControllable {
         }
     }
 
+    var uiviewControllerSetCallCount = 0
+    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
+
     var presentCallCount = 0
     var presentHandler: ((ViewControllable, Bool, (() -> ())?) -> ())?
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
@@ -310,9 +327,6 @@ class HelpViewControllableMock: HelpViewControllable {
             presentHandler(viewController, animated, completion)
         }
     }
-
-    var uiviewControllerSetCallCount = 0
-    var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
 
     var dismissCallCount = 0
     var dismissHandler: ((ViewControllable, Bool) -> ())?
@@ -1682,6 +1696,25 @@ class ExposureControllingMock: ExposureControlling {
         requestUploadKeysCallCount += 1
         if let requestUploadKeysHandler = requestUploadKeysHandler {
             requestUploadKeysHandler(labConfirmationKey, completion)
+        }
+    }
+}
+
+class TechnicalInformationRoutingMock: TechnicalInformationRouting {
+    init() {}
+    init(viewControllable: ViewControllable = ViewControllableMock()) {
+        self.viewControllable = viewControllable
+    }
+
+    var viewControllableSetCallCount = 0
+    var viewControllable: ViewControllable = ViewControllableMock() { didSet { viewControllableSetCallCount += 1 } }
+
+    var routeToGithubPageCallCount = 0
+    var routeToGithubPageHandler: (() -> ())?
+    func routeToGithubPage() {
+        routeToGithubPageCallCount += 1
+        if let routeToGithubPageHandler = routeToGithubPageHandler {
+            routeToGithubPageHandler()
         }
     }
 }
