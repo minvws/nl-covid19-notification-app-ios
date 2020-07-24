@@ -22,7 +22,7 @@ final class ScrollableStackView: View {
         super.build()
 
         stackView.axis = .vertical
-        stackView.alignment = .top
+        stackView.alignment = .fill
         stackView.distribution = .fill
         stackView.spacing = 40
         stackView.backgroundColor = .clear

@@ -44,21 +44,29 @@ private final class TechnicalInformationView: View {
 
         addSubview(scrollableStackView)
 
+        buttonWrapperView.addSubview(githubCardButton)
+        githubCardButton.backgroundColor = theme.colors.tertiary
+
         scrollableStackView.attributedTitle = String.helpTechnicalInformationTitle.attributed()
         scrollableStackView.addSections([
             step1View,
             step2View,
             step3View,
             step4View,
-            step5View
+            step5View,
+            buttonWrapperView
         ])
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        scrollableStackView.snp.makeConstraints { (maker: ConstraintMaker) in
+        scrollableStackView.snp.makeConstraints { maker in
             maker.top.leading.trailing.bottom.equalToSuperview()
+        }
+
+        githubCardButton.snp.makeConstraints { maker in
+            maker.top.leading.trailing.bottom.equalToSuperview().inset(16)
         }
     }
 
@@ -86,4 +94,12 @@ private final class TechnicalInformationView: View {
                                                      image: UIImage.technicalInformationStep5,
                                                      title: String.helpTechnicalInformationStep5Title.attributed(),
                                                      message: String.helpTechnicalInformationStep5Description.attributed())
+
+    private lazy var githubCardButton = CardButton(title: String.helpTechnicalInformationGithubTitle,
+                                                   subtitle: String.helpTechnicalInformationGithubSubtitle,
+                                                   image: UIImage.githubLogo,
+                                                   type: .short,
+                                                   theme: theme)
+
+    private lazy var buttonWrapperView = View(theme: theme)
 }
