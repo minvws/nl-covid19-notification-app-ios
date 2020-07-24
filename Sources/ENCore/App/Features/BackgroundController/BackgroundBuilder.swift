@@ -7,6 +7,7 @@
 
 import BackgroundTasks
 import Foundation
+import UserNotifications
 
 /// @mockable
 protocol BackgroundControlling {
@@ -15,6 +16,7 @@ protocol BackgroundControlling {
 }
 
 protocol BackgroundDependency {
+    var exposureManager: ExposureManaging { get }
     var exposureController: ExposureControlling { get }
     var networkController: NetworkControlling { get }
 }
@@ -24,7 +26,12 @@ protocol BackgroundControllerBuildable {
     func build() -> BackgroundControlling
 }
 
-private final class BackgroundControllerDependencyProvider: DependencyProvider<BackgroundDependency> {}
+private final class BackgroundControllerDependencyProvider: DependencyProvider<BackgroundDependency> {
+
+    fileprivate var userNotificationCenter: UserNotificationCenter {
+        UNUserNotificationCenter.current()
+    }
+}
 
 final class BackgroundControllerBuilder: Builder<BackgroundDependency>, BackgroundControllerBuildable {
     func build() -> BackgroundControlling {
@@ -35,6 +42,8 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
                                                         decoyDelayRange: 5 ... 900)
         return BackgroundController(exposureController: dependencyProvider.dependency.exposureController,
                                     networkController: dependencyProvider.dependency.networkController,
-                                    configuration: configuration)
+                                    configuration: configuration,
+                                    exposureManager: dependencyProvider.dependency.exposureManager,
+                                    userNotificationCenter: dependencyProvider.userNotificationCenter)
     }
 }

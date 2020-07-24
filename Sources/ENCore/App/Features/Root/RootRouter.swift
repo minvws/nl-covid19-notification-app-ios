@@ -132,6 +132,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     strongSelf.routeToMessage(title: content.title, body: content.body)
                 case .uploadFailed:
                     strongSelf.routeToCallGGD()
+                case .enStatusDisabled:
+                    () // Do nothing
                 }
             }.store(in: &disposeBag)
     }

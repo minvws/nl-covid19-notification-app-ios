@@ -31,6 +31,7 @@ targets:
           - nl.rijksoverheid.en.background-decoy-stop-keys
           - nl.rijksoverheid.en.background-decoy-sequence
           - nl.rijksoverheid.en.background-decoy-register
+          - nl.rijksoverheid.en.background-status-check
         CFBundleDisplayName: CoronaMelder
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder

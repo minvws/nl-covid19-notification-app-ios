@@ -26,6 +26,8 @@ struct ExposureDataStorageKey {
                                                                     storeType: .insecure(volatile: false))
     static let lastLocalNotificationExposureDate = CodableStorageKey<Date>(name: "lastLocalNotificationExposureDate",
                                                                            storeType: .insecure(volatile: false))
+    static let lastENStatusCheck = CodableStorageKey<Date>(name: "lastENStatusCheck",
+                                                           storeType: .insecure(volatile: false))
     static let exposureConfiguration = CodableStorageKey<ExposureRiskConfiguration>(name: "exposureConfiguration",
                                                                                     storeType: .insecure(volatile: false))
     static let pendingLabUploadRequests = CodableStorageKey<[PendingLabConfirmationUploadRequest]>(name: "pendingLabUploadRequests",
@@ -79,6 +81,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in })
 
         return date
+    }
+
+    var lastENStatusCheckDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastENStatusCheck)
+    }
+
+    func setLastEndStatusCheckDate(_ date: Date) {
+        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastENStatusCheck, completion: { _ in })
     }
 
     func removeLastExposure() -> AnyPublisher<(), Never> {

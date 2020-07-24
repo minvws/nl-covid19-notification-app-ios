@@ -131,6 +131,7 @@
 
 // MARK: - Notifications
 
+"notification.en.statusNotActive" = "CoronaMelder is op dit moment niet actief. Controleer je instellingen.";
 
 "notification.upload.failed.notification" = "Het is niet gelukt anderen een melding te sturen. Bel daarom de GGD. Lees meer in de app.";
 "notification.upload.failed.header" = "Bel de GGD";

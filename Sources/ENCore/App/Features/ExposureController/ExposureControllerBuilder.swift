@@ -11,6 +11,10 @@ import UserNotifications
 
 /// @mockable
 protocol ExposureControlling {
+
+    var lastENStatusCheckDate: Date? { get }
+    func setLastEndStatusCheckDate(_ date: Date)
+
     // MARK: - Setup
 
     func activate()
@@ -102,6 +106,7 @@ protocol ExposureControllerBuildable {
 }
 
 protocol ExposureControllerDependency {
+    var exposureManager: ExposureManaging { get }
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
@@ -119,13 +124,11 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
         return dependency.storageController
     }
 
+    var exposureManager: ExposureManaging {
+        return dependency.exposureManager
+    }
+
     // MARK: - Private Dependencies
-
-    fileprivate lazy var exposureManager: ExposureManaging = {
-        let builder = ExposureManagerBuilder()
-
-        return builder.build()
-    }()
 
     fileprivate var dataController: ExposureDataControlling {
         return ExposureDataControllerBuilder(dependency: self).build()

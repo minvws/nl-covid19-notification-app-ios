@@ -30,6 +30,14 @@ final class ExposureController: ExposureControlling, Logging {
 
     // MARK: - ExposureControlling
 
+    var lastENStatusCheckDate: Date? {
+        return dataController.lastENStatusCheckDate
+    }
+
+    func setLastEndStatusCheckDate(_ date: Date) {
+        dataController.setLastEndStatusCheckDate(date)
+    }
+
     func activate() {
         guard isActivated == false else {
             assertionFailure("Should only activate ExposureController once")
