@@ -10,7 +10,13 @@ import SnapKit
 import UIKit
 import WebKit
 
-final class TechnicalInformationViewController: ViewController {
+/// @mockable
+protocol TechnicalInformationRouting: Routing {
+    func routeToGithubPage()
+}
+
+final class TechnicalInformationViewController: ViewController, TechnicalInformationViewControllable {
+    weak var router: TechnicalInformationRouting?
 
     init(listener: TechnicalInformationListener, theme: Theme) {
         self.listener = listener
@@ -27,6 +33,10 @@ final class TechnicalInformationViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
+
+        internalView.githubCardButton.action = { [weak self] in
+            self?.router?.routeToGithubPage()
+        }
     }
 
     // MARK: - Private
@@ -37,12 +47,13 @@ final class TechnicalInformationViewController: ViewController {
 
 private final class TechnicalInformationView: View {
 
-    private lazy var scrollableStackView = ScrollableStackView(theme: theme)
-
     override func build() {
         super.build()
 
         addSubview(scrollableStackView)
+
+        buttonWrapperView.addSubview(githubCardButton)
+        githubCardButton.backgroundColor = theme.colors.tertiary
 
         scrollableStackView.attributedTitle = String.helpTechnicalInformationTitle.attributed()
         scrollableStackView.addSections([
@@ -50,17 +61,32 @@ private final class TechnicalInformationView: View {
             step2View,
             step3View,
             step4View,
-            step5View
+            step5View,
+            buttonWrapperView
         ])
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        scrollableStackView.snp.makeConstraints { (maker: ConstraintMaker) in
+        scrollableStackView.snp.makeConstraints { maker in
             maker.top.leading.trailing.bottom.equalToSuperview()
         }
+
+        githubCardButton.snp.makeConstraints { maker in
+            maker.top.leading.trailing.bottom.equalToSuperview().inset(16)
+        }
     }
+
+    lazy var githubCardButton = CardButton(title: String.helpTechnicalInformationGithubTitle,
+                                           subtitle: String.helpTechnicalInformationGithubSubtitle,
+                                           image: UIImage.githubLogo,
+                                           type: .short,
+                                           theme: theme)
+
+    // MARK: - Private
+
+    private lazy var scrollableStackView = ScrollableStackView(theme: theme)
 
     private lazy var step1View = InformationCardView(theme: theme,
                                                      image: UIImage.technicalInformationStep1,
@@ -86,4 +112,6 @@ private final class TechnicalInformationView: View {
                                                      image: UIImage.technicalInformationStep5,
                                                      title: String.helpTechnicalInformationStep5Title.attributed(),
                                                      message: String.helpTechnicalInformationStep5Description.attributed())
+
+    private lazy var buttonWrapperView = View(theme: theme)
 }

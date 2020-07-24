@@ -168,6 +168,8 @@ extension String {
     static var helpTechnicalInformationStep4Description: String { return Localization.string(for: "help.technical_explanation.step4.description") }
     static var helpTechnicalInformationStep5Title: String { return Localization.string(for: "help.technical_explanation.step5.title") }
     static var helpTechnicalInformationStep5Description: String { return Localization.string(for: "help.technical_explanation.step5.description") }
+    static var helpTechnicalInformationGithubTitle: String { return Localization.string(for: "help.technical_explanation.github.title") }
+    static var helpTechnicalInformationGithubSubtitle: String { return Localization.string(for: "help.technical_explanation.github.subtitle") }
 
     // MARK: - Message
 

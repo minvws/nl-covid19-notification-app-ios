@@ -56,4 +56,5 @@ extension UIImage {
     static var technicalInformationStep3: UIImage? { return Image.named("TechnicalInfoStep3") }
     static var technicalInformationStep4: UIImage? { return Image.named("TechnicalInfoStep4") }
     static var technicalInformationStep5: UIImage? { return Image.named("TechnicalInfoStep5") }
+    static var githubLogo: UIImage? { return Image.named("github") }
 }
