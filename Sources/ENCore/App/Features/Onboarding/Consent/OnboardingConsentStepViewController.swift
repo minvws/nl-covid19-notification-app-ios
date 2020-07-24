@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Lottie
 import UIKit
 
@@ -26,7 +27,6 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     static let onboardingConsentSummaryStepsViewTrailingMargin: CGFloat = 16
 
     private let onboardingConsentManager: OnboardingConsentManaging
-
     private let consentStep: OnboardingConsentStep?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
@@ -99,6 +99,10 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                 onboardingConsentManager.askNotificationsAuthorization {
                     self.goToNextStepOrCloseConsent()
                 }
+            case .share:
+                self.listener?.displayShareApp {
+                    self.goToNextStepOrCloseConsent()
+                }
             }
         }
     }
@@ -108,7 +112,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             switch consentStep.step {
             case .en:
                 self.listener?.displayHelp()
-            case .bluetooth, .notifications:
+            case .bluetooth, .notifications, .share:
                 self.goToNextStepOrCloseConsent()
             }
         }
@@ -118,9 +122,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         self.listener?.consentClose()
     }
 
-    private func goToNextStepOrCloseConsent() {
+    private func goToNextStepOrCloseConsent(skipCurrentStep: Bool = false) {
         if let consentStep = consentStep {
-            onboardingConsentManager.getNextConsentStep(consentStep.step) { nextStep in
+            onboardingConsentManager.getNextConsentStep(consentStep.step, skippedCurrentStep: skipCurrentStep) { nextStep in
                 if let nextStep = nextStep {
                     self.listener?.consentRequest(step: nextStep)
                 } else {
@@ -131,7 +135,20 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     }
 
     @objc func skipStepButtonPressed() {
-        goToNextStepOrCloseConsent()
+        if let consentStep = consentStep, consentStep.step == .en {
+            let alertController = UIAlertController(title: .consentSkipEnTitle,
+                                                    message: .consentSkipEnMessage,
+                                                    preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: .consentSkipEnDeclineButton, style: .cancel, handler: { _ in
+                self.goToNextStepOrCloseConsent(skipCurrentStep: true)
+            }))
+            alertController.addAction(UIAlertAction(title: .consentSkipEnAcceptButton, style: .default, handler: { _ in
+                self.primaryButtonPressed()
+            }))
+            present(alertController, animated: true, completion: nil)
+            return
+        }
+        goToNextStepOrCloseConsent(skipCurrentStep: true)
     }
 
     // MARK: - Private
@@ -204,8 +221,6 @@ final class OnboardingConsentView: View {
         super.build()
 
         addSubview(scrollView)
-        scrollView.alwaysBounceVertical = true
-
         addSubview(primaryButton)
         addSubview(secondaryButton)
 

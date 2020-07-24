@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Lottie
 import UIKit
 
@@ -12,6 +13,7 @@ enum OnboardingConsentStepIndex: Int {
     case en = 0
     case bluetooth
     case notifications
+    case share
 }
 
 final class OnboardingConsentStep: NSObject {

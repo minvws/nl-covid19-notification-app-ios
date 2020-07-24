@@ -6,6 +6,7 @@
  */
 
 import Combine
+import ENFoundation
 import Foundation
 import UIKit
 
@@ -358,7 +359,7 @@ final class ExposureController: ExposureControlling, Logging {
             content.sound = UNNotificationSound.default
             content.badge = 0
 
-            let identifier = "nl.rijksoverheid.en.inactive"
+            let identifier = PushNotificationIdentifier.inactive.rawValue
             let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
 
             unc.add(request) { [weak self] error in

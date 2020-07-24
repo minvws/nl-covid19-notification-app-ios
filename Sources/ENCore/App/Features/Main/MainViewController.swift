@@ -7,6 +7,7 @@
 
 import Combine
 import CoreBluetooth
+import ENFoundation
 import UIKit
 import UserNotifications
 

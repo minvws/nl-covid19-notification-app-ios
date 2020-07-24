@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Lottie
 import UIKit
 
@@ -151,8 +152,6 @@ final class OnboardingStepView: View {
         super.setupConstraints()
 
         hasBottomMargin = true
-
-        scrollView.alwaysBounceVertical = true
 
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)

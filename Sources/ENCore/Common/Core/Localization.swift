@@ -85,6 +85,11 @@ extension String {
 
     // MARK: - Consent Steps
 
+    static var consentSkipEnTitle: String { return Localization.string(for: "consentSkipEnTitle") }
+    static var consentSkipEnMessage: String { return Localization.string(for: "consentSkipEnMessage") }
+    static var consentSkipEnAcceptButton: String { return Localization.string(for: "consentSkipEnAcceptButton") }
+    static var consentSkipEnDeclineButton: String { return Localization.string(for: "consentSkipEnDeclineButton") }
+
     static var consentStep1Title: String { return Localization.string(for: "consentStep1Title") }
     static var consentStep1Summary1: String { return Localization.string(for: "consentStep1Summary1") }
     static var consentStep1Summary2: String { return Localization.string(for: "consentStep1Summary2") }
@@ -101,6 +106,11 @@ extension String {
     static var consentStep3Content: String { return Localization.string(for: "consentStep3Content") }
     static var consentStep3PrimaryButton: String { return Localization.string(for: "consentStep3PrimaryButton") }
     static var consentStep3SecondaryButton: String { return Localization.string(for: "consentStep3SecondaryButton") }
+
+    static var consentStep4Title: String { return Localization.string(for: "consentStep4Title") }
+    static var consentStep4Content: String { return Localization.string(for: "consentStep4Content") }
+    static var consentStep4PrimaryButton: String { return Localization.string(for: "consentStep4PrimaryButton") }
+    static var consentStep4SecondaryButton: String { return Localization.string(for: "consentStep4SecondaryButton") }
 
     // MARK: - Consent
 
@@ -124,6 +134,12 @@ extension String {
     static var helpFaqBluetoothDescription: String { return Localization.string(for: "help.faq.bluetooth.description") }
     static var helpFaqPowerUsageTitle: String { return Localization.string(for: "help.faq.power_usage.title") }
     static var helpFaqPowerUsageDescription: String { return Localization.string(for: "help.faq.power_usage.description") }
+    static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
+    static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link") }
+    static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
+    static var helpColofonDescription: String { return Localization.string(for: "help.faq.colofon.description") }
+    static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
+    static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
 
     // MARK: - Message
 
@@ -132,6 +148,11 @@ extension String {
 
     static var messageTitle: String { return Localization.string(for: "message.title") }
     static var messageButtonTitle: String { return Localization.string(for: "message.button.title") }
+
+    static var notificationUploadFailedNotification: String { Localization.string(for: "notification.upload.failed.notification") }
+    static var notificationUploadFailedHeader: String { Localization.string(for: "notification.upload.failed.header") }
+    static var notificationUploadFailedTitle: String { Localization.string(for: "notification.upload.failed.title") }
+    static var notificationUploadFailedContent: String { Localization.string(for: "notification.upload.failed.content") }
 
     // MARK: - Main
 
@@ -181,7 +202,6 @@ extension String {
     static var moreInformationComplaintsItem4: String { return Localization.string(for: "moreInformation.complaints.item4") }
     static var moreInformationComplaintsItem5: String { return Localization.string(for: "moreInformation.complaints.item5") }
     static var moreInformationComplaintsTitle: String { return Localization.string(for: "moreInformation.complaints.title") }
-    static var moreInformationComplaintsContent: String { return Localization.string(for: "moreInformation.complaints.content") }
 
     // MARK: - MoreInformation | About
 

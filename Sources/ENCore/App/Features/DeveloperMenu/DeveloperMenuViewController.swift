@@ -6,6 +6,7 @@
  */
 
 import Combine
+import ENFoundation
 import Foundation
 import MessageUI
 import UIKit
@@ -198,7 +199,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.listener?.developerMenuRequestMessage(title: "Message from Developer Menu", body: "The body of the message which was launched from the Developer Menu"); self?.hide() }),
                 DeveloperItem(title: "Schedule Message Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
-                              action: { [weak self] in self?.wantsScheduleNotification() })
+                              action: { [weak self] in self?.wantsScheduleNotification(identifier: .inactive) }),
+                DeveloperItem(title: "Schedule Upload Failed Flow",
+                              subtitle: "Schedules a push notifiction to be sent in 5 seconds",
+                              action: { [weak self] in self?.wantsScheduleNotification(identifier: .uploadFailed) })
             ]),
             ("Logging", [
                 DeveloperItem(title: "Log Files",
@@ -398,13 +402,19 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     private func toggleDailyLimit() {
-        ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets.toggle()
+        #if DEBUG
+            ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets.toggle()
+        #endif
     }
 
     // MARK: - Private
 
     private func getDailyLimit() -> String {
-        return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
+        #if DEBUG
+            return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
+        #else
+            return "None"
+        #endif
     }
 
     private func getNumberOfProcessedKeySetsInLast24Hours() -> Int {
@@ -472,12 +482,12 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         return "\(dateFormatter.string(from: last))"
     }
 
-    private func wantsScheduleNotification() {
+    private func wantsScheduleNotification(identifier: PushNotificationIdentifier) {
         let unc = UNUserNotificationCenter.current()
         unc.getNotificationSettings { [weak self] settings in
             DispatchQueue.main.async {
                 if settings.authorizationStatus == .authorized {
-                    self?.scheduleNotification()
+                    self?.scheduleNotification(identifier: identifier)
                 } else {
                     self?.displayNotificationError()
                 }
@@ -498,19 +508,24 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         present(alertController, animated: true, completion: nil)
     }
 
-    private func scheduleNotification() {
+    private func scheduleNotification(identifier: PushNotificationIdentifier) {
         let content = UNMutableNotificationContent()
-        content.title = "Local Notification"
-        content.body = "The body of the message which was scheduled from the Developer Menu"
         content.sound = UNNotificationSound.default
         content.badge = 0
+
+        switch identifier {
+        case .inactive:
+            content.title = .messageDefaultTitle
+            content.body = .messageDefaultBody
+        case .uploadFailed:
+            content.body = .notificationUploadFailedNotification
+        }
 
         let date = Date(timeIntervalSinceNow: 5)
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
 
-        let identifier = "Local Notification"
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: identifier.rawValue, content: content, trigger: trigger)
 
         let unc = UNUserNotificationCenter.current()
         unc.add(request) { error in

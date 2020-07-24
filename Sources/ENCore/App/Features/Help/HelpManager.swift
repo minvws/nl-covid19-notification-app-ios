@@ -6,6 +6,7 @@
  */
 
 import Combine
+import ENFoundation
 import UIKit
 
 /// @mockable
@@ -39,7 +40,21 @@ final class HelpManager: HelpManaging {
             HelpQuestion(
                 theme: theme,
                 question: .helpFaqPowerUsageTitle,
-                answer: .helpFaqPowerUsageDescription)
+                answer: .helpFaqPowerUsageDescription),
+            HelpQuestion(
+                theme: theme,
+                question: .helpPrivacyPolicyTitle,
+                answer: "",
+                link: .helpPrivacyPolicyLink),
+            HelpQuestion(
+                theme: theme,
+                question: .helpAccessibilityTitle,
+                answer: "",
+                link: .helpAccessibilityLink),
+            HelpQuestion(
+                theme: theme,
+                question: .helpColofonTitle,
+                answer: .helpColofonDescription)
         ]
     }
 }

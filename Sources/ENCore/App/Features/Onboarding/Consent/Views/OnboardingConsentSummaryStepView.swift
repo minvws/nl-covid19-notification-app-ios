@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import UIKit
 
 final class OnboardingConsentSummaryStepView: View {
@@ -27,10 +28,6 @@ final class OnboardingConsentSummaryStepView: View {
     private lazy var viewsInDisplayOrder = [imageView, label]
 
     private var consentSummaryStep: OnboardingConsentSummaryStep
-
-    var estimateHeight: CGFloat {
-        return (UIScreen.main.bounds.size.width - (OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewLeadingMargin + OnboardingConsentStepViewController.onboardingConsentSummaryStepsViewTrailingMargin)) / 3.75
-    }
 
     // MARK: - Lifecycle
 
@@ -58,7 +55,8 @@ final class OnboardingConsentSummaryStepView: View {
         super.setupConstraints()
 
         imageView.snp.makeConstraints { maker in
-            maker.top.leading.equalToSuperview()
+            maker.top.equalToSuperview().offset(-4)
+            maker.leading.equalToSuperview()
             maker.size.equalTo(CGSize(width: 42, height: 51))
         }
 
@@ -66,7 +64,7 @@ final class OnboardingConsentSummaryStepView: View {
             maker.top.equalToSuperview()
             maker.leading.equalTo(imageView.snp.trailing).offset(16)
             maker.trailing.equalToSuperview()
-            maker.bottom.equalToSuperview().inset(16)
+            maker.bottom.equalToSuperview().inset(24)
         }
     }
 }

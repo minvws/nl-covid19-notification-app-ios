@@ -1,134 +1,165 @@
 name: EN
 options:
-  developmentLanguage: "en"
+  developmentLanguage: en
 packages:
+  CocoaLumberjack:
+    path: vendor/CocoaLumberjack
+  Lottie:
+    path: vendor/lottie-ios
   Reachability:
     path: vendor/Reachability.swift
   SnapKit:
     path: vendor/SnapKit
-  Lottie:
-    path: vendor/lottie-ios
   SnapshotTesting:
     path: vendor/swift-snapshot-testing
   ZIPFoundation:
     path: vendor/ZIPFoundation
-  CocoaLumberjack:
-    path: vendor/CocoaLumberjack
 targets:
   EN:
-    platform: iOS
-    type: application
-    deploymentTarget: "11.0"
-    sources:
-      - path: Sources/EN
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en
-        SWIFT_VERSION: 5.2
-        CODE_SIGN_STYLE: Manual
-        DEVELOPMENT_TEAM: C2H38GV99H
-        ENABLE_BITCODE: YES
-        TARGETED_DEVICE_FAMILY: 1
-        CODE_SIGN_STYLE: Manual
-        DEVELOPMENT_TEAM: C2H38GV99H
-        SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
-      configs:
-        Debug:
-          CODE_SIGN_IDENTITY: "Apple Development"
-          CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Debug.entitlements
-          PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
-        Release:
-          CODE_SIGN_IDENTITY: "Apple Distribution"
-          CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Release.entitlements
-          PROVISIONING_PROFILE_SPECIFIER: "EN Tracing development"
+    dependencies:
+      - link: false
+        target: ENCore
+      - target: ENFoundation
+    deploymentTarget: '11.0'
     info:
       path: Sources/EN/Resources/Info.plist
       properties:
-        NSBluetoothPeripheralUsageDescription: "To securely exchange unique id's"
-        BGTaskSchedulerPermittedIdentifiers: [$(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification]
-        CFBundleName: CoronaMelder
+        BGTaskSchedulerPermittedIdentifiers:
+          - $(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification
+          - nl.rijksoverheid.en.background-update
+          - nl.rijksoverheid.en.background-decoy-stop-keys
+          - nl.rijksoverheid.en.background-decoy-stop-keys
+          - nl.rijksoverheid.en.background-decoy-sequence
+          - nl.rijksoverheid.en.background-decoy-register
         CFBundleDisplayName: CoronaMelder
-        CFBundleShortVersionString: "0.1"
-        CFBundleVersion: "1.0"
-        CFBundleIconName: "Media.xcassets/AppIcon.appiconset"
+        CFBundleIconName: Media.xcassets/AppIcon.appiconset
+        CFBundleName: CoronaMelder
+        CFBundleShortVersionString: '0.1'
+        CFBundleVersion: '1.0'
         ITSAppUsesNonExemptEncryption: false
-        LSApplicationQueriesSchemes: [""]
+        LOG_LEVEL: '${LOG_LEVEL}'
+        LSApplicationQueriesSchemes:
+          - ''
         LSRequiresIPhoneOS: true
+        NETWORK_CONFIGURATION: '${NETWORK_CONFIGURATION}'
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        NSBluetoothPeripheralUsageDescription: To securely exchange unique id's
         UIAppFonts: []
-        UIBackgroundModes: [fetch, processing]
-        UILaunchStoryboardName: LaunchScreen
-        UIRequiredDeviceCapabilities: [armv7, bluetooth-le, telephony]
-        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
-        UIViewControllerBasedStatusBarAppearance: true
-        UIUserInterfaceStyle: "Light"
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
           UISceneConfigurations:
             UIWindowSceneSessionRoleApplication:
-              - UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
-                UISceneConfigurationName: Default Configuration
-        NSAppTransportSecurity:
-          NSAllowsArbitraryLoads: true
-        BGTaskSchedulerPermittedIdentifiers:
-          - "nl.rijksoverheid.en.background-update"
-          - "nl.rijksoverheid.en.background-decoy-stop-keys"
-          - "nl.rijksoverheid.en.background-decoy-stop-keys"
-          - "nl.rijksoverheid.en.background-decoy-sequence"
-          - "nl.rijksoverheid.en.background-decoy-register"
-        NETWORK_CONFIGURATION: ${NETWORK_CONFIGURATION}
-        LOG_LEVEL: ${LOG_LEVEL}
-    dependencies:
-      - target: ENCore
-        link: false
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+        UIBackgroundModes:
+          - fetch
+          - processing
+        UILaunchStoryboardName: LaunchScreen
+        UIRequiredDeviceCapabilities:
+          - armv7
+          - bluetooth-le
+          - telephony
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIUserInterfaceStyle: Light
+        UIViewControllerBasedStatusBarAppearance: true
+    platform: iOS
     scheme:
       gatherCoverageData: true
       testTargets:
-        - name: ENCoreTests
-          parallelizable: false
+        - name: ENTests
           randomExecutionOrder: true
-  ENCore:
-    platform: iOS
-    type: framework
-    deploymentTarget: "13.5"
-    sources:
-      - Sources/ENCore
+        - name: ENCoreTests
+          randomExecutionOrder: true
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.core
-        TARGETED_DEVICE_FAMILY: 1
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: C2H38GV99H
+        ENABLE_BITCODE: 'YES'
+        PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en
+        SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
         SWIFT_VERSION: 5.2
-        OTHER_LDFLAGS: -weak_framework ExposureNotification
-        SWIFT_OBJC_BRIDGING_HEADER: Sources/ENCore/ObjCBridge.h
+        TARGETED_DEVICE_FAMILY: 1
+      configs:
+        Debug:
+          CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Debug.entitlements
+          CODE_SIGN_IDENTITY: Apple Development
+          PROVISIONING_PROFILE_SPECIFIER: EN Tracing development
+        Release:
+          CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Release.entitlements
+          CODE_SIGN_IDENTITY: Apple Distribution
+          PROVISIONING_PROFILE_SPECIFIER: EN Tracing development
+    sources:
+      - path: Sources/EN
+    type: application
+  ENCore:
     dependencies:
-      - package: CocoaLumberjack
-        product: CocoaLumberjack
-      - package: CocoaLumberjack
-        product: CocoaLumberjackSwift
+      - target: ENFoundation
       - package: ZIPFoundation
       - package: SnapKit
       - package: Lottie
       - package: Reachability
       - framework: ExposureNotification.framework
         optional: true
-      - framework: vendor/OpenSSL-for-iPhone/openssl.framework 
+      - framework: vendor/OpenSSL-for-iPhone/openssl.framework
+    deploymentTarget: '13.5'
+    platform: iOS
     scheme:
       gatherCoverageData: true
       testTargets:
         - name: ENCoreTests
-          parallelizable: false
           randomExecutionOrder: true
-  ENCoreTests:
-    platform: iOS
-    type: bundle.unit-test
-    deploymentTarget: "13.5"
+    settings:
+      base:
+        OTHER_LDFLAGS: '-weak_framework ExposureNotification'
+        PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.core
+        SWIFT_OBJC_BRIDGING_HEADER: Sources/ENCore/ObjCBridge.h
+        SWIFT_VERSION: 5.2
+        TARGETED_DEVICE_FAMILY: 1
     sources:
-      - Sources/ENCoreUnitTests
+      - Sources/ENCore
+    type: framework
+  ENCoreTests:
     dependencies:
       - target: ENCore
       - package: SnapshotTesting
+    deploymentTarget: '13.5'
+    platform: iOS
+    preBuildScripts:
+      - name: Generate Mocks
+        path: tools/scripts/generate-mocks.sh
     settings:
       base:
         SWIFT_VERSION: 5.2
-    preBuildScripts:
-      - path: tools/scripts/generate-mocks.sh
-        name: Generate Mocks
+    sources:
+      - Sources/ENCoreTests
+    type: bundle.unit-test
+  ENFoundation:
+    deploymentTarget: '11.0'
+    dependencies:
+      - package: CocoaLumberjack
+        product: CocoaLumberjack
+      - package: CocoaLumberjack
+        product: CocoaLumberjackSwift
+    platform: iOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.foundation
+        SWIFT_VERSION: 5.2
+        TARGETED_DEVICE_FAMILY: 1
+    sources:
+      - Sources/ENFoundation
+    type: framework
+  ENTests:
+    dependencies:
+      - target: EN
+      - package: SnapshotTesting
+    deploymentTarget: '11.0'
+    platform: iOS
+    settings:
+      base:
+        SWIFT_VERSION: 5.2
+    sources:
+      - Sources/ENTests
+    type: bundle.unit-test

@@ -5,7 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
+import UIKit
 
 /// @mockable
 protocol OnboardingRouting: Routing {
@@ -16,7 +18,7 @@ protocol OnboardingRouting: Routing {
     func routeToHelp()
 }
 
-final class OnboardingViewController: NavigationController, OnboardingViewControllable {
+final class OnboardingViewController: NavigationController, OnboardingViewControllable, Logging {
 
     weak var router: OnboardingRouting?
 
@@ -75,13 +77,27 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
             case .notAuthorized:
                 self.listener?.didCompleteOnboarding()
             default:
-                self.onboardingConsentManager.getNextConsentStep(.en) { nextStep in
+                self.onboardingConsentManager.getNextConsentStep(.en, skippedCurrentStep: false) { nextStep in
                     if let nextStep = nextStep {
                         self.router?.routeToConsent(withIndex: nextStep.rawValue, animated: true)
                     } else {
                         self.listener?.didCompleteOnboarding()
                     }
                 }
+            }
+        }
+    }
+
+    func displayShareApp(completion: @escaping (() -> ())) {
+        onboardingConsentManager.getAppStoreUrl { url in
+            if let url = url, let storeLink = URL(string: url) {
+                let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
+                activityVC.completionWithItemsHandler = { _, _, _, _ in
+                    completion()
+                }
+                self.present(activityVC, animated: true)
+            } else {
+                self.logError("Could retreive a AppStoreUrl")
             }
         }
     }

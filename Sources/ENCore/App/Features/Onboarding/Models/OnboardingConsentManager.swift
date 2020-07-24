@@ -6,6 +6,7 @@
  */
 
 import Combine
+import ENFoundation
 import UIKit
 
 /// @mockable
@@ -13,11 +14,12 @@ protocol OnboardingConsentManaging {
     var onboardingConsentSteps: [OnboardingConsentStep] { get }
 
     func getStep(_ index: Int) -> OnboardingConsentStep?
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ())
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ())
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
+    func getAppStoreUrl(_ completion: @escaping ((String?) -> ()))
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -92,6 +94,21 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 hasNavigationBarSkipButton: true
             )
         )
+
+        onboardingConsentSteps.append(
+            OnboardingConsentStep(
+                step: .share,
+                theme: theme,
+                title: .consentStep4Title,
+                content: .consentStep4Content,
+                image: .shareApp,
+                animationName: nil,
+                summarySteps: nil,
+                primaryButtonTitle: .consentStep4PrimaryButton,
+                secondaryButtonTitle: .consentStep4SecondaryButton,
+                hasNavigationBarSkipButton: true
+            )
+        )
     }
 
     deinit {
@@ -105,12 +122,12 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         return nil
     }
 
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
+    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
         switch currentStep {
         case .en:
             exposureStateStream
                 .exposureState
-                .filter { $0.activeState != .notAuthorized }
+                .filter { $0.activeState != .notAuthorized || skippedCurrentStep }
                 .first()
                 .sink { value in
                     switch value.activeState {
@@ -124,6 +141,8 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         case .bluetooth:
             completion(.notifications)
         case .notifications:
+            completion(.share)
+        case .share:
             completion(nil)
         }
     }
@@ -166,6 +185,12 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
     func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
         exposureController.requestPushNotificationPermission {
             completion()
+        }
+    }
+
+    func getAppStoreUrl(_ completion: @escaping ((String?) -> ())) {
+        exposureController.getAppVersionInformation { data in
+            completion(data?.appStoreURL)
         }
     }
 

@@ -6,6 +6,7 @@
  */
 
 import Combine
+import ENFoundation
 import Foundation
 
 final class NetworkManager: NetworkManaging, Logging {
@@ -173,6 +174,12 @@ final class NetworkManager: NetworkManaging, Logging {
                                           body: request,
                                           headers: headers)
 
+        if configuration.api.host == "localhost", configuration.api.port == nil {
+            // FIXME: This is stubbed for the region test
+            completion(nil)
+            return
+        }
+
         data(request: urlRequest) { result in
             switch result {
             case .success:
@@ -196,6 +203,12 @@ final class NetworkManager: NetworkManaging, Logging {
                                           body: request,
                                           headers: headers)
 
+        if configuration.api.host == "localhost", configuration.api.port == nil {
+            // FIXME: This is stubbed for the region test
+            completion(nil)
+            return
+        }
+
         data(request: urlRequest) { result in
             switch result {
             case .success:
@@ -218,6 +231,17 @@ final class NetworkManager: NetworkManaging, Logging {
                                           method: .POST,
                                           body: request,
                                           headers: headers)
+
+        if configuration.api.host == "localhost", configuration.api.port == nil {
+            // FIXME: This is stubbed for the region test
+            func randomString(length: Int) -> String {
+                let letters = "BCFGJLQRSTUVXYZ23456789"
+                return String((0 ..< length).map { _ in letters.randomElement() ?? Character("") })
+            }
+            let labConfirmationId = String(randomString(length: 6).enumerated().map { $0 > 0 && $0 % 2 == 0 ? ["-", $1] : [$1] }.joined())
+            completion(.success(LabInformation(labConfirmationId: labConfirmationId, bucketId: "tbWbzHx1CSvOeTJT+bL4Ij/vBBJYvt3GQ4/EJYWMY8U=", confirmationKey: "UND1tvcl9q2HTS+jdwugCeMSUb17Kndpor9BJ/oxtAc=", validity: 40956)))
+            return
+        }
 
         data(request: urlRequest) { result in
             self.jsonResponseHandler(result: result)

@@ -5,6 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
+import Foundation
+
 /// @mockable
 protocol MainBuildable {
     func build() -> Routing

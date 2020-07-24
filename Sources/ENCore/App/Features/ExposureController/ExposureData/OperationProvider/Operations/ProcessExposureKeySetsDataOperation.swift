@@ -6,6 +6,7 @@
  */
 
 import Combine
+import ENFoundation
 import Foundation
 import UIKit
 
@@ -305,6 +306,10 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         #endif
 
         logDebug("Number of keysets left to process today: \(numberOfKeySetsLeftToProcess)")
+
+        guard numberOfKeySetsLeftToProcess > 0 else {
+            return []
+        }
 
         let keySetHoldersToProcess = keySetsHolders
             .sorted(by: { first, second in first.creationDate < second.creationDate })

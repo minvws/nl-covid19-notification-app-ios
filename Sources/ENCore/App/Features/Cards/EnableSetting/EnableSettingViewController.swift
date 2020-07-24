@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import UIKit
 
@@ -91,6 +92,8 @@ private final class EnableSettingView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
+        hasBottomMargin = true
+
         navigationBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
         }
@@ -103,9 +106,10 @@ private final class EnableSettingView: View {
 
         button.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalTo(layoutMarginsGuide.snp.bottomMargin)
             make.top.equalTo(scrollView.snp.bottom).offset(16)
             make.height.equalTo(48)
+
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
         }
 
         scrollView.snp.makeConstraints { make in

@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 
 /// @mockable
@@ -21,6 +22,7 @@ protocol OnboardingConsentListener: AnyObject {
     func consentClose()
     func consentRequest(step: OnboardingConsentStepIndex)
     func displayHelp()
+    func displayShareApp(completion: @escaping (() -> ()))
 }
 
 protocol OnboardingConsentDependency {

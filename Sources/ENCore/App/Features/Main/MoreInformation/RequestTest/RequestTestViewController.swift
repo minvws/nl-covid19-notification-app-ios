@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import SnapKit
 import UIKit
 
@@ -121,16 +122,9 @@ private final class RequestTestView: View {
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
 
-        let content = NSMutableAttributedString(string: "\n")
-        content.append(String.moreInformationComplaintsContent.attributed())
-
-        var string = [NSAttributedString]()
-        string.append(contentsOf: bulletList)
-        string.append(content)
-
         return InfoSectionTextView(theme: theme,
                                    title: .moreInformationComplaintsTitle,
-                                   content: string)
+                                   content: bulletList)
     }
 
     private func info() -> View {

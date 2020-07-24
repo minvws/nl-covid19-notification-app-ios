@@ -31,15 +31,19 @@ extension UIImage {
     static var receivedNotificationHeader: UIImage? { return Image.named("ReceivedNotificationHeader") }
     static var coronaTestHeader: UIImage? { return Image.named("CoronatestHeader") }
     static var statusClouds: UIImage? { return Image.named("StatusClouds") }
+    static var statusCloud1: UIImage? { return Image.named("StatusCloud1") }
+    static var statusCloud2: UIImage? { return Image.named("StatusCloud2") }
     static var statusScene: UIImage? { return Image.named("StatusScene") }
     static var statusIconOk: UIImage? { return Image.named("StatusIconOk") }
     static var statusIconNotified: UIImage? { return Image.named("StatusIconNotified") }
     static var statusInactive: UIImage? { return Image.named("StatusInactive") }
     static var messageHeader: UIImage? { return Image.named("MessageHeader") }
+    static var callGGD: UIImage? { return Image.named("CallGGD") }
     static var bluetoothShield: UIImage? { return Image.named("BluetoothShield") }
     static var lockShield: UIImage? { return Image.named("LockShield") }
     static var pleaseTurnOnBluetooth: UIImage? { return Image.named("PleaseTurnOnBluetooth") }
     static var pleaseTurnOnNotifications: UIImage? { return Image.named("PleaseTurnOnNotifications") }
+    static var shareApp: UIImage? { return Image.named("ShareApp") }
     static var updateApp: UIImage? { return Image.named("UpdateApp") }
     static var info: UIImage? { return Image.named("Info") }
 }
