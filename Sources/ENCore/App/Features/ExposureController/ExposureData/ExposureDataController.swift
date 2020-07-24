@@ -12,7 +12,7 @@ import Foundation
 struct ExposureDataStorageKey {
     static let labConfirmationKey = CodableStorageKey<LabConfirmationKey>(name: "labConfirmationKey",
                                                                           storeType: .secure)
-    static let lastUploadedRollingStartNumber = CodableStorageKey<Int32>(name: "lastUploadedRollingStartNumber",
+    static let uploadedRollingStartNumbers = CodableStorageKey<[UInt32]>(name: "uploadedRollingStartNumbers",
                                                                          storeType: .secure)
     static let appManifest = CodableStorageKey<ApplicationManifest>(name: "appManifest",
                                                                     storeType: .insecure(volatile: true))
@@ -208,7 +208,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
         // clear all secure entries
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
-        storageController.removeData(for: ExposureDataStorageKey.lastUploadedRollingStartNumber, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.uploadedRollingStartNumbers, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
 

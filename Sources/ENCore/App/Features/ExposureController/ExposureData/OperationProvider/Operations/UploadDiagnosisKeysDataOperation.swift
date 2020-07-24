@@ -30,27 +30,23 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
         }
 
         return networkController
+            // execute network request
             .postKeys(keys: keys, labConfirmationKey: labConfirmationKey, padding: padding)
             .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
+            // store rolling start numbers for successfully uploaded keys
+            .flatMap { _ in self.storeRollingStartNumbers(for: keys) }
             .catch { error in self.scheduleRetryWhenFailed(error: error, diagnosisKeys: keys, labConfirmationKey: self.labConfirmationKey) }
-            .flatMap { self.storeLastRollingStartNumber(for: keys) }
             .eraseToAnyPublisher()
     }
 
     // MARK: - Private
 
-    private func storeLastRollingStartNumber(for keys: [DiagnosisKey]) -> AnyPublisher<(), ExposureDataError> {
+    private func storeRollingStartNumbers(for keys: [DiagnosisKey]) -> AnyPublisher<(), ExposureDataError> {
         let rollingStartNumbers = keys.map { $0.rollingStartNumber }
-        guard let highestRollingStartNumber = rollingStartNumbers.max() else {
-            // cannot find highest rolling number, don't store anything and upload the whole set again next time
-            return Just(())
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
-        }
 
         return Future { promise in
-            self.storageController.store(object: Int32(highestRollingStartNumber),
-                                         identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber) { error in
+            self.storageController.store(object: rollingStartNumbers,
+                                         identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) { error in
                 // cannot store - ignore and upload the whole set again next time
                 promise(.success(()))
             }
@@ -81,18 +77,23 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
     }
 
     private func filterOutAlreadyUploadedKeys(_ keys: [DiagnosisKey]) -> [DiagnosisKey] {
-        let storageKey = ExposureDataStorageKey.lastUploadedRollingStartNumber
-        let storedLastRollingStartNumber = storageController.retrieveObject(identifiedBy: storageKey)
+        // get successfully uploaded rollingStartNumbers
+        let rollingStartNumbersStorageKey = ExposureDataStorageKey.uploadedRollingStartNumbers
+        let uploadedRollingStartNumbers = storageController.retrieveObject(identifiedBy: rollingStartNumbersStorageKey) ?? []
 
-        guard let lastRollingStartNumber = storedLastRollingStartNumber else {
-            return keys
+        // get pending operations
+        let pendingOperationsStorageKey = ExposureDataStorageKey.pendingLabUploadRequests
+        let pendingOperations = storageController.retrieveObject(identifiedBy: pendingOperationsStorageKey) ?? []
+        let pendingRollingStartNumbers = pendingOperations.flatMap { $0.diagnosisKeys.map { $0.rollingStartNumber } }
+
+        let isNotPendingOrUploaded: (DiagnosisKey) -> Bool = { diagnosisKey in
+            let rollingStartNumber = diagnosisKey.rollingStartNumber
+
+            return uploadedRollingStartNumbers.contains(rollingStartNumber) == false
+                && pendingRollingStartNumbers.contains(rollingStartNumber) == false
         }
 
-        let keyHasHigherRollingStartNumber: (DiagnosisKey) -> Bool = { key in
-            key.rollingStartNumber > lastRollingStartNumber
-        }
-
-        return keys.filter(keyHasHigherRollingStartNumber)
+        return keys.filter(isNotPendingOrUploaded)
     }
 
     private let networkController: NetworkControlling

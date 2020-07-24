@@ -47,7 +47,7 @@ final class ExposureDataControllerTests: TestCase {
         let removedKeysStrings = removedKeys.map { $0.asString }
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.labConfirmationKey.asString))
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.lastExposureReport.asString))
-        XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.lastUploadedRollingStartNumber.asString))
+        XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.uploadedRollingStartNumbers.asString))
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.pendingLabUploadRequests.asString))
 
         XCTAssertEqual(receivedKey.asString, ExposureDataStorageKey.firstRunIdentifier.asString)
