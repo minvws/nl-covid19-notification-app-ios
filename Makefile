@@ -3,24 +3,24 @@
 XCODE_TEMPLATE_PATH_SRC="tools/Xcode Templates/Component.xctemplate"
 XCODE_TEMPLATE_PATH_DST="${HOME}/Library/Developer/Xcode/Templates/File Templates/COVID-NL"
 
+EN_MOCKS_PATH="Sources/ENTests/Mocks.swift"
+EN_CORE_MOCKS_PATH="Sources/ENCoreTests/Mocks.swift"
+
 # Creates xcodeproj
-project:
+project: touch_mock_files_if_needed
 	vendor/XcodeGen/.build/release/xcodegen
-	open EN.xcodeproj
+	# open EN.xcodeproj
 
 generate_project:
-	vendor/XcodeGen/.build/release/xcodegen
+	vendor/XcodeGen/.build/release/x codegen
 
 # Initializes dev environment
-dev: install_xcode_templates install_dev_deps ignore_mocks_changes
+dev: install_xcode_templates install_dev_deps
 
 install_xcode_templates:
 	@echo "Installing latest xcode template"
 	@mkdir -p ${XCODE_TEMPLATE_PATH_DST}
 	@cp -rf ${XCODE_TEMPLATE_PATH_SRC} ${XCODE_TEMPLATE_PATH_DST}
-
-ignore_mocks_changes:
-	git update-index --skip-worktree Sources/ENCoreUnitTests/Mocks.swift 
 
 install_dev_deps: build_xcodegen build_swiftformat build_mockolo
 	@echo "All dependencies are installed"
@@ -46,3 +46,11 @@ clean_snapshots:
 	@echo "Removing all __Snapshot__ folders"
 	@rm -rf `find Sources/ -type d -name __Snapshots__`
 	@echo "Re-run tests for current Snapshot tests to be generated"
+
+touch_mock_files_if_needed:
+ifneq ($(wildcard ${EN_MOCKS_PATH}), "")
+	@touch ${EN_MOCKS_PATH}
+endif
+ifneq ($(wildcard ${EN_CORE_MOCKS_PATH}), "")
+	@touch ${EN_CORE_MOCKS_PATH}
+endif
