@@ -255,7 +255,7 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Wat betekent het als je een melding krijgt?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. Je hebt in deze situatie extra kans op besmetting gelopen. Als je besmet bent, kan je het virus aan anderen doorgeven. Ook als je je niet ziek voelt.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Doe een coronatest";
-"moreInformation.receivedNotification.doCoronaTest.content" = "De GGD raadt aan je te laten testen op het virus. Zelfs als je je nog niet ziek voelt. Want zonder je ziek te voelen kun je het coronavirus al verspreiden en zo anderen besmetten.\n \nLaat je gratis testen. Het duurt niet lang en je kan meestal snel een afspraak maken. De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet.\n\nBel gratis 0800-1202 om een coronatest aan te vragen.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "De GGD raadt aan je te laten testen op het virus. Zelfs als je je nog niet ziek voelt. Want zonder je ziek te voelen kun je het coronavirus al verspreiden en zo anderen besmetten.\n \nLaat je gratis testen. Het duurt niet lang en je kan meestal snel een afspraak maken. De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet.\n\nBel gratis 0800-1280 om een coronatest aan te vragen.";
 
 // MARK: - MoreInformation | Request Test
 
