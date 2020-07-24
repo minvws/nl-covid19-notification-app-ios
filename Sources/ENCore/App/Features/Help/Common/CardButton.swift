@@ -24,7 +24,7 @@ final class CardButton: Button {
         cardTitleLabel.text = title
         subtitleLabel.text = subtitle
 
-        setupSubviews()
+        build()
         setupConstraints()
     }
 
@@ -43,8 +43,7 @@ final class CardButton: Button {
     private let cardImageView: UIImageView
     private let cardType: CardButton.CardType
 
-    private func setupSubviews() {
-
+    private func build() {
         cardImageView.contentMode = .scaleAspectFit
         cardTitleLabel.numberOfLines = 0
         cardTitleLabel.font = theme.fonts.title3
