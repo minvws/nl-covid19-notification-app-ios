@@ -11,8 +11,8 @@ project: touch_mock_files_if_needed
 	vendor/XcodeGen/.build/release/xcodegen
 	open EN.xcodeproj
 
-generate_project:
-	vendor/XcodeGen/.build/release/x codegen
+generate_project: touch_mock_files_if_needed
+	vendor/XcodeGen/.build/release/xcodegen
 
 # Initializes dev environment
 dev: install_xcode_templates install_dev_deps
