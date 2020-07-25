@@ -12,26 +12,12 @@ import XCTest
 final class AboutViewControllerTests: TestCase {
     private var viewController: AboutViewController!
     private let listener = AboutListenerMock()
-    private let webBuilder = WebBuildableMock()
 
     override func setUp() {
         super.setUp()
 
         viewController = AboutViewController(listener: listener,
-                                             theme: theme,
-                                             webBuilder: webBuilder)
-    }
-
-    func test_viewDidLoad_callsBuildAndEmbedWebView() {
-        webBuilder.buildHandler = { _, _ in WebViewControllableMock() }
-
-        XCTAssertEqual(webBuilder.buildCallCount, 0)
-        XCTAssertEqual(viewController.children.count, 0)
-
-        _ = viewController.view
-
-        XCTAssertEqual(webBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.children.count, 1)
+                                             theme: theme)
     }
 
     func test_didTapClose_callsListener() {
