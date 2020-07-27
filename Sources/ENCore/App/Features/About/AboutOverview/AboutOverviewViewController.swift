@@ -64,7 +64,7 @@ final class AboutOverviewViewController: ViewController, UIAdaptivePresentationC
         if let aCell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) {
             cell = aCell
         } else {
-            cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+            cell = AboutTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
         }
 
         cell.textLabel?.attributedText = questions[indexPath.row].attributedTitle
@@ -148,7 +148,7 @@ private final class AboutView: View {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
-        tableView.separatorStyle = .singleLine
+        tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
 
         tableView.showsVerticalScrollIndicator = true
@@ -219,7 +219,7 @@ private final class SectionHeaderView: View {
         }
 
         sectionHeaderLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(stackView.snp.bottom).offset(16)
+            maker.top.equalTo(stackView.snp.bottom).offset(40)
             maker.leading.trailing.bottom.equalToSuperview().inset(16)
         }
     }
@@ -242,4 +242,36 @@ private final class SectionHeaderView: View {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+}
+
+private class AboutTableViewCell: UITableViewCell {
+
+    init(theme: Theme, reuseIdentifier: String) {
+        self.theme = theme
+        super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        build()
+        setupConstraints()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func build() {
+        separatorView.backgroundColor = theme.colors.tertiary
+        addSubview(separatorView)
+    }
+
+    func setupConstraints() {
+        separatorView.snp.makeConstraints { maker in
+            maker.leading.equalToSuperview().inset(16)
+            maker.trailing.bottom.equalToSuperview()
+            maker.height.equalTo(1)
+        }
+    }
+
+    // MARK: - Private
+
+    private let separatorView = UIView()
+    private let theme: Theme
 }
