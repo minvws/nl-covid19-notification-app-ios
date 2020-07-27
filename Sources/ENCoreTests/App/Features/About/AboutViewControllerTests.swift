@@ -20,19 +20,6 @@ final class AboutViewControllerTests: TestCase {
                                              theme: theme)
     }
 
-    func test_didTapClose_callsListener() {
-        var shouldDismissViewController: Bool!
-        listener.aboutRequestsDismissalHandler = { shouldDismissViewController = $0 }
-
-        XCTAssertEqual(listener.aboutRequestsDismissalCallCount, 0)
-
-        viewController.didTapClose()
-
-        XCTAssertEqual(listener.aboutRequestsDismissalCallCount, 1)
-        XCTAssertNotNil(shouldDismissViewController)
-        XCTAssertTrue(shouldDismissViewController)
-    }
-
     func test_presentationControllerDidDismiss_callsListener() {
         var shouldDismissViewController: Bool!
         listener.aboutRequestsDismissalHandler = { shouldDismissViewController = $0 }

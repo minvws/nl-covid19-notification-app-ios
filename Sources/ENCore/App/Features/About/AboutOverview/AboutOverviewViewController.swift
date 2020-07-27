@@ -115,14 +115,14 @@ final class AboutOverviewViewController: ViewController, UIAdaptivePresentationC
         headerView.sectionHeaderLabel.text = aboutManager.questionsSection.title
         headerView.titleLabel.text = String.moreInformationAboutTitle
 
-        let appInfoButton = CardButton(title: "This is a test title", subtitle: "And a test subtile to check layout", image: UIImage.githubLogo, theme: theme)
-        appInfoButton.backgroundColor = theme.colors.inactive
+        let appInfoButton = CardButton(title: .aboutAppInformationTitle, subtitle: .aboutAppInformationDescription, image: UIImage.aboutAppInformation, type: .long, theme: theme)
+        appInfoButton.backgroundColor = theme.colors.headerBackgroundBlue
         appInfoButton.action = { [weak self] in
             self?.listener?.aboutOverviewRequestsRouteToAppInformation()
         }
 
-        let technicalInfoButton = CardButton(title: "This is a test title", subtitle: "And a test subtile to check layout", image: UIImage.githubLogo, theme: theme)
-        technicalInfoButton.backgroundColor = theme.colors.inactive
+        let technicalInfoButton = CardButton(title: .aboutTechnicalInformationTitle, subtitle: .aboutTechnicalInformationDescription, image: UIImage.aboutTechnicalInformation, theme: theme)
+        technicalInfoButton.backgroundColor = theme.colors.lightOrange
         technicalInfoButton.action = { [weak self] in
             self?.listener?.aboutOverviewRequestsRouteToTechnicalInformation()
         }

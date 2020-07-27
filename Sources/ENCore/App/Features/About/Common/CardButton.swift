@@ -84,14 +84,16 @@ final class CardButton: Button {
         }
 
         cardImageView.snp.makeConstraints { maker in
-            maker.trailing.bottom.equalToSuperview()
+            maker.bottom.equalToSuperview()
 
             if cardType == .short {
                 maker.width.equalTo(80 * imageAspectRatio)
                 maker.height.equalTo(80)
+                maker.trailing.equalToSuperview()
             } else {
-                maker.leading.equalToSuperview()
-                maker.top.equalTo(subtitleLabel.snp.bottom).inset(4)
+                maker.leading.trailing.equalToSuperview().inset(16)
+                maker.top.equalTo(subtitleLabel.snp.bottom).offset(4)
+                maker.height.equalTo(cardImageView.snp.width).dividedBy(imageAspectRatio)
             }
         }
 
