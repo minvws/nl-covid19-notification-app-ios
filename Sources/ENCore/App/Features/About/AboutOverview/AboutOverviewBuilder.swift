@@ -12,6 +12,7 @@ import Foundation
 protocol AboutOverviewListener: AnyObject {
     func aboutOverviewRequestsDismissal(shouldDismissViewController: Bool)
     func aboutOverviewRequestsRouteTo(question: HelpQuestion)
+    func aboutOverviewRequestsRouteToAppInformation()
 }
 
 protocol AboutOverviewBuildable {

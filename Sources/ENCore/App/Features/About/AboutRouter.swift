@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener {
+protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener {
     var router: AboutRouting? { get set }
     func push(viewController: ViewControllable, animated: Bool)
     func dismiss(viewController: ViewControllable, animated: Bool)
@@ -17,9 +17,13 @@ protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDet
 
 final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
 
-    init(viewController: AboutViewControllable, aboutOverviewBuilder: AboutOverviewBuildable, helpDetailBuilder: HelpDetailBuildable) {
+    init(viewController: AboutViewControllable,
+         aboutOverviewBuilder: AboutOverviewBuildable,
+         helpDetailBuilder: HelpDetailBuildable,
+         appInformationBuilder: AppInformationBuildable) {
         self.helpDetailBuilder = helpDetailBuilder
         self.aboutOverviewBuilder = aboutOverviewBuilder
+        self.appInformationBuilder = appInformationBuilder
         super.init(viewController: viewController)
         viewController.router = self
     }
@@ -62,6 +66,13 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
         }
     }
 
+    func routeToAppInformation() {
+        let appInformationViewController = appInformationBuilder.build(withListener: viewController)
+        self.appInformationViewController = aboutOverviewViewController
+
+        viewController.push(viewController: appInformationViewController, animated: true)
+    }
+
     // MARK: - Private
 
     private let helpDetailBuilder: HelpDetailBuildable
@@ -69,4 +80,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
 
     private let aboutOverviewBuilder: AboutOverviewBuildable
     private var aboutOverviewViewController: ViewControllable?
+
+    private let appInformationBuilder: AppInformationBuildable
+    private var appInformationViewController: ViewControllable?
 }

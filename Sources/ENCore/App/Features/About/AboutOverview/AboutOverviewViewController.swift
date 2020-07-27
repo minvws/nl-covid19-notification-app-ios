@@ -117,6 +117,10 @@ final class AboutOverviewViewController: ViewController, UIAdaptivePresentationC
 
         let button = CardButton(title: "This is a test title", subtitle: "And a test subtile to check layout", image: UIImage.githubLogo, theme: theme)
         button.backgroundColor = theme.colors.inactive
+        button.action = { [weak self] in
+            self?.listener?.aboutOverviewRequestsRouteToAppInformation()
+        }
+
         headerView.addSections([button])
 
         return headerView

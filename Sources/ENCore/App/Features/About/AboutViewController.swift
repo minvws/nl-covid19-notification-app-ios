@@ -16,10 +16,10 @@ protocol AboutRouting: Routing {
     func routeToHelpQuestion(question: HelpQuestion)
     func dismissHelpQuestion(shouldDismissViewController: Bool)
     func detachAboutOverview(shouldDismissViewController: Bool)
+    func routeToAppInformation()
 }
 
 final class AboutViewController: NavigationController, AboutViewControllable, UIAdaptivePresentationControllerDelegate {
-
     weak var router: AboutRouting?
 
     init(listener: AboutListener, theme: Theme) {
@@ -51,6 +51,10 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     func aboutOverviewRequestsRouteTo(question: HelpQuestion) {
         router?.routeToHelpQuestion(question: question)
+    }
+
+    func aboutOverviewRequestsRouteToAppInformation() {
+        router?.routeToAppInformation()
     }
 
     // MARK: - HelpDetailListener
