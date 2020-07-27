@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener {
+protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener {
     var router: AboutRouting? { get set }
     func push(viewController: ViewControllable, animated: Bool)
     func dismiss(viewController: ViewControllable, animated: Bool)
@@ -20,10 +20,12 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
     init(viewController: AboutViewControllable,
          aboutOverviewBuilder: AboutOverviewBuildable,
          helpDetailBuilder: HelpDetailBuildable,
-         appInformationBuilder: AppInformationBuildable) {
+         appInformationBuilder: AppInformationBuildable,
+         technicalInformationBuilder: TechnicalInformationBuildable) {
         self.helpDetailBuilder = helpDetailBuilder
         self.aboutOverviewBuilder = aboutOverviewBuilder
         self.appInformationBuilder = appInformationBuilder
+        self.technicalInformationBuilder = technicalInformationBuilder
         super.init(viewController: viewController)
         viewController.router = self
     }
@@ -73,6 +75,13 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
         viewController.push(viewController: appInformationViewController, animated: true)
     }
 
+    func routeToTechninalInformation() {
+        let technicalInformationRouter = technicalInformationBuilder.build(withListener: viewController)
+        self.technicalInformationRouter = technicalInformationRouter
+
+        viewController.push(viewController: technicalInformationRouter.viewControllable, animated: true)
+    }
+
     // MARK: - Private
 
     private let helpDetailBuilder: HelpDetailBuildable
@@ -83,4 +92,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
 
     private let appInformationBuilder: AppInformationBuildable
     private var appInformationViewController: ViewControllable?
+
+    private let technicalInformationBuilder: TechnicalInformationBuildable
+    private var technicalInformationRouter: Routing?
 }

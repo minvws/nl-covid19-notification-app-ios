@@ -22,7 +22,7 @@ protocol AboutDependency {
     var theme: Theme { get }
 }
 
-private final class AboutDependencyProvider: DependencyProvider<AboutDependency>, AboutOverviewDependency, HelpDetailDependency, AppInformationDependency {
+private final class AboutDependencyProvider: DependencyProvider<AboutDependency>, AboutOverviewDependency, HelpDetailDependency, AppInformationDependency, TechnicalInformationDependency {
 
     // MARK: - HelpOverviewDependency
 
@@ -47,6 +47,10 @@ private final class AboutDependencyProvider: DependencyProvider<AboutDependency>
     var appInformationBuilder: AppInformationBuildable {
         return AppInformationBuilder(dependency: self)
     }
+
+    var technicalInformationBuilder: TechnicalInformationBuildable {
+        return TechnicalInformationBuilder(dependency: self)
+    }
 }
 
 final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
@@ -59,6 +63,7 @@ final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
         return AboutRouter(viewController: viewController,
                            aboutOverviewBuilder: dependencyProvider.overviewBuilder,
                            helpDetailBuilder: dependencyProvider.detailBuilder,
-                           appInformationBuilder: dependencyProvider.appInformationBuilder)
+                           appInformationBuilder: dependencyProvider.appInformationBuilder,
+                           technicalInformationBuilder: dependencyProvider.technicalInformationBuilder)
     }
 }

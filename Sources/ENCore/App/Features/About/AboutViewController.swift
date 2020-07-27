@@ -17,6 +17,7 @@ protocol AboutRouting: Routing {
     func dismissHelpQuestion(shouldDismissViewController: Bool)
     func detachAboutOverview(shouldDismissViewController: Bool)
     func routeToAppInformation()
+    func routeToTechninalInformation()
 }
 
 final class AboutViewController: NavigationController, AboutViewControllable, UIAdaptivePresentationControllerDelegate {
@@ -55,6 +56,10 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     func aboutOverviewRequestsRouteToAppInformation() {
         router?.routeToAppInformation()
+    }
+
+    func aboutOverviewRequestsRouteToTechnicalInformation() {
+        router?.routeToTechninalInformation()
     }
 
     // MARK: - HelpDetailListener
