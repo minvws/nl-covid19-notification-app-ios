@@ -14,6 +14,7 @@ protocol MoreInformationViewControllable: ViewControllable {}
 /// @mockable
 protocol MoreInformationListener: AnyObject {
     func moreInformationRequestsAbout()
+    func moreInformationRequestsSharing()
     func moreInformationRequestsReceivedNotification()
     func moreInformationRequestsInfected()
     func moreInformationRequestsRequestTest()

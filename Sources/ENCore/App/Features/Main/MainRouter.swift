@@ -9,7 +9,8 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, MessageListener, EnableSettingListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener {
+
     var router: MainRouting? { get set }
 
     func embed(stackedViewController: ViewControllable)
@@ -24,6 +25,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          statusBuilder: StatusBuildable,
          moreInformationBuilder: MoreInformationBuildable,
          aboutBuilder: AboutBuildable,
+         shareBuilder: ShareSheetBuildable,
          receivedNotificationBuilder: ReceivedNotificationBuildable,
          requestTestBuilder: RequestTestBuildable,
          infectedBuilder: InfectedBuildable,
@@ -32,6 +34,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
+        self.shareBuilder = shareBuilder
         self.receivedNotificationBuilder = receivedNotificationBuilder
         self.requestTestBuilder = requestTestBuilder
         self.infectedBuilder = infectedBuilder
@@ -81,6 +84,28 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
         if shouldHideViewController {
             viewController.dismiss(viewController: aboutRouter.viewControllable, animated: true)
+        }
+    }
+
+    func routeToSharing() {
+        guard shareViewController == nil else {
+            return
+        }
+
+        let shareViewController = shareBuilder.build(withListener: viewController, items: [])
+        self.shareViewController = shareViewController
+
+        viewController.present(viewController: shareViewController, animated: true)
+    }
+
+    func detachSharing(shouldHideViewController: Bool) {
+        guard let shareViewController = shareViewController else {
+            return
+        }
+        self.shareViewController = nil
+
+        if shouldHideViewController {
+            viewController.dismiss(viewController: shareViewController, animated: true)
         }
     }
 
@@ -207,6 +232,9 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let aboutBuilder: AboutBuildable
     private var aboutRouter: Routing?
+
+    private let shareBuilder: ShareSheetBuildable
+    private var shareViewController: ViewControllable?
 
     private let receivedNotificationBuilder: ReceivedNotificationBuildable
     private var receivedNotificationViewController: ViewControllable?

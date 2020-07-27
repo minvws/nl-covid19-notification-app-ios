@@ -11,6 +11,7 @@ import UIKit
 
 enum MoreInformationIdentifier {
     case about
+    case share
     case infected
     case receivedNotification
     case requestTest
@@ -65,6 +66,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         switch identifier {
         case .about:
             listener?.moreInformationRequestsAbout()
+        case .share:
+            listener?.moreInformationRequestsSharing()
         case .infected:
             listener?.moreInformationRequestsInfected()
         case .receivedNotification:
@@ -81,6 +84,11 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
                                                          icon: .about,
                                                          title: .moreInformationCellAboutTitle,
                                                          subtitle: .moreInformationCellAboutSubtitle)
+
+        let shareAppModel = MoreInformationCellViewModel(identifier: .share,
+                                                         icon: .share,
+                                                         title: .moreInformationCellShareTitle,
+                                                         subtitle: .moreInformationCellShareSubtitle)
 
         let receivedNotificationModel = MoreInformationCellViewModel(identifier: .receivedNotification,
                                                                      icon: .warning,
@@ -99,6 +107,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         return [
             aboutAppModel,
+            shareAppModel,
             receivedNotificationModel,
             requestTestModel,
             infectedModel

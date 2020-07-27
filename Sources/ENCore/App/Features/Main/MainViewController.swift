@@ -19,6 +19,9 @@ protocol MainRouting: Routing {
     func routeToAboutApp()
     func detachAboutApp(shouldHideViewController: Bool)
 
+    func routeToSharing()
+    func detachSharing(shouldHideViewController: Bool)
+
     func routeToReceivedNotification()
     func detachReceivedNotification(shouldDismissViewController: Bool)
 
@@ -129,6 +132,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToAboutApp()
     }
 
+    func moreInformationRequestsSharing() {
+        router?.routeToSharing()
+    }
+
     func moreInformationRequestsReceivedNotification() {
         router?.routeToReceivedNotification()
     }
@@ -145,6 +152,26 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func aboutRequestsDismissal(shouldHideViewController: Bool) {
         router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
+    }
+
+    // MARK: - ShareSheetListener
+
+    func shareSheetDidComplete() {
+        router?.detachSharing(shouldHideViewController: true)
+    }
+
+    func displayShareSheet(completion: @escaping (() -> ())) {
+        exposureController.getAppVersionInformation { data in
+            if let url = data?.appStoreURL, let storeLink = URL(string: url) {
+                let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
+                activityVC.completionWithItemsHandler = { _, _, _, _ in
+                    completion()
+                }
+                self.present(activityVC, animated: true)
+            } else {
+                self.logError("Could retreive a AppStoreUrl")
+            }
+        }
     }
 
     // MARK: - ReceivedNotificationListner
@@ -211,10 +238,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                                                 preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: .cancel, style: .default) { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
-        })
+            })
         alertController.addAction(UIAlertAction(title: .mainConfirmNotificationRemovalConfirm, style: .default) { [weak self] _ in
             self?.exposureController.confirmExposureNotification()
-        })
+            })
         present(alertController, animated: true, completion: nil)
     }
 
@@ -277,7 +304,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 self?.logDebug("Finished `updateWhenRequired`")
             }, receiveValue: { _ in
                 // Do nothing
-            }).store(in: &disposeBag)
+                }).store(in: &disposeBag)
     }
 
     private func requestExposureNotificationPermission() {

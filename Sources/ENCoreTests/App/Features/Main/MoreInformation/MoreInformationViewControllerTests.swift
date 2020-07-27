@@ -40,6 +40,12 @@ final class MoreInformationViewControllerTests: TestCase {
         XCTAssertEqual(listener.moreInformationRequestsAboutCallCount, 1)
     }
 
+    func test_didSelectItem_share() {
+        viewController.didSelect(identifier: .share)
+
+        XCTAssertEqual(listener.moreInformationRequestsSharingCallCount, 1)
+    }
+
     func test_didSelectItem_infected() {
         viewController.didSelect(identifier: .infected)
 
