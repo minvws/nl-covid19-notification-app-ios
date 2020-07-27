@@ -44,7 +44,10 @@ final class AboutManager: AboutManaging {
             HelpQuestion(
                 theme: theme,
                 question: .helpFaqPowerUsageTitle,
-                answer: .helpFaqPowerUsageDescription),
+                answer: .helpFaqPowerUsageDescription)
+        ])
+
+        aboutSection = AboutSection(title: .moreInformationAboutTitle, questions: [
             HelpQuestion(
                 theme: theme,
                 question: .helpPrivacyPolicyTitle,
@@ -54,10 +57,7 @@ final class AboutManager: AboutManaging {
                 theme: theme,
                 question: .helpAccessibilityTitle,
                 answer: "",
-                link: .helpAccessibilityLink)
-        ])
-
-        aboutSection = AboutSection(title: .moreInformationAboutTitle, questions: [
+                link: .helpAccessibilityLink),
             HelpQuestion(
                 theme: theme,
                 question: .helpColofonTitle,

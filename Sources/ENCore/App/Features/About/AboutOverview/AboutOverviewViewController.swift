@@ -9,7 +9,7 @@ import ENFoundation
 import SnapKit
 import UIKit
 
-final class AboutOverviewViewController: ViewController, UIAdaptivePresentationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
+final class AboutOverviewViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
     init(listener: AboutOverviewListener, aboutManager: AboutManaging, theme: Theme) {
         self.listener = listener
@@ -136,7 +136,18 @@ final class AboutOverviewViewController: ViewController, UIAdaptivePresentationC
         let headerView = SectionHeaderView(theme: theme)
         headerView.sectionHeaderLabel.text = aboutManager.aboutSection.title
 
-        // TODO: add call callcenter button when strings are available
+        let helpdeskButton = CardButton(title: .aboutHelpdeskTitle, subtitle: .aboutHelpdeskSubtitle, image: UIImage.aboutHelpdesk, theme: theme)
+        helpdeskButton.backgroundColor = theme.colors.headerBackgroundBlue
+        helpdeskButton.action = { [weak self] in
+            let urlString = "tel://08001280"
+            if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                self?.logError("Unable to open \(urlString)")
+            }
+        }
+
+        headerView.addSections([helpdeskButton])
 
         return headerView
     }()

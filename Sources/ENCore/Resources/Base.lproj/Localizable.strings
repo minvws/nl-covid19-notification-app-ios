@@ -210,6 +210,9 @@
 "moreInformation.about.technical.title" = "Hoe werkt de app?";
 "moreInformation.about.technical.description" = "Bekijk de technische uitleg";
 
+"moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
+"moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
+
 "moreInformation.about.faq.reason" = "Waarom is deze app belangrijk?";
 "moreInformation.about.faq.location" =" Kan de app mijn locatie zien?";
 "moreInformation.about.faq.anonymous" = "Hoe kan de app anoniem zijn?";

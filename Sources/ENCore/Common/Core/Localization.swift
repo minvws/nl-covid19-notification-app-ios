@@ -242,6 +242,8 @@ extension String {
     static var aboutTechnicalInformationDescription: String { return Localization.string(for: "moreInformation.about.technical.description") }
     static var aboutAppInformationTitle: String { return Localization.string(for: "moreInformation.about.onboarding.title") }
     static var aboutAppInformationDescription: String { return Localization.string(for: "moreInformation.about.onboarding.description") }
+    static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
+    static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
 
     // MARK: - MoreInformation | Infected
 

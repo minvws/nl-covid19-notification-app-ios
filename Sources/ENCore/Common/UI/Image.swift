@@ -59,5 +59,5 @@ extension UIImage {
     static var githubLogo: UIImage? { return Image.named("github") }
     static var aboutAppInformation: UIImage? { return Image.named("AboutAppInformation") }
     static var aboutTechnicalInformation: UIImage? { return Image.named("AboutTechnicalInformation") }
-    static var aboutCallCenter: UIImage? { return Image.named("AboutCallCenter") }
+    static var aboutHelpdesk: UIImage? { return Image.named("AboutHelpdesk") }
 }
