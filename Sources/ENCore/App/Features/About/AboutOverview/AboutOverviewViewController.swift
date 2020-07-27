@@ -136,9 +136,7 @@ final class AboutOverviewViewController: ViewController, UIAdaptivePresentationC
         let headerView = SectionHeaderView(theme: theme)
         headerView.sectionHeaderLabel.text = aboutManager.aboutSection.title
 
-        let button = CardButton(title: "This is a test title", subtitle: "And a test subtile to check layout", image: UIImage.githubLogo, theme: theme)
-        button.backgroundColor = theme.colors.inactive
-        headerView.addSections([button])
+        // TODO: add call callcenter button when strings are available
 
         return headerView
     }()

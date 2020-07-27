@@ -16,6 +16,7 @@ protocol AboutOverviewListener: AnyObject {
     func aboutOverviewRequestsRouteToTechnicalInformation()
 }
 
+/// @mockable
 protocol AboutOverviewBuildable {
     func build(withListener listener: AboutOverviewListener) -> ViewControllable
 }

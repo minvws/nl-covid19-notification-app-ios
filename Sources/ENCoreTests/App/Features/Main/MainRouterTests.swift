@@ -17,7 +17,6 @@ final class MainRouterTests: XCTestCase {
     private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
     private let requestTestBuilder = RequestTestBuildableMock()
     private let infectedBuilder = InfectedBuildableMock()
-    private let helpBuilder = HelpBuildableMock()
     private let messageBuilder = MessageBuildableMock()
     private let enableSettingBuilder = EnableSettingBuildableMock()
 
@@ -33,7 +32,6 @@ final class MainRouterTests: XCTestCase {
                             receivedNotificationBuilder: receivedNotificationBuilder,
                             requestTestBuilder: requestTestBuilder,
                             infectedBuilder: infectedBuilder,
-                            helpBuilder: helpBuilder,
                             messageBuilder: messageBuilder,
                             enableSettingBuilder: enableSettingBuilder)
     }
@@ -128,16 +126,16 @@ final class MainRouterTests: XCTestCase {
         XCTAssert(receivedListener === viewController)
     }
 
-    func test_routeToHelp_callsBuildAndPresent() {
-        helpBuilder.buildHandler = { _, _ in RoutingMock() }
+    func test_routeToAbout_callsBuildAndPresent() {
+        aboutBuilder.buildHandler = { _ in RoutingMock() }
 
-        XCTAssertEqual(helpBuilder.buildCallCount, 0)
+        XCTAssertEqual(aboutBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.presentCallCount, 0)
 
         router.routeToAboutApp()
 
         XCTAssertEqual(viewController.presentCallCount, 1)
-        XCTAssertEqual(helpBuilder.buildCallCount, 1)
+        XCTAssertEqual(aboutBuilder.buildCallCount, 1)
     }
 
     func test_detachHelp_shouldHideViewController_callsViewController() {
