@@ -185,7 +185,12 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(receivedPendingRequests[1].expiryDate, expiryDate)
     }
 
-    func test_noKeys_doesNotReachOutToNetwork() {
+    func test_noKeys_doesReachOutToNetwork() {
+
+        networkController.postKeysHandler = { keys, confirmationKey, padding in
+            return Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher()
+        }
+
         operation = createOperation(withKeys: [])
 
         XCTAssertEqual(networkController.postKeysCallCount, 0)
@@ -194,7 +199,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
             .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
             .disposeOnTearDown(of: self)
 
-        XCTAssertEqual(networkController.postKeysCallCount, 0)
+        XCTAssertEqual(networkController.postKeysCallCount, 1)
     }
 
     // MARK: - Private

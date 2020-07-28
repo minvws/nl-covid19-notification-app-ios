@@ -24,11 +24,6 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
     func execute() -> AnyPublisher<(), ExposureDataError> {
         let keys = filterOutAlreadyUploadedKeys(diagnosisKeys)
 
-        guard keys.isEmpty == false else {
-            // no keys to upload, just return without reaching out to the network
-            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-        }
-
         return networkController
             // execute network request
             .postKeys(keys: keys, labConfirmationKey: labConfirmationKey, padding: padding)
