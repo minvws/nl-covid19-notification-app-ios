@@ -22,7 +22,7 @@ platform :ios do
 
   desc "Release master version of CoronaMelder to Firebase"
   lane :release_test_build do 
-    tests
+    # tests
     build_app(
       scheme: "EN", 
       configuration: "Debug",
