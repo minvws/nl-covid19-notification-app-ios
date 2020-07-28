@@ -9,16 +9,12 @@ import ENFoundation
 import SnapKit
 import UIKit
 
-final class AboutOverviewViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
+final class AboutOverviewViewController: ViewController, Logging, UITableViewDelegate, UITableViewDataSource {
 
     init(listener: AboutOverviewListener, aboutManager: AboutManaging, theme: Theme) {
         self.listener = listener
         self.aboutManager = aboutManager
         super.init(theme: theme)
-    }
-
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        listener?.aboutOverviewRequestsDismissal(shouldDismissViewController: false)
     }
 
     // MARK: - ViewController Lifecycle
@@ -35,11 +31,7 @@ final class AboutOverviewViewController: ViewController, Logging, UIAdaptivePres
         internalView.tableView.dataSource = self
         internalView.tableView.delegate = self
 
-        navigationItem.rightBarButtonItem = closeBarButtonItem
-    }
-
-    @objc func didTapClose() {
-        listener?.aboutOverviewRequestsDismissal(shouldDismissViewController: true)
+        navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
     }
 
     // MARK: - TableView
@@ -105,10 +97,6 @@ final class AboutOverviewViewController: ViewController, Logging, UIAdaptivePres
     private let aboutManager: AboutManaging
     private weak var listener: AboutOverviewListener?
     private lazy var internalView: AboutView = AboutView(theme: self.theme)
-
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                          target: self,
-                                                          action: #selector(didTapClose))
 
     private lazy var questionsSectionHeader: SectionHeaderView = {
         let headerView = SectionHeaderView(theme: theme)

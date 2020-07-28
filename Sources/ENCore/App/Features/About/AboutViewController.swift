@@ -14,10 +14,10 @@ import WebKit
 protocol AboutRouting: Routing {
     func routeToOverview()
     func routeToHelpQuestion(question: HelpQuestion)
-    func dismissHelpQuestion(shouldDismissViewController: Bool)
-    func detachAboutOverview(shouldDismissViewController: Bool)
     func routeToAppInformation()
-    func routeToTechninalInformation()
+    func routeToTechnicalInformation()
+    func detachHelpQuestion()
+    func detachAboutOverview()
 }
 
 final class AboutViewController: NavigationController, AboutViewControllable, UIAdaptivePresentationControllerDelegate {
@@ -27,10 +27,15 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         self.listener = listener
         super.init(theme: theme)
         modalPresentationStyle = .popover
+        navigationItem.rightBarButtonItem = closeBarButtonItem
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         listener?.aboutRequestsDismissal(shouldHideViewController: false)
+    }
+
+    @objc func didTapClose() {
+        listener?.aboutRequestsDismissal(shouldHideViewController: true)
     }
 
     // MARK: - AboutViewControllable
@@ -39,16 +44,7 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         pushViewController(viewController.uiviewController, animated: animated)
     }
 
-    func dismiss(viewController: ViewControllable, animated: Bool) {
-        viewController.uiviewController.dismiss(animated: animated)
-    }
-
     // MARK: - AboutOverviewListener
-
-    func aboutOverviewRequestsDismissal(shouldDismissViewController: Bool) {
-        router?.detachAboutOverview(shouldDismissViewController: shouldDismissViewController)
-        listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
-    }
 
     func aboutOverviewRequestsRouteTo(question: HelpQuestion) {
         router?.routeToHelpQuestion(question: question)
@@ -59,7 +55,7 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
     }
 
     func aboutOverviewRequestsRouteToTechnicalInformation() {
-        router?.routeToTechninalInformation()
+        router?.routeToTechnicalInformation()
     }
 
     // MARK: - HelpDetailListener
@@ -67,7 +63,8 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
     func helpDetailDidTapEnableAppButton() {}
 
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
-        router?.dismissHelpQuestion(shouldDismissViewController: shouldDismissViewController)
+        router?.detachHelpQuestion()
+        listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
     }
 
     // MARK: - ViewController Lifecycle
@@ -80,4 +77,7 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
     // MARK: - Private
 
     private weak var listener: AboutListener?
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                          target: self,
+                                                          action: #selector(didTapClose))
 }

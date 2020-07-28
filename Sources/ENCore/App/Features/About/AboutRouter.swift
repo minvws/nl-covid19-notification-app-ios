@@ -12,7 +12,6 @@ import UIKit
 protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener {
     var router: AboutRouting? { get set }
     func push(viewController: ViewControllable, animated: Bool)
-    func dismiss(viewController: ViewControllable, animated: Bool)
 }
 
 final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
@@ -31,9 +30,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
     }
 
     func routeToOverview() {
-        guard aboutOverviewViewController == nil else {
-            return
-        }
+        guard aboutOverviewViewController == nil else { return }
 
         let aboutOverviewViewController = aboutOverviewBuilder.build(withListener: viewController)
         self.aboutOverviewViewController = aboutOverviewViewController
@@ -41,13 +38,8 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
         viewController.push(viewController: aboutOverviewViewController, animated: false)
     }
 
-    func detachAboutOverview(shouldDismissViewController: Bool) {
-        guard let aboutOverviewViewController = aboutOverviewViewController else { return }
+    func detachAboutOverview() {
         self.aboutOverviewViewController = nil
-
-        if shouldDismissViewController {
-            viewController.dismiss(viewController: aboutOverviewViewController, animated: true)
-        }
     }
 
     func routeToHelpQuestion(question: HelpQuestion) {
@@ -59,13 +51,8 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
         viewController.push(viewController: helpDetailViewController, animated: true)
     }
 
-    func dismissHelpQuestion(shouldDismissViewController: Bool) {
-        guard let helpDetailViewController = helpDetailViewController else { return }
+    func detachHelpQuestion() {
         self.helpDetailViewController = nil
-
-        if shouldDismissViewController {
-            viewController.dismiss(viewController: helpDetailViewController, animated: true)
-        }
     }
 
     func routeToAppInformation() {
@@ -75,7 +62,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
         viewController.push(viewController: appInformationViewController, animated: true)
     }
 
-    func routeToTechninalInformation() {
+    func routeToTechnicalInformation() {
         let technicalInformationRouter = technicalInformationBuilder.build(withListener: viewController)
         self.technicalInformationRouter = technicalInformationRouter
 

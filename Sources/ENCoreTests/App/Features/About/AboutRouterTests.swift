@@ -65,16 +65,6 @@ final class AboutRouterTests: TestCase {
         XCTAssert(receivedListener === viewController)
     }
 
-    func test_detachOverview_dismissViewController() {
-        router.routeToOverview()
-
-        XCTAssertEqual(viewController.dismissCallCount, 0)
-
-        router.detachAboutOverview(shouldDismissViewController: true)
-
-        XCTAssertEqual(viewController.dismissCallCount, 1)
-    }
-
     func test_routeToHelpDetail_callsBuildAndPush() {
         var receivedListener: HelpDetailListener!
         helpDetailBuilder.buildHandler = { listener, _, _ in
@@ -104,7 +94,7 @@ final class AboutRouterTests: TestCase {
     func test_routeToTechnicalInformation_callsPush() {
         XCTAssertEqual(viewController.pushCallCount, 0)
 
-        router.routeToTechninalInformation()
+        router.routeToTechnicalInformation()
 
         XCTAssertEqual(viewController.pushCallCount, 1)
     }

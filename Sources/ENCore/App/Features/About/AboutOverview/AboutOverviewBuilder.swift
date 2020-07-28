@@ -10,7 +10,6 @@ import Foundation
 
 /// @mockable
 protocol AboutOverviewListener: AnyObject {
-    func aboutOverviewRequestsDismissal(shouldDismissViewController: Bool)
     func aboutOverviewRequestsRouteTo(question: HelpQuestion)
     func aboutOverviewRequestsRouteToAppInformation()
     func aboutOverviewRequestsRouteToTechnicalInformation()
