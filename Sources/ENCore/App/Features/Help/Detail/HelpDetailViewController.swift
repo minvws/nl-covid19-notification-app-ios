@@ -46,9 +46,8 @@ final class HelpDetailViewController: ViewController, Logging {
         }
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
-        internalView.acceptButton.isHidden = !shouldShowEnableAppButton
 
-        navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
+        navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
     }
 
     @objc func acceptButtonPressed() {
@@ -60,7 +59,7 @@ final class HelpDetailViewController: ViewController, Logging {
     private weak var listener: HelpDetailListener?
     private let shouldShowEnableAppButton: Bool
     private let question: HelpQuestion
-    private lazy var internalView: HelpView = HelpView(theme: self.theme)
+    private lazy var internalView: HelpView = HelpView(theme: theme, shouldDisplayButton: shouldShowEnableAppButton)
 }
 
 private final class HelpView: View {
@@ -105,18 +104,28 @@ private final class HelpView: View {
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [titleLabel, contentTextView, webView, gradientImageView, acceptButton]
+    init(theme: Theme, shouldDisplayButton: Bool) {
+        self.shouldDisplayButton = shouldDisplayButton
+        super.init(theme: theme)
+    }
 
     override func build() {
         super.build()
 
-        viewsInDisplayOrder.forEach { addSubview($0) }
+        let requiredViews = [titleLabel, contentTextView, webView, gradientImageView]
+        requiredViews.forEach { addSubview($0) }
+
+        if shouldDisplayButton {
+            addSubview(acceptButton)
+        }
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
         var constraints = [[NSLayoutConstraint]()]
+
+        let bottomAnchor = shouldDisplayButton ? acceptButton.topAnchor : self.bottomAnchor
 
         constraints.append([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
@@ -129,30 +138,36 @@ private final class HelpView: View {
             contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
             contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
             contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
-            contentTextView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
+            contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
         ])
 
         constraints.append([
             webView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
             webView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             webView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            webView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
+            webView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
         ])
 
         constraints.append([
             gradientImageView.heightAnchor.constraint(equalToConstant: 25),
             gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gradientImageView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
+            gradientImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
         ])
 
-        constraints.append([
-            acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            acceptButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
+        if shouldDisplayButton {
+            constraints.append([
+                acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+                acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+                acceptButton.heightAnchor.constraint(equalToConstant: 50)
+            ])
+        }
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
+
+    // MARK: - Private
+
+    private let shouldDisplayButton: Bool
 }
