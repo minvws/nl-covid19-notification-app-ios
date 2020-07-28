@@ -61,7 +61,8 @@ final class AboutManager: AboutManaging {
             HelpQuestion(
                 theme: theme,
                 question: .helpColofonTitle,
-                answer: .helpColofonDescription)
+                answer: "",
+                link: .helpColofonLink)
         ])
     }
 }

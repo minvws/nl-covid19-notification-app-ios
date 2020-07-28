@@ -90,7 +90,7 @@
 "help.faq.privacy_policy.title" = "Privacyverklaring";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
 "help.faq.colofon.title" = "Colofon";
-"help.faq.colofon.description" = "<p>De CoronaMelder is ontwikkeld door het Ministerie van Volksgezondheid, Welzijn en Sport in samenwerking met het RIVM en de landelijke GGD'en. De app had niet tot stand kunnen komen met de hulp van tientallen experts en ervaringsdeskundigen. Er is alles aan gedaan om te zorgen voor een privacyvriendelijke, veilige en toegankelijke en gebruiksvriendelijke app om te helpen corona onder controle te krijgen.</p><br /><h2>Broncode</h2><br /><p>De broncode van de app en de achterliggende systemen zijn volledig openbaar. Je kunt alle code terugvinden op <a href='https://github.com/minvws'>GitHub</a>. Zo is de precieze werking van de app controleerbaar, en helpen de vele ogen bij het opsporen van eventuele kwetsbaarheden.<p><br /><h2>Gebruikte bibliotheken</h2><br /><p>De gebruikte bibliotheken voor de apps vind je hier:</p><ul><li>Android</li><li><a href='https://github.com/minvws/nl-covid19-notification-app-ios/tree/master/licenses'>iOS</a></li></ul>";
+"help.faq.colofon.link" = "https://coronamelder.nl/colofon ";
 "help.faq.accessibility.title" = "Toegankelijkheid";
 "help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
 
