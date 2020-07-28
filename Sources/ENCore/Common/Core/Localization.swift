@@ -42,6 +42,11 @@ public final class Localization {
 }
 
 extension String {
+
+    // MARK: - Helpdesk Phone Number
+
+    static var helpDeskPhoneNumber = "tel://08001280"
+
     // MARK: - General Texts
 
     static var ok: String { return Localization.string(for: "ok") }
