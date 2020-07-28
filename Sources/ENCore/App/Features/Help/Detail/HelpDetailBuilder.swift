@@ -14,6 +14,7 @@ protocol HelpDetailListener: AnyObject {
     func helpDetailDidTapEnableAppButton()
 }
 
+/// @mockable
 protocol HelpDetailBuildable {
     func build(withListener listener: HelpDetailListener,
                shouldShowEnableAppButton: Bool,

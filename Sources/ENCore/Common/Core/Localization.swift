@@ -42,6 +42,11 @@ public final class Localization {
 }
 
 extension String {
+
+    // MARK: - Helpdesk Phone Number
+
+    static var helpDeskPhoneNumber = "tel://08001280"
+
     // MARK: - General Texts
 
     static var ok: String { return Localization.string(for: "ok") }
@@ -141,7 +146,7 @@ extension String {
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
     static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
 
-    // MARK: - Help - What the app do
+    // MARK: - About - What the app do
 
     static var helpWhatAppDoesTitle: String { return Localization.string(for: "help.what_does_the_app_do.title") }
     static var helpWhatAppDoesProtectTitle: String { return Localization.string(for: "help.what_does_the_app_do.protect.title") }
@@ -155,7 +160,7 @@ extension String {
     static var helpWhatAppDoesExampleTrainTitle: String { return Localization.string(for: "help.what_does_the_app_do.example.train.title") }
     static var helpWhatAppDoesExampleTrainDescription: String { return Localization.string(for: "help.what_does_the_app_do.example.train.description") }
 
-    // MARK: - Help - TechnicalInformation
+    // MARK: - About - TechnicalInformation
 
     static var helpTechnicalInformationTitle: String { return Localization.string(for: "help.technical_explanation.title") }
     static var helpTechnicalInformationStep1Title: String { return Localization.string(for: "help.technical_explanation.step1.title") }
@@ -238,6 +243,12 @@ extension String {
     // MARK: - MoreInformation | About
 
     static var moreInformationAboutTitle: String { return Localization.string(for: "moreInformation.about.title") }
+    static var aboutTechnicalInformationTitle: String { return Localization.string(for: "moreInformation.about.technical.title") }
+    static var aboutTechnicalInformationDescription: String { return Localization.string(for: "moreInformation.about.technical.description") }
+    static var aboutAppInformationTitle: String { return Localization.string(for: "moreInformation.about.onboarding.title") }
+    static var aboutAppInformationDescription: String { return Localization.string(for: "moreInformation.about.onboarding.description") }
+    static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
+    static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
 
     // MARK: - MoreInformation | Infected
 

@@ -26,6 +26,7 @@ public protocol Colors: AnyObject {
     var viewControllerBackground: UIColor { get }
 
     var headerBackgroundBlue: UIColor { get }
+    var lightOrange: UIColor { get }
 }
 
 final class ENColors: Colors, Logging {
@@ -75,6 +76,10 @@ final class ENColors: Colors, Logging {
 
     var headerBackgroundBlue: UIColor {
         return color(for: "HeaderBackgroundBlue")
+    }
+
+    var lightOrange: UIColor {
+        return color(for: "LightOrange")
     }
 
     // MARK: - Private

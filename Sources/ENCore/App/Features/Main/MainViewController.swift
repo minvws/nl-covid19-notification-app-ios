@@ -159,12 +159,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachRequestTest(shouldDismissViewController: shouldDismissViewController)
     }
 
-    func helpRequestsEnableApp() {}
-
-    func helpRequestsDismissal(shouldHideViewController: Bool) {
-        router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
-    }
-
     // MARK: - InfectedListener
 
     func infectedWantsDismissal(shouldDismissViewController: Bool) {

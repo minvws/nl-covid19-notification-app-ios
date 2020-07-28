@@ -11,6 +11,7 @@ import Foundation
 /// @mockable
 protocol TechnicalInformationListener: AnyObject {}
 
+/// @mockable
 protocol TechnicalInformationBuildable {
     func build(withListener listener: TechnicalInformationListener) -> Routing
 }

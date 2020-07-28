@@ -11,6 +11,7 @@ import Foundation
 /// @mockable
 protocol AppInformationListener: AnyObject {}
 
+/// @mockable
 protocol AppInformationBuildable {
     func build(withListener listener: AppInformationListener) -> ViewControllable
 }

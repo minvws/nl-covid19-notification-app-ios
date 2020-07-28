@@ -26,10 +26,20 @@ final class CardButtonTests: TestCase {
     func test_snapshot_cardButton_typeShort_rendersCorrectly() {
         let shortButton = CardButton(title: "Bekijk broncode", subtitle: "Ga naar GitHub", image: UIImage.githubLogo, type: .short, theme: theme)
         shortButton.backgroundColor = theme.colors.tertiary
-        snapshotWithWrappingView(cardButton: shortButton)
+        assertSnapshot(matching: wrapped(cardButton: shortButton), as: .image())
     }
 
-    private func snapshotWithWrappingView(cardButton: CardButton) {
+    func test_snapshot_cardButton_typeLong_rendersCorrectly() {
+        let longButton = CardButton(title: "Test title",
+                                    subtitle: "And this is a long test subtitle so the line breaks",
+                                    image: UIImage.aboutAppInformation,
+                                    type: .long,
+                                    theme: theme)
+        longButton.backgroundColor = theme.colors.headerBackgroundBlue
+        assertSnapshot(matching: wrapped(cardButton: longButton), as: .image())
+    }
+
+    private func wrapped(cardButton: CardButton) -> UIView {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 420))
         view.addSubview(cardButton)
         cardButton.snp.makeConstraints { maker in
@@ -37,6 +47,6 @@ final class CardButtonTests: TestCase {
             maker.centerX.centerY.equalToSuperview()
         }
 
-        assertSnapshot(matching: view, as: .image())
+        return view
     }
 }

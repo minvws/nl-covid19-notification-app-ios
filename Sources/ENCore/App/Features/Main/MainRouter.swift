@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, MessageListener, EnableSettingListener {
     var router: MainRouting? { get set }
 
     func embed(stackedViewController: ViewControllable)
@@ -27,7 +27,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          receivedNotificationBuilder: ReceivedNotificationBuildable,
          requestTestBuilder: RequestTestBuildable,
          infectedBuilder: InfectedBuildable,
-         helpBuilder: HelpBuildable,
          messageBuilder: MessageBuildable,
          enableSettingBuilder: EnableSettingBuildable) {
         self.statusBuilder = statusBuilder
@@ -36,7 +35,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.receivedNotificationBuilder = receivedNotificationBuilder
         self.requestTestBuilder = requestTestBuilder
         self.infectedBuilder = infectedBuilder
-        self.helpBuilder = helpBuilder
         self.messageBuilder = messageBuilder
         self.enableSettingBuilder = enableSettingBuilder
 
@@ -66,23 +64,23 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     }
 
     func routeToAboutApp() {
-        guard helpRouter == nil else {
+        guard aboutRouter == nil else {
             return
         }
 
-        let helpRouter = helpBuilder.build(withListener: viewController, shouldShowEnableAppButton: false)
-        self.helpRouter = helpRouter
+        let aboutRouter = aboutBuilder.build(withListener: viewController)
+        self.aboutRouter = aboutRouter
 
-        viewController.present(viewController: helpRouter.viewControllable,
+        viewController.present(viewController: aboutRouter.viewControllable,
                                animated: true)
     }
 
     func detachAboutApp(shouldHideViewController: Bool) {
-        guard let helpRouter = helpRouter else { return }
-        self.helpRouter = nil
+        guard let aboutRouter = aboutRouter else { return }
+        self.aboutRouter = nil
 
         if shouldHideViewController {
-            viewController.dismiss(viewController: helpRouter.viewControllable, animated: true)
+            viewController.dismiss(viewController: aboutRouter.viewControllable, animated: true)
         }
     }
 
@@ -208,7 +206,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private var moreInformationViewController: ViewControllable?
 
     private let aboutBuilder: AboutBuildable
-    private var aboutViewController: ViewControllable?
+    private var aboutRouter: Routing?
 
     private let receivedNotificationBuilder: ReceivedNotificationBuildable
     private var receivedNotificationViewController: ViewControllable?
@@ -218,9 +216,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let infectedBuilder: InfectedBuildable
     private var infectedRouter: Routing?
-
-    private let helpBuilder: HelpBuildable
-    private var helpRouter: Routing?
 
     private let messageBuilder: MessageBuildable
     private var messageViewController: ViewControllable?
