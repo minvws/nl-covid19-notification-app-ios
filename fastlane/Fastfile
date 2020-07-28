@@ -22,7 +22,6 @@ platform :ios do
 
   desc "Release master version of CoronaMelder to Firebase"
   lane :release_test_build do 
-    # tests
     build_app(
       scheme: "EN", 
       configuration: "Debug",
@@ -34,6 +33,7 @@ platform :ios do
       app: ENV["FIREBASE_APP_IOS"],
       groups: "ios-latest",
       ipa_path: "./.build/EN.ipa",
+      firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
       release_notes_file: File.expand_path("release_notes.txt"),
     )
   end
