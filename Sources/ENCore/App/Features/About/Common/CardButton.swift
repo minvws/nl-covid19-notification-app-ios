@@ -59,14 +59,14 @@ final class CardButton: Button {
     private func setupConstraints() {
 
         cardTitleLabel.snp.makeConstraints { maker in
-            maker.top.leading.equalToSuperview().inset(16)
+            maker.leading.top.equalToSuperview().inset(16)
 
             let trailingConstraint = cardType == .short ? cardImageView.snp.leading : snp.trailing
             maker.trailing.equalTo(trailingConstraint).inset(16)
         }
 
         subtitleLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(cardTitleLabel.snp.bottom).offset(4)
+            maker.top.equalTo(cardTitleLabel.snp.bottom).offset(6)
             maker.leading.equalToSuperview().inset(16)
 
             let trailingConstraint = cardType == .short ? cardImageView.snp.leading : snp.trailing
@@ -87,8 +87,8 @@ final class CardButton: Button {
             maker.bottom.equalToSuperview()
 
             if cardType == .short {
-                maker.width.equalTo(80 * imageAspectRatio)
-                maker.height.equalTo(80)
+                maker.width.equalTo(78 * imageAspectRatio)
+                maker.height.equalTo(78)
                 maker.trailing.equalToSuperview()
             } else {
                 maker.leading.trailing.equalToSuperview().inset(16)
@@ -98,7 +98,7 @@ final class CardButton: Button {
         }
 
         snp.makeConstraints { maker in
-            maker.height.greaterThanOrEqualTo(84)
+            maker.height.greaterThanOrEqualTo(80)
         }
     }
 }
