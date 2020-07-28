@@ -50,11 +50,7 @@ final class HelpManager: HelpManaging {
                 theme: theme,
                 question: .helpAccessibilityTitle,
                 answer: "",
-                link: .helpAccessibilityLink),
-            HelpQuestion(
-                theme: theme,
-                question: .helpColofonTitle,
-                answer: .helpColofonDescription)
+                link: .helpAccessibilityLink)
         ]
     }
 }
