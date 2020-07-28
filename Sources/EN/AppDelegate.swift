@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.5, *) {
             [
                 "nl.rijksoverheid.en.background-update",
+                "nl.rijksoverheid.en.background-status-check",
                 "nl.rijksoverheid.en.background-decoy-stop-keys",
                 "nl.rijksoverheid.en.background-decoy-sequence",
                 "nl.rijksoverheid.en.background-decoy-register"
