@@ -250,6 +250,25 @@ extension String {
     static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
 
+    static var aboutFaqReason: String { return Localization.string(for: "moreInformation.about.faq.reason") }
+    static var aboutFaqReasonAnswer: String { return Localization.string(for: "moreInformation.about.faq.reason.answer") }
+    static var aboutFaqLocation: String { return Localization.string(for: "moreInformation.about.faq.location") }
+    static var aboutFaqLocationAnswer: String { return Localization.string(for: "moreInformation.about.faq.location.answer") }
+    static var aboutFaqAnonymous: String { return Localization.string(for: "moreInformation.about.faq.anonymous") }
+    static var aboutFaqAnonymousAnswer: String { return Localization.string(for: "moreInformation.about.faq.anonymous.answer") }
+    static var aboutFaqNotification: String { return Localization.string(for: "moreInformation.about.faq.notification") }
+    static var aboutFaqNotificationAnswer: String { return Localization.string(for: "moreInformation.about.faq.notification.answer") }
+    static var aboutFaqUploadKeys: String { return Localization.string(for: "moreInformation.about.faq.upload_keys") }
+    static var aboutFaqUploadKeysAnswer: String { return Localization.string(for: "moreInformation.about.faq.upload_keys.answer") }
+    static var aboutFaqBluetooth: String { return Localization.string(for: "moreInformation.about.faq.bluetooth") }
+    static var aboutFaqBluetoothAnswer: String { return Localization.string(for: "moreInformation.about.faq.bluetooth.answer") }
+    static var aboutFaqPowerUsage: String { return Localization.string(for: "moreInformation.about.faq.power_usage") }
+    static var aboutFaqPowerUsageAnswer: String { return Localization.string(for: "moreInformation.about.faq.power_usage.answer") }
+    static var aboutFaqDeletion: String { return Localization.string(for: "moreInformation.about.faq.deletion") }
+    static var aboutFaqDeletionAnswer: String { return Localization.string(for: "moreInformation.about.faq.deletion.answer") }
+    static var aboutFaqLocationProvision: String { return Localization.string(for: "moreInformation.about.faq.location_provision") }
+    static var aboutFaqLocationProvisionAnswer: String { return Localization.string(for: "moreInformation.about.faq.location_provision.answer") }
+
     // MARK: - MoreInformation | Infected
 
     static var moreInformationInfectedTitle: String { return Localization.string(for: "moreInformation.infected.title") }
