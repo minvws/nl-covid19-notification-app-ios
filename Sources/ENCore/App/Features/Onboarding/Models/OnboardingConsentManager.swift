@@ -75,7 +75,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 animationName: nil,
                 summarySteps: nil,
                 primaryButtonTitle: .consentStep2PrimaryButton,
-                secondaryButtonTitle: .consentStep2SecondaryButton,
+                secondaryButtonTitle: nil,
                 hasNavigationBarSkipButton: true
             )
         )

@@ -31,7 +31,7 @@ final class OnboardingConsentStep: NSObject {
         return !summarySteps.isEmpty
     }
     var primaryButtonTitle: String = ""
-    var secondaryButtonTitle: String = ""
+    var secondaryButtonTitle: String?
     var hasNavigationBarSkipButton: Bool = false
 
     init(step: OnboardingConsentStepIndex,
@@ -42,7 +42,7 @@ final class OnboardingConsentStep: NSObject {
          animationName: String?,
          summarySteps: [OnboardingConsentSummaryStep]?,
          primaryButtonTitle: String,
-         secondaryButtonTitle: String,
+         secondaryButtonTitle: String?,
          hasNavigationBarSkipButton: Bool) {
 
         self.step = step

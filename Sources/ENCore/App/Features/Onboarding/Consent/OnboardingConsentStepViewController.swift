@@ -92,9 +92,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                     }
                 }
             case .bluetooth:
-                onboardingConsentManager.goToBluetoothSettings {
-                    self.goToNextStepOrCloseConsent()
-                }
+                self.listener?.displayBluetoothSettings()
             case .notifications:
                 onboardingConsentManager.askNotificationsAuthorization {
                     self.goToNextStepOrCloseConsent()
@@ -203,6 +201,7 @@ final class OnboardingConsentView: View {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.style = .secondary
+        button.isHidden = true
         return button
     }()
 
@@ -235,7 +234,7 @@ final class OnboardingConsentView: View {
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.width.equalToSuperview()
-            maker.bottom.equalTo(secondaryButton.snp.top).inset(-16)
+            maker.bottom.equalTo(primaryButton.snp.top).inset(-16)
         }
 
         animationView.snp.makeConstraints { maker in
@@ -267,7 +266,17 @@ final class OnboardingConsentView: View {
         self.contentLabel.attributedText = step.attributedContent
 
         self.primaryButton.title = step.primaryButtonTitle
-        self.secondaryButton.title = step.secondaryButtonTitle
+
+        if let title = step.secondaryButtonTitle {
+            self.secondaryButton.title = title
+            self.secondaryButton.isHidden = false
+
+            scrollView.snp.remakeConstraints { maker in
+                maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+                maker.width.equalToSuperview()
+                maker.bottom.equalTo(secondaryButton.snp.top).inset(-16)
+            }
+        }
 
         if let animation = step.animation {
             self.animationView.animation = animation
@@ -277,6 +286,8 @@ final class OnboardingConsentView: View {
             self.imageView.isHidden = false
         }
 
+        imageView.sizeToFit()
+
         if let width = imageView.image?.size.width,
             let height = imageView.image?.size.height,
             width > 0, height > 0 {
@@ -285,15 +296,9 @@ final class OnboardingConsentView: View {
 
             imageView.snp.makeConstraints { maker in
                 maker.top.equalToSuperview()
-                maker.leading.trailing.equalToSuperview()
-                maker.width.lessThanOrEqualTo(scrollView).inset(16)
+                maker.leading.trailing.equalTo(self).inset(16)
                 maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
             }
-        }
-
-        imageView.snp.makeConstraints { maker in
-            maker.top.equalToSuperview()
-            maker.width.equalTo(self)
         }
 
         guard let summarySteps = step.summarySteps else {
