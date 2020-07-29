@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-touch Cartfile
 env
 
 if [ -z "$NETWORK_CONFIGURATION" ]
@@ -15,13 +14,12 @@ fi
 
 if [ -z "$BUILD_ID" ]
 then
-      $BUILD_ID="1.0"
+      BUILD_ID="b1"
 fi
 
 brew install yq
 yq w -i project.yml "targets.EN.settings.base.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.settings.base.LOG_LEVEL" ${LOG_LEVEL}
-yq w -i project.yml "targets.EN.settings.base.USE_DEVELOPER_MENU" ${USE_DEVELOPER_MENU}
 yq w -i project.yml "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
 
 if [ ! -z "$USE_DEVELOPER_MENU" ]
