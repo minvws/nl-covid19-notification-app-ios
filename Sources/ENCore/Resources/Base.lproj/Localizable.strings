@@ -56,7 +56,7 @@
 
 "consentStep2Title" = "Zet je Bluetooth aan om de app te gebruiken";
 "consentStep2Content" = "Je Bluetooth staat uit. Daardoor kan de app niet zien of je bij anderen in de buurt bent geweest.";
-"consentStep2PrimaryButton" = "Bluetooth aanzetten";
+"consentStep2PrimaryButton" = "Zet Bluetooth aanzetten";
 "consentStep2SecondaryButton" = "Misschien later";
 
 "consentStep3Title" = "Mag CoronaMelder meldingen sturen zodat de app altijd goed werkt?";
@@ -69,10 +69,12 @@
 "consentStep4PrimaryButton" = "App delen";
 "consentStep4SecondaryButton" = "Ga door";
 
+// MARK: - Bluetooth
 "enableBluetoothTitle" = "Bluetooth aanzetten";
 "enableBluetoothSettingIndexRow1" = "1.";
 "enableBluetoothSettingTitleRow1" = "Open <b>Intellingen</b> op je telefoon";
-"enableBluetoothSettingTitleSettingRow1" = "Instellingen";
+"enableBluetoothSettingTitleSettingRow1" = "Settings";
+
 "enableBluetoothSettingIndexRow2" = "2.";
 "enableBluetoothSettingTitleRow2" = "Ga naar <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow2" = "Bluetooth";
@@ -85,6 +87,9 @@
 "notification.upload.failed.header" = "Bel de GGD";
 "moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
 "moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
+
+
+// MARK: - Consent
 
 "skipStep" = "Sla over";
 

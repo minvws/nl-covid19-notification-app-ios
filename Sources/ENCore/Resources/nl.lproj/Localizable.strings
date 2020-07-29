@@ -56,7 +56,7 @@
 
 "consentStep2Title" = "Zet je Bluetooth aan om de app te gebruiken";
 "consentStep2Content" = "Je Bluetooth staat uit. Daardoor kan de app niet zien of je bij anderen in de buurt bent geweest.";
-"consentStep2PrimaryButton" = "Bluetooth aanzetten";
+"consentStep2PrimaryButton" = "Zet Bluetooth aanzetten";
 "consentStep2SecondaryButton" = "Misschien later";
 
 "consentStep3Title" = "Mag CoronaMelder meldingen sturen als de app niet goed werkt?";
@@ -68,6 +68,18 @@
 "consentStep4Content" = "Hoe meer mensen CoronaMelder gebruiken, hoe beter deze werkt. Alleen samen kunnen we de verspreiding van het virus stoppen. Deel de app dus met zo veel mogelijk anderen.";
 "consentStep4PrimaryButton" = "App delen";
 "consentStep4SecondaryButton" = "Ga door";
+
+// MARK: - Bluetooth
+"enableBluetoothTitle" = "Bluetooth aanzetten";
+"enableBluetoothSettingIndexRow1" = "1.";
+"enableBluetoothSettingTitleRow1" = "Open <b>Intellingen</b> op je telefoon";
+"enableBluetoothSettingTitleSettingRow1" = "Settings";
+"enableBluetoothSettingIndexRow2" = "2.";
+"enableBluetoothSettingTitleRow2" = "Ga naar <b>Bluetooth</b>";
+"enableBluetoothSettingTitleSettingRow2" = "Bluetooth";
+"enableBluetoothSettingIndexRow3" = "3.";
+"enableBluetoothSettingTitleRow3" = "Zet <b>Bluetooth</b> aan";
+"enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
 // MARK: - Consent
 "skipStep" = "Sla over";

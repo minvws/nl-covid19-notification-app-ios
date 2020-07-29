@@ -121,6 +121,22 @@ extension String {
     static var consentStep4PrimaryButton: String { return Localization.string(for: "consentStep4PrimaryButton") }
     static var consentStep4SecondaryButton: String { return Localization.string(for: "consentStep4SecondaryButton") }
 
+    // MARK: - Bluetooth
+
+    static var enableBluetoothTitle: String { return Localization.string(for: "enableBluetoothTitle") }
+
+    static var enableBluetoothSettingIndexRow1: String { return Localization.string(for: "enableBluetoothSettingIndexRow1") }
+    static var enableBluetoothSettingTitleRow1: String { return Localization.string(for: "enableBluetoothSettingTitleRow1") }
+    static var enableBluetoothSettingTitleSettingRow1: String { return Localization.string(for: "enableBluetoothSettingTitleSettingRow1") }
+
+    static var enableBluetoothSettingIndexRow2: String { return Localization.string(for: "enableBluetoothSettingIndexRow2") }
+    static var enableBluetoothSettingTitleRow2: String { return Localization.string(for: "enableBluetoothSettingTitleRow2") }
+    static var enableBluetoothSettingTitleSettingRow2: String { return Localization.string(for: "enableBluetoothSettingTitleSettingRow2") }
+
+    static var enableBluetoothSettingIndexRow3: String { return Localization.string(for: "enableBluetoothSettingIndexRow3") }
+    static var enableBluetoothSettingTitleRow3: String { return Localization.string(for: "enableBluetoothSettingTitleRow3") }
+    static var enableBluetoothSettingTitleSettingRow3: String { return Localization.string(for: "enableBluetoothSettingTitleSettingRow3") }
+
     // MARK: - Consent
 
     static var skipStep: String { return Localization.string(for: "skipStep") }

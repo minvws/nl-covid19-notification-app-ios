@@ -16,6 +16,7 @@ protocol OnboardingRouting: Routing {
     func routeToConsent(animated: Bool)
     func routeToConsent(withIndex index: Int, animated: Bool)
     func routeToHelp()
+    func routeToBluetoothSettings()
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable, Logging {
@@ -69,6 +70,22 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     func helpRequestsDismissal(shouldHideViewController: Bool) {
         // empty body
+    }
+
+    func displayBluetoothSettings() {
+        router?.routeToBluetoothSettings()
+    }
+
+    func bluetoothSettingsDidComplete() {
+        dismiss(animated: true) {
+            self.onboardingConsentManager.getNextConsentStep(.bluetooth, skippedCurrentStep: false) { nextStep in
+                if let nextStep = nextStep {
+                    self.router?.routeToConsent(withIndex: nextStep.rawValue, animated: true)
+                } else {
+                    self.listener?.didCompleteOnboarding()
+                }
+            }
+        }
     }
 
     func helpRequestsEnableApp() {

@@ -26,7 +26,8 @@ protocol OnboardingDependency {
 
 ///
 /// - Tag: OnboardingDependencyProvider
-private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, ShareSheetDependency, HelpDependency {
+
+private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, WebDependency, BluetoothSettingsDependency, ShareSheetDependency, HelpDependency {
 
     // MARK: - OnboardingStepDependency
 
@@ -38,8 +39,8 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
 
     lazy var onboardingConsentManager: OnboardingConsentManaging = {
         return OnboardingConsentManager(exposureStateStream: dependency.exposureStateStream,
-                                        exposureController: dependency.exposureController,
-                                        theme: self.theme)
+            exposureController: dependency.exposureController,
+            theme: self.theme)
     }()
 
     var exposureController: ExposureControlling {
@@ -60,6 +61,14 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
         return OnboardingConsentBuilder(dependency: self)
     }
 
+    var webBuilder: WebBuildable {
+        return WebBuilder(dependency: self)
+    }
+
+    var bluetoothSettingsBuilder: BluetoothSettingsBuildable {
+        return BluetoothSettingsBuilder(dependency: self)
+    }
+
     var shareSheetBuilder: ShareSheetBuildable {
         return ShareSheetBuilder(dependency: self)
     }
@@ -73,13 +82,13 @@ final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildabl
     func build(withListener listener: OnboardingListener) -> Routing {
         let dependencyProvider = OnboardingDependencyProvider(dependency: dependency)
         let viewController = OnboardingViewController(onboardingConsentManager: dependencyProvider.onboardingConsentManager,
-                                                      listener: listener,
-                                                      theme: dependencyProvider.dependency.theme)
+            listener: listener,
+            theme: dependencyProvider.dependency.theme)
 
         return OnboardingRouter(viewController: viewController,
-                                stepBuilder: dependencyProvider.stepBuilder,
-                                consentBuilder: dependencyProvider.consentBuilder,
-                                shareSheetBuilder: dependencyProvider.shareSheetBuilder,
-                                helpBuilder: dependencyProvider.helpBuilder)
+            stepBuilder: dependencyProvider.stepBuilder,
+            consentBuilder: dependencyProvider.consentBuilder,
+            webBuilder: dependencyProvider.webBuilder,
+            bluetoothSettingsBuilder: dependencyProvider.bluetoothSettingsBuilder,
+        }
     }
-}
