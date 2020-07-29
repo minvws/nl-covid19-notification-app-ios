@@ -28,17 +28,15 @@ targets:
           - $(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification
           - nl.rijksoverheid.en.background-update
           - nl.rijksoverheid.en.background-decoy-stop-keys
-          - nl.rijksoverheid.en.background-decoy-stop-keys
           - nl.rijksoverheid.en.background-decoy-sequence
           - nl.rijksoverheid.en.background-decoy-register
           - nl.rijksoverheid.en.background-status-check
-        CFBundleDisplayName: CoronaMelder 🐞
+        CFBundleDisplayName: "CoronaMelder \U0001F41E"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
         CFBundleShortVersionString: '0.1'
-        CFBundleVersion: '1.0'
+        CFBundleVersion: b1
         ITSAppUsesNonExemptEncryption: false
-        LOG_LEVEL: '${LOG_LEVEL}'
         LSApplicationQueriesSchemes:
           - ''
         LSRequiresIPhoneOS: true
@@ -78,6 +76,8 @@ targets:
         CODE_SIGN_STYLE: Manual
         DEVELOPMENT_TEAM: C2H38GV99H
         ENABLE_BITCODE: 'YES'
+        LOG_LEVEL: debug
+        NETWORK_CONFIGURATION: ACC
         PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.test
         SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
         SWIFT_VERSION: 5.2
@@ -137,12 +137,12 @@ targets:
       - Sources/ENCoreTests
     type: bundle.unit-test
   ENFoundation:
-    deploymentTarget: '11.0'
     dependencies:
       - package: CocoaLumberjack
         product: CocoaLumberjack
       - package: CocoaLumberjack
         product: CocoaLumberjackSwift
+    deploymentTarget: '11.0'
     platform: iOS
     settings:
       base:
