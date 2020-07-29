@@ -26,6 +26,9 @@ install_dev_deps: build_xcodegen build_swiftformat build_mockolo
 	@echo "All dependencies are installed"
 	@echo "You're ready to go"
 
+install_ci_deps: build_xcodegen build_mockolo
+	@echo "All CI dependencies are installed"
+
 build_mockolo:
 	cd vendor/mockolo && swift build -c release
 
