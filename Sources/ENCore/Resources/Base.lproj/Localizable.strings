@@ -77,6 +77,8 @@
 "helpSubtitle" = "Veelgestelde vragen";
 "helpAcceptButtonTitle" = "Aanzetten";
 
+"help.faq.reason.title" = "Waarom is deze app belangrijk?";
+"help.faq.reason.description" = "Met de app help je de verspreiding van het coronavirus te stoppen. De app is een aanvulling op het contactonderzoek van de GGD. Als je een test doet en corona blijkt te hebben belt de GGD je. Tijdens dit gesprek vraagt de GGD bij wie je in de buurt bent geweest terwijl je besmettelijk was. De GGD belt ook deze mensen om te waarschuwen dat ze misschien corona hebben.<br><br>Alleen ben je waarschijnlijk ook in de buurt geweest van mensen die je niet kent. In de trein, bioscoop of restaurant. Dit is waar de app bij helpt. Met de app kun je alle mensen waarschuwen die bij jou in de buurt zijn geweest. Ook de mensen die je niet kent. Zo lang ze natuurlijk de app gebruiken.<br><br>De GGD benadert de mensen waarvan jij de naam of contactgegevens hebt. De app waarschuwt tegelijkertijd de mensen die je wel hebt ontmoet, maar waarvan je de naam of contactgegevens niet weet. Zo zijn ook zij snel op de hoogte, kunnen ze maatregelen nemen en daarmee voorkomen dat ze anderen besmetten. Het contactonderzoek van de GGD gaat gewoon door, want de mensen bij wie je vaker in de buurt bent geweest hebben misschien een groter risico gelopen.<br><br>Zelf kun je natuurlijk ook waarschuwingen krijgen via de app. Als dit gebeurt ben je in de afgelopen dagen in de buurt geweest van iemand met corona. Wanneer je dit hoort kun je op jouw beurt voorkomen dat je anderen besmet. Dit doe je door extra goed te letten op (lichte) klachten die passen bij het coronavirus en door je te laten testen als je deze klachten hebt.";
 "help.faq.location.title" = "Kan de app mijn locatie zien?";
 "help.faq.location.description" = "Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die ook de app hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen 2 apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.";
 "help.faq.anonymous.title" = "Hoe kan de app anoniem zijn?";
@@ -84,10 +86,14 @@
 "help.faq.anonymous.description_2" = "Blijkt deze persoon later corona te hebben? Dan kan diegene in de app zijn of haar codes toevoegen aan een lijst met codes van besmette personen. Het toevoegen van codes kan alleen nadat de besmette persoon een GGD-sleutel aan de GGD heeft doorgegeven. Daarna krijgen jij en alle andere mensen die deze codes op hun telefoon hebben een melding. In deze melding staat alleen wanneer je in de buurt bent geweest van een besmet persoon. Niet wie dit is en waar je die persoon bent tegengekomen.";
 "help.faq.notification.title" = "Wanneer krijg ik een melding van de app?";
 "help.faq.notification.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. En natuurlijk alleen als die persoon ook de app gebruikt. Of je een melding krijgt hangt af van de sterkte van het Bluetooth-signaal. En van de duur van jullie contact. Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Jullie waren dicht bij elkaar, dus het Bluetooth-signaal was sterk. Maar het contact duurde zo kort dat je geen extra kans op besmetting hebt. Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
+"help.faq.upload_keys.title" = "Hoe verstuur ik een melding?";
+"help.faq.upload_keys.description" = "Je kunt alleen een melding naar anderen versturen als je getest bent en corona blijkt te hebben. De GGD belt je in dat geval. Tijdens dit telefoongesprek kan je met hulp van de GGD-medewerker de melding versturen. Dit doe je door de codes die jouw telefoon in de afgelopen 14 dagen heeft gemaakt met de GGD te delen.<br>De GGD houdt namelijk een lijst bij van codes van besmette personen. Door jouw codes te delen voeg je die toe aan deze lijst. Hiervoor moet je eerst een GGD-sleutel doorgeven aan de GGD. Zo is altijd zeker dat de toegevoegde codes ook echt horen bij iemand die corona heeft. Alle codes ouder dan 14 dagen worden vanzelf verwijderd. Nadat je de codes hebt gedeeld krijgen de mensen bij wie je in de buurt bent geweest toen je besmettelijk was een anonieme melding. Alleen als deze mensen ook de app gebruiken.";
 "help.faq.bluetooth.title" = "Werkt Bluetooth door muren heen?";
 "help.faq.bluetooth.description" = "Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon. De kans is bijvoorbeeld heel klein dat je app het Bluetooth-signaal van je buren ontvangt. En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman corona blijkt te hebben en jullie niet in dezelfde ruimte zijn geweest.";
 "help.faq.power_usage.title" = "Hoeveel stroom gebruikt de app?";
 "help.faq.power_usage.description" = "De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.";
+"help.faq.deletion.title" = "Hoe verwijder ik mijn gegevens?";
+"help.faq.deletion.description" = "";
 "help.faq.privacy_policy.title" = "Privacyverklaring";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
 "help.faq.colofon.title" = "Colofon";
@@ -212,27 +218,6 @@
 
 "moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
 "moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
-
-"moreInformation.about.faq.reason" = "Waarom is deze app belangrijk?";
-"moreInformation.about.faq.location" = "Kan de app mijn locatie zien?";
-"moreInformation.about.faq.anonymous" = "Hoe kan de app anoniem zijn?";
-"moreInformation.about.faq.notification" = "Wanneer krijg ik een melding van de app?";
-"moreInformation.about.faq.upload_keys" = "Hoe verstuur ik een melding?";
-"moreInformation.about.faq.bluetooth" = "Werkt Bluetooth door muren heen?";
-"moreInformation.about.faq.power_usage" = "Hoeveel stroom gebruikt de app?";
-"moreInformation.about.faq.deletion" = "Hoe verwijder ik mijn gegevens?";
-"moreInformation.about.faq.location_provision" = "Waarom is locatievoorziening nodig?";
-
-"moreInformation.about.faq.reason.answer" = "";
-"moreInformation.about.faq.location.answer" = "Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die de app ook op hun telefoon hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen twee apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.";
-"moreInformation.about.faq.anonymous.answer" = "De app wisselt codes uit met andere telefoons. In deze codes staan geen persoonsgegevens of locatiegegevens van je. Ze zijn helemaal willekeurig. Het uitwisselen van codes gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.<br><br>Als deze persoon daarna positief test kan diegene in de app zijn of haar codes naar een centrale server sturen. Daarna krijgen jij en alle andere mensen die deze codes op hun telefoon hebben een melding. In deze melding staat alleen wanneer je extra kans op besmetting hebt gelopen. Niet wie besmet is en waar je die persoon tegengekomen bent.";
-"moreInformation.about.faq.notification.answer" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je 10 minuten dicht bij een andere persoon met de app bent geweest, die daarna positief test op het coronavirus. Het RIVM en de GGD zien dat als een situatie waarin je besmet kunt raken. Of je dichtbij genoeg bent geweest hangt af van de sterkte van het Bluetooth-signaal. Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Het Bluetooth-signaal was door de afstand te zwak en jullie waren maar kort bij elkaar in de buurt. Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
-"moreInformation.about.faq.upload_keys.answer" = "Je kunt alleen een melding naar anderen versturen als je getest bent en corona blijkt te hebben. De GGD belt je in dat geval. Tijdens dit telefoongesprek kan je met hulp van de GGD-medewerker de melding versturen. Dit doe je door de codes die jouw telefoon in de afgelopen 14 dagen heeft gemaakt met de GGD te delen.
-De GGD houdt namelijk een lijst bij van codes van besmette personen. Door jouw codes te delen voeg je die toe aan deze lijst. Hiervoor moet je eerst een GGD-sleutel doorgeven aan de GGD. Zo is altijd zeker dat de toegevoegde codes ook echt horen bij iemand die corona heeft. Alle codes ouder dan 14 dagen worden vanzelf verwijderd. Nadat je de codes hebt gedeeld krijgen de mensen bij wie je in de buurt bent geweest toen je besmettelijk was een anonieme melding. Alleen als deze mensen ook de app gebruiken.";
-"moreInformation.about.faq.bluetooth.answer" = "Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon. De kans is bijvoorbeeld heel klein dat je app het Bluetooth-signaal van je buren ontvangt. En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman positief test en jullie niet in dezelfde ruimte zijn geweest.";
-"moreInformation.about.faq.power_usage.answer" = "De app maakt gebruikt van Bluetooth Low Energy (Bluetooth Lage Energie). Dit is een speciale vorm van Bluetooth die heel weinig stroom gebruikt. Hoeveel procent dit precies van je telefoonbatterij vraagt verschilt per telefoon.";
-"moreInformation.about.faq.deletion.answer" = "";
-"moreInformation.about.faq.location_provision.answer" = "";
 
 // MARK: - MoreInformation | Share
 
