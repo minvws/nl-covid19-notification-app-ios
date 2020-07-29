@@ -68,6 +68,7 @@
 "consentStep4Content" = "Hoe meer mensen CoronaMelder gebruiken, hoe beter deze werkt. Alleen samen kunnen we de verspreiding van het virus stoppen. Deel de app dus met zo veel mogelijk anderen.";
 "consentStep4PrimaryButton" = "App delen";
 "consentStep4SecondaryButton" = "Ga door";
+
 // MARK: - Consent
 "skipStep" = "Sla over";
 
@@ -90,7 +91,7 @@
 "help.faq.privacy_policy.title" = "Privacyverklaring";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
 "help.faq.colofon.title" = "Colofon";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon ";
+"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Toegankelijkheid";
 "help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
 
@@ -117,6 +118,8 @@
 "help.technical_explanation.step4.description" = "De app kijkt een paar keer per dag naar de lijst met codes van besmette personen. Hij vergelijkt deze lijst met de codes die op jouw telefoon zijn bewaard. Zo ziet de app of je extra kans op besmetting hebt gelopen.";
 "help.technical_explanation.step5.title" = "5. Jij krijgt een melding als de codes van een besmet persoon op je telefoon staan";
 "help.technical_explanation.step5.description" = "In deze melding lees je wanneer je in de buurt van de besmette persoon bent geweest. Niet wie het is en waar het was. Ook vertelt de app wat je nu zelf het beste kunt doen. Je eigen codes staan niet op de lijst met besmette codes, maar worden 14 dagen op je telefoon bewaard.";
+"help.technical_explanation.github.title" = "Bekijk broncode";
+"help.technical_explanation.github.subtitle" = "Ga naar GitHub";
 
 "help.bluetooth.title" = "Werkt Bluetooth door muren heen?";
 
@@ -130,7 +133,10 @@
 
 // MARK: - Notifications
 
+"notification.en.statusNotActive" = "CoronaMelder is op dit moment niet actief. Controleer je instellingen.";
+
 "notification.upload.failed.notification" = "Het is niet gelukt anderen een melding te sturen. Bel daarom de GGD. Lees meer in de app.";
+"notification.upload.failed.header" = "Bel de GGD";
 "notification.upload.failed.title" = "Het is niet gelukt anderen een melding te sturen";
 "notification.upload.failed.content" = "We hebben geprobeerd je codes te delen met de GGD, maar dit is niet gelukt. Bel de GGD om dit opnieuw te doen. Het is heel belangrijk dat je dit snel doet. Anders kunnen er meer mensen besmet raken.";
 
@@ -203,6 +209,9 @@
 
 "moreInformation.about.technical.title" = "Hoe werkt de app?";
 "moreInformation.about.technical.description" = "Bekijk de technische uitleg";
+
+"moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
+"moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
 
 "moreInformation.about.faq.reason" = "Waarom is deze app belangrijk?";
 "moreInformation.about.faq.location" =" Kan de app mijn locatie zien?";
