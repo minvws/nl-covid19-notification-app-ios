@@ -1,0 +1,301 @@
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
+
+"ok" = "Ok";
+"yes" = "Tak";
+"no" = "Nie";
+"warning" = "Ostrzeżenie";
+"back" = "Poprzedni";
+"cancel" = "Anuluj";
+"example" = "Przykład";
+"close" = "Zamknij";
+"error.title" = "Coś poszło nie tak";
+
+// MARK: - Update App
+"updateApp.error.message" = "Nie można otworzyć App Store.";
+"updateApp.title" = "Aplikacja wymaga aktualizacji";
+
+"updateApp.content" = "Zaktualizuj aplikację, aby działała ona prawidłowo.";
+"updateApp.button" = "Zaktualizuj";
+
+// MARK: - Onboarding Steps
+"step1Title" = "Pomóż powstrzymać rozprzestrzenianie się koronawirusa";
+"step1Content" = "Ta aplikacja ostrzega Cię w przypadku, gdy znalazłeś się w pobliżu osoby z koronawirusem. W taki sposób możesz uniknąć zarażenia ludzi wokół siebie.";
+
+"step2Title" = "Otrzymasz powiadomienie <u>jeśli</u> byłeś narażony na szczególne ryzyko zarażenia.";
+"step2Content" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której wykryto koronawirusa. Ta osoba musi również korzystać z aplikacji.";
+
+"step3Title" = "Aplikacja korzysta z Bluetooth, <u>nie</u> z danych lokalizacyjnych";
+"step3Content" = "Dzięki Bluetooth aplikacja widzi, czy byłeś blisko kogoś. Im bliżej, tym mocniejszy sygnał Bluetooth. Aplikacja nie wie gdzie byłeś, ani kim jesteś.";
+
+"step4Title" = "Obok przejeżdżał ktoś na rowerze? Nie otrzymasz powiadomienia.";
+"step4Content" = "Sygnał Bluetooth był wystarczająco silny, bo znajdowaliście się blisko siebie. Trwało to jednak tak krótko, że szansa na zakażenie jest bardzo mała.";
+
+"step5Title" = "Siedziałeś blisko kogoś innego w pociągu? W takim przypadku możesz <u>później</u> otrzymać powiadomienie";
+"step5Content" = "Sygnał Bluetooth był wystarczająco silny i znajdowaliście się blisko siebie przez dłuższy czas.";
+
+// MARK: - Onboarding
+"nextButtonTitle" = "Następny";
+
+// MARK: - Consent Steps
+"consentStep1Title" = "Włącz powiadomienia o możliwym kontakcie z koronawirusem";
+"consentStep1Summary1" = "Twoje dane Bluetooth są przechowywane w telefonie przez 14 dni. Zawsze możesz je sam usunąć.";
+"consentStep1Summary2" = "Twoje imię i nazwisko oraz inne dane osobowe <b>nie</b> są używane ani przechowywane.";
+"consentStep1Summary3" = "Twoje dane dotyczące lokalizacji GPS <i>nie</i> są używane ani przechowywane.";
+"consentStep1PrimaryButton" = "Włącz";
+"consentStep1SecondaryButton" = "Jak dokładnie działa ta aplikacja?";
+
+"consentStep2Title" = "Włącz Bluetooth, aby korzystać z aplikacji";
+"consentStep2Content" = "Bluetooth jest wyłączony. W związku z tym aplikacja nie może zobaczyć, czy znajdowałeś się w pobliżu innych osób.";
+"consentStep2PrimaryButton" = "Włącz Bluetooth";
+"consentStep2SecondaryButton" = "Może później";
+
+"consentStep3Title" = "Czy CoronaMelder może wysyłać powiadomienia w przypadku nie działającej prawidłowo aplikacji?";
+"consentStep3Content" = "Aplikacja może natychmiast dać ci znać, co musisz zrobić, aby rozwiązać ten problem.";
+"consentStep3PrimaryButton" = "Wyraź zgodę";
+"consentStep3SecondaryButton" = "Może później";
+
+// MARK: - Consent
+"skipStep" = "Pomiń";
+
+// MARK: - Help
+"helpTitle" = "O aplikacji";
+"helpSubtitle" = "Najczęściej zadawane pytania";
+"helpAcceptButtonTitle" = "Włącz";
+
+"help.faq.location.title" = "Czy aplikacja może zobaczyć moją lokalizację?";
+"help.faq.location.description" = "Nie. Za pomocą Bluetooth aplikacja widzi wyłącznie, czy w pobliżu znajdują się osoby, które również korzystają z aplikacji. Bluetooth nie łączy się z Twoją lokalizacją, więc aplikacja nie może zobaczyć gdzie jesteś. Bluetooth jest przeznaczony wyłącznie do nawiązywania bezprzewodowego połączenia pomiędzy dwoma urządzeniami, znajdującymi się blisko siebie. Jak twój telefon i głośnik lub słuchawki.";
+"help.faq.anonymous.title" = "Jak aplikacja może być anonimowa?";
+"help.faq.anonymous.description_1" = "Aplikacja wymienia kody z innymi telefonami. Kody te nie zawierają żadnych Twoich informacji osobowych ani lokalizacyjnych. Są zupełnie losowe. Wymiana kodów ma miejsce, gdy jesteś blisko osoby, która również posiada aplikację.";
+"help.faq.anonymous.description_2" = "Okazuje się później, że dana osoba miała koronawirusa? W takim przypadku może ona dodać w aplikacji swoje kody do listy kodów osób zarażonych. Przekazanie kodów może mieć miejsce wyłącznie po przekazaniu GGD klucza GGD przez osobę zarażoną. Następnie ty, jak również wszystkie inne osoby, mające te kody w swoich telefonach, otrzymujecie powiadomienie. Powiadomienie zawiera wyłącznie informację o tym, kiedy miałeś kontakt z osobą zarażoną. Nie o tym, kto to jest i gdzie się spotkaliście.";
+"help.faq.notification.title" = "Kiedy dostaję powiadomienie od aplikacji?";
+"help.faq.notification.description" = "Otrzymasz powiadomienie, jeśli byłeś narażony na szczególne ryzyko zarażenia. Ma to miejsce, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której wykryto koronawirusa. I oczywiście wyłącznie, gdy ta osoba również używa tej aplikacji. To czy otrzymasz powiadomienie zależy od siły sygnału Bluetooth oraz od czasu trwania kontaktu. Na ulicy przejeżdżał ktoś na rowerze? Nie otrzymasz później powiadomienia. Znajdowaliście się blisko siebie, więc sygnał Bluetooth był silny. Jednak kontakt był na tyle krótki, że nie pojawiło się szczególne ryzyko zarażenia. Siedziałeś obok kogoś w pociągu lub biurze? Zatem możesz otrzymać później powiadomienie. Sygnał Bluetooth był wystarczająco silny i znajdowaliście się przez dłuższy czas blisko siebie.";
+"help.faq.bluetooth.title" = "Czy Bluetooth działa przez ściany?";
+"help.faq.bluetooth.description" = "Tak, jednak sygnał jest wtedy naprawdę słaby. Bluetooth działa najlepiej, gdy Twój telefon znajduje się w tym samym pomieszczeniu, co telefon innej osoby. Na przykład jest bardzo mało prawdopodobne, aby Twoja aplikacja odbierała sygnał Bluetooth od Twoich sąsiadów. Przez co istnieje również bardzo mała szansa, że otrzymasz powiadomienie, jeśli okaże się, że Twój sąsiad ma koronawirusa, a nie przebywaliście w tym samym pomieszczeniu.";
+"help.faq.power_usage.title" = "Ile energii zużywa aplikacja?";
+"help.faq.power_usage.description" = "Aplikacja korzysta z technologii Bluetooth Low Energy. Jest to specjalna forma Bluetooth, która wykorzystuje bardzo małą ilość energii. Dokładna ilość zużywanej energii różni się w zależności od telefonu.";
+
+"help.what_does_the_app_do.title" = "Do czego służy CoronaMelder?";
+"help.what_does_the_app_do.protect.title" = "Pomóż powstrzymać rozprzestrzenianie się koronawirusa";
+"help.what_does_the_app_do.protect.description" = "Ta aplikacja ostrzega Cię w przypadku, gdy znalazłeś się w pobliżu osoby z koronawirusem. W taki sposób możesz uniknąć zarażenia ludzi wokół siebie.";
+"help.what_does_the_app_do.notify.title" = "Otrzymasz powiadomienie, jeśli byłeś narażony na szczególne ryzyko zarażenia.";
+"help.what_does_the_app_do.notify.description" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której wykryto koronawirusa. Ta osoba musi również korzystać z aplikacji.";
+"help.what_does_the_app_do.bluetooth.title" = "Aplikacja korzysta z Bluetooth, nie z danych lokalizacyjnych";
+"help.what_does_the_app_do.bluetooth.description" = "Dzięki Bluetooth aplikacja widzi, czy byłeś blisko kogoś. Im bliżej, tym mocniejszy sygnał Bluetooth. Aplikacja nie wie gdzie byłeś, ani kim jesteś.";
+"help.what_does_the_app_do.example.cycle.title" = "Obok przejeżdżał ktoś na rowerze? Nie otrzymasz powiadomienia.";
+"help.what_does_the_app_do.example.cycle.description" = "Sygnał Bluetooth był wystarczająco silny, bo znajdowaliście się blisko siebie. Trwało to jednak tak krótko, że szansa na zakażenie jest bardzo mała.";
+"help.what_does_the_app_do.example.train.title" = "Siedziałeś blisko kogoś innego w pociągu? W takim przypadku możesz otrzymać powiadomienie";
+"help.what_does_the_app_do.example.train.description" = "Sygnał Bluetooth był wystarczająco silny i znajdowaliście się blisko siebie przez dłuższy czas.";
+
+"help.technical_explanation.title" = "Objaśnienie techniczne";
+"help.technical_explanation.step1.title" = "1. Aplikacja tworzy swój własny kod dla każdego telefonu";
+"help.technical_explanation.step1.description" = "Ten kod nie zawiera żadnych informacji o Tobie ani o Twoim telefonie. Kod jest całkowicie anonimowy i zmienia się co 15 minut.";
+"help.technical_explanation.step2.title" = "2. Telefony dzielą się swoimi kodami, gdy znajdują się blisko siebie.";
+"help.technical_explanation.step2.description" = "Osoba, którą spotkałeś również posiada tę aplikację? W takim razie wasze telefony udostępniają sobie swoje kody przez Bluetooth Low Energy. W ten sposób aplikacja wie, które telefony były w pobliżu. Aplikacja nie wie, do kogo one należą, ani gdzie się znajdowały.";
+"help.technical_explanation.step3.title" = "3. Osoba zarażona koronawirusem może wpisać swoje kody na listę";
+"help.technical_explanation.step3.description" = "Lista ta zawiera kody wyłącznie zarażonych osób. Aby dodać kody na listę, zarażona osoba musi najpierw przekazać GGD klucz GGD. W ten sposób pewne jest, że dodane kody naprawdę należą do kogoś zarażonego koronawirusem. Wszystkie kody starsze niż 14 dni są automatycznie usuwane z listy.";
+"help.technical_explanation.step4.title" = "4. Każdy telefon sprawdza, czy nie spotkał wcześniej kodów z listy.";
+"help.technical_explanation.step4.description" = "Aplikacja analizuje listę kodów osób zarażonych kilka razy dziennie. Porównuje ona tę listę z kodami zapisanymi w telefonie. W ten sposób aplikacja widzi, czy miało miejsce szczególne ryzyko zarażenia.";
+"help.technical_explanation.step5.title" = "5. Otrzymujesz powiadomienie, gdy kody zarażonej osoby znajdują się na Twoim telefonie";
+"help.technical_explanation.step5.description" = "Powiadomienie informuje o tym, kiedy znajdowałeś się w pobliżu osoby zarażonej. Nie informuje, kto to jest, ani gdzie miało miejsce spotkanie. Aplikacja również doradza, co najlepiej jest w tym momencie zrobić. Twoje własne kody nie znajdują się na liście z zarażonymi kodami, ale są przechowywane w Twoim telefonie przez 14 dni.";
+
+"help.bluetooth.title" = "Czy Bluetooth działa przez ściany?";
+
+// MARK: - Message
+
+"message.default.title" = "Znajdowałeś się w pobliżu osoby z koronawirusem";
+"message.default.body" = "%@ znajdowałeś się w pobliżu osoby, zarażonej koronawirusem. W tej sytuacji byłeś szczególnie narażony na ryzyko zarażenia. Jeśli rzeczywiście jesteś zarażony, możesz przekazywać wirusa innym. Nawet jeśli teraz nie czujesz się chory.";
+
+/* MARK: - Message */
+"message.title" = "Otrzymanie powiadomienia";
+"message.button.title" = "Zadzwoń po test na koronawirusa";
+
+// MARK: - Notifications
+
+"notification.upload.failed.notification" = "Nie udało się wysłać powiadomienia innym. Dlatego zadzwoń do GGD. Przeczytaj więcej w aplikacji.";
+"notification.upload.failed.title" = "Nie udało się wysłać powiadomienia innym";
+"notification.upload.failed.content" = "Próbowaliśmy udostępnić Twoje kody GG, ale nie udało się. Zadzwoń do GGD, aby spróbować ponownie. Istotne jest, abyś zrobił to szybko. W przeciwnym razie więcej osób może się zarazić.";
+
+
+// MARK: - Main
+
+"main.confirmNotificationRemoval.title" = "Jesteś pewien, że chcesz usunąć to powiadomienie?";
+"main.confirmNotificationRemoval.message" = "Później nie będziesz mógł znaleźć tej daty w aplikacji. Dlatego zapamiętaj ją dobrze.";
+"main.confirmNotificationRemoval.confirm" = "Usuń";
+
+// MARK: - Status
+
+"status.appState" = "Aplikacja jest aktywna";
+"status.appState.inactive.title" = "Aplikacja nie jest aktywna";
+"status.appState.inactive.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia";
+"status.appState.inactive.no_recent_updates.description" = "Aplikacja nie mogła połączyć się z internetem w ciągu ostatnich 24 godzin. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.card.title" = "Aplikacja nie jest aktywna";
+"status.appState.card.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia.";
+"status.appState.card.no_recent_updates.description" = "Aplikacja nie mogła połączyć się z internetem w ciągu ostatnich 24 godzin. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.card.button" = "Włącz aplikację";
+"status.appState.card.try_again" = "Spróbuj ponownie";
+"status.active.description" = "Nawet jeśli zamkniesz aplikację, CoronaMelder nadal będzie działać.";
+/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
+"status.notified.description_days" = "%@ dzień / dni temu (%@)";
+"status.notified.description_hours" = "%@ godzin(y) temu (%@)";
+"status.notified.description_none" = "%@";
+"status.notified.description" = "%@ byłeś narażony na szczególne ryzyko zarażenia.";
+"status.notified.moreInfo" = "Co mogę teraz zrobić?";
+"status.notified.removeNotification" = "Usuń powiadomienie";
+
+/* The title for the table of items in more infromation */
+"moreInformation.headerTitle" = "Więcej informacji";
+
+"moreInformation.cell.about.title" = "O aplikacji";
+"moreInformation.cell.about.subtitle" = "Zobacz jak działa aplikacja i co to oznacza dla Twojej prywatności";
+
+"moreInformation.cell.share.title" = "Zaproś znajomych do aplikacji";
+"moreInformation.cell.share.subtitle" = "Udostępnij aplikację innym, aby razem zwalczać koronawirusa";
+
+"moreInformation.cell.receivedNotification.title" = "Otrzymałem powiadomienie";
+"moreInformation.cell.receivedNotification.subtitle" = "Przeczytaj, co możesz zrobić, gdy okaże się, że ktoś inny jest zarażony koronawirusem";
+
+"moreInformation.cell.requestTest.title" = "Poproś o test na koronawirusa";
+"moreInformation.cell.requestTest.subtitle" = "Dowiedz się możliwie jak najszybciej, czy sam jesteś zarażony";
+
+"moreInformation.cell.infected.title" = "Przekaż klucz GGD";
+"moreInformation.cell.infected.subtitle" = "Wyślij razem z GDD anonimowe powiadomienie do innych osób, jeśli jesteś zarażony";
+
+"moreInformation.info.title" = "Miej pod ręką swój numer obsługi mieszkańca (BSN). Znajdziesz go w paszporcie lub na dowodzie osobistym";
+
+"moreInformation.complaints.item1" = "(lekki) kaszel";
+"moreInformation.complaints.item2" = "nieżyt nosa, katar, kichanie, ból gardła";
+"moreInformation.complaints.item3" = "nagła utrata zmysłu węchu lub smaku";
+"moreInformation.complaints.item4" = "szybsze oddychanie lub trudności z oddychaniem";
+"moreInformation.complaints.item5" = "podwyższona temperatura ciała wynosząca 38 stopni lub więcej";
+"moreInformation.complaints.title" = "Dolegliwości typowe dla koronawirusa (COVID-19)";
+"moreInformation.complaints.content" = "Masz dolegliwości? Pozostań w miarę możliwości w domu. Są to poważne dolegliwości? Zadzwoń do swojego lekarza rodzinnego.";
+
+
+// MARK: - MoreInformation | About
+
+"moreInformation.about.title" = "O aplikacji";
+"about.review" = "Oceń aplikację";
+"moreInformation.about.privacy_statement" = "Oświadczenie o ochronie prywatności";
+"moreInformation.about.accessibility" = "Dostępność";
+"moreInformation.about.colofon" = "Stopka";
+
+"moreInformation.about.onboarding.title" = "Do czego służy CoronaMelder?";
+"moreInformation.about.onboarding.description" = "Przeczytaj, jak za pomocą tej aplikacji, możesz pomóc powstrzymać rozprzestrzenianie się koronawirusa.";
+
+"moreInformation.about.technical.title" = "Jak działa aplikacja?";
+"moreInformation.about.technical.description" = "Zobacz objaśnienie techniczne";
+
+"moreInformation.about.faq.reason" = "Dlaczego ta aplikacja jest ważna?";
+"moreInformation.about.faq.location" =" Czy aplikacja może zobaczyć moją lokalizację?";
+"moreInformation.about.faq.anonymous" = "Jak aplikacja może być anonimowa?";
+"moreInformation.about.faq.notification" = "Kiedy dostanę powiadomienie od aplikacji?";
+"moreInformation.about.faq.upload_keys" = "Jak wysłać powiadomienie?";
+"moreInformation.about.faq.bluetooth" = "Czy Bluetooth działa przez ściany?";
+"moreInformation.about.faq.power_usage" = "Ile energii zużywa aplikacja?";
+"moreInformation.about.faq.deletion" = "Jak mogę usunąć dane Bluetooth z telefonu?";
+
+// MARK: - MoreInformation | Share
+
+"moreInformation.share.title" = "Przekaż innym, że pomagasz w powstrzymaniu rozprzestrzeniania się koronawirusa.";
+"moreInformation.share.description" = "Im więcej osób używa aplikacji CoronaMelder, tym lepiej ona działa. Tylko wspólnymi siłami możemy powstrzymać rozprzestrzenianie się wirusa. Udostępnij więc tę aplikację jak największej liczbie osób.";
+"moreInformation.share.action" = "Udostępnij aplikację";
+
+// MARK: - MoreInformation | Infected
+
+"moreInformation.infected.title" = "Wyślij powiadomienie";
+"moreInformation.infected.loading" = "Uzyskiwanie klucza GGD";
+"moreInformation.infected.upload" = "Dalej";
+
+"moreInformation.infected.error" = "Aplikacja nie mogła uzyskać klucza GGD. Sprawdź swoje połączenie internetowe.";
+"moreInformation.infected.error.upload" = "Coś poszło nie tak z wysłaniem powiadomienia";
+
+"moreInformation.infected.header" = "Zrobiłeś test i masz koronawirusa? W takim przypadku zadzwoni do Ciebie pracownik GGD. Będziesz potrzebować klucza GGD.";
+"moreInformation.infected.how_does_it_work" = "Jak to działa?";
+"moreInformation.infected.step1" = "Przekaż ten klucz GGD pracownikowi GGD.";
+"moreInformation.infected.step2" = "Poczekaj z następnym krokiem na pracownika GGD";
+"moreInformation.infected.step3" = "Wyślij anonimowe powiadomienie, aby ostrzec innych";
+"moreInformation.infected.tryAgain.description" = "Aplikacja nie mogła uzyskać klucza GGD. Sprawdź swoje połączenie internetowe.";
+"moreInformation.infected.action" = "Dalej";
+
+// MARK: - MoreInformation | Infected | Thank You
+
+"moreInformation.thankyou.title" = "Dzięki";
+"moreInformation.thankyou.section.title" = "Dzięki, dalej pomoże Ci GGD.";
+"moreInformation.thankyou.section.header" = "Pracownik GGD doradzi, co możesz zrobić, aby zapobiec zarażeniu innych. Trzymaj się i szybko wracaj do zdrowia. ";
+/* The passed in parameter will be the exposure confirmation key */
+"moreInformation.thankyou.section.footer" = "Użyty klucz GGD: %@";
+"moreInformation.thankyou.list.item1" = "Pozostań w domu do 2 dni od ostatnich dolegliwości";
+"moreInformation.thankyou.list.item2" = "Unikaj kontaktu ze swoimi współlokatorami";
+"moreInformation.thankyou.list.item3" = "Twoje dolegliwości się nasilają? Skontaktuj się z GGD lub swoim lekarzem rodzinnym";
+"moreInformation.thankyou.info.title" = "Powiadomienie zostaje wysłane w przypadku, gdy GGD przeprowadziło test i jesteś zarażony koronawirusem";
+
+// MARK: - MoreInformation | Received Notification
+
+"moreInformation.receivedNotification.title" = "Otrzymałem powiadomienie";
+"moreInformation.receivedNotification.button.title" = "Zadzwoń po test na koronawirusa";
+"moreInformation.receivedNotification.notificationExplanation.title" = "Otrzymałeś powiadomienie, co to oznacza?";
+"moreInformation.receivedNotification.notificationExplanation.content" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której potem wykryto koronawirusa. W tej sytuacji byłeś szczególnie narażony na ryzyko zarażenia. Jeśli rzeczywiście jesteś zarażony, możesz przekazywać wirusa innym. Nawet jeśli teraz nie czujesz się chory.";
+"moreInformation.receivedNotification.doCoronaTest.title" = "Zrób test na obecność koronawirusa";
+"moreInformation.receivedNotification.doCoronaTest.content" = "GGD zaleca przeprowadzenie testu na obecność wirusa. Nawet jeśli nie czujesz się chory. Ponieważ i bez tego możesz już rozprzestrzeniać koronawirusa i zarażać innych.\n \nZrób darmowy test. To nie zajmuje dużo czasu i zazwyczaj można się szybko umówić. Wyniki są znane w ciągu 48 godzin. Pozostań w domu do momentu poznania wyników.\n\nZadzwoń pod bezpłatny numer 0800-1202, aby zapytać o test na obecność koronawirusa.";
+
+// MARK: - MoreInformation | Request Test
+
+"moreInformation.requestTest.title" = "Poproś o test na koronawirusa";
+"moreInformation.requestTest.button.title" = "Zadzwoń po test na koronawirusa";
+"moreInformation.requestTest.receivedNotification.title" = "Masz dolegliwości typowe dla koronawirusa? Poproś o test";
+"moreInformation.requestTest.receivedNotification.content" = "Masz łagodne dolegliwości? Zrób test na obecność koronawirusa i pozostań w domu do momentu otrzymania wyników. Masz poważne dolegliwości, znajdujesz się w grupie wysokiego ryzyka lub wymagasz stałej opieki? Zadzwoń do swojego lekarza rodzinnego.\n\nZrób darmowy test. To nie zajmuje dużo czasu i zazwyczaj można się szybko umówić. Wyniki są znane w ciągu 48 godzin. Pozostań w domu do momentu poznania wyników.";
+// MARK: - Cards
+
+"cards.exposureOff.title" = "Aplikacja <u>nie</u> jest aktywna";
+"cards.exposureOff.content" = "Włącz ustawienia, które są niezbędne do działania aplikacji.";
+"cards.exposureOff.action" = "Włącz aplikację";
+
+"cards.bluetoothOff.title" = "Aplikacja <u>nie</u> jest aktywna";
+"cards.bluetoothOff.content" = "Włącz ustawienia, które są niezbędne do działania aplikacji.";
+"cards.bluetoothOff.action" = "Włącz aplikację";
+
+"cards.noInternet.title" = "Aplikacja <u>nie</u> jest aktywna";
+"cards.noInternet.content" = "Aplikacja nie mogła połączyć się z internetem w ciągu ostatnich 24 godzin. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"cards.noInternet.action" = "Spróbuj ponownie";
+
+"cards.notificationsOff.title" = "Powiadomienia są <u>wyłączone</u>";
+"cards.notificationsOff.content" = "Włącz powiadomienia ogólne, aby w razie potrzeby aplikacja mogła natychmiastowo udostępnić informacje.";
+"cards.notificationsOff.action" = "Włącz powiadomienia";
+
+// MARK: - Cards - Enable Settings
+
+"enableSettings.exposureNotifications.title" = "Włącz powiadomienia o kontaktach";
+"enableSettings.exposureNotifications.action" = "Otwórz Ustawienia";
+
+// supports HTML
+"enableSettings.exposureNotifications.step1" = "Otwórz <b>Ustawienia</b> w swoim telefonie poprzez poniższy przycisk";
+// supports HTML
+"enableSettings.exposureNotifications.step2" = "Włącz powiadomienia o kontaktach";
+"enableSettings.exposureNotifications.step2.action.title" = "Powiadomienia o ekspozycji na COVID-19";
+
+"enableSettings.bluetooth.title" = "Włącz Bluetooth";
+"enableSettings.bluetooth.action" = "Otwórz Ustawienia";
+// supports HTML
+"enableSettings.bluetooth.step1" = "Otwórz <b>Ustawienia</b> w swoim telefonie klikając poniższy przycisk";
+// supports HTML
+"enableSettings.bluetooth.step2" = "Włącz <b>&#96;Bluetooth&#96;</b>";
+"enableSettings.bluetooth.step2.action.title" = "Bluetooth";
+
+"enableSettings.localNotifications.title" = "Włącz powiadomienia ogólne";
+"enableSettings.localNotifications.action" = "Otwórz Ustawienia";
+// supports HTML
+"enableSettings.localNotifications.step1" = "Otwórz <b>Ustawienia</b> w swoim telefonie klikając poniższy przycisk";
+// supports HTML
+"enableSettings.localNotifications.step2" = "Idź do <b>&#96;Powiadomienia&#96;</b>";
+"enableSettings.localNotifications.step2.action.title" = "Powiadomienia";
+// supports HTML
+"enableSettings.localNotifications.step3" = "Włącz <b>&#96;Zezwalaj na przesyłanie wiadomości&#96;</b>";
+"enableSettings.localNotifications.step3.action.title" = "Zezwalaj na przesyłanie wiadomości";
+
+// MARK: - Exposure Notification Received - User Explanation
+"exposure.notification.userExplanation" = "Znajdowałeś się w pobliżu osoby z koronawirusem. Przeczytaj więcej w aplikacji.";
