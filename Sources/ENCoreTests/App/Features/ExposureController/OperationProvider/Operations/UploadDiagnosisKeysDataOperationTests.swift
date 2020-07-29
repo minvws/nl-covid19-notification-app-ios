@@ -188,7 +188,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     func test_noKeys_doesReachOutToNetwork() {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
-            return Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher()
+            return (Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher())
         }
 
         operation = createOperation(withKeys: [])
