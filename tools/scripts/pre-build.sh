@@ -29,3 +29,4 @@ fi
 
 cat project.yml
 
+make install_ci_deps && make generate_project
