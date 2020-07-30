@@ -31,7 +31,7 @@ final class MoreInformationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_moreInformationViewController() {
-        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 470)))
+        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 896)))
     }
 
     func test_didSelectItem_about() {
