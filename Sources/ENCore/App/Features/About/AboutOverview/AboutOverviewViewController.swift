@@ -262,9 +262,15 @@ private class AboutTableViewCell: UITableViewCell {
 
     func setupConstraints() {
         separatorView.snp.makeConstraints { maker in
-            maker.leading.equalToSuperview().inset(16)
+            maker.leading.equalToSuperview().inset(14)
             maker.trailing.bottom.equalToSuperview()
             maker.height.equalTo(1)
+        }
+
+        textLabel?.snp.makeConstraints { maker in
+            maker.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.bottom.top.equalToSuperview().inset(12)
         }
     }
 

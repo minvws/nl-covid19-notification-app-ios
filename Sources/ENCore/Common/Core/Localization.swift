@@ -128,6 +128,8 @@ extension String {
     static var helpAcceptButtonTitle: String { return Localization.string(for: "helpAcceptButtonTitle") }
     static var helpContent: String { return Localization.string(for: "helpContent") }
 
+    static var helpFaqReasonTitle: String { return Localization.string(for: "help.faq.reason.title") }
+    static var helpFaqReasonDescription: String { return Localization.string(for: "help.faq.reason.description") }
     static var helpFaqLocationTitle: String { return Localization.string(for: "help.faq.location.title") }
     static var helpFaqLocationDescription: String { return Localization.string(for: "help.faq.location.description") }
     static var helpFaqAnonymousTitle: String { return Localization.string(for: "help.faq.anonymous.title") }
@@ -135,10 +137,14 @@ extension String {
     static var helpFaqAnonymousDescription2: String { return Localization.string(for: "help.faq.anonymous.description_2") }
     static var helpFaqNotificationTitle: String { return Localization.string(for: "help.faq.notification.title") }
     static var helpFaqNotificationDescription: String { return Localization.string(for: "help.faq.notification.description") }
+    static var helpFaqUploadKeysTitle: String { return Localization.string(for: "help.faq.upload_keys.title") }
+    static var helpFaqUploadKeysDescription: String { return Localization.string(for: "help.faq.upload_keys.description") }
     static var helpFaqBluetoothTitle: String { return Localization.string(for: "help.faq.bluetooth.title") }
     static var helpFaqBluetoothDescription: String { return Localization.string(for: "help.faq.bluetooth.description") }
     static var helpFaqPowerUsageTitle: String { return Localization.string(for: "help.faq.power_usage.title") }
     static var helpFaqPowerUsageDescription: String { return Localization.string(for: "help.faq.power_usage.description") }
+    static var helpFaqDeletionTitle: String { return Localization.string(for: "help.faq.deletion.title") }
+    static var helpFaqDeletionDescription: String { return Localization.string(for: "help.faq.deletion.description") }
     static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
     static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link") }
     static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
