@@ -154,6 +154,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
     }
 
+    // MARK: - HelpListener
+
+    func helpRequestsEnableApp() {}
+
+    func helpRequestsDismissal(shouldHideViewController: Bool) {}
+
     // MARK: - ShareSheetListener
 
     func shareSheetDidComplete() {
