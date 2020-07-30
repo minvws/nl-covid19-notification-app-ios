@@ -243,6 +243,7 @@ private final class StatusView: View {
         }
         stretchGuide.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(contentStretchGuide).inset(-16)
+
             maker.top.equalTo(contentStretchGuide).inset(-70)
             maker.bottom.greaterThanOrEqualTo(contentStretchGuide.snp.bottom)
             maker.leading.trailing.bottom.equalToSuperview()
@@ -295,6 +296,7 @@ private final class StatusView: View {
 
         sceneImageView.isHidden = !viewModel.showScene
         containerToSceneVerticalConstraint?.isActive = viewModel.showScene
+        cloudsView.isHidden = !viewModel.showClouds
 
         evaluateHeight()
     }
