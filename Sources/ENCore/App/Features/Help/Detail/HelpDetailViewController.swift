@@ -19,6 +19,9 @@ final class HelpDetailViewController: ViewController, Logging {
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.question = question
 
+        let contentType: HelpView.ContentType = question.link == nil ? .text : .link
+        self.internalView = HelpView(theme: theme, shouldDisplayButton: shouldShowEnableAppButton, contentType: contentType)
+
         super.init(theme: theme)
     }
 
@@ -38,17 +41,14 @@ final class HelpDetailViewController: ViewController, Logging {
             guard webViewLoadingEnabled() else {
                 return logDebug("`webViewLoading` disabled")
             }
-            internalView.webView.isHidden = false
             internalView.webView.load(URLRequest(url: url))
         } else {
-            internalView.contentTextView.isHidden = false
             internalView.contentTextView.attributedText = question.attributedAnswer
         }
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
-        internalView.acceptButton.isHidden = !shouldShowEnableAppButton
 
-        navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
+        navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
     }
 
     @objc func acceptButtonPressed() {
@@ -59,11 +59,16 @@ final class HelpDetailViewController: ViewController, Logging {
 
     private weak var listener: HelpDetailListener?
     private let shouldShowEnableAppButton: Bool
+
     private let question: HelpQuestion
-    private lazy var internalView: HelpView = HelpView(theme: self.theme)
+    private let internalView: HelpView
 }
 
 private final class HelpView: View {
+
+    enum ContentType {
+        case text, link
+    }
 
     lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -75,7 +80,6 @@ private final class HelpView: View {
     lazy var contentTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.isHidden = true
         textView.isEditable = false
         return textView
     }()
@@ -83,7 +87,6 @@ private final class HelpView: View {
     lazy var webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
-        webView.isHidden = true
         webView.allowsBackForwardNavigationGestures = false
         return webView
     }()
@@ -105,18 +108,36 @@ private final class HelpView: View {
         return button
     }()
 
-    private lazy var viewsInDisplayOrder = [titleLabel, contentTextView, webView, gradientImageView, acceptButton]
+    init(theme: Theme, shouldDisplayButton: Bool, contentType: ContentType) {
+        self.shouldDisplayButton = shouldDisplayButton
+        self.contentType = contentType
+        super.init(theme: theme)
+    }
 
     override func build() {
         super.build()
 
-        viewsInDisplayOrder.forEach { addSubview($0) }
+        addSubview(titleLabel)
+
+        if contentType == .text {
+            addSubview(contentTextView)
+        } else {
+            addSubview(webView)
+        }
+
+        addSubview(gradientImageView)
+
+        if shouldDisplayButton {
+            addSubview(acceptButton)
+        }
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
         var constraints = [[NSLayoutConstraint]()]
+
+        let bottomAnchor = shouldDisplayButton ? acceptButton.topAnchor : self.bottomAnchor
 
         constraints.append([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
@@ -125,34 +146,45 @@ private final class HelpView: View {
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
         ])
 
-        constraints.append([
-            contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-            contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
-            contentTextView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
+        if contentType == .text {
+            constraints.append([
+                contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
+                contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
+                contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
+                contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+            ])
+        }
 
-        constraints.append([
-            webView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            webView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            webView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            webView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
+        if contentType == .link {
+            constraints.append([
+                webView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
+                webView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+                webView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+                webView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+            ])
+        }
 
         constraints.append([
             gradientImageView.heightAnchor.constraint(equalToConstant: 25),
             gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gradientImageView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
+            gradientImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
         ])
 
-        constraints.append([
-            acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            acceptButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
+        if shouldDisplayButton {
+            constraints.append([
+                acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+                acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+                acceptButton.heightAnchor.constraint(equalToConstant: 50)
+            ])
+        }
 
         for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
+
+    // MARK: - Private
+
+    private let shouldDisplayButton: Bool
+    private let contentType: ContentType
 }

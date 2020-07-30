@@ -42,6 +42,11 @@ public final class Localization {
 }
 
 extension String {
+
+    // MARK: - Helpdesk Phone Number
+
+    static var helpDeskPhoneNumber = "tel://08001280"
+
     // MARK: - General Texts
 
     static var ok: String { return Localization.string(for: "ok") }
@@ -137,9 +142,39 @@ extension String {
     static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
     static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link") }
     static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
-    static var helpColofonDescription: String { return Localization.string(for: "help.faq.colofon.description") }
+    static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link") }
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
     static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
+
+    // MARK: - About - What the app do
+
+    static var helpWhatAppDoesTitle: String { return Localization.string(for: "help.what_does_the_app_do.title") }
+    static var helpWhatAppDoesProtectTitle: String { return Localization.string(for: "help.what_does_the_app_do.protect.title") }
+    static var helpWhatAppDoesProtectDescription: String { return Localization.string(for: "help.what_does_the_app_do.protect.description") }
+    static var helpWhatAppDoesNotifyTitle: String { return Localization.string(for: "help.what_does_the_app_do.notify.title") }
+    static var helpWhatAppDoesNotifyDescription: String { return Localization.string(for: "help.what_does_the_app_do.notify.description") }
+    static var helpWhatAppDoesBluetoothTitle: String { return Localization.string(for: "help.what_does_the_app_do.bluetooth.title") }
+    static var helpWhatAppDoesBluetoothDescription: String { return Localization.string(for: "help.what_does_the_app_do.bluetooth.description") }
+    static var helpWhatAppDoesExampleCycleTitle: String { return Localization.string(for: "help.what_does_the_app_do.example.cycle.title") }
+    static var helpWhatAppDoesExampleCycleDescription: String { return Localization.string(for: "help.what_does_the_app_do.example.cycle.description") }
+    static var helpWhatAppDoesExampleTrainTitle: String { return Localization.string(for: "help.what_does_the_app_do.example.train.title") }
+    static var helpWhatAppDoesExampleTrainDescription: String { return Localization.string(for: "help.what_does_the_app_do.example.train.description") }
+
+    // MARK: - About - TechnicalInformation
+
+    static var helpTechnicalInformationTitle: String { return Localization.string(for: "help.technical_explanation.title") }
+    static var helpTechnicalInformationStep1Title: String { return Localization.string(for: "help.technical_explanation.step1.title") }
+    static var helpTechnicalInformationStep1Description: String { return Localization.string(for: "help.technical_explanation.step1.description") }
+    static var helpTechnicalInformationStep2Title: String { return Localization.string(for: "help.technical_explanation.step2.title") }
+    static var helpTechnicalInformationStep2Description: String { return Localization.string(for: "help.technical_explanation.step2.description") }
+    static var helpTechnicalInformationStep3Title: String { return Localization.string(for: "help.technical_explanation.step3.title") }
+    static var helpTechnicalInformationStep3Description: String { return Localization.string(for: "help.technical_explanation.step3.description") }
+    static var helpTechnicalInformationStep4Title: String { return Localization.string(for: "help.technical_explanation.step4.title") }
+    static var helpTechnicalInformationStep4Description: String { return Localization.string(for: "help.technical_explanation.step4.description") }
+    static var helpTechnicalInformationStep5Title: String { return Localization.string(for: "help.technical_explanation.step5.title") }
+    static var helpTechnicalInformationStep5Description: String { return Localization.string(for: "help.technical_explanation.step5.description") }
+    static var helpTechnicalInformationGithubTitle: String { return Localization.string(for: "help.technical_explanation.github.title") }
+    static var helpTechnicalInformationGithubSubtitle: String { return Localization.string(for: "help.technical_explanation.github.subtitle") }
 
     // MARK: - Message
 
@@ -148,6 +183,8 @@ extension String {
 
     static var messageTitle: String { return Localization.string(for: "message.title") }
     static var messageButtonTitle: String { return Localization.string(for: "message.button.title") }
+
+    static var notificationEnStatusNotActive: String { Localization.string(for: "notification.en.statusNotActive") }
 
     static var notificationUploadFailedNotification: String { Localization.string(for: "notification.upload.failed.notification") }
     static var notificationUploadFailedHeader: String { Localization.string(for: "notification.upload.failed.header") }
@@ -206,6 +243,12 @@ extension String {
     // MARK: - MoreInformation | About
 
     static var moreInformationAboutTitle: String { return Localization.string(for: "moreInformation.about.title") }
+    static var aboutTechnicalInformationTitle: String { return Localization.string(for: "moreInformation.about.technical.title") }
+    static var aboutTechnicalInformationDescription: String { return Localization.string(for: "moreInformation.about.technical.description") }
+    static var aboutAppInformationTitle: String { return Localization.string(for: "moreInformation.about.onboarding.title") }
+    static var aboutAppInformationDescription: String { return Localization.string(for: "moreInformation.about.onboarding.description") }
+    static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
+    static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
 
     // MARK: - MoreInformation | Infected
 

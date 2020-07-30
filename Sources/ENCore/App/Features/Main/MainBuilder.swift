@@ -57,10 +57,6 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
         return dependency.exposureController
     }
 
-    var helpBuilder: HelpBuildable {
-        return HelpBuilder(dependency: self)
-    }
-
     var messageBuilder: MessageBuildable {
         return MessageBuilder(dependency: self)
     }
@@ -84,7 +80,6 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder,
                           requestTestBuilder: dependencyProvider.requestTestBuilder,
                           infectedBuilder: dependencyProvider.infectedBuilder,
-                          helpBuilder: dependencyProvider.helpBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder)
     }

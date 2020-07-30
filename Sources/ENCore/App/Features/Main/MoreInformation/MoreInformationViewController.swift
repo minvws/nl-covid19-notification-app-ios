@@ -118,14 +118,12 @@ private final class MoreInformationView: View {
     }
     var didSelectItem: ((MoreInformationIdentifier) -> ())?
 
-    private let headerLabel: Label
     private let stackView: UIStackView
     private let versionLabel: Label
 
     // MARK: - Init
 
     override init(theme: Theme) {
-        self.headerLabel = Label()
         self.stackView = UIStackView(frame: .zero)
         self.versionLabel = Label()
         super.init(theme: theme)
@@ -136,17 +134,11 @@ private final class MoreInformationView: View {
     override func build() {
         super.build()
 
-        headerLabel.text = .moreInformationHeaderTitleUppercased
-        headerLabel.font = theme.fonts.footnote // TODO: Should actually be bold
-        headerLabel.accessibilityTraits = .header
-
         stackView.axis = .vertical
         stackView.distribution = .fill
 
         versionLabel.textAlignment = .center
-        headerLabel.font = theme.fonts.footnote
 
-        addSubview(headerLabel)
         addSubview(stackView)
         addSubview(versionLabel)
     }
@@ -156,12 +148,8 @@ private final class MoreInformationView: View {
 
         hasBottomMargin = true
 
-        headerLabel.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.equalToSuperview().offset(16)
-            maker.leading.trailing.equalToSuperview().inset(16)
-        }
         stackView.snp.makeConstraints { maker in
-            maker.top.equalTo(headerLabel.snp.bottom).offset(16)
+            maker.top.equalToSuperview().offset(16)
             maker.leading.trailing.equalToSuperview()
             maker.bottom.equalTo(versionLabel.snp.top).offset(-16)
         }

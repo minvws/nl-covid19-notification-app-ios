@@ -74,7 +74,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
                 },
                 receiveCancel: { [weak self] in
                     self?.logDebug("--- PROCESSING PENDING UPLOAD REQUESTS WAS CANCELLED ---")
-            })
+                })
             .share()
             .eraseToAnyPublisher()
     }

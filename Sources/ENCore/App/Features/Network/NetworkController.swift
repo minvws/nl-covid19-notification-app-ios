@@ -221,7 +221,8 @@ final class NetworkController: NetworkControlling, Logging {
             guard length > 0 else {
                 return ""
             }
-            let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            assert(letters.count == 52)
             return String((0 ..< length).map { _ in letters.randomElement() ?? "a" })
         }
 

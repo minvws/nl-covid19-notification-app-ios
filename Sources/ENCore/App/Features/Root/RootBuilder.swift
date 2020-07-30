@@ -75,6 +75,12 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return builder.build()
     }()
 
+    lazy var exposureManager: ExposureManaging = {
+        let builder = ExposureManagerBuilder()
+
+        return builder.build()
+    }()
+
     lazy var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming = {
         let networkConfiguration: NetworkConfiguration
 

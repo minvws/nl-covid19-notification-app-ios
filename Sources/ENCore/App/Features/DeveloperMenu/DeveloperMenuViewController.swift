@@ -163,9 +163,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Remove Stored LabConfirmationKey",
                               subtitle: "Last: \(getLastStoredConfirmationKey())",
                               action: { [weak self] in self?.removeStoredConfirmationKey() }),
-                DeveloperItem(title: "Remove Last Uploaded RollingStart",
-                              subtitle: "Last: \(getLastUploadedRollingStartNumber())",
-                              action: { [weak self] in self?.removeLastUploadedRollingStartNumber() }),
+                DeveloperItem(title: "Remove Uploaded RollingStart Numbers",
+                              subtitle: "Uploaded: \(getUploadedRollingStartNumbers().count)",
+                              action: { [weak self] in self?.removeUploadedRollingStartNumbers() }),
                 DeveloperItem(title: "Remove Last Exposure",
                               subtitle: "Last: \(getLastExposureString())",
                               action: { [weak self] in self?.removeLastExposure() }),
@@ -289,7 +289,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         removeLastExposure()
         removeAllExposureKeySets()
         removeStoredConfirmationKey()
-        removeLastUploadedRollingStartNumber()
+        removeUploadedRollingStartNumbers()
         storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.appConfiguration, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
@@ -337,8 +337,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         internalView.tableView.reloadData()
     }
 
-    private func removeLastUploadedRollingStartNumber() {
-        storageController.removeData(for: ExposureDataStorageKey.lastUploadedRollingStartNumber, completion: { _ in })
+    private func removeUploadedRollingStartNumbers() {
+        storageController.removeData(for: ExposureDataStorageKey.uploadedRollingStartNumbers, completion: { _ in })
 
         exposureController.refreshStatus()
         internalView.tableView.reloadData()
@@ -453,12 +453,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)?.identifier ?? "None"
     }
 
-    private func getLastUploadedRollingStartNumber() -> String {
-        guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUploadedRollingStartNumber) else {
-            return "None"
-        }
-
-        return String(last)
+    private func getUploadedRollingStartNumbers() -> [UInt32] {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) ?? []
     }
 
     private func getLastExposureString() -> String {
@@ -519,6 +515,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             content.body = .messageDefaultBody
         case .uploadFailed:
             content.body = .notificationUploadFailedNotification
+        case .enStatusDisabled:
+            return
         }
 
         let date = Date(timeIntervalSinceNow: 5)

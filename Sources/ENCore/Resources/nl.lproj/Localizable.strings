@@ -68,6 +68,7 @@
 "consentStep4Content" = "Hoe meer mensen CoronaMelder gebruiken, hoe beter deze werkt. Alleen samen kunnen we de verspreiding van het virus stoppen. Deel de app dus met zo veel mogelijk anderen.";
 "consentStep4PrimaryButton" = "App delen";
 "consentStep4SecondaryButton" = "Ga door";
+
 // MARK: - Consent
 "skipStep" = "Sla over";
 
@@ -90,7 +91,7 @@
 "help.faq.privacy_policy.title" = "Privacyverklaring";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
 "help.faq.colofon.title" = "Colofon";
-"help.faq.colofon.description" = "<p>De CoronaMelder is ontwikkeld door het Ministerie van Volksgezondheid, Welzijn en Sport in samenwerking met het RIVM en de landelijke GGD'en. De app had niet tot stand kunnen komen met de hulp van tientallen experts en ervaringsdeskundigen. Er is alles aan gedaan om te zorgen voor een privacyvriendelijke, veilige en toegankelijke en gebruiksvriendelijke app om te helpen corona onder controle te krijgen.</p><br /><h2>Broncode</h2><br /><p>De broncode van de app en de achterliggende systemen zijn volledig openbaar. Je kunt alle code terugvinden op <a href='https://github.com/minvws'>GitHub</a>. Zo is de precieze werking van de app controleerbaar, en helpen de vele ogen bij het opsporen van eventuele kwetsbaarheden.<p><br /><h2>Gebruikte bibliotheken</h2><br /><p>De gebruikte bibliotheken voor de apps vind je hier:</p><ul><li>Android</li><li><a href='https://github.com/minvws/nl-covid19-notification-app-ios/tree/master/licenses'>iOS</a></li></ul>";
+"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Toegankelijkheid";
 "help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
 
@@ -117,6 +118,8 @@
 "help.technical_explanation.step4.description" = "De app kijkt een paar keer per dag naar de lijst met codes van besmette personen. Hij vergelijkt deze lijst met de codes die op jouw telefoon zijn bewaard. Zo ziet de app of je extra kans op besmetting hebt gelopen.";
 "help.technical_explanation.step5.title" = "5. Jij krijgt een melding als de codes van een besmet persoon op je telefoon staan";
 "help.technical_explanation.step5.description" = "In deze melding lees je wanneer je in de buurt van de besmette persoon bent geweest. Niet wie het is en waar het was. Ook vertelt de app wat je nu zelf het beste kunt doen. Je eigen codes staan niet op de lijst met besmette codes, maar worden 14 dagen op je telefoon bewaard.";
+"help.technical_explanation.github.title" = "Bekijk broncode";
+"help.technical_explanation.github.subtitle" = "Ga naar GitHub";
 
 "help.bluetooth.title" = "Werkt Bluetooth door muren heen?";
 
@@ -130,7 +133,10 @@
 
 // MARK: - Notifications
 
+"notification.en.statusNotActive" = "CoronaMelder is op dit moment niet actief. Controleer je instellingen.";
+
 "notification.upload.failed.notification" = "Het is niet gelukt anderen een melding te sturen. Bel daarom de GGD. Lees meer in de app.";
+"notification.upload.failed.header" = "Bel de GGD";
 "notification.upload.failed.title" = "Het is niet gelukt anderen een melding te sturen";
 "notification.upload.failed.content" = "We hebben geprobeerd je codes te delen met de GGD, maar dit is niet gelukt. Bel de GGD om dit opnieuw te doen. Het is heel belangrijk dat je dit snel doet. Anders kunnen er meer mensen besmet raken.";
 
@@ -204,6 +210,9 @@
 "moreInformation.about.technical.title" = "Hoe werkt de app?";
 "moreInformation.about.technical.description" = "Bekijk de technische uitleg";
 
+"moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
+"moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
+
 "moreInformation.about.faq.reason" = "Waarom is deze app belangrijk?";
 "moreInformation.about.faq.location" =" Kan de app mijn locatie zien?";
 "moreInformation.about.faq.anonymous" = "Hoe kan de app anoniem zijn?";
@@ -255,7 +264,7 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Wat betekent het als je een melding krijgt?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. Je hebt in deze situatie extra kans op besmetting gelopen. Als je besmet bent, kan je het virus aan anderen doorgeven. Ook als je je niet ziek voelt.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Doe een coronatest";
-"moreInformation.receivedNotification.doCoronaTest.content" = "De GGD raadt aan je te laten testen op het virus. Zelfs als je je nog niet ziek voelt. Want zonder je ziek te voelen kun je het coronavirus al verspreiden en zo anderen besmetten.\n \nLaat je gratis testen. Het duurt niet lang en je kan meestal snel een afspraak maken. De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet.\n\nBel gratis 0800-1202 om een coronatest aan te vragen.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "De GGD raadt aan je te laten testen op het virus. Zelfs als je je nog niet ziek voelt. Want zonder je ziek te voelen kun je het coronavirus al verspreiden en zo anderen besmetten.\n \nLaat je gratis testen. Het duurt niet lang en je kan meestal snel een afspraak maken. De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet.\n\nBel gratis 0800-1280 om een coronatest aan te vragen.";
 
 // MARK: - MoreInformation | Request Test
 

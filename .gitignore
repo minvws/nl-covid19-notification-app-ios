@@ -73,3 +73,5 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 Sources/EN/Resources/Info.plist
+/Sources/ENTests/Mocks.swift
+/Sources/ENCoreTests/Mocks.swift

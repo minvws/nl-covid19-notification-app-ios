@@ -17,6 +17,9 @@ final class BackgroundControllerTests: XCTestCase {
     private let exposureController = ExposureControllingMock()
     private let networkController = NetworkControllingMock()
 
+    private let exposureManager = ExposureManagingMock()
+    private let userNotificationCenter = UserNotificationCenterMock()
+
     // MARK: - Setup
 
     override func setUp() {
@@ -29,7 +32,9 @@ final class BackgroundControllerTests: XCTestCase {
 
         controller = BackgroundController(exposureController: exposureController,
                                           networkController: networkController,
-                                          configuration: configuration)
+                                          configuration: configuration,
+                                          exposureManager: exposureManager,
+                                          userNotificationCenter: userNotificationCenter)
     }
 
     // MARK: - Tests
@@ -51,6 +56,9 @@ final class BackgroundControllerTests: XCTestCase {
     }
 
     func test_handleBackgroundUpdateTask_failure() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
         exposureController.updateWhenRequiredHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
@@ -67,6 +75,9 @@ final class BackgroundControllerTests: XCTestCase {
     }
 
     func test_handleBackgroundTask_cancel() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
         exposureController.updateWhenRequiredHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
@@ -129,6 +140,48 @@ final class BackgroundControllerTests: XCTestCase {
         wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(networkController.stopKeysCallCount, 1)
+
+        XCTAssertNotNil(task.completed)
+        XCTAssert(task.completed!)
+    }
+
+    func test_handleENStatusCheck() {
+        let exp = expectation(description: "HandleENStatusCheck")
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .authorizationDenied
+        }
+        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.authorized)
+        }
+        userNotificationCenter.addHandler = { _, completion in
+            exp.fulfill()
+            completion?(nil)
+        }
+
+        let task = MockBGProcessingTask(identifier: .statusCheck)
+
+        controller.handle(task: task)
+        wait(for: [exp], timeout: 2)
+
+        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+
+        XCTAssertNotNil(task.completed)
+        XCTAssert(task.completed!)
+    }
+
+    func test_handleENStatusCheck_doesntCallIfLessThan24hours() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .authorizationDenied
+        }
+
+        let date = Calendar.current.date(byAdding: .hour, value: -20, to: Date())!
+        exposureController.lastENStatusCheckDate = date
+
+        let task = MockBGProcessingTask(identifier: .statusCheck)
+
+        controller.handle(task: task)
+
+        XCTAssertEqual(userNotificationCenter.addCallCount, 0)
 
         XCTAssertNotNil(task.completed)
         XCTAssert(task.completed!)

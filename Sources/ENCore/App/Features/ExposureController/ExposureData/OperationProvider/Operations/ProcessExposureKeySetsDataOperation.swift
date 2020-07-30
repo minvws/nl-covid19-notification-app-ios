@@ -333,6 +333,18 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
+        if let daysSinceLastExposure = daysSinceLastExposure() {
+            logDebug("Had previous exposure \(daysSinceLastExposure) days ago")
+
+            if summary.daysSinceLastExposure >= daysSinceLastExposure {
+                logDebug("Previous exposure was newer than new found exposure - skipping notification")
+
+                return Just((result, nil))
+                    .setFailureType(to: ExposureDataError.self)
+                    .eraseToAnyPublisher()
+            }
+        }
+
         logDebug("Triggering notification for \(summary)")
 
         return self
@@ -449,6 +461,23 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
     private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL {
         return exposureKeySetsStorageUrl.appendingPathComponent(keySetHolder.binaryFilename)
+    }
+
+    private func lastStoredExposureReport() -> ExposureReport? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport)
+    }
+
+    private func daysSinceLastExposure() -> Int? {
+        let today = Date()
+
+        guard
+            let lastExposureDate = lastStoredExposureReport()?.date,
+            let dayCount = Calendar.current.dateComponents([.day], from: lastExposureDate, to: today).day
+        else {
+            return nil
+        }
+
+        return dayCount
     }
 
     private let networkController: NetworkControlling

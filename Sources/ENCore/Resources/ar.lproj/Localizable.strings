@@ -1,0 +1,301 @@
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
+
+"ok" = "حسنًا";
+"yes" = "نعم";
+"no" = "كلا";
+"warning" = "تحذير";
+"back" = "السابق";
+"cancel" = "إلغاء";
+"example" = "مثال";
+"close" = "إغلاق";
+"error.title" = "حدث خطأ ما";
+
+// MARK: - Update App
+"updateApp.error.message" = "لا يمكن فتح متجر التطبيقات [App Store]";
+"updateApp.title" = "التطبيق بحاجة إلى تحديث";
+
+"updateApp.content" = "حدّث التطبيق للتأكيد من أنه يستمر في العمل بشكل صحيح";
+"updateApp.button" = "تحديث";
+
+// MARK: - Onboarding Steps
+"step1Title" = "ساهم في وقف انتشار فيروس كورونا";
+"step1Content" = "يقوم هذا التطبيق بتحذيرك بعد مرورك بجوار شخص مصاب بفيروس كورونا. هكذا تستطيع أن تتفادى نقل الفيروس إلى الأشخاص الذين يعيشون في محيطك.";
+
+"step2Title" = "تستلم تحذيرًا <u>بعدما </u> تعرضت إلى خطر الإصابة.";
+"step2Content" = "يرسل هذا التطبيق تحذيرًا بعد تواجدك لمدة 15 دقائق على الأقل بالقرب من شخص تبين لاحقًا أنه مصاب بكورونا. يجب أن يكون هذا الشخص من مستخدمي التطبيق أيضًا.";
+
+"step3Title" = "يستخدم التطبيق بلوتوث <u>وليس</u> بيانات الموقع";
+"step3Content" = "يلاحظ التطبيق ما إذا كنتَ قد تواجدتَ بالقرب من شخص ما من خلال بلوتوث. كلما كنت تتواجد أقرب من هذا الشخص، كلما أصبحت إشارة البلوتوث أقوى. لا يعلم التطبيق أين كنت ومن أنتَ.";
+
+"step4Title" = "هل مر بجوارك شخص يقود دراجة هوائية؟ لن تستلم إشعارًا في وقت لاحق";
+"step4Content" = "كانت إشارة بلوتوث قوية بما يكفي بسبب تواجدكم بالقرب من بعضكم. إلا أن المدة كانت جدًا قصيرة بحيث يصبح احتمال العدوى جدًا ضئيل.";
+
+"step5Title" = "هل كنت جالسًا بالقرب من شخص في القطار؟ في هذه الحالة </u>من الممكن <u> أن تستلم إشعارًا في وقت لاحق.";
+"step5Content" = "إشارة البلوتوث كانت قوية بما يكفي وكنتم متواجدون بالقرب من بعضكم لفترة طويلة.";
+
+// MARK: - Onboarding
+"nextButtonTitle" = "إلى الصفحة التالية";
+
+// MARK: - Consent Steps
+"consentStep1Title" = "تشغيل إشعارات الإصابة المحتملة بفيروس كورونا";
+"consentStep1Summary1" = "يتم تخزين بيانات بلوتوث لمدة 14 يومًا على هاتفك. تستطيع أن تقوم بحذفها بنفسك دائمًا.";
+"consentStep1Summary2" = "<b>لا </b> يتم استخدام أو تخزين اسمك أو بياناتك الأخرى.";
+"consentStep1Summary3" = "<i>لا </i>يتم استخدام أو تخزين بيانات موقع (GPS) الخاصة بك.";
+"consentStep1PrimaryButton" = "تشغيل";
+"consentStep1SecondaryButton" = "كيف يعمل التطبيق بالضبط؟";
+
+"consentStep2Title" = "شغّل البلوتوث من أجل استخدام التطبيق";
+"consentStep2Content" = "البلوتوث الخاص بك غير مشغّل. لذلك لا يستطيع التطبيق ملاحظة ما إذا كنت قد تواجدت بالقرب من الآخرين.";
+"consentStep2PrimaryButton" = "تشغيل البلوتوث";
+"consentStep2SecondaryButton" = "ربما في وقت لاحق";
+
+"consentStep3Title" = "هل يستطيع تطبيق التحذير من كورونا (CoronaMelder) إرسال الإشعارات إذا لم يكن يعمل التطبيق بشكل صحيح؟";
+"consentStep3Content" = "سيقوم التطبيق بعد قليل بإخبارك بما يمكنك القيام به لحل هذه المشكلة.";
+"consentStep3PrimaryButton" = "إعطاء الموافقة";
+"consentStep3SecondaryButton" = "ربما في وقت لاحق";
+
+// MARK: - Consent
+"skipStep" = "تخطى";
+
+// MARK: - Help
+"helpTitle" = "حوْل التطبيق";
+"helpSubtitle" = "الأسئلة المتكررة";
+"helpAcceptButtonTitle" = "تشغيل";
+
+"help.faq.location.title" = "هل يستطيع التطبيق التعرف على موقعي الجغرافي؟";
+"help.faq.location.description" = "كلا. باستخدام البلوتوث يستطيع التطبيق فقط معرفة فيما إذا كنت متواجدًا بالقرب من أشخاص يقومون باستخدام التطبيق أيضًا. البلوتوث ليس مقترنًا بموقعك الجغرافي، إذ لا يمكن للتطبيق معرفة مكان تواجدك. يقوم البلوتوث فقط بإجراء اتصال لاسلكي بين جهازين قريبين من بعضهما. مثل هاتفك ومكبّر صوت أو سماعة.";
+"help.faq.anonymous.title" = "كيف يمكن أن يكون التطبيق سريًا؟";
+"help.faq.anonymous.description_1" = "يقوم التطبيق بتبادل الرموز مع هواتف أخرى. لا تحتوي هذه الرموز على بياناتك الشخصية أو بيانات الموقع الجغرافي لك، فهي عملية عشوائية تمامًا. يحدث تبادل الرموز في لحظة تواجدك بالقرب من شخص آخر لديه التطبيق أيضًا.";
+"help.faq.anonymous.description_2" = "هل تبين لاحقًا أن هذا الشخص مصاب بكورونا؟ يستطيع هذا الشخص إضافة رمزه أو رمزها إلى قائمة رموز الأشخاص المصابين بالفيروس. لا يمكن إضافة الرموز إلا بعد إرسال الكود إلى المصلحة الصحية للبلدية. بعد ذلك تستلم أنت وكل الأشخاص الذين عندهم هذا الرمز على هاتفهم إشعارًا. يذكر هذا الإشعار فقط الوقت الذي كنت فيه متواجدًا بالقرب من شخص مصاب بالعدوى. لا يذكر الإشعار من يكون هذا الشخص وأين صادفت به.";
+"help.faq.notification.title" = "متى يقوم التطبيق بإرسالي إشعارًا؟";
+"help.faq.notification.description" = "تستلم إشعارًا بعدما كنت معرضًا لزيادة خطر الإصابة بالعدوى. يحدث ذلك إذا تواجدت على الأقل لمدة 15 دقيقة من شخص تبين لاحقاً أنه مصاب بكورونا. بطبيعة الحال يحدث هذا الأمر فقط إن كان ذلك الشخص من مستخدمي التطبيق أيضًا. تتوقف عملية استلامك للإشعار على مدى قوة إشارة بلوتوث ومدة احتكاككم. هل مر بجوارك شخص  بدراجة هوائية؟ لن يصلك إشعار في وقت لاحق. كنتما قريبين من بعضكما ووصلت إشارة بلوتوث إلى الآخر. إلا أن الاحتكاك استمر لفترة قصيرة بحيث أنك لم تتعرض إلى زيادة خطر الإصابة. هل كنت جالسًا بالقرب من شخص ما في القطار أو المكتب؟ يصلك إشعار في وقت لاحق في هذه الحالة. كانت قوة البلوتوث كافية لتغطي المسافة وكنتم قريبين من بعض لفترة طويلة. ";
+"help.faq.bluetooth.title" = "هل بإمكان إشارة البلوتوث اختراق الجدران؟";
+"help.faq.bluetooth.description" = "نعم، إلا أن الإشارة تصبح ضعيفة جداً في هذا الحالة. يعمل بلوتوث على أكمل وجه عندما يتواجد هاتفك في نفس الغرفة التي يتواجد فيها هاتف الشخص الآخر. فعلى سبيل المثال، احتمالية استلامك لإشارة بلوتوث من الجيران ضئيلة جداً. لذلك فإن احتمال استلامك لتحذير ضئيلة أيضًا بعد أن تبين أن جارك مصاب بكورونا ولم تكونوا متواجدين في نفس الغرفة.";
+"help.faq.power_usage.title" = "ما كمية الطاقة التي يستهلكها التطبيق؟";
+"help.faq.power_usage.description" = "يستخدم التطبيق البلوتوث منخفض الطاقة (Bluetooth Low Energy). هذا نوع خاص من البلوتوث يستهلك كمية قليلة جدًا من الطاقة. أن كمية الطاقة التي يتطلبها من بطارية التليفون تختلف من هاتف لآخر.";
+
+"help.what_does_the_app_do.title" = "ما الذي يفعله تطبيق التحذير من كورونا (CoronaMelder)؟";
+"help.what_does_the_app_do.protect.title" = "ساهم في وقف انتشار فيروس كورونا";
+"help.what_does_the_app_do.protect.description" = "يقوم هذا التطبيق بتحذيرك بعد مرورك بجوار شخص مصاب بفيروس كورونا. هكذا تستطيع أن تتفادى نقل الفيروس إلى الأشخاص الذين يعيشون في محيطك.";
+"help.what_does_the_app_do.notify.title" = "تستلم إشعارًا <u>بعدما </u> تعرضت إلى خطر إصابة أكبر.";
+"help.what_does_the_app_do.notify.description" = "يرسل هذا التطبيق إشعارًا بعد تواجدك لمدة 15 دقائق على الأقل بالقرب من شخص تبين لاحقاً أنه مصاب بكورونا. يجب على هذا الشخص استخدام التطبيق أيضاً.";
+"help.what_does_the_app_do.bluetooth.title" = "يستخدم التطبيق البلوتوث وليس بيانات الموقع";
+"help.what_does_the_app_do.bluetooth.description" = "يلاحظ التطبيق ما إذا كنتَ قد تواجدتَ بالقرب من شخص ما من خلال البلوتوث. كلما كنت تتواجد أقرب من هذا الشخص، كلما صارت إشارة البلوتوث أقوى. لا يعلم التطبيق أين كنت ومن أنتَ.";
+"help.what_does_the_app_do.example.cycle.title" = "هل مر بك شخص يقود دراجة هوائية؟ لن تستلم إشعارًا في وقت لاحق";
+"help.what_does_the_app_do.example.cycle.description" = "كانت إشارة بلوتوث قوية بما يكفي بسبب تواجدكم بالقرب من بعضكم. إلا أن المدة كانت جدًا قصيرة بحيث تصبح فرصة العدوى ضئيلة جدًا.";
+"help.what_does_the_app_do.example.train.title" = "هل كنت جالسًا بالقرب من شخص في القطار؟ في هذه الحالة من الممكن أن تستلم إشعارًا في وقت لاحق.";
+"help.what_does_the_app_do.example.train.description" = "إشارة البلوتوث كانت قوية بما يكفي وكنتم متواجدون بالقرب من بعضكم لفترة طويلة.";
+
+"help.technical_explanation.title" = "الشرح التقني";
+"help.technical_explanation.step1.title" = "1. يقوم التطبيق بإنشاء رمز خاص لكل هاتف";
+"help.technical_explanation.step1.description" = "لا يتضمن هذا الرمز معلومات عنك أو عن هاتفك. الرمز مجهول تمامًا ويتغير كل ربع ساعة.";
+"help.technical_explanation.step2.title" = "2. تتبادل الهواتف رموزها عند تواجدها بالقرب من بعضها";
+"help.technical_explanation.step2.description" = "هل لدى الشخص التي تصادفه التطبيق أيضاً؟ تتبادل هواتفكم في تلك الحالة الرموز عن طريق البلوتوث منخفض الطاقة. بهذه الطريقة يعرف التطبيق ما هي الهواتف التي تواجدت بالقرب منه. لا يعرف التطبيق من هم أصحاب هذه الهواتف ولا مكان تواجدكم.";
+"help.technical_explanation.step3.title" = "3. إذا كان شخصًا ما مصابًا بكورونا، فيستطيع وضع رموزه أو رموزها على قائمة";
+"help.technical_explanation.step3.description" = "تتضمن هذه القائمة رموز الأشخاص المصابين بالعدوى فقط. من أجل إضافة الرموز، يجب على الشخص الحامل للعدوى إرسال كود المصلحة الصحية للبلدية إلى المصلحة الصحية للبلدية. بهذه الطريقة يمكن التأكد من أن الرموز المضافة تنتمي بالفعل إلى شخص مصاب بكورونا. يتم حذف كل الرموز التي يتجاوز عمرها 14 يومًا أوتوماتيكيًا.";
+"help.technical_explanation.step4.title" = "يتأكد كل هاتف فيما إذا قد سبق أن لاحظ الرموزعلى القائمة.";
+"help.technical_explanation.step4.description" = "يشاهد التطبيق قائمة رموز الناس المصابين عدة مرات في اليوم. يقارن قائمة رموز هذه مع الرموز المحفوظة على هاتفك. هكذا يعرف التطبيق ما إذا كنت معرضًا إلى خطر الإصابة بالعدوى بصورة أكبر.";
+"help.technical_explanation.step5.title" = "5. سيصلك إشعار في حال وجود رموز شخص مصاب على هاتفك.";
+"help.technical_explanation.step5.description" = "تقرأ في هذا الإشعار وقت تواجدك بالقرب من الشخص المصاب بالعدوى. ليس من يكون ومكان تواجده. كما أن التطبيق يعرّفك على أفضل شيء تستطيع القيام به الآن. رموزك غير موجودة على قائمة رموز المصابين، لكن يتم حفظها لمدة 14 يومًا على هاتفك.";
+
+"help.bluetooth.title" = "هل بإمكان إشارة البلوتوث اختراق الجدران؟";
+
+// MARK: - Message
+
+"message.default.title" = "لقد تواجدت بالقرب من شخص مصاب بالفيروس";
+"message.default.body" = "كنت %@ بالقرب من شخص تبين لاحقًا أنه مصاب بكورونا. من الممكن أنك كنت معرض إلى زيادة خطر الإصابة في هذه الحالة. إذا أصبت بالعدوى بالفعل، من الممكن أن تنقل الفيروس إلى الآخرين. حتى أذا لم تكن تشعر بالمرض الآن.";
+
+/* MARK: - Message */
+"message.title" = "ورد إشعار";
+"message.button.title" = "اتصل من أجل إجراء فحص كورونا";
+
+// MARK: - Notifications
+
+"notification.upload.failed.notification" = "لم تنجح في إرسال الإشعار إلى الآخرين. لذلك اتصل بالمصلحة الصحية للبلدية. اقرأ المزيد في التطبيق.";
+"notification.upload.failed.title" = "لم ننجح في إرسال إشعار إلى الآخرين.";
+"notification.upload.failed.content" = "حاولنا مشاركة رموزك بالمصلحة الصحية للبلدية، لكننا اخفقنا في ذلك. اتصل بالمصلحة الصحية للبلدية لتعاود المحاولة. من المهم جدًا أن تقوم بذلك بسرعة وإلا من الممكن أن يصاب عدد أكبر من الأشخاص بالعدوى.";
+
+
+// MARK: - Main
+
+"main.confirmNotificationRemoval.title" = "هل أنت متأكد من أنك تريد حذف التحذير هذا؟";
+"main.confirmNotificationRemoval.message" = "لن تستطيع إيجاد التاريخ في التطبيق فيما بعد. إحفظه جيدًا إذن.";
+"main.confirmNotificationRemoval.confirm" = "إحذف";
+
+// MARK: - Status
+
+"status.appState" = "التطبيق نشط";
+"status.appState.inactive.title" = "التطبيق غير نشط";
+"status.appState.inactive.description" = "تطبيق التحذير من الكورونا (CoronaMelder) لا يعمل إلا إذا قمت بضبط الإعدادات اللازمة.";
+"status.appState.inactive.no_recent_updates.description" = "لم يتمكن التطبيق من الاتصال بالإنترنت خلال الأربع والعشرين ساعة الماضية. تأكد فيما إذا كان الوي فاي أو بيانات المحمول مشغّلة.";
+"status.appState.card.title" = "التطبيق غير نشط";
+"status.appState.card.description" = "تطبيق التحذير من الكورونا (CoronaMelder) لا يعمل إلا إذا قمت بضبط الإعدادات اللازمة.";
+"status.appState.card.no_recent_updates.description" = "لم يتمكن التطبيق من الاتصال بالإنترنت خلال الأربع والعشرين ساعة الماضية. قم بالتأكد من أن الواي فاي وبيانات الهاتف المحمول مشغلين ثم حاول مجددًا.";
+"status.appState.card.button" = "تشغيل التطبيق";
+"status.appState.card.try_again" = "حاول مجددًا";
+"status.active.description" = "حتى إذا قمت بإغلاق التطبيق، يضل تطبيق التحذير من كورونا (CoronaMelder)  نشط";
+/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
+"status.notified.description_days" = "من %@ أيام مضت %@";
+"status.notified.description_hours" = "من %@ ساعة مضت %@";
+"status.notified.description_none" = "في %@";
+"status.notified.description" = "تعرضت %@ إلى زيادة احتمال الإصابة";
+"status.notified.moreInfo" = "ما الذي يمكنني القيام به الآن؟";
+"status.notified.removeNotification" = "حذف الإشعار";
+
+/* The title for the table of items in more infromation */
+"moreInformation.headerTitle" = "المزيد من المعلومات";
+
+"moreInformation.cell.about.title" = "حوْل التطبيق";
+"moreInformation.cell.about.subtitle" = "شاهد كيف يعمل التطبيق وما معنى ذلك بالنسبة لخصوصيتك.";
+
+"moreInformation.cell.share.title" = "دعوة الناس إلى استخدام التطبيق";
+"moreInformation.cell.share.subtitle" = "شارك التطبيق مع الآخرين لوقف كورونا معًا";
+
+"moreInformation.cell.receivedNotification.title" = "استلمتُ إشعارًا";
+"moreInformation.cell.receivedNotification.subtitle" = "إقرأ ما يمكنك القيام به بعد أن تبين أن شخص آخر مصاب بكورونا";
+
+"moreInformation.cell.requestTest.title" = "طلب إجراء فحص كورونا";
+"moreInformation.cell.requestTest.subtitle" = "اكتشف ما إذا كنت قد أصبت بالفيروس بأسرع وقت ممكن";
+
+"moreInformation.cell.infected.title" = "إعطاء كود المصلحة الصحية للبلدية";
+"moreInformation.cell.infected.subtitle" = "أرسل مع المصلحة الصحية للبلدية (GGD) إشعارًا مجهول المصدر إلى الآخرين إذا كنت مصابًا بالعدوى.";
+
+"moreInformation.info.title" = "تأكد من وجود رقم خدمات المواطن (BSN) في متناول اليد. تجد هذا الرقم في جواز سفرك أو بطاقة هويتك.";
+
+"moreInformation.complaints.item1" = "السعال (الخفيف)";
+"moreInformation.complaints.item2" = "حساسية الأنف، سيلان الأنف، العطس، الألم في الحلق";
+"moreInformation.complaints.item3" = "الفقدان المفاجئ لحاسة الشم أو التذوق";
+"moreInformation.complaints.item4" = "صعوبة في التنفس أو التنفس بسرعة";
+"moreInformation.complaints.item5" = "إرتفاع في درجة الحرارة أو حمى تصل إلى 38 درجة مئوية أو أعلى";
+"moreInformation.complaints.title" = "الاعراض التي تتوافق مع فيروس كورونا (كوفيد 19)";
+"moreInformation.complaints.content" = "هل عندك أعراض؟ لازم المنزل قدر الإمكان. هل يتعلق الأمر بأعراض خطيرة؟ اتصل بطبيب العائلة الخاص بك.";
+
+
+// MARK: - MoreInformation | About
+
+"moreInformation.about.title" = "حوْل التطبيق";
+"about.review" = "قم بتقييم التطبيق";
+"moreInformation.about.privacy_statement" = "شهادة حماية الخصوصية";
+"moreInformation.about.accessibility" = "إمكانية الدخول";
+"moreInformation.about.colofon" = "إشارة الناشر";
+
+"moreInformation.about.onboarding.title" = "ما الذي يفعله تطبيق التحذير من كورونا (CoronaMelder)؟";
+"moreInformation.about.onboarding.description" = "اقرأ كيفية المساهمة في وقف كورنا من خلال هذا التطبيق";
+
+"moreInformation.about.technical.title" = "كيف يعمل التطبيق؟";
+"moreInformation.about.technical.description" = "راجع الشرح التقني";
+
+"moreInformation.about.faq.reason" = "لماذا يعتبر هذا التطبيق مهم؟";
+"moreInformation.about.faq.location" ="هل يستطيع التطبيق التعرف على موقعي الجغرافي؟";
+"moreInformation.about.faq.anonymous" = "كيف من الممكن أن يكون التطبيق سرياً؟";
+"moreInformation.about.faq.notification" = "متى يقوم التطبيق بإرسالي إشعارًا؟";
+"moreInformation.about.faq.upload_keys" = "كيف أقوم بإرسل إشعار؟";
+"moreInformation.about.faq.bluetooth" = "هل من الممكن أن تخترق إشارة البلوتوث الجدران؟";
+"moreInformation.about.faq.power_usage" = "ما كمية الطاقة التي يستهلكها التطبيق؟";
+"moreInformation.about.faq.deletion" = "كيف أحذف بيانات البلوتوث من على هاتفي المحمول؟";
+
+// MARK: - MoreInformation | Share
+
+"moreInformation.share.title" = "عرَف الآخرين بإنك تساهم في وقف الفيروس.";
+"moreInformation.share.description" = "كلما قام عدد أكبرمن الأشخاص باستخدم تطبيق التحذير من كورونا (CoronaMelder)، كلما أصبح التطبيق يعمل بصورة أفضل. معًا فقط نستطيع أن نوقف انتشار الفيروس. شارك التطبيق إذن مع أكبرعدد ممكن من الأشخاص.";
+"moreInformation.share.action" = "مشاركة التطبيق";
+
+// MARK: - MoreInformation | Infected
+
+"moreInformation.infected.title" = "إرسال الإشعار";
+"moreInformation.infected.loading" = "كود المصلحة الصحية للبلدية قيد التحميل";
+"moreInformation.infected.upload" = "كمّل";
+
+"moreInformation.infected.error" = "لم ينجح التطبيق في تحميل كود المصلحة الصحية للبلدية. راجع اتصالك بالإنترنت.";
+"moreInformation.infected.error.upload" = "حدثت مشكلة أثناء إرسال الإشعار";
+
+"moreInformation.infected.header" = "هل خضعت للفحص وأنت مصاب بكورونا؟ سيتصل بك موظف المصلحة الصحية للبلدية. تحتاج إلى كود المصلحة الصحية البلدية عندئذ.";
+"moreInformation.infected.how_does_it_work" = "كيف يعمل هذا؟";
+"moreInformation.infected.step1" = "اعط هذا الكود إلى موظف المصلحة الصحية للبلدية:";
+"moreInformation.infected.step2" = "انتظر موظف المصلحة الصحية للبلدية من أجل الخطوة التالية";
+"moreInformation.infected.step3" = "حذر الآخرين عن طريق إرسال تحذير مجهول المصدر";
+"moreInformation.infected.tryAgain.description" = "لم ينجح التطبيق في تحميل كود المصلحة الصحية للبلدية. راجع اتصالك بالإنترنت.";
+"moreInformation.infected.action" = "تكملة";
+
+// MARK: - MoreInformation | Infected | Thank You
+
+"moreInformation.thankyou.title" = "شكرًا لك";
+"moreInformation.thankyou.section.title" = "شكرًا لك، ستساعدك المصلحة الصحية للبلدية فيما بعد";
+"moreInformation.thankyou.section.header" = "سيشرح لك موظف المصلحة الصحية للبلدية ما الذي تستطيع فعله لتجنب نقل العدوى إلى الآخرين. نتمنى لك الشفاء العاجل واستعادة عافيتك بسرعة.";
+/* The passed in parameter will be the exposure confirmation key */
+"moreInformation.thankyou.section.footer" = "كود المصلحة الصحية للبلدية المستخدمة: %@";
+"moreInformation.thankyou.list.item1" = "لازم المنزل حتى يومين بعد زوال الأعراض الأخيرة";
+"moreInformation.thankyou.list.item2" = "تجنب الاتصال بالأشخاص الذين تسكن معهم";
+"moreInformation.thankyou.list.item3" = "هل حالتك تزداد سوءًا؟ اتصل بالمصلحة الصحية للبلدية أو طبيب العائلة الخاص بك فورًا.";
+"moreInformation.thankyou.info.title" = "يتم إرسال التحذير فقط إذا فحصتك المصلحة الصحية للبلدية وتبين بأنك مصاب بكورونا";
+
+// MARK: - MoreInformation | Received Notification
+
+"moreInformation.receivedNotification.title" = "ورد إشعار";
+"moreInformation.receivedNotification.button.title" = "اتصل من أجل إجراء فحص كورونا";
+"moreInformation.receivedNotification.notificationExplanation.title" = "ماذا يعني عند استلامك إشعارًا؟";
+"moreInformation.receivedNotification.notificationExplanation.content" = "يرسل التطبيق إشعارًا بعد تواجدك لمدة 15 دقائق على الأقل بالقرب من شخص تبين لاحقًا أنه مصاب بكورونا. من الممكن أنك كنت معرضًا إلى زيادة خطر الإصابة في هذا الموقف. إذا أصبت بالعدوى بالفعل، من الممكن أن تنقل الفيروس إلى الآخرين. حتى أذا لم تكن تشعر بالمرض الآن.";
+"moreInformation.receivedNotification.doCoronaTest.title" = "قم بإجراء فحص كورونا";
+"moreInformation.receivedNotification.doCoronaTest.content" = "تنصحك مصلحة البلدية للصحة (GGD) بطلب إجراء فحص الفيروس لك. حتى إذا لم تشعر بالمرض. حيث أنه من الممكن أن تنقل الفيروس بدون الشعور بالمرض وهكذا تستطيع أن تنقل العدوى إلى الآخرين.\n\nاطلب إجراء الفحص مجانًا. لا يستغرق ذلك وقتًا طويلاً، وفي معظم الحالات تستطيع تحديد موعد بسرعة. تصبح النتيجة معروفة خلال 48 ساعة. لازم المنزل حتى تعرف النتيجة.\n\nاتصل بالرقم 0800 - 1202 لطلب إجراء فحص كورونا مجانًا.";
+
+// MARK: - MoreInformation | Request Test
+
+"moreInformation.requestTest.title" = "طلب فحص كورونا";
+"moreInformation.requestTest.button.title" = "اتصل من أجل إجراء فحص كورونا";
+"moreInformation.requestTest.receivedNotification.title" = "هل تشكو من الأعراض التي تتوافق مع أعراض كورونا؟ قم بطلب إجراء فحص";
+"moreInformation.requestTest.receivedNotification.content" = "هل لديك أعراض خفيفة؟ قم بإجراء فحص كورونا ولازم المنزل حتى تعرف النتيجة. هل عندك أعراض خطيرة أو هل أنت من ضمن مجموعة معرضة للخطر أو عاجز عن رعاية نفسك؟ اتصل بطبيب العائلة الخاص بك.\n\nقم بطلب إجراء الفحص مجانًا. لا يستغرق الأمر وقتًا طويلاً وفي معظم الحالات تستطيع تحديد موعد بسرعة. تصبح النتيجة معروفة خلال 48 ساعة. لازم المنزل حتى تعرف النتيجة.";
+// MARK: - Cards
+
+"cards.exposureOff.title" = "التطبيق <u>غير</u> نشط";
+"cards.exposureOff.content" = "شغّل الأعدادات التي يحتاج إليها التطبيق كي يعمل.";
+"cards.exposureOff.action" = "تشغيل التطبيق";
+
+"cards.bluetoothOff.title" = "التطبيق <u>غير</u> نشط";
+"cards.bluetoothOff.content" = "شغّل الأعدادات التي يحتاج إليها التطبيق كي يعمل.";
+"cards.bluetoothOff.action" = "تشغيل التطبيق";
+
+"cards.noInternet.title" = "التطبيق <u>غير</u> نشط الآن";
+"cards.noInternet.content" = "لم يتمكن التطبيق من الاتصال بالإنترنت خلال الأربع والعشرين ساعة الماضية. تأكد من تشغيل الواي فاي وبيانات الهاتف المحمول ثم حاول من جديد.";
+"cards.noInternet.action" = "حاول من جديد";
+
+"cards.notificationsOff.title" = "تم <u>  إيقاف تشغيل</u> التحذيرات";
+"cards.notificationsOff.content" = "قم بتشغيل الإشعارات العامة حتى يقوم التطبيق بمشاركة المعلومات إذا لزم الأمر.";
+"cards.notificationsOff.action" = "تشغيل الإشعارات";
+
+// MARK: - Cards - Enable Settings
+
+"enableSettings.exposureNotifications.title" = "تشغيل تحذيرات التعرض للإصابة";
+"enableSettings.exposureNotifications.action" = "إفتح الإعدادات";
+
+// supports HTML
+"enableSettings.exposureNotifications.step1" = "إفتح <b>الإعدادات</b> في هاتفك باستخدام الزر أسفله.";
+// supports HTML
+"enableSettings.exposureNotifications.step2" = "شغّل تحذيرات التعرض للإصابة";
+"enableSettings.exposureNotifications.step2.action.title" = "إشعارات حول التعرض لفيروس كورونا";
+
+"enableSettings.bluetooth.title" = "تشغيل البلوتوث";
+"enableSettings.bluetooth.action" = "إفتح الإعدادات";
+// supports HTML
+"enableSettings.bluetooth.step1" = "إفتح <b>الإعدادات</b> في هافتك عن طريق الزر أدناه";
+// supports HTML
+"enableSettings.bluetooth.step2" = "شغل <b>&#96; بلوتوث &#96;</b>";
+"enableSettings.bluetooth.step2.action.title" = "البلوتوث";
+
+"enableSettings.localNotifications.title" = "تشغيل الإشعارات العامة";
+"enableSettings.localNotifications.action" = "إفتح الإعدادات";
+// supports HTML
+"enableSettings.localNotifications.step1" = "افتح <b>الإعدادات</b> في هاتفك عن طريق الزر أدناه";
+// supports HTML
+"enableSettings.localNotifications.step2" = "انتقل إلى &#96;<b> الإشعارات </b>&#96;";
+"enableSettings.localNotifications.step2.action.title" = "الإشعارات";
+// supports HTML
+"enableSettings.localNotifications.step3" = "شغّل <b>&#96; السماح بإرسال الإشعارات &#96;</b>";
+"enableSettings.localNotifications.step3.action.title" = "إسمح بإرسال الإشعارات";
+
+// MARK: - Exposure Notification Received - User Explanation
+"exposure.notification.userExplanation" = "تواجدت %1$s بالقرب من شخص مصاب بفيروس كورونا. إقرأ المزيد في التطبيق.";
