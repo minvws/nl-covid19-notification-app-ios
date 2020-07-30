@@ -18,6 +18,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
         self.setting = setting
 
         super.init(theme: theme)
+        presentationController?.delegate = self
     }
 
     // MARK: - ViewController Lifecycle
