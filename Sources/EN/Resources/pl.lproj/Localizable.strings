@@ -1,0 +1,30 @@
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
+
+"alertTitle" = "Ostrzeżenie";
+"alertMessage" = "Nie można otworzyć ustawień.";
+"alertButton" = "Ok";
+
+"update.button.update" = "Zaktualizuj";
+"update.button.openSettings" = "Otwórz Ustawienia";
+
+"update.software.app.title" = "Ta wersja CoronaMelder już nie działa";
+"update.software.app.description" = "Zaktualizuj aplikację w swoim telefonie, aby umożliwić CoronaMelder ponowne działanie.";
+"update.software.app.detail.title" = "Zaktualizuj aplikację";
+"update.software.app.detail.step1" = "1. Otwórz Ustawienia w swoim telefonie klikając poniższy przycisk";
+"update.software.app.detail.step2" = "2. Kliknij „Zaktualizuj”, aby zaktualizować aplikację.";
+
+"update.software.os.title" = "Musisz zaktualizować oprogramowanie w swoim telefonie";
+"update.software.os.description" = "CoronaMelder wymaga najnowszej wersji systemu iOS, aby móc w dalszym ciągu pracować poprawnie na Twoim telefonie.";
+"update.software.os.detail.title" = "Zaktualizuj telefon";
+"update.software.os.detail.step1" = "1. Otwórz Ustawienia w swoim telefonie klikając poniższy przycisk";
+"update.software.os.detail.step2" = "2. Przejdź do „Ogólne”";
+"update.software.os.detail.step3" = "3. Przejdź do „Aktualizacja oprogramowania”";
+"update.software.os.detail.step4" = "4. Wybierz „Pobierz i zainstaluj”";
+
+"update.hardware.title" = "Niestety, aplikacja nie działa na Twoim telefonie";
+"update.hardware.description" = "CoronaMelder działa tylko na telefonach z systemem iOS 13.5 lub nowszym. Twój telefon nie jest kompatybilny z tym oprogramowaniem.";
