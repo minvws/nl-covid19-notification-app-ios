@@ -12,6 +12,7 @@ import UIKit
 /// @mockable
 protocol BluetoothSettingsListener: AnyObject {
     func bluetoothSettingsDidComplete()
+    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ()))
 }
 
 protocol BluetoothSettingsDependency {

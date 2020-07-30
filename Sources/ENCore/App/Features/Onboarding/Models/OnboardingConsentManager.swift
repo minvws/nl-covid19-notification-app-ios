@@ -6,6 +6,7 @@
  */
 
 import Combine
+import CoreBluetooth
 import ENFoundation
 import UIKit
 
@@ -15,7 +16,7 @@ protocol OnboardingConsentManaging {
 
     func getStep(_ index: Int) -> OnboardingConsentStep?
     func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ())
-
+    func isBluetoothEnabled(_ completion: @escaping (Bool) -> ())
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
@@ -144,6 +145,12 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             completion(.share)
         case .share:
             completion(nil)
+        }
+    }
+
+    func isBluetoothEnabled(_ completion: @escaping (Bool) -> ()) {
+        if let exposureActiveState = exposureStateStream.currentExposureState?.activeState {
+            completion(exposureActiveState == .inactive(.bluetoothOff) ? false : true)
         }
     }
 

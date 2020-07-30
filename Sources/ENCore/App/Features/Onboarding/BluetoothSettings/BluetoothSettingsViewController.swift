@@ -35,6 +35,8 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
 
         internalView.navigationBar.topItem?.rightBarButtonItem?.action = #selector(didTapClose)
         internalView.titleLabel.text = .enableBluetoothTitle
+
+        NotificationCenter.default.addObserver(self, selector: #selector(checkBluetoothStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     // MARK: - TableView
@@ -89,6 +91,13 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
                                image: Image.named("SwitchIcon"),
                                showDisclosure: false)
     ]
+    @objc private func checkBluetoothStatus() {
+        self.listener?.isBluetoothEnabled { enabled in
+            if enabled {
+                self.listener?.bluetoothSettingsDidComplete()
+            }
+        }
+    }
 }
 
 private final class BluetoothSettingsView: View {
