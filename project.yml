@@ -35,12 +35,11 @@ targets:
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
         CFBundleShortVersionString: '0.1'
-        CFBundleVersion: b1
+        CFBundleVersion: "1"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes:
           - ''
         LSRequiresIPhoneOS: true
-        NETWORK_CONFIGURATION: '${NETWORK_CONFIGURATION}'
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         NSBluetoothPeripheralUsageDescription: To securely exchange unique id's

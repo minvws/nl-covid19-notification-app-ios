@@ -14,13 +14,13 @@ fi
 
 if [ -z "$BUILD_ID" ]
 then
-      BUILD_ID="b1"
+      BUILD_ID="1"
 fi
 
 brew install yq
 yq w -i project.yml "targets.EN.settings.base.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.settings.base.LOG_LEVEL" ${LOG_LEVEL}
-yq w -i project.yml "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
+yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
 
 if [ ! -z "$USE_DEVELOPER_MENU" ]
 then
