@@ -36,9 +36,10 @@ public extension NSAttributedString {
             attributes[.underlineColor] = underlineColor
             attributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
         }
+        let data: Data = text.data(using: .unicode) ?? Data(text.utf8)
 
         if let attributedTitle = try? NSMutableAttributedString(
-            data: Data(text.utf8),
+            data: data,
             options: [.documentType: NSAttributedString.DocumentType.html],
             documentAttributes: nil) {
 

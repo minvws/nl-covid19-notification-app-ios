@@ -23,9 +23,7 @@ final class OnboardingStepViewControllerTests: TestCase {
         recordSnapshots = false
         manager = OnboardingManager(theme: theme)
 
-        #if DEBUG
-            AnimationTestingOverrides.animationsEnabled = false
-        #endif
+        AnimationTestingOverrides.animationsEnabled = false
     }
 
     // MARK: - Tests
