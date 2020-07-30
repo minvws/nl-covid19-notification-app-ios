@@ -76,6 +76,12 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         router?.routeToBluetoothSettings()
     }
 
+    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ())) {
+        onboardingConsentManager.isBluetoothEnabled { enabled in
+            completion(enabled)
+        }
+    }
+
     func bluetoothSettingsDidComplete() {
         dismiss(animated: true) {
             self.onboardingConsentManager.getNextConsentStep(.bluetooth, skippedCurrentStep: false) { nextStep in
