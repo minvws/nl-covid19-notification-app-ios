@@ -69,7 +69,7 @@ extension UIImage {
         let height = size.height
 
         guard width > 0, height > 0 else {
-            return 0
+            return 1
         }
         return width / height
     }

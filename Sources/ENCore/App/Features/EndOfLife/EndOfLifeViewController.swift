@@ -94,7 +94,7 @@ private final class EndOfLifeView: View {
 
         hasBottomMargin = true
 
-        let imageAspectRatio = headerImageView.image?.aspectRatio ?? 0.0
+        let imageAspectRatio = headerImageView.image?.aspectRatio ?? 1.0
 
         headerImageView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalToSuperview()
