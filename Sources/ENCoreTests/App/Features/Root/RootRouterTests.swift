@@ -14,6 +14,7 @@ final class RootRouterTests: XCTestCase {
     private let viewController = RootViewControllableMock()
     private let onboardingBuilder = OnboardingBuildableMock()
     private let mainBuilder = MainBuildableMock()
+    private let endOfLifeBuilder = EndOfLifeBuildableMock()
     private let messageBuilder = MessageBuildableMock()
     private let callGGDBuilder = CallGGDBuildableMock()
     private let developerMenuBuilder = DeveloperMenuBuildableMock()
@@ -30,11 +31,16 @@ final class RootRouterTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        exposureController.isAppDectivatedHandler = {
+            Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
         mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
         router = RootRouter(viewController: viewController,
                             onboardingBuilder: onboardingBuilder,
                             mainBuilder: mainBuilder,
+                            endOfLifeBuilder: endOfLifeBuilder,
                             messageBuilder: messageBuilder,
                             callGGDBuilder: callGGDBuilder,
                             exposureController: exposureController,
@@ -132,6 +138,18 @@ final class RootRouterTests: XCTestCase {
 
         XCTAssertEqual(updateAppBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.presentCallCount, 2)
+    }
+
+    func test_start_appIsDeactivated_showsEndOfLifeViewController() {
+
+        exposureController.isAppDectivatedHandler = {
+            Just(true).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
+        router.start()
+
+        XCTAssertEqual(endOfLifeBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.embedCallCount, 1)
     }
 
     func test_didEnterForeground_startsObservingNetworkReachability() {

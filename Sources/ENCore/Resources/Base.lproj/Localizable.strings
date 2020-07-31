@@ -14,6 +14,7 @@
 "example" = "Voorbeeld";
 "close" = "Sluiten";
 "error.title" = "Er ging iets mis";
+"learnMore" = "Lees Meer";
 
 // MARK: - Update App
 "updateApp.error.message" = "De App Store kan niet geopend worden.";
@@ -21,6 +22,10 @@
 
 "updateApp.content" = "Update de app om te zorgen dat deze goed blijft werken.";
 "updateApp.button" = "Updaten";
+
+// MARK: - EndOfLife
+"endOfLife.title" = "De CoronaMelder is gestopt";
+"endOfLife.description" = "CoronaMelder werkt niet meer omdat deze is afgesloten door het Ministerie van Volksgezondheid, Welzijn en Sport.";
 
 // MARK: - Onboarding Steps
 "step1Title" = "Help de verspreiding van het coronavirus te stoppen";

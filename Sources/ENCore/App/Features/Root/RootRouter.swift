@@ -16,7 +16,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool)
@@ -33,6 +33,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     init(viewController: RootViewControllable,
          onboardingBuilder: OnboardingBuildable,
          mainBuilder: MainBuildable,
+         endOfLifeBuilder: EndOfLifeBuildable,
          messageBuilder: MessageBuildable,
          callGGDBuilder: CallGGDBuildable,
          exposureController: ExposureControlling,
@@ -45,6 +46,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          currentAppVersion: String?) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
+        self.endOfLifeBuilder = endOfLifeBuilder
         self.messageBuilder = messageBuilder
         self.callGGDBuilder = callGGDBuilder
         self.developerMenuBuilder = developerMenuBuilder
@@ -99,8 +101,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
 
-        exposureStateStream.exposureState.sink { [weak self] state in
+        exposureController
+            .isAppDectivated()
+            .sink(receiveCompletion: { _ in
+                // Do nothing
+            }, receiveValue: { [weak self] isDectivated in
+                if isDectivated {
+                    self?.routeToEndOfLife()
+                }
+            })
+            .store(in: &disposeBag)
 
+        exposureStateStream.exposureState.sink { [weak self] state in
             if state.activeState.isAuthorized {
                 self?.routeToMain()
             } else {
@@ -241,6 +253,16 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.viewController.embed(viewController: mainRouter.viewControllable)
     }
 
+    private func routeToEndOfLife() {
+        guard endOfLifeViewController == nil else {
+            return
+        }
+        let endOfLifeViewController = endOfLifeBuilder.build(withListener: viewController)
+        self.endOfLifeViewController = endOfLifeViewController
+
+        self.viewController.embed(viewController: endOfLifeViewController)
+    }
+
     private func routeToCallGGD() {
         guard callGGDViewController == nil else {
             return
@@ -283,6 +305,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let mainBuilder: MainBuildable
     private var mainRouter: Routing?
+
+    private let endOfLifeBuilder: EndOfLifeBuildable
+    private var endOfLifeViewController: ViewControllable?
 
     private let messageBuilder: MessageBuildable
     private var messageViewController: ViewControllable?

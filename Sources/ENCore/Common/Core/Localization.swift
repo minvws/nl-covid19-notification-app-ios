@@ -58,6 +58,7 @@ extension String {
     static var example: String { return Localization.string(for: "example") }
     static var close: String { return Localization.string(for: "close") }
     static var errorTitle: String { return Localization.string(for: "error.title") }
+    static var learnMore: String { return Localization.string(for: "learnMore") }
 
     // MARK: - Update App
 
@@ -66,6 +67,9 @@ extension String {
 
     static var updateAppContent: String { return Localization.string(for: "updateApp.content") }
     static var updateAppButton: String { return Localization.string(for: "updateApp.button") }
+
+    static var endOfLifeTitle: String { return Localization.string(for: "endOfLife.title") }
+    static var endOfLifeDescription: String { return Localization.string(for: "endOfLife.description") }
 
     // MARK: - Onboarding Steps
 
