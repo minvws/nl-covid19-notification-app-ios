@@ -266,7 +266,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     private func changeNetworkConfiguration() {
-        let configurations: [NetworkConfiguration] = [.development, .labtest, .acceptance, .production]
+        let configurations: [NetworkConfiguration] = [.development, .test, .acceptance, .production]
 
         let actionItems = configurations.map { (configuration) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in

@@ -48,8 +48,8 @@ struct NetworkConfiguration {
         )
     )
 
-    static let labtest = NetworkConfiguration(
-        name: "LabTest",
+    static let test = NetworkConfiguration(
+        name: "Test",
         api: .init(
             scheme: "https",
             host: "mss-standalone-acc.azurewebsites.net",
@@ -60,7 +60,7 @@ struct NetworkConfiguration {
         ),
         cdn: .init(
             scheme: "https",
-            host: "mss-standalone-acc.azurewebsites.net",
+            host: "test.coronamelder-dist.nl",
             port: nil,
             path: ["v1"],
             sslSignature: nil,
@@ -80,7 +80,7 @@ struct NetworkConfiguration {
         ),
         cdn: .init(
             scheme: "https",
-            host: "vwspa-cdn-blob.azureedge.net",
+            host: "acceptatie.coronamelder-dist.nl",
             port: nil,
             path: ["vws", "v01"],
             sslSignature: Certificate.SSL.cdnAccSignature,
@@ -107,7 +107,7 @@ struct NetworkConfiguration {
         ),
         cdn: .init(
             scheme: "https",
-            host: "notknown",
+            host: "productie.coronamelder-dist.nl",
             port: nil,
             path: [],
             sslSignature: nil,

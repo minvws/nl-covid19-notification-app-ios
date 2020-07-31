@@ -4,7 +4,7 @@ env
 
 if [ -z "$NETWORK_CONFIGURATION" ]
 then
-      NETWORK_CONFIGURATION="ACC"
+      NETWORK_CONFIGURATION="Test"
 fi
 
 if [ -z "$LOG_LEVEL" ]
