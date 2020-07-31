@@ -58,7 +58,7 @@ extension String {
     static var example: String { return Localization.string(for: "example") }
     static var close: String { return Localization.string(for: "close") }
     static var errorTitle: String { return Localization.string(for: "error.title") }
-    static var learnMode: String { return Localization.string(for: "learnMore") }
+    static var learnMore: String { return Localization.string(for: "learnMore") }
 
     // MARK: - Update App
 

@@ -58,7 +58,7 @@ private final class EndOfLifeView: View {
         self.headerImageView = UIImageView(image: Image.appInformationNotify)
         self.titleLabel = Label()
         self.descriptionLabel = Label()
-        self.actionButton = Button(title: .learnMode, theme: theme)
+        self.actionButton = Button(title: .learnMore, theme: theme)
 
         self.contentView = UIView(frame: .zero)
         self.scrollView = UIScrollView(frame: .zero)
