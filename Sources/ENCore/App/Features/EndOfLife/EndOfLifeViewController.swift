@@ -55,10 +55,10 @@ private final class EndOfLifeView: View {
     // MARK: - Init
 
     override init(theme: Theme) {
-        self.headerImageView = UIImageView(image: Image.named("AppInfoNotify"))
+        self.headerImageView = UIImageView(image: Image.appInformationNotify)
         self.titleLabel = Label()
         self.descriptionLabel = Label()
-        self.actionButton = Button(title: "Lees Meer", theme: theme)
+        self.actionButton = Button(title: .learnMode, theme: theme)
 
         self.contentView = UIView(frame: .zero)
         self.scrollView = UIScrollView(frame: .zero)
@@ -75,11 +75,11 @@ private final class EndOfLifeView: View {
 
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
-        titleLabel.text = "De CoronaMelder is gestopt"
+        titleLabel.text = .endOfLifeTitle
 
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = theme.fonts.body
-        descriptionLabel.text = "CoronaMelder werkt niet meer omdat deze is afgesloten door het Ministerie van Volksgezondheid, Welzijn en Sport."
+        descriptionLabel.text = .endOfLifeDescription
 
         contentView.addSubview(headerImageView)
         contentView.addSubview(titleLabel)
