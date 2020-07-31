@@ -140,6 +140,18 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.presentCallCount, 2)
     }
 
+    func test_start_appIsDeactivated_showsEndOfLifeViewController() {
+
+        exposureController.isAppDectivatedHandler = {
+            Just(true).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
+        router.start()
+
+        XCTAssertEqual(endOfLifeBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.embedCallCount, 1)
+    }
+
     func test_didEnterForeground_startsObservingNetworkReachability() {
         exposureController.updateWhenRequiredHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
