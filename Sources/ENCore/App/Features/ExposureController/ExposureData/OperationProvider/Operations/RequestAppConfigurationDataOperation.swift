@@ -21,6 +21,7 @@ struct ApplicationConfiguration: Codable {
     let requestMinimumSize: Int
     let requestMaximumSize: Int
     let repeatedUploadDelay: Int
+    let decativated: Bool
 }
 
 final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {

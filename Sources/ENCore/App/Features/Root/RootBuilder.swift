@@ -37,33 +37,35 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency {
 
     // MARK: - Child Builders
 
-    /// Builds onboarding flow
-    var onboardingBuilder: OnboardingBuildable {
+    fileprivate var onboardingBuilder: OnboardingBuildable {
         return OnboardingBuilder(dependency: self)
     }
 
-    /// Builds main flow
-    var mainBuilder: MainBuildable {
+    fileprivate var mainBuilder: MainBuildable {
         return MainBuilder(dependency: self)
     }
 
-    var messageBuilder: MessageBuildable {
+    fileprivate var endOfLifeBuilder: EndOfLifeBuildable {
+        return EndOfLifeBuilder(dependency: self)
+    }
+
+    fileprivate var messageBuilder: MessageBuildable {
         return MessageBuilder(dependency: self)
     }
 
-    var callGGDBuilder: CallGGDBuildable {
+    fileprivate var callGGDBuilder: CallGGDBuildable {
         return CallGGDBuilder(dependency: self)
     }
 
-    var developerMenuBuilder: DeveloperMenuBuildable {
+    fileprivate var developerMenuBuilder: DeveloperMenuBuildable {
         return DeveloperMenuBuilder(dependency: self)
     }
 
-    var updateAppBuilder: UpdateAppBuildable {
+    fileprivate var updateAppBuilder: UpdateAppBuildable {
         return UpdateAppBuilder(dependency: self)
     }
 
@@ -167,6 +169,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
+                          endOfLifeBuilder: dependencyProvider.endOfLifeBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,

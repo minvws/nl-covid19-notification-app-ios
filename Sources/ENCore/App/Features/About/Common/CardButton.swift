@@ -77,11 +77,7 @@ final class CardButton: Button {
             }
         }
 
-        var imageAspectRatio: CGFloat = 0.0
-
-        if let width = cardImageView.image?.size.width, let height = cardImageView.image?.size.height, width > 0, height > 0 {
-            imageAspectRatio = width / height
-        }
+        let imageAspectRatio = cardImageView.image?.aspectRatio ?? 0.0
 
         cardImageView.snp.makeConstraints { maker in
             maker.bottom.equalToSuperview()

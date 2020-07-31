@@ -61,3 +61,16 @@ extension UIImage {
     static var aboutTechnicalInformation: UIImage? { return Image.named("AboutTechnicalInformation") }
     static var aboutHelpdesk: UIImage? { return Image.named("AboutHelpdesk") }
 }
+
+extension UIImage {
+
+    var aspectRatio: CGFloat {
+        let width = size.width
+        let height = size.height
+
+        guard width > 0, height > 0 else {
+            return 0
+        }
+        return width / height
+    }
+}
