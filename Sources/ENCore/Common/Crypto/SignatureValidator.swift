@@ -22,7 +22,8 @@ final class SignatureValidator: SignatureValidating {
 
         return openssl.validatePKCS7Signature(signature,
                                               contentData: content,
-                                              certificateData: rootCertificateData)
+                                              certificateData: rootCertificateData,
+                                              authorityKeyIdentifier: SignatureConfiguration.authorityKeyIdentifier)
     }
 
     private func validatedRootCertificateData() -> Data? {
