@@ -50,7 +50,7 @@ enum EnableSetting {
 struct EnableSettingModel {
     let title: String
     let steps: [EnableSettingStep]
-    let action: EnableSettingAction
+    let action: EnableSettingAction?
     let actionTitle: String
 
     static var enableExposureNotifications: (Theme) -> EnableSettingModel {
@@ -81,10 +81,12 @@ struct EnableSettingModel {
                                           action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep2),
                                           action: .toggle(description: .enableSettingsBluetoothStep2ActionTitle))
+            let step3 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep2),
+                                          action: .custom(image: Image.named("switch"), description: "test", showChevron: false))
 
             return .init(title: .enableSettingsBluetoothTitle,
-                         steps: [step1, step2],
-                         action: .openSettings,
+                         steps: [step1, step2, step3],
+                         action: nil,
                          actionTitle: .enableSettingsBluetoothAction)
         }
     }
@@ -114,6 +116,7 @@ struct EnableSettingStep {
     enum Action {
         case toggle(description: String)
         case cell(description: String)
+        case custom(image: UIImage?, description: String, showChevron: Bool)
     }
 
     let description: NSAttributedString
