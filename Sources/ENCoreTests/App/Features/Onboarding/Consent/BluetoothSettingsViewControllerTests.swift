@@ -10,28 +10,23 @@ import Foundation
 import SnapshotTesting
 import XCTest
 
-final class UpdateAppViewControllerTests: TestCase {
-
-    private var viewController: UpdateAppViewController!
-    private let listener = UpdateAppListenerMock()
-
-    // MARK: - Setup
+final class BluetoothSettingsViewControllerTests: TestCase {
+    private var viewController: BluetoothSettingsViewController!
+    private let listener = BluetoothSettingsListenerMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        viewController = UpdateAppViewController(
+        viewController = BluetoothSettingsViewController(
             listener: listener,
-            theme: theme,
-            appStoreURL: "",
-            minimumVersionMessage: nil)
+            theme: theme)
     }
 
     // MARK: - Tests
 
-    func testSnapshotUpdateAppViewController() {
+    func test_snapshot_bluetoothSettingsViewControllerTests() {
         assertSnapshot(matching: viewController, as: .image())
     }
 }
