@@ -85,6 +85,8 @@ private final class EnableSettingView: View {
         appearance.configureWithTransparentBackground()
         navigationBar.standardAppearance = appearance
 
+        button.isHidden = true
+
         addSubview(navigationBar)
         addSubview(scrollView)
         addSubview(button)
@@ -124,9 +126,12 @@ private final class EnableSettingView: View {
 
     fileprivate func update(model: EnableSettingModel, actionCompletion: @escaping () -> ()) {
         titleLabel.text = model.title
-        button.setTitle(model.actionTitle, for: .normal)
-        button.action = {
-            model.action.action(actionCompletion)
+        if let action = model.action {
+            button.isHidden = false
+            button.setTitle(model.actionTitle, for: .normal)
+            button.action = {
+                action.action(actionCompletion)
+            }
         }
 
         stepViews.forEach { $0.removeFromSuperview() }
