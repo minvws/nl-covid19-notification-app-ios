@@ -452,6 +452,10 @@ final class NetworkManager: NetworkManaging, Logging {
             do {
                 promise(.success(try self.jsonDecoder.decode(Object.self, from: data)))
             } catch {
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    self.logDebug("Raw JSON: \(json)")
+                }
+                self.logError("Error Deserializing \(Object.self): \(error.localizedDescription)")
                 promise(.failure(.cannotDeserialize))
             }
         }

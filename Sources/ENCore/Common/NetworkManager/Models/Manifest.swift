@@ -9,6 +9,8 @@ import Foundation
 
 struct Manifest: Codable {
     let exposureKeySets: [String]
-    let resourceBundle, riskCalculationParameters, appConfig: String
+    let resourceBundle: String
+    let riskCalculationParameters: String
+    let appConfig: String
     let iOSMinimumKillVersion: String?
 }
