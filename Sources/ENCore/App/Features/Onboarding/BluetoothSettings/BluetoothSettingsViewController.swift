@@ -50,7 +50,15 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = BluetoothSettingsTableViewCell(theme: theme, reuseIdentifier: "BluetoothSettingsTableViewCell")
+
+        let cell: BluetoothSettingsTableViewCell
+        let cellIdentifier = "BluetoothSettingsTableViewCell"
+
+        if let aCell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? BluetoothSettingsTableViewCell {
+            cell = aCell
+        } else {
+            cell = BluetoothSettingsTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
+        }
 
         let setting = settings[indexPath.row]
 
@@ -61,10 +69,6 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
         cell.disclosureImageView.isHidden = !setting.showDisclosure
 
         return cell
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 130
     }
 
     // MARK: - Private
@@ -118,13 +122,14 @@ private final class BluetoothSettingsView: View {
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
 
+        tableView.estimatedRowHeight = 130
+        tableView.rowHeight = UITableView.automaticDimension
+
         tableView.showsVerticalScrollIndicator = true
         tableView.showsHorizontalScrollIndicator = false
         tableView.isScrollEnabled = true
 
         tableView.allowsSelection = false
-
-        tableView.register(BluetoothSettingsTableViewCell.self, forCellReuseIdentifier: "BluetoothSettingsTableViewCell")
 
         return tableView
     }()
@@ -251,13 +256,13 @@ private class BluetoothSettingsTableViewCell: UITableViewCell {
     func setupConstraints() {
 
         indexLabel.snp.makeConstraints { maker in
-            maker.top.leading.equalTo(self).inset(16)
+            maker.top.leading.equalToSuperview().inset(16)
             maker.height.equalTo(30)
             maker.width.equalTo(20)
         }
 
         titleLabel.snp.makeConstraints { maker in
-            maker.top.trailing.equalTo(self).inset(16)
+            maker.top.trailing.equalToSuperview().inset(16)
             maker.leading.equalTo(indexLabel.snp.trailing)
             maker.height.equalTo(30)
         }
@@ -266,6 +271,7 @@ private class BluetoothSettingsTableViewCell: UITableViewCell {
             maker.top.equalTo(titleLabel.snp.bottom).offset(8)
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.height.equalTo(56)
+            maker.bottom.equalToSuperview()
         }
 
         settingsImageView.snp.makeConstraints { maker in
