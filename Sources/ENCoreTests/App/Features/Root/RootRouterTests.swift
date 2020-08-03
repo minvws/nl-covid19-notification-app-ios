@@ -148,6 +148,7 @@ final class RootRouterTests: XCTestCase {
 
         router.start()
 
+        XCTAssertEqual(exposureController.deactivateCallCount, 1)
         XCTAssertEqual(endOfLifeBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.embedCallCount, 1)
     }

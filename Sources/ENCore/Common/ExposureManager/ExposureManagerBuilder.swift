@@ -41,6 +41,9 @@ protocol ExposureManaging {
     /// might be usable until an active state is returned
     func activate(completion: @escaping (ExposureManagerStatus) -> ())
 
+    /// Deactives the ExporeManager.
+    func deactivate()
+
     /// Detects exposures from a given set of exposure key URLs.
     /// A summary is returned when a match is found. If no summary is returned
     /// no match has been found

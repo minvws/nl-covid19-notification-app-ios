@@ -53,6 +53,10 @@ final class ExposureController: ExposureControlling, Logging {
         updatePushNotificationState()
     }
 
+    func deactivate() {
+        exposureManager.deactivate()
+    }
+
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
         return dataController
             .getAppVersionInformation()

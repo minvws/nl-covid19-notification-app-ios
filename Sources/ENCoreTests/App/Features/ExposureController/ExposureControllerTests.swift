@@ -60,6 +60,14 @@ final class ExposureControllerTests: TestCase {
         XCTAssert(mutableStateStream.updateCallCount > 1)
     }
 
+    func test_deactive_callsDeactivate() {
+        XCTAssertEqual(exposureManager.deactivateCallCount, 0)
+
+        controller.deactivate()
+
+        XCTAssertEqual(exposureManager.deactivateCallCount, 1)
+    }
+
     func test_requestExposureNotificationPermission_callsManager_updatesStream() {
         var receivedEnabled: Bool!
         exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in

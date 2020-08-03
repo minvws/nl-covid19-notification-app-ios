@@ -108,6 +108,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }, receiveValue: { [weak self] isDectivated in
                 if isDectivated {
                     self?.routeToEndOfLife()
+                    self?.exposureController.deactivate()
                 }
             })
             .store(in: &disposeBag)
