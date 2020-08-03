@@ -20,12 +20,10 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     init(viewController: OnboardingViewControllable,
          stepBuilder: OnboardingStepBuildable,
          consentBuilder: OnboardingConsentBuildable,
-         webBuilder: WebBuildable,
          shareSheetBuilder: ShareSheetBuildable,
          helpBuilder: HelpBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
-        self.webBuilder = webBuilder
         self.shareSheetBuilder = shareSheetBuilder
         self.helpBuilder = helpBuilder
 
@@ -81,9 +79,6 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
 
     private let consentBuilder: OnboardingConsentBuildable
     private var consentViewController: ViewControllable?
-
-    private let webBuilder: WebBuildable
-    private var webViewController: ViewControllable?
 
     private let shareSheetBuilder: ShareSheetBuildable
     private var shareSheetViewController: ShareSheetViewControllable?

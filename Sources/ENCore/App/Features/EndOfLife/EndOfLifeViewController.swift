@@ -7,13 +7,16 @@
 
 import ENFoundation
 import Foundation
+import SafariServices
 import SnapKit
 import UIKit
 
 /// @mockable
 protocol EndOfLifeViewControllable: ViewControllable {}
 
-final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable {
+final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable, Logging {
+
+    private static let endOfLifeURL = "https://coronamelder.nl"
 
     init(listener: EndOfLifeListener, theme: Theme) {
         self.listener = listener
@@ -30,6 +33,8 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        internalView.actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
     }
 
     // MARK: - Private
@@ -38,7 +43,13 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable {
     private lazy var internalView: EndOfLifeView = EndOfLifeView(theme: self.theme)
 
     @objc private func didTapActionButton(sender: Button) {
-        // TODO: Launch WebView https://coronamelder.nl
+        guard let url = URL(string: EndOfLifeViewController.endOfLifeURL) else {
+            return logError("Cannot create URL from: \(EndOfLifeViewController.endOfLifeURL)")
+        }
+        let viewController = SFSafariViewController(url: url)
+        viewController.dismissButtonStyle = .close
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true) {}
     }
 }
 
