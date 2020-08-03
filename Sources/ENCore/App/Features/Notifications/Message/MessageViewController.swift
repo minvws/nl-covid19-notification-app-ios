@@ -98,9 +98,11 @@ private final class MessageView: View {
 
         infoView.addSections([
             message(),
-            complaints(),
+            situation(),
+            measures(),
             doCoronaTest(),
-            info()
+            info(),
+            complaints()
         ])
 
         addSubview(infoView)
@@ -131,6 +133,32 @@ private final class MessageView: View {
 
         return InfoSectionTextView(theme: theme,
                                    title: .moreInformationComplaintsTitle,
+                                   content: bulletList)
+    }
+
+    private func situation() -> View {
+        let list: [String] = [
+            .moreInformationSituationStep1,
+            .moreInformationSituationStep2,
+            .moreInformationSituationStep3
+        ]
+        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+
+        return InfoSectionTextView(theme: theme,
+                                   title: .moreInformationSituationTitle,
+                                   content: bulletList)
+    }
+
+    private func measures() -> View {
+        let list: [String] = [
+            .moreInformationNotificationMeasuresStep1,
+            .moreInformationNotificationMeasuresStep2,
+            .moreInformationNotificationMeasuresStep3
+        ]
+        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+
+        return InfoSectionTextView(theme: theme,
+                                   title: .moreInformationNotificationMeasuresTitle,
                                    content: bulletList)
     }
 
