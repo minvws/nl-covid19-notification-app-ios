@@ -137,15 +137,19 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestPushNotificationPermission(_ completion: @escaping (() -> ())) {
-        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
-            if authorizationStatus == .authorized {
-                completion()
+        func request() {
+            userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
+                DispatchQueue.main.async {
+                    completion()
+                }
             }
         }
 
-        userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
-            DispatchQueue.main.async {
+        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
+            if authorizationStatus == .authorized {
                 completion()
+            } else {
+                request()
             }
         }
     }
