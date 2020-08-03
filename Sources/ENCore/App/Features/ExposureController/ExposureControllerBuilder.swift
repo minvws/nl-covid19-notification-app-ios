@@ -18,6 +18,7 @@ protocol ExposureControlling {
     // MARK: - Setup
 
     func activate()
+    func deactivate()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError>

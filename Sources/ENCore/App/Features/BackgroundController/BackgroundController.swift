@@ -55,9 +55,19 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
-        scheduleENStatusCheck()
-        scheduleUpdate()
-        scheduleDecoySequence()
+        exposureController
+            .isAppDectivated()
+            .sink(receiveCompletion: { _ in
+                // Do nothing
+            }, receiveValue: { (isDeactivated: Bool) in
+                if isDeactivated {
+                    self.removeAllTasks()
+                } else {
+                    self.scheduleENStatusCheck()
+                    self.scheduleUpdate()
+                    self.scheduleDecoySequence()
+                }
+            }).store(in: &disposeBag)
     }
 
     func handle(task: BGTask) {
@@ -341,5 +351,9 @@ final class BackgroundController: BackgroundControlling, Logging {
             }
             execute()
         }
+    }
+
+    private func removeAllTasks() {
+        BGTaskScheduler.shared.cancelAllTaskRequests()
     }
 }

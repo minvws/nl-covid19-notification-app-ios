@@ -17,6 +17,10 @@ final class StubExposureManager: ExposureManaging {
         completion(.active)
     }
 
+    func deactivate() {
+        // Do nothing
+    }
+
     func getExposureNotificationStatus() -> ExposureManagerStatus {
         return isExposureNotificationEnabled() ? .active : .inactive(.unknown)
     }

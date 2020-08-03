@@ -5,10 +5,11 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import ExposureNotification
 import Foundation
 
-final class ExposureManager: ExposureManaging {
+final class ExposureManager: ExposureManaging, Logging {
 
     init(manager: ENManaging) {
         self.manager = manager
@@ -44,6 +45,14 @@ final class ExposureManager: ExposureManaging {
             let authorisationStatus = strongSelf.getExposureNotificationStatus()
 
             completion(authorisationStatus)
+        }
+    }
+
+    func deactivate() {
+        manager.setExposureNotificationEnabled(false) { error in
+            if let error = error {
+                self.logError("Error disabling `ExposureNotifications`: \(error.localizedDescription)")
+            }
         }
     }
 
