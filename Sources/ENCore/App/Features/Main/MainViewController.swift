@@ -166,17 +166,15 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachSharing(shouldHideViewController: true)
     }
 
-    func displayShareSheet(completion: @escaping (() -> ())) {
-        exposureController.getAppVersionInformation { data in
-            if let url = data?.appStoreURL, let storeLink = URL(string: url) {
-                let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
-                activityVC.completionWithItemsHandler = { _, _, _, _ in
-                    completion()
-                }
-                self.present(activityVC, animated: true)
-            } else {
-                self.logError("Could retreive a AppStoreUrl")
+    func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping (() -> ())) {
+        if let storeLink = URL(string: "https://coronamelder.nl/app") {
+            let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
+            activityVC.completionWithItemsHandler = { _, _, _, _ in
+                completion()
             }
+            viewcontroller.present(activityVC, animated: true)
+        } else {
+            self.logError("Could retreive a valid url")
         }
     }
 

@@ -32,7 +32,11 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
         navigationItem.rightBarButtonItem = closeBarButtonItem
 
         internalView.button.action = { [weak self] in
-            self?.listener?.displayShareSheet {}
+            if let viewController = self {
+                self?.listener?.displayShareSheet(usingViewController: viewController, completion: {
+                    self?.didTapClose()
+                })
+            }
         }
     }
 
