@@ -174,7 +174,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             }
             viewcontroller.present(activityVC, animated: true)
         } else {
-            self.logError("Could retreive a valid url")
+            self.logError("Couldn't retreive a valid url")
         }
     }
 

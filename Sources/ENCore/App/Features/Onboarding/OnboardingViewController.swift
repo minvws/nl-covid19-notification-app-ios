@@ -119,7 +119,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
             }
             self.present(activityVC, animated: true)
         } else {
-            self.logError("Could retreive a valid url")
+            self.logError("Couldn't retreive a valid url")
         }
     }
 
