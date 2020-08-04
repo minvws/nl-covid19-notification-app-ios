@@ -6,10 +6,14 @@
  */
 
 import ENFoundation
+import SafariServices
 import SnapKit
 import UIKit
 
 final class PrivacyAgreementViewController: ViewController, Logging {
+
+    // TODO: Update to correct url
+    private static let privacyAgreementURL = "https://coronamelder.nl"
 
     init(listener: PrivacyAgreementListener, theme: Theme) {
         self.listener = listener
@@ -32,14 +36,29 @@ final class PrivacyAgreementViewController: ViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.privacyAgreementButton.addTarget(self, action: #selector(privacyAgreementButtonPressed), for: .touchUpInside)
+        internalView.privacyAgreementButton.addTarget(self, action: #selector(didPressAgreeWithPrivacyAgreementButton), for: .touchUpInside)
+
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapReadPrivacyAgreementLabel))
+        internalView.readPrivacyAgreementLabel.addGestureRecognizer(tapRecognizer)
     }
 
-    @objc func privacyAgreementButtonPressed() {
+    let tapRecognizer = UITapGestureRecognizer()
+
+    @objc func didPressAgreeWithPrivacyAgreementButton() {
         let newAcceptValue = !internalView.privacyAgreementButton.isSelected
 
         internalView.privacyAgreementButton.isSelected = newAcceptValue
         internalView.nextButton.isEnabled = newAcceptValue
+    }
+
+    @objc func didTapReadPrivacyAgreementLabel() {
+        guard let url = URL(string: PrivacyAgreementViewController.privacyAgreementURL) else {
+            return logError("Cannot create URL from: \(PrivacyAgreementViewController.privacyAgreementURL)")
+        }
+        let viewController = SFSafariViewController(url: url)
+        viewController.dismissButtonStyle = .close
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true) {}
     }
 
     private let informationSteps: [OnboardingConsentSummaryStep]
@@ -50,11 +69,20 @@ final class PrivacyAgreementViewController: ViewController, Logging {
 private final class PrivacyAgreementView: View {
 
     lazy var privacyAgreementButton = PrivacyAgreementButton(theme: theme)
+
     lazy var nextButton: Button = {
         let button = Button(theme: theme)
         button.setTitle(.nextButtonTitle, for: .normal)
         button.isEnabled = false
         return button
+    }()
+
+    lazy var readPrivacyAgreementLabel: Label = {
+        let label = Label(frame: .zero)
+        label.isUserInteractionEnabled = true
+        label.attributedText = attributedSubtitleString
+        label.numberOfLines = 0
+        return label
     }()
 
     init(theme: Theme, informationSteps: [OnboardingConsentSummaryStep]) {
@@ -67,7 +95,7 @@ private final class PrivacyAgreementView: View {
 
         scrollView.addSubview(stackView)
         scrollView.addSubview(titleLabel)
-        scrollView.addSubview(subtitleLabel)
+        scrollView.addSubview(readPrivacyAgreementLabel)
 
         stepViews.forEach { stackView.addArrangedSubview($0) }
 
@@ -90,14 +118,14 @@ private final class PrivacyAgreementView: View {
             maker.leading.trailing.top.equalToSuperview().inset(16)
         }
 
-        subtitleLabel.snp.makeConstraints { maker in
+        readPrivacyAgreementLabel.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
         }
 
         stackView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.width.equalToSuperview().inset(16)
-            maker.top.equalTo(subtitleLabel.snp.bottom).offset(40)
+            maker.top.equalTo(readPrivacyAgreementLabel.snp.bottom).offset(40)
         }
 
         bottomStackView.snp.makeConstraints { maker in
@@ -109,6 +137,8 @@ private final class PrivacyAgreementView: View {
             maker.height.equalTo(50)
         }
     }
+
+    // MARK: - Private
 
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
@@ -128,7 +158,16 @@ private final class PrivacyAgreementView: View {
         return titleLabel
     }()
 
-    private lazy var subtitleLabel: Label = {
+    private let bottomStackView: UIStackView = {
+        let stackView = UIStackView(frame: .zero)
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.backgroundColor = .clear
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    private lazy var attributedSubtitleString: NSAttributedString = {
         let attributtedString = String(format: .privacyAgreementMessage, String.privacyAgreementMessageLink).attributed()
         let linkRange = (attributtedString.string as NSString).range(of: .privacyAgreementMessageLink)
 
@@ -137,21 +176,7 @@ private final class PrivacyAgreementView: View {
 
         attributtedString.addAttributes([.foregroundColor: theme.colors.primary, .underlineStyle: NSUnderlineStyle.single.rawValue],
                                         range: linkRange)
-
-        let label = Label(frame: .zero)
-        label.attributedText = attributtedString
-        label.numberOfLines = 0
-
-        return label
-    }()
-
-    private let bottomStackView: UIStackView = {
-        let stackView = UIStackView(frame: .zero)
-        stackView.axis = .vertical
-        stackView.spacing = 16
-        stackView.backgroundColor = .clear
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
+        return attributtedString
     }()
 
     private let scrollView = UIScrollView(frame: .zero)
