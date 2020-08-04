@@ -23,8 +23,7 @@ final class MainViewControllerTests: TestCase {
 
         viewController = MainViewController(theme: theme,
                                             exposureController: exposureController,
-                                            exposureStateStream: exposureStateStream,
-                                            bluetoothEnabledSubject: CurrentValueSubject(true))
+                                            exposureStateStream: exposureStateStream)
         viewController.router = router
     }
 

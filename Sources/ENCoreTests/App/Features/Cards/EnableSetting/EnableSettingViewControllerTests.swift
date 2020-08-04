@@ -12,13 +12,15 @@ import XCTest
 final class EnableSettingViewControllerTests: TestCase {
     private var viewController: EnableSettingViewController!
     private let listener = EnableSettingListenerMock()
+    private var bluetoothStateStream = BluetoothStateStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         viewController = EnableSettingViewController(listener: listener,
                                                      theme: theme,
-                                                     setting: .enableBluetooth)
+                                                     setting: .enableBluetooth,
+                                                     bluetoothStateStream: bluetoothStateStream)
     }
 
     func test_presentationControllerDidDismiss_callsListener() {
