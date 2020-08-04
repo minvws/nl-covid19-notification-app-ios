@@ -176,8 +176,12 @@ private final class PrivacyAgreementView: View {
         attributtedString.addAttributes([.font: theme.fonts.body, .foregroundColor: theme.colors.gray],
                                         range: NSRange(location: 0, length: attributtedString.string.count))
 
-        attributtedString.addAttributes([.foregroundColor: theme.colors.primary, .underlineStyle: NSUnderlineStyle.single.rawValue],
-                                        range: linkRange)
+        attributtedString.addAttributes([
+            .foregroundColor: theme.colors.primary,
+            .underlineStyle: NSUnderlineStyle.single.rawValue,
+            .font: theme.fonts.bodyBold
+        ],
+        range: linkRange)
         return attributtedString
     }()
 

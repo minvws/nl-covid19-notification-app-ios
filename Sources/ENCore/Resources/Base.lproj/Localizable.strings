@@ -331,7 +331,7 @@
 
 "privacyAgreement.title" = "Toestemming gegevensgebruik";
 "privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de %@. Belangrijk om te weten: ";
-"privacyAgreement.message.link" = "privacy verklaring";
+"privacyAgreement.message.link" = "privacyverklaring";
 "privacyAgreement.list.step1" = "Je app zendt versleutelde Bluetooth-gegevens uit.";
 "privacyAgreement.list.step2" = "Andere gebruikers die met jou in contact zijn geweest bewaren deze gegevens maximaal 14 dagen.";
 "privacyAgreement.list.step3" = "Als uit een coronatest blijkt dat je corona hebt kun je dit in de app melden om andere gebruikers te waarschuwen.";
