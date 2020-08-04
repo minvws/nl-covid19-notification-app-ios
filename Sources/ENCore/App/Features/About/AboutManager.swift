@@ -29,7 +29,7 @@ final class AboutManager: AboutManaging {
     let questionsSection: AboutSection
     private(set) var aboutSection: AboutSection
 
-    private var disposeBag = Set<AnyCancellable>()
+    // MARK: - Init
 
     init(theme: Theme, testPhaseStream: AnyPublisher<Bool, Never>) {
         questionsSection = AboutSection(title: .helpSubtitle, questions: [
@@ -51,13 +51,19 @@ final class AboutManager: AboutManaging {
         testPhaseStream
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { isTestPhase in
-                let question = HelpQuestion(theme: theme, question: .helpTestVersionTitle, answer: "", link: .helpTestVersionLink)
-                self.aboutSection.questions.append(question)
-                self.didUpdate?()
+                if isTestPhase {
+                    let question = HelpQuestion(theme: theme, question: .helpTestVersionTitle, answer: "", link: .helpTestVersionLink)
+                    self.aboutSection.questions.append(question)
+                    self.didUpdate?()
+                }
             }).store(in: &disposeBag)
     }
 
     deinit {
         disposeBag.forEach { $0.cancel() }
     }
+
+    // MARK: - Private
+
+    private var disposeBag = Set<AnyCancellable>()
 }

@@ -69,9 +69,10 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
             testPhaseStream
                 .sink(receiveValue: { isTestPhase in
-                    if isTestPhase {}
-                    self.moreInformationView.version = .testVersionTitle(version, build)
-                    self.moreInformationView.learnMoreButton.isHidden = false
+                    if isTestPhase {
+                        self.moreInformationView.version = .testVersionTitle(version, build)
+                        self.moreInformationView.learnMoreButton.isHidden = false
+                    }
                 }).store(in: &disposeBag)
         }
     }
