@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 
@@ -26,6 +27,7 @@ protocol InfectedDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
+    var bluetoothEnabledStream: AnyPublisher<Bool, Never> { get }
 }
 
 private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency {
@@ -40,6 +42,10 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
 
     var cardBuilder: CardBuildable {
         return CardBuilder(dependency: self)
+    }
+
+    var bluetoothEnabledStream: AnyPublisher<Bool, Never> {
+        return dependency.bluetoothEnabledStream
     }
 }
 

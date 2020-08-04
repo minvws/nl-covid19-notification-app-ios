@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 
@@ -12,11 +13,11 @@ import Foundation
 protocol EnableSettingListener: AnyObject {
     func enableSettingRequestsDismiss(shouldDismissViewController: Bool)
     func enableSettingDidTriggerAction()
-    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ()))
 }
 
 protocol EnableSettingDependency {
     var theme: Theme { get }
+    var bluetoothEnabledStream: AnyPublisher<Bool, Never> { get }
 }
 
 final class EnableSettingDependencyProvider: DependencyProvider<EnableSettingDependency> {
@@ -42,8 +43,4 @@ final class EnableSettingBuilder: Builder<EnableSettingDependency>, EnableSettin
                                            theme: dependencyProvider.theme,
                                            setting: setting)
     }
-}
-
-extension EnableSettingListener {
-    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ())) {}
 }

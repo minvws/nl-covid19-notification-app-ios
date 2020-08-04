@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import UIKit
@@ -26,6 +27,7 @@ protocol StatusBuildable {
 protocol StatusDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
+    var bluetoothEnabledStream: AnyPublisher<Bool, Never> { get }
 }
 
 private final class StatusDependencyProvider: DependencyProvider<StatusDependency>, CardDependency {
@@ -39,6 +41,10 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 
     var theme: Theme {
         return dependency.theme
+    }
+
+    var bluetoothEnabledStream: AnyPublisher<Bool, Never> {
+        return dependency.bluetoothEnabledStream
     }
 }
 

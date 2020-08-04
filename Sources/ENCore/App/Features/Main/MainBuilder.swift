@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 
@@ -23,6 +24,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var theme: Theme {
         return dependency.theme
+    }
+
+    var bluetoothEnabledStream: AnyPublisher<Bool, Never> {
+        return bluetoothEnabledSubject.eraseToAnyPublisher()
     }
 
     var exposureStateStream: ExposureStateStreaming {
@@ -68,6 +73,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var enableSettingBuilder: EnableSettingBuildable {
         return EnableSettingBuilder(dependency: self)
     }
+
+    fileprivate var bluetoothEnabledSubject: CurrentValueSubject<Bool, Never> {
+        return CurrentValueSubject(false)
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -75,7 +84,8 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
                                                 exposureController: dependencyProvider.exposureController,
-                                                exposureStateStream: dependencyProvider.exposureStateStream)
+                                                exposureStateStream: dependencyProvider.exposureStateStream,
+                                                bluetoothEnabledSubject: dependencyProvider.bluetoothEnabledSubject)
 
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,

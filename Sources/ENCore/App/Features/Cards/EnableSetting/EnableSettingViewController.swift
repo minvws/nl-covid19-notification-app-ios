@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import UIKit
@@ -13,12 +14,18 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
     init(listener: EnableSettingListener,
          theme: Theme,
-         setting: EnableSetting) {
+         setting: EnableSetting,
+         bluetoothEnabledStream: AnyPublisher<Bool, Never>) {
         self.listener = listener
         self.setting = setting
+        self.bluetoothEnabledStream = bluetoothEnabledStream
 
         super.init(theme: theme)
         presentationController?.delegate = self
+    }
+
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - ViewController Lifecycle
@@ -54,20 +61,23 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
     // MARK: - Private
 
-    @objc
-    private func didTapCloseButton() {
-        listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
-    }
-
     private weak var listener: EnableSettingListener?
     private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
     private let setting: EnableSetting
+    private let bluetoothEnabledStream: AnyPublisher<Bool, Never>
+    private var disposeBag = Set<AnyCancellable>()
+
+    @objc private func didTapCloseButton() {
+        listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+    }
+
     @objc private func checkBluetoothStatus() {
-        self.listener?.isBluetoothEnabled { enabled in
-            if enabled {
-                self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
-            }
-        }
+        bluetoothEnabledStream
+            .sink(receiveValue: { isEnabled in
+                if isEnabled {
+                    self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+                }
+            }).store(in: &disposeBag)
     }
 }
 

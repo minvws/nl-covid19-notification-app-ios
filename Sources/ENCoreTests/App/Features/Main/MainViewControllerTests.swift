@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import XCTest
@@ -22,7 +23,8 @@ final class MainViewControllerTests: TestCase {
 
         viewController = MainViewController(theme: theme,
                                             exposureController: exposureController,
-                                            exposureStateStream: exposureStateStream)
+                                            exposureStateStream: exposureStateStream,
+                                            bluetoothEnabledSubject: CurrentValueSubject(true))
         viewController.router = router
     }
 

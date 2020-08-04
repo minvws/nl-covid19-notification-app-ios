@@ -42,13 +42,17 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     weak var router: MainRouting?
 
+    private let bluetoothEnabledSubject: CurrentValueSubject<Bool, Never>
+
     // MARK: - Init
 
     init(theme: Theme,
          exposureController: ExposureControlling,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         bluetoothEnabledSubject: CurrentValueSubject<Bool, Never>) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
+        self.bluetoothEnabledSubject = bluetoothEnabledSubject
         super.init(theme: theme)
     }
 
@@ -67,6 +71,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         if let activeState = exposureStateStream.currentExposureState?.activeState, activeState == .inactive(.disabled) {
             exposureController.requestExposureNotificationPermission(nil)
         }
+
+        exposureStateStream
+            .exposureState
+            .sink(receiveValue: { state in
+                self.bluetoothEnabledSubject.send(state.activeState == .inactive(.bluetoothOff))
+            }).store(in: &disposeBag)
     }
 
     // MARK: - Internal
