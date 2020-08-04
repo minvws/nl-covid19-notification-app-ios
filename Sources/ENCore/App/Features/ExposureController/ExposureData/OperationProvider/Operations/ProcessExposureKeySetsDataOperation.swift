@@ -36,9 +36,10 @@ struct ExposureReport: Codable {
 #endif
 
 final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging {
-    // the detectExposures API is limited to 15 calls a day
+    // the detectExposures API is limited to 15 keysets or calls a day
     // https://developer.apple.com/documentation/exposurenotification/enmanager/3586331-detectexposures
-    private let maximumDailyOfKeySetsToProcess = 15
+    private let maximumDailyOfKeySetsToProcess = 15 // iOS 13.5
+    private let maximumDailyExposureDetectionAPICalls = 15 // iOS 13.6+
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
@@ -70,7 +71,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         let markKeySetsAsProcessedFirstTimeOnly = determineSkipAllExposureSetsForTheFirstTime()
         logDebug("Is processing for the first time: \(markKeySetsAsProcessedFirstTimeOnly)")
 
-        // Combine all streams into an array of streams
+        // Batch detect exposures
         return detectExposures(for: exposureKeySetHolders, fakeProcessKeySets: markKeySetsAsProcessedFirstTimeOnly)
             // persist keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(self.persistResult(_:))
@@ -185,7 +186,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         logDebug("Detect exposures for keySets: \(keySetHoldersToProcess.map { $0.identifier })")
 
-        return Deferred {
+        let executeExposureDetection: AnyPublisher<ExposureDetectionResult, ExposureDataError> = Deferred {
             Future { promise in
                 self.exposureManager.detectExposures(configuration: self.configuration,
                                                      diagnosisKeyURLs: diagnosisKeyUrls) { result in
@@ -236,6 +237,10 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             }
         }
         .eraseToAnyPublisher()
+
+        return updateNumberOfApiCallsMade()
+            .flatMap { _ in executeExposureDetection }
+            .eraseToAnyPublisher()
     }
 
     /// Updates the local keySetHolder storage with the latest results
@@ -310,20 +315,51 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .count
     }
 
+    private func getNumberOfExposureDetectionApiCallsInLast24Hours() -> Int {
+        let apiCalls = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureApiCallDates) ?? []
+
+        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) else {
+            return 0
+        }
+
+        let wasProcessedInLast24h: (Date) -> Bool = { date in
+            return date > cutOffDate
+        }
+
+        return apiCalls
+            .filter(wasProcessedInLast24h)
+            .count
+    }
+
     private func selectKeySetHoldersToProcess(from keySetsHolders: [ExposureKeySetHolder]) -> [ExposureKeySetHolder] {
         let numberOfKeySetsLeftToProcess: Int
 
         #if USE_DEVELOPER_MENU || DEBUG
 
             if ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets {
-                numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
+                if #available(iOS 13.6, *) {
+                    let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
+                    logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
+
+                    numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
+                } else {
+                    numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
+                }
+
             } else {
                 numberOfKeySetsLeftToProcess = Int.max
             }
 
         #else
 
-            numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
+            if #available(iOS 13.6, *) {
+                let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
+                logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
+
+                numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
+            } else {
+                numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
+            }
 
         #endif
 
@@ -471,6 +507,29 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                             completion: { _ in
                                                 promise(.success(value))
                                             })
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private func updateNumberOfApiCallsMade() -> AnyPublisher<(), ExposureDataError> {
+        return Deferred {
+            return Future { promise in
+                self.storageController.requestExclusiveAccess { storageController in
+                    var calls = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureApiCallDates) ?? []
+
+                    calls = [Date()] + calls
+                    self.logDebug("Most recent API calls \(calls)")
+
+                    if calls.count > self.maximumDailyExposureDetectionAPICalls {
+                        calls = Array(calls.prefix(self.maximumDailyExposureDetectionAPICalls))
+                    }
+
+                    storageController.store(object: calls,
+                                            identifiedBy: ExposureDataStorageKey.exposureApiCallDates) { _ in
+                        promise(.success(()))
+                    }
                 }
             }
         }

@@ -34,6 +34,8 @@ struct ExposureDataStorageKey {
                                                                                                    storeType: .secure)
     static let firstRunIdentifier = CodableStorageKey<Bool>(name: "firstRunIdentifier",
                                                             storeType: .insecure(volatile: false))
+    static let exposureApiCallDates = CodableStorageKey<[Date]>(name: "exposureApiCalls",
+                                                                storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
