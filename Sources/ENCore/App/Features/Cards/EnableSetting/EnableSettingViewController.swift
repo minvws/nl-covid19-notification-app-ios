@@ -37,6 +37,13 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
         internalView.navigationBar.topItem?.rightBarButtonItem?.target = self
         internalView.navigationBar.topItem?.rightBarButtonItem?.action = #selector(didTapCloseButton)
+
+        if self.setting == .enableBluetooth {
+            NotificationCenter.default.addObserver(self,
+                                                   selector: #selector(checkBluetoothStatus),
+                                                   name: UIApplication.didBecomeActiveNotification,
+                                                   object: nil)
+        }
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -55,6 +62,13 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     private weak var listener: EnableSettingListener?
     private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
     private let setting: EnableSetting
+    @objc private func checkBluetoothStatus() {
+        self.listener?.isBluetoothEnabled { enabled in
+            if enabled {
+                self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+            }
+        }
+    }
 }
 
 private final class EnableSettingView: View {
@@ -84,6 +98,8 @@ private final class EnableSettingView: View {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         navigationBar.standardAppearance = appearance
+
+        button.isHidden = true
 
         addSubview(navigationBar)
         addSubview(scrollView)
@@ -124,9 +140,12 @@ private final class EnableSettingView: View {
 
     fileprivate func update(model: EnableSettingModel, actionCompletion: @escaping () -> ()) {
         titleLabel.text = model.title
-        button.setTitle(model.actionTitle, for: .normal)
-        button.action = {
-            model.action.action(actionCompletion)
+        if let action = model.action {
+            button.isHidden = false
+            button.setTitle(model.actionTitle, for: .normal)
+            button.action = {
+                action.action(actionCompletion)
+            }
         }
 
         stepViews.forEach { $0.removeFromSuperview() }

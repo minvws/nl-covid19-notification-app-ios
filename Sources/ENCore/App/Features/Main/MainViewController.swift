@@ -230,6 +230,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachEnableSetting(shouldDismissViewController: true)
     }
 
+    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ())) {
+        if let exposureActiveState = exposureStateStream.currentExposureState?.activeState {
+            completion(exposureActiveState == .inactive(.bluetoothOff) ? false : true)
+        }
+    }
+
     // MARK: - Private
 
     private lazy var mainView: MainView = MainView(theme: self.theme)
