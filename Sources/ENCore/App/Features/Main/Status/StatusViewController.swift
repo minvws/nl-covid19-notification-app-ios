@@ -155,9 +155,6 @@ private final class StatusView: View {
         EmitterStatusIconView(theme: self.theme)
     }()
 
-    private let testingContainer = UIView(frame: .zero)
-    private let testingTitleLabel = Label()
-
     private let titleLabel = Label()
     private let descriptionLabel = Label()
 
@@ -183,14 +180,6 @@ private final class StatusView: View {
         contentContainer.spacing = 32
         contentContainer.alignment = .center
 
-        testingTitleLabel.font = theme.fonts.subhead
-        testingTitleLabel.textColor = .white
-        testingTitleLabel.text = "Dit is een test versie"
-
-        testingContainer.backgroundColor = .black
-        testingContainer.layer.cornerRadius = 16
-        testingContainer.layer.masksToBounds = true
-
         textContainer.axis = .vertical
         textContainer.spacing = 16
 
@@ -209,10 +198,8 @@ private final class StatusView: View {
         buttonContainer.spacing = 16
 
         layer.addSublayer(gradientLayer)
-        testingContainer.addSubview(testingTitleLabel)
         textContainer.addArrangedSubview(titleLabel)
         textContainer.addArrangedSubview(descriptionLabel)
-        contentContainer.addArrangedSubview(testingContainer)
         contentContainer.addArrangedSubview(iconView)
         contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
@@ -245,10 +232,6 @@ private final class StatusView: View {
             maker.width.equalTo(sceneImageView.snp.height).multipliedBy(sceneImageAspectRatio)
             maker.height.equalTo(300)
         }
-        testingTitleLabel.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
-            maker.top.bottom.equalToSuperview().inset(6)
-        }
         stretchGuide.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(contentStretchGuide).inset(-16)
 
@@ -276,7 +259,6 @@ private final class StatusView: View {
         CATransaction.commit()
 
         evaluateHeight()
-        updateTestingContainerCornerRadius()
     }
 
     // MARK: - Internal
@@ -320,17 +302,6 @@ private final class StatusView: View {
         let size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         heightConstraint?.constant = size.height
         heightConstraint?.isActive = true
-    }
-
-    private func updateTestingContainerCornerRadius() {
-        guard bounds.width > 0 else {
-            return
-        }
-        let height = testingContainer.frame.height
-        let cornerRadius = ceil(height / 2)
-        if cornerRadius != testingContainer.layer.cornerRadius {
-            testingContainer.layer.cornerRadius = cornerRadius
-        }
     }
 }
 

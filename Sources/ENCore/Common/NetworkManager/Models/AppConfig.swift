@@ -19,4 +19,5 @@ struct AppConfig: Decodable {
     let requestMaximumSize: Int?
     let repeatedUploadDelay: Int?
     let coronaMelderDeactivated: String?
+    let coronaMelderTestPhase: Bool?
 }

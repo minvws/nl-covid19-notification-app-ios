@@ -22,9 +22,8 @@ final class StatusViewControllerTests: TestCase {
         super.setUp()
 
         recordSnapshots = false
-        #if DEBUG
-            AnimationTestingOverrides.animationsEnabled = false
-        #endif
+
+        AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
 
         cardBuilder.buildHandler = { type in
