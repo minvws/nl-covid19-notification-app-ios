@@ -88,8 +88,8 @@ private final class RequestTestView: View {
 
         infoView.addSections([
             receivedNotification(),
-            complaints(),
-            info()
+            info(),
+            complaints()
         ])
 
         addSubview(infoView)
@@ -117,7 +117,8 @@ private final class RequestTestView: View {
             .moreInformationComplaintsItem1,
             .moreInformationComplaintsItem2,
             .moreInformationComplaintsItem3,
-            .moreInformationComplaintsItem4
+            .moreInformationComplaintsItem4,
+            .moreInformationComplaintsItem5
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
 

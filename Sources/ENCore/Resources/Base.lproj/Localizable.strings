@@ -202,6 +202,10 @@
 "moreInformation.complaints.title" = "Klachten die passen bij het coronavirus (COVID-19)";
 "moreInformation.complaints.content" = "Heb je klachten? Blijf dan zoveel mogelijk thuis. Zijn het ernstige klachten? Bel je huisarts.";
 
+"moreInformation.situation.title" = "Wat kun je doen in deze situatie?";
+"moreInformation.situation.step1" = "Heb je geen klachten? Doe een gratis coronatest";
+"moreInformation.situation.step2" = "Heb je (lichte) klachten die passen bij corona? Doe een coronatest en blijf thuis tot je de uitslag weet";
+"moreInformation.situation.step3" = "Heb je ernstige klachten of zit je in een risicogroep? Bel je huisarts";
 
 "moreInformation.about.title" = "Over de app";
 "about.review" = "Beoordeel de app";

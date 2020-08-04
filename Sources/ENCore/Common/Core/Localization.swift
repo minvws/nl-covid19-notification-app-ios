@@ -307,6 +307,16 @@ extension String {
     static var moreInformationRequestTestReceivedNotificationTitle: String { return Localization.string(for: "moreInformation.requestTest.receivedNotification.title") }
     static var moreInformationRequestTestReceivedNotificationContent: String { return Localization.string(for: "moreInformation.requestTest.receivedNotification.content") }
 
+    static var moreInformationNotificationMeasuresTitle: String { return Localization.string(for: "moreInformation.notification.measures.title") }
+    static var moreInformationNotificationMeasuresStep1: String { return Localization.string(for: "moreInformation.notification.measures.step1") }
+    static var moreInformationNotificationMeasuresStep2: String { return Localization.string(for: "moreInformation.notification.measures.step2") }
+    static var moreInformationNotificationMeasuresStep3: String { return Localization.string(for: "moreInformation.notification.measures.step3") }
+
+    static var moreInformationSituationTitle: String { return Localization.string(for: "moreInformation.situation.title") }
+    static var moreInformationSituationStep1: String { return Localization.string(for: "moreInformation.situation.step1") }
+    static var moreInformationSituationStep2: String { return Localization.string(for: "moreInformation.situation.step2") }
+    static var moreInformationSituationStep3: String { return Localization.string(for: "moreInformation.situation.step3") }
+
     // MARK: - Cards | Exposure Off
 
     static var cardsExposureOffTitle: String { return Localization.string(for: "cards.exposureOff.title") }
