@@ -18,15 +18,13 @@ protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, O
 final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
 
     init(viewController: OnboardingViewControllable,
-        stepBuilder: OnboardingStepBuildable,
-        consentBuilder: OnboardingConsentBuildable,
-        webBuilder: WebBuildable,
-        bluetoothSettingsBuilder: BluetoothSettingsBuildable,
-        shareSheetBuilder: ShareSheetBuildable,
-        helpBuilder: HelpBuildable) {
+         stepBuilder: OnboardingStepBuildable,
+         consentBuilder: OnboardingConsentBuildable,
+         bluetoothSettingsBuilder: BluetoothSettingsBuildable,
+         shareSheetBuilder: ShareSheetBuildable,
+         helpBuilder: HelpBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
-        self.webBuilder = webBuilder
         self.bluetoothSettingsBuilder = bluetoothSettingsBuilder
         self.shareSheetBuilder = shareSheetBuilder
         self.helpBuilder = helpBuilder
@@ -74,8 +72,8 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         self.helpRouter = helpRouter
 
         viewController.present(viewController: helpRouter.viewControllable,
-            animated: true,
-            completion: nil)
+                               animated: true,
+                               completion: nil)
     }
 
     func routeToBluetoothSettings() {
@@ -83,8 +81,8 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         self.bluetoothSettingsViewController = bluetoothSettingsViewController
 
         viewController.present(viewController: bluetoothSettingsViewController,
-            animated: true,
-            completion: nil)
+                               animated: true,
+                               completion: nil)
     }
 
     private let stepBuilder: OnboardingStepBuildable
