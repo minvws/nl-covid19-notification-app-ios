@@ -27,9 +27,15 @@ protocol CardBuildable {
 
 protocol CardDependency {
     var theme: Theme { get }
+    var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
 private final class CardDependencyProvider: DependencyProvider<CardDependency>, EnableSettingDependency {
+
+    var bluetoothStateStream: BluetoothStateStreaming {
+        return dependency.bluetoothStateStream
+    }
+
     var enableSettingBuilder: EnableSettingBuildable {
         return EnableSettingBuilder(dependency: self)
     }

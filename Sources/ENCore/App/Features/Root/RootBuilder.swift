@@ -129,6 +129,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableNetworkStatusStream
     }
 
+    var bluetoothStateStream: BluetoothStateStreaming {
+        return mutableBluetoothStateStream
+    }
+
     let theme: Theme = ENTheme()
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
@@ -139,6 +143,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
+
+    lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
 }
 
 /// Interface describing the builder that builds

@@ -6,7 +6,6 @@
  */
 
 import Combine
-import CoreBluetooth
 import ENFoundation
 import UIKit
 import UserNotifications
@@ -230,12 +229,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachEnableSetting(shouldDismissViewController: true)
     }
 
-    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ())) {
-        if let exposureActiveState = exposureStateStream.currentExposureState?.activeState {
-            completion(exposureActiveState == .inactive(.bluetoothOff) ? false : true)
-        }
-    }
-
     // MARK: - Private
 
     private lazy var mainView: MainView = MainView(theme: self.theme)
@@ -290,12 +283,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             return logError("Settings URL string problem")
         }
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
-    }
-
-    private func openBluetooth() {
-        // We need to navigate to the Bluetooth settings page, using `App-Perfs:root=Bluetooth`
-        // is a private api and risks getting the app rejected during review.
-        _ = CBCentralManager(delegate: nil, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
     }
 
     private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {

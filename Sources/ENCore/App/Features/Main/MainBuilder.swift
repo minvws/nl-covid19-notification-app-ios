@@ -17,12 +17,17 @@ protocol MainDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
     var exposureController: ExposureControlling { get }
+    var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency {
 
     var theme: Theme {
         return dependency.theme
+    }
+
+    var bluetoothStateStream: BluetoothStateStreaming {
+        return dependency.bluetoothStateStream
     }
 
     var exposureStateStream: ExposureStateStreaming {
