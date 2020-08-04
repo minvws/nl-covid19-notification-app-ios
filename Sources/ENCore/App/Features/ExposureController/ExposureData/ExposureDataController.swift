@@ -68,19 +68,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate)
     }
 
-    var lastSuccessfulFetchDate: Date {
-        if let date = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate) {
-            return date
-        }
-
-        // no date has been set before - set the current date/time to prevent showing
-        // a no-update warning immediately from the beginning.
-        // Only when the user has not had internet for x hours after opening the app
-        // a message should be shown
-        let date = Date()
-        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in })
-
-        return date
+    var lastSuccessfulProcessingDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
     }
 
     var lastENStatusCheckDate: Date? {

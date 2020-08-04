@@ -67,8 +67,11 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             logDebug("No additional keysets to process")
         }
 
+        let markKeySetsAsProcessedFirstTimeOnly = determineSkipAllExposureSetsForTheFirstTime()
+        logDebug("Is processing for the first time: \(markKeySetsAsProcessedFirstTimeOnly)")
+
         // Combine all streams into an array of streams
-        return detectExposures(for: exposureKeySetHolders)
+        return detectExposures(for: exposureKeySetHolders, fakeProcessKeySets: markKeySetsAsProcessedFirstTimeOnly)
             // persist keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
@@ -119,7 +122,26 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     /// Returns ExposureKeySetDetectionResult in case of a success, or in case of an error that's
     /// not related to the framework's inactiveness. When an error is thrown from here exposure detection
     /// should be stopped until the user enables the framework
-    private func detectExposures(for keySetHolders: [ExposureKeySetHolder]) -> AnyPublisher<ExposureDetectionResult, ExposureDataError> {
+    private func detectExposures(for keySetHolders: [ExposureKeySetHolder], fakeProcessKeySets: Bool) -> AnyPublisher<ExposureDetectionResult, ExposureDataError> {
+
+        guard fakeProcessKeySets == false else {
+            logDebug("Fake process all keysets")
+
+            // mark all keysets as processed
+            let keySetDetectionResults = keySetHolders.map { keySetHolder in
+                return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
+                                                     processDate: Date(),
+                                                     isValid: true)
+            }
+
+            let detectionResult = ExposureDetectionResult(keySetDetectionResults: keySetDetectionResults,
+                                                          exposureSummary: nil,
+                                                          exposureReport: nil)
+
+            return Just(detectionResult)
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
 
         // filter out keysets with missing local files
         let validKeySetHolders = keySetHolders.filter(self.verifyLocalFileUrl(forKeySetsHolder:))
@@ -478,6 +500,24 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         }
 
         return dayCount
+    }
+
+    /// Returns whether the skip any exposure keySet upon first install/launch.
+    /// This is required to satisfy iOS 13.5's 15 keySet per 24h rate limit until
+    /// the backend provides a correct rolling mechanism.
+    /// Future versions will address this in a more elegant matter (instead of just
+    /// skipping any initial keySet)
+    private func determineSkipAllExposureSetsForTheFirstTime() -> Bool {
+        if #available(iOS 13.6, *) {
+            // never skip the initial keysets on iOS 13.6 as it does not rate limit
+            // by the number of keysets, but rather by the number of API calls
+            return false
+        }
+
+        let lastExposureProcessingDate = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
+
+        // if lastExposureProcessingDate is nil, this is the first time we're processing
+        return lastExposureProcessingDate == nil
     }
 
     private let networkController: NetworkControlling

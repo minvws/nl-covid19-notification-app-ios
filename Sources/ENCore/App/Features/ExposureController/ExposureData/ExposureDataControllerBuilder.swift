@@ -29,7 +29,7 @@ protocol ExposureDataControlling {
     // MARK: - Exposure Detection
 
     var lastExposure: ExposureReport? { get }
-    var lastSuccessfulFetchDate: Date { get }
+    var lastSuccessfulProcessingDate: Date? { get }
     var lastLocalNotificationExposureDate: Date? { get }
     var lastENStatusCheckDate: Date? { get }
     func removeLastExposure() -> AnyPublisher<(), Never>

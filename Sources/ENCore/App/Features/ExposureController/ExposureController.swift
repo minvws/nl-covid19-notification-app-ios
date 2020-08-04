@@ -112,7 +112,10 @@ final class ExposureController: ExposureControlling, Logging {
 
     func notifyUserIfRequired() {
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
-        guard dataController.lastSuccessfulFetchDate.advanced(by: timeInterval) < Date() else {
+        guard
+            let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
+            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
+        else {
             return
         }
         guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
@@ -285,7 +288,13 @@ final class ExposureController: ExposureControlling, Logging {
         }
 
         let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
-        let hasBeenTooLongSinceLastUpdate = dataController.lastSuccessfulFetchDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
+        let hasBeenTooLongSinceLastUpdate: Bool
+
+        if let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate {
+            hasBeenTooLongSinceLastUpdate = lastSuccessfulProcessingDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
+        } else {
+            hasBeenTooLongSinceLastUpdate = false
+        }
 
         let activeState: ExposureActiveState
         let exposureManagerStatus = exposureManager.getExposureNotificationStatus()
