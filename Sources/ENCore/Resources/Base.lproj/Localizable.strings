@@ -224,10 +224,6 @@
 "moreInformation.about.faq.power_usage" = "Hoeveel stroom gebruikt de app?";
 "moreInformation.about.faq.deletion" = "Hoe verwijder ik de Bluetooth-gegevens van mijn telefoon?";
 
-"moreInformation.share.title" = "Laat anderen weten dat jij helpt het virus te stoppen";
-"moreInformation.share.description" = "Hoe meer mensen CoronaMelder gebruiken, hoe beter deze werkt. Alleen samen kunnen we de verspreiding van het virus stoppen. Deel de app dus met zo veel mogelijk anderen.";
-"moreInformation.share.action" = "App delen";
-
 "moreInformation.infected.title" = "Melding versturen";
 "moreInformation.infected.loading" = "GGD-sleutel aan het ophalen";
 "moreInformation.infected.upload" = "Ga door";
