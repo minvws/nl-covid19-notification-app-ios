@@ -109,6 +109,8 @@ private final class PrivacyAgreementView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
+        hasBottomMargin = true
+
         scrollView.snp.makeConstraints { maker in
             maker.leading.trailing.top.equalToSuperview()
             maker.bottom.equalTo(bottomStackView.snp.top)
@@ -130,7 +132,7 @@ private final class PrivacyAgreementView: View {
 
         bottomStackView.snp.makeConstraints { maker in
             maker.leading.trailing.width.equalToSuperview().inset(16)
-            maker.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
 
         nextButton.snp.makeConstraints { maker in
