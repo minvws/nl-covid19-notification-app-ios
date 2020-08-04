@@ -9,7 +9,7 @@ import ENFoundation
 import SnapKit
 import UIKit
 
-enum MoreInformationIdentifier {
+enum MoreInformationIdentifier: CaseIterable {
     case about
     case share
     case infected
