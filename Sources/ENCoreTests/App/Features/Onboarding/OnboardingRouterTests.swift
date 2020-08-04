@@ -14,6 +14,7 @@ final class OnboardingRouterTests: XCTestCase {
     private let stepBuilder = OnboardingStepBuildableMock()
     private let consentBuilder = OnboardingConsentBuildableMock()
     private let helpBuilder = HelpBuildableMock()
+    private let bluetoothSettingsBuilder = BluetoothSettingsBuildableMock()
     private let shareSheetBuilder = ShareSheetBuildableMock()
 
     private var router: OnboardingRouter!
@@ -25,6 +26,7 @@ final class OnboardingRouterTests: XCTestCase {
         router = OnboardingRouter(viewController: viewController,
                                   stepBuilder: stepBuilder,
                                   consentBuilder: consentBuilder,
+                                  bluetoothSettingsBuilder: bluetoothSettingsBuilder,
                                   shareSheetBuilder: shareSheetBuilder,
                                   helpBuilder: helpBuilder)
     }

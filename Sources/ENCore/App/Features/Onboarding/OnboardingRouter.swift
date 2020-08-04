@@ -8,7 +8,7 @@
 import Foundation
 
 /// @mockable
-protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener {
+protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
@@ -20,10 +20,12 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     init(viewController: OnboardingViewControllable,
          stepBuilder: OnboardingStepBuildable,
          consentBuilder: OnboardingConsentBuildable,
+         bluetoothSettingsBuilder: BluetoothSettingsBuildable,
          shareSheetBuilder: ShareSheetBuildable,
          helpBuilder: HelpBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
+        self.bluetoothSettingsBuilder = bluetoothSettingsBuilder
         self.shareSheetBuilder = shareSheetBuilder
         self.helpBuilder = helpBuilder
 
@@ -74,6 +76,15 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
                                completion: nil)
     }
 
+    func routeToBluetoothSettings() {
+        let bluetoothSettingsViewController = bluetoothSettingsBuilder.build(withListener: viewController)
+        self.bluetoothSettingsViewController = bluetoothSettingsViewController
+
+        viewController.present(viewController: bluetoothSettingsViewController,
+                               animated: true,
+                               completion: nil)
+    }
+
     private let stepBuilder: OnboardingStepBuildable
     private var stepViewController: ViewControllable?
 
@@ -82,6 +93,9 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
 
     private let shareSheetBuilder: ShareSheetBuildable
     private var shareSheetViewController: ShareSheetViewControllable?
+
+    private let bluetoothSettingsBuilder: BluetoothSettingsBuildable
+    private var bluetoothSettingsViewController: ViewControllable?
 
     private let helpBuilder: HelpBuildable
     private var helpViewController: ViewControllable?
