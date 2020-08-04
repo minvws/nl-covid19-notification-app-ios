@@ -27,7 +27,7 @@ protocol InfectedDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
-    var bluetoothEnabledStream: AnyPublisher<Bool, Never> { get }
+    var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
 private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency {
@@ -44,8 +44,8 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
         return CardBuilder(dependency: self)
     }
 
-    var bluetoothEnabledStream: AnyPublisher<Bool, Never> {
-        return dependency.bluetoothEnabledStream
+    var bluetoothStateStream: BluetoothStateStreaming {
+        return dependency.bluetoothStateStream
     }
 }
 

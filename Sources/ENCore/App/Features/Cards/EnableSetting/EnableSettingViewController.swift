@@ -15,10 +15,10 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     init(listener: EnableSettingListener,
          theme: Theme,
          setting: EnableSetting,
-         bluetoothEnabledStream: AnyPublisher<Bool, Never>) {
+         bluetoothStateStream: BluetoothStateStreaming) {
         self.listener = listener
         self.setting = setting
-        self.bluetoothEnabledStream = bluetoothEnabledStream
+        self.bluetoothStateStream = bluetoothStateStream
 
         super.init(theme: theme)
         presentationController?.delegate = self
@@ -64,7 +64,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     private weak var listener: EnableSettingListener?
     private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
     private let setting: EnableSetting
-    private let bluetoothEnabledStream: AnyPublisher<Bool, Never>
+    private let bluetoothStateStream: BluetoothStateStreaming
     private var disposeBag = Set<AnyCancellable>()
 
     @objc private func didTapCloseButton() {
@@ -72,7 +72,8 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     }
 
     @objc private func checkBluetoothStatus() {
-        bluetoothEnabledStream
+        bluetoothStateStream
+            .enabled
             .sink(receiveValue: { isEnabled in
                 if isEnabled {
                     self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)

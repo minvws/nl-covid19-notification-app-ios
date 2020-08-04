@@ -27,7 +27,7 @@ protocol StatusBuildable {
 protocol StatusDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
-    var bluetoothEnabledStream: AnyPublisher<Bool, Never> { get }
+    var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
 private final class StatusDependencyProvider: DependencyProvider<StatusDependency>, CardDependency {
@@ -43,8 +43,8 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
         return dependency.theme
     }
 
-    var bluetoothEnabledStream: AnyPublisher<Bool, Never> {
-        return dependency.bluetoothEnabledStream
+    var bluetoothStateStream: BluetoothStateStreaming {
+        return dependency.bluetoothStateStream
     }
 }
 

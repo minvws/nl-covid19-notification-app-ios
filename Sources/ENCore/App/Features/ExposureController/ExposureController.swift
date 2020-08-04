@@ -16,12 +16,14 @@ final class ExposureController: ExposureControlling, Logging {
          exposureManager: ExposureManaging,
          dataController: ExposureDataControlling,
          networkStatusStream: NetworkStatusStreaming,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         mutableBluetoothStateStream: MutableBluetoothStateStreaming) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
         self.networkStatusStream = networkStatusStream
         self.userNotificationCenter = userNotificationCenter
+        self.mutableBluetoothStateStream = mutableBluetoothStateStream
     }
 
     deinit {
@@ -399,6 +401,7 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
+    private let mutableBluetoothStateStream: MutableBluetoothStateStreaming
     private let mutableStateStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling

@@ -6,7 +6,6 @@
  */
 
 import Combine
-import CoreBluetooth
 import ENFoundation
 import UIKit
 import UserNotifications
@@ -42,17 +41,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     weak var router: MainRouting?
 
-    private let bluetoothEnabledSubject: CurrentValueSubject<Bool, Never>
-
     // MARK: - Init
 
     init(theme: Theme,
          exposureController: ExposureControlling,
-         exposureStateStream: ExposureStateStreaming,
-         bluetoothEnabledSubject: CurrentValueSubject<Bool, Never>) {
+         exposureStateStream: ExposureStateStreaming) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
-        self.bluetoothEnabledSubject = bluetoothEnabledSubject
         super.init(theme: theme)
     }
 
@@ -71,12 +66,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         if let activeState = exposureStateStream.currentExposureState?.activeState, activeState == .inactive(.disabled) {
             exposureController.requestExposureNotificationPermission(nil)
         }
-
-        exposureStateStream
-            .exposureState
-            .sink(receiveValue: { state in
-                self.bluetoothEnabledSubject.send(state.activeState == .inactive(.bluetoothOff))
-            }).store(in: &disposeBag)
     }
 
     // MARK: - Internal
@@ -240,12 +229,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachEnableSetting(shouldDismissViewController: true)
     }
 
-    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ())) {
-        if let exposureActiveState = exposureStateStream.currentExposureState?.activeState {
-            completion(exposureActiveState == .inactive(.bluetoothOff) ? false : true)
-        }
-    }
-
     // MARK: - Private
 
     private lazy var mainView: MainView = MainView(theme: self.theme)
@@ -300,12 +283,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             return logError("Settings URL string problem")
         }
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
-    }
-
-    private func openBluetooth() {
-        // We need to navigate to the Bluetooth settings page, using `App-Perfs:root=Bluetooth`
-        // is a private api and risks getting the app rejected during review.
-        _ = CBCentralManager(delegate: nil, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
     }
 
     private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {

@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
 
@@ -17,7 +16,7 @@ protocol EnableSettingListener: AnyObject {
 
 protocol EnableSettingDependency {
     var theme: Theme { get }
-    var bluetoothEnabledStream: AnyPublisher<Bool, Never> { get }
+    var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
 final class EnableSettingDependencyProvider: DependencyProvider<EnableSettingDependency> {
@@ -41,6 +40,7 @@ final class EnableSettingBuilder: Builder<EnableSettingDependency>, EnableSettin
 
         return EnableSettingViewController(listener: listener,
                                            theme: dependencyProvider.theme,
-                                           setting: setting)
+                                           setting: setting,
+                                           bluetoothStateStream: dependencyProvider.dependency.bluetoothStateStream)
     }
 }

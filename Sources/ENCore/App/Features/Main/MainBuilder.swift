@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
 
@@ -18,6 +17,7 @@ protocol MainDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
     var exposureController: ExposureControlling { get }
+    var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency {
@@ -26,8 +26,8 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
         return dependency.theme
     }
 
-    var bluetoothEnabledStream: AnyPublisher<Bool, Never> {
-        return bluetoothEnabledSubject.eraseToAnyPublisher()
+    var bluetoothStateStream: BluetoothStateStreaming {
+        return dependency.bluetoothStateStream
     }
 
     var exposureStateStream: ExposureStateStreaming {
@@ -73,10 +73,6 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var enableSettingBuilder: EnableSettingBuildable {
         return EnableSettingBuilder(dependency: self)
     }
-
-    fileprivate var bluetoothEnabledSubject: CurrentValueSubject<Bool, Never> {
-        return CurrentValueSubject(false)
-    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -84,8 +80,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
                                                 exposureController: dependencyProvider.exposureController,
-                                                exposureStateStream: dependencyProvider.exposureStateStream,
-                                                bluetoothEnabledSubject: dependencyProvider.bluetoothEnabledSubject)
+                                                exposureStateStream: dependencyProvider.exposureStateStream)
 
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,

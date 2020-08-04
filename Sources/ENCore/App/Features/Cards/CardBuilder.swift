@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
 
@@ -28,13 +27,13 @@ protocol CardBuildable {
 
 protocol CardDependency {
     var theme: Theme { get }
-    var bluetoothEnabledStream: AnyPublisher<Bool, Never> { get }
+    var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
 private final class CardDependencyProvider: DependencyProvider<CardDependency>, EnableSettingDependency {
 
-    var bluetoothEnabledStream: AnyPublisher<Bool, Never> {
-        return dependency.bluetoothEnabledStream
+    var bluetoothStateStream: BluetoothStateStreaming {
+        return dependency.bluetoothStateStream
     }
 
     var enableSettingBuilder: EnableSettingBuildable {
