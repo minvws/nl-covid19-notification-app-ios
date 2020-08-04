@@ -31,13 +31,20 @@ final class MoreInformationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_moreInformationViewController() {
-        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 470)))
+        let height = MoreInformationIdentifier.allCases.count * 110
+        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: height)))
     }
 
     func test_didSelectItem_about() {
         viewController.didSelect(identifier: .about)
 
         XCTAssertEqual(listener.moreInformationRequestsAboutCallCount, 1)
+    }
+
+    func test_didSelectItem_share() {
+        viewController.didSelect(identifier: .share)
+
+        XCTAssertEqual(listener.moreInformationRequestsSharingCallCount, 1)
     }
 
     func test_didSelectItem_infected() {

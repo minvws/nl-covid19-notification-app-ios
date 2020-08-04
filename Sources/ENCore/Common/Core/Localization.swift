@@ -248,6 +248,9 @@ extension String {
     static var moreInformationCellAboutTitle: String { return Localization.string(for: "moreInformation.cell.about.title") }
     static var moreInformationCellAboutSubtitle: String { return Localization.string(for: "moreInformation.cell.about.subtitle") }
 
+    static var moreInformationCellShareTitle: String { return Localization.string(for: "moreInformation.cell.share.title") }
+    static var moreInformationCellShareSubtitle: String { return Localization.string(for: "moreInformation.cell.share.subtitle") }
+
     static var moreInformationCellReceivedNotificationTitle: String { return Localization.string(for: "moreInformation.cell.receivedNotification.title") }
     static var moreInformationCellReceivedNotificationSubtitle: String { return Localization.string(for: "moreInformation.cell.receivedNotification.subtitle") }
 
@@ -275,6 +278,12 @@ extension String {
     static var aboutAppInformationDescription: String { return Localization.string(for: "moreInformation.about.onboarding.description") }
     static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
+
+    // MARK: - MoreInformation | Share
+
+    static var moreInformationShareTitle: String { return Localization.string(for: "moreInformation.share.title") }
+    static var moreInformationShareContent: String { return Localization.string(for: "moreInformation.share.description") }
+    static var moreInformationShareButton: String { return Localization.string(for: "moreInformation.share.action") }
 
     // MARK: - MoreInformation | Infected
 

@@ -7,11 +7,11 @@
 
 import ENFoundation
 import Foundation
-import UIKit
 
 /// @mockable
 protocol ShareSheetListener: AnyObject {
     func shareSheetDidComplete()
+    func displayShareSheet(completion: @escaping (() -> ()))
 }
 
 protocol ShareSheetDependency {
