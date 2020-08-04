@@ -28,8 +28,7 @@ private final class AboutDependencyProvider: DependencyProvider<AboutDependency>
     // MARK: - HelpOverviewDependency
 
     var aboutManager: AboutManaging {
-        let stream = dependency.exposureController.isTestPhase().replaceError(with: false).eraseToAnyPublisher()
-        return AboutManager(theme: dependency.theme, testPhaseStream: stream)
+        return AboutManager(theme: dependency.theme, testPhaseStream: dependency.exposureController.isTestPhase())
     }
 
     // MARK: - Forwarding Dependencies

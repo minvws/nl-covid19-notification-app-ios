@@ -38,7 +38,7 @@ protocol MoreInformationDependency {
 private final class MoreInformationDependencyProvider: DependencyProvider<MoreInformationDependency> {
 
     fileprivate var testPhaseStream: AnyPublisher<Bool, Never> {
-        return dependency.exposureController.isTestPhase().replaceError(with: false).eraseToAnyPublisher()
+        return dependency.exposureController.isTestPhase()
     }
 
     fileprivate var bundleInfoDictionary: [String: Any]? {
