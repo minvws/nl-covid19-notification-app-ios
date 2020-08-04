@@ -112,16 +112,14 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     func displayShareApp(completion: @escaping (() -> ())) {
-        onboardingConsentManager.getAppStoreUrl { url in
-            if let url = url, let storeLink = URL(string: url) {
-                let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
-                activityVC.completionWithItemsHandler = { _, _, _, _ in
-                    completion()
-                }
-                self.present(activityVC, animated: true)
-            } else {
-                self.logError("Could retreive a AppStoreUrl")
+        if let storeLink = URL(string: "https://coronamelder.nl/app") {
+            let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
+            activityVC.completionWithItemsHandler = { _, _, _, _ in
+                completion()
             }
+            self.present(activityVC, animated: true)
+        } else {
+            self.logError("Couldn't retreive a valid url")
         }
     }
 
