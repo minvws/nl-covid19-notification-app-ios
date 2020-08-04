@@ -12,6 +12,7 @@ import Foundation
 protocol EnableSettingListener: AnyObject {
     func enableSettingRequestsDismiss(shouldDismissViewController: Bool)
     func enableSettingDidTriggerAction()
+    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ()))
 }
 
 protocol EnableSettingDependency {
@@ -41,4 +42,8 @@ final class EnableSettingBuilder: Builder<EnableSettingDependency>, EnableSettin
                                            theme: dependencyProvider.theme,
                                            setting: setting)
     }
+}
+
+extension EnableSettingListener {
+    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ())) {}
 }

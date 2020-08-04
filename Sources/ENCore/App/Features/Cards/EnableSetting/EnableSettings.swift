@@ -77,12 +77,12 @@ struct EnableSettingModel {
                                                                            font: theme.fonts.body,
                                                                            textColor: .black) }
 
-            let step1 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep1),
-                                          action: nil)
-            let step2 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep2),
-                                          action: .toggle(description: .enableSettingsBluetoothStep2ActionTitle))
-            let step3 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep2),
-                                          action: .custom(image: Image.named("switch"), description: "test", showChevron: false))
+            let step1 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow1),
+                                          action: .custom(image: Image.named("SettingsIcon"), description: .enableBluetoothSettingTitleSettingRow1, showChevron: false))
+            let step2 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow2),
+                                          action: .custom(image: Image.named("BluetoothIcon"), description: .enableBluetoothSettingTitleSettingRow2, showChevron: true))
+            let step3 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow3),
+                                          action: .toggle(description: .enableBluetoothSettingTitleSettingRow3))
 
             return .init(title: .enableSettingsBluetoothTitle,
                          steps: [step1, step2, step3],

@@ -37,6 +37,13 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
         internalView.navigationBar.topItem?.rightBarButtonItem?.target = self
         internalView.navigationBar.topItem?.rightBarButtonItem?.action = #selector(didTapCloseButton)
+
+        if self.setting == .enableBluetooth {
+            NotificationCenter.default.addObserver(self,
+                                                   selector: #selector(checkBluetoothStatus),
+                                                   name: UIApplication.didBecomeActiveNotification,
+                                                   object: nil)
+        }
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -55,6 +62,13 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     private weak var listener: EnableSettingListener?
     private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
     private let setting: EnableSetting
+    @objc private func checkBluetoothStatus() {
+        self.listener?.isBluetoothEnabled { enabled in
+            if enabled {
+                self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+            }
+        }
+    }
 }
 
 private final class EnableSettingView: View {
