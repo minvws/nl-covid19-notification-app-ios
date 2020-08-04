@@ -174,8 +174,8 @@ extension String {
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
     static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
 
-    static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
-    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.accessibility.link") }
+    static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
+    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link") }
 
     // MARK: - About - What the app do
 

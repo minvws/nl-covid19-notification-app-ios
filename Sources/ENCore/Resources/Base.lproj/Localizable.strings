@@ -149,8 +149,8 @@
 "help.technical_explanation.github.title" = "Bekijk broncode";
 "help.technical_explanation.github.subtitle" = "Ga naar GitHub";
 
-"help.faq.accessibility.title" = "Wat betekent test- en onderzoeksversie?";
-"help.faq.accessibility.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.title" = "Wat betekent test- en onderzoeksversie?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
 
 "message.default.title" = "Je bent in de buurt geweest van iemand met corona";
 "message.default.body" = "Je was %@ dicht bij iemand die later corona bleek te hebben. Je hebt in deze situatie mogelijk extra kans op besmetting gelopen. Als je inderdaad besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
