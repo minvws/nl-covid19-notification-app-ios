@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import SnapshotTesting
@@ -25,7 +26,9 @@ final class MoreInformationViewControllerTests: TestCase {
         recordSnapshots = false
 
         viewController = MoreInformationViewController(listener: listener,
-                                                       theme: theme)
+                                                       theme: theme,
+                                                       testPhaseStream: Just(false).eraseToAnyPublisher(),
+                                                       bundleInfoDictionary: nil)
     }
 
     // MARK: - Tests
@@ -33,6 +36,21 @@ final class MoreInformationViewControllerTests: TestCase {
     func test_snapshot_moreInformationViewController() {
         let height = MoreInformationIdentifier.allCases.count * 110
         assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: height)))
+    }
+
+    func test_snapshot_moreInformationViewController_testVersion() {
+        let viewController = MoreInformationViewController(listener: listener,
+                                                           theme: theme,
+                                                           testPhaseStream: Just(true).eraseToAnyPublisher(), bundleInfoDictionary: ["CFBundleShortVersionString": "1.0", "CFBundleVersion": "12345"])
+        let exp = XCTestExpectation()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            let height = MoreInformationIdentifier.allCases.count * 110
+            assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: height + 40)))
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 1)
     }
 
     func test_didSelectItem_about() {

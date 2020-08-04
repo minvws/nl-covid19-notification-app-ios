@@ -15,6 +15,7 @@ class Button: UIButton, Themeable {
         case secondary
         case tertiary
         case warning
+        case info
     }
 
     var style = ButtonType.primary {
@@ -90,17 +91,20 @@ class Button: UIButton, Themeable {
                 setTitleColor(.gray, for: .normal)
             }
         case .secondary:
-            self.backgroundColor = theme.colors.tertiary
-            self.setTitleColor(theme.colors.primary, for: .normal)
+            backgroundColor = theme.colors.tertiary
+            setTitleColor(theme.colors.primary, for: .normal)
         case .tertiary:
-            self.backgroundColor = theme.colors.tertiary
-            self.setTitleColor(.black, for: .normal)
+            backgroundColor = theme.colors.tertiary
+            setTitleColor(.black, for: .normal)
         case .warning:
-            self.backgroundColor = theme.colors.warning
-            self.setTitleColor(.white, for: .normal)
+            backgroundColor = theme.colors.warning
+            setTitleColor(.white, for: .normal)
+        case .info:
+            backgroundColor = .clear
+            setTitleColor(theme.colors.primary, for: .normal)
         }
 
-        self.tintColor = .white
+        tintColor = .white
     }
 
     private func updateRoundedCorners() {

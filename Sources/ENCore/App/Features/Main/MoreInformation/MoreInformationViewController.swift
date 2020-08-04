@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import SnapKit
 import UIKit
@@ -35,10 +36,18 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     // MARK: - Init
 
-    init(listener: MoreInformationListener, theme: Theme) {
+    init(listener: MoreInformationListener,
+         theme: Theme,
+         testPhaseStream: AnyPublisher<Bool, Never>, bundleInfoDictionary: [String: Any]?) {
         self.listener = listener
+        self.testPhaseStream = testPhaseStream
+        self.bundleInfoDictionary = bundleInfoDictionary
 
         super.init(theme: theme)
+    }
+
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - View Lifecycle
@@ -53,10 +62,17 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         moreInformationView.set(data: objects, listener: self)
 
-        if let dictionary = Bundle.main.infoDictionary,
+        if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
             let build = dictionary["CFBundleVersion"] as? String {
-            moreInformationView.version = "v\(version) (\(build))"
+            moreInformationView.version = "\(version) (\(build))"
+
+            testPhaseStream
+                .sink(receiveValue: { isTestPhase in
+                    if isTestPhase {}
+                    self.moreInformationView.version = .testVersionTitle(version, build)
+                    self.moreInformationView.learnMoreButton.isHidden = false
+                }).store(in: &disposeBag)
         }
     }
 
@@ -115,8 +131,10 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     }
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
-
     private weak var listener: MoreInformationListener?
+    private let testPhaseStream: AnyPublisher<Bool, Never>
+    private var disposeBag = Set<AnyCancellable>()
+    private let bundleInfoDictionary: [String: Any]?
 }
 
 private final class MoreInformationView: View {
@@ -129,12 +147,14 @@ private final class MoreInformationView: View {
 
     private let stackView: UIStackView
     private let versionLabel: Label
+    fileprivate let learnMoreButton: Button
 
     // MARK: - Init
 
     override init(theme: Theme) {
         self.stackView = UIStackView(frame: .zero)
         self.versionLabel = Label()
+        self.learnMoreButton = Button(title: .learnMore, theme: theme)
         super.init(theme: theme)
     }
 
@@ -146,10 +166,16 @@ private final class MoreInformationView: View {
         stackView.axis = .vertical
         stackView.distribution = .fill
 
+        versionLabel.font = theme.fonts.footnote
+        versionLabel.textColor = theme.colors.gray
         versionLabel.textAlignment = .center
+        learnMoreButton.style = .info
+        learnMoreButton.titleLabel?.font = theme.fonts.footnote
+        learnMoreButton.isHidden = true
 
         addSubview(stackView)
         addSubview(versionLabel)
+        addSubview(learnMoreButton)
     }
 
     override func setupConstraints() {
@@ -164,7 +190,10 @@ private final class MoreInformationView: View {
         }
         versionLabel.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview()
-
+        }
+        learnMoreButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview()
+            maker.top.equalTo(versionLabel.snp.bottom)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }

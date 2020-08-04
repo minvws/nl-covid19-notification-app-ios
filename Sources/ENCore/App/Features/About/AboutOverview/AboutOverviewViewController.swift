@@ -31,6 +31,10 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
         internalView.tableView.dataSource = self
         internalView.tableView.delegate = self
 
+        aboutManager.didUpdate = {
+            self.internalView.tableView.reloadData()
+        }
+
         navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
     }
 

@@ -74,6 +74,10 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.isAppDectivated()
     }
 
+    func isTestPhase() -> AnyPublisher<Bool, ExposureDataError> {
+        return dataController.isTestPhase()
+    }
+
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
         return dataController.getAppRefreshInterval()
     }

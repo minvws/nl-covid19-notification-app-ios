@@ -20,13 +20,17 @@ protocol AboutBuildable {
 
 protocol AboutDependency {
     var theme: Theme { get }
+    var exposureController: ExposureControlling { get }
 }
 
 private final class AboutDependencyProvider: DependencyProvider<AboutDependency>, AboutOverviewDependency, HelpDetailDependency, AppInformationDependency, TechnicalInformationDependency {
 
     // MARK: - HelpOverviewDependency
 
-    lazy var aboutManager: AboutManaging = AboutManager(theme: dependency.theme)
+    var aboutManager: AboutManaging {
+        let stream = dependency.exposureController.isTestPhase().replaceError(with: false).eraseToAnyPublisher()
+        return AboutManager(theme: dependency.theme, testPhaseStream: stream)
+    }
 
     // MARK: - Forwarding Dependencies
 

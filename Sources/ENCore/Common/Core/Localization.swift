@@ -60,6 +60,8 @@ extension String {
     static var errorTitle: String { return Localization.string(for: "error.title") }
     static var learnMore: String { return Localization.string(for: "learnMore") }
 
+    static func testVersionTitle(_ version: String, _ build: String) -> String { return Localization.string(for: "testVersionTitle", [version, build]) }
+
     // MARK: - Update App
 
     static var updateAppErrorMessage: String { return Localization.string(for: "updateApp.error.message") }
@@ -171,6 +173,9 @@ extension String {
     static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link") }
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
     static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
+
+    static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
+    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.accessibility.link") }
 
     // MARK: - About - What the app do
 
