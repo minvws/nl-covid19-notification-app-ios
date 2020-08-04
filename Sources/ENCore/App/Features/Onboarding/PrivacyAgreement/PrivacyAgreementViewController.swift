@@ -65,33 +65,55 @@ private final class PrivacyAgreementView: View {
     override func build() {
         super.build()
 
-        addSubview(scrollView)
         scrollView.addSubview(stackView)
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(subtitleLabel)
+        scrollView.addSubview(titleLabel)
+        scrollView.addSubview(subtitleLabel)
+
         stepViews.forEach { stackView.addArrangedSubview($0) }
-        stackView.addArrangedSubview(privacyAgreementButton)
-        stackView.addArrangedSubview(nextButton)
+
+        bottomStackView.addArrangedSubview(privacyAgreementButton)
+        bottomStackView.addArrangedSubview(nextButton)
+
+        addSubview(scrollView)
+        addSubview(bottomStackView)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
         scrollView.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview()
+            maker.leading.trailing.top.equalToSuperview()
+            maker.bottom.equalTo(bottomStackView.snp.top)
+        }
+
+        titleLabel.snp.makeConstraints { maker in
+            maker.leading.trailing.top.equalToSuperview().inset(16)
+        }
+
+        subtitleLabel.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
         }
 
         stackView.snp.makeConstraints { maker in
-            maker.edges.width.equalToSuperview().inset(16)
+            maker.leading.trailing.bottom.width.equalToSuperview().inset(16)
+            maker.top.equalTo(subtitleLabel.snp.bottom).offset(40)
+        }
+
+        bottomStackView.snp.makeConstraints { maker in
+            maker.leading.trailing.width.equalToSuperview().inset(16)
+            maker.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
+        }
+
+        nextButton.snp.makeConstraints { maker in
+            maker.height.equalTo(50)
         }
     }
 
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-        stackView.spacing = 16
+        stackView.spacing = 0
         stackView.backgroundColor = .clear
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -121,6 +143,15 @@ private final class PrivacyAgreementView: View {
         label.numberOfLines = 0
 
         return label
+    }()
+
+    private let bottomStackView: UIStackView = {
+        let stackView = UIStackView(frame: .zero)
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.backgroundColor = .clear
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
 
     private let scrollView = UIScrollView(frame: .zero)
