@@ -80,7 +80,7 @@ struct NetworkConfiguration {
         ),
         cdn: .init(
             scheme: "https",
-            host: "acceptatie.coronamelder-api.nl",
+            host: "acceptatie.coronamelder-dist.nl",
             port: nil,
             path: ["v1"],
             sslSignature: Certificate.SSL.cdnSignature,
