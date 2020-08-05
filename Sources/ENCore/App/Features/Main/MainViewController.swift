@@ -161,8 +161,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     // MARK: - ShareSheetListener
 
-    func shareSheetDidComplete() {
-        router?.detachSharing(shouldHideViewController: true)
+    func shareSheetDidComplete(shouldHideViewController: Bool) {
+        router?.detachSharing(shouldHideViewController: shouldHideViewController)
     }
 
     func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping (() -> ())) {
