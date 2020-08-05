@@ -21,6 +21,10 @@ final class ExposureManager: ExposureManaging, Logging {
 
     // MARK: - ExposureManaging
 
+    var authorizationStatus: ENAuthorizationStatus {
+        return type(of: manager).authorizationStatus
+    }
+
     func activate(completion: @escaping (ExposureManagerStatus) -> ()) {
         #if DEBUG
             assert(Thread.isMainThread)
