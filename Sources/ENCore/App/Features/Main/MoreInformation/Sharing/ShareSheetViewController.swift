@@ -12,7 +12,7 @@ import UIKit
 /// @mockable
 protocol ShareSheetViewControllable: ViewControllable {}
 
-final class ShareSheetViewController: ViewController, ShareSheetViewControllable, Logging {
+final class ShareSheetViewController: ViewController, ShareSheetViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
     init(listener: ShareSheetListener, theme: Theme) {
         self.listener = listener
@@ -42,11 +42,17 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
         }
     }
 
+    // MARK: - UIAdaptivePresentationControllerDelegate
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        listener?.shareSheetDidComplete(shouldHideViewController: false)
+    }
+
     // MARK: - Private
 
     @objc
     func didTapClose() {
-        listener?.shareSheetDidComplete()
+        listener?.shareSheetDidComplete(shouldHideViewController: true)
     }
 
     private weak var listener: ShareSheetListener?
