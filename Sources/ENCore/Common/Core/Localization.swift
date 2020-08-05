@@ -48,6 +48,11 @@ extension String {
     static var helpDeskPhoneNumber = "tel://08001280"
     static var coronaTestPhoneNumber = "tel://08001202"
 
+    // MARK: - Share App
+
+    static var shareAppUrl = "https://coronamelder.nl/app"
+    static var shareAppTitle: String { return Localization.string(for: "shareAppTitle") }
+
     // MARK: - General Texts
 
     static var ok: String { return Localization.string(for: "ok") }

@@ -112,8 +112,8 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     func displayShareApp(completion: @escaping (() -> ())) {
-        if let storeLink = URL(string: "https://coronamelder.nl/app") {
-            let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
+        if let storeLink = URL(string: .shareAppUrl) {
+            let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
             activityVC.completionWithItemsHandler = { _, _, _, _ in
                 completion()
             }

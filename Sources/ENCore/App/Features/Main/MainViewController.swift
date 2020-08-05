@@ -166,8 +166,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     }
 
     func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping (() -> ())) {
-        if let storeLink = URL(string: "https://coronamelder.nl/app") {
-            let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
+        if let storeLink = URL(string: .shareAppUrl) {
+            let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
             activityVC.completionWithItemsHandler = { _, _, _, _ in
                 completion()
             }

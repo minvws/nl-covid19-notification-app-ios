@@ -336,3 +336,5 @@
 "privacyAgreement.list.step4" = "Je kunt op ieder moment de gegevens van je telefoon  verwijderen.";
 "privacyAgreement.consent.button" = "Ik heb de privacyverklaring gelezen en ga hiermee akkoord";
 "exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
+
+"shareAppTitle" = "Ik help corona onder controle te houden met CoronaMelder. Doe je ook mee?";

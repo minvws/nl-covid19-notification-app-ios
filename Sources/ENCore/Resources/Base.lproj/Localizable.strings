@@ -71,6 +71,7 @@
 "consentStep4PrimaryButton" = "App delen";
 "consentStep4SecondaryButton" = "Ga door";
 
+
 // MARK: - Bluetooth
 "enableBluetoothTitle" = "Bluetooth aanzetten";
 "enableBluetoothSettingIndexRow1" = "1.";
@@ -89,7 +90,6 @@
 "notification.upload.failed.header" = "Bel de GGD";
 "moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
 "moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
-
 
 // MARK: - Consent
 
@@ -338,3 +338,5 @@
 "privacyAgreement.list.step4" = "Je kunt op ieder moment de gegevens van je telefoon  verwijderen.";
 "privacyAgreement.consent.button" = "Ik heb de privacyverklaring gelezen en ga hiermee akkoord";
 "exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
+
+"shareAppTitle" = "Ik help corona onder controle te houden met CoronaMelder. Doe je ook mee?";
