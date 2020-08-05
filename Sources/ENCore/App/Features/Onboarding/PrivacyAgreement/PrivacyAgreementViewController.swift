@@ -12,9 +12,6 @@ import UIKit
 
 final class PrivacyAgreementViewController: ViewController, Logging {
 
-    // TODO: Update to correct url
-    private static let privacyAgreementURL = "https://coronamelder.nl"
-
     init(listener: PrivacyAgreementListener, theme: Theme) {
         self.listener = listener
         informationSteps = [
@@ -56,8 +53,8 @@ final class PrivacyAgreementViewController: ViewController, Logging {
     }
 
     @objc func didTapReadPrivacyAgreementLabel() {
-        guard let url = URL(string: PrivacyAgreementViewController.privacyAgreementURL) else {
-            return logError("Cannot create URL from: \(PrivacyAgreementViewController.privacyAgreementURL)")
+        guard let url = URL(string: .helpPrivacyPolicyLink) else {
+            return logError("Cannot create URL from: \(String.helpPrivacyPolicyLink)")
         }
         let viewController = SFSafariViewController(url: url)
         viewController.dismissButtonStyle = .close
