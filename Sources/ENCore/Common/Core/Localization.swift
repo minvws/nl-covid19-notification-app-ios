@@ -407,6 +407,17 @@ extension String {
 
     static var exposureNotificationUserExplanation: String { return Localization.string(for: "exposure.notification.userExplanation") }
 
+    // MARK: - Privacy Agreement
+
+    static var privacyAgreementTitle: String { return Localization.string(for: "privacyAgreement.title") }
+    static var privacyAgreementMessage: String { return Localization.string(for: "privacyAgreement.message") }
+    static var privacyAgreementMessageLink: String { return Localization.string(for: "privacyAgreement.message.link") }
+    static var privacyAgreementStep1: String { return Localization.string(for: "privacyAgreement.list.step1") }
+    static var privacyAgreementStep2: String { return Localization.string(for: "privacyAgreement.list.step2") }
+    static var privacyAgreementStep3: String { return Localization.string(for: "privacyAgreement.list.step3") }
+    static var privacyAgreementStep4: String { return Localization.string(for: "privacyAgreement.list.step4") }
+    static var privacyAgreementConsentButton: String { return Localization.string(for: "privacyAgreement.consent.button") }
+
     func attributed() -> NSMutableAttributedString {
         return NSMutableAttributedString(string: self)
     }

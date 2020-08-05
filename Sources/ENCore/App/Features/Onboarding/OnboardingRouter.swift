@@ -8,7 +8,7 @@
 import Foundation
 
 /// @mockable
-protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener {
+protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
@@ -22,11 +22,13 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
          consentBuilder: OnboardingConsentBuildable,
          bluetoothSettingsBuilder: BluetoothSettingsBuildable,
          shareSheetBuilder: ShareSheetBuildable,
+         privacyAgreementBuilder: PrivacyAgreementBuildable,
          helpBuilder: HelpBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
         self.bluetoothSettingsBuilder = bluetoothSettingsBuilder
         self.shareSheetBuilder = shareSheetBuilder
+        self.privacyAgreementBuilder = privacyAgreementBuilder
         self.helpBuilder = helpBuilder
 
         super.init(viewController: viewController)
@@ -67,6 +69,12 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.push(viewController: consentViewController, animated: animated)
     }
 
+    func routeToPrivacyAgreement() {
+        let privacyAgreementViewController = privacyAgreementBuilder.build(withListener: viewController)
+        self.privacyAgreementViewController = privacyAgreementViewController
+        viewController.push(viewController: privacyAgreementViewController, animated: true)
+    }
+
     func routeToHelp() {
         let helpRouter = helpBuilder.build(withListener: viewController, shouldShowEnableAppButton: true)
         self.helpRouter = helpRouter
@@ -93,6 +101,9 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
 
     private let shareSheetBuilder: ShareSheetBuildable
     private var shareSheetViewController: ShareSheetViewControllable?
+
+    private let privacyAgreementBuilder: PrivacyAgreementBuildable
+    private var privacyAgreementViewController: ViewControllable?
 
     private let bluetoothSettingsBuilder: BluetoothSettingsBuildable
     private var bluetoothSettingsViewController: ViewControllable?

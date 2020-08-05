@@ -17,6 +17,7 @@ protocol OnboardingRouting: Routing {
     func routeToConsent(withIndex index: Int, animated: Bool)
     func routeToHelp()
     func routeToBluetoothSettings()
+    func routeToPrivacyAgreement()
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable, Logging {
@@ -44,8 +45,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     // MARK: - OnboardingStepListener
 
     func onboardingStepsDidComplete() {
-
-        router?.routeToConsent(animated: true)
+        router?.routeToPrivacyAgreement()
     }
 
     func nextStepAtIndex(_ index: Int) {
@@ -60,6 +60,12 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     func consentRequest(step: OnboardingConsentStepIndex) {
         router?.routeToConsent(withIndex: step.rawValue, animated: true)
+    }
+
+    // MARK: - PrivacyAgreementListener
+
+    func privacyAgreementDidComplete() {
+        router?.routeToConsent(animated: true)
     }
 
     // MARK: - HelpListener
