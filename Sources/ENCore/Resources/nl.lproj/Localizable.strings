@@ -56,7 +56,7 @@
 
 "consentStep2Title" = "Zet je Bluetooth aan om de app te gebruiken";
 "consentStep2Content" = "Je Bluetooth staat uit. Daardoor kan de app niet zien of je bij anderen in de buurt bent geweest.";
-"consentStep2PrimaryButton" = "Zet Bluetooth aanzetten";
+"consentStep2PrimaryButton" = "Bluetooth aanzetten";
 "consentStep2SecondaryButton" = "Misschien later";
 
 "consentStep3Title" = "Mag CoronaMelder meldingen sturen zodat de app altijd goed werkt?";
