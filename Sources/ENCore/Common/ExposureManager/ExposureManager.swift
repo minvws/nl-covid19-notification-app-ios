@@ -131,7 +131,12 @@ final class ExposureManager: ExposureManaging, Logging {
             return
         }
 
-        _ = manager.getExposureInfo(summary: summary, userExplanation: userExplanation) { (info: [ENExposureInfo]?, error: Error?) in
+        var explanation = userExplanation
+        if userExplanation.last == "." {
+            _ = explanation.removeLast()
+        }
+
+        _ = manager.getExposureInfo(summary: summary, userExplanation: explanation) { (info: [ENExposureInfo]?, error: Error?) in
             completionHandler(info, error.map { $0.asExposureManagerError })
         }
     }
