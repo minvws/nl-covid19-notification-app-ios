@@ -39,6 +39,11 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
         NotificationCenter.default.addObserver(self, selector: #selector(checkBluetoothStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+
     // MARK: - TableView
 
     func numberOfSections(in tableView: UITableView) -> Int {
