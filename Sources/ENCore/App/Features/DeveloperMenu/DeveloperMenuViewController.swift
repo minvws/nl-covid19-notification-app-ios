@@ -179,8 +179,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Process Pending Upload Requests",
                               subtitle: "Pending Requests: \(getPendingUploadRequests())",
                               action: { [weak self] in self?.processPendingUploadRequests() }),
-                DeveloperItem(title: "Ignore 24h limit of 15 keysets",
-                              subtitle: "Only works with test entitlements, currently set: \(getDailyLimit())",
+                DeveloperItem(title: "Ignore 24h limit of 15 keysets/API calls",
+                              subtitle: "Only works with test entitlements, currently set: \(getDailyLimit()), API calls made in last 24h: \(getNumberOfAPICallsInLast24Hours())",
                               action: { [weak self] in self?.toggleDailyLimit() })
             ]),
             ("Storage", [
@@ -415,6 +415,22 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         #else
             return "None"
         #endif
+    }
+
+    private func getNumberOfAPICallsInLast24Hours() -> Int {
+        let apiCalls = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureApiCallDates) ?? []
+
+        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) else {
+            return 0
+        }
+
+        let wasProcessedInLast24h: (Date) -> Bool = { date in
+            return date > cutOffDate
+        }
+
+        return apiCalls
+            .filter(wasProcessedInLast24h)
+            .count
     }
 
     private func getNumberOfProcessedKeySetsInLast24Hours() -> Int {
