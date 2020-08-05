@@ -21,6 +21,7 @@ protocol OnboardingConsentManaging {
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
     func getAppStoreUrl(_ completion: @escaping ((String?) -> ()))
+    func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ())
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -146,6 +147,20 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         case .share:
             completion(nil)
         }
+    }
+
+    func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ()) {
+        exposureStateStream
+            .exposureState
+            .first()
+            .sink { value in
+                if value.activeState == .authorizationDenied {
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            }
+            .store(in: &disposeBag)
     }
 
     func isBluetoothEnabled(_ completion: @escaping (Bool) -> ()) {
