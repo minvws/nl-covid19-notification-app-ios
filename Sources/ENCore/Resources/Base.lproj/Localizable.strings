@@ -104,6 +104,7 @@
 "help.faq.anonymous.title" = "Hoe kan de app anoniem zijn?";
 "help.faq.anonymous.description_1" = "De app wisselt codes uit met andere telefoons. In deze codes staan geen persoonsgegevens of locatiegegevens van je. Ze zijn helemaal willekeurig. Het uitwisselen van codes gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.";
 "help.faq.anonymous.description_2" = "Blijkt deze persoon later corona te hebben? Dan kan diegene in de app zijn of haar codes aan een lijst met codes van besmette personen toevoegen. Het toevoegen van codes kan alleen nadat de besmette persoon zijn of haar GGD-sleutel aan de GGD heeft doorgegeven. Zo kan de besmetting bevestigd worden. Na deze controle is het mogelijk om een melding te versturen naar alle andere mensen die deze codes op hun telefoon hebben. In deze melding staat alleen wanneer ze in de buurt zijn geweest van een besmet persoon. Niet wie dit is en waar ze die persoon zijn tegengekomen.";
+"help.faq.notification.title" = "Wanneer krijg ik een melding van de app? ";
 "help.bluetooth.title" = "Werkt Bluetooth door muren heen?";
 
 "help.faq.reason.title" = "Waarom is deze app belangrijk?";
