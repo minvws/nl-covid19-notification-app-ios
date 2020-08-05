@@ -18,7 +18,7 @@ protocol InfectedRouting: Routing {
     func removeInactiveCard()
 }
 
-final class InfectedViewController: ViewController, InfectedViewControllable, UIAdaptivePresentationControllerDelegate {
+final class InfectedViewController: ViewController, InfectedViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
     enum State {
         case loading
@@ -131,18 +131,8 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
             case .success:
                 self?.router?.didUploadCodes(withKey: key)
             default:
-                // TODO: Error Handling
-                let alertController = UIAlertController(title: .errorTitle,
-                                                        message: String(format: .moreInformationInfectedErrorUploadingCodes, "\(result)"),
-                                                        preferredStyle: .alert)
-
-                let alertAction = UIAlertAction(title: .ok, style: .default) { _ in
-                    alertController.dismiss(animated: true, completion: nil)
-                }
-
-                alertController.addAction(alertAction)
-
-                self?.present(alertController, animated: true, completion: nil)
+                // Do nothing
+                self?.logDebug("`requestUploadKeys` \(result)")
             }
         }
     }
