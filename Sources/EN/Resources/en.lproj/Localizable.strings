@@ -4,3 +4,27 @@
 *
 *  SPDX-License-Identifier: EUPL-1.2
 */
+
+"alertTitle" = "Warning";
+"alertMessage" = "Can't open settings";
+"alertButton" = "OK";
+
+"update.button.update" = "Update";
+"update.button.openSettings" = "Open Settings";
+
+"update.software.app.title" = "This version of CoronaMelder doesn't work anymore";
+"update.software.app.description" = "Update the app on your phone to use CoronaMelder again.";
+"update.software.app.detail.title" = "Update the app";
+"update.software.app.detail.step1" = "1. Open Settings on your phone using the button below";
+"update.software.app.detail.step2" = "2. Tap 'Update' to update the app.";
+
+"update.software.os.title" = "You have to update your phone's software";
+"update.software.os.description" = "CoronaMelder needs the latest version of iOS to work correctly on your phone.";
+"update.software.os.detail.title" = "Update your phone";
+"update.software.os.detail.step1" = "1. Open Settings on your phone using the button below";
+"update.software.os.detail.step2" = "2. Go to 'General'";
+"update.software.os.detail.step3" = "3. Go to 'Software update'";
+"update.software.os.detail.step4" = "4. Select 'Download and install'";
+
+"update.hardware.title" = "Unfortunately, the app won't work on your phone";
+"update.hardware.description" = "CoronaMelder only works on phones with iOS 13.5 or higher. Your phone is not compatible with this software.";
