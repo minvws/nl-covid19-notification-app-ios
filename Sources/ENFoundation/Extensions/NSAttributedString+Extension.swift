@@ -9,9 +9,14 @@ import UIKit
 
 public extension NSAttributedString {
 
-    static func make(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
+    static func make(text: String, font: UIFont, textColor: UIColor = .black, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil, letterSpacing: CGFloat? = nil) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment
+
+        if let lineHeight = lineHeight {
+            paragraphStyle.lineSpacing = lineHeight
+        }
+
         var attributes: [Key: Any] = [
             .foregroundColor: textColor,
             .font: font,
@@ -21,8 +26,27 @@ public extension NSAttributedString {
             attributes[.underlineColor] = underlineColor
             attributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
         }
+
+        if let letterSpacing = letterSpacing {
+            attributes[.kern] = letterSpacing
+        }
+
         return NSAttributedString(string: text, attributes: attributes)
     }
+
+//    static func withFont(_ text:String, font:UIFont, lineSpacing:CGFloat = 0, letterSpacing:CGFloat = 0) -> NSAttributedString{
+//        let attributedString = NSMutableAttributedString(string: text)
+//        let range = NSRange(location: 0, length: text.count)
+//        // line spacing
+//        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: lineSpacing, range: range)
+//
+//        // letter spacing
+//        attributedString.addAttribute(NSAttributedString.Key.kern, value: letterSpacing, range: range)
+//
+//
+//        attributedString.addAttribute(.font, value: font, range: range)
+//        return attributedString
+//    }
 
     static func makeFromHtml(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
 
