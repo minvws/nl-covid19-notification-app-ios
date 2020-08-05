@@ -93,7 +93,7 @@ final class ExposureManager: ExposureManaging, Logging {
 
         let retrieve: (@escaping ENGetDiagnosisKeysHandler) -> ()
 
-        #if DEBUG
+        #if DEBUG || USE_DEVELOPER_MENU
             retrieve = manager.getTestDiagnosisKeys(completionHandler:)
         #else
             retrieve = manager.getDiagnosisKeys(completionHandler:)
