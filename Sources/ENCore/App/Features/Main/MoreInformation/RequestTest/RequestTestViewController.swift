@@ -39,10 +39,10 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
                                                             action: #selector(didTapCloseButton(sender:)))
 
         internalView.contactButtonActionHandler = { [weak self] in
-            if let url = URL(string: .helpDeskPhoneNumber), UIApplication.shared.canOpenURL(url) {
+            if let url = URL(string: .coronaTestPhoneNumber), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                self?.logError("Unable to open \(String.helpDeskPhoneNumber)")
+                self?.logError("Unable to open \(String.coronaTestPhoneNumber)")
             }
         }
     }
