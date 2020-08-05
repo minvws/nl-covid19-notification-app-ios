@@ -154,10 +154,10 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             .exposureState
             .first()
             .sink { value in
-                if value.activeState == .authorizationDenied {
-                    completion(true)
-                } else {
+                if value.activeState == .notAuthorized {
                     completion(false)
+                } else {
+                    completion(true)
                 }
             }
             .store(in: &disposeBag)
