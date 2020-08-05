@@ -16,6 +16,8 @@
 "error.title" = "Er ging iets mis";
 "learnMore" = "Lees meer";
 
+"testVersionTitle" = "Test en onderzoeksversie %@ (%@)";
+
 "updateApp.error.message" = "De App Store kan niet geopend worden.";
 "updateApp.title" = "De app heeft een update nodig";
 
@@ -69,11 +71,10 @@
 "consentStep4PrimaryButton" = "App delen";
 "consentStep4SecondaryButton" = "Ga door";
 
-// MARK: - Bluetooth
 "enableBluetoothTitle" = "Bluetooth aanzetten";
 "enableBluetoothSettingIndexRow1" = "1.";
-"enableBluetoothSettingTitleRow1" = "Open <b>Intellingen</b> op je telefoon";
-"enableBluetoothSettingTitleSettingRow1" = "Settings";
+"enableBluetoothSettingTitleRow1" = "Open <b>Instellingen</b> op je telefoon";
+"enableBluetoothSettingTitleSettingRow1" = "Instellingen";
 "enableBluetoothSettingIndexRow2" = "2.";
 "enableBluetoothSettingTitleRow2" = "Ga naar <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow2" = "Bluetooth";
@@ -81,15 +82,12 @@
 "enableBluetoothSettingTitleRow3" = "Zet <b>Bluetooth</b> aan";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
-
 "notification.en.statusNotActive" = "CoronaMelder is op dit moment niet actief. Controleer je instellingen.";
 
 "notification.upload.failed.header" = "Bel de GGD";
 "moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
 "moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
 
-
-// MARK: - Consent
 "skipStep" = "Sla over";
 
 "helpTitle" = "Over de app";
@@ -114,6 +112,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Toegankelijkheid";
 "help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.notification.title" = "Wanneer krijg ik een melding van de app?";
 "help.faq.notification.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. En natuurlijk alleen als die persoon ook de app gebruikt. Of je een melding krijgt hangt af van de sterkte van het Bluetooth-signaal. En van de duur van jullie contact. Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Jullie waren dicht bij elkaar, dus het Bluetooth-signaal was sterk. Maar het contact duurde zo kort dat je geen extra kans op besmetting hebt. Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
 "help.faq.bluetooth.title" = "Werkt Bluetooth door muren heen?";
 "help.faq.bluetooth.description" = "Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon. De kans is bijvoorbeeld heel klein dat je app het Bluetooth-signaal van je buren ontvangt. En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman corona blijkt te hebben en jullie niet in dezelfde ruimte zijn geweest.";
@@ -146,9 +145,12 @@
 "help.technical_explanation.github.title" = "Bekijk broncode";
 "help.technical_explanation.github.subtitle" = "Ga naar GitHub";
 
+"help.faq.testVersion.title" = "Wat betekent test- en onderzoeksversie?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+
 "message.default.title" = "Je bent in de buurt geweest van iemand met corona";
 "message.default.body" = "Je was %@ dicht bij iemand die later corona bleek te hebben. Je hebt in deze situatie mogelijk extra kans op besmetting gelopen. Als je inderdaad besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
-
 "message.title" = "Melding krijgen";
 "message.button.title" = "Coronatest aanvragen";
 
@@ -308,7 +310,7 @@
 // supports HTML
 "enableSettings.bluetooth.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
 // supports HTML
-"enableSettings.bluetooth.step2" = "Zet <b>&#96;Bluetooth&#96;</b> aan";
+"enableSettings.bluetooth.step2" = "Zet <b>Bluetooth</b> aan";
 "enableSettings.bluetooth.step2.action.title" = "Bluetooth";
 
 "enableSettings.localNotifications.title" = "Algemene meldingen aanzetten";
@@ -316,20 +318,19 @@
 // supports HTML
 "enableSettings.localNotifications.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
 // supports HTML
-"enableSettings.localNotifications.step2" = "Ga naar <b>&#96;Notificaties&#96;</b>";
+"enableSettings.localNotifications.step2" = "Ga naar <b>Notificaties</b>";
 "enableSettings.localNotifications.step2.action.title" = "Notificaties";
 // supports HTML
-"enableSettings.localNotifications.step3" = "Zet <b>&#96;Sta berichtgeving toe&#96;</b> aan";
+"enableSettings.localNotifications.step3" = "Zet <b>Sta berichtgeving toe</b> aan";
 "enableSettings.localNotifications.step3.action.title" = "Sta berichtgeving toe";
 
 "exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
-
 "exposure.notification.reminder" = "Herhaling: Je bent %@ dagen geleden in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
 "exposure.notification.reminder" = "Herinnering: Je bent %@ dagen geleden in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
 
 "privacyAgreement.title" = "Toestemming gegevensgebruik";
 "privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de $@. Belangrijk om te weten: ";
-"privacyAgreement.message.link" = "privacy verklaring";
+"privacyAgreement.message.link" = "privacyverklaring";
 "privacyAgreement.list.step1" = "Je app zendt versleutelde Bluetooth-gegevens uit.";
 "privacyAgreement.list.step2" = "Andere gebruikers die met jou in contact zijn geweest bewaren deze gegevens maximaal 14 dagen.";
 "privacyAgreement.list.step3" = "Als uit een coronatest blijkt dat je corona hebt kun je dit in de app melden om andere gebruikers te waarschuwen.";
