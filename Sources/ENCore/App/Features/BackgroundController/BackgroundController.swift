@@ -234,12 +234,12 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func notifyUserENFrameworkDisabled(task: BGProcessingTask) {
-        let content = UNMutableNotificationContent()
-        content.body = .notificationEnStatusNotActive
-        content.sound = .default
-        content.badge = 0
-
         func notify() {
+            let content = UNMutableNotificationContent()
+            content.body = .notificationEnStatusNotActive
+            content.sound = .default
+            content.badge = 0
+
             let request = UNNotificationRequest(identifier: PushNotificationIdentifier.enStatusDisabled.rawValue,
                                                 content: content,
                                                 trigger: nil)
@@ -265,7 +265,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Background Updates
 
     private func scheduleUpdate() {
-        guard ENManager.authorizationStatus == .authorized else {
+        guard exposureManager.authorizationStatus == .authorized else {
             return logError("`ENManager.authorizationStatus` not authorized")
         }
 
@@ -275,6 +275,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleUpdate(task: BGProcessingTask) {
+        guard exposureManager.authorizationStatus == .authorized else {
+            task.setTaskCompleted(success: true)
+            return logError("`ENManager.authorizationStatus` not authorized")
+        }
+
         let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
             exposureController.updateWhenRequired,
             exposureController.processPendingUploadRequests

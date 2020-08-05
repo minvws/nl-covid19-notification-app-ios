@@ -35,6 +35,9 @@ enum ExposureManagerError: Error {
 
 /// @mockable
 protocol ExposureManaging {
+
+    var authorizationStatus: ENAuthorizationStatus { get }
+
     // MARK: - Activation
 
     /// Activates the ExposureManager - Should be the first call to execute. The framework
