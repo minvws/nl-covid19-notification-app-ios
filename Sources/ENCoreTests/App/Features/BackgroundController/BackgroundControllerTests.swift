@@ -17,7 +17,7 @@ final class BackgroundControllerTests: XCTestCase {
     private let exposureController = ExposureControllingMock()
     private let networkController = NetworkControllingMock()
 
-    private let exposureManager = ExposureManagingMock()
+    private let exposureManager = ExposureManagingMock(authorizationStatus: .authorized)
     private let userNotificationCenter = UserNotificationCenterMock()
 
     // MARK: - Setup
