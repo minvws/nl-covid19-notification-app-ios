@@ -25,7 +25,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     weak var router: OnboardingRouting?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
-         listener: OnboardingListener, theme: Theme) {
+        listener: OnboardingListener, theme: Theme) {
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         super.init(theme: theme)
@@ -117,11 +117,13 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         }
     }
 
-    func displayShareApp(completion: @escaping (() -> ())) {
+    func displayShareApp(completion: (() -> ())?) {
         if let storeLink = URL(string: .shareAppUrl) {
             let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
             activityVC.completionWithItemsHandler = { _, _, _, _ in
-                completion()
+                if let handler = completion {
+                    handler()
+                }
             }
             self.present(activityVC, animated: true)
         } else {

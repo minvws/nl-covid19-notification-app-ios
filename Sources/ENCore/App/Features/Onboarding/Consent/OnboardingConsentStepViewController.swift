@@ -98,9 +98,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                     self.goToNextStepOrCloseConsent()
                 }
             case .share:
-                self.listener?.displayShareApp {
-                    self.goToNextStepOrCloseConsent()
-                }
+                self.listener?.displayShareApp(completion: nil)
             }
         }
     }
