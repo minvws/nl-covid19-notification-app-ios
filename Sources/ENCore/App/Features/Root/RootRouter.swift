@@ -135,14 +135,21 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
+                // Check if this is a notificaiton triggered by our application, if not then we assume this was
+                // an EN notificaiton triggered by Apple. Ideally we should get the identifier of the Apple notification.
+                guard notificationRespone.notification.request.identifier.contains("nl.rijksoverheid") else {
+                    let content = notificationRespone.notification.request.content
+                    strongSelf.routeToMessage(title: content.title, body: content.body)
+                    return
+                }
+
                 guard let identifier = PushNotificationIdentifier(rawValue: notificationRespone.notification.request.identifier) else {
                     return strongSelf.logError("Push notification for \(notificationRespone.notification.request.identifier) not handled")
                 }
 
                 switch identifier {
                 case .inactive:
-                    let content = notificationRespone.notification.request.content
-                    strongSelf.routeToMessage(title: content.title, body: content.body)
+                    () // Do nothing
                 case .uploadFailed:
                     strongSelf.routeToCallGGD()
                 case .enStatusDisabled:
