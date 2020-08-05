@@ -38,11 +38,15 @@ final class PrivacyAgreementViewController: ViewController, Logging {
 
         internalView.privacyAgreementButton.addTarget(self, action: #selector(didPressAgreeWithPrivacyAgreementButton), for: .touchUpInside)
 
+        internalView.nextButton.addTarget(self, action: #selector(didTapNextButton), for: .touchUpInside)
+
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapReadPrivacyAgreementLabel))
         internalView.readPrivacyAgreementLabel.addGestureRecognizer(tapRecognizer)
     }
 
-    let tapRecognizer = UITapGestureRecognizer()
+    @objc func didTapNextButton() {
+        listener?.privacyAgreementDidComplete()
+    }
 
     @objc func didPressAgreeWithPrivacyAgreementButton() {
         let newAcceptValue = !internalView.privacyAgreementButton.isSelected

@@ -9,7 +9,9 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol PrivacyAgreementListener: AnyObject {}
+protocol PrivacyAgreementListener: AnyObject {
+    func privacyAgreementDidComplete()
+}
 
 /// @mockable
 protocol PrivacyAgreementBuildable {
