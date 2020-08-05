@@ -5,7 +5,7 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"alertTitle" = "إنذار";
+"alertTitle" = "تحذير";
 "alertMessage" = "لا يمكن فتح الإعدادات.";
 "alertButton" = "حسنًا";
 
@@ -18,7 +18,7 @@
 "update.software.app.detail.step1" = "افتح الإعدادات في هاتفك باستخدام الزر أسفله.";
 "update.software.app.detail.step2" = "2. انقر على 'تحديث\" من أجل تحديث التطبيق.";
 
-"update.software.os.title" = "يجب عليك تحديث البرمجيات على هاتفك.";
+"update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
 "update.software.os.description" = "تطبيق التحذير من كورونا (CoronaMelder) يحتاج إلى الإصدار الأحدث ل آي أو إس كي يستمر في العمل بصورة صحيحة على هاتفك.";
 "update.software.os.detail.title" = "حدّث هاتفك";
 "update.software.os.detail.step1" = "افتح الإعدادات في هاتفك باستخدام الزر أسفله.";

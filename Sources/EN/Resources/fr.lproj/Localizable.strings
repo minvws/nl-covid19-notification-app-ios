@@ -7,7 +7,7 @@
 
 "alertTitle" = "Avertissement";
 "alertMessage" = "Impossible d'ouvrir les paramètres.";
-"alertButton" = "OK";
+"alertButton" = "Ok";
 
 "update.button.update" = "Mettre à jour";
 "update.button.openSettings" = "Ouvrir les paramètres";
