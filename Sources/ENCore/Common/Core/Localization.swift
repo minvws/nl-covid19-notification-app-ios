@@ -46,6 +46,7 @@ extension String {
     // MARK: - Helpdesk Phone Number
 
     static var helpDeskPhoneNumber = "tel://08001280"
+    static var coronaTestPhoneNumber = "tel://08001202"
 
     // MARK: - General Texts
 
