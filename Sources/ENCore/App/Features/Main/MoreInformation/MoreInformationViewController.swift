@@ -7,6 +7,7 @@
 
 import Combine
 import ENFoundation
+import SafariServices
 import SnapKit
 import UIKit
 
@@ -32,7 +33,9 @@ struct MoreInformationCellViewModel: MoreInformation {
     let subtitle: String
 }
 
-final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationCellListner {
+final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationCellListner, Logging {
+
+    private static let endOfLifeURL = "https://coronamelder.nl"
 
     // MARK: - Init
 
@@ -75,6 +78,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
                     }
                 }).store(in: &disposeBag)
         }
+
+        moreInformationView.learnMoreButton.addTarget(self, action: #selector(didTapLearnMore(sender:)), for: .touchUpInside)
     }
 
     // MARK: - MoreInformationCellListner
@@ -136,6 +141,16 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     private let testPhaseStream: AnyPublisher<Bool, Never>
     private var disposeBag = Set<AnyCancellable>()
     private let bundleInfoDictionary: [String: Any]?
+
+    @objc private func didTapLearnMore(sender: Button) {
+        guard let url = URL(string: MoreInformationViewController.endOfLifeURL) else {
+            return logError("Cannot create URL from: \(MoreInformationViewController.endOfLifeURL)")
+        }
+        let viewController = SFSafariViewController(url: url)
+        viewController.dismissButtonStyle = .close
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true) {}
+    }
 }
 
 private final class MoreInformationView: View {
