@@ -34,20 +34,6 @@ public extension NSAttributedString {
         return NSAttributedString(string: text, attributes: attributes)
     }
 
-//    static func withFont(_ text:String, font:UIFont, lineSpacing:CGFloat = 0, letterSpacing:CGFloat = 0) -> NSAttributedString{
-//        let attributedString = NSMutableAttributedString(string: text)
-//        let range = NSRange(location: 0, length: text.count)
-//        // line spacing
-//        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: lineSpacing, range: range)
-//
-//        // letter spacing
-//        attributedString.addAttribute(NSAttributedString.Key.kern, value: letterSpacing, range: range)
-//
-//
-//        attributedString.addAttribute(.font, value: font, range: range)
-//        return attributedString
-//    }
-
     static func makeFromHtml(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
 
         let paragraphStyle = NSMutableParagraphStyle()
