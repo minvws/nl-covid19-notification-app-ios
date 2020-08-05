@@ -199,10 +199,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.listener?.developerMenuRequestMessage(title: "Message from Developer Menu", body: "The body of the message which was launched from the Developer Menu"); self?.hide() }),
                 DeveloperItem(title: "Schedule Message Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
-                              action: { [weak self] in self?.wantsScheduleNotification(identifier: .inactive) }),
+                              action: { [weak self] in self?.wantsScheduleNotification(identifier: "com.apple.en.mock") }),
                 DeveloperItem(title: "Schedule Upload Failed Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
-                              action: { [weak self] in self?.wantsScheduleNotification(identifier: .uploadFailed) })
+                              action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.uploadFailed.rawValue) })
             ]),
             ("Logging", [
                 DeveloperItem(title: "Log Files",
@@ -478,7 +478,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         return "\(dateFormatter.string(from: last))"
     }
 
-    private func wantsScheduleNotification(identifier: PushNotificationIdentifier) {
+    private func wantsScheduleNotification(identifier: String) {
         let unc = UNUserNotificationCenter.current()
         unc.getNotificationSettings { [weak self] settings in
             DispatchQueue.main.async {
@@ -504,26 +504,28 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         present(alertController, animated: true, completion: nil)
     }
 
-    private func scheduleNotification(identifier: PushNotificationIdentifier) {
+    private func scheduleNotification(identifier: String) {
         let content = UNMutableNotificationContent()
         content.sound = UNNotificationSound.default
         content.badge = 0
 
         switch identifier {
-        case .inactive:
+        case PushNotificationIdentifier.inactive.rawValue:
+            return
+        case PushNotificationIdentifier.uploadFailed.rawValue:
+            content.body = .notificationUploadFailedNotification
+        case PushNotificationIdentifier.enStatusDisabled.rawValue:
+            return
+        default:
             content.title = .messageDefaultTitle
             content.body = .messageDefaultBody
-        case .uploadFailed:
-            content.body = .notificationUploadFailedNotification
-        case .enStatusDisabled:
-            return
         }
 
         let date = Date(timeIntervalSinceNow: 5)
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
 
-        let request = UNNotificationRequest(identifier: identifier.rawValue, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
 
         let unc = UNUserNotificationCenter.current()
         unc.add(request) { error in
