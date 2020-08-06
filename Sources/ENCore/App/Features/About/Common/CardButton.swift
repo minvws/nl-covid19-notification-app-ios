@@ -17,13 +17,11 @@ final class CardButton: Button {
     }
 
     init(title: String, subtitle: String, image: UIImage?, type: CardButton.CardType = .short, theme: Theme) {
-        self.cardImageView = UIImageView(image: image)
-
+        var cardImage = image
         if Localization.isRTL {
-            self.cardImageView.transform = CGAffineTransform(scaleX: -1, y: 1)
-        } else {
-            self.cardImageView.transform = .identity
+            cardImage = cardImage?.imageFlippedForRightToLeftLayoutDirection()
         }
+        self.cardImageView = UIImageView(image: cardImage)
 
         self.cardType = type
         super.init(theme: theme)

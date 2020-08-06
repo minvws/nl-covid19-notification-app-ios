@@ -34,12 +34,11 @@ final class MoreInformationCell: UIControl, Themeable {
         self.identifier = data.identifier
         self.theme = theme
         self.borderView = View(theme: theme)
-        self.chevronImageView = UIImageView(image: .chevron)
+        var chevronImage = UIImage.chevron
         if Localization.isRTL {
-            self.chevronImageView.transform = CGAffineTransform(scaleX: -1, y: 1)
-        } else {
-            self.chevronImageView.transform = .identity
+            chevronImage = chevronImage?.imageFlippedForRightToLeftLayoutDirection()
         }
+        self.chevronImageView = UIImageView(image: chevronImage)
         self.iconImageView = UIImageView(frame: .zero)
         self.titleLabel = Label()
         self.subtitleLabel = Label()
