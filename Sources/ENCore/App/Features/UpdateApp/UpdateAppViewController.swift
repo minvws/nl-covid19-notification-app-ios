@@ -46,11 +46,13 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
         internalView.titleLabel.attributedText = .makeFromHtml(
             text: .updateAppTitle,
             font: theme.fonts.title2,
-            textColor: .black)
+            textColor: .black,
+            textAlignment: Localization.isRTL ? .right : .left)
         internalView.contentLabel.attributedText = .makeFromHtml(
             text: minimumVersionMessage ?? String.updateAppContent,
             font: theme.fonts.body,
-            textColor: theme.colors.gray)
+            textColor: theme.colors.gray,
+            textAlignment: Localization.isRTL ? .right : .left)
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
 

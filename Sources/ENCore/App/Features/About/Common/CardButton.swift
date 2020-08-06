@@ -17,7 +17,8 @@ final class CardButton: Button {
     }
 
     init(title: String, subtitle: String, image: UIImage?, type: CardButton.CardType = .short, theme: Theme) {
-        self.cardImageView = UIImageView(image: image)
+        self.cardImageView = UIImageView(image: image?.imageFlippedForRightToLeftLayoutDirection())
+
         self.cardType = type
         super.init(theme: theme)
 

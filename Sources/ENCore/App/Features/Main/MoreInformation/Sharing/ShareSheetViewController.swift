@@ -103,10 +103,12 @@ final class ShareSheetView: View {
         imageView.image = Image.named("ShareApp")
         titleLabel.attributedText = .makeFromHtml(text: .moreInformationShareTitle,
                                                   font: theme.fonts.title2,
-                                                  textColor: .black)
+                                                  textColor: .black,
+                                                  textAlignment: Localization.isRTL ? .right : .left)
         contentLabel.attributedText = .makeFromHtml(text: .moreInformationShareContent,
                                                     font: theme.fonts.body,
-                                                    textColor: theme.colors.gray)
+                                                    textColor: theme.colors.gray,
+                                                    textAlignment: Localization.isRTL ? .right : .left)
         button.title = .moreInformationShareButton
 
         addSubview(scrollView)
