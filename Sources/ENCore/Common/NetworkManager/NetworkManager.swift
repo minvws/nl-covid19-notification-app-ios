@@ -365,9 +365,6 @@ final class NetworkManager: NetworkManaging, Logging {
             logDebug("Error with response: \(error)")
         }
 
-        if let object = object as? Data {
-            logDebug(String(data: object, encoding: .utf8)!)
-        }
         logDebug("--END RESPONSE--")
 
         guard let response = response,
@@ -427,7 +424,9 @@ final class NetworkManager: NetworkManaging, Logging {
     private func decodeJson<Object: Decodable>(data: Data) -> AnyPublisher<Object, NetworkResponseHandleError> {
         return Future { promise in
             do {
-                promise(.success(try self.jsonDecoder.decode(Object.self, from: data)))
+                let object = try self.jsonDecoder.decode(Object.self, from: data)
+                self.logDebug("Response Object: \(object)")
+                promise(.success(object))
             } catch {
                 if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     self.logDebug("Raw JSON: \(json)")
