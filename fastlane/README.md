@@ -26,6 +26,11 @@ fastlane ios tests
 fastlane ios release_test_build
 ```
 Release master version of CoronaMelder to Firebase
+### ios release_production
+```
+fastlane ios release_production
+```
+Build release version
 
 ----
 
