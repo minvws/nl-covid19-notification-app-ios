@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Versión de prueba e investigación %@ (%@)";
+
+"help.faq.testVersion.title" = "¿Qué significa la versión de prueba e investigación?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+"moreInformation.situation.title" = "¿Qué hacer en este caso?";
+"moreInformation.situation.step1" = "¿No muestras síntomas? Hazte un test de corona gratis";
+"moreInformation.situation.step2" = "¿Muestras síntomas leves relacionados con el coronavirus? Hazte un test de corona y quédate en casa hasta que sepas los resultados";
+"moreInformation.situation.step3" = "¿Muestras síntomas graves o formas parte de un grupo de riesgo? Llama a tu médico de cabecera";
+
+"shareAppTitle" = "Estoy ayudando a mantener el coronavirus bajo control con CoronaMelder. ¡Únete!";
+
 "ok" = "OK";
 "yes" = "Sí";
 "no" = "No";
@@ -102,6 +114,7 @@
 "helpSubtitle" = "Preguntas frecuentes";
 "helpAcceptButtonTitle" = "Activar";
 
+"help.faq.notification.title" = "¿Cuándo recibo notificaciones de la app?";
 "help.faq.location.title" = "¿La app puede ver mi localización?";
 "help.faq.location.description" = "No. La aplicación solo ve mediante Bluetooth si estás cerca de otras personas que tienen la misma app. Bluetooth no está vinculado con tu localización, así que la app no ve dónde estás. Bluetooth tiene simplemente el objetivo de conectar inalámbricamente 2 dispositivos que se encuentren cerca, como tu teléfono con un altavoz o unos auriculares.";
 "help.faq.anonymous.title" = "¿Cómo hace la app para que sea anónima?";
@@ -155,7 +168,6 @@
 /* MARK: - Message */
 "message.default.title" = "Has estado cerca de alguien con coronavirus ";
 "message.default.body" = "Estuviste hace %@ cerca de alguien que resultó tener el coronavirus. En ese caso, has corrido un riesgo de contagio. Si estás contagiado, puedes transmitir el virus a otros, incluso aunque no te sientas mal ahora.";
-
 /* MARK: - Message */
 "message.title" = "He recibido una notificación";
 "message.button.title" = "Solicitar test de coronavirus";
@@ -216,7 +228,6 @@
 "moreInformation.complaints.item5" = "una pérdida súbita del olfato o el gusto";
 "moreInformation.complaints.title" = "Síntomas que indican una infección de coronavirus (COVID-19)";
 "moreInformation.complaints.content" = "¿Muestras síntomas leves? Quédate en casa tanto como sea posible ¿Muestras síntomas graves? Llama a tu médico de cabecera.";
-
 
 /* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "Sobre la app";
@@ -339,11 +350,12 @@
 
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Has estado cerca de alguien con coronavirus. Lee más sobre ello en la app.";
+
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Recordatorio: Hace %@ días estuviste cerca de alguien con coronavirus. Lee más sobre ello en la app.";
 
 "privacyAgreement.title" = "Permitir el uso de datos";
-"privacyAgreement.message" = "Para utilizar CoronaMelder, tienes que aceptar $@. Importante saber: ";
+"privacyAgreement.message" = "Para utilizar CoronaMelder, tienes que aceptar %@. Importante saber: ";
 "privacyAgreement.message.link" = "declaración de privacidad";
 "privacyAgreement.list.step1" = "La app envía datos Bluetooth encriptados.";
 "privacyAgreement.list.step2" = "Otros usuarios que han estado en contacto contigo guardarán estos datos hasta 14 días.";

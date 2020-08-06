@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Wersja testowa i badawcza %@ (%@)";
+
+"help.faq.testVersion.title" = "Co oznacza wersja testowa i badawcza?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+"moreInformation.situation.title" = "Co możesz zrobić w tej sytuacji?";
+"moreInformation.situation.step1" = "Nie masz żadnych dolegliwości? Zrób darmowy test na obecność koronawirusa";
+"moreInformation.situation.step2" = "Masz łagodne dolegliwości, które są typowe dla koronawirusa? Zrób test na obecność koronawirusa i pozostań w domu do momentu otrzymania wyników";
+"moreInformation.situation.step3" = "Masz poważne dolegliwości lub znajdujesz się w grupie wysokiego ryzyka? Zadzwoń do swojego lekarza rodzinnego";
+
+"shareAppTitle" = "Pomagam utrzymać koronawirusa pod kontrolą dzięki CoronaMelder. Przyłączysz się?";
+
 "ok" = "Ok";
 "yes" = "Tak";
 "no" = "Nie";
@@ -102,6 +114,7 @@
 "helpSubtitle" = "Najczęściej zadawane pytania";
 "helpAcceptButtonTitle" = "Włącz";
 
+"help.faq.notification.title" = "Kiedy dostaję powiadomienie od aplikacji?";
 "help.faq.location.title" = "Czy aplikacja może zobaczyć moją lokalizację?";
 "help.faq.location.description" = "Nie. Za pomocą Bluetooth aplikacja widzi wyłącznie, czy w pobliżu znajdują się osoby, które również korzystają z aplikacji. Bluetooth nie łączy się z Twoją lokalizacją, więc aplikacja nie może zobaczyć, gdzie jesteś. Bluetooth jest przeznaczony wyłącznie do nawiązywania bezprzewodowego połączenia pomiędzy dwoma urządzeniami, znajdującymi się blisko siebie. Jak twój telefon i głośnik lub słuchawki.";
 "help.faq.anonymous.title" = "Jak aplikacja może być anonimowa?";
@@ -155,7 +168,6 @@
 /* MARK: - Message */
 "message.default.title" = "Znajdowałeś się w pobliżu osoby z koronawirusem";
 "message.default.body" = "%@ znajdowałeś się w pobliżu osoby, zarażonej koronawirusem. W tej sytuacji byłeś szczególnie narażony na ryzyko zarażenia. Jeśli rzeczywiście jesteś zarażony, możesz przekazywać wirusa innym. Nawet jeśli teraz nie czujesz się chory.";
-
 /* MARK: - Message */
 "message.title" = "Otrzymanie powiadomienia";
 "message.button.title" = "Poproś o test na koronawirusa";
@@ -216,7 +228,6 @@
 "moreInformation.complaints.item5" = "nagła utrata zmysłu zapachu lub smaku";
 "moreInformation.complaints.title" = "Dolegliwości typowe dla koronawirusa (COVID-19)";
 "moreInformation.complaints.content" = "Masz dolegliwości? Pozostań w miarę możliwości w domu. Są to poważne dolegliwości? Zadzwoń do swojego lekarza rodzinnego.";
-
 
 /* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "O aplikacji";
@@ -339,11 +350,12 @@
 
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Znajdowałeś się w pobliżu osoby z koronawirusem. Przeczytaj więcej w aplikacji.";
+
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Przypomnienie: %@ dni temu znajdowałeś się w pobliżu osoby z koronawirusem. Przeczytaj więcej w aplikacji.";
 
 "privacyAgreement.title" = "Zgoda na użycie danych";
-"privacyAgreement.message" = "Aby korzystać z CoronaMelder musisz wyrazić zgodę na $@. Warto wiedzieć: ";
+"privacyAgreement.message" = "Aby korzystać z CoronaMelder musisz wyrazić zgodę na %@. Warto wiedzieć: ";
 "privacyAgreement.message.link" = "oświadczenie o ochronie prywatności";
 "privacyAgreement.list.step1" = "Twoja aplikacja przesyła zaszyfrowane dane Bluetooth.";
 "privacyAgreement.list.step2" = "Dane te są przechowywane maksymalnie 14 dni przez innych użytkowników, z którymi miałeś kontakt.";

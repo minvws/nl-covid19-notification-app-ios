@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Test- und Untersuchungsversion %@ (%@)";
+
+"help.faq.testVersion.title" = "Was bedeutet Test- und Untersuchungsversion?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+"moreInformation.situation.title" = "Was können Sie in dieser Situation tun?";
+"moreInformation.situation.step1" = "Haben Sie keine Beschwerden? Machen Sie einen kostenlosen Coronatest";
+"moreInformation.situation.step2" = "Haben Sie (leichte) Beschwerden, die zu Corona passen? Machen Sie einen Coronatest und bleiben Sie zu Hause, bis Sie das Ergebnis haben";
+"moreInformation.situation.step3" = "Haben Sie ernste Beschwerden oder gehören Sie zu einer Risikogruppe? Rufen Sie Ihren Hausarzt an.";
+
+"shareAppTitle" = "Ich helfe dabei, Corona mit CoronaMelder zu bekämpfen. Machen Sie auch mit?";
+
 "ok" = "OK";
 "yes" = "Ja";
 "no" = "Nein";
@@ -102,6 +114,7 @@
 "helpSubtitle" = "Häufig gestellte Fragen";
 "helpAcceptButtonTitle" = "Aktivieren";
 
+"help.faq.notification.title" = "Wann bekomme ich eine App-Nachricht?";
 "help.faq.location.title" = "Kann die App meinen Standort erkennen?";
 "help.faq.location.description" = "Nein. Die App erkennt über Bluetooth nur, ob Sie in der Nähe anderer Personen sind, die die App auch haben. Bluetooth ist nicht an Ihren Standort gekoppelt. Die App kann also nicht sehen, wo Sie sind. Bluetooth dient nur dazu, eine drahtlose Verbindung zwischen zwei Geräten herzustellen, die dicht beieinander sind. Zum Beispiel Ihr Telefon und eine Musikbox oder ein Kopfhörer.";
 "help.faq.anonymous.title" = "Wie kann die App anonym funktionieren?";
@@ -155,10 +168,9 @@
 /* MARK: - Message */
 "message.default.title" = "Sie waren in der Nähe einer mit Corona infizierten Person.";
 "message.default.body" = "Sie waren %@ in unmittelbarer Nähe einer Person, bei der später Corona festgestellt wurde. Sie waren in dieser Situation möglicherweise einem erhöhten Infektionsrisiko ausgesetzt. Wenn Sie tatsächlich infiziert sind, können Sie andere mit dem Virus infizieren, auch wenn Sie sich jetzt nicht krank fühlen.";
-
 /* MARK: - Message */
 "message.title" = "Nachricht erhalten";
-"message.button.title" = "Coronatest telefonisch anfordern";
+"message.button.title" = "Coronatest anfordern";
 
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Es ist nicht gelungen, anderen eine Nachricht zu schicken. Rufen Sie deshalb den GGD an. Lesen Sie mehr in der App.";
@@ -216,7 +228,6 @@
 "moreInformation.complaints.item5" = "plötzlicher Geruchs- und/oder Geschmacksverlust";
 "moreInformation.complaints.title" = "Beschwerden, die zum Coronavirus (COVID-19) passen";
 "moreInformation.complaints.content" = "Haben Sie Beschwerden? Bleiben Sie dann möglichst zu Hause. Haben Sie ernste Beschwerden? Rufen Sie dann Ihren Hausarzt an.";
-
 
 /* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "Über die App";
@@ -339,6 +350,7 @@
 
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Sie waren in der Nähe einer mit Corona infizierten Person. Lesen Sie mehr in der App.";
+
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Erinnerung: Sie waren vor %@ Tagen in der Nähe einer mit Corona infizierten Person. Lesen Sie mehr in der App.";
 
