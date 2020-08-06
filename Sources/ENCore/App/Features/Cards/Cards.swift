@@ -24,8 +24,8 @@ struct Card {
         let content: String = .cardsBluetoothOffContent
         let action: String = .cardsBluetoothOffAction
 
-        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
-                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
+        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
                     action: .openEnableSetting(.enableBluetooth),
                     actionTitle: action)
     }
@@ -35,8 +35,8 @@ struct Card {
         let content: String = .cardsExposureOffContent
         let action: String = .cardsExposureOffAction
 
-        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
-                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
+        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
                     action: .openEnableSetting(.enableExposureNotifications),
                     actionTitle: action)
     }
@@ -46,8 +46,8 @@ struct Card {
         let content: String = .cardsNoInternetContent
         let action: String = .cardsNoInternetAction
 
-        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
-                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
+        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
                     action: .custom(action: retryHandler),
                     actionTitle: action)
     }
@@ -57,8 +57,8 @@ struct Card {
         let content: String = .cardsNotificationsOffContent
         let action: String = .cardsNotificationsOffAction
 
-        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black),
-                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray),
+        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
                     action: .openEnableSetting(.enableLocalNotifications),
                     actionTitle: action)
     }

@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import UIKit
 
 public final class Localization {
 
@@ -39,6 +40,8 @@ public final class Localization {
             return NSMutableAttributedString(string: value)
         }
     }
+
+    public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
 }
 
 extension String {
