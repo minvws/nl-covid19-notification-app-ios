@@ -87,35 +87,35 @@
 "enableBluetoothSettingTitleRow3" = "Turn on <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
-"notification.en.statusNotActive" = "CoronaMelder is op dit moment niet actief. Controleer je instellingen.";
+/* MARK: - Notifications */
+"notification.en.statusNotActive" = "CoronaMelder is not active at the moment. Check your settings.";
 
-"notification.upload.failed.header" = "Bel de GGD";
-"moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
-"moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
+"notification.upload.failed.header" = "Call the GGD";
+"moreInformation.about.helpdesk.title" = "Other questions about the app?";
+"moreInformation.about.helpdesk.subtitle" = "Call the help desk";
 
-// MARK: - Consent
+/* MARK: - Consent */
+"skipStep" = "Skip";
 
-"skipStep" = "Sla over";
+/* MARK: - Help */
+"helpTitle" = "About this app";
+"helpSubtitle" = "Frequently asked questions";
+"helpAcceptButtonTitle" = "Turn on";
 
-"helpTitle" = "Over de app";
-"helpSubtitle" = "Veelgestelde vragen";
-"helpAcceptButtonTitle" = "Aanzetten";
+"help.faq.location.title" = "Can the app see my location?";
+"help.faq.location.description" = "No. Using Bluetooth, the app only sees whether you're near other people who also have the app. Bluetooth isn't linked to your location, so the app can't see where you are. Bluetooth only wirelessly connects 2 devices that are near each other. Like your phone and a speaker, or a pair of headphones.";
+"help.faq.anonymous.title" = "How can the app be anonymous?";
+"help.faq.anonymous.description_1" = "The app exchanges codes with other phones. These codes don't include any of your personal or location data. They're completely random. The code exchange happens when you're near a person who also has the app.";
+"help.faq.anonymous.description_2" = "Was this person later found to have coronavirus? They can use the app to add their codes to a list of infected people. Adding codes is only possible after the infected person shares a GGD key with the GGD. Then, you and others who have these codes on their phones get a notification. This notification only says when you've been close to an infected person. Not who this person is and where you've encountered them.";
+"help.bluetooth.title" = "Can the Bluetooth signal pass through walls?";
+"help.faq.notification.title" = "When does the app send notifications?";
 
-"help.faq.location.title" = "Kan de app mijn locatie zien?";
-"help.faq.location.description" = "Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die ook de app hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen 2 apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.";
-"help.faq.anonymous.title" = "Hoe kan de app anoniem zijn?";
-"help.faq.anonymous.description_1" = "De app wisselt codes uit met andere telefoons. In deze codes staan geen persoonsgegevens of locatiegegevens van je. Ze zijn helemaal willekeurig. Het uitwisselen van codes gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.";
-"help.faq.anonymous.description_2" = "Blijkt deze persoon later corona te hebben? Dan kan diegene in de app zijn of haar codes aan een lijst met codes van besmette personen toevoegen. Het toevoegen van codes kan alleen nadat de besmette persoon zijn of haar GGD-sleutel aan de GGD heeft doorgegeven. Zo kan de besmetting bevestigd worden. Na deze controle is het mogelijk om een melding te versturen naar alle andere mensen die deze codes op hun telefoon hebben. In deze melding staat alleen wanneer ze in de buurt zijn geweest van een besmet persoon. Niet wie dit is en waar ze die persoon zijn tegengekomen.";
-"help.faq.notification.title" = "Wanneer krijg ik een melding van de app? ";
-"help.bluetooth.title" = "Werkt Bluetooth door muren heen?";
-
-"help.faq.reason.title" = "Waarom is deze app belangrijk?";
-"help.faq.reason.description" = "Met de app help je de verspreiding van het coronavirus te stoppen. De app is een aanvulling op het contactonderzoek van de GGD. Als je een test doet en corona blijkt te hebben belt de GGD je. Tijdens dit gesprek vraagt de GGD bij wie je in de buurt bent geweest terwijl je besmettelijk was. De GGD belt ook deze mensen om te waarschuwen dat ze misschien corona hebben.<br><br>Alleen ben je waarschijnlijk ook in de buurt geweest van mensen die je niet kent. In de trein, bioscoop of restaurant. Dit is waar de app bij helpt. Met de app kun je alle mensen waarschuwen die bij jou in de buurt zijn geweest. Ook de mensen die je niet kent. Zo lang ze natuurlijk de app gebruiken.<br><br>De GGD benadert de mensen waarvan jij de naam of contactgegevens hebt. De app waarschuwt tegelijkertijd de mensen die je wel hebt ontmoet, maar waarvan je de naam of contactgegevens niet weet. Zo zijn ook zij snel op de hoogte, kunnen ze maatregelen nemen en daarmee voorkomen dat ze anderen besmetten. Het contactonderzoek van de GGD gaat gewoon door, want de mensen bij wie je vaker in de buurt bent geweest hebben misschien een groter risico gelopen.<br><br>Zelf kun je natuurlijk ook waarschuwingen krijgen via de app. Als dit gebeurt ben je in de afgelopen dagen in de buurt geweest van iemand met corona. Wanneer je dit hoort kun je op jouw beurt voorkomen dat je anderen besmet. Dit doe je door extra goed te letten op (lichte) klachten die passen bij corona en door je te laten testen als je deze klachten hebt.";
-"help.faq.upload_keys.title" = "Hoe verstuur ik een melding?";
-"help.faq.upload_keys.description" = "Je kunt alleen een melding naar anderen versturen als je getest bent en corona blijkt te hebben. De GGD belt je in dat geval. Tijdens dit telefoongesprek kan je met hulp van de GGD-medewerker de melding versturen. Dit doe je door de codes die jouw telefoon in de afgelopen 14 dagen heeft gemaakt met de GGD te delen.<br>Nadat je GGD-sleutel is gecontroleerd kunnen de mensen bij wie je in de buurt bent geweest toen je besmettelijk was een anonieme melding krijgen. Alleen als deze mensen ook de app gebruiken.";
-"help.faq.deletion.title" = "Hoe verwijder ik mijn gegevens?";
-"help.faq.privacy_policy.title" = "Privacyverklaring";
-
+"help.faq.reason.title" = "Why is this app important?";
+"help.faq.reason.description" = "This app helps the GGD with their research. So by using the app you help stop the spread of the coronavirus. If you've been tested and have coronavirus, you get a call from the GGD. During this call, the GGD asks you who you've been close to while contagious. The GGD also calls these people to warn them that they might have coronavirus.<br></br>However, you've probably also been near people you don't know. In the train, cinema, or restaurant for example. This is where the app helps you. Because it allows you to warn all people who've been near you. Including people you don't know. As long as they use the app, of course.<br></br>The GGD contacts the people whose contact details you have. The app also warns people you've met, but whose name or contact details you don't know. So these people are quickly informed and able to take measures to prevent infecting others. The GGD's research continues. Because the people you've been close to more often might be at a higher risk.<br></br>You can also receive warnings through the app. If this happens, it means you've been near someone with coronavirus in last few days. In this case, you can do your part to prevent spreading the virus to others. Do so by paying extra attention to (mild) coronavirus symptoms. And by getting tested should you experience any of these symptoms.";
+"help.faq.upload_keys.title" = "How do I send a notification?";
+"help.faq.upload_keys.description" = "You can only send a notification to others if you have coronavirus. In this case, you'll get a call from the GGD. During this call a GGD employee checks your GGD key. You can find this key in the app. Using this method we make sure only people who are really infected can send notifications to others.";
+"help.faq.deletion.title" = "How do I delete my data?";
+"help.faq.privacy_policy.title" = "Privacy policy";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
 "help.faq.colofon.title" = "Colophon";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
