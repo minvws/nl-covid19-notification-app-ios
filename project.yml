@@ -26,6 +26,7 @@ targets:
       properties:
         LOG_LEVEL: debug
         NETWORK_CONFIGURATION: Test
+        GitHash: ""
         BGTaskSchedulerPermittedIdentifiers:
           - $(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification
           - nl.rijksoverheid.en.background-update
