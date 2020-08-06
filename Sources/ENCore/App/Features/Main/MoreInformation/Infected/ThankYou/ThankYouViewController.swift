@@ -84,32 +84,28 @@ private final class ThankYouView: View {
     override func build() {
         super.build()
 
-        let bulletPoints: [String] = [
-            .moreInformationThankYouListItem1,
-            .moreInformationThankYouListItem2,
-            .moreInformationThankYouListItem3
-        ]
-
         let header = String.moreInformationThankYouSectionHeader.attributed()
-        header.append(NSAttributedString(string: "\n\n"))
-
-        let list = NSAttributedString.bulletList(bulletPoints,
-                                                 theme: theme,
-                                                 font: theme.fonts.body)
-
         let footer = NSMutableAttributedString(string: "\n")
-        footer.append(String(format: .moreInformationThankYouSectionFooter, exposureConfirmationKey.key).attributed())
+        footer.append(NSAttributedString.make(
+            text: String(format: .moreInformationThankYouSectionFooter, "\n"),
+            font: theme.fonts.bodyBold,
+            lineHeight: 5))
+
+        footer.append(
+            NSAttributedString.make(
+                text: String(exposureConfirmationKey.key),
+                font: theme.fonts.body,
+                letterSpacing: 5))
 
         var string = [NSAttributedString]()
         string.append(header)
-        string.append(contentsOf: list)
         string.append(footer)
 
         let view = InfoSectionTextView(theme: theme,
                                        title: .moreInformationThankYouSectionTitle,
                                        content: string)
 
-        infoView.addSections([view])
+        infoView.addSections([view, info()])
 
         addSubview(infoView)
     }
@@ -120,5 +116,10 @@ private final class ThankYouView: View {
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.edges.equalToSuperview()
         }
+    }
+
+    private func info() -> View {
+        let string = String.moreInformationThankYouInfo.attributed()
+        return InfoSectionCalloutView(theme: theme, content: string)
     }
 }

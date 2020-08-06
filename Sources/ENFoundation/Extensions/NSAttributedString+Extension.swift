@@ -9,9 +9,14 @@ import UIKit
 
 public extension NSAttributedString {
 
-    static func make(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
+    static func make(text: String, font: UIFont, textColor: UIColor = .black, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil, letterSpacing: CGFloat? = nil) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment
+
+        if let lineHeight = lineHeight {
+            paragraphStyle.lineSpacing = lineHeight
+        }
+
         var attributes: [Key: Any] = [
             .foregroundColor: textColor,
             .font: font,
@@ -21,6 +26,11 @@ public extension NSAttributedString {
             attributes[.underlineColor] = underlineColor
             attributes[.underlineStyle] = NSUnderlineStyle.single.rawValue
         }
+
+        if let letterSpacing = letterSpacing {
+            attributes[.kern] = letterSpacing
+        }
+
         return NSAttributedString(string: text, attributes: attributes)
     }
 

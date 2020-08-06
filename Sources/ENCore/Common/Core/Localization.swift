@@ -326,6 +326,7 @@ extension String {
     static var moreInformationThankYouListItem1: String { return Localization.string(for: "moreInformation.thankyou.list.item1") }
     static var moreInformationThankYouListItem2: String { return Localization.string(for: "moreInformation.thankyou.list.item2") }
     static var moreInformationThankYouListItem3: String { return Localization.string(for: "moreInformation.thankyou.list.item3") }
+    static var moreInformationThankYouInfo: String { return Localization.string(for: "moreInformation.thankyou.info.title") }
 
     // MARK: - MoreInformation | Received Notification
 
