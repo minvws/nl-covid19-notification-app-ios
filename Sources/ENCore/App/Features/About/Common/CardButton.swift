@@ -17,11 +17,7 @@ final class CardButton: Button {
     }
 
     init(title: String, subtitle: String, image: UIImage?, type: CardButton.CardType = .short, theme: Theme) {
-        var cardImage = image
-        if Localization.isRTL {
-            cardImage = cardImage?.imageFlippedForRightToLeftLayoutDirection()
-        }
-        self.cardImageView = UIImageView(image: cardImage)
+        self.cardImageView = UIImageView(image: image?.imageFlippedForRightToLeftLayoutDirection())
 
         self.cardType = type
         super.init(theme: theme)
