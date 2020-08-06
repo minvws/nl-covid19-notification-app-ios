@@ -100,7 +100,7 @@ struct NetworkConfiguration {
         ),
         cdn: .init(
             scheme: "https",
-            host: "coronamelder-dist.nl",
+            host: "productie.coronamelder-dist.nl",
             port: nil,
             path: ["v1"],
             sslSignature: Certificate.SSL.cdnSignature,
