@@ -18,6 +18,13 @@ final class CardButton: Button {
 
     init(title: String, subtitle: String, image: UIImage?, type: CardButton.CardType = .short, theme: Theme) {
         self.cardImageView = UIImageView(image: image)
+
+        if Localization.isRTL {
+            self.cardImageView.transform = CGAffineTransform(scaleX: -1, y: 1)
+        } else {
+            self.cardImageView.transform = .identity
+        }
+
         self.cardType = type
         super.init(theme: theme)
 
