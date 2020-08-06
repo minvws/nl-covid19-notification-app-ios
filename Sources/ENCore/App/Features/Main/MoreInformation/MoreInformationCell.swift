@@ -35,6 +35,9 @@ final class MoreInformationCell: UIControl, Themeable {
         self.theme = theme
         self.borderView = View(theme: theme)
         self.chevronImageView = UIImageView(image: .chevron)
+        if Localization.isRTL {
+            self.chevronImageView.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        }
         self.iconImageView = UIImageView(frame: .zero)
         self.titleLabel = Label()
         self.subtitleLabel = Label()

@@ -113,14 +113,16 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             })
             .store(in: &disposeBag)
 
-        exposureStateStream.exposureState.sink { [weak self] state in
-            if state.activeState.isAuthorized {
-                self?.routeToMain()
-            } else {
-                self?.routeToOnboarding()
-            }
-        }
-        .store(in: &disposeBag)
+//        exposureStateStream.exposureState.sink { [weak self] state in
+//            if state.activeState.isAuthorized {
+//                self?.routeToMain()
+//            } else {
+//                self?.routeToOnboarding()
+//            }
+//        }
+//        .store(in: &disposeBag)
+
+        self.routeToOnboarding()
 
         exposureController.activate()
 

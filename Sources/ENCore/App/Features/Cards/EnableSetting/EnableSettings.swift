@@ -57,7 +57,8 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black) }
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
                                           action: nil)
@@ -75,7 +76,8 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black) }
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow1),
                                           action: .custom(image: Image.named("SettingsIcon"), description: .enableBluetoothSettingTitleSettingRow1, showChevron: false))
@@ -95,7 +97,8 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black) }
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep1),
                                           action: nil)

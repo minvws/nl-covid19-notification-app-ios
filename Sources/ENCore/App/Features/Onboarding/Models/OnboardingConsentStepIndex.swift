@@ -57,7 +57,7 @@ final class OnboardingConsentStep: NSObject {
         self.secondaryButtonTitle = secondaryButtonTitle
         self.hasNavigationBarSkipButton = hasNavigationBarSkipButton
 
-        self.attributedTitle = .makeFromHtml(text: title, font: theme.fonts.title2, textColor: .black)
-        self.attributedContent = .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray)
+        self.attributedTitle = .makeFromHtml(text: title, font: theme.fonts.title2, textColor: .black, textAlignment: Localization.isRTL ? .right : .left)
+        self.attributedContent = .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left)
     }
 }
