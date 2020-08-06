@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Versiunea de testare și de investigare %@ (%@)";
+
+"help.faq.testVersion.title" = "Ce înseamnă versiunea de testare și de investigare?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+"moreInformation.situation.title" = "Ce puteți face în această situație?";
+"moreInformation.situation.step1" = "Nu aveți nici un simptom? Faceți un test pentru corona gratuit";
+"moreInformation.situation.step2" = "Aveți simptome ușoare care ar putea fi asociate cu corona?  Faceți un test pentru corona și rămâneți acasă până aflați rezultatele";
+"moreInformation.situation.step3" = "Aveți simptome grave sau faceți parte dintr-o categorie de risc? Sunați medicul de familie";
+
+"shareAppTitle" = "Ajut să mențin corona sub control cu ​​CoronaMelder. Participi și tu?";
+
 "ok" = "Ok";
 "yes" = "Da";
 "no" = "Nu";
@@ -102,6 +114,7 @@
 "helpSubtitle" = "Întrebări frecvente";
 "helpAcceptButtonTitle" = "Activare";
 
+"help.faq.notification.title" = "Când primesc notificări de la aplicație?";
 "help.faq.location.title" = "Poate vedea aplicația locația mea?";
 "help.faq.location.description" = "Nu. Aplicația vede cu ajutorul semnalului Bluetooth doar dacă sunteți în preajma altor persoane care au aplicația activată. Bluetooth nu este legat de locația dvs., așa că aplicația nu poate vedea unde vă aflați. Bluetooth este destinat doar să creeze o conexiune fără fir între 2 dispozitive apropiate unul de altul. Cum ar fi telefonul și o boxă sau căști.";
 "help.faq.anonymous.title" = "Cum poate fi aplicația anonimă?";
@@ -155,7 +168,6 @@
 /* MARK: - Message */
 "message.default.title" = "Ați fost în apropierea cuiva contaminat cu corona";
 "message.default.body" = "%@ ați fost în apropierea unei persoane care ulterior s-a dovedit a fi contaminată cu corona. În această situație ați fost expus unui risc mai ridicat de a fi contaminat. Dacă sunteți într-adevăr contaminat, puteți transmite altora virusul. Chiar dacă nu vă simțiți rău acum.";
-
 /* MARK: - Message */
 "message.title" = "Primire notificare";
 "message.button.title" = "Solicitați test pentru corona";
@@ -216,7 +228,6 @@
 "moreInformation.complaints.item5" = "pierderea bruscă a simțului mirosului și/sau gustului";
 "moreInformation.complaints.title" = "Simptomele coronavirusului (COVID-19)";
 "moreInformation.complaints.content" = "Aveți simptome ? Rămâneți pe cât posibil în casă. Aveți simptome grave? Sunați medicul de familie.";
-
 
 /* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "Despre aplicație";
@@ -339,11 +350,12 @@
 
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Ai fost în apropierea cuiva contaminat cu coronavirus. Citiți mai multe informații în aplicație.";
+
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Rapel : Acum %@ zile ați fost în apropierea cuiva contaminat cu coronavirus. Citiți mai departe în aplicație.";
 
 "privacyAgreement.title" = "Autorizație pentru utilizarea datelor";
-"privacyAgreement.message" = "Pentru a utiliza CoronaMelder trebuie să acceptați $@. Important de știut: ";
+"privacyAgreement.message" = "Pentru a utiliza CoronaMelder trebuie să acceptați %@. Important de știut: ";
 "privacyAgreement.message.link" = "declarația de confidențialitate";
 "privacyAgreement.list.step1" = "Aplicația dvs. transmite date Bluetooth criptate.";
 "privacyAgreement.list.step2" = "Alți utilizatori care au fost în contact cu dvs. păstrează aceste date timp de maximum 14 zile.";

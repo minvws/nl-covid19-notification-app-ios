@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Версия за тестване и изследване %@ (%@)";
+
+"help.faq.testVersion.title" = "Какво означава версия за тестване и изследване?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+"moreInformation.situation.title" = "Какво можеш да направиш в тази ситуация?";
+"moreInformation.situation.step1" = "Нямаш никакви оплаквания? Направи си безплатен тест за коронавирус";
+"moreInformation.situation.step2" = "Имаш (леки) оплаквания, които са характерни за коронавируса? Направи си тест за коронавирус и остани вкъщи, докато научиш резултат";
+"moreInformation.situation.step3" = "Имаш сериозни оплаквания или се намираш в рискова група? Обади се на личния си лекар";
+
+"shareAppTitle" = "Помагам за ограничаването на коронавируса чрез използването на CoronaMelder. Ще се включиш ли и ти?";
+
 "ok" = "Ok";
 "yes" = "Да";
 "no" = "Не";
@@ -102,6 +114,7 @@
 "helpSubtitle" = "Често задавани въпроси";
 "helpAcceptButtonTitle" = "Включване";
 
+"help.faq.notification.title" = "Кога ще получа известие от приложението?";
 "help.faq.location.title" = "Може ли приложението да види местоположението ми?";
 "help.faq.location.description" = "Не. Приложението вижда посредством Bluetooth само дали се намираш близо до други хора, които също имат приложението. Bluetooth не е обвързан с твоето местоположение, така че приложението не вижда къде се намираш.  Целта на Bluetooth единствено безжичното свързване между два апарата, които се намират близо един до друг, като например телефона ти и колонка или слушалки.";
 "help.faq.anonymous.title" = "Как е възможно приложението да е анонимно?";
@@ -155,7 +168,6 @@
 /* MARK: - Message */
 "message.default.title" = "Намирал си се близо до човек с коронавирус.";
 "message.default.body" = "Намирал си се %@ близо до някого, при когото по-късно е установен коронавирусът. В тази ситуация вероятно си бил изложен на повишен риск от заразяване. Ако наистина си заразен, може да предадеш вируса на други хора. Дори сега да не се чувстваш болен.";
-
 /* MARK: - Message */
 "message.title" = "Получено известие";
 "message.button.title" = "Обади се за тест за коронавирус";
@@ -216,7 +228,6 @@
 "moreInformation.complaints.item5" = "повишена температура или треска от 38 градуса или по-висока";
 "moreInformation.complaints.title" = "Оплаквания, характерни за коронавируса (COVID-19)";
 "moreInformation.complaints.content" = "Имаш оплаквания? Остани си възможно най-дълго вкъщи. Имаш сериозни оплаквания? Обади се на личния си лекар.";
-
 
 /* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "Относно приложението";
@@ -339,11 +350,12 @@
 
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Намирал си се близо до човек с  коронавирус. Прочети повече в приложението.";
+
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Напомняне: Преди %@ дни си бил близо до някого с коронавирус. Прочети повече в приложението.";
 
 "privacyAgreement.title" = "Съгласие за използване на данни";
-"privacyAgreement.message" = "За да използваш CoronaMelder, трябва да потвърдиш $@. Важно е да знаеш: ";
+"privacyAgreement.message" = "За да използваш CoronaMelder, трябва да потвърдиш %@. Важно е да знаеш: ";
 "privacyAgreement.message.link" = "декларация за поверителност";
 "privacyAgreement.list.step1" = "Твоето приложение изпраща кодирани Bluetooth данни.";
 "privacyAgreement.list.step2" = "Останалите потребители, които са били в контакт с теб, ще съхраняват тези данни не повече от 14 дни.";

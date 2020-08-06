@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Version test et analyse %@ (%@)";
+
+"help.faq.testVersion.title" = "Que veut dire version test et analyse ?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+"moreInformation.situation.title" = "Que pouvez-vous faire dans une telle situation ?";
+"moreInformation.situation.step1" = "Vous n'avez aucun symptôme ? Faites un test corona gratuit";
+"moreInformation.situation.step2" = "Vous avez de (légers) symptômes qui correspondent à ceux du coronavirus ? Faites un test corona et restez chez vous jusqu'à ce que vous receviez le résultat";
+"moreInformation.situation.step3" = "Vous avez de graves symptômes ou vous êtes dans une catégorie à risque ? Appelez votre médecin traitant";
+
+"shareAppTitle" = "J'aide à garder sous contrôle la diffusion du coronavirus avec CoronaMelder. Vous voulez le faire aussi?";
+
 "ok" = "Ok";
 "yes" = "Oui";
 "no" = "Non";
@@ -103,6 +115,7 @@
 "helpSubtitle" = "Questions fréquemment posées";
 "helpAcceptButtonTitle" = "Activer";
 
+"help.faq.notification.title" = "Quand l'application m'envoie-t-elle une notification ?";
 "help.faq.location.title" = "L'application peut-elle me localiser ?";
 "help.faq.location.description" = "Non. L'application ne voit via le Bluetooth que si vous êtes à proximité d'autres personnes qui ont également l'application. Le Bluetooth n'est pas associé à votre localisation, l'application ne peut donc pas voir où vous vous trouvez. Le Bluetooth est uniquement destiné à établir une connexion sans fil entre 2 appareils qui sont proches l'un de l'autre. Comme votre téléphone et un haut-parleur ou un écouteur.";
 "help.faq.anonymous.title" = "Comment l'application peut-elle rester anonyme ?";
@@ -156,7 +169,6 @@
 /* MARK: - Message */
 "message.default.title" = "Vous avez été à proximité de quelqu'un qui a le virus";
 "message.default.body" = "Vous étiez %@ proche de quelqu'un qui s'est avéré plus tard avoir le coronavirus. Lors de cette situation, vous avez probablement davantage couru de risques d’être contaminé. Si vous avez effectivement été contaminé, vous pouvez transmettre le virus à d'autres, même si vous n'avez aucun symptôme pour l'instant.";
-
 /* MARK: - Message */
 "message.title" = "Recevoir une notification";
 "message.button.title" = "Demander un test corona";
@@ -217,7 +229,6 @@
 "moreInformation.complaints.item5" = "perte soudaine de l'odorat et/ou du goût";
 "moreInformation.complaints.title" = "Symptômes pouvant être ceux du coronavirus (COVID-19)";
 "moreInformation.complaints.content" = "Vous avez des symptômes ? Restez le plus possible chez vous. Les symptômes sont graves ? Appelez votre médecin traitant.";
-
 
 /* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "À propos de l'application";
@@ -324,7 +335,7 @@
 // supports HTML
 "enableSettings.bluetooth.step1" = "Ouvrez <b>Paramètres</b> sur votre téléphone via le bouton ci-dessous";
 // supports HTML
-"enableSettings.bluetooth.step2" = "Activez le <b>&#96;Bluetooth&#96;</b>";
+"enableSettings.bluetooth.step2" = "Activez le <b>Bluetooth</b>";
 "enableSettings.bluetooth.step2.action.title" = "Bluetooth";
 
 "enableSettings.localNotifications.title" = "Activer les notifications générales";
@@ -332,19 +343,20 @@
 // supports HTML
 "enableSettings.localNotifications.step1" = "Ouvrez <b>Paramètres</b> sur votre téléphone via le bouton ci-dessous";
 // supports HTML
-"enableSettings.localNotifications.step2" = "Allez à <b>&#96;Notifications&#96;</b>";
+"enableSettings.localNotifications.step2" = "Allez à <b>Notifications</b>";
 "enableSettings.localNotifications.step2.action.title" = "Notifications";
 // supports HTML
-"enableSettings.localNotifications.step3" = "Activez <b>&#96;Autoriser les informations&#96;</b>";
+"enableSettings.localNotifications.step3" = "Activez <b>Autoriser les informations</b>";
 "enableSettings.localNotifications.step3.action.title" = "Autorisez les informations";
 
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Vous avez été proche de quelqu'un qui a le coronavirus. Lisez plus dans l'application.";
+
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Rappel : il y a %@ jours, vous avez été proche de quelqu'un ayant le coronavirus. Lire plus dans l'application.";
 
 "privacyAgreement.title" = "Autorisation d'utilisation des données";
-"privacyAgreement.message" = "Pour utiliser CoronaMelder, vous devez accepter les $@. Important à savoir :";
+"privacyAgreement.message" = "Pour utiliser CoronaMelder, vous devez accepter les %@. Important à savoir :";
 "privacyAgreement.message.link" = "Déclaration de protection de la vie privée";
 "privacyAgreement.list.step1" = "Votre application diffuse des données Bluetooth cryptées.";
 "privacyAgreement.list.step2" = "Les autres utilisateurs qui ont été en contact avec vous conservent ces données pendant un maximum de 14 jours.";

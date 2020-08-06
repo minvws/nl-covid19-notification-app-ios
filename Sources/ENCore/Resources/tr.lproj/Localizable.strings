@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Test ve araştırma versiyonu %@ (%@)";
+
+"help.faq.testVersion.title" = "Test ve araştırma versiyonu ne anlama gelir?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+"moreInformation.situation.title" = "Bu durumda ne yapabilirsiniz?";
+"moreInformation.situation.step1" = "Şikayetiniz yok mu? Ücretsiz bir Korona testi yaptırın";
+"moreInformation.situation.step2" = "Korona'ya uyan (hafif) şikayetleriniz mi var? Korona testi yaptırın ve sonucu öğrenene kadar evde kalın.";
+"moreInformation.situation.step3" = "Ciddi şikayetleriniz mi var veya bir risk grubuna dahil misiniz? Doktorunuzu arayın";
+
+"shareAppTitle" = "CoronaMelder ile koronayı kontrol altında tutmaya yardım ediyorum. Siz de katılır mısınız?";
+
 "ok" = "Tamam";
 "yes" = "Evet";
 "no" = "Hayır";
@@ -102,21 +114,22 @@
 "helpSubtitle" = "Sıkça Sorulan Sorular";
 "helpAcceptButtonTitle" = "Açmak";
 
+"help.faq.notification.title" = "Uygulamadan ne zaman bildirim alacağım?";
 "help.faq.location.title" = "Uygulama konumumu görebilir mi?";
-"help.faq.location.description" = "Hayır. Uygulama, yalnızca uygulaması olan diğer kişilerin yanındaysanız Bluetooth üzerinden görür. Bluetooth konumunuza bağlı değil. Bu nedenle uygulama nerede olduğunuzu göremez. Bluetooth yalnızca birbirine yakın 2 cihaz arasında kablosuz bağlantı kurmayı amaçlamaktadır. Telefonunuz ve ses kutusu veya kulaklık gibi.";
+"help.faq.location.description" = "Hayır. Uygulama, sadece uygulaması olan diğer kişilerin yanındaysanız Bluetooth üzerinden görür. Bluetooth konumunuza bağlı değil. Bu nedenle uygulama nerede olduğunuzu göremez. Bluetooth yalnızca birbirine yakın 2 cihaz arasında kablosuz bağlantı kurmayı amaçlamaktadır. Telefonunuz ve ses kutusu veya kulaklık gibi.";
 "help.faq.anonymous.title" = "Uygulama nasıl anonim olabilir?";
 "help.faq.anonymous.description_1" = "Uygulama diğer telefonlarla kod alışverişinde bulunur. Bu kodlar hakkınızda kişisel veya konum bilgisi içermez. Tamamen rastgeledir. Kod değişimi, uygulaması olan bir kişiye yakın olduğunuz anda gerçekleşir.";
-"help.faq.anonymous.description_2" = "Bu kişinin daha sonra Korona olduğu mu belli oldu? Bu durumda uygulamadaki kişi, kodlarını virüs bulaşmış kişilerin kodları listesine ekleyebilir. Kodlar ancak virüs bulaşmış kişinin GGD anahtarını GGD'ye bildirdikten sonra eklenebilir. Bu şekilde bulaşma teyit edilebilir.Bu kontrolden sonra, telefonlarında bu kodlara sahip tüm diğer kişilere bildirim göndermek mümkündür. Bu bildirimde sadce virüs bulaşmış bir kişinin yakınında bulundukları bildirilir. Bunun kim olduğu ve o kişiye nerede rastladığı bildirilmez.";
+"help.faq.anonymous.description_2" = "Bu kişinin daha sonra Korona olduğu mu anlaşıldı? Bu durumda uygulamadaki kişi, kodlarını virüs bulaşmış kişilerin kodları listesine ekleyebilir. Kodlar ancak virüs bulaşmış kişinin GGD anahtarını GGD'ye bildirdikten sonra eklenebilir. Bu şekilde bulaşma teyit edilebilir. Bu kontrolden sonra telefonlarında bu kodlar bulunan herkese bir bildirim göndermek mümkün olur. Bu bildirimde sadece virüs bulaşmış bir kişinin ne zaman yakınında bulunmuş oldukları belirtilir. Bunun kim olduğu ve o kişiye nerede rastladığı bildirilmez.";
 "help.bluetooth.title" = "Bluetooth sinyali duvardan geçer mi?";
 
 "help.faq.reason.title" = "Bu uygulama neden önemlidir?";
-"help.faq.reason.description" = "Uygulama ile Korona virüsünün yayılmasını durdurmaya yardımcı olursunuz. Uygulama GGD iletişim soruşturmasını tamamlar. Bir test yaptırırsanız ve Korona olduğunuz ortaya çıkarsa, GGD sizi arayacaktır. Bu konuşma sırasında GGD, bulaşıcı olduğunuz sırada kimlerin yakınında olduğunuzu sorar. GGD ayrıca bu insanları, Korona olabilecekleri konusunda uyarmak için arar. <br><br> Muhtemelen tanımadığınız insanların etrafında oldunuz. Trende, sinemada veya restoranda. Bu konuda ise bu uygulama yardımcı olur. Uygulama, çevrenizdeki tüm insanları uyarmanıza izin verir. Tanımadığınız insanları bile. Elbette, uygulamayı kullandıkları sürece. <br><br> GGD, sizin adlarını veya iletişim bilgilerini bidikleriniz insanlarla baglantı kurar. Aynı zamanda uygulama tanıştığınız ancak adlarını veya iletişim bilgilerini bilmediğiniz kişileri uyarır. Bu şekilde onlar da hızlı bir şekilde bilgilendirilirler, önlemler alabilirler ve böylece başkalarına bulaşmalarını önleyebilirler. GGD'nin iletişim soruşturması devam eder, çünkü daha sık olarak temasta  bulunduğunuz insanlar daha büyük risk altında olabilir. <br><br> Tabii ki uygulama aracılığıyla siz de uyarı alabilirsiniz. Eğer bu olursa, son birkaç gündür Korona olmuş birisinin çevresinde bulunuyorsunuzdur. Bunu bilirseniz, siz de başkalarına bulaştırmaya engel olabilirsiniz. Bunu, Korona'ya uyan (hafif) şikayetlere fazladan dikkat ederek ve bu şikayetleriniz varsa kendinizi test ettirerek yapabilirsiniz.";
+"help.faq.reason.description" = "Bu uygulama ile Korona virüsünün yayılmasını durdurmak için yardımcı olursunuz. Çünkü uygulama GGD'nin temas soruşturmasını tamamlar. Test yaptırırsanız ve Korona olduğunuz ortaya çıkarsa, GGD sizi arar. Bu konuşma sırasında GGD bulaşıcı olduğunuz sırada kiminle temasta bulunduğunuzu sorar. GGD bu kişileri de Korona olabilecekleri konusunda uyarmak için arar.<br><br> Muhtemelen tanımadığınız insanların etrafında da bulundunuz. Trende, sinemada veya restoranda. Bu uygulama bu hususta yardımcı olur. Uygulamayı çevrenizdeki bulunmuş olan tüm insanları uyarmak için kullanabilirsiniz. Tanımadığınız insanları da. Tabii ki uygulamayı kullandıkları sürece.<br><br> GGD, sizin adını veya iletişim bilgilerini bildiğiniz insanlarla bağlantı kurar. Aynı zamanda uygulama tanıştığınız ancak adını veya iletişim bilgilerini bilmediğiniz kişileri uyarır. Bu şekilde onlar da bir an evvel bilgilendirilirler, önlem alabilirler ve böylece başkalarına bulaştırmalarını önleyebilirler. GGD'nin iletişim soruşturması devam eder, çünkü daha sık olarak temasta bulunduğunuz insanlar daha büyük risk altında olabilir. <br><br> Tabii ki uygulama aracılığıyla siz de uyarılar alabilirsiniz. Şayet bu olursa, son birkaç gündür Korona olan birisinin çevresinde bulunduğunuz anlamına gelir. Bunu duyduğunuzda siz de virüsü başkalarına bulaştırmanıza engel olabilirsiniz. Bunu, Korona'ya uyan (hafif) şikayetlere fazladan dikkat ederek ve bu şikayetleriniz varsa kendinizi test ettirerek yapabilirsiniz.";
 "help.faq.upload_keys.title" = "Nasıl bildirim gönderirim?";
-"help.faq.upload_keys.description" = "Başkalarına yalnızca test edildiyseniz ve Korona olduğunuz ortaya çıktığında bir bildirim gönderebilirsiniz. Bu durumda GGD sizi arayacaktır. Bu telefon görüşmesi sırasında, bildirimi GGD çalışanının yardımıyla gönderebilirsiniz. Bunu, telefonunuzun son 14 gün içinde yaptığı kodları GGD ile paylaşarak yaparsınız. <br>GGD anahtarınız kontrol edildikten sonra, bulaşıcı olduğunuzda yakınında bulunduğunuz kişilerin anonim bir bildirim almalarıni sağlayarak. Yalnızca bu kişiler de uygulamayı kullanıyorsa kullanıyorsa.";
+"help.faq.upload_keys.description" = "Sadece test edilipte Korona olduğunuz ortaya çıktığında başkalarına bir bildirim gönderebilirsiniz. Bu durumda GGD sizi arayacaktır. Bu telefon görüşmesi sırasında, bildirimi GGD çalışanının yardımıyla gönderebilirsiniz. Bunu, telefonunuzun son 14 gün içinde yaptığı kodları GGD ile paylaşarak yaparsınız. <br>GGD anahtarınız kontrol edildikten sonra, bulaşıcı olduğunuzda yakınında bulunduğunuz kişilere, anonim bir bildirim gönderilir. Ancak bu kişiler de uygulamayı kullanıyorsa.";
 "help.faq.deletion.title" = "Verilerimi nasıl silerim?";
 "help.faq.privacy_policy.title" = "Gizlilik beyanı";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
-"help.faq.colofon.title" = "Kolofon";
+"help.faq.colofon.title" = "Basım";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Ulaşılabilirlik";
 "help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
@@ -153,9 +166,8 @@
 "help.technical_explanation.github.subtitle" = "GitHub'a gidin";
 
 /* MARK: - Message */
-"message.default.title" = "Korona olan birisinin yakınında bulundunuz";
-"message.default.body" = "Daha sonra Korona olduğu ortaya çıkan birinin %@ yakınında bulundunuz. Bu durumda fazladan bir enfeksiyon riski altında bulunmuş olabilirsiniz. Gerçekten enfekte olursanız, virüsü başkalarına aktarabilirsiniz. Şimdilik kendinizi hasta hissetmeseniz bile.";
-
+"message.default.title" = "Korona olan bir kişinin yakınında bulundunuz";
+"message.default.body" = "Daha sonra Korona olduğu ortaya çıkan birinin %@ yakınında bulundunuz. Bu durumda ekstra bir enfeksiyon riski altında bulunmuş olabilirsiniz. Gerçekten enfekte olursanız, virüsü başkalarına aktarabilirsiniz. Şimdilik kendinizi hasta hissetmeseniz bile.";
 /* MARK: - Message */
 "message.title" = "Bildirim almak";
 "message.button.title" = "Korona testi talep etmek";
@@ -163,7 +175,7 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Başkalarına bildirim göndermek mümkün olmadı. GGD'yi arayın. Daha fazlasını uygulamada okuyun.";
 "notification.upload.failed.title" = "Başkalarına bildirim göndermek mümkün olmadı";
-"notification.upload.failed.content" = "Bildirim göndermeye çalıştık, ancak bu başarısız oldu. Bunu tekrar yapmak için GGD'yi arayın. Bunu hızlı bir şekilde yapmanız çok önemlidir. Aksi takdirde, daha fazla insan enfekte olabilir.";
+"notification.upload.failed.content" = "Bildirim göndermeye çalıştık, ancak bu başarısız oldu. Bunu tekrar yapmak için GGD'yi arayın. Bunu bir an evvel yapmanız çok önemlidir. Aksi takdirde, daha fazla insan enfekte olabilir.";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Bu bildirimi silmek istediğinizden emin misiniz?";
@@ -198,7 +210,7 @@
 "moreInformation.cell.share.title" = "Başkalarını uygulamaya davet etmek";
 "moreInformation.cell.share.subtitle" = "Korona'yı birlikte durdurmak için uygulamayı başkalarıyla paylaşın";
 
-"moreInformation.cell.receivedNotification.title" = "Bildirimde ne yazılır?";
+"moreInformation.cell.receivedNotification.title" = "Bildirimde ne yazar?";
 "moreInformation.cell.receivedNotification.subtitle" = "Korona olan birisinin yakınında bulunmuş olduğunuzu ögrendikten sonra neler yapabileceğinizi okuyun";
 
 "moreInformation.cell.requestTest.title" = "Korona testi talep etmek";
@@ -209,21 +221,20 @@
 
 "moreInformation.info.title" = "Sosyal güvenlik numaranızı hazır bulundurun. Bunu pasaportunuzda veya kimlik kartınızda bulabilirsiniz";
 
-"moreInformation.complaints.item1" = "soğuk algınlığı semptomları";
+"moreInformation.complaints.item1" = "soğuk algınlığı şikayetleri";
 "moreInformation.complaints.item2" = "soğuk algınlığı, burun akıntısı, hapşırma, boğaz ağrısı";
 "moreInformation.complaints.item3" = "öksürük";
 "moreInformation.complaints.item4" = "ateş";
-"moreInformation.complaints.item5" = "Ani koku ve tat tad alma kaybı";
+"moreInformation.complaints.item5" = "Ani koku ve tat alma kaybı";
 "moreInformation.complaints.title" = "Korona virüsü (COVID-19) ile ilgili şikayetler (COVID-19)";
 "moreInformation.complaints.content" = "Şikayetiniz mi var? O zaman mümkün olduğunca evde kalın. Bunlar ciddi şikayetler mi? Doktorunuzu arayın.";
-
 
 /* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "Uygulama hakkında";
 "about.review" = "Uygulamayı değerlendirin";
 "moreInformation.about.privacy_statement" = "Gizlilik beyanı";
 "moreInformation.about.accessibility" = "Ulaşılabilirlik";
-"moreInformation.about.colofon" = "Kolofon";
+"moreInformation.about.colofon" = "Basım";
 
 "moreInformation.about.onboarding.title" = "CoronaMelder ne yapar?";
 "moreInformation.about.onboarding.description" = "Bu uygulama ile Korona'yı durdurmaya nasıl yardımcı olabileceğinizi okuyun";
@@ -276,20 +287,20 @@
 "moreInformation.receivedNotification.title" = "Bildirim alındı";
 "moreInformation.receivedNotification.button.title" = "Korona testi için arayın";
 "moreInformation.receivedNotification.notificationExplanation.title" = "Bildirim almanız ne anlama gelir?";
-"moreInformation.receivedNotification.notificationExplanation.content" = "Sonradan Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama bir bildirim gönderir. Bildirim yalnızca bunun hangi gün olduğunu belirtir. Bu durumda fazladan bir enfeksiyon riski yaşadınız. Enfekte olursanız, virüsü başkalarına aktarabilirsiniz. Kendinizi hasta hissetmeseniz bile.";
+"moreInformation.receivedNotification.notificationExplanation.content" = "Sonradan Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama bir bildirim gönderir. Bildirim sadece bunun hangi gün olduğunu belirtir. Bu durumda ekstra bir enfeksiyon riski yaşadınız. Enfekte olursanız, virüsü başkalarına aktarabilirsiniz. Kendinizi hasta hissetmeseniz bile.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Korona testi yaptırın";
-"moreInformation.receivedNotification.doCoronaTest.content" = "GGD, Korona testi yaptırmanızı önerir. Kendinizi daha hasta hissetmeseniz bile. Çünkü kendinizi hasta hissetmeden de Korona virüsünü yayabilir ve böylece başkalarına bulaştırabilirsiniz.\n\nKendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.\nKorona testi talep etmek için 0800-1202 numaralı ücretsiz telefonu arayın.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "GGD, Korona için test edilmenizi önerir. Kendinizi hasta hissetmeseniz bile. Çünkü hasta hissetmeden Korona virüsü yayabilir ve böylece başkalarına bulaştırabilirsiniz.\n\nKendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.\n\nKorona testi talep etmek için 0800-1202 numaralı ücretsiz telefonu arayın.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Korona testi talep etmek";
 "moreInformation.requestTest.button.title" = "Korona testi için arayın";
 "moreInformation.requestTest.receivedNotification.title" = "Korona ile uyumlu şikayetleriniz mi var? Test talep edin";
-"moreInformation.requestTest.receivedNotification.content" = "Korona virüsüne uyan (hafif) şikayetleriniz mi var? Ücretsiz test yaptırın. Bu uzun sürmez ve genellikle hızlı bir şekilde randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın. Ciddi şikayetleriniz mi var ya da bir risk grubunda mısınız? Sonra doktorunuzu arayın.\n\nKorona testi talep etmek için ücretsiz 0800-1202 numaralı telefonu arayın.";
+"moreInformation.requestTest.receivedNotification.content" = "Korona virüsü ile uyumlu olan (hafif) şikayetleriniz mi var? Ücretsiz test yaptırın. Uzun sürmez ve genellikle hızlı bir şekilde randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın. Ciddi şikayetleriniz mi var ya da bir risk grubunda mısınız? O durumda doktorunuzu arayın.\n\nKorona testi talep etmek için ücretsiz 0800-1202 numaralı telefonu arayın.";
 
 "moreInformation.notification.measures.title" = "Önlemlere uymaya devam edin:";
 "moreInformation.notification.measures.step1" = "Ellerinizi düzenli olarak yıkayın";
-"moreInformation.notification.measures.step2" = "Dirseğinizde öksürün/hapşırın";
-"moreInformation.notification.measures.step3" = "Evinizin dışındaki insanlardan 1,5 metre mesafede durun";
+"moreInformation.notification.measures.step2" = "Dirseğinize öksürün/hapşırın";
+"moreInformation.notification.measures.step3" = "Evinizin dışındaki kişilerle aranızda 1,5 metre mesafe tutun";
 
 /* MARK: - Cards */
 "cards.exposureOff.title" = "Uygulama etkin <u>değil</u>";
@@ -340,15 +351,16 @@
 
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Korona virüsü olan bir kişinin etrafında bulundunuz. Uygulamada daha fazlasını okuyun.";
+
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Hatırlatma:  %@ gün önce Korona virüsü olan bir kişinin etrafında bulundunuz. Uygulamada daha fazlasını okuyun.";
+"exposure.notification.reminder" = "Hatırlatma:  %@ gün önce Korona virüsü olan bir kişinin yakınında bulundunuz. Uygulamada daha fazlasını okuyun.";
 
 "privacyAgreement.title" = "Veri kullanımı için onay";
-"privacyAgreement.message" = "CoronaMelder'i kullanmak için $@' ni kabul etmelisiniz. 
+"privacyAgreement.message" = "CoronaMelder'i kullanmak için %@' ni kabul etmelisiniz. 
 Bilinmesi gerekenler:";
-"privacyAgreement.message.link" = "Gizlilik beyanı";
+"privacyAgreement.message.link" = "gizlilik beyanı";
 "privacyAgreement.list.step1" = "Uygulamanız şifrelenmiş Bluetooth verileri yayınlar.";
-"privacyAgreement.list.step2" = "Sizinle temasta olmuş olan diğer kullanıcılar bu verileri en fazla 14 gün saklarlar.";
-"privacyAgreement.list.step3" = "Bir Korona testi, Korona olduğunuzu gösterirse, diğer kullanıcıları uyarmak için bunu uygulamada bildirebilirsiniz.";
+"privacyAgreement.list.step2" = "Sizinle temasta bulunmuş olan diğer kullanıcılar bu verileri en fazla 14 gün saklarlar.";
+"privacyAgreement.list.step3" = "Bir Korona testi, Korona’ya yakalandığınızı gösterirse, bunu diğer kullanıcıları uyarmak için uygulamada bildirebilirsiniz.";
 "privacyAgreement.list.step4" = "Verileri telefonunuzdan istediğiniz zaman silebilirsiniz.";
 "privacyAgreement.consent.button" = "Gizlilik bildirimini okudum ve kabul ediyorum";

@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Test- en onderzoeksversie %@ (%@)";
+
+"help.faq.testVersion.title" = "Wat betekent test- en onderzoeksversie?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+
+"moreInformation.situation.title" = "Wat kun je doen in deze situatie?";
+"moreInformation.situation.step1" = "Heb je geen klachten? Doe een gratis coronatest";
+"moreInformation.situation.step2" = "Heb je (lichte) klachten die passen bij corona? Doe een coronatest en blijf thuis tot je de uitslag weet";
+"moreInformation.situation.step3" = "Heb je ernstige klachten of zit je in een risicogroep? Bel je huisarts";
+
+"shareAppTitle" = "Ik help corona onder controle te houden met CoronaMelder. Doe je ook mee?";
+
 "ok" = "Ok";
 "yes" = "Ja";
 "no" = "Nee";
@@ -16,17 +28,18 @@
 "error.title" = "Er ging iets mis";
 "learnMore" = "Lees meer";
 
-"testVersionTitle" = "Test en onderzoeksversie %@ (%@)";
-
+/* MARK: - Update App */
 "updateApp.error.message" = "De App Store kan niet geopend worden.";
 "updateApp.title" = "De app heeft een update nodig";
 
 "updateApp.content" = "Update de app om te zorgen dat deze goed blijft werken.";
 "updateApp.button" = "Updaten";
 
+/* MARK: - EndOfLife */
 "endOfLife.title" = "CoronaMelder is gestopt";
 "endOfLife.description" = "Het Ministerie van Volksgezondheid, Welzijn en Sport heeft besloten dat de app niet meer nodig is. Je krijgt dus geen melding meer nadat je in de buurt bent geweest van iemand met corona.";
 
+/* MARK: - Onboarding Steps */
 "step1Title" = "Help de verspreiding van het coronavirus te stoppen";
 "step1Content" = "Deze app waarschuwt je nadat je in de buurt bent geweest van iemand met corona. Zo kun jij voorkomen dat je de mensen in je omgeving besmet.";
 
@@ -42,13 +55,16 @@
 "step5Title" = "Zat je dicht bij iemand in de trein? Dan kun je <u>later</u> wel een melding krijgen";
 "step5Content" = "Het Bluetooth-signaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
 
+/* MARK: - Onboarding */
 "nextButtonTitle" = "Volgende";
 
+/* MARK: - Consent Steps */
 "consentSkipEnTitle" = "Weet je zeker dat je deze meldingen niet wilt aanzetten?";
 "consentSkipEnMessage" = "Zonder toestemming kan de app je geen meldingen sturen nadat je extra kans op besmetting hebt gelopen.";
 "consentSkipEnAcceptButton" = "Aanzetten";
 "consentSkipEnDeclineButton" = "Sla over";
 
+/* MARK: - Consent Steps */
 "consentStep1Title" = "Meldingen over mogelijk contact met het coronavirus aanzetten";
 "consentStep1Summary1" = "Bluetooth-gegevens worden 14 dagen op je telefoon bewaard. Je kunt ze altijd zelf verwijderen.";
 "consentStep1Summary2" = "Je naam wordt <b>niet</b> gebruikt of bewaard.";
@@ -71,6 +87,7 @@
 "consentStep4PrimaryButton" = "App delen";
 "consentStep4SecondaryButton" = "Ga door";
 
+/* MARK: - Bluetooth */
 "enableBluetoothTitle" = "Bluetooth aanzetten";
 "enableBluetoothSettingIndexRow1" = "1.";
 "enableBluetoothSettingTitleRow1" = "Open <b>Instellingen</b> op je telefoon";
@@ -82,24 +99,27 @@
 "enableBluetoothSettingTitleRow3" = "Zet <b>Bluetooth</b> aan";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder is op dit moment niet actief. Controleer je instellingen.";
 
 "notification.upload.failed.header" = "Bel de GGD";
 "moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
 "moreInformation.about.helpdesk.subtitle" = "Bel de helpdesk";
 
+/* MARK: - Consent */
 "skipStep" = "Sla over";
 
+/* MARK: - Help */
 "helpTitle" = "Over de app";
 "helpSubtitle" = "Veelgestelde vragen";
 "helpAcceptButtonTitle" = "Aanzetten";
 
+"help.faq.notification.title" = "Wanneer krijg ik een melding van de app?";
 "help.faq.location.title" = "Kan de app mijn locatie zien?";
 "help.faq.location.description" = "Nee, de app ziet via Bluetooth alleen of je in de buurt bent van andere mensen die ook de app hebben. Bluetooth is niet gekoppeld aan je locatie, dus de app kan niet zien waar je bent. Bluetooth is puur bedoeld om een draadloze verbinding te maken tussen 2 apparaten die dicht bij elkaar zijn. Zoals je telefoon en een geluidsbox of koptelefoon.";
 "help.faq.anonymous.title" = "Hoe kan de app anoniem zijn?";
 "help.faq.anonymous.description_1" = "De app wisselt codes uit met andere telefoons. In deze codes staan geen persoonsgegevens of locatiegegevens van je. Ze zijn helemaal willekeurig. Het uitwisselen van codes gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.";
 "help.faq.anonymous.description_2" = "Blijkt deze persoon later corona te hebben? Dan kan diegene in de app zijn of haar codes aan een lijst met codes van besmette personen toevoegen. Het toevoegen van codes kan alleen nadat de besmette persoon zijn of haar GGD-sleutel aan de GGD heeft doorgegeven. Zo kan de besmetting bevestigd worden. Na deze controle is het mogelijk om een melding te versturen naar alle andere mensen die deze codes op hun telefoon hebben. In deze melding staat alleen wanneer ze in de buurt zijn geweest van een besmet persoon. Niet wie dit is en waar ze die persoon zijn tegengekomen.";
-"help.faq.notification.title" = "Wanneer krijg ik een melding van de app? ";
 "help.bluetooth.title" = "Werkt Bluetooth door muren heen?";
 
 "help.faq.reason.title" = "Waarom is deze app belangrijk?";
@@ -145,23 +165,24 @@
 "help.technical_explanation.github.title" = "Bekijk broncode";
 "help.technical_explanation.github.subtitle" = "Ga naar GitHub";
 
-"help.faq.testVersion.title" = "Wat betekent test- en onderzoeksversie?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
-
-
+/* MARK: - Message */
 "message.default.title" = "Je bent in de buurt geweest van iemand met corona";
 "message.default.body" = "Je was %@ dicht bij iemand die later corona bleek te hebben. Je hebt in deze situatie mogelijk extra kans op besmetting gelopen. Als je inderdaad besmet bent, kan je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
+/* MARK: - Message */
 "message.title" = "Melding krijgen";
 "message.button.title" = "Coronatest aanvragen";
 
+/* MARK: - Notifications */
 "notification.upload.failed.notification" = "Het is niet gelukt anderen een melding te sturen. Bel daarom de GGD. Lees meer in de app.";
 "notification.upload.failed.title" = "Het is niet gelukt anderen een melding te sturen";
 "notification.upload.failed.content" = "We hebben geprobeerd de melding te versturen, maar dit is niet gelukt. Bel de GGD om dit opnieuw te doen. Het is heel belangrijk dat je dit snel doet. Anders kunnen er meer mensen besmet raken.";
 
+/* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Weet je zeker dat je deze melding wilt verwijderen?";
 "main.confirmNotificationRemoval.message" = "Je kunt de datum daarna niet meer terugvinden in de app. Onthoud deze dus goed.";
 "main.confirmNotificationRemoval.confirm" = "Verwijder";
 
+/* MARK: - Status */
 "status.appState" = "De app is actief";
 "status.appState.inactive.title" = "De app is niet actief";
 "status.appState.inactive.description" = "CoronaMelder werkt alleen als de noodzakelijke instellingen aanstaan.";
@@ -208,11 +229,7 @@
 "moreInformation.complaints.title" = "Klachten die passen bij het coronavirus (COVID-19)";
 "moreInformation.complaints.content" = "Heb je klachten? Blijf dan zoveel mogelijk thuis. Zijn het ernstige klachten? Bel je huisarts.";
 
-"moreInformation.situation.title" = "Wat kun je doen in deze situatie?";
-"moreInformation.situation.step1" = "Heb je geen klachten? Doe een gratis coronatest";
-"moreInformation.situation.step2" = "Heb je (lichte) klachten die passen bij corona? Doe een coronatest en blijf thuis tot je de uitslag weet";
-"moreInformation.situation.step3" = "Heb je ernstige klachten of zit je in een risicogroep? Bel je huisarts";
-
+/* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "Over de app";
 "about.review" = "Beoordeel de app";
 "moreInformation.about.privacy_statement" = "Privacyverklaring";
@@ -234,10 +251,12 @@
 "moreInformation.about.faq.power_usage" = "Hoeveel stroom gebruikt de app?";
 "moreInformation.about.faq.deletion" = "Hoe verwijder ik de Bluetooth-gegevens van mijn telefoon?";
 
+/* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Laat anderen weten dat jij helpt het virus te stoppen";
 "moreInformation.share.description" = "Hoe meer mensen CoronaMelder gebruiken, hoe beter deze werkt. Alleen samen kunnen we de verspreiding van het virus stoppen. Deel de app dus met zo veel mogelijk anderen.";
 "moreInformation.share.action" = "App delen";
 
+/* MARK: - MoreInformation | Infected */
 "moreInformation.infected.title" = "Melding versturen";
 "moreInformation.infected.loading" = "GGD-sleutel aan het ophalen";
 "moreInformation.infected.upload" = "Ga door";
@@ -253,6 +272,7 @@
 "moreInformation.infected.tryAgain.description" = "De app kon geen GGD-sleutel ophalen. Controleer je internetverbinding.";
 "moreInformation.infected.action" = "Ga door";
 
+/* MARK: - MoreInformation | Infected | Thank You */
 "moreInformation.thankyou.title" = "Bedankt";
 "moreInformation.thankyou.section.title" = "Bedankt, de GGD helpt je verder";
 "moreInformation.thankyou.section.header" = "De GGD-medewerker vertelt wat je kunt doen om te voorkomen dat je anderen besmet. Beterschap en sterkte met je herstel. ";
@@ -263,6 +283,7 @@
 "moreInformation.thankyou.list.item3" = "Worden je klachten erger? Neem direct contact op met de GGD of je huisarts";
 "moreInformation.thankyou.info.title" = "De melding wordt alleen verstuurd als de GGD je heeft getest en je corona hebt";
 
+/* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Melding gekregen";
 "moreInformation.receivedNotification.button.title" = "Bel voor coronatest";
 "moreInformation.receivedNotification.notificationExplanation.title" = "Wat betekent het als je een melding krijgt?";
@@ -270,6 +291,7 @@
 "moreInformation.receivedNotification.doCoronaTest.title" = "Doe een coronatest";
 "moreInformation.receivedNotification.doCoronaTest.content" = "De GGD raadt aan een coronatest te doen. Zelfs als je je nog niet ziek voelt. Want zonder je ziek te voelen kun je het coronavirus al verspreiden en zo anderen besmetten.\n \nLaat je gratis testen. Het duurt niet lang en je kan meestal snel een afspraak maken. De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet.\n\nBel gratis 0800-1202 om een coronatest aan te vragen.";
 
+/* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Coronatest aanvragen";
 "moreInformation.requestTest.button.title" = "Bel voor coronatest";
 "moreInformation.requestTest.receivedNotification.title" = "Heb je klachten die passen bij corona? Vraag een test aan";
@@ -280,6 +302,7 @@
 "moreInformation.notification.measures.step2" = "Hoest/nies in je elleboog";
 "moreInformation.notification.measures.step3" = "Houd 1,5 meter afstand van mensen buiten je huishouden";
 
+/* MARK: - Cards */
 "cards.exposureOff.title" = "App is <u>niet</u> actief";
 "cards.exposureOff.content" = "Zet de instellingen aan die de app nodig heeft om te werken.";
 "cards.exposureOff.action" = "App aanzetten";
@@ -296,6 +319,7 @@
 "cards.notificationsOff.content" = "Zet algemene meldingen aan zodat de app direct informatie kan delen wanneer dat nodig is.";
 "cards.notificationsOff.action" = "Meldingen aanzetten";
 
+/* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Contactmeldingen aanzetten";
 "enableSettings.exposureNotifications.action" = "Open Instellingen";
 
@@ -324,18 +348,17 @@
 "enableSettings.localNotifications.step3" = "Zet <b>Sta berichtgeving toe</b> aan";
 "enableSettings.localNotifications.step3.action.title" = "Sta berichtgeving toe";
 
+/* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
-"exposure.notification.reminder" = "Herhaling: Je bent %@ dagen geleden in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
+
+/* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Herinnering: Je bent %@ dagen geleden in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
 
 "privacyAgreement.title" = "Toestemming gegevensgebruik";
-"privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de $@. Belangrijk om te weten: ";
+"privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de %@. Belangrijk om te weten: ";
 "privacyAgreement.message.link" = "privacyverklaring";
 "privacyAgreement.list.step1" = "Je app zendt versleutelde Bluetooth-gegevens uit.";
 "privacyAgreement.list.step2" = "Andere gebruikers die met jou in contact zijn geweest bewaren deze gegevens maximaal 14 dagen.";
 "privacyAgreement.list.step3" = "Als uit een coronatest blijkt dat je corona hebt kun je dit in de app melden om andere gebruikers te waarschuwen.";
 "privacyAgreement.list.step4" = "Je kunt op ieder moment de gegevens van je telefoon  verwijderen.";
 "privacyAgreement.consent.button" = "Ik heb de privacyverklaring gelezen en ga hiermee akkoord";
-"exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
-
-"shareAppTitle" = "Ik help corona onder controle te houden met CoronaMelder. Doe je ook mee?";
