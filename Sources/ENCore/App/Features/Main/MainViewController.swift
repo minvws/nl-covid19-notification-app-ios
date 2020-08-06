@@ -310,7 +310,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 return
             }
             self.logError("Error `requestExposureNotificationPermission`: \(error.localizedDescription)")
-            self.openAppSettings()
         }
     }
 }
