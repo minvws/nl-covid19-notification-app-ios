@@ -7,3 +7,7 @@ echo "*********************"
 echo "*     Make project  *"
 echo "*********************"
 make project
+echo "*********************"
+echo "*     Make buildinfo*"
+echo "*********************"
+make buildinfo
