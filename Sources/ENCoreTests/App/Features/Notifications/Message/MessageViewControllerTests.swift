@@ -28,7 +28,7 @@ final class MessageViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotMessageViewController() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func testPresentationControllerDidDismissCallsListener() {

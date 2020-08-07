@@ -32,6 +32,6 @@ final class UpdateAppViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotUpdateAppViewController() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 }

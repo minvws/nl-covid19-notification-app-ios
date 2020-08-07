@@ -25,7 +25,7 @@ final class CallGGDControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotCallGGDViewController() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func testPresentationControllerDidDismissCallsListener() {

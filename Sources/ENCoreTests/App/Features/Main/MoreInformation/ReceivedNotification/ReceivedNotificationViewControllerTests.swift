@@ -25,7 +25,7 @@ final class ReceivedNotificationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotReceivedNotificationViewController() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func testPresentationControllerDidDismissCallsListener() {

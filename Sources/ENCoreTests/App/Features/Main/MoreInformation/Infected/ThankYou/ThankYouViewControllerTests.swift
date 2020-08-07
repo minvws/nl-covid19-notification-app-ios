@@ -34,6 +34,6 @@ final class ThankYouViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_thankYou_snapshotStateLoading() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 }

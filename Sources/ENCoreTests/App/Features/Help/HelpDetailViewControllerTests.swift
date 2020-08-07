@@ -33,7 +33,7 @@ final class HelpDetailViewControllerTests: TestCase {
     func test_snapshot_helpDetailViewController() {
         for (index, question) in helpManager.questions.enumerated() {
             let viewController = HelpDetailViewController(listener: listener, shouldShowEnableAppButton: false, question: question, theme: theme)
-            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)")
+            snapshots(matching: viewController, named: "\(#function)\(index)")
         }
     }
 }

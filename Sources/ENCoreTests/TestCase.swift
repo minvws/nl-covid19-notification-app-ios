@@ -34,6 +34,38 @@ class TestCase: XCTestCase {
         super.tearDown()
     }
 
+    func snapshots(
+        matching viewController: UIViewController,
+        as snapshotting: Snapshotting<UIViewController, UIImage>? = nil,
+        named name: String? = nil,
+        record recording: Bool = false,
+        timeout: TimeInterval = 5,
+        file: StaticString = #file,
+        testName: String = #function,
+        line: UInt = #line
+    ) {
+
+        var snapshots = [
+            Snapshotting.image(on: .iPhoneSe),
+            Snapshotting.image(on: .iPhoneX),
+            Snapshotting.image(on: .iPhoneXsMax)
+        ]
+
+        if let snapshotting = snapshotting {
+            snapshots.append(snapshotting)
+        }
+
+        let localization = LocalizationOverrides.overriddenLocalization ?? ""
+
+        assertSnapshots(matching: viewController,
+                        as: snapshots,
+                        record: recording,
+                        timeout: timeout,
+                        file: file,
+                        testName: testName + localization,
+                        line: line)
+    }
+
     // MARK: - Private
 
     fileprivate var disposeBag = Set<AnyCancellable>()

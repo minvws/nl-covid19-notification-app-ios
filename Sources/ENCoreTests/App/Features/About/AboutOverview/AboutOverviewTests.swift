@@ -30,7 +30,7 @@ final class AboutOverviewViewControllerTests: TestCase {
         let viewController = AboutOverviewViewController(listener: listener,
                                                          aboutManager: aboutManager,
                                                          theme: theme)
-        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 1200)))
+        snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: 1200)))
     }
 
     func test_snapshot_aboutOverviewViewController_testVersion_rendersCorrectly() {
@@ -42,7 +42,7 @@ final class AboutOverviewViewControllerTests: TestCase {
         let exp = XCTestExpectation()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 1300)))
+            self.snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: 1300)))
             exp.fulfill()
         }
 

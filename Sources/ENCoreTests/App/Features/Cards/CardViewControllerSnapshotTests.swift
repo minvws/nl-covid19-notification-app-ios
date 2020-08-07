@@ -22,24 +22,24 @@ final class CardViewControllerSnapshotTests: TestCase {
     func test_cardViewController_bluetoothOff() {
         viewController = CardViewController(theme: theme, type: .bluetoothOff)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_cardViewController_exposureOff() {
         viewController = CardViewController(theme: theme, type: .exposureOff)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_cardViewController_noLocalNotifications() {
         viewController = CardViewController(theme: theme, type: .noLocalNotifications)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_cardViewController_noInternet() {
         viewController = CardViewController(theme: theme, type: .noInternet(retryHandler: {}))
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 }
