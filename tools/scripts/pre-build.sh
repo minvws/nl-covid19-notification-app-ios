@@ -42,4 +42,4 @@ fi
 
 cat project.yml
 
-# make install_ci_deps && make generate_project
+make install_ci_deps && make generate_project
