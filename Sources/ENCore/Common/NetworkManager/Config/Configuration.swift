@@ -145,10 +145,10 @@ struct NetworkConfiguration {
         urlComponents.port = config.port
         urlComponents.path = "/" + (config.path + path.components).joined(separator: "/")
 
-        if params.count > 0 {
+        if !params.isEmpty {
             urlComponents.percentEncodedQueryItems = params.compactMap { parameter in
-                guard let name = parameter.key.addingPercentEncoding(withAllowedCharacters: urlQueryEncodedCharacterSet),
-                    let value = parameter.value.addingPercentEncoding(withAllowedCharacters: urlQueryEncodedCharacterSet) else {
+                guard let name = parameter.key.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
+                    let value = parameter.value.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {
                     return nil
                 }
 
@@ -158,10 +158,4 @@ struct NetworkConfiguration {
 
         return urlComponents.url
     }
-
-    private var urlQueryEncodedCharacterSet: CharacterSet = {
-        // specify characters which are allowed to be unespaced in the queryString, note the `inverted`
-        let characterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted
-        return characterSet
-    }()
 }
