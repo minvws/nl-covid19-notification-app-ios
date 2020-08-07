@@ -37,7 +37,7 @@ yq w -i project.yml "targets.EN.settings.base.PRODUCT_BUNDLE_IDENTIFIER" ${BUNDL
 yq w -i project.yml "targets.EN.settings.base.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.settings.base.LOG_LEVEL" ${LOG_LEVEL}
 yq w -i project.yml "targets.EN.settings.configs.Release.PROVISIONING_PROFILE_SPECIFIER" "${RELEASE_PROVISIONING_PROFILE}"
-yq w -i project.yml "targets.EN.info.properties.CFBundleDisplayName" ${BUNDLE_DISPLAY_NAME}
+yq w -i project.yml "targets.EN.info.properties.CFBundleDisplayName" "${BUNDLE_DISPLAY_NAME}"
 yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
 
 
