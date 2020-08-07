@@ -31,7 +31,7 @@ brew install yq
 yq w -i project.yml "targets.EN.settings.base.PRODUCT_BUNDLE_IDENTIFIER" ${BUNDLE_IDENTIFIER}
 yq w -i project.yml "targets.EN.settings.base.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.settings.base.LOG_LEVEL" ${LOG_LEVEL}
-yq w -i project.yml "targets.EN.info.proprties.CFBundleDisplayName" ${BUNDLE_DISPLAY_NAME}
+yq w -i project.yml "targets.EN.info.properties.CFBundleDisplayName" ${BUNDLE_DISPLAY_NAME}
 yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
 
 
