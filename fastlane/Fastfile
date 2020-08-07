@@ -37,5 +37,23 @@ platform :ios do
       release_notes_file: File.expand_path("release_notes.txt"),
     )
   end
+
+  desc "Release master version of CoronaMelder to Firebase"
+  lane :release_acceptance_build do
+    build_app(
+      scheme: "EN", 
+      configuration: "Release",
+      include_bitcode: true, 
+      output_directory: "./.build", 
+      export_method: "ad-hoc"
+    )
+    firebase_app_distribution(
+      app: ENV["FIREBASE_APP_IOS"],
+      groups: "ios-acceptance",
+      ipa_path: "./.build/EN.ipa",
+      firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
+      release_notes_file: File.expand_path("release_notes.txt"),
+    )
+  end
 end
  
