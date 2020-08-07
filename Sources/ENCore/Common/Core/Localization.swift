@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import UIKit
 
@@ -13,6 +14,20 @@ public final class Localization {
     /// Get the Localized string for the current bundle.
     /// If the key has not been localized this will fallback to the Base project strings
     public static func string(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> String {
+        if let override = localization() {
+            guard
+                let path = Bundle(for: Localization.self).path(forResource: override, ofType: "lproj"),
+                let bundle = Bundle(path: path) else {
+                let value = NSLocalizedString(key, bundle: Bundle(for: Localization.self), comment: comment)
+                return (arguments.count > 0) ? String(format: value, arguments: arguments) : value
+            }
+            let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
+            if override != "Base" {
+                print(override)
+            }
+            return (arguments.count > 0) ? String(format: localizedString, arguments: arguments) : localizedString
+        }
+
         let value = NSLocalizedString(key, bundle: Bundle(for: Localization.self), comment: comment)
         guard value == key else {
             return (arguments.count > 0) ? String(format: value, arguments: arguments) : value

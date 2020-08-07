@@ -26,7 +26,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
                                                      setting: .enableBluetooth,
                                                      bluetoothStateStream: bluetoothStateStream)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_enableExposureNotifications() {
@@ -35,7 +35,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
                                                      setting: .enableExposureNotifications,
                                                      bluetoothStateStream: bluetoothStateStream)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_enableLocalNotifications() {
@@ -44,6 +44,6 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
                                                      setting: .enableLocalNotifications,
                                                      bluetoothStateStream: bluetoothStateStream)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 }

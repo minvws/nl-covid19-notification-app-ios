@@ -35,7 +35,7 @@ final class MoreInformationViewControllerTests: TestCase {
 
     func test_snapshot_moreInformationViewController() {
         let height = MoreInformationIdentifier.allCases.count * 110
-        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: height)))
+        snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: height)))
     }
 
     func test_snapshot_moreInformationViewController_testVersion() {
@@ -46,7 +46,7 @@ final class MoreInformationViewControllerTests: TestCase {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             let height = MoreInformationIdentifier.allCases.count * 110
-            assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: height + 40)))
+            self.snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: height + 40)))
             exp.fulfill()
         }
 

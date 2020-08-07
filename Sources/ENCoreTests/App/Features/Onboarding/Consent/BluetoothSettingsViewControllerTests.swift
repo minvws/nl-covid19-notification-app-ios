@@ -27,6 +27,6 @@ final class BluetoothSettingsViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_bluetoothSettingsViewControllerTests() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 }

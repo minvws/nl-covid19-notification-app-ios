@@ -29,6 +29,6 @@ final class EndOfLifeViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_endOfLifeViewController() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 }

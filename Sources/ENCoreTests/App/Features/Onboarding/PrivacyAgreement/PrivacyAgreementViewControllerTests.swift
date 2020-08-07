@@ -28,11 +28,11 @@ final class PrivacyAgreementViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_privacyAgreementViewController() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_privacyAgreementViewController_accepted() {
         viewController.didPressAgreeWithPrivacyAgreementButton()
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 }
