@@ -295,7 +295,9 @@ final class BackgroundController: BackgroundControlling, Logging {
             .collect()
             // notify the user if required
             .handleEvents(receiveCompletion: { [weak self] _ in
-                self?.exposureController.notifyUserIfRequired()
+                // FIXME: disabled for `57704`
+                // self?.exposureController.notifyUserIfRequired()
+                self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
             })
             .sink(receiveCompletion: { [weak self] result in
                 switch result {
