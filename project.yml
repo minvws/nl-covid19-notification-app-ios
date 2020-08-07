@@ -31,7 +31,7 @@ targets:
           - nl.rijksoverheid.en.background-decoy-sequence
           - nl.rijksoverheid.en.background-decoy-register
           - nl.rijksoverheid.en.background-status-check
-        CFBundleDisplayName: Something
+        CFBundleDisplayName: "CoronaMelder \U0001F41E"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
         CFBundleShortVersionString: '0.1'
@@ -77,7 +77,7 @@ targets:
         DEVELOPMENT_TEAM: C2H38GV99H
         ENABLE_BITCODE: 'YES'
         LOG_LEVEL: debug
-        NETWORK_CONFIGURATION: Test
+        NETWORK_CONFIGURATION: ACC
         PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.test
         SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
         SWIFT_VERSION: 5.2
@@ -90,7 +90,7 @@ targets:
         Release:
           CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Release.entitlements
           CODE_SIGN_IDENTITY: Apple Distribution
-          PROVISIONING_PROFILE_SPECIFIER: CoronaMelder Acc
+          PROVISIONING_PROFILE_SPECIFIER: EN Tracing development
     sources:
       - path: Sources/EN
     type: application
