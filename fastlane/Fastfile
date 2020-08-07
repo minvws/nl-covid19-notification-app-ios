@@ -49,7 +49,7 @@ platform :ios do
     )
     firebase_app_distribution(
       app: ENV["FIREBASE_APP_IOS"],
-      groups: "ios-latest",
+      groups: "ios-acceptance",
       ipa_path: "./.build/EN.ipa",
       firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
       release_notes_file: File.expand_path("release_notes.txt"),
