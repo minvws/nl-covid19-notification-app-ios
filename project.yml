@@ -90,7 +90,7 @@ targets:
         Release:
           CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Release.entitlements
           CODE_SIGN_IDENTITY: Apple Distribution
-          PROVISIONING_PROFILE_SPECIFIER: EN Tracing development
+          PROVISIONING_PROFILE_SPECIFIER: CoronaMelder Acc
     sources:
       - path: Sources/EN
     type: application

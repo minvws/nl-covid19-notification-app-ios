@@ -17,10 +17,23 @@ then
       BUILD_ID="1"
 fi
 
+if [ -z "$BUNDLE_IDENTIFIER" ]
+then 
+      BUNDLE_IDENTIFIER="nl.rijksoverheid.en.test"
+fi
+
+if [ -z "$BUNDLE_DISPLAY_NAME"]
+then
+      BUNDLE_DISPLAY_NAME="CoronaMelder \U0001F41E"
+fi
+
 brew install yq
+yq w -i project.yml "targets.EN.info.CFBundleDisplayName" ${BUNDLE_DISPLAY_NAME}
+yq w -i project.yml "targets.EN.settings.base.PRODUCT_BUNDLE_IDENTIFIER" ${BUNDLE_IDENTIFIER}
 yq w -i project.yml "targets.EN.settings.base.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.settings.base.LOG_LEVEL" ${LOG_LEVEL}
 yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
+
 
 if [ ! -z "$USE_DEVELOPER_MENU" ]
 then
@@ -29,4 +42,4 @@ fi
 
 cat project.yml
 
-make install_ci_deps && make generate_project
+# make install_ci_deps && make generate_project
