@@ -52,7 +52,7 @@ clean_snapshots:
 
 buildinfo:
 	@echo "Generating buildinfo.."
-	bash -c tools/scripts/buildinfo.sh release > .buildinfo
+	bash -c tools/scripts/buildinfo.sh Release > .buildinfo
 	cat .buildinfo
 
 touch_mock_files_if_needed:

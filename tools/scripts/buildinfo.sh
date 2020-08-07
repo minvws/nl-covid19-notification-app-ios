@@ -8,6 +8,7 @@ git_tag=$(git describe --tags --exact-match 2>/dev/null)
 build_time=$(date)
 git_branch_or_tag="${git_branch:-${git_tag}}"
 
+# TODO: this is probably the wrong Info.plist file
 info_plist="${GITHUB_WORKSPACE}/Sources/EN/Resources/Info.plist"
 
 cat <<EOF
@@ -40,20 +41,16 @@ EOF
 
 
 printf 'Environment:\n'
-
-# whitelist stolen from Debian's dpkg:
-# https://anonscm.debian.org/git/dpkg/dpkg.git/tree/scripts/Dpkg/Build/Info.pm#n50
-ENV_WHITELIST=
+ENV=
 # Toolchain.
-ENV_WHITELIST="$ENV_WHITELIST CC CPP CXX OBJC OBJCXX PC FC M2C AS LD AR RANLIB MAKE AWK LEX YACC"
+ENV="$ENV CC CPP CXX OBJC OBJCXX PC FC M2C AS LD AR RANLIB MAKE AWK LEX YACC"
 # Toolchain flags.
-ENV_WHITELIST="$ENV_WHITELIST CFLAGS CPPFLAGS CXXFLAGS OBJCFLAGS OBJCXXFLAGS GCJFLAGS FFLAGS LDFLAGS ARFLAGS MAKEFLAGS"
+ENV="$ENV CFLAGS CPPFLAGS CXXFLAGS OBJCFLAGS OBJCXXFLAGS GCJFLAGS FFLAGS LDFLAGS ARFLAGS MAKEFLAGS"
 # Dynamic linker, see ld(1).
-ENV_WHITELIST="$ENV_WHITELIST LD_LIBRARY_PATH"
+ENV="$ENV LD_LIBRARY_PATH"
 # Locale, see locale(1).
-ENV_WHITELIST="$ENV_WHITELIST LANG LC_ALL LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION"
-ENV_WHITELIST="$ENV_WHITELIST SOURCE_DATE_EPOCH"
-for var in $ENV_WHITELIST
+ENV="$ENV LANG LC_ALL LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION"
+for var in $ENV
 do
     eval value=\$$var
     test -n "$value" && printf '  %s="%s"\n' "$var" "$value"
@@ -63,21 +60,12 @@ done
 #/usr/libexec/PlistBuddy -c "Set :CFBundleVersion '${git_branch_or_tag}-${git_version}'" "${info_plist}"
 #/usr/libexec/PlistBuddy -c "Set :BuildTime '${build_time}'" "${info_plist}"
 
-#printf 'other:\n'
-#cat <<EOF
-#  EN_MOCKS_PATH:
-#  EN_CORE_MOCKS_PATH:
-#  XCODE_TEMPLATE_PATH_SRC:
-#  XCODE_TEMPLATE_PATH_DST:
-#EOF
-
 printf 'Packageresults:\n'
 #IPA_Sha: $(openssl sha1 $resultsdir/$builtIPA | awk '{print $2}')
 cat <<EOF
   IPA_Sha: TODO
-  IPA_Name: TODO 
-  IPA_TYPE: TODO
-  BUNDLE_Development_region: $(/usr/libexec/PlistBuddy -c "Print :CFBundleDevelopmentRegion" $info_plist)
+  IPA_Name: TODO
+  IPA_Type: TODO
   BUNDLE_Executable: $(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" $info_plist)
   BUNDLE_Identifier: $(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" $info_plist)
   BUNDLE_Infodictversion: $(/usr/libexec/PlistBuddy -c "Print :CFBundleInfoDictionaryVersion" $info_plist)
