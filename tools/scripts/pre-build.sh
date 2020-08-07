@@ -22,7 +22,7 @@ then
       BUNDLE_IDENTIFIER="nl.rijksoverheid.en.test"
 fi
 
-if [ -z "$BUNDLE_DISPLAY_NAME"]
+if [ -z "$BUNDLE_DISPLAY_NAME" ]
 then
       BUNDLE_DISPLAY_NAME="CoronaMelder \U0001F41E"
 fi
