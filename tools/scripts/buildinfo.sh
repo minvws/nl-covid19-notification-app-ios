@@ -77,13 +77,13 @@ cat <<EOF
   IPA_Sha: TODO
   IPA_Name: TODO 
   IPA_TYPE: TODO
-  BUNDLE_Development_region: $(/usr/libexec/PlistBuddy -c "Print: CFBundleDevelopmentRegion" $info_plist)
-  BUNDLE_Executable: $(/usr/libexec/PlistBuddy -c "Print: CFBundleExecutable" $info_plist)
-  BUNDLE_Identifier: $(/usr/libexec/PlistBuddy -c "Print: CFBundleIdentifier" $info_plist)
-  BUNDLE_Infodictversion: $(/usr/libexec/PlistBuddy -c "Print: CFBundleInfoDictionaryVersion" $info_plist)
-  BUNDLE_Name: $(/usr/libexec/PlistBuddy -c "Print: CFBundleName" $info_plist)
-  BUNDLE_Packagetype: $(/usr/libexec/PlistBuddy -c "Print: CFBundlePackageType" $info_plist)
-  BUNDLE_Shortversion: $(/usr/libexec/PlistBuddy -c "Print: CFBundleShortVersionString" $info_plist)
+  BUNDLE_Development_region: $(/usr/libexec/PlistBuddy -c "Print :CFBundleDevelopmentRegion" $info_plist)
+  BUNDLE_Executable: $(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" $info_plist)
+  BUNDLE_Identifier: $(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" $info_plist)
+  BUNDLE_Infodictversion: $(/usr/libexec/PlistBuddy -c "Print :CFBundleInfoDictionaryVersion" $info_plist)
+  BUNDLE_Name: $(/usr/libexec/PlistBuddy -c "Print :CFBundleName" $info_plist)
+  BUNDLE_Packagetype: $(/usr/libexec/PlistBuddy -c "Print :CFBundlePackageType" $info_plist)
+  BUNDLE_Shortversion: $(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" $info_plist)
   BUNDLE_Version: $(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" $info_plist)
 EOF
 
