@@ -50,6 +50,11 @@ clean_snapshots:
 	@rm -rf `find Sources/ -type d -name __Snapshots__`
 	@echo "Re-run tests for current Snapshot tests to be generated"
 
+buildinfo:
+	@echo "Generating buildinfo.."
+	bash -c tools/scripts/buildinfo.sh release > .buildinfo
+	cat .buildinfo
+
 touch_mock_files_if_needed:
 ifneq ($(wildcard ${EN_MOCKS_PATH}), "")
 	@touch ${EN_MOCKS_PATH}
