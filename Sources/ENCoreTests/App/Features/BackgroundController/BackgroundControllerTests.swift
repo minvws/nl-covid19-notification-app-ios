@@ -157,6 +157,8 @@ final class BackgroundControllerTests: XCTestCase {
             exp.fulfill()
             completion?(nil)
         }
+        let date = Calendar.current.date(byAdding: .hour, value: -24, to: Date())!
+        exposureController.lastENStatusCheckDate = date
 
         let task = MockBGProcessingTask(identifier: .statusCheck)
 

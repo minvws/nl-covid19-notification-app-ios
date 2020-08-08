@@ -135,6 +135,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
+                self?.logDebug("Push Notification Identifier: \(notificationRespone.notification.request.identifier)")
+
                 // Check if this is a notificaiton triggered by our application, if not then we assume this was
                 // an EN notificaiton triggered by Apple. Ideally we should get the identifier of the Apple notification.
                 guard notificationRespone.notification.request.identifier.contains("nl.rijksoverheid") else {

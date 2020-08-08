@@ -162,6 +162,7 @@ final class ExposureManager: ExposureManaging, Logging {
 
     func getExposureNotificationStatus() -> ExposureManagerStatus {
         let authorisationStatus = type(of: manager).authorizationStatus
+        logDebug("`getExposureNotificationStatus`: \(authorisationStatus)")
 
         switch authorisationStatus {
         case .authorized:
