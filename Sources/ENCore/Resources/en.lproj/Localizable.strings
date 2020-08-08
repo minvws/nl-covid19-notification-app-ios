@@ -11,7 +11,7 @@
 "help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
 
 "moreInformation.situation.title" = "What can you do in this situation?";
-"moreInformation.situation.step1" = "No symptoms? Get a free coronavirus test";
+"moreInformation.situation.step1" = "No symptoms? Get tested for coronavirus and stay home until you get the results";
 "moreInformation.situation.step2" = "Do you have (mild) symptoms related to the coronavirus? Get tested for coronavirus and stay home until you get the results";
 "moreInformation.situation.step3" = "Serious symptoms or part of a high-risk group? Call your doctor";
 
@@ -289,7 +289,7 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "What does it mean when you get a notification?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "The app sends you a notification if you've spent 15 minutes near someone who was later found to have coronavirus. You've been exposed to a higher risk of infection in this situation. If you are indeed infected, you can infect other people with coronavirus. Even if you don't feel sick right now.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Get tested for coronavirus";
-"moreInformation.receivedNotification.doCoronaTest.content" = "The GGD recommends you get tested for coronavirus. Even if you don't feel sick. Because you can still infect others and spread the virus without feeling sick.\n\nGet a free test. It doesn't take long to get tested and waiting times are mostly short. You get the results within 48 hours. In the meantime, stay home. \n\nMake a free call to 0800-1202 to request a coronavirus test.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Even if you don't feel sick. Because you can still infect others and spread the virus without feeling sick.\n\nGet a free test. It doesn't take long to get tested and waiting times are mostly short. You get the results within 48 hours. In the meantime, stay home. \n\nMake a free call to 0800-1202 to request a coronavirus test.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Request coronavirus test";
