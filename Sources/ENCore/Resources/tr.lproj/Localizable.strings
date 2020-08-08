@@ -11,7 +11,7 @@
 "help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
 
 "moreInformation.situation.title" = "Bu durumda ne yapabilirsiniz?";
-"moreInformation.situation.step1" = "Şikayetiniz yok mu? Ücretsiz bir Korona testi yaptırın";
+"moreInformation.situation.step1" = "Şikayetiniz yok mu? Korona testi yaptırın ve sonucu öğrenene kadar evde kalın.";
 "moreInformation.situation.step2" = "Korona'ya uyan (hafif) şikayetleriniz mi var? Korona testi yaptırın ve sonucu öğrenene kadar evde kalın.";
 "moreInformation.situation.step3" = "Ciddi şikayetleriniz mi var veya bir risk grubuna dahil misiniz? Doktorunuzu arayın";
 
@@ -289,7 +289,7 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Bildirim almanız ne anlama gelir?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "Sonradan Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama bir bildirim gönderir. Bildirim sadece bunun hangi gün olduğunu belirtir. Bu durumda ekstra bir enfeksiyon riski yaşadınız. Enfekte olursanız, virüsü başkalarına aktarabilirsiniz. Kendinizi hasta hissetmeseniz bile.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Korona testi yaptırın";
-"moreInformation.receivedNotification.doCoronaTest.content" = "GGD, Korona için test edilmenizi önerir. Kendinizi hasta hissetmeseniz bile. Çünkü hasta hissetmeden Korona virüsü yayabilir ve böylece başkalarına bulaştırabilirsiniz.\n\nKendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.\n\nKorona testi talep etmek için 0800-1202 numaralı ücretsiz telefonu arayın.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Kendinizi hasta hissetmeseniz bile. Çünkü hasta hissetmeden Korona virüsü yayabilir ve böylece başkalarına bulaştırabilirsiniz.\n\nKendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.\n\nKorona testi talep etmek için 0800-1202 numaralı ücretsiz telefonu arayın.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Korona testi talep etmek";

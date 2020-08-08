@@ -11,7 +11,7 @@
 "help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
 
 "moreInformation.situation.title" = "Ce puteți face în această situație?";
-"moreInformation.situation.step1" = "Nu aveți nici un simptom? Faceți un test pentru corona gratuit";
+"moreInformation.situation.step1" = "Nu aveți nici un simptom? Faceți un test pentru corona și rămâneți acasă până aflați rezultatele";
 "moreInformation.situation.step2" = "Aveți simptome ușoare care ar putea fi asociate cu corona?  Faceți un test pentru corona și rămâneți acasă până aflați rezultatele";
 "moreInformation.situation.step3" = "Aveți simptome grave sau faceți parte dintr-o categorie de risc? Sunați medicul de familie";
 
@@ -289,7 +289,7 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Ce înseamnă când primiți o notificare?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "Aplicația trimite o notificare dacă ați fost timp de cel puțin 15 minute în apropierea unei persoane care se dovedește ulterior a fi contaminată cu corona. Notificarea menționează doar ziua în care s-a întâmplat. În această situație ați fost expus unui risc ridicat de contaminare. Dacă sunteți contaminat, puteți transmite altora virusul. Chiar dacă nu vă simțiți rău.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Faceți un test pentru corona";
-"moreInformation.receivedNotification.doCoronaTest.content" = "GGD (Serviciul de Sănătate Municipal) vă recomandă să vă testați pentru corona. Chiar dacă încă nu vă simțiți rău. Deoarece fără a vă simți rău, puteți deja răspândi coronavirusul, contaminându-i astfel pe alții.\n\n \nTestați-vă gratuit. Nu durează mult și deseori puteți face repede o programare. Rezultatul va fi cunoscut în timp de 48 de ore. Rămâneți în casă până la aflarea rezultatului.\nSunați gratis la 0800-1202 pentru a solicita un test pentru corona.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Chiar dacă încă nu vă simțiți rău. Deoarece fără a vă simți rău, puteți deja răspândi coronavirusul, contaminându-i astfel pe alții.\n\n \nTestați-vă gratuit. Nu durează mult și deseori puteți face repede o programare. Rezultatul va fi cunoscut în timp de 48 de ore. Rămâneți în casă până la aflarea rezultatului.\nSunați gratis la 0800-1202 pentru a solicita un test pentru corona.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Solicitați test pentru corona";

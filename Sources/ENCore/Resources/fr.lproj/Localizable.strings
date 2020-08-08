@@ -11,7 +11,7 @@
 "help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
 
 "moreInformation.situation.title" = "Que pouvez-vous faire dans une telle situation ?";
-"moreInformation.situation.step1" = "Vous n'avez aucun symptôme ? Faites un test corona gratuit";
+"moreInformation.situation.step1" = "Vous n'avez aucun symptôme ? Faites un test corona et restez chez vous jusqu'à ce que vous receviez le résultat";
 "moreInformation.situation.step2" = "Vous avez de (légers) symptômes qui correspondent à ceux du coronavirus ? Faites un test corona et restez chez vous jusqu'à ce que vous receviez le résultat";
 "moreInformation.situation.step3" = "Vous avez de graves symptômes ou vous êtes dans une catégorie à risque ? Appelez votre médecin traitant";
 
@@ -290,7 +290,7 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Si vous recevez une notification, qu'est-ce que ça veut dire ?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "L'application envoie une notification si vous avez été au moins pendant 15 minutes proche de quelqu'un qui, par la suite, s'avère avoir le coronavirus. La notification n'indique que le jour où cela s'est produit. Lors de cette situation, vous avez davantage couru le risque d’être contaminé. Si vous êtes contaminé, vous pouvez transmettre le virus à d'autres, même si vous n'avez aucun symptôme.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Faites un test corona";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Le GGD recommande de faire un test de dépistage du virus. Même si vous n'avez aucun symptôme. Car sans symptôme, vous pouvez quand même diffuser le coronavirus et dès lors contaminer les autres.\n\nFaites-vous tester gratuitement. Cela ne dure pas longtemps et vous pouvez généralement fixer un rendez-vous rapidement. Le résultat est connu dans les 48 heures. Restez chez vous jusqu'à la communication du résultat.\n\nAppelez gratuitement le numéro 0800-1202 pour demander à faire un test corona.\n\n";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Même si vous n'avez aucun symptôme. Car sans symptôme, vous pouvez quand même diffuser le coronavirus et dès lors contaminer les autres.\n\nFaites-vous tester gratuitement. Cela ne dure pas longtemps et vous pouvez généralement fixer un rendez-vous rapidement. Le résultat est connu dans les 48 heures. Restez chez vous jusqu'à la communication du résultat.\n\nAppelez gratuitement le numéro 0800-1202 pour demander à faire un test corona.\n\n";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Demander un test corona";

@@ -11,7 +11,7 @@
 "help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
 
 "moreInformation.situation.title" = "ما الذي يمكنك فعله في هذه الحالة؟";
-"moreInformation.situation.step1" = "أليست لديك أي أعراض؟ قم بإجراء فحص كورونا مجانًا";
+"moreInformation.situation.step1" = "أليست لديك أي أعراض؟ قم بإجراء فحص كورونا والزم المنزل حتى تستلم النتيجة";
 "moreInformation.situation.step2" = "هل لديك أعراض (خفيفة) تتناسب مع كورونا؟ قم بإجراء فحص كورونا والزم المنزل حتى تستلم النتيجة";
 "moreInformation.situation.step3" = "هل لديك أعراض خطيرة وأنت من ضمن مجموعة معرضة للخطر؟ اتصل بطبيب العائلة الخاص بك";
 
@@ -292,7 +292,7 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "ماذا يعني عند استلامك إشعارًا؟";
 "moreInformation.receivedNotification.notificationExplanation.content" = "يرسل التطبيق إشعارًا بعد تواجدك لمدة 15 دقائق على الأقل بالقرب من شخص تبين لاحقًا أنه مصاب بكورونا. يذكر الإشعار فقط في أي يوم كان هذا. لقد تعرضت لخطر إضافي للعدوى في هذه الحالة. إذا كنت مصابًا، يمكنك نقل الفيروس إلى الآخرين. حتى لو لم تكن تشعر بالمرض.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "قم بإجراء فحص كورونا";
-"moreInformation.receivedNotification.doCoronaTest.content" = "تنصحك مصلحة البلدية للصحة (GGD) بإجراء اختبار كورونا. حتى إذا لم تشعر بالمرض. حيث أنه من الممكن أن تنقل الفيروس بدون الشعور بالمرض وهكذا تستطيع أن تنقل العدوى إلى الآخرين.\n\nقم بإجراء الفحص مجانًا. لا يستغرق ذلك وقتًا طويلاً، وفي معظم الحالات تستطيع تحديد موعد بسرعة. ستعرف النتيجة خلال 48 ساعة. الزم المنزل حتى تعرف النتيجة.\n\nاتصل بالرقم 1202-0800 لطلب إجراء فحص كورونا مجانًا.";
+"moreInformation.receivedNotification.doCoronaTest.content" = " حتى إذا لم تشعر بالمرض. حيث أنه من الممكن أن تنقل الفيروس بدون الشعور بالمرض وهكذا تستطيع أن تنقل العدوى إلى الآخرين.\n\nقم بإجراء الفحص مجانًا. لا يستغرق ذلك وقتًا طويلاً، وفي معظم الحالات تستطيع تحديد موعد بسرعة. ستعرف النتيجة خلال 48 ساعة. الزم المنزل حتى تعرف النتيجة.\n\nاتصل بالرقم 1202-0800 لطلب إجراء فحص كورونا مجانًا.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "طلب فحص كورونا";

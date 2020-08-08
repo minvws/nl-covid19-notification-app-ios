@@ -11,7 +11,7 @@
 "help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
 
 "moreInformation.situation.title" = "Was können Sie in dieser Situation tun?";
-"moreInformation.situation.step1" = "Haben Sie keine Beschwerden? Machen Sie einen kostenlosen Coronatest";
+"moreInformation.situation.step1" = "Haben Sie keine Beschwerden? Machen Sie einen Coronatest und bleiben Sie zu Hause, bis Sie das Ergebnis haben";
 "moreInformation.situation.step2" = "Haben Sie (leichte) Beschwerden, die zu Corona passen? Machen Sie einen Coronatest und bleiben Sie zu Hause, bis Sie das Ergebnis haben";
 "moreInformation.situation.step3" = "Haben Sie ernste Beschwerden oder gehören Sie zu einer Risikogruppe? Rufen Sie Ihren Hausarzt an.";
 
@@ -289,7 +289,7 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Was bedeutet es, wenn ich eine Nachricht bekomme?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "Die App schickt eine Nachricht, wenn Sie mindestens 15 Minuten lang in unmittelbarer Nähe einer Person waren, bei der später Corona festgestellt wurde. In der Nachricht steht nur, an welchem Tag das war. Sie waren in dieser Situation einem erhöhten Infektionsrisiko ausgesetzt. Wenn Sie infiziert sind, können Sie andere mit dem Virus infizieren, auch wenn Sie sich nicht krank fühlen.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Machen Sie einen Coronatest";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Der GGD empfiehlt einen Coronatest, auch wenn Sie sich noch nicht krank fühlen. Denn auch dann können Sie das Coronavirus schon übertragen und andere infizieren.\n\nLassen Sie sich kostenlos testen. Das dauert nicht lange und Sie können meistens schnell einen Termin vereinbaren. Das Ergebnis ist innerhalb von 48 Stunden bekannt. Bleiben Sie zu Hause, bis Sie das Ergebnis haben.\n \nRufen Sie kostenlos die Nummer 0800-1202 an, um einen Coronatest anzufordern.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Auch wenn Sie sich noch nicht krank fühlen. Denn auch dann können Sie das Coronavirus schon übertragen und andere infizieren.\n\nLassen Sie sich kostenlos testen. Das dauert nicht lange und Sie können meistens schnell einen Termin vereinbaren. Das Ergebnis ist innerhalb von 48 Stunden bekannt. Bleiben Sie zu Hause, bis Sie das Ergebnis haben.\n \nRufen Sie kostenlos die Nummer 0800-1202 an, um einen Coronatest anzufordern.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Coronatest anfordern";
