@@ -21,7 +21,7 @@ final class StatusViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = true
+        recordSnapshots = false
 
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
