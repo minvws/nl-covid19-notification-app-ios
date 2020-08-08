@@ -104,7 +104,7 @@ struct StatusViewModel {
 
         return StatusViewModel(
             icon: .notified,
-            title: .init(string: .statusAppState),
+            title: .init(string: .messageDefaultTitle),
             description: .init(string: description),
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
@@ -133,7 +133,7 @@ struct StatusViewModel {
 
         return StatusViewModel(
             icon: .notified,
-            title: .init(string: .statusAppState),
+            title: .init(string: .messageDefaultTitle),
             description: .init(string: description),
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
