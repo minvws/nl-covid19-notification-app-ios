@@ -162,30 +162,34 @@ final class ExposureManager: ExposureManaging, Logging {
 
     func getExposureNotificationStatus() -> ExposureManagerStatus {
         let authorisationStatus = type(of: manager).authorizationStatus
+        let result: ExposureManagerStatus
 
         switch authorisationStatus {
         case .authorized:
             switch manager.exposureNotificationStatus {
             case .active:
-                return .active
+                result = .active
             case .bluetoothOff:
-                return .inactive(.bluetoothOff)
+                result = .inactive(.bluetoothOff)
             case .disabled:
-                return .inactive(.disabled)
+                result = .inactive(.disabled)
             case .restricted:
-                return .inactive(.restricted)
+                result = .inactive(.restricted)
             default:
-                return .inactive(.unknown)
+                result = .inactive(.unknown)
             }
         case .notAuthorized:
-            return .authorizationDenied
+            result = .authorizationDenied
         case .unknown:
-            return .notAuthorized
+            result = .notAuthorized
         case .restricted:
-            return .inactive(.restricted)
+            result = .inactive(.restricted)
         default:
-            return .inactive(.unknown)
+            result = .inactive(.unknown)
         }
+
+        logDebug("`getExposureNotificationStatus`: \(result)")
+        return result
     }
 
     private let manager: ENManaging

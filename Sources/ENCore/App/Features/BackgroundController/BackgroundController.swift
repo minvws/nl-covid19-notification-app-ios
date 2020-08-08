@@ -77,6 +77,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         guard let identifier = BackgroundTaskIdentifiers(rawValue: task.identifier) else {
             return logError("No Handler for: \(task.identifier)")
         }
+        logDebug("Handling: \(identifier)")
 
         switch identifier {
         case .decoySequence:
@@ -217,19 +218,23 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleENStatusCheck(task: BGProcessingTask) {
-        guard exposureManager.getExposureNotificationStatus() != .active else {
+        let status = exposureManager.getExposureNotificationStatus()
+        guard status != .active else {
             task.setTaskCompleted(success: true)
             return logDebug("`handleENStatusCheck` skipped as it is `active`")
         }
         guard let lastENStatusCheck = exposureController.lastENStatusCheckDate else {
-            return notifyUserENFrameworkDisabled(task: task)
+            exposureController.setLastEndStatusCheckDate(Date())
+            return
         }
+        exposureController.setLastEndStatusCheckDate(Date())
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
 
         guard lastENStatusCheck.advanced(by: timeInterval) < Date() else {
             task.setTaskCompleted(success: true)
             return logDebug("`handleENStatusCheck` skipped as it hasn't been 24h")
         }
+        logDebug("EN Status Check: triggering notification \(status)")
         notifyUserENFrameworkDisabled(task: task)
     }
 
@@ -250,7 +255,6 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.logError("Error posting notification: \(error.localizedDescription)")
                 task.setTaskCompleted(success: false)
             }
-            exposureController.setLastEndStatusCheckDate(Date())
         }
 
         userNotificationCenter.getAuthorizationStatus { status in
