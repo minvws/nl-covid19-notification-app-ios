@@ -3,6 +3,6 @@ echo "*********************"
 echo "*     CI tests      *"
 echo "*********************"
 
-# swift test --enable-code-coverage
+# make test
 
 exit 0
