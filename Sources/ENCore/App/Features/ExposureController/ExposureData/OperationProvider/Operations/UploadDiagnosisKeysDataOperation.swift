@@ -40,10 +40,16 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
         let rollingStartNumbers = keys.map { $0.rollingStartNumber }
 
         return Future { promise in
-            self.storageController.store(object: rollingStartNumbers,
-                                         identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) { error in
-                // cannot store - ignore and upload the whole set again next time
-                promise(.success(()))
+            self.storageController.requestExclusiveAccess { storageController in
+                let currentRollingStartNumbers = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) ?? []
+
+                let allRollingStartNumbers = rollingStartNumbers + currentRollingStartNumbers
+
+                self.storageController.store(object: allRollingStartNumbers,
+                                             identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) { error in
+                    // cannot store - ignore and upload the whole set again next time
+                    promise(.success(()))
+                }
             }
         }
         .share()
