@@ -1,4 +1,4 @@
-# Covid19 Notification App - iOS
+G# Covid19 Notification App - iOS
 
 ![CI](https://github.com/minvws/nl-covid19-notification-app-ios/workflows/CI/badge.svg)
 
@@ -26,9 +26,30 @@ In order to facilitate CI and reproducible builds (https://github.com/minvws/nl-
 
 ## OpenSSL
 
-Tihs project relies on OpenSSL to validate the KeySet signatures. OpenSSL binaries (v1.1.1d) are included and can be built using `make build_openssl`. By default the compiled binaries are part of the repo to reduce CI build times. Feel free to compile the binaries yourself.
+This project relies on OpenSSL to validate the KeySet signatures. OpenSSL binaries (v1.1.1d) are included and can be built using `make build_openssl`. By default the compiled binaries are part of the repo to reduce CI build times. Feel free to compile the binaries yourself.
 
 This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/)
+
+## Validate GAEN signature
+
+Both Apple and Google validate signatures when processing exposure keysets. These so-called GAEN signatures are generated using a private key on our backend. The public key is sent to Google and Apple and for every bundle-identifier, region-identifier, key-version combination they store a public key. 
+
+Examples: 
+
+- nl.rijksoverheid.en.test, region 204, key version v1 -> public key 1
+- nl.rijksoverheid.en, region 204, key version v1 -> public key 2
+
+To validate the generated GAEN signatures on mobile please execute the following steps:
+
+- Remove all test entitlements from Debug.entitlements, this leaves two entitlements left: com.apple.developer.exposure-notification and the data protection one
+- Compile the app with the `USE_DEVELOPER_MENU` environment variable set
+- Once ran, open the development menu, select "Erase Local Storage"
+- Validate the correct network environment in the development menu
+- Select "Download and Process New KeySets" from the development menu and look at the debugger
+- Make sure the number of valid keysets in > 0 (it's logged)
+- Make sure you don't see `Error: AddFile, ENErrorDomain:5 'Unable to find Application's Exposure Notification Configuration'`
+- In case of success you'll see an ENExposureSummary object in the logs
+
 
 ## Disclaimer
 
