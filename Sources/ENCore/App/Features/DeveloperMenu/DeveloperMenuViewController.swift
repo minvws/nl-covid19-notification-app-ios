@@ -181,7 +181,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.processPendingUploadRequests() }),
                 DeveloperItem(title: "Ignore 24h limit of 15 keysets/API calls",
                               subtitle: "Only works with test entitlements, currently set: \(getDailyLimit()), API calls made in last 24h: \(getNumberOfAPICallsInLast24Hours())",
-                              action: { [weak self] in self?.toggleDailyLimit() })
+                              action: { [weak self] in self?.toggleDailyLimit() }),
+                DeveloperItem(title: "Fetch TEKs using Test function",
+                              subtitle: "Only works with test entitlements, currently set: \(getUseTestDiagnosisKeys())",
+                              action: { [weak self] in self?.toggleGetTestDiagnosisKeys() })
             ]),
             ("Storage", [
                 DeveloperItem(title: "Erase Local Storage",
@@ -407,7 +410,23 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         #endif
     }
 
+    private func toggleGetTestDiagnosisKeys() {
+        if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys {
+            ExposureManagerOverrides.useTestDiagnosisKeys = !useTestDiagnosisKeys
+        }
+
+        ExposureManagerOverrides.useTestDiagnosisKeys = false
+    }
+
     // MARK: - Private
+
+    private func getUseTestDiagnosisKeys() -> String {
+        if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys {
+            return useTestDiagnosisKeys ? "Yes" : "No"
+        }
+
+        return "Yes"
+    }
 
     private func getDailyLimit() -> String {
         #if DEBUG

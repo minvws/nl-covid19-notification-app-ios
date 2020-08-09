@@ -9,6 +9,14 @@ import ENFoundation
 import ExposureNotification
 import Foundation
 
+#if DEBUG || USE_DEVELOPMENT_MENU
+
+    final class ExposureManagerOverrides {
+        static var useTestDiagnosisKeys: Bool?
+    }
+
+#endif
+
 final class ExposureManager: ExposureManaging, Logging {
 
     init(manager: ENManaging) {
@@ -94,7 +102,11 @@ final class ExposureManager: ExposureManaging, Logging {
         let retrieve: (@escaping ENGetDiagnosisKeysHandler) -> ()
 
         #if DEBUG || USE_DEVELOPER_MENU
-            retrieve = manager.getTestDiagnosisKeys(completionHandler:)
+            if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys, !useTestDiagnosisKeys {
+                retrieve = manager.getDiagnosisKeys(completionHandler:)
+            } else {
+                retrieve = manager.getTestDiagnosisKeys(completionHandler:)
+            }
         #else
             retrieve = manager.getDiagnosisKeys(completionHandler:)
         #endif

@@ -45,8 +45,8 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
 
                 let allRollingStartNumbers = rollingStartNumbers + currentRollingStartNumbers
 
-                self.storageController.store(object: allRollingStartNumbers,
-                                             identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) { error in
+                storageController.store(object: allRollingStartNumbers,
+                                        identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) { error in
                     // cannot store - ignore and upload the whole set again next time
                     promise(.success(()))
                 }
