@@ -124,16 +124,13 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     }
 
     private func uploadCodes() {
-        guard case let .success(key) = state else { return }
+        guard case let .success(key) = state else {
+            return logError("Error uploading keys: \(state)")
+        }
 
         exposureController.requestUploadKeys(forLabConfirmationKey: key) { [weak self] result in
-            switch result {
-            case .success:
-                self?.router?.didUploadCodes(withKey: key)
-            default:
-                // Do nothing
-                self?.logDebug("`requestUploadKeys` \(result)")
-            }
+            self?.logDebug("`requestUploadKeys` \(result)")
+            self?.router?.didUploadCodes(withKey: key)
         }
     }
 
