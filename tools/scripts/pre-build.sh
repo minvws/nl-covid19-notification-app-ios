@@ -44,6 +44,8 @@ yq w -i project.yml "targets.EN.settings.configs.Release.PROVISIONING_PROFILE_SP
 if [ ! -z "$USE_DEVELOPER_MENU" ]
 then
 	yq w -i project.yml -- "targets.ENCore.settings.base.OTHER_SWIFT_FLAGS" -DUSE_DEVELOPER_MENU
+else 
+      yq d -i project.yml -- "targets.ENCore.settings.base.OTHER_SWIFT_FLAGS"
 fi
 
 cat project.yml

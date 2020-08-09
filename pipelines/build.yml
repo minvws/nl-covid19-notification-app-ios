@@ -1,0 +1,77 @@
+parameters:
+- name: provisioningProfileSecureFile
+  type: string
+  default: ''
+- name: provisioningProfileName
+  type: string
+  default: ''
+- name: networkConfiguration
+  type: string
+- name: logLevel
+  type: string
+  default: 'error'
+- name: bundleDisplayName
+  type: string
+- name: bundleIdentifier
+  type: string
+- name: debugMenu
+  type: string
+  default: ''
+- name: signingOption
+  type: string
+  default: manual
+- name: runTests
+  type: boolean
+  default: false
+- name: packageApp
+  type: boolean
+  default: false
+- name: exportPath
+  type: string
+  default: ipa/default
+- name: exportMethod
+  type: string
+  default: development
+
+steps:
+- task: InstallAppleProvisioningProfile@1
+  displayName: 'Install provisioning profile'
+  inputs:
+    provProfileSecureFile: ${{ parameters.provisioningProfileSecureFile }}
+  condition: ne('${{ parameters.provisioningProfileSecureFile }}', '')
+- script: 'sh ./tools/scripts/pre-build.sh'
+  displayName: 'Setup build'
+  env:
+    NETWORK_CONFIGURATION: ${{ parameters.networkConfiguration }}
+    LOG_LEVEL: ${{ parameters.logLevel }}
+    BUILD_ID: $(Build.BuildId)
+    BUNDLE_IDENTIFIER: ${{ parameters.bundleIdentifier }}
+    BUNDLE_DISPLAY_NAME: ${{ parameters.bundleDisplayName }}
+    RELEASE_PROVISIONING_PROFILE: ${{ parameters.provisioningProfileName }}
+    USE_DEVELOPER_MENU: ${{ parameters.debugMenu }}
+- task: Xcode@5
+  displayName: 'Build'
+  inputs:
+    actions: 'clean build'
+    sdk: 'iphoneos'
+    configuration: 'Release'
+    xcWorkspacePath: 'EN.xcodeproj'
+    scheme: 'EN'
+    xcodeVersion: 'default'
+    provisioningProfileName: ${{ parameters.provisioningProfileName }}
+    signingOption: ${{ parameters.signingOption }}
+    packageApp: ${{ parameters.packageApp }}
+    exportPath: ${{ parameters.exportPath }}
+- task: Xcode@5
+  enabled: ${{ parameters.runTests }}
+  displayName: 'Test'
+  inputs:
+    actions: 'clean test'
+    sdk: iphoneos
+    configuration: Debug
+    xcWorkspacePath: EN.xcodeproj
+    scheme: ENCore
+    xcodeVersion: 'default'
+    destinationPlatformOption: iOS
+    destinationSimulators: 'iPhone 11,OS=13.6'
+    publishJUnitResults: true
