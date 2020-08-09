@@ -405,31 +405,37 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     private func toggleDailyLimit() {
-        #if DEBUG
+        #if DEBUG || USE_DEVELOPER_MENU
             ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets.toggle()
         #endif
     }
 
     private func toggleGetTestDiagnosisKeys() {
-        if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys {
-            ExposureManagerOverrides.useTestDiagnosisKeys = !useTestDiagnosisKeys
-        }
+        #if DEBUG || USE_DEVELOPER_MENU
+            if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys {
+                ExposureManagerOverrides.useTestDiagnosisKeys = !useTestDiagnosisKeys
+            }
 
-        ExposureManagerOverrides.useTestDiagnosisKeys = false
+            ExposureManagerOverrides.useTestDiagnosisKeys = false
+        #endif
     }
 
     // MARK: - Private
 
     private func getUseTestDiagnosisKeys() -> String {
-        if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys {
-            return useTestDiagnosisKeys ? "Yes" : "No"
-        }
+        #if DEBUG || USE_DEVELOPER_MENU
+            if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys {
+                return useTestDiagnosisKeys ? "Yes" : "No"
+            }
 
-        return "Yes"
+            return "Yes"
+        #endif
+
+        return "No"
     }
 
     private func getDailyLimit() -> String {
-        #if DEBUG
+        #if DEBUG || USE_DEVELOPER_MENU
             return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
         #else
             return "None"
