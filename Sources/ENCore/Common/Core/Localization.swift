@@ -192,7 +192,7 @@ extension String {
     static var helpFaqDeletionTitle: String { return Localization.string(for: "help.faq.deletion.title") }
     static var helpFaqDeletionDescription: String { return Localization.string(for: "help.faq.deletion.description") }
     static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
-    static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link") }
+    static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link", [currentLanguageIdentifier]) }
     static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
     static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link") }
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
@@ -449,5 +449,16 @@ extension String {
             let value = index < strings.count - 1 ? element + "\n" : element
             return NSMutableAttributedString(string: value)
         }
+    }
+
+    static var currentLanguageIdentifier: String {
+        let defaultLanguageIdentifier = "en"
+        let supportedLanguageCodes = Bundle.main.localizations
+
+        guard let languageCode = Locale.current.languageCode else {
+            return defaultLanguageIdentifier
+        }
+
+        return supportedLanguageCodes.contains(languageCode) ? languageCode : defaultLanguageIdentifier
     }
 }

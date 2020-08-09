@@ -128,7 +128,7 @@
 "help.faq.upload_keys.description" = "Puteți trimite o notificare altor persoane doar dacă ați fost testat și rezultă că aveți corona. În acest caz, GGD vă va suna. În timpul acestei conversații telefonice, puteți trimite notificarea cu ajutorul angajatului GGD. Faceți acest lucru prin partajarea cu GGD a codurilor pe care telefonul dvs. le-a făcut în ultimele 14 zile. <br> După ce a fost verificată cheia GGD, persoanele în apropierea cărora ați fost când ați fost contagios pot primi o notificare anonimă. Dar numai dacă și aceste persoane folosesc aplicația.";
 "help.faq.deletion.title" = "Cum îmi șterg datele?";
 "help.faq.privacy_policy.title" = "Declarația de confidențialitate";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Colofon";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Accesibilitate";

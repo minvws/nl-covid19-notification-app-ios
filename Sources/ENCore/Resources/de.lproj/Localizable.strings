@@ -128,7 +128,7 @@
 "help.faq.upload_keys.description" = "Sie können nur eine Nachricht an andere schicken, wenn sich nach einem Test herausstellt, dass Sie Corona haben. Der GGD ruft Sie in diesem Fall an. Während dieses Gesprächs können Sie mit Unterstützung des GGD-Mitarbeiters die Nachricht schicken. Das tun Sie, indem Sie die Codes, die Ihr Telefon in den letzten 14 Tagen erstellt hat, mit dem GGD teilen.<br>Nach der Kontrolle Ihres GGD-Schlüssels können die Personen, in deren Nähe Sie waren, als Sie ansteckend waren, eine anonyme Nachricht erhalten. Aber nur, wenn diese Personen auch die App verwenden.";
 "help.faq.deletion.title" = "Wie lösche ich meine Daten?";
 "help.faq.privacy_policy.title" = "Datenschutzerklärung";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Impressum";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Zugänglichkeit";

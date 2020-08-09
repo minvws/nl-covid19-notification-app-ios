@@ -128,7 +128,7 @@
 "help.faq.upload_keys.description" = "Sadece test edilipte Korona olduğunuz ortaya çıktığında başkalarına bir bildirim gönderebilirsiniz. Bu durumda GGD sizi arayacaktır. Bu telefon görüşmesi sırasında, bildirimi GGD çalışanının yardımıyla gönderebilirsiniz. Bunu, telefonunuzun son 14 gün içinde yaptığı kodları GGD ile paylaşarak yaparsınız. <br>GGD anahtarınız kontrol edildikten sonra, bulaşıcı olduğunuzda yakınında bulunduğunuz kişilere, anonim bir bildirim gönderilir. Ancak bu kişiler de uygulamayı kullanıyorsa.";
 "help.faq.deletion.title" = "Verilerimi nasıl silerim?";
 "help.faq.privacy_policy.title" = "Gizlilik beyanı";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Basım";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Ulaşılabilirlik";

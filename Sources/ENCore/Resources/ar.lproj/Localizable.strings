@@ -131,7 +131,7 @@
 "help.faq.upload_keys.description" = "تستطيع إرسال إشعار إلى الآخرين فقط إذا قمت بإجراء فحص وتبين أنك مصاب بكورونا. في هذه الحالة ستتصل المصلحة الصحية للبلدية بك. يمكنك من خلال هذه المكالمة إرسال الإشعار بمساعدة موظف المصلحة الصحية للبلدية. تقوم بذلك عن طريق مشاركة الرموز التي طورها هاتفك في الـ 14 يومًا الماضية مع المصلحة الصحية للبلدية.<br>. بعد التحقق من مفتاح المصلحة الصحية للبلدية الخاص بك، يمكن للأشخاص الذين كنت متواجدًا بالقرب منهم عندما كنت ناقلاً للعدوى استلام إشعار مجهول. فقط إذا كان هؤلاء الأشخاص يستخدمون التطبيق أيضًا.";
 "help.faq.deletion.title" = "كيف أقوم بحذف بياناتي؟";
 "help.faq.privacy_policy.title" = "بيان حماية الخصوصية";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "إشارة الناشر";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "إمكانية الدخول";

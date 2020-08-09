@@ -128,7 +128,7 @@
 "help.faq.upload_keys.description" = "Możesz wysłać innym powiadomienie tylko wtedy, gdy zrobiłeś test i okazało się, że masz koronawirusa. W tym przypadku GGD zadzwoni do Ciebie. Podczas rozmowy telefonicznej z pomocą pracownika GGD możesz wysłać powiadomienie. Robisz to dzieląc się z GGD kodami, które Twój telefon stworzył w ciągu ostatnich 14 dni.<br>Po sprawdzeniu Twojego klucza GGD, osoby, z którymi miałeś kontakt, gdy byłeś zarażony, mogą otrzymać anonimowe powiadomienie. Tylko, jeśli oni również używają aplikacji.";
 "help.faq.deletion.title" = "Jak mogę usunąć moje dane?";
 "help.faq.privacy_policy.title" = "Oświadczenie o ochronie prywatności";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Stopka";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Dostępność";

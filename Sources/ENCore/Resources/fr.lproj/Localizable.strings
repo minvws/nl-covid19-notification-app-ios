@@ -129,7 +129,7 @@
 "help.faq.upload_keys.description" = "Vous ne pouvez envoyer de notification aux autres que si vous avez fait un test de dépistage et qu'il s'avère que vous avez le coronavirus. Dans ce cas, le GGD vous appelle. Lors de cet entretien téléphonique, vous pouvez envoyer la notification en vous faisant assister par l'employé du GGD. Ceci se fait en partageant avec le GGD les codes créés par votre téléphone les 14 jours précédents.<br>Après contrôle de votre clé GGD, les personnes avec qui vous avez été en contact lorsque vous étiez contagieux/contagieuse recevront une notification anonyme. Ces personnes doivent toutefois aussi utiliser l'application.";
 "help.faq.deletion.title" = "Comment supprimer mes données ?";
 "help.faq.privacy_policy.title" = "Déclaration de protection de la vie privée";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Colophon";
 "help.faq.colofon.link" = "https://coronamelder.fr/colophon";
 "help.faq.accessibility.title" = "Accessibilité";

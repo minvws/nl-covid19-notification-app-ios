@@ -128,7 +128,7 @@
 "help.faq.upload_keys.description" = "You can only send a notification to others if you have coronavirus. In this case, you'll get a call from the GGD. During this call a GGD employee checks your GGD key. You can find this key in the app. Using this method we make sure only people who are really infected can send notifications to others.";
 "help.faq.deletion.title" = "How do I delete my data?";
 "help.faq.privacy_policy.title" = "Privacy policy";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Colophon";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Accessibility";

@@ -128,7 +128,7 @@
 "help.faq.upload_keys.description" = "Solo puedes mandar notificaciones a otras personas si te has hecho un test y resulta que tienes el coronavirus. En ese caso, te llamará el GGD (servicio de salud municipal). Durante la llamada, el asistente del GGD te ayudará a mandar la notificación. Para ello, debes compartir los códigos que tu teléfono ha creado en los últimos 14 días con el GGD.<br>Una vez confirmada tu clave GGD, las personas que estuvieron cerca de ti mientras estabas contagiado recibirán una notificación anónima, pero solo si también utilizan la app.";
 "help.faq.deletion.title" = "¿Cómo puedo eliminar mis datos?";
 "help.faq.privacy_policy.title" = "Declaración de privacidad";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Aviso legal";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Accesibilidad";

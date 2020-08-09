@@ -128,7 +128,7 @@
 "help.faq.upload_keys.description" = "Je kunt alleen een melding naar anderen versturen als je getest bent en corona blijkt te hebben. De GGD belt je in dat geval. Tijdens dit telefoongesprek kan je met hulp van de GGD-medewerker de melding versturen. Dit doe je door de codes die jouw telefoon in de afgelopen 14 dagen heeft gemaakt met de GGD te delen.<br>Nadat je GGD-sleutel is gecontroleerd kunnen de mensen bij wie je in de buurt bent geweest toen je besmettelijk was een anonieme melding krijgen. Alleen als deze mensen ook de app gebruiken.";
 "help.faq.deletion.title" = "Hoe verwijder ik mijn gegevens?";
 "help.faq.privacy_policy.title" = "Privacyverklaring";
-"help.faq.privacy_policy.link" = "https://coronamelder.nl/privacy";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Colofon";
 "help.faq.colofon.link" = "https://coronamelder.nl/colofon";
 "help.faq.accessibility.title" = "Toegankelijkheid";
