@@ -218,16 +218,18 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleENStatusCheck(task: BGProcessingTask) {
+        defer {
+            exposureController.setLastEndStatusCheckDate(Date())
+        }
+
         let status = exposureManager.getExposureNotificationStatus()
         guard status != .active else {
             task.setTaskCompleted(success: true)
             return logDebug("`handleENStatusCheck` skipped as it is `active`")
         }
         guard let lastENStatusCheck = exposureController.lastENStatusCheckDate else {
-            exposureController.setLastEndStatusCheckDate(Date())
             return
         }
-        exposureController.setLastEndStatusCheckDate(Date())
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
 
         guard lastENStatusCheck.advanced(by: timeInterval) < Date() else {
