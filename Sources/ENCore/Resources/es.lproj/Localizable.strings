@@ -8,7 +8,7 @@
 "testVersionTitle" = "Versión de prueba e investigación %@ (%@)";
 
 "help.faq.testVersion.title" = "¿Qué significa la versión de prueba e investigación?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "¿Qué hacer en este caso?";
 "moreInformation.situation.step1" = "¿No muestras síntomas? Hazte un test de corona y quédate en casa hasta que sepas los resultados";
@@ -130,9 +130,9 @@
 "help.faq.privacy_policy.title" = "Declaración de privacidad";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Aviso legal";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accesibilidad";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Recibirás una notificación cuando hayas corrido un riesgo de contagio. Esto ocurre si has estado por lo menos 15 minutos cerca de alguien que resultó luego tener el coronavirus. Naturalmente, esto solo funciona si la persona también tiene la app. Recibirás una notificación o no dependiendo de la potencia de la señal Bluetooth y de la duración del contacto con la otra persona. ¿Te ha pasado alguien en bicicleta? Entonces no recibirás una notificación. Estuvisteis cerca el uno del otro, así que la señal Bluetooth era fuerte, pero el contacto fue tan corto que no corres demasiado riesgo de contagiarte. ¿Estabas sentado con alguien en el tren o en la oficina? Entonces puede que recibas una notificación más tarde. La señal Bluetooth fue lo suficientemente potente y estuvisteis mucho tiempo cerca el un del otro.";
 "help.faq.bluetooth.title" = "¿Funciona Bluetooth a través de paredes?";
 "help.faq.bluetooth.description" = "Sí, pero la señal se vuelve muy débil. Bluetooth funciona mejor si tu teléfono se encuentra en el mismo espacio que el teléfono de otra persona. Por ejemplo, la probabilidad de que recibas la señal Bluetooth de tus vecinos es mínima y, por tanto, la probabilidad de que recibas una notificación si tu vecino resulta tener el coronavirus y no habéis estado en el mismo espacio es también mínima.";

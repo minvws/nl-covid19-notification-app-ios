@@ -8,7 +8,7 @@
 "testVersionTitle" = "Versiunea de testare și de investigare %@ (%@)";
 
 "help.faq.testVersion.title" = "Ce înseamnă versiunea de testare și de investigare?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Ce puteți face în această situație?";
 "moreInformation.situation.step1" = "Nu aveți nici un simptom? Faceți un test pentru corona și rămâneți acasă până aflați rezultatele";
@@ -130,9 +130,9 @@
 "help.faq.privacy_policy.title" = "Declarația de confidențialitate";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Colofon";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accesibilitate";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Veți primi notificări după ce ați fost expus unui risc ridicat de contaminare. Acest lucru se întâmplă dacă ați fost pentru cel puțin 15 minute aproape de cineva care se dovedește a fi contaminat cu corona. Bineînțeles, doar dacă și acea persoană folosește aplicația. Primirea unei notificări depinde de puterea semnalului Bluetooth. Și de durata contactului. A trecut cineva cu bicicleta pe stradă? Atunci nu veți primi o notificare ulterior. Ați fost aproape unul de altul, deci semnalul Bluetooth a fost puternic. Dar contactul a durat atât de puțin timp încât nu aveți nici un risc suplimentar de contaminare. Ați stat aproape de cineva în tren sau la birou? Atunci puteți ulterior primi o notificare. Semnalul Bluetooth a fost suficient de puternic și ați fost aproape unul de celălalt mult timp.";
 "help.faq.bluetooth.title" = "Semnalul Bluetooth poate trece prin pereți?";
 "help.faq.bluetooth.description" = "Da, dar semnalul este foarte slab. Bluetooth funcționează cel mai bine dacă telefonul dvs. se află în aceeași cameră cu telefonul unei alte persoane. De exemplu, șansele sunt foarte mici ca aplicația dvs. să primească semnalul Bluetooth de la vecini. Și, prin urmare, șansa este foarte mică să primiți o notificare dacă vecinul dvs. se dovedește a avea corona dar nu ați fost în aceeași cameră.";

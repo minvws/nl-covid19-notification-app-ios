@@ -8,7 +8,7 @@
 "testVersionTitle" = "Version test et analyse %@ (%@)";
 
 "help.faq.testVersion.title" = "Que veut dire version test et analyse ?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Que pouvez-vous faire dans une telle situation ?";
 "moreInformation.situation.step1" = "Vous n'avez aucun symptôme ? Faites un test corona et restez chez vous jusqu'à ce que vous receviez le résultat";
@@ -133,7 +133,7 @@
 "help.faq.colofon.title" = "Colophon";
 "help.faq.colofon.link" = "https://coronamelder.fr/colophon";
 "help.faq.accessibility.title" = "Accessibilité";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Vous recevez une notification après avoir couru un risque supplémentaire de contamination. Ceci se fait si vous vous trouvez au moins 15 minutes près de quelqu'un qui s'avère par la suite être contaminé. Et naturellement, uniquement si cette personne utilise aussi l'application. Le fait de recevoir une notification dépend de la puissance du signal Bluetooth et de la durée de votre contact. Quelqu'un vous dépasse en vélo en rue ? Vous ne recevrez pas de notification. Vous étiez près l'un de l'autre, donc le signal Bluetooth était puissant, mais le contact a été tellement court que vous n'avez aucun risque d'avoir été contaminé. Vous étiez assis(e) près de quelqu'un dans le train ou au bureau ? Alors vous pourriez recevoir une notification par la suite. Le signal Bluetooth était assez puissant et vous étiez proches l'un de l'autre pendant plus longtemps.";
 "help.faq.bluetooth.title" = "Le Bluetooth fonctionne-t-il à travers les murs ?";
 "help.faq.bluetooth.description" = "Oui, mais le signal est alors très faible. Le Bluetooth fonctionne mieux si votre téléphone se trouve dans la même pièce que le téléphone d'une autre personne. Par exemple, il y a très peu de risques que votre application réceptionne le signal Bluetooth de vos voisins. Et le risque est également minime que vous receviez une notification si votre voisin a le coronavirus et que vous n'avez pas été dans la même pièce que lui.";

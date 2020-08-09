@@ -8,7 +8,7 @@
 "testVersionTitle" = "Wersja testowa i badawcza %@ (%@)";
 
 "help.faq.testVersion.title" = "Co oznacza wersja testowa i badawcza?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Co możesz zrobić w tej sytuacji?";
 "moreInformation.situation.step1" = "Nie masz żadnych dolegliwości? Zrób test na obecność koronawirusa i pozostań w domu do momentu otrzymania wyników";
@@ -130,9 +130,9 @@
 "help.faq.privacy_policy.title" = "Oświadczenie o ochronie prywatności";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Stopka";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Dostępność";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Otrzymasz powiadomienie, jeśli byłeś narażony na szczególne ryzyko zarażenia. Ma to miejsce, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której wykryto koronawirusa. I oczywiście wyłącznie, gdy ta osoba również używa tej aplikacji. To czy otrzymasz powiadomienie zależy od siły sygnału Bluetooth oraz od czasu trwania kontaktu. Na ulicy przejeżdżał ktoś na rowerze? Nie otrzymasz później powiadomienia. Znajdowaliście się blisko siebie, więc sygnał Bluetooth był silny. Jednak kontakt był na tyle krótki, że nie pojawiło się szczególne ryzyko zarażenia. Siedziałeś obok kogoś w pociągu lub biurze? Zatem możesz otrzymać później powiadomienie. Sygnał Bluetooth był wystarczająco silny i znajdowaliście się przez dłuższy czas blisko siebie.";
 "help.faq.bluetooth.title" = "Czy Bluetooth działa przez ściany?";
 "help.faq.bluetooth.description" = "Tak, jednak sygnał jest wtedy naprawdę słaby. Bluetooth działa najlepiej, gdy Twój telefon znajduje się w tym samym pomieszczeniu, co telefon innej osoby. Na przykład jest bardzo mało prawdopodobne, aby Twoja aplikacja odbierała sygnał Bluetooth od Twoich sąsiadów. Przez co istnieje również bardzo mała szansa, że otrzymasz powiadomienie, jeśli okaże się, że Twój sąsiad ma koronawirusa, a nie przebywaliście w tym samym pomieszczeniu.";

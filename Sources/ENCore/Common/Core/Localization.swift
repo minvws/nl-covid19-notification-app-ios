@@ -194,12 +194,12 @@ extension String {
     static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
     static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link", [currentLanguageIdentifier]) }
     static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
-    static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link") }
+    static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link", [currentLanguageIdentifier]) }
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
-    static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
+    static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link", [currentLanguageIdentifier]) }
 
     static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
-    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link") }
+    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link", [currentLanguageIdentifier]) }
 
     // MARK: - About - What the app do
 

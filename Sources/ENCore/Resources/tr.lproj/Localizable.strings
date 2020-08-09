@@ -8,7 +8,7 @@
 "testVersionTitle" = "Test ve araştırma versiyonu %@ (%@)";
 
 "help.faq.testVersion.title" = "Test ve araştırma versiyonu ne anlama gelir?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Bu durumda ne yapabilirsiniz?";
 "moreInformation.situation.step1" = "Şikayetiniz yok mu? Korona testi yaptırın ve sonucu öğrenene kadar evde kalın.";
@@ -130,9 +130,9 @@
 "help.faq.privacy_policy.title" = "Gizlilik beyanı";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Basım";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Ulaşılabilirlik";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Fazladan bir enfeksiyon riskiyle karşılaştıktan sonra bir bildirim alırsınız. Bu en az 15 dakika boyunca korona olduğu ortaya çıkan birine yakın olmanız durumunda olur. Ve tabii ki ancak bu kişi de uygulamayı kullanıyorsa. Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne bağlıdır. Ve iletişim sürenize. Birisi sokakta bisikletle yanınızdan mı geçti? O zaman daha sonra size bildirim gelmez. Birbirine çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski olmadı. Trende ya da ofiste birine yakınında mıydınız? O zaman daha sonra bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
 "help.faq.bluetooth.title" = "Bluetooth sinyali duvardan geçer mi?";
 "help.faq.bluetooth.description" = "Evet, ancak sinyal çok zayıflar. Bluetooth, en iyi sonucu telefonunuz başka bir kişinin telefonuyla aynı odada bulunuyorsa verir. Örneğin, uygulamanızın komşularınızdan Bluetooth sinyali alması ihtimali çok düşüktür. Bu nedenle, komşunuzda Korona olduğu ortaya çıkarsa ve aynı odada bulunmuyorsanız, bildirim alma şansı çok azdır.";

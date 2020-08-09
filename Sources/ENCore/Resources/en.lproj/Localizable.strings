@@ -8,7 +8,7 @@
 "testVersionTitle" = "Test and research version %@ (%@)";
 
 "help.faq.testVersion.title" = "What does test and research version mean?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "What can you do in this situation?";
 "moreInformation.situation.step1" = "No symptoms? Get tested for coronavirus and stay home until you get the results";
@@ -130,9 +130,9 @@
 "help.faq.privacy_policy.title" = "Privacy policy";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Colophon";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accessibility";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent 15 minutes near someone who later turns out to have coronavirus. That person must be using the app too. Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter. Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But you were near each other for such a short time that your risk of infection is very low. Were you near someone on the train or in the office? Then you could get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
 "help.faq.bluetooth.title" = "Can the Bluetooth signal pass through walls?";
 "help.faq.bluetooth.description" = "Yes, but the signal would be very weak. Bluetooth works best when your phone is in the same room as another person's phone. So the chance of you getting your neighbours' Bluetooth signal is very low. That also means you probably won't get a notification if your neighbour has corona and you haven't been in the same room.";

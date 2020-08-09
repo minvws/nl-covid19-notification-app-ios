@@ -8,7 +8,7 @@
 "testVersionTitle" = "Версия за тестване и изследване %@ (%@)";
 
 "help.faq.testVersion.title" = "Какво означава версия за тестване и изследване?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Какво можеш да направиш в тази ситуация?";
 "moreInformation.situation.step1" = "Нямаш никакви оплаквания? Направи си тест за коронавирус и остани вкъщи, докато научиш резултата";
@@ -130,9 +130,9 @@
 "help.faq.privacy_policy.title" = "Декларация за поверителност";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Библиография";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Достъпност";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Ще получиш известие, след като си бил изложен на повишен риск от заразяване. Това се случва, когато за повече от 15 минути си бил близо до някого, при когото по-късно е установен коронавирусът. Разбира се, само ако това лице също използва приложението. Дали ще получиш известие, зависи от силата на Bluetooth сигнала. И от продължителността на контакта ви. Ако някой е минал покрай теб на колело на улицата, няма да получиш известие. Били сте близо един до друг, така че Bluetooth сигналът е бил силен. Контактът обаче е бил толкова кратък, че не си бил изложен на повишен риск от заразяване. Ако си седял близо до някого във влака или в офиса, по-късно може да ти бъде изпратено известие. Bluetooth сигналът е бил достатъчно силен, а вие сте стояли продължително време близо един до друг.";
 "help.faq.bluetooth.title" = "Bluetooth работи ли през стени?";
 "help.faq.bluetooth.description" = "Да, но тогава сигналът отслабва значително. Bluetooth работи най-добре, когато твоят телефон се намира в едно и също помещение с телефона на друго лице. Например, вероятността приложението ти да получава Bluetooth сигнал от съседите е твърде малка. По тази причина е много малко вероятно да ти бъде изпратено известие, ако съседът ти се окаже с коронавирус и не сте били в едно и също помещение.";

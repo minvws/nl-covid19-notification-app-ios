@@ -8,7 +8,7 @@
 "testVersionTitle" = "إصدار الفحص والبحث %@ (%@)";
 
 "help.faq.testVersion.title" = "ماذا يعني إصدار الفحص والبحث؟";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "ما الذي يمكنك فعله في هذه الحالة؟";
 "moreInformation.situation.step1" = "أليست لديك أي أعراض؟ قم بإجراء فحص كورونا والزم المنزل حتى تستلم النتيجة";
@@ -133,9 +133,9 @@
 "help.faq.privacy_policy.title" = "بيان حماية الخصوصية";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "إشارة الناشر";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "إمكانية الدخول";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "تستلم إشعارًا بعدما كنت معرضًا لزيادة خطر الإصابة بالعدوى. يحدث ذلك إذا تواجدت على الأقل لمدة 15 دقيقة من شخص تبين لاحقاً أنه مصاب بكورونا. بطبيعة الحال يحدث هذا الأمر فقط إن كان ذلك الشخص من مستخدمي التطبيق أيضًا. تتوقف عملية استلامك للإشعار على مدى قوة إشارة بلوتوث ومدة احتكاككم. هل مر بجوارك شخص  بدراجة هوائية؟ لن يصلك إشعار في وقت لاحق. كنتما قريبين من بعضكما ووصلت إشارة بلوتوث إلى الآخر. إلا أن الاحتكاك استمر لفترة قصيرة بحيث أنك لم تتعرض إلى زيادة خطر الإصابة. هل كنت جالسًا بالقرب من شخص ما في القطار أو المكتب؟ يصلك إشعار في وقت لاحق في هذه الحالة. كانت قوة البلوتوث كافية لتغطي المسافة وكنتم قريبين من بعض لفترة طويلة.";
 "help.faq.bluetooth.title" = "هل بإمكان إشارة البلوتوث اختراق الجدران؟";
 "help.faq.bluetooth.description" = "نعم، إلا أن الإشارة تصبح ضعيفة جداً في هذا الحالة. يعمل بلوتوث على أكمل وجه عندما يتواجد هاتفك في نفس الغرفة التي يتواجد فيها هاتف الشخص الآخر. فعلى سبيل المثال، احتمالية استلامك لإشارة بلوتوث من الجيران ضئيلة جداً. لذلك فإن احتمال استلامك لتحذير ضئيلة أيضًا بعد أن تبين أن جارك مصاب بكورونا ولم تكونوا متواجدين في نفس الغرفة.";

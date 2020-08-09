@@ -8,7 +8,7 @@
 "testVersionTitle" = "Test- und Untersuchungsversion %@ (%@)";
 
 "help.faq.testVersion.title" = "Was bedeutet Test- und Untersuchungsversion?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/test-en-onderzoeksversie";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Was können Sie in dieser Situation tun?";
 "moreInformation.situation.step1" = "Haben Sie keine Beschwerden? Machen Sie einen Coronatest und bleiben Sie zu Hause, bis Sie das Ergebnis haben";
@@ -130,9 +130,9 @@
 "help.faq.privacy_policy.title" = "Datenschutzerklärung";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Impressum";
-"help.faq.colofon.link" = "https://coronamelder.nl/colofon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Zugänglichkeit";
-"help.faq.accessibility.link" = "https://coronamelder.nl/toegankelijkheidsverklaring";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Sie erhalten eine Nachricht, nachdem sich für Sie ein zusätzliches Infektionsrisiko ergeben hat. Das ist der Fall, wenn Sie mindestens 15 Minuten lang ganz in der Nähe einer Person waren, bei der später Corona festgestellt wurde. Und natürlich nur, wenn diese Person auch die App benutzt. Ob Sie eine Nachricht erhalten, hängt van der Stärke des Bluetooth-Signals sowie von der Dauer des Kontaktmoments ab. Fuhr jemand auf der Straße mit dem Rad vorbei? Dann bekommen Sie später keine Nachricht. Sie waren dicht beieinander, also war das Bluetooth-Signal stark. Aber der Kontakt war so kurz, dass sich für Sie kein zusätzliches Infektionsrisiko ergeben hat. Saßen Sie im Zug oder Büro dicht beieinander? Dann können Sie später wohl eine Nachricht bekommen. Das Bluetooth-Signal war stark genug, und Sie waren längere Zeit dicht beieinander.";
 "help.faq.bluetooth.title" = "Funktioniert Bluetooth durch Wände hindurch?";
 "help.faq.bluetooth.description" = "Ja, aber das Signal ist dann sehr schwach. Bluetooth funktioniert am besten, wenn Ihr Telefon im selben Raum ist wie das Telefon der anderen Person. Es ist z. B. sehr unwahrscheinlich, dass Ihre App das Bluetooth-Signal der Nachbarn auffängt. Deshalb ist es auch sehr unwahrscheinlich, dass Sie eine Nachricht erhalten, wenn sich Ihr Nachbar mit Corona infiziert hat und Sie nicht im selben Raum waren.";
