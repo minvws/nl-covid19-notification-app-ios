@@ -9,7 +9,7 @@ import ENFoundation
 import ExposureNotification
 import Foundation
 
-#if DEBUG || USE_DEVELOPMENT_MENU
+#if DEBUG || USE_DEVELOPER_MENU
 
     final class ExposureManagerOverrides {
         static var useTestDiagnosisKeys: Bool?
