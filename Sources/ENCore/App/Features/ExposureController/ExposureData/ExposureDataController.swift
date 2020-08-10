@@ -82,6 +82,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastENStatusCheck, completion: { _ in })
     }
 
+    func setDisplayedExposureNotification() {
+        guard let exposureReport = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport) else {
+            return logDebug("Not setting `setDisplayedExposureNotification` as no  `ExposureReport` found")
+        }
+        let updatedExposureReport = ExposureReport(date: exposureReport.date, duration: exposureReport.duration, displayedNotification: true)
+        storageController.store(object: updatedExposureReport, identifiedBy: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
+    }
+
     func removeLastExposure() -> AnyPublisher<(), Never> {
         return Future { promise in
             self.storageController.removeData(for: ExposureDataStorageKey.lastExposureReport) { _ in
