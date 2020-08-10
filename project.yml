@@ -65,7 +65,6 @@ targets:
         UIUserInterfaceStyle: Light
         UIViewControllerBasedStatusBarAppearance: true
         ENDeveloperRegion: nl
-        SHARE_LOGS_ENABLED: true
     platform: iOS
     scheme:
       gatherCoverageData: true
