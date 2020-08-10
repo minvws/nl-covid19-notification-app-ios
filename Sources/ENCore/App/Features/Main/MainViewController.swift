@@ -67,10 +67,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             exposureController.requestExposureNotificationPermission(nil)
         }
 
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didQuadrupleTap(sender:)))
-        gestureRecognizer.numberOfTapsRequired = 4
+        if let shareLogs = Bundle.main.infoDictionary?["SHARE_LOGS_ENABLED"] as? String, shareLogs == "true" {
+            let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didQuadrupleTap(sender:)))
+            gestureRecognizer.numberOfTapsRequired = 4
 
-        view.addGestureRecognizer(gestureRecognizer)
+            view.addGestureRecognizer(gestureRecognizer)
+        }
     }
 
     // MARK: - Internal
