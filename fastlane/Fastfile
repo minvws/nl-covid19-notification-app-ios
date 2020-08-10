@@ -56,21 +56,5 @@ platform :ios do
     )
   end
 
-
-  # add FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD as environment variable
-  desc "Build release version"
-  lane :release_production do 
-    build_app(
-      scheme: "EN", 
-      configuration: "Release",
-      include_bitcode: true, 
-      output_directory: "./.build", 
-      export_method: "app-store"
-    )
-    upload_to_testflight(
-      skip_waiting_for_build_processing: true)
-
-  end
-
 end
  
