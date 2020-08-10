@@ -50,14 +50,15 @@ enum EnableSetting {
 struct EnableSettingModel {
     let title: String
     let steps: [EnableSettingStep]
-    let action: EnableSettingAction
+    let action: EnableSettingAction?
     let actionTitle: String
 
     static var enableExposureNotifications: (Theme) -> EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black) }
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
                                           action: nil)
@@ -75,16 +76,19 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black) }
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
 
-            let step1 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep1),
-                                          action: nil)
-            let step2 = EnableSettingStep(description: fromHtml(.enableSettingsBluetoothStep2),
-                                          action: .toggle(description: .enableSettingsBluetoothStep2ActionTitle))
+            let step1 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow1),
+                                          action: .custom(image: Image.named("SettingsIcon"), description: .enableBluetoothSettingTitleSettingRow1, showChevron: false))
+            let step2 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow2),
+                                          action: .custom(image: Image.named("BluetoothIcon"), description: .enableBluetoothSettingTitleSettingRow2, showChevron: true))
+            let step3 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow3),
+                                          action: .toggle(description: .enableBluetoothSettingTitleSettingRow3))
 
             return .init(title: .enableSettingsBluetoothTitle,
-                         steps: [step1, step2],
-                         action: .openSettings,
+                         steps: [step1, step2, step3],
+                         action: nil,
                          actionTitle: .enableSettingsBluetoothAction)
         }
     }
@@ -93,7 +97,8 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black) }
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep1),
                                           action: nil)
@@ -114,6 +119,7 @@ struct EnableSettingStep {
     enum Action {
         case toggle(description: String)
         case cell(description: String)
+        case custom(image: UIImage?, description: String, showChevron: Bool)
     }
 
     let description: NSAttributedString

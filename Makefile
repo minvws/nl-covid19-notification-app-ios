@@ -26,6 +26,10 @@ install_dev_deps: build_xcodegen build_swiftformat build_mockolo
 	@echo "All dependencies are installed"
 	@echo "You're ready to go"
 
+ci_build: install_ci_deps
+	@echo "CI build"
+	xcodebuild -project EN.xcodeproj -scheme ENCore
+
 install_ci_deps: build_xcodegen build_mockolo
 	@echo "All CI dependencies are installed"
 
@@ -49,6 +53,10 @@ clean_snapshots:
 	@echo "Removing all __Snapshot__ folders"
 	@rm -rf `find Sources/ -type d -name __Snapshots__`
 	@echo "Re-run tests for current Snapshot tests to be generated"
+
+buildinfo:
+	@echo "Generating buildinfo.."
+	bash tools/scripts/buildinfo.sh release > .buildinfo
 
 touch_mock_files_if_needed:
 ifneq ($(wildcard ${EN_MOCKS_PATH}), "")

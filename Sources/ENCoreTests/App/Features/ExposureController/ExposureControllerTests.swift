@@ -16,6 +16,7 @@ final class ExposureControllerTests: TestCase {
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
     private let userNotificationCenter = UserNotificationCenterMock()
+    private var mutableBluetoothStateStream = MutableBluetoothStateStreamingMock()
     private let networkStatusStream = NetworkStatusStreamingMock(networkStatusStream: CurrentValueSubject<Bool, Never>(true).eraseToAnyPublisher())
 
     override func setUp() {
@@ -26,12 +27,13 @@ final class ExposureControllerTests: TestCase {
                                         exposureManager: exposureManager,
                                         dataController: dataController,
                                         networkStatusStream: networkStatusStream,
-                                        userNotificationCenter: userNotificationCenter)
+                                        userNotificationCenter: userNotificationCenter,
+                                        mutableBluetoothStateStream: mutableBluetoothStateStream)
 
         exposureManager.activateCallCount = 0
         mutableStateStream.updateCallCount = 0
 
-        dataController.lastSuccessfulFetchDate = Date()
+        dataController.lastSuccessfulProcessingDate = Date()
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher() }
 
         let stream = PassthroughSubject<ExposureState, Never>()
@@ -58,6 +60,14 @@ final class ExposureControllerTests: TestCase {
 
         XCTAssertEqual(exposureManager.activateCallCount, 1)
         XCTAssert(mutableStateStream.updateCallCount > 1)
+    }
+
+    func test_deactive_callsDeactivate() {
+        XCTAssertEqual(exposureManager.deactivateCallCount, 0)
+
+        controller.deactivate()
+
+        XCTAssertEqual(exposureManager.deactivateCallCount, 1)
     }
 
     func test_requestExposureNotificationPermission_callsManager_updatesStream() {
@@ -312,7 +322,7 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
-        dataController.lastSuccessfulFetchDate = Date().addingTimeInterval(-24 * 60 * 60 - 1)
+        dataController.lastSuccessfulProcessingDate = Date().addingTimeInterval(-24 * 60 * 60 - 1)
         exposureManager.activateHandler = { $0(.active) }
 
         controller.activate()

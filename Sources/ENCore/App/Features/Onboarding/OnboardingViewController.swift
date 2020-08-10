@@ -16,6 +16,8 @@ protocol OnboardingRouting: Routing {
     func routeToConsent(animated: Bool)
     func routeToConsent(withIndex index: Int, animated: Bool)
     func routeToHelp()
+    func routeToBluetoothSettings()
+    func routeToPrivacyAgreement()
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable, Logging {
@@ -23,7 +25,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     weak var router: OnboardingRouting?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
-         listener: OnboardingListener, theme: Theme) {
+        listener: OnboardingListener, theme: Theme) {
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         super.init(theme: theme)
@@ -43,8 +45,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     // MARK: - OnboardingStepListener
 
     func onboardingStepsDidComplete() {
-
-        router?.routeToConsent(animated: true)
+        router?.routeToPrivacyAgreement()
     }
 
     func nextStepAtIndex(_ index: Int) {
@@ -61,6 +62,12 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         router?.routeToConsent(withIndex: step.rawValue, animated: true)
     }
 
+    // MARK: - PrivacyAgreementListener
+
+    func privacyAgreementDidComplete() {
+        router?.routeToConsent(animated: true)
+    }
+
     // MARK: - HelpListener
 
     func displayHelp() {
@@ -69,6 +76,28 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     func helpRequestsDismissal(shouldHideViewController: Bool) {
         // empty body
+    }
+
+    func displayBluetoothSettings() {
+        router?.routeToBluetoothSettings()
+    }
+
+    func isBluetoothEnabled(_ completion: @escaping ((Bool) -> ())) {
+        onboardingConsentManager.isBluetoothEnabled { enabled in
+            completion(enabled)
+        }
+    }
+
+    func bluetoothSettingsDidComplete() {
+        dismiss(animated: true) {
+            self.onboardingConsentManager.getNextConsentStep(.bluetooth, skippedCurrentStep: false) { nextStep in
+                if let nextStep = nextStep {
+                    self.router?.routeToConsent(withIndex: nextStep.rawValue, animated: true)
+                } else {
+                    self.listener?.didCompleteOnboarding()
+                }
+            }
+        }
     }
 
     func helpRequestsEnableApp() {
@@ -88,17 +117,17 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         }
     }
 
-    func displayShareApp(completion: @escaping (() -> ())) {
-        onboardingConsentManager.getAppStoreUrl { url in
-            if let url = url, let storeLink = URL(string: url) {
-                let activityVC = UIActivityViewController(activityItems: [storeLink], applicationActivities: nil)
-                activityVC.completionWithItemsHandler = { _, _, _, _ in
-                    completion()
+    func displayShareApp(completion: (() -> ())?) {
+        if let storeLink = URL(string: .shareAppUrl) {
+            let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
+            activityVC.completionWithItemsHandler = { _, _, _, _ in
+                if let handler = completion {
+                    handler()
                 }
-                self.present(activityVC, animated: true)
-            } else {
-                self.logError("Could retreive a AppStoreUrl")
             }
+            self.present(activityVC, animated: true)
+        } else {
+            self.logError("Couldn't retreive a valid url")
         }
     }
 

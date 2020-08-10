@@ -53,6 +53,16 @@ public func webViewLoadingEnabled() -> Bool {
     return true
 }
 
+public func localization() -> String? {
+    #if DEBUG
+        // Not needed but makes the compiler happy during Debug mode
+        if let overriddenLocalization = LocalizationOverrides.overriddenLocalization {
+            return overriddenLocalization
+        }
+    #endif
+    return nil
+}
+
 #if DEBUG
     /// Overriden date and time related properties
     public struct DateTimeTestingOverrides {
@@ -68,6 +78,10 @@ public func webViewLoadingEnabled() -> Bool {
     /// Overrides animation
     public struct WebViewTestingOverrides {
         public static var webViewLoadingEnabled: Bool?
+    }
+
+    public struct LocalizationOverrides {
+        public static var overriddenLocalization: String?
     }
 #endif
 

@@ -31,6 +31,10 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
         internalView.tableView.dataSource = self
         internalView.tableView.delegate = self
 
+        aboutManager.didUpdate = {
+            self.internalView.tableView.reloadData()
+        }
+
         navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
     }
 
@@ -262,9 +266,15 @@ private class AboutTableViewCell: UITableViewCell {
 
     func setupConstraints() {
         separatorView.snp.makeConstraints { maker in
-            maker.leading.equalToSuperview().inset(16)
+            maker.leading.equalToSuperview().inset(14)
             maker.trailing.bottom.equalToSuperview()
             maker.height.equalTo(1)
+        }
+
+        textLabel?.snp.makeConstraints { maker in
+            maker.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.bottom.top.equalToSuperview().inset(12)
         }
     }
 

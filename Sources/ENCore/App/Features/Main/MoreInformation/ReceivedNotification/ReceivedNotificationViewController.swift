@@ -40,10 +40,10 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
                                                             action: #selector(didTapCloseButton(sender:)))
 
         internalView.contactButtonActionHandler = { [weak self] in
-            if let url = URL(string: .helpDeskPhoneNumber), UIApplication.shared.canOpenURL(url) {
+            if let url = URL(string: .coronaTestPhoneNumber), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                self?.logError("Unable to open \(String.helpDeskPhoneNumber)")
+                self?.logError("Unable to open \(String.coronaTestPhoneNumber)")
             }
         }
     }
@@ -89,9 +89,11 @@ private final class ReceivedNotificationView: View {
 
         infoView.addSections([
             notificationExplanation(),
-            complaints(),
+            situation(),
+            measures(),
             doCoronaTest(),
-            info()
+            info(),
+            complaints()
         ])
 
         addSubview(infoView)
@@ -124,6 +126,32 @@ private final class ReceivedNotificationView: View {
 
         return InfoSectionTextView(theme: theme,
                                    title: .moreInformationComplaintsTitle,
+                                   content: bulletList)
+    }
+
+    private func situation() -> View {
+        let list: [String] = [
+            .moreInformationSituationStep1,
+            .moreInformationSituationStep2,
+            .moreInformationSituationStep3
+        ]
+        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+
+        return InfoSectionTextView(theme: theme,
+                                   title: .moreInformationSituationTitle,
+                                   content: bulletList)
+    }
+
+    private func measures() -> View {
+        let list: [String] = [
+            .moreInformationNotificationMeasuresStep1,
+            .moreInformationNotificationMeasuresStep2,
+            .moreInformationNotificationMeasuresStep3
+        ]
+        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+
+        return InfoSectionTextView(theme: theme,
+                                   title: .moreInformationNotificationMeasuresTitle,
                                    content: bulletList)
     }
 

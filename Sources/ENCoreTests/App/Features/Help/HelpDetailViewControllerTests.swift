@@ -14,7 +14,7 @@ import XCTest
 final class HelpDetailViewControllerTests: TestCase {
 
     private var helpManager: HelpManager!
-    private let listern = HelpDetailListenerMock()
+    private let listener = HelpDetailListenerMock()
 
     // MARK: - Setup
 
@@ -32,8 +32,8 @@ final class HelpDetailViewControllerTests: TestCase {
 
     func test_snapshot_helpDetailViewController() {
         for (index, question) in helpManager.questions.enumerated() {
-            let viewController = HelpDetailViewController(listener: listern, shouldShowEnableAppButton: false, question: question, theme: theme)
-            assertSnapshot(matching: viewController, as: .image(), named: "\(#function)\(index)")
+            let viewController = HelpDetailViewController(listener: listener, shouldShowEnableAppButton: false, question: question, theme: theme)
+            snapshots(matching: viewController, named: "\(#function)\(index)")
         }
     }
 }

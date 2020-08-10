@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import UIKit
@@ -13,11 +14,18 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
     init(listener: EnableSettingListener,
          theme: Theme,
-         setting: EnableSetting) {
+         setting: EnableSetting,
+         bluetoothStateStream: BluetoothStateStreaming) {
         self.listener = listener
         self.setting = setting
+        self.bluetoothStateStream = bluetoothStateStream
 
         super.init(theme: theme)
+        presentationController?.delegate = self
+    }
+
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - ViewController Lifecycle
@@ -36,6 +44,13 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
         internalView.navigationBar.topItem?.rightBarButtonItem?.target = self
         internalView.navigationBar.topItem?.rightBarButtonItem?.action = #selector(didTapCloseButton)
+
+        if self.setting == .enableBluetooth {
+            NotificationCenter.default.addObserver(self,
+                                                   selector: #selector(checkBluetoothStatus),
+                                                   name: UIApplication.didBecomeActiveNotification,
+                                                   object: nil)
+        }
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -46,14 +61,25 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
     // MARK: - Private
 
-    @objc
-    private func didTapCloseButton() {
-        listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
-    }
-
     private weak var listener: EnableSettingListener?
     private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
     private let setting: EnableSetting
+    private let bluetoothStateStream: BluetoothStateStreaming
+    private var disposeBag = Set<AnyCancellable>()
+
+    @objc private func didTapCloseButton() {
+        listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+    }
+
+    @objc private func checkBluetoothStatus() {
+        bluetoothStateStream
+            .enabled
+            .sink(receiveValue: { isEnabled in
+                if isEnabled {
+                    self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+                }
+            }).store(in: &disposeBag)
+    }
 }
 
 private final class EnableSettingView: View {
@@ -83,6 +109,8 @@ private final class EnableSettingView: View {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         navigationBar.standardAppearance = appearance
+
+        button.isHidden = true
 
         addSubview(navigationBar)
         addSubview(scrollView)
@@ -123,9 +151,12 @@ private final class EnableSettingView: View {
 
     fileprivate func update(model: EnableSettingModel, actionCompletion: @escaping () -> ()) {
         titleLabel.text = model.title
-        button.setTitle(model.actionTitle, for: .normal)
-        button.action = {
-            model.action.action(actionCompletion)
+        if let action = model.action {
+            button.isHidden = false
+            button.setTitle(model.actionTitle, for: .normal)
+            button.action = {
+                action.action(actionCompletion)
+            }
         }
 
         stepViews.forEach { $0.removeFromSuperview() }

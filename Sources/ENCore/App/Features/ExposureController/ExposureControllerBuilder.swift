@@ -12,14 +12,22 @@ import UserNotifications
 /// @mockable
 protocol ExposureControlling {
 
+    var lastExposureDate: Date? { get }
+
+    var shouldDisplayExposureNotification: Bool { get }
+    func setDisplayedExposureNotification()
+
     var lastENStatusCheckDate: Date? { get }
     func setLastEndStatusCheckDate(_ date: Date)
 
     // MARK: - Setup
 
     func activate()
+    func deactivate()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
+    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError>
+    func isTestPhase() -> AnyPublisher<Bool, Never>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
@@ -111,6 +119,7 @@ protocol ExposureControllerDependency {
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
     var networkStatusStream: NetworkStatusStreaming { get }
+    var mutableBluetoothStateStream: MutableBluetoothStateStreaming { get }
 }
 
 private final class ExposureControllerDependencyProvider: DependencyProvider<ExposureControllerDependency>, ExposureDataControllerDependency {
@@ -147,6 +156,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
                                   exposureManager: dependencyProvider.exposureManager,
                                   dataController: dependencyProvider.dataController,
                                   networkStatusStream: dependencyProvider.dependency.networkStatusStream,
-                                  userNotificationCenter: dependencyProvider.userNotificationCenter)
+                                  userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                  mutableBluetoothStateStream: dependencyProvider.dependency.mutableBluetoothStateStream)
     }
 }

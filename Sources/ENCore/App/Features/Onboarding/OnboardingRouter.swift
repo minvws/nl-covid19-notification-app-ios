@@ -8,7 +8,7 @@
 import Foundation
 
 /// @mockable
-protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener {
+protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
@@ -20,13 +20,15 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     init(viewController: OnboardingViewControllable,
          stepBuilder: OnboardingStepBuildable,
          consentBuilder: OnboardingConsentBuildable,
-         webBuilder: WebBuildable,
+         bluetoothSettingsBuilder: BluetoothSettingsBuildable,
          shareSheetBuilder: ShareSheetBuildable,
+         privacyAgreementBuilder: PrivacyAgreementBuildable,
          helpBuilder: HelpBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
-        self.webBuilder = webBuilder
+        self.bluetoothSettingsBuilder = bluetoothSettingsBuilder
         self.shareSheetBuilder = shareSheetBuilder
+        self.privacyAgreementBuilder = privacyAgreementBuilder
         self.helpBuilder = helpBuilder
 
         super.init(viewController: viewController)
@@ -67,11 +69,26 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.push(viewController: consentViewController, animated: animated)
     }
 
+    func routeToPrivacyAgreement() {
+        let privacyAgreementViewController = privacyAgreementBuilder.build(withListener: viewController)
+        self.privacyAgreementViewController = privacyAgreementViewController
+        viewController.push(viewController: privacyAgreementViewController, animated: true)
+    }
+
     func routeToHelp() {
         let helpRouter = helpBuilder.build(withListener: viewController, shouldShowEnableAppButton: true)
         self.helpRouter = helpRouter
 
         viewController.present(viewController: helpRouter.viewControllable,
+                               animated: true,
+                               completion: nil)
+    }
+
+    func routeToBluetoothSettings() {
+        let bluetoothSettingsViewController = bluetoothSettingsBuilder.build(withListener: viewController)
+        self.bluetoothSettingsViewController = bluetoothSettingsViewController
+
+        viewController.present(viewController: bluetoothSettingsViewController,
                                animated: true,
                                completion: nil)
     }
@@ -82,11 +99,14 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     private let consentBuilder: OnboardingConsentBuildable
     private var consentViewController: ViewControllable?
 
-    private let webBuilder: WebBuildable
-    private var webViewController: ViewControllable?
-
     private let shareSheetBuilder: ShareSheetBuildable
     private var shareSheetViewController: ShareSheetViewControllable?
+
+    private let privacyAgreementBuilder: PrivacyAgreementBuildable
+    private var privacyAgreementViewController: ViewControllable?
+
+    private let bluetoothSettingsBuilder: BluetoothSettingsBuildable
+    private var bluetoothSettingsViewController: ViewControllable?
 
     private let helpBuilder: HelpBuildable
     private var helpViewController: ViewControllable?

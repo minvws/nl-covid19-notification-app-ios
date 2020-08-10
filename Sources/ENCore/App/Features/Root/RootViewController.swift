@@ -51,7 +51,11 @@ final class RootViewController: ViewController, RootViewControllable {
             navigationController.presentationController?.delegate = presentationDelegate
         }
 
-        present(navigationController, animated: animated, completion: nil)
+        if let presentedModal = presentedViewController {
+            presentedModal.present(navigationController, animated: animated, completion: nil)
+        } else {
+            present(navigationController, animated: animated, completion: nil)
+        }
     }
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {

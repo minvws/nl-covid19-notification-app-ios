@@ -12,6 +12,7 @@ import XCTest
 
 final class EnableSettingViewControllerSnapshotTests: TestCase {
     private var viewController: EnableSettingViewController!
+    private var bluetoothStateStream = BluetoothStateStreamingMock()
 
     override func setUp() {
         super.setUp()
@@ -22,24 +23,27 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
     func test_enableBluetooth() {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
-                                                     setting: .enableBluetooth)
+                                                     setting: .enableBluetooth,
+                                                     bluetoothStateStream: bluetoothStateStream)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_enableExposureNotifications() {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
-                                                     setting: .enableExposureNotifications)
+                                                     setting: .enableExposureNotifications,
+                                                     bluetoothStateStream: bluetoothStateStream)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_enableLocalNotifications() {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
-                                                     setting: .enableLocalNotifications)
+                                                     setting: .enableLocalNotifications,
+                                                     bluetoothStateStream: bluetoothStateStream)
 
-        assertSnapshot(matching: viewController.view, as: .image())
+        snapshots(matching: viewController)
     }
 }

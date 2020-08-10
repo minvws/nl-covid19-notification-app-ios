@@ -91,7 +91,8 @@
 
 - (BOOL)validatePKCS7Signature:(NSData *)signatureData
                    contentData:(NSData *)contentData
-               certificateData:(NSData *)certificateData {
+               certificateData:(NSData *)certificateData
+        authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData {
     BIO *signatureBlob = BIO_new_mem_buf(signatureData.bytes, (int)signatureData.length);
     if (signatureBlob == NULL) {
         return NO;
@@ -119,6 +120,54 @@
         BIO_free(certificateBlob); certificateBlob = NULL;
         
         return NO;
+    }
+    
+    if (expectedAuthorityKeyIdentifierData != NULL) {
+        const unsigned char * bytes = expectedAuthorityKeyIdentifierData.bytes;
+        ASN1_OCTET_STRING *expectedAuthorityKeyIdentifier = d2i_ASN1_OCTET_STRING(NULL,
+                                                                                  &bytes,
+                                                                                  (int)expectedAuthorityKeyIdentifierData.length);
+
+        STACK_OF(X509) *signers = PKCS7_get0_signers(p7, NULL, 0);
+        
+        if (expectedAuthorityKeyIdentifier == NULL) {
+            BIO_free(signatureBlob); signatureBlob = NULL;
+            BIO_free(contentBlob); contentBlob = NULL;
+            BIO_free(certificateBlob); certificateBlob = NULL;
+            
+            return NO;
+        }
+        
+        if (signers == NULL || sk_X509_num(signers) == 0) {
+            BIO_free(signatureBlob); signatureBlob = NULL;
+            BIO_free(contentBlob); contentBlob = NULL;
+            BIO_free(certificateBlob); certificateBlob = NULL;
+            
+            ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
+            
+            return NO;
+        }
+
+        X509 *signingCert = sk_X509_value(signers, 0);
+        const ASN1_OCTET_STRING * authorityKeyIdentifier = X509_get0_authority_key_id(signingCert);
+        
+        if (authorityKeyIdentifier == NULL) {
+            BIO_free(signatureBlob); signatureBlob = NULL;
+            BIO_free(contentBlob); contentBlob = NULL;
+            BIO_free(certificateBlob); certificateBlob = NULL;
+            
+            ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
+            
+            return NO;
+        }
+
+        BOOL isMatch = ASN1_OCTET_STRING_cmp(authorityKeyIdentifier, expectedAuthorityKeyIdentifier) == 0;
+        
+        ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
+                
+        if (isMatch == false) {
+            return NO;
+        }
     }
     
     X509 *cert = PEM_read_bio_X509(certificateBlob, NULL, 0, NULL);

@@ -33,11 +33,9 @@ extension DiagnosisKey {
 extension Manifest {
     var asApplicationManifest: ApplicationManifest {
         return ApplicationManifest(exposureKeySetsIdentifiers: exposureKeySets,
-                                   resourceBundleIdentifier: resourceBundle,
                                    riskCalculationParametersIdentifier: riskCalculationParameters,
                                    appConfigurationIdentifier: appConfig,
-                                   creationDate: Date(),
-                                   iOSMinimumKillVersion: iOSMinimumKillVersion)
+                                   creationDate: Date())
     }
 }
 
@@ -48,12 +46,14 @@ extension AppConfig {
                                         decoyProbability: decoyProbability ?? 0.00118,
                                         creationDate: Date(),
                                         identifier: identifier,
-                                        minimumVersion: (iOSMinimumKillVersion ?? iOSMinimumVersion) ?? "0.1",
+                                        minimumVersion: iOSMinimumVersion ?? "1.0.0",
                                         minimumVersionMessage: iOSMinimumVersionMessage ?? "",
                                         appStoreURL: iOSAppStoreURL ?? "",
                                         requestMinimumSize: requestMinimumSize ?? 1800,
                                         requestMaximumSize: requestMaximumSize ?? 17000,
-                                        repeatedUploadDelay: repeatedUploadDelay ?? 14400)
+                                        repeatedUploadDelay: repeatedUploadDelay ?? 14400,
+                                        decativated: coronaMelderDeactivated == "deactivated",
+                                        testPhase: coronaMelderTestPhase == true)
     }
 }
 

@@ -55,9 +55,19 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
-        scheduleENStatusCheck()
-        scheduleUpdate()
-        scheduleDecoySequence()
+        exposureController
+            .isAppDectivated()
+            .sink(receiveCompletion: { _ in
+                // Do nothing
+            }, receiveValue: { (isDeactivated: Bool) in
+                if isDeactivated {
+                    self.removeAllTasks()
+                } else {
+                    self.scheduleENStatusCheck()
+                    self.scheduleUpdate()
+                    self.scheduleDecoySequence()
+                }
+            }).store(in: &disposeBag)
     }
 
     func handle(task: BGTask) {
@@ -67,6 +77,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         guard let identifier = BackgroundTaskIdentifiers(rawValue: task.identifier) else {
             return logError("No Handler for: \(task.identifier)")
         }
+        logDebug("Handling: \(identifier)")
 
         switch identifier {
         case .decoySequence:
@@ -207,12 +218,17 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleENStatusCheck(task: BGProcessingTask) {
-        guard exposureManager.getExposureNotificationStatus() != .active else {
+        defer {
+            exposureController.setLastEndStatusCheckDate(Date())
+        }
+
+        let status = exposureManager.getExposureNotificationStatus()
+        guard status != .active else {
             task.setTaskCompleted(success: true)
             return logDebug("`handleENStatusCheck` skipped as it is `active`")
         }
         guard let lastENStatusCheck = exposureController.lastENStatusCheckDate else {
-            return notifyUserENFrameworkDisabled(task: task)
+            return
         }
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
 
@@ -220,16 +236,17 @@ final class BackgroundController: BackgroundControlling, Logging {
             task.setTaskCompleted(success: true)
             return logDebug("`handleENStatusCheck` skipped as it hasn't been 24h")
         }
+        logDebug("EN Status Check: triggering notification \(status)")
         notifyUserENFrameworkDisabled(task: task)
     }
 
     private func notifyUserENFrameworkDisabled(task: BGProcessingTask) {
-        let content = UNMutableNotificationContent()
-        content.body = .notificationEnStatusNotActive
-        content.sound = .default
-        content.badge = 0
-
         func notify() {
+            let content = UNMutableNotificationContent()
+            content.body = .notificationEnStatusNotActive
+            content.sound = .default
+            content.badge = 0
+
             let request = UNNotificationRequest(identifier: PushNotificationIdentifier.enStatusDisabled.rawValue,
                                                 content: content,
                                                 trigger: nil)
@@ -240,7 +257,6 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.logError("Error posting notification: \(error.localizedDescription)")
                 task.setTaskCompleted(success: false)
             }
-            exposureController.setLastEndStatusCheckDate(Date())
         }
 
         userNotificationCenter.getAuthorizationStatus { status in
@@ -255,7 +271,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Background Updates
 
     private func scheduleUpdate() {
-        guard ENManager.authorizationStatus == .authorized else {
+        guard exposureManager.authorizationStatus == .authorized else {
             return logError("`ENManager.authorizationStatus` not authorized")
         }
 
@@ -265,6 +281,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleUpdate(task: BGProcessingTask) {
+        guard exposureManager.authorizationStatus == .authorized else {
+            task.setTaskCompleted(success: true)
+            return logError("`ENManager.authorizationStatus` not authorized")
+        }
+
         let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
             exposureController.updateWhenRequired,
             exposureController.processPendingUploadRequests
@@ -280,7 +301,9 @@ final class BackgroundController: BackgroundControlling, Logging {
             .collect()
             // notify the user if required
             .handleEvents(receiveCompletion: { [weak self] _ in
-                self?.exposureController.notifyUserIfRequired()
+                // FIXME: disabled for `57704`
+                // self?.exposureController.notifyUserIfRequired()
+                self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
             })
             .sink(receiveCompletion: { [weak self] result in
                 switch result {
@@ -341,5 +364,9 @@ final class BackgroundController: BackgroundControlling, Logging {
             }
             execute()
         }
+    }
+
+    private func removeAllTasks() {
+        BGTaskScheduler.shared.cancelAllTaskRequests()
     }
 }

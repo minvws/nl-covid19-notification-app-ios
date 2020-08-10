@@ -7,3 +7,11 @@ echo "*********************"
 echo "*     Make project  *"
 echo "*********************"
 make project
+#echo "*********************"
+#echo "*     Make ci_build *"
+#echo "*********************"
+#make ci_build
+echo "*********************"
+echo "*     Make buildinfo*"
+echo "*********************"
+make buildinfo

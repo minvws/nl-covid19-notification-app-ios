@@ -17,7 +17,8 @@ final class CardButton: Button {
     }
 
     init(title: String, subtitle: String, image: UIImage?, type: CardButton.CardType = .short, theme: Theme) {
-        self.cardImageView = UIImageView(image: image)
+        self.cardImageView = UIImageView(image: image?.imageFlippedForRightToLeftLayoutDirection())
+
         self.cardType = type
         super.init(theme: theme)
 
@@ -77,11 +78,7 @@ final class CardButton: Button {
             }
         }
 
-        var imageAspectRatio: CGFloat = 0.0
-
-        if let width = cardImageView.image?.size.width, let height = cardImageView.image?.size.height, width > 0, height > 0 {
-            imageAspectRatio = width / height
-        }
+        let imageAspectRatio = cardImageView.image?.aspectRatio ?? 1.0
 
         cardImageView.snp.makeConstraints { maker in
             maker.bottom.equalToSuperview()

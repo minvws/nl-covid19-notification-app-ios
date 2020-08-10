@@ -17,7 +17,7 @@ final class BackgroundControllerTests: XCTestCase {
     private let exposureController = ExposureControllingMock()
     private let networkController = NetworkControllingMock()
 
-    private let exposureManager = ExposureManagingMock()
+    private let exposureManager = ExposureManagingMock(authorizationStatus: .authorized)
     private let userNotificationCenter = UserNotificationCenterMock()
 
     // MARK: - Setup
@@ -157,6 +157,8 @@ final class BackgroundControllerTests: XCTestCase {
             exp.fulfill()
             completion?(nil)
         }
+        let date = Calendar.current.date(byAdding: .hour, value: -24, to: Date())!
+        exposureController.lastENStatusCheckDate = date
 
         let task = MockBGProcessingTask(identifier: .statusCheck)
 

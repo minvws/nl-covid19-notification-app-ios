@@ -5,12 +5,15 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
+import SafariServices
 import SnapKit
 import UIKit
 
-enum MoreInformationIdentifier {
+enum MoreInformationIdentifier: CaseIterable {
     case about
+    case share
     case infected
     case receivedNotification
     case requestTest
@@ -30,14 +33,22 @@ struct MoreInformationCellViewModel: MoreInformation {
     let subtitle: String
 }
 
-final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationCellListner {
+final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationCellListner, Logging {
 
     // MARK: - Init
 
-    init(listener: MoreInformationListener, theme: Theme) {
+    init(listener: MoreInformationListener,
+         theme: Theme,
+         testPhaseStream: AnyPublisher<Bool, Never>, bundleInfoDictionary: [String: Any]?) {
         self.listener = listener
+        self.testPhaseStream = testPhaseStream
+        self.bundleInfoDictionary = bundleInfoDictionary
 
         super.init(theme: theme)
+    }
+
+    deinit {
+        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - View Lifecycle
@@ -52,11 +63,23 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         moreInformationView.set(data: objects, listener: self)
 
-        if let dictionary = Bundle.main.infoDictionary,
+        if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
-            let build = dictionary["CFBundleVersion"] as? String {
-            moreInformationView.version = "v\(version) (\(build))"
+            let build = dictionary["CFBundleVersion"] as? String,
+            let hash = dictionary["GitHash"] as? String {
+            let buildAndHash = "\(build)-\(hash)"
+            moreInformationView.version = "\(version) (\(buildAndHash))"
+
+            testPhaseStream
+                .sink(receiveValue: { isTestPhase in
+                    if isTestPhase {
+                        self.moreInformationView.version = .testVersionTitle(version, buildAndHash)
+                        self.moreInformationView.learnMoreButton.isHidden = false
+                    }
+                }).store(in: &disposeBag)
         }
+
+        moreInformationView.learnMoreButton.addTarget(self, action: #selector(didTapLearnMore(sender:)), for: .touchUpInside)
     }
 
     // MARK: - MoreInformationCellListner
@@ -65,6 +88,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         switch identifier {
         case .about:
             listener?.moreInformationRequestsAbout()
+        case .share:
+            listener?.moreInformationRequestsSharing()
         case .infected:
             listener?.moreInformationRequestsInfected()
         case .receivedNotification:
@@ -81,6 +106,11 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
                                                          icon: .about,
                                                          title: .moreInformationCellAboutTitle,
                                                          subtitle: .moreInformationCellAboutSubtitle)
+
+        let shareAppModel = MoreInformationCellViewModel(identifier: .share,
+                                                         icon: .share,
+                                                         title: .moreInformationCellShareTitle,
+                                                         subtitle: .moreInformationCellShareSubtitle)
 
         let receivedNotificationModel = MoreInformationCellViewModel(identifier: .receivedNotification,
                                                                      icon: .warning,
@@ -99,6 +129,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         return [
             aboutAppModel,
+            shareAppModel,
             receivedNotificationModel,
             requestTestModel,
             infectedModel
@@ -106,8 +137,20 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     }
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
-
     private weak var listener: MoreInformationListener?
+    private let testPhaseStream: AnyPublisher<Bool, Never>
+    private var disposeBag = Set<AnyCancellable>()
+    private let bundleInfoDictionary: [String: Any]?
+
+    @objc private func didTapLearnMore(sender: Button) {
+        guard let url = URL(string: .helpTestVersionLink) else {
+            return logError("Cannot create URL from: \(String.helpTestVersionLink)")
+        }
+        let viewController = SFSafariViewController(url: url)
+        viewController.dismissButtonStyle = .close
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true) {}
+    }
 }
 
 private final class MoreInformationView: View {
@@ -120,12 +163,14 @@ private final class MoreInformationView: View {
 
     private let stackView: UIStackView
     private let versionLabel: Label
+    fileprivate let learnMoreButton: Button
 
     // MARK: - Init
 
     override init(theme: Theme) {
         self.stackView = UIStackView(frame: .zero)
         self.versionLabel = Label()
+        self.learnMoreButton = Button(title: .learnMore, theme: theme)
         super.init(theme: theme)
     }
 
@@ -137,10 +182,16 @@ private final class MoreInformationView: View {
         stackView.axis = .vertical
         stackView.distribution = .fill
 
+        versionLabel.font = theme.fonts.footnote
+        versionLabel.textColor = theme.colors.gray
         versionLabel.textAlignment = .center
+        learnMoreButton.style = .info
+        learnMoreButton.titleLabel?.font = theme.fonts.footnote
+        learnMoreButton.isHidden = true
 
         addSubview(stackView)
         addSubview(versionLabel)
+        addSubview(learnMoreButton)
     }
 
     override func setupConstraints() {
@@ -155,7 +206,10 @@ private final class MoreInformationView: View {
         }
         versionLabel.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview()
-
+        }
+        learnMoreButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview()
+            maker.top.equalTo(versionLabel.snp.bottom)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }

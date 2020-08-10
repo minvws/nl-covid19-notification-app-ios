@@ -24,6 +24,9 @@ targets:
     info:
       path: Sources/EN/Resources/Info.plist
       properties:
+        LOG_LEVEL: debug
+        NETWORK_CONFIGURATION: Test
+        GitHash: ""
         BGTaskSchedulerPermittedIdentifiers:
           - $(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification
           - nl.rijksoverheid.en.background-update
@@ -31,10 +34,10 @@ targets:
           - nl.rijksoverheid.en.background-decoy-sequence
           - nl.rijksoverheid.en.background-decoy-register
           - nl.rijksoverheid.en.background-status-check
-        CFBundleDisplayName: "CoronaMelder \U0001F41E"
+        CFBundleDisplayName: "CoronaMelder 🐞"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
-        CFBundleShortVersionString: '0.1'
+        CFBundleShortVersionString: '1.0.0'
         CFBundleVersion: "1"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes:
@@ -62,6 +65,8 @@ targets:
           - UIInterfaceOrientationPortrait
         UIUserInterfaceStyle: Light
         UIViewControllerBasedStatusBarAppearance: true
+        ENDeveloperRegion: NL
+        ENAPIVersion: 1
     platform: iOS
     scheme:
       gatherCoverageData: true
@@ -75,8 +80,6 @@ targets:
         CODE_SIGN_STYLE: Manual
         DEVELOPMENT_TEAM: C2H38GV99H
         ENABLE_BITCODE: 'YES'
-        LOG_LEVEL: debug
-        NETWORK_CONFIGURATION: ACC
         PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.test
         SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
         SWIFT_VERSION: 5.2
@@ -89,7 +92,7 @@ targets:
         Release:
           CODE_SIGN_ENTITLEMENTS: Sources/EN/Resources/Entitlements/Release.entitlements
           CODE_SIGN_IDENTITY: Apple Distribution
-          PROVISIONING_PROFILE_SPECIFIER: EN Tracing development
+          PROVISIONING_PROFILE_SPECIFIER: CoronaMelder productie
     sources:
       - path: Sources/EN
     type: application

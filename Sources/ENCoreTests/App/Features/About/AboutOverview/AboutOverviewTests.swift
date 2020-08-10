@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import SnapshotTesting
@@ -25,7 +26,26 @@ final class AboutOverviewViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_aboutOverviewViewController_renderCorrectly() {
-        let viewController = AboutOverviewViewController(listener: listener, aboutManager: AboutManager(theme: theme), theme: theme)
-        assertSnapshot(matching: viewController, as: .image())
+        let aboutManager = AboutManager(theme: theme, testPhaseStream: Just(false).eraseToAnyPublisher())
+        let viewController = AboutOverviewViewController(listener: listener,
+                                                         aboutManager: aboutManager,
+                                                         theme: theme)
+        snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: 1200)))
+    }
+
+    func test_snapshot_aboutOverviewViewController_testVersion_rendersCorrectly() {
+        let aboutManager = AboutManager(theme: theme, testPhaseStream: Just(true).eraseToAnyPublisher())
+        let viewController = AboutOverviewViewController(listener: listener,
+                                                         aboutManager: aboutManager,
+                                                         theme: theme)
+
+        let exp = XCTestExpectation()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: 1300)))
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 1)
     }
 }

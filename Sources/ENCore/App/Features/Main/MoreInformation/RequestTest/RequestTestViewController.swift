@@ -39,10 +39,10 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
                                                             action: #selector(didTapCloseButton(sender:)))
 
         internalView.contactButtonActionHandler = { [weak self] in
-            if let url = URL(string: .helpDeskPhoneNumber), UIApplication.shared.canOpenURL(url) {
+            if let url = URL(string: .coronaTestPhoneNumber), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                self?.logError("Unable to open \(String.helpDeskPhoneNumber)")
+                self?.logError("Unable to open \(String.coronaTestPhoneNumber)")
             }
         }
     }
@@ -88,8 +88,8 @@ private final class RequestTestView: View {
 
         infoView.addSections([
             receivedNotification(),
-            complaints(),
-            info()
+            info(),
+            complaints()
         ])
 
         addSubview(infoView)
@@ -117,7 +117,8 @@ private final class RequestTestView: View {
             .moreInformationComplaintsItem1,
             .moreInformationComplaintsItem2,
             .moreInformationComplaintsItem3,
-            .moreInformationComplaintsItem4
+            .moreInformationComplaintsItem4,
+            .moreInformationComplaintsItem5
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
 

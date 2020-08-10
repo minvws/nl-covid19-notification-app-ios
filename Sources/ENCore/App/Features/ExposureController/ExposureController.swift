@@ -16,12 +16,14 @@ final class ExposureController: ExposureControlling, Logging {
          exposureManager: ExposureManaging,
          dataController: ExposureDataControlling,
          networkStatusStream: NetworkStatusStreaming,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         mutableBluetoothStateStream: MutableBluetoothStateStreaming) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
         self.networkStatusStream = networkStatusStream
         self.userNotificationCenter = userNotificationCenter
+        self.mutableBluetoothStateStream = mutableBluetoothStateStream
     }
 
     deinit {
@@ -29,6 +31,21 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     // MARK: - ExposureControlling
+
+    var lastExposureDate: Date? {
+        return dataController.lastExposure?.date
+    }
+
+    var shouldDisplayExposureNotification: Bool {
+        guard let lastExposure = dataController.lastExposure else {
+            return false
+        }
+        return lastExposure.displayedInformation == false
+    }
+
+    func setDisplayedExposureNotification() {
+        dataController.setDisplayedExposureNotification()
+    }
 
     var lastENStatusCheckDate: Date? {
         return dataController.lastENStatusCheckDate
@@ -53,6 +70,10 @@ final class ExposureController: ExposureControlling, Logging {
         updatePushNotificationState()
     }
 
+    func deactivate() {
+        exposureManager.deactivate()
+    }
+
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
         return dataController
             .getAppVersionInformation()
@@ -64,6 +85,14 @@ final class ExposureController: ExposureControlling, Logging {
                 },
                 receiveValue: completion)
             .store(in: &disposeBag)
+    }
+
+    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError> {
+        return dataController.isAppDectivated()
+    }
+
+    func isTestPhase() -> AnyPublisher<Bool, Never> {
+        return dataController.isTestPhase().replaceError(with: false).eraseToAnyPublisher()
     }
 
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
@@ -98,7 +127,10 @@ final class ExposureController: ExposureControlling, Logging {
 
     func notifyUserIfRequired() {
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
-        guard dataController.lastSuccessfulFetchDate.advanced(by: timeInterval) < Date() else {
+        guard
+            let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
+            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
+        else {
             return
         }
         guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
@@ -129,15 +161,19 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestPushNotificationPermission(_ completion: @escaping (() -> ())) {
-        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
-            if authorizationStatus == .authorized {
-                completion()
+        func request() {
+            userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
+                DispatchQueue.main.async {
+                    completion()
+                }
             }
         }
 
-        userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
-            DispatchQueue.main.async {
+        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
+            if authorizationStatus == .authorized {
                 completion()
+            } else {
+                request()
             }
         }
     }
@@ -267,7 +303,13 @@ final class ExposureController: ExposureControlling, Logging {
         }
 
         let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
-        let hasBeenTooLongSinceLastUpdate = dataController.lastSuccessfulFetchDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
+        let hasBeenTooLongSinceLastUpdate: Bool
+
+        if let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate {
+            hasBeenTooLongSinceLastUpdate = lastSuccessfulProcessingDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
+        } else {
+            hasBeenTooLongSinceLastUpdate = false
+        }
 
         let activeState: ExposureActiveState
         let exposureManagerStatus = exposureManager.getExposureNotificationStatus()
@@ -387,6 +429,7 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
+    private let mutableBluetoothStateStream: MutableBluetoothStateStreaming
     private let mutableStateStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling

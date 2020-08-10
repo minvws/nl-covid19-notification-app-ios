@@ -11,11 +11,9 @@ import Foundation
 
 struct ApplicationManifest: Codable {
     let exposureKeySetsIdentifiers: [String]
-    let resourceBundleIdentifier: String
     let riskCalculationParametersIdentifier: String
     let appConfigurationIdentifier: String
     let creationDate: Date
-    let iOSMinimumKillVersion: String?
 }
 
 final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {

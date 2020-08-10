@@ -58,6 +58,10 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
+
+        if let currentState = exposureStateStream.currentExposureState {
+            update(exposureState: currentState)
+        }
     }
 
     override func didMove(toParent parent: UIViewController?) {
@@ -80,43 +84,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
                 return
             }
 
-            let statusViewModel: StatusViewModel
-
-            switch (status.activeState, status.notifiedState) {
-            case (.active, .notNotified):
-                statusViewModel = .activeWithNotNotified
-            case let (.active, .notified(date)):
-                statusViewModel = .activeWithNotified(date: date)
-            case let (.inactive(reason), .notified(date)):
-                let cardType = reason.cardType(listener: self?.listener)
-
-                statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
-            case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
-                statusViewModel = .inactiveTryAgainWithNotNotified
-            case (.inactive, .notNotified):
-                statusViewModel = .inactiveWithNotNotified
-            case let (.authorizationDenied, .notified(date)):
-                statusViewModel = StatusViewModel
-                    .inactiveWithNotified(date: date)
-                    .with(cardType: .exposureOff)
-            case (.authorizationDenied, .notNotified):
-                statusViewModel = .inactiveWithNotNotified
-            case let (.notAuthorized, .notified(date)):
-                statusViewModel = StatusViewModel
-                    .inactiveWithNotified(date: date)
-                    .with(cardType: .exposureOff)
-            case (.notAuthorized, .notNotified):
-                statusViewModel = .inactiveWithNotNotified
-            }
-
-            strongSelf.statusView.update(with: statusViewModel)
-
-            if let cardType = statusViewModel.cardType {
-                strongSelf.cardRouter.type = cardType
-                strongSelf.cardRouter.viewControllable.uiviewController.view.isHidden = false
-            } else {
-                strongSelf.cardRouter.viewControllable.uiviewController.view.isHidden = true
-            }
+            strongSelf.update(exposureState: status)
         }
     }
 
@@ -127,6 +95,46 @@ final class StatusViewController: ViewController, StatusViewControllable {
     }
 
     // MARK: - Private
+
+    private func update(exposureState status: ExposureState) {
+        let statusViewModel: StatusViewModel
+
+        switch (status.activeState, status.notifiedState) {
+        case (.active, .notNotified):
+            statusViewModel = .activeWithNotNotified
+        case let (.active, .notified(date)):
+            statusViewModel = .activeWithNotified(date: date)
+        case let (.inactive(reason), .notified(date)):
+            let cardType = reason.cardType(listener: listener)
+
+            statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
+        case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
+            statusViewModel = .inactiveTryAgainWithNotNotified
+        case (.inactive, .notNotified):
+            statusViewModel = .inactiveWithNotNotified
+        case let (.authorizationDenied, .notified(date)):
+            statusViewModel = StatusViewModel
+                .inactiveWithNotified(date: date)
+                .with(cardType: .exposureOff)
+        case (.authorizationDenied, .notNotified):
+            statusViewModel = .inactiveWithNotNotified
+        case let (.notAuthorized, .notified(date)):
+            statusViewModel = StatusViewModel
+                .inactiveWithNotified(date: date)
+                .with(cardType: .exposureOff)
+        case (.notAuthorized, .notNotified):
+            statusViewModel = .inactiveWithNotNotified
+        }
+
+        statusView.update(with: statusViewModel)
+
+        if let cardType = statusViewModel.cardType {
+            cardRouter.type = cardType
+            cardRouter.viewControllable.uiviewController.view.isHidden = false
+        } else {
+            cardRouter.viewControllable.uiviewController.view.isHidden = true
+        }
+    }
 
     private lazy var statusView: StatusView = StatusView(theme: self.theme,
                                                          cardView: cardRouter.viewControllable.uiviewController.view)
@@ -146,9 +154,6 @@ private final class StatusView: View {
     private lazy var iconView: EmitterStatusIconView = {
         EmitterStatusIconView(theme: self.theme)
     }()
-
-    private let testingContainer = UIView(frame: .zero)
-    private let testingTitleLabel = Label()
 
     private let titleLabel = Label()
     private let descriptionLabel = Label()
@@ -175,14 +180,6 @@ private final class StatusView: View {
         contentContainer.spacing = 32
         contentContainer.alignment = .center
 
-        testingTitleLabel.font = theme.fonts.subhead
-        testingTitleLabel.textColor = .white
-        testingTitleLabel.text = "Dit is een test versie"
-
-        testingContainer.backgroundColor = .black
-        testingContainer.layer.cornerRadius = 16
-        testingContainer.layer.masksToBounds = true
-
         textContainer.axis = .vertical
         textContainer.spacing = 16
 
@@ -201,10 +198,8 @@ private final class StatusView: View {
         buttonContainer.spacing = 16
 
         layer.addSublayer(gradientLayer)
-        testingContainer.addSubview(testingTitleLabel)
         textContainer.addArrangedSubview(titleLabel)
         textContainer.addArrangedSubview(descriptionLabel)
-        contentContainer.addArrangedSubview(testingContainer)
         contentContainer.addArrangedSubview(iconView)
         contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
@@ -237,12 +232,9 @@ private final class StatusView: View {
             maker.width.equalTo(sceneImageView.snp.height).multipliedBy(sceneImageAspectRatio)
             maker.height.equalTo(300)
         }
-        testingTitleLabel.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
-            maker.top.bottom.equalToSuperview().inset(6)
-        }
         stretchGuide.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(contentStretchGuide).inset(-16)
+
             maker.top.equalTo(contentStretchGuide).inset(-70)
             maker.bottom.greaterThanOrEqualTo(contentStretchGuide.snp.bottom)
             maker.leading.trailing.bottom.equalToSuperview()
@@ -267,7 +259,6 @@ private final class StatusView: View {
         CATransaction.commit()
 
         evaluateHeight()
-        updateTestingContainerCornerRadius()
     }
 
     // MARK: - Internal
@@ -295,6 +286,7 @@ private final class StatusView: View {
 
         sceneImageView.isHidden = !viewModel.showScene
         containerToSceneVerticalConstraint?.isActive = viewModel.showScene
+        cloudsView.isHidden = !viewModel.showClouds
 
         evaluateHeight()
     }
@@ -310,17 +302,6 @@ private final class StatusView: View {
         let size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         heightConstraint?.constant = size.height
         heightConstraint?.isActive = true
-    }
-
-    private func updateTestingContainerCornerRadius() {
-        guard bounds.width > 0 else {
-            return
-        }
-        let height = testingContainer.frame.height
-        let cornerRadius = ceil(height / 2)
-        if cornerRadius != testingContainer.layer.cornerRadius {
-            testingContainer.layer.cornerRadius = cornerRadius
-        }
     }
 }
 

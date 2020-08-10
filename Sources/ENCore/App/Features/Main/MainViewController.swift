@@ -6,7 +6,6 @@
  */
 
 import Combine
-import CoreBluetooth
 import ENFoundation
 import UIKit
 import UserNotifications
@@ -18,6 +17,9 @@ protocol MainRouting: Routing {
 
     func routeToAboutApp()
     func detachAboutApp(shouldHideViewController: Bool)
+
+    func routeToSharing()
+    func detachSharing(shouldHideViewController: Bool)
 
     func routeToReceivedNotification()
     func detachReceivedNotification(shouldDismissViewController: Bool)
@@ -63,6 +65,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
         if let activeState = exposureStateStream.currentExposureState?.activeState, activeState == .inactive(.disabled) {
             exposureController.requestExposureNotificationPermission(nil)
+        }
+
+        if let shareLogs = Bundle.main.infoDictionary?["SHARE_LOGS_ENABLED"] as? Bool, shareLogs == true {
+            let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didQuadrupleTap(sender:)))
+            gestureRecognizer.numberOfTapsRequired = 4
+
+            view.addGestureRecognizer(gestureRecognizer)
         }
     }
 
@@ -129,6 +138,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToAboutApp()
     }
 
+    func moreInformationRequestsSharing() {
+        router?.routeToSharing()
+    }
+
     func moreInformationRequestsReceivedNotification() {
         router?.routeToReceivedNotification()
     }
@@ -145,6 +158,30 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func aboutRequestsDismissal(shouldHideViewController: Bool) {
         router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
+    }
+
+    // MARK: - HelpListener
+
+    func helpRequestsEnableApp() {}
+
+    func helpRequestsDismissal(shouldHideViewController: Bool) {}
+
+    // MARK: - ShareSheetListener
+
+    func shareSheetDidComplete(shouldHideViewController: Bool) {
+        router?.detachSharing(shouldHideViewController: shouldHideViewController)
+    }
+
+    func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping (() -> ())) {
+        if let storeLink = URL(string: .shareAppUrl) {
+            let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
+            activityVC.completionWithItemsHandler = { _, _, _, _ in
+                completion()
+            }
+            viewcontroller.present(activityVC, animated: true)
+        } else {
+            self.logError("Couldn't retreive a valid url")
+        }
     }
 
     // MARK: - ReceivedNotificationListner
@@ -205,16 +242,22 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     private var disposeBag = Set<AnyCancellable>()
 
+    @objc private func didQuadrupleTap(sender: UITapGestureRecognizer) {
+        let activityViewController = UIActivityViewController(activityItems: LogHandler.logFiles(),
+                                                              applicationActivities: nil)
+        present(activityViewController, animated: true, completion: nil)
+    }
+
     private func confirmNotificationRemoval() {
         let alertController = UIAlertController(title: .mainConfirmNotificationRemovalTitle,
                                                 message: .mainConfirmNotificationRemovalTitle,
                                                 preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: .cancel, style: .default) { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
-        })
+            })
         alertController.addAction(UIAlertAction(title: .mainConfirmNotificationRemovalConfirm, style: .default) { [weak self] _ in
             self?.exposureController.confirmExposureNotification()
-        })
+            })
         present(alertController, animated: true, completion: nil)
     }
 
@@ -253,12 +296,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 
-    private func openBluetooth() {
-        // We need to navigate to the Bluetooth settings page, using `App-Perfs:root=Bluetooth`
-        // is a private api and risks getting the app rejected during review.
-        _ = CBCentralManager(delegate: nil, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
-    }
-
     private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {
         switch authorizationStatus {
         case .notDetermined:
@@ -277,7 +314,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 self?.logDebug("Finished `updateWhenRequired`")
             }, receiveValue: { _ in
                 // Do nothing
-            }).store(in: &disposeBag)
+                }).store(in: &disposeBag)
     }
 
     private func requestExposureNotificationPermission() {
@@ -286,7 +323,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 return
             }
             self.logError("Error `requestExposureNotificationPermission`: \(error.localizedDescription)")
-            self.openAppSettings()
         }
     }
 }

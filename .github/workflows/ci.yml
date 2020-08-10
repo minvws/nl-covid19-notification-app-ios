@@ -22,3 +22,8 @@ jobs:
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           ONLY_ACTIVE_ARCH=NO
+      - name: CIartifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: buildinfo
+          path: .buildinfo

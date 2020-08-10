@@ -26,7 +26,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             (UIApplication.shared.delegate as? AppDelegate)?.setBridge(bridge: bridge)
         } else {
             // Handle OS Update Case
-            window.rootViewController = RequiresUpdateViewController()
+            window.rootViewController = RequiresUpdateViewController(deviceModel: UIDevice.modelName)
         }
         window.makeKeyAndVisible()
 

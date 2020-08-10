@@ -14,7 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)validateSerialNumber:(uint64_t)serialNumber forCertificateData:(NSData *)certificateData;
 - (BOOL)validateSubjectKeyIdentifier:(NSData *)subjectKeyIdentifier forCertificateData:(NSData *)certificateData;
 
-- (BOOL)validatePKCS7Signature:(NSData *)signatureData contentData:(NSData *)contentData certificateData:(NSData *)certificateData;
+- (BOOL)validatePKCS7Signature:(NSData *)signatureData
+                   contentData:(NSData *)contentData
+               certificateData:(NSData *)certificateData
+        authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData;
 
 @end
 

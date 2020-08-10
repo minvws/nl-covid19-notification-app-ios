@@ -48,22 +48,22 @@ struct NetworkConfiguration {
         )
     )
 
-    static let labtest = NetworkConfiguration(
-        name: "LabTest",
+    static let test = NetworkConfiguration(
+        name: "Test",
         api: .init(
             scheme: "https",
-            host: "mss-standalone-acc.azurewebsites.net",
+            host: "test.coronamelder-api.nl",
             port: nil,
             path: ["v1"],
-            sslSignature: nil,
+            sslSignature: Certificate.SSL.apiSignature,
             tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
-            host: "mss-standalone-acc.azurewebsites.net",
+            host: "test.coronamelder-dist.nl",
             port: nil,
             path: ["v1"],
-            sslSignature: nil,
+            sslSignature: Certificate.SSL.cdnSignature,
             tokenParams: [:]
         )
     )
@@ -72,26 +72,19 @@ struct NetworkConfiguration {
         name: "ACC",
         api: .init(
             scheme: "https",
-            host: "localhost",
+            host: "acceptatie.coronamelder-api.nl",
             port: nil,
-            path: ["mss-acc", "v1"],
-            sslSignature: Certificate.SSL.apiAccSignature,
+            path: ["v1"],
+            sslSignature: Certificate.SSL.apiSignature,
             tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
-            host: "vwspa-cdn-blob.azureedge.net",
+            host: "acceptatie.coronamelder-dist.nl",
             port: nil,
-            path: ["vws", "v01"],
-            sslSignature: Certificate.SSL.cdnAccSignature,
-            tokenParams: [
-                "sv": "2019-02-02",
-                "st": "2020-06-26T14:13:35Z",
-                "se": "2025-06-27T14:13:00Z",
-                "sr": "c",
-                "sp": "rl",
-                "sig": "fCwrecfbx6JNp5RlTzw5mmnRCna6hne92Khb8Gk4+Rw="
-            ]
+            path: ["v1"],
+            sslSignature: Certificate.SSL.cdnSignature,
+            tokenParams: [:]
         )
     )
 
@@ -99,18 +92,18 @@ struct NetworkConfiguration {
         name: "Production",
         api: .init(
             scheme: "https",
-            host: "notknown",
+            host: "coronamelder-api.nl",
             port: nil,
-            path: [],
-            sslSignature: nil,
+            path: ["v1"],
+            sslSignature: Certificate.SSL.apiSignature,
             tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
-            host: "notknown",
+            host: "productie.coronamelder-dist.nl",
             port: nil,
-            path: [],
-            sslSignature: nil,
+            path: ["v1"],
+            sslSignature: Certificate.SSL.cdnSignature,
             tokenParams: [:]
         )
     )
@@ -152,7 +145,7 @@ struct NetworkConfiguration {
         urlComponents.port = config.port
         urlComponents.path = "/" + (config.path + path.components).joined(separator: "/")
 
-        if params.count > 0 {
+        if !params.isEmpty {
             urlComponents.percentEncodedQueryItems = params.compactMap { parameter in
                 guard let name = parameter.key.addingPercentEncoding(withAllowedCharacters: urlQueryEncodedCharacterSet),
                     let value = parameter.value.addingPercentEncoding(withAllowedCharacters: urlQueryEncodedCharacterSet) else {
@@ -167,6 +160,7 @@ struct NetworkConfiguration {
     }
 
     private var urlQueryEncodedCharacterSet: CharacterSet = {
+        // WARNING: Do not remove this code, this will break signature validation on the backend.
         // specify characters which are allowed to be unespaced in the queryString, note the `inverted`
         let characterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted
         return characterSet

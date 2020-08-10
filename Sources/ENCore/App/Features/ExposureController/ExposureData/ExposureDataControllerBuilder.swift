@@ -29,13 +29,14 @@ protocol ExposureDataControlling {
     // MARK: - Exposure Detection
 
     var lastExposure: ExposureReport? { get }
-    var lastSuccessfulFetchDate: Date { get }
+    var lastSuccessfulProcessingDate: Date? { get }
     var lastLocalNotificationExposureDate: Date? { get }
     var lastENStatusCheckDate: Date? { get }
     func removeLastExposure() -> AnyPublisher<(), Never>
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
 
     func setLastEndStatusCheckDate(_ date: Date)
+    func setDisplayedExposureNotification()
 
     // MARK: - Lab Flow
 
@@ -46,6 +47,8 @@ protocol ExposureDataControlling {
     // MARK: - Misc
 
     func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
+    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError>
+    func isTestPhase() -> AnyPublisher<Bool, ExposureDataError>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>

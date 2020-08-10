@@ -31,7 +31,7 @@ final class OnboardingConsentStep: NSObject {
         return !summarySteps.isEmpty
     }
     var primaryButtonTitle: String = ""
-    var secondaryButtonTitle: String = ""
+    var secondaryButtonTitle: String?
     var hasNavigationBarSkipButton: Bool = false
 
     init(step: OnboardingConsentStepIndex,
@@ -42,7 +42,7 @@ final class OnboardingConsentStep: NSObject {
          animationName: String?,
          summarySteps: [OnboardingConsentSummaryStep]?,
          primaryButtonTitle: String,
-         secondaryButtonTitle: String,
+         secondaryButtonTitle: String?,
          hasNavigationBarSkipButton: Bool) {
 
         self.step = step
@@ -57,7 +57,7 @@ final class OnboardingConsentStep: NSObject {
         self.secondaryButtonTitle = secondaryButtonTitle
         self.hasNavigationBarSkipButton = hasNavigationBarSkipButton
 
-        self.attributedTitle = .makeFromHtml(text: title, font: theme.fonts.title2, textColor: .black)
-        self.attributedContent = .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray)
+        self.attributedTitle = .makeFromHtml(text: title, font: theme.fonts.title2, textColor: .black, textAlignment: Localization.isRTL ? .right : .left)
+        self.attributedContent = .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left)
     }
 }

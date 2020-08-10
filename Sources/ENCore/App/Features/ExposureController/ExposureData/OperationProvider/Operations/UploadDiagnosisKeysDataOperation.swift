@@ -24,11 +24,6 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
     func execute() -> AnyPublisher<(), ExposureDataError> {
         let keys = filterOutAlreadyUploadedKeys(diagnosisKeys)
 
-        guard keys.isEmpty == false else {
-            // no keys to upload, just return without reaching out to the network
-            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-        }
-
         return networkController
             // execute network request
             .postKeys(keys: keys, labConfirmationKey: labConfirmationKey, padding: padding)
@@ -45,10 +40,16 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
         let rollingStartNumbers = keys.map { $0.rollingStartNumber }
 
         return Future { promise in
-            self.storageController.store(object: rollingStartNumbers,
-                                         identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) { error in
-                // cannot store - ignore and upload the whole set again next time
-                promise(.success(()))
+            self.storageController.requestExclusiveAccess { storageController in
+                let currentRollingStartNumbers = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) ?? []
+
+                let allRollingStartNumbers = rollingStartNumbers + currentRollingStartNumbers
+
+                storageController.store(object: allRollingStartNumbers,
+                                        identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) { error in
+                    // cannot store - ignore and upload the whole set again next time
+                    promise(.success(()))
+                }
             }
         }
         .share()

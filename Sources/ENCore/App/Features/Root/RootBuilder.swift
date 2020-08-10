@@ -37,33 +37,35 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency {
 
     // MARK: - Child Builders
 
-    /// Builds onboarding flow
-    var onboardingBuilder: OnboardingBuildable {
+    fileprivate var onboardingBuilder: OnboardingBuildable {
         return OnboardingBuilder(dependency: self)
     }
 
-    /// Builds main flow
-    var mainBuilder: MainBuildable {
+    fileprivate var mainBuilder: MainBuildable {
         return MainBuilder(dependency: self)
     }
 
-    var messageBuilder: MessageBuildable {
+    fileprivate var endOfLifeBuilder: EndOfLifeBuildable {
+        return EndOfLifeBuilder(dependency: self)
+    }
+
+    fileprivate var messageBuilder: MessageBuildable {
         return MessageBuilder(dependency: self)
     }
 
-    var callGGDBuilder: CallGGDBuildable {
+    fileprivate var callGGDBuilder: CallGGDBuildable {
         return CallGGDBuilder(dependency: self)
     }
 
-    var developerMenuBuilder: DeveloperMenuBuildable {
+    fileprivate var developerMenuBuilder: DeveloperMenuBuildable {
         return DeveloperMenuBuilder(dependency: self)
     }
 
-    var updateAppBuilder: UpdateAppBuildable {
+    fileprivate var updateAppBuilder: UpdateAppBuildable {
         return UpdateAppBuilder(dependency: self)
     }
 
@@ -86,12 +88,12 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
         let configurations: [String: NetworkConfiguration] = [
             NetworkConfiguration.development.name: NetworkConfiguration.development,
-            NetworkConfiguration.labtest.name: NetworkConfiguration.labtest,
+            NetworkConfiguration.test.name: NetworkConfiguration.test,
             NetworkConfiguration.acceptance.name: NetworkConfiguration.acceptance,
             NetworkConfiguration.production.name: NetworkConfiguration.production
         ]
 
-        let fallbackConfiguration = NetworkConfiguration.acceptance
+        let fallbackConfiguration = NetworkConfiguration.test
 
         if let networkConfigurationValue = Bundle.main.infoDictionary?["NETWORK_CONFIGURATION"] as? String {
             networkConfiguration = configurations[networkConfigurationValue] ?? fallbackConfiguration
@@ -127,6 +129,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableNetworkStatusStream
     }
 
+    var bluetoothStateStream: BluetoothStateStreaming {
+        return mutableBluetoothStateStream
+    }
+
     let theme: Theme = ENTheme()
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
@@ -137,6 +143,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
+
+    lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
 }
 
 /// Interface describing the builder that builds
@@ -167,6 +175,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
+                          endOfLifeBuilder: dependencyProvider.endOfLifeBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,

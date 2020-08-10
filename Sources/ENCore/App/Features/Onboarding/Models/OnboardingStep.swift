@@ -36,12 +36,21 @@ final class OnboardingStep: NSObject {
         let attributedTitleString = NSMutableAttributedString()
 
         if isExample {
-            attributedTitleString.append(.make(text: .example + "\n\n", font: theme.fonts.subheadBold, textColor: theme.colors.warning))
+            attributedTitleString.append(.make(text: .example + "\n\n",
+                                               font: theme.fonts.subheadBold,
+                                               textColor: theme.colors.warning,
+                                               textAlignment: Localization.isRTL ? .right : .left))
         }
 
-        attributedTitleString.append(.makeFromHtml(text: title, font: theme.fonts.title2, textColor: .black))
+        attributedTitleString.append(.makeFromHtml(text: title,
+                                                   font: theme.fonts.title2,
+                                                   textColor: .black,
+                                                   textAlignment: Localization.isRTL ? .right : .left))
 
         self.attributedTitle = attributedTitleString
-        self.attributedContent = .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray)
+        self.attributedContent = .makeFromHtml(text: content,
+                                               font: theme.fonts.body,
+                                               textColor: theme.colors.gray,
+                                               textAlignment: Localization.isRTL ? .right : .left)
     }
 }

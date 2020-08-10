@@ -22,9 +22,8 @@ final class StatusViewControllerTests: TestCase {
         super.setUp()
 
         recordSnapshots = false
-        #if DEBUG
-            AnimationTestingOverrides.animationsEnabled = false
-        #endif
+
+        AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
 
         cardBuilder.buildHandler = { type in
@@ -42,48 +41,48 @@ final class StatusViewControllerTests: TestCase {
 
     func test_snapshot_active_not_notified() {
         set(activeState: .active, notified: false)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_active_notified() {
         set(activeState: .active, notified: true)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_active_notified_days_ago() {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593000030)
         set(activeState: .active, notified: true)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_authorized_denied_notNotified() {
         set(activeState: .authorizationDenied, notified: false)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_authorized_denied_notified() {
         set(activeState: .authorizationDenied, notified: true)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_not_authorized_notified() {
         set(activeState: .notAuthorized, notified: true)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_not_authorized_not_notified() {
         set(activeState: .notAuthorized, notified: false)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_no_recent_updates_notified() {
         set(activeState: .inactive(.noRecentNotificationUpdates), notified: true)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_no_recent_updates_not_notified() {
         set(activeState: .inactive(.noRecentNotificationUpdates), notified: false)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     // MARK: - Private

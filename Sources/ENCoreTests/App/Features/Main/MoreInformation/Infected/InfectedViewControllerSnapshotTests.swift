@@ -38,7 +38,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
 
     func test_infected_snapshotStateLoading() {
         viewController.state = .loading
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_infected_snapshotStateSuccess() {
@@ -46,12 +46,12 @@ final class InfectedViewControllerSnapshotTests: TestCase {
                                                                             bucketIdentifier: Data(),
                                                                             confirmationKey: Data(),
                                                                             validUntil: Date()))
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_infected_snapshotStateError() {
         viewController.state = .error
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_infected_errorCard() {
@@ -63,7 +63,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
                                                     type: .exposureOff)
         viewController.set(cardViewController: cardViewController)
 
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 
     func test_viewDidLoad_calls_exposureController() {

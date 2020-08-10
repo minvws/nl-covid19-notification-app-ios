@@ -179,9 +179,12 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Process Pending Upload Requests",
                               subtitle: "Pending Requests: \(getPendingUploadRequests())",
                               action: { [weak self] in self?.processPendingUploadRequests() }),
-                DeveloperItem(title: "Ignore 24h limit of 15 keysets",
-                              subtitle: "Only works with test entitlements, currently set: \(getDailyLimit())",
-                              action: { [weak self] in self?.toggleDailyLimit() })
+                DeveloperItem(title: "Ignore 24h limit of 15 keysets/API calls",
+                              subtitle: "Only works with test entitlements, currently set: \(getDailyLimit()), API calls made in last 24h: \(getNumberOfAPICallsInLast24Hours())",
+                              action: { [weak self] in self?.toggleDailyLimit() }),
+                DeveloperItem(title: "Fetch TEKs using Test function",
+                              subtitle: "Only works with test entitlements, currently set: \(getUseTestDiagnosisKeys())",
+                              action: { [weak self] in self?.toggleGetTestDiagnosisKeys() })
             ]),
             ("Storage", [
                 DeveloperItem(title: "Erase Local Storage",
@@ -199,10 +202,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.listener?.developerMenuRequestMessage(title: "Message from Developer Menu", body: "The body of the message which was launched from the Developer Menu"); self?.hide() }),
                 DeveloperItem(title: "Schedule Message Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
-                              action: { [weak self] in self?.wantsScheduleNotification(identifier: .inactive) }),
+                              action: { [weak self] in self?.wantsScheduleNotification(identifier: "com.apple.en.mock") }),
                 DeveloperItem(title: "Schedule Upload Failed Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
-                              action: { [weak self] in self?.wantsScheduleNotification(identifier: .uploadFailed) })
+                              action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.uploadFailed.rawValue) })
             ]),
             ("Logging", [
                 DeveloperItem(title: "Log Files",
@@ -266,7 +269,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     private func changeNetworkConfiguration() {
-        let configurations: [NetworkConfiguration] = [.development, .labtest, .acceptance, .production]
+        let configurations: [NetworkConfiguration] = [.development, .test, .acceptance, .production]
 
         let actionItems = configurations.map { (configuration) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
@@ -402,19 +405,57 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     private func toggleDailyLimit() {
-        #if DEBUG
+        #if DEBUG || USE_DEVELOPER_MENU
             ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets.toggle()
+        #endif
+    }
+
+    private func toggleGetTestDiagnosisKeys() {
+        #if DEBUG || USE_DEVELOPER_MENU
+            if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys {
+                ExposureManagerOverrides.useTestDiagnosisKeys = !useTestDiagnosisKeys
+            }
+
+            ExposureManagerOverrides.useTestDiagnosisKeys = false
         #endif
     }
 
     // MARK: - Private
 
+    private func getUseTestDiagnosisKeys() -> String {
+        #if DEBUG || USE_DEVELOPER_MENU
+            if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys {
+                return useTestDiagnosisKeys ? "Yes" : "No"
+            }
+
+            return "Yes"
+        #endif
+
+        return "No"
+    }
+
     private func getDailyLimit() -> String {
-        #if DEBUG
+        #if DEBUG || USE_DEVELOPER_MENU
             return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
         #else
             return "None"
         #endif
+    }
+
+    private func getNumberOfAPICallsInLast24Hours() -> Int {
+        let apiCalls = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureApiCallDates) ?? []
+
+        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) else {
+            return 0
+        }
+
+        let wasProcessedInLast24h: (Date) -> Bool = { date in
+            return date > cutOffDate
+        }
+
+        return apiCalls
+            .filter(wasProcessedInLast24h)
+            .count
     }
 
     private func getNumberOfProcessedKeySetsInLast24Hours() -> Int {
@@ -478,7 +519,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         return "\(dateFormatter.string(from: last))"
     }
 
-    private func wantsScheduleNotification(identifier: PushNotificationIdentifier) {
+    private func wantsScheduleNotification(identifier: String) {
         let unc = UNUserNotificationCenter.current()
         unc.getNotificationSettings { [weak self] settings in
             DispatchQueue.main.async {
@@ -504,26 +545,28 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         present(alertController, animated: true, completion: nil)
     }
 
-    private func scheduleNotification(identifier: PushNotificationIdentifier) {
+    private func scheduleNotification(identifier: String) {
         let content = UNMutableNotificationContent()
         content.sound = UNNotificationSound.default
         content.badge = 0
 
         switch identifier {
-        case .inactive:
+        case PushNotificationIdentifier.inactive.rawValue:
+            return
+        case PushNotificationIdentifier.uploadFailed.rawValue:
+            content.body = .notificationUploadFailedNotification
+        case PushNotificationIdentifier.enStatusDisabled.rawValue:
+            return
+        default:
             content.title = .messageDefaultTitle
             content.body = .messageDefaultBody
-        case .uploadFailed:
-            content.body = .notificationUploadFailedNotification
-        case .enStatusDisabled:
-            return
         }
 
         let date = Date(timeIntervalSinceNow: 5)
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
 
-        let request = UNNotificationRequest(identifier: identifier.rawValue, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
 
         let unc = UNUserNotificationCenter.current()
         unc.add(request) { error in

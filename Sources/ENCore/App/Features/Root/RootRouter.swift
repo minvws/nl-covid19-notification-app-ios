@@ -16,7 +16,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool)
@@ -33,6 +33,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     init(viewController: RootViewControllable,
          onboardingBuilder: OnboardingBuildable,
          mainBuilder: MainBuildable,
+         endOfLifeBuilder: EndOfLifeBuildable,
          messageBuilder: MessageBuildable,
          callGGDBuilder: CallGGDBuildable,
          exposureController: ExposureControlling,
@@ -45,6 +46,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          currentAppVersion: String?) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
+        self.endOfLifeBuilder = endOfLifeBuilder
         self.messageBuilder = messageBuilder
         self.callGGDBuilder = callGGDBuilder
         self.developerMenuBuilder = developerMenuBuilder
@@ -91,7 +93,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 guard let appVersionInformation = appVersionInformation else {
                     return
                 }
-                if currentAppVersion.compare(appVersionInformation.minimumVersion, options: .numeric) == .orderedDescending {
+                if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
                     self.routeToUpdateApp(animated: true,
                                           appStoreURL: appVersionInformation.appStoreURL,
                                           minimumVersionMessage: appVersionInformation.minimumVersionMessage)
@@ -99,8 +101,19 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
 
-        exposureStateStream.exposureState.sink { [weak self] state in
+        exposureController
+            .isAppDectivated()
+            .sink(receiveCompletion: { _ in
+                // Do nothing
+            }, receiveValue: { [weak self] isDectivated in
+                if isDectivated {
+                    self?.routeToEndOfLife()
+                    self?.exposureController.deactivate()
+                }
+            })
+            .store(in: &disposeBag)
 
+        exposureStateStream.exposureState.sink { [weak self] state in
             if state.activeState.isAuthorized {
                 self?.routeToMain()
             } else {
@@ -122,14 +135,23 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
+                self?.logDebug("Push Notification Identifier: \(notificationRespone.notification.request.identifier)")
+
+                // Check if this is a notificaiton triggered by our application, if not then we assume this was
+                // an EN notificaiton triggered by Apple. Ideally we should get the identifier of the Apple notification.
+                guard notificationRespone.notification.request.identifier.contains("nl.rijksoverheid") else {
+                    let content = notificationRespone.notification.request.content
+                    strongSelf.routeToMessage(title: content.title, body: content.body)
+                    return
+                }
+
                 guard let identifier = PushNotificationIdentifier(rawValue: notificationRespone.notification.request.identifier) else {
                     return strongSelf.logError("Push notification for \(notificationRespone.notification.request.identifier) not handled")
                 }
 
                 switch identifier {
                 case .inactive:
-                    let content = notificationRespone.notification.request.content
-                    strongSelf.routeToMessage(title: content.title, body: content.body)
+                    () // Do nothing
                 case .uploadFailed:
                     strongSelf.routeToCallGGD()
                 case .enStatusDisabled:
@@ -151,6 +173,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .store(in: &disposeBag)
 
         networkController.startObservingNetworkReachability()
+
+        if exposureController.shouldDisplayExposureNotification,
+            let date = exposureController.lastExposureDate {
+            routeToMessage(title: .messageDefaultTitle, body: String(format: .messageDefaultBody, timeAgo(from: date)))
+            exposureController.setDisplayedExposureNotification()
+        }
     }
 
     func didEnterBackground() {
@@ -241,6 +269,16 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.viewController.embed(viewController: mainRouter.viewControllable)
     }
 
+    private func routeToEndOfLife() {
+        guard endOfLifeViewController == nil else {
+            return
+        }
+        let endOfLifeViewController = endOfLifeBuilder.build(withListener: viewController)
+        self.endOfLifeViewController = endOfLifeViewController
+
+        self.viewController.embed(viewController: endOfLifeViewController)
+    }
+
     private func routeToCallGGD() {
         guard callGGDViewController == nil else {
             return
@@ -270,6 +308,22 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.developerMenuViewController = developerMenuViewController
     }
 
+    private func timeAgo(from: Date) -> String {
+        let now = currentDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+
+        let dateString = dateFormatter.string(from: from)
+
+        if let days = from.days(sinceDate: now), days > 0 {
+            return String(format: .statusNotifiedDescriptionDays, "\(days)", dateString)
+        }
+        if let hours = from.hours(sinceDate: now), hours > 0 {
+            return String(format: .statusNotifiedDescriptionHours, "\(hours)", dateString)
+        }
+        return String(format: .statusNotifiedDescriptionNone, dateString)
+    }
+
     private let currentAppVersion: String?
 
     private let networkController: NetworkControlling
@@ -283,6 +337,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let mainBuilder: MainBuildable
     private var mainRouter: Routing?
+
+    private let endOfLifeBuilder: EndOfLifeBuildable
+    private var endOfLifeViewController: ViewControllable?
 
     private let messageBuilder: MessageBuildable
     private var messageViewController: ViewControllable?

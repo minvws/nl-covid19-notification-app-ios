@@ -5,6 +5,18 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
+"testVersionTitle" = "Версия за тестване и изследване %@ (%@)";
+
+"help.faq.testVersion.title" = "Какво означава версия за тестване и изследване?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
+
+"moreInformation.situation.title" = "Какво можеш да направиш в тази ситуация?";
+"moreInformation.situation.step1" = "Нямаш никакви оплаквания? Направи си тест за коронавирус и остани вкъщи, докато научиш резултата";
+"moreInformation.situation.step2" = "Имаш (леки) оплаквания, които са характерни за коронавируса? Направи си тест за коронавирус и остани вкъщи, докато научиш резултата";
+"moreInformation.situation.step3" = "Имаш сериозни оплаквания или се намираш в рискова група? Обади се на личния си лекар";
+
+"shareAppTitle" = "Помагам за ограничаването на коронавируса чрез използването на CoronaMelder. Ще се включиш ли и ти?";
+
 "ok" = "Ok";
 "yes" = "Да";
 "no" = "Не";
@@ -14,15 +26,20 @@
 "example" = "Пример";
 "close" = "Затваряне";
 "error.title" = "Нещо се обърка";
+"learnMore" = "Повече информация";
 
-// MARK: - Update App
+/* MARK: - Update App */
 "updateApp.error.message" = "App Store не се отваря.";
 "updateApp.title" = "Приложението се нуждае от актуализация";
 
 "updateApp.content" = "Актуализирай приложението, за да продължи да работи добре.";
 "updateApp.button" = "Актуализиране";
 
-// MARK: - Onboarding Steps
+/* MARK: - EndOfLife */
+"endOfLife.title" = "CoronaMelder е спряно";
+"endOfLife.description" = "Министерството на здравеопазването, благосъстоянието и спорта реши, че приложението вече не е необходимо. Това означава, че повече няма да получаваш известия, ако си бил близо до някой с коронавирус.";
+
+/* MARK: - Onboarding Steps */
 "step1Title" = "Съдействай за спиране на разпространението на коронавируса";
 "step1Content" = "Това приложение те предупреждава, след като си бил близо до някого с коронавирус. По този начин можеш да предотвратиш заразяването на хората от своето обкръжение.";
 
@@ -38,13 +55,19 @@
 "step5Title" = "Седял си близо до някого във влака? Тогава по-късно <u>може </u>да получиш известие";
 "step5Content" = "Bluetooth сигналът е бил достатъчно силен и сте седели по-дълго време близо един до друг.";
 
-// MARK: - Onboarding
+/* MARK: - Onboarding */
 "nextButtonTitle" = "Нататък";
 
-// MARK: - Consent Steps
+/* MARK: - Consent Steps */
+"consentSkipEnTitle" = "Сигурен ли си, че не искаш да включиш тези известия?";
+"consentSkipEnMessage" = "Без позволение приложението не може да изпраща известия, след като си бил изложен на повишен риск от заразяване.";
+"consentSkipEnAcceptButton" = "Включване";
+"consentSkipEnDeclineButton" = "Пропусни";
+
+/* MARK: - Consent Steps */
 "consentStep1Title" = "Включване на известия за евентуален контакт с коронавируса";
-"consentStep1Summary1" = "Твоите Bluetooth данни се съхраняват в телефона ти в продължение на 14 дни. Можеш да ги премахнеш сам по всяко време.";
-"consentStep1Summary2" = "Името и другите ти лични данни <b>не</b> се използват или съхраняват.";
+"consentStep1Summary1" = "Bluetooth данните се съхраняват в телефона ти в продължение на 14 дни. Можеш да ги премахнеш сам по всяко време.";
+"consentStep1Summary2" = "Името ти <b>не</b> се използва или съхранява.";
 "consentStep1Summary3" = "GPS данните за местоположението ти <i>не</i> се използват или съхраняват.";
 "consentStep1PrimaryButton" = "Включване";
 "consentStep1SecondaryButton" = "Как точно работи приложението?";
@@ -54,31 +77,67 @@
 "consentStep2PrimaryButton" = "Включване на Bluetooth";
 "consentStep2SecondaryButton" = "Може би по-късно";
 
-"consentStep3Title" = "Може ли CoronaMelder да изпраща известия, ако приложеното не работи добре?";
-"consentStep3Content" = "Така приложението директно може да посочи какво да направиш за разрешаване на проблема.";
+"consentStep3Title" = "Може ли CoronaMelder да изпраща известия, за да работи приложеното постоянно добре?";
+"consentStep3Content" = "Приложението изпраща известия само ако нещо не работи добре. Например ако Bluetooth е изключен.";
 "consentStep3PrimaryButton" = "Даване на разрешение";
 "consentStep3SecondaryButton" = "Може би по-късно";
 
-// MARK: - Consent
+"consentStep4Title" = "Съобщи на други хора, че помагаш за спирането на вируса.";
+"consentStep4Content" = "Колкото повече хора използват CoronaMelder, толкова по-ефективна е работата му. Единствено заедно можем да спрем разпространението на вируса. Затова сподели приложението с възможно най-много хора.";
+"consentStep4PrimaryButton" = "Споделяне на приложението";
+"consentStep4SecondaryButton" = "Продължи";
+
+/* MARK: - Bluetooth */
+"enableBluetoothTitle" = "Включване на Bluetooth";
+"enableBluetoothSettingIndexRow1" = "1.";
+"enableBluetoothSettingTitleRow1" = "Отвори <b>Настройки</b> на телефона си";
+"enableBluetoothSettingTitleSettingRow1" = "Настройки";
+"enableBluetoothSettingIndexRow2" = "2.";
+"enableBluetoothSettingTitleRow2" = "Отиди на <b>Bluetooth</b>";
+"enableBluetoothSettingTitleSettingRow2" = "Bluetooth";
+"enableBluetoothSettingIndexRow3" = "3.";
+"enableBluetoothSettingTitleRow3" = "Включи <b>Bluetooth</b>";
+"enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
+
+/* MARK: - Notifications */
+"notification.en.statusNotActive" = "В момента CoronaMelder не е включен. Провери настройките си.";
+
+"notification.upload.failed.header" = "Обади се на Общинската здравна инспекция (GGD).";
+"moreInformation.about.helpdesk.title" = "Друг въпрос относно приложението?";
+"moreInformation.about.helpdesk.subtitle" = "Обади се на отдела за обслужване на клиенти";
+
+/* MARK: - Consent */
 "skipStep" = "Пропусни";
 
-// MARK: - Help
+/* MARK: - Help */
 "helpTitle" = "Относно приложението";
 "helpSubtitle" = "Често задавани въпроси";
 "helpAcceptButtonTitle" = "Включване";
 
+"help.faq.notification.title" = "Кога ще получа известие от приложението?";
 "help.faq.location.title" = "Може ли приложението да види местоположението ми?";
 "help.faq.location.description" = "Не. Приложението вижда посредством Bluetooth само дали се намираш близо до други хора, които също имат приложението. Bluetooth не е обвързан с твоето местоположение, така че приложението не вижда къде се намираш.  Целта на Bluetooth единствено безжичното свързване между два апарата, които се намират близо един до друг, като например телефона ти и колонка или слушалки.";
 "help.faq.anonymous.title" = "Как е възможно приложението да е анонимно?";
 "help.faq.anonymous.description_1" = "Приложението обменя кодове с други телефони. В тези кодове не се съдържат лични данни или данни за местоположението ти. Те са напълно произволни. Обменът на кодове се случва в момента, в който се намираш близо до човек, който също има приложението.";
 "help.faq.anonymous.description_2" = "Ако по-късно се установи, че този човек е заразен с коронавирус, в приложението той може да добави своите кодове към списък с кодове на заразоносители. Добавянето на кодове е възможно само след като заразоносителят е предал GGD-ключ на Общинската здравна инспекция (GGD). След това ще бъде изпратено известие на теб и на всички хора, които имат тези кодове в своя телефон. Това известие съдържа единствено момента, в който си се намирал близо до заразоносител. Не се разкрива негова самоличност, нито мястото, на което сте се срещнали.";
-"help.faq.notification.title" = "Кога ще получа известие от приложението?";
+"help.bluetooth.title" = "Bluetooth работи ли през стени?";
+
+"help.faq.reason.title" = "Защо е важно това приложение?";
+"help.faq.reason.description" = "С приложението съдействаш да се спре разпространението на коронавируса. Приложението допълва проучването на контактите на вирусоносителите, извършвано от Общинската здравна инспекция (GGD). Ако направиш тест и се установи, че имаш коронавирус, от GGD ще ти се обадят. По време на този разговор от GGD ще те питат с кои хора си бил в контакт, откакто си се заразил. GGD ще се обади и на тези лица, за да ги предупреди, че може би имат коронавирус.<br><br>Твърде вероятно е обаче да си бил близо до хора, които не познаваш, например във влака, киното или ресторанта. Именно тук помага приложението. С него можеш да предупредиш всички, които са били близо до теб. В това число хората, които не познаваш. Стига те също да използват приложението.<br><br>Общинската здравна инспекция (GGD) ще се свърже с хората, чиито имена или данни за контакт имаш. Едновременно с това приложението ще предупреди хората, които си срещнал, но чиито имена и данни за контакт не са ти известни. Така и те бързо ще бъдат уведомени, ще могат да вземат мерки и по този начин ще се предотврати заразяване на други лица. GGD продължава да проучва контактите, тъй като хората, в чиято близост си се намирал по-често, вероятно са изложени на повишен риск.<br><br>Самият ти, естествено, също можеш да получаваш предупреждения през приложението. Ако това се случи, значи през изминалите дни си бил близо до човек с коронавирус. Когато научиш за това, на свой ред можеш да предотвратиш заразяването на други хора. Трябва да следиш добре за (леки) оплаквания, които са характерни за коронавируса, и да се тестваш, ако имаш такива оплаквания.";
+"help.faq.upload_keys.title" = "Как да изпратя известие?";
+"help.faq.upload_keys.description" = "Можеш да изпратиш известие до други лица само ако от направения ти тест се установи, че имаш коронавирус. В този случай ще ти се обадят от Общинската здравна инспекция (GGD). По време на този телефонен разговор служител на GGD ще ти помогне да изпратиш известието. Ще направиш това като споделиш с Общинската здравна инспекция (GGD) кодовете, които телефонът ти е генерирал през изминалите 14 дни.<br>След като твоят GGD-ключ бъде проверен, хората, в чиято близост си бил, докато си бил заразен, могат да получат анонимно известие. Само ако и тези хора използват приложението.";
+"help.faq.deletion.title" = "Как да премахна данните си?";
+"help.faq.privacy_policy.title" = "Декларация за поверителност";
+"help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
+"help.faq.colofon.title" = "Библиография";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
+"help.faq.accessibility.title" = "Достъпност";
+"help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Ще получиш известие, след като си бил изложен на повишен риск от заразяване. Това се случва, когато за повече от 15 минути си бил близо до някого, при когото по-късно е установен коронавирусът. Разбира се, само ако това лице също използва приложението. Дали ще получиш известие, зависи от силата на Bluetooth сигнала. И от продължителността на контакта ви. Ако някой е минал покрай теб на колело на улицата, няма да получиш известие. Били сте близо един до друг, така че Bluetooth сигналът е бил силен. Контактът обаче е бил толкова кратък, че не си бил изложен на повишен риск от заразяване. Ако си седял близо до някого във влака или в офиса, по-късно може да ти бъде изпратено известие. Bluetooth сигналът е бил достатъчно силен, а вие сте стояли продължително време близо един до друг.";
 "help.faq.bluetooth.title" = "Bluetooth работи ли през стени?";
 "help.faq.bluetooth.description" = "Да, но тогава сигналът отслабва значително. Bluetooth работи най-добре, когато твоят телефон се намира в едно и също помещение с телефона на друго лице. Например, вероятността приложението ти да получава Bluetooth сигнал от съседите е твърде малка. По тази причина е много малко вероятно да ти бъде изпратено известие, ако съседът ти се окаже с коронавирус и не сте били в едно и също помещение.";
 "help.faq.power_usage.title" = "Колко ток използва приложението?";
 "help.faq.power_usage.description" = "Приложението използва Bluetooth Low Energy (нискоенергиен Bluetooth). Това е специална форма на Bluetooth, която използва много малко ток. Колко точно процента харчи това от батерията на телефона ти, зависи от апарата.";
-
 "help.what_does_the_app_do.title" = "Как функционира CoronaMelder?";
 "help.what_does_the_app_do.protect.title" = "Помогни да спрем разпространението на коронавируса";
 "help.what_does_the_app_do.protect.description" = "Това приложение те предупреждава, след като си бил в близост до някого с коронавирус. По този начин можеш да предотвратиш заразяването на хората от своето обкръжение.";
@@ -103,32 +162,27 @@
 "help.technical_explanation.step5.title" = "5. Ще получиш известие, ако в телефона ти има кодове на заразоносител.";
 "help.technical_explanation.step5.description" = "В това известие ще прочетеш кога си се намирал в близост до заразоносителя, но не и кой е бил той и къде е станало. Приложението също така посочва и какво е най-добре да направиш сега. Твоите собствени кодове не са в списъка с кодове на заразоносители, а се съхраняват 14 дни в телефона ти.";
 
-"help.bluetooth.title" = "Bluetooth работи ли през стени?";
+"help.technical_explanation.github.title" = "Разгледай изходния код";
+"help.technical_explanation.github.subtitle" = "Отиди на GitHub";
 
-// MARK: - Message
-
+/* MARK: - Message */
 "message.default.title" = "Намирал си се близо до човек с коронавирус.";
 "message.default.body" = "Намирал си се %@ близо до някого, при когото по-късно е установен коронавирусът. В тази ситуация вероятно си бил изложен на повишен риск от заразяване. Ако наистина си заразен, може да предадеш вируса на други хора. Дори сега да не се чувстваш болен.";
-
 /* MARK: - Message */
 "message.title" = "Получено известие";
 "message.button.title" = "Обади се за тест за коронавирус";
 
-// MARK: - Notifications
-
+/* MARK: - Notifications */
 "notification.upload.failed.notification" = "Изпращането на известие до други лица е неуспешно. Обади се на Общинската здравна инспекция (GGD). Прочети повече в приложението.";
 "notification.upload.failed.title" = "Изпращането на известие до други лица е неуспешно";
 "notification.upload.failed.content" = "Опитахме да споделим кодовете ти със Общинската здравна инспекция (GGD), но безуспешно. Обади се на GGD, за да направиш това отново. Много е важно да действаш бързо. В противен случай могат да бъдат заразени повече хора.";
 
-
-// MARK: - Main
-
+/* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Сигурен ли си, че искаш да премахнеш това известие?";
 "main.confirmNotificationRemoval.message" = "След това вече няма да можеш да намериш датата в приложението. Затова я запомни добре.";
 "main.confirmNotificationRemoval.confirm" = "Премахни";
 
-// MARK: - Status
-
+/* MARK: - Status */
 "status.appState" = "Приложението е активно";
 "status.appState.inactive.title" = "Приложението не е активно";
 "status.appState.inactive.description" = "CoronaMelder работи само ако са включени необходимите настройки.";
@@ -175,9 +229,7 @@
 "moreInformation.complaints.title" = "Оплаквания, характерни за коронавируса (COVID-19)";
 "moreInformation.complaints.content" = "Имаш оплаквания? Остани си възможно най-дълго вкъщи. Имаш сериозни оплаквания? Обади се на личния си лекар.";
 
-
-// MARK: - MoreInformation | About
-
+/* MARK: - MoreInformation | About */
 "moreInformation.about.title" = "Относно приложението";
 "about.review" = "Оцени приложението";
 "moreInformation.about.privacy_statement" = "Декларация за защита на личните данни";
@@ -191,7 +243,7 @@
 "moreInformation.about.technical.description" = "Виж техническото обяснение";
 
 "moreInformation.about.faq.reason" = "Защо е важно това приложение?";
-"moreInformation.about.faq.location" =" Може ли приложението да види местоположението ми?";
+"moreInformation.about.faq.location" = " Може ли приложението да види местоположението ми?";
 "moreInformation.about.faq.anonymous" = "Как е възможно приложението да е анонимно?";
 "moreInformation.about.faq.notification" = "Кога ще получа известие от приложението?";
 "moreInformation.about.faq.upload_keys" = "Как да изпратя известие?";
@@ -199,14 +251,12 @@
 "moreInformation.about.faq.power_usage" = "Колко ток използва приложението?";
 "moreInformation.about.faq.deletion" = "Как да премахна Bluetooth данните от телефона си?";
 
-// MARK: - MoreInformation | Share
-
+/* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Съобщи на други хора, че помагаш за спирането на вируса";
 "moreInformation.share.description" = "Колкото повече хора използват CoronaMelder, толкова по-ефективна е работата му. Единствено заедно можем да спрем разпространението на вируса. Затова сподели приложението с възможно най-много хора.";
 "moreInformation.share.action" = "Споделяне на приложението";
 
-// MARK: - MoreInformation | Infected
-
+/* MARK: - MoreInformation | Infected */
 "moreInformation.infected.title" = "Изпращане на известие";
 "moreInformation.infected.loading" = "Доставя се GGD-ключ";
 "moreInformation.infected.upload" = "Продължи";
@@ -222,8 +272,7 @@
 "moreInformation.infected.tryAgain.description" = "Приложението не успя да достави GGD-ключ. Провери връзката с интернет.";
 "moreInformation.infected.action" = "Продължи";
 
-// MARK: - MoreInformation | Infected | Thank You
-
+/* MARK: - MoreInformation | Infected | Thank You */
 "moreInformation.thankyou.title" = "Благодаря";
 "moreInformation.thankyou.section.title" = "Благодаря, Общинската здравна инспекция (GGD) ще ти окаже допълнително съдействие.";
 "moreInformation.thankyou.section.header" = "Служителят на Общинската здравна инспекция (GGD) ще обясни какво можеш да направиш, за да предотвратиш заразяването на други хора. Бързо оздравяване и успешно възстановяване! ";
@@ -234,23 +283,26 @@
 "moreInformation.thankyou.list.item3" = "Ако оплакванията ти се влошат, веднага се свържи с Общинската здравна инспекция (GGD) или с личния си лекар";
 "moreInformation.thankyou.info.title" = "Известието се изпраща само ако от Общинската здравна инспекция (GGD) ти е направен тест и имаш коронавирус.";
 
-// MARK: - MoreInformation | Received Notification
-
+/* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Получено известие";
 "moreInformation.receivedNotification.button.title" = "Обади се за тест за коронавирус";
 "moreInformation.receivedNotification.notificationExplanation.title" = "Какво означава, ако получиш известие?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "Приложението изпраща известие, ако повече от 15 минути си бил близо до някого, при когото по-късно е установен коронавирусът. В тази ситуация си бил изложен на повишен риск от заразяване. Ако си заразен, може да предадеш вируса на други хора. Дори когато не се чувстваш болен.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Направи си тест за коронавирус";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Общинската здравна инспекция (GGD) препоръчва да си направиш тест за коронавирус. Дори да не се чувстваш болен. Защото и без да имаш симптоми,  може да разпространяваш коронавируса и така да заразиш други хора.\n\nНаправи си безплатен тест. Не отнема много време, а и в повечето случаи бързо може да си запишеш час. Резултатът става известен в рамките на 48 часа. Остани си вкъщи, докато научиш резултата.\n\nОбади се на безплатен номер 0800-1202, за да заявиш тест за коронавирус.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Дори да не се чувстваш болен. Защото и без да имаш симптоми,  може да разпространяваш коронавируса и така да заразиш други хора.\n\nНаправи си безплатен тест. Не отнема много време, а и в повечето случаи бързо може да си запишеш час. Резултатът става известен в рамките на 48 часа. Остани си вкъщи, докато научиш резултата.\n\nОбади се на безплатен номер 0800-1202, за да заявиш тест за коронавирус.";
 
-// MARK: - MoreInformation | Request Test
-
+/* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Заявяване на тест за коронавирус";
 "moreInformation.requestTest.button.title" = "Обади се за тест за коронавирус";
 "moreInformation.requestTest.receivedNotification.title" = "Имаш ли оплаквания, характерни за коронавируса? Заяви тест";
 "moreInformation.requestTest.receivedNotification.content" = "Имаш леки оплаквания? Направи си тест за коронавирус и остани вкъщи, докато стане готов резултатът. Имаш сериозни оплаквания, намираш се в рискова група или се нуждаеш от чужда помощ? Обади се на личния си лекар.\n\nНаправи си безплатен тест. Не отнема много време, а и в повечето случаи бързо може да си запишеш час. Резултатът става известен в рамките на 48 часа. Остани си вкъщи, докато научиш резултата.";
-// MARK: - Cards
 
+"moreInformation.notification.measures.title" = "Изпълнявай стриктно следните мерки:";
+"moreInformation.notification.measures.step1" = "Мий ръцете си редовно.";
+"moreInformation.notification.measures.step2" = "Кашляй/кихай в сгъвката на лакътя си.";
+"moreInformation.notification.measures.step3" = "Спазвай 1,5 метра дистанция от хора, с които не си от едно домакинство.";
+
+/* MARK: - Cards */
 "cards.exposureOff.title" = "Приложението <u>не</u> е активно";
 "cards.exposureOff.content" = "Включи настройките, които са необходими за правилната работа на приложението.";
 "cards.exposureOff.action" = "Включване на приложението";
@@ -267,8 +319,7 @@
 "cards.notificationsOff.content" = "Включи общи известия, така че приложението директно да споделя информация, когато това е необходимо.";
 "cards.notificationsOff.action" = "Включване на известия";
 
-// MARK: - Cards - Enable Settings
-
+/* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Включване на известия за контакт";
 "enableSettings.exposureNotifications.action" = "Отвори Настройки";
 
@@ -297,5 +348,17 @@
 "enableSettings.localNotifications.step3" = "Включи <b>&#96;Разреши известяването&#96;</b>";
 "enableSettings.localNotifications.step3.action.title" = "Разреши известяването";
 
-// MARK: - Exposure Notification Received - User Explanation
+/* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Намирал си се близо до човек с  коронавирус. Прочети повече в приложението.";
+
+/* MARK: - Exposure Reminder Notification */
+"exposure.notification.reminder" = "Напомняне: Преди %@ дни си бил близо до някого с коронавирус. Прочети повече в приложението.";
+
+"privacyAgreement.title" = "Съгласие за използване на данни";
+"privacyAgreement.message" = "За да използваш CoronaMelder, трябва да потвърдиш %@. Важно е да знаеш: ";
+"privacyAgreement.message.link" = "декларация за поверителност";
+"privacyAgreement.list.step1" = "Твоето приложение изпраща кодирани Bluetooth данни.";
+"privacyAgreement.list.step2" = "Останалите потребители, които са били в контакт с теб, ще съхраняват тези данни не повече от 14 дни.";
+"privacyAgreement.list.step3" = "Ако тест за коронавирус покаже, че имаш коронавирус, можеш да съобщиш за това в приложението, за да предупредиш останалите потребители.";
+"privacyAgreement.list.step4" = "По всяко време можеш да премахнеш данните от телефона си.";
+"privacyAgreement.consent.button" = "Прочетох декларацията за поверителност и съм съгласен със съдържанието.";

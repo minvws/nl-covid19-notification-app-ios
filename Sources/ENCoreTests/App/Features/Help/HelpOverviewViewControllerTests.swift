@@ -25,11 +25,11 @@ final class HelpOverviewViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_helpOverviewViewController_shouldShowEnableAppButton() {
-        assertSnapshot(matching: viewController(shouldShowEnableAppButton: true), as: .image())
+        snapshots(matching: viewController(shouldShowEnableAppButton: true))
     }
 
     func test_snapshot_helpOverviewViewController_hideShowEnableAppButton() {
-        assertSnapshot(matching: viewController(shouldShowEnableAppButton: false), as: .image())
+        snapshots(matching: viewController(shouldShowEnableAppButton: false))
     }
 
     // MARK: - Private

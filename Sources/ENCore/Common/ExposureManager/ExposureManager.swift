@@ -5,10 +5,19 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import ExposureNotification
 import Foundation
 
-final class ExposureManager: ExposureManaging {
+#if DEBUG || USE_DEVELOPER_MENU
+
+    final class ExposureManagerOverrides {
+        static var useTestDiagnosisKeys: Bool?
+    }
+
+#endif
+
+final class ExposureManager: ExposureManaging, Logging {
 
     init(manager: ENManaging) {
         self.manager = manager
@@ -19,6 +28,10 @@ final class ExposureManager: ExposureManaging {
     }
 
     // MARK: - ExposureManaging
+
+    var authorizationStatus: ENAuthorizationStatus {
+        return type(of: manager).authorizationStatus
+    }
 
     func activate(completion: @escaping (ExposureManagerStatus) -> ()) {
         #if DEBUG
@@ -44,6 +57,14 @@ final class ExposureManager: ExposureManaging {
             let authorisationStatus = strongSelf.getExposureNotificationStatus()
 
             completion(authorisationStatus)
+        }
+    }
+
+    func deactivate() {
+        manager.setExposureNotificationEnabled(false) { error in
+            if let error = error {
+                self.logError("Error disabling `ExposureNotifications`: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -80,8 +101,12 @@ final class ExposureManager: ExposureManaging {
 
         let retrieve: (@escaping ENGetDiagnosisKeysHandler) -> ()
 
-        #if DEBUG
-            retrieve = manager.getTestDiagnosisKeys(completionHandler:)
+        #if DEBUG || USE_DEVELOPER_MENU
+            if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys, !useTestDiagnosisKeys {
+                retrieve = manager.getDiagnosisKeys(completionHandler:)
+            } else {
+                retrieve = manager.getTestDiagnosisKeys(completionHandler:)
+            }
         #else
             retrieve = manager.getDiagnosisKeys(completionHandler:)
         #endif
@@ -122,7 +147,12 @@ final class ExposureManager: ExposureManaging {
             return
         }
 
-        _ = manager.getExposureInfo(summary: summary, userExplanation: userExplanation) { (info: [ENExposureInfo]?, error: Error?) in
+        var explanation = userExplanation
+        if userExplanation.last == "." {
+            _ = explanation.removeLast()
+        }
+
+        _ = manager.getExposureInfo(summary: summary, userExplanation: explanation) { (info: [ENExposureInfo]?, error: Error?) in
             completionHandler(info, error.map { $0.asExposureManagerError })
         }
     }
@@ -144,30 +174,34 @@ final class ExposureManager: ExposureManaging {
 
     func getExposureNotificationStatus() -> ExposureManagerStatus {
         let authorisationStatus = type(of: manager).authorizationStatus
+        let result: ExposureManagerStatus
 
         switch authorisationStatus {
         case .authorized:
             switch manager.exposureNotificationStatus {
             case .active:
-                return .active
+                result = .active
             case .bluetoothOff:
-                return .inactive(.bluetoothOff)
+                result = .inactive(.bluetoothOff)
             case .disabled:
-                return .inactive(.disabled)
+                result = .inactive(.disabled)
             case .restricted:
-                return .inactive(.restricted)
+                result = .inactive(.restricted)
             default:
-                return .inactive(.unknown)
+                result = .inactive(.unknown)
             }
         case .notAuthorized:
-            return .authorizationDenied
+            result = .authorizationDenied
         case .unknown:
-            return .notAuthorized
+            result = .notAuthorized
         case .restricted:
-            return .inactive(.restricted)
+            result = .inactive(.restricted)
         default:
-            return .inactive(.unknown)
+            result = .inactive(.unknown)
         }
+
+        logDebug("`getExposureNotificationStatus`: \(result)")
+        return result
     }
 
     private let manager: ENManaging

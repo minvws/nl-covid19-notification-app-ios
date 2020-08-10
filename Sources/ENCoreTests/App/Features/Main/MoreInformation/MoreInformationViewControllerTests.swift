@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import SnapshotTesting
@@ -25,19 +26,43 @@ final class MoreInformationViewControllerTests: TestCase {
         recordSnapshots = false
 
         viewController = MoreInformationViewController(listener: listener,
-                                                       theme: theme)
+                                                       theme: theme,
+                                                       testPhaseStream: Just(false).eraseToAnyPublisher(),
+                                                       bundleInfoDictionary: nil)
     }
 
     // MARK: - Tests
 
     func test_snapshot_moreInformationViewController() {
-        assertSnapshot(matching: viewController, as: .image(size: CGSize(width: 414, height: 470)))
+        let height = MoreInformationIdentifier.allCases.count * 110
+        snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: height)))
+    }
+
+    func test_snapshot_moreInformationViewController_testVersion() {
+        let viewController = MoreInformationViewController(listener: listener,
+                                                           theme: theme,
+                                                           testPhaseStream: Just(true).eraseToAnyPublisher(), bundleInfoDictionary: ["CFBundleShortVersionString": "1.0", "CFBundleVersion": "12345"])
+        let exp = XCTestExpectation()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            let height = MoreInformationIdentifier.allCases.count * 110
+            self.snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: height + 40)))
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 1)
     }
 
     func test_didSelectItem_about() {
         viewController.didSelect(identifier: .about)
 
         XCTAssertEqual(listener.moreInformationRequestsAboutCallCount, 1)
+    }
+
+    func test_didSelectItem_share() {
+        viewController.didSelect(identifier: .share)
+
+        XCTAssertEqual(listener.moreInformationRequestsSharingCallCount, 1)
     }
 
     func test_didSelectItem_infected() {

@@ -18,6 +18,8 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     override func setUp() {
         super.setUp()
 
+        storageController.requestExclusiveAccessHandler = { block in block(self.storageController) }
+
         operation = createOperation(withKeys: createDiagnosisKeys(withHighestRollingStartNumber: 65))
     }
 
@@ -128,12 +130,12 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
 
         XCTAssertNotNil(receivedKeys)
         XCTAssertEqual(receivedKeys, expectedKeys)
-        XCTAssertEqual(storageController.retrieveDataCallCount, 2) // once for pending operations, once for rollingStartNumbers
+        XCTAssertEqual(storageController.retrieveDataCallCount, 3) // once for pending operations, once for rollingStartNumbers
         XCTAssertEqual(storageController.storeCallCount, 1)
 
         // new stored rolling start numbers should be
         let rollingStartNumbers = try! JSONDecoder().decode([UInt32].self, from: receivedData)
-        XCTAssertEqual(rollingStartNumbers, [67, 66, 63])
+        XCTAssertEqual(rollingStartNumbers, [67, 66, 63, 62, 64])
     }
 
     func test_error_schedulesRetryRequest() {
@@ -185,7 +187,12 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(receivedPendingRequests[1].expiryDate, expiryDate)
     }
 
-    func test_noKeys_doesNotReachOutToNetwork() {
+    func test_noKeys_doesReachOutToNetwork() {
+
+        networkController.postKeysHandler = { keys, confirmationKey, padding in
+            return (Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher())
+        }
+
         operation = createOperation(withKeys: [])
 
         XCTAssertEqual(networkController.postKeysCallCount, 0)
@@ -194,7 +201,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
             .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
             .disposeOnTearDown(of: self)
 
-        XCTAssertEqual(networkController.postKeysCallCount, 0)
+        XCTAssertEqual(networkController.postKeysCallCount, 1)
     }
 
     // MARK: - Private

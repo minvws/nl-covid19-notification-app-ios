@@ -26,6 +26,6 @@ final class AppInformationViewControllerTests: TestCase {
 
     func test_snapshot_appInformationViewController_rendersCorrectly() {
         let viewController = AppInformationViewController(listener: listener, theme: theme)
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 }

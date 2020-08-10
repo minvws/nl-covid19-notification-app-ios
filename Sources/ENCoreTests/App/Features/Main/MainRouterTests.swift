@@ -14,6 +14,7 @@ final class MainRouterTests: XCTestCase {
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()
     private let aboutBuilder = AboutBuildableMock()
+    private let shareBuilder = ShareSheetBuildableMock()
     private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
     private let requestTestBuilder = RequestTestBuildableMock()
     private let infectedBuilder = InfectedBuildableMock()
@@ -29,6 +30,7 @@ final class MainRouterTests: XCTestCase {
                             statusBuilder: statusBuilder,
                             moreInformationBuilder: moreInformationBuilder,
                             aboutBuilder: aboutBuilder,
+                            shareBuilder: shareBuilder,
                             receivedNotificationBuilder: receivedNotificationBuilder,
                             requestTestBuilder: requestTestBuilder,
                             infectedBuilder: infectedBuilder,

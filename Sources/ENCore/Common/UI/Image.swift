@@ -19,6 +19,7 @@ extension UIImage {
     static var gradient: UIImage? { return Image.named("Gradient") }
     static var chevron: UIImage? { return Image.named("Chevron") }
     static var about: UIImage? { return Image.named("About") }
+    static var share: UIImage? { return Image.named("Share") }
     static var warning: UIImage? { return Image.named("Warning") }
     static var coronatest: UIImage? { return Image.named("Coronatest") }
     static var coronatestHeader: UIImage? { return Image.named("CoronatestHeader") }
@@ -41,7 +42,7 @@ extension UIImage {
     static var callGGD: UIImage? { return Image.named("CallGGD") }
     static var bluetoothShield: UIImage? { return Image.named("BluetoothShield") }
     static var lockShield: UIImage? { return Image.named("LockShield") }
-    static var pleaseTurnOnBluetooth: UIImage? { return Image.named("PleaseTurnOnBluetooth") }
+    static var pleaseTurnOnBluetooth: UIImage? { return Image.named("Bluetooth") }
     static var pleaseTurnOnNotifications: UIImage? { return Image.named("PleaseTurnOnNotifications") }
     static var shareApp: UIImage? { return Image.named("ShareApp") }
     static var updateApp: UIImage? { return Image.named("UpdateApp") }
@@ -60,4 +61,19 @@ extension UIImage {
     static var aboutAppInformation: UIImage? { return Image.named("AboutAppInformation") }
     static var aboutTechnicalInformation: UIImage? { return Image.named("AboutTechnicalInformation") }
     static var aboutHelpdesk: UIImage? { return Image.named("AboutHelpdesk") }
+    static var checkmarkChecked: UIImage? { return Image.named("checkmarkChecked") }
+    static var checkmarkUnchecked: UIImage? { return Image.named("checkmarkUnchecked") }
+}
+
+extension UIImage {
+
+    var aspectRatio: CGFloat {
+        let width = size.width
+        let height = size.height
+
+        guard width > 0, height > 0 else {
+            return 1
+        }
+        return width / height
+    }
 }

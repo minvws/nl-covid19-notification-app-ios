@@ -5,13 +5,29 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
+import UIKit
 
 public final class Localization {
 
     /// Get the Localized string for the current bundle.
     /// If the key has not been localized this will fallback to the Base project strings
     public static func string(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> String {
+        if let override = localization() {
+            guard
+                let path = Bundle(for: Localization.self).path(forResource: override, ofType: "lproj"),
+                let bundle = Bundle(path: path) else {
+                let value = NSLocalizedString(key, bundle: Bundle(for: Localization.self), comment: comment)
+                return (arguments.count > 0) ? String(format: value, arguments: arguments) : value
+            }
+            let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
+            if override != "Base" {
+                print(override)
+            }
+            return (arguments.count > 0) ? String(format: localizedString, arguments: arguments) : localizedString
+        }
+
         let value = NSLocalizedString(key, bundle: Bundle(for: Localization.self), comment: comment)
         guard value == key else {
             return (arguments.count > 0) ? String(format: value, arguments: arguments) : value
@@ -39,6 +55,8 @@ public final class Localization {
             return NSMutableAttributedString(string: value)
         }
     }
+
+    public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
 }
 
 extension String {
@@ -46,6 +64,12 @@ extension String {
     // MARK: - Helpdesk Phone Number
 
     static var helpDeskPhoneNumber = "tel://08001280"
+    static var coronaTestPhoneNumber = "tel://08001202"
+
+    // MARK: - Share App
+
+    static var shareAppUrl = "https://coronamelder.nl/app"
+    static var shareAppTitle: String { return Localization.string(for: "shareAppTitle") }
 
     // MARK: - General Texts
 
@@ -58,6 +82,9 @@ extension String {
     static var example: String { return Localization.string(for: "example") }
     static var close: String { return Localization.string(for: "close") }
     static var errorTitle: String { return Localization.string(for: "error.title") }
+    static var learnMore: String { return Localization.string(for: "learnMore") }
+
+    static func testVersionTitle(_ version: String, _ build: String) -> String { return Localization.string(for: "testVersionTitle", [version, build]) }
 
     // MARK: - Update App
 
@@ -66,6 +93,9 @@ extension String {
 
     static var updateAppContent: String { return Localization.string(for: "updateApp.content") }
     static var updateAppButton: String { return Localization.string(for: "updateApp.button") }
+
+    static var endOfLifeTitle: String { return Localization.string(for: "endOfLife.title") }
+    static var endOfLifeDescription: String { return Localization.string(for: "endOfLife.description") }
 
     // MARK: - Onboarding Steps
 
@@ -117,6 +147,22 @@ extension String {
     static var consentStep4PrimaryButton: String { return Localization.string(for: "consentStep4PrimaryButton") }
     static var consentStep4SecondaryButton: String { return Localization.string(for: "consentStep4SecondaryButton") }
 
+    // MARK: - Bluetooth
+
+    static var enableBluetoothTitle: String { return Localization.string(for: "enableBluetoothTitle") }
+
+    static var enableBluetoothSettingIndexRow1: String { return Localization.string(for: "enableBluetoothSettingIndexRow1") }
+    static var enableBluetoothSettingTitleRow1: String { return Localization.string(for: "enableBluetoothSettingTitleRow1") }
+    static var enableBluetoothSettingTitleSettingRow1: String { return Localization.string(for: "enableBluetoothSettingTitleSettingRow1") }
+
+    static var enableBluetoothSettingIndexRow2: String { return Localization.string(for: "enableBluetoothSettingIndexRow2") }
+    static var enableBluetoothSettingTitleRow2: String { return Localization.string(for: "enableBluetoothSettingTitleRow2") }
+    static var enableBluetoothSettingTitleSettingRow2: String { return Localization.string(for: "enableBluetoothSettingTitleSettingRow2") }
+
+    static var enableBluetoothSettingIndexRow3: String { return Localization.string(for: "enableBluetoothSettingIndexRow3") }
+    static var enableBluetoothSettingTitleRow3: String { return Localization.string(for: "enableBluetoothSettingTitleRow3") }
+    static var enableBluetoothSettingTitleSettingRow3: String { return Localization.string(for: "enableBluetoothSettingTitleSettingRow3") }
+
     // MARK: - Consent
 
     static var skipStep: String { return Localization.string(for: "skipStep") }
@@ -128,6 +174,8 @@ extension String {
     static var helpAcceptButtonTitle: String { return Localization.string(for: "helpAcceptButtonTitle") }
     static var helpContent: String { return Localization.string(for: "helpContent") }
 
+    static var helpFaqReasonTitle: String { return Localization.string(for: "help.faq.reason.title") }
+    static var helpFaqReasonDescription: String { return Localization.string(for: "help.faq.reason.description") }
     static var helpFaqLocationTitle: String { return Localization.string(for: "help.faq.location.title") }
     static var helpFaqLocationDescription: String { return Localization.string(for: "help.faq.location.description") }
     static var helpFaqAnonymousTitle: String { return Localization.string(for: "help.faq.anonymous.title") }
@@ -135,16 +183,23 @@ extension String {
     static var helpFaqAnonymousDescription2: String { return Localization.string(for: "help.faq.anonymous.description_2") }
     static var helpFaqNotificationTitle: String { return Localization.string(for: "help.faq.notification.title") }
     static var helpFaqNotificationDescription: String { return Localization.string(for: "help.faq.notification.description") }
+    static var helpFaqUploadKeysTitle: String { return Localization.string(for: "help.faq.upload_keys.title") }
+    static var helpFaqUploadKeysDescription: String { return Localization.string(for: "help.faq.upload_keys.description") }
     static var helpFaqBluetoothTitle: String { return Localization.string(for: "help.faq.bluetooth.title") }
     static var helpFaqBluetoothDescription: String { return Localization.string(for: "help.faq.bluetooth.description") }
     static var helpFaqPowerUsageTitle: String { return Localization.string(for: "help.faq.power_usage.title") }
     static var helpFaqPowerUsageDescription: String { return Localization.string(for: "help.faq.power_usage.description") }
+    static var helpFaqDeletionTitle: String { return Localization.string(for: "moreInformation.about.faq.deletion") }
+    static var helpFaqDeletionDescription: String { return Localization.string(for: "moreInformation.about.faq.deletion.description") }
     static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
-    static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link") }
+    static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link", [currentLanguageIdentifier]) }
     static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }
-    static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link") }
+    static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link", [currentLanguageIdentifier]) }
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
-    static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link") }
+    static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link", [currentLanguageIdentifier]) }
+
+    static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
+    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link", [currentLanguageIdentifier]) }
 
     // MARK: - About - What the app do
 
@@ -222,6 +277,9 @@ extension String {
     static var moreInformationCellAboutTitle: String { return Localization.string(for: "moreInformation.cell.about.title") }
     static var moreInformationCellAboutSubtitle: String { return Localization.string(for: "moreInformation.cell.about.subtitle") }
 
+    static var moreInformationCellShareTitle: String { return Localization.string(for: "moreInformation.cell.share.title") }
+    static var moreInformationCellShareSubtitle: String { return Localization.string(for: "moreInformation.cell.share.subtitle") }
+
     static var moreInformationCellReceivedNotificationTitle: String { return Localization.string(for: "moreInformation.cell.receivedNotification.title") }
     static var moreInformationCellReceivedNotificationSubtitle: String { return Localization.string(for: "moreInformation.cell.receivedNotification.subtitle") }
 
@@ -249,6 +307,12 @@ extension String {
     static var aboutAppInformationDescription: String { return Localization.string(for: "moreInformation.about.onboarding.description") }
     static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
+
+    // MARK: - MoreInformation | Share
+
+    static var moreInformationShareTitle: String { return Localization.string(for: "moreInformation.share.title") }
+    static var moreInformationShareContent: String { return Localization.string(for: "moreInformation.share.description") }
+    static var moreInformationShareButton: String { return Localization.string(for: "moreInformation.share.action") }
 
     // MARK: - MoreInformation | Infected
 
@@ -280,6 +344,7 @@ extension String {
     static var moreInformationThankYouListItem1: String { return Localization.string(for: "moreInformation.thankyou.list.item1") }
     static var moreInformationThankYouListItem2: String { return Localization.string(for: "moreInformation.thankyou.list.item2") }
     static var moreInformationThankYouListItem3: String { return Localization.string(for: "moreInformation.thankyou.list.item3") }
+    static var moreInformationThankYouInfo: String { return Localization.string(for: "moreInformation.thankyou.info.title") }
 
     // MARK: - MoreInformation | Received Notification
 
@@ -296,6 +361,16 @@ extension String {
     static var moreInformationRequestTestButtonTitle: String { return Localization.string(for: "moreInformation.requestTest.button.title") }
     static var moreInformationRequestTestReceivedNotificationTitle: String { return Localization.string(for: "moreInformation.requestTest.receivedNotification.title") }
     static var moreInformationRequestTestReceivedNotificationContent: String { return Localization.string(for: "moreInformation.requestTest.receivedNotification.content") }
+
+    static var moreInformationNotificationMeasuresTitle: String { return Localization.string(for: "moreInformation.notification.measures.title") }
+    static var moreInformationNotificationMeasuresStep1: String { return Localization.string(for: "moreInformation.notification.measures.step1") }
+    static var moreInformationNotificationMeasuresStep2: String { return Localization.string(for: "moreInformation.notification.measures.step2") }
+    static var moreInformationNotificationMeasuresStep3: String { return Localization.string(for: "moreInformation.notification.measures.step3") }
+
+    static var moreInformationSituationTitle: String { return Localization.string(for: "moreInformation.situation.title") }
+    static var moreInformationSituationStep1: String { return Localization.string(for: "moreInformation.situation.step1") }
+    static var moreInformationSituationStep2: String { return Localization.string(for: "moreInformation.situation.step2") }
+    static var moreInformationSituationStep3: String { return Localization.string(for: "moreInformation.situation.step3") }
 
     // MARK: - Cards | Exposure Off
 
@@ -351,6 +426,17 @@ extension String {
 
     static var exposureNotificationUserExplanation: String { return Localization.string(for: "exposure.notification.userExplanation") }
 
+    // MARK: - Privacy Agreement
+
+    static var privacyAgreementTitle: String { return Localization.string(for: "privacyAgreement.title") }
+    static var privacyAgreementMessage: String { return Localization.string(for: "privacyAgreement.message") }
+    static var privacyAgreementMessageLink: String { return Localization.string(for: "privacyAgreement.message.link") }
+    static var privacyAgreementStep1: String { return Localization.string(for: "privacyAgreement.list.step1") }
+    static var privacyAgreementStep2: String { return Localization.string(for: "privacyAgreement.list.step2") }
+    static var privacyAgreementStep3: String { return Localization.string(for: "privacyAgreement.list.step3") }
+    static var privacyAgreementStep4: String { return Localization.string(for: "privacyAgreement.list.step4") }
+    static var privacyAgreementConsentButton: String { return Localization.string(for: "privacyAgreement.consent.button") }
+
     func attributed() -> NSMutableAttributedString {
         return NSMutableAttributedString(string: self)
     }
@@ -363,5 +449,16 @@ extension String {
             let value = index < strings.count - 1 ? element + "\n" : element
             return NSMutableAttributedString(string: value)
         }
+    }
+
+    static var currentLanguageIdentifier: String {
+        let defaultLanguageIdentifier = "en"
+        let supportedLanguageCodes = Bundle.main.localizations
+
+        guard let languageCode = Locale.current.languageCode else {
+            return defaultLanguageIdentifier
+        }
+
+        return supportedLanguageCodes.contains(languageCode) ? languageCode : defaultLanguageIdentifier
     }
 }

@@ -6,6 +6,7 @@
  */
 
 import Combine
+import CoreBluetooth
 import ENFoundation
 import UIKit
 
@@ -15,11 +16,12 @@ protocol OnboardingConsentManaging {
 
     func getStep(_ index: Int) -> OnboardingConsentStep?
     func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ())
-
+    func isBluetoothEnabled(_ completion: @escaping (Bool) -> ())
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
     func getAppStoreUrl(_ completion: @escaping ((String?) -> ()))
+    func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ())
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging {
@@ -75,7 +77,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 animationName: nil,
                 summarySteps: nil,
                 primaryButtonTitle: .consentStep2PrimaryButton,
-                secondaryButtonTitle: .consentStep2SecondaryButton,
+                secondaryButtonTitle: nil,
                 hasNavigationBarSkipButton: true
             )
         )
@@ -144,6 +146,26 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             completion(.share)
         case .share:
             completion(nil)
+        }
+    }
+
+    func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ()) {
+        exposureStateStream
+            .exposureState
+            .first()
+            .sink { value in
+                if value.activeState == .notAuthorized {
+                    completion(false)
+                } else {
+                    completion(true)
+                }
+            }
+            .store(in: &disposeBag)
+    }
+
+    func isBluetoothEnabled(_ completion: @escaping (Bool) -> ()) {
+        if let exposureActiveState = exposureStateStream.currentExposureState?.activeState {
+            completion(exposureActiveState == .inactive(.bluetoothOff) ? false : true)
         }
     }
 

@@ -26,7 +26,8 @@ protocol OnboardingDependency {
 
 ///
 /// - Tag: OnboardingDependencyProvider
-private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, WebDependency, ShareSheetDependency, HelpDependency {
+
+private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, BluetoothSettingsDependency, ShareSheetDependency, HelpDependency, PrivacyAgreementDependency {
 
     // MARK: - OnboardingStepDependency
 
@@ -60,12 +61,16 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
         return OnboardingConsentBuilder(dependency: self)
     }
 
-    var webBuilder: WebBuildable {
-        return WebBuilder(dependency: self)
+    var bluetoothSettingsBuilder: BluetoothSettingsBuildable {
+        return BluetoothSettingsBuilder(dependency: self)
     }
 
     var shareSheetBuilder: ShareSheetBuildable {
         return ShareSheetBuilder(dependency: self)
+    }
+
+    var privacyAgreementBuilder: PrivacyAgreementBuildable {
+        return PrivacyAgreementBuilder(dependency: self)
     }
 
     var helpBuilder: HelpBuildable {
@@ -83,8 +88,9 @@ final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildabl
         return OnboardingRouter(viewController: viewController,
                                 stepBuilder: dependencyProvider.stepBuilder,
                                 consentBuilder: dependencyProvider.consentBuilder,
-                                webBuilder: dependencyProvider.webBuilder,
+                                bluetoothSettingsBuilder: dependencyProvider.bluetoothSettingsBuilder,
                                 shareSheetBuilder: dependencyProvider.shareSheetBuilder,
+                                privacyAgreementBuilder: dependencyProvider.privacyAgreementBuilder,
                                 helpBuilder: dependencyProvider.helpBuilder)
     }
 }

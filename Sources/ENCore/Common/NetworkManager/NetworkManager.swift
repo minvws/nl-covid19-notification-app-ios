@@ -174,12 +174,6 @@ final class NetworkManager: NetworkManaging, Logging {
                                           body: request,
                                           headers: headers)
 
-        if configuration.api.host == "localhost", configuration.api.port == nil {
-            // FIXME: This is stubbed for the region test
-            completion(nil)
-            return
-        }
-
         data(request: urlRequest) { result in
             switch result {
             case .success:
@@ -203,12 +197,6 @@ final class NetworkManager: NetworkManaging, Logging {
                                           body: request,
                                           headers: headers)
 
-        if configuration.api.host == "localhost", configuration.api.port == nil {
-            // FIXME: This is stubbed for the region test
-            completion(nil)
-            return
-        }
-
         data(request: urlRequest) { result in
             switch result {
             case .success:
@@ -231,17 +219,6 @@ final class NetworkManager: NetworkManaging, Logging {
                                           method: .POST,
                                           body: request,
                                           headers: headers)
-
-        if configuration.api.host == "localhost", configuration.api.port == nil {
-            // FIXME: This is stubbed for the region test
-            func randomString(length: Int) -> String {
-                let letters = "BCFGJLQRSTUVXYZ23456789"
-                return String((0 ..< length).map { _ in letters.randomElement() ?? Character("") })
-            }
-            let labConfirmationId = String(randomString(length: 6).enumerated().map { $0 > 0 && $0 % 2 == 0 ? ["-", $1] : [$1] }.joined())
-            completion(.success(LabInformation(labConfirmationId: labConfirmationId, bucketId: "tbWbzHx1CSvOeTJT+bL4Ij/vBBJYvt3GQ4/EJYWMY8U=", confirmationKey: "UND1tvcl9q2HTS+jdwugCeMSUb17Kndpor9BJ/oxtAc=", validity: 40956)))
-            return
-        }
 
         data(request: urlRequest) { result in
             self.jsonResponseHandler(result: result)
@@ -286,14 +263,8 @@ final class NetworkManager: NetworkManaging, Logging {
             request.addValue(value, forHTTPHeaderField: header.rawValue)
         }
 
-        if let body = body.flatMap({ try? self.jsonEncoder.encode(AnyEncodable($0)) }),
-            let bodyString = String(data: body, encoding: .utf8) {
-
-            // DataPower cannot handle escaped forward slashes in a JSON payload - so replace them
-            // This seems wrong given https://stackoverflow.com/questions/58815041/why-does-encoding-a-string-with-jsonencoder-adds-a-backslash
-            let unescapedBodyString = bodyString.replacingOccurrences(of: "\\/", with: "/")
-
-            request.httpBody = unescapedBodyString.data(using: .utf8)
+        if let body = body.flatMap({ try? self.jsonEncoder.encode(AnyEncodable($0)) }) {
+            request.httpBody = body
         }
 
         logDebug("--REQUEST--")
@@ -388,9 +359,6 @@ final class NetworkManager: NetworkManaging, Logging {
             logDebug("Error with response: \(error)")
         }
 
-        if let object = object as? Data {
-            logDebug(String(data: object, encoding: .utf8)!)
-        }
         logDebug("--END RESPONSE--")
 
         guard let response = response,
@@ -450,8 +418,14 @@ final class NetworkManager: NetworkManaging, Logging {
     private func decodeJson<Object: Decodable>(data: Data) -> AnyPublisher<Object, NetworkResponseHandleError> {
         return Future { promise in
             do {
-                promise(.success(try self.jsonDecoder.decode(Object.self, from: data)))
+                let object = try self.jsonDecoder.decode(Object.self, from: data)
+                self.logDebug("Response Object: \(object)")
+                promise(.success(object))
             } catch {
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    self.logDebug("Raw JSON: \(json)")
+                }
+                self.logError("Error Deserializing \(Object.self): \(error.localizedDescription)")
                 promise(.failure(.cannotDeserialize))
             }
         }

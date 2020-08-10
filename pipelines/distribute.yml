@@ -1,0 +1,73 @@
+steps:
+- task: InstallAppleCertificate@2
+  displayName: 'Install an Apple certificate'
+  inputs:
+    certSecureFile: 'Rijksoverheid_iOS.p12'
+    certPwd: '$(developerCertificatePassword)'                     
+- script: 'curl -sL firebase.tools | bash'
+  workingDirectory: '$(Agent.ToolsDirectory)'
+  displayName: 'Install Firebase Tools'
+- task: DownloadSecureFile@1
+  displayName: Download Firebase credentials
+  name: firebaseCredentials
+  inputs:
+    secureFile: firebase-credentials.json
+- script: |
+    echo "##vso[task.setvariable variable=GOOGLE_APPLICATION_CREDENTIALS]$(firebaseCredentials.secureFilePath)"
+  displayName: Set Firebase credentials
+- template: build.yml
+  parameters:
+    provisioningProfileSecureFile: CoronaMelder_Test.mobileprovision
+    provisioningProfileName: "CoronaMelder_TST"
+    networkConfiguration: Test
+    logLevel: debug
+    bundleDisplayName: "CoronaMelder 🐞"
+    bundleIdentifier: nl.rijksoverheid.en.test
+    debugMenu: true
+    packageApp: true
+    shareLogsEnabled: true
+    exportPath: "ipa/test"
+    exportMethod: "ad-hoc"
+- publish: "ipa/test"
+  displayName: Publish test IPA
+  artifact: ipa-test
+- script: |
+    firebase appdistribution:distribute ipa/test/EN.ipa \
+    --app 1:937920499570:ios:ada965c6b5534d48f957eb \
+    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+    --groups ios-latest
+  displayName: Distribute test build
+- template: build.yml
+  parameters:
+    provisioningProfileSecureFile: CoronaMelder_Acceptance.mobileprovision
+    provisioningProfileName: "CoronaMelder_ACC"
+    networkConfiguration: ACC
+    logLevel: debug
+    bundleDisplayName: "CoronaMelder β"
+    bundleIdentifier: nl.rijksoverheid.en.acc
+    packageApp: true
+    shareLogsEnabled: true
+    exportPath: "ipa/acc"
+    exportMethod: "ad-hoc"
+- publish: "ipa/acc"
+  displayName: Publish acceptance IPA
+  artifact: ipa-acc
+- script: |
+    firebase appdistribution:distribute ipa/acc/EN.ipa \
+    --app 1:937920499570:ios:eb6aa0819a7abff0f957eb \
+    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+    --groups ios-acceptance
+  displayName: Distribute acceptance build  
+- template: build.yml
+  parameters:
+    provisioningProfileSecureFile: CoronaMelder_Production.mobileprovision
+    provisioningProfileName: "CoronaMelder_PROD"
+    networkConfiguration: Production
+    bundleDisplayName: "CoronaMelder"
+    bundleIdentifier: nl.rijksoverheid.en
+    packageApp: true
+    exportPath: "ipa/prod"
+    exportMethod: "app-store"
+- publish: "ipa/prod"
+  displayName: Publish production IPA
+  artifact: ipa-prod

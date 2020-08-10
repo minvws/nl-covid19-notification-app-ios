@@ -88,6 +88,7 @@ struct StatusViewModel {
     var shouldShowHideMessage: Bool
     var gradientColor: ThemeColor
     var showScene: Bool
+    var showClouds: Bool
 
     func with(cardType: CardType?) -> Self {
         var result = self
@@ -103,13 +104,14 @@ struct StatusViewModel {
 
         return StatusViewModel(
             icon: .notified,
-            title: .init(string: .statusAppState),
+            title: .init(string: .messageDefaultTitle),
             description: .init(string: description),
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
-            showScene: false
+            showScene: false,
+            showClouds: false
         )
     }
 
@@ -121,7 +123,8 @@ struct StatusViewModel {
         footer: nil,
         shouldShowHideMessage: false,
         gradientColor: \.statusGradientActive,
-        showScene: true
+        showScene: true,
+        showClouds: true
     )
 
     static func inactiveWithNotified(date: Date) -> StatusViewModel {
@@ -130,13 +133,14 @@ struct StatusViewModel {
 
         return StatusViewModel(
             icon: .notified,
-            title: .init(string: .statusAppState),
+            title: .init(string: .messageDefaultTitle),
             description: .init(string: description),
             buttons: [.moreInfo(date: date), .removeNotification],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
-            showScene: false
+            showScene: false,
+            showClouds: false
         )
     }
 
@@ -148,7 +152,8 @@ struct StatusViewModel {
         footer: nil,
         shouldShowHideMessage: false,
         gradientColor: \.inactive,
-        showScene: false
+        showScene: false,
+        showClouds: false
     )
 
     static let inactiveTryAgainWithNotNotified = StatusViewModel(
@@ -159,7 +164,8 @@ struct StatusViewModel {
         footer: nil,
         shouldShowHideMessage: false,
         gradientColor: \.inactive,
-        showScene: false
+        showScene: false,
+        showClouds: false
     )
 
     static func timeAgo(from: Date) -> String {

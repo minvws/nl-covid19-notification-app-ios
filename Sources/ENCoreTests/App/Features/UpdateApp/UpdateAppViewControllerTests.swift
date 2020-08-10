@@ -13,7 +13,7 @@ import XCTest
 final class UpdateAppViewControllerTests: TestCase {
 
     private var viewController: UpdateAppViewController!
-    private let listern = UpdateAppListenerMock()
+    private let listener = UpdateAppListenerMock()
 
     // MARK: - Setup
 
@@ -23,7 +23,7 @@ final class UpdateAppViewControllerTests: TestCase {
         recordSnapshots = false
 
         viewController = UpdateAppViewController(
-            listener: listern,
+            listener: listener,
             theme: theme,
             appStoreURL: "",
             minimumVersionMessage: nil)
@@ -32,6 +32,6 @@ final class UpdateAppViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotUpdateAppViewController() {
-        assertSnapshot(matching: viewController, as: .image())
+        snapshots(matching: viewController)
     }
 }
