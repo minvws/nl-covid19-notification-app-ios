@@ -101,7 +101,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
             networkConfiguration = fallbackConfiguration
         }
 
-        return NetworkConfigurationStream(configuration: NetworkConfiguration.acceptance)
+        return NetworkConfigurationStream(configuration: networkConfiguration)
     }()
 
     var networkConfigurationProvider: NetworkConfigurationProvider {
