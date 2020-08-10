@@ -189,8 +189,8 @@ extension String {
     static var helpFaqBluetoothDescription: String { return Localization.string(for: "help.faq.bluetooth.description") }
     static var helpFaqPowerUsageTitle: String { return Localization.string(for: "help.faq.power_usage.title") }
     static var helpFaqPowerUsageDescription: String { return Localization.string(for: "help.faq.power_usage.description") }
-    static var helpFaqDeletionTitle: String { return Localization.string(for: "help.faq.deletion.title") }
-    static var helpFaqDeletionDescription: String { return Localization.string(for: "help.faq.deletion.description") }
+    static var helpFaqDeletionTitle: String { return Localization.string(for: "moreInformation.about.faq.deletion") }
+    static var helpFaqDeletionDescription: String { return Localization.string(for: "moreInformation.about.faq.deletion.description") }
     static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
     static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link", [currentLanguageIdentifier]) }
     static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }

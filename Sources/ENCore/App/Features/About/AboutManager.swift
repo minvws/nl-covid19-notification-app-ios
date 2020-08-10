@@ -39,7 +39,8 @@ final class AboutManager: AboutManaging {
             HelpQuestion(theme: theme, question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription),
             HelpQuestion(theme: theme, question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription),
             HelpQuestion(theme: theme, question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription),
-            HelpQuestion(theme: theme, question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
+            HelpQuestion(theme: theme, question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription),
+            HelpQuestion(theme: theme, question: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
         ])
 
         aboutSection = AboutSection(title: .moreInformationAboutTitle, questions: [

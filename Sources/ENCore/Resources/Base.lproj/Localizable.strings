@@ -249,7 +249,9 @@
 "moreInformation.about.faq.upload_keys" = "How do I send a notification?";
 "moreInformation.about.faq.bluetooth" = "Can the Bluetooth signal pass through walls?";
 "moreInformation.about.faq.power_usage" = "How much power does the app use?";
+
 "moreInformation.about.faq.deletion" = "How do I delete the Bluetooth data from my phone?";
+"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth files saved by the app yourself. Here's how that's done.</br></br>Go to the settings menu on your phone -> Privacy -> Health -> COVID-19 Exposure Logging. Tap on Delete Exposure Log. Don't want the app to save new Bluetooth data? Delete the app.";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Let others know you're helping to stop the spread of the virus";
