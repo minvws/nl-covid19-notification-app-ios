@@ -11,20 +11,22 @@ import SnapshotTesting
 import XCTest
 
 final class RequiresUpdateViewControllerTest: XCTestCase {
-    private var viewController: RequiresUpdateViewController!
-
     override func setUp() {
         super.setUp()
 
         SnapshotTesting.record = false
         SnapshotTesting.diffTool = "ksdiff"
-
-        viewController = RequiresUpdateViewController()
     }
 
     // MARK: - Tests
 
-    func testSnapshotRequiresUpdateViewController() {
-        assertSnapshot(matching: viewController, as: .image())
+    func testSnapshotRequiresUpdateViewControllerWithUnsupportedDevice() {
+        let updateHardwareViewController = RequiresUpdateViewController(deviceModel: "iPhone6,2")
+        assertSnapshot(matching: updateHardwareViewController, as: .image())
+    }
+
+    func testSnapshotRequiresUpdateViewControllerWithSupportedDevice() {
+        let updateSoftwareViewController = RequiresUpdateViewController(deviceModel: "iPhone8,2")
+        assertSnapshot(matching: updateSoftwareViewController, as: .image())
     }
 }
