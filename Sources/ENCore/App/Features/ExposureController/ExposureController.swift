@@ -40,7 +40,7 @@ final class ExposureController: ExposureControlling, Logging {
         guard let lastExposure = dataController.lastExposure else {
             return false
         }
-        return lastExposure.displayedNotification == false
+        return lastExposure.displayedInformation == false
     }
 
     func setDisplayedExposureNotification() {
