@@ -66,6 +66,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         if let activeState = exposureStateStream.currentExposureState?.activeState, activeState == .inactive(.disabled) {
             exposureController.requestExposureNotificationPermission(nil)
         }
+
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didQuadrupleTap(sender:)))
+        gestureRecognizer.numberOfTapsRequired = 4
+
+        view.addGestureRecognizer(gestureRecognizer)
     }
 
     // MARK: - Internal
@@ -234,6 +239,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private let exposureStateStream: ExposureStateStreaming
 
     private var disposeBag = Set<AnyCancellable>()
+
+    @objc private func didQuadrupleTap(sender: UITapGestureRecognizer) {
+        let activityViewController = UIActivityViewController(activityItems: LogHandler.logFiles(),
+                                                              applicationActivities: nil)
+        present(activityViewController, animated: true, completion: nil)
+    }
 
     private func confirmNotificationRemoval() {
         let alertController = UIAlertController(title: .mainConfirmNotificationRemovalTitle,
