@@ -93,7 +93,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 guard let appVersionInformation = appVersionInformation else {
                     return
                 }
-                if currentAppVersion.compare(appVersionInformation.minimumVersion, options: .numeric) == .orderedDescending {
+                if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
                     self.routeToUpdateApp(animated: true,
                                           appStoreURL: appVersionInformation.appStoreURL,
                                           minimumVersionMessage: appVersionInformation.minimumVersionMessage)

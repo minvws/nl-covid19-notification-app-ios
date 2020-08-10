@@ -129,7 +129,7 @@ final class RootRouterTests: XCTestCase {
 
     func test_start_getMinimumVersion_showsUpdateAppViewController() {
         exposureController.getAppVersionInformationHandler = { handler in
-            handler(.init(minimumVersion: "0.9",
+            handler(.init(minimumVersion: "1.1",
                           minimumVersionMessage: "Version too low",
                           appStoreURL: "appstore://url"))
         }
