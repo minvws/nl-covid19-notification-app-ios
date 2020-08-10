@@ -32,6 +32,9 @@ parameters:
 - name: exportMethod
   type: string
   default: development
+- name: shareLogsEnabled
+  type: boolean
+  default: false
 
 steps:
 - task: InstallAppleProvisioningProfile@1
@@ -49,6 +52,7 @@ steps:
     BUNDLE_DISPLAY_NAME: ${{ parameters.bundleDisplayName }}
     RELEASE_PROVISIONING_PROFILE: ${{ parameters.provisioningProfileName }}
     USE_DEVELOPER_MENU: ${{ parameters.debugMenu }}
+    SHARE_LOGS_ENABLED: ${{ parameters.shareLogsEnabled }}
 - task: Xcode@5
   displayName: 'Build'
   inputs:
