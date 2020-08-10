@@ -67,8 +67,9 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
-            let build = dictionary["CFBundleVersion"] as? String {
-            moreInformationView.version = "\(version) (\(build))"
+            let build = dictionary["CFBundleVersion"] as? String,
+            let hash = dictionary["GitHash"] as? String {
+            moreInformationView.version = "\(version) (\(build), \(hash))"
 
             testPhaseStream
                 .sink(receiveValue: { isTestPhase in
