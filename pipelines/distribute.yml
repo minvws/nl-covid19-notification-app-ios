@@ -45,7 +45,6 @@ steps:
     logLevel: debug
     bundleDisplayName: "CoronaMelder β"
     bundleIdentifier: nl.rijksoverheid.en.acc
-    debugMenu: false
     packageApp: true
     shareLogsEnabled: true
     exportPath: "ipa/acc"
