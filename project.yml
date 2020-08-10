@@ -34,7 +34,7 @@ targets:
           - nl.rijksoverheid.en.background-decoy-sequence
           - nl.rijksoverheid.en.background-decoy-register
           - nl.rijksoverheid.en.background-status-check
-        CFBundleDisplayName: CoronaMelder \U0001F41E
+        CFBundleDisplayName: "CoronaMelder 🐞"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
         CFBundleShortVersionString: '1.0.0'
