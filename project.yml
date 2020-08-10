@@ -25,7 +25,7 @@ targets:
       path: Sources/EN/Resources/Info.plist
       properties:
         LOG_LEVEL: debug
-        NETWORK_CONFIGURATION: Production
+        NETWORK_CONFIGURATION: Test
         BGTaskSchedulerPermittedIdentifiers:
           - $(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification
           - nl.rijksoverheid.en.background-update
