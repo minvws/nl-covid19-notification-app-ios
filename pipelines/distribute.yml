@@ -25,6 +25,7 @@ steps:
     bundleIdentifier: nl.rijksoverheid.en.test
     debugMenu: true
     packageApp: true
+    shareLogsEnabled: true
     exportPath: "ipa/test"
     exportMethod: "ad-hoc"
 - publish: "ipa/test"
@@ -44,8 +45,8 @@ steps:
     logLevel: debug
     bundleDisplayName: "CoronaMelder β"
     bundleIdentifier: nl.rijksoverheid.en.acc
-    debugMenu: true
     packageApp: true
+    shareLogsEnabled: true
     exportPath: "ipa/acc"
     exportMethod: "ad-hoc"
 - publish: "ipa/acc"

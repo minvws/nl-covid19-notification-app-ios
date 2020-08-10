@@ -118,7 +118,6 @@ targets:
         SWIFT_OBJC_BRIDGING_HEADER: Sources/ENCore/ObjCBridge.h
         SWIFT_VERSION: 5.2
         TARGETED_DEVICE_FAMILY: 1
-        OTHER_SWIFT_FLAGS: -DUSE_DEVELOPER_MENU
     sources:
       - Sources/ENCore
     type: framework
