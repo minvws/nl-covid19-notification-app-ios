@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let window = UIWindow(frame: UIScreen.main.bounds)
             self.window = window
 
-            window.rootViewController = RequiresUpdateViewController()
+            window.rootViewController = RequiresUpdateViewController(deviceModel: UIDevice.modelName)
             window.makeKeyAndVisible()
 
             return true

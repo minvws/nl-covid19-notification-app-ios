@@ -12,6 +12,15 @@ final class RequiresUpdateViewController: UIViewController {
 
     // MARK: - Lifecycle
 
+    init(deviceModel: String) {
+        isDeviceSupported = RequiresUpdateViewController.unsupportedDevicesModels.contains(deviceModel) == false
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -29,10 +38,14 @@ final class RequiresUpdateViewController: UIViewController {
 
         self.view.addSubview(button)
 
-        internalView.titleLabel.text = localizedString(for: "update.hardware.title")
+        button.isHidden = isDeviceSupported == false
+
+        let titleKey = isDeviceSupported ? "update.software.os.title" : "update.hardware.title"
+        internalView.titleLabel.text = localizedString(for: titleKey)
         internalView.titleLabel.font = font(size: 22, weight: .bold, textStyle: .title2)
 
-        internalView.contentLabel.text = localizedString(for: "update.hardware.description")
+        let descriptionKey = isDeviceSupported ? "update.software.os.description" : "update.hardware.description"
+        internalView.contentLabel.text = localizedString(for: descriptionKey)
         internalView.contentLabel.font = font(size: 17, weight: .regular, textStyle: .body)
     }
 
@@ -93,6 +106,8 @@ final class RequiresUpdateViewController: UIViewController {
 
     // MARK: - Private
 
+    private let isDeviceSupported: Bool
+
     private lazy var internalView: RequiresUpdateView = RequiresUpdateView()
 
     private lazy var button: UIButton = {
@@ -107,6 +122,14 @@ final class RequiresUpdateViewController: UIViewController {
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
     }()
+
+    // Only devices that support iOS 11 and not iOS 13.
+    private static let unsupportedDevicesModels = [
+        "iPhone6,1", // iPhone 5s
+        "iPhone6,2", // iPhone 5s
+        "iPhone7,2", // iPhone 6
+        "iPhone7,1" // iPhone 6 Plus
+    ]
 }
 
 final class RequiresUpdateView: UIView {
@@ -171,7 +194,7 @@ final class RequiresUpdateView: UIView {
         ])
 
         constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 40),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
