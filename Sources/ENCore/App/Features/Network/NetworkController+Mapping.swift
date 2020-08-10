@@ -35,8 +35,7 @@ extension Manifest {
         return ApplicationManifest(exposureKeySetsIdentifiers: exposureKeySets,
                                    riskCalculationParametersIdentifier: riskCalculationParameters,
                                    appConfigurationIdentifier: appConfig,
-                                   creationDate: Date(),
-                                   iOSMinimumKillVersion: iOSMinimumKillVersion)
+                                   creationDate: Date())
     }
 }
 
@@ -47,7 +46,7 @@ extension AppConfig {
                                         decoyProbability: decoyProbability ?? 0.00118,
                                         creationDate: Date(),
                                         identifier: identifier,
-                                        minimumVersion: (iOSMinimumKillVersion ?? iOSMinimumVersion) ?? "0.1",
+                                        minimumVersion: iOSMinimumVersion ?? "1.0.0",
                                         minimumVersionMessage: iOSMinimumVersionMessage ?? "",
                                         appStoreURL: iOSAppStoreURL ?? "",
                                         requestMinimumSize: requestMinimumSize ?? 1800,
