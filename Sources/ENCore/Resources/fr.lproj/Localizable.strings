@@ -131,7 +131,7 @@
 "help.faq.privacy_policy.title" = "Déclaration de protection de la vie privée";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Colophon";
-"help.faq.colofon.link" = "https://coronamelder.fr/colophon";
+"help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accessibilité";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
 "help.faq.notification.description" = "Vous recevez une notification après avoir couru un risque supplémentaire de contamination. Ceci se fait si vous vous trouvez au moins 15 minutes près de quelqu'un qui s'avère par la suite être contaminé. Et naturellement, uniquement si cette personne utilise aussi l'application. Le fait de recevoir une notification dépend de la puissance du signal Bluetooth et de la durée de votre contact. Quelqu'un vous dépasse en vélo en rue ? Vous ne recevrez pas de notification. Vous étiez près l'un de l'autre, donc le signal Bluetooth était puissant, mais le contact a été tellement court que vous n'avez aucun risque d'avoir été contaminé. Vous étiez assis(e) près de quelqu'un dans le train ou au bureau ? Alors vous pourriez recevoir une notification par la suite. Le signal Bluetooth était assez puissant et vous étiez proches l'un de l'autre pendant plus longtemps.";

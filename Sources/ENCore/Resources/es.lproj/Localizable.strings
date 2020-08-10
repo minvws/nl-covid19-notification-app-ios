@@ -219,7 +219,7 @@
 "moreInformation.cell.infected.title" = "Enviar clave GGD";
 "moreInformation.cell.infected.subtitle" = "Envía a través del GGD (servicio de salud municipal) una notificación anónima a otras personas si estás contagiado";
 
-"moreInformation.info.title" = "Ten a mano tu número de seguridad social (<i>burgerservicenummer</i>). Este número lo puedes encontrar en tu pasaporte o tarjeta de identidad.";
+"moreInformation.info.title" = "Ten a mano tu número de seguridad social (burgerservicenummer). Este número lo puedes encontrar en tu pasaporte o tarjeta de identidad.";
 
 "moreInformation.complaints.item1" = "síntomas de resfriado";
 "moreInformation.complaints.item2" = "resfriado, moqueo, estornudos, dolor de garganta";
