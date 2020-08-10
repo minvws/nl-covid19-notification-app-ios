@@ -32,7 +32,13 @@ then
       RELEASE_PROVISIONING_PROFILE="EN Tracing development"
 fi
 
+if [ -z "$SHARE_LOGS_ENABLED" ]
+then
+      SHARE_LOGS_ENABLED="false"
+fi
+
 brew install yq
+yq w -i project.yml "targets.EN.info.properties.SHARE_LOGS_ENABLED" ${SHARE_LOGS_ENABLED}
 yq w -i project.yml "targets.EN.info.properties.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.info.properties.LOG_LEVEL" ${LOG_LEVEL}
 yq w -i project.yml "targets.EN.info.properties.CFBundleDisplayName" "${BUNDLE_DISPLAY_NAME}"
