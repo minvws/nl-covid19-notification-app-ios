@@ -67,13 +67,12 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             let version = dictionary["CFBundleShortVersionString"] as? String,
             let build = dictionary["CFBundleVersion"] as? String,
             let hash = dictionary["GitHash"] as? String {
-            let buildAndHash = "\(build), \(hash)"
+            let buildAndHash = "\(build)-\(hash)"
             moreInformationView.version = "\(version) (\(buildAndHash))"
 
             testPhaseStream
                 .sink(receiveValue: { isTestPhase in
                     if isTestPhase {
-                        let buildAndHash = "\(build), \(hash)"
                         self.moreInformationView.version = .testVersionTitle(version, buildAndHash)
                         self.moreInformationView.learnMoreButton.isHidden = false
                     }
