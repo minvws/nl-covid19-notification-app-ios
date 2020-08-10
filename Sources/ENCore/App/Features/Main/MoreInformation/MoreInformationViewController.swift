@@ -35,8 +35,6 @@ struct MoreInformationCellViewModel: MoreInformation {
 
 final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationCellListner, Logging {
 
-    private static let endOfLifeURL = "https://coronamelder.nl"
-
     // MARK: - Init
 
     init(listener: MoreInformationListener,
@@ -143,8 +141,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     private let bundleInfoDictionary: [String: Any]?
 
     @objc private func didTapLearnMore(sender: Button) {
-        guard let url = URL(string: MoreInformationViewController.endOfLifeURL) else {
-            return logError("Cannot create URL from: \(MoreInformationViewController.endOfLifeURL)")
+        guard let url = URL(string: .helpTestVersionLink) else {
+            return logError("Cannot create URL from: \(String.helpTestVersionLink)")
         }
         let viewController = SFSafariViewController(url: url)
         viewController.dismissButtonStyle = .close
