@@ -64,7 +64,8 @@ targets:
           - UIInterfaceOrientationPortrait
         UIUserInterfaceStyle: Light
         UIViewControllerBasedStatusBarAppearance: true
-        ENDeveloperRegion: nl
+        ENDeveloperRegion: NL
+        ENAPIVersion: 1
     platform: iOS
     scheme:
       gatherCoverageData: true
