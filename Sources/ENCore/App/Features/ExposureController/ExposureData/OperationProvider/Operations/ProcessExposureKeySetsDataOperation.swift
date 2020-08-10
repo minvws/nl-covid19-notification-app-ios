@@ -25,6 +25,7 @@ private struct ExposureDetectionResult {
 struct ExposureReport: Codable {
     let date: Date
     let duration: TimeInterval?
+    let displayedInformation: Bool
 }
 
 #if USE_DEVELOPER_MENU || DEBUG
@@ -419,7 +420,8 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 }
 
                 let exposureReport = ExposureReport(date: exposureInformation.date,
-                                                    duration: exposureInformation.duration)
+                                                    duration: exposureInformation.duration,
+                                                    displayedInformation: false)
 
                 self.logDebug("Final exposure report: \(exposureReport)")
 
