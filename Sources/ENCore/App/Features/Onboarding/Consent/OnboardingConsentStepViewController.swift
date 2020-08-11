@@ -83,20 +83,18 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         if let consentStep = consentStep {
             switch consentStep.step {
             case .en:
-                onboardingConsentManager.askEnableExposureNotifications { activeState in
-                    switch activeState {
-                    case .notAuthorized:
-                        self.closeConsent()
-                    default:
-                        self.goToNextStepOrCloseConsent()
+                onboardingConsentManager.askNotificationsAuthorization {
+                    self.onboardingConsentManager.askEnableExposureNotifications { activeState in
+                        switch activeState {
+                        case .notAuthorized:
+                            self.closeConsent()
+                        default:
+                            self.goToNextStepOrCloseConsent()
+                        }
                     }
                 }
             case .bluetooth:
                 self.listener?.displayBluetoothSettings()
-            case .notifications:
-                onboardingConsentManager.askNotificationsAuthorization {
-                    self.goToNextStepOrCloseConsent()
-                }
             case .share:
                 self.listener?.displayShareApp(completion: nil)
             }
@@ -108,7 +106,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             switch consentStep.step {
             case .en:
                 self.listener?.displayHelp()
-            case .bluetooth, .notifications, .share:
+            case .bluetooth, .share:
                 self.goToNextStepOrCloseConsent()
             }
         }
