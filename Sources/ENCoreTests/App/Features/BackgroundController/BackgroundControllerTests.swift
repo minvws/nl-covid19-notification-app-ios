@@ -47,9 +47,15 @@ final class BackgroundControllerTests: XCTestCase {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
+        let exp = expectation(description: "asyncTask")
         let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.update)
+        task.completion = {
+            exp.fulfill()
+        }
 
         controller.handle(task: task)
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssertNotNil(task.completed)
         XCTAssert(task.completed!)
@@ -66,9 +72,15 @@ final class BackgroundControllerTests: XCTestCase {
             Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
         }
 
+        let exp = expectation(description: "async task")
         let task = MockBGProcessingTask(identifier: .update)
+        task.completion = {
+            exp.fulfill()
+        }
 
         controller.handle(task: task)
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssertNotNil(task.completed)
         XCTAssertFalse(task.completed!)
@@ -82,18 +94,30 @@ final class BackgroundControllerTests: XCTestCase {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
         var cancelled = false
+
+        let exp = expectation(description: "asyncTask")
         let stream = PassthroughSubject<(), ExposureDataError>()
             .handleEvents(receiveCancel: {
                 cancelled = true
+
+                exp.fulfill()
             })
             .eraseToAnyPublisher()
+
         exposureController.processPendingUploadRequestsHandler = {
             return stream
         }
 
         let task = MockBGProcessingTask(identifier: .update)
+
         controller.handle(task: task)
+
+        // hacky: wait for a bit for the async handle function to complete
+        sleep(2)
+
         task.expirationHandler?()
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssert(cancelled)
     }
@@ -130,11 +154,13 @@ final class BackgroundControllerTests: XCTestCase {
         }
 
         networkController.stopKeysHandler = { _ in
-            exp.fulfill()
             return Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher()
         }
 
         let task = MockBGProcessingTask(identifier: .decoyStopKeys)
+        task.completion = {
+            exp.fulfill()
+        }
 
         controller.handle(task: task)
         wait(for: [exp], timeout: 1)
@@ -179,9 +205,15 @@ final class BackgroundControllerTests: XCTestCase {
         let date = Calendar.current.date(byAdding: .hour, value: -20, to: Date())!
         exposureController.lastENStatusCheckDate = date
 
+        let exp = expectation(description: "asyncTask")
         let task = MockBGProcessingTask(identifier: .statusCheck)
+        task.completion = {
+            exp.fulfill()
+        }
 
         controller.handle(task: task)
+
+        wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(userNotificationCenter.addCallCount, 0)
 
@@ -199,6 +231,7 @@ final class BackgroundControllerTests: XCTestCase {
 private final class MockBGProcessingTask: BGProcessingTask {
 
     private(set) var completed: Bool?
+    var completion: (() -> ())?
 
     override var identifier: String {
         return _identifier
@@ -212,5 +245,7 @@ private final class MockBGProcessingTask: BGProcessingTask {
 
     override func setTaskCompleted(success: Bool) {
         completed = success
+
+        completion?()
     }
 }
