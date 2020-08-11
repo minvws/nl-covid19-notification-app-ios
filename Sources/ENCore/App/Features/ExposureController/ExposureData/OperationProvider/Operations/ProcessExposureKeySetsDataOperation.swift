@@ -392,6 +392,14 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
+        guard summary.maximumRiskScore >= configuration.minimumRiskScope else {
+            logDebug("Risk Score not high enough to see this as an exposure")
+
+            return Just((result, nil))
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
         if let daysSinceLastExposure = daysSinceLastExposure() {
             logDebug("Had previous exposure \(daysSinceLastExposure) days ago")
 
