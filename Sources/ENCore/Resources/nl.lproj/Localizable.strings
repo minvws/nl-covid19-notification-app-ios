@@ -349,7 +349,7 @@
 "enableSettings.localNotifications.step3.action.title" = "Sta berichtgeving toe";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
+"exposure.notification.userExplanation" = "Je bent %@ daggen geleden in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
 
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Herinnering: Je bent %@ dagen geleden in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";

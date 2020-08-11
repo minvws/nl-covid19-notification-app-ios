@@ -10,12 +10,14 @@ import Foundation
 import NotificationCenter
 
 enum PushNotificationIdentifier: String {
+    case exposure = "nl.rijksoverheid.en.exposure"
     case inactive = "nl.rijksoverheid.en.inactive"
     case uploadFailed = "nl.rijksoverheid.en.uploadFailed"
     case enStatusDisabled = "nl.rijksoverheid.en.statusDisabled"
 
     static func allIdentifiers() -> [PushNotificationIdentifier] {
         return [
+            .exposure,
             .inactive,
             .uploadFailed,
             .enStatusDisabled

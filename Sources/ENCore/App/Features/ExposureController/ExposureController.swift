@@ -32,21 +32,6 @@ final class ExposureController: ExposureControlling, Logging {
 
     // MARK: - ExposureControlling
 
-    var lastExposureDate: Date? {
-        return dataController.lastExposure?.date
-    }
-
-    var shouldDisplayExposureNotification: Bool {
-        guard let lastExposure = dataController.lastExposure else {
-            return false
-        }
-        return lastExposure.displayedInformation == false
-    }
-
-    func setDisplayedExposureNotification() {
-        dataController.setDisplayedExposureNotification()
-    }
-
     var lastENStatusCheckDate: Date? {
         return dataController.lastENStatusCheckDate
     }
