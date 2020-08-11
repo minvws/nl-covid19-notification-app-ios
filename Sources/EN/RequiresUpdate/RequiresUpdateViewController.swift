@@ -66,42 +66,7 @@ final class RequiresUpdateViewController: UIViewController {
     // MARK: - Functions
 
     @objc func buttonPressed() {
-        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString),
-            UIApplication.shared.canOpenURL(settingsUrl) else {
-            showCannotOpenSettingsAlert()
-            return
-        }
-        UIApplication.shared.open(settingsUrl)
-    }
-
-    private func showCannotOpenSettingsAlert() {
-        let alertController = UIAlertController(title: localizedString(for: "alertTitle"),
-                                                message: localizedString(for: "alertMessage"),
-                                                preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: localizedString(for: "alertButton"), style: .default, handler: nil))
-        present(alertController, animated: true, completion: nil)
-    }
-
-    /// Get the scaled font
-    private func font(size: CGFloat, weight: UIFont.Weight, textStyle: UIFont.TextStyle) -> UIFont {
-        let font = UIFont.systemFont(ofSize: size, weight: weight)
-        let fontMetrics = UIFontMetrics(forTextStyle: textStyle)
-        return fontMetrics.scaledFont(for: font)
-    }
-
-    /// Get the Localized string for the current bundle.
-    private func localizedString(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> String {
-        let value = NSLocalizedString(key, comment: comment)
-        guard value == key else {
-            return String(format: value, arguments: arguments)
-        }
-        guard
-            let path = Bundle.main.path(forResource: "Base", ofType: "lproj"),
-            let bundle = Bundle(path: path) else {
-            return String(format: value, arguments: arguments)
-        }
-        let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
-        return String(format: localizedString, arguments: arguments)
+        present(UpdateInstructionsViewController(), animated: true, completion: nil)
     }
 
     // MARK: - Private
