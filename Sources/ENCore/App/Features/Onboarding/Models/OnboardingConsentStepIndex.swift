@@ -12,7 +12,6 @@ import UIKit
 enum OnboardingConsentStepIndex: Int {
     case en = 0
     case bluetooth
-    case notifications
     case share
 }
 

@@ -14,9 +14,6 @@ protocol ExposureControlling {
 
     var lastExposureDate: Date? { get }
 
-    var shouldDisplayExposureNotification: Bool { get }
-    func setDisplayedExposureNotification()
-
     var lastENStatusCheckDate: Date? { get }
     func setLastEndStatusCheckDate(_ date: Date)
 

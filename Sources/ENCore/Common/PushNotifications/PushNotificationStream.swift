@@ -10,12 +10,14 @@ import Foundation
 import NotificationCenter
 
 enum PushNotificationIdentifier: String {
+    case exposure = "nl.rijksoverheid.en.exposure"
     case inactive = "nl.rijksoverheid.en.inactive"
     case uploadFailed = "nl.rijksoverheid.en.uploadFailed"
     case enStatusDisabled = "nl.rijksoverheid.en.statusDisabled"
 
     static func allIdentifiers() -> [PushNotificationIdentifier] {
         return [
+            .exposure,
             .inactive,
             .uploadFailed,
             .enStatusDisabled
@@ -38,7 +40,11 @@ final class PushNotificaionStream: MutablePushNotificationStreaming {
     // MARK: - PushNotificationStreaming
 
     var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
-        return subject.eraseToAnyPublisher()
+        return subject
+            .removeDuplicates(by: ==)
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
     // MARK: - MutablePushNotificationStreaming
@@ -47,5 +53,5 @@ final class PushNotificaionStream: MutablePushNotificationStreaming {
         subject.send(response)
     }
 
-    private let subject = PassthroughSubject<UNNotificationResponse, Never>()
+    private let subject = CurrentValueSubject<UNNotificationResponse?, Never>(nil)
 }

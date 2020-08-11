@@ -63,14 +63,6 @@ final class StubExposureManager: ExposureManaging {
         self.exposureNotificationEnabled = enabled
     }
 
-    func getExposureInfo(summary: ExposureDetectionSummary,
-                         userExplanation: String,
-                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) {
-        DispatchQueue.main.async {
-            completionHandler(nil, nil)
-        }
-    }
-
     // return whether exposureNotifications should be enabled or not
     private var exposureNotificationEnabled = true
 }

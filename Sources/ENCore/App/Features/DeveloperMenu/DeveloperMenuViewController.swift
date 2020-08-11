@@ -505,7 +505,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
-        return "\(dateFormatter.string(from: last.date)) for \(last.duration.map(String.init(describing:)) ?? "?") seconds"
+        return "\(dateFormatter.string(from: last.date))) seconds"
     }
 
     private func getLastExposureFetchString() -> String {

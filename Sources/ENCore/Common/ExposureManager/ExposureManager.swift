@@ -135,28 +135,6 @@ final class ExposureManager: ExposureManaging, Logging {
         }
     }
 
-    func getExposureInfo(summary: ExposureDetectionSummary,
-                         userExplanation: String,
-                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ()) {
-        #if DEBUG
-            assert(Thread.isMainThread)
-        #endif
-
-        guard let summary = summary as? ENExposureDetectionSummary else {
-            completionHandler(nil, .internalTypeMismatch)
-            return
-        }
-
-        var explanation = userExplanation
-        if userExplanation.last == "." {
-            _ = explanation.removeLast()
-        }
-
-        _ = manager.getExposureInfo(summary: summary, userExplanation: explanation) { (info: [ENExposureInfo]?, error: Error?) in
-            completionHandler(info, error.map { $0.asExposureManagerError })
-        }
-    }
-
     func setExposureNotificationEnabled(_ enabled: Bool, completion: @escaping (Result<(), ExposureManagerError>) -> ()) {
         manager.setExposureNotificationEnabled(enabled) { error in
             guard let error = error.map({ $0.asExposureManagerError }) else {

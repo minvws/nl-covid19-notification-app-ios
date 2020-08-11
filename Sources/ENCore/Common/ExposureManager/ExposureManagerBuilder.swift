@@ -66,10 +66,6 @@ protocol ExposureManaging {
 
     /// Returns the current framework status
     func getExposureNotificationStatus() -> ExposureManagerStatus
-
-    func getExposureInfo(summary: ExposureDetectionSummary,
-                         userExplanation: String,
-                         completionHandler: @escaping ([ExposureInformation]?, ExposureManagerError?) -> ())
 }
 
 /// @mockable
