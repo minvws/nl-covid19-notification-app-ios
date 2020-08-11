@@ -79,21 +79,25 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
         logDebug("Handling: \(identifier)")
 
-        switch identifier {
-        case .decoySequence:
-            handleDecoySequence(task: task)
-            scheduleDecoySequence()
-        case .decoyRegister:
-            handleDecoyRegister(task: task)
-        case .decoyStopKeys:
-            handleDecoyStopkeys(task: task)
-        case .update:
-            handleUpdate(task: task)
-            scheduleUpdate()
-        case .statusCheck:
-            handleENStatusCheck(task: task)
-            scheduleENStatusCheck()
+        let handleTask: () -> () = {
+            switch identifier {
+            case .decoySequence:
+                self.handleDecoySequence(task: task)
+                self.scheduleDecoySequence()
+            case .decoyRegister:
+                self.handleDecoyRegister(task: task)
+            case .decoyStopKeys:
+                self.handleDecoyStopkeys(task: task)
+            case .update:
+                self.handleUpdate(task: task)
+                self.scheduleUpdate()
+            case .statusCheck:
+                self.handleENStatusCheck(task: task)
+                self.scheduleENStatusCheck()
+            }
         }
+
+        operationQueue.async(execute: handleTask)
     }
 
     // MARK: - Private
@@ -112,6 +116,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
+    private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
 
     // MARK: - Decoy Scheduling
 
