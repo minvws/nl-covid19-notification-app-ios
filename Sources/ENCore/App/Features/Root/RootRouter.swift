@@ -144,7 +144,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 switch identifier {
                 case .exposure:
                     guard let lastExposureDate = strongSelf.exposureController.lastExposureDate else {
-                        return strongSelf.logError("No Last Exppsure Date to present")
+                        return strongSelf.logError("No Last Exposure Date to present")
                     }
 
                     strongSelf.routeToMessage(title: .messageDefaultTitle,
