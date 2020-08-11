@@ -424,7 +424,7 @@ extension String {
 
     // MARK: - Exposure Notification Received - User Explanation
 
-    static func exposureNotificationUserExplanation(_ days: String) -> String { return Localization.string(for: "exposure.notification.userExplanation", [days]) }
+    static var exposureNotificationUserExplanation: String { return Localization.string(for: "exposure.notification.userExplanation") }
 
     // MARK: - Privacy Agreement
 
