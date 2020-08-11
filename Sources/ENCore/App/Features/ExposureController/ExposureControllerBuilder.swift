@@ -12,6 +12,8 @@ import UserNotifications
 /// @mockable
 protocol ExposureControlling {
 
+    var lastExposureDate: Date? { get }
+
     var lastENStatusCheckDate: Date? { get }
     func setLastEndStatusCheckDate(_ date: Date)
 

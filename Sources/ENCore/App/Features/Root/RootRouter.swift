@@ -143,8 +143,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 switch identifier {
                 case .exposure:
-                    let content = notificationRespone.notification.request.content
-                    strongSelf.routeToMessage(title: content.title, body: content.body)
+                    guard let lastExposureDate = strongSelf.exposureController.lastExposureDate else {
+                        return strongSelf.logError("No Last Exppsure Date to present")
+                    }
+
+                    strongSelf.routeToMessage(title: .messageDefaultTitle,
+                                              body: String(format: .messageDefaultBody, StatusViewModel.timeAgo(from: lastExposureDate)))
                 case .inactive:
                     () // Do nothing
                 case .uploadFailed:

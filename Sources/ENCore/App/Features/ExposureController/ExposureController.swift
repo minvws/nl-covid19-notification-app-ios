@@ -32,6 +32,10 @@ final class ExposureController: ExposureControlling, Logging {
 
     // MARK: - ExposureControlling
 
+    var lastExposureDate: Date? {
+        return dataController.lastExposure?.date
+    }
+
     var lastENStatusCheckDate: Date? {
         return dataController.lastENStatusCheckDate
     }

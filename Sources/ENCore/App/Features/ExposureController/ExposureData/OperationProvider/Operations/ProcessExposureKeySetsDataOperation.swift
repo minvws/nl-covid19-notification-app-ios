@@ -431,7 +431,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
                 self.userNotificationCenter.getAuthorizationStatus { status in
                     guard status == .authorized else {
-                        promise(.success(value))
+                        promise(.failure(ExposureDataError.internalError))
                         return self.logError("Not authorized to post notifications")
                     }
 
@@ -454,17 +454,6 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             }
         }
         .eraseToAnyPublisher()
-    }
-
-    /// Returns the exposureInformation with the most recent date
-    private func getLastExposureInformation(for informations: [ExposureInformation]?) -> ExposureInformation? {
-        guard let informations = informations else { return nil }
-
-        let isNewer: (ExposureInformation, ExposureInformation) -> Bool = { first, second in
-            return second.date > first.date
-        }
-
-        return informations.sorted(by: isNewer).last
     }
 
     /// Stores the exposureReport in local storage (which triggers the 'notified' state)
