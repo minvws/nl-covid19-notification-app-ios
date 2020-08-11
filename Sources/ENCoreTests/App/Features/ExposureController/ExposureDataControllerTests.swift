@@ -41,13 +41,12 @@ final class ExposureDataControllerTests: TestCase {
         controller = ExposureDataController(operationProvider: operationProvider,
                                             storageController: storageController)
 
-        XCTAssertEqual(storageController.removeDataCallCount, 4)
+        XCTAssertEqual(storageController.removeDataCallCount, 3)
         XCTAssertEqual(storageController.storeCallCount, 1)
 
         let removedKeysStrings = removedKeys.map { $0.asString }
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.labConfirmationKey.asString))
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.lastExposureReport.asString))
-        XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.uploadedRollingStartNumbers.asString))
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.pendingLabUploadRequests.asString))
 
         XCTAssertEqual(receivedKey.asString, ExposureDataStorageKey.firstRunIdentifier.asString)
