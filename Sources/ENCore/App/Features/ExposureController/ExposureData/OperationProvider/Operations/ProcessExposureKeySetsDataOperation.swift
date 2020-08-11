@@ -24,8 +24,6 @@ private struct ExposureDetectionResult {
 
 struct ExposureReport: Codable {
     let date: Date
-    let duration: TimeInterval?
-    let displayedInformation: Bool
 }
 
 #if USE_DEVELOPER_MENU || DEBUG
@@ -46,12 +44,14 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
          storageController: StorageControlling,
          exposureManager: ExposureManaging,
          exposureKeySetsStorageUrl: URL,
-         configuration: ExposureConfiguration) {
+         configuration: ExposureConfiguration,
+         userNotificationCenter: UserNotificationCenter) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
         self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
         self.configuration = configuration
+        self.userNotificationCenter = userNotificationCenter
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
@@ -412,67 +412,48 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             }
         }
 
+        guard let date = Calendar.current.date(byAdding: .day, value: -summary.daysSinceLastExposure, to: Date()) else {
+            logError("Error triggering notification for \(summary), could not create date")
+            return Just((result, nil))
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
         logDebug("Triggering notification for \(summary)")
 
-        return self
-            .getExposureInformations(forSummary: summary,
-                                     userExplanation: .exposureNotificationUserExplanation)
-            .map { (exposureInformations) -> (ExposureDetectionResult, ExposureReport?) in
-                self.logDebug("Got back exposure info \(String(describing: exposureInformations))")
-
-                // get most recent exposureInformation
-                guard let exposureInformation = self.getLastExposureInformation(for: exposureInformations) else {
-                    self.logDebug("Cannot get last exposure info")
-
-                    return (result, nil)
-                }
-
-                let exposureReport = ExposureReport(date: exposureInformation.date,
-                                                    duration: exposureInformation.duration,
-                                                    displayedInformation: false)
-
-                self.logDebug("Final exposure report: \(exposureReport)")
-
-                return (result, exposureReport)
-            }
-            .eraseToAnyPublisher()
+        return notifyUserOfExposure(daysSinceLastExposure: summary.daysSinceLastExposure,
+                                    exposureReport: (result, ExposureReport(date: date)))
     }
 
-    /// Asks the EN framework for more information about the exposure summary which
-    /// triggers a local notification if the exposure was risky enough (according to the configuration and
-    /// the rules of the EN framework)
-    private func getExposureInformations(forSummary summary: ExposureDetectionSummary?, userExplanation: String) -> AnyPublisher<[ExposureInformation]?, ExposureDataError> {
-        guard let summary = summary else {
-            return Just(nil).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-        }
-
+    private func notifyUserOfExposure(daysSinceLastExposure: Int, exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
         return Deferred {
-            Future<[ExposureInformation]?, ExposureDataError> { promise in
-                self.exposureManager
-                    .getExposureInfo(summary: summary,
-                                     userExplanation: userExplanation) { infos, error in
-                        if let error = error {
-                            promise(.failure(error.asExposureDataError))
-                            return
-                        }
+            Future { promise in
 
-                        promise(.success(infos))
+                self.userNotificationCenter.getAuthorizationStatus { status in
+                    guard status == .authorized else {
+                        promise(.failure(ExposureDataError.internalError))
+                        return self.logError("Not authorized to post notifications")
                     }
+
+                    let content = UNMutableNotificationContent()
+                    content.body = .exposureNotificationUserExplanation
+                    content.sound = .default
+                    content.badge = 0
+
+                    let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
+                                                        content: content,
+                                                        trigger: nil)
+                    self.userNotificationCenter.add(request) { error in
+                        guard let error = error else {
+                            return promise(.success(value))
+                        }
+                        self.logError("Error posting notification: \(error.localizedDescription)")
+                        promise(.failure(ExposureDataError.internalError))
+                    }
+                }
             }
-            .subscribe(on: DispatchQueue.main)
         }
         .eraseToAnyPublisher()
-    }
-
-    /// Returns the exposureInformation with the most recent date
-    private func getLastExposureInformation(for informations: [ExposureInformation]?) -> ExposureInformation? {
-        guard let informations = informations else { return nil }
-
-        let isNewer: (ExposureInformation, ExposureInformation) -> Bool = { first, second in
-            return second.date > first.date
-        }
-
-        return informations.sorted(by: isNewer).last
     }
 
     /// Stores the exposureReport in local storage (which triggers the 'notified' state)
@@ -594,4 +575,5 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let exposureManager: ExposureManaging
     private let exposureKeySetsStorageUrl: URL
     private let configuration: ExposureConfiguration
+    private let userNotificationCenter: UserNotificationCenter
 }

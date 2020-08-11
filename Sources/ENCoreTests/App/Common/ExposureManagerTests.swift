@@ -58,18 +58,4 @@ final class ExposureManagerTests: XCTestCase {
 
         XCTAssertEqual(mock.activateCallCount, 1)
     }
-
-    func test_getExposureInfo_doesntDisplay_periodAtEnd() {
-        let stringWithPeriod = "Test string."
-        let string = "Test string"
-
-        mock.getExposureInfoHandler = { _, receivedString, _ in
-            XCTAssertEqual(receivedString, string)
-            return Progress()
-        }
-
-        manager.getExposureInfo(summary: ENExposureDetectionSummary(), userExplanation: stringWithPeriod, completionHandler: { _, _ in })
-
-        XCTAssertEqual(mock.getExposureInfoCallCount, 1)
-    }
 }

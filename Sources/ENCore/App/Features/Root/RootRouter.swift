@@ -137,19 +137,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 self?.logDebug("Push Notification Identifier: \(notificationRespone.notification.request.identifier)")
 
-                // Check if this is a notificaiton triggered by our application, if not then we assume this was
-                // an EN notificaiton triggered by Apple. Ideally we should get the identifier of the Apple notification.
-                guard notificationRespone.notification.request.identifier.contains("nl.rijksoverheid") else {
-                    let content = notificationRespone.notification.request.content
-                    strongSelf.routeToMessage(title: content.title, body: content.body)
-                    return
-                }
-
                 guard let identifier = PushNotificationIdentifier(rawValue: notificationRespone.notification.request.identifier) else {
                     return strongSelf.logError("Push notification for \(notificationRespone.notification.request.identifier) not handled")
                 }
 
                 switch identifier {
+                case .exposure:
+                    guard let lastExposureDate = strongSelf.exposureController.lastExposureDate else {
+                        return strongSelf.logError("No Last Exposure Date to present")
+                    }
+
+                    strongSelf.routeToMessage(title: .messageDefaultTitle,
+                                              body: String(format: .messageDefaultBody, StatusViewModel.timeAgo(from: lastExposureDate)))
                 case .inactive:
                     () // Do nothing
                 case .uploadFailed:
@@ -173,12 +172,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .store(in: &disposeBag)
 
         networkController.startObservingNetworkReachability()
-
-        if exposureController.shouldDisplayExposureNotification,
-            let date = exposureController.lastExposureDate {
-            routeToMessage(title: .messageDefaultTitle, body: String(format: .messageDefaultBody, timeAgo(from: date)))
-            exposureController.setDisplayedExposureNotification()
-        }
     }
 
     func didEnterBackground() {
@@ -306,22 +299,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         let developerMenuViewController = developerMenuBuilder.build(listener: viewController)
         self.developerMenuViewController = developerMenuViewController
-    }
-
-    private func timeAgo(from: Date) -> String {
-        let now = currentDate()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-
-        let dateString = dateFormatter.string(from: from)
-
-        if let days = from.days(sinceDate: now), days > 0 {
-            return String(format: .statusNotifiedDescriptionDays, "\(days)", dateString)
-        }
-        if let hours = from.hours(sinceDate: now), hours > 0 {
-            return String(format: .statusNotifiedDescriptionHours, "\(hours)", dateString)
-        }
-        return String(format: .statusNotifiedDescriptionNone, dateString)
     }
 
     private let currentAppVersion: String?
