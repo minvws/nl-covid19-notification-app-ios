@@ -55,19 +55,23 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
-        exposureController
-            .isAppDectivated()
-            .sink(receiveCompletion: { _ in
-                // Do nothing
-            }, receiveValue: { (isDeactivated: Bool) in
-                if isDeactivated {
-                    self.removeAllTasks()
-                } else {
-                    self.scheduleENStatusCheck()
-                    self.scheduleUpdate()
-                    self.scheduleDecoySequence()
-                }
-            }).store(in: &disposeBag)
+        let scheduleTasks: () -> () = {
+            self.exposureController
+                .isAppDectivated()
+                .sink(receiveCompletion: { _ in
+                    // Do nothing
+                }, receiveValue: { (isDeactivated: Bool) in
+                    if isDeactivated {
+                        self.removeAllTasks()
+                    } else {
+                        self.scheduleENStatusCheck()
+                        self.scheduleUpdate()
+                        self.scheduleDecoySequence()
+                    }
+                }).store(in: &self.disposeBag)
+        }
+
+        operationQueue.async(execute: scheduleTasks)
     }
 
     func handle(task: BGTask) {
@@ -329,14 +333,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         cancellable.store(in: &disposeBag)
-    }
-
-    private func getAndSetRefreshInterval() {
-        exposureController
-            .getAppRefreshInterval()
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { [weak self] value in self?.receivedRefreshInterval = TimeInterval(value) })
-            .store(in: &disposeBag)
     }
 
     private func date(hour: Int, minute: Int) -> Date? {
