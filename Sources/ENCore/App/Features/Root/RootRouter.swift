@@ -301,22 +301,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.developerMenuViewController = developerMenuViewController
     }
 
-    private func timeAgo(from: Date) -> String {
-        let now = currentDate()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-
-        let dateString = dateFormatter.string(from: from)
-
-        if let days = from.days(sinceDate: now), days > 0 {
-            return String(format: .statusNotifiedDescriptionDays, "\(days)", dateString)
-        }
-        if let hours = from.hours(sinceDate: now), hours > 0 {
-            return String(format: .statusNotifiedDescriptionHours, "\(hours)", dateString)
-        }
-        return String(format: .statusNotifiedDescriptionNone, dateString)
-    }
-
     private let currentAppVersion: String?
 
     private let networkController: NetworkControlling
