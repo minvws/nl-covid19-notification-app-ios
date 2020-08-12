@@ -65,6 +65,7 @@ steps:
     networkConfiguration: Production
     bundleDisplayName: "CoronaMelder"
     bundleIdentifier: nl.rijksoverheid.en
+    logLevel: none
     packageApp: true
     exportPath: "ipa/prod"
     exportMethod: "app-store"
