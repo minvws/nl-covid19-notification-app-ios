@@ -117,9 +117,8 @@ private final class HelpView: View {
     override func build() {
         super.build()
 
-        addSubview(titleLabel)
-
         if contentType == .text {
+            addSubview(titleLabel)
             addSubview(contentTextView)
         } else {
             addSubview(webView)
@@ -139,14 +138,14 @@ private final class HelpView: View {
 
         let bottomAnchor = shouldDisplayButton ? acceptButton.topAnchor : self.bottomAnchor
 
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-        ])
-
         if contentType == .text {
+            constraints.append([
+                titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+                titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+                titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+                titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
+            ])
+
             constraints.append([
                 contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
                 contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
@@ -157,7 +156,7 @@ private final class HelpView: View {
 
         if contentType == .link {
             constraints.append([
-                webView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
+                webView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
                 webView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
                 webView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
                 webView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
