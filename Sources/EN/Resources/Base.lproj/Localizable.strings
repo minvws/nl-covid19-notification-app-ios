@@ -21,13 +21,13 @@
 "update.software.os.title" = "You have to update your phone's software";
 "update.software.os.description" = "CoronaMelder needs the latest version of iOS to work correctly on your phone.";
 "update.software.os.detail.title" = "Update your phone";
-"update.software.os.detail.step1" = "1. Open Settings on your phone using the button below";
+"update.software.os.detail.step1" = "1. Open Settings on your phone";
 "update.software.os.detail.step1.detail" = "Settings";
-"update.software.os.detail.step2" = "2. Go to 'General'";
+"update.software.os.detail.step2" = "2. Go to General";
 "update.software.os.detail.step2.detail" = "General";
-"update.software.os.detail.step3" = "3. Go to 'Software update'";
+"update.software.os.detail.step3" = "3. Go to Software update";
 "update.software.os.detail.step3.detail" = "Software update";
-"update.software.os.detail.step4" = "4. Select 'Download and install'";
+"update.software.os.detail.step4" = "4. Select Download and install";
 
 "update.hardware.title" = "Unfortunately, the app won't work on your phone";
 "update.hardware.description" = "CoronaMelder only works on phones with iOS 13.5 or higher. Your phone is not compatible with this software.";
