@@ -16,6 +16,9 @@ protocol InfectedRouting: Routing {
     func infectedWantsDismissal(shouldDismissViewController: Bool)
     func showInactiveCard()
     func removeInactiveCard()
+
+    func showFAQ()
+    func hideFAQ(shouldDismissViewController: Bool)
 }
 
 final class InfectedViewController: ViewController, InfectedViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
@@ -67,6 +70,12 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
             self?.uploadCodes()
         }
 
+        internalView.contentView.linkHandler = { [weak self] link in
+            guard link == "openFAQ" else { return }
+
+            self?.router?.showFAQ()
+        }
+
         exposureStateStream
             .exposureState
             .sink { state in
@@ -85,6 +94,14 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
     func push(viewController: ViewControllable) {
         navigationController?.pushViewController(viewController.uiviewController, animated: true)
+    }
+
+    func present(viewController: ViewControllable) {
+        present(viewController.uiviewController, animated: true, completion: nil)
+    }
+
+    func dismiss(viewController: ViewControllable) {
+        viewController.uiviewController.dismiss(animated: true, completion: nil)
     }
 
     func thankYouWantsDismissal() {
@@ -109,6 +126,12 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
             self.cardViewController = cardViewController
         }
+    }
+
+    // MARK: - AboutListener
+
+    func aboutRequestsDismissal(shouldHideViewController: Bool) {
+        router?.hideFAQ(shouldDismissViewController: shouldHideViewController)
     }
 
     // MARK: - Private
@@ -187,7 +210,9 @@ private final class InfectedView: View {
         let howDoesItWork = NSAttributedString(string: .moreInformationInfectedHowDoesItWork,
                                                attributes: [
                                                    NSAttributedString.Key.foregroundColor: theme.colors.primary,
-                                                   NSAttributedString.Key.font: theme.fonts.bodyBold
+                                                   NSAttributedString.Key.font: theme.fonts.bodyBold,
+                                                   NSAttributedString.Key.link: "openFAQ",
+                                                   NSAttributedString.Key.underlineColor: UIColor.clear
                                                ])
 
         let content = NSMutableAttributedString()

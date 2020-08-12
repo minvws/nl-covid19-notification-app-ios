@@ -28,6 +28,7 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         super.init(theme: theme)
         modalPresentationStyle = .popover
         navigationItem.rightBarButtonItem = closeBarButtonItem
+        presentationController?.delegate = self
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {

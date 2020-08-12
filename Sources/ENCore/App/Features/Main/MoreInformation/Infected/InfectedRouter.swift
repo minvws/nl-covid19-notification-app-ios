@@ -8,11 +8,14 @@
 import UIKit
 
 /// @mockable
-protocol InfectedViewControllable: ViewControllable, ThankYouListener {
+protocol InfectedViewControllable: ViewControllable, ThankYouListener, AboutListener {
     var router: InfectedRouting? { get set }
 
     func push(viewController: ViewControllable)
     func set(cardViewController: ViewControllable?)
+
+    func present(viewController: ViewControllable)
+    func dismiss(viewController: ViewControllable)
 }
 
 final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
@@ -22,10 +25,12 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
     init(listener: InfectedListener,
          viewController: InfectedViewControllable,
          thankYouBuilder: ThankYouBuildable,
-         cardBuilder: CardBuildable) {
+         cardBuilder: CardBuildable,
+         aboutBuilder: AboutBuildable) {
         self.listener = listener
         self.thankYouBuilder = thankYouBuilder
         self.cardBuilder = cardBuilder
+        self.aboutBuilder = aboutBuilder
 
         super.init(viewController: viewController)
 
@@ -66,6 +71,29 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
         cardRouter = nil
     }
 
+    func showFAQ() {
+        guard aboutRouter == nil else {
+            return
+        }
+
+        let router = aboutBuilder.build(withListener: viewController)
+        viewController.present(viewController: router.viewControllable)
+
+        aboutRouter = router
+    }
+
+    func hideFAQ(shouldDismissViewController: Bool) {
+        guard let router = aboutRouter else {
+            return
+        }
+
+        aboutRouter = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: router.viewControllable)
+        }
+    }
+
     // MARK: - Private
 
     private weak var listener: InfectedListener?
@@ -75,4 +103,7 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
 
     private let cardBuilder: CardBuildable
     private var cardRouter: (Routing & CardTypeSettable)?
+
+    private let aboutBuilder: AboutBuildable
+    private var aboutRouter: Routing?
 }

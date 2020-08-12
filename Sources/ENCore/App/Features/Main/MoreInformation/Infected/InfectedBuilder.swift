@@ -29,10 +29,14 @@ protocol InfectedDependency {
     var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
-private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency {
+private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency, AboutDependency {
 
     var theme: Theme {
         dependency.theme
+    }
+
+    var exposureController: ExposureControlling {
+        dependency.exposureController
     }
 
     var thankYouBuilder: ThankYouBuildable {
@@ -41,6 +45,10 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
 
     var cardBuilder: CardBuildable {
         return CardBuilder(dependency: self)
+    }
+
+    var aboutBuilder: AboutBuildable {
+        return AboutBuilder(dependency: self)
     }
 
     var bluetoothStateStream: BluetoothStateStreaming {
@@ -58,6 +66,7 @@ final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
         return InfectedRouter(listener: listener,
                               viewController: viewController,
                               thankYouBuilder: dependencyProvider.thankYouBuilder,
-                              cardBuilder: dependencyProvider.cardBuilder)
+                              cardBuilder: dependencyProvider.cardBuilder,
+                              aboutBuilder: dependencyProvider.aboutBuilder)
     }
 }
