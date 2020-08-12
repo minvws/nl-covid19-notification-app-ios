@@ -15,6 +15,16 @@ final class UpdateInstructionsViewController: UIViewController {
     override func loadView() {
         self.view = internalView
         self.view.frame = UIScreen.main.bounds
+        self.modalPresentationStyle = .overCurrentContext
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        internalView.closeButton.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
+    }
+
+    @objc func didTapCloseButton() {
+        dismiss(animated: true, completion: nil)
     }
 
     // MARK: - Private
@@ -42,13 +52,11 @@ final class UpdateInstructionsViewController: UIViewController {
 
 final class UpdateInstructionsView: UIView {
 
-    lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.font = font(size: 28, weight: .bold, textStyle: .title2)
-        label.text = localizedString(for: "update.software.os.detail.title")
-        return label
+    lazy var closeButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "Close"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
 
     // MARK: - Life cycle
@@ -66,6 +74,7 @@ final class UpdateInstructionsView: UIView {
 
     private func setupViews() {
         backgroundColor = .white
+        addSubview(closeButton)
         addSubview(stackView)
         stackView.addArrangedSubview(titleLabel)
 
@@ -76,9 +85,16 @@ final class UpdateInstructionsView: UIView {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
+            closeButton.heightAnchor.constraint(equalToConstant: 28),
+            closeButton.widthAnchor.constraint(equalToConstant: 28),
+            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 14)
+        ])
+
+        constraints.append([
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 16)
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 64)
         ])
 
         constraints.forEach { NSLayoutConstraint.activate($0) }
@@ -93,6 +109,15 @@ final class UpdateInstructionsView: UIView {
         stackView.backgroundColor = .clear
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }()
+
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        label.font = font(size: 28, weight: .bold, textStyle: .title2)
+        label.text = localizedString(for: "update.software.os.detail.title")
+        return label
     }()
 
     private let steps: [UpdateStep]
@@ -142,7 +167,6 @@ final class SettingsInformationStepView: UIView {
     init(informationStep: SettingsInformationStep) {
         self.informationStep = informationStep
         super.init(frame: .zero)
-
         setupViews()
         setupConstraints()
     }
@@ -183,7 +207,7 @@ final class SettingsInformationStepView: UIView {
             disclosureIndicator.heightAnchor.constraint(equalToConstant: 14),
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            stackView.centerYAnchor.constraint(equalToSystemSpacingBelow: centerYAnchor, multiplier: 0)
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
 
         constraints.forEach { NSLayoutConstraint.activate($0) }
