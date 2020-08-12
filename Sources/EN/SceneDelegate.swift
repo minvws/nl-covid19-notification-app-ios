@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import UIKit
 
 @available(iOS 13, *)
@@ -26,7 +27,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             (UIApplication.shared.delegate as? AppDelegate)?.setBridge(bridge: bridge)
         } else {
             // Handle OS Update Case
-            window.rootViewController = RequiresUpdateViewController(deviceModel: UIDevice.modelName)
+            window.rootViewController = RequiresUpdateViewController(deviceModel: UIDevice.modelName, theme: ENTheme())
         }
         window.makeKeyAndVisible()
 

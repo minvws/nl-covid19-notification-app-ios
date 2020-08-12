@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "SettingsIcon.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

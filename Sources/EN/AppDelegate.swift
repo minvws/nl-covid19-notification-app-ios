@@ -9,6 +9,7 @@
     import BackgroundTasks
 #endif
 
+import ENFoundation
 import UIKit
 
 @UIApplicationMain
@@ -22,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let window = UIWindow(frame: UIScreen.main.bounds)
             self.window = window
 
-            window.rootViewController = RequiresUpdateViewController(deviceModel: UIDevice.modelName)
+            window.rootViewController = RequiresUpdateViewController(deviceModel: UIDevice.modelName, theme: ENTheme())
             window.makeKeyAndVisible()
 
             return true
