@@ -138,12 +138,10 @@ final class UpdateStepView: UIStackView {
 
     private func setupViews() {
         axis = .vertical
-        alignment = .fill
-        distribution = .fill
         spacing = 12
-        backgroundColor = .clear
 
-        titleLabel.text = step.title
+        let titleLabelFont = font(size: 17, weight: .regular, textStyle: .body)
+        titleLabel.attributedText = NSAttributedString.makeFromHtml(text: step.title, font: titleLabelFont)
         addArrangedSubview(titleLabel)
 
         if let settingsStep = step.settingsStep {
@@ -155,7 +153,6 @@ final class UpdateStepView: UIStackView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = font(size: 17, weight: .regular, textStyle: .body)
         return label
     }()
 
