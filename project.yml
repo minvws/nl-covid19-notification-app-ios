@@ -43,8 +43,6 @@ targets:
         LSApplicationQueriesSchemes:
           - ''
         LSRequiresIPhoneOS: true
-        NSAppTransportSecurity:
-          NSAllowsArbitraryLoads: true
         NSBluetoothPeripheralUsageDescription: To securely exchange unique id's
         UIAppFonts: []
         UIApplicationSceneManifest:

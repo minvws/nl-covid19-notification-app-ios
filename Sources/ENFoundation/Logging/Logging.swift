@@ -45,6 +45,7 @@ public final class LogHandler: Logging {
 
     public static func setup() {
         let level = Bundle.main.infoDictionary?["LOG_LEVEL"] as? String ?? "debug"
+
         switch level {
         case "debug":
             dynamicLogLevel = .debug
@@ -54,8 +55,10 @@ public final class LogHandler: Logging {
             dynamicLogLevel = .warning
         case "error":
             dynamicLogLevel = .error
+        case "none":
+            dynamicLogLevel = .off
         default:
-            dynamicLogLevel = .debug
+            dynamicLogLevel = .off
         }
 
         DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
