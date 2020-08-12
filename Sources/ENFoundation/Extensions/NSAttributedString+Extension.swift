@@ -48,35 +48,23 @@ public extension NSAttributedString {
         }
         let data: Data = text.data(using: .unicode) ?? Data(text.utf8)
 
-        if let attributedTitle = try? NSMutableAttributedString(
-            data: data,
-            options: [.documentType: NSAttributedString.DocumentType.html],
-            documentAttributes: nil) {
+        if let attributedTitle = try? NSMutableAttributedString(data: data,
+                                                                options: [.documentType: NSAttributedString.DocumentType.html],
+                                                                documentAttributes: nil) {
 
-            attributedTitle.addAttributes(
-                attributes,
-                range: NSRange(
-                    location: 0,
-                    length:
-                    attributedTitle.length))
+            let fullRange = NSRange(location: 0, length: attributedTitle.length)
+            attributedTitle.addAttributes(attributes, range: fullRange)
 
             let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitBold)
             let boldFont = boldFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
 
             // replace default font with desired font - maintain bold style if possible
-            let fullRange = NSRange(location: 0, length: attributedTitle.length)
-            attributedTitle.enumerateAttribute(NSAttributedString.Key.font,
-                                               in: fullRange,
-                                               options: [])
-            { value, range, finished in
-                guard let currentFont = value as? UIFont else {
-                    return
-                }
+            attributedTitle.enumerateAttribute(.font, in: fullRange, options: []) { value, range, finished in
+                guard let currentFont = value as? UIFont else { return }
 
                 let newFont: UIFont
 
-                if let boldFont = boldFont,
-                    currentFont.fontDescriptor.symbolicTraits.contains(UIFontDescriptor.SymbolicTraits.traitBold) {
+                if let boldFont = boldFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitBold) {
                     newFont = boldFont
                 } else {
                     newFont = font

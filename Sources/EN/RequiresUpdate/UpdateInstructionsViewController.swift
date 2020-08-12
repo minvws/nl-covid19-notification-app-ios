@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import UIKit
 
@@ -141,7 +142,7 @@ final class UpdateStepView: UIStackView {
         spacing = 12
 
         let titleLabelFont = font(size: 17, weight: .regular, textStyle: .body)
-        titleLabel.attributedText = NSAttributedString.makeFromHtml(text: step.title, font: titleLabelFont)
+        titleLabel.attributedText = NSAttributedString.makeFromHtml(text: step.title, font: titleLabelFont, textColor: .black)
         addArrangedSubview(titleLabel)
 
         if let settingsStep = step.settingsStep {
