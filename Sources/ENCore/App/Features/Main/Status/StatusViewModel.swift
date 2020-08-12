@@ -175,7 +175,7 @@ struct StatusViewModel {
 
         let dateString = dateFormatter.string(from: from)
 
-        let days = from.days(sinceDate: now) ?? 0
+        let days = now.days(sinceDate: from) ?? 0
         let string = (days > 1) ? String.statusNotifiedDaysAgoOther("\(days)") : String.statusNotifiedDaysAgoOne("\(days)")
         return .statusNotifiedDescription(string, two: dateString)
     }
