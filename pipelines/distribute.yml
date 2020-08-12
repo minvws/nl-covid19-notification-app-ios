@@ -21,7 +21,7 @@ steps:
     provisioningProfileName: "CoronaMelder_TST"
     networkConfiguration: Test
     logLevel: debug
-    configuration: ${testBuildConfiguration}
+    configuration: Release
     bundleDisplayName: "CoronaMelder 🐞"
     bundleIdentifier: nl.rijksoverheid.en.test
     debugMenu: true
