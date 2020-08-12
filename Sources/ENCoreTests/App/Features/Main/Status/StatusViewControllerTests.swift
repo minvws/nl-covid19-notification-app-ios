@@ -50,7 +50,7 @@ final class StatusViewControllerTests: TestCase {
     }
 
     func test_snapshot_active_notified_days_ago() {
-        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593000030)
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088)
         set(activeState: .active, notified: true)
         snapshots(matching: viewController)
     }
