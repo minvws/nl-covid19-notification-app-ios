@@ -436,7 +436,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                     }
 
                     let content = UNMutableNotificationContent()
-                    content.body = .exposureNotificationUserExplanation("")
+                    content.body = .exposureNotificationUserExplanation("\(daysSinceLastExposure)")
                     content.sound = .default
                     content.badge = 0
 
