@@ -120,7 +120,8 @@ private final class ReceivedNotificationView: View {
             .moreInformationComplaintsItem1,
             .moreInformationComplaintsItem2,
             .moreInformationComplaintsItem3,
-            .moreInformationComplaintsItem4
+            .moreInformationComplaintsItem4,
+            .moreInformationComplaintsItem5
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
 
