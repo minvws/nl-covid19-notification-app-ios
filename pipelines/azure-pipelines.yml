@@ -15,6 +15,13 @@ stages:
       steps:
       - checkout: self
         clean: true
+      - task: Cache@2
+        inputs:
+          key: 'toolscache | "$(Agent.OS)" | tools/scripts/buildcache.sh | vendor/XcodeGen/Package.resolved | vendor/mockolo/Package.resolved'
+          path: cache
+        displayName: Cache build binaries
+      - script: sh tools/scripts/buildcache.sh
+        displayName: Copy binaries from cache
       - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
         displayName: 'Prepare analysis on SonarCloud'
         inputs:
@@ -41,6 +48,8 @@ stages:
           debugMenu: true
           runTests: true
           signingOption: 'nosign'
+      - script: sh tools/scripts/buildcache.sh copy
+        displayName: Copy binaries to cache
       - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
         displayName: 'Run Code Analysis'
       - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
