@@ -193,11 +193,9 @@
 "status.appState.card.button" = "Activare aplicație";
 "status.appState.card.try_again" = "Încercați din nou";
 "status.active.description" = "Chiar dacă închideți aplicația, CoronaMelder rămâne activă";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "Acum %@ zile (%@)";
-"status.notified.description_hours" = "Acum %@ ore (%@)";
-"status.notified.description_none" = "pe %@";
-"status.notified.description" = "Pe %@  ați fost expus riscului de contaminare";
+"status.notified.days_ago_one" = "Acum %@ zi";
+"status.notified.days_ago_other" = "Acum %@ zile";
+"status.notified.description" = "Acum %@ zile (%@) ați fost expus riscului de contaminare";
 "status.notified.moreInfo" = "Ce pot face acum?";
 "status.notified.removeNotification" = "Ștergere notificare";
 
@@ -349,10 +347,10 @@
 "enableSettings.localNotifications.step3.action.title" = "Permiteți notificări";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Ai fost în apropierea cuiva contaminat cu coronavirus. Citiți mai multe informații în aplicație.";
+"exposure.notification.userExplanation" = "Acum  %@ ați fost în apropierea cuiva infectat cu virusul corona. Citiți mai multe în aplicație.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Rapel : Acum %@ zile ați fost în apropierea cuiva contaminat cu coronavirus. Citiți mai departe în aplicație.";
+"exposure.notification.reminder" = "Reapel: %@";
 
 "privacyAgreement.title" = "Autorizație pentru utilizarea datelor";
 "privacyAgreement.message" = "Pentru a utiliza CoronaMelder trebuie să acceptați %@. Important de știut: ";

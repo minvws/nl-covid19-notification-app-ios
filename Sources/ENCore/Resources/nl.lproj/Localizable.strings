@@ -193,11 +193,9 @@
 "status.appState.card.button" = "App aanzetten";
 "status.appState.card.try_again" = "Probeer opnieuw";
 "status.active.description" = "Ook als je de app sluit, blijft CoronaMelder actief";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "%@ dagen geleden (%@)";
-"status.notified.description_hours" = "%@ uur geleden (%@)";
-"status.notified.description_none" = "op %@";
-"status.notified.description" = "Je hebt %@ extra kans op besmetting gelopen";
+"status.notified.days_ago_one" = "%@ dag geleden";
+"status.notified.days_ago_other" = "%@ dagen geleden";
+"status.notified.description" = "Je hebt %@ (%@) extra kans op besmetting gelopen";
 "status.notified.moreInfo" = "Wat kan ik nu doen?";
 "status.notified.removeNotification" = "Melding verwijderen";
 
@@ -349,10 +347,10 @@
 "enableSettings.localNotifications.step3.action.title" = "Sta berichtgeving toe";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
+"exposure.notification.userExplanation" = "Je bent %@ in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Herinnering: Je bent %@ dagen geleden in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
+"exposure.notification.reminder" = "Herinnering: %@";
 
 "privacyAgreement.title" = "Toestemming gegevensgebruik";
 "privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de %@. Belangrijk om te weten: ";

@@ -99,7 +99,7 @@ struct StatusViewModel {
     }
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
-        let description = String(format: .statusNotifiedDescription, timeAgo(from: date))
+        let description = timeAgo(from: date)
             .capitalizedFirstLetterOnly
 
         return StatusViewModel(
@@ -128,7 +128,7 @@ struct StatusViewModel {
     )
 
     static func inactiveWithNotified(date: Date) -> StatusViewModel {
-        let description = String(format: .statusNotifiedDescription, timeAgo(from: date))
+        let description = timeAgo(from: date)
             .capitalizedFirstLetterOnly
 
         return StatusViewModel(
@@ -175,12 +175,8 @@ struct StatusViewModel {
 
         let dateString = dateFormatter.string(from: from)
 
-        if let days = from.days(sinceDate: now), days > 0 {
-            return String(format: .statusNotifiedDescriptionDays, "\(days)", dateString)
-        }
-        if let hours = from.hours(sinceDate: now), hours > 0 {
-            return String(format: .statusNotifiedDescriptionHours, "\(hours)", dateString)
-        }
-        return String(format: .statusNotifiedDescriptionNone, dateString)
+        let days = from.days(sinceDate: now) ?? 0
+        let string = (days > 1) ? String.statusNotifiedDaysAgoOther("\(days)") : String.statusNotifiedDaysAgoOne("\(days)")
+        return .statusNotifiedDescription(string, two: dateString)
     }
 }

@@ -196,11 +196,9 @@
 "status.appState.card.button" = "تشغيل التطبيق";
 "status.appState.card.try_again" = "حاول مجددًا";
 "status.active.description" = "حتى إذا قمت بإغلاق التطبيق، يبقى تطبيق التحذير من كورونا (CoronaMelder)  نشطًا";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "من %@ أيام مضت %@";
-"status.notified.description_hours" = "من %@ ساعة مضت %@";
-"status.notified.description_none" = "في %@";
-"status.notified.description" = "تعرضت %@ إلى زيادة احتمال الإصابة";
+"status.notified.days_ago_one" = "آخر%@";
+"status.notified.days_ago_other" = "آخر%@";
+"status.notified.description" = "لقد%@%@ تعرضت إلى خطر الإصابة بصورة أكبر";
 "status.notified.moreInfo" = "ما الذي يمكنني القيام به الآن؟";
 "status.notified.removeNotification" = "حذف الإشعار";
 
@@ -352,10 +350,10 @@
 "enableSettings.localNotifications.step3.action.title" = "اسمح باستلام الإشعارات";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "تواجدت %1$s بالقرب من شخص مصاب بفيروس كورونا. إقرأ المزيد في التطبيق.";
+"exposure.notification.userExplanation" = "تواجدت %@ بالقرب من شخص مصاب بفيروس كورونا.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "تذكير: لقد كنت قبل%@ أيام بالقرب من شخص مصاب بفيروس كورونا. اقرأ المزيد في التطبيق";
+"exposure.notification.reminder" = "تذكير: %@";
 
 "privacyAgreement.title" = "إعطاء الموافقة";
 "privacyAgreement.message" = "لاستخدام تطبيق التحذير من كورونا، يجب أن توافق على %@. من المهم أن تعرف:";

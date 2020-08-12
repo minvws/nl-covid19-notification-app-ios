@@ -193,11 +193,9 @@
 "status.appState.card.button" = "Włącz aplikację";
 "status.appState.card.try_again" = "Spróbuj ponownie";
 "status.active.description" = "Nawet jeśli zamkniesz aplikację, CoronaMelder nadal będzie działać.";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "%@ dzień / dni temu (%@)";
-"status.notified.description_hours" = "%@ godzin(y) temu (%@)";
-"status.notified.description_none" = "%@";
-"status.notified.description" = "%@ byłeś narażony na szczególne ryzyko zarażenia.";
+"status.notified.days_ago_one" = "%@ dzień temu";
+"status.notified.days_ago_other" = "%@ dni temu";
+"status.notified.description" = "%@ (%@) byłeś narażony na szczególne ryzyko zarażenia.";
 "status.notified.moreInfo" = "Co mogę teraz zrobić?";
 "status.notified.removeNotification" = "Usuń powiadomienie";
 
@@ -349,10 +347,10 @@
 "enableSettings.localNotifications.step3.action.title" = "Zezwalaj na przesyłanie wiadomości";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Znajdowałeś się w pobliżu osoby z koronawirusem. Przeczytaj więcej w aplikacji.";
+"exposure.notification.userExplanation" = "%@ znajdowałeś się w pobliżu osoby z koronawirusem. Przeczytaj więcej w aplikacji.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Przypomnienie: %@ dni temu znajdowałeś się w pobliżu osoby z koronawirusem. Przeczytaj więcej w aplikacji.";
+"exposure.notification.reminder" = "Przypomnienie: %@";
 
 "privacyAgreement.title" = "Zgoda na użycie danych";
 "privacyAgreement.message" = "Aby korzystać z CoronaMelder musisz wyrazić zgodę na %@. Warto wiedzieć: ";
