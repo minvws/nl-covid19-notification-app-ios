@@ -13,10 +13,19 @@ final class UpdateInstructionsViewController: UIViewController {
 
     // MARK: - Lifecycle
 
+    init(theme: Theme) {
+        self.theme = theme
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func loadView() {
-        self.view = internalView
-        self.view.frame = UIScreen.main.bounds
-        self.modalPresentationStyle = .overCurrentContext
+        view = internalView
+        view.frame = UIScreen.main.bounds
+        view.backgroundColor = theme.colors.viewControllerBackground
     }
 
     override func viewDidLoad() {
@@ -46,7 +55,9 @@ final class UpdateInstructionsViewController: UIViewController {
         UpdateStep(title: localizedString(for: "update.software.os.detail.step4"), settingsStep: nil)
     ]
 
-    private lazy var internalView: UpdateInstructionsView = UpdateInstructionsView(steps: steps)
+    private lazy var internalView: UpdateInstructionsView = UpdateInstructionsView(steps: steps, theme: theme)
+
+    private let theme: Theme
 }
 
 // MARK: - Functions
@@ -62,7 +73,8 @@ final class UpdateInstructionsView: UIView {
 
     // MARK: - Life cycle
 
-    init(steps: [UpdateStep]) {
+    init(steps: [UpdateStep], theme: Theme) {
+        self.theme = theme
         self.steps = steps
         super.init(frame: .zero)
         setupViews()
@@ -74,12 +86,12 @@ final class UpdateInstructionsView: UIView {
     }
 
     private func setupViews() {
-        backgroundColor = .white
+        backgroundColor = .clear
         addSubview(closeButton)
         addSubview(stackView)
         stackView.addArrangedSubview(titleLabel)
 
-        steps.forEach { stackView.addArrangedSubview(UpdateStepView(step: $0)) }
+        steps.forEach { stackView.addArrangedSubview(UpdateStepView(step: $0, theme: theme)) }
     }
 
     private func setupConstraints() {
@@ -116,17 +128,19 @@ final class UpdateInstructionsView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = font(size: 28, weight: .bold, textStyle: .title2)
+        label.font = theme.fonts.title1
         label.text = localizedString(for: "update.software.os.detail.title")
         return label
     }()
 
     private let steps: [UpdateStep]
+    private let theme: Theme
 }
 
 final class UpdateStepView: UIStackView {
 
-    init(step: UpdateStep) {
+    init(step: UpdateStep, theme: Theme) {
+        self.theme = theme
         self.step = step
         super.init(frame: .zero)
 
@@ -141,12 +155,11 @@ final class UpdateStepView: UIStackView {
         axis = .vertical
         spacing = 12
 
-        let titleLabelFont = font(size: 17, weight: .regular, textStyle: .body)
-        titleLabel.attributedText = NSAttributedString.makeFromHtml(text: step.title, font: titleLabelFont, textColor: .black)
+        titleLabel.attributedText = NSAttributedString.makeFromHtml(text: step.title, font: theme.fonts.body, textColor: theme.colors.gray)
         addArrangedSubview(titleLabel)
 
         if let settingsStep = step.settingsStep {
-            addArrangedSubview(SettingsInformationStepView(informationStep: settingsStep))
+            addArrangedSubview(SettingsInformationStepView(informationStep: settingsStep, theme: theme))
         }
     }
 
@@ -158,11 +171,13 @@ final class UpdateStepView: UIStackView {
     }()
 
     private let step: UpdateStep
+    private let theme: Theme
 }
 
 final class SettingsInformationStepView: UIView {
 
-    init(informationStep: SettingsInformationStep) {
+    init(informationStep: SettingsInformationStep, theme: Theme) {
+        self.theme = theme
         self.informationStep = informationStep
         super.init(frame: .zero)
         setupViews()
@@ -174,7 +189,7 @@ final class SettingsInformationStepView: UIView {
     }
 
     private func setupViews() {
-        backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.97, alpha: 1.00)
+        backgroundColor = theme.colors.tertiary
         layer.cornerRadius = 8
         addSubview(stackView)
 
@@ -226,7 +241,7 @@ final class SettingsInformationStepView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = font(size: 17, weight: .regular, textStyle: .body)
+        label.font = theme.fonts.body
         label.setContentHuggingPriority(.defaultLow, for: .horizontal)
         return label
     }()
@@ -242,6 +257,7 @@ final class SettingsInformationStepView: UIView {
     }()
 
     private let informationStep: SettingsInformationStep
+    private let theme: Theme
 }
 
 struct UpdateStep {

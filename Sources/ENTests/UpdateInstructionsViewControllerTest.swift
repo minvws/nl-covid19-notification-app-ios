@@ -6,11 +6,15 @@
  */
 
 @testable import EN
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
 
 final class UpdateInstructionsViewControllerTest: XCTestCase {
+
+    private let theme = ENTheme()
+
     override func setUp() {
         super.setUp()
 
@@ -21,6 +25,6 @@ final class UpdateInstructionsViewControllerTest: XCTestCase {
     // MARK: - Tests
 
     func testSnapshotUpdateInstructionsViewController() {
-        assertSnapshot(matching: UpdateInstructionsViewController(), as: .image())
+        assertSnapshot(matching: UpdateInstructionsViewController(theme: theme), as: .image())
     }
 }

@@ -68,7 +68,7 @@ final class RequiresUpdateViewController: UIViewController {
     // MARK: - Functions
 
     @objc func buttonPressed() {
-        present(UpdateInstructionsViewController(), animated: true, completion: nil)
+        present(UpdateInstructionsViewController(theme: theme), animated: true, completion: nil)
     }
 
     // MARK: - Private
