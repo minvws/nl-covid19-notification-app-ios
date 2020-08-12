@@ -193,11 +193,9 @@
 "status.appState.card.button" = "Uygulamayı açmak";
 "status.appState.card.try_again" = "Tekrar deneyin";
 "status.active.description" = "Uygulamayı kapatsanız bile CoronaMelder etkindir";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "%@ gün önce (%@)";
-"status.notified.description_hours" = "%@ saat önce (%@)";
-"status.notified.description_none" = "%@'de";
-"status.notified.description" = "Fazladan %@ bulaşma riskine uğradınız";
+"status.notified.days_ago_one" = "%@ gün önce";
+"status.notified.days_ago_other" = "%@ gün önce";
+"status.notified.description" = "Fazladan %@ (%@) bulaşma riskine uğradınız";
 "status.notified.moreInfo" = "Şimdi ne yapabilirim?";
 "status.notified.removeNotification" = "Bildirimi silin";
 
@@ -350,10 +348,10 @@
 "enableSettings.localNotifications.step3.action.title" = "Raporlamaya izin verin";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Korona virüsü olan bir kişinin etrafında bulundunuz. Uygulamada daha fazlasını okuyun.";
+"exposure.notification.userExplanation" = "Korona virüsü olan bir kişinin etrafında %@ bulundunuz. Uygulamada daha fazlasını okuyun.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Hatırlatma:  %@ gün önce Korona virüsü olan bir kişinin yakınında bulundunuz. Uygulamada daha fazlasını okuyun.";
+"exposure.notification.reminder" = "Hatırlatma: %@";
 
 "privacyAgreement.title" = "Veri kullanımı için onay";
 "privacyAgreement.message" = "CoronaMelder'i kullanmak için %@' ni kabul etmelisiniz. 

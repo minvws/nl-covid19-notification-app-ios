@@ -194,11 +194,9 @@
 "status.appState.card.button" = "Ouvrir l'application";
 "status.appState.card.try_again" = "Veuillez réessayer";
 "status.active.description" = "Même si vous fermez l'application, CoronaMelder reste active";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "il y a %@ jours (%@)";
-"status.notified.description_hours" = "Il y a %@ heures (%@)";
-"status.notified.description_none" = "le %@";
-"status.notified.description" = "Vous avez %@ de possibilités de plus d'avoir été contaminé";
+"status.notified.days_ago_one" = "il y a %@ jour";
+"status.notified.days_ago_other" = "il y a %@ jours";
+"status.notified.description" = "Vous avez, %@ (%@), couru plus de risques d\'avoir été contaminé(e)";
 "status.notified.moreInfo" = "Que puis-je faire maintenant ?";
 "status.notified.removeNotification" = "Supprimer la notification";
 
@@ -350,10 +348,10 @@
 "enableSettings.localNotifications.step3.action.title" = "Autorisez les informations";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Vous avez été proche de quelqu'un qui a le coronavirus. Lisez plus dans l'application.";
+"exposure.notification.userExplanation" = "Vous avez été, %@ proche de quelqu\'un qui a le coronavirus. Lisez plus dans l\'application.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Rappel : il y a %@ jours, vous avez été proche de quelqu'un ayant le coronavirus. Lire plus dans l'application.";
+"exposure.notification.reminder" = "Rappel : %@";
 
 "privacyAgreement.title" = "Autorisation d'utilisation des données";
 "privacyAgreement.message" = "Pour utiliser CoronaMelder, vous devez accepter les %@. Important à savoir :";
