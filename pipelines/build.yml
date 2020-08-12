@@ -35,6 +35,9 @@ parameters:
 - name: shareLogsEnabled
   type: boolean
   default: false
+- name: configuration
+  type: string
+  default: Release
 
 steps:
 - task: InstallAppleProvisioningProfile@1
@@ -58,7 +61,7 @@ steps:
   inputs:
     actions: 'clean build'
     sdk: 'iphoneos'
-    configuration: 'Release'
+    configuration: ${{ parameters.configuration }}
     xcWorkspacePath: 'EN.xcodeproj'
     scheme: 'EN'
     xcodeVersion: 'default'
