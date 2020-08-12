@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import UIKit
 
@@ -12,8 +13,9 @@ final class RequiresUpdateViewController: UIViewController {
 
     // MARK: - Lifecycle
 
-    init(deviceModel: String) {
+    init(deviceModel: String, theme: Theme) {
         isDeviceSupported = RequiresUpdateViewController.unsupportedDevicesModels.contains(deviceModel) == false
+        self.theme = theme
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -34,7 +36,7 @@ final class RequiresUpdateViewController: UIViewController {
 
         self.view = internalView
         self.view.frame = UIScreen.main.bounds
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = theme.colors.viewControllerBackground
 
         self.view.addSubview(button)
 
@@ -42,11 +44,11 @@ final class RequiresUpdateViewController: UIViewController {
 
         let titleKey = isDeviceSupported ? "update.software.os.title" : "update.hardware.title"
         internalView.titleLabel.text = localizedString(for: titleKey)
-        internalView.titleLabel.font = font(size: 22, weight: .bold, textStyle: .title2)
+        internalView.titleLabel.font = theme.fonts.title2
 
         let descriptionKey = isDeviceSupported ? "update.software.os.description" : "update.hardware.description"
         internalView.contentLabel.text = localizedString(for: descriptionKey)
-        internalView.contentLabel.font = font(size: 17, weight: .regular, textStyle: .body)
+        internalView.contentLabel.font = theme.fonts.body
     }
 
     private func setupConstraints() {
@@ -71,6 +73,7 @@ final class RequiresUpdateViewController: UIViewController {
 
     // MARK: - Private
 
+    private let theme: Theme
     private let isDeviceSupported: Bool
 
     private lazy var internalView: RequiresUpdateView = RequiresUpdateView()
@@ -79,10 +82,10 @@ final class RequiresUpdateViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle(localizedString(for: "update.button.update"), for: .normal)
-        button.titleLabel?.font = font(size: 17, weight: .bold, textStyle: .body)
+        button.titleLabel?.font = theme.fonts.bodyBold
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
-        button.backgroundColor = UIColor(named: "PrimaryColor")
+        button.backgroundColor = theme.colors.primary
         button.setTitleColor(.white, for: .normal)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button
