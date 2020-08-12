@@ -171,7 +171,7 @@ struct StatusViewModel {
     static func timeAgo(from: Date) -> String {
         let now = currentDate()
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
+        dateFormatter.dateStyle = .full
 
         let dateString = dateFormatter.string(from: from)
 
