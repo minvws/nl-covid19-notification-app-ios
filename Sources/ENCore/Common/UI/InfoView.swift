@@ -347,12 +347,13 @@ final class InfoSectionCalloutView: View {
             maker.top.bottom.equalToSuperview()
         }
         iconImageView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.leading.equalToSuperview().offset(16)
+            maker.leading.equalToSuperview().offset(20)
+            maker.top.equalToSuperview().offset(16)
             maker.width.height.equalTo(24)
         }
         contentLabel.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalToSuperview().offset(16)
-            maker.leading.equalTo(iconImageView.snp.trailing).offset(18)
+            maker.leading.equalTo(iconImageView.snp.trailing).offset(12)
             maker.trailing.bottom.equalToSuperview().inset(16)
         }
     }
