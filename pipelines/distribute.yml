@@ -1,9 +1,14 @@
 steps:
 - task: InstallAppleCertificate@2
-  displayName: 'Install an Apple certificate'
+  displayName: 'Install Apple certificate'
   inputs:
     certSecureFile: 'Rijksoverheid_iOS.p12'
     certPwd: '$(developerCertificatePassword)'                     
+- task: InstallAppleCertificate@2
+  displayName: 'Install Apple certificate'
+  inputs:
+    certSecureFile: 'Rijksoverheid_iOS_dev.p12'
+    certPwd: '$(developerDevCertificatePassword)'                     
 - script: 'curl -sL firebase.tools | bash'
   workingDirectory: '$(Agent.ToolsDirectory)'
   displayName: 'Install Firebase Tools'
@@ -21,7 +26,7 @@ steps:
     provisioningProfileName: "CoronaMelder_TST"
     networkConfiguration: Test
     logLevel: debug
-    configuration: Release
+    configuration: Debug
     bundleDisplayName: "CoronaMelder 🐞"
     bundleIdentifier: nl.rijksoverheid.en.test
     debugMenu: true
