@@ -119,7 +119,7 @@ private final class ThankYouView: View {
     }
 
     private func info() -> View {
-        let string = String.moreInformationThankYouInfo.attributed()
+        let string = NSAttributedString.make(text: .moreInformationInfoTitle, font: theme.fonts.subhead, textColor: theme.colors.gray)
         return InfoSectionCalloutView(theme: theme, content: string)
     }
 }
