@@ -8,14 +8,17 @@
 import ENFoundation
 import UIKit
 
+enum RedirectType { case rateApp }
+
 final class HelpQuestion {
 
     let question: String
     let attributedTitle: NSAttributedString
     let attributedAnswer: NSAttributedString?
     let link: String?
+    let redirectType: RedirectType?
 
-    init(theme: Theme, question: String, answer: String?, link: String? = nil) {
+    init(theme: Theme, question: String, answer: String?, link: String? = nil, redirectType: RedirectType? = nil) {
 
         self.question = question
 
@@ -33,5 +36,6 @@ final class HelpQuestion {
         }
 
         self.link = link
+        self.redirectType = redirectType
     }
 }

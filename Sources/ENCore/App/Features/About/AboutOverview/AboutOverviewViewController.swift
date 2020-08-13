@@ -88,22 +88,22 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
             return
         }
 
-        if indexPath == rateAppIndexPath {
+        let question = questions[indexPath.row]
+
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        if question.redirectType == .rateApp {
             listener?.aboutOverviewRequestsRouteToRateApp()
             return
         }
 
-        let question = questions[indexPath.row]
         listener?.aboutOverviewRequestsRouteTo(question: question)
-
-        tableView.deselectRow(at: indexPath, animated: true)
     }
 
     // MARK: - Private
 
     private let questionsSectionIndex = 0
     private let aboutSectionIndex = 1
-    private let rateAppIndexPath = IndexPath(row: 0, section: 1)
     private let aboutManager: AboutManaging
     private weak var listener: AboutOverviewListener?
     private lazy var internalView: AboutView = AboutView(theme: self.theme)

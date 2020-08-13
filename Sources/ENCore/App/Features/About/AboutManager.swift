@@ -44,7 +44,7 @@ final class AboutManager: AboutManaging {
         ])
 
         aboutSection = AboutSection(title: .moreInformationAboutTitle, questions: [
-            HelpQuestion(theme: theme, question: .helpRateAppTitle, answer: nil),
+            HelpQuestion(theme: theme, question: .helpRateAppTitle, answer: nil, link: nil, redirectType: .rateApp),
             HelpQuestion(theme: theme, question: .helpPrivacyPolicyTitle, answer: "", link: .helpPrivacyPolicyLink),
             HelpQuestion(theme: theme, question: .helpAccessibilityTitle, answer: "", link: .helpAccessibilityLink),
             HelpQuestion(theme: theme, question: .helpColofonTitle, answer: "", link: .helpColofonLink)
