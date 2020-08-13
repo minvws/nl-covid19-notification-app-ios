@@ -191,6 +191,7 @@ extension String {
     static var helpFaqPowerUsageDescription: String { return Localization.string(for: "help.faq.power_usage.description") }
     static var helpFaqDeletionTitle: String { return Localization.string(for: "moreInformation.about.faq.deletion") }
     static var helpFaqDeletionDescription: String { return Localization.string(for: "moreInformation.about.faq.deletion.description") }
+    static var helpRateAppTitle: String { return Localization.string(for: "about.review") }
     static var helpPrivacyPolicyTitle: String { return Localization.string(for: "help.faq.privacy_policy.title") }
     static var helpPrivacyPolicyLink: String { return Localization.string(for: "help.faq.privacy_policy.link", [currentLanguageIdentifier]) }
     static var helpColofonTitle: String { return Localization.string(for: "help.faq.colofon.title") }

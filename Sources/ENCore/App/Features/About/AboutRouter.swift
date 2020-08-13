@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import StoreKit
 import UIKit
 
 /// @mockable
@@ -53,6 +54,10 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
 
     func detachHelpQuestion() {
         self.helpDetailViewController = nil
+    }
+
+    func routeToRateApp() {
+        SKStoreReviewController.requestReview()
     }
 
     func routeToAppInformation() {

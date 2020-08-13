@@ -14,6 +14,7 @@ import WebKit
 protocol AboutRouting: Routing {
     func routeToOverview()
     func routeToHelpQuestion(question: HelpQuestion)
+    func routeToRateApp()
     func routeToAppInformation()
     func routeToTechnicalInformation()
     func detachHelpQuestion()
@@ -21,6 +22,7 @@ protocol AboutRouting: Routing {
 }
 
 final class AboutViewController: NavigationController, AboutViewControllable, UIAdaptivePresentationControllerDelegate {
+
     weak var router: AboutRouting?
 
     init(listener: AboutListener, theme: Theme) {
@@ -57,6 +59,10 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     func aboutOverviewRequestsRouteToTechnicalInformation() {
         router?.routeToTechnicalInformation()
+    }
+
+    func aboutOverviewRequestsRouteToRateApp() {
+        router?.routeToRateApp()
     }
 
     // MARK: - HelpDetailListener

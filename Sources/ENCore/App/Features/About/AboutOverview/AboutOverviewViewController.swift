@@ -89,9 +89,15 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
         }
 
         let question = questions[indexPath.row]
-        listener?.aboutOverviewRequestsRouteTo(question: question)
 
         tableView.deselectRow(at: indexPath, animated: true)
+
+        if question.redirectType == .rateApp {
+            listener?.aboutOverviewRequestsRouteToRateApp()
+            return
+        }
+
+        listener?.aboutOverviewRequestsRouteTo(question: question)
     }
 
     // MARK: - Private
