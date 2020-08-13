@@ -13,6 +13,7 @@ protocol AboutOverviewListener: AnyObject {
     func aboutOverviewRequestsRouteTo(question: HelpQuestion)
     func aboutOverviewRequestsRouteToAppInformation()
     func aboutOverviewRequestsRouteToTechnicalInformation()
+    func aboutOverviewRequestsRouteToRateApp()
 }
 
 /// @mockable

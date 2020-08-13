@@ -12,14 +12,26 @@ final class HelpQuestion {
 
     let question: String
     let attributedTitle: NSAttributedString
-    let attributedAnswer: NSAttributedString
+    let attributedAnswer: NSAttributedString?
     let link: String?
 
-    init(theme: Theme, question: String, answer: String, link: String? = nil) {
+    init(theme: Theme, question: String, answer: String?, link: String? = nil) {
 
         self.question = question
-        self.attributedTitle = .makeFromHtml(text: question, font: theme.fonts.largeTitle, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left)
-        self.attributedAnswer = .makeFromHtml(text: answer, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left)
+
+        self.attributedTitle = .makeFromHtml(text: question,
+                                             font: theme.fonts.largeTitle,
+                                             textColor: theme.colors.gray,
+                                             textAlignment: Localization.isRTL ? .right : .left)
+        if let answer = answer {
+            self.attributedAnswer = .makeFromHtml(text: answer,
+                                                  font: theme.fonts.body,
+                                                  textColor: theme.colors.gray,
+                                                  textAlignment: Localization.isRTL ? .right : .left)
+        } else {
+            self.attributedAnswer = nil
+        }
+
         self.link = link
     }
 }

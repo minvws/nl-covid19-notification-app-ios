@@ -88,6 +88,11 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
             return
         }
 
+        if indexPath == rateAppIndexPath {
+            listener?.aboutOverviewRequestsRouteToRateApp()
+            return
+        }
+
         let question = questions[indexPath.row]
         listener?.aboutOverviewRequestsRouteTo(question: question)
 
@@ -98,6 +103,7 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
 
     private let questionsSectionIndex = 0
     private let aboutSectionIndex = 1
+    private let rateAppIndexPath = IndexPath(row: 0, section: 1)
     private let aboutManager: AboutManaging
     private weak var listener: AboutOverviewListener?
     private lazy var internalView: AboutView = AboutView(theme: self.theme)
