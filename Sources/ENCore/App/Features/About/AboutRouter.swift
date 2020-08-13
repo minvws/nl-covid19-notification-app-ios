@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import StoreKit
 import UIKit
@@ -43,21 +44,21 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
         self.aboutOverviewViewController = nil
     }
 
-    func routeToHelpQuestion(question: HelpQuestion) {
-        let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
-                                                               shouldShowEnableAppButton: false,
-                                                               question: question)
-        self.helpDetailViewController = helpDetailViewController
-
-        viewController.push(viewController: helpDetailViewController, animated: true)
+    func routeToAboutEntry(entry: AboutEntry) {
+        switch entry {
+        case let .question(title, answer: answer):
+            // TODO: remove theme from help question
+            routeToHelpQuestion(question: HelpQuestion(theme: ENTheme(), question: title, answer: answer))
+        case .rate:
+            routeToRateApp()
+        case .link:
+            // TODO: route to link
+            routeToWebView()
+        }
     }
 
     func detachHelpQuestion() {
         self.helpDetailViewController = nil
-    }
-
-    func routeToRateApp() {
-        SKStoreReviewController.requestReview()
     }
 
     func routeToAppInformation() {
@@ -75,6 +76,23 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
     }
 
     // MARK: - Private
+
+    private func routeToHelpQuestion(question: HelpQuestion) {
+        let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
+                                                               shouldShowEnableAppButton: false,
+                                                               question: question)
+        self.helpDetailViewController = helpDetailViewController
+
+        viewController.push(viewController: helpDetailViewController, animated: true)
+    }
+
+    private func routeToRateApp() {
+        SKStoreReviewController.requestReview()
+    }
+
+    private func routeToWebView() {
+        // TODO:
+    }
 
     private let helpDetailBuilder: HelpDetailBuildable
     private var helpDetailViewController: ViewControllable?

@@ -75,7 +75,7 @@ final class AboutRouterTests: TestCase {
         XCTAssertEqual(helpDetailBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.pushCallCount, 0)
 
-        router.routeToHelpQuestion(question: HelpQuestion(theme: theme, question: "question", answer: "answer"))
+        router.routeToAboutEntry(entry: .question(title: "question", answer: "answer"))
 
         XCTAssertEqual(helpDetailBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.pushCallCount, 1)

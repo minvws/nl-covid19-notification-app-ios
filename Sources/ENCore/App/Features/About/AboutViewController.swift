@@ -13,8 +13,7 @@ import WebKit
 /// @mockable
 protocol AboutRouting: Routing {
     func routeToOverview()
-    func routeToHelpQuestion(question: HelpQuestion)
-    func routeToRateApp()
+    func routeToAboutEntry(entry: AboutEntry)
     func routeToAppInformation()
     func routeToTechnicalInformation()
     func detachHelpQuestion()
@@ -49,8 +48,8 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     // MARK: - AboutOverviewListener
 
-    func aboutOverviewRequestsRouteTo(question: HelpQuestion) {
-        router?.routeToHelpQuestion(question: question)
+    func aboutOverviewRequestsRouteTo(entry: AboutEntry) {
+        router?.routeToAboutEntry(entry: entry)
     }
 
     func aboutOverviewRequestsRouteToAppInformation() {
@@ -59,10 +58,6 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     func aboutOverviewRequestsRouteToTechnicalInformation() {
         router?.routeToTechnicalInformation()
-    }
-
-    func aboutOverviewRequestsRouteToRateApp() {
-        router?.routeToRateApp()
     }
 
     // MARK: - HelpDetailListener
