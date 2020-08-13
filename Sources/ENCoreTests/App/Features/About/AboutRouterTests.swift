@@ -15,13 +15,14 @@ final class AboutRouterTests: TestCase {
     private let helpDetailBuilder = HelpDetailBuildableMock()
     private let appInformationBuilder = AppInformationBuildableMock()
     private let technicalInformationBuilder = TechnicalInformationBuildableMock()
+    private let webviewBuilder = WebviewBuildableMock()
 
     private var router: AboutRouter!
 
     override func setUp() {
         super.setUp()
 
-        router = AboutRouter(viewController: viewController, aboutOverviewBuilder: aboutOverviewBuilder, helpDetailBuilder: helpDetailBuilder, appInformationBuilder: appInformationBuilder, technicalInformationBuilder: technicalInformationBuilder)
+        router = AboutRouter(viewController: viewController, aboutOverviewBuilder: aboutOverviewBuilder, helpDetailBuilder: helpDetailBuilder, appInformationBuilder: appInformationBuilder, technicalInformationBuilder: technicalInformationBuilder, webviewBuilder: webviewBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
@@ -65,7 +66,7 @@ final class AboutRouterTests: TestCase {
         XCTAssert(receivedListener === viewController)
     }
 
-    func test_routeToHelpDetail_callsBuildAndPush() {
+    func test_routeToAboutEntry_withQuestionType_callsBuildAndPush() {
         var receivedListener: HelpDetailListener!
         helpDetailBuilder.buildHandler = { listener, _, _ in
             receivedListener = listener
@@ -81,6 +82,34 @@ final class AboutRouterTests: TestCase {
         XCTAssertEqual(viewController.pushCallCount, 1)
         XCTAssertNotNil(receivedListener)
         XCTAssert(receivedListener === viewController)
+    }
+
+    func test_routeToAboutEntry_withLinkType_callsBuildAndPush() {
+        var receivedListener: WebviewListener!
+        webviewBuilder.buildHandler = { listener, _ in
+            receivedListener = listener
+            return ViewControllableMock()
+        }
+
+        XCTAssertEqual(webviewBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.pushCallCount, 0)
+
+        router.routeToAboutEntry(entry: .link(title: "some title", link: "http://coronamelder.nl"))
+
+        XCTAssertEqual(webviewBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.pushCallCount, 1)
+        XCTAssertNotNil(receivedListener)
+        XCTAssert(receivedListener === viewController)
+    }
+
+    func test_routeToAboutEntry_withLinkType_invalidLink_doesNotCallsBuildAndPush() {
+        XCTAssertEqual(webviewBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.pushCallCount, 0)
+
+        router.routeToAboutEntry(entry: .link(title: "some title", link: "htl:\\"))
+
+        XCTAssertEqual(webviewBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.pushCallCount, 0)
     }
 
     func test_routeToAppInformation_callsPush() {

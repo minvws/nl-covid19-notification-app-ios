@@ -11,22 +11,24 @@ import StoreKit
 import UIKit
 
 /// @mockable
-protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener {
+protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener, WebviewListener {
     var router: AboutRouting? { get set }
     func push(viewController: ViewControllable, animated: Bool)
 }
 
-final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
+final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
 
     init(viewController: AboutViewControllable,
          aboutOverviewBuilder: AboutOverviewBuildable,
          helpDetailBuilder: HelpDetailBuildable,
          appInformationBuilder: AppInformationBuildable,
-         technicalInformationBuilder: TechnicalInformationBuildable) {
+         technicalInformationBuilder: TechnicalInformationBuildable,
+         webviewBuilder: WebviewBuildable) {
         self.helpDetailBuilder = helpDetailBuilder
         self.aboutOverviewBuilder = aboutOverviewBuilder
         self.appInformationBuilder = appInformationBuilder
         self.technicalInformationBuilder = technicalInformationBuilder
+        self.webviewBuilder = webviewBuilder
         super.init(viewController: viewController)
         viewController.router = self
     }
@@ -51,9 +53,9 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
             routeToHelpQuestion(question: HelpQuestion(theme: ENTheme(), question: title, answer: answer))
         case .rate:
             routeToRateApp()
-        case .link:
+        case let .link(_, urlString):
             // TODO: route to link
-            routeToWebView()
+            routeToWebView(urlString: urlString)
         }
     }
 
@@ -90,9 +92,18 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
         SKStoreReviewController.requestReview()
     }
 
-    private func routeToWebView() {
-        // TODO:
+    private func routeToWebView(urlString: String) {
+        guard let url = URL(string: urlString) else {
+            return logError("Cannot create URL from: \(urlString)")
+        }
+
+        let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
+        self.webviewViewController = webviewViewController
+        viewController.push(viewController: webviewViewController, animated: true)
     }
+
+    private let webviewBuilder: WebviewBuildable
+    private var webviewViewController: ViewControllable?
 
     private let helpDetailBuilder: HelpDetailBuildable
     private var helpDetailViewController: ViewControllable?

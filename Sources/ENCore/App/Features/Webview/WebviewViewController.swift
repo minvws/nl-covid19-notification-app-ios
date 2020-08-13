@@ -39,9 +39,9 @@ final class WebviewViewController: ViewController, Logging {
 
     // MARK: - Private
 
+    private lazy var internalView: WebviewView = WebviewView(theme: theme)
     private weak var listener: WebviewListener?
     private let url: URL
-    private let internalView = WebviewView()
 }
 
 private final class WebviewView: View {
