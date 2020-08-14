@@ -20,6 +20,7 @@ final class MainRouterTests: XCTestCase {
     private let infectedBuilder = InfectedBuildableMock()
     private let messageBuilder = MessageBuildableMock()
     private let enableSettingBuilder = EnableSettingBuildableMock()
+    private let webviewBuilder = WebviewBuildableMock()
 
     private var router: MainRouter!
 
@@ -35,7 +36,8 @@ final class MainRouterTests: XCTestCase {
                             requestTestBuilder: requestTestBuilder,
                             infectedBuilder: infectedBuilder,
                             messageBuilder: messageBuilder,
-                            enableSettingBuilder: enableSettingBuilder)
+                            enableSettingBuilder: enableSettingBuilder,
+                            webviewBuilder: webviewBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
@@ -186,6 +188,29 @@ final class MainRouterTests: XCTestCase {
 
         router.routeToEnableSetting(.enableBluetooth)
         router.detachEnableSetting(shouldDismissViewController: true)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_callWebviewTwice_doesNotPresentTwice() {
+        webviewBuilder.buildHandler = { _, _ in ViewControllableMock() }
+
+        XCTAssertEqual(webviewBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.presentCallCount, 0)
+
+        router.routeToWebview(url: URL(string: "https://coronamelder.nl")!)
+        router.routeToWebview(url: URL(string: "https://coronamelder.nl")!)
+
+        XCTAssertEqual(webviewBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentViewControllerCallCount, 1)
+    }
+
+    func test_detachWebview_callsDismiss() {
+        router.routeToWebview(url: URL(string: "https://coronamelder.nl")!)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.detachWebview(shouldDismissViewController: true)
 
         XCTAssertEqual(viewController.dismissCallCount, 1)
     }

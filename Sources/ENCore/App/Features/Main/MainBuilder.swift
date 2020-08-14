@@ -20,7 +20,7 @@ protocol MainDependency {
     var bluetoothStateStream: BluetoothStateStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -73,6 +73,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var enableSettingBuilder: EnableSettingBuildable {
         return EnableSettingBuilder(dependency: self)
     }
+
+    var webviewBuilder: WebviewBuildable {
+        return WebviewBuilder(dependency: self)
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -91,6 +95,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           requestTestBuilder: dependencyProvider.requestTestBuilder,
                           infectedBuilder: dependencyProvider.infectedBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
-                          enableSettingBuilder: dependencyProvider.enableSettingBuilder)
+                          enableSettingBuilder: dependencyProvider.enableSettingBuilder,
+                          webviewBuilder: dependencyProvider.webviewBuilder)
     }
 }

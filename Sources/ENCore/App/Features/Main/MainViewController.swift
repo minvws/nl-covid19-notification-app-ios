@@ -35,6 +35,9 @@ protocol MainRouting: Routing {
 
     func routeToEnableSetting(_ setting: EnableSetting)
     func detachEnableSetting(shouldDismissViewController: Bool)
+
+    func routeToWebview(url: URL)
+    func detachWebview(shouldDismissViewController: Bool)
 }
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, Logging {
@@ -152,6 +155,16 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func moreInformationRequestsRequestTest() {
         router?.routeToRequestTest()
+    }
+
+    func moreInformationRequestsRedirect(to url: URL) {
+        router?.routeToWebview(url: url)
+    }
+
+    // MARK: - WebviewListener
+
+    func webviewRequestsDismissal(shouldHideViewController: Bool) {
+        router?.detachWebview(shouldDismissViewController: shouldHideViewController)
     }
 
     // MARK: - AboutListener
