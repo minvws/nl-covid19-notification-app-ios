@@ -36,7 +36,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
                                                                      theme: theme,
                                                                      index: index)
 
-            snapshots(matching: viewController)
+            snapshots(matching: viewController, named: "\(#function)\(index)")
         }
     }
 }
