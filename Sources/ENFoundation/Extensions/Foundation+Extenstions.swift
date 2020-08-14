@@ -16,7 +16,8 @@ public extension Collection {
 public extension Date {
 
     func days(sinceDate: Date) -> Int? {
-        return Calendar.current.dateComponents([.day], from: sinceDate, to: self).day
+        let calendar = Calendar.current
+        return calendar.dateComponents([.day], from: calendar.startOfDay(for: sinceDate), to: calendar.startOfDay(for: self)).day
     }
 
     func hours(sinceDate: Date) -> Int? {
