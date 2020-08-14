@@ -36,6 +36,12 @@ protocol RootRouting: Routing {
 
     /// Presents the update app screen
     func routeToUpdateApp(animated: Bool, appStoreURL: String?, minimumVersionMessage: String?)
+
+    /// Presents an webview
+    func routeToWebview(url: URL)
+
+    // Detaches the webview
+    func detachWebview(shouldDismissViewController: Bool)
 }
 
 final class RootViewController: ViewController, RootViewControllable {
@@ -95,6 +101,18 @@ final class RootViewController: ViewController, RootViewControllable {
 
     func callGGDWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachCallGGD(shouldDismissViewController: shouldDismissViewController)
+    }
+
+    // MARK: - EndOfLifeListener
+
+    func endOfLifeRequestsRedirect(to url: URL) {
+        router?.routeToWebview(url: url)
+    }
+
+    // MARK: - WebviewListener
+
+    func webviewRequestsDismissal(shouldHideViewController: Bool) {
+        router?.detachWebview(shouldDismissViewController: shouldHideViewController)
     }
 
     // MARK: - DeveloperMenu Listener

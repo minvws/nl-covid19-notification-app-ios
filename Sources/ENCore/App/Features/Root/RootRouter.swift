@@ -16,7 +16,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener, WebviewListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool)
@@ -43,6 +43,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          networkController: NetworkControlling,
          backgroundController: BackgroundControlling,
          updateAppBuilder: UpdateAppBuildable,
+         webviewBuilder: WebviewBuildable,
          currentAppVersion: String?) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
@@ -50,6 +51,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.messageBuilder = messageBuilder
         self.callGGDBuilder = callGGDBuilder
         self.developerMenuBuilder = developerMenuBuilder
+        self.webviewBuilder = webviewBuilder
 
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
@@ -248,6 +250,25 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         viewController.present(viewController: updateAppViewController, animated: animated, completion: nil)
     }
 
+    func routeToWebview(url: URL) {
+        guard webviewViewController == nil else { return }
+        let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
+        self.webviewViewController = webviewViewController
+
+        viewController.presentInNavigationController(viewController: webviewViewController, animated: true)
+    }
+
+    func detachWebview(shouldDismissViewController: Bool) {
+        guard let webviewViewController = webviewViewController else {
+            return
+        }
+        self.webviewViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: webviewViewController, animated: true, completion: nil)
+        }
+    }
+
     // MARK: - Private
 
     private func routeToMain() {
@@ -331,6 +352,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let updateAppBuilder: UpdateAppBuildable
     private var updateAppViewController: ViewControllable?
+
+    private let webviewBuilder: WebviewBuildable
+    private var webviewViewController: ViewControllable?
 }
 
 private extension ExposureActiveState {

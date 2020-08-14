@@ -24,6 +24,7 @@ final class RootRouterTests: XCTestCase {
     private let networkController = NetworkControllingMock()
     private let backgroundController = BackgroundControllingMock()
     private let updateAppBuilder = UpdateAppBuildableMock()
+    private let webviewBuilder = WebviewBuildableMock()
     private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     private var router: RootRouter!
@@ -50,6 +51,7 @@ final class RootRouterTests: XCTestCase {
                             networkController: networkController,
                             backgroundController: backgroundController,
                             updateAppBuilder: updateAppBuilder,
+                            webviewBuilder: webviewBuilder,
                             currentAppVersion: "1.0")
         set(activeState: .notAuthorized)
     }
@@ -125,6 +127,31 @@ final class RootRouterTests: XCTestCase {
         router.start()
 
         XCTAssertEqual(exposureController.activateCallCount, 1)
+    }
+
+    func test_callWebviewTwice_doesNotPresentTwice() {
+        webviewBuilder.buildHandler = { _, _ in ViewControllableMock() }
+
+        XCTAssertEqual(webviewBuilder.buildCallCount, 0)
+        XCTAssertEqual(mainBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.presentCallCount, 0)
+
+        router.routeToWebview(url: URL(string: "https://coronamelder.nl")!)
+        router.routeToWebview(url: URL(string: "https://coronamelder.nl")!)
+
+        XCTAssertEqual(webviewBuilder.buildCallCount, 1)
+        XCTAssertEqual(mainBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.presentInNavigationControllerCallCount, 1)
+    }
+
+    func test_detachWebview_callsDismiss() {
+        router.routeToWebview(url: URL(string: "https://coronamelder.nl")!)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.detachWebview(shouldDismissViewController: true)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
     }
 
     func test_start_getMinimumVersion_showsUpdateAppViewController() {
