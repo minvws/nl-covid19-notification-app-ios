@@ -36,7 +36,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
                                                                      theme: theme,
                                                                      index: index)
 
-            snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: 896)), named: "\(#function)\(index)")
+            snapshots(matching: viewController)
         }
     }
 }

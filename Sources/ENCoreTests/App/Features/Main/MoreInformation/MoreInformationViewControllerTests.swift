@@ -34,23 +34,15 @@ final class MoreInformationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_moreInformationViewController() {
-        let height = MoreInformationIdentifier.allCases.count * 110
-        snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: height)))
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_moreInformationViewController_testVersion() {
         let viewController = MoreInformationViewController(listener: listener,
                                                            theme: theme,
                                                            testPhaseStream: Just(true).eraseToAnyPublisher(), bundleInfoDictionary: ["CFBundleShortVersionString": "1.0", "CFBundleVersion": "12345"])
-        let exp = XCTestExpectation()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            let height = MoreInformationIdentifier.allCases.count * 110
-            self.snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: height + 40)))
-            exp.fulfill()
-        }
-
-        wait(for: [exp], timeout: 1)
+        self.snapshots(matching: viewController)
     }
 
     func test_didSelectItem_about() {

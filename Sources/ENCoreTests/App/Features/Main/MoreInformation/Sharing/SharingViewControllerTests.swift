@@ -26,6 +26,6 @@ final class SharingViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_shareSheetViewController() {
-        snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: 896)))
+        snapshots(matching: viewController)
     }
 }
