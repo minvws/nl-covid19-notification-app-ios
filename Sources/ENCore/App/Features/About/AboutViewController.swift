@@ -69,6 +69,12 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
     }
 
+    // MARK: - WebviewListener
+
+    func webviewRequestsDismissal(shouldHideViewController: Bool) {
+        listener?.aboutRequestsDismissal(shouldHideViewController: shouldHideViewController)
+    }
+
     // MARK: - ViewController Lifecycle
 
     override func viewWillAppear(_ animated: Bool) {

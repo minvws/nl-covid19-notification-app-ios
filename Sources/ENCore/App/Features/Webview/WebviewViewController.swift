@@ -9,13 +9,16 @@ import ENFoundation
 import UIKit
 import WebKit
 
-final class WebviewViewController: ViewController, Logging {
+final class WebviewViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate {
 
     init(listener: WebviewListener, url: URL, theme: Theme) {
         self.listener = listener
         self.url = url
 
         super.init(theme: theme)
+
+        navigationItem.rightBarButtonItem = closeBarButtonItem
+        presentationController?.delegate = self
     }
 
     // MARK: - ViewController Lifecycle
@@ -33,8 +36,14 @@ final class WebviewViewController: ViewController, Logging {
         } else {
             logDebug("`webViewLoading` disabled")
         }
+    }
 
-        navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        listener?.webviewRequestsDismissal(shouldHideViewController: false)
+    }
+
+    @objc func didTapClose() {
+        listener?.webviewRequestsDismissal(shouldHideViewController: true)
     }
 
     // MARK: - Private
@@ -42,6 +51,9 @@ final class WebviewViewController: ViewController, Logging {
     private lazy var internalView: WebviewView = WebviewView(theme: theme)
     private weak var listener: WebviewListener?
     private let url: URL
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                          target: self,
+                                                          action: #selector(didTapClose))
 }
 
 private final class WebviewView: View {

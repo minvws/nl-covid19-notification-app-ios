@@ -9,7 +9,9 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol WebviewListener: AnyObject {}
+protocol WebviewListener: AnyObject {
+    func webviewRequestsDismissal(shouldHideViewController: Bool)
+}
 
 /// @mockable
 protocol WebviewBuildable {
