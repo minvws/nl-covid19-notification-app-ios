@@ -21,13 +21,13 @@ final class HelpManager: HelpManaging {
     init(theme: Theme) {
 
         questions = [
-            HelpQuestion(theme: theme, question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
-            HelpQuestion(theme: theme, question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription),
-            HelpQuestion(theme: theme, question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2),
-            HelpQuestion(theme: theme, question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription),
-            HelpQuestion(theme: theme, question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription),
-            HelpQuestion(theme: theme, question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription),
-            HelpQuestion(theme: theme, question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
+            HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
+            HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription),
+            HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2),
+            HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription),
+            HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription),
+            HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription),
+            HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
         ]
     }
 }

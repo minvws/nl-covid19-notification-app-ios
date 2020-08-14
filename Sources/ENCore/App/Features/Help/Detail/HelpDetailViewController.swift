@@ -32,9 +32,15 @@ final class HelpDetailViewController: ViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.titleLabel.attributedText = question.attributedTitle
+        internalView.titleLabel.attributedText = .makeFromHtml(text: question.question,
+                                                               font: theme.fonts.largeTitle,
+                                                               textColor: theme.colors.gray,
+                                                               textAlignment: Localization.isRTL ? .right : .left)
 
-        internalView.contentTextView.attributedText = question.attributedAnswer
+        internalView.contentTextView.attributedText = .makeFromHtml(text: question.answer,
+                                                                    font: theme.fonts.body,
+                                                                    textColor: theme.colors.gray,
+                                                                    textAlignment: Localization.isRTL ? .right : .left)
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
 

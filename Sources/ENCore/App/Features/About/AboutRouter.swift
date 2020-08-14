@@ -49,8 +49,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
     func routeToAboutEntry(entry: AboutEntry) {
         switch entry {
         case let .question(title, answer: answer):
-            // TODO: remove theme from help question
-            routeToHelpQuestion(question: HelpQuestion(theme: ENTheme(), question: title, answer: answer))
+            routeToHelpQuestion(question: HelpQuestion(question: title, answer: answer))
         case .rate:
             routeToRateApp()
         case let .link(_, urlString):
