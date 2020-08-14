@@ -30,7 +30,7 @@ final class AboutOverviewViewControllerTests: TestCase {
         let viewController = AboutOverviewViewController(listener: listener,
                                                          aboutManager: aboutManager,
                                                          theme: theme)
-        snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: 1200)))
+        snapshots(matching: viewController)
     }
 
     func test_snapshot_aboutOverviewViewController_testVersion_rendersCorrectly() {
@@ -39,13 +39,6 @@ final class AboutOverviewViewControllerTests: TestCase {
                                                          aboutManager: aboutManager,
                                                          theme: theme)
 
-        let exp = XCTestExpectation()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.snapshots(matching: viewController, as: .image(size: CGSize(width: 414, height: 1300)))
-            exp.fulfill()
-        }
-
-        wait(for: [exp], timeout: 1)
+        snapshots(matching: viewController)
     }
 }
