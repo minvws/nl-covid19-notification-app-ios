@@ -54,7 +54,6 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
         case .rate:
             routeToRateApp()
         case let .link(_, urlString):
-            // TODO: route to link
             routeToWebView(urlString: urlString)
         }
     }
