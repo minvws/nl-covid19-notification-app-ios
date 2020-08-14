@@ -32,7 +32,7 @@ private final class HelpDependencyProvider: DependencyProvider<HelpDependency>, 
 
     // MARK: - HelpOverviewDependency
 
-    lazy var helpManager: HelpManaging = HelpManager(theme: dependency.theme)
+    lazy var helpManager: HelpManaging = HelpManager()
 
     // MARK: - Forwarding Dependencies
 

@@ -18,8 +18,7 @@ final class HelpManager: HelpManaging {
 
     let questions: [HelpQuestion]
 
-    init(theme: Theme) {
-
+    init() {
         questions = [
             HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
             HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription),
