@@ -1,8 +1,8 @@
-# Covid19 Notification App - iOS
+# COVID-19 Notification App - iOS
 
 ![CI](https://github.com/minvws/nl-covid19-notification-app-ios/workflows/CI/badge.svg)
 
-This repository contains the source code for the iOS App of the Dutch exposure notification app.
+This repository contains the native iOS implementation of the Dutch COVID-19 Notification App CoronaMelder. 
 
 * The iOS app is located in the repository you are currently viewing.
 * The Android app can be found here: https://github.com/minvws/nl-covid19-notification-app-android
@@ -12,7 +12,7 @@ This repository contains the source code for the iOS App of the Dutch exposure n
 
 ## Development & Contribution process
 
-The core team works on the repository in a private fork (for reasons of compliance with existing processes) and will share its work as often as possible.
+The development team works on the repository in a private fork (for reasons of compliance with existing processes) and shares its work as often as possible.
 If you plan to make non-trivial changes, we recommend to open an issue beforehand where we can discuss your planned changes.
 This increases the chance that we might be able to use your contribution (or it avoids doing work if there are reasons why we wouldn't be able to use it).
 
