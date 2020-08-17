@@ -248,7 +248,7 @@
 "moreInformation.about.faq.bluetooth" = "Werkt bluetooth door muren heen?";
 "moreInformation.about.faq.power_usage" = "Hoeveel stroom gebruikt de app?";
 "moreInformation.about.faq.deletion" = "Hoe verwijder ik de bluetoothgegevens van mijn telefoon?";
-"moreInformation.about.faq.deletion.description" = "Je kunt de bluetoothgegevens die CoronaMelder heeft bewaard zelf verwijderen. Dat gaat als volgt.</br></br>Ga op je telefoon naar Instellingen -> Privacy -> Gezondheid > Blootstelling aan COVID-19. Klik op Verwijder blootstellingslogbestand. Wil je dat de app geen nieuwe bluetoothgegevens meer bewaart? Verwijder dan de app.";
+"moreInformation.about.faq.deletion.description" = "Je kunt de door de app opgeslagen Bluetooth bestanden zelf verwijderen. Zo doe je dat.</br></br>Ga naar de Instellingen app van je telefoon -> Privacy -> Gezondheid -> Blootstelling aan COVID-19. Druk op Verwijder blootstellingslogboek. Wil je niet dat de app nieuwe Bluetooth-gegevens opslaat? Verwijder de app.";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Laat anderen weten dat jij helpt het virus te stoppen";
