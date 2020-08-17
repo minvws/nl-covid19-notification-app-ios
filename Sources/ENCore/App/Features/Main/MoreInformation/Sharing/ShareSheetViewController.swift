@@ -33,8 +33,10 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
 
         internalView.button.action = { [weak self] in
             if let viewController = self {
-                self?.listener?.displayShareSheet(usingViewController: viewController, completion: {
-                    self?.didTapClose()
+                self?.listener?.displayShareSheet(usingViewController: viewController, completion: { completed in
+                    if completed {
+                        self?.didTapClose()
+                    }
                 })
             } else {
                 self?.logError("Couldn't retreive a viewcontroller")

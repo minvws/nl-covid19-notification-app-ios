@@ -185,11 +185,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachSharing(shouldHideViewController: shouldHideViewController)
     }
 
-    func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping (() -> ())) {
+    func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping ((Bool) -> ())) {
         if let storeLink = URL(string: .shareAppUrl) {
             let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
-            activityVC.completionWithItemsHandler = { _, _, _, _ in
-                completion()
+            activityVC.completionWithItemsHandler = { _, completed, _, _ in
+                completion(completed)
             }
             viewcontroller.present(activityVC, animated: true)
         } else {

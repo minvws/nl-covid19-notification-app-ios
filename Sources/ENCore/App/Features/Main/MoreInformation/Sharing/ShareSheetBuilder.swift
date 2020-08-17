@@ -11,7 +11,7 @@ import Foundation
 /// @mockable
 protocol ShareSheetListener: AnyObject {
     func shareSheetDidComplete(shouldHideViewController: Bool)
-    func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping (() -> ()))
+    func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping ((Bool) -> ()))
 }
 
 protocol ShareSheetDependency {
