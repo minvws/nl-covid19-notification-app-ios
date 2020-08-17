@@ -342,7 +342,7 @@ final class ExposureControllerTests: TestCase {
         exposureManager.getExposureNotificationStatusHandler = { .active }
         mutableStateStream.update(state: .init(notifiedState: .notNotified, activeState: .active))
 
-        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 2)
     }
 
     // MARK: - Private
