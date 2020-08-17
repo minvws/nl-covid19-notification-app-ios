@@ -62,6 +62,9 @@ final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
 
     private func store(manifest: ApplicationManifest) -> AnyPublisher<ApplicationManifest, ExposureDataError> {
         return Future { promise in
+            guard !manifest.appConfigurationIdentifier.isEmpty else {
+                return promise(.failure(.serverError))
+            }
             self.storageController.store(object: manifest,
                                          identifiedBy: ExposureDataStorageKey.appManifest,
                                          completion: { _ in
