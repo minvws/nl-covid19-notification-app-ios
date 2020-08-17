@@ -190,6 +190,7 @@ private final class PrivacyAgreementView: View {
 private final class PrivacyAgreementButton: Button {
     required init(theme: Theme) {
         super.init(theme: theme)
+        accessibilityValue = .privacyAgreementConsentButton
         isSelected = false
         style = .tertiary
         build()
@@ -235,7 +236,7 @@ private final class PrivacyAgreementButton: Button {
         label.numberOfLines = 0
         label.textColor = theme.colors.gray
         label.font = theme.fonts.subhead
-        label.text = String.privacyAgreementConsentButton
+        label.text = .privacyAgreementConsentButton
         return label
     }()
 }
