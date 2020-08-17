@@ -24,7 +24,7 @@ fi
 
 if [ -z "$BUNDLE_DISPLAY_NAME" ]
 then
-      BUNDLE_DISPLAY_NAME="CoronaMelder 🐞"
+      BUNDLE_DISPLAY_NAME="🐞 CoronaMelder"
 fi
 
 if [ -z "$RELEASE_PROVISIONING_PROFILE" ]
