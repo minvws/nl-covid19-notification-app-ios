@@ -38,6 +38,7 @@ open class ViewController: UIViewController, ViewControllable, Themeable {
     override open func viewDidLoad() {
         super.viewDidLoad()
 
+        setThemeNavigationBar()
         view.backgroundColor = theme.colors.viewControllerBackground
         edgesForExtendedLayout = []
     }
