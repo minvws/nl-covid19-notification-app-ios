@@ -153,7 +153,12 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         exposureController.requestUploadKeys(forLabConfirmationKey: key) { [weak self] result in
             self?.logDebug("`requestUploadKeys` \(result)")
-            self?.router?.didUploadCodes(withKey: key)
+            switch result {
+            case .notAuthorized:
+                () // The user did not allow uploading the keys so we do nothing.
+            default:
+                self?.router?.didUploadCodes(withKey: key)
+            }
         }
     }
 
