@@ -46,10 +46,7 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable, 
         guard let url = URL(string: EndOfLifeViewController.endOfLifeURL) else {
             return logError("Cannot create URL from: \(EndOfLifeViewController.endOfLifeURL)")
         }
-        let viewController = SFSafariViewController(url: url)
-        viewController.dismissButtonStyle = .close
-        viewController.modalPresentationStyle = .automatic
-        present(viewController, animated: true) {}
+        listener?.endOfLifeRequestsRedirect(to: url)
     }
 }
 

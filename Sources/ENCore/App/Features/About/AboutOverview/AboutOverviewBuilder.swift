@@ -10,10 +10,9 @@ import Foundation
 
 /// @mockable
 protocol AboutOverviewListener: AnyObject {
-    func aboutOverviewRequestsRouteTo(question: HelpQuestion)
+    func aboutOverviewRequestsRouteTo(entry: AboutEntry)
     func aboutOverviewRequestsRouteToAppInformation()
     func aboutOverviewRequestsRouteToTechnicalInformation()
-    func aboutOverviewRequestsRouteToRateApp()
 }
 
 /// @mockable

@@ -8,34 +8,13 @@
 import ENFoundation
 import UIKit
 
-enum RedirectType { case rateApp }
-
 final class HelpQuestion {
 
     let question: String
-    let attributedTitle: NSAttributedString
-    let attributedAnswer: NSAttributedString?
-    let link: String?
-    let redirectType: RedirectType?
+    let answer: String
 
-    init(theme: Theme, question: String, answer: String?, link: String? = nil, redirectType: RedirectType? = nil) {
-
+    init(question: String, answer: String) {
         self.question = question
-
-        self.attributedTitle = .makeFromHtml(text: question,
-                                             font: theme.fonts.largeTitle,
-                                             textColor: theme.colors.gray,
-                                             textAlignment: Localization.isRTL ? .right : .left)
-        if let answer = answer {
-            self.attributedAnswer = .makeFromHtml(text: answer,
-                                                  font: theme.fonts.body,
-                                                  textColor: theme.colors.gray,
-                                                  textAlignment: Localization.isRTL ? .right : .left)
-        } else {
-            self.attributedAnswer = nil
-        }
-
-        self.link = link
-        self.redirectType = redirectType
+        self.answer = answer
     }
 }

@@ -146,10 +146,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         guard let url = URL(string: .helpTestVersionLink) else {
             return logError("Cannot create URL from: \(String.helpTestVersionLink)")
         }
-        let viewController = SFSafariViewController(url: url)
-        viewController.dismissButtonStyle = .close
-        viewController.modalPresentationStyle = .automatic
-        present(viewController, animated: true) {}
+        listener?.moreInformationRequestsRedirect(to: url)
     }
 }
 

@@ -56,10 +56,7 @@ final class PrivacyAgreementViewController: ViewController, Logging {
         guard let url = URL(string: .helpPrivacyPolicyLink) else {
             return logError("Cannot create URL from: \(String.helpPrivacyPolicyLink)")
         }
-        let viewController = SFSafariViewController(url: url)
-        viewController.dismissButtonStyle = .close
-        viewController.modalPresentationStyle = .automatic
-        present(viewController, animated: true) {}
+        listener?.privacyAgreementRequestsRedirect(to: url)
     }
 
     private let informationSteps: [OnboardingConsentSummaryStep]

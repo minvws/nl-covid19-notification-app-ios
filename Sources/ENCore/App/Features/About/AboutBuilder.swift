@@ -23,7 +23,7 @@ protocol AboutDependency {
     var exposureController: ExposureControlling { get }
 }
 
-private final class AboutDependencyProvider: DependencyProvider<AboutDependency>, AboutOverviewDependency, HelpDetailDependency, AppInformationDependency, TechnicalInformationDependency {
+private final class AboutDependencyProvider: DependencyProvider<AboutDependency>, AboutOverviewDependency, HelpDetailDependency, AppInformationDependency, TechnicalInformationDependency, WebviewDependency {
 
     // MARK: - HelpOverviewDependency
 
@@ -54,6 +54,10 @@ private final class AboutDependencyProvider: DependencyProvider<AboutDependency>
     var technicalInformationBuilder: TechnicalInformationBuildable {
         return TechnicalInformationBuilder(dependency: self)
     }
+
+    var webviewBuilder: WebviewBuilder {
+        return WebviewBuilder(dependency: self)
+    }
 }
 
 final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
@@ -67,6 +71,7 @@ final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
                            aboutOverviewBuilder: dependencyProvider.overviewBuilder,
                            helpDetailBuilder: dependencyProvider.detailBuilder,
                            appInformationBuilder: dependencyProvider.appInformationBuilder,
-                           technicalInformationBuilder: dependencyProvider.technicalInformationBuilder)
+                           technicalInformationBuilder: dependencyProvider.technicalInformationBuilder,
+                           webviewBuilder: dependencyProvider.webviewBuilder)
     }
 }

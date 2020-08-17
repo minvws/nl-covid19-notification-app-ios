@@ -19,9 +19,6 @@ final class HelpDetailViewController: ViewController, Logging {
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.question = question
 
-        let contentType: HelpView.ContentType = question.link == nil ? .text : .link
-        self.internalView = HelpView(theme: theme, shouldDisplayButton: shouldShowEnableAppButton, contentType: contentType)
-
         super.init(theme: theme)
     }
 
@@ -35,16 +32,15 @@ final class HelpDetailViewController: ViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.titleLabel.attributedText = question.attributedTitle
+        internalView.titleLabel.attributedText = .makeFromHtml(text: question.question,
+                                                               font: theme.fonts.largeTitle,
+                                                               textColor: theme.colors.gray,
+                                                               textAlignment: Localization.isRTL ? .right : .left)
 
-        if let link = question.link, let url = URL(string: link) {
-            guard webViewLoadingEnabled() else {
-                return logDebug("`webViewLoading` disabled")
-            }
-            internalView.webView.load(URLRequest(url: url))
-        } else {
-            internalView.contentTextView.attributedText = question.attributedAnswer
-        }
+        internalView.contentTextView.attributedText = .makeFromHtml(text: question.answer,
+                                                                    font: theme.fonts.body,
+                                                                    textColor: theme.colors.gray,
+                                                                    textAlignment: Localization.isRTL ? .right : .left)
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
 
@@ -57,18 +53,14 @@ final class HelpDetailViewController: ViewController, Logging {
 
     // MARK: - Private
 
+    private lazy var internalView: HelpView = HelpView(theme: theme, shouldDisplayButton: shouldShowEnableAppButton)
     private weak var listener: HelpDetailListener?
-    private let shouldShowEnableAppButton: Bool
 
+    private let shouldShowEnableAppButton: Bool
     private let question: HelpQuestion
-    private let internalView: HelpView
 }
 
 private final class HelpView: View {
-
-    enum ContentType {
-        case text, link
-    }
 
     lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -83,13 +75,6 @@ private final class HelpView: View {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.isEditable = false
         return textView
-    }()
-
-    lazy var webView: WKWebView = {
-        let webView = WKWebView()
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        webView.allowsBackForwardNavigationGestures = false
-        return webView
     }()
 
     private lazy var gradientImageView: UIImageView = {
@@ -109,21 +94,16 @@ private final class HelpView: View {
         return button
     }()
 
-    init(theme: Theme, shouldDisplayButton: Bool, contentType: ContentType) {
+    init(theme: Theme, shouldDisplayButton: Bool) {
         self.shouldDisplayButton = shouldDisplayButton
-        self.contentType = contentType
         super.init(theme: theme)
     }
 
     override func build() {
         super.build()
 
-        if contentType == .text {
-            addSubview(titleLabel)
-            addSubview(contentTextView)
-        } else {
-            addSubview(webView)
-        }
+        addSubview(titleLabel)
+        addSubview(contentTextView)
 
         addSubview(gradientImageView)
 
@@ -139,30 +119,19 @@ private final class HelpView: View {
 
         let bottomAnchor = shouldDisplayButton ? acceptButton.topAnchor : self.bottomAnchor
 
-        if contentType == .text {
-            constraints.append([
-                titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-                titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-                titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-                titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-            ])
+        constraints.append([
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
+        ])
 
-            constraints.append([
-                contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-                contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-                contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
-                contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
-            ])
-        }
-
-        if contentType == .link {
-            constraints.append([
-                webView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-                webView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-                webView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-                webView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
-            ])
-        }
+        constraints.append([
+            contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
+            contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
+            contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
+            contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+        ])
 
         constraints.append([
             gradientImageView.heightAnchor.constraint(equalToConstant: 25),
@@ -186,5 +155,4 @@ private final class HelpView: View {
     // MARK: - Private
 
     private let shouldDisplayButton: Bool
-    private let contentType: ContentType
 }

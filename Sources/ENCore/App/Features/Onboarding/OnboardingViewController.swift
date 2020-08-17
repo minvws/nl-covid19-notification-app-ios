@@ -18,6 +18,8 @@ protocol OnboardingRouting: Routing {
     func routeToHelp()
     func routeToBluetoothSettings()
     func routeToPrivacyAgreement()
+    func routeToWebview(url: URL)
+    func dismissWebview(shouldHideViewController: Bool)
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable, Logging {
@@ -25,7 +27,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     weak var router: OnboardingRouting?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
-        listener: OnboardingListener, theme: Theme) {
+         listener: OnboardingListener, theme: Theme) {
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         super.init(theme: theme)
@@ -40,6 +42,30 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
         present(viewController.uiviewController, animated: animated, completion: completion)
+    }
+
+    func presentInNavigationController(viewController: ViewControllable, animated: Bool) {
+        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
+        present(navigationController, animated: animated, completion: nil)
+    }
+
+    func dismiss(viewController: ViewControllable, animated: Bool) {
+        guard let presentedViewController = presentedViewController else {
+            return
+        }
+
+        var viewControllerToDismiss: UIViewController?
+
+        if let navigationController = presentedViewController as? NavigationController,
+            navigationController.visibleViewController === viewController.uiviewController {
+            viewControllerToDismiss = navigationController
+        } else if presentedViewController === viewController.uiviewController {
+            viewControllerToDismiss = presentedViewController
+        }
+
+        if let viewController = viewControllerToDismiss {
+            viewController.dismiss(animated: animated, completion: nil)
+        }
     }
 
     // MARK: - OnboardingStepListener
@@ -66,6 +92,16 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     func privacyAgreementDidComplete() {
         router?.routeToConsent(animated: true)
+    }
+
+    func privacyAgreementRequestsRedirect(to url: URL) {
+        router?.routeToWebview(url: url)
+    }
+
+    // MARK: - WebviewListener
+
+    func webviewRequestsDismissal(shouldHideViewController: Bool) {
+        router?.dismissWebview(shouldHideViewController: shouldHideViewController)
     }
 
     // MARK: - HelpListener

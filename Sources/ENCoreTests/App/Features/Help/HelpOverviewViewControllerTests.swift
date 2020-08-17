@@ -37,7 +37,7 @@ final class HelpOverviewViewControllerTests: TestCase {
     private func viewController(shouldShowEnableAppButton: Bool) -> HelpOverviewViewController {
         HelpOverviewViewController(listener: listern,
                                    shouldShowEnableAppButton: shouldShowEnableAppButton,
-                                   helpManager: HelpManager(theme: theme),
+                                   helpManager: HelpManager(),
                                    theme: theme)
     }
 }

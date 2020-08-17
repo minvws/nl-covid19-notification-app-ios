@@ -5,27 +5,30 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import StoreKit
 import UIKit
 
 /// @mockable
-protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener {
+protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener, WebviewListener {
     var router: AboutRouting? { get set }
     func push(viewController: ViewControllable, animated: Bool)
 }
 
-final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
+final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
 
     init(viewController: AboutViewControllable,
          aboutOverviewBuilder: AboutOverviewBuildable,
          helpDetailBuilder: HelpDetailBuildable,
          appInformationBuilder: AppInformationBuildable,
-         technicalInformationBuilder: TechnicalInformationBuildable) {
+         technicalInformationBuilder: TechnicalInformationBuildable,
+         webviewBuilder: WebviewBuildable) {
         self.helpDetailBuilder = helpDetailBuilder
         self.aboutOverviewBuilder = aboutOverviewBuilder
         self.appInformationBuilder = appInformationBuilder
         self.technicalInformationBuilder = technicalInformationBuilder
+        self.webviewBuilder = webviewBuilder
         super.init(viewController: viewController)
         viewController.router = self
     }
@@ -43,21 +46,19 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
         self.aboutOverviewViewController = nil
     }
 
-    func routeToHelpQuestion(question: HelpQuestion) {
-        let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
-                                                               shouldShowEnableAppButton: false,
-                                                               question: question)
-        self.helpDetailViewController = helpDetailViewController
-
-        viewController.push(viewController: helpDetailViewController, animated: true)
+    func routeToAboutEntry(entry: AboutEntry) {
+        switch entry {
+        case let .question(title, answer: answer):
+            routeToHelpQuestion(question: HelpQuestion(question: title, answer: answer))
+        case .rate:
+            routeToRateApp()
+        case let .link(_, urlString):
+            routeToWebView(urlString: urlString)
+        }
     }
 
     func detachHelpQuestion() {
         self.helpDetailViewController = nil
-    }
-
-    func routeToRateApp() {
-        SKStoreReviewController.requestReview()
     }
 
     func routeToAppInformation() {
@@ -75,6 +76,32 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting {
     }
 
     // MARK: - Private
+
+    private func routeToHelpQuestion(question: HelpQuestion) {
+        let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
+                                                               shouldShowEnableAppButton: false,
+                                                               question: question)
+        self.helpDetailViewController = helpDetailViewController
+
+        viewController.push(viewController: helpDetailViewController, animated: true)
+    }
+
+    private func routeToRateApp() {
+        SKStoreReviewController.requestReview()
+    }
+
+    private func routeToWebView(urlString: String) {
+        guard let url = URL(string: urlString) else {
+            return logError("Cannot create URL from: \(urlString)")
+        }
+
+        let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
+        self.webviewViewController = webviewViewController
+        viewController.push(viewController: webviewViewController, animated: true)
+    }
+
+    private let webviewBuilder: WebviewBuildable
+    private var webviewViewController: ViewControllable?
 
     private let helpDetailBuilder: HelpDetailBuildable
     private var helpDetailViewController: ViewControllable?

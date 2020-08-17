@@ -8,11 +8,13 @@
 import Foundation
 
 /// @mockable
-protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener {
+protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener, WebviewListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
+    func presentInNavigationController(viewController: ViewControllable, animated: Bool)
+    func dismiss(viewController: ViewControllable, animated: Bool)
 }
 
 final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
@@ -23,13 +25,15 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
          bluetoothSettingsBuilder: BluetoothSettingsBuildable,
          shareSheetBuilder: ShareSheetBuildable,
          privacyAgreementBuilder: PrivacyAgreementBuildable,
-         helpBuilder: HelpBuildable) {
+         helpBuilder: HelpBuildable,
+         webviewBuilder: WebviewBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
         self.bluetoothSettingsBuilder = bluetoothSettingsBuilder
         self.shareSheetBuilder = shareSheetBuilder
         self.privacyAgreementBuilder = privacyAgreementBuilder
         self.helpBuilder = helpBuilder
+        self.webviewBuilder = webviewBuilder
 
         super.init(viewController: viewController)
 
@@ -75,6 +79,22 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.push(viewController: privacyAgreementViewController, animated: true)
     }
 
+    func routeToWebview(url: URL) {
+        let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
+        self.webviewViewController = webviewViewController
+        viewController.presentInNavigationController(viewController: webviewViewController, animated: true)
+    }
+
+    func dismissWebview(shouldHideViewController: Bool) {
+        guard let webviewViewController = webviewViewController else { return }
+
+        self.webviewViewController = nil
+
+        if shouldHideViewController {
+            viewController.dismiss(viewController: webviewViewController, animated: true)
+        }
+    }
+
     func routeToHelp() {
         let helpRouter = helpBuilder.build(withListener: viewController, shouldShowEnableAppButton: true)
         self.helpRouter = helpRouter
@@ -111,4 +131,7 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     private let helpBuilder: HelpBuildable
     private var helpViewController: ViewControllable?
     private var helpRouter: Routing?
+
+    private let webviewBuilder: WebviewBuildable
+    private var webviewViewController: ViewControllable?
 }

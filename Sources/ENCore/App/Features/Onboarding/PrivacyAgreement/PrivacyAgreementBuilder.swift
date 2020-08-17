@@ -11,6 +11,7 @@ import Foundation
 /// @mockable
 protocol PrivacyAgreementListener: AnyObject {
     func privacyAgreementDidComplete()
+    func privacyAgreementRequestsRedirect(to url: URL)
 }
 
 /// @mockable
