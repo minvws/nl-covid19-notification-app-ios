@@ -25,7 +25,7 @@ final class HelpDetailViewControllerTests: TestCase {
 
         WebViewTestingOverrides.webViewLoadingEnabled = false
 
-        helpManager = HelpManager(theme: theme)
+        helpManager = HelpManager()
     }
 
     // MARK: - Tests

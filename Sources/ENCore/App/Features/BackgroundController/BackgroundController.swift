@@ -55,19 +55,23 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
-        exposureController
-            .isAppDectivated()
-            .sink(receiveCompletion: { _ in
-                // Do nothing
-            }, receiveValue: { (isDeactivated: Bool) in
-                if isDeactivated {
-                    self.removeAllTasks()
-                } else {
-                    self.scheduleENStatusCheck()
-                    self.scheduleUpdate()
-                    self.scheduleDecoySequence()
-                }
-            }).store(in: &disposeBag)
+        let scheduleTasks: () -> () = {
+            self.exposureController
+                .isAppDectivated()
+                .sink(receiveCompletion: { _ in
+                    // Do nothing
+                }, receiveValue: { (isDeactivated: Bool) in
+                    if isDeactivated {
+                        self.removeAllTasks()
+                    } else {
+                        self.scheduleENStatusCheck()
+                        self.scheduleUpdate()
+                        self.scheduleDecoySequence()
+                    }
+                }).store(in: &self.disposeBag)
+        }
+
+        operationQueue.async(execute: scheduleTasks)
     }
 
     func handle(task: BGTask) {
@@ -79,21 +83,25 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
         logDebug("Handling: \(identifier)")
 
-        switch identifier {
-        case .decoySequence:
-            handleDecoySequence(task: task)
-            scheduleDecoySequence()
-        case .decoyRegister:
-            handleDecoyRegister(task: task)
-        case .decoyStopKeys:
-            handleDecoyStopkeys(task: task)
-        case .update:
-            handleUpdate(task: task)
-            scheduleUpdate()
-        case .statusCheck:
-            handleENStatusCheck(task: task)
-            scheduleENStatusCheck()
+        let handleTask: () -> () = {
+            switch identifier {
+            case .decoySequence:
+                self.handleDecoySequence(task: task)
+                self.scheduleDecoySequence()
+            case .decoyRegister:
+                self.handleDecoyRegister(task: task)
+            case .decoyStopKeys:
+                self.handleDecoyStopkeys(task: task)
+            case .update:
+                self.handleUpdate(task: task)
+                self.scheduleUpdate()
+            case .statusCheck:
+                self.handleENStatusCheck(task: task)
+                self.scheduleENStatusCheck()
+            }
         }
+
+        operationQueue.async(execute: handleTask)
     }
 
     // MARK: - Private
@@ -112,6 +120,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
+    private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
 
     // MARK: - Decoy Scheduling
 
@@ -324,14 +333,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         cancellable.store(in: &disposeBag)
-    }
-
-    private func getAndSetRefreshInterval() {
-        exposureController
-            .getAppRefreshInterval()
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { [weak self] value in self?.receivedRefreshInterval = TimeInterval(value) })
-            .store(in: &disposeBag)
     }
 
     private func date(hour: Int, minute: Int) -> Date? {

@@ -193,10 +193,6 @@
 "status.appState.card.button" = "Включване на приложението";
 "status.appState.card.try_again" = "Опитай отново";
 "status.active.description" = "CoronaMelder е активиран дори и при затваряне на приложението";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "Преди %@ дни (%@)";
-"status.notified.description_hours" = "Преди %@ час (%@)";
-"status.notified.description_none" = "на %@";
 "status.notified.description" = "%@ си бил изложен на повишен риск от инфектиране";
 "status.notified.moreInfo" = "Какво мога да направя сега?";
 "status.notified.removeNotification" = "Премахване на известие";
@@ -349,7 +345,7 @@
 "enableSettings.localNotifications.step3.action.title" = "Разреши известяването";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Намирал си се близо до човек с  коронавирус. Прочети повече в приложението.";
+"exposure.notification.userExplanation" = "Намирал си се %@ близо до някого с коронавирус. Прочети повече в приложението.";
 
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Напомняне: Преди %@ дни си бил близо до някого с коронавирус. Прочети повече в приложението.";

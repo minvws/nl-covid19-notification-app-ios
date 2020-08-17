@@ -82,20 +82,22 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             )
         )
 
-        onboardingConsentSteps.append(
-            OnboardingConsentStep(
-                step: .notifications,
-                theme: theme,
-                title: .consentStep3Title,
-                content: .consentStep3Content,
-                image: .pleaseTurnOnNotifications,
-                animationName: nil,
-                summarySteps: nil,
-                primaryButtonTitle: .consentStep3PrimaryButton,
-                secondaryButtonTitle: .consentStep3SecondaryButton,
-                hasNavigationBarSkipButton: true
-            )
-        )
+        /* Disabled For 57828
+         onboardingConsentSteps.append(
+             OnboardingConsentStep(
+                 step: .notifications,
+                 theme: theme,
+                 title: .consentStep3Title,
+                 content: .consentStep3Content,
+                 image: .pleaseTurnOnNotifications,
+                 animationName: nil,
+                 summarySteps: nil,
+                 primaryButtonTitle: .consentStep3PrimaryButton,
+                 secondaryButtonTitle: .consentStep3SecondaryButton,
+                 hasNavigationBarSkipButton: true
+             )
+         )
+         */
 
         onboardingConsentSteps.append(
             OnboardingConsentStep(
@@ -136,13 +138,11 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                     case .inactive(.bluetoothOff):
                         completion(.bluetooth)
                     default:
-                        completion(.notifications)
+                        completion(.share)
                     }
                 }
                 .store(in: &disposeBag)
         case .bluetooth:
-            completion(.notifications)
-        case .notifications:
             completion(.share)
         case .share:
             completion(nil)

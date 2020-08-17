@@ -48,96 +48,6 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(keys, receivedKeys)
     }
 
-    func test_execute_stores_uploadedRollingNumbersAfterSuccessfulUpload() {
-        networkController.postKeysHandler = { keys, confirmationKey, padding in
-            return Just(())
-                .setFailureType(to: NetworkError.self)
-                .eraseToAnyPublisher()
-        }
-
-        var receivedData: Data!
-        storageController.storeHandler = { data, _, completion in
-            receivedData = data
-            completion(nil)
-        }
-
-        let keys = createDiagnosisKeys(withHighestRollingStartNumber: 65)
-        operation = createOperation(withKeys: keys)
-
-        XCTAssertEqual(storageController.storeCallCount, 0)
-
-        operation.execute()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
-
-        XCTAssertNotNil(receivedData)
-        XCTAssertEqual(storageController.storeCallCount, 1)
-
-        let rollingStartNumbers = try! JSONDecoder().decode([UInt32].self, from: receivedData)
-        XCTAssertEqual(rollingStartNumbers.count, 6)
-        XCTAssertEqual(rollingStartNumbers, [65, 64, 63, 62, 61, 60])
-    }
-
-    func test_execute_readsUploadedRollingNumberAndPendingOperationsAndFiltersOutKeys() {
-        var receivedKeys: [DiagnosisKey]!
-        networkController.postKeysHandler = { keys, confirmationKey, padding in
-            receivedKeys = keys
-
-            return Just(())
-                .setFailureType(to: NetworkError.self)
-                .eraseToAnyPublisher()
-        }
-
-        storageController.retrieveDataHandler = { key in
-            switch (key as! StoreKey).asString {
-            case "uploadedRollingStartNumbers":
-                return try! JSONEncoder().encode([UInt32]([62, 64]))
-            case "pendingLabUploadRequests":
-                let requests = [
-                    PendingLabConfirmationUploadRequest(labConfirmationKey: self.createLabConfirmationKey(),
-                                                        diagnosisKeys: [
-                                                            DiagnosisKey(keyData: Data(),
-                                                                         rollingPeriod: 0,
-                                                                         rollingStartNumber: 65,
-                                                                         transmissionRiskLevel: 0)
-                                                        ],
-                                                        expiryDate: Date().addingTimeInterval(60))
-                ]
-
-                return try! JSONEncoder().encode(requests)
-            default:
-                return nil
-            }
-        }
-
-        let keys = createDiagnosisKeys(withHighestRollingStartNumber: 67) // creates 5 keys, from 63-67
-        let expectedKeys = keys.filter { $0.rollingStartNumber != 62 && $0.rollingStartNumber != 64 && $0.rollingStartNumber != 65 }
-
-        var receivedData: Data!
-        storageController.storeHandler = { data, _, completion in
-            receivedData = data
-            completion(nil)
-        }
-
-        operation = createOperation(withKeys: keys)
-
-        XCTAssertEqual(storageController.storeCallCount, 0)
-        XCTAssertEqual(storageController.retrieveDataCallCount, 0)
-
-        operation.execute()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
-
-        XCTAssertNotNil(receivedKeys)
-        XCTAssertEqual(receivedKeys, expectedKeys)
-        XCTAssertEqual(storageController.retrieveDataCallCount, 3) // once for pending operations, once for rollingStartNumbers
-        XCTAssertEqual(storageController.storeCallCount, 1)
-
-        // new stored rolling start numbers should be
-        let rollingStartNumbers = try! JSONDecoder().decode([UInt32].self, from: receivedData)
-        XCTAssertEqual(rollingStartNumbers, [67, 66, 63, 62, 64])
-    }
-
     func test_error_schedulesRetryRequest() {
         let expiryDate = Date().addingTimeInterval(60)
         let alreadyPendingRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(validUntil: expiryDate),
@@ -180,7 +90,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
             .disposeOnTearDown(of: self)
 
         XCTAssertEqual(storageController.storeCallCount, 1)
-        XCTAssertEqual(storageController.retrieveDataCallCount, 3)
+        XCTAssertEqual(storageController.retrieveDataCallCount, 1)
         XCTAssertEqual(receivedPendingRequests.count, 2)
         XCTAssertEqual(receivedPendingRequests[0], alreadyPendingRequest)
         XCTAssertEqual(receivedPendingRequests[1].diagnosisKeys, createDiagnosisKeys(withHighestRollingStartNumber: 65))

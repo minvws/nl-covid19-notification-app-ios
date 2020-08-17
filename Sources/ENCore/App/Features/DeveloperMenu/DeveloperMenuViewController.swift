@@ -163,9 +163,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Remove Stored LabConfirmationKey",
                               subtitle: "Last: \(getLastStoredConfirmationKey())",
                               action: { [weak self] in self?.removeStoredConfirmationKey() }),
-                DeveloperItem(title: "Remove Uploaded RollingStart Numbers",
-                              subtitle: "Uploaded: \(getUploadedRollingStartNumbers().count)",
-                              action: { [weak self] in self?.removeUploadedRollingStartNumbers() }),
                 DeveloperItem(title: "Remove Last Exposure",
                               subtitle: "Last: \(getLastExposureString())",
                               action: { [weak self] in self?.removeLastExposure() }),
@@ -292,7 +289,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         removeLastExposure()
         removeAllExposureKeySets()
         removeStoredConfirmationKey()
-        removeUploadedRollingStartNumbers()
         storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.appConfiguration, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
@@ -335,13 +331,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
     private func removeStoredConfirmationKey() {
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
-
-        exposureController.refreshStatus()
-        internalView.tableView.reloadData()
-    }
-
-    private func removeUploadedRollingStartNumbers() {
-        storageController.removeData(for: ExposureDataStorageKey.uploadedRollingStartNumbers, completion: { _ in })
 
         exposureController.refreshStatus()
         internalView.tableView.reloadData()
@@ -494,10 +483,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)?.identifier ?? "None"
     }
 
-    private func getUploadedRollingStartNumbers() -> [UInt32] {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.uploadedRollingStartNumbers) ?? []
-    }
-
     private func getLastExposureString() -> String {
         guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport) else {
             return "None"
@@ -505,7 +490,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
-        return "\(dateFormatter.string(from: last.date)) for \(last.duration.map(String.init(describing:)) ?? "?") seconds"
+        return "\(dateFormatter.string(from: last.date))) seconds"
     }
 
     private func getLastExposureFetchString() -> String {

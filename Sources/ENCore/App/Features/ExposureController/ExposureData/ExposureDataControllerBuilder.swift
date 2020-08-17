@@ -36,7 +36,6 @@ protocol ExposureDataControlling {
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
 
     func setLastEndStatusCheckDate(_ date: Date)
-    func setDisplayedExposureNotification()
 
     // MARK: - Lab Flow
 

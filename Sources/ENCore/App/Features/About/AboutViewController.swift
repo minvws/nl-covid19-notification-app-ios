@@ -13,7 +13,7 @@ import WebKit
 /// @mockable
 protocol AboutRouting: Routing {
     func routeToOverview()
-    func routeToHelpQuestion(question: HelpQuestion)
+    func routeToAboutEntry(entry: AboutEntry)
     func routeToAppInformation()
     func routeToTechnicalInformation()
     func detachHelpQuestion()
@@ -21,6 +21,7 @@ protocol AboutRouting: Routing {
 }
 
 final class AboutViewController: NavigationController, AboutViewControllable, UIAdaptivePresentationControllerDelegate {
+
     weak var router: AboutRouting?
 
     init(listener: AboutListener, theme: Theme) {
@@ -28,6 +29,7 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         super.init(theme: theme)
         modalPresentationStyle = .popover
         navigationItem.rightBarButtonItem = closeBarButtonItem
+        presentationController?.delegate = self
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -46,8 +48,8 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     // MARK: - AboutOverviewListener
 
-    func aboutOverviewRequestsRouteTo(question: HelpQuestion) {
-        router?.routeToHelpQuestion(question: question)
+    func aboutOverviewRequestsRouteTo(entry: AboutEntry) {
+        router?.routeToAboutEntry(entry: entry)
     }
 
     func aboutOverviewRequestsRouteToAppInformation() {
@@ -65,6 +67,12 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
         router?.detachHelpQuestion()
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
+    }
+
+    // MARK: - WebviewListener
+
+    func webviewRequestsDismissal(shouldHideViewController: Bool) {
+        listener?.aboutRequestsDismissal(shouldHideViewController: shouldHideViewController)
     }
 
     // MARK: - ViewController Lifecycle

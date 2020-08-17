@@ -31,7 +31,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                    storageController: storageController,
                                                    exposureManager: exposureManager,
                                                    exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
-                                                   configuration: configuration)
+                                                   configuration: configuration,
+                                                   userNotificationCenter: userNotificationCenter)
     }
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {

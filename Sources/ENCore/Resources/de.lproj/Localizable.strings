@@ -193,10 +193,6 @@
 "status.appState.card.button" = "App aktivieren";
 "status.appState.card.try_again" = "Versuchen Sie es erneut.";
 "status.active.description" = "Auch wenn Sie die App schließen, bleibt CoronaMelder aktiv.";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "vor %@ Tagen (%@)";
-"status.notified.description_hours" = "vor %@ Stunden (%@)";
-"status.notified.description_none" = "am %@";
 "status.notified.description" = "Sie haben ein um %@ höheres Infektionsrisiko.";
 "status.notified.moreInfo" = "Was kann ich jetzt machen?";
 "status.notified.removeNotification" = "Nachricht löschen";
@@ -349,7 +345,7 @@
 "enableSettings.localNotifications.step3.action.title" = "Benachrichtigung zulassen";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Sie waren in der Nähe einer mit Corona infizierten Person. Lesen Sie mehr in der App.";
+"exposure.notification.userExplanation" = "Sie waren %@ in der Nähe einer mit Corona infizierten Person. Lesen Sie mehr in der App.";
 
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Erinnerung: Sie waren vor %@ Tagen in der Nähe einer mit Corona infizierten Person. Lesen Sie mehr in der App.";

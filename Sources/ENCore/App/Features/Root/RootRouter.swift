@@ -16,7 +16,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener, WebviewListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool)
@@ -43,6 +43,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          networkController: NetworkControlling,
          backgroundController: BackgroundControlling,
          updateAppBuilder: UpdateAppBuildable,
+         webviewBuilder: WebviewBuildable,
          currentAppVersion: String?) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
@@ -50,6 +51,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.messageBuilder = messageBuilder
         self.callGGDBuilder = callGGDBuilder
         self.developerMenuBuilder = developerMenuBuilder
+        self.webviewBuilder = webviewBuilder
 
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
@@ -137,19 +139,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 self?.logDebug("Push Notification Identifier: \(notificationRespone.notification.request.identifier)")
 
-                // Check if this is a notificaiton triggered by our application, if not then we assume this was
-                // an EN notificaiton triggered by Apple. Ideally we should get the identifier of the Apple notification.
-                guard notificationRespone.notification.request.identifier.contains("nl.rijksoverheid") else {
-                    let content = notificationRespone.notification.request.content
-                    strongSelf.routeToMessage(title: content.title, body: content.body)
-                    return
-                }
-
                 guard let identifier = PushNotificationIdentifier(rawValue: notificationRespone.notification.request.identifier) else {
                     return strongSelf.logError("Push notification for \(notificationRespone.notification.request.identifier) not handled")
                 }
 
                 switch identifier {
+                case .exposure:
+                    guard let lastExposureDate = strongSelf.exposureController.lastExposureDate else {
+                        return strongSelf.logError("No Last Exposure Date to present")
+                    }
+
+                    strongSelf.routeToMessage(title: .messageDefaultTitle,
+                                              body: String(format: .messageDefaultBody, StatusViewModel.timeAgo(from: lastExposureDate)))
                 case .inactive:
                     () // Do nothing
                 case .uploadFailed:
@@ -173,12 +174,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .store(in: &disposeBag)
 
         networkController.startObservingNetworkReachability()
-
-        if exposureController.shouldDisplayExposureNotification,
-            let date = exposureController.lastExposureDate {
-            routeToMessage(title: .messageDefaultTitle, body: String(format: .messageDefaultBody, timeAgo(from: date)))
-            exposureController.setDisplayedExposureNotification()
-        }
     }
 
     func didEnterBackground() {
@@ -255,6 +250,25 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         viewController.present(viewController: updateAppViewController, animated: animated, completion: nil)
     }
 
+    func routeToWebview(url: URL) {
+        guard webviewViewController == nil else { return }
+        let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
+        self.webviewViewController = webviewViewController
+
+        viewController.presentInNavigationController(viewController: webviewViewController, animated: true)
+    }
+
+    func detachWebview(shouldDismissViewController: Bool) {
+        guard let webviewViewController = webviewViewController else {
+            return
+        }
+        self.webviewViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: webviewViewController, animated: true, completion: nil)
+        }
+    }
+
     // MARK: - Private
 
     private func routeToMain() {
@@ -308,22 +322,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.developerMenuViewController = developerMenuViewController
     }
 
-    private func timeAgo(from: Date) -> String {
-        let now = currentDate()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-
-        let dateString = dateFormatter.string(from: from)
-
-        if let days = from.days(sinceDate: now), days > 0 {
-            return String(format: .statusNotifiedDescriptionDays, "\(days)", dateString)
-        }
-        if let hours = from.hours(sinceDate: now), hours > 0 {
-            return String(format: .statusNotifiedDescriptionHours, "\(hours)", dateString)
-        }
-        return String(format: .statusNotifiedDescriptionNone, dateString)
-    }
-
     private let currentAppVersion: String?
 
     private let networkController: NetworkControlling
@@ -354,6 +352,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let updateAppBuilder: UpdateAppBuildable
     private var updateAppViewController: ViewControllable?
+
+    private let webviewBuilder: WebviewBuildable
+    private var webviewViewController: ViewControllable?
 }
 
 private extension ExposureActiveState {

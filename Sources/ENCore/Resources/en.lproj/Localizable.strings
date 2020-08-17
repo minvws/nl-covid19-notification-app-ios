@@ -141,13 +141,13 @@
 "help.what_does_the_app_do.title" = "What does CoronaMelder do?";
 "help.what_does_the_app_do.protect.title" = "Help stop the spread of the coronavirus";
 "help.what_does_the_app_do.protect.description" = "This app warns you if you've been near someone with coronavirus. So you can prevent infecting people in your environment.";
-"help.what_does_the_app_do.notify.title" = "You get a notification after you’ve been exposed to a higher risk of infection";
+"help.what_does_the_app_do.notify.title" = "You get a notification <u>after</u> you’ve been exposed to a higher risk of infection";
 "help.what_does_the_app_do.notify.description" = "The app notifies you when you've been close to someone for at least 15 minutes who was later found to have coronavirus. This person must also use the app.";
-"help.what_does_the_app_do.bluetooth.title" = "The app uses Bluetooth, not location data";
+"help.what_does_the_app_do.bluetooth.title" = "The app uses Bluetooth, <u>not</u> location data";
 "help.what_does_the_app_do.bluetooth.description" = "Using Bluetooth, the app sees whether you've been near someone. The closer you've been, the stronger the Bluetooth signal. The app doesn't know who you are or where you've been.";
-"help.what_does_the_app_do.example.cycle.title" = "Did someone cycle past you? Then you will not get a notification later.";
+"help.what_does_the_app_do.example.cycle.title" = "Did someone cycle past you? Then you will <u>not</u> get a notification later.";
 "help.what_does_the_app_do.example.cycle.description" = "The Bluetooth signal was strong because you were near each other. But only for a very short time. This means your risk of infection is very low.";
-"help.what_does_the_app_do.example.train.title" = "Did you sit near someone on the train? You could possibly get a notification later";
+"help.what_does_the_app_do.example.train.title" = "Did you sit near someone on the train? You could <u>possibly</u> get a notification later";
 "help.what_does_the_app_do.example.train.description" = "The Bluetooth signal was strong enough and you were near each other for a longer period of time.";
 
 "help.technical_explanation.title" = "Technical explanation";
@@ -193,11 +193,9 @@
 "status.appState.card.button" = "Turn on app";
 "status.appState.card.try_again" = "Try again";
 "status.active.description" = "Even if you close the app, CoronaMelder will still be active";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "%@ day(s) ago (%@)";
-"status.notified.description_hours" = "%@ hour(s) ago (%@)";
-"status.notified.description_none" = "on %@";
-"status.notified.description" = "You've been exposed to a %@ higher risk of infection";
+"status.notified.days_ago_one" = "%@ day ago";
+"status.notified.days_ago_other" = "%@ days ago";
+"status.notified.description" = "You were exposed to a higher risk of infection %@ (%@)";
 "status.notified.moreInfo" = "What can I do now?";
 "status.notified.removeNotification" = "Delete notification";
 
@@ -249,7 +247,9 @@
 "moreInformation.about.faq.upload_keys" = "How do I send a notification?";
 "moreInformation.about.faq.bluetooth" = "Can the Bluetooth signal pass through walls?";
 "moreInformation.about.faq.power_usage" = "How much power does the app use?";
+
 "moreInformation.about.faq.deletion" = "How do I delete the Bluetooth data from my phone?";
+"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth files saved by the app yourself. Here's how that's done.</br></br>Go to the settings menu on your phone -> Privacy -> Health -> COVID-19 Exposure Logging. Tap on Delete Exposure Log. Don't want the app to save new Bluetooth data? Delete the app.";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Let others know you're helping to stop the spread of the virus";
@@ -349,10 +349,10 @@
 "enableSettings.localNotifications.step3.action.title" = "Allow notifications";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "You've been near someone with coronavirus. Read more in the app.";
+"exposure.notification.userExplanation" = "You were near someone with coronavirus %@. Read more in the app.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Reminder: You've been near someone with coronavirus %@ days ago. Read more in the app.";
+"exposure.notification.reminder" = "Reminder: %@";
 
 "privacyAgreement.title" = "Permission to use data";
 "privacyAgreement.message" = "To use CoronaMelder, you have to accept the %@. Important to know:";

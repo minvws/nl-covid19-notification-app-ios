@@ -56,4 +56,8 @@ fi
 
 cat project.yml
 
-make install_ci_deps && make generate_project
+if [ ! -f vendor/XcodeGen/.build/release/xcodegen ] || [ ! -f vendor/mockolo/.build/release/mockolo ];
+then
+      make install_ci_deps
+fi
+make generate_project

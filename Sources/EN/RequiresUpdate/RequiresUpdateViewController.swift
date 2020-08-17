@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import UIKit
 
@@ -12,8 +13,9 @@ final class RequiresUpdateViewController: UIViewController {
 
     // MARK: - Lifecycle
 
-    init(deviceModel: String) {
+    init(deviceModel: String, theme: Theme) {
         isDeviceSupported = RequiresUpdateViewController.unsupportedDevicesModels.contains(deviceModel) == false
+        self.theme = theme
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -34,7 +36,7 @@ final class RequiresUpdateViewController: UIViewController {
 
         self.view = internalView
         self.view.frame = UIScreen.main.bounds
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = theme.colors.viewControllerBackground
 
         self.view.addSubview(button)
 
@@ -42,11 +44,11 @@ final class RequiresUpdateViewController: UIViewController {
 
         let titleKey = isDeviceSupported ? "update.software.os.title" : "update.hardware.title"
         internalView.titleLabel.text = localizedString(for: titleKey)
-        internalView.titleLabel.font = font(size: 22, weight: .bold, textStyle: .title2)
+        internalView.titleLabel.font = theme.fonts.title2
 
         let descriptionKey = isDeviceSupported ? "update.software.os.description" : "update.hardware.description"
         internalView.contentLabel.text = localizedString(for: descriptionKey)
-        internalView.contentLabel.font = font(size: 17, weight: .regular, textStyle: .body)
+        internalView.contentLabel.font = theme.fonts.body
     }
 
     private func setupConstraints() {
@@ -66,46 +68,12 @@ final class RequiresUpdateViewController: UIViewController {
     // MARK: - Functions
 
     @objc func buttonPressed() {
-        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString),
-            UIApplication.shared.canOpenURL(settingsUrl) else {
-            showCannotOpenSettingsAlert()
-            return
-        }
-        UIApplication.shared.open(settingsUrl)
-    }
-
-    private func showCannotOpenSettingsAlert() {
-        let alertController = UIAlertController(title: localizedString(for: "alertTitle"),
-                                                message: localizedString(for: "alertMessage"),
-                                                preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: localizedString(for: "alertButton"), style: .default, handler: nil))
-        present(alertController, animated: true, completion: nil)
-    }
-
-    /// Get the scaled font
-    private func font(size: CGFloat, weight: UIFont.Weight, textStyle: UIFont.TextStyle) -> UIFont {
-        let font = UIFont.systemFont(ofSize: size, weight: weight)
-        let fontMetrics = UIFontMetrics(forTextStyle: textStyle)
-        return fontMetrics.scaledFont(for: font)
-    }
-
-    /// Get the Localized string for the current bundle.
-    private func localizedString(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> String {
-        let value = NSLocalizedString(key, comment: comment)
-        guard value == key else {
-            return String(format: value, arguments: arguments)
-        }
-        guard
-            let path = Bundle.main.path(forResource: "Base", ofType: "lproj"),
-            let bundle = Bundle(path: path) else {
-            return String(format: value, arguments: arguments)
-        }
-        let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
-        return String(format: localizedString, arguments: arguments)
+        present(UpdateInstructionsViewController(theme: theme), animated: true, completion: nil)
     }
 
     // MARK: - Private
 
+    private let theme: Theme
     private let isDeviceSupported: Bool
 
     private lazy var internalView: RequiresUpdateView = RequiresUpdateView()
@@ -114,10 +82,10 @@ final class RequiresUpdateViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle(localizedString(for: "update.button.update"), for: .normal)
-        button.titleLabel?.font = font(size: 17, weight: .bold, textStyle: .body)
+        button.titleLabel?.font = theme.fonts.bodyBold
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
-        button.backgroundColor = UIColor(named: "PrimaryColor")
+        button.backgroundColor = theme.colors.primary
         button.setTitleColor(.white, for: .normal)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         return button

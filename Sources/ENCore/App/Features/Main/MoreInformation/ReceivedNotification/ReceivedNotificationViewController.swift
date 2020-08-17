@@ -120,7 +120,8 @@ private final class ReceivedNotificationView: View {
             .moreInformationComplaintsItem1,
             .moreInformationComplaintsItem2,
             .moreInformationComplaintsItem3,
-            .moreInformationComplaintsItem4
+            .moreInformationComplaintsItem4,
+            .moreInformationComplaintsItem5
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
 
@@ -162,7 +163,7 @@ private final class ReceivedNotificationView: View {
     }
 
     private func info() -> View {
-        let string = String.moreInformationInfoTitle.attributed()
+        let string = NSAttributedString.make(text: .moreInformationInfoTitle, font: theme.fonts.subhead, textColor: theme.colors.gray)
         return InfoSectionCalloutView(theme: theme, content: string)
     }
 }

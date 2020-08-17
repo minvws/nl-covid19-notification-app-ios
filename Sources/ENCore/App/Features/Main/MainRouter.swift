@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener {
 
     var router: MainRouting? { get set }
 
@@ -30,7 +30,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          requestTestBuilder: RequestTestBuildable,
          infectedBuilder: InfectedBuildable,
          messageBuilder: MessageBuildable,
-         enableSettingBuilder: EnableSettingBuildable) {
+         enableSettingBuilder: EnableSettingBuildable,
+         webviewBuilder: WebviewBuildable) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
@@ -40,6 +41,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.infectedBuilder = infectedBuilder
         self.messageBuilder = messageBuilder
         self.enableSettingBuilder = enableSettingBuilder
+        self.webviewBuilder = webviewBuilder
 
         super.init(viewController: viewController)
 
@@ -222,6 +224,25 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         }
     }
 
+    func routeToWebview(url: URL) {
+        guard webviewViewController == nil else { return }
+        let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
+        self.webviewViewController = webviewViewController
+
+        viewController.present(viewController: webviewViewController, animated: true, inNavigationController: true)
+    }
+
+    func detachWebview(shouldDismissViewController: Bool) {
+        guard let webviewViewController = webviewViewController else {
+            return
+        }
+        self.webviewViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: webviewViewController, animated: true)
+        }
+    }
+
     // MARK: - Private
 
     private let statusBuilder: StatusBuildable
@@ -250,4 +271,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let enableSettingBuilder: EnableSettingBuildable
     private var enableSettingViewController: ViewControllable?
+
+    private let webviewBuilder: WebviewBuildable
+    private var webviewViewController: ViewControllable?
 }

@@ -17,6 +17,7 @@ final class OnboardingRouterTests: XCTestCase {
     private let bluetoothSettingsBuilder = BluetoothSettingsBuildableMock()
     private let privacyAgreementBuilder = PrivacyAgreementBuildableMock()
     private let shareSheetBuilder = ShareSheetBuildableMock()
+    private let webviewBuilder = WebviewBuildableMock()
 
     private var router: OnboardingRouter!
 
@@ -30,7 +31,8 @@ final class OnboardingRouterTests: XCTestCase {
                                   bluetoothSettingsBuilder: bluetoothSettingsBuilder,
                                   shareSheetBuilder: shareSheetBuilder,
                                   privacyAgreementBuilder: privacyAgreementBuilder,
-                                  helpBuilder: helpBuilder)
+                                  helpBuilder: helpBuilder,
+                                  webviewBuilder: webviewBuilder)
     }
 
     func test_init_setsRouterOnViewController() {

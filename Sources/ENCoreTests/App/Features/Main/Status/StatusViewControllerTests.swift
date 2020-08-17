@@ -24,7 +24,7 @@ final class StatusViewControllerTests: TestCase {
         recordSnapshots = false
 
         AnimationTestingOverrides.animationsEnabled = false
-        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593200000)
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
 
         cardBuilder.buildHandler = { type in
             return CardRouter(viewController: CardViewController(theme: self.theme, type: type),
@@ -50,7 +50,7 @@ final class StatusViewControllerTests: TestCase {
     }
 
     func test_snapshot_active_notified_days_ago() {
-        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593000030)
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         set(activeState: .active, notified: true)
         snapshots(matching: viewController)
     }
@@ -88,7 +88,8 @@ final class StatusViewControllerTests: TestCase {
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState, notified: Bool) {
-        let notifiedState: ExposureNotificationState = notified ? .notified(Date(timeIntervalSince1970: 1593262397)) : .notNotified
+        // 27/06/20 12:46
+        let notifiedState: ExposureNotificationState = notified ? .notified(Date(timeIntervalSince1970: 1593260000)) : .notNotified
         let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
         exposureStateStream.exposureState = Just(state).eraseToAnyPublisher()

@@ -12,8 +12,6 @@ import Foundation
 struct ExposureDataStorageKey {
     static let labConfirmationKey = CodableStorageKey<LabConfirmationKey>(name: "labConfirmationKey",
                                                                           storeType: .secure)
-    static let uploadedRollingStartNumbers = CodableStorageKey<[UInt32]>(name: "uploadedRollingStartNumbers",
-                                                                         storeType: .secure)
     static let appManifest = CodableStorageKey<ApplicationManifest>(name: "appManifest",
                                                                     storeType: .insecure(volatile: true))
     static let appConfiguration = CodableStorageKey<ApplicationConfiguration>(name: "appConfiguration",
@@ -80,17 +78,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     func setLastEndStatusCheckDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastENStatusCheck, completion: { _ in })
-    }
-
-    func setDisplayedExposureNotification() {
-        storageController.requestExclusiveAccess { [weak self] controller in
-            guard let exposureReport = controller.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport) else {
-                self?.logDebug("Not setting `setDisplayedExposureNotification` as no  `ExposureReport` found")
-                return
-            }
-            let updatedExposureReport = ExposureReport(date: exposureReport.date, duration: exposureReport.duration, displayedInformation: true)
-            controller.store(object: updatedExposureReport, identifiedBy: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
-        }
     }
 
     func removeLastExposure() -> AnyPublisher<(), Never> {
@@ -236,7 +223,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
         // clear all secure entries
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
-        storageController.removeData(for: ExposureDataStorageKey.uploadedRollingStartNumbers, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
 

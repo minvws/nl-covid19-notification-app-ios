@@ -19,7 +19,7 @@ protocol AboutManaging: AnyObject {
 
 struct AboutSection {
     let title: String
-    fileprivate(set) var questions: [HelpQuestion]
+    fileprivate(set) var entries: [AboutEntry]
 }
 
 final class AboutManager: AboutManaging {
@@ -32,29 +32,29 @@ final class AboutManager: AboutManaging {
     // MARK: - Init
 
     init(theme: Theme, testPhaseStream: AnyPublisher<Bool, Never>) {
-        questionsSection = AboutSection(title: .helpSubtitle, questions: [
-            HelpQuestion(theme: theme, question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
-            HelpQuestion(theme: theme, question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription),
-            HelpQuestion(theme: theme, question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2),
-            HelpQuestion(theme: theme, question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription),
-            HelpQuestion(theme: theme, question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription),
-            HelpQuestion(theme: theme, question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription),
-            HelpQuestion(theme: theme, question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription),
-            HelpQuestion(theme: theme, question: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
+        questionsSection = AboutSection(title: .helpSubtitle, entries: [
+            .question(title: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
+            .question(title: .helpFaqLocationTitle, answer: .helpFaqLocationDescription),
+            .question(title: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2),
+            .question(title: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription),
+            .question(title: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription),
+            .question(title: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription),
+            .question(title: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription),
+            .question(title: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
         ])
 
-        aboutSection = AboutSection(title: .moreInformationAboutTitle, questions: [
-            HelpQuestion(theme: theme, question: .helpPrivacyPolicyTitle, answer: "", link: .helpPrivacyPolicyLink),
-            HelpQuestion(theme: theme, question: .helpAccessibilityTitle, answer: "", link: .helpAccessibilityLink),
-            HelpQuestion(theme: theme, question: .helpColofonTitle, answer: "", link: .helpColofonLink)
+        aboutSection = AboutSection(title: .moreInformationAboutTitle, entries: [
+            .rate(title: .helpRateAppTitle),
+            .link(title: .helpPrivacyPolicyTitle, link: .helpPrivacyPolicyLink),
+            .link(title: .helpAccessibilityTitle, link: .helpAccessibilityLink),
+            .link(title: .helpColofonTitle, link: .helpColofonLink)
         ])
 
         testPhaseStream
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { isTestPhase in
                 if isTestPhase {
-                    let question = HelpQuestion(theme: theme, question: .helpTestVersionTitle, answer: "", link: .helpTestVersionLink)
-                    self.aboutSection.questions.append(question)
+                    self.aboutSection.entries.append(.link(title: .helpTestVersionTitle, link: .helpTestVersionLink))
                     self.didUpdate?()
                 }
             }).store(in: &disposeBag)

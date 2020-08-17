@@ -9,7 +9,9 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol EndOfLifeListener: AnyObject {}
+protocol EndOfLifeListener: AnyObject {
+    func endOfLifeRequestsRedirect(to url: URL)
+}
 
 /// @mockable
 protocol EndOfLifeBuildable {

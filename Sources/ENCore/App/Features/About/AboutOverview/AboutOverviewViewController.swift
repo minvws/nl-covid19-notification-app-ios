@@ -46,16 +46,16 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == questionsSectionIndex {
-            return aboutManager.questionsSection.questions.count
+            return aboutManager.questionsSection.entries.count
         } else {
-            return aboutManager.aboutSection.questions.count
+            return aboutManager.aboutSection.entries.count
         }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell
         let cellIdentifier = "AboutCell"
-        let questions = indexPath.section == questionsSectionIndex ? aboutManager.questionsSection.questions : aboutManager.aboutSection.questions
+        let questions = indexPath.section == questionsSectionIndex ? aboutManager.questionsSection.entries : aboutManager.aboutSection.entries
 
         if let aCell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) {
             cell = aCell
@@ -63,9 +63,10 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
             cell = AboutTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
         }
 
-        cell.textLabel?.attributedText = questions[indexPath.row].attributedTitle
+        cell.textLabel?.text = questions[indexPath.row].title()
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
+        cell.textLabel?.textColor = theme.colors.gray
         cell.textLabel?.accessibilityTraits = .header
 
         cell.accessoryType = .disclosureIndicator
@@ -82,16 +83,15 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let questions = indexPath.section == questionsSectionIndex ? aboutManager.questionsSection.questions : aboutManager.aboutSection.questions
+        let entries = indexPath.section == questionsSectionIndex ? aboutManager.questionsSection.entries : aboutManager.aboutSection.entries
 
-        guard (0 ..< questions.count).contains(indexPath.row) else {
+        guard (0 ..< entries.count).contains(indexPath.row) else {
             return
         }
 
-        let question = questions[indexPath.row]
-        listener?.aboutOverviewRequestsRouteTo(question: question)
-
         tableView.deselectRow(at: indexPath, animated: true)
+
+        listener?.aboutOverviewRequestsRouteTo(entry: entries[indexPath.row])
     }
 
     // MARK: - Private

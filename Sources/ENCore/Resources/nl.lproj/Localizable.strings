@@ -141,13 +141,13 @@
 "help.what_does_the_app_do.title" = "Wat doet CoronaMelder?";
 "help.what_does_the_app_do.protect.title" = "Help de verspreiding van het coronavirus te stoppen";
 "help.what_does_the_app_do.protect.description" = "Deze app waarschuwt je nadat je in de buurt bent geweest van iemand met corona. Zo kun jij voorkomen dat je de mensen in je omgeving besmet.";
-"help.what_does_the_app_do.notify.title" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen";
+"help.what_does_the_app_do.notify.title" = "Je krijgt een melding <u>nadat</u> je extra kans op besmetting hebt gelopen";
 "help.what_does_the_app_do.notify.description" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. Deze persoon moet ook de app gebruiken.";
-"help.what_does_the_app_do.bluetooth.title" = "De app gebruikt bluetooth, geen locatiegegevens";
+"help.what_does_the_app_do.bluetooth.title" = " De app gebruikt bluetooth, <u>geen</u> locatiegegevens";
 "help.what_does_the_app_do.bluetooth.description" = "De app ziet via bluetooth of je dicht bij iemand was. Hoe dichterbij, hoe sterker het bluetoothsignaal. De app weet niet waar je was en wie je bent.";
-"help.what_does_the_app_do.example.cycle.title" = "Fietste iemand voorbij? Dan krijg je later geen melding";
+"help.what_does_the_app_do.example.cycle.title" = "Fietste iemand voorbij? Dan krijg je later <u>geen</u> melding";
 "help.what_does_the_app_do.example.cycle.description" = "Het bluetoothsignaal was sterk genoeg omdat jullie dicht bij elkaar waren. Dit duurde alleen zo kort dat de kans op besmetting heel klein is.";
-"help.what_does_the_app_do.example.train.title" = "Zat je dicht bij iemand in de trein? Dan kun je later wel een melding krijgen";
+"help.what_does_the_app_do.example.train.title" = "Zat je dicht bij iemand in de trein? Dan kun je <u>later</u> wel een melding krijgen";
 "help.what_does_the_app_do.example.train.description" = "Het bluetoothsignaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
 
 "help.technical_explanation.title" = "Technische uitleg";
@@ -193,11 +193,9 @@
 "status.appState.card.button" = "App aanzetten";
 "status.appState.card.try_again" = "Probeer opnieuw";
 "status.active.description" = "Ook als je de app sluit, blijft CoronaMelder actief";
-/* Note: These strings will be composed together `status.notified.description_*` is passed into `status.notified.description` depending on the time since the two dates */
-"status.notified.description_days" = "%@ dagen geleden (%@)";
-"status.notified.description_hours" = "%@ uur geleden (%@)";
-"status.notified.description_none" = "op %@";
-"status.notified.description" = "Je hebt %@ extra kans op besmetting gelopen";
+"status.notified.days_ago_one" = "%@ dag geleden";
+"status.notified.days_ago_other" = "%@ dagen geleden";
+"status.notified.description" = "Je hebt %@ (%@) extra kans op besmetting gelopen";
 "status.notified.moreInfo" = "Wat kan ik nu doen?";
 "status.notified.removeNotification" = "Melding verwijderen";
 
@@ -250,6 +248,7 @@
 "moreInformation.about.faq.bluetooth" = "Werkt bluetooth door muren heen?";
 "moreInformation.about.faq.power_usage" = "Hoeveel stroom gebruikt de app?";
 "moreInformation.about.faq.deletion" = "Hoe verwijder ik de bluetoothgegevens van mijn telefoon?";
+"moreInformation.about.faq.deletion.description" = "Je kunt de bluetoothgegevens die CoronaMelder heeft bewaard zelf verwijderen. Dat gaat als volgt.</br></br>Ga op je telefoon naar Instellingen -> Privacy -> Gezondheid > Blootstelling aan COVID-19. Klik op Verwijder blootstellingslogbestand. Wil je dat de app geen nieuwe bluetoothgegevens meer bewaart? Verwijder dan de app.";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Laat anderen weten dat jij helpt het virus te stoppen";
@@ -349,10 +348,10 @@
 "enableSettings.localNotifications.step3.action.title" = "Sta berichtgeving toe";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Je bent in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
+"exposure.notification.userExplanation" = "Je bent %@ in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Herinnering: Je bent %@ dagen geleden in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
+"exposure.notification.reminder" = "Herinnering: %@";
 
 "privacyAgreement.title" = "Toestemming gegevensgebruik";
 "privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de %@. Belangrijk om te weten: ";

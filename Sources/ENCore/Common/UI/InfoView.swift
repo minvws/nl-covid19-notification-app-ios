@@ -136,6 +136,7 @@ final class InfoView: View {
 final class InfoSectionContentView: View {
 
     private let contentLabel: Label
+    var linkHandler: ((String) -> ())?
 
     // MARK: - Init
 
@@ -155,6 +156,9 @@ final class InfoSectionContentView: View {
         contentLabel.accessibilityTraits = .header
 
         addSubview(contentLabel)
+
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapLabel(_:)))
+        addGestureRecognizer(tapGestureRecognizer)
     }
 
     override func setupConstraints() {
@@ -165,6 +169,32 @@ final class InfoSectionContentView: View {
             maker.bottom.equalToSuperview()
             maker.leading.trailing.equalToSuperview().inset(16)
         }
+    }
+
+    // MARK: - Private
+
+    @objc
+    private func didTapLabel(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard let linkHandler = linkHandler else { return }
+
+        let range = NSRange(location: 0, length: contentLabel.attributedText?.length ?? 0)
+
+        let handlePotentialMatch: (Any?, NSRange, UnsafeMutablePointer<ObjCBool>) -> () = { value, range, `continue` in
+            guard let value = value as? String else {
+                return
+            }
+
+            if gestureRecognizer.didTapAttributedTextInLabel(label: self.contentLabel, inRange: range) {
+                linkHandler(value)
+
+                `continue`.pointee = true
+            }
+        }
+
+        contentLabel.attributedText?.enumerateAttribute(.link,
+                                                        in: range,
+                                                        options: [],
+                                                        using: handlePotentialMatch)
     }
 }
 
@@ -317,12 +347,13 @@ final class InfoSectionCalloutView: View {
             maker.top.bottom.equalToSuperview()
         }
         iconImageView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.leading.equalToSuperview().offset(16)
+            maker.leading.equalToSuperview().offset(20)
+            maker.top.equalToSuperview().offset(16)
             maker.width.height.equalTo(24)
         }
         contentLabel.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalToSuperview().offset(16)
-            maker.leading.equalTo(iconImageView.snp.trailing).offset(18)
+            maker.leading.equalTo(iconImageView.snp.trailing).offset(12)
             maker.trailing.bottom.equalToSuperview().inset(16)
         }
     }
@@ -556,5 +587,42 @@ private final class InfoSectionDynamicErrorView: View {
 
     @objc private func didTapActionButton(sender: Button) {
         actionHandler()
+    }
+}
+
+private extension UITapGestureRecognizer {
+
+    // taken from https://stackoverflow.com/questions/1256887/create-tap-able-links-in-the-nsattributedstring-of-a-uilabel
+    func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
+        // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(size: CGSize.zero)
+        let textStorage = NSTextStorage(attributedString: label.attributedText!)
+
+        // Configure layoutManager and textStorage
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+
+        // Configure textContainer
+        textContainer.lineFragmentPadding = 0.0
+        textContainer.lineBreakMode = label.lineBreakMode
+        textContainer.maximumNumberOfLines = label.numberOfLines
+        let labelSize = label.bounds.size
+        textContainer.size = labelSize
+
+        // Find the tapped character location and compare it to the specified range
+        let locationOfTouchInLabel = self.location(in: label)
+        let textBoundingBox = layoutManager.usedRect(for: textContainer)
+        let textContainerOffset = CGPoint(
+            x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
+            y: (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y
+        )
+        let locationOfTouchInTextContainer = CGPoint(
+            x: locationOfTouchInLabel.x - textContainerOffset.x,
+            y: locationOfTouchInLabel.y - textContainerOffset.y
+        )
+        let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+
+        return NSLocationInRange(indexOfCharacter, targetRange)
     }
 }
