@@ -29,8 +29,10 @@ final class OnboardingConsentSummaryStepsView: View {
         translatesAutoresizingMaskIntoConstraints = false
 
         contentView.axis = .vertical
-        contentView.alignment = .top
-        contentView.distribution = .fillEqually
+        contentView.spacing = 16
+        contentView.backgroundColor = .clear
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+
         addSubview(contentView)
 
         consentSummarySteps
