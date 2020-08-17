@@ -103,7 +103,7 @@ final class ExposureController: ExposureControlling, Logging {
 
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
         // update when active, or when inactive due to no recent updates
-        guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else {
+        guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(mutableStateStream.currentExposureState?.activeState) else {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
         return fetchAndProcessExposureKeySets()
@@ -257,7 +257,7 @@ final class ExposureController: ExposureControlling, Logging {
         mutableStateStream
             .exposureState
             .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in
-                return [.active, .inactive(.noRecentNotificationUpdates)].contains(exposureState.activeState)
+                return [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
                     && networkState
             }
             .filter { $0 }
