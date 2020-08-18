@@ -9,7 +9,7 @@ import ENFoundation
 import UIKit
 import WebKit
 
-final class HelpDetailViewController: ViewController, Logging {
+final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate {
 
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
@@ -20,6 +20,7 @@ final class HelpDetailViewController: ViewController, Logging {
         self.question = question
 
         super.init(theme: theme)
+        navigationItem.rightBarButtonItem = closeBarButtonItem
     }
 
     // MARK: - ViewController Lifecycle
@@ -43,17 +44,24 @@ final class HelpDetailViewController: ViewController, Logging {
                                                                     textAlignment: Localization.isRTL ? .right : .left)
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
+    }
 
-        navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        listener?.helpDetailRequestsDismissal(shouldDismissViewController: false)
     }
 
     @objc func acceptButtonPressed() {
         listener?.helpDetailDidTapEnableAppButton()
     }
 
+    @objc func didTapClose() {
+        listener?.helpDetailRequestsDismissal(shouldDismissViewController: true)
+    }
+
     // MARK: - Private
 
     private lazy var internalView: HelpView = HelpView(theme: theme, shouldDisplayButton: shouldShowEnableAppButton)
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapClose))
     private weak var listener: HelpDetailListener?
 
     private let shouldShowEnableAppButton: Bool

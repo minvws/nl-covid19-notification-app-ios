@@ -22,7 +22,7 @@ final class InfectedRouterTests: XCTestCase {
                                 viewController: viewController,
                                 thankYouBuilder: ThankYouBuildableMock(),
                                 cardBuilder: CardBuildableMock(),
-                                aboutBuilder: AboutBuildableMock())
+                                helpDetailBuilder: HelpDetailBuildableMock())
     }
 
     func test_init_setsRouterOnViewController() {

@@ -96,12 +96,22 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         navigationController?.pushViewController(viewController.uiviewController, animated: true)
     }
 
-    func present(viewController: ViewControllable) {
-        present(viewController.uiviewController, animated: true, completion: nil)
+    func presentInNavigationController(viewController: ViewControllable) {
+        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
+
+        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
+            navigationController.presentationController?.delegate = presentationDelegate
+        }
+
+        present(navigationController, animated: true, completion: nil)
     }
 
     func dismiss(viewController: ViewControllable) {
-        viewController.uiviewController.dismiss(animated: true, completion: nil)
+        if let navigationController = viewController.uiviewController.navigationController {
+            navigationController.dismiss(animated: true, completion: nil)
+        } else {
+            viewController.uiviewController.dismiss(animated: true, completion: nil)
+        }
     }
 
     func thankYouWantsDismissal() {
@@ -128,11 +138,13 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         }
     }
 
-    // MARK: - AboutListener
+    // MARK: - HelpDetailListener
 
-    func aboutRequestsDismissal(shouldHideViewController: Bool) {
-        router?.hideFAQ(shouldDismissViewController: shouldHideViewController)
+    func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
+        router?.hideFAQ(shouldDismissViewController: shouldDismissViewController)
     }
+
+    func helpDetailDidTapEnableAppButton() {}
 
     // MARK: - Private
 

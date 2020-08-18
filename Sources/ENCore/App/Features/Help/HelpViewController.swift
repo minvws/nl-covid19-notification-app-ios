@@ -63,7 +63,7 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
     // MARK: - HelpDetailListener
 
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
-        router?.detachHelpDetail(shouldDismissViewController: true)
+        router?.detachHelpDetail(shouldDismissViewController: shouldDismissViewController)
     }
 
     func helpDetailDidTapEnableAppButton() {
