@@ -360,5 +360,5 @@
 "privacyAgreement.list.step1" = "Your app sends out encrypted Bluetooth data.";
 "privacyAgreement.list.step2" = "Other users who've been in contact with you save this data for a maximum of 14 days.";
 "privacyAgreement.list.step3" = "If you've been tested and have coronavirus, you can report it in the app to warn other users.";
-"privacyAgreement.list.step4" = "You can delete the data off your phone whenever you want.";
+"privacyAgreement.list.step4" = "You can delete the data from your phone whenever you want.";
 "privacyAgreement.consent.button" = "I've read and accepted the privacy statement";
