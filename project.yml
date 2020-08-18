@@ -20,7 +20,7 @@ targets:
       - link: false
         target: ENCore
       - target: ENFoundation
-    deploymentTarget: '11.0'
+    deploymentTarget: '13.0'
     info:
       path: Sources/EN/Resources/Info.plist
       properties:
@@ -37,7 +37,7 @@ targets:
         CFBundleDisplayName: "🐞 CoronaMelder"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
-        CFBundleShortVersionString: '1.0.3'
+        CFBundleShortVersionString: '1.0.4'
         CFBundleVersion: "1"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes:
@@ -156,7 +156,7 @@ targets:
     dependencies:
       - target: EN
       - package: SnapshotTesting
-    deploymentTarget: '11.0'
+    deploymentTarget: '13.0'
     platform: iOS
     settings:
       base:
