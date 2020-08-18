@@ -55,8 +55,9 @@ final class RequiresUpdateViewController: UIViewController {
 
         var constraints = [[NSLayoutConstraint]()]
 
+        let bottomMargin: CGFloat = UIWindow().safeAreaInsets.bottom == 0 ? -20 : 0
         constraints.append([
-            button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: bottomMargin),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             button.heightAnchor.constraint(equalToConstant: 50)
