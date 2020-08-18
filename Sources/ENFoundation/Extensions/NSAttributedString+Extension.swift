@@ -87,7 +87,7 @@ public extension NSAttributedString {
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
 
-        let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.black]
+        let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
 
         let bulletFont = font.withSize(10)
         let bulletAttributes: [NSAttributedString.Key: Any] = [

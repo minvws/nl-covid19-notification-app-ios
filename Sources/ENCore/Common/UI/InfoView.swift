@@ -289,6 +289,7 @@ final class InfoSectionTextView: View {
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
             label.font = theme.fonts.body
+            label.textColor = theme.colors.gray
             label.attributedText = text
             contentStack.addArrangedSubview(label)
         }
