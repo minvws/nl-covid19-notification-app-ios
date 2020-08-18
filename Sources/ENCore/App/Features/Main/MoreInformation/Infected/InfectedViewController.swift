@@ -209,7 +209,7 @@ private final class InfectedView: View {
     private var content: NSAttributedString {
         let header = NSAttributedString(string: .moreInformationInfectedHeader,
                                         attributes: [
-                                            NSAttributedString.Key.foregroundColor: UIColor.black,
+                                            NSAttributedString.Key.foregroundColor: theme.colors.gray,
                                             NSAttributedString.Key.font: theme.fonts.body
                                         ])
         let howDoesItWork = NSAttributedString(string: .moreInformationInfectedHowDoesItWork,
