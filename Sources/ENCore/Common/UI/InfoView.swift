@@ -96,11 +96,15 @@ final class InfoView: View {
             maker.bottom.equalTo(scrollView)
             maker.leading.trailing.equalTo(self)
         }
+
+        let imageAspectRatio = headerImageView.image?.aspectRatio ?? 1.0
         headerImageView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.equalToSuperview()
+            maker.height.equalTo(headerImageView.snp.width).dividedBy(imageAspectRatio)
         }
+
         stackView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.equalTo(headerImageView.snp.bottom).offset(32)
+            maker.top.equalTo(headerImageView.snp.bottom).offset(24)
             maker.leading.trailing.equalToSuperview()
 
             if !showActionButton {
@@ -165,7 +169,7 @@ final class InfoSectionContentView: View {
         super.setupConstraints()
 
         contentLabel.snp.makeConstraints { maker in
-            maker.top.equalToSuperview().offset(24)
+            maker.top.equalToSuperview().offset(0)
             maker.bottom.equalToSuperview()
             maker.leading.trailing.equalToSuperview().inset(16)
         }
