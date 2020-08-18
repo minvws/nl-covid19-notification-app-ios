@@ -8,13 +8,13 @@
 import UIKit
 
 /// @mockable
-protocol InfectedViewControllable: ViewControllable, ThankYouListener, AboutListener {
+protocol InfectedViewControllable: ViewControllable, ThankYouListener, HelpDetailListener {
     var router: InfectedRouting? { get set }
 
     func push(viewController: ViewControllable)
     func set(cardViewController: ViewControllable?)
 
-    func present(viewController: ViewControllable)
+    func presentInNavigationController(viewController: ViewControllable)
     func dismiss(viewController: ViewControllable)
 }
 
@@ -26,11 +26,11 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
          viewController: InfectedViewControllable,
          thankYouBuilder: ThankYouBuildable,
          cardBuilder: CardBuildable,
-         aboutBuilder: AboutBuildable) {
+         helpDetailBuilder: HelpDetailBuildable) {
         self.listener = listener
         self.thankYouBuilder = thankYouBuilder
         self.cardBuilder = cardBuilder
-        self.aboutBuilder = aboutBuilder
+        self.helpDetailBuilder = helpDetailBuilder
 
         super.init(viewController: viewController)
 
@@ -72,25 +72,26 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
     }
 
     func showFAQ() {
-        guard aboutRouter == nil else {
+        guard helpDetailViewController == nil else {
             return
         }
 
-        let router = aboutBuilder.build(withListener: viewController)
-        viewController.present(viewController: router.viewControllable)
+        let question = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
+        let controller = helpDetailBuilder.build(withListener: viewController, shouldShowEnableAppButton: false, question: question)
+        viewController.presentInNavigationController(viewController: controller)
 
-        aboutRouter = router
+        helpDetailViewController = controller
     }
 
     func hideFAQ(shouldDismissViewController: Bool) {
-        guard let router = aboutRouter else {
+        guard let controller = helpDetailViewController else {
             return
         }
 
-        aboutRouter = nil
+        helpDetailViewController = nil
 
         if shouldDismissViewController {
-            viewController.dismiss(viewController: router.viewControllable)
+            viewController.dismiss(viewController: controller)
         }
     }
 
@@ -104,6 +105,6 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
     private let cardBuilder: CardBuildable
     private var cardRouter: (Routing & CardTypeSettable)?
 
-    private let aboutBuilder: AboutBuildable
-    private var aboutRouter: Routing?
+    private let helpDetailBuilder: HelpDetailBuildable
+    private var helpDetailViewController: ViewControllable?
 }
