@@ -81,8 +81,8 @@ final class ENFonts: Fonts {
     private func font(textStyle: UIFont.TextStyle, isBold: Bool = false) -> UIFont {
         var fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: textStyle)
 
-        if isBold, let newDescriptor = fontDescriptor.withSymbolicTraits(.traitBold) {
-            fontDescriptor = newDescriptor
+        if isBold, let boldFontDescriptor = fontDescriptor.withSymbolicTraits(.traitBold) {
+            fontDescriptor = boldFontDescriptor
         }
 
         return UIFont(descriptor: fontDescriptor, size: fontDescriptor.pointSize)
