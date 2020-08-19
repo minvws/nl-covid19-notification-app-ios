@@ -64,7 +64,11 @@ final class OnboardingConsentSummaryStepView: View {
             maker.top.equalToSuperview()
             maker.leading.equalTo(imageView.snp.trailing).offset(16)
             maker.trailing.equalToSuperview()
-            maker.bottom.equalToSuperview().inset(24)
+        }
+
+        snp.makeConstraints { maker in
+            maker.height.greaterThanOrEqualTo(47)
+            maker.height.greaterThanOrEqualTo(label.snp.height).offset(2)
         }
     }
 }

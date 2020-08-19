@@ -143,7 +143,7 @@ private final class PrivacyAgreementView: View {
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
-        stackView.spacing = 0
+        stackView.spacing = 16
         stackView.backgroundColor = .clear
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView

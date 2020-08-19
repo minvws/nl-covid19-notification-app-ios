@@ -101,7 +101,7 @@ final class UpdateInstructionsView: UIView {
             closeButton.heightAnchor.constraint(equalToConstant: 28),
             closeButton.widthAnchor.constraint(equalToConstant: 28),
             closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 14)
+            closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 28)
         ])
 
         constraints.append([

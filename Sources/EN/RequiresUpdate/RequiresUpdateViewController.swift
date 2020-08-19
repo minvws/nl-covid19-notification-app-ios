@@ -25,22 +25,22 @@ final class RequiresUpdateViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupViews()
-        setupConstraints()
+    }
+
+    override func loadView() {
+        super.loadView()
+        self.view = internalView
+        self.view.frame = UIScreen.main.bounds
     }
 
     // MARK: - Setups
 
     private func setupViews() {
-
-        self.view = internalView
-        self.view.frame = UIScreen.main.bounds
         self.view.backgroundColor = theme.colors.viewControllerBackground
 
-        self.view.addSubview(button)
-
-        button.isHidden = isDeviceSupported == false
+        internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        internalView.button.isHidden = isDeviceSupported == false
 
         let titleKey = isDeviceSupported ? "update.software.os.title" : "update.hardware.title"
         internalView.titleLabel.text = localizedString(for: titleKey)
@@ -49,20 +49,6 @@ final class RequiresUpdateViewController: UIViewController {
         let descriptionKey = isDeviceSupported ? "update.software.os.description" : "update.hardware.description"
         internalView.contentLabel.text = localizedString(for: descriptionKey)
         internalView.contentLabel.font = theme.fonts.body
-    }
-
-    private func setupConstraints() {
-
-        var constraints = [[NSLayoutConstraint]()]
-
-        constraints.append([
-            button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            button.heightAnchor.constraint(equalToConstant: 50)
-        ])
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
     }
 
     // MARK: - Functions
@@ -76,20 +62,7 @@ final class RequiresUpdateViewController: UIViewController {
     private let theme: Theme
     private let isDeviceSupported: Bool
 
-    private lazy var internalView: RequiresUpdateView = RequiresUpdateView()
-
-    private lazy var button: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(localizedString(for: "update.button.update"), for: .normal)
-        button.titleLabel?.font = theme.fonts.bodyBold
-        button.layer.cornerRadius = 10
-        button.clipsToBounds = true
-        button.backgroundColor = theme.colors.primary
-        button.setTitleColor(.white, for: .normal)
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        return button
-    }()
+    private lazy var internalView: RequiresUpdateView = RequiresUpdateView(theme: theme)
 
     // Only devices that support iOS 11 and not iOS 13.
     private static let unsupportedDevicesModels = [
@@ -125,27 +98,35 @@ final class RequiresUpdateView: UIView {
         return label
     }()
 
-    private lazy var viewsInDisplayOrder = [imageView, titleLabel, contentLabel]
+    lazy var button: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle(localizedString(for: "update.button.update"), for: .normal)
+        button.titleLabel?.font = theme.fonts.bodyBold
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        button.backgroundColor = theme.colors.primary
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+
+    private lazy var viewsInDisplayOrder = [imageView, titleLabel, contentLabel, button]
 
     // MARK: - Live cycle
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(theme: Theme) {
+        self.theme = theme
+        super.init(frame: .zero)
 
         setupViews()
         setupConstraints()
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-
-        setupViews()
-        setupConstraints()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func setupViews() {
-
-        translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .white
         viewsInDisplayOrder.forEach { addSubview($0) }
     }
@@ -155,10 +136,10 @@ final class RequiresUpdateView: UIView {
         var constraints = [[NSLayoutConstraint]()]
 
         constraints.append([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 75),
+            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 50),
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
+            imageView.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.83, constant: 1)
         ])
 
         constraints.append([
@@ -175,8 +156,18 @@ final class RequiresUpdateView: UIView {
             contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
         ])
 
+        let bottomMargin: CGFloat = UIWindow().safeAreaInsets.bottom == 0 ? -20 : 0
+        constraints.append([
+            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: bottomMargin),
+            button.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            button.heightAnchor.constraint(equalToConstant: 50)
+        ])
+
         constraints.forEach { NSLayoutConstraint.activate($0) }
 
         self.contentLabel.sizeToFit()
     }
+
+    private let theme: Theme
 }

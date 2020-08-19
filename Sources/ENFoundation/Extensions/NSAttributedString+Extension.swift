@@ -83,17 +83,17 @@ public extension NSAttributedString {
     static func bulletList(_ stringList: [String],
                            theme: Theme,
                            font: UIFont,
-                           bullet: String = "\u{2022}",
+                           bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
 
-        let textAttributes = [
-            NSAttributedString.Key.font: font,
-            NSAttributedString.Key.foregroundColor: UIColor.black
-        ]
-        let bulletAttributes = [
-            NSAttributedString.Key.font: font,
-            NSAttributedString.Key.foregroundColor: theme.colors.primary
+        let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
+
+        let bulletFont = font.withSize(10)
+        let bulletAttributes: [NSAttributedString.Key: Any] = [
+            .font: bulletFont,
+            .foregroundColor: theme.colors.primary,
+            .baselineOffset: (font.xHeight - bulletFont.xHeight) / 2
         ]
 
         let paragraphStyle = NSMutableParagraphStyle()
