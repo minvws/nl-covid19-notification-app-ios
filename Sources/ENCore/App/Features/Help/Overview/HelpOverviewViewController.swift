@@ -57,7 +57,7 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
         if let aCell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) {
             cell = aCell
         } else {
-            cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+            cell = HelpTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
         }
 
         let question = helpManager.questions[indexPath.row]
@@ -68,9 +68,6 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
         cell.textLabel?.accessibilityTraits = .header
 
         cell.accessoryType = .disclosureIndicator
-
-        cell.indentationLevel = 1
-        cell.indentationWidth = 5
 
         return cell
     }
@@ -115,7 +112,7 @@ private final class HelpView: View {
     }()
 
     lazy var tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
         tableView.separatorStyle = .none
@@ -128,7 +125,11 @@ private final class HelpView: View {
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableView.automaticDimension
 
+        tableView.estimatedSectionHeaderHeight = 50
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+
         tableView.allowsMultipleSelection = false
+        tableView.tableFooterView = UIView()
 
         return tableView
     }()
@@ -179,6 +180,44 @@ private final class HelpView: View {
     }
 }
 
+private class HelpTableViewCell: UITableViewCell {
+
+    init(theme: Theme, reuseIdentifier: String) {
+        self.theme = theme
+        super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        build()
+        setupConstraints()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func build() {
+        separatorView.backgroundColor = theme.colors.tertiary
+        addSubview(separatorView)
+    }
+
+    func setupConstraints() {
+        separatorView.snp.makeConstraints { maker in
+            maker.leading.equalToSuperview().inset(14)
+            maker.trailing.bottom.equalToSuperview()
+            maker.height.equalTo(1)
+        }
+
+        textLabel?.snp.makeConstraints { maker in
+            maker.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.bottom.top.equalToSuperview().inset(12)
+        }
+    }
+
+    // MARK: - Private
+
+    private let separatorView = UIView()
+    private let theme: Theme
+}
+
 private final class SectionHeaderView: View {
 
     lazy var label: Label = {
@@ -203,7 +242,7 @@ private final class SectionHeaderView: View {
         hasBottomMargin = true
 
         label.snp.makeConstraints { maker in
-            maker.leading.trailing.top.equalToSuperview().inset(16)
+            maker.edges.equalToSuperview().inset(16)
         }
     }
 }
