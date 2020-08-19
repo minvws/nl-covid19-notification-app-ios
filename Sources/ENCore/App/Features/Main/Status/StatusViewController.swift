@@ -193,6 +193,7 @@ private final class StatusView: View {
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
+        descriptionLabel.textColor = theme.colors.gray
 
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
