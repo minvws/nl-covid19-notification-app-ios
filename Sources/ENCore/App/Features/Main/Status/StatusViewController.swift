@@ -334,6 +334,7 @@ private final class StatusAnimationView: View {
 
     override func build() {
         super.build()
+        backgroundColor = .clear
 
         animationView.animation = LottieAnimation.named("statusactive")
         animationView.loopMode = .playOnce
