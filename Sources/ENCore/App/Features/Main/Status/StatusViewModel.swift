@@ -15,7 +15,7 @@ struct StatusViewIcon {
 
     static let ok = StatusViewIcon(color: \.ok, icon: .statusIconOk)
     static let notified = StatusViewIcon(color: \.notified, icon: .statusIconNotified)
-    static let inactive = StatusViewIcon(color: \.inactive, icon: .statusInactive)
+    static let inactive = StatusViewIcon(color: \.inactive, icon: .statusIconInactive)
 }
 
 struct StatusViewButtonModel {
@@ -151,7 +151,7 @@ struct StatusViewModel {
         buttons: [.enableSettings],
         footer: nil,
         shouldShowHideMessage: false,
-        gradientColor: \.inactive,
+        gradientColor: \.lightOrange,
         showScene: false,
         showClouds: false
     )
@@ -163,7 +163,7 @@ struct StatusViewModel {
         buttons: [.tryAgain],
         footer: nil,
         shouldShowHideMessage: false,
-        gradientColor: \.inactive,
+        gradientColor: \.lightOrange,
         showScene: false,
         showClouds: false
     )

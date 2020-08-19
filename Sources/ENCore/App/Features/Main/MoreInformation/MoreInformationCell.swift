@@ -98,12 +98,12 @@ final class MoreInformationCell: UIControl, Themeable {
         iconImageView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.leading.equalToSuperview().offset(16)
             maker.top.equalToSuperview().offset(23)
-            maker.width.height.equalTo(40)
+            maker.width.height.equalTo(32)
         }
         titleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.leading.equalTo(iconImageView.snp.trailing).offset(16)
             maker.top.equalTo(iconImageView)
-            maker.trailing.equalTo(chevronImageView).inset(12)
+            maker.trailing.equalToSuperview().inset(40)
         }
         subtitleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(titleLabel.snp.bottom).offset(4)

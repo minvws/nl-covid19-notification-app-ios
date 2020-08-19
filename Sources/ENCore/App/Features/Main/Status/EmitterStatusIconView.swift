@@ -45,8 +45,8 @@ final class EmitterStatusIconView: View {
             iconImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
 
-            iconImageView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.5),
-            iconImageView.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, multiplier: 0.5)
+            iconImageView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.66),
+            iconImageView.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, multiplier: 0.66)
         ])
     }
 

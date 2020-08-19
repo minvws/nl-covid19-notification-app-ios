@@ -193,6 +193,7 @@ private final class StatusView: View {
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
+        descriptionLabel.textColor = theme.colors.gray
 
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
@@ -333,6 +334,7 @@ private final class StatusAnimationView: View {
 
     override func build() {
         super.build()
+        backgroundColor = .clear
 
         animationView.animation = LottieAnimation.named("statusactive")
         animationView.loopMode = .playOnce

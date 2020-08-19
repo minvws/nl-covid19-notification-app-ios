@@ -37,6 +37,7 @@ extension UIImage {
     static var statusScene: UIImage? { return Image.named("StatusScene") }
     static var statusIconOk: UIImage? { return Image.named("StatusIconOk") }
     static var statusIconNotified: UIImage? { return Image.named("StatusIconNotified") }
+    static var statusIconInactive: UIImage? { return Image.named("StatusIconInactive") }
     static var statusInactive: UIImage? { return Image.named("StatusInactive") }
     static var messageHeader: UIImage? { return Image.named("MessageHeader") }
     static var callGGD: UIImage? { return Image.named("CallGGD") }
