@@ -24,60 +24,67 @@ public protocol Fonts {
 }
 
 final class ENFonts: Fonts {
+    // Using default textStyles from Apple typography guidelines:
+    // https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/typography/
+    // Table with point in sizes can be found on the link.
 
     var largeTitle: UIFont {
-        font(size: 34, weight: .bold, textStyle: .largeTitle)
+        font(textStyle: .largeTitle, isBold: true) // Size 34 points
     }
 
     var title1: UIFont {
-        font(size: 28, weight: .bold, textStyle: .title1)
+        font(textStyle: .title1, isBold: true) // Size 28 points
     }
 
     var title2: UIFont {
-        font(size: 22, weight: .bold, textStyle: .title2)
+        font(textStyle: .title2, isBold: true) // Size 22 points
     }
 
     var title3: UIFont {
-        font(size: 20, weight: .bold, textStyle: .title3)
+        font(textStyle: .title3, isBold: true) // Size 20 points
     }
 
     var headline: UIFont {
-        font(size: 17, weight: .semibold, textStyle: .headline)
+        font(textStyle: .headline) // Size 17 points
     }
 
     var body: UIFont {
-        font(size: 17, weight: .regular, textStyle: .body)
+        font(textStyle: .body) // Size 17 points
     }
 
     var bodyBold: UIFont {
-        font(size: 17, weight: .bold, textStyle: .body)
+        font(textStyle: .body, isBold: true) // Size 17 points
     }
 
     var callout: UIFont {
-        font(size: 16, weight: .regular, textStyle: .callout)
+        font(textStyle: .callout) // Size 16 points
     }
 
     var subhead: UIFont {
-        font(size: 15, weight: .regular, textStyle: .subheadline)
+        font(textStyle: .subheadline) // Size 15 points
     }
 
     var subheadBold: UIFont {
-        font(size: 15, weight: .bold, textStyle: .subheadline)
+        font(textStyle: .subheadline, isBold: true) // Size 15 points
     }
 
     var footnote: UIFont {
-        font(size: 13, weight: .regular, textStyle: .footnote)
+        font(textStyle: .footnote) // Size 13 points
     }
 
     var caption1: UIFont {
-        font(size: 12, weight: .regular, textStyle: .caption1)
+        font(textStyle: .caption1) // size 12 points
     }
 
     // MARK: - Private
 
-    private func font(size: CGFloat, weight: UIFont.Weight, textStyle: UIFont.TextStyle) -> UIFont {
-        let font = UIFont.systemFont(ofSize: size, weight: weight)
-        let fontMetrics = UIFontMetrics(forTextStyle: textStyle)
-        return fontMetrics.scaledFont(for: font)
+    private func font(textStyle: UIFont.TextStyle, isBold: Bool = false) -> UIFont {
+        var fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: textStyle)
+
+        if isBold, let newDescriptor = fontDescriptor.withSymbolicTraits(.traitBold) {
+            fontDescriptor = newDescriptor
+        }
+
+        return UIFont(descriptor: fontDescriptor, size: fontDescriptor.pointSize)
     }
 }

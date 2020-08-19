@@ -18,7 +18,6 @@ final class RequiresUpdateViewControllerTest: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        SnapshotTesting.record = false
         SnapshotTesting.diffTool = "ksdiff"
     }
 
