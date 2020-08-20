@@ -50,13 +50,13 @@ final class ExposureController: ExposureControlling, Logging {
             return
         }
 
-        exposureManager.activate { _ in
-            self.isActivated = true
-            self.postExposureManagerActivation()
-            self.updateStatusStream()
+        updatePushNotificationState {
+            self.exposureManager.activate { _ in
+                self.isActivated = true
+                self.postExposureManagerActivation()
+                self.updateStatusStream()
+            }
         }
-
-        updatePushNotificationState()
     }
 
     func deactivate() {
@@ -97,8 +97,9 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func refreshStatus() {
-        updateStatusStream()
-        updatePushNotificationState()
+        updatePushNotificationState {
+            self.updateStatusStream()
+        }
     }
 
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
@@ -411,10 +412,11 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    private func updatePushNotificationState() {
+    private func updatePushNotificationState(completition: @escaping () -> ()) {
         userNotificationCenter.getAuthorizationStatus { authorizationStatus in
             self.isPushNotificationsEnabled = authorizationStatus == .authorized
             self.updateStatusStream()
+            completition()
         }
     }
 
