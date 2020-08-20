@@ -103,7 +103,7 @@ final class OnboardingStepView: View {
 
     lazy var animationView: AnimationView = {
         let animationView = AnimationView()
-        animationView.contentMode = .scaleToFill
+        animationView.contentMode = .scaleAspectFit
         return animationView
     }()
 
@@ -237,8 +237,8 @@ final class OnboardingStepView: View {
             animationView.snp.makeConstraints { maker in
                 maker.top.equalToSuperview()
                 maker.centerX.equalToSuperview()
-                maker.width.equalTo(scrollView).multipliedBy(1.5)
-                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio * 1.5)
+                maker.width.equalTo(scrollView)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
             }
         }
     }
