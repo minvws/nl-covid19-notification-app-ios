@@ -59,7 +59,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step5Title,
                 content: .step5Content,
-                illustration: .image(named: "Step5"),
+                illustration: .animation(named: "train"),
                 buttonTitle: .nextButtonTitle,
                 isExample: true
             )
