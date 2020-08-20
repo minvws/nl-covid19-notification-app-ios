@@ -239,10 +239,6 @@ final class OnboardingConsentView: View {
             maker.bottom.equalTo(primaryButton.snp.top).inset(-16)
         }
 
-        animationView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalTo(self)
-        }
-
         primaryButton.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.height.equalTo(50)
@@ -266,18 +262,11 @@ final class OnboardingConsentView: View {
 
         self.titleLabel.attributedText = step.attributedTitle
         self.contentLabel.attributedText = step.attributedContent
-
         self.primaryButton.title = step.primaryButtonTitle
 
         if let title = step.secondaryButtonTitle {
             self.secondaryButton.title = title
             self.secondaryButton.isHidden = false
-
-            scrollView.snp.remakeConstraints { maker in
-                maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
-                maker.width.equalToSuperview()
-                maker.bottom.equalTo(secondaryButton.snp.top).inset(-16)
-            }
         }
 
         if let animation = step.animation {
@@ -286,21 +275,6 @@ final class OnboardingConsentView: View {
         } else if let image = step.image {
             self.imageView.image = image
             self.imageView.isHidden = false
-        }
-
-        imageView.sizeToFit()
-
-        if let width = imageView.image?.size.width,
-            let height = imageView.image?.size.height,
-            width > 0, height > 0 {
-
-            let aspectRatio = height / width
-
-            imageView.snp.makeConstraints { maker in
-                maker.top.equalToSuperview()
-                maker.leading.trailing.equalTo(self).inset(16)
-                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
-            }
         }
 
         guard let summarySteps = step.summarySteps else {
@@ -327,10 +301,46 @@ final class OnboardingConsentView: View {
 
         guard let step = self.consentStep else { return }
 
+        imageView.sizeToFit()
+
+        if let width = imageView.image?.size.width,
+            let height = imageView.image?.size.height,
+            width > 0, height > 0 {
+
+            let aspectRatio = height / width
+
+            imageView.snp.makeConstraints { maker in
+                maker.top.equalToSuperview()
+                maker.leading.trailing.equalTo(self).inset(16)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
+            }
+        }
+
+        animationView.sizeToFit()
+
+        if let width = animationView.animation?.size.width,
+            let height = animationView.animation?.size.height,
+            width > 0, height > 0 {
+
+            let aspectRatio = height / width
+
+            animationView.snp.makeConstraints { maker in
+                maker.top.equalToSuperview()
+                maker.centerX.equalToSuperview()
+                maker.width.equalTo(scrollView)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
+            }
+        }
+
         titleLabel.snp.remakeConstraints { maker in
             maker.leading.trailing.equalTo(self).inset(16)
             maker.height.greaterThanOrEqualTo(50)
-            maker.top.equalTo(step.hasImage ? imageView.snp.bottom : scrollView.snp.top).offset(25)
+            if step.hasImage || step.hasAnimation {
+                maker.top.greaterThanOrEqualTo(imageView.snp.bottom)
+                maker.top.greaterThanOrEqualTo(animationView.snp.bottom)
+            } else {
+                maker.top.equalTo(scrollView.snp.top).offset(25)
+            }
         }
 
         contentLabel.snp.remakeConstraints { maker in
