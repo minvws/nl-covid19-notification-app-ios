@@ -9,48 +9,45 @@ import ENFoundation
 import Lottie
 import UIKit
 
-enum OnboardingConsentStepIndex: Int {
-    case en = 0
-    case bluetooth
-    case share
-}
-
 final class OnboardingConsentStep: NSObject {
+    enum Index: Int {
+        case en = 0
+        case bluetooth
+        case share
+    }
 
-    var step: OnboardingConsentStepIndex
+    enum Illustration {
+        case none
+        case image(image: UIImage?)
+        case animation(named: String, repeatFromFrame: Int? = nil)
+    }
+
+    var step: Index
     var attributedTitle: NSAttributedString = NSAttributedString(string: "")
     var attributedContent: NSAttributedString = NSAttributedString(string: "")
-    var image: UIImage?
-    var hasImage: Bool { return self.image != nil }
-    var animation: Animation?
-    var hasAnimation: Bool { return self.animation != nil }
+    var illustration: Illustration
     var summarySteps: [OnboardingConsentSummaryStep]?
-    var hasSummarySteps: Bool {
-        guard let summarySteps = self.summarySteps else { return false }
-        return !summarySteps.isEmpty
-    }
     var primaryButtonTitle: String = ""
     var secondaryButtonTitle: String?
     var hasNavigationBarSkipButton: Bool = false
 
-    init(step: OnboardingConsentStepIndex,
+    var hasSummarySteps: Bool {
+        guard let summarySteps = self.summarySteps else { return false }
+        return !summarySteps.isEmpty
+    }
+
+    init(step: Index,
          theme: Theme,
          title: String,
          content: String,
-         image: UIImage?,
-         animationName: String?,
+         illustration: Illustration,
          summarySteps: [OnboardingConsentSummaryStep]?,
          primaryButtonTitle: String,
          secondaryButtonTitle: String?,
          hasNavigationBarSkipButton: Bool) {
 
         self.step = step
-        self.image = image
-        if let animationName = animationName {
-            if let animation = LottieAnimation.named(animationName) {
-                self.animation = animation
-            }
-        }
+        self.illustration = illustration
         self.summarySteps = summarySteps
         self.primaryButtonTitle = primaryButtonTitle
         self.secondaryButtonTitle = secondaryButtonTitle

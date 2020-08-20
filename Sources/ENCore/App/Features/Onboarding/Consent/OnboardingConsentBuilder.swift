@@ -20,7 +20,7 @@ protocol OnboardingConsentBuildable {
 /// @mockable
 protocol OnboardingConsentListener: AnyObject {
     func consentClose()
-    func consentRequest(step: OnboardingConsentStepIndex)
+    func consentRequest(step: OnboardingConsentStep.Index)
     func displayHelp()
     func displayBluetoothSettings()
     func displayShareApp(completion: (() -> ())?)

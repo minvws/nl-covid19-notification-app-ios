@@ -65,14 +65,16 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         }
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
-        self.internalView.animationView.play()
+        if internalView.animationView.animation != nil, animationsEnabled() {
+            self.internalView.animationView.play()
+        }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
 
         self.internalView.animationView.stop()
     }
@@ -165,7 +167,6 @@ final class OnboardingConsentView: View {
         let animationView = AnimationView()
         animationView.translatesAutoresizingMaskIntoConstraints = false
         animationView.isHidden = true
-        animationView.loopMode = .loop
         return animationView
     }()
 
@@ -239,10 +240,6 @@ final class OnboardingConsentView: View {
             maker.bottom.equalTo(primaryButton.snp.top).inset(-16)
         }
 
-        animationView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalTo(self)
-        }
-
         primaryButton.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.height.equalTo(50)
@@ -266,41 +263,33 @@ final class OnboardingConsentView: View {
 
         self.titleLabel.attributedText = step.attributedTitle
         self.contentLabel.attributedText = step.attributedContent
-
         self.primaryButton.title = step.primaryButtonTitle
 
         if let title = step.secondaryButtonTitle {
             self.secondaryButton.title = title
             self.secondaryButton.isHidden = false
-
-            scrollView.snp.remakeConstraints { maker in
-                maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
-                maker.width.equalToSuperview()
-                maker.bottom.equalTo(secondaryButton.snp.top).inset(-16)
-            }
         }
 
-        if let animation = step.animation {
-            self.animationView.animation = animation
-            self.animationView.isHidden = false
-        } else if let image = step.image {
-            self.imageView.image = image
-            self.imageView.isHidden = false
-        }
+        switch step.illustration {
+        case let .image(image: image):
+            imageView.image = image
+            animationView.isHidden = true
+            imageView.isHidden = false
+        case let .animation(named: name, repeatFromFrame: repeatFromFrame):
+            animationView.animation = LottieAnimation.named(name)
+            animationView.isHidden = false
+            imageView.isHidden = true
 
-        imageView.sizeToFit()
-
-        if let width = imageView.image?.size.width,
-            let height = imageView.image?.size.height,
-            width > 0, height > 0 {
-
-            let aspectRatio = height / width
-
-            imageView.snp.makeConstraints { maker in
-                maker.top.equalToSuperview()
-                maker.leading.trailing.equalTo(self).inset(16)
-                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
+            if let repeatFromFrame = repeatFromFrame {
+                let endFrame = animationView.animation?.endFrame ?? 0
+                animationView.play(fromFrame: 0, toFrame: endFrame, loopMode: .playOnce) { [weak self] _ in
+                    self?.loopAnimation(fromFrame: repeatFromFrame)
+                }
+            } else {
+                animationView.loopMode = .loop
             }
+        case .none:
+            break
         }
 
         guard let summarySteps = step.summarySteps else {
@@ -327,10 +316,46 @@ final class OnboardingConsentView: View {
 
         guard let step = self.consentStep else { return }
 
+        imageView.sizeToFit()
+
+        if let width = imageView.image?.size.width,
+            let height = imageView.image?.size.height,
+            width > 0, height > 0 {
+
+            let aspectRatio = height / width
+
+            imageView.snp.makeConstraints { maker in
+                maker.top.equalToSuperview()
+                maker.leading.trailing.equalTo(self).inset(16)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
+            }
+        }
+
+        animationView.sizeToFit()
+
+        if let width = animationView.animation?.size.width,
+            let height = animationView.animation?.size.height,
+            width > 0, height > 0 {
+
+            let aspectRatio = height / width
+
+            animationView.snp.makeConstraints { maker in
+                maker.top.equalToSuperview()
+                maker.centerX.equalToSuperview()
+                maker.width.equalTo(scrollView)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
+            }
+        }
+
         titleLabel.snp.remakeConstraints { maker in
             maker.leading.trailing.equalTo(self).inset(16)
             maker.height.greaterThanOrEqualTo(50)
-            maker.top.equalTo(step.hasImage ? imageView.snp.bottom : scrollView.snp.top).offset(25)
+            if case .none = step.illustration {
+                maker.top.equalTo(scrollView.snp.top).offset(25)
+            } else {
+                maker.top.greaterThanOrEqualTo(imageView.snp.bottom)
+                maker.top.greaterThanOrEqualTo(animationView.snp.bottom)
+            }
         }
 
         contentLabel.snp.remakeConstraints { maker in
@@ -350,6 +375,15 @@ final class OnboardingConsentView: View {
                     maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
                 }
             }
+        }
+    }
+
+    // MARK: - Private
+
+    private func loopAnimation(fromFrame frameNumber: Int) {
+        let toFrame = animationView.animation?.endFrame ?? 0
+        animationView.play(fromFrame: CGFloat(frameNumber), toFrame: toFrame, loopMode: nil) { [weak self] _ in
+            self?.loopAnimation(fromFrame: frameNumber)
         }
     }
 }

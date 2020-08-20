@@ -103,7 +103,7 @@ final class OnboardingStepView: View {
 
     lazy var animationView: AnimationView = {
         let animationView = AnimationView()
-        animationView.contentMode = .scaleToFill
+        animationView.contentMode = .scaleAspectFit
         return animationView
     }()
 
@@ -133,11 +133,6 @@ final class OnboardingStepView: View {
         didSet {
             updateView()
         }
-    }
-
-    deinit {
-        displayLink?.invalidate()
-        displayLink = nil
     }
 
     override func build() {
@@ -182,16 +177,12 @@ final class OnboardingStepView: View {
     }
 
     func updateView() {
-
         guard let step = self.onboardingStep else {
             return
         }
 
         self.titleLabel.attributedText = step.attributedTitle
         self.contentLabel.attributedText = step.attributedContent
-        self.displayLink?.invalidate()
-        self.displayLink = nil
-        self.frameNumber = nil
 
         switch step.illustration {
         case let .image(named: name):
@@ -204,7 +195,10 @@ final class OnboardingStepView: View {
             imageView.isHidden = true
 
             if let repeatFromFrame = repeatFromFrame {
-                loopAnimation(fromFrame: repeatFromFrame)
+                let endFrame = animationView.animation?.endFrame ?? 0
+                animationView.play(fromFrame: 0, toFrame: endFrame, loopMode: .playOnce) { [weak self] _ in
+                    self?.loopAnimation(fromFrame: repeatFromFrame)
+                }
             } else {
                 animationView.loopMode = .loop
             }
@@ -237,34 +231,18 @@ final class OnboardingStepView: View {
             animationView.snp.makeConstraints { maker in
                 maker.top.equalToSuperview()
                 maker.centerX.equalToSuperview()
-                maker.width.equalTo(scrollView).multipliedBy(1.5)
-                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio * 1.5)
+                maker.width.equalTo(scrollView)
+                maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
             }
         }
     }
 
     // MARK: - Private
 
-    var displayLink: CADisplayLink?
-    var frameNumber: Int?
-
     private func loopAnimation(fromFrame frameNumber: Int) {
-        self.frameNumber = frameNumber
-
-        displayLink?.invalidate()
-
-        displayLink = CADisplayLink(target: self, selector: #selector(tick))
-        displayLink?.add(to: RunLoop.current, forMode: .common)
-    }
-
-    @objc private func tick() {
-        if animationView.currentProgress == 1.0,
-            animationView.isAnimationPlaying == false,
-            let frameNumber = frameNumber {
-            animationView.play(fromFrame: CGFloat(frameNumber),
-                               toFrame: animationView.animation?.endFrame ?? 0,
-                               loopMode: nil,
-                               completion: nil)
+        let endFrame = animationView.animation?.endFrame ?? 0
+        animationView.play(fromFrame: CGFloat(frameNumber), toFrame: endFrame, loopMode: nil) { [weak self] _ in
+            self?.loopAnimation(fromFrame: frameNumber)
         }
     }
 }

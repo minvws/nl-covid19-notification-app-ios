@@ -15,7 +15,7 @@ protocol OnboardingConsentManaging {
     var onboardingConsentSteps: [OnboardingConsentStep] { get }
 
     func getStep(_ index: Int) -> OnboardingConsentStep?
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ())
+    func getNextConsentStep(_ currentStep: OnboardingConsentStep.Index, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStep.Index?) -> ())
     func isBluetoothEnabled(_ completion: @escaping (Bool) -> ())
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ()))
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
@@ -42,8 +42,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 theme: theme,
                 title: .consentStep1Title,
                 content: "",
-                image: nil,
-                animationName: nil,
+                illustration: .none,
                 summarySteps: [
                     OnboardingConsentSummaryStep(
                         theme: theme,
@@ -73,8 +72,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 theme: theme,
                 title: .consentStep2Title,
                 content: .consentStep2Content,
-                image: .pleaseTurnOnBluetooth,
-                animationName: nil,
+                illustration: .image(image: .pleaseTurnOnBluetooth),
                 summarySteps: nil,
                 primaryButtonTitle: .consentStep2PrimaryButton,
                 secondaryButtonTitle: nil,
@@ -89,8 +87,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                  theme: theme,
                  title: .consentStep3Title,
                  content: .consentStep3Content,
-                 image: .pleaseTurnOnNotifications,
-                 animationName: nil,
+                 illustration: .image(image: .pleaseTurnOnNotifications),
                  summarySteps: nil,
                  primaryButtonTitle: .consentStep3PrimaryButton,
                  secondaryButtonTitle: .consentStep3SecondaryButton,
@@ -105,8 +102,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 theme: theme,
                 title: .consentStep4Title,
                 content: .consentStep4Content,
-                image: .shareApp,
-                animationName: nil,
+                illustration: .animation(named: "share", repeatFromFrame: 31),
                 summarySteps: nil,
                 primaryButtonTitle: .consentStep4PrimaryButton,
                 secondaryButtonTitle: .consentStep4SecondaryButton,
@@ -126,7 +122,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
         return nil
     }
 
-    func getNextConsentStep(_ currentStep: OnboardingConsentStepIndex, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStepIndex?) -> ()) {
+    func getNextConsentStep(_ currentStep: OnboardingConsentStep.Index, skippedCurrentStep: Bool, completion: @escaping (OnboardingConsentStep.Index?) -> ()) {
         switch currentStep {
         case .en:
             exposureStateStream
