@@ -29,7 +29,6 @@ final class RequiresUpdateViewController: UIViewController {
     }
 
     override func loadView() {
-        super.loadView()
         self.view = internalView
         self.view.frame = UIScreen.main.bounds
     }
