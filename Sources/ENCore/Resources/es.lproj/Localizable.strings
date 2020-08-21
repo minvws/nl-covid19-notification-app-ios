@@ -193,6 +193,7 @@
 "status.appState.card.button" = "Activar la app";
 "status.appState.card.try_again" = "Prueba otra vez";
 "status.active.description" = "Incluso si cierras la app, CoronaMelder seguirá activado";
+"status.notified.today" = "hoy";
 "status.notified.days_ago_one" = "hace %@ día";
 "status.notified.days_ago_other" = "hace %@ días";
 "status.notified.description" = "Hace %@ (%@) corriste el riesgo de un posible contagio";

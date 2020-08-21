@@ -193,6 +193,7 @@
 "status.appState.card.button" = "Uygulamayı açmak";
 "status.appState.card.try_again" = "Tekrar deneyin";
 "status.active.description" = "Uygulamayı kapatsanız bile CoronaMelder etkindir";
+"status.notified.today" = "bugün";
 "status.notified.days_ago_one" = "%@ gün önce";
 "status.notified.days_ago_other" = "%@ gün önce";
 "status.notified.description" = "Fazladan %@ (%@) bulaşma riskine uğradınız";

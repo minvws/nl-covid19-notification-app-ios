@@ -21,7 +21,7 @@ final class StatusViewModelTests: TestCase {
 
         let daysBetweenDates = StatusViewModel.timeAgo(from: dayBeforeWithLessThan24HoursDifference)
 
-        XCTAssertEqual(daysBetweenDates, .statusNotifiedDescription(.statusNotifiedDaysAgoOne("1"), two: "Thursday, August 13, 2020"))
+        XCTAssertEqual(daysBetweenDates, .statusNotifiedDescription(.statusNotifiedDaysAgo(days: 1), two: "Thursday, August 13, 2020"))
     }
 
     func testTimeAgoWithSameDay() {
@@ -31,7 +31,7 @@ final class StatusViewModelTests: TestCase {
 
         let daysBetweenDates = StatusViewModel.timeAgo(from: sameDayDate)
 
-        XCTAssertEqual(daysBetweenDates, .statusNotifiedDescription(.statusNotifiedDaysAgoOne("0"), two: "Friday, August 14, 2020"))
+        XCTAssertEqual(daysBetweenDates, .statusNotifiedDescription(.statusNotifiedDaysAgo(days: 0), two: "Friday, August 14, 2020"))
     }
 
     func testTimeAgoWithMultipleDays() {
@@ -41,6 +41,6 @@ final class StatusViewModelTests: TestCase {
 
         let daysBetweenDates = StatusViewModel.timeAgo(from: threeDaysBefore)
 
-        XCTAssertEqual(daysBetweenDates, .statusNotifiedDescription(.statusNotifiedDaysAgoOther("3"), two: "Tuesday, August 11, 2020"))
+        XCTAssertEqual(daysBetweenDates, .statusNotifiedDescription(.statusNotifiedDaysAgo(days: 3), two: "Tuesday, August 11, 2020"))
     }
 }

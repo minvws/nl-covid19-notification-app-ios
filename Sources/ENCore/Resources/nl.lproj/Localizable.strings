@@ -193,6 +193,7 @@
 "status.appState.card.button" = "App aanzetten";
 "status.appState.card.try_again" = "Probeer opnieuw";
 "status.active.description" = "Ook als je de app sluit, blijft CoronaMelder actief";
+"status.notified.today" = "vandaag";
 "status.notified.days_ago_one" = "%@ dag geleden";
 "status.notified.days_ago_other" = "%@ dagen geleden";
 "status.notified.description" = "Je hebt %@ (%@) extra kans op besmetting gelopen";

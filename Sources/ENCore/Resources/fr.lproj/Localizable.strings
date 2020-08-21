@@ -194,6 +194,7 @@
 "status.appState.card.button" = "Ouvrir l'application";
 "status.appState.card.try_again" = "Veuillez réessayer";
 "status.active.description" = "Même si vous fermez l'application, CoronaMelder reste active";
+"status.notified.today" = "aujourd'hui";
 "status.notified.days_ago_one" = "il y a %@ jour";
 "status.notified.days_ago_other" = "il y a %@ jours";
 "status.notified.description" = "Vous avez, %@ (%@), couru plus de risques d\'avoir été contaminé(e)";

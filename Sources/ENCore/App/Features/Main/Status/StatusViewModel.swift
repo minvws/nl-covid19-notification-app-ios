@@ -174,9 +174,8 @@ struct StatusViewModel {
         dateFormatter.dateStyle = .full
 
         let dateString = dateFormatter.string(from: from)
-
         let days = now.days(sinceDate: from) ?? 0
-        let string = (days > 1) ? String.statusNotifiedDaysAgoOther("\(days)") : String.statusNotifiedDaysAgoOne("\(days)")
-        return .statusNotifiedDescription(string, two: dateString)
+
+        return .statusNotifiedDescription(.statusNotifiedDaysAgo(days: days), two: dateString)
     }
 }

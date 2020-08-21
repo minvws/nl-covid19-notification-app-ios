@@ -193,6 +193,7 @@
 "status.appState.card.button" = "Activare aplicație";
 "status.appState.card.try_again" = "Încercați din nou";
 "status.active.description" = "Chiar dacă închideți aplicația, CoronaMelder rămâne activă";
+"status.notified.today" = "Astăzi";
 "status.notified.days_ago_one" = "Acum %@ zi";
 "status.notified.days_ago_other" = "Acum %@ zile";
 "status.notified.description" = "Acum %@ zile (%@) ați fost expus riscului de contaminare";
