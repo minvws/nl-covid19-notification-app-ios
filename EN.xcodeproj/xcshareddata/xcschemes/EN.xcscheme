@@ -35,17 +35,6 @@
             testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F5B0ED60414C6DE1E7E9FE04"
-               BuildableName = "ENTests.xctest"
-               BlueprintName = "ENTests"
-               ReferencedContainer = "container:EN.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "39B6B33AA5525CAE90F2519E"
                BuildableName = "ENCoreTests.xctest"
                BlueprintName = "ENCoreTests"

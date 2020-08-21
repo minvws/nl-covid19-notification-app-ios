@@ -59,9 +59,6 @@ buildinfo:
 	bash tools/scripts/buildinfo.sh release > .buildinfo
 
 touch_mock_files_if_needed:
-ifneq ($(wildcard ${EN_MOCKS_PATH}), "")
-	@touch ${EN_MOCKS_PATH}
-endif
 ifneq ($(wildcard ${EN_CORE_MOCKS_PATH}), "")
 	@touch ${EN_CORE_MOCKS_PATH}
 endif
