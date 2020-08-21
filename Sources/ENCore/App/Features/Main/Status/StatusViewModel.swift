@@ -12,10 +12,11 @@ import UIKit
 struct StatusViewIcon {
     let color: ThemeColor
     let icon: UIImage?
+    let accessibilityLabel: String
 
-    static let ok = StatusViewIcon(color: \.ok, icon: .statusIconOk)
-    static let notified = StatusViewIcon(color: \.notified, icon: .statusIconNotified)
-    static let inactive = StatusViewIcon(color: \.inactive, icon: .statusIconInactive)
+    static let ok = StatusViewIcon(color: \.ok, icon: .statusIconOk, accessibilityLabel: .statusIconAccessibilityOk)
+    static let notified = StatusViewIcon(color: \.notified, icon: .statusIconNotified, accessibilityLabel: .statusIconAccessibilityNotified)
+    static let inactive = StatusViewIcon(color: \.inactive, icon: .statusIconInactive, accessibilityLabel: .statusIconAccessibilityInactive)
 }
 
 struct StatusViewButtonModel {
@@ -64,14 +65,14 @@ struct StatusCardViewModel {
     let button: StatusViewButtonModel
 
     static let inactive = StatusCardViewModel(
-        icon: StatusViewIcon(color: \.inactive, icon: .statusInactive),
+        icon: StatusViewIcon(color: \.inactive, icon: .statusInactive, accessibilityLabel: .statusIconAccessibilityInactive),
         title: .init(string: .statusAppStateCardTitle),
         description: .init(string: String(format: .statusAppStateCardDescription)),
         button: StatusViewButtonModel.enableSettings
     )
 
     static let inactiveTryAgain = StatusCardViewModel(
-        icon: StatusViewIcon(color: \.inactive, icon: .statusInactive),
+        icon: StatusViewIcon(color: \.inactive, icon: .statusInactive, accessibilityLabel: .statusIconAccessibilityInactive),
         title: .init(string: .statusAppStateCardTitle),
         description: .init(string: .statusAppStateInactiveNoRecentUpdatesDescription),
         button: StatusViewButtonModel.tryAgain

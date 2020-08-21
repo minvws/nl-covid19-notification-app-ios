@@ -183,6 +183,9 @@
 "main.confirmNotificationRemoval.confirm" = "Verwijder";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Groen rondje met vinkje dat aangeeft dat de app goed staat ingesteld";
+"status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
+"status.icon.accessibility.notified" = "Rood rondje met alarmbel dat aangeeft dat er nu actie nodig is";
 "status.appState" = "De app is actief";
 "status.appState.inactive.title" = "De app is niet actief";
 "status.appState.inactive.description" = "CoronaMelder werkt alleen als de noodzakelijke instellingen aanstaan.";

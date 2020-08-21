@@ -183,6 +183,9 @@
 "main.confirmNotificationRemoval.confirm" = "Премахни";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Зелено кръгче с отметка, което показва, че приложението е настроено правилно";
+"status.icon.accessibility.inactive" = "Жълто кръгче с удивителен знак за предупреждение";
+"status.icon.accessibility.notified" = "Червено кръгче с алармен звънец, който показва, че в момента трябва да се направи нещо";
 "status.appState" = "Приложението е активно";
 "status.appState.inactive.title" = "Приложението не е активно";
 "status.appState.inactive.description" = "CoronaMelder работи само ако са включени необходимите настройки.";

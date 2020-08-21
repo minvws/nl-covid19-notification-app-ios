@@ -183,6 +183,9 @@
 "main.confirmNotificationRemoval.confirm" = "Șterge";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Cercul verde cu marcaj de validare care indică faptul că aplicația este configurată corect";
+"status.icon.accessibility.inactive" = "Cercul galben cu semn de exclamare ca avertisment";
+"status.icon.accessibility.notified" = "Cerc roșu cu clopoțel de alarmă care indică faptul că o acțiune este acum necesară";
 "status.appState" = "Aplicația este activă";
 "status.appState.inactive.title" = "Aplicația nu este activă";
 "status.appState.inactive.description" = "CoronaMelder funcționează doar dacă configurările necesare sunt activate.";

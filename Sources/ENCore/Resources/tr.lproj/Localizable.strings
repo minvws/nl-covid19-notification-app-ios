@@ -183,6 +183,9 @@
 "main.confirmNotificationRemoval.confirm" = "Silin";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Uygulamanın doğru kurulduğunu gösteren yeşil daire içinde onay işareti";
+"status.icon.accessibility.inactive" = "Uyarı olarak sarı daire içinde ünlem işareti";
+"status.icon.accessibility.notified" = "Eyleme geçmenin gerekli olduğunu gösteren alarm zilli kırmızı daire";
 "status.appState" = "Uygulama etkindir";
 "status.appState.inactive.title" = "Uygulama etkin değil";
 "status.appState.inactive.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır";

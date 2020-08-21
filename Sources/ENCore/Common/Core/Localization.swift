@@ -255,6 +255,9 @@ extension String {
 
     // MARK: - Status
 
+    static var statusIconAccessibilityOk: String { return Localization.string(for: "status.icon.accessibility.ok") }
+    static var statusIconAccessibilityInactive: String { return Localization.string(for: "status.icon.accessibility.inactive") }
+    static var statusIconAccessibilityNotified: String { return Localization.string(for: "status.icon.accessibility.notified") }
     static var statusAppState: String { return Localization.string(for: "status.appState") }
     static var statusAppStateInactiveTitle: String { return Localization.string(for: "status.appState.inactive.title") }
     static var statusAppStateInactiveDescription: String { return Localization.string(for: "status.appState.inactive.description") }

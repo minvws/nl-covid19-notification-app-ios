@@ -17,6 +17,7 @@ final class EmitterStatusIconView: View {
     override func build() {
         super.build()
 
+        iconImageView.isAccessibilityElement = true
         backgroundColor = .clear
 
         buildEmitterLayer()
@@ -67,6 +68,7 @@ final class EmitterStatusIconView: View {
     func update(with icon: StatusViewIcon) {
         backgroundColor = theme.colors[keyPath: icon.color]
         iconImageView.image = icon.icon
+        iconImageView.accessibilityLabel = icon.accessibilityLabel
 
         updateEmitterCell()
     }

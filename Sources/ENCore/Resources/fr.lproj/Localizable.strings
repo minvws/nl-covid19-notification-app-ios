@@ -184,6 +184,9 @@
 "main.confirmNotificationRemoval.confirm" = "Supprimer";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Cercle vert coché qui indique que l'application est paramétrée correctement";
+"status.icon.accessibility.inactive" = "Cercle jaune avec point d\'exclamation comme avertissement";
+"status.icon.accessibility.notified" = "Cercle rouge avec sonnette d'alarme qui indique qu\'une action est nécessaire";
 "status.appState" = "L'application est active";
 "status.appState.inactive.title" = "L'application n'est pas active";
 "status.appState.inactive.description" = "CoronaMelder ne fonctionne que si les paramètres indispensables sont activés.";

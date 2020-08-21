@@ -183,6 +183,9 @@
 "main.confirmNotificationRemoval.confirm" = "Löschen";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Ein grüner Kreis mit Häkchen gibt an, dass die App gut eingestellt ist.";
+"status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen dient als Warnung.";
+"status.icon.accessibility.notified" = "Ein roter Kreist mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist";
 "status.appState" = "Die App ist aktiv.";
 "status.appState.inactive.title" = "Die App ist nicht aktiv.";
 "status.appState.inactive.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";

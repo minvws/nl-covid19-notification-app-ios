@@ -183,6 +183,9 @@
 "main.confirmNotificationRemoval.confirm" = "Usuń";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Zielone kółko z ptaszkiem oznacza, że ustawienia aplikacji są prawidłowe";
+"status.icon.accessibility.inactive" = "Żółte kółko z wykrzyknikiem to ostrzeżenie";
+"status.icon.accessibility.notified" = "Czerwone kółko z dzwonkiem alarmowym oznacza, że konieczne jest podjęcie działań";
 "status.appState" = "Aplikacja jest aktywna";
 "status.appState.inactive.title" = "Aplikacja nie jest aktywna";
 "status.appState.inactive.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia";
