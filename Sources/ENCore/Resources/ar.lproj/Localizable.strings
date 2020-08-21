@@ -186,6 +186,9 @@
 "main.confirmNotificationRemoval.confirm" = "إحذف";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "دائرة خضراء مع علامة الصح تشير إلى أنه قد تم إعداد التطبيق بشكل صحيح";
+"status.icon.accessibility.inactive" = "دائرة صفراء مع علامة تعجب تشير إلى تنبيه";
+"status.icon.accessibility.notified" = "دائرة حمراء مع جرس الإنذار تشير إلى أنه يتوجب عليك التصرف الآن";
 "status.appState" = "التطبيق نشط";
 "status.appState.inactive.title" = "التطبيق غير نشط";
 "status.appState.inactive.description" = "تطبيق التحذير من كورونا (CoronaMelder) يعمل فقط إذا قمت بضبط الإعدادات اللازمة.";

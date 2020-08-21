@@ -183,6 +183,9 @@
 "main.confirmNotificationRemoval.confirm" = "Eliminar";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Círculo verde con una marca que indica que la app está ajustada correctamente";
+"status.icon.accessibility.inactive" = "Círculo amarillo con signo de exclamación como aviso";
+"status.icon.accessibility.notified" = "Círculo rojo con campana de alerta que indica que hay que reaccionar urgentemente";
 "status.appState" = "La app está activada";
 "status.appState.inactive.title" = "La app no está activada";
 "status.appState.inactive.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios";

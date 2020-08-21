@@ -183,6 +183,9 @@
 "main.confirmNotificationRemoval.confirm" = "Delete";
 
 /* MARK: - Status */
+"status.icon.accessibility.ok" = "Green circle with checkmark that shows the app has been set up properly";
+"status.icon.accessibility.inactive" = "Yellow circle with exclamation mark as warning";
+"status.icon.accessibility.notified" = "Red circle with alarm bell that shows you need to take action immediately";
 "status.appState" = "The app is active";
 "status.appState.inactive.title" = "The app is not active";
 "status.appState.inactive.description" = "CoronaMelder only works if the necessary settings are turned on.";
