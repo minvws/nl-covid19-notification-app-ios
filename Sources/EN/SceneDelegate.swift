@@ -20,15 +20,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let window = UIWindow(windowScene: windowScene)
 
-        if ENCoreBridge.isAppRootAvailable() {
-            bridge = ENCoreBridge()
-            bridge?.attach(to: window)
+        bridge = ENCoreBridge()
+        bridge?.attach(to: window)
 
-            (UIApplication.shared.delegate as? AppDelegate)?.setBridge(bridge: bridge)
-        } else {
-            // Handle OS Update Case
-            window.rootViewController = RequiresUpdateViewController(deviceModel: UIDevice.modelName, theme: ENTheme())
-        }
+        (UIApplication.shared.delegate as? AppDelegate)?.setBridge(bridge: bridge)
+
         window.makeKeyAndVisible()
 
         self.window = window

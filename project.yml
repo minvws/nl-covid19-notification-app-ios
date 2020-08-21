@@ -20,7 +20,7 @@ targets:
       - link: false
         target: ENCore
       - target: ENFoundation
-    deploymentTarget: '13.0'
+    deploymentTarget: '13.5'
     info:
       path: Sources/EN/Resources/Info.plist
       properties:
@@ -69,8 +69,6 @@ targets:
     scheme:
       gatherCoverageData: true
       testTargets:
-        - name: ENTests
-          randomExecutionOrder: true
         - name: ENCoreTests
           randomExecutionOrder: true
     settings:
@@ -152,15 +150,3 @@ targets:
     sources:
       - Sources/ENFoundation
     type: framework
-  ENTests:
-    dependencies:
-      - target: EN
-      - package: SnapshotTesting
-    deploymentTarget: '13.0'
-    platform: iOS
-    settings:
-      base:
-        SWIFT_VERSION: 5.2
-    sources:
-      - Sources/ENTests
-    type: bundle.unit-test
