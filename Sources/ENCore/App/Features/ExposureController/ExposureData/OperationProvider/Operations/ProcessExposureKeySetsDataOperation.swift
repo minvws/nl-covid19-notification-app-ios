@@ -435,10 +435,8 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                         return self.logError("Not authorized to post notifications")
                     }
 
-                    let string = (daysSinceLastExposure > 1) ? String.statusNotifiedDaysAgoOther("\(daysSinceLastExposure)") : String.statusNotifiedDaysAgoOne("\(daysSinceLastExposure)")
-
                     let content = UNMutableNotificationContent()
-                    content.body = .exposureNotificationUserExplanation("\(string)")
+                    content.body = .exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure))
                     content.sound = .default
                     content.badge = 0
 

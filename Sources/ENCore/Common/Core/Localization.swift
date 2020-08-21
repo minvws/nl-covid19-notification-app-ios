@@ -265,8 +265,15 @@ extension String {
     static var statusAppStateCardButton: String { return Localization.string(for: "status.appState.card.button") }
     static var statusAppStateCardTryAgain: String { return Localization.string(for: "status.appState.card.try_again") }
     static var statusActiveDescription: String { return Localization.string(for: "status.active.description") }
-    static func statusNotifiedDaysAgoOne(_ one: String) -> String { return Localization.string(for: "status.notified.days_ago_one", [one]) }
-    static func statusNotifiedDaysAgoOther(_ one: String) -> String { return Localization.string(for: "status.notified.days_ago_other", [one]) }
+
+    static func statusNotifiedDaysAgo(days: Int) -> String {
+        switch days {
+        case 0: return Localization.string(for: "status.notified.today")
+        case 1: return Localization.string(for: "status.notified.days_ago_one", ["\(days)"])
+        default: return Localization.string(for: "status.notified.days_ago_other", ["\(days)"])
+        }
+    }
+
     static func statusNotifiedDescription(_ one: String, two: String) -> String { return Localization.string(for: "status.notified.description", [one, two]) }
     static var statusNotifiedMoreInfo: String { return Localization.string(for: "status.notified.moreInfo") }
     static var statusNotifiedRemoveNotification: String { return Localization.string(for: "status.notified.removeNotification") }

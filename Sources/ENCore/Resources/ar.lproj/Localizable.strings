@@ -196,6 +196,7 @@
 "status.appState.card.button" = "تشغيل التطبيق";
 "status.appState.card.try_again" = "حاول مجددًا";
 "status.active.description" = "حتى إذا قمت بإغلاق التطبيق، يبقى تطبيق التحذير من كورونا (CoronaMelder)  نشطًا";
+"status.notified.today" = "اليوم";
 "status.notified.days_ago_one" = "آخر%@";
 "status.notified.days_ago_other" = "آخر%@";
 "status.notified.description" = "لقد%@%@ تعرضت إلى خطر الإصابة بصورة أكبر";
