@@ -314,7 +314,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     return strongSelf.logDebug("`handleENStatusCheck` skipped as it is `active`")
                 }
                 guard let lastENStatusCheck = strongSelf.exposureController.lastENStatusCheckDate else {
-                    return
+                    return strongSelf.logDebug("No `lastENStatusCheck`, skipping")
                 }
                 let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
 
