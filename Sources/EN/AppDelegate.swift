@@ -23,15 +23,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         unc.delegate = self
 
         if #available(iOS 13.5, *) {
+            let bundleIdentifier = Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en"
+
             [
-                "nl.rijksoverheid.en.background-update",
-                "nl.rijksoverheid.en.background-status-check",
-                "nl.rijksoverheid.en.background-decoy-stop-keys",
-                "nl.rijksoverheid.en.background-decoy-sequence",
-                "nl.rijksoverheid.en.background-decoy-register"
+                ".exposure-notification",
+                ".background-decoy-stop-keys",
+                ".background-decoy-sequence",
+                ".background-decoy-register"
             ]
             .forEach { identifier in
-                BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { task in
+                BGTaskScheduler.shared.register(forTaskWithIdentifier: bundleIdentifier + identifier, using: nil) { task in
                     self.handle(backgroundTask: task)
                 }
             }
