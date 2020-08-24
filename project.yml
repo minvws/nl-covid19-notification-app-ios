@@ -29,9 +29,9 @@ targets:
         GitHash: ""
         BGTaskSchedulerPermittedIdentifiers:
           - $(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification
-          - nl.rijksoverheid.en.background-decoy-stop-keys
-          - nl.rijksoverheid.en.background-decoy-sequence
-          - nl.rijksoverheid.en.background-decoy-register
+          - $(PRODUCT_BUNDLE_IDENTIFIER).background-decoy-stop-keys
+          - $(PRODUCT_BUNDLE_IDENTIFIER).background-decoy-sequence
+          - $(PRODUCT_BUNDLE_IDENTIFIER).background-decoy-register
         CFBundleDisplayName: "🐞 CoronaMelder"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder

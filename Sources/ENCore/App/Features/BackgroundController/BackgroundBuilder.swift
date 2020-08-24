@@ -31,6 +31,10 @@ private final class BackgroundControllerDependencyProvider: DependencyProvider<B
     fileprivate var userNotificationCenter: UserNotificationCenter {
         UNUserNotificationCenter.current()
     }
+
+    fileprivate var bundleIdentifier: String {
+        Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en"
+    }
 }
 
 final class BackgroundControllerBuilder: Builder<BackgroundDependency>, BackgroundControllerBuildable {
@@ -44,6 +48,7 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
                                     networkController: dependencyProvider.dependency.networkController,
                                     configuration: configuration,
                                     exposureManager: dependencyProvider.dependency.exposureManager,
-                                    userNotificationCenter: dependencyProvider.userNotificationCenter)
+                                    userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                    bundleIdentifier: dependencyProvider.bundleIdentifier)
     }
 }

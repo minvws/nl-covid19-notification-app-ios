@@ -13,10 +13,10 @@ import Foundation
 import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
-    case refresh = "nl.rijksoverheid.en.exposure-notification"
-    case decoyStopKeys = "nl.rijksoverheid.en.background-decoy-stop-keys"
-    case decoySequence = "nl.rijksoverheid.en.background-decoy-sequence"
-    case decoyRegister = "nl.rijksoverheid.en.background-decoy-register"
+    case refresh = "exposure-notification"
+    case decoyStopKeys = "background-decoy-stop-keys"
+    case decoySequence = "background-decoy-sequence"
+    case decoyRegister = "background-decoy-register"
 }
 
 struct BackgroundTaskConfiguration {
@@ -39,12 +39,14 @@ final class BackgroundController: BackgroundControlling, Logging {
          networkController: NetworkControlling,
          configuration: BackgroundTaskConfiguration,
          exposureManager: ExposureManaging,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         bundleIdentifier: String) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
         self.exposureManager = exposureManager
         self.userNotificationCenter = userNotificationCenter
+        self.bundleIdentifier = bundleIdentifier
     }
 
     deinit {
@@ -76,7 +78,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         guard let task = task as? BGProcessingTask else {
             return logError("Task is not of type `BGProcessingTask`")
         }
-        guard let identifier = BackgroundTaskIdentifiers(rawValue: task.identifier) else {
+        guard let identifier = BackgroundTaskIdentifiers(rawValue: task.identifier.replacingOccurrences(of: bundleIdentifier + ".", with: "")) else {
             return logError("No Handler for: \(task.identifier)")
         }
         logDebug("Handling: \(identifier)")
@@ -114,6 +116,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
+    private let bundleIdentifier: String
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
 
     // MARK: - Decoy Scheduling
