@@ -28,12 +28,10 @@ targets:
         NETWORK_CONFIGURATION: Test
         GitHash: ""
         BGTaskSchedulerPermittedIdentifiers:
-          - $(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification
-          - nl.rijksoverheid.en.background-update
+          - nl.rijksoverheid.en.background-refresh.exposure-notification
           - nl.rijksoverheid.en.background-decoy-stop-keys
           - nl.rijksoverheid.en.background-decoy-sequence
           - nl.rijksoverheid.en.background-decoy-register
-          - nl.rijksoverheid.en.background-status-check
         CFBundleDisplayName: "🐞 CoronaMelder"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
