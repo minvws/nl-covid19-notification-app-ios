@@ -41,9 +41,10 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
     func build() -> BackgroundControlling {
         let dependencyProvider = BackgroundControllerDependencyProvider(dependency: dependency)
         let configuration = BackgroundTaskConfiguration(decoyProbabilityRange: 0 ..< 1,
-                                                        decoyHourRange: 7 ... 18,
+                                                        decoyHourRange: 0 ... 23,
                                                         decoyMinuteRange: 0 ... 59,
-                                                        decoyDelayRange: 5 ... 900)
+                                                        decoyDelayRangeLowerBound: 1 ... (24 * 60 * 60),
+                                                        decoyDelayRangeUpperBound: 1 ... 900)
         return BackgroundController(exposureController: dependencyProvider.dependency.exposureController,
                                     networkController: dependencyProvider.dependency.networkController,
                                     configuration: configuration,

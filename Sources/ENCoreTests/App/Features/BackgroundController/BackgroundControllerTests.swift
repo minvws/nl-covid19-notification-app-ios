@@ -28,7 +28,8 @@ final class BackgroundControllerTests: XCTestCase {
         let configuration = BackgroundTaskConfiguration(decoyProbabilityRange: 0 ..< 1,
                                                         decoyHourRange: 0 ... 1,
                                                         decoyMinuteRange: 0 ... 1,
-                                                        decoyDelayRange: 0 ... 1)
+                                                        decoyDelayRangeLowerBound: 0 ... 1,
+                                                        decoyDelayRangeUpperBound: 0 ... 1)
 
         controller = BackgroundController(exposureController: exposureController,
                                           networkController: networkController,
