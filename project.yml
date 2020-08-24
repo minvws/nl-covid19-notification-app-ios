@@ -28,7 +28,7 @@ targets:
         NETWORK_CONFIGURATION: Test
         GitHash: ""
         BGTaskSchedulerPermittedIdentifiers:
-          - nl.rijksoverheid.en.background-refresh.exposure-notification
+          - $(PRODUCT_BUNDLE_IDENTIFIER).exposure-notification
           - nl.rijksoverheid.en.background-decoy-stop-keys
           - nl.rijksoverheid.en.background-decoy-sequence
           - nl.rijksoverheid.en.background-decoy-register

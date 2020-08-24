@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if #available(iOS 13.5, *) {
             [
-                "nl.rijksoverheid.en.background-refresh.exposure-notification",
+                "nl.rijksoverheid.en.exposure-notification",
                 "nl.rijksoverheid.en.background-decoy-stop-keys",
                 "nl.rijksoverheid.en.background-decoy-sequence",
                 "nl.rijksoverheid.en.background-decoy-register"

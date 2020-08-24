@@ -13,7 +13,7 @@ import Foundation
 import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
-    case refresh = "nl.rijksoverheid.en.background-refresh.exposure-notification"
+    case refresh = "nl.rijksoverheid.en.exposure-notification"
     case decoyStopKeys = "nl.rijksoverheid.en.background-decoy-stop-keys"
     case decoySequence = "nl.rijksoverheid.en.background-decoy-sequence"
     case decoyRegister = "nl.rijksoverheid.en.background-decoy-register"
@@ -324,7 +324,12 @@ final class BackgroundController: BackgroundControlling, Logging {
                 }
                 strongSelf.logDebug("EN Status Check: triggering notification \(status)")
 
-                func notify() {
+                strongSelf.userNotificationCenter.getAuthorizationStatus { status in
+                    guard status == .authorized else {
+                        promise(.success(()))
+                        return strongSelf.logError("Not authorized to post notifications")
+                    }
+
                     let content = UNMutableNotificationContent()
                     content.body = .notificationEnStatusNotActive
                     content.sound = .default
@@ -333,6 +338,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     let request = UNNotificationRequest(identifier: PushNotificationIdentifier.enStatusDisabled.rawValue,
                                                         content: content,
                                                         trigger: nil)
+
                     strongSelf.userNotificationCenter.add(request) { error in
                         guard let error = error else {
                             return promise(.success(()))
@@ -340,14 +346,6 @@ final class BackgroundController: BackgroundControlling, Logging {
                         strongSelf.logError("Error posting notification: \(error.localizedDescription)")
                         promise(.success(()))
                     }
-                }
-
-                strongSelf.userNotificationCenter.getAuthorizationStatus { status in
-                    guard status == .authorized else {
-                        promise(.success(()))
-                        return strongSelf.logError("Not authorized to post notifications")
-                    }
-                    notify()
                 }
             }
         }.eraseToAnyPublisher()
