@@ -362,8 +362,10 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func schedule(identifier: BackgroundTaskIdentifiers, date: Date, requiresNetworkConnectivity: Bool = false, completion: ((Bool) -> ())? = nil) {
+        let backgroundTaskIdentifier = bundleIdentifier + "." + identifier.rawValue
+
         func execute() {
-            let request = BGProcessingTaskRequest(identifier: identifier.rawValue)
+            let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
             request.requiresNetworkConnectivity = requiresNetworkConnectivity
             request.earliestBeginDate = date
 
@@ -372,13 +374,13 @@ final class BackgroundController: BackgroundControlling, Logging {
                 logDebug("Scheduled `\(identifier)` ✅")
                 completion?(true)
             } catch {
-                logError("Could not schedule \(identifier): \(error.localizedDescription)")
+                logError("Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
                 completion?(true)
             }
         }
 
         BGTaskScheduler.shared.getPendingTaskRequests { tasks in
-            guard tasks.filter({ $0.identifier == identifier.rawValue }).isEmpty else {
+            guard tasks.filter({ $0.identifier == backgroundTaskIdentifier }).isEmpty else {
                 completion?(true)
                 return
             }
