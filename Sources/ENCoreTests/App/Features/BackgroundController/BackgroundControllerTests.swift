@@ -34,95 +34,37 @@ final class BackgroundControllerTests: XCTestCase {
                                           networkController: networkController,
                                           configuration: configuration,
                                           exposureManager: exposureManager,
-                                          userNotificationCenter: userNotificationCenter)
+                                          userNotificationCenter: userNotificationCenter,
+                                          bundleIdentifier: "nl.rijksoverheid.en")
+
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
+        exposureController.updateWhenRequiredHandler = {
+            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+        exposureController.processPendingUploadRequestsHandler = {
+            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
     }
 
     // MARK: - Tests
 
-    /*
-     func test_handleBackgroundUpdateTask_success() {
-         exposureController.updateWhenRequiredHandler = {
-             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-         }
-         exposureController.processPendingUploadRequestsHandler = {
-             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-         }
+    func test_handleBackgroundUpdateTask_success() {
+        let exp = expectation(description: "asyncTask")
+        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
+        task.completion = {
+            exp.fulfill()
+        }
 
-         let exp = expectation(description: "asyncTask")
-         let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.update)
-         task.completion = {
-             exp.fulfill()
-         }
+        controller.handle(task: task)
 
-         controller.handle(task: task)
+        wait(for: [exp], timeout: 1)
 
-         wait(for: [exp], timeout: 1)
-
-         XCTAssertNotNil(task.completed)
-         XCTAssert(task.completed!)
-     }
-
-     func test_handleBackgroundUpdateTask_failure() {
-         exposureManager.getExposureNotificationStatusHandler = {
-             return .active
-         }
-         exposureController.updateWhenRequiredHandler = {
-             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-         }
-         exposureController.processPendingUploadRequestsHandler = {
-             Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
-         }
-
-         let exp = expectation(description: "async task")
-         let task = MockBGProcessingTask(identifier: .update)
-         task.completion = {
-             exp.fulfill()
-         }
-
-         controller.handle(task: task)
-
-         wait(for: [exp], timeout: 1)
-
-         XCTAssertNotNil(task.completed)
-         XCTAssertFalse(task.completed!)
-     }
-
-     func test_handleBackgroundTask_cancel() {
-         exposureManager.getExposureNotificationStatusHandler = {
-             return .active
-         }
-         exposureController.updateWhenRequiredHandler = {
-             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-         }
-         var cancelled = false
-
-         let exp = expectation(description: "asyncTask")
-         let stream = PassthroughSubject<(), ExposureDataError>()
-             .handleEvents(receiveCancel: {
-                 cancelled = true
-
-                 exp.fulfill()
-             })
-             .eraseToAnyPublisher()
-
-         exposureController.processPendingUploadRequestsHandler = {
-             return stream
-         }
-
-         let task = MockBGProcessingTask(identifier: .update)
-
-         controller.handle(task: task)
-
-         // hacky: wait for a bit for the async handle function to complete
-         sleep(2)
-
-         task.expirationHandler?()
-
-         wait(for: [exp], timeout: 1)
-
-         XCTAssert(cancelled)
-     }
-     */
+        XCTAssertNotNil(task.completed)
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
+        XCTAssertEqual(exposureController.processPendingUploadRequestsCallCount, 1)
+    }
 
     func test_handleBackgroundDecoyRegister() {
         let exp = expectation(description: "HandleBackgroundDecoyRegister")
@@ -173,57 +115,58 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssert(task.completed!)
     }
 
-    /*
-     func test_handleENStatusCheck() {
-         let exp = expectation(description: "HandleENStatusCheck")
-         exposureManager.getExposureNotificationStatusHandler = {
-             return .authorizationDenied
-         }
-         userNotificationCenter.getAuthorizationStatusHandler = { completion in
-             completion(.authorized)
-         }
-         userNotificationCenter.addHandler = { _, completion in
-             exp.fulfill()
-             completion?(nil)
-         }
-         let date = Calendar.current.date(byAdding: .hour, value: -24, to: Date())!
-         exposureController.lastENStatusCheckDate = date
+    func test_handleENStatusCheck() {
+        let exp = expectation(description: "HandleENStatusCheck")
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .authorizationDenied
+        }
+        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.authorized)
+        }
+        userNotificationCenter.addHandler = { _, completion in
+            exp.fulfill()
+            completion?(nil)
+        }
+        let date = Calendar.current.date(byAdding: .hour, value: -24, to: Date())!
+        exposureController.lastENStatusCheckDate = date
 
-         let task = MockBGProcessingTask(identifier: .statusCheck)
+        let task = MockBGProcessingTask(identifier: .refresh)
 
-         controller.handle(task: task)
-         wait(for: [exp], timeout: 2)
+        controller.handle(task: task)
 
-         XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+        // hacky: wait for a bit for the async handle function to complete
+        sleep(1)
 
-         XCTAssertNotNil(task.completed)
-         XCTAssert(task.completed!)
-     }
+        wait(for: [exp], timeout: 2)
 
-     func test_handleENStatusCheck_doesntCallIfLessThan24hours() {
-         exposureManager.getExposureNotificationStatusHandler = {
-             return .authorizationDenied
-         }
+        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
 
-         let date = Calendar.current.date(byAdding: .hour, value: -20, to: Date())!
-         exposureController.lastENStatusCheckDate = date
+        XCTAssertNotNil(task.completed)
+        XCTAssert(task.completed!)
+    }
 
-         let exp = expectation(description: "asyncTask")
-         let task = MockBGProcessingTask(identifier: .statusCheck)
-         task.completion = {
-             exp.fulfill()
-         }
+    func test_handleENStatusCheck_doesntCallIfLessThan24hours() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .authorizationDenied
+        }
 
-         controller.handle(task: task)
+        let date = Calendar.current.date(byAdding: .hour, value: -20, to: Date())!
+        exposureController.lastENStatusCheckDate = date
 
-         wait(for: [exp], timeout: 1)
+        let exp = expectation(description: "asyncTask")
+        let task = MockBGProcessingTask(identifier: .refresh)
+        task.completion = {
+            exp.fulfill()
+        }
 
-         XCTAssertEqual(userNotificationCenter.addCallCount, 0)
+        controller.handle(task: task)
 
-         XCTAssertNotNil(task.completed)
-         XCTAssert(task.completed!)
-     }
-     */
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertEqual(userNotificationCenter.addCallCount, 0)
+
+        XCTAssertNotNil(task.completed)
+    }
 
     // MARK: - Private
 
