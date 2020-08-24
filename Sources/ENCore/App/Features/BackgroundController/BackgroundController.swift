@@ -23,7 +23,8 @@ struct BackgroundTaskConfiguration {
     let decoyProbabilityRange: Range<Float>
     let decoyHourRange: ClosedRange<Int>
     let decoyMinuteRange: ClosedRange<Int>
-    let decoyDelayRange: ClosedRange<Int>
+    let decoyDelayRangeLowerBound: ClosedRange<Int>
+    let decoyDelayRangeUpperBound: ClosedRange<Int>
 }
 
 /// BackgroundController
@@ -126,9 +127,10 @@ final class BackgroundController: BackgroundControlling, Logging {
     /// Sequence of scheduling a decoy
     ///
     /// 1. Every day at 1:00 AM, determine whether a decoy traffic sequence is to be scheduled with a probability of Appconfig.decoyProbability (taken from the `/appconfig` response). This is a value between `0` and `1`. The default value when the app has not successfully retrieved Appconfig yet, is the aforementioned `0.00118`. So take a number `R = random_float(0..1)` and only if `R < Appconfig.decoyProbability`, continue with the next step. Otherwise, stop this procedure and wait for the next round (in 24 hours).
-    /// 2. Pick a random time decoyTime between `7AM` and `7PM` of the current day. (Note: we do not take into account Sundays and holidays that may have no genuine upload traffic since health authority offices may be closed.)
+    /// 2. Pick a random time decoyTime between `00:00` and `24:00` of the current day. (Note: we do not take into account Sundays and holidays that may have no genuine upload traffic since health authority offices may be closed.)
     /// 3. Schedule a decoy transmission job (simulating a `/register` call) at decoyTime.
-    /// 4. Pick a random number of seconds `decoyInterval = random_int(5..900)` (interval between first and second decoy call).
+    /// 4a. If `random_int(0..10) == 0: decoyInterval = random_int(1..(24*60*60)) `   (i.e. with chance of 10%, decoyInterval is between 1 sec and 24 hours)
+    /// 4b. Otherwise: `decoyInterval = random_int(1..900)`      (i.e. with chance of 90%, decoyInterval is between 1 sec and 15 minutes)
     /// 5. Schedule a second decoy transmission job (simulating a `/postkeys` call) for time decoyTime + decoyInterval.
 
     private func scheduleDecoySequence() {
@@ -155,8 +157,9 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func scheduleDecoyStopKeys(task: BGProcessingTask) {
-        let delay = Double(Int.random(in: configuration.decoyDelayRange))
-        let date = Date().addingTimeInterval(delay)
+        let percentage = Int.random(in: 0 ... 10)
+        let delay = percentage == 0 ? Int.random(in: configuration.decoyDelayRangeLowerBound) : Int.random(in: configuration.decoyDelayRangeUpperBound)
+        let date = Date().addingTimeInterval(Double(delay))
 
         schedule(identifier: .decoyRegister, date: date, requiresNetworkConnectivity: true) { result in
             task.setTaskCompleted(success: result)
