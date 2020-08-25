@@ -95,6 +95,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.handleDecoyStopkeys(task: task)
             case .refresh:
                 self.refresh(task: task)
+                self.scheduleRefresh()
             }
         }
 
