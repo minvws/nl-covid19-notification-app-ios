@@ -172,7 +172,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             let r = Float.random(in: configuration.decoyProbabilityRange)
             guard r < decoyProbability else {
                 task.setTaskCompleted(success: true)
-                return logDebug("Not scheduling decoy \(r) > \(decoyProbability)")
+                return logDebug("Not scheduling decoy \(r) >= \(decoyProbability)")
             }
             scheduleDecoyRegister(task: task)
         }
