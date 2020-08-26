@@ -245,7 +245,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
-        guard self.exposureManager.authorizationStatus == .authorized else {
+        guard exposureManager.authorizationStatus == .authorized else {
             return Fail(error: .notAuthorized).eraseToAnyPublisher()
         }
 
@@ -266,7 +266,7 @@ final class ExposureController: ExposureControlling, Logging {
             .handleEvents(receiveCompletion: { [weak self] result in
                 switch result {
                 case .finished:
-                    self?.logDebug("--- Finished Background Updating ---")
+                    self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
                     // FIXME: disabled for `57704`
                     // self?.exposureController.notifyUserIfRequired()
                     self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")

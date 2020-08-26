@@ -345,6 +345,121 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
+    func test_updateAndProcessPendingUploads() {
+        dataController.processPendingUploadRequestsHandler = {
+            Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
+        exposureManager.authorizationStatus = .authorized
+
+        let exp = expectation(description: "Wait for async")
+
+        controller
+            .updateAndProcessPendingUploads()
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail()
+                case .finished:
+                    exp.fulfill()
+                }
+            }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
+    }
+
+    func test_updateAndProcessPendingUploads_notAuthorized() {
+        exposureManager.authorizationStatus = .notAuthorized
+
+        let exp = expectation(description: "Wait for async")
+
+        controller
+            .updateAndProcessPendingUploads()
+            .sink(receiveCompletion: { result in
+                switch result {
+                case let .failure(error):
+                    XCTAssert(error == .notAuthorized)
+                case .finished:
+                    XCTFail()
+                }
+                exp.fulfill()
+            }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
+    }
+
+    func test_exposureNotificationStatusCheck_active_setsLastENStatusCheck() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
+
+        controller
+            .exposureNotificationStatusCheck()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
+        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
+    }
+
+    func test_exposureNotificationStatusCheck_notActive_noLastCheck_setsLastENStatusCheck() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .inactive(.disabled)
+        }
+        dataController.lastENStatusCheckDate = nil
+
+        controller
+            .exposureNotificationStatusCheck()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
+        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
+    }
+
+    func test_exposureNotificationStatusCheck_notActive_lessThan24h_doesntSetLastENStatusCheck() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .inactive(.disabled)
+        }
+
+        let timeInterval = TimeInterval(60 * 60 * 20) // 20 hours
+        dataController.lastENStatusCheckDate = Date().advanced(by: -timeInterval)
+
+        controller
+            .exposureNotificationStatusCheck()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 0)
+        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
+    }
+
+    func test_exposureNotificationStatusCheck_notActive_notifiesAfter24h() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .inactive(.disabled)
+        }
+        userNotificationCenter.getAuthorizationStatusHandler = { completition in
+            completition(.authorized)
+        }
+        userNotificationCenter.addHandler = { _, completition in
+            completition?(nil)
+        }
+
+        let timeInterval = TimeInterval(60 * 60 * 25) // 25 hours
+        dataController.lastENStatusCheckDate = Date().advanced(by: -timeInterval)
+
+        controller
+            .exposureNotificationStatusCheck()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
+        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
+        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+    }
+
     // MARK: - Private
 
     private func activate() {
