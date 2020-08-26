@@ -130,9 +130,10 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             logDebug("Fake process all keysets")
 
             // mark all keysets as processed
+            // ensure processDate is in the past to not have these keysets count towards the rate limit
             let keySetDetectionResults = keySetHolders.map { keySetHolder in
                 return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
-                                                     processDate: Date(),
+                                                     processDate: Date().addingTimeInterval(-60 * 60 * 24),
                                                      isValid: true)
             }
 
