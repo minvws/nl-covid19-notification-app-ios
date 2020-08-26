@@ -227,7 +227,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         switch action {
         case let .explainRisk(date):
             router?.routeToMessage(title: .messageDefaultTitle,
-                                   body: String(format: .messageDefaultBody, StatusViewModel.timeAgo(from: date)))
+                                   body: String(format: .messageDefaultBody, String.messageDefaultDaysAgo(from: date)))
         case .removeNotification:
             confirmNotificationRemoval()
         case .updateAppSettings:
