@@ -150,7 +150,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     }
 
                     strongSelf.routeToMessage(title: .messageDefaultTitle,
-                                              body: String(format: .messageDefaultBody, StatusViewModel.timeAgo(from: lastExposureDate)))
+                                              body: String(format: .messageDefaultBody, String.messageDefaultDaysAgo(from: lastExposureDate)))
                 case .inactive:
                     () // Do nothing
                 case .uploadFailed:

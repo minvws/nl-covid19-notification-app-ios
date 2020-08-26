@@ -237,6 +237,14 @@ extension String {
     static var messageDefaultTitle: String { return Localization.string(for: "message.default.title") }
     static var messageDefaultBody: String { return Localization.string(for: "message.default.body") }
 
+    static func messageDefaultDaysAgo(from date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .full
+        let dateString = dateFormatter.string(from: date)
+        let days = currentDate().days(sinceDate: date) ?? 0
+        return "\(String.statusNotifiedDaysAgo(days: days)) (\(dateString))".capitalizedFirstLetterOnly
+    }
+
     static var messageTitle: String { return Localization.string(for: "message.title") }
     static var messageButtonTitle: String { return Localization.string(for: "message.button.title") }
 
