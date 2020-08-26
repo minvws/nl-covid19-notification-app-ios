@@ -14,9 +14,6 @@ protocol ExposureControlling {
 
     var lastExposureDate: Date? { get }
 
-    var lastENStatusCheckDate: Date? { get }
-    func setLastEndStatusCheckDate(_ date: Date)
-
     // MARK: - Setup
 
     func activate()
@@ -67,6 +64,14 @@ protocol ExposureControlling {
     /// - Parameter result: Result of the request
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
                            completion: @escaping (_ result: ExposureControllerUploadKeysResult) -> ())
+
+    // MARK: - Misc
+
+    /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
+    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
+
+    /// Checks the status of the EN framework for the last 24h
+    func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
 }
 
 /// Represents a ConfirmationKey for the Lab Flow

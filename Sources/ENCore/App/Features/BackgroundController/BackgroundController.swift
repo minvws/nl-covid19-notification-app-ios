@@ -221,10 +221,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Refresh
 
     private func scheduleRefresh() {
-        guard let date = date(hour: 1, minute: 0) else {
-            return logError("Error creating date")
-        }
-        schedule(identifier: .refresh, date: date)
+        schedule(identifier: .refresh, requiresNetworkConnectivity: true)
     }
 
     private func refresh(task: BGProcessingTask) {
@@ -258,104 +255,14 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func processUpdate() -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { [weak self] promise in
-                guard let strongSelf = self else {
-                    promise(.success(()))
-                    return
-                }
-                guard strongSelf.exposureManager.authorizationStatus == .authorized else {
-                    promise(.success(()))
-                    return strongSelf.logError("`ENManager.authorizationStatus` not authorized")
-                }
-
-                let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
-                    strongSelf.exposureController.updateWhenRequired,
-                    strongSelf.exposureController.processPendingUploadRequests
-                ]
-
-                strongSelf.logDebug("--- Start Background Updating ---")
-
-                // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
-                let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
-                    // execute them one by one
-                    .flatMap(maxPublishers: .max(1)) { $0 }
-                    // collect them
-                    .collect()
-                    // notify the user if required
-                    .handleEvents(receiveCompletion: { [weak strongSelf] _ in
-                        // FIXME: disabled for `57704`
-                        // self?.exposureController.notifyUserIfRequired()
-                        strongSelf?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
-                    })
-                    .sink(receiveCompletion: { [weak strongSelf] result in
-                        switch result {
-                        case .finished:
-                            strongSelf?.logDebug("--- Finished Background Updating ---")
-                        case let .failure(error):
-                            strongSelf?.logError("Error completiting sequence \(error.localizedDescription)")
-                        }
-                        promise(.success(()))
-                    }, receiveValue: { [weak self] _ in
-                        self?.logDebug("Completed task")
-                    })
-
-                cancellable.store(in: &strongSelf.disposeBag)
-            }
-        }.eraseToAnyPublisher()
+        return exposureController
+            .updateAndProcessPendingUploads()
+            .replaceError(with: ())
+            .eraseToAnyPublisher()
     }
 
     private func processENStatusCheck() -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { [weak self] promise in
-                guard let strongSelf = self else {
-                    return promise(.success(()))
-                }
-                defer {
-                    strongSelf.exposureController.setLastEndStatusCheckDate(Date())
-                }
-
-                let status = strongSelf.exposureManager.getExposureNotificationStatus()
-                guard status != .active else {
-                    promise(.success(()))
-                    return strongSelf.logDebug("`handleENStatusCheck` skipped as it is `active`")
-                }
-                guard let lastENStatusCheck = strongSelf.exposureController.lastENStatusCheckDate else {
-                    return strongSelf.logDebug("No `lastENStatusCheck`, skipping")
-                }
-                let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
-
-                guard lastENStatusCheck.advanced(by: timeInterval) < Date() else {
-                    promise(.success(()))
-                    return strongSelf.logDebug("`handleENStatusCheck` skipped as it hasn't been 24h")
-                }
-                strongSelf.logDebug("EN Status Check: triggering notification \(status)")
-
-                strongSelf.userNotificationCenter.getAuthorizationStatus { status in
-                    guard status == .authorized else {
-                        promise(.success(()))
-                        return strongSelf.logError("Not authorized to post notifications")
-                    }
-
-                    let content = UNMutableNotificationContent()
-                    content.body = .notificationEnStatusNotActive
-                    content.sound = .default
-                    content.badge = 0
-
-                    let request = UNNotificationRequest(identifier: PushNotificationIdentifier.enStatusDisabled.rawValue,
-                                                        content: content,
-                                                        trigger: nil)
-
-                    strongSelf.userNotificationCenter.add(request) { error in
-                        guard let error = error else {
-                            return promise(.success(()))
-                        }
-                        strongSelf.logError("Error posting notification: \(error.localizedDescription)")
-                        promise(.success(()))
-                    }
-                }
-            }
-        }.eraseToAnyPublisher()
+        return exposureController.exposureNotificationStatusCheck()
     }
 
     private func date(hour: Int, minute: Int) -> Date? {
@@ -365,30 +272,21 @@ final class BackgroundController: BackgroundControlling, Logging {
         return Calendar.current.date(from: components)
     }
 
-    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date, requiresNetworkConnectivity: Bool = false, completion: ((Bool) -> ())? = nil) {
+    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, requiresNetworkConnectivity: Bool = false, completion: ((Bool) -> ())? = nil) {
         let backgroundTaskIdentifier = bundleIdentifier + "." + identifier.rawValue
 
-        func execute() {
-            let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
-            request.requiresNetworkConnectivity = requiresNetworkConnectivity
-            request.earliestBeginDate = date
+        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
+        let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
+        request.requiresNetworkConnectivity = requiresNetworkConnectivity
+        request.earliestBeginDate = date
 
-            do {
-                try BGTaskScheduler.shared.submit(request)
-                logDebug("Scheduled `\(identifier)` ✅")
-                completion?(true)
-            } catch {
-                logError("Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
-                completion?(true)
-            }
-        }
-
-        BGTaskScheduler.shared.getPendingTaskRequests { tasks in
-            guard tasks.filter({ $0.identifier == backgroundTaskIdentifier }).isEmpty else {
-                completion?(true)
-                return
-            }
-            execute()
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            logDebug("Scheduled `\(identifier)` ✅")
+            completion?(true)
+        } catch {
+            logError("Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
+            completion?(true)
         }
     }
 

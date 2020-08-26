@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 ".background-decoy-register"
             ]
             .forEach { identifier in
-                BGTaskScheduler.shared.register(forTaskWithIdentifier: bundleIdentifier + identifier, using: nil) { task in
+                BGTaskScheduler.shared.register(forTaskWithIdentifier: bundleIdentifier + identifier, using: .main) { task in
                     self.handle(backgroundTask: task)
                 }
             }

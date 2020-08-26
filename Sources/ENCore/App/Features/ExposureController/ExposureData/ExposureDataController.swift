@@ -76,7 +76,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastENStatusCheck)
     }
 
-    func setLastEndStatusCheckDate(_ date: Date) {
+    func setLastENStatusCheckDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastENStatusCheck, completion: { _ in })
     }
 
