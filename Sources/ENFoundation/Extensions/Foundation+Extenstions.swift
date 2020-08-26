@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import UIKit
 
 public extension Collection {
     subscript(safe index: Index) -> Iterator.Element? {
@@ -42,7 +43,7 @@ public func animationsEnabled() -> Bool {
             return enabled
         }
     #endif
-    return true
+    return UIAccessibility.isReduceMotionEnabled ? false : true
 }
 
 public func webViewLoadingEnabled() -> Bool {

@@ -364,7 +364,7 @@ private final class StatusAnimationView: View {
                                            repeats: false,
                                            block: { [weak self] _ in
                                                self?.playAnimation()
-        })
+            })
     }
 
     private func playAnimation() {
@@ -376,8 +376,10 @@ private final class StatusAnimationView: View {
 
         #endif
 
-        animationView.play { [weak self] _ in
-            self?.scheduleReplayTimer()
+        if animationsEnabled() {
+            animationView.play { [weak self] _ in
+                self?.scheduleReplayTimer()
+            }
         }
     }
 }

@@ -280,14 +280,17 @@ final class OnboardingConsentView: View {
             animationView.isHidden = false
             imageView.isHidden = true
 
-            if let repeatFromFrame = repeatFromFrame {
-                let endFrame = animationView.animation?.endFrame ?? 0
-                animationView.play(fromFrame: 0, toFrame: endFrame, loopMode: .playOnce) { [weak self] _ in
-                    self?.loopAnimation(fromFrame: repeatFromFrame)
+            if animationsEnabled() {
+                if let repeatFromFrame = repeatFromFrame {
+                    let endFrame = animationView.animation?.endFrame ?? 0
+                    animationView.play(fromFrame: 0, toFrame: endFrame, loopMode: .playOnce) { [weak self] _ in
+                        self?.loopAnimation(fromFrame: repeatFromFrame)
+                    }
+                } else {
+                    animationView.loopMode = .loop
                 }
-            } else {
-                animationView.loopMode = .loop
             }
+
         case .none:
             break
         }
