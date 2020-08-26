@@ -254,35 +254,27 @@ final class ExposureController: ExposureControlling, Logging {
             self.processPendingUploadRequests
         ]
 
-        return Deferred {
-            Future { promise in
-                // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
-                let cancellable = Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
-                    // execute them one by one
-                    .flatMap(maxPublishers: .max(1)) { $0 }
-                    // collect them
-                    .collect()
-                    // notify the user if required
-                    .handleEvents(receiveCompletion: { [weak self] _ in
-                        // FIXME: disabled for `57704`
-                        // self?.exposureController.notifyUserIfRequired()
-                        self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
-                    })
-                    .sink(receiveCompletion: { [weak self] result in
-                        switch result {
-                        case .finished:
-                            self?.logDebug("--- Finished Background Updating ---")
-                        case let .failure(error):
-                            self?.logError("Error completiting sequence \(error.localizedDescription)")
-                        }
-                        promise(.success(()))
-                    }, receiveValue: { [weak self] _ in
-                        self?.logDebug("Completed task")
-                    })
-
-                cancellable.store(in: &self.disposeBag)
-            }
-        }.eraseToAnyPublisher()
+        // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
+        return Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
+            // execute them one by one
+            .flatMap(maxPublishers: .max(1)) { $0 }
+            // collect them
+            .collect()
+            // merge
+            .compactMap { _ in () }
+            // notify the user if required
+            .handleEvents(receiveCompletion: { [weak self] result in
+                switch result {
+                case .finished:
+                    self?.logDebug("--- Finished Background Updating ---")
+                    // FIXME: disabled for `57704`
+                    // self?.exposureController.notifyUserIfRequired()
+                    self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
+                case let .failure(error):
+                    self?.logError("Error completing sequence \(error.localizedDescription)")
+                }
+            })
+            .eraseToAnyPublisher()
     }
 
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never> {
@@ -294,14 +286,14 @@ final class ExposureController: ExposureControlling, Logging {
 
                 guard status != .active else {
                     self.dataController.setLastENStatusCheckDate(now)
-                    promise(.success(()))
-                    return self.logDebug("`exposureNotificationStatusCheck` skipped as it is `active`")
+                    self.logDebug("`exposureNotificationStatusCheck` skipped as it is `active`")
+                    return promise(.success(()))
                 }
 
                 guard let lastENStatusCheckDate = self.dataController.lastENStatusCheckDate else {
                     self.dataController.setLastENStatusCheckDate(now)
-                    promise(.success(()))
-                    return self.logDebug("No `lastENStatusCheck`, skipping")
+                    self.logDebug("No `lastENStatusCheck`, skipping")
+                    return promise(.success(()))
                 }
 
                 let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
@@ -509,8 +501,8 @@ final class ExposureController: ExposureControlling, Logging {
                     completion(true)
                     return
                 }
-                completion(false)
                 self.logError("Error posting notification: \(identifier.rawValue) \(error.localizedDescription)")
+                completion(false)
             }
         }
     }
