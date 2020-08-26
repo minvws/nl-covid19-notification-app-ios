@@ -36,14 +36,6 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.lastExposure?.date
     }
 
-    var lastENStatusCheckDate: Date? {
-        return dataController.lastENStatusCheckDate
-    }
-
-    func setLastEndStatusCheckDate(_ date: Date) {
-        dataController.setLastEndStatusCheckDate(date)
-    }
-
     func activate() {
         guard isActivated == false else {
             assertionFailure("Should only activate ExposureController once")
@@ -252,6 +244,80 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
+    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
+        guard exposureManager.authorizationStatus == .authorized else {
+            return Fail(error: .notAuthorized).eraseToAnyPublisher()
+        }
+
+        let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
+            self.updateWhenRequired,
+            self.processPendingUploadRequests
+        ]
+
+        // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
+        return Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
+            // execute them one by one
+            .flatMap(maxPublishers: .max(1)) { $0 }
+            // collect them
+            .collect()
+            // merge
+            .compactMap { _ in () }
+            // notify the user if required
+            .handleEvents(receiveCompletion: { [weak self] result in
+                switch result {
+                case .finished:
+                    self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
+                    // FIXME: disabled for `57704`
+                    // self?.exposureController.notifyUserIfRequired()
+                    self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
+                case let .failure(error):
+                    self?.logError("Error completing sequence \(error.localizedDescription)")
+                }
+            })
+            .eraseToAnyPublisher()
+    }
+
+    func exposureNotificationStatusCheck() -> AnyPublisher<(), Never> {
+        return Deferred {
+            Future { promise in
+
+                let now = Date()
+                let status = self.exposureManager.getExposureNotificationStatus()
+
+                guard status != .active else {
+                    self.dataController.setLastENStatusCheckDate(now)
+                    self.logDebug("`exposureNotificationStatusCheck` skipped as it is `active`")
+                    return promise(.success(()))
+                }
+
+                guard let lastENStatusCheckDate = self.dataController.lastENStatusCheckDate else {
+                    self.dataController.setLastENStatusCheckDate(now)
+                    self.logDebug("No `lastENStatusCheck`, skipping")
+                    return promise(.success(()))
+                }
+
+                let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
+
+                guard lastENStatusCheckDate.advanced(by: timeInterval) < Date() else {
+                    promise(.success(()))
+                    return self.logDebug("`exposureNotificationStatusCheck` skipped as it hasn't been 24h")
+                }
+
+                self.logDebug("EN Status Check not active within 24h: \(status)")
+                self.dataController.setLastENStatusCheckDate(now)
+
+                let content = UNMutableNotificationContent()
+                content.body = .notificationEnStatusNotActive
+                content.sound = .default
+                content.badge = 0
+
+                self.sendNotification(content: content, identifier: .enStatusDisabled) { _ in
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+
     // MARK: - Private
 
     private func postExposureManagerActivation() {
@@ -416,6 +482,28 @@ final class ExposureController: ExposureControlling, Logging {
         userNotificationCenter.getAuthorizationStatus { authorizationStatus in
             self.isPushNotificationsEnabled = authorizationStatus == .authorized
             completition()
+        }
+    }
+
+    private func sendNotification(content: UNNotificationContent, identifier: PushNotificationIdentifier, completion: @escaping (Bool) -> ()) {
+        userNotificationCenter.getAuthorizationStatus { status in
+            guard status == .authorized else {
+                completion(false)
+                return self.logError("Not authorized to post notifications")
+            }
+
+            let request = UNNotificationRequest(identifier: identifier.rawValue,
+                                                content: content,
+                                                trigger: nil)
+
+            self.userNotificationCenter.add(request) { error in
+                guard let error = error else {
+                    completion(true)
+                    return
+                }
+                self.logError("Error posting notification: \(identifier.rawValue) \(error.localizedDescription)")
+                completion(false)
+            }
         }
     }
 

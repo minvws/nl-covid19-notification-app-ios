@@ -118,6 +118,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureStateStream.exposureState.sink { [weak self] state in
             if state.activeState.isAuthorized {
                 self?.routeToMain()
+                self?.backgroundController.scheduleTasks()
             } else {
                 self?.routeToOnboarding()
             }
@@ -178,7 +179,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didEnterBackground() {
         networkController.stopObservingNetworkReachability()
-        backgroundController.scheduleTasks()
     }
 
     func handle(backgroundTask: BGTask) {
