@@ -12,9 +12,15 @@ final class HelpQuestion {
 
     let question: String
     let answer: String
+    var linkedQuestions: [HelpQuestion] = []
 
     init(question: String, answer: String) {
         self.question = question
         self.answer = answer
+    }
+
+    func appending(linkedQuestions: [HelpQuestion]) -> HelpQuestion {
+        self.linkedQuestions = linkedQuestions
+        return self
     }
 }

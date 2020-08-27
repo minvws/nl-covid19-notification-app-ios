@@ -14,16 +14,10 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
          question: HelpQuestion,
-         linkedQuestions: [HelpQuestion] = [],
          theme: Theme) {
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.question = question
-        self.linkedQuestions = [
-            HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
-            HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
-        ]
-//            linkedQuestions
 
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
@@ -79,13 +73,13 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return linkedQuestions.count
+        return question.linkedQuestions.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = HelpTableViewCell(theme: theme, reuseIdentifier: "HelpDetailQuestionCell")
 
-        cell.textLabel?.text = linkedQuestions[indexPath.row].question
+        cell.textLabel?.text = question.linkedQuestions[indexPath.row].question
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
         cell.textLabel?.accessibilityTraits = .header
@@ -94,11 +88,11 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return linkedQuestions.isEmpty ? UIView() : headerView
+        return question.linkedQuestions.isEmpty ? UIView() : headerView
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        listener?.helpDetailRequestRedirect(to: linkedQuestions[indexPath.row])
+        listener?.helpDetailRequestRedirect(to: question.linkedQuestions[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
@@ -118,7 +112,6 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
     private let shouldShowEnableAppButton: Bool
     private let question: HelpQuestion
-    private let linkedQuestions: [HelpQuestion]
 
     private lazy var headerView: HelpTableViewSectionHeaderView = HelpTableViewSectionHeaderView(theme: self.theme)
 }

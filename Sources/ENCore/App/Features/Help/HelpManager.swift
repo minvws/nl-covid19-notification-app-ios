@@ -19,14 +19,21 @@ final class HelpManager: HelpManaging {
     let questions: [HelpQuestion]
 
     init() {
+        let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
+        let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
+        let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2)
+        let notification = HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription)
+        let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
+        let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
+
         questions = [
-            HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
-            HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription),
-            HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2),
-            HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription),
-            HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription),
-            HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription),
-            HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
+            reason.appending(linkedQuestions: [location, notification]),
+            anonymous.appending(linkedQuestions: [notification, location]),
+            location.appending(linkedQuestions: [bluetooth]),
+            // TODO: Link new screen 'wat betekent het als je een melding krijgt'
+            notification.appending(linkedQuestions: [ /* Add link to new screen */ bluetooth]),
+            bluetooth.appending(linkedQuestions: [notification, anonymous]),
+            power.appending(linkedQuestions: [location, reason])
         ]
     }
 }
