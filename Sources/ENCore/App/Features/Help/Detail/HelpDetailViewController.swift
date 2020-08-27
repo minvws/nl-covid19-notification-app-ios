@@ -14,10 +14,12 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
          question: HelpQuestion,
+         linkedQuestions: [HelpQuestion] = [],
          theme: Theme) {
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.question = question
+        self.linkedQuestions = linkedQuestions
 
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
@@ -32,6 +34,10 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        linkedQuestions.forEach { [weak self] question in
+            self?.internalView.append(linkedQuestion: question, tapHandler: { print(question.question) })
+        }
 
         internalView.titleLabel.attributedText = .makeFromHtml(text: question.question,
                                                                font: theme.fonts.largeTitle,
@@ -66,6 +72,7 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
     private let shouldShowEnableAppButton: Bool
     private let question: HelpQuestion
+    private let linkedQuestions: [HelpQuestion]
 }
 
 private final class HelpView: View {
@@ -100,16 +107,22 @@ private final class HelpView: View {
 
     override func build() {
         super.build()
+        hasBottomMargin = true
         scrollView.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(scrollView)
 
-        scrollView.addSubview(titleLabel)
-        scrollView.addSubview(contentLabel)
+        scrollView.addSubview(contentView)
+
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(contentLabel)
+        contentView.addSubview(linkedQuestionsContainer)
 
         if shouldDisplayButton {
             addSubview(acceptButton)
         }
+
+        linkedQuestionsViewWrapper.addSubview(linkedQuestionsTitle)
     }
 
     override func setupConstraints() {
@@ -122,20 +135,42 @@ private final class HelpView: View {
             maker.bottom.equalTo(bottomAnchor)
         }
 
+        contentView.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+            maker.width.equalToSuperview()
+            maker.height.greaterThanOrEqualToSuperview()
+        }
+
         titleLabel.snp.makeConstraints { maker in
             maker.top.leading.trailing.width.equalToSuperview().inset(16)
         }
 
         contentLabel.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
-            maker.leading.trailing.bottom.width.equalToSuperview().inset(16)
+            maker.leading.trailing.width.equalToSuperview().inset(16)
+        }
+
+        linkedQuestionsContainer.snp.makeConstraints { maker in
+            maker.leading.trailing.bottom.width.equalToSuperview()
+            maker.top.greaterThanOrEqualTo(contentLabel.snp.bottom).offset(16)
         }
 
         if shouldDisplayButton {
             acceptButton.snp.makeConstraints { maker in
+
                 maker.bottom.leading.trailing.equalToSuperview().inset(20)
                 maker.height.equalTo(50)
             }
+        }
+
+        linkedQuestionsTitle.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview().inset(16)
+        }
+    }
+
+    func append(linkedQuestion: HelpQuestion, tapHandler: () -> ()) {
+        if linkedQuestionsContainer.subviews.isEmpty {
+            linkedQuestionsContainer.addArrangedSubview(linkedQuestionsViewWrapper)
         }
     }
 
@@ -143,5 +178,34 @@ private final class HelpView: View {
 
     private let shouldDisplayButton: Bool
 
-    private let scrollView = UIScrollView()
+    private lazy var linkedQuestionsViewWrapper = View(theme: theme)
+
+    private lazy var scrollView: UIScrollView = {
+        let scrollview = UIScrollView()
+        scrollview.translatesAutoresizingMaskIntoConstraints = false
+        return scrollview
+    }()
+
+    private lazy var contentView: View = {
+        let view = View(theme: theme)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private lazy var linkedQuestionsContainer: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    private lazy var linkedQuestionsTitle: Label = {
+        let label = Label()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        label.font = theme.fonts.subheadBold
+        label.textColor = self.theme.colors.primary
+        label.accessibilityTraits = .header
+        label.text = "Less ook"
+        return label
+    }()
 }
