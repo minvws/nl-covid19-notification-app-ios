@@ -85,15 +85,6 @@ private final class HelpView: View {
         return textView
     }()
 
-    private lazy var gradientImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .clear
-        imageView.image = .gradient ?? UIImage()
-        return imageView
-    }()
-
     lazy var acceptButton: Button = {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -112,8 +103,6 @@ private final class HelpView: View {
 
         addSubview(titleLabel)
         addSubview(contentTextView)
-
-        addSubview(gradientImageView)
 
         if shouldDisplayButton {
             addSubview(acceptButton)
@@ -139,13 +128,6 @@ private final class HelpView: View {
             contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
             contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
             contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
-        ])
-
-        constraints.append([
-            gradientImageView.heightAnchor.constraint(equalToConstant: 25),
-            gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gradientImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
         ])
 
         if shouldDisplayButton {
