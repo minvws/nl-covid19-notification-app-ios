@@ -38,10 +38,10 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
                                                                textColor: theme.colors.gray,
                                                                textAlignment: Localization.isRTL ? .right : .left)
 
-        internalView.contentTextView.attributedText = .makeFromHtml(text: question.answer,
-                                                                    font: theme.fonts.body,
-                                                                    textColor: theme.colors.gray,
-                                                                    textAlignment: Localization.isRTL ? .right : .left)
+        internalView.contentLabel.attributedText = .makeFromHtml(text: question.answer,
+                                                                 font: theme.fonts.body,
+                                                                 textColor: theme.colors.gray,
+                                                                 textAlignment: Localization.isRTL ? .right : .left)
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
     }
@@ -78,11 +78,11 @@ private final class HelpView: View {
         return label
     }()
 
-    lazy var contentTextView: UITextView = {
-        let textView = UITextView()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.isEditable = false
-        return textView
+    lazy var contentLabel: Label = {
+        let label = Label()
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
 
     lazy var acceptButton: Button = {
@@ -100,9 +100,12 @@ private final class HelpView: View {
 
     override func build() {
         super.build()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
 
-        addSubview(titleLabel)
-        addSubview(contentTextView)
+        addSubview(scrollView)
+
+        scrollView.addSubview(titleLabel)
+        scrollView.addSubview(contentLabel)
 
         if shouldDisplayButton {
             addSubview(acceptButton)
@@ -114,15 +117,18 @@ private final class HelpView: View {
 
         let bottomAnchor = shouldDisplayButton ? acceptButton.snp.top : snp.bottom
 
-        titleLabel.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalToSuperview().inset(20)
-            maker.height.greaterThanOrEqualTo(25)
+        scrollView.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalToSuperview()
+            maker.bottom.equalTo(bottomAnchor)
         }
 
-        contentTextView.snp.makeConstraints { maker in
-            maker.top.equalTo(titleLabel.snp.bottom).offset(15)
-            maker.leading.trailing.equalToSuperview().inset(15)
-            maker.bottom.equalTo(bottomAnchor)
+        titleLabel.snp.makeConstraints { maker in
+            maker.top.leading.trailing.width.equalToSuperview().inset(16)
+        }
+
+        contentLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
+            maker.leading.trailing.bottom.width.equalToSuperview().inset(16)
         }
 
         if shouldDisplayButton {
@@ -136,4 +142,6 @@ private final class HelpView: View {
     // MARK: - Private
 
     private let shouldDisplayButton: Bool
+
+    private let scrollView = UIScrollView()
 }
