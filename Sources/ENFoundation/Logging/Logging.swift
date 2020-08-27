@@ -43,7 +43,18 @@ public extension Logging {
 
 public final class LogHandler: Logging {
 
+    public static var isSetup = false
+
+    /// Can be called multiple times, will only setup once
     public static func setup() {
+        guard !isSetup else {
+            DDLogDebug("🐞 Logging has already been setup before", file: #file, function: #function, line: #line, tag: "default")
+
+            return
+        }
+
+        isSetup = true
+
         let level = Bundle.main.infoDictionary?["LOG_LEVEL"] as? String ?? "debug"
 
         switch level {
@@ -67,6 +78,8 @@ public final class LogHandler: Logging {
         fileLogger.rollingFrequency = 60 * 60 * 24 // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
         DDLog.add(fileLogger)
+
+        DDLogDebug("🐞 Logging has been setup", file: #file, function: #function, line: #line, tag: "default")
     }
 
     public static func logFiles() -> [URL] {

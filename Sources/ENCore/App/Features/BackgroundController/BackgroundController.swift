@@ -64,8 +64,10 @@ final class BackgroundController: BackgroundControlling, Logging {
                     // Do nothing
                 }, receiveValue: { (isDeactivated: Bool) in
                     if isDeactivated {
+                        self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
                         self.removeAllTasks()
                     } else {
+                        self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
                         self.scheduleRefresh()
                         self.scheduleDecoySequence()
                     }
@@ -76,13 +78,15 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     func handle(task: BGTask) {
+        LogHandler.setup()
+
         guard let task = task as? BGProcessingTask else {
-            return logError("Task is not of type `BGProcessingTask`")
+            return logError("Background: Task is not of type `BGProcessingTask`")
         }
         guard let identifier = BackgroundTaskIdentifiers(rawValue: task.identifier.replacingOccurrences(of: bundleIdentifier + ".", with: "")) else {
-            return logError("No Handler for: \(task.identifier)")
+            return logError("Background: No Handler for: \(task.identifier)")
         }
-        logDebug("Handling: \(identifier)")
+        logDebug("Background: Handling task \(identifier)")
 
         let handleTask: () -> () = {
             switch identifier {
@@ -230,8 +234,10 @@ final class BackgroundController: BackgroundControlling, Logging {
             processENStatusCheck
         ]
 
+        logDebug("Background: starting refresh task")
+
         let cancellable = Publishers.Sequence<[AnyPublisher<(), Never>], Never>(sequence: sequence.map { $0() })
-            .flatMap { $0 }
+            .flatMap(maxPublishers: .max(1)) { $0 }
             .collect()
             .sink(receiveCompletion: { [weak self] result in
                 switch result {
@@ -239,11 +245,11 @@ final class BackgroundController: BackgroundControlling, Logging {
                     self?.logDebug("--- Finished Background Refresh ---")
                     task.setTaskCompleted(success: true)
                 case let .failure(error):
-                    self?.logError("Error completiting sequence \(error.localizedDescription)")
+                    self?.logError("Background: Error completing sequence \(error.localizedDescription)")
                     task.setTaskCompleted(success: false)
                 }
             }, receiveValue: { [weak self] _ in
-                self?.logDebug("Completed task")
+                self?.logDebug("Background: Completed refresh task")
             })
 
         cancellable.store(in: &disposeBag)
@@ -255,18 +261,47 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func processUpdate() -> AnyPublisher<(), Never> {
+        logDebug("Background: Process Update Started")
+
         return exposureController
             .updateAndProcessPendingUploads()
             .replaceError(with: ())
+            .handleEvents(
+                receiveCompletion: { [weak self] completion in
+                    switch completion {
+                    case .finished:
+                        self?.logDebug("Background: Process Update Completed")
+                    case .failure:
+                        self?.logDebug("Background: Process Update Failed")
+                    }
+                },
+                receiveCancel: { [weak self] in self?.logDebug("Background: Process Update Cancelled") }
+            )
             .eraseToAnyPublisher()
     }
 
     private func processENStatusCheck() -> AnyPublisher<(), Never> {
-        return exposureController.exposureNotificationStatusCheck()
+        logDebug("Background: Exposure Notification Status Check Started")
+        return exposureController
+            .exposureNotificationStatusCheck()
+            .handleEvents(
+                receiveCompletion: { [weak self] completion in
+                    switch completion {
+                    case .finished:
+                        self?.logDebug("Background: Exposure Notification Status Check Completed")
+                    case .failure:
+                        self?.logDebug("Background: Exposure Notification Status Check Failed")
+                    }
+                },
+                receiveCancel: { [weak self] in self?.logDebug("Background: Exposure Notification Status Check Cancelled") }
+            )
+            .eraseToAnyPublisher()
     }
 
     private func date(hour: Int, minute: Int) -> Date? {
-        var components = DateComponents()
+        let calendar = Calendar.current
+
+        var components = calendar.dateComponents([.day, .month, .year, .timeZone], from: Date())
         components.hour = hour
         components.minute = minute
         return Calendar.current.date(from: components)
@@ -275,22 +310,26 @@ final class BackgroundController: BackgroundControlling, Logging {
     private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, requiresNetworkConnectivity: Bool = false, completion: ((Bool) -> ())? = nil) {
         let backgroundTaskIdentifier = bundleIdentifier + "." + identifier.rawValue
 
+        logDebug("Background: Scheduling `\(identifier)` for earliestDate \(String(describing: date)), requiresNetwork: \(requiresNetworkConnectivity)")
+
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
+
         let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
         request.requiresNetworkConnectivity = requiresNetworkConnectivity
         request.earliestBeginDate = date
 
         do {
             try BGTaskScheduler.shared.submit(request)
-            logDebug("Scheduled `\(identifier)` ✅")
+            logDebug("Background: Scheduled `\(identifier)` ✅")
             completion?(true)
         } catch {
-            logError("Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
+            logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
         }
     }
 
     private func removeAllTasks() {
+        logDebug("Background: Removing all scheduled tasks")
         BGTaskScheduler.shared.cancelAllTaskRequests()
     }
 }
