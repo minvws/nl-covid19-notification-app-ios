@@ -112,34 +112,25 @@ private final class HelpView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        var constraints = [[NSLayoutConstraint]()]
+        let bottomAnchor = shouldDisplayButton ? acceptButton.snp.top : snp.bottom
 
-        let bottomAnchor = shouldDisplayButton ? acceptButton.topAnchor : self.bottomAnchor
-
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-        ])
-
-        constraints.append([
-            contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-            contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
-            contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
-        ])
-
-        if shouldDisplayButton {
-            constraints.append([
-                acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
-                acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-                acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-                acceptButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
+        titleLabel.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalToSuperview().inset(20)
+            maker.height.greaterThanOrEqualTo(25)
         }
 
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        contentTextView.snp.makeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(15)
+            maker.leading.trailing.equalToSuperview().inset(15)
+            maker.bottom.equalTo(bottomAnchor)
+        }
+
+        if shouldDisplayButton {
+            acceptButton.snp.makeConstraints { maker in
+                maker.bottom.leading.trailing.equalToSuperview().inset(20)
+                maker.height.equalTo(50)
+            }
+        }
     }
 
     // MARK: - Private
