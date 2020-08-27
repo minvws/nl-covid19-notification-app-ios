@@ -19,7 +19,11 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.question = question
-        self.linkedQuestions = linkedQuestions
+        self.linkedQuestions = [
+            HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
+            HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
+        ]
+//            linkedQuestions
 
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
@@ -94,7 +98,7 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // TODO: call listener
+        listener?.helpDetailRequestRedirect(to: linkedQuestions[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
     }
 

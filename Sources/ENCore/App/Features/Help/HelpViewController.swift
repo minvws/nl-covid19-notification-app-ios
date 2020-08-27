@@ -45,6 +45,10 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
         viewController.uiviewController.dismiss(animated: animated)
     }
 
+    func removeFromNavigationStack(viewController: ViewControllable) {
+        viewControllers.removeAll(where: { $0 == viewController.uiviewController })
+    }
+
     // MARK: - HelpOverviewListener
 
     func helpOverviewRequestsRouteTo(question: HelpQuestion) {
@@ -70,6 +74,10 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
 
         router?.detachHelpDetail(shouldDismissViewController: true)
         self.listener?.helpRequestsEnableApp()
+    }
+
+    func helpDetailRequestRedirect(to question: HelpQuestion) {
+        router?.routeTo(question: question, shouldShowEnableAppButton: shouldShowEnableAppButton)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate

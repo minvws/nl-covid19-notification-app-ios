@@ -146,6 +146,8 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
     func helpDetailDidTapEnableAppButton() {}
 
+    func helpDetailRequestRedirect(to question: HelpQuestion) {}
+
     // MARK: - Private
 
     private func update(exposureState: ExposureState) {

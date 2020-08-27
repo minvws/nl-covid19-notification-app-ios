@@ -15,6 +15,7 @@ protocol HelpOverviewListener: AnyObject {
     func helpOverviewDidTapEnableAppButton()
 }
 
+/// @mockable
 protocol HelpOverviewBuildable {
     func build(withListener listener: HelpOverviewListener,
                shouldShowEnableAppButton: Bool) -> ViewControllable

@@ -12,6 +12,7 @@ import Foundation
 protocol HelpDetailListener: AnyObject {
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool)
     func helpDetailDidTapEnableAppButton()
+    func helpDetailRequestRedirect(to question: HelpQuestion)
 }
 
 /// @mockable
