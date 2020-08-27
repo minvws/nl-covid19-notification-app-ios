@@ -9,7 +9,7 @@ import ENFoundation
 import UIKit
 import WebKit
 
-final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate {
+final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
@@ -35,9 +35,9 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        linkedQuestions.forEach { [weak self] question in
-            self?.internalView.append(linkedQuestion: question, tapHandler: { print(question.question) })
-        }
+        headerView.label.text = "Less ook" // TODO: localize string
+        internalView.tableView.delegate = self
+        internalView.tableView.dataSource = self
 
         internalView.titleLabel.attributedText = .makeFromHtml(text: question.question,
                                                                font: theme.fonts.largeTitle,
@@ -52,6 +52,16 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
+    }
+
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         listener?.helpDetailRequestsDismissal(shouldDismissViewController: false)
     }
@@ -64,6 +74,38 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
         listener?.helpDetailRequestsDismissal(shouldDismissViewController: true)
     }
 
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return linkedQuestions.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = HelpTableViewCell(theme: theme, reuseIdentifier: "HelpDetailQuestionCell")
+
+        cell.textLabel?.text = linkedQuestions[indexPath.row].question
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.font = theme.fonts.body
+        cell.textLabel?.accessibilityTraits = .header
+
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return linkedQuestions.isEmpty ? UIView() : headerView
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // TODO: call listener
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        if let obj = object as? UITableView {
+            if obj == self.internalView.tableView, keyPath == "contentSize" {
+                internalView.updateTableViewHeight()
+            }
+        }
+    }
+
     // MARK: - Private
 
     private lazy var internalView: HelpView = HelpView(theme: theme, shouldDisplayButton: shouldShowEnableAppButton)
@@ -73,6 +115,8 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     private let shouldShowEnableAppButton: Bool
     private let question: HelpQuestion
     private let linkedQuestions: [HelpQuestion]
+
+    private lazy var headerView: HelpTableViewSectionHeaderView = HelpTableViewSectionHeaderView(theme: self.theme)
 }
 
 private final class HelpView: View {
@@ -100,6 +144,8 @@ private final class HelpView: View {
         return button
     }()
 
+    lazy var tableView = HelpTableView()
+
     init(theme: Theme, shouldDisplayButton: Bool) {
         self.shouldDisplayButton = shouldDisplayButton
         super.init(theme: theme)
@@ -108,7 +154,7 @@ private final class HelpView: View {
     override func build() {
         super.build()
         hasBottomMargin = true
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.isScrollEnabled = false
 
         addSubview(scrollView)
 
@@ -116,13 +162,11 @@ private final class HelpView: View {
 
         contentView.addSubview(titleLabel)
         contentView.addSubview(contentLabel)
-        contentView.addSubview(linkedQuestionsContainer)
+        contentView.addSubview(tableView)
 
         if shouldDisplayButton {
             addSubview(acceptButton)
         }
-
-        linkedQuestionsViewWrapper.addSubview(linkedQuestionsTitle)
     }
 
     override func setupConstraints() {
@@ -138,7 +182,7 @@ private final class HelpView: View {
         contentView.snp.makeConstraints { maker in
             maker.edges.equalToSuperview()
             maker.width.equalToSuperview()
-            maker.height.greaterThanOrEqualToSuperview()
+            maker.height.greaterThanOrEqualToSuperview().priority(.low)
         }
 
         titleLabel.snp.makeConstraints { maker in
@@ -150,27 +194,23 @@ private final class HelpView: View {
             maker.leading.trailing.width.equalToSuperview().inset(16)
         }
 
-        linkedQuestionsContainer.snp.makeConstraints { maker in
+        tableView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.width.equalToSuperview()
             maker.top.greaterThanOrEqualTo(contentLabel.snp.bottom).offset(16)
+            maker.height.equalTo(0)
         }
 
         if shouldDisplayButton {
             acceptButton.snp.makeConstraints { maker in
-
                 maker.bottom.leading.trailing.equalToSuperview().inset(20)
                 maker.height.equalTo(50)
             }
         }
-
-        linkedQuestionsTitle.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview().inset(16)
-        }
     }
 
-    func append(linkedQuestion: HelpQuestion, tapHandler: () -> ()) {
-        if linkedQuestionsContainer.subviews.isEmpty {
-            linkedQuestionsContainer.addArrangedSubview(linkedQuestionsViewWrapper)
+    func updateTableViewHeight() {
+        tableView.snp.updateConstraints { maker in
+            maker.height.equalTo(tableView.contentSize.height)
         }
     }
 
@@ -178,11 +218,10 @@ private final class HelpView: View {
 
     private let shouldDisplayButton: Bool
 
-    private lazy var linkedQuestionsViewWrapper = View(theme: theme)
-
     private lazy var scrollView: UIScrollView = {
         let scrollview = UIScrollView()
         scrollview.translatesAutoresizingMaskIntoConstraints = false
+        scrollview.contentInsetAdjustmentBehavior = .never
         return scrollview
     }()
 
@@ -190,22 +229,5 @@ private final class HelpView: View {
         let view = View(theme: theme)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
-
-    private lazy var linkedQuestionsContainer: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-
-    private lazy var linkedQuestionsTitle: Label = {
-        let label = Label()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.font = theme.fonts.subheadBold
-        label.textColor = self.theme.colors.primary
-        label.accessibilityTraits = .header
-        label.text = "Less ook"
-        return label
     }()
 }
