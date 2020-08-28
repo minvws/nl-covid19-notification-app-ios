@@ -217,7 +217,7 @@ final class OnboardingStepView: View {
             imageView.snp.makeConstraints { maker in
                 maker.top.equalToSuperview()
                 maker.leading.trailing.equalToSuperview()
-                maker.width.equalTo(scrollView).inset(16)
+                maker.width.equalTo(scrollView)
                 maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
             }
         }
