@@ -45,8 +45,11 @@ final class ExposureControllerTests: TestCase {
 
         exposureManager.getExposureNotificationStatusHandler = { .active }
 
-        userNotificationCenter.getAuthorizationStatusHandler = { handler in
-            handler(.authorized)
+        userNotificationCenter.getAuthorizationStatusHandler = { completition in
+            completition(.authorized)
+        }
+        userNotificationCenter.addHandler = { _, completition in
+            completition?(nil)
         }
     }
 
@@ -440,12 +443,6 @@ final class ExposureControllerTests: TestCase {
         exposureManager.getExposureNotificationStatusHandler = {
             return .inactive(.disabled)
         }
-        userNotificationCenter.getAuthorizationStatusHandler = { completition in
-            completition(.authorized)
-        }
-        userNotificationCenter.addHandler = { _, completition in
-            completition?(nil)
-        }
 
         let timeInterval = TimeInterval(60 * 60 * 25) // 25 hours
         dataController.lastENStatusCheckDate = Date().advanced(by: -timeInterval)
@@ -458,6 +455,34 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
         XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
         XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+    }
+
+    func test_lastOpenedNotificationCheck_moreThan3Hours_postsNotification() {
+        let timeInterval = TimeInterval(60 * 60 * 4) // 4 hours
+        dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
+        dataController.lastExposure = ExposureReport(date: Date())
+
+        controller
+            .lastOpenedNotificationCheck()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
+        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+    }
+
+    func test_lastOpenedNotificationCheck_lessThan3Hours_doesntPostNotification() {
+        let timeInterval = TimeInterval(60 * 60 * 2) // 2 hours
+        dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
+        dataController.lastExposure = ExposureReport(date: Date())
+
+        controller
+            .lastOpenedNotificationCheck()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
+        XCTAssertEqual(userNotificationCenter.addCallCount, 0)
     }
 
     // MARK: - Private

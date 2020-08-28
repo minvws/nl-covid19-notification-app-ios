@@ -67,11 +67,17 @@ protocol ExposureControlling {
 
     // MARK: - Misc
 
+    /// Updates the last app launch date
+    func updateLastLaunch()
+
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
     func updateAndProcessPendingUploads(activateIfNeeded: Bool) -> AnyPublisher<(), ExposureDataError>
 
     /// Checks the status of the EN framework for the last 24h
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
+
+    /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
+    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
 }
 
 /// Represents a ConfirmationKey for the Lab Flow

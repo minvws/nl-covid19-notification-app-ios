@@ -231,7 +231,8 @@ final class BackgroundController: BackgroundControlling, Logging {
     private func refresh(task: BGProcessingTask) {
         let sequence: [() -> AnyPublisher<(), Never>] = [
             processUpdate,
-            processENStatusCheck
+            processENStatusCheck,
+            processLastOpenedNotificationCheck
         ]
 
         logDebug("Background: starting refresh task")
@@ -296,6 +297,10 @@ final class BackgroundController: BackgroundControlling, Logging {
                 receiveCancel: { [weak self] in self?.logDebug("Background: Exposure Notification Status Check Cancelled") }
             )
             .eraseToAnyPublisher()
+    }
+
+    private func processLastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
+        return exposureController.lastOpenedNotificationCheck()
     }
 
     private func date(hour: Int, minute: Int) -> Date? {

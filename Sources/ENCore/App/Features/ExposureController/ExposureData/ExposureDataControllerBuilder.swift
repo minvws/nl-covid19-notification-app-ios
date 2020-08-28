@@ -33,10 +33,12 @@ protocol ExposureDataControlling {
     var lastSuccessfulProcessingDate: Date? { get }
     var lastLocalNotificationExposureDate: Date? { get }
     var lastENStatusCheckDate: Date? { get }
+    var lastAppLaunchDate: Date? { get }
 
     func removeLastExposure() -> AnyPublisher<(), Never>
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
     func setLastENStatusCheckDate(_ date: Date)
+    func setLastAppLaunchDate(_ date: Date)
 
     // MARK: - Lab Flow
 
