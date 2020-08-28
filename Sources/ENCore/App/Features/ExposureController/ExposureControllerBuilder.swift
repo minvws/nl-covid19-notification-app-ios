@@ -68,7 +68,7 @@ protocol ExposureControlling {
     // MARK: - Misc
 
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
-    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
+    func updateAndProcessPendingUploads(activateIfNeeded: Bool) -> AnyPublisher<(), ExposureDataError>
 
     /// Checks the status of the EN framework for the last 24h
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>

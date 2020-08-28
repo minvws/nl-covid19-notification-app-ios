@@ -264,7 +264,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         logDebug("Background: Process Update Started")
 
         return exposureController
-            .updateAndProcessPendingUploads()
+            .updateAndProcessPendingUploads(activateIfNeeded: true)
             .replaceError(with: ())
             .handleEvents(
                 receiveCompletion: { [weak self] completion in

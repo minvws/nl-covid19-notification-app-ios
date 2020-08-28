@@ -355,7 +355,7 @@ final class ExposureControllerTests: TestCase {
         let exp = expectation(description: "Wait for async")
 
         controller
-            .updateAndProcessPendingUploads()
+            .updateAndProcessPendingUploads(activateIfNeeded: true)
             .sink(receiveCompletion: { result in
                 switch result {
                 case .failure:
@@ -375,7 +375,7 @@ final class ExposureControllerTests: TestCase {
         let exp = expectation(description: "Wait for async")
 
         controller
-            .updateAndProcessPendingUploads()
+            .updateAndProcessPendingUploads(activateIfNeeded: true)
             .sink(receiveCompletion: { result in
                 switch result {
                 case let .failure(error):

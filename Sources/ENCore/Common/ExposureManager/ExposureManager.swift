@@ -34,10 +34,6 @@ final class ExposureManager: ExposureManaging, Logging {
     }
 
     func activate(completion: @escaping (ExposureManagerStatus) -> ()) {
-        #if DEBUG
-            assert(Thread.isMainThread)
-        #endif
-
         manager.activate { [weak self] error in
             guard let strongSelf = self else {
                 // Exposure Manager released before activation
@@ -201,6 +197,9 @@ extension Error {
                 status = .disabled
             case .rateLimited:
                 status = .rateLimited
+            case .unsupported:
+                // usually when receiving unsupported something is off with the signature validation
+                status = .signatureValidationFailed
             default:
                 status = .unknown
             }

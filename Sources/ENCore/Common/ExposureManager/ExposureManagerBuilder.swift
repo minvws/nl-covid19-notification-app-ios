@@ -30,6 +30,7 @@ enum ExposureManagerError: Error {
     case restricted
     case notAuthorized
     case rateLimited
+    case signatureValidationFailed
     case internalTypeMismatch // programmers error
 }
 

@@ -133,6 +133,8 @@ extension ExposureManagerError {
             return .notAuthorized
         case .internalTypeMismatch, .unknown, .rateLimited:
             return .internalError
+        case .signatureValidationFailed:
+            return .signatureValidationFailed
         }
     }
 }

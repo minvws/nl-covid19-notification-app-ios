@@ -15,6 +15,7 @@ enum ExposureDataError: Error, Equatable {
     case inactive(ExposureStateInactiveState)
     case notAuthorized
     case responseCached
+    case signatureValidationFailed
 }
 
 struct ExposureDataAppVersionInformation {

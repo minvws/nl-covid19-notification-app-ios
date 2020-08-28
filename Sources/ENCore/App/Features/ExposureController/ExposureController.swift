@@ -244,9 +244,23 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
-    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
+    func updateAndProcessPendingUploads(activateIfNeeded: Bool) -> AnyPublisher<(), ExposureDataError> {
         guard exposureManager.authorizationStatus == .authorized else {
             return Fail(error: .notAuthorized).eraseToAnyPublisher()
+        }
+
+        if case .inactive = exposureManager.getExposureNotificationStatus(), activateIfNeeded {
+            // framework is inactive and if should be activate, activate and try again
+            // this call won't loop as it passes in activateIfNeeded false for the recursive
+            // one and therefore it will not get in this if statement again
+            return Future { resolve in
+                self.exposureManager.activate { _ in
+                    resolve(.success(()))
+                }
+            }
+            .setFailureType(to: ExposureDataError.self)
+            .flatMap { self.updateAndProcessPendingUploads(activateIfNeeded: false) }
+            .eraseToAnyPublisher()
         }
 
         let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
@@ -426,7 +440,7 @@ final class ExposureController: ExposureControlling, Logging {
                 // No network request is done (yet), these errors can only mean
                 // an internal error
                 return .internalError
-            case .inactive:
+            case .inactive, .signatureValidationFailed:
                 return .inactive
             case .notAuthorized:
                 return .notAuthorized
