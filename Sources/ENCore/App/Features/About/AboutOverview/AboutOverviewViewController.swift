@@ -63,7 +63,7 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
             cell = HelpTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
         }
 
-        cell.textLabel?.text = questions[indexPath.row].title()
+        cell.textLabel?.text = questions[indexPath.row].title
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
         cell.textLabel?.textColor = theme.colors.gray

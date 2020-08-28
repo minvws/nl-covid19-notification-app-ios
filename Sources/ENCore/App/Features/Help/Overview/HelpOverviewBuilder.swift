@@ -11,7 +11,7 @@ import Foundation
 /// @mockable
 protocol HelpOverviewListener: AnyObject {
     func helpOverviewRequestsDismissal(shouldDismissViewController: Bool)
-    func helpOverviewRequestsRouteTo(question: HelpQuestion)
+    func helpOverviewRequestsRouteTo(entry: HelpOverviewEntry)
     func helpOverviewDidTapEnableAppButton()
 }
 

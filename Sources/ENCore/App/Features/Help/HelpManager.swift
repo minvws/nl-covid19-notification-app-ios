@@ -11,12 +11,11 @@ import UIKit
 
 /// @mockable
 protocol HelpManaging {
-    var questions: [HelpQuestion] { get }
+    var entries: [HelpOverviewEntry] { get }
 }
 
 final class HelpManager: HelpManaging {
-
-    let questions: [HelpQuestion]
+    let entries: [HelpOverviewEntry]
 
     init() {
         let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
@@ -26,14 +25,36 @@ final class HelpManager: HelpManaging {
         let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
         let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
 
-        questions = [
-            reason.appending(linkedQuestions: [location, notification]),
-            anonymous.appending(linkedQuestions: [notification, location]),
-            location.appending(linkedQuestions: [bluetooth]),
+        entries = [
+            .question(reason.appending(linkedEntries: [
+                HelpOverviewEntry.question(location),
+                HelpOverviewEntry.question(notification)
+            ])),
+
+            .question(anonymous.appending(linkedEntries: [
+                HelpOverviewEntry.question(notification),
+                HelpOverviewEntry.question(location)
+            ])),
+
+            .question(location.appending(linkedEntries: [
+                HelpOverviewEntry.question(bluetooth)
+            ])),
+
             // TODO: Link new screen 'wat betekent het als je een melding krijgt'
-            notification.appending(linkedQuestions: [ /* Add link to new screen */ bluetooth]),
-            bluetooth.appending(linkedQuestions: [notification, anonymous]),
-            power.appending(linkedQuestions: [location, reason])
+
+            .question(notification.appending(linkedEntries: [
+                HelpOverviewEntry.question(bluetooth)
+            ])),
+
+            .question(bluetooth.appending(linkedEntries: [
+                HelpOverviewEntry.question(notification),
+                HelpOverviewEntry.question(anonymous)
+            ])),
+
+            .question(power.appending(linkedEntries: [
+                HelpOverviewEntry.question(location),
+                HelpOverviewEntry.question(reason)
+            ]))
         ]
     }
 }

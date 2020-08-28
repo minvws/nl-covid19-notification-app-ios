@@ -13,11 +13,11 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
-         question: HelpQuestion,
+         entry: HelpDetailEntry,
          theme: Theme) {
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
-        self.question = question
+        self.entry = entry
 
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
@@ -37,12 +37,12 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
         internalView.tableView.delegate = self
         internalView.tableView.dataSource = self
 
-        internalView.titleLabel.attributedText = .makeFromHtml(text: question.question,
+        internalView.titleLabel.attributedText = .makeFromHtml(text: entry.title,
                                                                font: theme.fonts.largeTitle,
                                                                textColor: theme.colors.gray,
                                                                textAlignment: Localization.isRTL ? .right : .left)
 
-        internalView.contentLabel.attributedText = .makeFromHtml(text: question.answer,
+        internalView.contentLabel.attributedText = .makeFromHtml(text: entry.answer,
                                                                  font: theme.fonts.body,
                                                                  textColor: theme.colors.gray,
                                                                  textAlignment: Localization.isRTL ? .right : .left)
@@ -73,13 +73,13 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return question.linkedQuestions.count
+        return entry.linkedEntries.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = HelpTableViewCell(theme: theme, reuseIdentifier: "HelpDetailQuestionCell")
 
-        cell.textLabel?.text = question.linkedQuestions[indexPath.row].question
+        cell.textLabel?.text = entry.linkedEntries[indexPath.row].title
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
         cell.textLabel?.accessibilityTraits = .header
@@ -88,11 +88,11 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return question.linkedQuestions.isEmpty ? UIView() : headerView
+        return entry.linkedEntries.isEmpty ? UIView() : headerView
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        listener?.helpDetailRequestRedirect(to: question.linkedQuestions[indexPath.row])
+        listener?.helpDetailRequestRedirect(to: entry.linkedEntries[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
@@ -111,7 +111,7 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     private weak var listener: HelpDetailListener?
 
     private let shouldShowEnableAppButton: Bool
-    private let question: HelpQuestion
+    private let entry: HelpDetailEntry
 
     private lazy var headerView: HelpTableViewSectionHeaderView = HelpTableViewSectionHeaderView(theme: self.theme)
 }

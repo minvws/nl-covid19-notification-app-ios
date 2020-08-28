@@ -46,7 +46,7 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return helpManager.questions.count
+        return helpManager.entries.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,9 +60,9 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
             cell = HelpTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
         }
 
-        let question = helpManager.questions[indexPath.row]
+        let entry = helpManager.entries[indexPath.row]
 
-        cell.textLabel?.text = question.question
+        cell.textLabel?.text = entry.title
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
         cell.textLabel?.accessibilityTraits = .header
@@ -77,12 +77,12 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard (0 ..< helpManager.questions.count).contains(indexPath.row) else {
+        guard (0 ..< helpManager.entries.count).contains(indexPath.row) else {
             return
         }
 
-        let question = helpManager.questions[indexPath.row]
-        listener?.helpOverviewRequestsRouteTo(question: question)
+        let entry = helpManager.entries[indexPath.row]
+        listener?.helpOverviewRequestsRouteTo(entry: entry)
 
         tableView.deselectRow(at: indexPath, animated: true)
     }

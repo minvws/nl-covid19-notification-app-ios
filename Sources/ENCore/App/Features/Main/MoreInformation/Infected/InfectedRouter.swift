@@ -77,7 +77,7 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
         }
 
         let question = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
-        let controller = helpDetailBuilder.build(withListener: viewController, shouldShowEnableAppButton: false, question: question)
+        let controller = helpDetailBuilder.build(withListener: viewController, shouldShowEnableAppButton: false, entry: HelpOverviewEntry.question(question))
         viewController.presentInNavigationController(viewController: controller)
 
         helpDetailViewController = controller

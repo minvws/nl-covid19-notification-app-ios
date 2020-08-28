@@ -44,12 +44,12 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
         viewController.push(viewController: helpOverviewViewController, animated: false)
     }
 
-    func routeTo(question: HelpQuestion, shouldShowEnableAppButton: Bool) {
+    func routeTo(entry: HelpDetailEntry, shouldShowEnableAppButton: Bool) {
         let viewControllerToBeRemoved = self.helpDetailViewController
 
         let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
                                                                shouldShowEnableAppButton: shouldShowEnableAppButton,
-                                                               question: question)
+                                                               entry: entry)
         self.helpDetailViewController = helpDetailViewController
 
         viewController.push(viewController: helpDetailViewController, animated: true)

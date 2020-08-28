@@ -69,7 +69,7 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
     }
 
-    func helpDetailRequestRedirect(to question: HelpQuestion) {
+    func helpDetailRequestRedirect(to entry: HelpDetailEntry) {
         // TODO: Navigate to new question
     }
 

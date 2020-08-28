@@ -12,7 +12,7 @@ import WebKit
 /// @mockable
 protocol HelpRouting: Routing {
     func routeToOverview(shouldShowEnableAppButton: Bool)
-    func routeTo(question: HelpQuestion, shouldShowEnableAppButton: Bool)
+    func routeTo(entry: HelpDetailEntry, shouldShowEnableAppButton: Bool)
     func detachHelpOverview(shouldDismissViewController: Bool)
     func detachHelpDetail(shouldDismissViewController: Bool)
 }
@@ -51,8 +51,8 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
 
     // MARK: - HelpOverviewListener
 
-    func helpOverviewRequestsRouteTo(question: HelpQuestion) {
-        router?.routeTo(question: question, shouldShowEnableAppButton: shouldShowEnableAppButton)
+    func helpOverviewRequestsRouteTo(entry: HelpOverviewEntry) {
+        router?.routeTo(entry: entry, shouldShowEnableAppButton: shouldShowEnableAppButton)
     }
 
     func helpOverviewRequestsDismissal(shouldDismissViewController: Bool) {
@@ -76,8 +76,8 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
         self.listener?.helpRequestsEnableApp()
     }
 
-    func helpDetailRequestRedirect(to question: HelpQuestion) {
-        router?.routeTo(question: question, shouldShowEnableAppButton: shouldShowEnableAppButton)
+    func helpDetailRequestRedirect(to entry: HelpDetailEntry) {
+        router?.routeTo(entry: entry, shouldShowEnableAppButton: shouldShowEnableAppButton)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
