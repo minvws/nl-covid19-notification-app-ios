@@ -1,3 +1,8 @@
+/* MARK: - Status */
+"status.icon.accessibility.ok" = "Ein grüner Kreis mit Häkchen gibt an, dass die App gut eingestellt ist.";
+"status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen ist eine Warnung.";
+"status.icon.accessibility.notified" = "Ein roter Kreis mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist.";
+"status.notified.today" = "heute";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -11,11 +16,11 @@
 "help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Was können Sie in dieser Situation tun?";
-"moreInformation.situation.step1" = "Haben Sie keine Beschwerden? Machen Sie einen Coronatest und bleiben Sie zu Hause, bis Sie das Ergebnis haben";
-"moreInformation.situation.step2" = "Haben Sie (leichte) Beschwerden, die zu Corona passen? Machen Sie einen Coronatest und bleiben Sie zu Hause, bis Sie das Ergebnis haben";
+"moreInformation.situation.step1" = "Haben Sie keine Beschwerden? Machen Sie einen Coronatest und bleiben Sie zu Hause, bis Sie das Ergebnis haben.";
+"moreInformation.situation.step2" = "Haben Sie (leichte) Beschwerden, die zu Corona passen? Machen Sie einen Coronatest und bleiben Sie zu Hause, bis Sie das Ergebnis haben.";
 "moreInformation.situation.step3" = "Haben Sie ernste Beschwerden oder gehören Sie zu einer Risikogruppe? Rufen Sie Ihren Hausarzt an.";
 
-"shareAppTitle" = "Ich helfe dabei, Corona mit CoronaMelder zu bekämpfen. Machen Sie auch mit?";
+"shareAppTitle" = "Ich helfe dabei, Corona mit CoronaMelder unter Kontrolle zu bekommen. Machen Sie auch mit?";
 
 "ok" = "OK";
 "yes" = "Ja";
@@ -37,38 +42,38 @@
 
 /* MARK: - EndOfLife */
 "endOfLife.title" = "CoronaMelder wurde eingestellt.";
-"endOfLife.description" = "Das Ministerium für Gesundheit, Gemeinwohl und Sport hat beschlossen, dass die App nicht mehr erforderlich ist. Sie erhalten also keine Nachricht mehr, wenn Sie in der Nähe einer mit Corona infizierten Person waren.";
+"endOfLife.description" = "Das Ministerium für Gesundheit, Gemeinwohl und Sport hat beschlossen, dass die App nicht mehr erforderlich ist. Sie erhalten also keine Nachricht mehr, wenn Sie in der Nähe einer Person mit Corona waren.";
 
 /* MARK: - Onboarding Steps */
-"step1Title" = "Helfen Sie dabei, die Verbreitung des Coronavirus zu stoppen";
-"step1Content" = "Diese App warnt Sie, wenn Sie in der Nähe einer mit Corona infizierten Person waren. So können Sie verhindern, dass Sie Menschen in Ihrer Umgebung anstecken.";
+"step1Title" = "Helfen Sie dabei, die Verbreitung des Coronavirus zu stoppen.";
+"step1Content" = "Diese App warnt Sie, wenn Sie in der Nähe einer Person mit Corona waren. So können Sie verhindern, dass Sie Personen in Ihrer Umgebung unbewusst anstecken.";
 
-"step2Title" = "Sie erhalten eine Nachricht, <u>nachdem</u> ein zusätzliches Infektionsrisiko für Sie entstanden ist.";
-"step2Content" = "Die App schickt eine Nachricht, wenn Sie mindestens 15 Minuten in der Nähe einer Person waren, bei der später Corona festgestellt wurde. Diese Person muss ebenfalls die App benutzen.";
+"step2Title" = "Sie erhalten eine Nachricht, <u>wenn</u> für Sie eine erhöhte Ansteckungsgefahr bestand.";
+"step2Content" = "Die App schickt eine Nachricht, wenn Sie mindestens 15 Minuten in der Nähe einer Person waren, bei der später Corona festgestellt wurde. Diese Person muss auch die App nutzen.";
 
 "step3Title" = "Die App verwendet Bluetooth, <u>keine</u> Standortdaten.";
-"step3Content" = "Die App erkennt über Bluetooth, ob Sie ganz in der Nähe einer anderen Person waren. Je näher Sie sind, desto stärker ist das Bluetooth-Signal. Die App weiß nicht, wo Sie waren und wer Sie sind.";
+"step3Content" = "Die App erkennt über Bluetooth, ob Sie in der Nähe einer anderen Person waren. Je näher, desto stärker ist das Bluetooth-Signal. Die App weiß nicht, wo Sie waren und wer Sie sind.";
 
-"step4Title" = "Fuhr jemand mit dem Rad vorbei? Dann bekommen Sie später keine Nachricht.";
-"step4Content" = "Das Bluetooth-Signal war stark genug, da Sie dicht beieinander waren. Diese Nähe war jedoch von so kurzer Dauer, dass das Infektionsrisiko sehr klein ist.";
+"step4Title" = "Fuhr jemand mit dem Rad vorbei? Dann bekommen Sie später <u>keine</u> Nachricht.";
+"step4Content" = "Das Bluetooth-Signal war stark genug, da Sie dicht beieinander waren. Diese Begegnung war jedoch so kurz, dass die Ansteckungsgefahr sehr gering ist.";
 
-"step5Title" = "Saßen Sie im Zug dicht neben jemandem? Dann können Sie <u>später</u> wohl eine Nachricht erhalten.";
-"step5Content" = "Das Bluetooth-Signal war stark genug, und Sie saßen längere Zeit dicht beieinander.";
+"step5Title" = "Saßen Sie im Zug dicht neben jemandem? Dann können Sie <u>später</u> eine Nachricht bekommen.";
+"step5Content" = "Das Bluetooth-Signal war stark genug, und Sie waren längere Zeit dicht beieinander.";
 
 /* MARK: - Onboarding */
 "nextButtonTitle" = "Weiter";
 
 /* MARK: - Consent Steps */
-"consentSkipEnTitle" = "Sind Sie sicher, dass Sie diese Nachrichten nicht aktivieren möchten?";
-"consentSkipEnMessage" = "Ohne Zustimmung kann die App Ihnen keine Nachrichten schicken, nachdem für Sie ein erhöhtes Infektionsrisiko entstanden ist.";
+"consentSkipEnTitle" = "Sollen diese Nachrichten wirklich nicht aktiviert werden?";
+"consentSkipEnMessage" = "Ohne Zustimmung kann die App Ihnen keine Nachrichten schicken, wenn für Sie eine erhöhte Ansteckungsgefahr bestand.";
 "consentSkipEnAcceptButton" = "Aktivieren";
 "consentSkipEnDeclineButton" = "Überspringen";
 
 /* MARK: - Consent Steps */
 "consentStep1Title" = "Nachrichten über möglichen Kontakt mit dem Coronavirus aktivieren";
-"consentStep1Summary1" = "Bluetooth-Daten werden 14 Tage lang auf Ihrem Telefon gespeichert. Sie können sie jederzeit selbst löschen.";
+"consentStep1Summary1" = "Bluetooth-Daten werden 14 Tage auf Ihrem Telefon gespeichert. Sie können sie jederzeit selbst löschen.";
 "consentStep1Summary2" = "Ihr Name wird <b>nicht</b> verwendet oder gespeichert.";
-"consentStep1Summary3" = "Ihre GPS-Standortdaten werden <i>nicht</i> verwendet oder gespeichert.";
+"consentStep1Summary3" = "Ihre GPS- oder Standortdaten werden <b>nicht</b> verwendet oder gespeichert.";
 "consentStep1PrimaryButton" = "Aktivieren";
 "consentStep1SecondaryButton" = "Wie funktioniert die App genau?";
 
@@ -83,7 +88,7 @@
 "consentStep3SecondaryButton" = "Vielleicht später";
 
 "consentStep4Title" = "Teilen Sie anderen mit, dass Sie dazu beitragen, das Virus zu stoppen.";
-"consentStep4Content" = "Je mehr Menschen CoronaMelder verwenden, desto besser funktioniert die App. Nur gemeinsam können wir die Ausbreitung des Virus stoppen. Teilen Sie die App mit möglichst vielen anderen Personen.";
+"consentStep4Content" = "Je mehr Menschen CoronaMelder verwenden, desto besser funktioniert die App. Nur gemeinsam bekommen wir Corona unter Kontrolle. Teilen Sie die App deshalb mit möglichst vielen anderen.";
 "consentStep4PrimaryButton" = "App teilen";
 "consentStep4SecondaryButton" = "Weiter";
 
@@ -116,16 +121,18 @@
 
 "help.faq.notification.title" = "Wann bekomme ich eine App-Nachricht?";
 "help.faq.location.title" = "Kann die App meinen Standort erkennen?";
-"help.faq.location.description" = "Nein. Die App erkennt über Bluetooth nur, ob Sie in der Nähe anderer Personen sind, die die App auch haben. Bluetooth ist nicht an Ihren Standort gekoppelt. Die App kann also nicht sehen, wo Sie sind. Bluetooth dient nur dazu, eine drahtlose Verbindung zwischen zwei Geräten herzustellen, die dicht beieinander sind. Zum Beispiel Ihr Telefon und eine Musikbox oder ein Kopfhörer.";
+"help.faq.location.description" = "Nein. Die App erkennt über Bluetooth nur, ob Sie in der Nähe anderer Personen sind, die die App auch haben. Die App sieht nie, wo Sie sind.<br><br>Bluetooth stellt eine drahtlose Verbindung zwischen zwei Geräten her, die dicht beieinander sind. Zum Beispiel Ihr Telefon und eine Musikbox oder ein Kopfhörer.<br><br>Die App schätzt den Abstand zwischen den beiden Telefonen. Das tut sie anhand der Stärke des Bluetooth-Signals.
+";
 "help.faq.anonymous.title" = "Wie kann die App anonym funktionieren?";
-"help.faq.anonymous.description_1" = "Die App tauscht Codes mit anderen Telefonen aus. Die Codes enthalten keine persönlichen Daten, auch nicht Ihre Standortdaten. Die Codes sind völlig willkürlich. Der Austausch von Codes findet statt, wenn Sie ganz in der Nähe einer Person sind, die auch die App hat.";
-"help.faq.anonymous.description_2" = "Stellt sich später heraus, dass diese Person Corona hat? Dann kann diese Person in der App ihre Codes einer Liste mit Codes infizierter Personen hinzufügen. Die Codes können nur hinzugefügt werden, nachdem die infizierte Person ihren GGD-Schlüssel an den GGD weitergeleitet hat. So kann die Ansteckung bestätigt werden. Nach dieser Kontrolle ist es möglich, eine Nachricht an alle anderen Personen zu schicken, die diese Codes auf ihrem Telefon haben. In dieser Nachricht steht nur, wann sie in der Nähe einer infizierten Person waren. Aber nicht, wer das ist und wo sie der Person begegnet sind.";
+"help.faq.anonymous.description_1" = "Die App tauscht willkürliche Codes mit anderen Telefonen aus. Die Codes enthalten keine Personen- oder Standortdaten. Die Codes werden ausgetauscht, wenn Sie in der Nähe einer Person sind, die auch die App hat.";
+"help.faq.anonymous.description_2" = "Stellt sich später heraus, dass diese Person Corona hat? Dann kann diese Person gemeinsam mit dem GGD ihre Codes einer Liste mit Codes von Personen mit Corona hinzufügen. So wird die Ansteckung bestätigt.<br><br>Danach wird eine Nachricht an alle anderen Personen geschickt, die diese Codes auf ihrem Telefon haben. In dieser Nachricht steht nur, wann sie in der Nähe einer Person mit Corona waren. Aber nicht, wer das ist und wo sie der Person begegnet sind.";
 "help.bluetooth.title" = "Funktioniert Bluetooth durch Wände hindurch?";
 
 "help.faq.reason.title" = "Warum ist diese App wichtig?";
-"help.faq.reason.description" = "Mit der App helfen Sie, die Verbreitung des Coronavirus zu stoppen. Die App ist eine Ergänzung der Kontaktuntersuchung des GGD. Wenn Sie sich testen lassen und sich herausstellt, dass Sie Corona haben, ruft der GGD Sie an. Der GGD fragt Sie dann, in wessen Nähe Sie waren, als Sie ansteckend waren. Der GGD ruft auch diese Personen an. Er warnt sie, dass sie vieleicht Corona haben.<br><br>Allerdings waren Sie wahrscheinlich auch in der Nähe von Personen, die Sie nicht kennen. Im Zug, im Kino oder im Restaurant. Jetzt kommt die App zu Hilfe. Mit der App können Sie alle Personen warnen, die bei Ihnen in der Nähe waren. Auch die Personen, die Sie nicht kennen. Solange sie natürlich die App verwenden.<br><br>Der GGD kontaktiert die Personen, deren Namen bzw. Kontaktdaten Sie haben. Die App warnt gleichzeitig die Personen, die Sie getroffen haben, deren Namen bzw. Kontaktdaten Sie aber nicht haben. So sind auch diese Personen schnell informiert, können Maßnahmen ergreifen und somit verhindern, dass sie andere anstecken. Die Kontaktuntersuchung des GGD geht einfach weiter. Denn für die Menschen, in deren Nähe Sie öfter waren, entstand vielleicht ein größeres Infektionsrisiko.<br><br>Sie können selbst natürlich auch Warnungen über die App erhalten. Wenn das passiert, waren Sie in den vergangenen Tagen in der Nähe einer Person mit Corona. Wenn Sie dies erfahren, können Sie Ihrerseits verhindern, dass Sie andere anstecken. Das tun Sie, indem Sie besonders gut auf (leichte) Beschwerden achten, die zu Corona passen. Und indem Sie sich testen lassen, wenn Sie diese Beschwerden haben.";
-"help.faq.upload_keys.title" = "Wie verschicke ich eine Nachricht?";
-"help.faq.upload_keys.description" = "Sie können nur eine Nachricht an andere schicken, wenn sich nach einem Test herausstellt, dass Sie Corona haben. Der GGD ruft Sie in diesem Fall an. Während dieses Gesprächs können Sie mit Unterstützung des GGD-Mitarbeiters die Nachricht schicken. Das tun Sie, indem Sie die Codes, die Ihr Telefon in den letzten 14 Tagen erstellt hat, mit dem GGD teilen.<br>Nach der Kontrolle Ihres GGD-Schlüssels können die Personen, in deren Nähe Sie waren, als Sie ansteckend waren, eine anonyme Nachricht erhalten. Aber nur, wenn diese Personen auch die App verwenden.";
+"help.faq.reason.description" = "Die App kann Sie schnell warnen, wenn Sie in der Nähe einer Person mit Corona waren. Schon bevor Sie Beschwerden haben. Sie können nämlich Corona haben und ansteckend sein, ohne es zu wissen.<br><br>Wenn Sie über die App eine Warnmeldung bekommen, können Sie sich testen lassen. Es ist zudem ratsam, zu Hause zu bleiben. So verhindern Sie, dass Sie Personen in Ihrer Umgebung unbewusst anstecken.<br><br>Sie wurden getestet und haben Corona? Dann können Sie gemeinsam mit dem GGD (auch unbekannte) Personen warnen, die lange in Ihrer Nähe waren. Zum Beispiel in einem Restaurant, Kino oder Wartezimmer. Diese Personen müssen allerdings auch die App nutzen.<br><br>Dank CoronaMelder können wir schneller eingreifen und Neuansteckungen verhindern. Nur gemeinsam bekommen wir Corona unter Kontrolle.";
+"help.faq.upload_keys.title" = "Kann ich anderen eine Nachricht schicken, wenn ich Corona habe?";
+"help.faq.upload_keys.description" = "Sie können nur eine Nachricht an andere schicken, wenn sich nach einem Test herausstellt, dass Sie Corona haben. Der GGD ruft Sie in diesem Fall an.<br>Bei diesem Gespräch kontrolliert ein GGD-Mitarbeiter Ihren GGD-Schlüssel. Sie finden ihn in der App. So wird immer sichergestellt, dass nur Personen Nachrichten verschicken können, die wirklich Corona haben.<br>Nach der Kontrolle Ihres GGD-Schlüssels können Sie die Codes teilen, die Ihr Telefon in den letzten 14 Tagen an andere Telefone geschickt hat.<br>So können die Personen, in deren Nähe Sie waren, als Sie ansteckend waren, eine anonyme Nachricht erhalten. Aber nur, wenn diese Personen auch die App nutzen.
+";
 "help.faq.deletion.title" = "Wie lösche ich meine Daten?";
 "help.faq.privacy_policy.title" = "Datenschutzerklärung";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -133,41 +140,41 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Zugänglichkeit";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Sie erhalten eine Nachricht, nachdem sich für Sie ein zusätzliches Infektionsrisiko ergeben hat. Das ist der Fall, wenn Sie mindestens 15 Minuten lang ganz in der Nähe einer Person waren, bei der später Corona festgestellt wurde. Und natürlich nur, wenn diese Person auch die App benutzt. Ob Sie eine Nachricht erhalten, hängt van der Stärke des Bluetooth-Signals sowie von der Dauer des Kontaktmoments ab. Fuhr jemand auf der Straße mit dem Rad vorbei? Dann bekommen Sie später keine Nachricht. Sie waren dicht beieinander, also war das Bluetooth-Signal stark. Aber der Kontakt war so kurz, dass sich für Sie kein zusätzliches Infektionsrisiko ergeben hat. Saßen Sie im Zug oder Büro dicht beieinander? Dann können Sie später wohl eine Nachricht bekommen. Das Bluetooth-Signal war stark genug, und Sie waren längere Zeit dicht beieinander.";
+"help.faq.notification.description" = "Sie erhalten eine Nachricht, wenn für Sie eine erhöhte Ansteckungsgefahr bestand. Das ist der Fall, wenn Sie mindestens 15 Minuten in der Nähe einer Person waren, bei der später Corona festgestellt wurde. Und natürlich nur, wenn diese Person auch die App nutzt.<br><br>Ob Sie eine Nachricht erhalten, hängt van der Stärke des Bluetooth-Signals ab. Und von der Dauer der Begegnung. Fuhr jemand auf der Straße mit dem Rad vorbei? Dann bekommen Sie später keine Nachricht. Sie waren dicht beieinander, also war das Bluetooth-Signal stark. Aber die Begegnung war so kurz, dass die Ansteckungsgefahr sehr gering ist.<br><br>Saßen Sie im Zug oder Büro dicht beieinander? Dann können Sie später eine Nachricht bekommen. Das Bluetooth-Signal war stark genug, und Sie waren längere Zeit dicht beieinander.";
 "help.faq.bluetooth.title" = "Funktioniert Bluetooth durch Wände hindurch?";
-"help.faq.bluetooth.description" = "Ja, aber das Signal ist dann sehr schwach. Bluetooth funktioniert am besten, wenn Ihr Telefon im selben Raum ist wie das Telefon der anderen Person. Es ist z. B. sehr unwahrscheinlich, dass Ihre App das Bluetooth-Signal der Nachbarn auffängt. Deshalb ist es auch sehr unwahrscheinlich, dass Sie eine Nachricht erhalten, wenn sich Ihr Nachbar mit Corona infiziert hat und Sie nicht im selben Raum waren.";
+"help.faq.bluetooth.description" = "Ja, aber das Signal ist dann sehr schwach. Bluetooth funktioniert am besten, wenn Ihr Telefon im selben Raum ist wie das Telefon der anderen Person.<br><br>Es ist zum Beispiel sehr unwahrscheinlich, dass Ihre App das Bluetooth-Signal des Nachbarn auffängt.<br><br>Deshalb ist es auch sehr unwahrscheinlich, dass Sie eine Nachricht erhalten, wenn sich Ihr Nachbar mit Corona angesteckt hat und Sie nicht im selben Raum waren.";
 "help.faq.power_usage.title" = "Wieviel Akku verbraucht die App?";
-"help.faq.power_usage.description" = "Die App verwendet Bluetooth Low Energy. Das ist eine Sonderform von Bluetooth, die sehr wenig Strom verbraucht. Es hängt von Ihrem Handy-Akku ab, wieviel Prozent das genau sind.";
+"help.faq.power_usage.description" = "Die App verwendet Bluetooth Low Energy. Das ist eine Sonderform von Bluetooth, die sehr wenig Strom verbraucht. Es hängt von Ihrem Telefon ab, wieviel Prozent das genau sind.";
 "help.what_does_the_app_do.title" = "Was macht CoronaMelder?";
 "help.what_does_the_app_do.protect.title" = "Helfen Sie dabei, die Verbreitung des Coronavirus zu stoppen.";
-"help.what_does_the_app_do.protect.description" = "Diese App warnt Sie, wenn Sie in der Nähe einer mit Corona infizierten Person waren. So können Sie verhindern, dass Sie Menschen in Ihrer Umgebung anstecken.";
-"help.what_does_the_app_do.notify.title" = "Sie erhalten eine Nachricht, nachdem ein zusätzliches Infektionsrisiko für Sie entstanden ist.";
+"help.what_does_the_app_do.protect.description" = "Diese App warnt Sie, wenn Sie in der Nähe einer Person mit Corona waren. So können Sie verhindern, dass Sie Personen in Ihrer Umgebung unbewusst anstecken.";
+"help.what_does_the_app_do.notify.title" = "Sie erhalten eine Nachricht, <u>wenn</u> für Sie eine erhöhte Ansteckungsgefahr bestand.";
 "help.what_does_the_app_do.notify.description" = "Die App schickt eine Nachricht, wenn Sie mindestens 15 Minuten in der Nähe einer Person waren, bei der später Corona festgestellt wurde. Diese Person muss ebenfalls die App benutzen.";
-"help.what_does_the_app_do.bluetooth.title" = "Die App verwendet Bluetooth, keine Standortdaten.";
-"help.what_does_the_app_do.bluetooth.description" = "Die App erkennt über Bluetooth, ob Sie ganz in der Nähe einer anderen Person waren. Je näher Sie sind, desto stärker ist das Bluetooth-Signal. Die App weiß nicht, wo Sie waren und wer Sie sind.";
-"help.what_does_the_app_do.example.cycle.title" = "Fuhr jemand mit dem Rad vorbei? Dann bekommen Sie später keine Nachricht.";
-"help.what_does_the_app_do.example.cycle.description" = "Das Bluetooth-Signal war stark genug, da Sie dicht beieinander waren. Diese Nähe war jedoch von so kurzer Dauer, dass das Infektionsrisiko sehr klein ist.";
-"help.what_does_the_app_do.example.train.title" = "Saßen Sie im Zug dicht neben jemandem? Dann können Sie später wohl eine Nachricht erhalten.";
-"help.what_does_the_app_do.example.train.description" = "Das Bluetooth-Signal war stark genug, und Sie saßen längere Zeit dicht beieinander.";
+"help.what_does_the_app_do.bluetooth.title" = "Die App verwendet Bluetooth, <u>keine</u> Standortdaten.";
+"help.what_does_the_app_do.bluetooth.description" = "Die App erkennt über Bluetooth, ob Sie in der Nähe einer anderen Person waren. Je näher, desto stärker ist das Bluetooth-Signal. Die App weiß nicht, wo Sie waren und wer Sie sind.";
+"help.what_does_the_app_do.example.cycle.title" = "Fuhr jemand mit dem Rad vorbei? Dann bekommen Sie später <u>keine</u> Nachricht.";
+"help.what_does_the_app_do.example.cycle.description" = "Das Bluetooth-Signal war stark genug, da Sie dicht beieinander waren. Diese Begegnung war jedoch so kurz, dass die Ansteckungsgefahr sehr gering ist.";
+"help.what_does_the_app_do.example.train.title" = "Saßen Sie im Zug dicht neben jemandem? Dann können Sie später eine Nachricht bekommen.";
+"help.what_does_the_app_do.example.train.description" = "Das Bluetooth-Signal war stark genug, und Sie waren längere Zeit dicht beieinander.";
 
 "help.technical_explanation.title" = "Technische Erläuterungen";
 "help.technical_explanation.step1.title" = "1. Die App erstellt für jedes Telefon einen eigenen Code.";
 "help.technical_explanation.step1.description" = "Der Code enthält keine Informationen über Sie oder Ihr Telefon. Der Code ist völlig anonym und ändert sich alle 15 Minuten.";
 "help.technical_explanation.step2.title" = "2. Telefone tauschen ihre Codes aus, wenn sie dicht beieinander sind.";
 "help.technical_explanation.step2.description" = "Hat die Person, der Sie begegnen, auch die App? Dann tauschen beide Telefone ihre Codes über Bluetooth Low Energy miteinander aus. So weiß die App, welche Telefone dicht beieinander waren. Die App weiß nicht, zu wem die Telefone gehören oder wo Sie gewesen sind.";
-"help.technical_explanation.step3.title" = "3. Stellt sich heraus, dass eine Person Corona hat, kann diese Person ihre Codes auf eine Liste setzen.";
-"help.technical_explanation.step3.description" = "Diese Liste enthält nur Codes infizierter Personen. Um Codes hinzufügen zu können, muss eine infizierte Person erst einen GGD-Schlüssel an den GGD weiterleiten. So ist immer sichergestellt, dass die hinzugefügten Codes auch wirklich zu einer Person gehören, die Corona hat. Alle Codes, die älter sind als 14 Tage, werden automatisch aus der Liste gelöscht.";
+"help.technical_explanation.step3.title" = "3. Wenn eine Person Corona hat, kann sie ihre Codes auf eine Liste setzen.";
+"help.technical_explanation.step3.description" = "Diese Liste enthält nur Codes von Personen mit Corona. Um Codes hinzufügen zu können, muss eine Person mit Corona erst einen GGD-Schlüssel an den GGD weiterleiten. So ist immer sichergestellt, dass die hinzugefügten Codes auch wirklich zu einer Person gehören, die Corona hat. Alle Codes, die älter sind als 14 Tage, werden automatisch aus der Liste gelöscht.";
 "help.technical_explanation.step4.title" = "4. Jedes Telefon kontrolliert, ob es die Codes auf der Liste schon kennt.";
-"help.technical_explanation.step4.description" = "Die App prüft ein paar Mal am Tag die Liste mit den Codes infizierter Personen. Und vergleicht sie mit der Liste der Codes, die auf dem eigenen Telefon gespeichert sind. So kann die App feststellen, ob für Sie ein zusätzliches Infektionsrisiko bestand.";
-"help.technical_explanation.step5.title" = "5. Sie bekommen eine Nachricht, wenn die Codes einer infizierten Person auf Ihrem Telefon stehen.";
-"help.technical_explanation.step5.description" = "In dieser Nachricht steht, wann Sie in der Nähe der infizierten Person waren, aber nicht, wer das ist und wo das war. Die App sagt Ihnen auch, was Sie nun am besten tun können. Ihre eigenen Codes stehen nicht auf der Liste mit den Codes infizierter Personen, werden aber 14 Tage lang auf Ihrem Telefon gespeichert.";
+"help.technical_explanation.step4.description" = "Die App prüft ein paar Mal am Tag die Liste mit den Codes von Personen mit Corona. Und vergleicht sie mit den Codes, die auf Ihrem Telefon gespeichert sind. So erkennt die App, ob für Sie eine erhöhte Ansteckungsgefahr bestand.";
+"help.technical_explanation.step5.title" = "5. Sie bekommen eine Nachricht, wenn die Codes einer Person mit Corona auf Ihrem Telefon stehen.";
+"help.technical_explanation.step5.description" = "In dieser Nachricht steht, wann Sie in der Nähe der Person mit Corona waren. Aber nicht, wer das ist und wo das war. Die App sagt Ihnen auch, was Sie nun am besten tun können. Ihre eigenen Codes stehen nicht auf der Liste mit den Codes von Personen mit Corona. Ihre Codes werden aber 14 Tage auf Ihrem Telefon gespeichert.";
 
 "help.technical_explanation.github.title" = "Quellcode anzeigen";
 "help.technical_explanation.github.subtitle" = "Zu GitHub wechseln";
 
 /* MARK: - Message */
-"message.default.title" = "Sie waren in der Nähe einer mit Corona infizierten Person.";
-"message.default.body" = "Sie waren %@ in unmittelbarer Nähe einer Person, bei der später Corona festgestellt wurde. Sie waren in dieser Situation möglicherweise einem erhöhten Infektionsrisiko ausgesetzt. Wenn Sie tatsächlich infiziert sind, können Sie andere mit dem Virus infizieren, auch wenn Sie sich jetzt nicht krank fühlen.";
+"message.default.title" = "Sie waren in der Nähe einer Person mit Corona.";
+"message.default.body" = "Sie waren %@ in der Nähe einer Person, bei der später Corona festgestellt wurde. Für Sie bestand in dieser Situation eine erhöhte Ansteckungsgefahr. Wenn Sie tatsächlich Corona haben, können Sie andere mit dem Virus anstecken. Auch wenn Sie sich jetzt nicht krank fühlen.";
 /* MARK: - Message */
 "message.title" = "Nachricht erhalten";
 "message.button.title" = "Coronatest anfordern";
@@ -178,14 +185,11 @@
 "notification.upload.failed.content" = "Wir haben versucht, die Nachricht zu schicken. Aber das ist fehlgeschlagen. Rufen Sie den GGD an, um die Nachricht erneut zu schicken. Es ist sehr wichtig, dass Sie das schnell tun. Sonst können sich noch mehr Menschen anstecken.";
 
 /* MARK: - Main */
-"main.confirmNotificationRemoval.title" = "Sind Sie sicher, dass diese Nachricht gelöscht werden soll?";
+"main.confirmNotificationRemoval.title" = "Soll diese Nachricht wirklich gelöscht werden?";
 "main.confirmNotificationRemoval.message" = "Sie können das Datum danach nicht mehr in der App finden. Merken Sie es sich deshalb gut.";
 "main.confirmNotificationRemoval.confirm" = "Löschen";
 
 /* MARK: - Status */
-"status.icon.accessibility.ok" = "Ein grüner Kreis mit Häkchen gibt an, dass die App gut eingestellt ist.";
-"status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen dient als Warnung.";
-"status.icon.accessibility.notified" = "Ein roter Kreist mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist";
 "status.appState" = "Die App ist aktiv.";
 "status.appState.inactive.title" = "Die App ist nicht aktiv.";
 "status.appState.inactive.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
@@ -196,7 +200,9 @@
 "status.appState.card.button" = "App aktivieren";
 "status.appState.card.try_again" = "Versuchen Sie es erneut.";
 "status.active.description" = "Auch wenn Sie die App schließen, bleibt CoronaMelder aktiv.";
-"status.notified.description" = "Sie haben ein um %@ höheres Infektionsrisiko.";
+"status.notified.days_ago_one" = "vor %@ Tag";
+"status.notified.days_ago_other" = "vor %@ Tagen";
+"status.notified.description" = "Sie hatten %@ (%@) ein höheres Infektionsrisiko.";
 "status.notified.moreInfo" = "Was kann ich jetzt machen?";
 "status.notified.removeNotification" = "Nachricht löschen";
 
@@ -207,16 +213,16 @@
 "moreInformation.cell.about.subtitle" = "Schauen Sie sich an, wie die App funktioniert und was das für den Datenschutz bedeutet.";
 
 "moreInformation.cell.share.title" = "Andere einladen, die App zu verwenden";
-"moreInformation.cell.share.subtitle" = "Teilen Sie die App mit anderen, um gemeinsam Corona zu stoppen.";
+"moreInformation.cell.share.subtitle" = "Teilen Sie die App mit anderen, damit wir gemeinsam Corona unter Kontrolle bekommen.";
 
 "moreInformation.cell.receivedNotification.title" = "Was steht in der Nachricht?";
-"moreInformation.cell.receivedNotification.subtitle" = "Lesen Sie, was Sie tun können, wenn Sie in der Nähe einer mit Corona infizierten Person waren.";
+"moreInformation.cell.receivedNotification.subtitle" = "Lesen Sie, was Sie tun können, wenn Sie in der Nähe einer Person mit Corona waren.";
 
 "moreInformation.cell.requestTest.title" = "Coronatest anfordern";
-"moreInformation.cell.requestTest.subtitle" = "Erfahren Sie schnellstmöglich, ob Sie selbst infiziert sind.";
+"moreInformation.cell.requestTest.subtitle" = "Erfahren Sie schnellstmöglich, ob Sie selbst Corona haben.";
 
 "moreInformation.cell.infected.title" = "GGD-Schlüssel weiterleiten";
-"moreInformation.cell.infected.subtitle" = "Schicken Sie mit dem GGD eine anonyme Nachricht an andere, wenn Sie infiziert sind.";
+"moreInformation.cell.infected.subtitle" = "Schicken Sie mit dem GGD eine anonyme Nachricht an andere, wenn Sie Corona haben.";
 
 "moreInformation.info.title" = "Sie brauchen dazu Ihre Bürgerservicenummer. Diese steht auf Ihrem Pass oder Ausweis.";
 
@@ -245,14 +251,13 @@
 "moreInformation.about.faq.location" = " Kann die App meinen Standort erkennen?";
 "moreInformation.about.faq.anonymous" = "Wie kann die App anonym funktionieren?";
 "moreInformation.about.faq.notification" = "Wann bekomme ich eine App-Nachricht?";
-"moreInformation.about.faq.upload_keys" = "Wie verschicke ich eine Nachricht?";
+"moreInformation.about.faq.upload_keys" = "Kann ich anderen eine Nachricht schicken, wenn ich Corona habe?";
 "moreInformation.about.faq.bluetooth" = "Funktioniert Bluetooth durch Wände hindurch?";
 "moreInformation.about.faq.power_usage" = "Wieviel Akku verbraucht die App?";
 "moreInformation.about.faq.deletion" = "Wie lösche ich die Bluetooth-Daten auf meinem Telefon?";
-
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Teilen Sie anderen mit, dass Sie dazu beitragen, das Virus zu stoppen.";
-"moreInformation.share.description" = "Je mehr Menschen CoronaMelder verwenden, desto besser funktioniert die App. Nur gemeinsam können wir die Ausbreitung des Virus stoppen. Teilen Sie die App mit möglichst vielen anderen Personen.";
+"moreInformation.share.description" = "Je mehr Menschen CoronaMelder nutzen, desto besser funktioniert die App. Nur gemeinsam bekommen wir Corona unter Kontrolle. Teilen Sie die App deshalb mit möglichst vielen anderen.";
 "moreInformation.share.action" = "App teilen";
 
 /* MARK: - MoreInformation | Infected */
@@ -267,7 +272,7 @@
 "moreInformation.infected.how_does_it_work" = "Wie funktioniert das?";
 "moreInformation.infected.step1" = "Leiten Sie diesen GGD-Schlüssel an den GGD-Mitarbeiter weiter:";
 "moreInformation.infected.step2" = "Warten Sie auf den GGD-Mitarbeiter, bevor Sie fortfahren.";
-"moreInformation.infected.step3" = "Warnen Sie andere, indem Sie eine anonyme Nachricht schicken.";
+"moreInformation.infected.step3" = "Warnen Sie andere mit einer anonymen Nachricht.";
 "moreInformation.infected.tryAgain.description" = "Die App konnte keinen GGD-Schlüssel laden. Kontrollieren Sie Ihre Internetverbindung.";
 "moreInformation.infected.action" = "Weiter";
 
@@ -284,17 +289,17 @@
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Nachricht erhalten";
-"moreInformation.receivedNotification.button.title" = "Coronatest telefonisch anfordern";
-"moreInformation.receivedNotification.notificationExplanation.title" = "Was bedeutet es, wenn ich eine Nachricht bekomme?";
-"moreInformation.receivedNotification.notificationExplanation.content" = "Die App schickt eine Nachricht, wenn Sie mindestens 15 Minuten lang in unmittelbarer Nähe einer Person waren, bei der später Corona festgestellt wurde. In der Nachricht steht nur, an welchem Tag das war. Sie waren in dieser Situation einem erhöhten Infektionsrisiko ausgesetzt. Wenn Sie infiziert sind, können Sie andere mit dem Virus infizieren, auch wenn Sie sich nicht krank fühlen.";
+"moreInformation.receivedNotification.button.title" = "Coronatest anfordern";
+"moreInformation.receivedNotification.notificationExplanation.title" = "Was bedeutet es, wenn Sie eine Nachricht erhalten?";
+"moreInformation.receivedNotification.notificationExplanation.content" = "Die App schickt eine Nachricht, wenn Sie mindestens 15 Minuten in der Nähe einer Person waren, bei der später Corona festgestellt wurde. In der Nachricht steht nur, an welchem Tag das war. Für Sie bestand in dieser Situation eine erhöhte Ansteckungsgefahr. Wenn Sie Corona haben, können Sie andere mit dem Virus anstecken. Auch wenn Sie sich jetzt nicht krank fühlen.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Machen Sie einen Coronatest";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Auch wenn Sie sich noch nicht krank fühlen. Denn auch dann können Sie das Coronavirus schon übertragen und andere infizieren.\n\nLassen Sie sich kostenlos testen. Das dauert nicht lange und Sie können meistens schnell einen Termin vereinbaren. Das Ergebnis ist innerhalb von 48 Stunden bekannt. Bleiben Sie zu Hause, bis Sie das Ergebnis haben.\n \nRufen Sie kostenlos die Nummer 0800-1202 an, um einen Coronatest anzufordern.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Auch wenn Sie sich noch nicht krank fühlen. Denn auch dann können Sie das Coronavirus schon übertragen und andere anstecken.\n \n\n\nLassen Sie sich kostenlos testen. Es dauert nicht lange und Sie können meistens schnell einen Termin vereinbaren. Das Ergebnis ist innerhalb von 48 Stunden bekannt. Bleiben Sie zu Hause, bis Sie das Ergebnis haben.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Coronatest anfordern";
-"moreInformation.requestTest.button.title" = "Coronatest telefonisch anfordern";
+"moreInformation.requestTest.button.title" = "Coronatest anfordern";
 "moreInformation.requestTest.receivedNotification.title" = "Haben Sie Beschwerden, die zu Corona passen? Fordern Sie dann einen Test an.";
-"moreInformation.requestTest.receivedNotification.content" = "Haben Sie (leichte) Beschwerden, die zu Corona passen? Lassen Sie sich kostenlos testen. Das dauert nicht lange und Sie können meistens schnell einen Termin vereinbaren. Das Ergebnis ist innerhalb von 48 Stunden bekannt. Bleiben Sie zu Hause, bis Sie das Ergebnis haben. Haben Sie ernste Beschwerden oder gehören Sie zu einer Risikogruppe? Rufen Sie dann den Hausarzt an. \n\nRufen Sie kostenlos die Nummer 0800-1202 an, um einen Coronatest anzufordern.\n";
+"moreInformation.requestTest.receivedNotification.content" = "Haben Sie (leichte) Beschwerden, die zu Corona passen? Lassen Sie sich kostenlos testen. Das dauert nicht lange und Sie können meistens schnell einen Termin vereinbaren. Das Ergebnis ist innerhalb von 48 Stunden bekannt. Bleiben Sie zu Hause, bis Sie das Ergebnis haben. Haben Sie ernste Beschwerden oder gehören Sie zu einer Risikogruppe? Rufen Sie dann den Hausarzt an.";
 
 "moreInformation.notification.measures.title" = "Halten Sie sich weiterhin an die Regeln:";
 "moreInformation.notification.measures.step1" = "Waschen Sie regelmäßig die Hände.";
@@ -323,7 +328,7 @@
 "enableSettings.exposureNotifications.action" = "Einstellungen öffnen";
 
 // supports HTML
-"enableSettings.exposureNotifications.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Taste.";
+"enableSettings.exposureNotifications.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Schaltfläche.";
 // supports HTML
 "enableSettings.exposureNotifications.step2" = "Kontaktnachrichten aktivieren";
 "enableSettings.exposureNotifications.step2.action.title" = "Nachrichten über möglichen Kontakt mit dem Coronavirus";
@@ -331,27 +336,27 @@
 "enableSettings.bluetooth.title" = "Bluetooth aktivieren";
 "enableSettings.bluetooth.action" = "Einstellungen öffnen";
 // supports HTML
-"enableSettings.bluetooth.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Taste.";
+"enableSettings.bluetooth.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Schaltfläche.";
 // supports HTML
-"enableSettings.bluetooth.step2" = "Aktivieren Sie <b>&#96;Bluetooth&#96;</b>.";
+"enableSettings.bluetooth.step2" = "Aktivieren Sie <b>Bluetooth</b>.";
 "enableSettings.bluetooth.step2.action.title" = "Bluetooth";
 
 "enableSettings.localNotifications.title" = "Allgemeine Nachrichten aktivieren";
 "enableSettings.localNotifications.action" = "Einstellungen öffnen";
 // supports HTML
-"enableSettings.localNotifications.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Taste.";
+"enableSettings.localNotifications.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Schaltfläche.";
 // supports HTML
-"enableSettings.localNotifications.step2" = "Gehen Sie zu <b>&#96;Benachrichtigungen&#96;</b>.";
+"enableSettings.localNotifications.step2" = "Gehen Sie zu <b>Benachrichtigungen</b>.";
 "enableSettings.localNotifications.step2.action.title" = "Benachrichtigungen";
 // supports HTML
-"enableSettings.localNotifications.step3" = "Aktivieren Sie <b>&#96;Benachrichtigung zulassen&#96;</b>.";
+"enableSettings.localNotifications.step3" = "Aktivieren Sie <b>Benachrichtigung zulassen</b>.";
 "enableSettings.localNotifications.step3.action.title" = "Benachrichtigung zulassen";
 
 /* MARK: - Exposure Notification Received - User Explanation */
-"exposure.notification.userExplanation" = "Sie waren %@ in der Nähe einer mit Corona infizierten Person. Lesen Sie mehr in der App.";
+"exposure.notification.userExplanation" = "Sie waren %@ in der Nähe einer Person mit Corona. Lesen Sie mehr in der App.";
 
 /* MARK: - Exposure Reminder Notification */
-"exposure.notification.reminder" = "Erinnerung: Sie waren vor %@ Tagen in der Nähe einer mit Corona infizierten Person. Lesen Sie mehr in der App.";
+"exposure.notification.reminder" = "Erinnerung: %@";
 
 "privacyAgreement.title" = "Zustimmung zur Datennutzung";
 "privacyAgreement.message" = "Zur Verwendung von CoronaMelder müssen Sie der %@ zustimmen. Wichtig: ";
