@@ -139,6 +139,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.refreshStatus()
 
+
         exposureController
             .isAppDeactivated()
             .sink(receiveCompletion: { _ in
@@ -152,6 +153,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .store(in: &disposeBag)
 
         checkIfAppUpdateIsRequired()
+
+        exposureController.updateLastLaunch()
     }
 
     func didEnterForeground() {
