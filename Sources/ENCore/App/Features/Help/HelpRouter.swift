@@ -11,7 +11,7 @@ import Foundation
 protocol HelpViewControllable: ViewControllable, HelpOverviewListener, HelpDetailListener, ReceivedNotificationListener {
     var router: HelpRouting? { get set }
 
-    func removeFromNavigationStack(viewController: ViewControllable)
+    func cleanNavigationStackIfNeeded()
     func push(viewController: ViewControllable, animated: Bool)
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
     func dismiss(viewController: ViewControllable, animated: Bool)
@@ -87,11 +87,11 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
         self.receivedNotificationViewController = receivedNotificationViewController
 
         viewController.push(viewController: receivedNotificationViewController, animated: true)
+
+        viewController.cleanNavigationStackIfNeeded()
     }
 
     private func routeToHelpDetail(entry: HelpDetailEntry, shouldShowEnableAppButton: Bool) {
-        let viewControllerToBeRemoved = self.helpDetailViewController
-
         let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
                                                                shouldShowEnableAppButton: shouldShowEnableAppButton,
                                                                entry: entry)
@@ -99,9 +99,7 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
 
         viewController.push(viewController: helpDetailViewController, animated: true)
 
-        if let viewControllerToBeRemoved = viewControllerToBeRemoved {
-            viewController.removeFromNavigationStack(viewController: viewControllerToBeRemoved)
-        }
+        viewController.cleanNavigationStackIfNeeded()
     }
 
     private let helpOverviewBuilder: HelpOverviewBuildable

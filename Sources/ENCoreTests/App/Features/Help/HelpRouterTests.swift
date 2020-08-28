@@ -66,39 +66,21 @@ final class HelpRouterTests: TestCase {
         XCTAssert(receivedListener === viewController)
     }
 
-    func test_routeToQuestion_twice_callsRemoveFromNavigationStack() {
+    func test_routeToQuestion_twice_callsRemoveCleanNavigationStackIfNeeded() {
         XCTAssertEqual(helpDetailBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.pushCallCount, 0)
-        XCTAssertEqual(viewController.removeFromNavigationStackCallCount, 0)
+        XCTAssertEqual(viewController.cleanNavigationStackIfNeededCallCount, 0)
 
         router.routeTo(entry: HelpOverviewEntry.question(HelpQuestion(question: "question", answer: "answer")), shouldShowEnableAppButton: true)
 
         XCTAssertEqual(helpDetailBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.pushCallCount, 1)
-        XCTAssertEqual(viewController.removeFromNavigationStackCallCount, 0)
+        XCTAssertEqual(viewController.cleanNavigationStackIfNeededCallCount, 1)
 
         router.routeTo(entry: HelpOverviewEntry.question(HelpQuestion(question: "another question", answer: "another answer")), shouldShowEnableAppButton: true)
 
         XCTAssertEqual(helpDetailBuilder.buildCallCount, 2)
         XCTAssertEqual(viewController.pushCallCount, 2)
-        XCTAssertEqual(viewController.removeFromNavigationStackCallCount, 1)
-    }
-
-    func test_routeToQuestion_twice_removesCorrectViewControllerFromStack() {
-        let viewControllerThatShouldBeRemoved = UIViewController()
-
-        helpDetailBuilder.buildHandler = { _, _, entry in
-            if entry.title == "first" {
-                return ViewControllableMock(uiviewController: viewControllerThatShouldBeRemoved)
-            }
-            return ViewControllableMock()
-        }
-
-        viewController.removeFromNavigationStackHandler = { viewController in
-            XCTAssertEqual(viewController.uiviewController, viewControllerThatShouldBeRemoved)
-        }
-
-        router.routeTo(entry: HelpOverviewEntry.question(HelpQuestion(question: "first", answer: "answer")), shouldShowEnableAppButton: true)
-        router.routeTo(entry: HelpOverviewEntry.question(HelpQuestion(question: "second", answer: "answer")), shouldShowEnableAppButton: true)
+        XCTAssertEqual(viewController.cleanNavigationStackIfNeededCallCount, 2)
     }
 }

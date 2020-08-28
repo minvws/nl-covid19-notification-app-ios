@@ -46,8 +46,10 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
         viewController.uiviewController.dismiss(animated: animated)
     }
 
-    func removeFromNavigationStack(viewController: ViewControllable) {
-        viewControllers.removeAll(where: { $0 == viewController.uiviewController })
+    func cleanNavigationStackIfNeeded() {
+        if let first = viewControllers.first, let last = viewControllers.last {
+            viewControllers = [first, last]
+        }
     }
 
     // MARK: - HelpOverviewListener
