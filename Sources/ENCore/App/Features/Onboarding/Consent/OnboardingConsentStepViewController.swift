@@ -67,16 +67,13 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        if internalView.animationView.animation != nil, animationsEnabled() {
-            self.internalView.animationView.play()
-        }
+        self.internalView.playAnimation()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        self.internalView.animationView.stop()
+        self.internalView.stopAnimation()
     }
 
     // MARK: - Functions
@@ -163,7 +160,7 @@ final class OnboardingConsentView: View {
 
     private lazy var scrollView = UIScrollView()
 
-    lazy var animationView: AnimationView = {
+    private lazy var animationView: AnimationView = {
         let animationView = AnimationView()
         animationView.translatesAutoresizingMaskIntoConstraints = false
         animationView.isHidden = true
@@ -255,6 +252,27 @@ final class OnboardingConsentView: View {
         }
     }
 
+    func playAnimation() {
+        guard animationsEnabled() else { return }
+
+        if case let .animation(_, repeatFromFrame) = self.consentStep?.illustration {
+            if let repeatFromFrame = repeatFromFrame {
+                animationView.play(fromProgress: 0, toProgress: 1, loopMode: .playOnce) { [weak self] completed in
+                    if completed {
+                        self?.loopAnimation(fromFrame: repeatFromFrame)
+                    }
+                }
+            } else {
+                animationView.loopMode = .loop
+                animationView.play()
+            }
+        }
+    }
+
+    func stopAnimation() {
+        animationView.stop()
+    }
+
     private func updateView() {
 
         guard let step = self.consentStep else {
@@ -279,18 +297,7 @@ final class OnboardingConsentView: View {
             animationView.animation = LottieAnimation.named(name)
             animationView.isHidden = false
             imageView.isHidden = true
-
-            if animationsEnabled() {
-                if let repeatFromFrame = repeatFromFrame {
-                    let endFrame = animationView.animation?.endFrame ?? 0
-                    animationView.play(fromFrame: 0, toFrame: endFrame, loopMode: .playOnce) { [weak self] _ in
-                        self?.loopAnimation(fromFrame: repeatFromFrame)
-                    }
-                } else {
-                    animationView.loopMode = .loop
-                }
-            }
-
+            playAnimation()
         case .none:
             break
         }
@@ -385,8 +392,10 @@ final class OnboardingConsentView: View {
 
     private func loopAnimation(fromFrame frameNumber: Int) {
         let toFrame = animationView.animation?.endFrame ?? 0
-        animationView.play(fromFrame: CGFloat(frameNumber), toFrame: toFrame, loopMode: nil) { [weak self] _ in
-            self?.loopAnimation(fromFrame: frameNumber)
+        animationView.play(fromFrame: CGFloat(frameNumber), toFrame: toFrame, loopMode: nil) { [weak self] completed in
+            if completed {
+                self?.loopAnimation(fromFrame: frameNumber)
+            }
         }
     }
 }

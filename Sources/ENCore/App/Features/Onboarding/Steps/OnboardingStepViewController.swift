@@ -47,15 +47,13 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if internalView.animationView.animation != nil, animationsEnabled() {
-            self.internalView.animationView.play()
-        }
+        self.internalView.playAnimation()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        self.internalView.animationView.stop()
+        self.internalView.stopAnimation()
     }
 
     // MARK: - ViewController Lifecycle
@@ -101,7 +99,7 @@ final class OnboardingStepView: View {
         return Button(theme: self.theme)
     }()
 
-    lazy var animationView: AnimationView = {
+    private lazy var animationView: AnimationView = {
         let animationView = AnimationView()
         animationView.contentMode = .scaleAspectFit
         return animationView
@@ -189,21 +187,11 @@ final class OnboardingStepView: View {
             imageView.image = Image.named(name)
             animationView.isHidden = true
             imageView.isHidden = false
-        case let .animation(named: name, repeatFromFrame: repeatFromFrame):
+        case let .animation(named: name, _):
             animationView.animation = LottieAnimation.named(name)
             animationView.isHidden = false
             imageView.isHidden = true
-
-            if animationsEnabled() {
-                if let repeatFromFrame = repeatFromFrame {
-                    let endFrame = animationView.animation?.endFrame ?? 0
-                    animationView.play(fromFrame: 0, toFrame: endFrame, loopMode: .playOnce) { [weak self] _ in
-                        self?.loopAnimation(fromFrame: repeatFromFrame)
-                    }
-                } else {
-                    animationView.loopMode = .loop
-                }
-            }
+            playAnimation()
         }
 
         imageView.sizeToFit()
@@ -239,12 +227,35 @@ final class OnboardingStepView: View {
         }
     }
 
+    func playAnimation() {
+        guard animationsEnabled() else { return }
+
+        if case let .animation(_, repeatFromFrame) = self.onboardingStep?.illustration {
+            if let repeatFromFrame = repeatFromFrame {
+                animationView.play(fromProgress: 0, toProgress: 1, loopMode: .playOnce) { [weak self] completed in
+                    if completed {
+                        self?.loopAnimation(fromFrame: repeatFromFrame)
+                    }
+                }
+            } else {
+                animationView.loopMode = .loop
+                animationView.play()
+            }
+        }
+    }
+
+    func stopAnimation() {
+        animationView.stop()
+    }
+
     // MARK: - Private
 
     private func loopAnimation(fromFrame frameNumber: Int) {
         let endFrame = animationView.animation?.endFrame ?? 0
-        animationView.play(fromFrame: CGFloat(frameNumber), toFrame: endFrame, loopMode: nil) { [weak self] _ in
-            self?.loopAnimation(fromFrame: frameNumber)
+        animationView.play(fromFrame: CGFloat(frameNumber), toFrame: endFrame, loopMode: nil) { [weak self] completed in
+            if completed {
+                self?.loopAnimation(fromFrame: frameNumber)
+            }
         }
     }
 }
