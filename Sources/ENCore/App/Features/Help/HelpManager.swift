@@ -25,26 +25,34 @@ final class HelpManager: HelpManaging {
         let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
         let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
 
+        let notificationExplanation = HelpOverviewEntry.notificationExplanation(title: String.moreInformationCellReceivedNotificationTitle,
+                                                                                linkedEntries: [
+                                                                                    HelpOverviewEntry.question(notification),
+                                                                                    HelpOverviewEntry.question(reason),
+                                                                                    HelpOverviewEntry.question(bluetooth)
+                                                                                ])
+
         entries = [
             .question(reason.appending(linkedEntries: [
                 HelpOverviewEntry.question(location),
-                HelpOverviewEntry.question(notification)
-            ])),
-
-            .question(anonymous.appending(linkedEntries: [
-                HelpOverviewEntry.question(notification),
-                HelpOverviewEntry.question(location)
+                notificationExplanation
             ])),
 
             .question(location.appending(linkedEntries: [
                 HelpOverviewEntry.question(bluetooth)
             ])),
 
-            // TODO: Link new screen 'wat betekent het als je een melding krijgt'
+            .question(anonymous.appending(linkedEntries: [
+                notificationExplanation,
+                HelpOverviewEntry.question(location)
+            ])),
 
             .question(notification.appending(linkedEntries: [
+                notificationExplanation,
                 HelpOverviewEntry.question(bluetooth)
             ])),
+
+            notificationExplanation,
 
             .question(bluetooth.appending(linkedEntries: [
                 HelpOverviewEntry.question(notification),
@@ -52,7 +60,6 @@ final class HelpManager: HelpManaging {
             ])),
 
             .question(power.appending(linkedEntries: [
-                HelpOverviewEntry.question(location),
                 HelpOverviewEntry.question(reason)
             ]))
         ]

@@ -8,7 +8,7 @@
 import Foundation
 
 /// @mockable
-protocol HelpViewControllable: ViewControllable, HelpOverviewListener, HelpDetailListener {
+protocol HelpViewControllable: ViewControllable, HelpOverviewListener, HelpDetailListener, ReceivedNotificationListener {
     var router: HelpRouting? { get set }
 
     func removeFromNavigationStack(viewController: ViewControllable)
@@ -21,10 +21,12 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
 
     init(viewController: HelpViewControllable,
          helpOverviewBuilder: HelpOverviewBuildable,
-         helpDetailBuilder: HelpDetailBuildable) {
+         helpDetailBuilder: HelpDetailBuildable,
+         receivedNotificationBuilder: ReceivedNotificationBuildable) {
 
         self.helpOverviewBuilder = helpOverviewBuilder
         self.helpDetailBuilder = helpDetailBuilder
+        self.receivedNotificationBuildable = receivedNotificationBuilder
 
         super.init(viewController: viewController)
 
@@ -44,18 +46,12 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
         viewController.push(viewController: helpOverviewViewController, animated: false)
     }
 
-    func routeTo(entry: HelpDetailEntry, shouldShowEnableAppButton: Bool) {
-        let viewControllerToBeRemoved = self.helpDetailViewController
-
-        let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
-                                                               shouldShowEnableAppButton: shouldShowEnableAppButton,
-                                                               entry: entry)
-        self.helpDetailViewController = helpDetailViewController
-
-        viewController.push(viewController: helpDetailViewController, animated: true)
-
-        if let viewControllerToBeRemoved = viewControllerToBeRemoved {
-            viewController.removeFromNavigationStack(viewController: viewControllerToBeRemoved)
+    func routeTo(entry: HelpOverviewEntry, shouldShowEnableAppButton: Bool) {
+        switch entry {
+        case .question:
+            routeToHelpDetail(entry: entry, shouldShowEnableAppButton: shouldShowEnableAppButton)
+        case .notificationExplanation:
+            routeToNotificationExplanation()
         }
     }
 
@@ -77,9 +73,43 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
         }
     }
 
+    func detachReceivedNotification(shouldDismissViewController: Bool) {
+        guard let receivedNotificationViewController = receivedNotificationViewController else { return }
+        self.receivedNotificationViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: receivedNotificationViewController, animated: true)
+        }
+    }
+
+    private func routeToNotificationExplanation() {
+        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController)
+        self.receivedNotificationViewController = receivedNotificationViewController
+
+        viewController.push(viewController: receivedNotificationViewController, animated: true)
+    }
+
+    private func routeToHelpDetail(entry: HelpDetailEntry, shouldShowEnableAppButton: Bool) {
+        let viewControllerToBeRemoved = self.helpDetailViewController
+
+        let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
+                                                               shouldShowEnableAppButton: shouldShowEnableAppButton,
+                                                               entry: entry)
+        self.helpDetailViewController = helpDetailViewController
+
+        viewController.push(viewController: helpDetailViewController, animated: true)
+
+        if let viewControllerToBeRemoved = viewControllerToBeRemoved {
+            viewController.removeFromNavigationStack(viewController: viewControllerToBeRemoved)
+        }
+    }
+
     private let helpOverviewBuilder: HelpOverviewBuildable
     private var helpOverviewViewController: ViewControllable?
 
     private let helpDetailBuilder: HelpDetailBuildable
     private var helpDetailViewController: ViewControllable?
+
+    private let receivedNotificationBuildable: ReceivedNotificationBuildable
+    private var receivedNotificationViewController: ViewControllable?
 }

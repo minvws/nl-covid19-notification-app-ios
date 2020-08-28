@@ -28,7 +28,7 @@ protocol HelpDependency {
     var exposureController: ExposureControlling { get }
 }
 
-private final class HelpDependencyProvider: DependencyProvider<HelpDependency>, HelpOverviewDependency, HelpDetailDependency {
+private final class HelpDependencyProvider: DependencyProvider<HelpDependency>, HelpOverviewDependency, HelpDetailDependency, ReceivedNotificationDependency {
 
     // MARK: - HelpOverviewDependency
 
@@ -49,6 +49,10 @@ private final class HelpDependencyProvider: DependencyProvider<HelpDependency>, 
     var detailBuilder: HelpDetailBuildable {
         return HelpDetailBuilder(dependency: self)
     }
+
+    var receivedNotificationBuilder: ReceivedNotificationBuildable {
+        return ReceivedNotificationBuilder(dependency: self)
+    }
 }
 
 final class HelpBuilder: Builder<HelpDependency>, HelpBuildable {
@@ -65,6 +69,7 @@ final class HelpBuilder: Builder<HelpDependency>, HelpBuildable {
 
         return HelpRouter(viewController: viewController,
                           helpOverviewBuilder: dependencyProvider.overviewBuilder,
-                          helpDetailBuilder: dependencyProvider.detailBuilder)
+                          helpDetailBuilder: dependencyProvider.detailBuilder,
+                          receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder)
     }
 }

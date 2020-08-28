@@ -15,13 +15,14 @@ final class HelpRouterTests: TestCase {
     private let viewController = HelpViewControllableMock()
     private let helpOverviewBuilder = HelpOverviewBuildableMock()
     private let helpDetailBuilder = HelpDetailBuildableMock()
+    private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
 
     private var router: HelpRouter!
 
     override func setUp() {
         super.setUp()
 
-        router = HelpRouter(viewController: viewController, helpOverviewBuilder: helpOverviewBuilder, helpDetailBuilder: helpDetailBuilder)
+        router = HelpRouter(viewController: viewController, helpOverviewBuilder: helpOverviewBuilder, helpDetailBuilder: helpDetailBuilder, receivedNotificationBuilder: receivedNotificationBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
