@@ -470,6 +470,8 @@ extension String {
 
     static func exposureNotificationUserExplanation(_ one: String) -> String { return Localization.string(for: "exposure.notification.userExplanation", [one]) }
 
+    static func exposureNotificationReminder(_ one: String) -> String { return Localization.string(for: "exposure.notification.reminder", [one]) }
+
     // MARK: - Privacy Agreement
 
     static var privacyAgreementTitle: String { return Localization.string(for: "privacyAgreement.title") }

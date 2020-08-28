@@ -67,6 +67,9 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Misc
 
+    /// Updates the last app launch date
+    func updateLastLaunch()
+
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
 
@@ -83,6 +86,10 @@ protocol ExposureControlling: AnyObject {
 
     /// Whether the user has completed onboarding
     var didCompleteOnboarding: Bool { get set }
+
+    /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
+    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
+
 }
 
 /// Represents a ConfirmationKey for the Lab Flow
