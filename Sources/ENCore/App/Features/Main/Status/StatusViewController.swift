@@ -219,7 +219,7 @@ private final class StatusView: View {
         sceneImageView.translatesAutoresizingMaskIntoConstraints = false
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(greaterThanOrEqualTo: contentStretchGuide.bottomAnchor)
+        containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(equalTo: contentStretchGuide.bottomAnchor, constant: -48)
         heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
         let sceneImageAspectRatio = sceneImageView.animation.map { $0.size.width / $0.size.height } ?? 1
