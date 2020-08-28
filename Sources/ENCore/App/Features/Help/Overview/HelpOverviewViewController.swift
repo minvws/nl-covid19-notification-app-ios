@@ -37,8 +37,6 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
 
-        internalView.acceptButton.isHidden = !shouldShowEnableAppButton
-
         internalView.tableView.delegate = self
         internalView.tableView.dataSource = self
 
@@ -96,7 +94,7 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     private weak var listener: HelpOverviewListener?
     private let shouldShowEnableAppButton: Bool
     private let helpManager: HelpManaging
-    private lazy var internalView: HelpView = HelpView(theme: self.theme)
+    private lazy var internalView: HelpView = HelpView(theme: self.theme, shouldShowEnableButton: self.shouldShowEnableAppButton)
     private lazy var headerView: HelpTableViewSectionHeaderView = HelpTableViewSectionHeaderView(theme: self.theme)
 }
 
@@ -121,40 +119,46 @@ private final class HelpView: View {
         return button
     }()
 
+    init(theme: Theme, shouldShowEnableButton: Bool) {
+        self.shouldShowEnableButton = shouldShowEnableButton
+        super.init(theme: theme)
+    }
+
     private lazy var viewsInDisplayOrder = [titleLabel, tableView, acceptButton]
 
     override func build() {
         super.build()
+        acceptButton.isHidden = !shouldShowEnableButton
 
         viewsInDisplayOrder.forEach { addSubview($0) }
     }
 
     override func setupConstraints() {
         super.setupConstraints()
+        hasBottomMargin = true
 
-        var constraints = [[NSLayoutConstraint]()]
+        titleLabel.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(20)
+            maker.top.equalToSuperview().inset(15)
+        }
 
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-        ])
+        tableView.snp.makeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(15)
+            maker.leading.trailing.equalToSuperview()
 
-        constraints.append([
-            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            tableView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
+            if shouldShowEnableButton {
+                maker.bottom.equalTo(acceptButton.snp.top).offset(-16)
+            } else {
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
+            }
+        }
 
-        constraints.append([
-            acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            acceptButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        acceptButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(20)
+            maker.height.equalTo(50)
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
+        }
     }
+
+    private let shouldShowEnableButton: Bool
 }
