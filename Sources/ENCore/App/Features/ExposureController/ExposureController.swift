@@ -245,16 +245,24 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func updateAndProcessPendingUploads(activateIfNeeded: Bool) -> AnyPublisher<(), ExposureDataError> {
+        logDebug("Update and Process, activate if needed: \(activateIfNeeded), authorisationStatus: \(exposureManager.authorizationStatus)")
+
         guard exposureManager.authorizationStatus == .authorized else {
             return Fail(error: .notAuthorized).eraseToAnyPublisher()
         }
 
+        logDebug("Current exposure notification status: \(exposureManager.getExposureNotificationStatus())")
+
         if case .inactive = exposureManager.getExposureNotificationStatus(), activateIfNeeded {
+            logDebug("Exposure Notification framework inactive, activate it")
+
             // framework is inactive and if should be activate, activate and try again
             // this call won't loop as it passes in activateIfNeeded false for the recursive
             // one and therefore it will not get in this if statement again
             return Future { resolve in
-                self.exposureManager.activate { _ in
+                self.logDebug("Call activate")
+                self.exposureManager.activate { status in
+                    self.logDebug("Activation ended: \(status)")
                     resolve(.success(()))
                 }
             }
@@ -267,6 +275,8 @@ final class ExposureController: ExposureControlling, Logging {
             self.updateWhenRequired,
             self.processPendingUploadRequests
         ]
+
+        logDebug("Executing update sequence")
 
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
         return Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
