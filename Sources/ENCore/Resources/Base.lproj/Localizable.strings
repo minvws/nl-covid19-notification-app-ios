@@ -1,3 +1,8 @@
+/* MARK: - Status */
+"status.icon.accessibility.ok" = "Green circle with checkmark that shows the app has been set up properly";
+"status.icon.accessibility.inactive" = "Yellow circle with exclamation mark as warning ";
+"status.icon.accessibility.notified" = "Red circle with alarm bell that shows you need to take action immediately";
+"status.notified.today" = "today";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -15,7 +20,7 @@
 "moreInformation.situation.step2" = "Do you have (mild) symptoms related to the coronavirus? Get tested for coronavirus and stay home until you get the results";
 "moreInformation.situation.step3" = "Serious symptoms or part of a high-risk group? Call your doctor";
 
-"shareAppTitle" = "I'm helping to keep the coronavirus under control with CoronaMelder. Are you with me?";
+"shareAppTitle" = "I'm helping to keep the coronavirus under control with CoronaMelder. Will you join me?";
 
 "ok" = "OK";
 "yes" = "Yes";
@@ -40,19 +45,19 @@
 "endOfLife.description" = "The Ministry of Health, Welfare and Sports has decided that the app is no longer necessary. From now on, you won't get a notification after you've been near someone with coronavirus.";
 
 /* MARK: - Onboarding Steps */
-"step1Title" = "Help stop the spread of the coronavirus";
-"step1Content" = "This app warns you if you've been near someone with coronavirus. So you can prevent infecting the people around you.";
+"step1Title" = "Help stop the spread of coronavirus";
+"step1Content" = "This app notifies you if you've been near someone with coronavirus. So you can prevent infecting people around you.";
 
-"step2Title" = "You get a notification <u>after</u> you’ve been exposed to a higher risk of infection";
-"step2Content" = "The app notifies you when you've been close to someone for at least 15 minutes who was later found to have coronavirus. This person must also use the app.";
+"step2Title" = "You get a notification <u>after</u> you’ve had a higher risk of infection";
+"step2Content" = "The app notifies you if you've been close to someone for at least 15 minutes who was later found to have coronavirus. But only if that person also uses the app.";
 
-"step3Title" = "The app uses Bluetooth, <u>no</u> location data";
+"step3Title" = "The app uses Bluetooth, <u>not</u> location data";
 "step3Content" = "Using Bluetooth, the app sees if you've been near someone. The closer you've been, the stronger the Bluetooth signal. The app doesn't know who you are or where you've been.";
 
 "step4Title" = "Did someone cycle past you? Then you will <u>not</u> get a notification later.";
-"step4Content" = "The Bluetooth signal was strong because you were near each other. But only for a very short time. This means your risk of infection is very low.";
+"step4Content" = "The Bluetooth signal was strong because you were near each other. But only for a very short time. So your risk of infection is very low.";
 
-"step5Title" = "Did you sit near someone on the train? You could <u>possibly</u> get a notification later";
+"step5Title" = "Did you sit near someone on the train? You <u>might</u> get a notification later";
 "step5Content" = "The Bluetooth signal was strong enough and you were near each other for a longer period of time.";
 
 /* MARK: - Onboarding */
@@ -60,7 +65,7 @@
 
 /* MARK: - Consent Steps */
 "consentSkipEnTitle" = "Are you sure you don't want to turn on these notifications?";
-"consentSkipEnMessage" = "Without permission, the app can't send you notifications after you've been exposed to a higher risk of infection.";
+"consentSkipEnMessage" = "Without permission, the app won't be able to send you notifications after you've been exposed to a higher risk of infection.";
 "consentSkipEnAcceptButton" = "Turn on";
 "consentSkipEnDeclineButton" = "Skip";
 
@@ -68,12 +73,12 @@
 "consentStep1Title" = "Turn on notifications about possible coronavirus exposure";
 "consentStep1Summary1" = "Bluetooth data is saved on your phone for 14 days. You can always delete it yourself.";
 "consentStep1Summary2" = "Your name will <b>not</b> be used or saved.";
-"consentStep1Summary3" = "Your GPS location data will <b>not</b> be used or saved.";
+"consentStep1Summary3" = "Your GPS or location data will <b>not</b> be used or saved.";
 "consentStep1PrimaryButton" = "Turn on";
-"consentStep1SecondaryButton" = "How exactly does the app work?";
+"consentStep1SecondaryButton" = "How does the app work?";
 
 "consentStep2Title" = "Turn on Bluetooth to use the app";
-"consentStep2Content" = "Bluetooth is turned off. That means the app can't see whether you've been near other people.";
+"consentStep2Content" = "Bluetooth is turned off. That means the app can't see if you've been near other people.";
 "consentStep2PrimaryButton" = "Turn on Bluetooth";
 "consentStep2SecondaryButton" = "Maybe later";
 
@@ -83,7 +88,7 @@
 "consentStep3SecondaryButton" = "Maybe later";
 
 "consentStep4Title" = "Let others know you're helping to stop the coronavirus";
-"consentStep4Content" = "The more people use CoronaMelder, the better it works. Only together can we stop the spread of the virus. So share the app with as many other people as you can.";
+"consentStep4Content" = "The more people that use CoronaMelder, the better it works. Only together can we get coronavirus under control. So share the app with as many other people as you can.";
 "consentStep4PrimaryButton" = "Share app";
 "consentStep4SecondaryButton" = "Continue";
 
@@ -116,47 +121,47 @@
 
 "help.faq.notification.title" = "When does the app send notifications?";
 "help.faq.location.title" = "Can the app see my location?";
-"help.faq.location.description" = "No. Using Bluetooth, the app only sees whether you're near other people who also have the app. Bluetooth isn't linked to your location, so the app can't see where you are. Bluetooth only wirelessly connects 2 devices that are near each other. Like your phone and a speaker, or a pair of headphones.";
+"help.faq.location.description" = "No. Using Bluetooth, the app only sees if you're near other people who also have the app. Bluetooth isn't linked to your location, so the app never sees where you are.<br><br>  Bluetooth only wirelessly connects 2 devices that are near each other. Like your phone and a speaker, or a pair of wireless headphones. <br><br>The app can estimate the distance between 2 phones using the strength of the Bluetooth signal.";
 "help.faq.anonymous.title" = "How can the app be anonymous?";
-"help.faq.anonymous.description_1" = "The app exchanges codes with other phones. These codes don't include any of your personal or location data. They're completely random. The code exchange happens when you're near a person who also has the app.";
-"help.faq.anonymous.description_2" = "Was this person later found to have coronavirus? They can use the app to add their codes to a list of infected people. Adding codes is only possible after the infected person shares a GGD key with the GGD. Then, you and others who have these codes on their phones get a notification. This notification only says when you've been close to an infected person. Not who this person is and where you've encountered them.";
+"help.faq.anonymous.description_1" = "The app exchanges random codes with other phones. These codes don't include any personal or location data. The code exchange happens when you're near a person who also has the app.";
+"help.faq.anonymous.description_2" = "Was this person later found to have coronavirus? Together with the GGD they can add their code to a list of codes of infected people. By doing so the infection can be confirmed. <br><br>After this, you and others who have these codes on their phones get a notification. This notification only says when they've been close to an infected person. Not who this person is and where they've encountered them.";
 "help.bluetooth.title" = "Can the Bluetooth signal pass through walls?";
 
 "help.faq.reason.title" = "Why is this app important?";
-"help.faq.reason.description" = "This app helps the GGD with their research. So by using the app you help stop the spread of the coronavirus. If you've been tested and have coronavirus, you get a call from the GGD. During this call, the GGD asks you who you've been close to while contagious. The GGD also calls these people to warn them that they might have coronavirus.<br></br>However, you've probably also been near people you don't know. In the train, cinema, or restaurant for example. This is where the app helps you. Because it allows you to warn all people who've been near you. Including people you don't know. As long as they use the app, of course.<br></br>The GGD contacts the people whose contact details you have. The app also warns people you've met, but whose name or contact details you don't know. So these people are quickly informed and able to take measures to prevent infecting others. The GGD's research continues. Because the people you've been close to more often might be at a higher risk.<br></br>You can also receive warnings through the app. If this happens, it means you've been near someone with coronavirus in last few days. In this case, you can do your part to prevent spreading the virus to others. Do so by paying extra attention to (mild) coronavirus symptoms. And by getting tested should you experience any of these symptoms.";
-"help.faq.upload_keys.title" = "How do I send a notification?";
-"help.faq.upload_keys.description" = "You can only send a notification to others if you have coronavirus. In this case, you'll get a call from the GGD. During this call a GGD employee checks your GGD key. You can find this key in the app. Using this method we make sure only people who are really infected can send notifications to others.";
+"help.faq.reason.description" = "The app can quickly warn you after you've been near someone who has coronavirus. Even before you show symptoms. Because it's possible to have coronavirus and be contagious without having symptoms. <br><br> If you get a warning through the app, you can get tested. Furthermore, the advice is to stay home. So you prevent unknowingly infecting people in your environment.<br><br>Did you get tested, and do you have coronavirus? Together with the GGD, you can warn people who were near you for an extended amount of time. Including people you don't know. <br><br>Thanks to CoronaMelder we can act quicker and prevent new infections. Only together can we get coronavirus under control.";
+"help.faq.upload_keys.title" = "Can I send others a notification if I have coronavirus?";
+"help.faq.upload_keys.description" = "You can only send a notification to others if you were tested and have coronavirus. In this case, you'll get a call from the GGD with the test results.<br> During this call a GGD employee checks your GGD key. You can find this key in the app. Using this method we make sure only people who are really infected can send notifications to others.<br>After your GGD key is checked you can share the codes your phone has sent to other phones in the last 14 days.<br>By doing so the people who were near you while you were contagious are notified anonymously. Only if these people also use the app.";
 "help.faq.deletion.title" = "How do I delete my data?";
-"help.faq.privacy_policy.title" = "Privacy policy";
+"help.faq.privacy_policy.title" = "Privacy statement";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
 "help.faq.colofon.title" = "Colophon";
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accessibility";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent 15 minutes near someone who later turns out to have coronavirus. That person must be using the app too. Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter. Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But you were near each other for such a short time that your risk of infection is very low. Were you near someone on the train or in the office? Then you could get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
+"help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent 15 minutes near someone who was later found to have coronavirus. Only if this person also uses the app.<br><br> Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter. Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But only for a short time. So your risk of infection is very low.<br><br>Were you near someone in the train or office? Then you might get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
 "help.faq.bluetooth.title" = "Can the Bluetooth signal pass through walls?";
-"help.faq.bluetooth.description" = "Yes, but the signal would be very weak. Bluetooth works best when your phone is in the same room as another person's phone. So the chance of you getting your neighbours' Bluetooth signal is very low. That also means you probably won't get a notification if your neighbour has corona and you haven't been in the same room.";
+"help.faq.bluetooth.description" = "Yes, but the signal would be very weak. Bluetooth works best when your phone is in the same room as another person's phone.<br><br> So the chance of you getting your neighbours' Bluetooth signal is very low.<br><br> That also means you probably won't get a notification if your neighbour has coronavirus and you haven't been in the same room.";
 "help.faq.power_usage.title" = "How much power does the app use?";
-"help.faq.power_usage.description" = "The app uses Bluetooth Low Energy — a special kind of Bluetooth that only uses a tiny bit of power. How fast this drains your battery depends on your phone.";
+"help.faq.power_usage.description" = "The app uses Bluetooth Low Energy — a special kind of Bluetooth that only uses a tiny amount of power. How fast this drains your battery depends on your phone.";
 "help.what_does_the_app_do.title" = "What does CoronaMelder do?";
 "help.what_does_the_app_do.protect.title" = "Help stop the spread of the coronavirus";
-"help.what_does_the_app_do.protect.description" = "This app warns you if you've been near someone with coronavirus. So you can prevent infecting people in your environment.";
-"help.what_does_the_app_do.notify.title" = "You get a notification <u>after</u> you’ve been exposed to a higher risk of infection";
-"help.what_does_the_app_do.notify.description" = "The app notifies you when you've been close to someone for at least 15 minutes who was later found to have coronavirus. This person must also use the app.";
+"help.what_does_the_app_do.protect.description" = "This app notifies you if you've been near someone with coronavirus. So you can prevent infecting people around you.";
+"help.what_does_the_app_do.notify.title" = "You get a notification <u>after</u> you've had a higher risk of infection";
+"help.what_does_the_app_do.notify.description" = "The app notifies you if you've been close to someone for at least 15 minutes who was later found to have coronavirus. This person must also use the app.";
 "help.what_does_the_app_do.bluetooth.title" = "The app uses Bluetooth, <u>not</u> location data";
-"help.what_does_the_app_do.bluetooth.description" = "Using Bluetooth, the app sees whether you've been near someone. The closer you've been, the stronger the Bluetooth signal. The app doesn't know who you are or where you've been.";
-"help.what_does_the_app_do.example.cycle.title" = "Did someone cycle past you? Then you will <u>not</u> get a notification later.";
+"help.what_does_the_app_do.bluetooth.description" = "Using Bluetooth, the app sees if you've been near someone. The closer you've been, the stronger the Bluetooth signal. The app doesn't know who you are or where you've been.";
+"help.what_does_the_app_do.example.cycle.title" = "Did someone cycle past you? Then you will <u>not</u> get a notification later";
 "help.what_does_the_app_do.example.cycle.description" = "The Bluetooth signal was strong because you were near each other. But only for a very short time. This means your risk of infection is very low.";
-"help.what_does_the_app_do.example.train.title" = "Did you sit near someone on the train? You could <u>possibly</u> get a notification later";
+"help.what_does_the_app_do.example.train.title" = "Did you sit near someone on the train? You <u>might</u> get a notification later";
 "help.what_does_the_app_do.example.train.description" = "The Bluetooth signal was strong enough and you were near each other for a longer period of time.";
 
 "help.technical_explanation.title" = "Technical explanation";
 "help.technical_explanation.step1.title" = "1. The app makes a unique code for each phone";
 "help.technical_explanation.step1.description" = "This code doesn't include any information about you or your phone. The code is completely anonymous and changes every 15 minutes.";
 "help.technical_explanation.step2.title" = "2. Phones only exchange codes when they're near each other";
-"help.technical_explanation.step2.description" = "Does the person you run into also have the app? Then your phones uses Bluetooth Low Energy to exchange codes. This way, the app knows which phones were near you. The app doesn't know who the phones belong to. And it doesn't know where you were.";
+"help.technical_explanation.step2.description" = "If the person you’re near also has the app, then your phones use Bluetooth Low Energy to exchange codes. This way, the app knows which phones were near you. The app doesn't know who the phones belong to. And it doesn't know where you were.";
 "help.technical_explanation.step3.title" = "3. If someone has coronavirus, they can put their codes on a list";
-"help.technical_explanation.step3.description" = "This list only contains the codes of infected people. All codes older than 14 days are automatically deleted. An infected person can add their codes to this list. To do so, they need to give a so-called GGD key to the GGD. This guarantees the added codes actually belong to someone with coronavirus.";
+"help.technical_explanation.step3.description" = "This list only contains the codes of infected people. All codes older than 14 days are automatically deleted. An infected person can add their codes to this list. To do so, they need to give a special code, called a GGD key, to the GGD. This guarantees the added codes actually belong to someone with coronavirus.";
 "help.technical_explanation.step4.title" = "4. Each phone checks whether it has seen the codes on the GGD's list before";
 "help.technical_explanation.step4.description" = "A few times a day, the app checks the list which has codes of infected people. And it compares these codes with the codes saved on your phone. This is how the app sees whether you've been exposed to a higher risk of infection.";
 "help.technical_explanation.step5.title" = "5. You get a notification if an infected person's codes are on your phone";
@@ -166,8 +171,8 @@
 "help.technical_explanation.github.subtitle" = "Go to GitHub";
 
 /* MARK: - Message */
-"message.default.title" = "You've been near someone who has coronavirus";
-"message.default.body" = "%@, you were near someone who was later found to have coronavirus. You were exposed to a higher risk of infection in this situation. If you are indeed infected, you can infect other people with coronavirus. Even if you don't feel sick right now.";
+"message.default.title" = "You've been near someone with coronavirus";
+"message.default.body" = "%@, you were near someone who was later found to have coronavirus. You had a higher risk of infection in this situation. If you are indeed infected, you can infect other people with coronavirus. Even if you don't feel sick right now.";
 /* MARK: - Message */
 "message.title" = "Getting a notification";
 "message.button.title" = "Request coronavirus test";
@@ -183,9 +188,6 @@
 "main.confirmNotificationRemoval.confirm" = "Delete";
 
 /* MARK: - Status */
-"status.icon.accessibility.ok" = "Green circle with checkmark that shows the app has been set up properly";
-"status.icon.accessibility.inactive" = "Yellow circle with exclamation mark as warning";
-"status.icon.accessibility.notified" = "Red circle with alarm bell that shows you need to take action immediately";
 "status.appState" = "The app is active";
 "status.appState.inactive.title" = "The app is not active";
 "status.appState.inactive.description" = "CoronaMelder only works if the necessary settings are turned on.";
@@ -195,11 +197,10 @@
 "status.appState.card.no_recent_updates.description" = "The app couldn't connect to the internet for the past 24 hours. Check if your Wi-Fi or mobile data is turned on and try again.";
 "status.appState.card.button" = "Turn on app";
 "status.appState.card.try_again" = "Try again";
-"status.active.description" = "Even if you close the app, CoronaMelder will still be active";
-"status.notified.today" = "today";
+"status.active.description" = "Even if you close the app, CoronaMelder will still keep working";
 "status.notified.days_ago_one" = "%@ day ago";
 "status.notified.days_ago_other" = "%@ days ago";
-"status.notified.description" = "You were exposed to a higher risk of infection %@ (%@)";
+"status.notified.description" = "You had a higher risk of infection %@ (%@)";
 "status.notified.moreInfo" = "What can I do now?";
 "status.notified.removeNotification" = "Delete notification";
 
@@ -210,7 +211,7 @@
 "moreInformation.cell.about.subtitle" = "See how the app works. And what it means for your privacy";
 
 "moreInformation.cell.share.title" = "Invite others to the app";
-"moreInformation.cell.share.subtitle" = "Share the app with others to stop the coronavirus together";
+"moreInformation.cell.share.subtitle" = "Share the app with others to get coronavirus under control together";
 
 "moreInformation.cell.receivedNotification.title" = "What does a notification say?";
 "moreInformation.cell.receivedNotification.subtitle" = "Read what you can do after you've been near someone with coronavirus";
@@ -226,7 +227,7 @@
 "moreInformation.complaints.item1" = "cold symptoms";
 "moreInformation.complaints.item2" = "nasal cold, runny nose, sneezing, sore throat";
 "moreInformation.complaints.item3" = "cough";
-"moreInformation.complaints.item4" = "increased temperature";
+"moreInformation.complaints.item4" = "elevated temperature";
 "moreInformation.complaints.item5" = "sudden loss of taste and/or smell";
 "moreInformation.complaints.title" = "Possible coronavirus (COVID-19) symptoms";
 "moreInformation.complaints.content" = "Do you have symptoms? Stay home as much as possible. Are your symptoms severe? Call your doctor.";
@@ -248,16 +249,13 @@
 "moreInformation.about.faq.location" = "Can the app see my location?";
 "moreInformation.about.faq.anonymous" = "How can the app be anonymous?";
 "moreInformation.about.faq.notification" = "When does the app send me notifications?";
-"moreInformation.about.faq.upload_keys" = "How do I send a notification?";
+"moreInformation.about.faq.upload_keys" = "Can I send others a notification if I have coronavirus?";
 "moreInformation.about.faq.bluetooth" = "Can the Bluetooth signal pass through walls?";
 "moreInformation.about.faq.power_usage" = "How much power does the app use?";
-
 "moreInformation.about.faq.deletion" = "How do I delete the Bluetooth data from my phone?";
-"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth files saved by the app yourself. Here's how that's done.</br></br>Go to the settings menu on your phone -> Privacy -> Health -> COVID-19 Exposure Logging. Tap on Delete Exposure Log. Don't want the app to save new Bluetooth data? Delete the app.";
-
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Let others know you're helping to stop the spread of the virus";
-"moreInformation.share.description" = "The more people use CoronaMelder, the better it works. So share the app with as many people as you can. We can only stop the spread of the virus together.";
+"moreInformation.share.description" = "The more people that use CoronaMelder, the better it works. Only together can we get coronavirus under control. So share the app with as many other people as you can.";
 "moreInformation.share.action" = "Share app";
 
 /* MARK: - MoreInformation | Infected */
@@ -289,17 +287,17 @@
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Got notification";
-"moreInformation.receivedNotification.button.title" = "Call for coronavirus test";
+"moreInformation.receivedNotification.button.title" = "Request coronavirus test";
 "moreInformation.receivedNotification.notificationExplanation.title" = "What does it mean when you get a notification?";
-"moreInformation.receivedNotification.notificationExplanation.content" = "The app sends you a notification if you've spent 15 minutes near someone who was later found to have coronavirus. You've been exposed to a higher risk of infection in this situation. If you are indeed infected, you can infect other people with coronavirus. Even if you don't feel sick right now.";
+"moreInformation.receivedNotification.notificationExplanation.content" = "The app sends you a notification if you've spent 15 minutes near someone who was later found to have coronavirus. You've had a higher risk of infection in this situation. If you are indeed infected, you can infect other people with coronavirus. Even if you don't feel sick right now.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Get tested for coronavirus";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Even if you don't feel sick. Because you can still infect others and spread the virus without feeling sick.\n\nGet a free test. It doesn't take long to get tested and waiting times are mostly short. You get the results within 48 hours. In the meantime, stay home. \n\nMake a free call to 0800-1202 to request a coronavirus test.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Even if you don't feel sick. Because you can still infect others and spread the virus without feeling sick.\n\nGet a free test. It doesn't take long to get tested and waiting times are usually short. You get the results within 48 hours. In the meantime, stay home.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Request coronavirus test";
-"moreInformation.requestTest.button.title" = "Call to get tested";
+"moreInformation.requestTest.button.title" = "Request coronavirus test";
 "moreInformation.requestTest.receivedNotification.title" = "Do you have symptoms related to the coronavirus? Get tested";
-"moreInformation.requestTest.receivedNotification.content" = "Do you have mild symptoms? Get tested for coronavirus and stay home until you get the results. Serious symptoms, part of a high-risk group, or need help? Call your doctor. Testing is free and doesn't take much time. And waiting times are mostly short. You get the results within 48 hours. In the meantime, stay home. ";
+"moreInformation.requestTest.receivedNotification.content" = "Do you have (mild) symptoms related to the coronavirus? Get a free test. It doesn't take long to get tested and waiting times are usually short. You get the results within 48 hours. In the meantime, stay home. Serious symptoms or part of a high-risk group? Call your doctor.";
 
 "moreInformation.notification.measures.title" = "Keep following the rules:";
 "moreInformation.notification.measures.step1" = "Regularly wash your hands";

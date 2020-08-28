@@ -1,3 +1,8 @@
+/* MARK: - Status */
+"status.icon.accessibility.ok" = "Groen rondje met vinkje dat aangeeft dat de app goed staat ingesteld";
+"status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
+"status.icon.accessibility.notified" = "Rood rondje met alarmbel dat aangeeft dat er nu actie nodig is";
+"status.notified.today" = "vandaag";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -170,6 +175,7 @@
 /* MARK: - Message */
 "message.default.title" = "Je bent in de buurt geweest van iemand met corona";
 "message.default.body" = "Je was %@ dicht bij iemand die later corona bleek te hebben. Je hebt in deze situatie mogelijk extra kans op besmetting gelopen. Als je inderdaad besmet bent, kun je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
+/* MARK: - Message */
 "message.title" = "Melding krijgen";
 "message.button.title" = "Coronatest aanvragen";
 
@@ -184,9 +190,6 @@
 "main.confirmNotificationRemoval.confirm" = "Verwijder";
 
 /* MARK: - Status */
-"status.icon.accessibility.ok" = "Groen rondje met vinkje dat aangeeft dat de app goed staat ingesteld";
-"status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
-"status.icon.accessibility.notified" = "Rood rondje met alarmbel dat aangeeft dat er nu actie nodig is";
 "status.appState" = "De app is actief";
 "status.appState.inactive.title" = "De app is niet actief";
 "status.appState.inactive.description" = "CoronaMelder werkt alleen als de noodzakelijke instellingen aanstaan.";
@@ -197,7 +200,6 @@
 "status.appState.card.button" = "App aanzetten";
 "status.appState.card.try_again" = "Probeer opnieuw";
 "status.active.description" = "Ook als je de app sluit, blijft CoronaMelder actief";
-"status.notified.today" = "vandaag";
 "status.notified.days_ago_one" = "%@ dag geleden";
 "status.notified.days_ago_other" = "%@ dagen geleden";
 "status.notified.description" = "Je hebt %@ (%@) extra kans op besmetting gelopen";
@@ -253,6 +255,7 @@
 "moreInformation.about.faq.bluetooth" = "Werkt bluetooth door muren heen?";
 "moreInformation.about.faq.power_usage" = "Hoeveel stroom gebruikt de app?";
 "moreInformation.about.faq.deletion" = "Hoe verwijder ik de bluetoothgegevens van mijn telefoon?";
+"moreInformation.about.faq.deletion.description" = "Je kunt de bluetoothgegevens die CoronaMelder heeft bewaard zelf verwijderen. Dat gaat als volgt.</br></br>Ga op je telefoon naar Instellingen -> Privacy -> Gezondheid > Blootstelling aan COVID-19. Klik op Verwijder blootstellingslogbestand. Wil je dat de app geen nieuwe bluetoothgegevens meer bewaart? Verwijder dan de app.";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Laat anderen weten dat jij helpt het virus te stoppen";
