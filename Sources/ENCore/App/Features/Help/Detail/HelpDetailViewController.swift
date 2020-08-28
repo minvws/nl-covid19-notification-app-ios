@@ -169,10 +169,10 @@ private final class HelpView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        let bottomAnchor = shouldDisplayButton ? acceptButton.snp.top : snp.bottom
-
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalToSuperview()
+
+            let bottomAnchor = shouldDisplayButton ? acceptButton.snp.top : snp.bottom
             maker.bottom.equalTo(bottomAnchor)
         }
 
@@ -199,8 +199,9 @@ private final class HelpView: View {
 
         if shouldDisplayButton {
             acceptButton.snp.makeConstraints { maker in
-                maker.bottom.leading.trailing.equalToSuperview().inset(20)
+                maker.leading.trailing.equalToSuperview().inset(20)
                 maker.height.equalTo(50)
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
             }
         }
     }
