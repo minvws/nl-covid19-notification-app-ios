@@ -298,10 +298,15 @@ final class BackgroundController: BackgroundControlling, Logging {
             .eraseToAnyPublisher()
     }
 
+    // Returns a Date with the specified hour and minute, for the next day
+    // E.g. date(hour: 1, minute: 0) returns 1:00 am for the next day
     private func date(hour: Int, minute: Int) -> Date? {
         let calendar = Calendar.current
+        guard let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date()) else {
+            return nil
+        }
 
-        var components = calendar.dateComponents([.day, .month, .year, .timeZone], from: Date())
+        var components = calendar.dateComponents([.day, .month, .year, .timeZone], from: tomorrow)
         components.hour = hour
         components.minute = minute
         return Calendar.current.date(from: components)
