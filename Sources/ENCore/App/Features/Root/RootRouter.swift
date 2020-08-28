@@ -164,6 +164,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didBecomeActive() {
         exposureController.refreshStatus()
+        exposureController.updateLastLaunch()
     }
 
     func didEnterForeground() {
