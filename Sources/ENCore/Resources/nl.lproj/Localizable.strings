@@ -172,6 +172,19 @@
 "help.technical_explanation.github.title" = "Bekijk broncode";
 "help.technical_explanation.github.subtitle" = "Ga naar GitHub";
 
+"help.what_does_notification_mean.title" = "Wat betekent het als je een melding krijgt?";
+"help.what_does_notification_mean.description" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. In de melding staat alleen op welke dag dit was. Je hebt in deze situatie extra kans op besmetting gelopen. Als je besmet bent, kun je het virus aan anderen doorgeven. Ook als je je niet ziek voelt.";
+"help.what_does_report_look_like.title" = "Hoe ziet een melding eruit?";
+"help.what_does_report_look_like.description" = "De melding lijkt op wat je ziet als je een sms-bericht ontvangt. In de melding staat op welke dag je in de buurt was van iemand met het coronavirus.<br><br>Klik op de melding om CoronaMelder te openen. Daar lees je wat je verder kunt doen.";
+"help.notification.example" = "Voorbeeld: Zo ziet de app eruit als je een melding hebt ontvangen.";
+"help.what_to_do_with_notification.title" = "Wat kun je doen als je een melding krijgt?";
+"help.what_to_do_with_notification.description" = "Laat je testen op corona. Wanneer precies hangt af van of je klachten hebt die bij corona passen. En op welke dag je in de buurt was van de persoon met corona. Blijf  in ieder geval thuis tot je de uitslag weet. Zo voorkom je dat je onbewust anderen besmet.<br><br>Was je in de buurt van iemand die jou kende, en word je gebeld door de GGD? Volg dan het advies van de GGD, niet dat van de app.";
+"help.other_reports.title" = "Andere meldingen";
+"help.other_reports.description" = "De app kan je ook een melding sturen als er een technisch probleem is. Bijvoorbeeld als je Bluetooth uitstaat. Of als er langer dan een dag geen internetverbindig was. De app helpt je dit op te lossen.<br><br>Heb je zo’n melding ontvangen, en is de app wel gewoon actief? Dan is het probleem in de tussentijd al opgelost.";
+
+"help.pause_app.title" = "Kan ik de app pauzeren?";
+"help.pause_app.description" = "Ja, dat kan door je bluetooth uit te zetten. Dit doe je via <b>Instellingen > Bluetooth</b>. Als je bluetooth uitzet, wisselt de app geen codes meer uit. Je krijgt hierna elke 24 uur automatisch een herinnering om de app weer aan te zetten.<br><br>Als je bluetooth aan wilt laten staan, kun je de app ook pauzeren door ‘Blootstelling bijhouden’ tijdelijk uit te zetten. Dit doe je via <b>Instellingen > Privacy > Gezondheid > Blootstelling aan COVID-19</b>. Ook dan krijg je elke 24 uur automatisch een herinnering om de app weer aan te zetten.<br><br>Toch is het meestal niet aan te raden om de app te pauzeren, omdat je misschien vergeet hem weer aan te zetten. Je kunt de app wel pauzeren in bijzondere situaties. Bijvoorbeeld als je in de buurt komt van (mogelijke) coronapatiënten, maar zeker weet dat je medische beschermingsmiddelen draagt.";
+
 /* MARK: - Message */
 "message.default.title" = "Je bent in de buurt geweest van iemand met corona";
 "message.default.body" = "Je was %@ dicht bij iemand die later corona bleek te hebben. Je hebt in deze situatie mogelijk extra kans op besmetting gelopen. Als je inderdaad besmet bent, kun je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
@@ -302,6 +315,9 @@
 "moreInformation.requestTest.button.title" = "Coronatest aanvragen";
 "moreInformation.requestTest.receivedNotification.title" = "Heb je klachten die passen bij corona? Vraag een test aan";
 "moreInformation.requestTest.receivedNotification.content" = "Heb je (lichte) klachten die passen bij het coronavirus? Laat je gratis testen. Het duurt niet lang en je kunt meestal snel een afspraak maken. De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet. Heb je ernstige klachten of zit je in een risicogroep? Bel dan je huisarts.";
+"moreInformation.requestTest.complaints" = "Heb je ernstige klachten of zit je in een risicogroep? Bel dan je huisarts.";
+"moreInformation.requestTest.link" = "Ga naar coronatest.nl";
+"moreInformation.requestTest.phone" = "Bel 0800-1202";
 
 "moreInformation.notification.measures.title" = "Blijf je goed aan de maatregelen houden:";
 "moreInformation.notification.measures.step1" = "Was je handen regelmatig";
