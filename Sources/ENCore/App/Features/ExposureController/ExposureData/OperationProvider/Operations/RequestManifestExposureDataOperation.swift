@@ -19,7 +19,7 @@ struct ApplicationManifest: Codable {
 final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
     typealias Result = ApplicationManifest
 
-    private let defaultRefreshFrequency = 60 * 60 * 4 // 4 hours
+    private let defaultRefreshFrequency = 60 * 4 // 4 hours
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {
@@ -81,6 +81,6 @@ final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
 
 extension ApplicationManifest {
     func isValid(forUpdateFrequency updateFrequency: Int) -> Bool {
-        return creationDate.addingTimeInterval(TimeInterval(updateFrequency)) >= Date()
+        return creationDate.addingTimeInterval(TimeInterval(updateFrequency * 60)) >= Date()
     }
 }
