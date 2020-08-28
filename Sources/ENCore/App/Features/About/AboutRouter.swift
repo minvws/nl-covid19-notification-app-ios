@@ -48,8 +48,8 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
 
     func routeToAboutEntry(entry: AboutEntry) {
         switch entry {
-        case let .question(title, answer: answer):
-            routeToHelpQuestion(question: HelpQuestion(question: title, answer: answer))
+        case .question:
+            routeToHelpQuestion(entry: entry)
         case .rate:
             routeToRateApp()
         case let .link(_, urlString):
@@ -77,10 +77,10 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
 
     // MARK: - Private
 
-    private func routeToHelpQuestion(question: HelpQuestion) {
+    private func routeToHelpQuestion(entry: HelpDetailEntry) {
         let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
                                                                shouldShowEnableAppButton: false,
-                                                               question: question)
+                                                               entry: entry)
         self.helpDetailViewController = helpDetailViewController
 
         viewController.push(viewController: helpDetailViewController, animated: true)

@@ -31,8 +31,16 @@ final class HelpDetailViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_helpDetailViewController() {
-        for (index, question) in helpManager.questions.enumerated() {
-            let viewController = HelpDetailViewController(listener: listener, shouldShowEnableAppButton: false, question: question, theme: theme)
+        let detailEntries = helpManager.entries.filter {
+            if case .question = $0 {
+                return true
+            } else {
+                return false
+            }
+        }
+
+        for (index, entry) in detailEntries.enumerated() {
+            let viewController = HelpDetailViewController(listener: listener, shouldShowEnableAppButton: false, entry: entry, theme: theme)
             snapshots(matching: viewController, named: "\(#function)\(index)")
         }
     }

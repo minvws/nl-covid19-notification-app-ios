@@ -8,17 +8,24 @@
 import ENFoundation
 import Foundation
 
+protocol HelpDetailEntry {
+    var title: String { get }
+    var answer: String { get }
+    var linkedEntries: [HelpDetailEntry] { get }
+}
+
 /// @mockable
 protocol HelpDetailListener: AnyObject {
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool)
     func helpDetailDidTapEnableAppButton()
+    func helpDetailRequestRedirect(to entrey: HelpDetailEntry)
 }
 
 /// @mockable
 protocol HelpDetailBuildable {
     func build(withListener listener: HelpDetailListener,
                shouldShowEnableAppButton: Bool,
-               question: HelpQuestion) -> ViewControllable
+               entry: HelpDetailEntry) -> ViewControllable
 }
 
 protocol HelpDetailDependency {
@@ -30,12 +37,12 @@ private final class HelpDetailDependencyProvider: DependencyProvider<HelpDetailD
 final class HelpDetailBuilder: Builder<HelpDetailDependency>, HelpDetailBuildable {
     func build(withListener listener: HelpDetailListener,
                shouldShowEnableAppButton: Bool,
-               question: HelpQuestion) -> ViewControllable {
+               entry: HelpDetailEntry) -> ViewControllable {
         let dependencyProvider = HelpDetailDependencyProvider(dependency: dependency)
 
         return HelpDetailViewController(listener: listener,
                                         shouldShowEnableAppButton: shouldShowEnableAppButton,
-                                        question: question,
+                                        entry: entry,
                                         theme: dependencyProvider.dependency.theme)
     }
 }

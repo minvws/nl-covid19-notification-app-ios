@@ -9,15 +9,15 @@ import ENFoundation
 import UIKit
 import WebKit
 
-final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate {
+final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
-         question: HelpQuestion,
+         entry: HelpDetailEntry,
          theme: Theme) {
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
-        self.question = question
+        self.entry = entry
 
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
@@ -33,17 +33,31 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.titleLabel.attributedText = .makeFromHtml(text: question.question,
+        headerView.label.text = "Less ook" // TODO: localize string
+        internalView.tableView.delegate = self
+        internalView.tableView.dataSource = self
+
+        internalView.titleLabel.attributedText = .makeFromHtml(text: entry.title,
                                                                font: theme.fonts.largeTitle,
                                                                textColor: theme.colors.gray,
                                                                textAlignment: Localization.isRTL ? .right : .left)
 
-        internalView.contentTextView.attributedText = .makeFromHtml(text: question.answer,
-                                                                    font: theme.fonts.body,
-                                                                    textColor: theme.colors.gray,
-                                                                    textAlignment: Localization.isRTL ? .right : .left)
+        internalView.contentLabel.attributedText = .makeFromHtml(text: entry.answer,
+                                                                 font: theme.fonts.body,
+                                                                 textColor: theme.colors.gray,
+                                                                 textAlignment: Localization.isRTL ? .right : .left)
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -58,6 +72,38 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
         listener?.helpDetailRequestsDismissal(shouldDismissViewController: true)
     }
 
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return entry.linkedEntries.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = HelpTableViewCell(theme: theme, reuseIdentifier: "HelpDetailQuestionCell")
+
+        cell.textLabel?.text = entry.linkedEntries[indexPath.row].title
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.font = theme.fonts.body
+        cell.textLabel?.accessibilityTraits = .header
+
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return entry.linkedEntries.isEmpty ? UIView() : headerView
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        listener?.helpDetailRequestRedirect(to: entry.linkedEntries[indexPath.row])
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        if let obj = object as? UITableView {
+            if obj == self.internalView.tableView, keyPath == "contentSize" {
+                internalView.updateTableViewHeight()
+            }
+        }
+    }
+
     // MARK: - Private
 
     private lazy var internalView: HelpView = HelpView(theme: theme, shouldDisplayButton: shouldShowEnableAppButton)
@@ -65,7 +111,9 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     private weak var listener: HelpDetailListener?
 
     private let shouldShowEnableAppButton: Bool
-    private let question: HelpQuestion
+    private let entry: HelpDetailEntry
+
+    private lazy var headerView: HelpTableViewSectionHeaderView = HelpTableViewSectionHeaderView(theme: self.theme)
 }
 
 private final class HelpView: View {
@@ -78,20 +126,11 @@ private final class HelpView: View {
         return label
     }()
 
-    lazy var contentTextView: UITextView = {
-        let textView = UITextView()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.isEditable = false
-        return textView
-    }()
-
-    private lazy var gradientImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .clear
-        imageView.image = .gradient ?? UIImage()
-        return imageView
+    lazy var contentLabel: Label = {
+        let label = Label()
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
 
     lazy var acceptButton: Button = {
@@ -102,6 +141,8 @@ private final class HelpView: View {
         return button
     }()
 
+    lazy var tableView = HelpTableView()
+
     init(theme: Theme, shouldDisplayButton: Bool) {
         self.shouldDisplayButton = shouldDisplayButton
         super.init(theme: theme)
@@ -109,11 +150,16 @@ private final class HelpView: View {
 
     override func build() {
         super.build()
+        hasBottomMargin = true
+        tableView.isScrollEnabled = false
 
-        addSubview(titleLabel)
-        addSubview(contentTextView)
+        addSubview(scrollView)
 
-        addSubview(gradientImageView)
+        scrollView.addSubview(contentView)
+
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(contentLabel)
+        contentView.addSubview(tableView)
 
         if shouldDisplayButton {
             addSubview(acceptButton)
@@ -123,44 +169,63 @@ private final class HelpView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        var constraints = [[NSLayoutConstraint]()]
+        scrollView.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalToSuperview()
 
-        let bottomAnchor = shouldDisplayButton ? acceptButton.topAnchor : self.bottomAnchor
-
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-        ])
-
-        constraints.append([
-            contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-            contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
-            contentTextView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
-        ])
-
-        constraints.append([
-            gradientImageView.heightAnchor.constraint(equalToConstant: 25),
-            gradientImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            gradientImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gradientImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
-        ])
-
-        if shouldDisplayButton {
-            constraints.append([
-                acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
-                acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-                acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-                acceptButton.heightAnchor.constraint(equalToConstant: 50)
-            ])
+            let bottomAnchor = shouldDisplayButton ? acceptButton.snp.top : snp.bottom
+            maker.bottom.equalTo(bottomAnchor)
         }
 
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
+        contentView.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+            maker.width.equalToSuperview()
+            maker.height.greaterThanOrEqualToSuperview().priority(.low)
+        }
+
+        titleLabel.snp.makeConstraints { maker in
+            maker.top.leading.trailing.width.equalToSuperview().inset(16)
+        }
+
+        contentLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
+            maker.leading.trailing.width.equalToSuperview().inset(16)
+        }
+
+        tableView.snp.makeConstraints { maker in
+            maker.leading.trailing.bottom.width.equalToSuperview()
+            maker.top.greaterThanOrEqualTo(contentLabel.snp.bottom).offset(16)
+            maker.height.equalTo(0)
+        }
+
+        if shouldDisplayButton {
+            acceptButton.snp.makeConstraints { maker in
+                maker.leading.trailing.equalToSuperview().inset(20)
+                maker.height.equalTo(50)
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
+            }
+        }
+    }
+
+    func updateTableViewHeight() {
+        tableView.snp.updateConstraints { maker in
+            maker.height.equalTo(tableView.contentSize.height)
+        }
     }
 
     // MARK: - Private
 
     private let shouldDisplayButton: Bool
+
+    private lazy var scrollView: UIScrollView = {
+        let scrollview = UIScrollView()
+        scrollview.translatesAutoresizingMaskIntoConstraints = false
+        scrollview.contentInsetAdjustmentBehavior = .never
+        return scrollview
+    }()
+
+    private lazy var contentView: View = {
+        let view = View(theme: theme)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 }

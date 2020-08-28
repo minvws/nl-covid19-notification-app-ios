@@ -37,8 +37,6 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
 
-        internalView.acceptButton.isHidden = !shouldShowEnableAppButton
-
         internalView.tableView.delegate = self
         internalView.tableView.dataSource = self
 
@@ -46,7 +44,7 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return helpManager.questions.count
+        return helpManager.entries.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,9 +58,9 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
             cell = HelpTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
         }
 
-        let question = helpManager.questions[indexPath.row]
+        let entry = helpManager.entries[indexPath.row]
 
-        cell.textLabel?.text = question.question
+        cell.textLabel?.text = entry.title
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
         cell.textLabel?.accessibilityTraits = .header
@@ -77,12 +75,12 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard (0 ..< helpManager.questions.count).contains(indexPath.row) else {
+        guard (0 ..< helpManager.entries.count).contains(indexPath.row) else {
             return
         }
 
-        let question = helpManager.questions[indexPath.row]
-        listener?.helpOverviewRequestsRouteTo(question: question)
+        let entry = helpManager.entries[indexPath.row]
+        listener?.helpOverviewRequestsRouteTo(entry: entry)
 
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -96,8 +94,8 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
     private weak var listener: HelpOverviewListener?
     private let shouldShowEnableAppButton: Bool
     private let helpManager: HelpManaging
-    private lazy var internalView: HelpView = HelpView(theme: self.theme)
-    private lazy var headerView: SectionHeaderView = SectionHeaderView(theme: self.theme)
+    private lazy var internalView: HelpView = HelpView(theme: self.theme, shouldShowEnableButton: self.shouldShowEnableAppButton)
+    private lazy var headerView: HelpTableViewSectionHeaderView = HelpTableViewSectionHeaderView(theme: self.theme)
 }
 
 private final class HelpView: View {
@@ -111,28 +109,7 @@ private final class HelpView: View {
         return label
     }()
 
-    lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-
-        tableView.showsVerticalScrollIndicator = true
-        tableView.showsHorizontalScrollIndicator = false
-        tableView.isScrollEnabled = true
-
-        tableView.estimatedRowHeight = 100
-        tableView.rowHeight = UITableView.automaticDimension
-
-        tableView.estimatedSectionHeaderHeight = 50
-        tableView.sectionHeaderHeight = UITableView.automaticDimension
-
-        tableView.allowsMultipleSelection = false
-        tableView.tableFooterView = UIView()
-
-        return tableView
-    }()
+    lazy var tableView = HelpTableView()
 
     lazy var acceptButton: Button = {
         let button = Button(theme: self.theme)
@@ -142,107 +119,46 @@ private final class HelpView: View {
         return button
     }()
 
+    init(theme: Theme, shouldShowEnableButton: Bool) {
+        self.shouldShowEnableButton = shouldShowEnableButton
+        super.init(theme: theme)
+    }
+
     private lazy var viewsInDisplayOrder = [titleLabel, tableView, acceptButton]
 
     override func build() {
         super.build()
+        acceptButton.isHidden = !shouldShowEnableButton
 
         viewsInDisplayOrder.forEach { addSubview($0) }
     }
 
     override func setupConstraints() {
         super.setupConstraints()
-
-        var constraints = [[NSLayoutConstraint]()]
-
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 25)
-        ])
-
-        constraints.append([
-            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            tableView.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: 0)
-        ])
-
-        constraints.append([
-            acceptButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            acceptButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            acceptButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            acceptButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
-    }
-}
-
-private class HelpTableViewCell: UITableViewCell {
-
-    init(theme: Theme, reuseIdentifier: String) {
-        self.theme = theme
-        super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        build()
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func build() {
-        separatorView.backgroundColor = theme.colors.tertiary
-        addSubview(separatorView)
-    }
-
-    func setupConstraints() {
-        separatorView.snp.makeConstraints { maker in
-            maker.leading.equalToSuperview().inset(14)
-            maker.trailing.bottom.equalToSuperview()
-            maker.height.equalTo(1)
-        }
-
-        textLabel?.snp.makeConstraints { maker in
-            maker.trailing.equalToSuperview().inset(16)
-            maker.leading.trailing.equalToSuperview().inset(16)
-            maker.bottom.top.equalToSuperview().inset(12)
-        }
-    }
-
-    // MARK: - Private
-
-    private let separatorView = UIView()
-    private let theme: Theme
-}
-
-private final class SectionHeaderView: View {
-
-    lazy var label: Label = {
-        let label = Label()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.font = theme.fonts.subheadBold
-        label.textColor = self.theme.colors.primary
-        label.accessibilityTraits = .header
-        return label
-    }()
-
-    override func build() {
-        super.build()
-
-        addSubview(label)
-    }
-
-    override func setupConstraints() {
-        super.setupConstraints()
-
         hasBottomMargin = true
 
-        label.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview().inset(16)
+        titleLabel.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(20)
+            maker.top.equalToSuperview().inset(15)
+        }
+
+        tableView.snp.makeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(15)
+            maker.leading.trailing.equalToSuperview()
+
+            if shouldShowEnableButton {
+                maker.bottom.equalTo(acceptButton.snp.top).offset(-16)
+            } else {
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
+            }
+        }
+
+        acceptButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(20)
+            maker.height.equalTo(50)
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }
+
+    private let shouldShowEnableButton: Bool
 }

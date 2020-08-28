@@ -60,10 +60,10 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
         if let aCell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) {
             cell = aCell
         } else {
-            cell = AboutTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
+            cell = HelpTableViewCell(theme: theme, reuseIdentifier: cellIdentifier)
         }
 
-        cell.textLabel?.text = questions[indexPath.row].title()
+        cell.textLabel?.text = questions[indexPath.row].title
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
         cell.textLabel?.textColor = theme.colors.gray
@@ -146,28 +146,7 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
 
 private final class AboutView: View {
 
-    lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-
-        tableView.showsVerticalScrollIndicator = true
-        tableView.showsHorizontalScrollIndicator = false
-        tableView.isScrollEnabled = true
-
-        tableView.estimatedRowHeight = 100
-        tableView.rowHeight = UITableView.automaticDimension
-
-        tableView.estimatedSectionHeaderHeight = 300
-        tableView.sectionHeaderHeight = UITableView.automaticDimension
-
-        tableView.allowsMultipleSelection = false
-        tableView.tableFooterView = UIView()
-
-        return tableView
-    }()
+    lazy var tableView = HelpTableView()
 
     override func build() {
         super.build()
@@ -244,42 +223,4 @@ private final class SectionHeaderView: View {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-}
-
-private class AboutTableViewCell: UITableViewCell {
-
-    init(theme: Theme, reuseIdentifier: String) {
-        self.theme = theme
-        super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        build()
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func build() {
-        separatorView.backgroundColor = theme.colors.tertiary
-        addSubview(separatorView)
-    }
-
-    func setupConstraints() {
-        separatorView.snp.makeConstraints { maker in
-            maker.leading.equalToSuperview().inset(14)
-            maker.trailing.bottom.equalToSuperview()
-            maker.height.equalTo(1)
-        }
-
-        textLabel?.snp.makeConstraints { maker in
-            maker.trailing.equalToSuperview().inset(16)
-            maker.leading.trailing.equalToSuperview().inset(16)
-            maker.bottom.top.equalToSuperview().inset(12)
-        }
-    }
-
-    // MARK: - Private
-
-    private let separatorView = UIView()
-    private let theme: Theme
 }

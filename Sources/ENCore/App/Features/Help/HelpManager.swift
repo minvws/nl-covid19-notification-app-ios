@@ -11,22 +11,57 @@ import UIKit
 
 /// @mockable
 protocol HelpManaging {
-    var questions: [HelpQuestion] { get }
+    var entries: [HelpOverviewEntry] { get }
 }
 
 final class HelpManager: HelpManaging {
-
-    let questions: [HelpQuestion]
+    let entries: [HelpOverviewEntry]
 
     init() {
-        questions = [
-            HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
-            HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription),
-            HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2),
-            HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription),
-            HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription),
-            HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription),
-            HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
+        let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
+        let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
+        let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2)
+        let notification = HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription)
+        let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
+        let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
+
+        let notificationExplanation = HelpOverviewEntry.notificationExplanation(title: String.moreInformationCellReceivedNotificationTitle,
+                                                                                linkedEntries: [
+                                                                                    HelpOverviewEntry.question(notification),
+                                                                                    HelpOverviewEntry.question(reason),
+                                                                                    HelpOverviewEntry.question(bluetooth)
+                                                                                ])
+
+        entries = [
+            .question(reason.appending(linkedEntries: [
+                HelpOverviewEntry.question(location),
+                notificationExplanation
+            ])),
+
+            .question(location.appending(linkedEntries: [
+                HelpOverviewEntry.question(bluetooth)
+            ])),
+
+            .question(anonymous.appending(linkedEntries: [
+                notificationExplanation,
+                HelpOverviewEntry.question(location)
+            ])),
+
+            .question(notification.appending(linkedEntries: [
+                notificationExplanation,
+                HelpOverviewEntry.question(bluetooth)
+            ])),
+
+            notificationExplanation,
+
+            .question(bluetooth.appending(linkedEntries: [
+                HelpOverviewEntry.question(notification),
+                HelpOverviewEntry.question(anonymous)
+            ])),
+
+            .question(power.appending(linkedEntries: [
+                HelpOverviewEntry.question(reason)
+            ]))
         ]
     }
 }

@@ -12,9 +12,10 @@ import WebKit
 /// @mockable
 protocol HelpRouting: Routing {
     func routeToOverview(shouldShowEnableAppButton: Bool)
-    func routeTo(question: HelpQuestion, shouldShowEnableAppButton: Bool)
+    func routeTo(entry: HelpOverviewEntry, shouldShowEnableAppButton: Bool)
     func detachHelpOverview(shouldDismissViewController: Bool)
     func detachHelpDetail(shouldDismissViewController: Bool)
+    func detachReceivedNotification(shouldDismissViewController: Bool)
 }
 
 final class HelpViewController: NavigationController, HelpViewControllable, UIAdaptivePresentationControllerDelegate {
@@ -45,10 +46,16 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
         viewController.uiviewController.dismiss(animated: animated)
     }
 
+    func cleanNavigationStackIfNeeded() {
+        if let first = viewControllers.first, let last = viewControllers.last {
+            viewControllers = [first, last]
+        }
+    }
+
     // MARK: - HelpOverviewListener
 
-    func helpOverviewRequestsRouteTo(question: HelpQuestion) {
-        router?.routeTo(question: question, shouldShowEnableAppButton: shouldShowEnableAppButton)
+    func helpOverviewRequestsRouteTo(entry: HelpOverviewEntry) {
+        router?.routeTo(entry: entry, shouldShowEnableAppButton: shouldShowEnableAppButton)
     }
 
     func helpOverviewRequestsDismissal(shouldDismissViewController: Bool) {
@@ -67,9 +74,20 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
     }
 
     func helpDetailDidTapEnableAppButton() {
-
         router?.detachHelpDetail(shouldDismissViewController: true)
         self.listener?.helpRequestsEnableApp()
+    }
+
+    func helpDetailRequestRedirect(to entry: HelpDetailEntry) {
+        if let entry = entry as? HelpOverviewEntry {
+            router?.routeTo(entry: entry, shouldShowEnableAppButton: shouldShowEnableAppButton)
+        }
+    }
+
+    // MARK: - ReceivedNotificationListener
+
+    func receivedNotificationWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachReceivedNotification(shouldDismissViewController: shouldDismissViewController)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
