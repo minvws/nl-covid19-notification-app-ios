@@ -265,7 +265,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func processUpdate() -> AnyPublisher<(), Never> {
-        logDebug("Background: Process Update Scheduled")
+        logDebug("Background: Process Update Function Called")
 
         return exposureController
             .updateAndProcessPendingUploads()
@@ -285,7 +285,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func processENStatusCheck() -> AnyPublisher<(), Never> {
-        logDebug("Background: Exposure Notification Status Check Scheduled")
+        logDebug("Background: Exposure Notification Status Check Function Called")
 
         return exposureController
             .exposureNotificationStatusCheck()
