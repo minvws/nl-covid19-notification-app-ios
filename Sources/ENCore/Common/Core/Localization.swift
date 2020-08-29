@@ -198,6 +198,8 @@ extension String {
     static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link", [currentLanguageIdentifier]) }
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
     static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link", [currentLanguageIdentifier]) }
+    static var helpPauseAppTitle: String { return Localization.string(for: "help.pause_app.title") }
+    static var helpPauseAppDescription: String { return Localization.string(for: "help.pause_app.description") }
 
     static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
     static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link", [currentLanguageIdentifier]) }

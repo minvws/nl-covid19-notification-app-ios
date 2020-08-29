@@ -43,8 +43,7 @@ final class AboutManager: AboutManaging {
         let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
         let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
         let deletion = HelpQuestion(question: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
-
-        // Pauzeren
+        let pause = HelpQuestion(question: .helpPauseAppTitle, answer: .helpPauseAppDescription)
         // Andere landen
 
         questionsSection = AboutSection(title: .helpSubtitle, entries: [
@@ -81,13 +80,19 @@ final class AboutManager: AboutManaging {
             ])),
 
             .question(power.appending(linkedEntries: [
-                AboutEntry.question(reason)
-                // pauzeren
+                AboutEntry.question(reason),
+                AboutEntry.question(pause)
             ])),
 
             .question(deletion.appending(linkedEntries: [
-                AboutEntry.question(bluetooth)
-                // pauzeren
+                AboutEntry.question(bluetooth),
+                AboutEntry.question(pause)
+            ])),
+
+            .question(pause.appending(linkedEntries: [
+                AboutEntry.question(bluetooth),
+                AboutEntry.question(power),
+                AboutEntry.question(location)
             ]))
 
         ])
