@@ -70,7 +70,9 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
     }
 
     func helpDetailRequestRedirect(to entry: HelpDetailEntry) {
-        // TODO: Navigate to new question
+        if let entry = entry as? AboutEntry {
+            router?.routeToAboutEntry(entry: entry)
+        }
     }
 
     // MARK: - WebviewListener
