@@ -32,15 +32,64 @@ final class AboutManager: AboutManaging {
     // MARK: - Init
 
     init(theme: Theme, testPhaseStream: AnyPublisher<Bool, Never>) {
+        let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
+        let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2)
+        let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
+        let notification = HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription)
+
+        // Wat staat er in een melding? (notification screen)
+
+        let uploadKeys = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
+        let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
+        let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
+        let deletion = HelpQuestion(question: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
+
+        // Pauzeren
+        // Andere landen
+
         questionsSection = AboutSection(title: .helpSubtitle, entries: [
-            .question(title: .helpFaqReasonTitle, answer: .helpFaqReasonDescription),
-            .question(title: .helpFaqLocationTitle, answer: .helpFaqLocationDescription),
-            .question(title: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2),
-            .question(title: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription),
-            .question(title: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription),
-            .question(title: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription),
-            .question(title: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription),
-            .question(title: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
+            .question(reason.appending(linkedEntries: [
+                // techinical information
+                // notification explanation
+            ])),
+
+            .question(anonymous.appending(linkedEntries: [
+                // techinical information
+                // notification explanation
+                AboutEntry.question(location)
+            ])),
+
+            .question(location.appending(linkedEntries: [
+                AboutEntry.question(bluetooth)
+            ])),
+
+            .question(notification.appending(linkedEntries: [
+                // notification explanation
+                AboutEntry.question(bluetooth),
+                AboutEntry.question(uploadKeys)
+            ])),
+
+            .question(uploadKeys.appending(linkedEntries: [
+                // notification explanation
+                AboutEntry.question(anonymous)
+                // techinical information
+            ])),
+
+            .question(bluetooth.appending(linkedEntries: [
+                AboutEntry.question(notification),
+                AboutEntry.question(anonymous)
+            ])),
+
+            .question(power.appending(linkedEntries: [
+                AboutEntry.question(reason)
+                // pauzeren
+            ])),
+
+            .question(deletion.appending(linkedEntries: [
+                AboutEntry.question(bluetooth)
+                // pauzeren
+            ]))
+
         ])
 
         aboutSection = AboutSection(title: .moreInformationAboutTitle, entries: [

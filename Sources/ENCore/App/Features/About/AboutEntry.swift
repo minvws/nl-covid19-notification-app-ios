@@ -8,27 +8,34 @@
 import Foundation
 
 enum AboutEntry: HelpDetailEntry {
-    case question(title: String, answer: String)
+    case question(_ question: HelpQuestion)
     case link(title: String, link: String)
     case rate(title: String)
 
     var title: String {
         switch self {
-        case let .question(title, _), let .rate(title), let .link(title, _):
+        case let .question(question):
+            return question.question
+        case let .rate(title), let .link(title, _):
             return title
         }
     }
 
     var answer: String {
         switch self {
-        case let .question(_, answer):
-            return answer
+        case let .question(question):
+            return question.answer
         default:
             return ""
         }
     }
 
     var linkedEntries: [HelpDetailEntry] {
-        return []
+        switch self {
+        case let .question(question):
+            return question.linkedEntries
+        default:
+            return []
+        }
     }
 }
