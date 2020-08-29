@@ -26,7 +26,7 @@ struct StatusViewButtonModel {
 
     enum Action {
         case explainRisk(Date)
-        case removeNotification
+        case removeNotification(String)
         case updateAppSettings
         case tryAgain
     }
@@ -39,11 +39,13 @@ struct StatusViewButtonModel {
         )
     }
 
-    static let removeNotification = StatusViewButtonModel(
-        title: .statusNotifiedRemoveNotification,
-        style: .tertiary,
-        action: .removeNotification
-    )
+    static func removeNotification(title: String) -> StatusViewButtonModel {
+        StatusViewButtonModel(
+            title: .statusNotifiedRemoveNotification,
+            style: .tertiary,
+            action: .removeNotification(title)
+        )
+    }
 
     static let enableSettings = StatusViewButtonModel(
         title: .statusAppStateCardButton,
@@ -107,7 +109,7 @@ struct StatusViewModel {
             icon: .notified,
             title: .init(string: .messageDefaultTitle),
             description: .init(string: description),
-            buttons: [.moreInfo(date: date), .removeNotification],
+            buttons: [.moreInfo(date: date), .removeNotification(title: description)],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
@@ -136,7 +138,7 @@ struct StatusViewModel {
             icon: .notified,
             title: .init(string: .messageDefaultTitle),
             description: .init(string: description),
-            buttons: [.moreInfo(date: date), .removeNotification],
+            buttons: [.moreInfo(date: date), .removeNotification(title: description)],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,

@@ -228,8 +228,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case let .explainRisk(date):
             router?.routeToMessage(title: .messageDefaultTitle,
                                    body: String(format: .messageDefaultBody, String.messageDefaultDaysAgo(from: date)))
-        case .removeNotification:
-            confirmNotificationRemoval()
+        case let .removeNotification(title):
+            confirmNotificationRemoval(title: title)
         case .updateAppSettings:
             handleUpdateAppSettings()
         case .tryAgain:
@@ -261,9 +261,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         present(activityViewController, animated: true, completion: nil)
     }
 
-    private func confirmNotificationRemoval() {
-        let alertController = UIAlertController(title: .mainConfirmNotificationRemovalTitle,
-                                                message: .mainConfirmNotificationRemovalTitle,
+    private func confirmNotificationRemoval(title: String) {
+        let message = .mainConfirmNotificationRemovalTitle + " " + .mainConfirmNotificationRemovalMessage
+        let alertController = UIAlertController(title: title,
+                                                message: message,
                                                 preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: .cancel, style: .default) { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
