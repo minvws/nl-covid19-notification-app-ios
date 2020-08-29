@@ -35,6 +35,9 @@ final class RootRouterTests: XCTestCase {
         exposureController.isAppDectivatedHandler = {
             Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+        exposureController.activateHandler = { _ in
+            return Just(()).eraseToAnyPublisher()
+        }
 
         mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
@@ -184,6 +187,8 @@ final class RootRouterTests: XCTestCase {
         exposureController.updateWhenRequiredHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+
+        router.routeToOnboarding()
 
         XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 0)
 

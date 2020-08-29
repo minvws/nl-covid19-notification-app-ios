@@ -41,6 +41,9 @@ final class BackgroundControllerTests: XCTestCase {
         exposureManager.getExposureNotificationStatusHandler = {
             return .active
         }
+        exposureController.activateHandler = { _ in
+            return Just(()).eraseToAnyPublisher()
+        }
         exposureController.updateWhenRequiredHandler = {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
@@ -50,7 +53,7 @@ final class BackgroundControllerTests: XCTestCase {
         exposureController.exposureNotificationStatusCheckHandler = {
             Just(()).eraseToAnyPublisher()
         }
-        exposureController.updateAndProcessPendingUploadsHandler = { _ in
+        exposureController.updateAndProcessPendingUploadsHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
     }
