@@ -16,7 +16,8 @@ protocol ExposureControlling {
 
     // MARK: - Setup
 
-    func activate()
+    @discardableResult
+    func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never>
     func deactivate()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
@@ -68,7 +69,7 @@ protocol ExposureControlling {
     // MARK: - Misc
 
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
-    func updateAndProcessPendingUploads(activateIfNeeded: Bool) -> AnyPublisher<(), ExposureDataError>
+    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
 
     /// Checks the status of the EN framework for the last 24h
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>

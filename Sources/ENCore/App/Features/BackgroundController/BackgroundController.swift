@@ -225,11 +225,15 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Refresh
 
     private func scheduleRefresh() {
-        schedule(identifier: .refresh, requiresNetworkConnectivity: true)
+        let timeInterval = refreshInterval * 60
+        let date = Date().addingTimeInterval(timeInterval)
+
+        schedule(identifier: .refresh, date: date, requiresNetworkConnectivity: true)
     }
 
     private func refresh(task: BGProcessingTask) {
         let sequence: [() -> AnyPublisher<(), Never>] = [
+            { self.exposureController.activate(inBackgroundMode: true) },
             processUpdate,
             processENStatusCheck
         ]
@@ -261,10 +265,10 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func processUpdate() -> AnyPublisher<(), Never> {
-        logDebug("Background: Process Update Started")
+        logDebug("Background: Process Update Scheduled")
 
         return exposureController
-            .updateAndProcessPendingUploads(activateIfNeeded: true)
+            .updateAndProcessPendingUploads()
             .replaceError(with: ())
             .handleEvents(
                 receiveCompletion: { [weak self] completion in
@@ -281,7 +285,8 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func processENStatusCheck() -> AnyPublisher<(), Never> {
-        logDebug("Background: Exposure Notification Status Check Started")
+        logDebug("Background: Exposure Notification Status Check Scheduled")
+
         return exposureController
             .exposureNotificationStatusCheck()
             .handleEvents(

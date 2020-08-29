@@ -125,7 +125,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
         .store(in: &disposeBag)
 
-        exposureController.activate()
+        exposureController.activate(inBackgroundMode: false)
 
         #if USE_DEVELOPER_MENU || DEBUG
             attachDeveloperMenu()
@@ -167,6 +167,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func didEnterForeground() {
+        guard mainRouter != nil || onboardingRouter != nil else {
+            // not started yet
+            return
+        }
+
         exposureController.refreshStatus()
         exposureController
             .updateWhenRequired()

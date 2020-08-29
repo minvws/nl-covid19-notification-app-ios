@@ -36,19 +36,34 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.lastExposure?.date
     }
 
-    func activate() {
+    @discardableResult
+    func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never> {
+        logDebug("Request EN framework activation")
+
         guard isActivated == false else {
-            assertionFailure("Should only activate ExposureController once")
-            return
+            logDebug("Already activated")
+            // already activated, return success
+            return Just(()).eraseToAnyPublisher()
         }
 
-        updatePushNotificationState {
-            self.exposureManager.activate { _ in
-                self.isActivated = true
-                self.postExposureManagerActivation()
-                self.updateStatusStream()
+        return Future { resolve in
+            self.updatePushNotificationState {
+                self.logDebug("EN framework activating")
+                self.exposureManager.activate { _ in
+                    self.logDebug("EN framework activated")
+                    self.isActivated = true
+
+                    if inBackgroundMode == false {
+                        self.postExposureManagerActivation()
+                    }
+
+                    self.updateStatusStream()
+
+                    resolve(.success(()))
+                }
             }
         }
+        .eraseToAnyPublisher()
     }
 
     func deactivate() {
@@ -95,11 +110,38 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
-        // update when active, or when inactive due to no recent updates
-        guard [.active, .inactive(.noRecentNotificationUpdates)].contains(mutableStateStream.currentExposureState?.activeState) else {
-            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        logDebug("Update when required started")
+
+        if let updateStream = updateStream {
+            // already updating
+            logDebug("Already updating")
+            return updateStream.share().eraseToAnyPublisher()
         }
-        return fetchAndProcessExposureKeySets()
+
+        let updateStream = mutableStateStream
+            .exposureState
+            .first()
+            .setFailureType(to: ExposureDataError.self)
+            .flatMap { (state: ExposureState) -> AnyPublisher<(), ExposureDataError> in
+                // update when active, or when inactive due to no recent updates
+                guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications)].contains(state.activeState) else {
+                    self.logDebug("Not updating as inactive")
+                    return Just(())
+                        .setFailureType(to: ExposureDataError.self)
+                        .eraseToAnyPublisher()
+                }
+
+                self.logDebug("Going to fetch and process exposure keysets")
+                return self.fetchAndProcessExposureKeySets()
+            }
+            .handleEvents(
+                receiveCompletion: { _ in self.updateStream = nil },
+                receiveCancel: { self.updateStream = nil }
+            )
+            .eraseToAnyPublisher()
+
+        self.updateStream = updateStream
+        return updateStream.share().eraseToAnyPublisher()
     }
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
@@ -161,7 +203,9 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
+        logDebug("fetchAndProcessExposureKeySets started")
         if let exposureKeyUpdateStream = exposureKeyUpdateStream {
+            logDebug("Already fetching")
             // already fetching
             return exposureKeyUpdateStream.eraseToAnyPublisher()
         }
@@ -170,10 +214,12 @@ final class ExposureController: ExposureControlling, Logging {
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
             .handleEvents(
                 receiveCompletion: { completion in
+                    self.logDebug("fetchAndProcessExposureKeySets Completed")
                     self.updateStatusStream()
                     self.exposureKeyUpdateStream = nil
                 },
                 receiveCancel: {
+                    self.logDebug("fetchAndProcessExposureKeySets Cancelled")
                     self.updateStatusStream()
                     self.exposureKeyUpdateStream = nil
                 })
@@ -244,32 +290,14 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
-    func updateAndProcessPendingUploads(activateIfNeeded: Bool) -> AnyPublisher<(), ExposureDataError> {
-        logDebug("Update and Process, activate if needed: \(activateIfNeeded), authorisationStatus: \(exposureManager.authorizationStatus)")
+    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
+        logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus)")
 
         guard exposureManager.authorizationStatus == .authorized else {
             return Fail(error: .notAuthorized).eraseToAnyPublisher()
         }
 
-        logDebug("Current exposure notification status: \(exposureManager.getExposureNotificationStatus())")
-
-        if case .inactive = exposureManager.getExposureNotificationStatus(), activateIfNeeded {
-            logDebug("Exposure Notification framework inactive, activate it")
-
-            // framework is inactive and if should be activate, activate and try again
-            // this call won't loop as it passes in activateIfNeeded false for the recursive
-            // one and therefore it will not get in this if statement again
-            return Future { resolve in
-                self.logDebug("Call activate")
-                self.exposureManager.activate { status in
-                    self.logDebug("Activation ended: \(status)")
-                    resolve(.success(()))
-                }
-            }
-            .setFailureType(to: ExposureDataError.self)
-            .flatMap { self.updateAndProcessPendingUploads(activateIfNeeded: false) }
-            .eraseToAnyPublisher()
-        }
+        logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState?.activeState)), activated before: \(isActivated)")
 
         let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
             self.updateWhenRequired,
@@ -304,6 +332,7 @@ final class ExposureController: ExposureControlling, Logging {
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never> {
         return Deferred {
             Future { promise in
+                self.logDebug("Exposure Notification Status Check Started")
 
                 let now = Date()
                 let status = self.exposureManager.getExposureNotificationStatus()
@@ -541,6 +570,7 @@ final class ExposureController: ExposureControlling, Logging {
     private var isActivated = false
     private var isPushNotificationsEnabled = false
     private let userNotificationCenter: UserNotificationCenter
+    private var updateStream: AnyPublisher<(), ExposureDataError>?
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {
