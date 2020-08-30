@@ -21,7 +21,7 @@ final class LinkedContentTableViewManager: NSObject, UITableViewDelegate, UITabl
         self.content = content
         self.theme = theme
         super.init()
-        headerView.label.text = "Less ook" // TODO: localize string
+        headerView.label.text = .helpAlsoRead
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

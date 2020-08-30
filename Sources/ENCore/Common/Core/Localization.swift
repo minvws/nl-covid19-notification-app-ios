@@ -173,6 +173,7 @@ extension String {
     static var helpSubtitle: String { return Localization.string(for: "helpSubtitle") }
     static var helpAcceptButtonTitle: String { return Localization.string(for: "helpAcceptButtonTitle") }
     static var helpContent: String { return Localization.string(for: "helpContent") }
+    static var helpAlsoRead: String { return Localization.string(for: "helpAlsoRead") }
 
     static var helpFaqReasonTitle: String { return Localization.string(for: "help.faq.reason.title") }
     static var helpFaqReasonDescription: String { return Localization.string(for: "help.faq.reason.description") }
