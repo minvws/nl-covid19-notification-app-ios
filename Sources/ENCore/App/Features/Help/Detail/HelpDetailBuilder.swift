@@ -8,17 +8,21 @@
 import ENFoundation
 import Foundation
 
+protocol LinkedContent {
+    var title: String { get }
+}
+
 protocol HelpDetailEntry {
     var title: String { get }
     var answer: String { get }
-    var linkedEntries: [HelpDetailEntry] { get }
+    var linkedEntries: [LinkedContent] { get }
 }
 
 /// @mockable
 protocol HelpDetailListener: AnyObject {
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool)
     func helpDetailDidTapEnableAppButton()
-    func helpDetailRequestRedirect(to entrey: HelpDetailEntry)
+    func helpDetailRequestRedirect(to entry: LinkedContent)
 }
 
 /// @mockable

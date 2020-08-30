@@ -75,8 +75,8 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
     }
 
-    func helpDetailRequestRedirect(to entry: HelpDetailEntry) {
-        if let entry = entry as? AboutEntry {
+    func helpDetailRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? AboutEntry {
             router?.routeToAboutEntry(entry: entry)
         }
     }

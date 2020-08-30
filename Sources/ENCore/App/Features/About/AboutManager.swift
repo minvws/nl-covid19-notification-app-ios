@@ -47,49 +47,49 @@ final class AboutManager: AboutManaging {
         // Andere landen
 
         questionsSection = AboutSection(title: .helpSubtitle, entries: [
-            .question(reason.appending(linkedEntries: [
+            .question(reason.appending(linkedContent: [
                 // techinical information
                 // notification explanation
             ])),
 
-            .question(anonymous.appending(linkedEntries: [
+            .question(anonymous.appending(linkedContent: [
                 // techinical information
                 // notification explanation
                 AboutEntry.question(location)
             ])),
 
-            .question(location.appending(linkedEntries: [
+            .question(location.appending(linkedContent: [
                 AboutEntry.question(bluetooth)
             ])),
 
-            .question(notification.appending(linkedEntries: [
+            .question(notification.appending(linkedContent: [
                 // notification explanation
                 AboutEntry.question(bluetooth),
                 AboutEntry.question(uploadKeys)
             ])),
 
-            .question(uploadKeys.appending(linkedEntries: [
+            .question(uploadKeys.appending(linkedContent: [
                 // notification explanation
                 AboutEntry.question(anonymous)
                 // techinical information
             ])),
 
-            .question(bluetooth.appending(linkedEntries: [
+            .question(bluetooth.appending(linkedContent: [
                 AboutEntry.question(notification),
                 AboutEntry.question(anonymous)
             ])),
 
-            .question(power.appending(linkedEntries: [
+            .question(power.appending(linkedContent: [
                 AboutEntry.question(reason),
                 AboutEntry.question(pause)
             ])),
 
-            .question(deletion.appending(linkedEntries: [
+            .question(deletion.appending(linkedContent: [
                 AboutEntry.question(bluetooth),
                 AboutEntry.question(pause)
             ])),
 
-            .question(pause.appending(linkedEntries: [
+            .question(pause.appending(linkedContent: [
                 AboutEntry.question(bluetooth),
                 AboutEntry.question(power),
                 AboutEntry.question(location)

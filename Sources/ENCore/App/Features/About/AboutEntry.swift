@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AboutEntry: HelpDetailEntry {
+enum AboutEntry: HelpDetailEntry, LinkedContent {
     case question(_ question: HelpQuestion)
     case link(title: String, link: String)
     case rate(title: String)
@@ -30,10 +30,10 @@ enum AboutEntry: HelpDetailEntry {
         }
     }
 
-    var linkedEntries: [HelpDetailEntry] {
+    var linkedEntries: [LinkedContent] {
         switch self {
         case let .question(question):
-            return question.linkedEntries
+            return question.linkedContent
         default:
             return []
         }
