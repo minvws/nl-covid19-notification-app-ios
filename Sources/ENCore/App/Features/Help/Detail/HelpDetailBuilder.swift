@@ -8,10 +8,6 @@
 import ENFoundation
 import Foundation
 
-protocol LinkedContent {
-    var title: String { get }
-}
-
 protocol HelpDetailEntry {
     var title: String { get }
     var answer: String { get }

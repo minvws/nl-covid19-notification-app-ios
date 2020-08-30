@@ -9,7 +9,7 @@ import ENFoundation
 import SnapKit
 import UIKit
 
-final class HelpTableView: UITableView {
+class HelpTableView: UITableView {
 
     init() {
         super.init(frame: .zero, style: .grouped)
