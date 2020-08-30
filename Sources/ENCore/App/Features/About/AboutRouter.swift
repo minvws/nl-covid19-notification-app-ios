@@ -13,7 +13,9 @@ import UIKit
 /// @mockable
 protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener, WebviewListener {
     var router: AboutRouting? { get set }
+
     func push(viewController: ViewControllable, animated: Bool)
+    func cleanNavigationStackIfNeeded()
 }
 
 final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
@@ -55,6 +57,8 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
         case let .link(_, urlString):
             routeToWebView(urlString: urlString)
         }
+
+        viewController.cleanNavigationStackIfNeeded()
     }
 
     func detachHelpQuestion() {

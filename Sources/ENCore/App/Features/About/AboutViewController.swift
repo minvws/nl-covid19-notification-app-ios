@@ -46,6 +46,12 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         pushViewController(viewController.uiviewController, animated: animated)
     }
 
+    func cleanNavigationStackIfNeeded() {
+        if let first = viewControllers.first, let last = viewControllers.last {
+            viewControllers = [first, last]
+        }
+    }
+
     // MARK: - AboutOverviewListener
 
     func aboutOverviewRequestsRouteTo(entry: AboutEntry) {
