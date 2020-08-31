@@ -60,6 +60,8 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
             routeToWebView(urlString: urlString)
         case .notificationExplanation:
             routeToNotificationExplanation()
+        case .appInformation:
+            routeToAppInformation()
         }
 
         viewController.cleanNavigationStackIfNeeded()

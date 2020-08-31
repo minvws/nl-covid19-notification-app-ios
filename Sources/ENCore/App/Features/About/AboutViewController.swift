@@ -97,8 +97,14 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     // MARK: - AppInformationListener
 
-    func appInformationRequestsToTechinicalInformation() {
+    func appInformationRequestsToTechnicalInformation() {
         router?.routeToTechnicalInformation()
+    }
+
+    func appInformationRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? AboutEntry {
+            router?.routeToAboutEntry(entry: entry)
+        }
     }
 
     // MARK: - ViewController Lifecycle

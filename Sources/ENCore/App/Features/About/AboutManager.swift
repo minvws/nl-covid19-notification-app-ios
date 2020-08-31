@@ -13,6 +13,7 @@ import UIKit
 protocol AboutManaging: AnyObject {
     var questionsSection: AboutSection { get }
     var aboutSection: AboutSection { get }
+    var appInformationEntry: AboutEntry { get }
 
     var didUpdate: (() -> ())? { get set }
 }
@@ -28,6 +29,8 @@ final class AboutManager: AboutManaging {
 
     let questionsSection: AboutSection
     private(set) var aboutSection: AboutSection
+
+    let appInformationEntry: AboutEntry
 
     // MARK: - Init
 
@@ -49,6 +52,12 @@ final class AboutManager: AboutManaging {
                                                                              AboutEntry.question(bluetooth),
                                                                              AboutEntry.question(reason)
                                                                          ])
+
+        appInformationEntry = AboutEntry.appInformation(linkedContent: [
+            AboutEntry.question(reason),
+            AboutEntry.question(location),
+            AboutEntry.question(anonymous)
+        ])
 
         questionsSection = AboutSection(title: .helpSubtitle, entries: [
             .question(reason.appending(linkedContent: [
