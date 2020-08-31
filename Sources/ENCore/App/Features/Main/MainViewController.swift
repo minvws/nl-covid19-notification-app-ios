@@ -113,7 +113,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             navigationController.presentationController?.delegate = presentationDelegate
         }
 
-        present(navigationController, animated: animated, completion: nil)
+        if let presentedViewController = presentedViewController {
+            presentedViewController.present(navigationController, animated: true, completion: nil)
+        } else {
+            present(navigationController, animated: animated, completion: nil)
+        }
     }
 
     func dismiss(viewController: ViewControllable, animated: Bool) {
@@ -158,6 +162,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     }
 
     func moreInformationRequestsRedirect(to url: URL) {
+        router?.routeToWebview(url: url)
+    }
+
+    func requestTestOpenURL(url: URL) {
         router?.routeToWebview(url: url)
     }
 

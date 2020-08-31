@@ -12,13 +12,18 @@ import UIKit
 
 struct InfoViewConfig {
     let actionButtonTitle: String
+    let secondaryButtonTitle: String?
     let headerImage: UIImage?
-    let showActionButton: Bool
+    let showButtons: Bool
 
-    init(actionButtonTitle: String = "", headerImage: UIImage? = nil, showActionButton: Bool = true) {
+    init(actionButtonTitle: String = "",
+         secondaryButtonTitle: String? = nil,
+         headerImage: UIImage? = nil,
+         showButtons: Bool = true) {
         self.actionButtonTitle = actionButtonTitle
+        self.secondaryButtonTitle = secondaryButtonTitle
         self.headerImage = headerImage
-        self.showActionButton = showActionButton
+        self.showButtons = showButtons
     }
 }
 
@@ -28,6 +33,7 @@ final class InfoView: View {
     var isActionButtonEnabled: Bool = true {
         didSet { actionButton.isEnabled = isActionButtonEnabled }
     }
+    var secondaryActionHandler: (() -> ())?
 
     private let scrollView: UIScrollView
     private let contentView: UIView
@@ -35,9 +41,11 @@ final class InfoView: View {
 
     private let headerImageView: UIImageView
     private let stackView: UIStackView
+    private let buttonStackView: UIStackView
     private let actionButton: Button
+    private let secondaryButton: Button?
 
-    private let showActionButton: Bool
+    private let showButtons: Bool
 
     // MARK: - Init
 
@@ -45,10 +53,16 @@ final class InfoView: View {
         self.contentView = UIView(frame: .zero)
         self.headerImageView = UIImageView(image: config.headerImage)
         self.stackView = UIStackView(frame: .zero)
+        self.buttonStackView = UIStackView(frame: .zero)
         self.scrollView = UIScrollView(frame: .zero)
         self.headerBackgroundView = UIView(frame: .zero)
         self.actionButton = Button(title: config.actionButtonTitle, theme: theme)
-        self.showActionButton = config.showActionButton
+        if let title = config.secondaryButtonTitle {
+            self.secondaryButton = Button(title: title, theme: theme)
+        } else {
+            self.secondaryButton = nil
+        }
+        self.showButtons = config.showButtons
         super.init(theme: theme)
     }
 
@@ -58,11 +72,15 @@ final class InfoView: View {
         super.build()
 
         headerImageView.contentMode = .scaleAspectFill
+        headerBackgroundView.backgroundColor = theme.colors.headerBackgroundBlue
         stackView.axis = .vertical
         stackView.spacing = 40
         stackView.distribution = .equalSpacing
         contentView.backgroundColor = .clear
-        headerBackgroundView.backgroundColor = theme.colors.headerBackgroundBlue
+
+        buttonStackView.axis = .vertical
+        buttonStackView.spacing = 20
+        buttonStackView.distribution = .fillEqually
 
         addSubview(scrollView)
         scrollView.addSubview(headerBackgroundView)
@@ -70,9 +88,16 @@ final class InfoView: View {
         contentView.addSubview(headerImageView)
         contentView.addSubview(stackView)
 
-        if showActionButton {
+        if showButtons {
             actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
-            contentView.addSubview(actionButton)
+            if let secondaryButton = secondaryButton {
+                secondaryButton.addTarget(self, action: #selector(didTapSecondaryButton(sender:)), for: .touchUpInside)
+                secondaryButton.style = .secondary
+                buttonStackView.addArrangedSubview(secondaryButton)
+            }
+
+            buttonStackView.addArrangedSubview(actionButton)
+            contentView.addSubview(buttonStackView)
         }
     }
 
@@ -107,13 +132,17 @@ final class InfoView: View {
             maker.top.equalTo(headerImageView.snp.bottom).offset(24)
             maker.leading.trailing.equalToSuperview()
 
-            if !showActionButton {
+            if !showButtons {
                 constrainToSuperViewWithBottomMargin(maker: maker)
             }
         }
-        if showActionButton {
-            actionButton.snp.makeConstraints { (maker: ConstraintMaker) in
-                maker.height.equalTo(48)
+        if showButtons {
+            buttonStackView.snp.makeConstraints { (maker: ConstraintMaker) in
+                let count = buttonStackView.arrangedSubviews.count
+                if count > 0 {
+                    let height = Float((count * 48) + ((count - 1) * 20))
+                    maker.height.equalTo(height)
+                }
                 maker.top.equalTo(stackView.snp.bottom).offset(16)
                 maker.leading.trailing.equalToSuperview().inset(16)
 
@@ -134,6 +163,10 @@ final class InfoView: View {
 
     @objc private func didTapActionButton(sender: Button) {
         actionHandler?()
+    }
+
+    @objc private func didTapSecondaryButton(sender: Button) {
+        secondaryActionHandler?()
     }
 }
 
