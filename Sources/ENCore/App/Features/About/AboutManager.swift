@@ -36,7 +36,7 @@ final class AboutManager: AboutManaging {
 
     // MARK: - Init
 
-    init(theme: Theme, testPhaseStream: AnyPublisher<Bool, Never>) {
+    init(testPhaseStream: AnyPublisher<Bool, Never>) {
         let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
         let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2)
         let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
