@@ -69,13 +69,13 @@ final class AboutManager: AboutManaging {
 
         questionsSection = AboutSection(title: .helpSubtitle, entries: [
             .question(reason.appending(linkedContent: [
-                // techinical information
-                // notification explanation
+                technicalInformationEntry,
+                notificationExplanation
             ])),
 
             .question(anonymous.appending(linkedContent: [
-                // techinical information
-                // notification explanation
+                technicalInformationEntry,
+                notificationExplanation,
                 AboutEntry.question(location)
             ])),
 
@@ -84,15 +84,15 @@ final class AboutManager: AboutManaging {
             ])),
 
             .question(notification.appending(linkedContent: [
-                // notification explanation
+                notificationExplanation,
                 AboutEntry.question(bluetooth),
                 AboutEntry.question(uploadKeys)
             ])),
 
             .question(uploadKeys.appending(linkedContent: [
-                // notification explanation
-                AboutEntry.question(anonymous)
-                // techinical information
+                notificationExplanation,
+                AboutEntry.question(anonymous),
+                technicalInformationEntry
             ])),
 
             .question(bluetooth.appending(linkedContent: [
@@ -119,7 +119,7 @@ final class AboutManager: AboutManaging {
             ])),
 
             .question(otherCountries.appending(linkedContent: [
-                // techinical information
+                technicalInformationEntry,
                 AboutEntry.question(notification),
                 AboutEntry.question(location)
             ]))
