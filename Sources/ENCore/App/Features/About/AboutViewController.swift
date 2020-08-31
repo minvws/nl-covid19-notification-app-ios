@@ -107,6 +107,12 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         }
     }
 
+    // MARK: - TechnicalInformationListener
+
+    func technicalInformationRequestsToAppInformation() {
+        router?.routeToAppInformation()
+    }
+
     // MARK: - ViewController Lifecycle
 
     override func viewWillAppear(_ animated: Bool) {

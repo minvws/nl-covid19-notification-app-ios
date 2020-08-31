@@ -37,6 +37,10 @@ final class TechnicalInformationViewController: ViewController, TechnicalInforma
         internalView.githubCardButton.action = { [weak self] in
             self?.router?.routeToGithubPage()
         }
+
+        internalView.appInfoButton.action = { [weak self] in
+            self?.listener?.technicalInformationRequestsToAppInformation()
+        }
     }
 
     // MARK: - Private
@@ -49,11 +53,13 @@ private final class TechnicalInformationView: View {
 
     override func build() {
         super.build()
+        appInfoButton.backgroundColor = theme.colors.headerBackgroundBlue
+        githubCardButton.backgroundColor = theme.colors.tertiary
 
         addSubview(scrollableStackView)
 
-        buttonWrapperView.addSubview(githubCardButton)
-        githubCardButton.backgroundColor = theme.colors.tertiary
+        buttonsWrapperView.addSubview(appInfoButton)
+        buttonsWrapperView.addSubview(githubCardButton)
 
         scrollableStackView.attributedTitle = String.helpTechnicalInformationTitle.attributed()
         scrollableStackView.addSections([
@@ -62,7 +68,7 @@ private final class TechnicalInformationView: View {
             step3View,
             step4View,
             step5View,
-            buttonWrapperView
+            buttonsWrapperView
         ])
     }
 
@@ -73,16 +79,27 @@ private final class TechnicalInformationView: View {
             maker.top.leading.trailing.bottom.equalToSuperview()
         }
 
+        appInfoButton.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalToSuperview().inset(16)
+        }
+
         githubCardButton.snp.makeConstraints { maker in
-            maker.top.leading.trailing.bottom.equalToSuperview().inset(16)
+            maker.top.equalTo(appInfoButton.snp.bottom).offset(30)
+            maker.leading.trailing.bottom.equalToSuperview().inset(16)
         }
     }
 
-    lazy var githubCardButton = CardButton(title: String.helpTechnicalInformationGithubTitle,
-                                           subtitle: String.helpTechnicalInformationGithubSubtitle,
-                                           image: UIImage.githubLogo,
+    lazy var githubCardButton = CardButton(title: .helpTechnicalInformationGithubTitle,
+                                           subtitle: .helpTechnicalInformationGithubSubtitle,
+                                           image: .githubLogo,
                                            type: .short,
                                            theme: theme)
+
+    lazy var appInfoButton = CardButton(title: .aboutAppInformationTitle,
+                                        subtitle: .aboutAppInformationDescription,
+                                        image: .aboutAppInformation,
+                                        type: .long,
+                                        theme: theme)
 
     // MARK: - Private
 
@@ -113,5 +130,5 @@ private final class TechnicalInformationView: View {
                                                      title: String.helpTechnicalInformationStep5Title.attributed(),
                                                      message: String.helpTechnicalInformationStep5Description.attributed())
 
-    private lazy var buttonWrapperView = View(theme: theme)
+    private lazy var buttonsWrapperView = View(theme: theme)
 }

@@ -76,6 +76,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
         self.appInformationViewController = aboutOverviewViewController
 
         viewController.push(viewController: appInformationViewController, animated: true)
+        viewController.cleanNavigationStackIfNeeded()
     }
 
     func routeToTechnicalInformation() {
