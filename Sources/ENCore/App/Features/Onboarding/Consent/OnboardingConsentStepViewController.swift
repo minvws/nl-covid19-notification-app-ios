@@ -293,7 +293,7 @@ final class OnboardingConsentView: View {
             imageView.image = image
             animationView.isHidden = true
             imageView.isHidden = false
-        case let .animation(named: name, repeatFromFrame: repeatFromFrame):
+        case let .animation(named: name, _):
             animationView.animation = LottieAnimation.named(name)
             animationView.isHidden = false
             imageView.isHidden = true
