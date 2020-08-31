@@ -200,7 +200,7 @@ private final class SectionHeaderView: View {
         }
 
         sectionHeaderLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(stackView.snp.bottom).offset(40)
+            maker.top.equalTo(stackView.snp.bottom).offset(32)
             maker.leading.trailing.bottom.equalToSuperview().inset(16)
         }
     }
