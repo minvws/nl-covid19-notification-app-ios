@@ -95,6 +95,12 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
     }
 
+    // MARK: - AppInformationListener
+
+    func appInformationRequestsToTechinicalInformation() {
+        router?.routeToTechnicalInformation()
+    }
+
     // MARK: - ViewController Lifecycle
 
     override func viewWillAppear(_ animated: Bool) {

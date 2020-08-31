@@ -27,6 +27,10 @@ final class AppInformationViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
+
+        internalView.technicalInformationButton.action = { [weak self] in
+            self?.listener?.appInformationRequestsToTechinicalInformation()
+        }
     }
 
     // MARK: - Private
@@ -42,6 +46,9 @@ private final class AppInformationView: View {
     override func build() {
         super.build()
 
+        buttonWrapperView.addSubview(technicalInformationButton)
+        technicalInformationButton.backgroundColor = theme.colors.lightOrange
+
         addSubview(scrollableStackView)
 
         scrollableStackView.attributedTitle = String.helpWhatAppDoesTitle.attributed()
@@ -50,7 +57,8 @@ private final class AppInformationView: View {
             notifyView,
             bluetoothView,
             cycleExampleView,
-            trainExampleView
+            trainExampleView,
+            buttonWrapperView
         ])
     }
 
@@ -60,7 +68,16 @@ private final class AppInformationView: View {
         scrollableStackView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.bottom.equalToSuperview()
         }
+
+        technicalInformationButton.snp.makeConstraints { maker in
+            maker.top.leading.trailing.bottom.equalToSuperview().inset(16)
+        }
     }
+
+    lazy var technicalInformationButton = CardButton(title: .aboutTechnicalInformationTitle,
+                                                     subtitle: .aboutTechnicalInformationDescription,
+                                                     image: .aboutTechnicalInformation,
+                                                     theme: theme)
 
     private lazy var protectView = InformationCardView(theme: theme,
                                                        image: UIImage.appInformationProtect,
@@ -88,4 +105,6 @@ private final class AppInformationView: View {
                                                             pretitle: String.example.attributed(),
                                                             title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainTitle, font: theme.fonts.title2, textColor: .black),
                                                             message: String.helpWhatAppDoesExampleTrainDescription.attributed())
+
+    private lazy var buttonWrapperView = View(theme: theme)
 }

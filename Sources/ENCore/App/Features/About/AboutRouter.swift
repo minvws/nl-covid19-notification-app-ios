@@ -81,6 +81,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
         self.technicalInformationRouter = technicalInformationRouter
 
         viewController.push(viewController: technicalInformationRouter.viewControllable, animated: true)
+        viewController.cleanNavigationStackIfNeeded()
     }
 
     func detachReceivedNotification() {

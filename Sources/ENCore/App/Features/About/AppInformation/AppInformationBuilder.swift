@@ -9,7 +9,9 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol AppInformationListener: AnyObject {}
+protocol AppInformationListener: AnyObject {
+    func appInformationRequestsToTechinicalInformation()
+}
 
 /// @mockable
 protocol AppInformationBuildable {
