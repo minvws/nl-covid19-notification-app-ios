@@ -201,6 +201,8 @@ extension String {
     static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link", [currentLanguageIdentifier]) }
     static var helpPauseAppTitle: String { return Localization.string(for: "help.pause_app.title") }
     static var helpPauseAppDescription: String { return Localization.string(for: "help.pause_app.description") }
+    static var helpOtherCountriesTitle: String { return Localization.string(for: "help.apps_other_countries.title") }
+    static var helpOtherCountriesDescription: String { return Localization.string(for: "help.apps_other_countries.description") }
 
     static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
     static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link", [currentLanguageIdentifier]) }

@@ -44,7 +44,7 @@ final class AboutManager: AboutManaging {
         let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
         let deletion = HelpQuestion(question: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
         let pause = HelpQuestion(question: .helpPauseAppTitle, answer: .helpPauseAppDescription)
-        // Andere landen
+        let otherCountries = HelpQuestion(question: .helpOtherCountriesTitle, answer: .helpOtherCountriesDescription)
 
         questionsSection = AboutSection(title: .helpSubtitle, entries: [
             .question(reason.appending(linkedContent: [
@@ -92,6 +92,12 @@ final class AboutManager: AboutManaging {
             .question(pause.appending(linkedContent: [
                 AboutEntry.question(bluetooth),
                 AboutEntry.question(power),
+                AboutEntry.question(location)
+            ])),
+
+            .question(otherCountries.appending(linkedContent: [
+                // techinical information
+                AboutEntry.question(notification),
                 AboutEntry.question(location)
             ]))
 
