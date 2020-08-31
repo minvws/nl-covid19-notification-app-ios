@@ -62,6 +62,8 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
             routeToNotificationExplanation()
         case .appInformation:
             routeToAppInformation()
+        case .technicalInformation:
+            routeToTechnicalInformation()
         }
 
         viewController.cleanNavigationStackIfNeeded()

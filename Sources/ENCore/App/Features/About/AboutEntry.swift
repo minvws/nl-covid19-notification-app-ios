@@ -13,12 +13,13 @@ enum AboutEntry: HelpDetailEntry, LinkedContent {
     case rate(title: String)
     case notificationExplanation(title: String, linkedContent: [LinkedContent])
     case appInformation(linkedContent: [LinkedContent])
+    case technicalInformation(title: String, linkedContent: [LinkedContent])
 
     var title: String {
         switch self {
         case let .question(question):
             return question.question
-        case let .rate(title), let .link(title, _), let .notificationExplanation(title, _):
+        case let .rate(title), let .link(title, _), let .notificationExplanation(title, _), let .technicalInformation(title, _):
             return title
         default:
             return ""
@@ -38,7 +39,7 @@ enum AboutEntry: HelpDetailEntry, LinkedContent {
         switch self {
         case let .question(question):
             return question.linkedContent
-        case let .notificationExplanation(_, linkedContent), let .appInformation(linkedContent):
+        case let .notificationExplanation(_, linkedContent), let .appInformation(linkedContent), let .technicalInformation(_, linkedContent):
             return linkedContent
         default:
             return []

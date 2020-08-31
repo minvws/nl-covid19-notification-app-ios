@@ -113,6 +113,12 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         router?.routeToAppInformation()
     }
 
+    func technicalInformationRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? AboutEntry {
+            router?.routeToAboutEntry(entry: entry)
+        }
+    }
+
     // MARK: - ViewController Lifecycle
 
     override func viewWillAppear(_ animated: Bool) {

@@ -14,6 +14,7 @@ protocol AboutManaging: AnyObject {
     var questionsSection: AboutSection { get }
     var aboutSection: AboutSection { get }
     var appInformationEntry: AboutEntry { get }
+    var technicalInformationEntry: AboutEntry { get }
 
     var didUpdate: (() -> ())? { get set }
 }
@@ -31,6 +32,7 @@ final class AboutManager: AboutManaging {
     private(set) var aboutSection: AboutSection
 
     let appInformationEntry: AboutEntry
+    let technicalInformationEntry: AboutEntry
 
     // MARK: - Init
 
@@ -53,10 +55,16 @@ final class AboutManager: AboutManaging {
                                                                              AboutEntry.question(reason)
                                                                          ])
 
-        appInformationEntry = AboutEntry.appInformation(linkedContent: [
+        appInformationEntry = .appInformation(linkedContent: [
             AboutEntry.question(reason),
             AboutEntry.question(location),
             AboutEntry.question(anonymous)
+        ])
+
+        technicalInformationEntry = .technicalInformation(title: .consentStep1SecondaryButton, linkedContent: [
+            AboutEntry.question(bluetooth),
+            AboutEntry.question(deletion),
+            AboutEntry.question(otherCountries)
         ])
 
         questionsSection = AboutSection(title: .helpSubtitle, entries: [

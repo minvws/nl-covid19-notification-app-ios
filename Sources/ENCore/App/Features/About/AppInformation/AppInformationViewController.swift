@@ -66,8 +66,6 @@ final class AppInformationViewController: ViewController {
 
 private final class AppInformationView: View {
 
-    private lazy var scrollableStackView = ScrollableStackView(theme: theme)
-
     init(theme: Theme, linkedContentTableViewManager: LinkedContentTableViewManager) {
         self.tableViewManager = linkedContentTableViewManager
         super.init(theme: theme)
@@ -75,12 +73,12 @@ private final class AppInformationView: View {
 
     override func build() {
         super.build()
-
-        tableViewWrapperView.addSubview(tableView)
-        buttonWrapperView.addSubview(technicalInformationButton)
         technicalInformationButton.backgroundColor = theme.colors.lightOrange
 
         addSubview(scrollableStackView)
+
+        tableViewWrapperView.addSubview(tableView)
+        buttonWrapperView.addSubview(technicalInformationButton)
 
         scrollableStackView.attributedTitle = String.helpWhatAppDoesTitle.attributed()
         scrollableStackView.addSections([
@@ -125,6 +123,8 @@ private final class AppInformationView: View {
                                                      theme: theme)
 
     // MARK: - Private
+
+    private lazy var scrollableStackView = ScrollableStackView(theme: theme)
 
     private lazy var protectView = InformationCardView(theme: theme,
                                                        image: UIImage.appInformationProtect,
