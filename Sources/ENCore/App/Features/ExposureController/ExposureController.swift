@@ -83,7 +83,7 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError> {
+    func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError> {
         return dataController.isAppDectivated()
     }
 

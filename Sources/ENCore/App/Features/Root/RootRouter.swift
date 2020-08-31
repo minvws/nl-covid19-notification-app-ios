@@ -19,7 +19,7 @@ import UIKit
 protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener, WebviewListener {
     var router: RootRouting? { get set }
 
-    func presentInNavigationController(viewController: ViewControllable, animated: Bool)
+    func presentInNavigationController(viewController: ViewControllable, animated: Bool, presentFullScreen: Bool)
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
     func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
 
@@ -104,7 +104,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
 
         exposureController
-            .isAppDectivated()
+            .isAppDeactivated()
             .sink(receiveCompletion: { _ in
                 // Do nothing
             }, receiveValue: { [weak self] isDectivated in
@@ -218,7 +218,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let messageViewController = messageBuilder.build(withListener: viewController, title: title, body: body)
         self.messageViewController = messageViewController
 
-        viewController.presentInNavigationController(viewController: messageViewController, animated: true)
+        viewController.presentInNavigationController(viewController: messageViewController, animated: true, presentFullScreen: false)
     }
 
     func detachMessage(shouldDismissViewController: Bool) {
@@ -260,7 +260,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
         self.webviewViewController = webviewViewController
 
-        viewController.presentInNavigationController(viewController: webviewViewController, animated: true)
+        viewController.presentInNavigationController(viewController: webviewViewController, animated: true, presentFullScreen: false)
     }
 
     func detachWebview(shouldDismissViewController: Bool) {
@@ -294,8 +294,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
         let endOfLifeViewController = endOfLifeBuilder.build(withListener: viewController)
         self.endOfLifeViewController = endOfLifeViewController
-
-        self.viewController.embed(viewController: endOfLifeViewController)
+        self.viewController.presentInNavigationController(viewController: endOfLifeViewController, animated: false, presentFullScreen: true)
     }
 
     private func routeToCallGGD() {
@@ -305,7 +304,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let callGGDViewController = callGGDBuilder.build(withListener: viewController)
         self.callGGDViewController = callGGDViewController
 
-        viewController.presentInNavigationController(viewController: callGGDViewController, animated: true)
+        viewController.presentInNavigationController(viewController: callGGDViewController, animated: true, presentFullScreen: false)
     }
 
     private func detachOnboarding(animated: Bool) {
