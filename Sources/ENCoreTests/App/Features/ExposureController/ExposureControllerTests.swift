@@ -343,7 +343,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.update(state: .init(notifiedState: .notNotified, activeState: .active))
         mutableStateStream.exposureState = Just(.init(notifiedState: .notNotified, activeState: .active)).eraseToAnyPublisher()
 
-        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 2)
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
     func test_updateAndProcessPendingUploads() {
