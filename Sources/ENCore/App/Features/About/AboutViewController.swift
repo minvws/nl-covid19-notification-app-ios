@@ -18,6 +18,7 @@ protocol AboutRouting: Routing {
     func routeToTechnicalInformation()
     func detachHelpQuestion()
     func detachAboutOverview()
+    func detachReceivedNotification()
 }
 
 final class AboutViewController: NavigationController, AboutViewControllable, UIAdaptivePresentationControllerDelegate {
@@ -85,6 +86,13 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     func webviewRequestsDismissal(shouldHideViewController: Bool) {
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldHideViewController)
+    }
+
+    // MARK: - ReceivedNotificationListener
+
+    func receivedNotificationWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachReceivedNotification()
+        listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
     }
 
     // MARK: - ViewController Lifecycle

@@ -36,15 +36,19 @@ final class AboutManager: AboutManaging {
         let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2)
         let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
         let notification = HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription)
-
-        // Wat staat er in een melding? (notification screen)
-
         let uploadKeys = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
         let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
         let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
         let deletion = HelpQuestion(question: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
         let pause = HelpQuestion(question: .helpPauseAppTitle, answer: .helpPauseAppDescription)
         let otherCountries = HelpQuestion(question: .helpOtherCountriesTitle, answer: .helpOtherCountriesDescription)
+
+        let notificationExplanation = AboutEntry.notificationExplanation(title: String.moreInformationCellReceivedNotificationTitle,
+                                                                         linkedContent: [
+                                                                             AboutEntry.question(notification),
+                                                                             AboutEntry.question(bluetooth),
+                                                                             AboutEntry.question(reason)
+                                                                         ])
 
         questionsSection = AboutSection(title: .helpSubtitle, entries: [
             .question(reason.appending(linkedContent: [
@@ -88,6 +92,8 @@ final class AboutManager: AboutManaging {
                 AboutEntry.question(bluetooth),
                 AboutEntry.question(pause)
             ])),
+
+            notificationExplanation,
 
             .question(pause.appending(linkedContent: [
                 AboutEntry.question(bluetooth),
