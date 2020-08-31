@@ -118,6 +118,7 @@
 "helpTitle" = "Over de app";
 "helpSubtitle" = "Veelgestelde vragen";
 "helpAcceptButtonTitle" = "Aanzetten";
+"helpAlsoRead" = "Lees ook";
 
 "help.faq.notification.title" = "Wanneer krijg ik een melding van de app?";
 "help.faq.location.title" = "Kan de app mijn locatie zien?";
@@ -184,6 +185,9 @@
 
 "help.pause_app.title" = "Kan ik de app pauzeren?";
 "help.pause_app.description" = "Ja, dat kan door je bluetooth uit te zetten. Dit doe je via <b>Instellingen > Bluetooth</b>. Als je bluetooth uitzet, wisselt de app geen codes meer uit. Je krijgt hierna elke 24 uur automatisch een herinnering om de app weer aan te zetten.<br><br>Als je bluetooth aan wilt laten staan, kun je de app ook pauzeren door ‘Blootstelling bijhouden’ tijdelijk uit te zetten. Dit doe je via <b>Instellingen > Privacy > Gezondheid > Blootstelling aan COVID-19</b>. Ook dan krijg je elke 24 uur automatisch een herinnering om de app weer aan te zetten.<br><br>Toch is het meestal niet aan te raden om de app te pauzeren, omdat je misschien vergeet hem weer aan te zetten. Je kunt de app wel pauzeren in bijzondere situaties. Bijvoorbeeld als je in de buurt komt van (mogelijke) coronapatiënten, maar zeker weet dat je medische beschermingsmiddelen draagt.";
+
+"help.apps_other_countries.title" = "Werkt ook de app samen met apps uit andere landen?";
+"help.apps_other_countries.description" = "Helaas nu nog niet, maar de verwachting is dat het eind september wel kan. Dan zal CoronaMelder ook codes kunnen uitwisselen met sommige apps uit andere landen. Bijvoorbeeld de Duitse app.<br><br>Als je naast CoronaMelder de Duitse Corona-Warn-App installeert, zegt je telefoon dat er maar 1 app tegelijk actief kan zijn. De app die je kiest is de enige app die op dat moment jouw ontmoetingen controleert. Wil je dat in meerdere landen doen, dan moet je dus zelf wisselen van app. Van die app kun je dan meldingen ontvangen. Als je 1 keer per dag wisselt van app, controleren beide apps je ontmoetingen. Zo mis je niks.<br><br>Vanaf eind september kun je waarschijnlijk de app van je eigen land blijven gebruiken, en hoef je niet meer dagelijks te wisselen.";
 
 /* MARK: - Message */
 "message.default.title" = "Je bent in de buurt geweest van iemand met corona";
