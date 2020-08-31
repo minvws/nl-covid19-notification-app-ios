@@ -117,11 +117,11 @@ final class ExposureController: ExposureControlling, Logging {
             // already updating
             logDebug("Already updating")
             return updateStream.share().eraseToAnyPublisher()
+        }
 
         // update when active, or when inactive due to no recent updates
         guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(mutableStateStream.currentExposureState?.activeState) else {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-
         }
 
         let updateStream = mutableStateStream
@@ -331,7 +331,7 @@ final class ExposureController: ExposureControlling, Logging {
                 case let .failure(error):
                     self?.logError("Error completing sequence \(error.localizedDescription)")
                 }
-            })
+        })
             .eraseToAnyPublisher()
     }
 
