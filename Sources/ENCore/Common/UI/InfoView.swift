@@ -336,7 +336,7 @@ final class InfoSectionTextView: View {
             maker.leading.trailing.equalToSuperview().inset(16)
         }
         contentStack.snp.makeConstraints { maker in
-            maker.top.equalTo(titleLabel.snp.bottom).offset(10)
+            maker.top.equalTo(titleLabel.snp.bottom).offset(20)
             maker.leading.trailing.equalTo(titleLabel)
             maker.bottom.equalToSuperview()
         }
