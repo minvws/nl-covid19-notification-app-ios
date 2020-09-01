@@ -19,7 +19,7 @@ final class ReceivedNotificationViewControllerTests: TestCase {
 
         recordSnapshots = false
 
-        viewController = ReceivedNotificationViewController(listener: listern, theme: theme)
+        viewController = ReceivedNotificationViewController(listener: listern, linkedContent: [], actionButtonTitle: nil, theme: theme)
     }
 
     // MARK: - Tests

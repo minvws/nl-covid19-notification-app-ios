@@ -173,25 +173,29 @@ private final class ReceivedNotificationView: View {
     private func notificationExplanation() -> View {
         InfoSectionTextView(theme: theme,
                             title: .helpReceivedNotificationMeaningTitle,
-                            content: [String.helpReceivedNotificationMeaningDescription.attributed()])
+                            content: [attributedContentText(for: .helpReceivedNotificationMeaningDescription)])
     }
 
     private func howReportLooksLike() -> View {
         InfoSectionTextView(theme: theme,
                             title: .helpReceivedNotificationReportTitle,
-                            content: [String.helpReceivedNotificationReportDescription.attributed()])
+                            content: [attributedContentText(for: .helpReceivedNotificationReportDescription)])
     }
 
     private func whatToDo() -> View {
         InfoSectionTextView(theme: theme,
                             title: .helpReceivedNotificationWhatToDoTitle,
-                            content: [String.helpReceivedNotificationWhatToDoDescription.attributed()])
+                            content: [attributedContentText(for: .helpReceivedNotificationWhatToDoDescription)])
     }
 
     private func otherReports() -> View {
         InfoSectionTextView(theme: theme,
                             title: .helpReceivedNotificationOtherReportsTitle,
-                            content: [String.helpReceivedNotificationOtherReportsDescription.attributed()])
+                            content: [attributedContentText(for: .helpReceivedNotificationOtherReportsDescription)])
+    }
+
+    private func attributedContentText(for string: String) -> NSAttributedString {
+        NSAttributedString.makeFromHtml(text: string, font: theme.fonts.body, textColor: theme.colors.gray)
     }
 
     private let infoView: InfoView

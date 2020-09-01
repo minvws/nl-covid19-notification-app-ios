@@ -115,7 +115,7 @@ final class AboutRouterTests: TestCase {
 
     func test_routeToAboutEntry_withNotificationExplanation_callsBuildAndPush() {
         var receivedListener: ReceivedNotificationListener!
-        receivedNotificationBuilder.buildHandler = { listener in
+        receivedNotificationBuilder.buildHandler = { listener, _, _ in
             receivedListener = listener
             return ViewControllableMock()
         }
