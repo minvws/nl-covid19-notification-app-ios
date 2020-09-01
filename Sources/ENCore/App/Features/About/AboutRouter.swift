@@ -118,11 +118,15 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
     private func routeToRateApp() {
         exposureController.getAppVersionInformation { appVersionInformation in
             guard let appVersionInformation = appVersionInformation else {
+                /// StoreKit Fallback
+                SKStoreReviewController.requestReview()
                 return
             }
             guard let urlString = URL(string: "\(appVersionInformation.appStoreURL)?action=write-review")
             else {
                 self.logError("Cannot create URL from: \(appVersionInformation.appStoreURL)?action=write-review")
+                /// StoreKit Fallback
+                SKStoreReviewController.requestReview()
                 return
             }
             UIApplication.shared.open(urlString, options: [:], completionHandler: nil)
