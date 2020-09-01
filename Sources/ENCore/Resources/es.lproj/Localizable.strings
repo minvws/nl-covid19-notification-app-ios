@@ -119,6 +119,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "helpTitle" = "Sobre la app";
 "helpSubtitle" = "Preguntas frecuentes";
 "helpAcceptButtonTitle" = "Activar";
+"helpAlsoRead" = "Más información";
 
 "help.faq.notification.title" = "¿Cuándo recibo notificaciones de la app?";
 "help.faq.location.title" = "¿La app puede ver mi localización?";
@@ -131,7 +132,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.faq.reason.title" = "¿Por qué es importante esta app?";
 "help.faq.reason.description" = "La app te puede avisar rápidamente después de haber estado cerca de alguien que tiene coronavirus, incluso antes de que muestres síntomas. De hecho, puedes tener coronavirus y ser contagioso sin saberlo.<br><br>Si recibes un aviso mediante la app, puedes hacerte un test. Después de hacerlo, te aconsejamos que te quedes en casa, así evitarás contagiar sin querer a la gente de tu entorno.<br><br>¿Te has hecho un test y tienes coronavirus? Entonces podrás avisar con ayuda del GGD a la gente (incluidos desconocidos) que haya tenido un contacto prolongado contigo en lugares como el cine, un restaurante o sala de espera, siempre y cuando también utilice la app.<br<br>>Gracias a CoronaMelder, podemos reaccionar más rápido y evitar nuevos contagios. Solo juntos podemos contener el coronavirus.";
 "help.faq.upload_keys.title" = "¿Puedo enviar una notificación a otras personas si tengo coronavirus?";
-"help.faq.upload_keys.description" = "Solo puedes mandar notificaciones a otras personas si te has hecho un test y resulta que tienes coronavirus. En ese caso, te llamará el GGD (servicio de salud municipal) con los resultados.<br>Durante la llamada, el asistente del GGD confirmará tu clave GGD que encontrarás en la app. Así siempre se está seguro de que solo las personas realmente contagiadas pueden enviar sus notificaciones.<br>Una vez confirmada tu clave GGD, podrás compartir los códigos que tu teléfono ha enviado a otros teléfonos en los últimos 14 días.<br>Así las personas que estuvieron cerca de ti mientras eras contagioso recibirán una notificación anónima, siempre y cuando también utilicen la app.";
+"help.faq.upload_keys.description" = "Solo puedes mandar notificaciones a otras personas si te has hecho un test y resulta que tienes coronavirus. En ese caso, te llamará el GGD (servicio de salud municipal) con los resultados.<br><br>Durante la llamada, el asistente del GGD confirmará tu clave GGD que encontrarás en la app. Así siempre se está seguro de que solo las personas realmente contagiadas pueden enviar sus notificaciones.<br><br>Una vez confirmada tu clave GGD, podrás compartir los códigos que tu teléfono ha enviado a otros teléfonos en los últimos 14 días.<br><br>Así las personas que estuvieron cerca de ti mientras eras contagioso recibirán una notificación anónima, siempre y cuando también utilicen la app.";
 "help.faq.deletion.title" = "¿Cómo puedo eliminar mis datos?";
 "help.faq.privacy_policy.title" = "Declaración de privacidad";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -171,6 +172,20 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.technical_explanation.github.title" = "Consultar el código fuente";
 "help.technical_explanation.github.subtitle" = "Ir a GitHub";
 
+"help.what_does_notification_mean.title" = "¿Qué significa si recibes una notificación?";
+"help.what_does_notification_mean.description" = "La app te enviará una notificación si has estado al menos 15 minutos cerca de alguien que resultó tener coronavirus.  En la notificación, solo pone en qué día ocurrió. En ese caso, has corrido un riesgo de contagio. Si estás contagiado, puedes transmitir el virus a otros, incluso aunque no te sientas mal.";
+"help.what_does_report_look_like.title" = "¿Qué aspecto tiene una notificación?";
+"help.what_does_report_look_like.description" = "Una notificación se parece a lo que ves cuando recibes un mensaje de texto. En la notificación pone qué día estuviste cerca de alguien con coronavirus.<br><br>Pulsa la notificación para abrir CoronaMelder y consultar qué puedes hacer.";
+"help.notification.example" = "Ejemplo: La app cuando recibes una notificación";
+"help.what_to_do_with_notification.title" = "Qué hacer si recibes una notificación";
+"help.what_to_do_with_notification.description" = "Hazte un test de coronavirus. ¿Cuándo? depende de si tienes síntomas relacionados con el coronavirus, y de qué día estuviste cerca de la persona contagiada. En cualquier caso, quédate en casa hasta saber los resultados. Así evitarás contagiar a otros sin querer.<br><br>¿Estuviste cerca de un conocido y recibes una llamada del GGD (servicio de salud municipal)? En ese caso, sigue los consejos del GGD, no de la app.";
+"help.other_reports.title" = "Otras notificaciones";
+"help.other_reports.description" = "La app también envía una notificación si hay un problema técnico, por ejemplo, si tienes el Bluetooth desactivado o si la app lleva más de un día sin conexión a internet. La app te ayudará a resolverlo.<br><br>¿Has recibido una notificación pero la app funciona sin problemas? Entonces ya se ha resuelto el problema.";
+
+"help.pause_app.title" = "Can I pause the app?";
+"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. Do this through <b>Settings > Bluetooth</b>. If you turn off Bluetooth, the app won't exchange codes anymore. After this, you get a reminder to turn on the app again every 24 hours.<br><br>If you want to keep Bluetooth turned on, you can also pause the app by temporarily turning off 'Exposure Logging'. Do this through <b>Settings > Privacy > Health > COVID-19 Exposure Logging</b>. Also in this case you get a reminder to turn on the app again every 24 hours.<br><br>However, it's mostly not recommended to pause the app. Because you might forget to turn it on again. You can pause the app in certain moments. For example, when you're near (potential) corona patients and you're wearing the appropriate medical protection.";
+
+"help.apps_other_countries.title" = "¿CoronaMelder funciona con apps de otros países?";
 /* MARK: - Message */
 "message.default.title" = "Has estado cerca de alguien con coronavirus ";
 "message.default.body" = "Estuviste hace %@ cerca de alguien que resultó tener coronavirus. En ese caso, has corrido riesgo de contagio. Si estás contagiado, puedes transmitir el virus a otros, incluso aunque no te sientas mal ahora.";
@@ -254,6 +269,8 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.about.faq.bluetooth" = "¿Funciona Bluetooth a través de las paredes?";
 "moreInformation.about.faq.power_usage" = "¿Cuánta batería utiliza la app?";
 "moreInformation.about.faq.deletion" = "¿Cómo puedo eliminar datos de Bluetooth de mi teléfono?";
+"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth data saved by Corona Melder yourself. Do so by:<br><br>Go to <b>Settings on your phone > Privacy > Health > Exposure to COVID-19</b>. Press <b>Delete exposure logs</b>. If you don't want the app do save new Bluetooth data, delete the app.";
+
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Cuéntale a más gente cómo estás ayudando a detener el virus";
 "moreInformation.share.description" = "Cuantas más personas utilicen CoronaMelder, mejor funcionará. Solo juntos podemos contener el coronavirus, así que comparte la app con tanta gente como puedas.";
@@ -292,13 +309,16 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.receivedNotification.notificationExplanation.title" = "¿Qué significa si recibes una notificación?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "La app te enviará una notificación si has estado al menos 15 minutos cerca de alguien que resultó tener coronavirus. En la notificación solo pone en qué día ocurrió. En ese caso, has corrido riesgo de contagio. Si estás contagiado, puedes transmitir el virus a otros, incluso aunque no te sientas mal.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Hazte un test";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Incluso aunque aún no te sientas mal, ya que podrías propagar el coronavirus y contagiar a otras personas sin encontrarte enfermo.\n\nHazte un test gratis. No tarda mucho en hacerse y normalmente puedes concertar una cita rápidamente. Recibirás los resultados en 48 horas. Quédate en casa hasta que sepas los resultados.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Incluso aunque aún no te sientas mal, ya que podrías propagar el coronavirus y contagiar a otras personas sin encontrarte enfermo.<br><br>Hazte un test gratis. No tarda mucho en hacerse y normalmente puedes concertar una cita rápidamente. Recibirás los resultados en 48 horas. Quédate en casa hasta que sepas los resultados.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Solicitar un test";
 "moreInformation.requestTest.button.title" = "Solicitar un test";
 "moreInformation.requestTest.receivedNotification.title" = "¿Muestras síntomas relacionados con el coronavirus? Solicita un test";
-"moreInformation.requestTest.receivedNotification.content" = "¿Muestras síntomas, aunque sean leves, relacionados con el coronavirus? Hazte un test gratis. No tarda mucho en hacerse y normalmente puedes concertar la cita rápidamente. Recibirás los resultados en 48 horas. Quédate en casa hasta recibir los resultados. ¿Muestras síntomas graves o formas parte de un grupo de riesgo? Llama a tu médico de cabecera.";
+"moreInformation.requestTest.receivedNotification.content" = "¿Muestras síntomas, aunque sean leves, relacionados con el coronavirus? Hazte un test gratis. No tarda mucho en hacerse y normalmente puedes concertar la cita rápidamente. Recibirás los resultados en 48 horas. Quédate en casa hasta recibir los resultados.";
+"moreInformation.requestTest.complaints" = "¿Muestras síntomas graves o formas parte de un grupo de riesgo? Llama a tu médico de cabecera.";
+"moreInformation.requestTest.link" = "Ir a coronatest.nl";
+"moreInformation.requestTest.phone" = "Llama al 0800-1202";
 
 "moreInformation.notification.measures.title" = "Respeta las medidas:";
 "moreInformation.notification.measures.step1" = "Lávate las manos a menudo";

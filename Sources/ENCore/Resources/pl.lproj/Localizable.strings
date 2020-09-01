@@ -118,6 +118,7 @@
 "helpTitle" = "O aplikacji";
 "helpSubtitle" = "Najczęściej zadawane pytania";
 "helpAcceptButtonTitle" = "Włącz";
+"helpAlsoRead" = "Przeczytaj także";
 
 "help.faq.notification.title" = "Kiedy dostaję powiadomienie od aplikacji?";
 "help.faq.location.title" = "Czy aplikacja może zobaczyć moją lokalizację?";
@@ -130,7 +131,7 @@
 "help.faq.reason.title" = "Dlaczego ta aplikacja jest ważna?";
 "help.faq.reason.description" = "Aplikacja może Cię szybko ostrzec w przypadku, gdy znalazłeś się w pobliżu osoby z koronawirusem. Jeszcze zanim pojawią się dolegliwości. Możesz mieć koronawirusa i zarażać innych nawet nie zdając sobie z tego sprawy.<br><br>Gdy otrzymasz ostrzeżenie za pośrednictwem aplikacji, możesz poddać się testowi na obecność koronawirusa. Ponadto zaleca się pozostanie w domu. W ten sposób unikasz nieświadomego zarażenia ludzi wokół siebie.<br><br>Zrobiłeś test i masz koronawirusa? W takim przypadku, razem z GGD, możesz ostrzec ludzi, z którymi miałeś styczność. Także tych, których nie znasz. Spotkanych w restauracji, kinie lub poczekalni. Oczywiście, jeśli korzystają z aplikacji.<br><br>Dzięki aplikacji CoronaMelder możemy szybciej interweniować i zapobiegać nowym zakażeniom. Tylko wspólnymi siłami możemy uzyskać kontrolę nad koronawirusem.";
 "help.faq.upload_keys.title" = "Czy mogę wysłać powiadomienie innym, gdy okaże się, że mam koronawirusa?";
-"help.faq.upload_keys.description" = "Możesz wysłać innym powiadomienie tylko wtedy, gdy zrobiłeś test i okazało się, że masz koronawirusa. W tym przypadku GGD zadzwoni do Ciebie z wynikiem testu.<br>Podczas rozmowy telefonicznej pracownik GGD sprawdzi Twój klucz GGD. Możesz go znaleźć w aplikacji. Dzięki temu powiadomienia są wysyłane wyłącznie przez osoby rzeczywiście zarażone.<br>Po sprawdzeniu Twojego klucza GGD, możesz udostępnić kody, które Twój telefon wysłał w przeciągu ostatnich 14 dni do innych telefonów.<br>W ten sposób osoby, z którymi miałeś kontakt, gdy byłeś zarażony, mogą otrzymać anonimowe powiadomienie. Tylko, jeśli oni również używają aplikacji.";
+"help.faq.upload_keys.description" = "Możesz wysłać innym powiadomienie tylko wtedy, gdy zrobiłeś test i okazało się, że masz koronawirusa. W tym przypadku GGD zadzwoni do Ciebie z wynikiem testu.<br><br>Podczas rozmowy telefonicznej pracownik GGD sprawdzi Twój klucz GGD. Możesz go znaleźć w aplikacji. Dzięki temu powiadomienia są wysyłane wyłącznie przez osoby rzeczywiście zarażone.<br><br>Po sprawdzeniu Twojego klucza GGD, możesz udostępnić kody, które Twój telefon wysłał w przeciągu ostatnich 14 dni do innych telefonów.<br><br>W ten sposób osoby, z którymi miałeś kontakt, gdy byłeś zarażony, mogą otrzymać anonimowe powiadomienie. Tylko, jeśli oni również używają aplikacji.";
 "help.faq.deletion.title" = "Jak mogę usunąć moje dane?";
 "help.faq.privacy_policy.title" = "Oświadczenie o ochronie prywatności";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -170,6 +171,20 @@
 "help.technical_explanation.github.title" = "Zobacz kod źródłowy";
 "help.technical_explanation.github.subtitle" = "Przejdź do GitHub";
 
+"help.what_does_notification_mean.title" = "Otrzymałeś powiadomienie, co to oznacza?";
+"help.what_does_notification_mean.description" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której potem wykryto koronawirusa. W powiadomieniu znajduje się wyłącznie informacja, kiedy to miało miejsce. W tej sytuacji byłeś szczególnie narażony na ryzyko zarażenia. Jeśli rzeczywiście jesteś zarażony, możesz przekazywać wirusa innym. Nawet jeśli teraz nie czujesz się chory.";
+"help.what_does_report_look_like.title" = "Jak wygląda powiadomienie?";
+"help.what_does_report_look_like.description" = "Powiadomienie przypomina wyglądem wiadomość SMS. Powiadomienie zawiera informację o tym, kiedy miałeś kontakt z osobą zarażoną koronawirusem.<br><br>Kliknij na powiadomienie, aby otworzyć CoronaMelder. Tam przeczytasz, jakie są zalecenia.";
+"help.notification.example" = "Przykład: Tak wygląda aplikacja, gdy otrzymasz powiadomienie.";
+"help.what_to_do_with_notification.title" = "Co możesz zrobić, gdy otrzymasz powiadomienie?";
+"help.what_to_do_with_notification.description" = "Wykonaj test na obecność koronawirusa. To, kiedy dokładnie zależy od tego, czy masz dolegliwości, które są typowe dla koronawirusa oraz kiedy znajdowałeś się w pobliżu osoby z koronawirusem. W każdym razie pozostań w domu do momentu otrzymania wyników. W ten sposób unikasz nieświadomego zarażenia innych.<br><br>Znajdowałeś się w pobliżu znajomego i otrzymałeś telefon od GGD? Postępuj zgodnie z zaleceniami GGD, nie aplikacji.";
+"help.other_reports.title" = "Inne powiadomienia";
+"help.other_reports.description" = "Aplikacja może przesłać powiadomienie w przypadku problemu technicznego. Na przykład gdy Bluetooth jest wyłączony. Albo jeśli nie ma połączenia internetowego przez więcej niż jeden dzień. Aplikacja pomoże Ci to rozwiązać.<br><br>Otrzymałeś takie powiadomienie, a aplikacja jest aktywna? W międzyczasie problem został rozwiązany.";
+
+"help.pause_app.title" = "Can I pause the app?";
+"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. Do this through <b>Settings > Bluetooth</b>. If you turn off Bluetooth, the app won't exchange codes anymore. After this, you get a reminder to turn on the app again every 24 hours.<br><br>If you want to keep Bluetooth turned on, you can also pause the app by temporarily turning off 'Exposure Logging'. Do this through <b>Settings > Privacy > Health > COVID-19 Exposure Logging</b>. Also in this case you get a reminder to turn on the app again every 24 hours.<br><br>However, it's mostly not recommended to pause the app. Because you might forget to turn it on again. You can pause the app in certain moments. For example, when you're near (potential) corona patients and you're wearing the appropriate medical protection.";
+
+"help.apps_other_countries.title" = "Czy CoronaMelder współpracuje również z aplikacjami z innych krajów?";
 /* MARK: - Message */
 "message.default.title" = "Znajdowałeś się w pobliżu osoby z koronawirusem";
 "message.default.body" = "%@ znajdowałeś się w pobliżu osoby, zarażonej koronawirusem. W tej sytuacji byłeś szczególnie narażony na ryzyko zarażenia. Jeśli rzeczywiście jesteś zarażony, możesz przekazywać wirusa innym. Nawet jeśli teraz nie czujesz się chory.";
@@ -253,6 +268,8 @@
 "moreInformation.about.faq.bluetooth" = "Czy Bluetooth działa przez ściany?";
 "moreInformation.about.faq.power_usage" = "Ile energii zużywa aplikacja?";
 "moreInformation.about.faq.deletion" = "Jak mogę usunąć dane Bluetooth z telefonu?";
+"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth data saved by Corona Melder yourself. Do so by:<br><br>Go to <b>Settings on your phone > Privacy > Health > Exposure to COVID-19</b>. Press <b>Delete exposure logs</b>. If you don't want the app do save new Bluetooth data, delete the app.";
+
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Przekaż innym, że pomagasz w powstrzymaniu rozprzestrzeniania się koronawirusa.";
 "moreInformation.share.description" = "Im więcej osób używa aplikacji CoronaMelder, tym lepiej ona działa. Tylko wspólnymi siłami możemy uzyskać kontrolę nad koronawirusem. Udostępnij więc tę aplikację jak największej liczbie osób.";
@@ -291,13 +308,16 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Otrzymałeś powiadomienie, co to oznacza?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której potem wykryto koronawirusa. W powiadomieniu znajduje się wyłącznie informacja, kiedy to miało miejsce. W tej sytuacji byłeś szczególnie narażony na ryzyko zarażenia. Jeśli rzeczywiście jesteś zarażony, możesz przekazywać wirusa innym. Nawet jeśli teraz nie czujesz się chory.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Zrób test na obecność koronawirusa";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Nawet jeśli nie czujesz się chory. Ponieważ i bez tego możesz już rozprzestrzeniać koronawirusa i zarażać innych.\n \nZrób darmowy test. To nie zajmuje dużo czasu i zazwyczaj można się szybko umówić. Wyniki są znane w ciągu 48 godzin. Pozostań w domu do momentu poznania wyników.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Nawet jeśli nie czujesz się chory. Ponieważ i bez tego możesz już rozprzestrzeniać koronawirusa i zarażać innych.<br><br>Zrób darmowy test. To nie zajmuje dużo czasu i zazwyczaj można się szybko umówić. Wyniki są znane w ciągu 48 godzin. Pozostań w domu do momentu poznania wyników.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Poproś o test na koronawirusa";
 "moreInformation.requestTest.button.title" = "Poproś o test na koronawirusa";
 "moreInformation.requestTest.receivedNotification.title" = "Masz dolegliwości typowe dla koronawirusa? Poproś o test";
-"moreInformation.requestTest.receivedNotification.content" = "Masz (łagodne) dolegliwości, które są typowe dla koronawirusa? Zrób darmowy test. To nie zajmuje dużo czasu i zazwyczaj można się szybko umówić. Wyniki są znane w ciągu 48 godzin. Pozostań w domu do momentu otrzymania wyników. Masz poważne dolegliwości lub znajdujesz się w grupie wysokiego ryzyka? Zadzwoń do swojego lekarza rodzinnego.";
+"moreInformation.requestTest.receivedNotification.content" = "Masz (łagodne) dolegliwości, które są typowe dla koronawirusa? Zrób darmowy test. To nie zajmuje dużo czasu i zazwyczaj można się szybko umówić. Wyniki są znane w ciągu 48 godzin. Pozostań w domu do momentu otrzymania wyników.";
+"moreInformation.requestTest.complaints" = "Masz poważne dolegliwości lub znajdujesz się w grupie wysokiego ryzyka? Zadzwoń do swojego lekarza rodzinnego.";
+"moreInformation.requestTest.link" = "Przejdź na stronę coronatest.nl";
+"moreInformation.requestTest.phone" = "Zadzwoń pod numer 0800-1202";
 
 "moreInformation.notification.measures.title" = "Przestrzegaj środków ostrożności:";
 "moreInformation.notification.measures.step1" = "Regularnie myj ręce";

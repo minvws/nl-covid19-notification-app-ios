@@ -119,6 +119,7 @@
 "helpTitle" = "À propos de l'application";
 "helpSubtitle" = "Questions fréquentes";
 "helpAcceptButtonTitle" = "Activer";
+"helpAlsoRead" = "Lire aussi";
 
 "help.faq.notification.title" = "Quand l'application m'envoie-t-elle une notification ?";
 "help.faq.location.title" = "L'application peut-elle percevoir mes données de géolocalisation ?";
@@ -131,7 +132,7 @@
 "help.faq.reason.title" = "Pourquoi cette application est-elle importante ?";
 "help.faq.reason.description" = "L'application vous avertit rapidement si vous avez été en contact avec une personne qui a le Covid-19. Avant même que vous n'ayez des symptômes.  Vous pouvez en effet être contagieux(se) sans le savoir.<br><br>Si vous recevez une notification via l'application, vous pouvez faire un test. Nous vous conseillons ensuite de rester chez vous. Vous évitez ainsi de contaminer les personnes qui vous entourent.<br><br>Vous avez fait le test et vous avez le Covid-19 ? Alors, en collaboration avec le GGD, vous pouvez avertir les personnes avec qui vous avez été en contact pendant une plus longue durée. Même celles que vous ne connaissez pas. Dans un restaurant, au cinéma ou une salle d'attente. Du moment que ces personnes utilisent également l'application.<br><br>Grâce à CoronaMelder, nous pouvons agir plus vite et éviter de nouvelles contaminations. Ce n'est qu'ensemble que nous pourrons stopper la progression du Covid-19.";
 "help.faq.upload_keys.title" = "Puis-je envoyer une notification aux autres si j'ai le Covid-19 ?";
-"help.faq.upload_keys.description" = "Vous ne pouvez envoyer de notification aux autres que si vous avez fait un test de dépistage et qu'il s'avère par la suite que vous avez le Covid-19. Dans ce cas, le GGD vous appelle pour vous communiquer le résultat du test.<br>Lors de cet entretien téléphonique, un employé du GGD contrôle votre code GGD. Vous trouvez celui-ci dans l'application. Nous sommes ainsi toujours certains que seules les personnes qui sont vraiment contaminées puissent envoyer leurs notifications.<br>Après contrôle de votre code GGD, vous pouvez partager les codes que votre téléphone a envoyés aux autres téléphones ces 14 derniers jours.<br>Les personnes avec qui vous avez été en contact lorsque vous étiez contagieux reçoivent alors un message anonyme. Uniquement si ces personnes utilisent également l'application.";
+"help.faq.upload_keys.description" = "Vous ne pouvez envoyer de notification aux autres que si vous avez fait un test de dépistage et qu'il s'avère par la suite que vous avez le Covid-19. Dans ce cas, le GGD vous appelle pour vous communiquer le résultat du test.<br><br>Lors de cet entretien téléphonique, un employé du GGD contrôle votre code GGD. Vous trouvez celui-ci dans l'application. Nous sommes ainsi toujours certains que seules les personnes qui sont vraiment contaminées puissent envoyer leurs notifications.<br><br>Après contrôle de votre code GGD, vous pouvez partager les codes que votre téléphone a envoyés aux autres téléphones ces 14 derniers jours.<br><br>Les personnes avec qui vous avez été en contact lorsque vous étiez contagieux reçoivent alors un message anonyme. Uniquement si ces personnes utilisent également l'application.";
 "help.faq.deletion.title" = "Comment supprimer mes données ?";
 "help.faq.privacy_policy.title" = "Déclaration de protection de la vie privée";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -171,6 +172,20 @@
 "help.technical_explanation.github.title" = "Voyez le code source";
 "help.technical_explanation.github.subtitle" = "Allez à GitHub";
 
+"help.what_does_notification_mean.title" = "Si vous recevez une notification, qu'est-ce que ça veut dire ?";
+"help.what_does_notification_mean.description" = "L'application envoie une notification si vous avez été au moins pendant 15 minutes à proximité de quelqu'un qui, par la suite, s'est avéré avoir le Covid-19. La notification indique uniquement le jour où cela s'est produit. Lors de cette situation, vous avez couru un plus grand risque d’être contaminé. Si vous êtes contaminé(e), vous pouvez transmettre le virus aux personnes autour de vous, même si vous n'avez aucun symptôme pour l'instant.";
+"help.what_does_report_look_like.title" = "À quoi ressemble une notification ?";
+"help.what_does_report_look_like.description" = "La notification ressemble à un SMS. Le message indique le jour où vous avez été en contact avec quelqu’un qui a le Covid-19.<br><br>Cliquez sur la notification pour ouvrir CoronaMelder. Vous y lirez ce que vous devez faire.";
+"help.notification.example" = "Exemple : Voilà à quoi ressemble l’application lorsque vous recevez une notification";
+"help.what_to_do_with_notification.title" = "Que pouvez-vous faire si vous recevez une notification ?";
+"help.what_to_do_with_notification.description" = "Faites un test de dépistage du Covid-19. Le moment exact dépend du fait que vous ayez ou non les symptômes du Covid-19. Et du jour où vous avez été en contact avec la personne qui a le Covid-19. Restez en tous cas chez vous jusqu’à la communication du résultat. Vous évitez ainsi de contaminer involontairement d’autres personnes autour de vous.<br><br>Avez-vous été en contact avec quelqu’un qui vous connaît et le GGD vous appelle ? Suivez alors les conseils du GGD et pas ceux de l’application.";
+"help.other_reports.title" = "Autres notifications";
+"help.other_reports.description" = "L’application peut aussi vous envoyer une notification en cas de problème technique. Par exemple si votre Bluetooth est désactivé. Ou si la connexion internet a été interrompue depuis plus d’une journée. L’application vous aide à résoudre le problème.<br><br>Avez-vous reçu une telle notification et l’application est activée ? Alors le problème a été résolu entretemps.";
+
+"help.pause_app.title" = "Can I pause the app?";
+"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. Do this through <b>Settings > Bluetooth</b>. If you turn off Bluetooth, the app won't exchange codes anymore. After this, you get a reminder to turn on the app again every 24 hours.<br><br>If you want to keep Bluetooth turned on, you can also pause the app by temporarily turning off 'Exposure Logging'. Do this through <b>Settings > Privacy > Health > COVID-19 Exposure Logging</b>. Also in this case you get a reminder to turn on the app again every 24 hours.<br><br>However, it's mostly not recommended to pause the app. Because you might forget to turn it on again. You can pause the app in certain moments. For example, when you're near (potential) corona patients and you're wearing the appropriate medical protection.";
+
+"help.apps_other_countries.title" = "Est-ce que CoronaMelder fonctionne aussi avec des applications d’autres pays?";
 /* MARK: - Message */
 "message.default.title" = "Vous avez été à proximité de quelqu'un qui a le Covid-19";
 "message.default.body" = "Vous étiez %@ proche de quelqu'un qui s'est avéré par la suite avoir le Covid-19. Lors de cette situation, vous avez probablement couru un plus grand risque d’être contaminé(e). Si vous avez effectivement été contaminé(e), vous pouvez transmettre le virus à d'autres, même si vous n'avez aucun symptôme pour l'instant.";
@@ -254,6 +269,8 @@
 "moreInformation.about.faq.bluetooth" = "Le Bluetooth fonctionne-t-il à travers les murs ?";
 "moreInformation.about.faq.power_usage" = "Quel est l'impact de l'application sur ma batterie ?";
 "moreInformation.about.faq.deletion" = "Comment supprimer les données Bluetooth de mon téléphone ? ";
+"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth data saved by Corona Melder yourself. Do so by:<br><br>Go to <b>Settings on your phone > Privacy > Health > Exposure to COVID-19</b>. Press <b>Delete exposure logs</b>. If you don't want the app do save new Bluetooth data, delete the app.";
+
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Faites savoir à vos proches que vous contribuez à stopper la progression du virus";
 "moreInformation.share.description" = "Plus il y aura de personnes utilisant CoronaMelder, plus l'application sera efficace. Ce n'est qu'ensemble que nous arrêterons la diffusion du virus. Partagez donc l'application autour de vous !";
@@ -292,13 +309,16 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Si vous recevez une notification, qu'est-ce que ça veut dire ?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "L'application envoie une notification si vous avez été au moins pendant 15 minutes à proximité de quelqu'un qui, par la suite, s'est avéré avoir le Covid-19. La notification indique uniquement le jour où cela s'est produit. Lors de cette situation, vous avez couru un plus grand risque d’être contaminé(e). Si vous êtes contaminé(e), vous pouvez transmettre le virus aux personnes autour de vous, même si vous n'avez aucun symptôme pour l'instant.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Faites un test de dépistage du Covid-19";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Même si vous n'avez aucun symptôme. Car sans symptôme, vous pouvez déjà transmettre le Covid-19 et donc contaminer les personnes qui vous entourent.\n\nFaites le test gratuit. Il ne dure pas longtemps et vous pouvez généralement fixer un rendez-vous rapidement. Le résultat est connu dans les 48 heures. Restez chez vous jusqu'à la communication du résultat.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Même si vous n'avez aucun symptôme. Car sans symptôme, vous pouvez déjà transmettre le Covid-19 et donc contaminer les personnes qui vous entourent.<br><br>Faites le test gratuit. Il ne dure pas longtemps et vous pouvez généralement fixer un rendez-vous rapidement. Le résultat est connu dans les 48 heures. Restez chez vous jusqu'à la communication du résultat.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Demander un test de dépistage du Covid-19";
 "moreInformation.requestTest.button.title" = "Demander un test de dépistage du Covid-19";
 "moreInformation.requestTest.receivedNotification.title" = "Vous avez des symptômes qui correspondent à ceux du Covid-19 ? Demandez un test";
-"moreInformation.requestTest.receivedNotification.content" = "Vous avez de (légers) symptômes qui correspondent à ceux du Covid-19 ? Faites un test de dépistage gratuit. Il ne dure pas longtemps et vous pouvez généralement fixer rapidement un rendez-vous. Le résultat est connu dans les 48 heures. Restez chez vous jusqu'à ce que l'on vous communique le résultat. Vous avez des symptômes graves ou vous faites partie d'un groupe à risques ? Appelez votre médecin traitant.";
+"moreInformation.requestTest.receivedNotification.content" = "Vous avez de (légers) symptômes qui correspondent à ceux du Covid-19 ? Faites un test de dépistage gratuit. Il ne dure pas longtemps et vous pouvez généralement fixer rapidement un rendez-vous. Le résultat est connu dans les 48 heures. Restez chez vous jusqu'à ce que l'on vous communique le résultat. ";
+"moreInformation.requestTest.complaints" = "Vous avez de graves symptômes ou vous faites partie d'un groupe à risques ? Appelez votre médecin traitant";
+"moreInformation.requestTest.link" = "Consultez coronatest.nl";
+"moreInformation.requestTest.phone" = "Composez le 0800-1202";
 
 "moreInformation.notification.measures.title" = "Respectez strictement les mesures :";
 "moreInformation.notification.measures.step1" = "Lavez-vous régulièrement les mains";

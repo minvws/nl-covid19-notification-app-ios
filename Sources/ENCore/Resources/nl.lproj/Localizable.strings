@@ -328,6 +328,8 @@
 "moreInformation.notification.measures.step2" = "Hoest/nies in je elleboog";
 "moreInformation.notification.measures.step3" = "Houd 1,5 meter afstand van mensen buiten je huishouden";
 
+"moreInformation.status.alarm.alt-text" = "Rood scherm met alarmbel dat aangeeft dat er nu actie nodig is";
+
 /* MARK: - Cards */
 "cards.exposureOff.title" = "App is <u>niet</u> actief";
 "cards.exposureOff.content" = "Zet de instellingen aan die de app nodig heeft om te werken.";
