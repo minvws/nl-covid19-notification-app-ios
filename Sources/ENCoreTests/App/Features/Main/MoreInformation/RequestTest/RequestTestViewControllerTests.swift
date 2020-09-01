@@ -17,7 +17,7 @@ final class RequestTestViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = true
+        recordSnapshots = false
 
         viewController = RequestTestViewController(listener: listern, theme: theme)
     }
