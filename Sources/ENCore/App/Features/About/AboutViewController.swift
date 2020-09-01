@@ -49,7 +49,9 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
 
     func cleanNavigationStackIfNeeded() {
         if let first = viewControllers.first, let last = viewControllers.last {
-            viewControllers = [first, last]
+            if first != last {
+                viewControllers = [first, last]
+            }
         }
     }
 
