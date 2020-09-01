@@ -12,6 +12,7 @@ import Foundation
 protocol ReceivedNotificationListener: AnyObject {
     func receivedNotificationWantsDismissal(shouldDismissViewController: Bool)
     func receivedNotificationRequestRedirect(to content: LinkedContent)
+    func receivedNotificationActionButtonTapped()
 }
 
 /// @mockable
@@ -20,7 +21,8 @@ protocol ReceivedNotificationBuildable {
     ///
     /// - Parameter listener: Listener of created ReceivedNotificationViewController
     /// - Parameter linkedContent: Linked content to be displayed
-    func build(withListener listener: ReceivedNotificationListener, linkedContent: [LinkedContent]) -> ViewControllable
+    /// - Parameter actionButtonTitle: Title for the action button. If nil is set no button will be shown.
+    func build(withListener listener: ReceivedNotificationListener, linkedContent: [LinkedContent], actionButtonTitle: String?) -> ViewControllable
 }
 
 protocol ReceivedNotificationDependency {
@@ -30,10 +32,11 @@ protocol ReceivedNotificationDependency {
 private final class ReceivedNotificationDependencyProvider: DependencyProvider<ReceivedNotificationDependency> {}
 
 final class ReceivedNotificationBuilder: Builder<ReceivedNotificationDependency>, ReceivedNotificationBuildable {
-    func build(withListener listener: ReceivedNotificationListener, linkedContent: [LinkedContent]) -> ViewControllable {
+    func build(withListener listener: ReceivedNotificationListener, linkedContent: [LinkedContent], actionButtonTitle: String?) -> ViewControllable {
         let dependencyProvider = ReceivedNotificationDependencyProvider(dependency: dependency)
         return ReceivedNotificationViewController(listener: listener,
                                                   linkedContent: linkedContent,
+                                                  actionButtonTitle: actionButtonTitle,
                                                   theme: dependencyProvider.dependency.theme)
     }
 }

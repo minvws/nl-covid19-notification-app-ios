@@ -96,7 +96,9 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
     // MARK: - Private
 
     private func routeToNotificationExplanation(linkedContent: [LinkedContent]) {
-        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController, linkedContent: linkedContent)
+        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController,
+                                                                                     linkedContent: linkedContent,
+                                                                                     actionButtonTitle: nil)
         self.receivedNotificationViewController = receivedNotificationViewController
 
         viewController.push(viewController: receivedNotificationViewController, animated: true)

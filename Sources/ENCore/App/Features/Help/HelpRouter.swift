@@ -83,7 +83,9 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
     }
 
     private func routeToNotificationExplanation(linkedContent: [LinkedContent]) {
-        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController, linkedContent: linkedContent)
+        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController,
+                                                                                     linkedContent: linkedContent,
+                                                                                     actionButtonTitle: .helpAcceptButtonTitle)
         self.receivedNotificationViewController = receivedNotificationViewController
 
         viewController.push(viewController: receivedNotificationViewController, animated: true)

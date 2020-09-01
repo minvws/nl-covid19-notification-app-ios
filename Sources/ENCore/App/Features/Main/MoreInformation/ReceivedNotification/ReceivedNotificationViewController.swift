@@ -17,10 +17,11 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
 
     // MARK: - Init
 
-    init(listener: ReceivedNotificationListener, linkedContent: [LinkedContent], theme: Theme) {
+    init(listener: ReceivedNotificationListener, linkedContent: [LinkedContent], actionButtonTitle: String?, theme: Theme) {
         self.listener = listener
         self.linkedContentTableViewManager = LinkedContentTableViewManager(content: linkedContent, theme: theme)
         self.shouldDisplayLinkedQuestions = linkedContent.isEmpty == false
+        self.actionButtonTitle = actionButtonTitle
         super.init(theme: theme)
     }
 
@@ -40,12 +41,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
-        internalView.contactButtonActionHandler = { [weak self] in
-            if let url = URL(string: .coronaTestPhoneNumber), UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            } else {
-                self?.logError("Unable to open \(String.coronaTestPhoneNumber)")
-            }
+        internalView.buttonActionHandler = { [weak self] in
+            self?.listener?.receivedNotificationActionButtonTapped()
         }
 
         linkedContentTableViewManager.selectedContentHandler = { [weak self] selectedContent in
@@ -78,10 +75,13 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     // MARK: - Private
 
     private weak var listener: ReceivedNotificationListener?
-    private lazy var internalView: ReceivedNotificationView = ReceivedNotificationView(theme: self.theme, linkedContentTableViewManager: linkedContentTableViewManager)
+    private lazy var internalView: ReceivedNotificationView = ReceivedNotificationView(theme: theme,
+                                                                                       linkedContentTableViewManager: linkedContentTableViewManager,
+                                                                                       buttonTitle: actionButtonTitle)
 
     private let linkedContentTableViewManager: LinkedContentTableViewManager
     private let shouldDisplayLinkedQuestions: Bool
+    private let actionButtonTitle: String?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.receivedNotificationWantsDismissal(shouldDismissViewController: true)
@@ -98,17 +98,19 @@ private final class ReceivedNotificationView: View {
 
     lazy var tableView = LinkedContentTableView(manager: tableViewManager)
 
-    var contactButtonActionHandler: (() -> ())? {
+    var buttonActionHandler: (() -> ())? {
         get { infoView.actionHandler }
         set { infoView.actionHandler = newValue }
     }
 
     // MARK: - Init
 
-    init(theme: Theme, linkedContentTableViewManager: LinkedContentTableViewManager) {
+    init(theme: Theme, linkedContentTableViewManager: LinkedContentTableViewManager, buttonTitle: String?) {
+
         self.tableViewManager = linkedContentTableViewManager
-        let config = InfoViewConfig(actionButtonTitle: .moreInformationReceivedNotificationButtonTitle,
-                                    headerImage: .receivedNotificationHeader)
+        let config = InfoViewConfig(actionButtonTitle: buttonTitle ?? "",
+                                    headerImage: .receivedNotificationHeader,
+                                    showActionButton: buttonTitle != nil)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }

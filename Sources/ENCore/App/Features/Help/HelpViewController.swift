@@ -96,6 +96,11 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
         }
     }
 
+    func receivedNotificationActionButtonTapped() {
+        router?.detachReceivedNotification(shouldDismissViewController: true)
+        self.listener?.helpRequestsEnableApp()
+    }
+
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {

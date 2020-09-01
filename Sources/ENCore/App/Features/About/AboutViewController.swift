@@ -101,6 +101,8 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         }
     }
 
+    func receivedNotificationActionButtonTapped() {}
+
     // MARK: - AppInformationListener
 
     func appInformationRequestsToTechnicalInformation() {
