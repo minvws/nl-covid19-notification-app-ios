@@ -90,6 +90,12 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
         router?.detachReceivedNotification(shouldDismissViewController: shouldDismissViewController)
     }
 
+    func receivedNotificationRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? HelpOverviewEntry {
+            router?.routeTo(entry: entry, shouldShowEnableAppButton: shouldShowEnableAppButton)
+        }
+    }
+
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {

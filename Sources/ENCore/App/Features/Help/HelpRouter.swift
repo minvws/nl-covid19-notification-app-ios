@@ -50,8 +50,8 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
         switch entry {
         case .question:
             routeToHelpDetail(entry: entry, shouldShowEnableAppButton: shouldShowEnableAppButton)
-        case .notificationExplanation:
-            routeToNotificationExplanation()
+        case let .notificationExplanation(_, linkedContent):
+            routeToNotificationExplanation(linkedContent: linkedContent)
         }
     }
 
@@ -82,8 +82,8 @@ final class HelpRouter: Router<HelpViewControllable>, HelpRouting {
         }
     }
 
-    private func routeToNotificationExplanation() {
-        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController)
+    private func routeToNotificationExplanation(linkedContent: [LinkedContent]) {
+        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController, linkedContent: linkedContent)
         self.receivedNotificationViewController = receivedNotificationViewController
 
         viewController.push(viewController: receivedNotificationViewController, animated: true)

@@ -17,9 +17,10 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
 
     // MARK: - Init
 
-    init(listener: ReceivedNotificationListener, theme: Theme) {
+    init(listener: ReceivedNotificationListener, linkedContent: [LinkedContent], theme: Theme) {
         self.listener = listener
-
+        self.linkedContentTableViewManager = LinkedContentTableViewManager(content: linkedContent, theme: theme)
+        self.shouldDisplayLinkedQuestions = linkedContent.isEmpty == false
         super.init(theme: theme)
     }
 
@@ -46,12 +47,41 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
                 self?.logError("Unable to open \(String.coronaTestPhoneNumber)")
             }
         }
+
+        linkedContentTableViewManager.selectedContentHandler = { [weak self] selectedContent in
+            self?.listener?.receivedNotificationRequestRedirect(to: selectedContent)
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if shouldDisplayLinkedQuestions {
+            internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if shouldDisplayLinkedQuestions {
+            internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
+        }
+    }
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        if let obj = object as? UITableView {
+            if obj == self.internalView.tableView, keyPath == "contentSize" {
+                internalView.updateTableViewHeight()
+            }
+        }
     }
 
     // MARK: - Private
 
     private weak var listener: ReceivedNotificationListener?
-    private lazy var internalView: ReceivedNotificationView = ReceivedNotificationView(theme: self.theme)
+    private lazy var internalView: ReceivedNotificationView = ReceivedNotificationView(theme: self.theme, linkedContentTableViewManager: linkedContentTableViewManager)
+
+    private let linkedContentTableViewManager: LinkedContentTableViewManager
+    private let shouldDisplayLinkedQuestions: Bool
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.receivedNotificationWantsDismissal(shouldDismissViewController: true)
@@ -66,16 +96,17 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
 
 private final class ReceivedNotificationView: View {
 
+    lazy var tableView = LinkedContentTableView(manager: tableViewManager)
+
     var contactButtonActionHandler: (() -> ())? {
         get { infoView.actionHandler }
         set { infoView.actionHandler = newValue }
     }
 
-    private let infoView: InfoView
-
     // MARK: - Init
 
-    override init(theme: Theme) {
+    init(theme: Theme, linkedContentTableViewManager: LinkedContentTableViewManager) {
+        self.tableViewManager = linkedContentTableViewManager
         let config = InfoViewConfig(actionButtonTitle: .moreInformationReceivedNotificationButtonTitle,
                                     headerImage: .receivedNotificationHeader)
         self.infoView = InfoView(theme: theme, config: config)
@@ -88,13 +119,15 @@ private final class ReceivedNotificationView: View {
         super.build()
         exampleWrapperView.addSubview(exampleImageView)
         exampleWrapperView.addSubview(exampleCaption)
+        tableViewWrapperView.addSubview(tableView)
 
         infoView.addSections([
             notificationExplanation(),
             howReportLooksLike(),
             exampleWrapperView,
             whatToDo(),
-            otherReports()
+            otherReports(),
+            tableViewWrapperView
         ])
 
         addSubview(infoView)
@@ -119,6 +152,17 @@ private final class ReceivedNotificationView: View {
             maker.bottom.equalToSuperview()
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.top.equalTo(exampleImageView.snp.bottom).offset(24)
+        }
+
+        tableView.snp.makeConstraints { maker in
+            maker.leading.trailing.top.bottom.width.equalToSuperview()
+            maker.height.equalTo(0)
+        }
+    }
+
+    func updateTableViewHeight() {
+        tableView.snp.updateConstraints { maker in
+            maker.height.equalTo(tableView.contentSize.height)
         }
     }
 
@@ -148,6 +192,9 @@ private final class ReceivedNotificationView: View {
                             content: [String.helpReceivedNotificationOtherReportsDescription.attributed()])
     }
 
+    private let infoView: InfoView
+    private lazy var tableViewWrapperView = View(theme: theme)
+    private let tableViewManager: LinkedContentTableViewManager
     private lazy var exampleWrapperView = View(theme: theme)
 
     private lazy var exampleImageView: UIImageView = {

@@ -11,6 +11,7 @@ import Foundation
 /// @mockable
 protocol ReceivedNotificationListener: AnyObject {
     func receivedNotificationWantsDismissal(shouldDismissViewController: Bool)
+    func receivedNotificationRequestRedirect(to content: LinkedContent)
 }
 
 /// @mockable
@@ -18,7 +19,8 @@ protocol ReceivedNotificationBuildable {
     /// Builds ReceivedNotification
     ///
     /// - Parameter listener: Listener of created ReceivedNotificationViewController
-    func build(withListener listener: ReceivedNotificationListener) -> ViewControllable
+    /// - Parameter linkedContent: Linked content to be displayed
+    func build(withListener listener: ReceivedNotificationListener, linkedContent: [LinkedContent]) -> ViewControllable
 }
 
 protocol ReceivedNotificationDependency {
@@ -28,9 +30,10 @@ protocol ReceivedNotificationDependency {
 private final class ReceivedNotificationDependencyProvider: DependencyProvider<ReceivedNotificationDependency> {}
 
 final class ReceivedNotificationBuilder: Builder<ReceivedNotificationDependency>, ReceivedNotificationBuildable {
-    func build(withListener listener: ReceivedNotificationListener) -> ViewControllable {
+    func build(withListener listener: ReceivedNotificationListener, linkedContent: [LinkedContent]) -> ViewControllable {
         let dependencyProvider = ReceivedNotificationDependencyProvider(dependency: dependency)
         return ReceivedNotificationViewController(listener: listener,
+                                                  linkedContent: linkedContent,
                                                   theme: dependencyProvider.dependency.theme)
     }
 }

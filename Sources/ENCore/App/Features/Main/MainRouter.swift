@@ -116,7 +116,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
             return
         }
 
-        let receivedNotificationViewController = receivedNotificationBuilder.build(withListener: viewController)
+        let receivedNotificationViewController = receivedNotificationBuilder.build(withListener: viewController, linkedContent: [])
         self.receivedNotificationViewController = receivedNotificationViewController
 
         viewController.present(viewController: receivedNotificationViewController, animated: true)
