@@ -62,6 +62,10 @@ private final class AboutDependencyProvider: DependencyProvider<AboutDependency>
     var receivedNotificationBuilder: ReceivedNotificationBuildable {
         return ReceivedNotificationBuilder(dependency: self)
     }
+
+    var exposureController: ExposureControlling {
+        return dependency.exposureController
+    }
 }
 
 final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
@@ -77,6 +81,7 @@ final class AboutBuilder: Builder<AboutDependency>, AboutBuildable {
                            appInformationBuilder: dependencyProvider.appInformationBuilder,
                            technicalInformationBuilder: dependencyProvider.technicalInformationBuilder,
                            webviewBuilder: dependencyProvider.webviewBuilder,
-                           receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder)
+                           receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder,
+                           exposureController: dependencyProvider.exposureController)
     }
 }

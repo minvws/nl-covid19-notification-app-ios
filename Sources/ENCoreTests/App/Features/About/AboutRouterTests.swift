@@ -17,13 +17,13 @@ final class AboutRouterTests: TestCase {
     private let technicalInformationBuilder = TechnicalInformationBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
     private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
-
+    private let exposureController = ExposureControllingMock()
     private var router: AboutRouter!
 
     override func setUp() {
         super.setUp()
 
-        router = AboutRouter(viewController: viewController, aboutOverviewBuilder: aboutOverviewBuilder, helpDetailBuilder: helpDetailBuilder, appInformationBuilder: appInformationBuilder, technicalInformationBuilder: technicalInformationBuilder, webviewBuilder: webviewBuilder, receivedNotificationBuilder: receivedNotificationBuilder)
+        router = AboutRouter(viewController: viewController, aboutOverviewBuilder: aboutOverviewBuilder, helpDetailBuilder: helpDetailBuilder, appInformationBuilder: appInformationBuilder, technicalInformationBuilder: technicalInformationBuilder, webviewBuilder: webviewBuilder, receivedNotificationBuilder: receivedNotificationBuilder, exposureController: exposureController)
     }
 
     func test_init_setsRouterOnViewController() {

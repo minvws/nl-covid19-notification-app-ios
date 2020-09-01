@@ -26,13 +26,15 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
          appInformationBuilder: AppInformationBuildable,
          technicalInformationBuilder: TechnicalInformationBuildable,
          webviewBuilder: WebviewBuildable,
-         receivedNotificationBuilder: ReceivedNotificationBuildable) {
+         receivedNotificationBuilder: ReceivedNotificationBuildable,
+         exposureController: ExposureControlling) {
         self.helpDetailBuilder = helpDetailBuilder
         self.aboutOverviewBuilder = aboutOverviewBuilder
         self.appInformationBuilder = appInformationBuilder
         self.technicalInformationBuilder = technicalInformationBuilder
         self.webviewBuilder = webviewBuilder
         self.receivedNotificationBuildable = receivedNotificationBuilder
+        self.exposureController = exposureController
         super.init(viewController: viewController)
         viewController.router = self
     }
@@ -116,7 +118,21 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
     }
 
     private func routeToRateApp() {
-        SKStoreReviewController.requestReview()
+        exposureController.getAppVersionInformation { appVersionInformation in
+            guard let appVersionInformation = appVersionInformation else {
+                /// StoreKit Fallback
+                SKStoreReviewController.requestReview()
+                return
+            }
+            guard let urlString = URL(string: "\(appVersionInformation.appStoreURL)?action=write-review")
+            else {
+                self.logError("Cannot create URL from: \(appVersionInformation.appStoreURL)?action=write-review")
+                /// StoreKit Fallback
+                SKStoreReviewController.requestReview()
+                return
+            }
+            UIApplication.shared.open(urlString, options: [:], completionHandler: nil)
+        }
     }
 
     private func routeToWebView(urlString: String) {
@@ -146,4 +162,6 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
 
     private let receivedNotificationBuildable: ReceivedNotificationBuildable
     private var receivedNotificationViewController: ViewControllable?
+
+    private let exposureController: ExposureControlling
 }
