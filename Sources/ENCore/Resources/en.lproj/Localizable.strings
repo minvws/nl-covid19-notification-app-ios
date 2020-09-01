@@ -316,7 +316,7 @@
 "moreInformation.requestTest.title" = "Request coronavirus test";
 "moreInformation.requestTest.button.title" = "Request coronavirus test";
 "moreInformation.requestTest.receivedNotification.title" = "Do you have symptoms related to the coronavirus? Get tested";
-"moreInformation.requestTest.receivedNotification.content" = "Do you have (mild) symptoms related to the coronavirus? Get a free test. It doesn't take long to get tested and waiting times are usually short. You get the results within 48 hours. In the meantime, stay home.";
+"moreInformation.requestTest.receivedNotification.content" = "Do you have (mild) symptoms related to the coronavirus? Get a free test. It doesn't take long to get tested and waiting times are usually short.<br><br>You get the results within 48 hours. In the meantime, stay home.";
 "moreInformation.requestTest.complaints" = "Serious symptoms or part of a high-risk group? Call your doctor.";
 "moreInformation.requestTest.link" = "Go to coronatest.nl";
 "moreInformation.requestTest.phone" = "Call 0800-1202";

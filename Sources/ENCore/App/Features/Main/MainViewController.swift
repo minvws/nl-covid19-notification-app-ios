@@ -169,10 +169,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToWebview(url: url)
     }
 
-    func requestTestOpenURL(url: URL) {
-        router?.routeToWebview(url: url)
-    }
-
     // MARK: - WebviewListener
 
     func webviewRequestsDismissal(shouldHideViewController: Bool) {

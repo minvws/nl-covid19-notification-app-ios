@@ -10,7 +10,6 @@ import Foundation
 
 /// @mockable
 protocol RequestTestListener: AnyObject {
-    func requestTestOpenURL(url: URL)
     func requestTestWantsDismissal(shouldDismissViewController: Bool)
 }
 
