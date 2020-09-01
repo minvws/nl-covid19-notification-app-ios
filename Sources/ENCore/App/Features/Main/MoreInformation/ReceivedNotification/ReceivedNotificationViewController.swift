@@ -86,10 +86,13 @@ private final class ReceivedNotificationView: View {
 
     override func build() {
         super.build()
+        exampleWrapperView.addSubview(exampleImageView)
+        exampleWrapperView.addSubview(exampleCaption)
 
         infoView.addSections([
             notificationExplanation(),
             howReportLooksLike(),
+            exampleWrapperView,
             whatToDo(),
             otherReports()
         ])
@@ -102,6 +105,20 @@ private final class ReceivedNotificationView: View {
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.bottom.leading.trailing.equalToSuperview()
+        }
+
+        exampleImageView.snp.makeConstraints { maker in
+            let aspectRatio = exampleImageView.image?.aspectRatio ?? 1
+
+            maker.top.equalToSuperview()
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.height.equalTo(exampleImageView.snp.width).dividedBy(aspectRatio)
+        }
+
+        exampleCaption.snp.makeConstraints { maker in
+            maker.bottom.equalToSuperview()
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.top.equalTo(exampleImageView.snp.bottom).offset(24)
         }
     }
 
@@ -130,4 +147,26 @@ private final class ReceivedNotificationView: View {
                             title: .helpReceivedNotificationOtherReportsTitle,
                             content: [String.helpReceivedNotificationOtherReportsDescription.attributed()])
     }
+
+    private lazy var exampleWrapperView = View(theme: theme)
+
+    private lazy var exampleImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .helpNotificationExample
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.backgroundColor = .clear
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+
+    private lazy var exampleCaption: Label = {
+        let label = Label()
+        label.text = .helpReceivedNotificationExample
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = theme.colors.captionGray
+        label.font = theme.fonts.bodyBold
+        return label
+    }()
 }
