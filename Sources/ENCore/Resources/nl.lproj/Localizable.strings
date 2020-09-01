@@ -318,7 +318,7 @@
 "moreInformation.requestTest.title" = "Coronatest aanvragen";
 "moreInformation.requestTest.button.title" = "Coronatest aanvragen";
 "moreInformation.requestTest.receivedNotification.title" = "Heb je klachten die passen bij corona? Vraag een test aan";
-"moreInformation.requestTest.receivedNotification.content" = "Heb je (lichte) klachten die passen bij het coronavirus? Laat je gratis testen. Het duurt niet lang en je kunt meestal snel een afspraak maken. De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet. Heb je ernstige klachten of zit je in een risicogroep? Bel dan je huisarts.";
+"moreInformation.requestTest.receivedNotification.content" = "Heb je (lichte) klachten die passen bij het coronavirus? Laat je gratis testen. Het duurt niet lang en je kunt meestal snel een afspraak maken.<br><br>De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet.";
 "moreInformation.requestTest.complaints" = "Heb je ernstige klachten of zit je in een risicogroep? Bel dan je huisarts.";
 "moreInformation.requestTest.link" = "Ga naar coronatest.nl";
 "moreInformation.requestTest.phone" = "Bel 0800-1202";

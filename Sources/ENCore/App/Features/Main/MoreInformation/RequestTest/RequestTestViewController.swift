@@ -6,6 +6,7 @@
  */
 
 import ENFoundation
+import SafariServices
 import SnapKit
 import UIKit
 
@@ -43,7 +44,8 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
                 self?.logError("Unable to open \(String.coronaTestWebUrl)")
                 return
             }
-            self?.listener?.requestTestOpenURL(url: url)
+            let viewController = SFSafariViewController(url: url)
+            self?.present(viewController, animated: true)
         }
         internalView.phoneButtonActionHandler = { [weak self] in
             if let url = URL(string: .coronaTestPhoneNumber), UIApplication.shared.canOpenURL(url) {
