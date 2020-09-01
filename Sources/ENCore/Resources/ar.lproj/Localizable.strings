@@ -119,6 +119,7 @@
 "helpTitle" = "حوْل التطبيق";
 "helpSubtitle" = "الأسئلة المتكررة";
 "helpAcceptButtonTitle" = "تشغيل";
+"helpAlsoRead" = "إقرأ أيضًا";
 
 "help.faq.notification.title" = "متى يرسل لي التطبيق إشعارًا؟";
 "help.faq.location.title" = "هل يستطيع التطبيق التعرّف على موقعي الجغرافي؟";
@@ -132,8 +133,7 @@
 "help.faq.reason.title" = "لماذا يعتبرهذا التطبيق مهمًا؟";
 "help.faq.reason.description" = "يستطيع التطبيق تحذيرك بسرعة بعد تواجدك بالقرب من شخص مصاب بكورونا. حتى قبل أن تظهر عليك الأعراض. يمكن أن تكون مصابًا بكورونا وتكون معديًا دون أن تدرك ذلك. <br><br> إذا تلقيت تحذيرًا عبر التطبيق، فيمكنك إجراء اختبار. علاوة على ذلك، فإن النصيحة هي ملازمة المنزل. يمكنك بذلك تجنب تعرض الآخرين في محيطك للإصابة بدون قصد. <br><br>هل تم اختبارك وتبين أنك مصاب بفيروس كورونا؟ عندئذ يمكنك تحذير الأشخاص الذين تواجدوا بالقرب منك لفترة طويلة بمساعدة الـ GGD. حتى الأشخاص الذين لا تعرفهم، في مطعم أو سينما أو غرفة انتظار. طالما أن هؤلاء الأشخاص يستخدمون التطبيق أيضًا. <br><br> بفضل CoronaMelder يمكننا التدخل بسرعة أكبر ومنع حدوث إصابات جديدة. معًا فقط يمكننا السيطرة على كورونا.";
 "help.faq.upload_keys.title" = "هل يمكنني إبلاغ الآخرين إذا كنت مصابا بكورونا؟";
-"help.faq.upload_keys.description" = "لا يمكنك إرسال إشعار للآخرين إلا إذا قمتَ بإجراء فحص وتبين أنك مصاب بكورونا. في هذه الحالة، ستتصل بك الـ GGD لإبلاغك بنتيجة الاختبار. <br> أثناء هذه المحادثة الهاتفية، سيتحقق موظف الـ GGD من مفتاح الـ GGD الخاص بك. تجد هذا الرمز في التطبيق. بهذه الطريقة، من المؤكد دائمًا أن الأشخاص المصابين حقًا هم فقط من يمكنهم إرسال الإشعارات. <br> بعد التحقق من مفتاح الـ GGD، يمكنك مشاركة الرموز التي أرسلها هاتفك إلى الهواتف الأخرى في الـ 14 يومًا الماضية. <br> وبهذه الطريقة يمكن للأشخاص الذين كنت متواجدًا بالقرب منهم عندما كنت ناقلاً للعدوى تلقي إشعار مجهول. فقط إذا كان هؤلاء الأشخاص يستخدمون التطبيق أيضًا.
-";
+"help.faq.upload_keys.description" = "لا يمكنك إرسال إشعار للآخرين إلا إذا قمتَ بإجراء فحص وتبين أنك مصاب بكورونا. في هذه الحالة، ستتصل بك الـ GGD لإبلاغك بنتيجة الاختبار. <br><br> أثناء هذه المحادثة الهاتفية، سيتحقق موظف الـ GGD من مفتاح الـ GGD الخاص بك. تجد هذا الرمز في التطبيق. بهذه الطريقة، من المؤكد دائمًا أن الأشخاص المصابين حقًا هم فقط من يمكنهم إرسال الإشعارات. <br> بعد التحقق من مفتاح الـ GGD، يمكنك مشاركة الرموز التي أرسلها هاتفك إلى الهواتف الأخرى في الـ 14 يومًا الماضية. <br><br> وبهذه الطريقة يمكن للأشخاص الذين كنت متواجدًا بالقرب منهم عندما كنت ناقلاً للعدوى تلقي إشعار مجهول. فقط إذا كان هؤلاء الأشخاص يستخدمون التطبيق أيضًا.";
 "help.faq.deletion.title" = "كيف أقوم بحذف بياناتي؟";
 "help.faq.privacy_policy.title" = "بيان حماية الخصوصية";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -174,6 +174,26 @@
 "help.technical_explanation.github.title" = "راجع الشفرة المصدرية";
 "help.technical_explanation.github.subtitle" = "انتقل إلى GitHub";
 
+"help.what_does_notification_mean.title" = "ماذا يعني إذا استلمت إشعارًا؟";
+"help.what_does_notification_mean.description" = "يرسل التطبيق تحذيرًا عند تواجدك لمدة 15 دقائق على الأقل بالقرب من شخص تبين لاحقاً أنه مصاب بكورونا. تستطيع من خلال هذا الإشعار فقط معرفة اليوم الذي تعرضت به لذلك. لقد كنت أكثر عرضة للإصابة في هذا الموقف. إذا أصبت بالعدوى بالفعل، من الممكن أن تنقل الفيروس إلى الآخرين. حتى أذا لم تكن تشعر بالمرض.";
+"help.what_does_report_look_like.title" = "كيف يبدو الإشعار؟";
+"help.what_does_report_look_like.description" = "يشبه الإشعار ما تراه عندما تتلقى رسالة نصية. يورد في الإشعار اليوم الذي كنت فيه بالقرب من شخص مصاب بفيروس كورونا.
+ <br><br>
+ انقر على الإشعار لفتح تطبيق CoronaMelder. هناك يمكنك قراءة ما يمكنك القيام به بعد ذلك.";
+"help.notification.example" = "مثال: هذا ما يبدو عليه التطبيق عندما تتلقى إشعارًا";
+"help.what_to_do_with_notification.title" = "ما الذي يمكنك القيام به إذا تلقيت إشعارَا؟";
+"help.what_to_do_with_notification.description" = "اخضع لفحص الكورونا. يتوقف الوقت على ما إذا كانت لديك أعراض تتناسب مع أعراض كورونا. وعلى اليوم الذي كنت فيه بالقرب من الشخص المصاب بكورونا. ابق في المنزل على أي حال حتى تعرف النتيجة. تتفادى بهذه الطريقة نقل العدوى للآخرين دون قصد.
+ <br><br>
+ هل كنت بالقرب من شخص يعرفك وهل تلقيت مكالمة من الـ GGD؟ اتبع نصيحة الـGGD إذًا، وليس نصيحة التطبيق.";
+"help.other_reports.title" = "إشعارات أخرى";
+"help.other_reports.description" = "يمكن للتطبيق أيضًا أن يرسل إليك إشعارًا إذا كانت هناك مشكلة فنية. إذا تم إيقاف تشغيل البلوتوث على سبيل المثال. أو في حالة عدم وجود اتصال بالإنترنت لأكثر من يوم. سيساعدك التطبيق في حل هذه المشكلة.
+ <br><br>
+ هل تلقيت مثل هذا الإشعار، وهل لا يزال التطبيق نشطًا؟ تم بالفعل حل المشكلة في هذه الأثناء.";
+
+"help.pause_app.title" = "Can I pause the app?";
+"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. Do this through <b>Settings > Bluetooth</b>. If you turn off Bluetooth, the app won't exchange codes anymore. After this, you get a reminder to turn on the app again every 24 hours.<br><br>If you want to keep Bluetooth turned on, you can also pause the app by temporarily turning off 'Exposure Logging'. Do this through <b>Settings > Privacy > Health > COVID-19 Exposure Logging</b>. Also in this case you get a reminder to turn on the app again every 24 hours.<br><br>However, it's mostly not recommended to pause the app. Because you might forget to turn it on again. You can pause the app in certain moments. For example, when you're near (potential) corona patients and you're wearing the appropriate medical protection.";
+
+"help.apps_other_countries.title" = "هل يعمل CoronaMelder أيضًا مع تطبيقات من دول أخرى؟";
 /* MARK: - Message */
 "message.default.title" = "لقد تواجدت بالقرب من شخص مصاب بكورونا";
 "message.default.body" = "كنت %@قريبًا من شخص تبين لاحقًا أنه مصاب بفيروس كورونا. قد تكون أكثر عرضة للإصابة في هذه الحالة. إذا كنت مصابًا بالفعل، يمكنك نقل الفيروس إلى الآخرين. حتى لو لم تكن تشعر بالمرض الآن.";
@@ -257,6 +277,8 @@
 "moreInformation.about.faq.bluetooth" = "هل من الممكن أن تخترق إشارة البلوتوث الجدران؟ ";
 "moreInformation.about.faq.power_usage" = "ما كمية الطاقة التي يستهلكها التطبيق؟";
 "moreInformation.about.faq.deletion" = "كيف أقوم بحذف بيانات البلوتوث من هاتفي المحمول؟";
+"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth data saved by Corona Melder yourself. Do so by:<br><br>Go to <b>Settings on your phone > Privacy > Health > Exposure to COVID-19</b>. Press <b>Delete exposure logs</b>. If you don't want the app do save new Bluetooth data, delete the app.";
+
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "عرَف الآخرين بإنك تساهم في وقف الفيروس.";
 "moreInformation.share.description" = "كلما قام عدد أكبر من الأشخاص باستخدام تطبيق التحذير من كورونا (CoronaMelder)، كلما أصبح التطبيق يعمل بصورة أفضل. معًا فقط نستطيع إيقاف انتشار الفيروس. شارك التطبيق إذًا مع أكبر عدد ممكن من الأشخاص.
@@ -297,13 +319,16 @@
 "moreInformation.receivedNotification.notificationExplanation.content" = "يرسل التطبيق إشعارًا بعد تواجدك لمدة 15 دقائق على الأقل بالقرب من شخص تبين لاحقًا أنه مصاب بكورونا. يذكر الإشعار فقط في أي يوم كان هذا. لقد تعرضت لخطر إضافي للعدوى في هذه الحالة. إذا كنت مصابًا، يمكنك نقل الفيروس إلى الآخرين. حتى لو لم تكن تشعر بالمرض.
 ";
 "moreInformation.receivedNotification.doCoronaTest.title" = "قم بإجراء فحص كورونا";
-"moreInformation.receivedNotification.doCoronaTest.content" = "حتى لو لم تشعر بالمرض بعد. لأنه بدون الشعور بالمرض يمكنك بالفعل نشر فيروس كورونا وإصابة الآخرين.\n\nقم بإجراء الاختبار مجانًا. لا يستغرق الأمر وقتًا طويلاً ويمكنك عادةً تحديد موعد بسرعة. ستعرف النتيجة في غضون 48 ساعة. إبق في المنزل حتى تعرف النتيجة.\n";
+"moreInformation.receivedNotification.doCoronaTest.content" = "حتى لو لم تشعر بالمرض بعد. لأنه بدون الشعور بالمرض يمكنك بالفعل نشر فيروس كورونا وإصابة الآخرين.\n<br><br>\nقم بإجراء الاختبار مجانًا. لا يستغرق الأمر وقتًا طويلاً ويمكنك عادةً تحديد موعد بسرعة. ستعرف النتيجة في غضون 48 ساعة. إبق في المنزل حتى تعرف النتيجة.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "طلب إجراء فحص كورونا";
 "moreInformation.requestTest.button.title" = "طلب إجراء فحص كورونا";
 "moreInformation.requestTest.receivedNotification.title" = "هل لديك أعراض تتناسب مع أعراض كورونا؟ قم بطلب إجراء فحص";
-"moreInformation.requestTest.receivedNotification.content" = "هل لديك أعراض (خفيفة) تتناسب مع أعراض فيروس كورونا؟ قم بطلب إجراء الفحص مجانًا. لا يستغرق الأمر وقتًا طويلاً وتستطيع في معظم الحالات تحديد موعد بسرعة. ستعرف النتيجة خلال 48 ساعة.  الزم المنزل حتى تعرف النتيجة. هل لديك أعراض خطيرة أو هل أنت من ضمن مجموعة معرضة للخطر؟ اتصل بطبيب العائلة الخاص بك.";
+"moreInformation.requestTest.receivedNotification.content" = "هل لديك أعراض (خفيفة) تتناسب مع أعراض فيروس كورونا؟ قم بطلب إجراء الفحص مجانًا. لا يستغرق الأمر وقتًا طويلاً وتستطيع في معظم الحالات تحديد موعد بسرعة. ستعرف النتيجة خلال 48 ساعة.  الزم المنزل حتى تعرف النتيج. ";
+"moreInformation.requestTest.complaints" = " هل لديك أعراض خطيرة أو هل أنت من ضمن مجموعة معرضة للخطر؟ اتصل بطبيب العائلة الخاص بك.";
+"moreInformation.requestTest.link" = "راجع الموقع Coronatest.nl";
+"moreInformation.requestTest.phone" = "اتصل بالرقم 0800-1202";
 
 "moreInformation.notification.measures.title" = "إحرص على الالتزم بالإجراءات جيدًا:";
 "moreInformation.notification.measures.step1" = "قم بغسل يديك بانتظام";

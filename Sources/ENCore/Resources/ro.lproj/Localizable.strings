@@ -72,8 +72,8 @@
 /* MARK: - Consent Steps */
 "consentStep1Title" = "Activare notificări despre posibile contacte cu coronavirus.";
 "consentStep1Summary1" = "Datele Bluetooth sunt stocate pe telefonul dvs. timp de 14 zile. Le puteți șterge oricând.";
-"consentStep1Summary2" = "Numele dvs. <b>nu</b>este folosit sau stocat.";
-"consentStep1Summary3" = "Datele GPS sau datele despre locația dvs. <b>nu</b>sunt folosite sau stocate.";
+"consentStep1Summary2" = "Numele dvs. <b>nu</b> este folosit sau stocat.";
+"consentStep1Summary3" = "Datele GPS sau datele despre locația dvs. <b>nu</b> sunt folosite sau stocate.";
 "consentStep1PrimaryButton" = "Activare";
 "consentStep1SecondaryButton" = "Cum funcționează exact aplicația?";
 
@@ -95,7 +95,7 @@
 /* MARK: - Bluetooth */
 "enableBluetoothTitle" = "Activare Bluetooth";
 "enableBluetoothSettingIndexRow1" = "1.";
-"enableBluetoothSettingTitleRow1" = "Deschideți<b>Configurări</b> pe telefonul dvs.";
+"enableBluetoothSettingTitleRow1" = "Deschideți <b>Configurări</b> pe telefonul dvs.";
 "enableBluetoothSettingTitleSettingRow1" = "Configurări";
 "enableBluetoothSettingIndexRow2" = "2.";
 "enableBluetoothSettingTitleRow2" = "Accesați <b>Bluetooth</b>";
@@ -118,21 +118,21 @@
 "helpTitle" = "Despre aplicație";
 "helpSubtitle" = "Întrebări frecvente";
 "helpAcceptButtonTitle" = "Activare";
+"helpAlsoRead" = "Citiți de asemenea";
 
 "help.faq.notification.title" = "Când primesc notificări de la aplicație?";
 "help.faq.location.title" = "Poate vedea aplicația locația mea?";
-"help.faq.location.description" = "Nu. Aplicația vede cu ajutorul semnalului Bluetooth doar dacă sunteți în preajma altor persoane care au aplicația activată. Aplicația nu vede unde sunteți.<br><br>Bluetooth este destinat doar să creeze o conexiune wireless între 2 dispozitive apropiate unul de altul, cum ar fi telefonul și o boxă sau căști.<br><br> Aplicația poate estima distanța dintre 2 telefoane prin puterea semnalului Bluetooth. 
+"help.faq.location.description" = "Nu. Aplicația vede cu ajutorul semnalului Bluetooth doar dacă sunteți în preajma altor persoane care au aplicația activată. Aplicația nu vede unde sunteți.<br><br>Bluetooth este destinat doar să creeze o conexiune wireless între 2 dispozitive apropiate unul de altul, cum ar fi telefonul și o boxă sau căști.<br><br>Aplicația poate estima distanța dintre 2 telefoane prin puterea semnalului Bluetooth. 
 ";
 "help.faq.anonymous.title" = "Cum funcționează aplicația pentru a va păstra anonimatul?";
 "help.faq.anonymous.description_1" = "Aplicația face schimb de coduri aleatoare cu alte telefoane. Aceste coduri nu conțin date personale sau date despre locația dvs. Schimbul de coduri are loc în momentul în care sunteți aproape de o persoană care are aplicația activată.";
-"help.faq.anonymous.description_2" = "Se dovedește ulterior că această persoană este infectată cu coronavirus? Atunci, împreună cu GGD (Serviciul de Sănătate Municipal), acea persoana poate adăuga codurile sale la o listă cu coduri ale persoanelor infectate.  În acest fel infectarea poate fi confirmată. <br><br>După aceea se  trimite o notificare tuturor persoanelor care au aceste coduri pe telefonul lor. Această notificare precizează numai când s-au aflat în apropierea unei persoane infectate. Nu cine este sau unde au întâlnit persoana respectivă.";
+"help.faq.anonymous.description_2" = "Se dovedește ulterior că această persoană este infectată cu coronavirus? Atunci, împreună cu GGD (Serviciul de Sănătate Municipal), acea persoana poate adăuga codurile sale la o listă cu coduri ale persoanelor infectate.  În acest fel infectarea poate fi confirmată.<br><br>După aceea se  trimite o notificare tuturor persoanelor care au aceste coduri pe telefonul lor. Această notificare precizează numai când s-au aflat în apropierea unei persoane infectate. Nu cine este sau unde au întâlnit persoana respectivă.";
 "help.bluetooth.title" = "Funcționează semnalul Bluetooth prin pereți?";
 
 "help.faq.reason.title" = "De ce este importantă această aplicație?";
 "help.faq.reason.description" = "Aplicația vă poate avertiza repede după ce v-ați aflat în apropierea cuiva infectat cu coronavirus, chiar înainte de a prezenta simptome. Puteți fi infectat și contagios fără a știi acest lucru.  <br><br>Dacă primiți o avertizare prin aplicație atunci vă puteți testa. Vi se recomandă să stați acasă. În acest fel preveniți infectarea involuntară a persoanelor din apropierea dvs.<br><br> Ați fost testat și sunteți infectat cu coronavirus?  Împreună cu GGD (Serviciul de Sănătate Municipal) puteți avertiza persoanele care s-au aflat mult timp în apropierea dvs., chiar și persoane necunoscute, întâlnite într-un restaurant, cinematograf sau sală de așteptare. Acest lucru este posibil doar dacă și aceste persoane folosesc aplicația.<br><br>Datorită aplicației CoronaMelder putem interveni rapid pentru a preveni noi infectări. Numai împreună putem ține coronavirus sub control.";
 "help.faq.upload_keys.title" = "Pot trimite notificări dacă sunt infectat cu coronavirus?";
-"help.faq.upload_keys.description" = "Puteți trimite notificări altor persoane doar dacă ați fost testat și rezultă că aveți coronavirus. În acest caz, GGD (Serviciul de Sănătate Municipal) vă va suna pentru a vă da rezultatul testului.<br> În timpul acestei conversații telefonice, angajatul GGD vă controlează cheia GGD personală. Aceasta se găsește în aplicație.  Această cheie garantează că doar codurile unei persoane contaminate pot fi adăugate pe listă.<br>După ce cheia GGD personală a fost controlată, puteți distribui codurile transmise de către telefonul dvs. altor telefoane în ultimele 14 zile. <br>În acest fel, persoanele care au fost în apropierea dvs. când erați contagios, primesc o notificare anonimă. Notificare poate fi trimisă doar dacă și aceste persoane folosesc aplicația. 
-";
+"help.faq.upload_keys.description" = "Puteți trimite notificări altor persoane doar dacă ați fost testat și rezultă că aveți coronavirus. În acest caz, GGD (Serviciul de Sănătate Municipal) vă va suna pentru a vă da rezultatul testului.<br><br>În timpul acestei conversații telefonice, angajatul GGD vă controlează cheia GGD personală. Aceasta se găsește în aplicație.  Această cheie garantează că doar codurile unei persoane contaminate pot fi adăugate pe listă.<br><br>După ce cheia GGD personală a fost controlată, puteți distribui codurile transmise de către telefonul dvs. altor telefoane în ultimele 14 zile.<br><br>În acest fel, persoanele care au fost în apropierea dvs. când erați contagios, primesc o notificare anonimă. Notificare poate fi trimisă doar dacă și aceste persoane folosesc aplicația.";
 "help.faq.deletion.title" = "Cum îmi șterg datele?";
 "help.faq.privacy_policy.title" = "Declarația de confidențialitate";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -140,20 +140,20 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accesibilitate";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Veți primi notificări după ce ați fost expus unui risc ridicat de infectare. Acest lucru se întâmplă dacă ați fost cel puțin 15 minute aproape de cineva care se dovedește a fi infectat cu coronavirus. Bineînțeles, primiți notificări doar dacă și acea persoană folosește aplicația. <br><br>Primirea unei notificări depinde de puterea semnalului Bluetooth și de durata contactului. A trecut cineva cu bicicleta pe lângă dvs.? Atunci nu veți primi notificări în viitor. Ați fost aproape unul de altul, deci semnalul Bluetooth a fost puternic. Însă durata contactului a fost așa de scurtă încât riscul de infectare este foarte mic. <br><br>Ați stat aproape de cineva în tren sau la birou? Atunci puteți primi notificări în viitor. Semnalul Bluetooth a fost puternic și ați fost aproape unul de celălalt mult timp.";
+"help.faq.notification.description" = "Veți primi notificări după ce ați fost expus unui risc ridicat de infectare. Acest lucru se întâmplă dacă ați fost cel puțin 15 minute aproape de cineva care se dovedește a fi infectat cu coronavirus. Bineînțeles, primiți notificări doar dacă și acea persoană folosește aplicația.<br><br>Primirea unei notificări depinde de puterea semnalului Bluetooth și de durata contactului. A trecut cineva cu bicicleta pe lângă dvs.? Atunci nu veți primi notificări în viitor. Ați fost aproape unul de altul, deci semnalul Bluetooth a fost puternic. Însă durata contactului a fost așa de scurtă încât riscul de infectare este foarte mic.<br><br>Ați stat aproape de cineva în tren sau la birou? Atunci puteți primi notificări în viitor. Semnalul Bluetooth a fost puternic și ați fost aproape unul de celălalt mult timp.";
 "help.faq.bluetooth.title" = "Poate trece semnalul Bluetooth prin pereți?";
-"help.faq.bluetooth.description" = "Da, dar semnalul este foarte slab. Bluetooth funcționează cel mai bine dacă telefonul dvs. se află în aceeași cameră cu telefonul unei alte persoane. <br><br>De exemplu, este puțin probabil ca aplicația dvs. să primească semnalul Bluetooth de la vecini. <br><br>De aceea, este puțin probabil să primiți o notificare dacă vecinul dvs. se dovedește a avea coronavirus dar nu ați fost în aceeași cameră.";
+"help.faq.bluetooth.description" = "Da, dar semnalul este foarte slab. Bluetooth funcționează cel mai bine dacă telefonul dvs. se află în aceeași cameră cu telefonul unei alte persoane.<br><br>De exemplu, este puțin probabil ca aplicația dvs. să primească semnalul Bluetooth de la vecini.<br><br>De aceea, este puțin probabil să primiți o notificare dacă vecinul dvs. se dovedește a avea coronavirus dar nu ați fost în aceeași cameră.";
 "help.faq.power_usage.title" = "Câtă baterie utilizează aplicația?";
 "help.faq.power_usage.description" = "Aplicația utilizează Bluetooth Low Energy (Energie Bluetooth de volum scăzut). Aceasta este o formă specială de Bluetooth care consumă foarte puțină baterie. Numărul de procente consumate diferă de la un telefon la altul.";
 "help.what_does_the_app_do.title" = "Ce face CoronaMelder?";
 "help.what_does_the_app_do.protect.title" = "Ajută la oprirea răspândirii coronavirusului";
 "help.what_does_the_app_do.protect.description" = "Această aplicație vă avertizează după ce ați fost în apropierea unei persoane infectate cu coronavirus. Astfel puteți preveni infectarea involuntară a persoanelor din jurul dvs.";
-"help.what_does_the_app_do.notify.title" = "Veți primi un mesaj  <u>după</u> ce ați fost expus unui risc ridicat de infectare";
+"help.what_does_the_app_do.notify.title" = "Veți primi un mesaj <u>după</u> ce ați fost expus unui risc ridicat de infectare";
 "help.what_does_the_app_do.notify.description" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea cuiva care se dovedește a fi infectat cu coronavirus. Acest lucru funcționează doar dacă și acea persoană folosește aplicația.";
-"help.what_does_the_app_do.bluetooth.title" = "Această aplicație folosește Bluetooth, <u>nu</u>  datele locației";
+"help.what_does_the_app_do.bluetooth.title" = "Această aplicație folosește Bluetooth, <u>nu</u> datele locației";
 "help.what_does_the_app_do.bluetooth.description" = "Aplicația vede prin Bluetooth dacă ați fost aproape de cineva. Cu cât ați fost mai aproape, cu atât semnalul Bluetooth este mai puternic. Aplicația nu știe nici unde ați fost și nici cine sunteți.";
-"help.what_does_the_app_do.example.cycle.title" = "A trecut cineva cu bicicleta pe lângă dvs? <u>Nu</u>  veți primi notificări în viitor.";
-"help.what_does_the_app_do.example.cycle.description" = "Semnalul Bluetooth a fost puternic pentru că erați aproape unul de celălalt.  Însă a durat atât de puțin încât riscul de infectare este foarte mic.";
+"help.what_does_the_app_do.example.cycle.title" = "A trecut cineva cu bicicleta pe lângă dvs? <u>Nu</u> veți primi notificări în viitor.";
+"help.what_does_the_app_do.example.cycle.description" = "Semnalul Bluetooth a fost puternic pentru că erați aproape unul de celălalt. Însă a durat atât de puțin încât riscul de infectare este foarte mic.";
 "help.what_does_the_app_do.example.train.title" = "Ați stat aproape de cineva în tren? Puteți primi <u>în viitor</u> notificări";
 "help.what_does_the_app_do.example.train.description" = "Semnalul Bluetooth a fost puternic și ați fost aproape unul de celălalt mult timp.";
 
@@ -172,6 +172,20 @@
 "help.technical_explanation.github.title" = "Vizualizați codul sursă";
 "help.technical_explanation.github.subtitle" = "Accesați GitHub";
 
+"help.what_does_notification_mean.title" = "Ce înseamnă dacă primiți o notificare?";
+"help.what_does_notification_mean.description" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei persoane care se dovedește ulterior a fi infectată cu coronavirus. În notificare se menționează doar ziua în care s-a întâmplat. În această situație ați fost expus unui risc ridicat de infectare. Dacă sunteți infectat, puteți transmite virusul altora. Chiar dacă nu vă simțiți rău.";
+"help.what_does_report_look_like.title" = "Cum arată o notificare?";
+"help.what_does_report_look_like.description" = "Notificarea este asemănătoare unui mesaj sms. În notificare se menționează în ce zi v-ați aflat în apropierea cuiva infectat cu coronavirus.<br><br>Deschideți notificarea. În notificare veți putea citi ce puteți face mai departe.";
+"help.notification.example" = "Exemplu: așa arată aplicația în momentul în care ați primit o notificare";
+"help.what_to_do_with_notification.title" = "Ce puteți face când ați primit o notificare?";
+"help.what_to_do_with_notification.description" = "Testați-vă pentru coronavirus. Când va avea loc testul? Depinde dacă prezentați simptome care pot fi asociate cu coronavirus și când v-ați aflat în apropierea persoanei infectată cu coronavirus. În orice caz, rămâneți acasă până aflați rezultatul. În acest fel preveniți infectarea altora.<br><br>Ați fost în apropierea unei persoane pe care o cunoașteți și sunteți sunat de către GGD (Serviciul de Sănătate Municipal)? Atunci trebuie să urmați recomandările de la GGD, nu cele din aplicație.";
+"help.other_reports.title" = "Alte notificări";
+"help.other_reports.description" = "Aplicația vă poate trimite și notificări în cazul unor probleme tehnice. De exemplu, dacă Bluetooth este dezactivat sau dacă nu ați avut legătură la internet mai mult de o zi. Aplicația vă ajută să soluționați problema.<br><br>Ați primit o astfel de notificare dar aplicația este activă? Înseamnă că problema a fost rezolvată între timp.";
+
+"help.pause_app.title" = "Can I pause the app?";
+"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. Do this through <b>Settings > Bluetooth</b>. If you turn off Bluetooth, the app won't exchange codes anymore. After this, you get a reminder to turn on the app again every 24 hours.<br><br>If you want to keep Bluetooth turned on, you can also pause the app by temporarily turning off 'Exposure Logging'. Do this through <b>Settings > Privacy > Health > COVID-19 Exposure Logging</b>. Also in this case you get a reminder to turn on the app again every 24 hours.<br><br>However, it's mostly not recommended to pause the app. Because you might forget to turn it on again. You can pause the app in certain moments. For example, when you're near (potential) corona patients and you're wearing the appropriate medical protection.";
+
+"help.apps_other_countries.title" = "Colaborează CoronaMelder și cu aplicații din alte tări?";
 /* MARK: - Message */
 "message.default.title" = "Ați fost în apropierea cuiva infectat cu coronavirus";
 "message.default.body" = "%@ ați fost în apropierea unei persoane care ulterior s-a dovedit a fi infectată cu coronavirus. În această situație ați fost expus unui risc mai ridicat de infectare. Dacă sunteți într-adevăr infectat, puteți transmite altora virusul. Chiar dacă acum nu vă simțiți rău.";
@@ -255,6 +269,8 @@
 "moreInformation.about.faq.bluetooth" = "Poate trece semnalul Bluetooth prin pereți?";
 "moreInformation.about.faq.power_usage" = "Câtă baterie consumă aplicația?";
 "moreInformation.about.faq.deletion" = "Cum pot șterge datele Bluetooth din telefonul meu?";
+"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth data saved by Corona Melder yourself. Do so by:<br><br>Go to <b>Settings on your phone > Privacy > Health > Exposure to COVID-19</b>. Press <b>Delete exposure logs</b>. If you don't want the app do save new Bluetooth data, delete the app.";
+
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Înștiințați-i pe ceilalți că ajutați la oprirea virusului.";
 "moreInformation.share.description" = "Cu cât sunt mai multe persoane care folosesc CoronaMelder, cu atât aceasta funcționează mai bine. Numai împreună putem ține coronavirus sub control. Deci distribuiți aplicația cât mai multor persoane.";
@@ -293,13 +309,16 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Ce înseamnă când primiți o notificare?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei persoane care se dovedește ulterior a fi infectată cu coronavirus. Notificarea menționează doar ziua în care s-a întâmplat. În această situație ați fost expus unui risc ridicat de infectare. Dacă sunteți infectat, puteți transmite altora virusul. Chiar dacă nu vă simțiți rău.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Testați-vă pentru coronavirus";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Chiar dacă încă nu vă simțiți rău. Deoarece fără a vă simți rău, puteți deja răspândi coronavirus, infectându-i astfel pe alții.\n\n \nTestați-vă gratuit. Nu durează mult și, de regulă, puteți face repede o programare. Rezultatul va fi cunoscut în timp de 48 de ore. Stați acasă până la aflarea rezultatului.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Chiar dacă încă nu vă simțiți rău. Deoarece fără a vă simți rău, puteți deja răspândi coronavirus, infectându-i astfel pe alții.<br><br>Testați-vă gratuit. Nu durează mult și, de regulă, puteți face repede o programare. Rezultatul va fi cunoscut în timp de 48 de ore. Stați acasă până la aflarea rezultatului.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Solicitați un test pentru coronavirus";
 "moreInformation.requestTest.button.title" = "Solicitați un test pentru coronavirus";
 "moreInformation.requestTest.receivedNotification.title" = "Aveți simptome care ar putea indica infectarea cu coronavirus? Solicitați un test";
-"moreInformation.requestTest.receivedNotification.content" = "Aveți simptome (ușoare) care pot fi asociate cu coronavirus? Testați-vă gratuit.  Nu durează mult și, de regulă, puteți face repede o programare. Rezultatul va fi cunoscut în timp de 48 de ore. Rămâneți acasă până aflați rezultatul. Aveți simptome grave sau faceți parte dintr-un grup de risc? Sunați medicul de familie.";
+"moreInformation.requestTest.receivedNotification.content" = "Aveți simptome (ușoare) care pot fi asociate cu coronavirus? Testați-vă gratuit.  Nu durează mult și, de regulă, puteți face repede o programare. Rezultatul va fi cunoscut în timp de 48 de ore. Rămâneți acasă până aflați rezultatul.";
+"moreInformation.requestTest.complaints" = "Aveți simptome grave sau faceți parte dintr-un grup de risc? Sunați medicul de familie.";
+"moreInformation.requestTest.link" = "Accesați coronatest.nl";
+"moreInformation.requestTest.phone" = "Sunați la 0800-1202";
 
 "moreInformation.notification.measures.title" = "Respectați măsurile:";
 "moreInformation.notification.measures.step1" = "Spălați-vă des pe mâini";
@@ -349,7 +368,7 @@
 "enableSettings.localNotifications.step2" = "Mergeți la <b>Notificări</b>";
 "enableSettings.localNotifications.step2.action.title" = "Notificări";
 // supports HTML
-"enableSettings.localNotifications.step3" = "Activați opțiunea <b>&#96;Permitere notificări&#96;</b>";
+"enableSettings.localNotifications.step3" = "Activați opțiunea <b>Permitere notificări</b>";
 "enableSettings.localNotifications.step3.action.title" = "Permiteți notificări";
 
 /* MARK: - Exposure Notification Received - User Explanation */
