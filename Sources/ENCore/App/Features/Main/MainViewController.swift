@@ -153,6 +153,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToReceivedNotification()
     }
 
+    func receivedNotificationRequestRedirect(to content: LinkedContent) {}
+
+    func receivedNotificationActionButtonTapped() {}
+
     func moreInformationRequestsInfected() {
         router?.routeToInfected()
     }

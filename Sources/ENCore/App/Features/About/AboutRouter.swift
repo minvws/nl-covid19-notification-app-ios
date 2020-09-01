@@ -58,8 +58,8 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
             routeToRateApp()
         case let .link(_, urlString):
             routeToWebView(urlString: urlString)
-        case .notificationExplanation:
-            routeToNotificationExplanation()
+        case let .notificationExplanation(_, linkedContent):
+            routeToNotificationExplanation(linkedContent: linkedContent)
         case .appInformation:
             routeToAppInformation()
         case .technicalInformation:
@@ -95,8 +95,10 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
 
     // MARK: - Private
 
-    private func routeToNotificationExplanation() {
-        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController)
+    private func routeToNotificationExplanation(linkedContent: [LinkedContent]) {
+        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController,
+                                                                                     linkedContent: linkedContent,
+                                                                                     actionButtonTitle: nil)
         self.receivedNotificationViewController = receivedNotificationViewController
 
         viewController.push(viewController: receivedNotificationViewController, animated: true)

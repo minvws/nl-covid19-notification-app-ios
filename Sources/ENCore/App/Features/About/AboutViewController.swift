@@ -95,6 +95,14 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
     }
 
+    func receivedNotificationRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? AboutEntry {
+            router?.routeToAboutEntry(entry: entry)
+        }
+    }
+
+    func receivedNotificationActionButtonTapped() {}
+
     // MARK: - AppInformationListener
 
     func appInformationRequestsToTechnicalInformation() {
