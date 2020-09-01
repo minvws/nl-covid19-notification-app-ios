@@ -38,7 +38,14 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
-        internalView.contactButtonActionHandler = { [weak self] in
+        internalView.linkButtonActionHandler = { [weak self] in
+            guard let url = URL(string: .coronaTestWebUrl) else {
+                self?.logError("Unable to open \(String.coronaTestWebUrl)")
+                return
+            }
+            self?.listener?.requestTestOpenURL(url: url)
+        }
+        internalView.phoneButtonActionHandler = { [weak self] in
             if let url = URL(string: .coronaTestPhoneNumber), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
@@ -65,7 +72,11 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
 private final class RequestTestView: View {
 
-    var contactButtonActionHandler: (() -> ())? {
+    var phoneButtonActionHandler: (() -> ())? {
+        get { infoView.secondaryActionHandler }
+        set { infoView.secondaryActionHandler = newValue }
+    }
+    var linkButtonActionHandler: (() -> ())? {
         get { infoView.actionHandler }
         set { infoView.actionHandler = newValue }
     }
@@ -75,7 +86,8 @@ private final class RequestTestView: View {
     // MARK: - Init
 
     override init(theme: Theme) {
-        let config = InfoViewConfig(actionButtonTitle: .moreInformationRequestTestButtonTitle,
+        let config = InfoViewConfig(actionButtonTitle: .moreInformationRequestTestLink,
+                                    secondaryButtonTitle: .moreInformationRequestTestPhone,
                                     headerImage: .coronatestHeader)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
@@ -88,8 +100,8 @@ private final class RequestTestView: View {
 
         infoView.addSections([
             receivedNotification(),
-            info(),
-            complaints()
+            complaints(),
+            requestTest()
         ])
 
         addSubview(infoView)
@@ -106,7 +118,6 @@ private final class RequestTestView: View {
     // MARK: - Private
 
     private func receivedNotification() -> View {
-        // TODO: Bold Phone Number
         InfoSectionTextView(theme: theme,
                             title: .moreInformationRequestTestReceivedNotificationTitle,
                             content: String.moreInformationRequestTestReceivedNotificationContent.attributedStrings())
@@ -120,15 +131,18 @@ private final class RequestTestView: View {
             .moreInformationComplaintsItem4,
             .moreInformationComplaintsItem5
         ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+        var string = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+        string.append(NSAttributedString(string: " ")) // Should be a space to ensure the correct line spacing
+        string.append(NSAttributedString(string: .moreInformationRequestTestComplaints))
 
         return InfoSectionTextView(theme: theme,
                                    title: .moreInformationComplaintsTitle,
-                                   content: bulletList)
+                                   content: string)
     }
 
-    private func info() -> View {
-        let string = NSAttributedString.make(text: .moreInformationInfoTitle, font: theme.fonts.subhead, textColor: theme.colors.gray)
-        return InfoSectionCalloutView(theme: theme, content: string)
+    private func requestTest() -> View {
+        InfoSectionTextView(theme: theme,
+                            title: .moreInformationRequestTestTitle,
+                            content: [String.moreInformationInfoTitle.attributed()])
     }
 }

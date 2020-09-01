@@ -65,6 +65,7 @@ extension String {
 
     static var helpDeskPhoneNumber = "tel://08001280"
     static var coronaTestPhoneNumber = "tel://08001202"
+    static var coronaTestWebUrl = "https://coronatest.nl"
 
     // MARK: - Share App
 
@@ -394,6 +395,10 @@ extension String {
     static var moreInformationSituationStep1: String { return Localization.string(for: "moreInformation.situation.step1") }
     static var moreInformationSituationStep2: String { return Localization.string(for: "moreInformation.situation.step2") }
     static var moreInformationSituationStep3: String { return Localization.string(for: "moreInformation.situation.step3") }
+
+    static var moreInformationRequestTestComplaints: String { return Localization.string(for: "moreInformation.requestTest.complaints") }
+    static var moreInformationRequestTestLink: String { return Localization.string(for: "moreInformation.requestTest.link") }
+    static var moreInformationRequestTestPhone: String { return Localization.string(for: "moreInformation.requestTest.phone") }
 
     // MARK: - Cards | Exposure Off
 

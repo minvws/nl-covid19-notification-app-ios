@@ -62,7 +62,7 @@ private final class CallGGDView: View {
 
     override init(theme: Theme) {
         let config = InfoViewConfig(headerImage: .callGGD,
-                                    showActionButton: false)
+                                    showButtons: false)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }
