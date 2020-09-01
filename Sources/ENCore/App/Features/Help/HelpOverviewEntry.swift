@@ -7,9 +7,9 @@
 
 import Foundation
 
-enum HelpOverviewEntry: HelpDetailEntry {
+enum HelpOverviewEntry: HelpDetailEntry, LinkedContent {
     case question(_ question: HelpQuestion)
-    case notificationExplanation(title: String, linkedEntries: [HelpDetailEntry])
+    case notificationExplanation(title: String, linkedContent: [LinkedContent])
 
     var title: String {
         switch self {
@@ -29,12 +29,12 @@ enum HelpOverviewEntry: HelpDetailEntry {
         }
     }
 
-    var linkedEntries: [HelpDetailEntry] {
+    var linkedEntries: [LinkedContent] {
         switch self {
         case let .question(question):
-            return question.linkedEntries
-        case let .notificationExplanation(_, linkedEntries):
-            return linkedEntries
+            return question.linkedContent
+        case let .notificationExplanation(_, linkedContent):
+            return linkedContent
         }
     }
 }

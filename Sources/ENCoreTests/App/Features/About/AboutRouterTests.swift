@@ -16,13 +16,14 @@ final class AboutRouterTests: TestCase {
     private let appInformationBuilder = AppInformationBuildableMock()
     private let technicalInformationBuilder = TechnicalInformationBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
+    private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
 
     private var router: AboutRouter!
 
     override func setUp() {
         super.setUp()
 
-        router = AboutRouter(viewController: viewController, aboutOverviewBuilder: aboutOverviewBuilder, helpDetailBuilder: helpDetailBuilder, appInformationBuilder: appInformationBuilder, technicalInformationBuilder: technicalInformationBuilder, webviewBuilder: webviewBuilder)
+        router = AboutRouter(viewController: viewController, aboutOverviewBuilder: aboutOverviewBuilder, helpDetailBuilder: helpDetailBuilder, appInformationBuilder: appInformationBuilder, technicalInformationBuilder: technicalInformationBuilder, webviewBuilder: webviewBuilder, receivedNotificationBuilder: receivedNotificationBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
@@ -76,7 +77,7 @@ final class AboutRouterTests: TestCase {
         XCTAssertEqual(helpDetailBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.pushCallCount, 0)
 
-        router.routeToAboutEntry(entry: .question(title: "question", answer: "answer"))
+        router.routeToAboutEntry(entry: .question(HelpQuestion(question: "question", answer: "answer")))
 
         XCTAssertEqual(helpDetailBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.pushCallCount, 1)
@@ -110,6 +111,24 @@ final class AboutRouterTests: TestCase {
 
         XCTAssertEqual(webviewBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.pushCallCount, 0)
+    }
+
+    func test_routeToAboutEntry_withNotificationExplanation_callsBuildAndPush() {
+        var receivedListener: ReceivedNotificationListener!
+        receivedNotificationBuilder.buildHandler = { listener in
+            receivedListener = listener
+            return ViewControllableMock()
+        }
+
+        XCTAssertEqual(receivedNotificationBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.pushCallCount, 0)
+
+        router.routeToAboutEntry(entry: .notificationExplanation(title: "Title", linkedContent: []))
+
+        XCTAssertEqual(receivedNotificationBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.pushCallCount, 1)
+        XCTAssertNotNil(receivedListener)
+        XCTAssert(receivedListener === viewController)
     }
 
     func test_routeToAppInformation_callsPush() {

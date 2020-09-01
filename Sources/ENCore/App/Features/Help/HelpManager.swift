@@ -26,40 +26,40 @@ final class HelpManager: HelpManaging {
         let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
 
         let notificationExplanation = HelpOverviewEntry.notificationExplanation(title: String.moreInformationCellReceivedNotificationTitle,
-                                                                                linkedEntries: [
+                                                                                linkedContent: [
                                                                                     HelpOverviewEntry.question(notification),
                                                                                     HelpOverviewEntry.question(reason),
                                                                                     HelpOverviewEntry.question(bluetooth)
                                                                                 ])
 
         entries = [
-            .question(reason.appending(linkedEntries: [
+            .question(reason.appending(linkedContent: [
                 HelpOverviewEntry.question(location),
                 notificationExplanation
             ])),
 
-            .question(location.appending(linkedEntries: [
+            .question(location.appending(linkedContent: [
                 HelpOverviewEntry.question(bluetooth)
             ])),
 
-            .question(anonymous.appending(linkedEntries: [
+            .question(anonymous.appending(linkedContent: [
                 notificationExplanation,
                 HelpOverviewEntry.question(location)
             ])),
 
-            .question(notification.appending(linkedEntries: [
+            .question(notification.appending(linkedContent: [
                 notificationExplanation,
                 HelpOverviewEntry.question(bluetooth)
             ])),
 
             notificationExplanation,
 
-            .question(bluetooth.appending(linkedEntries: [
+            .question(bluetooth.appending(linkedContent: [
                 HelpOverviewEntry.question(notification),
                 HelpOverviewEntry.question(anonymous)
             ])),
 
-            .question(power.appending(linkedEntries: [
+            .question(power.appending(linkedContent: [
                 HelpOverviewEntry.question(reason)
             ]))
         ]

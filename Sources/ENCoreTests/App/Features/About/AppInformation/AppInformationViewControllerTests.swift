@@ -25,7 +25,7 @@ final class AppInformationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_appInformationViewController_rendersCorrectly() {
-        let viewController = AppInformationViewController(listener: listener, theme: theme)
+        let viewController = AppInformationViewController(listener: listener, linkedContent: [], theme: theme)
         snapshots(matching: viewController)
     }
 }

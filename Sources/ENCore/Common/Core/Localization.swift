@@ -173,6 +173,7 @@ extension String {
     static var helpSubtitle: String { return Localization.string(for: "helpSubtitle") }
     static var helpAcceptButtonTitle: String { return Localization.string(for: "helpAcceptButtonTitle") }
     static var helpContent: String { return Localization.string(for: "helpContent") }
+    static var helpAlsoRead: String { return Localization.string(for: "helpAlsoRead") }
 
     static var helpFaqReasonTitle: String { return Localization.string(for: "help.faq.reason.title") }
     static var helpFaqReasonDescription: String { return Localization.string(for: "help.faq.reason.description") }
@@ -198,6 +199,10 @@ extension String {
     static var helpColofonLink: String { return Localization.string(for: "help.faq.colofon.link", [currentLanguageIdentifier]) }
     static var helpAccessibilityTitle: String { return Localization.string(for: "help.faq.accessibility.title") }
     static var helpAccessibilityLink: String { return Localization.string(for: "help.faq.accessibility.link", [currentLanguageIdentifier]) }
+    static var helpPauseAppTitle: String { return Localization.string(for: "help.pause_app.title") }
+    static var helpPauseAppDescription: String { return Localization.string(for: "help.pause_app.description") }
+    static var helpOtherCountriesTitle: String { return Localization.string(for: "help.apps_other_countries.title") }
+    static var helpOtherCountriesDescription: String { return Localization.string(for: "help.apps_other_countries.description") }
 
     static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
     static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link", [currentLanguageIdentifier]) }

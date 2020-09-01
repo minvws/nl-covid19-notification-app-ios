@@ -118,6 +118,7 @@
 "helpTitle" = "About this app";
 "helpSubtitle" = "Frequently asked questions";
 "helpAcceptButtonTitle" = "Turn on";
+"helpAlsoRead" = "Also read";
 
 "help.faq.notification.title" = "When does the app send notifications?";
 "help.faq.location.title" = "Can the app see my location?";

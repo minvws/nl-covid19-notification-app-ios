@@ -9,7 +9,10 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol AppInformationListener: AnyObject {}
+protocol AppInformationListener: AnyObject {
+    func appInformationRequestsToTechnicalInformation()
+    func appInformationRequestRedirect(to content: LinkedContent)
+}
 
 /// @mockable
 protocol AppInformationBuildable {
@@ -18,6 +21,7 @@ protocol AppInformationBuildable {
 
 protocol AppInformationDependency {
     var theme: Theme { get }
+    var aboutManager: AboutManaging { get }
 }
 
 private final class AppInformationDependencyProvider: DependencyProvider<AppInformationDependency> {}
@@ -27,6 +31,8 @@ final class AppInformationBuilder: Builder<AppInformationDependency>, AppInforma
     func build(withListener listener: AppInformationListener) -> ViewControllable {
         let dependencyProvider = AppInformationDependencyProvider(dependency: dependency)
 
-        return AppInformationViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        return AppInformationViewController(listener: listener,
+                                            linkedContent: dependencyProvider.dependency.aboutManager.appInformationEntry.linkedEntries,
+                                            theme: dependencyProvider.dependency.theme)
     }
 }

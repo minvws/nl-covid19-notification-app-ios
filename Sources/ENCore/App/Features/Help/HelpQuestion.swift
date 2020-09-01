@@ -11,15 +11,15 @@ import UIKit
 final class HelpQuestion {
     let question: String
     let answer: String
-    var linkedEntries: [HelpDetailEntry] = []
+    var linkedContent: [LinkedContent] = []
 
     init(question: String, answer: String) {
         self.question = question
         self.answer = answer
     }
 
-    func appending(linkedEntries: [HelpDetailEntry]) -> HelpQuestion {
-        self.linkedEntries = linkedEntries
+    func appending(linkedContent: [LinkedContent]) -> HelpQuestion {
+        self.linkedContent = linkedContent
         return self
     }
 }

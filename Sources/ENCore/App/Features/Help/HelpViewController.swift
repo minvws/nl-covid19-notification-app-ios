@@ -78,8 +78,8 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
         self.listener?.helpRequestsEnableApp()
     }
 
-    func helpDetailRequestRedirect(to entry: HelpDetailEntry) {
-        if let entry = entry as? HelpOverviewEntry {
+    func helpDetailRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? HelpOverviewEntry {
             router?.routeTo(entry: entry, shouldShowEnableAppButton: shouldShowEnableAppButton)
         }
     }

@@ -18,6 +18,7 @@ protocol AboutRouting: Routing {
     func routeToTechnicalInformation()
     func detachHelpQuestion()
     func detachAboutOverview()
+    func detachReceivedNotification()
 }
 
 final class AboutViewController: NavigationController, AboutViewControllable, UIAdaptivePresentationControllerDelegate {
@@ -46,6 +47,12 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         pushViewController(viewController.uiviewController, animated: animated)
     }
 
+    func cleanNavigationStackIfNeeded() {
+        if let first = viewControllers.first, let last = viewControllers.last {
+            viewControllers = [first, last]
+        }
+    }
+
     // MARK: - AboutOverviewListener
 
     func aboutOverviewRequestsRouteTo(entry: AboutEntry) {
@@ -69,14 +76,47 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
     }
 
-    func helpDetailRequestRedirect(to entry: HelpDetailEntry) {
-        // TODO: Navigate to new question
+    func helpDetailRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? AboutEntry {
+            router?.routeToAboutEntry(entry: entry)
+        }
     }
 
     // MARK: - WebviewListener
 
     func webviewRequestsDismissal(shouldHideViewController: Bool) {
         listener?.aboutRequestsDismissal(shouldHideViewController: shouldHideViewController)
+    }
+
+    // MARK: - ReceivedNotificationListener
+
+    func receivedNotificationWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachReceivedNotification()
+        listener?.aboutRequestsDismissal(shouldHideViewController: shouldDismissViewController)
+    }
+
+    // MARK: - AppInformationListener
+
+    func appInformationRequestsToTechnicalInformation() {
+        router?.routeToTechnicalInformation()
+    }
+
+    func appInformationRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? AboutEntry {
+            router?.routeToAboutEntry(entry: entry)
+        }
+    }
+
+    // MARK: - TechnicalInformationListener
+
+    func technicalInformationRequestsToAppInformation() {
+        router?.routeToAppInformation()
+    }
+
+    func technicalInformationRequestRedirect(to content: LinkedContent) {
+        if let entry = content as? AboutEntry {
+            router?.routeToAboutEntry(entry: entry)
+        }
     }
 
     // MARK: - ViewController Lifecycle

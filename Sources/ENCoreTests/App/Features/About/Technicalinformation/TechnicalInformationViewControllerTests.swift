@@ -25,7 +25,7 @@ final class TechnicalInformationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_technicalInformationViewController_rendersCorrectly() {
-        let viewController = TechnicalInformationViewController(listener: listener, theme: theme)
+        let viewController = TechnicalInformationViewController(listener: listener, linkedContent: [], theme: theme)
         snapshots(matching: viewController, as: .image())
     }
 }

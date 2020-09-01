@@ -9,7 +9,7 @@ import ENFoundation
 import UIKit
 import WebKit
 
-final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
+final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate {
 
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
@@ -18,6 +18,7 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
         self.entry = entry
+        self.linkedContentTableViewManager = LinkedContentTableViewManager(content: entry.linkedEntries, theme: theme)
 
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
@@ -33,9 +34,9 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        headerView.label.text = "Less ook" // TODO: localize string
-        internalView.tableView.delegate = self
-        internalView.tableView.dataSource = self
+        linkedContentTableViewManager.selectedContentHandler = { [weak self] selectedContent in
+            self?.listener?.helpDetailRequestRedirect(to: selectedContent)
+        }
 
         internalView.titleLabel.attributedText = .makeFromHtml(text: entry.title,
                                                                font: theme.fonts.largeTitle,
@@ -72,30 +73,6 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
         listener?.helpDetailRequestsDismissal(shouldDismissViewController: true)
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return entry.linkedEntries.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = HelpTableViewCell(theme: theme, reuseIdentifier: "HelpDetailQuestionCell")
-
-        cell.textLabel?.text = entry.linkedEntries[indexPath.row].title
-        cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.font = theme.fonts.body
-        cell.textLabel?.accessibilityTraits = .header
-
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return entry.linkedEntries.isEmpty ? UIView() : headerView
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        listener?.helpDetailRequestRedirect(to: entry.linkedEntries[indexPath.row])
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if let obj = object as? UITableView {
             if obj == self.internalView.tableView, keyPath == "contentSize" {
@@ -106,14 +83,15 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
     // MARK: - Private
 
-    private lazy var internalView: HelpView = HelpView(theme: theme, shouldDisplayButton: shouldShowEnableAppButton)
+    private lazy var internalView: HelpView = HelpView(theme: theme,
+                                                       linkedContentTableViewManager: linkedContentTableViewManager,
+                                                       shouldDisplayButton: shouldShowEnableAppButton)
     private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapClose))
     private weak var listener: HelpDetailListener?
 
     private let shouldShowEnableAppButton: Bool
     private let entry: HelpDetailEntry
-
-    private lazy var headerView: HelpTableViewSectionHeaderView = HelpTableViewSectionHeaderView(theme: self.theme)
+    private let linkedContentTableViewManager: LinkedContentTableViewManager
 }
 
 private final class HelpView: View {
@@ -141,10 +119,11 @@ private final class HelpView: View {
         return button
     }()
 
-    lazy var tableView = HelpTableView()
+    lazy var tableView = LinkedContentTableView(manager: tableViewManager)
 
-    init(theme: Theme, shouldDisplayButton: Bool) {
+    init(theme: Theme, linkedContentTableViewManager: LinkedContentTableViewManager, shouldDisplayButton: Bool) {
         self.shouldDisplayButton = shouldDisplayButton
+        self.tableViewManager = linkedContentTableViewManager
         super.init(theme: theme)
     }
 
@@ -215,6 +194,7 @@ private final class HelpView: View {
     // MARK: - Private
 
     private let shouldDisplayButton: Bool
+    private let tableViewManager: LinkedContentTableViewManager
 
     private lazy var scrollView: UIScrollView = {
         let scrollview = UIScrollView()

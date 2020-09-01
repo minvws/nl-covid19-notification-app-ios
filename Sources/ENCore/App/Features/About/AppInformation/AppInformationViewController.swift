@@ -12,8 +12,9 @@ import WebKit
 
 final class AppInformationViewController: ViewController {
 
-    init(listener: AppInformationListener, theme: Theme) {
+    init(listener: AppInformationListener, linkedContent: [LinkedContent], theme: Theme) {
         self.listener = listener
+        self.linkedContentTableViewManager = LinkedContentTableViewManager(content: linkedContent, theme: theme)
         super.init(theme: theme)
     }
 
@@ -27,22 +28,57 @@ final class AppInformationViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
+
+        linkedContentTableViewManager.selectedContentHandler = { [weak self] selectedContent in
+            self?.listener?.appInformationRequestRedirect(to: selectedContent)
+        }
+
+        internalView.technicalInformationButton.action = { [weak self] in
+            self?.listener?.appInformationRequestsToTechnicalInformation()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
+    }
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        if let obj = object as? UITableView {
+            if obj == self.internalView.tableView, keyPath == "contentSize" {
+                internalView.updateTableViewHeight()
+            }
+        }
     }
 
     // MARK: - Private
 
     private weak var listener: AppInformationListener?
-    private lazy var internalView: AppInformationView = AppInformationView(theme: self.theme)
+    private lazy var internalView: AppInformationView = AppInformationView(theme: self.theme, linkedContentTableViewManager: linkedContentTableViewManager)
+
+    private let linkedContentTableViewManager: LinkedContentTableViewManager
 }
 
 private final class AppInformationView: View {
 
-    private lazy var scrollableStackView = ScrollableStackView(theme: theme)
+    init(theme: Theme, linkedContentTableViewManager: LinkedContentTableViewManager) {
+        self.tableViewManager = linkedContentTableViewManager
+        super.init(theme: theme)
+    }
 
     override func build() {
         super.build()
+        technicalInformationButton.backgroundColor = theme.colors.lightOrange
 
         addSubview(scrollableStackView)
+
+        tableViewWrapperView.addSubview(tableView)
+        buttonWrapperView.addSubview(technicalInformationButton)
 
         scrollableStackView.attributedTitle = String.helpWhatAppDoesTitle.attributed()
         scrollableStackView.addSections([
@@ -50,7 +86,9 @@ private final class AppInformationView: View {
             notifyView,
             bluetoothView,
             cycleExampleView,
-            trainExampleView
+            trainExampleView,
+            buttonWrapperView,
+            tableViewWrapperView
         ])
     }
 
@@ -60,7 +98,33 @@ private final class AppInformationView: View {
         scrollableStackView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.bottom.equalToSuperview()
         }
+
+        technicalInformationButton.snp.makeConstraints { maker in
+            maker.top.leading.trailing.bottom.equalToSuperview().inset(16)
+        }
+
+        tableView.snp.makeConstraints { maker in
+            maker.leading.trailing.top.bottom.width.equalToSuperview()
+            maker.height.equalTo(0)
+        }
     }
+
+    func updateTableViewHeight() {
+        tableView.snp.updateConstraints { maker in
+            maker.height.equalTo(tableView.contentSize.height)
+        }
+    }
+
+    lazy var tableView = LinkedContentTableView(manager: tableViewManager)
+
+    lazy var technicalInformationButton = CardButton(title: .aboutTechnicalInformationTitle,
+                                                     subtitle: .aboutTechnicalInformationDescription,
+                                                     image: .aboutTechnicalInformation,
+                                                     theme: theme)
+
+    // MARK: - Private
+
+    private lazy var scrollableStackView = ScrollableStackView(theme: theme)
 
     private lazy var protectView = InformationCardView(theme: theme,
                                                        image: UIImage.appInformationProtect,
@@ -88,4 +152,8 @@ private final class AppInformationView: View {
                                                             pretitle: String.example.attributed(),
                                                             title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainTitle, font: theme.fonts.title2, textColor: .black),
                                                             message: String.helpWhatAppDoesExampleTrainDescription.attributed())
+
+    private lazy var buttonWrapperView = View(theme: theme)
+    private lazy var tableViewWrapperView = View(theme: theme)
+    private let tableViewManager: LinkedContentTableViewManager
 }

@@ -11,9 +11,11 @@ import StoreKit
 import UIKit
 
 /// @mockable
-protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener, WebviewListener {
+protocol AboutViewControllable: ViewControllable, AboutOverviewListener, HelpDetailListener, AppInformationListener, TechnicalInformationListener, WebviewListener, ReceivedNotificationListener {
     var router: AboutRouting? { get set }
+
     func push(viewController: ViewControllable, animated: Bool)
+    func cleanNavigationStackIfNeeded()
 }
 
 final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
@@ -23,12 +25,14 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
          helpDetailBuilder: HelpDetailBuildable,
          appInformationBuilder: AppInformationBuildable,
          technicalInformationBuilder: TechnicalInformationBuildable,
-         webviewBuilder: WebviewBuildable) {
+         webviewBuilder: WebviewBuildable,
+         receivedNotificationBuilder: ReceivedNotificationBuildable) {
         self.helpDetailBuilder = helpDetailBuilder
         self.aboutOverviewBuilder = aboutOverviewBuilder
         self.appInformationBuilder = appInformationBuilder
         self.technicalInformationBuilder = technicalInformationBuilder
         self.webviewBuilder = webviewBuilder
+        self.receivedNotificationBuildable = receivedNotificationBuilder
         super.init(viewController: viewController)
         viewController.router = self
     }
@@ -54,7 +58,15 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
             routeToRateApp()
         case let .link(_, urlString):
             routeToWebView(urlString: urlString)
+        case .notificationExplanation:
+            routeToNotificationExplanation()
+        case .appInformation:
+            routeToAppInformation()
+        case .technicalInformation:
+            routeToTechnicalInformation()
         }
+
+        viewController.cleanNavigationStackIfNeeded()
     }
 
     func detachHelpQuestion() {
@@ -66,6 +78,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
         self.appInformationViewController = aboutOverviewViewController
 
         viewController.push(viewController: appInformationViewController, animated: true)
+        viewController.cleanNavigationStackIfNeeded()
     }
 
     func routeToTechnicalInformation() {
@@ -73,9 +86,23 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
         self.technicalInformationRouter = technicalInformationRouter
 
         viewController.push(viewController: technicalInformationRouter.viewControllable, animated: true)
+        viewController.cleanNavigationStackIfNeeded()
+    }
+
+    func detachReceivedNotification() {
+        self.receivedNotificationViewController = nil
     }
 
     // MARK: - Private
+
+    private func routeToNotificationExplanation() {
+        let receivedNotificationViewController = receivedNotificationBuildable.build(withListener: viewController)
+        self.receivedNotificationViewController = receivedNotificationViewController
+
+        viewController.push(viewController: receivedNotificationViewController, animated: true)
+
+        viewController.cleanNavigationStackIfNeeded()
+    }
 
     private func routeToHelpQuestion(entry: HelpDetailEntry) {
         let helpDetailViewController = helpDetailBuilder.build(withListener: viewController,
@@ -114,4 +141,7 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
 
     private let technicalInformationBuilder: TechnicalInformationBuildable
     private var technicalInformationRouter: Routing?
+
+    private let receivedNotificationBuildable: ReceivedNotificationBuildable
+    private var receivedNotificationViewController: ViewControllable?
 }

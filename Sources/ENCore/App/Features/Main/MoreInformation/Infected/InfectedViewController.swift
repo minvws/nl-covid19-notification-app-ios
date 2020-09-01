@@ -146,7 +146,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
     func helpDetailDidTapEnableAppButton() {}
 
-    func helpDetailRequestRedirect(to entry: HelpDetailEntry) {}
+    func helpDetailRequestRedirect(to content: LinkedContent) {}
 
     // MARK: - Private
 

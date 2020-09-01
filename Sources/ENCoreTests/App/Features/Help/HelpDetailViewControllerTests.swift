@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
@@ -32,6 +33,22 @@ final class HelpDetailViewControllerTests: TestCase {
 
     func test_snapshot_helpDetailViewController() {
         let detailEntries = helpManager.entries.filter {
+            if case .question = $0 {
+                return true
+            } else {
+                return false
+            }
+        }
+
+        for (index, entry) in detailEntries.enumerated() {
+            let viewController = HelpDetailViewController(listener: listener, shouldShowEnableAppButton: false, entry: entry, theme: theme)
+            snapshots(matching: viewController, named: "\(#function)\(index)")
+        }
+    }
+
+    func test_snapshot_helpDetailViewController_aboutManager() {
+        let aboutManager = AboutManager(testPhaseStream: Just(false).eraseToAnyPublisher())
+        let detailEntries = aboutManager.questionsSection.entries.filter {
             if case .question = $0 {
                 return true
             } else {
