@@ -238,6 +238,18 @@ extension String {
     static var helpTechnicalInformationGithubTitle: String { return Localization.string(for: "help.technical_explanation.github.title") }
     static var helpTechnicalInformationGithubSubtitle: String { return Localization.string(for: "help.technical_explanation.github.subtitle") }
 
+    // MARK: - Help/MoreInformation - Notification Received
+
+    static var helpReceivedNotificationMeaningTitle: String { return Localization.string(for: "help.what_does_notification_mean.title") }
+    static var helpReceivedNotificationMeaningDescription: String { return Localization.string(for: "help.what_does_notification_mean.description") }
+    static var helpReceivedNotificationReportTitle: String { return Localization.string(for: "help.what_does_report_look_like.title") }
+    static var helpReceivedNotificationReportDescription: String { return Localization.string(for: "help.what_does_report_look_like.description") }
+    static var helpReceivedNotificationExample: String { return Localization.string(for: "help.notification.example") }
+    static var helpReceivedNotificationWhatToDoTitle: String { return Localization.string(for: "help.what_to_do_with_notification.title") }
+    static var helpReceivedNotificationWhatToDoDescription: String { return Localization.string(for: "help.what_to_do_with_notification.description") }
+    static var helpReceivedNotificationOtherReportsTitle: String { return Localization.string(for: "help.other_reports.title") }
+    static var helpReceivedNotificationOtherReportsDescription: String { return Localization.string(for: "help.other_reports.description") }
+
     // MARK: - Message
 
     static var messageDefaultTitle: String { return Localization.string(for: "message.default.title") }

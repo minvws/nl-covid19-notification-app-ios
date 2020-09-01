@@ -89,11 +89,9 @@ private final class ReceivedNotificationView: View {
 
         infoView.addSections([
             notificationExplanation(),
-            situation(),
-            measures(),
-            doCoronaTest(),
-            info(),
-            complaints()
+            howReportLooksLike(),
+            whatToDo(),
+            otherReports()
         ])
 
         addSubview(infoView)
@@ -111,59 +109,25 @@ private final class ReceivedNotificationView: View {
 
     private func notificationExplanation() -> View {
         InfoSectionTextView(theme: theme,
-                            title: .moreInformationReceivedNotificationNotificationExplanationTitle,
-                            content: [String.moreInformationReceivedNotificationNotificationExplanationContent.attributed()])
+                            title: .helpReceivedNotificationMeaningTitle,
+                            content: [String.helpReceivedNotificationMeaningDescription.attributed()])
     }
 
-    private func complaints() -> View {
-        let list: [String] = [
-            .moreInformationComplaintsItem1,
-            .moreInformationComplaintsItem2,
-            .moreInformationComplaintsItem3,
-            .moreInformationComplaintsItem4,
-            .moreInformationComplaintsItem5
-        ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .moreInformationComplaintsTitle,
-                                   content: bulletList)
-    }
-
-    private func situation() -> View {
-        let list: [String] = [
-            .moreInformationSituationStep1,
-            .moreInformationSituationStep2,
-            .moreInformationSituationStep3
-        ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .moreInformationSituationTitle,
-                                   content: bulletList)
-    }
-
-    private func measures() -> View {
-        let list: [String] = [
-            .moreInformationNotificationMeasuresStep1,
-            .moreInformationNotificationMeasuresStep2,
-            .moreInformationNotificationMeasuresStep3
-        ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .moreInformationNotificationMeasuresTitle,
-                                   content: bulletList)
-    }
-
-    private func doCoronaTest() -> View {
+    private func howReportLooksLike() -> View {
         InfoSectionTextView(theme: theme,
-                            title: .moreInformationReceivedNotificationDoCoronaTestTitle,
-                            content: String.moreInformationReceivedNotificationDoCoronaTestContent.attributedStrings())
+                            title: .helpReceivedNotificationReportTitle,
+                            content: [String.helpReceivedNotificationReportDescription.attributed()])
     }
 
-    private func info() -> View {
-        let string = NSAttributedString.make(text: .moreInformationInfoTitle, font: theme.fonts.subhead, textColor: theme.colors.gray)
-        return InfoSectionCalloutView(theme: theme, content: string)
+    private func whatToDo() -> View {
+        InfoSectionTextView(theme: theme,
+                            title: .helpReceivedNotificationWhatToDoTitle,
+                            content: [String.helpReceivedNotificationWhatToDoDescription.attributed()])
+    }
+
+    private func otherReports() -> View {
+        InfoSectionTextView(theme: theme,
+                            title: .helpReceivedNotificationOtherReportsTitle,
+                            content: [String.helpReceivedNotificationOtherReportsDescription.attributed()])
     }
 }
