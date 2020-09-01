@@ -122,7 +122,7 @@ private final class RequestTestView: View {
     private func receivedNotification() -> View {
         InfoSectionTextView(theme: theme,
                             title: .moreInformationRequestTestReceivedNotificationTitle,
-                            content: String.moreInformationRequestTestReceivedNotificationContent.attributedStrings())
+                            content: [NSAttributedString.makeFromHtml(text: .moreInformationRequestTestReceivedNotificationContent, font: theme.fonts.title2, textColor: .black)])
     }
 
     private func complaints() -> View {
