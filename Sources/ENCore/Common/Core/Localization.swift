@@ -482,14 +482,15 @@ extension String {
     // MARK: - Message (Change of contamination)
 
     static var contaminationChanceTitle: String { return Localization.string(for: "contamination.title") }
+
     static var contaminationChanceNearSomeoneWithCoronaTitle: String { return Localization.string(for: "contamination.near_someone_with_corona.title") }
-    static var contaminationChanceNearSomeoneWithCoronaDescription: String { return Localization.string(for: "contamination.near_someone_with_corona.description") }
+    static func contaminationChanceNearSomeoneWithCoronaDescription(_ one: String) -> String { return Localization.string(for: "contamination.near_someone_with_corona.description", [one]) }
     static var contaminationChanceWhatToDoTitle: String { return Localization.string(for: "contamination.what_to_do.title") }
-    static var contaminationChanceWhatToDoStep1: String { return Localization.string(for: "contamination.what_to_do.step1") }
-    static var contaminationChanceWhatToDoStep2: String { return Localization.string(for: "contamination.what_to_do.step2") }
+    static func contaminationChanceWhatToDoStep1(_ one: String) -> String { return Localization.string(for: "contamination.what_to_do.step1", [one]) }
+    static func contaminationChanceWhatToDoStep2(_ one: String) -> String { return Localization.string(for: "contamination.what_to_do.step2", [one]) }
     static var contaminationChanceWhatToDoStep3: String { return Localization.string(for: "contamination.what_to_do.step3") }
     static var contaminationChanceWhatToDoDescription: String { return Localization.string(for: "contamination.what_to_do.description") }
-    static var contaminationChanceStayHomeTitle: String { return Localization.string(for: "contamination.stay_home.title") }
+    static func contaminationChanceStayHomeTitle(_ one: String) -> String { return Localization.string(for: "contamination.stay_home.title", [one]) }
     static var contaminationChanceStayHomeStep1: String { return Localization.string(for: "contamination.stay_home.step1") }
     static var contaminationChanceStayHomeStep2: String { return Localization.string(for: "contamination.stay_home.step2") }
     static var contaminationChanceStayHomeStep3: String { return Localization.string(for: "contamination.stay_home.step3") }
@@ -498,8 +499,8 @@ extension String {
     static var contaminationChanceMedicalHelpTitle: String { return Localization.string(for: "contamination.medical_help.title") }
     static var contaminationChanceMedicalHelpStep1: String { return Localization.string(for: "contamination.medical_help.step1") }
     static var contaminationChanceMedicalHelpStep2: String { return Localization.string(for: "contamination.medical_help.step2") }
-    static var contaminationChanceAfterTitle: String { return Localization.string(for: "contamination.after.title") }
-    static var contaminationChanceAfterDescription: String { return Localization.string(for: "contamination.after.description") }
+    static func contaminationChanceAfterTitle(_ one: String) -> String { return Localization.string(for: "contamination.after.title", [one]) }
+    static func contaminationChanceAfterDescription(_ one: String) -> String { return Localization.string(for: "contamination.after.description", [one]) }
     static var contaminationChanceComplaintsTitle: String { return Localization.string(for: "contamination.complaints.title") }
     static var contaminationChanceComplaintsStep1: String { return Localization.string(for: "contamination.complaints.step1") }
     static var contaminationChanceComplaintsStep2: String { return Localization.string(for: "contamination.complaints.step2") }
