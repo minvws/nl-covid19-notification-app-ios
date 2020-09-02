@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
@@ -18,11 +19,11 @@ final class MessageViewControllerTests: TestCase {
         super.setUp()
 
         recordSnapshots = false
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
 
         viewController = MessageViewController(listener: listern,
                                                theme: theme,
-                                               message: MessageViewController.Message(title: "Title",
-                                                                                      body: "Body"))
+                                               exposureDate: Date(timeIntervalSince1970: 1593290000)) // 27/06/20 20:33
     }
 
     // MARK: - Tests

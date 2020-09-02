@@ -15,16 +15,11 @@ protocol MessageViewControllable: ViewControllable {}
 
 final class MessageViewController: ViewController, MessageViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
-    struct Message {
-        let title: String
-        let body: String
-    }
-
     // MARK: - Init
 
-    init(listener: MessageListener, theme: Theme, message: Message) {
+    init(listener: MessageListener, theme: Theme, exposureDate: Date) {
         self.listener = listener
-        self.message = message
+        self.exposureDate = exposureDate
 
         super.init(theme: theme)
     }
@@ -40,7 +35,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
         super.viewDidLoad()
 
         hasBottomMargin = true
-        title = .messageTitle
+        title = .contaminationChanceTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
@@ -62,29 +57,50 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     // MARK: - Private
 
-    private let message: Message
+    private func formattedExposureDate() -> String {
+        let now = currentDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
 
-    private weak var listener: MessageListener?
-    private lazy var internalView: MessageView = {
-        MessageView(theme: self.theme, title: self.message.title, body: self.message.body)
-    }()
+        let dateString = dateFormatter.string(from: exposureDate)
+        let days = now.days(sinceDate: exposureDate) ?? 0
+
+        return "\(dateString) (\(String.statusNotifiedDaysAgo(days: days)))"
+    }
+
+    private func formattedTenDaysAfterExposure() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+
+        let tenDays: TimeInterval = 60 * 60 * 24 * 10
+        let tenDaysAfterExposure = exposureDate.advanced(by: tenDays)
+
+        return dateFormatter.string(from: tenDaysAfterExposure)
+    }
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.messageWantsDismissal(shouldDismissViewController: true)
     }
+
+    private lazy var internalView: MessageView = {
+        MessageView(theme: self.theme, formattedExposureDate: formattedExposureDate(), formattedFutureDate: formattedTenDaysAfterExposure())
+    }()
+
+    private let exposureDate: Date
+    private weak var listener: MessageListener?
 }
 
 private final class MessageView: View {
 
     fileprivate let infoView: InfoView
-    private let title: String
-    private let body: String
+    private let formattedExposureDate: String
+    private let formattedFutureDate: String
 
     // MARK: - Init
 
-    init(theme: Theme, title: String, body: String) {
-        self.title = title
-        self.body = body
+    init(theme: Theme, formattedExposureDate: String, formattedFutureDate: String) {
+        self.formattedExposureDate = formattedExposureDate
+        self.formattedFutureDate = formattedFutureDate
         let config = InfoViewConfig(actionButtonTitle: .messageButtonTitle,
                                     headerImage: .messageHeader)
         self.infoView = InfoView(theme: theme, config: config)
@@ -97,11 +113,12 @@ private final class MessageView: View {
         super.build()
 
         infoView.addSections([
-            message(),
-            situation(),
-            measures(),
-            doCoronaTest(),
-            info(),
+            nearSomeoneWithCorona(),
+            whatCanYouDo(),
+            stayHome(),
+            visitors(),
+            medicalHelp(),
+            after(),
             complaints()
         ])
 
@@ -118,59 +135,82 @@ private final class MessageView: View {
 
     // MARK: - Private
 
-    private func message() -> View {
-        InfoSectionTextView(theme: theme, title: title, content: [NSAttributedString(string: body)])
+    private func nearSomeoneWithCorona() -> View {
+        InfoSectionTextView(theme: theme,
+                            title: .contaminationChanceNearSomeoneWithCoronaTitle,
+                            content: [NSAttributedString.makeFromHtml(text: .contaminationChanceNearSomeoneWithCoronaDescription(formattedExposureDate),
+                                                                      font: theme.fonts.body,
+                                                                      textColor: theme.colors.gray)])
+    }
+
+    private func whatCanYouDo() -> View {
+        let list: [String] = [
+            .contaminationChanceWhatToDoStep1(formattedFutureDate),
+            .contaminationChanceWhatToDoStep2(formattedFutureDate),
+            .contaminationChanceWhatToDoStep3
+        ]
+
+        var content = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+        content.append(String.contaminationChanceWhatToDoDescription.attributed())
+
+        return InfoSectionTextView(theme: theme,
+                                   title: .contaminationChanceWhatToDoTitle,
+                                   content: content)
+    }
+
+    private func stayHome() -> View {
+        let list: [String] = [
+            .contaminationChanceStayHomeStep1,
+            .contaminationChanceStayHomeStep2,
+            .contaminationChanceStayHomeStep3
+        ]
+        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+
+        return InfoSectionTextView(theme: theme,
+                                   title: .contaminationChanceStayHomeTitle(formattedFutureDate),
+                                   content: bulletList)
+    }
+
+    private func visitors() -> View {
+        let list: [String] = [.contaminationChanceVisitorsStep1]
+        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+
+        return InfoSectionTextView(theme: theme,
+                                   title: .contaminationChanceVisitorsTitle,
+                                   content: bulletList)
+    }
+
+    private func medicalHelp() -> View {
+        let list: [String] = [
+            .contaminationChanceMedicalHelpStep1,
+            .contaminationChanceMedicalHelpStep2
+        ]
+        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+
+        return InfoSectionTextView(theme: theme,
+                                   title: .contaminationChanceMedicalHelpTitle,
+                                   content: bulletList)
+    }
+
+    private func after() -> View {
+        InfoSectionTextView(theme: theme,
+                            title: .contaminationChanceAfterTitle(formattedFutureDate),
+                            content: [String.contaminationChanceAfterDescription(formattedFutureDate).attributed()])
     }
 
     private func complaints() -> View {
         let list: [String] = [
-            .moreInformationComplaintsItem1,
-            .moreInformationComplaintsItem2,
-            .moreInformationComplaintsItem3,
-            .moreInformationComplaintsItem4,
-            .moreInformationComplaintsItem5
+            .contaminationChanceComplaintsStep1,
+            .contaminationChanceComplaintsStep2,
+            .contaminationChanceComplaintsStep3,
+            .contaminationChanceComplaintsStep4,
+            .contaminationChanceComplaintsStep5,
+            .contaminationChanceComplaintsStep6
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
 
         return InfoSectionTextView(theme: theme,
-                                   title: .moreInformationComplaintsTitle,
+                                   title: .contaminationChanceComplaintsTitle,
                                    content: bulletList)
-    }
-
-    private func situation() -> View {
-        let list: [String] = [
-            .moreInformationSituationStep1,
-            .moreInformationSituationStep2,
-            .moreInformationSituationStep3
-        ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .moreInformationSituationTitle,
-                                   content: bulletList)
-    }
-
-    private func measures() -> View {
-        let list: [String] = [
-            .moreInformationNotificationMeasuresStep1,
-            .moreInformationNotificationMeasuresStep2,
-            .moreInformationNotificationMeasuresStep3
-        ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .moreInformationNotificationMeasuresTitle,
-                                   content: bulletList)
-    }
-
-    private func doCoronaTest() -> View {
-        InfoSectionTextView(theme: theme,
-                            title: .moreInformationReceivedNotificationDoCoronaTestTitle,
-                            content: String.moreInformationReceivedNotificationDoCoronaTestContent.attributedStrings())
-    }
-
-    private func info() -> View {
-        let string = NSAttributedString.make(text: .moreInformationInfoTitle, font: theme.fonts.subhead, textColor: theme.colors.gray)
-        return InfoSectionCalloutView(theme: theme, content: string)
     }
 }
