@@ -153,7 +153,9 @@ private final class MessageView: View {
         ]
 
         var content = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-        content.append(String.contaminationChanceWhatToDoDescription.attributed())
+        content.append(NSAttributedString.makeFromHtml(text: .contaminationChanceWhatToDoDescription,
+                                                       font: theme.fonts.body,
+                                                       textColor: theme.colors.gray))
 
         return InfoSectionTextView(theme: theme,
                                    title: .contaminationChanceWhatToDoTitle,
