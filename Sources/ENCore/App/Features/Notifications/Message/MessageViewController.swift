@@ -103,6 +103,7 @@ private final class MessageView: View {
         self.formattedFutureDate = formattedFutureDate
         let config = InfoViewConfig(actionButtonTitle: .messageButtonTitle,
                                     headerImage: .messageHeader,
+                                    headerBackgroundViewColor: theme.colors.headerBackgroundRed,
                                     stickyButtons: true)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)

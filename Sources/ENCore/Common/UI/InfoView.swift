@@ -16,10 +16,12 @@ struct InfoViewConfig {
     let headerImage: UIImage?
     let showButtons: Bool
     let stickyButtons: Bool
+    let headerBackgroundViewColor: UIColor?
 
     init(actionButtonTitle: String = "",
          secondaryButtonTitle: String? = nil,
          headerImage: UIImage? = nil,
+         headerBackgroundViewColor: UIColor? = nil,
          showButtons: Bool = true,
          stickyButtons: Bool = false) {
         self.actionButtonTitle = actionButtonTitle
@@ -27,6 +29,7 @@ struct InfoViewConfig {
         self.headerImage = headerImage
         self.showButtons = showButtons
         self.stickyButtons = stickyButtons
+        self.headerBackgroundViewColor = headerBackgroundViewColor
     }
 }
 
@@ -70,6 +73,7 @@ final class InfoView: View {
         }
         self.showButtons = config.showButtons
         self.stickyButtons = config.stickyButtons
+        self.headerBackgroundView.backgroundColor = config.headerBackgroundViewColor ?? theme.colors.headerBackgroundBlue
         super.init(theme: theme)
     }
 
@@ -79,7 +83,6 @@ final class InfoView: View {
         super.build()
 
         headerImageView.contentMode = .scaleAspectFill
-        headerBackgroundView.backgroundColor = theme.colors.headerBackgroundBlue
         stackView.axis = .vertical
         stackView.spacing = 40
         stackView.distribution = .equalSpacing

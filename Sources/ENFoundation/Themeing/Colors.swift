@@ -26,6 +26,8 @@ public protocol Colors: AnyObject {
     var viewControllerBackground: UIColor { get }
 
     var headerBackgroundBlue: UIColor { get }
+    var headerBackgroundRed: UIColor { get }
+
     var lightOrange: UIColor { get }
 
     var captionGray: UIColor { get }
@@ -78,6 +80,10 @@ final class ENColors: Colors, Logging {
 
     var headerBackgroundBlue: UIColor {
         return color(for: "HeaderBackgroundBlue")
+    }
+
+    var headerBackgroundRed: UIColor {
+        return color(for: "HeaderBackgroundRed")
     }
 
     var lightOrange: UIColor {
