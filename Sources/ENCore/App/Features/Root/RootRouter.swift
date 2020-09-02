@@ -150,9 +150,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     guard let lastExposureDate = strongSelf.exposureController.lastExposureDate else {
                         return strongSelf.logError("No Last Exposure Date to present")
                     }
-
-                    strongSelf.routeToMessage(title: .messageDefaultTitle,
-                                              body: String(format: .messageDefaultBody, String.messageDefaultDaysAgo(from: lastExposureDate)))
+                    strongSelf.routeToMessage(exposureDate: lastExposureDate)
                 case .inactive:
                     () // Do nothing
                 case .uploadFailed:
@@ -212,11 +210,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         detachOnboarding(animated: animated)
     }
 
-    func routeToMessage(title: String, body: String) {
+    func routeToMessage(exposureDate: Date) {
         guard messageViewController == nil else {
             return
         }
-        let messageViewController = messageBuilder.build(withListener: viewController, title: title, body: body)
+        let messageViewController = messageBuilder.build(withListener: viewController, exposureDate: exposureDate)
         self.messageViewController = messageViewController
 
         viewController.presentInNavigationController(viewController: messageViewController, animated: true)

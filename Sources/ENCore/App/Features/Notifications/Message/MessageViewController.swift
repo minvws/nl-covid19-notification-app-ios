@@ -22,9 +22,9 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     // MARK: - Init
 
-    init(listener: MessageListener, theme: Theme, message: Message) {
+    init(listener: MessageListener, theme: Theme, exposureDate: Date) {
         self.listener = listener
-        self.message = message
+        self.message = Message(title: .messageDefaultTitle, body: String(format: .messageDefaultBody, String.messageDefaultDaysAgo(from: exposureDate)))
 
         super.init(theme: theme)
     }

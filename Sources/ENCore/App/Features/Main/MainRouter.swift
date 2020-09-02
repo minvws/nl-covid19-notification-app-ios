@@ -177,11 +177,11 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         }
     }
 
-    func routeToMessage(title: String, body: String) {
+    func routeToMessage(exposureDate: Date) {
         guard messageViewController == nil else {
             return
         }
-        let messageViewController = messageBuilder.build(withListener: viewController, title: title, body: body)
+        let messageViewController = messageBuilder.build(withListener: viewController, exposureDate: exposureDate)
         self.messageViewController = messageViewController
 
         viewController.present(viewController: messageViewController, animated: true)

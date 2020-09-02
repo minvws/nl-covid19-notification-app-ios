@@ -10,7 +10,7 @@ import Foundation
 
 protocol DeveloperMenuListener: AnyObject {
     func developerMenuRequestsOnboardingFlow()
-    func developerMenuRequestMessage(title: String, body: String)
+    func developerMenuRequestMessage(exposureDate: Date)
 }
 
 /// @mockable

@@ -195,8 +195,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             ]),
             ("Push Notifications", [
                 DeveloperItem(title: "Launch Message Flow",
-                              subtitle: "Launches the message flow as would be done from a push notification",
-                              action: { [weak self] in self?.listener?.developerMenuRequestMessage(title: "Message from Developer Menu", body: "The body of the message which was launched from the Developer Menu"); self?.hide() }),
+                              subtitle: "Launches the message flow as would be done from a exposure push notification with today's date",
+                              action: { [weak self] in self?.listener?.developerMenuRequestMessage(exposureDate: Date()); self?.hide() }),
                 DeveloperItem(title: "Schedule Message Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
                               action: { [weak self] in self?.wantsScheduleNotification(identifier: "com.apple.en.mock") }),

@@ -18,7 +18,7 @@ protocol MessageBuildable {
     /// Builds Message
     ///
     /// - Parameter listener: Listener of created MessageViewController
-    func build(withListener listener: MessageListener, title: String, body: String) -> ViewControllable
+    func build(withListener listener: MessageListener, exposureDate: Date) -> ViewControllable
 }
 
 protocol MessageDependency {
@@ -28,10 +28,10 @@ protocol MessageDependency {
 private final class MessageDependencyProvider: DependencyProvider<MessageDependency> {}
 
 final class MessageBuilder: Builder<MessageDependency>, MessageBuildable {
-    func build(withListener listener: MessageListener, title: String, body: String) -> ViewControllable {
+    func build(withListener listener: MessageListener, exposureDate: Date) -> ViewControllable {
         let dependencyProvider = MessageDependencyProvider(dependency: dependency)
         return MessageViewController(listener: listener,
                                      theme: dependencyProvider.dependency.theme,
-                                     message: MessageViewController.Message(title: title, body: body))
+                                     exposureDate: exposureDate)
     }
 }
