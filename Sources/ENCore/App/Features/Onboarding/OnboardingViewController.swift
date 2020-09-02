@@ -137,16 +137,18 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     func helpRequestsEnableApp() {
-        onboardingConsentManager.askEnableExposureNotifications { activeState in
-            switch activeState {
-            case .notAuthorized:
-                self.listener?.didCompleteOnboarding()
-            default:
-                self.onboardingConsentManager.getNextConsentStep(.en, skippedCurrentStep: false) { nextStep in
-                    if let nextStep = nextStep {
-                        self.router?.routeToConsent(withIndex: nextStep.rawValue, animated: true)
-                    } else {
-                        self.listener?.didCompleteOnboarding()
+        onboardingConsentManager.askNotificationsAuthorization {
+            self.onboardingConsentManager.askEnableExposureNotifications { activeState in
+                switch activeState {
+                case .notAuthorized:
+                    self.listener?.didCompleteOnboarding()
+                default:
+                    self.onboardingConsentManager.getNextConsentStep(.en, skippedCurrentStep: false) { nextStep in
+                        if let nextStep = nextStep {
+                            self.router?.routeToConsent(withIndex: nextStep.rawValue, animated: true)
+                        } else {
+                            self.listener?.didCompleteOnboarding()
+                        }
                     }
                 }
             }
