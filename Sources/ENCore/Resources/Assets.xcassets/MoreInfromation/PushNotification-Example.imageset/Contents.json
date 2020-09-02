@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "PushNotification-Example.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -343,6 +343,54 @@ final class InfoSectionTextView: View {
     }
 }
 
+final class InfoSectionContentTextView: View {
+
+    private let contentStack: UIStackView
+    private let content: [NSAttributedString]
+
+    // MARK: - Init
+
+    init(theme: Theme, content: [NSAttributedString]) {
+        self.contentStack = UIStackView()
+        self.content = content
+
+        super.init(theme: theme)
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        contentStack.axis = .vertical
+        contentStack.alignment = .top
+        contentStack.distribution = .fill
+        contentStack.spacing = 5
+
+        addSubview(contentStack)
+
+        for text in self.content {
+            let label = Label(frame: .zero)
+            label.numberOfLines = 0
+            label.lineBreakMode = .byWordWrapping
+            label.font = theme.fonts.body
+            label.textColor = theme.colors.gray
+            label.attributedText = text
+            contentStack.addArrangedSubview(label)
+        }
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        contentStack.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.bottom.equalToSuperview()
+        }
+    }
+}
+
 final class InfoSectionCalloutView: View {
 
     private let backgroundView: View

@@ -65,6 +65,7 @@ extension UIImage {
     static var checkmarkChecked: UIImage? { return Image.named("checkmarkChecked") }
     static var checkmarkUnchecked: UIImage? { return Image.named("checkmarkUnchecked") }
     static var helpNotificationExample: UIImage? { return Image.named("notification-example") }
+    static var helpPushNotificationExample: UIImage? { return Image.named("PushNotification-Example") }
 }
 
 extension UIImage {

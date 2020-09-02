@@ -241,7 +241,8 @@ extension String {
     // MARK: - Help/MoreInformation - Notification Received
 
     static var helpReceivedNotificationMeaningTitle: String { return Localization.string(for: "help.what_does_notification_mean.title") }
-    static var helpReceivedNotificationMeaningDescription: String { return Localization.string(for: "help.what_does_notification_mean.description") }
+    static var helpReceivedNotificationMeaningDescription1: String { return Localization.string(for: "help.what_does_notification_mean.description1") }
+    static var helpReceivedNotificationMeaningDescription2: String { return Localization.string(for: "help.what_does_notification_mean.description2") }
     static var helpReceivedNotificationReportTitle: String { return Localization.string(for: "help.what_does_report_look_like.title") }
     static var helpReceivedNotificationReportDescription: String { return Localization.string(for: "help.what_does_report_look_like.description") }
     static var helpReceivedNotificationExample: String { return Localization.string(for: "help.notification.example") }
@@ -249,6 +250,7 @@ extension String {
     static var helpReceivedNotificationWhatToDoDescription: String { return Localization.string(for: "help.what_to_do_with_notification.description") }
     static var helpReceivedNotificationOtherReportsTitle: String { return Localization.string(for: "help.other_reports.title") }
     static var helpReceivedNotificationOtherReportsDescription: String { return Localization.string(for: "help.other_reports.description") }
+    static var helpOtherWhatDoesReportSayTitle: String { return Localization.string(for: "help.other_what_does_report_say.title") }
 
     // MARK: - Message
 
