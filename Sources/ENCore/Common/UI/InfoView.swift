@@ -15,15 +15,18 @@ struct InfoViewConfig {
     let secondaryButtonTitle: String?
     let headerImage: UIImage?
     let showButtons: Bool
+    let stickyButtons: Bool
 
     init(actionButtonTitle: String = "",
          secondaryButtonTitle: String? = nil,
          headerImage: UIImage? = nil,
-         showButtons: Bool = true) {
+         showButtons: Bool = true,
+         stickyButtons: Bool = false) {
         self.actionButtonTitle = actionButtonTitle
         self.secondaryButtonTitle = secondaryButtonTitle
         self.headerImage = headerImage
         self.showButtons = showButtons
+        self.stickyButtons = stickyButtons
     }
 }
 
@@ -42,10 +45,12 @@ final class InfoView: View {
     private let headerImageView: UIImageView
     private let stackView: UIStackView
     private let buttonStackView: UIStackView
+    private let buttonSeparator: GradientView
     private let actionButton: Button
     private let secondaryButton: Button?
 
     private let showButtons: Bool
+    private let stickyButtons: Bool
 
     // MARK: - Init
 
@@ -57,12 +62,14 @@ final class InfoView: View {
         self.scrollView = UIScrollView(frame: .zero)
         self.headerBackgroundView = UIView(frame: .zero)
         self.actionButton = Button(title: config.actionButtonTitle, theme: theme)
+        self.buttonSeparator = GradientView(startColor: UIColor.white.withAlphaComponent(0), endColor: UIColor.black.withAlphaComponent(0.1))
         if let title = config.secondaryButtonTitle {
             self.secondaryButton = Button(title: title, theme: theme)
         } else {
             self.secondaryButton = nil
         }
         self.showButtons = config.showButtons
+        self.stickyButtons = config.stickyButtons
         super.init(theme: theme)
     }
 
@@ -97,7 +104,13 @@ final class InfoView: View {
             }
 
             buttonStackView.addArrangedSubview(actionButton)
-            contentView.addSubview(buttonStackView)
+
+            if stickyButtons {
+                addSubview(buttonSeparator)
+                addSubview(buttonStackView)
+            } else {
+                contentView.addSubview(buttonStackView)
+            }
         }
     }
 
@@ -107,7 +120,11 @@ final class InfoView: View {
         hasBottomMargin = true
 
         scrollView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.leading.trailing.bottom.equalToSuperview()
+            maker.top.leading.trailing.equalToSuperview()
+
+            if !stickyButtons {
+                maker.bottom.equalToSuperview()
+            }
         }
 
         headerBackgroundView.snp.makeConstraints { (maker: ConstraintMaker) in
@@ -135,6 +152,10 @@ final class InfoView: View {
             if !showButtons {
                 constrainToSuperViewWithBottomMargin(maker: maker)
             }
+
+            if showButtons, stickyButtons {
+                maker.bottom.equalToSuperview().inset(16)
+            }
         }
         if showButtons {
             buttonStackView.snp.makeConstraints { (maker: ConstraintMaker) in
@@ -143,10 +164,23 @@ final class InfoView: View {
                     let height = Float((count * 48) + ((count - 1) * 20))
                     maker.height.equalTo(height)
                 }
-                maker.top.equalTo(stackView.snp.bottom).offset(16)
                 maker.leading.trailing.equalToSuperview().inset(16)
 
-                constrainToSuperViewWithBottomMargin(maker: maker)
+                if stickyButtons {
+                    maker.top.equalTo(scrollView.snp.bottom).offset(16)
+                    constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
+                } else {
+                    constrainToSuperViewWithBottomMargin(maker: maker)
+                    maker.top.equalTo(stackView.snp.bottom).offset(16)
+                }
+            }
+        }
+
+        if showButtons, stickyButtons {
+            buttonSeparator.snp.makeConstraints { maker in
+                maker.bottom.equalTo(buttonStackView.snp.top).offset(-16)
+                maker.leading.trailing.equalToSuperview()
+                maker.height.equalTo(16)
             }
         }
     }
