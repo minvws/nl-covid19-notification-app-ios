@@ -479,6 +479,35 @@ extension String {
     static var privacyAgreementStep4: String { return Localization.string(for: "privacyAgreement.list.step4") }
     static var privacyAgreementConsentButton: String { return Localization.string(for: "privacyAgreement.consent.button") }
 
+    // MARK: - Message (Change of contamination)
+
+    static var contaminationChanceTitle: String { return Localization.string(for: "contamination.title") }
+    static var contaminationChanceNearSomeoneWithCoronaTitle: String { return Localization.string(for: "contamination.near_someone_with_corona.title") }
+    static var contaminationChanceNearSomeoneWithCoronaDescription: String { return Localization.string(for: "contamination.near_someone_with_corona.description") }
+    static var contaminationChanceWhatToDoTitle: String { return Localization.string(for: "contamination.what_to_do.title") }
+    static var contaminationChanceWhatToDoStep1: String { return Localization.string(for: "contamination.what_to_do.step1") }
+    static var contaminationChanceWhatToDoStep2: String { return Localization.string(for: "contamination.what_to_do.step2") }
+    static var contaminationChanceWhatToDoStep3: String { return Localization.string(for: "contamination.what_to_do.step3") }
+    static var contaminationChanceWhatToDoDescription: String { return Localization.string(for: "contamination.what_to_do.description") }
+    static var contaminationChanceStayHomeTitle: String { return Localization.string(for: "contamination.stay_home.title") }
+    static var contaminationChanceStayHomeStep1: String { return Localization.string(for: "contamination.stay_home.step1") }
+    static var contaminationChanceStayHomeStep2: String { return Localization.string(for: "contamination.stay_home.step2") }
+    static var contaminationChanceStayHomeStep3: String { return Localization.string(for: "contamination.stay_home.step3") }
+    static var contaminationChanceVisitorsTitle: String { return Localization.string(for: "contamination.visitors.title") }
+    static var contaminationChanceVisitorsStep1: String { return Localization.string(for: "contamination.visitors.step1") }
+    static var contaminationChanceMedicalHelpTitle: String { return Localization.string(for: "contamination.medical_help.title") }
+    static var contaminationChanceMedicalHelpStep1: String { return Localization.string(for: "contamination.medical_help.step1") }
+    static var contaminationChanceMedicalHelpStep2: String { return Localization.string(for: "contamination.medical_help.step2") }
+    static var contaminationChanceAfterTitle: String { return Localization.string(for: "contamination.after.title") }
+    static var contaminationChanceAfterDescription: String { return Localization.string(for: "contamination.after.description") }
+    static var contaminationChanceComplaintsTitle: String { return Localization.string(for: "contamination.complaints.title") }
+    static var contaminationChanceComplaintsStep1: String { return Localization.string(for: "contamination.complaints.step1") }
+    static var contaminationChanceComplaintsStep2: String { return Localization.string(for: "contamination.complaints.step2") }
+    static var contaminationChanceComplaintsStep3: String { return Localization.string(for: "contamination.complaints.step3") }
+    static var contaminationChanceComplaintsStep4: String { return Localization.string(for: "contamination.complaints.step4") }
+    static var contaminationChanceComplaintsStep5: String { return Localization.string(for: "contamination.complaints.step5") }
+    static var contaminationChanceComplaintsStep6: String { return Localization.string(for: "contamination.complaints.step6") }
+
     func attributed() -> NSMutableAttributedString {
         return NSMutableAttributedString(string: self)
     }
