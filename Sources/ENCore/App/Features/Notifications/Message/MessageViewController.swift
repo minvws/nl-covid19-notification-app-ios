@@ -102,7 +102,9 @@ private final class MessageView: View {
         self.formattedExposureDate = formattedExposureDate
         self.formattedFutureDate = formattedFutureDate
         let config = InfoViewConfig(actionButtonTitle: .messageButtonTitle,
-                                    headerImage: .messageHeader)
+                                    headerImage: .messageHeader,
+                                    headerBackgroundViewColor: theme.colors.headerBackgroundRed,
+                                    stickyButtons: true)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }
@@ -151,7 +153,9 @@ private final class MessageView: View {
         ]
 
         var content = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-        content.append(String.contaminationChanceWhatToDoDescription.attributed())
+        content.append(NSAttributedString.makeFromHtml(text: .contaminationChanceWhatToDoDescription,
+                                                       font: theme.fonts.body,
+                                                       textColor: theme.colors.gray))
 
         return InfoSectionTextView(theme: theme,
                                    title: .contaminationChanceWhatToDoTitle,
