@@ -119,14 +119,17 @@ private final class ReceivedNotificationView: View {
 
     override func build() {
         super.build()
-        exampleWrapperView.addSubview(exampleImageView)
-        exampleWrapperView.addSubview(exampleCaption)
+
+        exampleNotificationWrapperView.addSubview(examplePushNotificationImageView)
+        exampleExposureWrapperView.addSubview(exampleCaption)
+        exampleExposureWrapperView.addSubview(exampleExposureImageView)
         tableViewWrapperView.addSubview(tableView)
 
         infoView.addSections([
             notificationExplanation(),
-            howReportLooksLike(),
-            exampleWrapperView,
+            exampleNotificationWrapperView,
+            content(),
+            exampleExposureWrapperView,
             whatToDo(),
             otherReports(),
             tableViewWrapperView
@@ -142,20 +145,25 @@ private final class ReceivedNotificationView: View {
             maker.top.bottom.leading.trailing.equalToSuperview()
         }
 
-        exampleImageView.snp.makeConstraints { maker in
-            let aspectRatio = exampleImageView.image?.aspectRatio ?? 1
-
-            maker.top.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(16)
-            maker.height.equalTo(exampleImageView.snp.width).dividedBy(aspectRatio)
-        }
-
         exampleCaption.snp.makeConstraints { maker in
-            maker.bottom.equalToSuperview()
             maker.leading.trailing.equalToSuperview().inset(16)
-            maker.top.equalTo(exampleImageView.snp.bottom).offset(24)
+            maker.top.equalToSuperview()
         }
+        exampleExposureImageView.snp.makeConstraints { maker in
+            let aspectRatio = exampleExposureImageView.image?.aspectRatio ?? 1
 
+            maker.top.equalTo(exampleCaption.snp.bottom).offset(15)
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.height.equalTo(exampleExposureImageView.snp.width).dividedBy(aspectRatio)
+            maker.bottom.equalToSuperview()
+        }
+        examplePushNotificationImageView.snp.makeConstraints { maker in
+            let aspectRatio = examplePushNotificationImageView.image?.aspectRatio ?? 1
+
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.height.equalTo(examplePushNotificationImageView.snp.width).dividedBy(aspectRatio)
+            maker.top.bottom.equalToSuperview()
+        }
         tableView.snp.makeConstraints { maker in
             maker.leading.trailing.top.bottom.width.equalToSuperview()
             maker.height.equalTo(0)
@@ -172,14 +180,12 @@ private final class ReceivedNotificationView: View {
 
     private func notificationExplanation() -> View {
         InfoSectionTextView(theme: theme,
-                            title: .helpReceivedNotificationMeaningTitle,
-                            content: [attributedContentText(for: .helpReceivedNotificationMeaningDescription)])
+                            title: .helpOtherWhatDoesReportSayTitle,
+                            content: [attributedContentText(for: .helpReceivedNotificationMeaningDescription1)])
     }
 
-    private func howReportLooksLike() -> View {
-        InfoSectionTextView(theme: theme,
-                            title: .helpReceivedNotificationReportTitle,
-                            content: [attributedContentText(for: .helpReceivedNotificationReportDescription)])
+    private func content() -> View {
+        InfoSectionContentTextView(theme: theme, content: [attributedContentText(for: .helpReceivedNotificationMeaningDescription2)])
     }
 
     private func whatToDo() -> View {
@@ -201,9 +207,19 @@ private final class ReceivedNotificationView: View {
     private let infoView: InfoView
     private lazy var tableViewWrapperView = View(theme: theme)
     private let tableViewManager: LinkedContentTableViewManager
-    private lazy var exampleWrapperView = View(theme: theme)
+    private lazy var exampleExposureWrapperView = View(theme: theme)
+    private lazy var exampleNotificationWrapperView = View(theme: theme)
 
-    private lazy var exampleImageView: UIImageView = {
+    private lazy var examplePushNotificationImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .helpPushNotificationExample
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.backgroundColor = .clear
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+
+    private lazy var exampleExposureImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .helpNotificationExample
         imageView.translatesAutoresizingMaskIntoConstraints = false
