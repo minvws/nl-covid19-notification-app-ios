@@ -39,6 +39,7 @@ struct ExposureDataStorageKey {
 final class ExposureDataController: ExposureDataControlling, Logging {
 
     private var disposeBag = Set<AnyCancellable>()
+    private(set) var isFirstRun: Bool = false
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling) {
@@ -220,6 +221,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             // nothing to do, not the first run
             return
         }
+
+        isFirstRun = true
 
         // clear all secure entries
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })

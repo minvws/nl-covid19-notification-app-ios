@@ -104,15 +104,19 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
 
-        exposureStateStream.exposureState.sink { [weak self] state in
-            if state.activeState.isAuthorized {
-                self?.routeToMain()
-                self?.backgroundController.scheduleTasks()
-            } else {
-                self?.routeToOnboarding()
+        let isFirstRun = self.exposureController.isFirstRun
+        exposureStateStream
+            .exposureState
+            .first()
+            .sink { [weak self] state in
+                if state.activeState.isAuthorized, !isFirstRun {
+                    self?.routeToMain()
+                    self?.backgroundController.scheduleTasks()
+                } else {
+                    self?.routeToOnboarding()
+                }
             }
-        }
-        .store(in: &disposeBag)
+            .store(in: &disposeBag)
 
         exposureController.activate(inBackgroundMode: false)
 

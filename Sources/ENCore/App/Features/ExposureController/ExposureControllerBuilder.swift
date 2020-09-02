@@ -13,6 +13,7 @@ import UserNotifications
 protocol ExposureControlling {
 
     var lastExposureDate: Date? { get }
+    var isFirstRun: Bool { get }
 
     // MARK: - Setup
 

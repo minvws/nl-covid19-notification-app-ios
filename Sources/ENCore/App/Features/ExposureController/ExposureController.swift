@@ -36,6 +36,10 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.lastExposure?.date
     }
 
+    var isFirstRun: Bool {
+        return dataController.isFirstRun
+    }
+
     @discardableResult
     func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never> {
         logDebug("Request EN framework activation")

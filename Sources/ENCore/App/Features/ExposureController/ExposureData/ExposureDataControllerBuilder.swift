@@ -53,6 +53,7 @@ protocol ExposureDataControlling {
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
+    var isFirstRun: Bool { get }
 }
 
 protocol ExposureDataControllerBuildable {
