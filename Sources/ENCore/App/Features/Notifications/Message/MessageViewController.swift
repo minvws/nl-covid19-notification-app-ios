@@ -15,16 +15,11 @@ protocol MessageViewControllable: ViewControllable {}
 
 final class MessageViewController: ViewController, MessageViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
-    struct Message {
-        let title: String
-        let body: String
-    }
-
     // MARK: - Init
 
     init(listener: MessageListener, theme: Theme, exposureDate: Date) {
         self.listener = listener
-        self.message = Message(title: .messageDefaultTitle, body: String(format: .messageDefaultBody, String.messageDefaultDaysAgo(from: exposureDate)))
+        self.exposureDate = exposureDate
 
         super.init(theme: theme)
     }
@@ -62,16 +57,37 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     // MARK: - Private
 
-    private let message: Message
+    private func formattedExposureDate() -> String {
+        let now = currentDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
 
-    private weak var listener: MessageListener?
-    private lazy var internalView: MessageView = {
-        MessageView(theme: self.theme, formattedExposureDate: "Vrijdag 21 augustus (5 dagen geleden)", formattedFutureDate: "31 augustus")
-    }()
+        let dateString = dateFormatter.string(from: exposureDate)
+        let days = now.days(sinceDate: exposureDate) ?? 0
+
+        return "\(dateString) (\(String.statusNotifiedDaysAgo(days: days)))"
+    }
+
+    private func formattedTenDaysAfterExposure() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+
+        let tenDays: TimeInterval = 60 * 60 * 24 * 10
+        let tenDaysAfterExposure = exposureDate.advanced(by: tenDays)
+
+        return dateFormatter.string(from: tenDaysAfterExposure)
+    }
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.messageWantsDismissal(shouldDismissViewController: true)
     }
+
+    private lazy var internalView: MessageView = {
+        MessageView(theme: self.theme, formattedExposureDate: formattedExposureDate(), formattedFutureDate: formattedTenDaysAfterExposure())
+    }()
+
+    private let exposureDate: Date
+    private weak var listener: MessageListener?
 }
 
 private final class MessageView: View {
