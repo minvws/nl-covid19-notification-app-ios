@@ -404,7 +404,7 @@
 "contamination.what_to_do.step3" = "Heb je ernstige klachten zoals hoge koorts of moeite met ademhalen? Of zit je een risicogroep en krijg je koorts? Bel eerst je huisarts";
 "contamination.what_to_do.description" = "Geeft de GGD je aan de telefoon andere adviezen dan de app? Volg dan het advies van de GGD.";
 
-"contamination.stay_home.title" = "Blijf tot 31 augustus thuis";
+"contamination.stay_home.title" = "Blijf tot %@ thuis";
 "contamination.stay_home.step1" = "Laat anderen boodschappen doen. Kan dit echt niet en heb je geen klachten? Dan mag je wel even naar buiten om boodschappen te doen. Houd 1,5 meter afstand en raak niemand aan.";
 "contamination.stay_home.step2" = "Je mag in de tuin of op het balkon zitten.";
 "contamination.stay_home.step3" = "Kinderen van 4-12 jaar mogen naar school en/of sporten.";
@@ -417,7 +417,7 @@
 "contamination.medical_help.step2" = "Je huisarts of andere medische hulp mag wel bij je langskomen.";
 
 "contamination.after.title" = "Na %@";
-"contamination.after.description" = "Heb je tot 31 augustus geen klachten gekregen? Dan hoef je niet meer thuis te blijven. Blijf wel de algemene regels tegen corona volgen.";
+"contamination.after.description" = "Heb je tot %@ geen klachten gekregen? Dan hoef je niet meer thuis te blijven. Blijf wel de algemene regels tegen corona volgen.";
 
 "contamination.complaints.title" = "Klachten die passen bij het coronavirus";
 "contamination.complaints.step1" = "verkoudheid, loopneus, niezen";
