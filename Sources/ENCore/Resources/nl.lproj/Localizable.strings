@@ -390,3 +390,39 @@
 "privacyAgreement.list.step3" = "Als uit een coronatest blijkt dat je corona hebt, kun je dit in de app melden om andere gebruikers te waarschuwen.";
 "privacyAgreement.list.step4" = "Je kunt op ieder moment de gegevens van je telefoon verwijderen.";
 "privacyAgreement.consent.button" = "Ik heb de privacyverklaring gelezen en ga hiermee akkoord";
+
+
+/* MARK: - Chance of contamination */
+"contamination.title" = "Kans op besmetting";
+
+"contamination.near_someone_with_corona.title" = "Je was in de buurt van iemand met het coronavirus";
+"contamination.near_someone_with_corona.description" = "Op vrijdag %@ ben jij misschien besmet geraakt. Je was die dag minstens 15 minuten dicht bij iemand met corona.<br><br>Als je inderdaad besmet bent, kun je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
+
+"contamination.what_to_do.title" = "Wat kun je nu doen?";
+"contamination.what_to_do.step1" = "Blijf tot %@ thuis en let extra goed op klachten die kunnen passen bij corona";
+"contamination.what_to_do.step2" = "Heb je (lichte) klachten die passen bij het coronavirus? Doe een coronatest en blijf thuis tot %@";
+"contamination.what_to_do.step3" = "Heb je ernstige klachten zoals hoge koorts of moeite met ademhalen? Of zit je een risicogroep en krijg je koorts? Bel eerst je huisarts";
+"contamination.what_to_do.description" = "Geeft de GGD je aan de telefoon andere adviezen dan de app? Volg dan het advies van de GGD.";
+
+"contamination.stay_home.title" = "Blijf tot 31 augustus thuis";
+"contamination.stay_home.step1" = "Laat anderen boodschappen doen. Kan dit echt niet en heb je geen klachten? Dan mag je wel even naar buiten om boodschappen te doen. Houd 1,5 meter afstand en raak niemand aan.";
+"contamination.stay_home.step2" = "Je mag in de tuin of op het balkon zitten.";
+"contamination.stay_home.step3" = "Kinderen van 4-12 jaar mogen naar school en/of sporten.";
+
+"contamination.visitors.title" = "Ontvang geen bezoek";
+"contamination.visitors.step1" = "Alleen de mensen die bij je wonen, mogen samen met jou in huis zijn. Blijf bij elkaar uit de buurt en houdt 1,5 meter afstand. Dus niet knuffelen, niet zoenen en geen seks.";
+
+"contamination.medical_help.title" = "Medische hulp nodig?";
+"contamination.medical_help.step1" = "Ga niet naar de huisarts of het ziekenhuis, maar bel eerst met je huisarts. Vertel dat je bij iemand bent geweest die het coronavirus heeft.";
+"contamination.medical_help.step2" = "Je huisarts of andere medische hulp mag wel bij je langskomen.";
+
+"contamination.after.title" = "Na %@";
+"contamination.after.description" = "Heb je tot 31 augustus geen klachten gekregen? Dan hoef je niet meer thuis te blijven. Blijf wel de algemene regels tegen corona volgen.";
+
+"contamination.complaints.title" = "Klachten die passen bij het coronavirus";
+"contamination.complaints.step1" = "verkoudheid, loopneus, niezen";
+"contamination.complaints.step2" = "keelpijn";
+"contamination.complaints.step3" = "hoesten";
+"contamination.complaints.step4" = "opeens niets meer ruiken of proeven";
+"contamination.complaints.step5" = "temperatuur boven 37,5 graden (verhoging of koorts)";
+"contamination.complaints.step6" = "snel of moeilijk ademen";
