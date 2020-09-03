@@ -104,18 +104,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
 
-        exposureController
-            .isAppDeactivated()
-            .sink(receiveCompletion: { _ in
-                // Do nothing
-            }, receiveValue: { [weak self] isDectivated in
-                if isDectivated {
-                    self?.routeToEndOfLife()
-                    self?.exposureController.deactivate()
-                }
-            })
-            .store(in: &disposeBag)
-
         exposureStateStream.exposureState.sink { [weak self] state in
             if state.activeState.isAuthorized {
                 self?.routeToMain()
@@ -162,7 +150,20 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func didBecomeActive() {
+
         exposureController.refreshStatus()
+
+        exposureController
+            .isAppDeactivated()
+            .sink(receiveCompletion: { _ in
+                // Do nothing
+            }, receiveValue: { [weak self] isDectivated in
+                if isDectivated {
+                    self?.routeToEndOfLife()
+                    self?.exposureController.deactivate()
+                }
+               })
+            .store(in: &disposeBag)
     }
 
     func didEnterForeground() {
