@@ -95,6 +95,8 @@ final class AboutManager: AboutManaging {
                 technicalInformationEntry
             ])),
 
+            notificationExplanation,
+
             .question(bluetooth.appending(linkedContent: [
                 AboutEntry.question(notification),
                 AboutEntry.question(anonymous)
@@ -109,8 +111,6 @@ final class AboutManager: AboutManaging {
                 AboutEntry.question(bluetooth),
                 AboutEntry.question(pause)
             ])),
-
-            notificationExplanation,
 
             .question(pause.appending(linkedContent: [
                 AboutEntry.question(bluetooth),
