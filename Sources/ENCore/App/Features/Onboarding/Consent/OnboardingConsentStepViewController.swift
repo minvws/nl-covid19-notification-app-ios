@@ -65,8 +65,8 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.internalView.playAnimation()
     }
 

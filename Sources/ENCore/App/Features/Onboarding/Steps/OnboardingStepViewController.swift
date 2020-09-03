@@ -44,14 +44,14 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
         self.internalView.playAnimation()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
 
         self.internalView.stopAnimation()
     }
