@@ -253,9 +253,12 @@ final class OnboardingConsentView: View {
     }
 
     func playAnimation() {
-        guard animationsEnabled() else { return }
+        if case let .animation(_, repeatFromFrame, defaultFrame) = self.consentStep?.illustration {
+            guard animationsEnabled() else {
+                animationView.currentFrame = defaultFrame ?? 0
+                return
+            }
 
-        if case let .animation(_, repeatFromFrame) = self.consentStep?.illustration {
             if let repeatFromFrame = repeatFromFrame {
                 animationView.play(fromProgress: 0, toProgress: 1, loopMode: .playOnce) { [weak self] completed in
                     if completed {
@@ -293,7 +296,7 @@ final class OnboardingConsentView: View {
             imageView.image = image
             animationView.isHidden = true
             imageView.isHidden = false
-        case let .animation(named: name, _):
+        case let .animation(named: name, _, _):
             animationView.animation = LottieAnimation.named(name)
             animationView.isHidden = false
             imageView.isHidden = true

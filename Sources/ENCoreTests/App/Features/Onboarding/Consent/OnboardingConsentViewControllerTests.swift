@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
@@ -25,6 +26,8 @@ final class OnboardingConsentViewControllerTests: TestCase {
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,
                                            theme: theme)
+
+        AnimationTestingOverrides.animationsEnabled = false
     }
 
     // MARK: - Tests
