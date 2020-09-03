@@ -12,7 +12,7 @@ import UIKit
 final class OnboardingStep: NSObject {
     enum Illustration {
         case image(named: String)
-        case animation(named: String, repeatFromFrame: Int? = nil)
+        case animation(named: String, repeatFromFrame: Int? = nil, defaultFrame: CGFloat? = nil)
     }
 
     var attributedTitle: NSAttributedString = NSAttributedString(string: "")

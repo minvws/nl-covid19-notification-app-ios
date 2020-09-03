@@ -102,7 +102,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 theme: theme,
                 title: .consentStep4Title,
                 content: .consentStep4Content,
-                illustration: .animation(named: "share", repeatFromFrame: 31),
+                illustration: .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35),
                 summarySteps: nil,
                 primaryButtonTitle: .consentStep4PrimaryButton,
                 secondaryButtonTitle: .consentStep4SecondaryButton,
