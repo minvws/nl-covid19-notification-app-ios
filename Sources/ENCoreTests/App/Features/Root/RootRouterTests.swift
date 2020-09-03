@@ -176,7 +176,7 @@ final class RootRouterTests: XCTestCase {
             Just(true).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        router.start()
+        router.didBecomeActive()
 
         XCTAssertEqual(exposureController.deactivateCallCount, 1)
         XCTAssertEqual(endOfLifeBuilder.buildCallCount, 1)
