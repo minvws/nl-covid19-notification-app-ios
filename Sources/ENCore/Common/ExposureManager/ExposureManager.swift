@@ -57,9 +57,11 @@ final class ExposureManager: ExposureManaging, Logging {
     }
 
     func deactivate() {
-        manager.setExposureNotificationEnabled(false) { error in
-            if let error = error {
-                self.logError("Error disabling `ExposureNotifications`: \(error.localizedDescription)")
+        if manager.exposureNotificationEnabled {
+            manager.setExposureNotificationEnabled(false) { error in
+                if let error = error {
+                    self.logError("Error disabling `ExposureNotifications`: \(error.localizedDescription)")
+                }
             }
         }
     }

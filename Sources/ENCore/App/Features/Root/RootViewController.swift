@@ -50,11 +50,15 @@ final class RootViewController: ViewController, RootViewControllable {
 
     weak var router: RootRouting?
 
-    func presentInNavigationController(viewController: ViewControllable, animated: Bool) {
+    func presentInNavigationController(viewController: ViewControllable, animated: Bool, presentFullScreen: Bool) {
         let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
 
         if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
             navigationController.presentationController?.delegate = presentationDelegate
+        }
+
+        if presentFullScreen {
+            navigationController.uiviewController.modalPresentationStyle = .fullScreen
         }
 
         if let presentedModal = presentedViewController {

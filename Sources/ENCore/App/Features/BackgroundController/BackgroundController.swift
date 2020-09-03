@@ -59,7 +59,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     func scheduleTasks() {
         let scheduleTasks: () -> () = {
             self.exposureController
-                .isAppDectivated()
+                .isAppDeactivated()
                 .sink(receiveCompletion: { _ in
                     // Do nothing
                 }, receiveValue: { (isDeactivated: Bool) in

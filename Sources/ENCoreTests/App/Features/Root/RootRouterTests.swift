@@ -32,7 +32,7 @@ final class RootRouterTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        exposureController.isAppDectivatedHandler = {
+        exposureController.isAppDeactivatedHandler = {
             Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
         exposureController.activateHandler = { _ in
@@ -172,7 +172,7 @@ final class RootRouterTests: XCTestCase {
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {
 
-        exposureController.isAppDectivatedHandler = {
+        exposureController.isAppDeactivatedHandler = {
             Just(true).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
@@ -180,7 +180,7 @@ final class RootRouterTests: XCTestCase {
 
         XCTAssertEqual(exposureController.deactivateCallCount, 1)
         XCTAssertEqual(endOfLifeBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.embedCallCount, 1)
+        XCTAssertEqual(viewController.presentInNavigationControllerCallCount, 1)
     }
 
     func test_didEnterForeground_startsObservingNetworkReachability() {

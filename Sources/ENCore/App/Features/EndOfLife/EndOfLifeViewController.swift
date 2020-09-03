@@ -22,6 +22,8 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable, 
         self.listener = listener
 
         super.init(theme: theme)
+
+        modalPresentationStyle = .fullScreen
     }
 
     // MARK: - ViewController Lifecycle
