@@ -1,3 +1,37 @@
+/* MARK: - Chance of contamination */
+"contamination.title" = "Enfeksiyon riski";
+
+"contamination.near_someone_with_corona.title" = "Korona virüsü olan birisinin yakınında bulundunuz";
+"contamination.near_someone_with_corona.description" = "Cuma günü %@ tarihinde enfekte olmuş olabilirsiniz. O gün Korona olan birinin en az 15 dakika yakınında bulundunuz.<br><br>Gerçekten enfekte olmuşsanız, o zaman virüsü başkalarına bulaştırabilirsiniz. Şimdilik kendinizi hasta hissetmeseniz bile.";
+
+"contamination.what_to_do.title" = "Şimdi ne yapabilirsiniz?";
+"contamination.what_to_do.step1" = "%@ tarihine kadar evde kalın ve Korona ile ilişkili olabilecek şikayetlere ekstra dikkat gösterin";
+"contamination.what_to_do.step2" = "Korona'ya uyan (hafif) şikayetleriniz mi var? Korona testi yaptırın ve  %@ tarihine kadar evde kalın.";
+"contamination.what_to_do.step3" = "Yüksek ateş veya nefes almada güçlük çekme gibi ciddi şikayetleriniz mi var? Veya risk grubunda mısınız ve ateşiniz mi var? Önce doktorunuzu arayın";
+"contamination.what_to_do.description" = "GGD size telefonda uygulamadan farklı tavsiyeler mi veriyor? O zaman, GGD'nin tavsiyelerine uyun.";
+
+"contamination.stay_home.title" = "%@ tarihine kadar evde kalın";
+"contamination.stay_home.step1" = "Alışverişlerinizi başkalarına yaptırın. Bu gerçekten mümkün değil mi ve hiç şikayetiniz yok mu? O zaman alışveriş yapmak için dışarı çıkabilirsiniz. 1,5 metre mesafe koruyun ve kimseye dokunmayın.";
+"contamination.stay_home.step2" = "Bahçede veya balkonda oturabilirsiniz.";
+"contamination.stay_home.step3" = "4-12 yaş arası çocuklar okula gidebilirler ve / veya spor yapabilirler.";
+
+"contamination.visitors.title" = "Ziyaretçi kabul etmeyin";
+"contamination.visitors.step1" = "Ancak sizinle birlikte yaşayanlar sizinle birlikte aynı evde bulunabilirler. Birbirinizden uzak durun ve 1,5 metre mesafe koruyun. Yani sarılmak, öpüşmek ve sevişmek yok.";
+
+"contamination.medical_help.title" = "Tıbbi yardıma mı ihtiyacınız var?";
+"contamination.medical_help.step1" = "Doktora veya hastaneye gitmeyin, önce doktorunuzu arayın. Korona virüsü olan birinin yakınında bulunmuş olduğunuzu söyleyin.";
+"contamination.medical_help.step2" = "Doktorunuz veya diğer tıbbi yardımcı sizi ziyaret edebilir.";
+
+"contamination.after.title" = "%@ tarihinden sonra";
+"contamination.after.description" = "%@ tarihine kadar sizde şikayetler oluşmadı mı? Öyleyse artık evde kalmak zorunda değilsiniz. Korona'dan korunmak için genel önlemleri almaya devam edin.";
+
+"contamination.complaints.title" = "Korona virüsü ile ilgili şikayetler";
+"contamination.complaints.step1" = "burun nezlesi, burun akıntısı, hapşırma";
+"contamination.complaints.step2" = "boğaz ağrısı";
+"contamination.complaints.step3" = "öksürük";
+"contamination.complaints.step4" = "Aniden koku ve tat alamamak";
+"contamination.complaints.step5" = "37,5 derecenin üzerindeki vücut ısısı (ateş)";
+"contamination.complaints.step6" = "hızlı veya zor nefes alma";
 /* MARK: - Status */
 "status.icon.accessibility.ok" = "Uygulamanın doğru kurulduğunu gösteren yeşil daire içinde onay işareti";
 "status.icon.accessibility.inactive" = "Uyarı olarak sarı daire içinde ünlem işareti";
@@ -109,7 +143,7 @@
 
 "notification.upload.failed.header" = "GGD'yi arayın";
 "moreInformation.about.helpdesk.title" = "Uygulama hakkında başka sorunuz mu var?";
-"moreInformation.about.helpdesk.subtitle" = "Yardım masasını arayın";
+"moreInformation.about.helpdesk.subtitle" = "0800-1280'i ücretsiz olarak arayın";
 
 /* MARK: - Consent */
 "skipStep" = "Atla";
@@ -122,7 +156,7 @@
 
 "help.faq.notification.title" = "Uygulamadan ne zaman bildirim alacağım?";
 "help.faq.location.title" = "Uygulama konumumu görebilir mi?";
-"help.faq.location.description" = "Hayır. Uygulama, yalnızca uygulaması olan diğer kişilerin yakınındaysanız Bluetooth üzerinden görür. Bluetooth konumunuza bağlı değildir. Bu nedenle uygulama nerede olduğunuzu göremez.<br><br>Bluetooth, birbirine yakın olan 2 cihaz arasında kablosuz bağlantı kurmak içindir. Telefonunuz ve hoparlör veya kulaklık gibi.<br><br>Uygulama, bluetooth sinyalinin gücüne göre 2 telefon arasındaki mesafeyi tahmin edebilir.
+"help.faq.location.description" = "Hayır. Uygulama, yalnızca uygulaması olan diğer kişilerin yakınındaysanız Bluetooth üzerinden görür. Bluetooth konumunuza bağlı değildir. Bu nedenle uygulama nerede olduğunuzu göremez. <br><br>Bluetooth, birbirine yakın olan 2 cihaz arasında kablosuz bağlantı kurmak içindir. Telefonunuz ve hoparlör veya kulaklık gibi.<br><br>Uygulama, bluetooth sinyalinin gücüne göre 2 telefon arasındaki mesafeyi tahmin edebilir.
 ";
 "help.faq.anonymous.title" = "Uygulama nasıl anonim olabilir?";
 "help.faq.anonymous.description_1" = "Uygulama diğer telefonlarla kod değişimi yapar. Bu kodlar herhangi bir kişisel bilgi veya konum bilgisi içermez. Tamamen rastgeledir. Kod değişimi, uygulaması olan bir kişiye yakın olduğunuz anda gerçekleşir.";
@@ -130,7 +164,7 @@
 "help.bluetooth.title" = "Bluetooth sinyali duvardan geçer mi?";
 
 "help.faq.reason.title" = "Bu uygulama neden önemlidir?";
-"help.faq.reason.description" = "Korona olan birinin yakınında bulunduktan sonra uygulama sizi hızlı bir şekilde uyarabilir. Sizde henüz şikayetler oluşmadan bile. Korona taşıyor olabilirsiniz ve fark etmeden bulaşıcı olabilirsiniz.<br><br>Uygulama aracılığıyla bir uyarı alırsanız, kendinizi test ettirebilirsiniz. Ayrıca evde kalmanız tavsiye edilir. Bu şekilde çevrenizdeki insanları bilinçsizce enfekte etmeyi önlersiniz.<br><br>Test edildiniz ve sizde Korona mı var? Daha sonra GGD ile birlikte etrafınızda uzun süre bulunmuş olan kişileri uyarabilirsiniz. Tanımadığınız kişileri de. Bir restoranda, sinemada veya bekleme odasında. Uygulama bu kişiler tarafından kullanıldığı sürece.<br><br>CoronaMelder sayesinde daha hızlı müdahale edip yeni enfeksiyonların önüne geçebiliriz. Korona'yı ancak birlikte kontrol altına alabiliriz.";
+"help.faq.reason.description" = "Korona olan birinin yakınında bulunduktan sonra uygulama sizi hızlı bir şekilde uyarabilir. Sizde henüz şikayetler oluşmadan bile. Korona taşıyor olabilirsiniz ve fark etmeden bulaşıcı olabilirsiniz.<br><br>Uygulama aracılığıyla bir uyarı alırsanız, neler yapabileceğinizi uygulamada okuyabilirsiniz. Mesela test edilmeniz gerekip gerekmediğini. Bu şekilde çevrenizdeki insanları bilinçsizce enfekte etmeyi önlersiniz.<br><br>Test edildiniz ve sizde Korona mı var? Daha sonra GGD ile birlikte etrafınızda uzun süre bulunmuş olan kişileri uyarabilirsiniz. Tanımadığınız kişileri de. Bir restoranda, sinemada veya bekleme odasında. Uygulama bu kişiler tarafından kullanıldığı sürece.<br><br>CoronaMelder sayesinde daha hızlı müdahale edip yeni enfeksiyonların önüne geçebiliriz. Korona'yı ancak birlikte kontrol altına alabiliriz.";
 "help.faq.upload_keys.title" = "Bende Korona olduğunda başkalarına bildirim gönderebilir miyim?";
 "help.faq.upload_keys.description" = "Ancak test edilipte Korona olduğunuz ortaya çıktığında başkalarına bildirim gönderebilirsiniz. Bu durumda GGD sizi arayacaktır.<br><br>Bu telefon görüşmesi sırasında GGD çalışanı GGD anahtarınızı kontrol eder. Bunu uygulamada bulabilirsiniz. Bu şekilde, sadece gerçekten enfekte olmuş olan kişilerin bildirim gönderebileceği her zaman kesindir.<br><br>GGD anahtarınız kontrol edildikten sonra, telefonunuzun son 14 gün içinde başka telefonlara gönderdiği kodları paylaşabilirsiniz.<br><br>Bu şekilde, bulaşıcı olduğunuzda yakınında bulunduğunuz kişilere, anonim bir bildirim gönderilir. Sadece bu kişiler de uygulamayı kullanıyorsa.";
 "help.faq.deletion.title" = "Verilerimi nasıl silerim?";
@@ -140,7 +174,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Ulaşılabilirlik";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Ekstra bir enfeksiyon riskine maruz kaldıktan sonra bir bildirim alırsınız. Bu en az 15 dakika boyunca Korona olduğu ortaya çıkan birine yakın olmanız durumunda olur. Ve tabii ki ancak bu kişi de uygulamayı kullanıyorsa.<br><br>Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne bağlıdır. Ve iletişim sürenize. Birisi sokakta bisikletle yanınızdan mı geçti? O zaman sonrasında size bildirim gelmez. Birbirine çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski olmadı. <br><br>Trende ya da ofiste birine yakınında mıydınız? O zaman sonrasında bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
+"help.faq.notification.description" = "Ekstra bir enfeksiyon riskine maruz kaldıktan sonra bir bildirim alırsınız. Bunu en az 15 dakika boyunca Korona olduğu ortaya çıkan birine yakın olduğunuz durumda olur. Ve tabii ki ancak bu kişi de uygulamayı kullanıyorsa.<br><br>Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne ve iletişim sürenize bağlıdır.<br><br>Birisi sokakta bisikletle yanınızdan mı geçti? O zaman sonrasında size bildirim gelmez. Birbirine çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski olmadı. <br><br>Trende ya da ofiste birinin yakınında mıydınız? O zaman sonrasında bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
 "help.faq.bluetooth.title" = "Bluetooth sinyali duvardan geçer mi?";
 "help.faq.bluetooth.description" = "Evet, ancak bu durumda sinyal çok zayıflar. Bluetooth, en iyi sonucu telefonunuz başka bir kişinin telefonuyla aynı odada bulunduğu takdirde verir.<br><br>Örneğin, uygulamanızın komşularınızdan Bluetooth sinyali alması ihtimali çok düşüktür.<br><br>Bu nedenle, komşunuzda Korona olduğu ortaya çıkarsa ve aynı odada bulunmuyorsanız, bildirim alma şansınız çok azdır.";
 "help.faq.power_usage.title" = "Uygulama ne kadar elektrik kullanıyor?";
@@ -173,21 +207,27 @@
 "help.technical_explanation.github.subtitle" = "GitHub'a gidin";
 
 "help.what_does_notification_mean.title" = "Bildirim almanız ne anlama gelir?";
-"help.what_does_notification_mean.description" = "Sonradan Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama bir bildirim gönderir. Bildirim sadece bunun hangi gün olduğunu belirtir. Bu durumda ekstra bir enfeksiyon riskine maruz kalmış olursunuz. Enfekte olursanız, virüsü başkalarına aktarabilirsiniz. Kendinizi hasta hissetmeseniz bile.";
+"help.what_does_notification_mean.description1" = "Daha sonra Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
+"help.what_does_notification_mean.description2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 "help.what_does_report_look_like.title" = "Bildirim nasıl gözükür?";
 "help.what_does_report_look_like.description" = "Bildirim, kısa mesaj aldığınızda gördüklerinize benzer. Bildirim,Korona virüslü birinin yakınında olduğunuz günü belirtir.<br><br>CoronaMelder'ı açmak için bildirime tıklayın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 "help.notification.example" = "Örnek: Bildirim aldığınızda uygulama bu şekilde görünür";
-"help.what_to_do_with_notification.title" = "Bir bildirim aldığınızda ne yapabilirsiniz?";
-"help.what_to_do_with_notification.description" = "Korona testi yaptırın. Ne zaman test yaptırmanız ise Korona'ya uyan belirtilerinizin olup olmadığına bağlıdır. Ve hangi gün Koronalı kişinin yakınında olduğunuza bağlıdır. Her durumda, sonuçları öğrenene kadar evde kalın. Böylelikle bilinçsizce başkalarına bulaştırmayı önlersiniz.<br><br>Sizi tanıyan birinin yakınında mıydınız ve GGD'den bir çağrı mı aldınız? O zaman, uygulamanın değil de GGD'nin tavsiyelerine uyun.";
+"help.what_to_do_with_notification.title" = "Korona olan birisinin yakınında bulunduktan sonra neler yapabilirsiniz?";
+"help.what_to_do_with_notification.description" = "Uygulamadaki tavsiyelere uyun. Tavsiye, durumunuza bağlıdır. Koronaya uyan şikayetlerinizin olup olmadığına bağlıdır. Ve enfekte olan kişinin yakınında hangi gün bulunduğunuza bağlıdır.<br><br>Her durumda, sizde Korona olmadığından emin olana kadar evde kalın. Böylelikle, bilinçsizce başkalarına bulaştırmayı önlersiniz.<br><br> GGD size telefonda uygulamadan farklı tavsiyeler mi verdi? O zaman GGD'nin tavsiyelerine uyun.";
 "help.other_reports.title" = "Diğer bildirimler";
-"help.other_reports.description" = "Uygulama, teknik bir sorun olduğunda size bir bildirim de gönderebilir. Örneğin, Bluetooth'unuz kapalıysa veya bir günden uzun süredir internet bağlantısı yoksa. Uygulama bunu çözmenize yardımcı olacaktır.<br><br>Böyle bir bildirim mi aldınız ve uygulama hala aktif mi? O zaman sorun bu meyanda çözülmüştür.";
+"help.other_reports.description" = "CoronaMelder, teknik bir sorun olması durumunda da size bir bildirim gönderebilir. Örneğin, Bluetooth'unuz kapalıysa. Veya bir günden uzun süredir internet bağlantısı yoksa. Uygulama sorunu çözmenize yardımcı olacaktır.<br><br>Böyle bir bildirim mi aldınız ve uygulama hala aktif mi? O zaman sorun bu meyanda çözülmüştür. <br><br>Bazen telefonunuzun COVID-19 kontrolleri gerçekleştirdiğini belirten bildirimler de alırsınız. O zaman CoronaMelder'ı açın. Bilmekte fayda var: genellikle hiçbir sorun yoktur.";
+"help.other_what_does_report_say.title" = "Bildirimde ne yazar?";
+"help.other_what_does_report_say.content1" = "Daha sonra Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
+"help.other_what_does_report_say.content2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 
 "help.pause_app.title" = "Can I pause the app?";
-"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. Do this through <b>Settings > Bluetooth</b>. If you turn off Bluetooth, the app won't exchange codes anymore. After this, you get a reminder to turn on the app again every 24 hours.<br><br>If you want to keep Bluetooth turned on, you can also pause the app by temporarily turning off 'Exposure Logging'. Do this through <b>Settings > Privacy > Health > COVID-19 Exposure Logging</b>. Also in this case you get a reminder to turn on the app again every 24 hours.<br><br>However, it's mostly not recommended to pause the app. Because you might forget to turn it on again. You can pause the app in certain moments. For example, when you're near (potential) corona patients and you're wearing the appropriate medical protection.";
+"help.pause_app.description" = "Evet, bunu bluetooth'unuzu kapatarak yapabilirsiniz. Bunu<b>Ayarlar> Bluetooth</b>ile yapabilirsiniz. Bluetooth'u kapatırsanız, uygulama artık kod değişimi yapmayacaktır. Bundan sonra, her 24 saatte bir uygulamayı tekrar açmanız için otomatik olarak bir hatırlatıcı mesaj alacaksınız.<br><br>Yine de, tekrar açmayı unutabileceğiniz için genellikle uygulamayı duraklatmanız önerilmez. Özel durumlarda uygulamayı duraklatabilirsiniz. Örneğin, (olası) Korona hastalarına yaklaşırsanız, ancak tıbbi koruyucu ekipman giydiğinizden eminseniz.";
 
 "help.apps_other_countries.title" = "CoronaMelder diğer ülkelerdeki uygulamalarla da çalışıyor mu?";
+"help.apps_other_countries.description" = "Ne yazık ki henüz değil, ancak Eylül ayı sonunda mümkün olması bekleniyor. Ardından CoronaMelder, diğer ülkelerdeki bazı uygulamalarla da kod değişimi yapabilecek. Örneğin, Alman uygulaması. <br><br>CoronaMelder'e ek olarak Almanca Corona-Warn-Uygulamasını yüklerseniz, telefonunuz aynı anda yalnızca 1 uygulamanın etkin olabileceğini söyler. Seçtiğiniz uygulama, o anda temaslarınızı izleyen tek uygulama olur. Bunu birden fazla ülkede yapmak istiyorsanız, uygulamaları kendiniz değiştirmelisiniz. Daha sonra o uygulamadan bildirim alabilirsiniz. Günde bir kez uygulama değiştirirseniz her iki uygulama da temaslarınızı kontrol eder. Bu şekilde hiçbir şeyi kaçırmazsınız.<br><br>Eylül ayının sonundan itibaren muhtemelen kendi ülkenizin uygulamasını kullanmaya devam edebilirsiniz ve artık her gün değiştirmeniz gerekmez.";
+
 /* MARK: - Message */
-"message.default.title" = "Korona olan bir kişinin yakınında bulundunuz";
+"message.default.title" = "Korona olan birisinin yakınında bulundunuz";
 "message.default.body" = "Daha sonra Korona olduğu ortaya çıkan birinin yakınında %@ bulundunuz. Bu durumda ekstra bir enfekte olma riskine maruz kalmış olabilirsiniz. Gerçekten enfekte olursanız, virüsü başkalarına bulaştırabilirsiniz. Şimdilik kendinizi hasta hissetmeseniz bile.";
 /* MARK: - Message */
 "message.title" = "Bildirim almak";
@@ -213,17 +253,17 @@
 "status.appState.card.no_recent_updates.description" = "Uygulama, son 24 saat içinde internete bağlanamadı. Wifi veya mobil verilerinizin açık olup olmadığını kontrol edin ve tekrar deneyin.";
 "status.appState.card.button" = "Uygulamayı açmak";
 "status.appState.card.try_again" = "Tekrar deneyin";
-"status.active.description" = "Uygulamayı kapatsanız bile CoronaMelder etkindir";
+"status.active.description" = "Uygulamayı kapatsanız bile buluşmalar izlenir";
 "status.notified.days_ago_one" = "%@ gün önce";
 "status.notified.days_ago_other" = "%@ gün önce";
-"status.notified.description" = "Fazladan %@ (%@) bulaşma riskine uğradınız";
+"status.notified.description" = "%@ (%@) tarihinde enfekte olmuş olabilirsiniz";
 "status.notified.moreInfo" = "Şimdi ne yapabilirim?";
 "status.notified.removeNotification" = "Bildirimi silin";
 
 /* The title for the table of items in more infromation */
 "moreInformation.headerTitle" = "Daha fazla bilgi";
 
-"moreInformation.cell.about.title" = "Uygulama hakkında";
+"moreInformation.cell.about.title" = "Uygulama hakkında sorularınız mı var?";
 "moreInformation.cell.about.subtitle" = "Uygulamanın nasıl çalıştığını ve gizliliğiniz için ne anlama geldiğini görün";
 
 "moreInformation.cell.share.title" = "Başkalarını uygulamaya davet etmek";
@@ -240,11 +280,11 @@
 
 "moreInformation.info.title" = "Sosyal güvenlik numaranızı hazır bulundurun. Bunu pasaportunuzda veya kimlik kartınızda bulabilirsiniz";
 
-"moreInformation.complaints.item1" = "soğuk algınlığı şikayetleri";
-"moreInformation.complaints.item2" = "soğuk algınlığı, burun akıntısı, hapşırma, boğaz ağrısı";
-"moreInformation.complaints.item3" = "öksürük";
-"moreInformation.complaints.item4" = "ateş";
-"moreInformation.complaints.item5" = "Ani koku ve tat alma kaybı";
+"moreInformation.complaints.item1" = "burun nezlesi, burun akıntısı, hapşırma, boğaz ağrısı gibi soğuk algınlığı şikayetleri";
+"moreInformation.complaints.item2" = "öksürük";
+"moreInformation.complaints.item3" = "nefes darlığı";
+"moreInformation.complaints.item4" = "vücut ısısında artış veya ateş";
+"moreInformation.complaints.item5" = "Ani koku ve tat alma kaybı (burun tıkanıklığı olmadan)";
 "moreInformation.complaints.title" = "Korona virüsü (COVID-19) ile ilgili şikayetler (COVID-19)";
 "moreInformation.complaints.content" = "Şikayetiniz mi var? O zaman mümkün olduğunca evde kalın. Bunlar ciddi şikayetler mi? Doktorunuzu arayın.";
 
@@ -269,7 +309,7 @@
 "moreInformation.about.faq.bluetooth" = "Bluetooth sinyali duvardan geçer mi?";
 "moreInformation.about.faq.power_usage" = "Uygulama ne kadar elektrik kullanıyor?";
 "moreInformation.about.faq.deletion" = "Bluetooth verilerini telefonumdan nasıl silerim?";
-"moreInformation.about.faq.deletion.description" = "You can delete the Bluetooth data saved by Corona Melder yourself. Do so by:<br><br>Go to <b>Settings on your phone > Privacy > Health > Exposure to COVID-19</b>. Press <b>Delete exposure logs</b>. If you don't want the app do save new Bluetooth data, delete the app.";
+"moreInformation.about.faq.deletion.description" = "CoronaMelder'ın kaydettiği bluetooth verilerini silebilirsiniz. Bunu nasıl yapacağınız aşağıda açıklanmıştır.<br><br>Telefonunuzda Ayarlar> Karşılaşma Uyarıları> \"Maruz Kalmayı İzle\" Durumuna gidin.Karşılaşma Günlüğünü Sil'i tıklayın.<br><br>Uygulamanın yeni Bluetooth verilerini kaydetmeyi durdurmasını mı istiyorsunuz? O zaman uygulamayı silin.";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Virüsün durdurulmasına yardımcı olduğunuzu başkalarına bildirin";
@@ -309,14 +349,14 @@
 "moreInformation.receivedNotification.notificationExplanation.title" = "Bildirim almanız ne anlama gelir?";
 "moreInformation.receivedNotification.notificationExplanation.content" = "Sonradan Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama bir bildirim gönderir. Bildirim sadece bunun hangi gün olduğunu belirtir. Bu durumda fazladan bir enfeksiyon riskine maruz kaldınız. Enfekte olursanız, virüsü başkalarına aktarabilirsiniz. Kendinizi hasta hissetmeseniz bile.";
 "moreInformation.receivedNotification.doCoronaTest.title" = "Korona testi yaptırın";
-"moreInformation.receivedNotification.doCoronaTest.content" = "Kendinizi hasta hissetmeseniz bile. Çünkü hasta hissetmeden Korona virüsü yayabilir ve böylece başkalarına bulaştırabilirsiniz.<br><br>Kendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.";
+"moreInformation.receivedNotification.doCoronaTest.content" = "Kendinizi hasta hissetmeseniz bile. Çünkü hasta hissetmeden Korona virüsü yayabilir ve böylece başkalarına bulaştırabilirsiniz.\n\nKendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.";
 
 /* MARK: - MoreInformation | Request Test */
 "moreInformation.requestTest.title" = "Korona testi talep etmek";
 "moreInformation.requestTest.button.title" = "Korona testi talep edin";
 "moreInformation.requestTest.receivedNotification.title" = "Korona ile uyumlu şikayetleriniz mi var? Test talep edin";
-"moreInformation.requestTest.receivedNotification.content" = "Korona virüsü ile uyumlu olan (hafif) şikayetleriniz mi var? Kendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz. Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.";
-"moreInformation.requestTest.complaints" = "Ciddi şikayetleriniz mi var ya da bir risk grubuna dahil misiniz? O durumda doktorunuzu arayın.";
+"moreInformation.requestTest.receivedNotification.content" = "Korona virüsü ile uyumlu olan (hafif) şikayetleriniz mi var? Kendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz.<br><br>Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.";
+"moreInformation.requestTest.complaints" = "Yüksek ateş veya nefes almada güçlük çekme gibi ciddi şikayetleriniz mi var? Veya risk grubunda mısınız ve ateşiniz mi var? Önce doktorunuzu arayın.";
 "moreInformation.requestTest.link" = "Coronatest.nl adresine gidin";
 "moreInformation.requestTest.phone" = "0800-1202'yi arayın";
 
@@ -324,6 +364,8 @@
 "moreInformation.notification.measures.step1" = "Ellerinizi düzenli olarak yıkayın";
 "moreInformation.notification.measures.step2" = "Dirseğinize öksürün/hapşırın";
 "moreInformation.notification.measures.step3" = "Evinizin dışındaki kişilerle aranızda 1,5 metre mesafe tutun";
+
+"moreInformation.status.alarm.alt-text" = "Eyleme geçmenin gerekli olduğunu gösteren alarm zilli kırmızı daire";
 
 /* MARK: - Cards */
 "cards.exposureOff.title" = "Uygulama etkin <u>değil</u>";
@@ -386,3 +428,5 @@ Bilinmesi gerekenler:";
 "privacyAgreement.list.step3" = "Bir Korona testi, Korona olduğunuzu gösterirse, diğer kullanıcıları uyarmak için bunu uygulamada bildirebilirsiniz.";
 "privacyAgreement.list.step4" = "Verileri telefonunuzdan istediğiniz zaman silebilirsiniz.";
 "privacyAgreement.consent.button" = "Gizlilik bildirimini okudum ve kabul ediyorum";
+
+
