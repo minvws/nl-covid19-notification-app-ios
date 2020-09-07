@@ -23,9 +23,6 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         return button
     }()
 
-    static let onboardingConsentSummaryStepsViewLeadingMargin: CGFloat = 16
-    static let onboardingConsentSummaryStepsViewTrailingMargin: CGFloat = 16
-
     private let onboardingConsentManager: OnboardingConsentManaging
     private let consentStep: OnboardingConsentStep?
 
@@ -207,8 +204,6 @@ final class OnboardingConsentView: View {
 
     private lazy var viewsInDisplayOrder = [imageView, animationView, titleLabel, contentLabel]
 
-    private var consentSummaryStepsView: OnboardingConsentSummaryStepsView?
-
     var consentStep: OnboardingConsentStep? {
         didSet {
             updateView()
@@ -304,25 +299,6 @@ final class OnboardingConsentView: View {
         case .none:
             break
         }
-
-        guard let summarySteps = step.summarySteps else {
-            return
-        }
-
-        if step.hasSummarySteps {
-
-            consentSummaryStepsView = OnboardingConsentSummaryStepsView(with: summarySteps, theme: theme)
-
-            subviews.forEach {
-                if $0 is OnboardingConsentSummaryStepView {
-                    $0.removeFromSuperview()
-                }
-            }
-
-            if let consentSummaryStepsView = consentSummaryStepsView {
-                scrollView.addSubview(consentSummaryStepsView)
-            }
-        }
     }
 
     private func updateViewConstraints() {
@@ -376,18 +352,6 @@ final class OnboardingConsentView: View {
             maker.leading.trailing.equalTo(self).inset(16)
             maker.height.greaterThanOrEqualTo(50)
             maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
-        }
-
-        if let consentSummaryStepsView = consentSummaryStepsView {
-
-            if step.hasSummarySteps {
-
-                consentSummaryStepsView.snp.remakeConstraints { maker in
-                    maker.top.equalTo(titleLabel.snp.bottom).offset(20)
-                    maker.leading.trailing.equalTo(self).inset(16)
-                    maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
-                }
-            }
         }
     }
 

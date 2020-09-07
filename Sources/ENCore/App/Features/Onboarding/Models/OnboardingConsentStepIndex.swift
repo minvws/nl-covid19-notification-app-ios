@@ -26,29 +26,21 @@ final class OnboardingConsentStep: NSObject {
     var attributedTitle: NSAttributedString = NSAttributedString(string: "")
     var attributedContent: NSAttributedString = NSAttributedString(string: "")
     var illustration: Illustration
-    var summarySteps: [OnboardingConsentSummaryStep]?
     var primaryButtonTitle: String = ""
     var secondaryButtonTitle: String?
     var hasNavigationBarSkipButton: Bool = false
-
-    var hasSummarySteps: Bool {
-        guard let summarySteps = self.summarySteps else { return false }
-        return !summarySteps.isEmpty
-    }
 
     init(step: Index,
          theme: Theme,
          title: String,
          content: String,
          illustration: Illustration,
-         summarySteps: [OnboardingConsentSummaryStep]?,
          primaryButtonTitle: String,
          secondaryButtonTitle: String?,
          hasNavigationBarSkipButton: Bool) {
 
         self.step = step
         self.illustration = illustration
-        self.summarySteps = summarySteps
         self.primaryButtonTitle = primaryButtonTitle
         self.secondaryButtonTitle = secondaryButtonTitle
         self.hasNavigationBarSkipButton = hasNavigationBarSkipButton
