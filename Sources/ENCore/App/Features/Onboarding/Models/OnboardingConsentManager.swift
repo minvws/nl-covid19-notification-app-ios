@@ -43,7 +43,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 title: .onboardingPermissionsTitle,
                 content: .onboardingPermissionsDescription,
                 bulletItems: [.onboardingPermissionsDescriptionList1, .onboardingPermissionsDescriptionList2],
-                illustration: .image(image: .pleaseTurnOnBluetooth),
+                illustration: .image(image: .onboardingPermissionsHeader),
                 primaryButtonTitle: .onboardingPermissionsPrimaryButton,
                 secondaryButtonTitle: .onboardingPermissionsSecondaryButton,
                 hasNavigationBarSkipButton: true
