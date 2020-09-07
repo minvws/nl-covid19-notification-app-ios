@@ -1,8 +1,15 @@
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
+
 /* MARK: - Chance of contamination */
 "contamination.title" = "Kans op besmetting";
 
 "contamination.near_someone_with_corona.title" = "Je was in de buurt van iemand met het coronavirus";
-"contamination.near_someone_with_corona.description" = "Op %@ ben jij misschien besmet geraakt. Je was die dag minstens 15 minuten dicht bij iemand met corona.<br><br>Als je inderdaad besmet bent, kun je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
+"contamination.near_someone_with_corona.description" = "Op vrijdag %@ ben jij misschien besmet geraakt. Je was die dag minstens 15 minuten dicht bij iemand met corona.<br><br>Als je inderdaad besmet bent, kun je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
 
 "contamination.what_to_do.title" = "Wat kun je nu doen?";
 "contamination.what_to_do.step1" = "Blijf tot %@ thuis en let extra goed op klachten die kunnen passen bij corona";
@@ -16,7 +23,7 @@
 "contamination.stay_home.step3" = "Kinderen van 4-12 jaar mogen naar school en/of sporten.";
 
 "contamination.visitors.title" = "Ontvang geen bezoek";
-"contamination.visitors.step1" = "Alleen de mensen die bij je wonen, mogen samen met jou in huis zijn. Blijf bij elkaar uit de buurt en houdt 1,5 meter afstand. Dus niet knuffelen, niet zoenen en geen seks.";
+"contamination.visitors.step1" = "Alleen de mensen die bij je wonen, mogen samen met jou in huis zijn. Blijf bij elkaar uit de buurt en houd 1,5 meter afstand. Dus niet knuffelen, niet zoenen en geen seks.";
 
 "contamination.medical_help.title" = "Medische hulp nodig?";
 "contamination.medical_help.step1" = "Ga niet naar de huisarts of het ziekenhuis, maar bel eerst met je huisarts. Vertel dat je bij iemand bent geweest die het coronavirus heeft.";
@@ -37,12 +44,6 @@
 "status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
 "status.icon.accessibility.notified" = "Rood rondje met alarmbel dat aangeeft dat er nu actie nodig is";
 "status.notified.today" = "vandaag";
-/*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
 
 "testVersionTitle" = "Test- en onderzoeksversie %@ (%@)";
 
@@ -93,6 +94,13 @@
 
 "step5Title" = "Zat je dicht bij iemand in de trein? Dan kun je <u>later</u> wel een melding krijgen";
 "step5Content" = "Het bluetoothsignaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
+
+"onboarding.permissions.title" = "Zet CoronaMelder aan";
+"onboarding.permissions.description" = "CoronaMelder kan je alleen waarschuwen als je de app toestemming geeft om:";
+"onboarding.permissions.description.list1" = "Je meldingen te kunnen sturen";
+"onboarding.permissions.description.list2" = "Ontmoetingen met andere app-gebruikers bij te houden";
+"onboarding.permissions.secondary_button" = "Hoe werkt de app precies?";
+"onboarding.permissions.primary_button" = "Aanzetten";
 
 /* MARK: - Onboarding */
 "nextButtonTitle" = "Volgende";
@@ -212,10 +220,10 @@
 "help.what_does_report_look_like.title" = "Hoe ziet een melding eruit?";
 "help.what_does_report_look_like.description" = "De melding lijkt op wat je ziet als je een sms-bericht ontvangt. In de melding staat op welke dag je in de buurt was van iemand met het coronavirus.<br><br>Klik op de melding om CoronaMelder te openen. Daar lees je wat je verder kunt doen.";
 "help.notification.example" = "Voorbeeld: Zo ziet de app eruit als je een melding hebt ontvangen.";
-"help.what_to_do_with_notification.title" = "Wat kun je doen als je een melding krijgt?";
-"help.what_to_do_with_notification.description" = "Laat je testen op corona. Wanneer precies hangt af van of je klachten hebt die bij corona passen. En op welke dag je in de buurt was van de persoon met corona. Blijf  in ieder geval thuis tot je de uitslag weet. Zo voorkom je dat je onbewust anderen besmet.<br><br>Was je in de buurt van iemand die jou kende, en word je gebeld door de GGD? Volg dan het advies van de GGD, niet dat van de app.";
+"help.what_to_do_with_notification.title" = "Wat kun je doen als je in de buurt was van iemand met corona?";
+"help.what_to_do_with_notification.description" = "Volg het advies in de app. Het advies hangt af van je situatie. Of je klachten hebt die bij corona passen. En op welke dag je in de buurt was van de besmette persoon.<br><br>Blijf in ieder geval thuis tot je zeker weet dat je geen corona hebt. Zo voorkom je dat je onbewust anderen besmet.<br><br>Geeft de GGD je aan de telefoon andere adviezen dan de app? Volg dan het advies van de GGD.";
 "help.other_reports.title" = "Andere meldingen";
-"help.other_reports.description" = "De app kan je ook een melding sturen als er een technisch probleem is. Bijvoorbeeld als je Bluetooth uitstaat. Of als er langer dan een dag geen internetverbindig was. De app helpt je dit op te lossen.<br><br>Heb je zo’n melding ontvangen, en is de app wel gewoon actief? Dan is het probleem in de tussentijd al opgelost.<br><br>Je krijgt soms ook meldingen waarin staat dat je telefoon COVID-19 controles uitvoert. Open dan CoronaMelder. Goed om te weten: meestal is er niks aan de hand.";
+"help.other_reports.description" = "CoronaMelder kan je ook een melding sturen als er een technisch probleem is. Bijvoorbeeld als je Bluetooth uitstaat. Of als er langer dan een dag geen internetverbindig was. De app helpt je dit op te lossen.<br><br>Heb je zo’n melding ontvangen, en is de app wel gewoon actief? Dan is het probleem in de tussentijd al opgelost.<br><br>Je krijgt soms ook meldingen waarin staat dat je telefoon COVID-19 controles uitvoert. Open dan CoronaMelder. Goed om te weten: meestal is er niks aan de hand.";
 "help.other_what_does_report_say.title" = "Wat staat er in een melding?";
 "help.other_what_does_report_say.content1" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben.";
 "help.other_what_does_report_say.content2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
@@ -280,11 +288,11 @@
 
 "moreInformation.info.title" = "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart";
 
-"moreInformation.complaints.item1" = "verkoudheidsklachten";
-"moreInformation.complaints.item2" = "neusverkoudheid, loopneus, niezen, keelpijn";
-"moreInformation.complaints.item3" = "hoesten";
-"moreInformation.complaints.item4" = "verhoging";
-"moreInformation.complaints.item5" = "plotseling verlies van reuk en/of smaak";
+"moreInformation.complaints.item1" = "verkoudheidklachten zoals neusverkoudheid, loopneus, niezen, keelpijn";
+"moreInformation.complaints.item2" = "hoesten";
+"moreInformation.complaints.item3" = "benauwdheid";
+"moreInformation.complaints.item4" = "verhoging of koorts";
+"moreInformation.complaints.item5" = "plotseling verlies van reuk en/of smaak (zonder neusverstopping)";
 "moreInformation.complaints.title" = "Klachten die passen bij het coronavirus (COVID-19)";
 "moreInformation.complaints.content" = "Heb je klachten? Blijf dan zoveel mogelijk thuis. Zijn het ernstige klachten? Bel je huisarts.";
 
@@ -356,7 +364,7 @@
 "moreInformation.requestTest.button.title" = "Coronatest aanvragen";
 "moreInformation.requestTest.receivedNotification.title" = "Heb je klachten die passen bij corona? Vraag een test aan";
 "moreInformation.requestTest.receivedNotification.content" = "Heb je (lichte) klachten die passen bij het coronavirus? Laat je gratis testen. Het duurt niet lang en je kunt meestal snel een afspraak maken.<br><br>De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet.";
-"moreInformation.requestTest.complaints" = "Heb je ernstige klachten of zit je in een risicogroep? Bel dan je huisarts.";
+"moreInformation.requestTest.complaints" = "Heb je ernstige klachten zoals hoge koorts of moeite met ademhalen? Of zit je een risicogroep en krijg je koorts? Bel eerst je huisarts.";
 "moreInformation.requestTest.link" = "Ga naar coronatest.nl";
 "moreInformation.requestTest.phone" = "Bel 0800-1202";
 
