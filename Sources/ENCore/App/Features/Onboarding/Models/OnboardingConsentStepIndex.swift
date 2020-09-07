@@ -30,10 +30,61 @@ final class OnboardingConsentStep: NSObject {
     var secondaryButtonTitle: String?
     var hasNavigationBarSkipButton: Bool = false
 
+    convenience init(step: Index,
+                     theme: Theme,
+                     title: String,
+                     content: String,
+                     illustration: Illustration,
+                     primaryButtonTitle: String,
+                     secondaryButtonTitle: String?,
+                     hasNavigationBarSkipButton: Bool) {
+
+        let attributedContent = NSAttributedString.makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left)
+
+        self.init(step: step,
+                  theme: theme,
+                  title: title,
+                  attributedContent: attributedContent,
+                  illustration: illustration,
+                  primaryButtonTitle: primaryButtonTitle,
+                  secondaryButtonTitle: secondaryButtonTitle,
+                  hasNavigationBarSkipButton: hasNavigationBarSkipButton)
+    }
+
+    convenience init(step: Index,
+                     theme: Theme,
+                     title: String,
+                     content: String,
+                     bulletItems: [String],
+                     illustration: Illustration,
+                     primaryButtonTitle: String,
+                     secondaryButtonTitle: String?,
+                     hasNavigationBarSkipButton: Bool) {
+
+        let attributedContent = NSMutableAttributedString(attributedString: .makeFromHtml(text: content + "<br>",
+                                                                                          font: theme.fonts.body,
+                                                                                          textColor: theme.colors.gray,
+                                                                                          textAlignment: Localization.isRTL ? .right : .left))
+
+        for bullet in NSAttributedString.bulletList(bulletItems, theme: theme, font: theme.fonts.body) {
+            attributedContent.append("\n".attributed())
+            attributedContent.append(bullet)
+        }
+
+        self.init(step: step,
+                  theme: theme,
+                  title: title,
+                  attributedContent: attributedContent,
+                  illustration: illustration,
+                  primaryButtonTitle: primaryButtonTitle,
+                  secondaryButtonTitle: secondaryButtonTitle,
+                  hasNavigationBarSkipButton: hasNavigationBarSkipButton)
+    }
+
     init(step: Index,
          theme: Theme,
          title: String,
-         content: String,
+         attributedContent: NSAttributedString,
          illustration: Illustration,
          primaryButtonTitle: String,
          secondaryButtonTitle: String?,
@@ -46,6 +97,6 @@ final class OnboardingConsentStep: NSObject {
         self.hasNavigationBarSkipButton = hasNavigationBarSkipButton
 
         self.attributedTitle = .makeFromHtml(text: title, font: theme.fonts.title2, textColor: .black, textAlignment: Localization.isRTL ? .right : .left)
-        self.attributedContent = .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left)
+        self.attributedContent = attributedContent
     }
 }
