@@ -152,7 +152,17 @@ final class ExposureManager: ExposureManaging, Logging {
         let authorisationStatus = type(of: manager).authorizationStatus
         let result: ExposureManagerStatus
 
+        // iOS 14 returns unknown as authorizationStatus always
+        let isiOS14OrHigher: Bool
+        if #available(iOS 14, *) {
+            isiOS14OrHigher = true
+        } else {
+            isiOS14OrHigher = false
+        }
+
         switch authorisationStatus {
+        case .unknown where isiOS14OrHigher:
+            fallthrough
         case .authorized:
             switch manager.exposureNotificationStatus {
             case .active:
@@ -166,10 +176,10 @@ final class ExposureManager: ExposureManaging, Logging {
             default:
                 result = .inactive(.unknown)
             }
-        case .notAuthorized:
-            result = .authorizationDenied
         case .unknown:
             result = .notAuthorized
+        case .notAuthorized:
+            result = .authorizationDenied
         case .restricted:
             result = .inactive(.restricted)
         default:
