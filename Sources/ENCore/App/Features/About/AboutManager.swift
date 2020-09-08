@@ -61,7 +61,7 @@ final class AboutManager: AboutManaging {
             AboutEntry.question(anonymous)
         ])
 
-        technicalInformationEntry = .technicalInformation(title: .consentStep1SecondaryButton, linkedContent: [
+        technicalInformationEntry = .technicalInformation(title: .aboutTechnicalInformationTitle, linkedContent: [
             AboutEntry.question(bluetooth),
             AboutEntry.question(deletion),
             AboutEntry.question(otherCountries)
