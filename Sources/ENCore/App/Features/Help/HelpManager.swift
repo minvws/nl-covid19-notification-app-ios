@@ -20,7 +20,7 @@ final class HelpManager: HelpManaging {
     init() {
         let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
         let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
-        let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2)
+        let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "<br><br>" + .helpFaqAnonymousDescription2)
         let notification = HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription)
         let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
         let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)

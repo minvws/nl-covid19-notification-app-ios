@@ -38,7 +38,7 @@ final class AboutManager: AboutManaging {
 
     init(testPhaseStream: AnyPublisher<Bool, Never>) {
         let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
-        let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "\n\n" + .helpFaqAnonymousDescription2)
+        let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "<br><br>" + .helpFaqAnonymousDescription2)
         let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
         let notification = HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription)
         let uploadKeys = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
