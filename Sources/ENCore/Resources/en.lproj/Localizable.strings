@@ -284,7 +284,7 @@
 "moreInformation.complaints.item3" = "stuffiness";
 "moreInformation.complaints.item4" = "elevated temperature or fever";
 "moreInformation.complaints.item5" = "sudden loss of taste and/or smell (without stuffed nose)";
-"moreInformation.complaints.title" = "Possible coronavirus (COVID-19) symptoms";
+"moreInformation.complaints.title" = "Possible coronavirus symptoms";
 "moreInformation.complaints.content" = "Do you have symptoms? Stay home as much as possible. Are your symptoms severe? Call your doctor.";
 
 /* MARK: - MoreInformation | About */
