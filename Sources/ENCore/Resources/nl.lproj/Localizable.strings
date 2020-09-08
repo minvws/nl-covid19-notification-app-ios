@@ -1,10 +1,3 @@
-/*
-* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
-*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
-*
-*  SPDX-License-Identifier: EUPL-1.2
-*/
-
 /* MARK: - Chance of contamination */
 "contamination.title" = "Kans op besmetting";
 
@@ -44,6 +37,12 @@
 "status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
 "status.icon.accessibility.notified" = "Rood rondje met alarmbel dat aangeeft dat er nu actie nodig is";
 "status.notified.today" = "vandaag";
+/*
+* Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+*  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+*
+*  SPDX-License-Identifier: EUPL-1.2
+*/
 
 "testVersionTitle" = "Test- en onderzoeksversie %@ (%@)";
 
@@ -293,7 +292,7 @@
 "moreInformation.complaints.item3" = "benauwdheid";
 "moreInformation.complaints.item4" = "verhoging of koorts";
 "moreInformation.complaints.item5" = "plotseling verlies van reuk en/of smaak (zonder neusverstopping)";
-"moreInformation.complaints.title" = "Klachten die passen bij het coronavirus (COVID-19)";
+"moreInformation.complaints.title" = "Klachten die passen bij het coronavirus";
 "moreInformation.complaints.content" = "Heb je klachten? Blijf dan zoveel mogelijk thuis. Zijn het ernstige klachten? Bel je huisarts.";
 
 /* MARK: - MoreInformation | About */
