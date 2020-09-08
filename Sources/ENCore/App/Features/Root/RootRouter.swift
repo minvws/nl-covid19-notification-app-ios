@@ -104,19 +104,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
 
-        let isFirstRun = self.exposureController.isFirstRun
-        exposureStateStream
-            .exposureState
-            .first()
-            .sink { [weak self] state in
-                if state.activeState.isAuthorized, !isFirstRun {
-                    self?.routeToMain()
-                    self?.backgroundController.scheduleTasks()
-                } else {
-                    self?.routeToOnboarding()
-                }
-            }
-            .store(in: &disposeBag)
+        if exposureController.didCompleteOnboarding {
+            routeToMain()
+            backgroundController.scheduleTasks()
+        } else {
+            routeToOnboarding()
+        }
 
         exposureController.activate(inBackgroundMode: false)
 
@@ -211,6 +204,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
+        exposureController.didCompleteOnboarding = true
+
         routeToMain()
         detachOnboarding(animated: animated)
     }

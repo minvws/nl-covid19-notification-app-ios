@@ -40,6 +40,15 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.isFirstRun
     }
 
+    var didCompleteOnboarding: Bool {
+        get {
+            return dataController.didCompleteOnboarding
+        }
+        set {
+            dataController.didCompleteOnboarding = newValue
+        }
+    }
+
     @discardableResult
     func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never> {
         logDebug("Request EN framework activation")
