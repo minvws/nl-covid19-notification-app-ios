@@ -149,11 +149,11 @@ final class ExposureControllerTests: TestCase {
         XCTAssertTrue(expectation.evaluate())
     }
 
-    func test_managerIsInactiveBecauseUnknown_updatesStreamWithDisabled() {
+    func test_managerIsInactiveBecauseUnknown_doesNotUpdateStream() {
         activate()
         exposureManager.getExposureNotificationStatusHandler = { .inactive(.unknown) }
 
-        let expectation = expect(activeState: .inactive(.disabled))
+        let expectation = expect()
 
         triggerUpdateStream()
 
@@ -501,7 +501,9 @@ final class ExposureControllerTests: TestCase {
         }
 
         func evaluate() -> Bool {
-            guard let state = receivedState else { return false }
+            guard let state = receivedState else {
+                return expectedActiveState == nil && expectedNotifiedState == nil
+            }
 
             var matchActiveState = true
             var matchNotified = true

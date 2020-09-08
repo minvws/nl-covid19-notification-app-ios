@@ -442,8 +442,12 @@ final class ExposureController: ExposureControlling, Logging {
             activeState = .inactive(.disabled)
         case let .inactive(error) where error == .notAuthorized:
             activeState = .notAuthorized
-        case let .inactive(error) where error == .unknown || error == .internalTypeMismatch:
-            // Most likely due to code signing issues
+        case let .inactive(error) where error == .unknown:
+            // Unknown can happen when iOS cannot retrieve the status correctly at this moment.
+            // This can happen when the user just switched from the bluetooth settings screen.
+            // Don't propagate this state as it only leads to confusion, just maintain the current state
+            return
+        case let .inactive(error) where error == .internalTypeMismatch:
             activeState = .inactive(.disabled)
         case .inactive where !isPushNotificationsEnabled:
             activeState = .inactive(.pushNotifications)
