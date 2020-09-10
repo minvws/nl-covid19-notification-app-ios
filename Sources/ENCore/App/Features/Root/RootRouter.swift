@@ -369,8 +369,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
-
-    private var isDeactivated = false
 }
 
 private extension ExposureActiveState {
