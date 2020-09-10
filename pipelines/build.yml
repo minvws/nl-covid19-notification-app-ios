@@ -80,5 +80,5 @@ steps:
     scheme: ENCore
     xcodeVersion: 'default'
     destinationPlatformOption: iOS
-    destinationSimulators: 'iPhone 11,OS=13.6'
+    destinationSimulators: 'iPhone 11,OS=13.7'
     publishJUnitResults: true
