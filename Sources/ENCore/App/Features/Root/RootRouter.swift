@@ -159,7 +159,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     self?.routeToEndOfLife()
                     self?.exposureController.deactivate()
                 }
-               })
+                })
             .store(in: &disposeBag)
     }
 
@@ -256,6 +256,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func routeToWebview(url: URL) {
         guard webviewViewController == nil else { return }
+
         let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
         self.webviewViewController = webviewViewController
 
@@ -291,6 +292,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         guard endOfLifeViewController == nil else {
             return
         }
+
+        /// Set the correct window hierachy
+        detachOnboarding(animated: false)
+        routeToMain()
+
         let endOfLifeViewController = endOfLifeBuilder.build(withListener: viewController)
         self.endOfLifeViewController = endOfLifeViewController
         self.viewController.presentInNavigationController(viewController: endOfLifeViewController, animated: false, presentFullScreen: true)
