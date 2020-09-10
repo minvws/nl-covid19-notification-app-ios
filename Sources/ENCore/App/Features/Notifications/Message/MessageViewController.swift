@@ -204,12 +204,11 @@ private final class MessageView: View {
 
     private func complaints() -> View {
         let list: [String] = [
-            .contaminationChanceComplaintsStep1,
-            .contaminationChanceComplaintsStep2,
-            .contaminationChanceComplaintsStep3,
-            .contaminationChanceComplaintsStep4,
-            .contaminationChanceComplaintsStep5,
-            .contaminationChanceComplaintsStep6
+            .moreInformationComplaintsItem1,
+            .moreInformationComplaintsItem2,
+            .moreInformationComplaintsItem3,
+            .moreInformationComplaintsItem4,
+            .moreInformationComplaintsItem5
         ]
         let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
 
