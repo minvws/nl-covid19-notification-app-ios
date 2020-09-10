@@ -33,7 +33,7 @@ final class LinkedContentTableViewManager: NSObject, UITableViewDelegate, UITabl
 
         cell.textLabel?.text = content[indexPath.row].title
         cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.font = theme.fonts.body
+        cell.textLabel?.font = theme.fonts.bodyBold
         cell.textLabel?.accessibilityTraits = .header
 
         return cell
