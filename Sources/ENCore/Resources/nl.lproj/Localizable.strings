@@ -5,12 +5,12 @@
 "contamination.near_someone_with_corona.description" = "Op vrijdag %@ ben jij misschien besmet geraakt. Je was die dag minstens 15 minuten dicht bij iemand met corona.<br><br>Als je inderdaad besmet bent, kun je het virus aan anderen doorgeven. Ook als je je nu niet ziek voelt.";
 
 "contamination.what_to_do.title" = "Wat kun je nu doen?";
-"contamination.what_to_do.step1" = "Blijf tot %@ thuis en let extra goed op klachten die kunnen passen bij corona";
-"contamination.what_to_do.step2" = "Heb je (lichte) klachten die passen bij het coronavirus? Doe een coronatest en blijf thuis tot %@";
+"contamination.what_to_do.step1" = "Blijf tot en met %@ thuis en let extra goed op klachten die kunnen passen bij corona";
+"contamination.what_to_do.step2" = "Heb je (lichte) klachten die passen bij het coronavirus? Doe een coronatest en blijf thuis tot en met %@";
 "contamination.what_to_do.step3" = "Heb je ernstige klachten zoals hoge koorts of moeite met ademhalen? Of zit je een risicogroep en krijg je koorts? Bel eerst je huisarts";
 "contamination.what_to_do.description" = "Geeft de GGD je aan de telefoon andere adviezen dan de app? Volg dan het advies van de GGD.";
 
-"contamination.stay_home.title" = "Blijf tot %@ thuis";
+"contamination.stay_home.title" = "Blijf tot en met %@ thuis";
 "contamination.stay_home.step1" = "Laat anderen boodschappen doen. Kan dit echt niet en heb je geen klachten? Dan mag je wel even naar buiten om boodschappen te doen. Houd 1,5 meter afstand en raak niemand aan.";
 "contamination.stay_home.step2" = "Je mag in de tuin of op het balkon zitten.";
 "contamination.stay_home.step3" = "Kinderen van 4-12 jaar mogen naar school en/of sporten.";
@@ -23,10 +23,10 @@
 "contamination.medical_help.step2" = "Je huisarts of andere medische hulp mag wel bij je langskomen.";
 
 "contamination.after.title" = "Na %@";
-"contamination.after.description" = "Heb je tot %@ geen klachten gekregen? Dan hoef je niet meer thuis te blijven. Blijf wel de algemene regels tegen corona volgen.";
+"contamination.after.description" = "Heb je tot en met %@ geen klachten gekregen? Dan hoef je niet meer thuis te blijven. Blijf wel de algemene regels tegen corona volgen.";
 
 "contamination.complaints.title" = "Klachten die passen bij het coronavirus";
-"contamination.complaints.step1" = "verkoudheidklachten zoals neusverkoudheid, loopneus, niezen, keelpijn";
+"contamination.complaints.step1" = "verkoudheid, loopneus, niezen";
 "contamination.complaints.step2" = "keelpijn";
 "contamination.complaints.step3" = "hoesten";
 "contamination.complaints.step4" = "opeens niets meer ruiken of proeven";
@@ -93,13 +93,6 @@
 
 "step5Title" = "Zat je dicht bij iemand in de trein? Dan kun je <u>later</u> wel een melding krijgen";
 "step5Content" = "Het bluetoothsignaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
-
-"onboarding.permissions.title" = "Zet CoronaMelder aan";
-"onboarding.permissions.description" = "CoronaMelder kan je alleen waarschuwen als je de app toestemming geeft om:";
-"onboarding.permissions.description.list1" = "Je meldingen te kunnen sturen";
-"onboarding.permissions.description.list2" = "Ontmoetingen met andere app-gebruikers bij te houden";
-"onboarding.permissions.secondary_button" = "Hoe werkt de app precies?";
-"onboarding.permissions.primary_button" = "Aanzetten";
 
 /* MARK: - Onboarding */
 "nextButtonTitle" = "Volgende";
