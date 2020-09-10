@@ -25,7 +25,7 @@ struct ExposureDataAppVersionInformation {
 }
 
 /// @mockable
-protocol ExposureDataControlling {
+protocol ExposureDataControlling: AnyObject {
 
     // MARK: - Exposure Detection
 
@@ -54,6 +54,7 @@ protocol ExposureDataControlling {
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
     var isFirstRun: Bool { get }
+    var didCompleteOnboarding: Bool { get set }
 }
 
 protocol ExposureDataControllerBuildable {

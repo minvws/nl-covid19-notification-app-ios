@@ -66,10 +66,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.attachStatus(topAnchor: view.topAnchor)
         router?.attachMoreInformation()
 
-        if let activeState = exposureStateStream.currentExposureState?.activeState, activeState == .inactive(.disabled) {
-            exposureController.requestExposureNotificationPermission(nil)
-        }
-
         if let shareLogs = Bundle.main.infoDictionary?["SHARE_LOGS_ENABLED"] as? Bool, shareLogs == true {
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didQuadrupleTap(sender:)))
             gestureRecognizer.numberOfTapsRequired = 4

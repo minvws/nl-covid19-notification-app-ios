@@ -96,8 +96,8 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.embedCallCount, 0)
     }
 
-    func test_callStartWhenAlreadyAuthorized_routesToMain() {
-        set(activeState: .active)
+    func test_callStartWhenOnboardingCompleted_routesToMain() {
+        exposureController.didCompleteOnboarding = true
 
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
@@ -122,6 +122,16 @@ final class RootRouterTests: XCTestCase {
 
         XCTAssertEqual(viewController.embedCallCount, 1)
         XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_detachOnboardingAndRouteToMain_marksOnboardingAsComplete() {
+        router.start()
+
+        XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 0)
+
+        router.detachOnboardingAndRouteToMain(animated: true)
+
+        XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 1)
     }
 
     func test_start_activatesExposureController() {

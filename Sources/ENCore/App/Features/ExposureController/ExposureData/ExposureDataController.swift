@@ -34,6 +34,10 @@ struct ExposureDataStorageKey {
                                                             storeType: .insecure(volatile: false))
     static let exposureApiCallDates = CodableStorageKey<[Date]>(name: "exposureApiCalls",
                                                                 storeType: .insecure(volatile: false))
+    static let onboardingCompleted = CodableStorageKey<Bool>(name: "onboardingCompleted",
+                                                             storeType: .insecure(volatile: false))
+    static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
+                                                             storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
@@ -47,6 +51,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         self.storageController = storageController
 
         detectFirstRunAndEraseKeychainIfRequired()
+        compareAndUpdateLastRanAppVersion(isFirstRun: isFirstRun)
     }
 
     // MARK: - ExposureDataControlling
@@ -214,6 +219,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
     }
 
+    var didCompleteOnboarding: Bool {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.onboardingCompleted) ?? false
+        }
+        set {
+            storageController.store(object: newValue,
+                                    identifiedBy: ExposureDataStorageKey.onboardingCompleted,
+                                    completion: { _ in })
+        }
+    }
+
     // MARK: - Private
 
     private func detectFirstRunAndEraseKeychainIfRequired() {
@@ -229,7 +245,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
 
-        // mark as successful first tun
+        // mark as successful first run
         storageController.store(object: true, identifiedBy: ExposureDataStorageKey.firstRunIdentifier, completion: { _ in })
     }
 
@@ -259,6 +275,37 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                     .execute()
             }
             .eraseToAnyPublisher()
+    }
+
+    // MARK: - Version Management
+
+    private func compareAndUpdateLastRanAppVersion(isFirstRun: Bool) {
+        guard let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else {
+            return
+        }
+
+        let lastRanVersion = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastRanAppVersion) ?? "1.0.0"
+
+        if appVersion.compare(lastRanVersion, options: .numeric) == .orderedDescending, !isFirstRun {
+            executeUpdate(from: lastRanVersion, to: appVersion)
+        }
+
+        storageController.store(object: appVersion,
+                                identifiedBy: ExposureDataStorageKey.lastRanAppVersion,
+                                completion: { _ in })
+    }
+
+    private func executeUpdate(from fromVersion: String, to toVersion: String) {
+        if toVersion == "1.0.6" {
+            // for people updating, mark onboarding as completed. OnboardingCompleted is a new
+            // variable to keep track whether people have completed onboarding. For people who update
+            // this variable is not set, even though they most likely completed onboarding. Those users
+            // will be treated as onboarding completed to prevent everyone who is updating to go through
+            // onboarding again
+            storageController.store(object: true,
+                                    identifiedBy: ExposureDataStorageKey.onboardingCompleted,
+                                    completion: { _ in })
+        }
     }
 
     private let operationProvider: ExposureDataOperationProvider

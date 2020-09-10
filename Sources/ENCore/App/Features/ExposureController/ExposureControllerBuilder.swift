@@ -10,10 +10,9 @@ import Foundation
 import UserNotifications
 
 /// @mockable
-protocol ExposureControlling {
+protocol ExposureControlling: AnyObject {
 
     var lastExposureDate: Date? { get }
-    var isFirstRun: Bool { get }
 
     // MARK: - Setup
 
@@ -74,6 +73,14 @@ protocol ExposureControlling {
 
     /// Checks the status of the EN framework for the last 24h
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
+
+    // MARK: - Onboarding
+
+    /// Whether the user runs the app for the first time
+    var isFirstRun: Bool { get }
+
+    /// Whether the user has completed onboarding
+    var didCompleteOnboarding: Bool { get set }
 }
 
 /// Represents a ConfirmationKey for the Lab Flow
