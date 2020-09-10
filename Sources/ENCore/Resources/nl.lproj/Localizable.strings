@@ -33,7 +33,7 @@
 "contamination.after.description" = "Heb je tot %@ geen klachten gekregen? Dan hoef je niet meer thuis te blijven. Blijf wel de algemene regels tegen corona volgen.";
 
 "contamination.complaints.title" = "Klachten die passen bij het coronavirus";
-"contamination.complaints.step1" = "verkoudheid, loopneus, niezen";
+"contamination.complaints.step1" = "verkoudheidklachten zoals neusverkoudheid, loopneus, niezen, keelpijn";
 "contamination.complaints.step2" = "keelpijn";
 "contamination.complaints.step3" = "hoesten";
 "contamination.complaints.step4" = "opeens niets meer ruiken of proeven";

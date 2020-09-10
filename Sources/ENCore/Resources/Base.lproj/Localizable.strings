@@ -26,7 +26,7 @@
 "contamination.after.description" = "No symptoms until %@? You don't have to stay at home anymore. Do keep following the basic rules.";
 
 "contamination.complaints.title" = "Possible coronavirus symptoms";
-"contamination.complaints.step1" = "nasal cold, runny nose, sneezing";
+"contamination.complaints.step1" = "cold symptoms like nasal cold, runny nose, sneezing, sore throat";
 "contamination.complaints.step2" = "sore throat";
 "contamination.complaints.step3" = "coughing";
 "contamination.complaints.step4" = "sudden loss of smell or taste";
