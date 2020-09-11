@@ -22,6 +22,15 @@ protocol BackgroundDependency {
 }
 
 /// @mockable
+protocol TaskScheduling {
+    func submit(_ taskRequest: BGTaskRequest) throws
+    func cancel(taskRequestWithIdentifier identifier: String)
+    func cancelAllTaskRequests()
+}
+
+extension BGTaskScheduler: TaskScheduling {}
+
+/// @mockable
 protocol BackgroundControllerBuildable {
     func build() -> BackgroundControlling
 }
@@ -50,6 +59,7 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
                                     configuration: configuration,
                                     exposureManager: dependencyProvider.dependency.exposureManager,
                                     userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                    taskScheduler: BGTaskScheduler.shared,
                                     bundleIdentifier: dependencyProvider.bundleIdentifier)
     }
 }

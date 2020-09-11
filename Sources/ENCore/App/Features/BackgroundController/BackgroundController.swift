@@ -41,12 +41,14 @@ final class BackgroundController: BackgroundControlling, Logging {
          configuration: BackgroundTaskConfiguration,
          exposureManager: ExposureManaging,
          userNotificationCenter: UserNotificationCenter,
+         taskScheduler: TaskScheduling,
          bundleIdentifier: String) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
         self.exposureManager = exposureManager
         self.userNotificationCenter = userNotificationCenter
+        self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
     }
 
@@ -116,6 +118,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let defaultRefreshInterval: TimeInterval = 60 // minutes
     private var receivedRefreshInterval: TimeInterval?
 
+    private let taskScheduler: TaskScheduling
     private let exposureManager: ExposureManaging
     private let userNotificationCenter: UserNotificationCenter
     private let exposureController: ExposureControlling
@@ -140,7 +143,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func scheduleDecoySequence() {
         // The decoy sequence should be run at 1am.
-        guard let date = date(hour: 1, minute: 0) else {
+        guard let date = date(hour: 1, minute: 0, dayOffset: 1) else {
             return logError("Error creating date")
         }
 
@@ -151,7 +154,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         let hour = Int.random(in: configuration.decoyHourRange)
         let minute = Int.random(in: configuration.decoyMinuteRange)
 
-        guard let date = date(hour: hour, minute: minute) else {
+        guard let date = date(hour: hour, minute: minute, dayOffset: 0) else {
             task.setTaskCompleted(success: false)
             return logError("Error creating date")
         }
@@ -305,9 +308,9 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     // Returns a Date with the specified hour and minute, for the next day
     // E.g. date(hour: 1, minute: 0) returns 1:00 am for the next day
-    private func date(hour: Int, minute: Int) -> Date? {
+    private func date(hour: Int, minute: Int, dayOffset: Int = 1) -> Date? {
         let calendar = Calendar.current
-        guard let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date()) else {
+        guard let tomorrow = calendar.date(byAdding: .day, value: dayOffset, to: Date()) else {
             return nil
         }
 
@@ -322,14 +325,14 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("Background: Scheduling `\(identifier)` for earliestDate \(String(describing: date)), requiresNetwork: \(requiresNetworkConnectivity)")
 
-        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
+        taskScheduler.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
 
         let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
         request.requiresNetworkConnectivity = requiresNetworkConnectivity
         request.earliestBeginDate = date
 
         do {
-            try BGTaskScheduler.shared.submit(request)
+            try taskScheduler.submit(request)
             logDebug("Background: Scheduled `\(identifier)` ✅")
             completion?(true)
         } catch {
@@ -340,6 +343,6 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func removeAllTasks() {
         logDebug("Background: Removing all scheduled tasks")
-        BGTaskScheduler.shared.cancelAllTaskRequests()
+        taskScheduler.cancelAllTaskRequests()
     }
 }
