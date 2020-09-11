@@ -16,6 +16,7 @@ final class BackgroundControllerTests: XCTestCase {
 
     private let exposureController = ExposureControllingMock()
     private let networkController = NetworkControllingMock()
+    private let taskScheduler = TaskSchedulingMock()
 
     private let exposureManager = ExposureManagingMock(authorizationStatus: .authorized)
     private let userNotificationCenter = UserNotificationCenterMock()
@@ -36,6 +37,7 @@ final class BackgroundControllerTests: XCTestCase {
                                           configuration: configuration,
                                           exposureManager: exposureManager,
                                           userNotificationCenter: userNotificationCenter,
+                                          taskScheduler: taskScheduler,
                                           bundleIdentifier: "nl.rijksoverheid.en")
 
         exposureManager.getExposureNotificationStatusHandler = {
@@ -59,6 +61,30 @@ final class BackgroundControllerTests: XCTestCase {
     }
 
     // MARK: - Tests
+
+    func test_scheduleDecoySequence() {
+        exposureController.isAppDeactivatedHandler = {
+            return Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+        let calendar = Calendar.current
+        let today = calendar.dateComponents([.day], from: Date()).day ?? 0
+        let exp = expectation(description: "asyncTask")
+        taskScheduler.submitHandler = { task in
+            if task.identifier.contains(BackgroundTaskIdentifiers.decoySequence.rawValue) {
+                guard let date = task.earliestBeginDate else {
+                    return XCTFail()
+                }
+                let components = calendar.dateComponents([.hour, .day], from: date)
+                XCTAssert(components.day == (today + 1))
+                XCTAssert(components.hour == 1)
+                exp.fulfill()
+            }
+        }
+
+        controller.scheduleTasks()
+
+        wait(for: [exp], timeout: 1)
+    }
 
     func test_handeRefresh() {
         let exp = expectation(description: "asyncTask")
