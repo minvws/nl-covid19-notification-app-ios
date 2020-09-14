@@ -2,6 +2,8 @@
 
 env
 
+BUNDLE_VERSION=$(yq r project.yml targets.EN.info.properties.CFBundleShortVersionString)
+
 if [ -z "$NETWORK_CONFIGURATION" ]
 then
       NETWORK_CONFIGURATION="Test"
@@ -17,9 +19,11 @@ then
       BUILD_ID="1"
 fi
 
-if [ -z "$BUNDLE_IDENTIFIER" ]
+if [ -z "$BUNDLE_SHORT_VERSION" ]
 then 
-      BUNDLE_IDENTIFIER="nl.rijksoverheid.en.test"
+      BUNDLE_SHORT_VERSION="${BUNDLE_VERSION}"
+else 
+      BUNDLE_SHORT_VERSION="${BUNDLE_VERSION}-${BUNDLE_SHORT_VERSION}"
 fi
 
 if [ -z "$BUNDLE_DISPLAY_NAME" ]
@@ -41,6 +45,7 @@ brew install yq
 yq w -i project.yml "targets.EN.info.properties.SHARE_LOGS_ENABLED" ${SHARE_LOGS_ENABLED}
 yq w -i project.yml "targets.EN.info.properties.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.info.properties.LOG_LEVEL" ${LOG_LEVEL}
+yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleShortVersionString" ${BUNDLE_SHORT_VERSION}
 yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleDisplayName" "${BUNDLE_DISPLAY_NAME}"
 yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
 yq w -i project.yml "targets.EN.settings.base.PRODUCT_BUNDLE_IDENTIFIER" ${BUNDLE_IDENTIFIER}

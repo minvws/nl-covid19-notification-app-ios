@@ -28,7 +28,7 @@ steps:
     logLevel: debug
     configuration: Debug
     bundleDisplayName: "🐞 CoronaMelder"
-    bundleIdentifier: nl.rijksoverheid.en.test
+    bundleShortVersion: tst
     debugMenu: true
     packageApp: true
     shareLogsEnabled: true
@@ -39,7 +39,7 @@ steps:
   artifact: ipa-test
 - script: |
     firebase appdistribution:distribute ipa/test/EN.ipa \
-    --app 1:937920499570:ios:ada965c6b5534d48f957eb \
+    --app 1:937920499570:ios:e06226437bfc7612f957eb \
     --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-latest
   displayName: Distribute test build
@@ -50,7 +50,7 @@ steps:
     networkConfiguration: ACC
     logLevel: debug
     bundleDisplayName: "β CoronaMelder"
-    bundleIdentifier: nl.rijksoverheid.en.acc
+    bundleShortVersion: acc
     packageApp: true
     shareLogsEnabled: true
     exportPath: "ipa/acc"
@@ -60,7 +60,7 @@ steps:
   artifact: ipa-acc
 - script: |
     firebase appdistribution:distribute ipa/acc/EN.ipa \
-    --app 1:937920499570:ios:eb6aa0819a7abff0f957eb \
+    --app 1:937920499570:ios:e06226437bfc7612f957eb \
     --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-acceptance
   displayName: Distribute acceptance build  
@@ -69,9 +69,8 @@ steps:
     provisioningProfileSecureFile: CoronaMelder_Production.mobileprovision
     provisioningProfileName: "CoronaMelder_PROD"
     networkConfiguration: Production
-    bundleDisplayName: "CoronaMelder"
-    bundleIdentifier: nl.rijksoverheid.en
     logLevel: none
+    bundleDisplayName: "CoronaMelder"
     packageApp: true
     exportPath: "ipa/prod"
     exportMethod: "app-store"
