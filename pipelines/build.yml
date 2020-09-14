@@ -12,6 +12,7 @@ parameters:
   default: 'error'
 - name: bundleShortVersion
   type: string
+  default: ''
 - name: debugMenu
   type: string
   default: ''
