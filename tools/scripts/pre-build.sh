@@ -5,6 +5,8 @@ env
 brew install yq
 
 BUNDLE_VERSION=$(yq r project.yml targets.EN.info.properties.CFBundleShortVersionString)
+BUNDLE_VERSION=${BUNDLE_VERSION%%-tst}
+BUNDLE_VERSION=${BUNDLE_VERSION%%-acc}
 
 if [ -z "$NETWORK_CONFIGURATION" ]
 then
