@@ -39,7 +39,7 @@ steps:
   artifact: ipa-test
 - script: |
     firebase appdistribution:distribute ipa/test/EN.ipa \
-    --app 1:937920499570:ios:e06226437bfc7612f957eb \
+    --app 1:937920499570:ios:3fa1c661e8189087f957eb \
     --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-latest
   displayName: Distribute test build
@@ -60,7 +60,7 @@ steps:
   artifact: ipa-acc
 - script: |
     firebase appdistribution:distribute ipa/acc/EN.ipa \
-    --app 1:937920499570:ios:e06226437bfc7612f957eb \
+    --app 1:937920499570:ios:3fa1c661e8189087f957eb \
     --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-acceptance
   displayName: Distribute acceptance build  

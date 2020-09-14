@@ -2,6 +2,8 @@
 
 env
 
+brew install yq
+
 BUNDLE_VERSION=$(yq r project.yml targets.EN.info.properties.CFBundleShortVersionString)
 
 if [ -z "$NETWORK_CONFIGURATION" ]
@@ -41,7 +43,6 @@ then
       SHARE_LOGS_ENABLED="false"
 fi
 
-brew install yq
 yq w -i project.yml "targets.EN.info.properties.SHARE_LOGS_ENABLED" ${SHARE_LOGS_ENABLED}
 yq w -i project.yml "targets.EN.info.properties.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.info.properties.LOG_LEVEL" ${LOG_LEVEL}
