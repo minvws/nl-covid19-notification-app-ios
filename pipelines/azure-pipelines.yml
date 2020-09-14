@@ -41,6 +41,7 @@ stages:
             sonar.exclusions=vendor/**/*
       - template: build.yml
         parameters:
+          bundleShortVersion: tst
           networkConfiguration: Test
           logLevel: debug
           debugMenu: true
