@@ -32,7 +32,7 @@ targets:
           - $(PRODUCT_BUNDLE_IDENTIFIER).background-decoy-stop-keys
           - $(PRODUCT_BUNDLE_IDENTIFIER).background-decoy-sequence
           - $(PRODUCT_BUNDLE_IDENTIFIER).background-decoy-register
-        CFBundleDisplayName: "🐞 CoronaMelder"
+        CFBundleDisplayName: "CoronaMelder"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
         CFBundleShortVersionString: '1.0.6'
