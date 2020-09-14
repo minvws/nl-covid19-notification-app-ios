@@ -26,6 +26,11 @@ else
       BUNDLE_SHORT_VERSION="${BUNDLE_VERSION}-${BUNDLE_SHORT_VERSION}"
 fi
 
+if [ -z "$BUNDLE_DISPLAY_NAME" ]
+then
+      BUNDLE_DISPLAY_NAME="🐞 CoronaMelder"
+fi
+
 if [ -z "$RELEASE_PROVISIONING_PROFILE" ]
 then
       RELEASE_PROVISIONING_PROFILE="EN Tracing development"
@@ -41,6 +46,7 @@ yq w -i project.yml "targets.EN.info.properties.SHARE_LOGS_ENABLED" ${SHARE_LOGS
 yq w -i project.yml "targets.EN.info.properties.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.info.properties.LOG_LEVEL" ${LOG_LEVEL}
 yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleShortVersionString" ${BUNDLE_SHORT_VERSION}
+yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleDisplayName" "${BUNDLE_DISPLAY_NAME}"
 yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
 yq w -i project.yml "targets.EN.settings.base.PRODUCT_BUNDLE_IDENTIFIER" ${BUNDLE_IDENTIFIER}
 yq w -i project.yml "targets.EN.settings.configs.Release.PROVISIONING_PROFILE_SPECIFIER" "${RELEASE_PROVISIONING_PROFILE}"

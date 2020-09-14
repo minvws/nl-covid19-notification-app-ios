@@ -10,6 +10,8 @@ parameters:
 - name: logLevel
   type: string
   default: 'error'
+- name: bundleDisplayName
+  type: string
 - name: bundleShortVersion
   type: string
   default: ''
@@ -51,6 +53,7 @@ steps:
     LOG_LEVEL: ${{ parameters.logLevel }}
     BUILD_ID: $(Build.BuildId)
     BUNDLE_SHORT_VERSION: ${{ parameters.bundleShortVersion }}
+    BUNDLE_DISPLAY_NAME: ${{ parameters.bundleDisplayName }}
     RELEASE_PROVISIONING_PROFILE: ${{ parameters.provisioningProfileName }}
     USE_DEVELOPER_MENU: ${{ parameters.debugMenu }}
     SHARE_LOGS_ENABLED: ${{ parameters.shareLogsEnabled }}

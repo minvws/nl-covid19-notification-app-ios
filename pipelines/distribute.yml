@@ -27,6 +27,7 @@ steps:
     networkConfiguration: Test
     logLevel: debug
     configuration: Debug
+    bundleDisplayName: "🐞 CoronaMelder"
     bundleShortVersion: tst
     debugMenu: true
     packageApp: true
@@ -48,6 +49,7 @@ steps:
     provisioningProfileName: "CoronaMelder_ACC"
     networkConfiguration: ACC
     logLevel: debug
+    bundleDisplayName: "β CoronaMelder"
     bundleShortVersion: acc
     packageApp: true
     shareLogsEnabled: true
@@ -68,6 +70,7 @@ steps:
     provisioningProfileName: "CoronaMelder_PROD"
     networkConfiguration: Production
     logLevel: none
+    bundleDisplayName: "CoronaMelder"
     packageApp: true
     exportPath: "ipa/prod"
     exportMethod: "app-store"
