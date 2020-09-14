@@ -41,10 +41,10 @@ stages:
             sonar.exclusions=vendor/**/*
       - template: build.yml
         parameters:
-          bundleShortVersion: tst
           networkConfiguration: Test
-          bundleDisplayName: "🐞 CoronaMelder"
           logLevel: debug
+          bundleShortVersion: tst
+          bundleDisplayName: "🐞 CoronaMelder"
           debugMenu: true
           runTests: true
           signingOption: 'nosign'
