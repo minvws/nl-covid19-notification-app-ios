@@ -126,6 +126,14 @@
 "consentStep4PrimaryButton" = "App delen";
 "consentStep4SecondaryButton" = "Ga door";
 
+/* MARK: - Onboarding permissions */
+"onboarding.permissions.title" = "Zet CoronaMelder aan";
+"onboarding.permissions.description" = "CoronaMelder kan je alleen waarschuwen als je de app toestemming geeft om:";
+"onboarding.permissions.description.list1" = "Je meldingen te kunnen sturen";
+"onboarding.permissions.description.list2" = "Ontmoetingen met andere app-gebruikers bij te houden";
+"onboarding.permissions.secondary_button" = "Hoe werkt de app precies?";
+"onboarding.permissions.primary_button" = "Aanzetten";
+
 /* MARK: - Bluetooth */
 "enableBluetoothTitle" = "Bluetooth aanzetten";
 "enableBluetoothSettingIndexRow1" = "1.";
