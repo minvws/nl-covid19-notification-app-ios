@@ -15,6 +15,7 @@ final class PrivacyAgreementViewController: ViewController, Logging {
     init(listener: PrivacyAgreementListener, theme: Theme) {
         self.listener = listener
         informationSteps = [
+            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep0, image: .privacyShield),
             OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep1, image: .bluetoothShield),
             OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep2, image: .bluetoothShield),
             OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep4, image: .bluetoothShield),

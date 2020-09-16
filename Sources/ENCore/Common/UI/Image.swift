@@ -41,9 +41,10 @@ extension UIImage {
     static var statusInactive: UIImage? { return Image.named("StatusInactive") }
     static var messageHeader: UIImage? { return Image.named("MessageHeader") }
     static var callGGD: UIImage? { return Image.named("CallGGD") }
+    static var privacyShield: UIImage? { return Image.named("PrivacyShield") }
+    static var bellShield: UIImage? { return Image.named("BellShield") }
     static var bluetoothShield: UIImage? { return Image.named("BluetoothShield") }
     static var lockShield: UIImage? { return Image.named("LockShield") }
-    static var bellShield: UIImage? { return Image.named("BellShield") }
     static var pleaseTurnOnBluetooth: UIImage? { return Image.named("Bluetooth") }
     static var pleaseTurnOnNotifications: UIImage? { return Image.named("PleaseTurnOnNotifications") }
     static var shareApp: UIImage? { return Image.named("ShareApp") }
