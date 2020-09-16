@@ -40,28 +40,12 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             OnboardingConsentStep(
                 step: .en,
                 theme: theme,
-                title: .consentStep1Title,
-                content: "",
-                illustration: .none,
-                summarySteps: [
-                    OnboardingConsentSummaryStep(
-                        theme: theme,
-                        title: .consentStep1Summary1,
-                        image: .bluetoothShield
-                    ),
-                    OnboardingConsentSummaryStep(
-                        theme: theme,
-                        title: .consentStep1Summary2,
-                        image: .lockShield
-                    ),
-                    OnboardingConsentSummaryStep(
-                        theme: theme,
-                        title: .consentStep1Summary3,
-                        image: .lockShield
-                    )
-                ],
-                primaryButtonTitle: .consentStep1PrimaryButton,
-                secondaryButtonTitle: .consentStep1SecondaryButton,
+                title: .onboardingPermissionsTitle,
+                content: .onboardingPermissionsDescription,
+                bulletItems: [.onboardingPermissionsDescriptionList1, .onboardingPermissionsDescriptionList2],
+                illustration: .animation(named: "permission", repeatFromFrame: 100, defaultFrame: 56),
+                primaryButtonTitle: .onboardingPermissionsPrimaryButton,
+                secondaryButtonTitle: .onboardingPermissionsSecondaryButton,
                 hasNavigationBarSkipButton: true
             )
         )
@@ -73,7 +57,6 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 title: .consentStep2Title,
                 content: .consentStep2Content,
                 illustration: .image(image: .pleaseTurnOnBluetooth),
-                summarySteps: nil,
                 primaryButtonTitle: .consentStep2PrimaryButton,
                 secondaryButtonTitle: nil,
                 hasNavigationBarSkipButton: true
@@ -103,7 +86,6 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
                 title: .consentStep4Title,
                 content: .consentStep4Content,
                 illustration: .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35),
-                summarySteps: nil,
                 primaryButtonTitle: .consentStep4PrimaryButton,
                 secondaryButtonTitle: .consentStep4SecondaryButton,
                 hasNavigationBarSkipButton: true

@@ -100,6 +100,13 @@ extension String {
 
     // MARK: - Onboarding Steps
 
+    static var onboardingPermissionsTitle: String { return Localization.string(for: "onboarding.permissions.title") }
+    static var onboardingPermissionsDescription: String { return Localization.string(for: "onboarding.permissions.description") }
+    static var onboardingPermissionsDescriptionList1: String { return Localization.string(for: "onboarding.permissions.description.list1") }
+    static var onboardingPermissionsDescriptionList2: String { return Localization.string(for: "onboarding.permissions.description.list2") }
+    static var onboardingPermissionsSecondaryButton: String { return Localization.string(for: "onboarding.permissions.secondary_button") }
+    static var onboardingPermissionsPrimaryButton: String { return Localization.string(for: "onboarding.permissions.primary_button") }
+
     static var step1Title: String { return Localization.string(for: "step1Title") }
     static var step1Content: String { return Localization.string(for: "step1Content") }
 
