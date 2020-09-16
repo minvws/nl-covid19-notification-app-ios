@@ -15,10 +15,12 @@ final class PrivacyAgreementViewController: ViewController, Logging {
     init(listener: PrivacyAgreementListener, theme: Theme) {
         self.listener = listener
         informationSteps = [
-            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep1, image: .lockShield),
-            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep2, image: .lockShield),
-            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep3, image: .lockShield),
-            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep4, image: .lockShield)
+            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep1, image: .bluetoothShield),
+            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep2, image: .bluetoothShield),
+            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep4, image: .bluetoothShield),
+            OnboardingConsentSummaryStep(theme: theme, title: .consentStep1Summary2, image: .lockShield),
+            OnboardingConsentSummaryStep(theme: theme, title: .consentStep1Summary3, image: .lockShield),
+            OnboardingConsentSummaryStep(theme: theme, title: .privacyAgreementStep3, image: .bellShield)
         ]
         super.init(theme: theme)
     }
