@@ -45,7 +45,6 @@ extension UIImage {
     static var bellShield: UIImage? { return Image.named("BellShield") }
     static var bluetoothShield: UIImage? { return Image.named("BluetoothShield") }
     static var lockShield: UIImage? { return Image.named("LockShield") }
-    static var bellShield: UIImage? { return Image.named("BellShield") }
     static var pleaseTurnOnBluetooth: UIImage? { return Image.named("Bluetooth") }
     static var pleaseTurnOnNotifications: UIImage? { return Image.named("PleaseTurnOnNotifications") }
     static var shareApp: UIImage? { return Image.named("ShareApp") }
