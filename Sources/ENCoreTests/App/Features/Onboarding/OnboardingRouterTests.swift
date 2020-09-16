@@ -39,5 +39,146 @@ final class OnboardingRouterTests: XCTestCase {
         XCTAssertEqual(viewController.routerSetCallCount, 1)
     }
 
-    // TODO: Add more tests
+    func test_routeToHelp_andDismissal() {
+
+        router.routeToHelp()
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToConsent_andDismissal() {
+
+        router.routeToConsent(animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToSteps_andDismissal() {
+
+        router.routeToSteps()
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToPrivacyAgreement_andDismissal() {
+
+        router.routeToPrivacyAgreement()
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToBluetoothSettings_andDismissal() {
+
+        router.routeToBluetoothSettings()
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToOnboardingHelpStopTheSpreadofCoronavirusStep_andDismissal() {
+
+        router.routeToStep(withIndex: 0, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToOnboardingNotificationInformation_andDismissal() {
+
+        router.routeToStep(withIndex: 1, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToOnboardingBluetoothIformation_andDismissal() {
+
+        router.routeToStep(withIndex: 2, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToOnboardingNoNotificationIformation_andDismissal() {
+
+        router.routeToStep(withIndex: 3, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToOnboardingWillGetNotificationIformation_andDismissal() {
+
+        router.routeToStep(withIndex: 4, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToEnConsentStep_andDismissal() {
+
+        router.routeToConsent(withIndex: 0, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToBluetoothConsentStep_andDismissal() {
+
+        router.routeToConsent(withIndex: 1, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToShareConsentStep_andDismissal() {
+
+        router.routeToConsent(withIndex: 2, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 0)
+
+        router.viewController.dismiss(viewController: viewController, animated: false)
+
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
 }
