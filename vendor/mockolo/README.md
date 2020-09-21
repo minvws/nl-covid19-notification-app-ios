@@ -1,8 +1,4 @@
 # ![](Images/logo.png)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2964/badge)](https://bestpractices.coreinfrastructure.org/projects/2964)
-[![Build Status](https://travis-ci.com/uber/mockolo.svg?token=xLqK5hKgjQBvRErSp7Wk&branch=master)](https://travis-ci.com/uber/mockolo.svg?token=xLqK5hKgjQBvRErSp7Wk&branch=master)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B4458%2Fgithub.com%2Fuber%2Fmockolo.svg?type=shield)](https://app.fossa.com/projects/custom%2B4458%2Fgithub.com%2Fuber%2Fmockolo?ref=badge_shield)
 
 # Welcome to Mockolo
 
@@ -21,8 +17,8 @@ This project may contain unstable APIs which may not be ready for general use. S
 
 ## System Requirements
 
-* Swift 5.1 or later
-* Xcode 11.2 or later
+* Swift 5.2 or later
+* Xcode 11.4 or later
 * MacOS 10.14.6 or later
 * Support is included for the Swift Package Manager
 

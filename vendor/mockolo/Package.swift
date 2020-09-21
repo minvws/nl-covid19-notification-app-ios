@@ -1,11 +1,12 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.3
 import PackageDescription
 
 var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMinor(from: "0.0.4")),
     .package(url: "https://github.com/apple/swift-tools-support-core.git", .exact("0.1.5")),
-    .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .exact("0.50200.0"))
 ]
+
+dependencies.append(.package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", .branch("swift-5.3-RELEASE")))
 
 let package = Package(
     name: "Mockolo",

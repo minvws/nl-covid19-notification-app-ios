@@ -34,7 +34,7 @@ extension MethodModel {
         var template = ""
         
         let returnTypeName = returnType.isUnknown ? "" : returnType.typeName
-        
+
         let acl = accessLevel.isEmpty ? "" : accessLevel+" "
         let genericTypeDeclsStr = genericTypeParams.compactMap {$0.render(with: "", encloser: "")}.joined(separator: ", ")
         let genericTypesStr = genericTypeDeclsStr.isEmpty ? "" : "<\(genericTypeDeclsStr)>"
@@ -114,10 +114,11 @@ extension MethodModel {
             }
             
             let overrideStr = isOverride ? "\(String.override) " : ""
-
+            let privateSetSpace = "\(String.privateSet) "
+            
             template = """
 
-            \(1.tab)\(acl)\(staticStr)var \(callCount) = 0
+            \(1.tab)\(acl)\(staticStr)\(privateSetSpace)var \(callCount) = 0
             """
             
             if let argsHistory = argsHistory, argsHistory.enable(force: enableFuncArgsHistory) {
@@ -142,4 +143,3 @@ extension MethodModel {
         return template
     }
 }
-

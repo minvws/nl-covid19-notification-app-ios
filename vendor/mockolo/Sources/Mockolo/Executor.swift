@@ -39,6 +39,7 @@ class Executor {
     private var useTemplateFunc: OptionArgument<Bool>!
     private var useMockObservable: OptionArgument<Bool>!
     private var mockAll: OptionArgument<Bool>!
+    private var mockFinal: OptionArgument<Bool>!
     private var concurrencyLimit: OptionArgument<Int>!
     private var enableArgsHistory: OptionArgument<Bool>!
 
@@ -56,8 +57,9 @@ class Executor {
     ///
     /// - parameter parser: The argument parser to use.
     private func setupArguments(with parser: ArgumentParser) {
+        
         loggingLevel = parser.add(option: "--logging-level",
-                                  shortName: "-v",
+                                  shortName: "-l",
                                   kind: Int.self,
                                   usage: "The logging level to use. Default is set to 0 (info only). Set 1 for verbose, 2 for warning, and 3 for error.")
         sourceFiles = parser.add(option: "--sourcefiles",
@@ -112,7 +114,7 @@ class Executor {
                                         usage: "If set, custom module imports will be added to the final import statement list.")
         excludeImports = parser.add(option: "--exclude-imports",
                                         kind: [String].self,
-                                        usage: "If set, listed modules will be exluded from the import statements in the mock output.")
+                                        usage: "If set, listed modules will be excluded from the import statements in the mock output.")
         header = parser.add(option: "--header",
                                 kind: String.self,
                                 usage: "A custom header documentation to be added to the beginning of a generated mock file.")
@@ -125,6 +127,9 @@ class Executor {
         mockAll = parser.add(option: "--mock-all",
                                  kind: Bool.self,
                                  usage: "If set, it will mock all types (protocols and classes) with a mock annotation (default is set to false and only mocks protocols with a mock annotation).")
+        mockFinal = parser.add(option: "--mock-final",
+                                 kind: Bool.self,
+                                 usage: "If set, generated mock classes will have the 'final' attributes (default is set to false).")
         concurrencyLimit = parser.add(option: "--concurrency-limit",
                                       shortName: "-j",
                                       kind: Int.self,
@@ -144,6 +149,7 @@ class Executor {
         }
         return FileManager.default.currentDirectoryPath + "/" + path
     }
+    
     
     /// Execute the command.
     ///
@@ -189,6 +195,7 @@ class Executor {
         let shouldUseMockObservable = arguments.get(useMockObservable) ?? false
         let shouldMockAll = arguments.get(mockAll) ?? false
         let shouldCaptureAllFuncArgsHistory = arguments.get(enableArgsHistory) ?? false
+        let shouldMockFinal = arguments.get(mockFinal) ?? false
 
         do {
             try generate(sourceDirs: srcDirs,
@@ -203,6 +210,7 @@ class Executor {
                          useTemplateFunc: shouldUseTemplateFunc,
                          useMockObservable: shouldUseMockObservable,
                          enableFuncArgsHistory: shouldCaptureAllFuncArgsHistory,
+                         mockFinal: shouldMockFinal,
                          testableImports: testableImports,
                          customImports: customImports,
                          excludeImports: excludeImports,
@@ -217,4 +225,12 @@ class Executor {
             fatalError("Generation error: \(error)")
         }
     }
+}
+
+public struct Version {
+    /// The string value for this version.
+    public let value: String
+
+    /// The current Mockolo version.
+    public static let current = Version(value: "1.2.8")
 }

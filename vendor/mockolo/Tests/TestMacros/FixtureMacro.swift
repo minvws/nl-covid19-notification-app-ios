@@ -4,7 +4,7 @@ let macroImports = """
 import X
 import Y
 
-#if DEBUG
+#if canImport(NewFramework)
 import Z
 import W
 #endif
@@ -18,10 +18,11 @@ public protocol SomeProtocol: Parent {
 """
 
 let macroImportsMock = """
+
 import V
 import X
 import Y
-#if DEBUG
+#if canImport(NewFramework)
 import W
 import Z
 #endif
@@ -30,14 +31,15 @@ import Z
 public class SomeProtocolMock: SomeProtocol {
     public init() { }
 
-    public var runCallCount = 0
+
+    public private(set) var runCallCount = 0
     public var runHandler: (() -> ())?
     public func run()  {
         runCallCount += 1
         if let runHandler = runHandler {
             runHandler()
         }
-
+        
     }
 }
 
@@ -59,7 +61,7 @@ import Foundation
 import V
 import X
 import Y
-#if DEBUG
+#if canImport(NewFramework)
 import W
 import Z
 #endif
@@ -68,7 +70,7 @@ import Z
 public class SomeProtocolMock: SomeProtocol {
     public init() { }
 
-    public var runCallCount = 0
+    public private(set) var runCallCount = 0
     public var runHandler: (() -> ())?
     public func run()  {
         runCallCount += 1
@@ -101,6 +103,8 @@ import X
 import Y
 #if DEBUG
 import P
+#endif
+#if canImport(NewFramework)
 import W
 import Z
 #endif
@@ -110,7 +114,7 @@ public class SomeProtocolMock: SomeProtocol {
     public init() { }
 
 
-    public var runCallCount = 0
+    public private(set) var runCallCount = 0
     public var runHandler: (() -> ())?
     public func run()  {
         runCallCount += 1
@@ -120,7 +124,6 @@ public class SomeProtocolMock: SomeProtocol {
         
     }
 }
-
 
 """
 let ifElseMacroImports = """
@@ -162,7 +165,7 @@ public class SomeProtocolMock: SomeProtocol {
     public init() { }
 
 
-    public var runCallCount = 0
+    public private(set) var runCallCount = 0
     public var runHandler: (() -> ())?
     public func run()  {
         runCallCount += 1
@@ -172,7 +175,6 @@ public class SomeProtocolMock: SomeProtocol {
         
     }
 }
-
 
 """
 
@@ -213,7 +215,7 @@ public class SomeProtocolMock: SomeProtocol {
     public init() { }
 
 
-    public var runCallCount = 0
+    public private(set) var runCallCount = 0
     public var runHandler: (() -> ())?
     public func run()  {
         runCallCount += 1
@@ -223,7 +225,6 @@ public class SomeProtocolMock: SomeProtocol {
         
     }
 }
-
 """
 
 let macroInFunc =
@@ -239,28 +240,27 @@ protocol PresentableListener: class {
 
 let macroInFuncMock = """
 
+
+
 class PresentableListenerMock: PresentableListener {
-    
-    
-    
-    init() {  }
-    
-    var runCallCount = 0
+    init() { }
+
+
+    private(set) var runCallCount = 0
     var runHandler: (() -> ())?
     func run()  {
         runCallCount += 1
-
         if let runHandler = runHandler {
             runHandler()
         }
         
     }
     #if DEBUG
-    var showDebugModeCallCount = 0
+
+    private(set) var showDebugModeCallCount = 0
     var showDebugModeHandler: (() -> ())?
     func showDebugMode()  {
         showDebugModeCallCount += 1
-
         if let showDebugModeHandler = showDebugModeHandler {
             showDebugModeHandler()
         }

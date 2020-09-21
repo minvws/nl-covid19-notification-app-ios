@@ -41,11 +41,13 @@ extension String {
 
     static let `inout` = "inout"
     static let hasBlankInit = "_hasBlankInit"
+    static let `Self` = "Self"
     static let `static` = "static"
     static let importSpace = "import "
     static public let `class` = "class"
     static public let `final` = "final"
     static let override = "override"
+    static let privateSet = "private(set)"
     static let mockType = "protocol"
     static let unknownVal = "Unknown"
     static let prefix = "prefix"
@@ -134,7 +136,16 @@ extension String {
     var withRightParen: String {
         return "\(self))"
     }
-    
+
+    mutating func withoutTrailingCharacters(_ characters: [String]) -> String {
+        for character in characters {
+            if hasSuffix(character) {
+                _ = self.removeLast()
+            }
+        }
+        return self
+    }
+
 
     func canBeInitParam(type: String, isStatic: Bool) -> Bool {
         return !(isStatic || type == .unknownVal || (type.hasSuffix("?") && type.contains(String.closureArrow)) ||  isGenerated(type: Type(type)))

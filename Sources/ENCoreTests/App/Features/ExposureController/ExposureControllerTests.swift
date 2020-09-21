@@ -30,9 +30,6 @@ final class ExposureControllerTests: TestCase {
                                         userNotificationCenter: userNotificationCenter,
                                         mutableBluetoothStateStream: mutableBluetoothStateStream)
 
-        exposureManager.activateCallCount = 0
-        mutableStateStream.updateCallCount = 0
-
         dataController.lastSuccessfulProcessingDate = Date()
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher() }
 
@@ -335,8 +332,6 @@ final class ExposureControllerTests: TestCase {
     func test_updatesAndFetches_afterInitialActiveState() {
         exposureManager.getExposureNotificationStatusHandler = { .active }
         exposureManager.activateHandler = { $0(.active) }
-
-        dataController.fetchAndProcessExposureKeySetsCallCount = 0
 
         controller.activate(inBackgroundMode: false)
 
