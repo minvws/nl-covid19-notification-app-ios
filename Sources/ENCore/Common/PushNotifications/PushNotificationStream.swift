@@ -14,13 +14,15 @@ enum PushNotificationIdentifier: String {
     case inactive = "nl.rijksoverheid.en.inactive"
     case uploadFailed = "nl.rijksoverheid.en.uploadFailed"
     case enStatusDisabled = "nl.rijksoverheid.en.statusDisabled"
+    case appUpdateRequired = "nl.rijksoverheid.en.appUpdateRequired"
 
     static func allIdentifiers() -> [PushNotificationIdentifier] {
         return [
             .exposure,
             .inactive,
             .uploadFailed,
-            .enStatusDisabled
+            .enStatusDisabled,
+            .appUpdateRequired
         ]
     }
 }

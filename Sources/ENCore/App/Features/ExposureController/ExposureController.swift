@@ -384,6 +384,42 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
+    func appUpdateRequiredCheck() -> AnyPublisher<(), Never> {
+        return Deferred {
+            Future { promise in
+
+                self.logDebug("App Update Required Check Started")
+
+                if let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+                    self.getAppVersionInformation { appVersionInformation in
+
+                        guard let appVersionInformation = appVersionInformation else {
+                            self.logError("Error retrieving app version information")
+                            return promise(.success(()))
+                        }
+
+                        if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
+
+                            guard let minimumVersionMessage = appVersionInformation.minimumVersionMessage.isEmpty ? nil : appVersionInformation.minimumVersionMessage else {
+                                self.logError("Error retrieving minimum app version")
+                                return promise(.success(()))
+                            }
+
+                            let content = UNMutableNotificationContent()
+                            content.body = minimumVersionMessage
+                            content.sound = .default
+                            content.badge = 0
+
+                            self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
+                                promise(.success(()))
+                            }
+                        }
+                    }
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+
     // MARK: - Private
 
     private func postExposureManagerActivation() {

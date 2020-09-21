@@ -73,7 +73,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                         self.scheduleRefresh()
                         self.scheduleDecoySequence()
                     }
-                }).store(in: &self.disposeBag)
+                    }).store(in: &self.disposeBag)
         }
 
         operationQueue.async(execute: scheduleTasks)
@@ -189,7 +189,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             .sink(receiveCompletion: { _ in
             }, receiveValue: { value in
                 execute(decoyProbability: value)
-            })
+                })
             .store(in: &disposeBag)
     }
 
@@ -238,7 +238,8 @@ final class BackgroundController: BackgroundControlling, Logging {
         let sequence: [() -> AnyPublisher<(), Never>] = [
             { self.exposureController.activate(inBackgroundMode: true) },
             processUpdate,
-            processENStatusCheck
+            processENStatusCheck,
+            appUpdateRequiredCheck
         ]
 
         logDebug("Background: starting refresh task")
@@ -257,7 +258,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 }
             }, receiveValue: { [weak self] _ in
                 self?.logDebug("Background: Completed refresh task")
-            })
+                })
 
         cancellable.store(in: &disposeBag)
 
@@ -302,6 +303,25 @@ final class BackgroundController: BackgroundControlling, Logging {
                     }
                 },
                 receiveCancel: { [weak self] in self?.logDebug("Background: Exposure Notification Status Check Cancelled") }
+            )
+            .eraseToAnyPublisher()
+    }
+
+    private func appUpdateRequiredCheck() -> AnyPublisher<(), Never> {
+        logDebug("Background: App Update Required Check Function Called")
+
+        return exposureController
+            .appUpdateRequiredCheck()
+            .handleEvents(
+                receiveCompletion: { [weak self] completion in
+                    switch completion {
+                    case .finished:
+                        self?.logDebug("Background: App Update Required Check Completed")
+                    case .failure:
+                        self?.logDebug("Background: App Update Required Check Failed")
+                    }
+                },
+                receiveCancel: { [weak self] in self?.logDebug("Background: App Update Required Check Cancelled") }
             )
             .eraseToAnyPublisher()
     }
