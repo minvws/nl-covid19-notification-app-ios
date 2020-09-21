@@ -114,11 +114,10 @@ extension MethodModel {
             }
             
             let overrideStr = isOverride ? "\(String.override) " : ""
-            let privateSetSpace = "\(String.privateSet) "
-            
+
             template = """
 
-            \(1.tab)\(acl)\(staticStr)\(privateSetSpace)var \(callCount) = 0
+            \(1.tab)\(acl)\(staticStr)var \(callCount) = 0
             """
             
             if let argsHistory = argsHistory, argsHistory.enable(force: enableFuncArgsHistory) {

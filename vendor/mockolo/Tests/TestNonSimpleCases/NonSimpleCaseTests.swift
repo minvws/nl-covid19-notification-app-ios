@@ -1,6 +1,6 @@
 import Foundation
 
-class BasicFuncTests: MockoloTestCase {
+class NonSimpleVarTests: MockoloTestCase {
 
     func testInoutParams() {
         verify(srcContent: inoutParams,
@@ -10,6 +10,12 @@ class BasicFuncTests: MockoloTestCase {
     func testSubscripts() {
         verify(srcContent: subscripts,
                dstContent: subscriptsMocks)
+    }
+    
+
+    func testNonSimpleVars() {
+        verify(srcContent: nonSimpleVars,
+               dstContent: nonSimpleVarsMock)
     }
     
     func testVariadicFuncs() {
@@ -36,17 +42,4 @@ class BasicFuncTests: MockoloTestCase {
         verify(srcContent: returnSelfFunc,
                dstContent: returnSelfFuncMock)
     }
-    
-    
-    func testSimpleFuncs() {
-        verify(srcContent: simpleFuncs,
-               dstContent: simpleFuncsMock)
-    }
-
-    func testMockFuncs() {
-        verify(srcContent: simpleFuncs,
-               dstContent: simpleMockFuncMock,
-               useTemplateFunc: true)
-    }
 }
-

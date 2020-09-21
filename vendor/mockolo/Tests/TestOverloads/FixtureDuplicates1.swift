@@ -18,15 +18,13 @@ func update(arg: Float)
 
 let overloadMock3 =
 """
-
 import UIKit
-
-
 class FooMock: Foo {
-    init() { }
-
-
-    private(set) var displayCallCount = 0
+    
+    init() {
+        
+    }
+    var displayCallCount = 0
     var displayHandler: (() -> ())?
     func display()  {
         displayCallCount += 1
@@ -35,8 +33,7 @@ class FooMock: Foo {
         }
         
     }
-
-    private(set) var displayXCallCount = 0
+    var displayXCallCount = 0
     var displayXHandler: ((Int) -> ())?
     func display(x: Int)  {
         displayXCallCount += 1
@@ -45,8 +42,7 @@ class FooMock: Foo {
         }
         
     }
-
-    private(set) var displayYCallCount = 0
+    var displayYCallCount = 0
     var displayYHandler: ((Int) -> ())?
     func display(y: Int)  {
         displayYCallCount += 1
@@ -55,8 +51,7 @@ class FooMock: Foo {
         }
         
     }
-
-    private(set) var updateCallCount = 0
+    var updateCallCount = 0
     var updateHandler: (() -> ())?
     func update()  {
         updateCallCount += 1
@@ -65,8 +60,7 @@ class FooMock: Foo {
         }
         
     }
-
-    private(set) var updateIntCallCount = 0
+    var updateIntCallCount = 0
     var updateIntHandler: (() -> (Int))?
     func update() -> Int {
         updateIntCallCount += 1
@@ -75,8 +69,7 @@ class FooMock: Foo {
         }
         return 0
     }
-
-    private(set) var updateArgCallCount = 0
+    var updateArgCallCount = 0
     var updateArgHandler: ((Int) -> ())?
     func update(arg: Int)  {
         updateArgCallCount += 1
@@ -85,8 +78,7 @@ class FooMock: Foo {
         }
         
     }
-
-    private(set) var updateArgFloatCallCount = 0
+    var updateArgFloatCallCount = 0
     var updateArgFloatHandler: ((Float) -> ())?
     func update(arg: Float)  {
         updateArgFloatCallCount += 1

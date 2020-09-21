@@ -25,7 +25,6 @@ extension ClassModel {
                             metadata: AnnotationMetadata?,
                             useTemplateFunc: Bool,
                             useMockObservable: Bool,
-                            mockFinal: Bool,
                             enableFuncArgsHistory: Bool,
                             initParamCandidates: [Model],
                             declaredInits: [MethodModel],
@@ -45,7 +44,7 @@ extension ClassModel {
                 if model.modelType == .method, model.isInitializer, !model.processed {
                     return nil
                 }
-                if let ret = model.render(with: uniqueId, encloser: name, useTemplateFunc: useTemplateFunc, useMockObservable: useMockObservable, mockFinal: mockFinal, enableFuncArgsHistory: enableFuncArgsHistory) {
+                if let ret = model.render(with: uniqueId, encloser: name, useTemplateFunc: useTemplateFunc, useMockObservable: useMockObservable, enableFuncArgsHistory: enableFuncArgsHistory) {
                     return (ret, model.offset)
                 }
                 return nil
@@ -86,10 +85,9 @@ extension ClassModel {
             body += "\(renderedEntities)"
         }
 
-        let finalStr = mockFinal ? "\(String.final) " : ""
         let template = """
         \(attribute)
-        \(acl)\(finalStr)class \(name): \(moduleDot)\(identifier) {
+        \(acl)class \(name): \(moduleDot)\(identifier) {
         \(body)
         }
         """

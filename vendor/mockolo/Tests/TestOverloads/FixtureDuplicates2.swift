@@ -21,22 +21,19 @@ func update(arg: Int, some: Float) -> Array<String, Float>
 let overloadMock4 =
 """
 
-
 class FooMock: Foo {
     init() { }
 
-
-    private(set) var updateCallCount = 0
+    var updateCallCount = 0
     var updateHandler: ((Int, Float) -> ())?
     func update(arg: Int, some: Float)  {
         updateCallCount += 1
         if let updateHandler = updateHandler {
             updateHandler(arg, some)
         }
-        
-    }
 
-    private(set) var updateArgCallCount = 0
+    }
+    var updateArgCallCount = 0
     var updateArgHandler: ((Int, Float) -> (Int))?
     func update(arg: Int, some: Float) -> Int {
         updateArgCallCount += 1
@@ -45,8 +42,7 @@ class FooMock: Foo {
         }
         return 0
     }
-
-    private(set) var updateArgSomeCallCount = 0
+    var updateArgSomeCallCount = 0
     var updateArgSomeHandler: ((Int, Float) -> (Observable<Int>))?
     func update(arg: Int, some: Float) -> Observable<Int> {
         updateArgSomeCallCount += 1
@@ -55,8 +51,7 @@ class FooMock: Foo {
         }
         return Observable<Int>.empty()
     }
-
-    private(set) var updateArgSomeIntCallCount = 0
+    var updateArgSomeIntCallCount = 0
     var updateArgSomeIntHandler: ((Int, Float) -> ((String) -> Observable<Double>))?
     func update(arg: Int, some: Float) -> (String) -> Observable<Double> {
         updateArgSomeIntCallCount += 1
@@ -65,8 +60,7 @@ class FooMock: Foo {
         }
         fatalError("updateArgSomeIntHandler returns can't have a default value thus its handler must be set")
     }
-
-    private(set) var updateArgSomeIntFloatCallCount = 0
+    var updateArgSomeIntFloatCallCount = 0
     var updateArgSomeIntFloatHandler: ((Int, Float) -> (Array<String, Float>))?
     func update(arg: Int, some: Float) -> Array<String, Float> {
         updateArgSomeIntFloatCallCount += 1
@@ -76,5 +70,4 @@ class FooMock: Foo {
         return Array<String, Float>()
     }
 }
-
 """

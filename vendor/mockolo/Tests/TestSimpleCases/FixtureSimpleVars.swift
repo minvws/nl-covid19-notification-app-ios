@@ -23,26 +23,7 @@ class SimpleVarMock: SimpleVar {
         self.name = name
         
     }
-    private(set) var nameSetCallCount = 0
-    var name: Int = 0 { didSet { nameSetCallCount += 1 } }
-}
-
-"""
-
-let simpleVarsFinalMock = """
-
-import Foundation
-
-final class SimpleVarMock: SimpleVar {
-    
-    
-    
-    init() {  }
-    init(name: Int = 0) {
-        self.name = name
-        
-    }
-    private(set) var nameSetCallCount = 0
+    var nameSetCallCount = 0
     var name: Int = 0 { didSet { nameSetCallCount += 1 } }
 }
 

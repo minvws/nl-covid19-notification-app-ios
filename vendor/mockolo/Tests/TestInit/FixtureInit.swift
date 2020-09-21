@@ -158,14 +158,14 @@ public class ParentMock: Parent {
         self._rate = rate
     }
     
-     public private(set) var numSetCallCount = 0
+     public var numSetCallCount = 0
        private var _num: Int = 0 { didSet { numSetCallCount += 1 } }
        public var num: Int {
            get { return _num }
            set { _num = newValue }
        }
 
-       public private(set) var rateSetCallCount = 0
+       public var rateSetCallCount = 0
        private var _rate: Double = 0.0 { didSet { rateSetCallCount += 1 } }
        public var rate: Double {
            get { return _rate }
@@ -176,35 +176,37 @@ public class ParentMock: Parent {
 """
 
 let simpleInitResultMock = """
-import Foundation
+    import Foundation
 
-public class CurrentMock: Current {
-    public init() { }
-    public init(title: String = "", num: Int = 0, rate: Double = 0.0) {
-        self.title = title
-        self.num = num
-        self.rate = rate
+    public class CurrentMock: Current {
+        
+        
+        
+        public init() {  }
+        public init(title: String = "", num: Int = 0, rate: Double = 0.0) {
+            self.title = title
+            self.num = num
+            self.rate = rate
+            
+        }
+        public var titleSetCallCount = 0
+        public var title: String = "" { didSet { titleSetCallCount += 1 } }
+
+        
+        public var numSetCallCount = 0
+           private var _num: Int = 0 { didSet { numSetCallCount += 1 } }
+           public var num: Int {
+               get { return _num }
+               set { _num = newValue }
+           }
+
+           public var rateSetCallCount = 0
+           private var _rate: Double = 0.0 { didSet { rateSetCallCount += 1 } }
+           public var rate: Double {
+               get { return _rate }
+               set { _rate = newValue }
+           }
     }
-
-
-    public private(set) var titleSetCallCount = 0
-    public var title: String = "" { didSet { titleSetCallCount += 1 } }
-    
-     public private(set) var numSetCallCount = 0
-       private var _num: Int = 0 { didSet { numSetCallCount += 1 } }
-       public var num: Int {
-           get { return _num }
-           set { _num = newValue }
-       }
-       public private(set) var rateSetCallCount = 0
-       private var _rate: Double = 0.0 { didSet { rateSetCallCount += 1 } }
-       public var rate: Double {
-           get { return _rate }
-           set { _rate = newValue }
-       }
-}
-
-
 """
 
 
@@ -224,19 +226,16 @@ public typealias ForcastCheckBlock = () -> ForcastUpdateConfig?
 
 let nonSimpleInitVarsMock = """
 
-
-
 public class ForcastUpdatingMock: ForcastUpdating {
-        private var _checkBlock: ForcastCheckBlock!
+    private var _checkBlock: ForcastCheckBlock!
     private var _dataStream: DataStream!
     public init() { }
+
     required public init(checkBlock: @escaping ForcastCheckBlock, dataStream: DataStream) {
         self._checkBlock = checkBlock
         self._dataStream = dataStream
     }
-
-
-    public private(set) var enabledCallCount = 0
+    public var enabledCallCount = 0
     public var enabledHandler: (() -> (Bool))?
     public func enabled() -> Bool {
         enabledCallCount += 1
@@ -245,8 +244,7 @@ public class ForcastUpdatingMock: ForcastUpdating {
         }
         return false
     }
-
-    public private(set) var forcastLoaderCallCount = 0
+    public var forcastLoaderCallCount = 0
     public var forcastLoaderHandler: (() -> (ForcastLoading?))?
     public func forcastLoader() -> ForcastLoading? {
         forcastLoaderCallCount += 1
@@ -255,15 +253,14 @@ public class ForcastUpdatingMock: ForcastUpdating {
         }
         return nil
     }
-
-    public private(set) var fetchInfoCallCount = 0
+    public var fetchInfoCallCount = 0
     public var fetchInfoHandler: ((URL, @escaping (String?, URL?) -> ()) -> ())?
     public func fetchInfo(fromItmsURL itmsURL: URL, completionHandler: @escaping (String?, URL?) -> ())  {
         fetchInfoCallCount += 1
         if let fetchInfoHandler = fetchInfoHandler {
             fetchInfoHandler(itmsURL, completionHandler)
         }
-        
+
     }
 }
 """
