@@ -53,6 +53,27 @@ To validate the generated GAEN signatures on mobile please execute the following
 
 This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/)
 
+### SSL Hash Generation
+
+```
+let certificate = """
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+"""
+let cert = certificate
+    .replacingOccurrences(of: "-----BEGIN CERTIFICATE-----", with: "")
+    .replacingOccurrences(of: "-----END CERTIFICATE-----", with: "")
+    .replacingOccurrences(of: "\n", with: "")
+let certData = Data(base64Encoded: cert)!
+
+guard let secCert = SecCertificateCreateWithData(nil, certData as CFData) else {
+    fatalError()
+}
+
+print(Certificate(certificate: secCert).signature!)
+```
+
 ## Disclaimer
 
 Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.
