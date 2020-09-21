@@ -16,7 +16,7 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate {
 
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> ()) {
 
-        guard let localSignatures = configurationProvider.configuration.sslSignature(forHost: challenge.protectionSpace.host),
+        guard let localSignatures = configurationProvider.configuration.sslSignatures(forHost: challenge.protectionSpace.host),
             challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
             let serverTrust = challenge.protectionSpace.serverTrust else {
             // no pinning

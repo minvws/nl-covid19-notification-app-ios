@@ -21,7 +21,7 @@ struct NetworkConfiguration {
     let api: EndpointConfiguration
     let cdn: EndpointConfiguration
 
-    func sslSignature(forHost host: String) -> [Certificate.Signature]? {
+    func sslSignatures(forHost host: String) -> [Certificate.Signature]? {
         if api.host == host { return api.sslSignatures }
         if cdn.host == host { return cdn.sslSignatures }
 
