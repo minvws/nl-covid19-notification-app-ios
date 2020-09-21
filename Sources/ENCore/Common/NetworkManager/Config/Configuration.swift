@@ -55,7 +55,7 @@ struct NetworkConfiguration {
             host: "test.coronamelder-api.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.apiSignature],
+            sslSignatures: [Certificate.SSL.apiSignature, Certificate.SSL.apiV2Signature],
             tokenParams: [:]
         ),
         cdn: .init(
@@ -63,7 +63,7 @@ struct NetworkConfiguration {
             host: "test.coronamelder-dist.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.cdnSignature],
+            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2Signature],
             tokenParams: [:]
         )
     )
@@ -75,7 +75,7 @@ struct NetworkConfiguration {
             host: "acceptatie.coronamelder-api.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.apiSignature],
+            sslSignatures: [Certificate.SSL.apiSignature, Certificate.SSL.apiV2Signature],
             tokenParams: [:]
         ),
         cdn: .init(
@@ -83,7 +83,7 @@ struct NetworkConfiguration {
             host: "acceptatie.coronamelder-dist.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.cdnSignature],
+            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2Signature],
             tokenParams: [:]
         )
     )
@@ -95,7 +95,7 @@ struct NetworkConfiguration {
             host: "coronamelder-api.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.apiSignature],
+            sslSignatures: [Certificate.SSL.apiSignature, Certificate.SSL.apiV2Signature],
             tokenParams: [:]
         ),
         cdn: .init(
@@ -103,7 +103,7 @@ struct NetworkConfiguration {
             host: "productie.coronamelder-dist.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.cdnSignature],
+            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2Signature],
             tokenParams: [:]
         )
     )
