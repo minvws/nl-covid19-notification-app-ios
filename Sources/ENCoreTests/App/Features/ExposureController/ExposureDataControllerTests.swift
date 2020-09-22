@@ -23,8 +23,10 @@ final class ExposureDataControllerTests: TestCase {
     }
 
     func test_firstRun_erasesStorage() {
-        storageController.storeCallCount = 0
-        storageController.removeDataCallCount = 0
+        // These values are incremented during inti of `ExposureDataController`,
+        // if tests are breaking due to this assert update the call counts accordingly.
+        XCTAssertEqual(storageController.storeCallCount, 1)
+        XCTAssertEqual(storageController.removeDataCallCount, 3)
 
         var removedKeys: [StoreKey] = []
         storageController.removeDataHandler = { key, _ in
@@ -41,8 +43,8 @@ final class ExposureDataControllerTests: TestCase {
         controller = ExposureDataController(operationProvider: operationProvider,
                                             storageController: storageController)
 
-        XCTAssertEqual(storageController.removeDataCallCount, 3)
-        XCTAssertEqual(storageController.storeCallCount, 1)
+        XCTAssertEqual(storageController.removeDataCallCount, 6)
+        XCTAssertEqual(storageController.storeCallCount, 2)
 
         let removedKeysStrings = removedKeys.map { $0.asString }
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.labConfirmationKey.asString))
