@@ -80,7 +80,7 @@
     if (certificateSubjectKeyIdentifier == NULL) {
         return NO;
     }
-    
+
     BOOL isMatch = ASN1_OCTET_STRING_cmp(expectedSubjectKeyIdentifier, certificateSubjectKeyIdentifier) == 0;
     
     X509_free(certificate); certificate = NULL;
