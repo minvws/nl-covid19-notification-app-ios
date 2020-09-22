@@ -2,15 +2,15 @@
 "contamination.title" = "Risiko einer Ansteckung";
 
 "contamination.near_someone_with_corona.title" = "Sie waren in der Nähe einer Person mit Corona.";
-"contamination.near_someone_with_corona.description" = "Am Freitag %@ sind Sie möglicherweise angesteckt worden. Sie waren an diesem Tag mindestens 15 Minuten lang in der Nähe einer Person mit Corona. <br><br>Wenn Sie tatsächlich angesteckt worden sind, können Sie das Virus an andere weitergeben. Auch wenn Sie sich jetzt nicht krank fühlen.";
+"contamination.near_someone_with_corona.description" = "Am %@ sind Sie möglicherweise angesteckt worden. Sie waren an diesem Tag mindestens 15 Minuten lang in der Nähe einer Person mit Corona.<br><br>Wenn Sie tatsächlich angesteckt worden sind, können Sie das Virus an andere weitergeben. Auch wenn Sie sich jetzt nicht krank fühlen.";
 
 "contamination.what_to_do.title" = "Was können Sie nun tun?";
-"contamination.what_to_do.step1" = "Bleiben Sie bis zum %@ zu Hause und achten Sie auf Beschwerden, die zu Corona passen können.";
-"contamination.what_to_do.step2" = "Haben Sie (leichte) Beschwerden, die zum Corona-Virus passen?  Machen Sie einen Coronatest und bleiben Sie bis zum %@ zu Hause.";
+"contamination.what_to_do.step1" = "Bleiben Sie bis einschließlich %@ zu Hause und achten Sie genau auf Beschwerden, die zu Corona passen können.";
+"contamination.what_to_do.step2" = "Haben Sie (leichte) Beschwerden, die zum Corona-Virus passen?  Machen Sie einen Coronatest und bleiben Sie bis einschließlich %@ zu Hause.";
 "contamination.what_to_do.step3" = "Haben Sie ernste Symptome, wie hohes Fieber oder Atembeschwerden? Oder gehören Sie zu einer Risikogruppe und bekommen Sie Fieber? Rufen Sie zuerst Ihren Hausarzt an.";
 "contamination.what_to_do.description" = "Gibt Ihnen der GGD andere Anweisungen per Telefon als die App? Befolgen Sie dann die Anweisungen des GGD.";
 
-"contamination.stay_home.title" = "Bleiben Sie bis zum %@ zu Hause.";
+"contamination.stay_home.title" = "Bleiben Sie bis einschließlich %@ zu Hause.";
 "contamination.stay_home.step1" = "Lassen Sie Ihre Einkäufe von anderen machen. Ist dies nicht möglich und haben Sie keine Symptome? Dann können Sie für kurze Zeit das Haus verlassen, um Ihre Einkäufe zu erledigen. Halten Sie einen Abstand von 1,5 Metern ein und berühren Sie niemanden.";
 "contamination.stay_home.step2" = "Sie dürfen im Garten oder auf dem Balkon sitzen.";
 "contamination.stay_home.step3" = "Kinder im Alter von 4 - 12 Jahren dürfen in die Schule und/oder zum Sport.";
@@ -23,15 +23,15 @@
 "contamination.medical_help.step2" = "Ihr Hausarzt oder andere medizinisches Personal darf Sie zu Hause besuchen.";
 
 "contamination.after.title" = "Ab dem %@";
-"contamination.after.description" = "Haben Sie bis zum %@ keine Symptome bekommen? Dann brauchen Sie nicht mehr zu Hause zu bleiben. Halten Sie aber weiter die allgemeine Corona-Verhaltensregeln ein.";
+"contamination.after.description" = "Haben Sie bis einschließlich %@ keine Symptome bekommen? Dann brauchen Sie nicht mehr zu Hause zu bleiben. Halten Sie aber weiter die allgemeine Corona-Verhaltensregeln ein.";
 
 "contamination.complaints.title" = "Beschwerden, die zum Coronavirus passen";
-"contamination.complaints.step1" = "Erkältung, laufende Nase, Niesen";
+"contamination.complaints.step1" = "Erkältungssymptome wie Schnupfen, laufende Nase, Niesen, Halsschmerzen";
 "contamination.complaints.step2" = "Halsschmerzen";
 "contamination.complaints.step3" = "Husten";
-"contamination.complaints.step4" = "Plötzlicher Geruchs- oder Geschmacksverlust";
-"contamination.complaints.step5" = "Erhöhte Temperatur über 37,5 °C (leichtes Fieber oder Fieber)";
-"contamination.complaints.step6" = "Schnelle Atmung, Kurzatmigkeit";
+"contamination.complaints.step4" = "Plötzlicher Geruchs- und/oder Geschmacksverlust (ohne verstopfte Nase)";
+"contamination.complaints.step5" = "Leichtes Fieber oder Fieber";
+"contamination.complaints.step6" = "Kurzatmigkeit";
 /* MARK: - Status */
 "status.icon.accessibility.ok" = "Ein grüner Kreis mit Häkchen gibt an, dass die App gut eingestellt ist.";
 "status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen ist eine Warnung.";
@@ -126,6 +126,14 @@
 "consentStep4PrimaryButton" = "App teilen";
 "consentStep4SecondaryButton" = "Weiter";
 
+/* MARK: - Onboarding permissions */
+"onboarding.permissions.title" = "Aktivieren Sie CoronaMelder";
+"onboarding.permissions.description" = "CoronaMelder kann Sie nur warnen, wenn Sie der App die Erlaubnis erteilen, um:";
+"onboarding.permissions.description.list1" = "Ihnen Nachrichten zu senden";
+"onboarding.permissions.description.list2" = "Begegnungen mit anderen App-Nutzern aufzuzeichnen";
+"onboarding.permissions.secondary_button" = "Wie funktioniert die App genau?";
+"onboarding.permissions.primary_button" = "Aktivieren";
+
 /* MARK: - Bluetooth */
 "enableBluetoothTitle" = "Bluetooth aktivieren";
 "enableBluetoothSettingIndexRow1" = "1.";
@@ -158,7 +166,7 @@
 "help.faq.location.title" = "Kann die App meinen Standort erkennen?";
 "help.faq.location.description" = "Nein. Die App erkennt über Bluetooth nur, ob Sie in der Nähe anderer Personen sind, die die App auch haben. Die App sieht nie, wo Sie sind.<br><br>Bluetooth stellt eine drahtlose Verbindung zwischen zwei Geräten her, die dicht beieinander sind. Zum Beispiel Ihr Telefon und eine Musikbox oder ein Kopfhörer.<br><br>Die App schätzt den Abstand zwischen den beiden Telefonen anhand der Stärke des Bluetooth-Signals.
 ";
-"help.faq.anonymous.title" = "Wie kann die App anonym funktionieren?";
+"help.faq.anonymous.title" = "Weiß die App wer ich bin und wen ich begegnet bin?";
 "help.faq.anonymous.description_1" = "Die App tauscht Codes mit anderen Telefonen aus. Die Codes enthalten keine persönlichen Daten, auch nicht Ihre Standortdaten. Die Codes sind völlig willkürlich. Der Austausch von Codes findet statt, wenn Sie ganz in der Nähe einer Person sind, die auch die App hat.";
 "help.faq.anonymous.description_2" = "Stellt sich später heraus, dass diese Person Corona hat? Dann kann diese Person gemeinsam mit dem GGD ihre Codes einer Liste mit Codes von Personen mit Corona hinzufügen. So wird die Ansteckung bestätigt.<br><br>Danach wird eine Nachricht an alle anderen Personen geschickt, die diese Codes auf ihrem Telefon haben. In dieser Nachricht steht nur, wann sie in der Nähe einer Person mit Corona waren. Aber nicht, wer das ist und wo sie der Person begegnet sind.";
 "help.bluetooth.title" = "Funktioniert Bluetooth durch Wände hindurch?";
@@ -166,7 +174,7 @@
 "help.faq.reason.title" = "Warum ist diese App wichtig?";
 "help.faq.reason.description" = "Die App kann Sie schnell warnen, wenn Sie in der Nähe einer Person mit Corona waren. Schon bevor Sie Beschwerden haben. Sie können nämlich Corona haben und ansteckend sein, ohne es zu wissen.<br><br>Wenn Sie über die App eine Warnmeldung bekommen, lesen Sie in der App, was zu tun ist. Und ob Sie sich testen lassen müssen. So verhindern Sie, dass Sie Personen in Ihrer Umgebung unbewusst anstecken.<br><br>Sie wurden getestet und haben Corona? Dann können Sie gemeinsam mit dem GGD (auch unbekannte) Personen warnen, die lange in Ihrer Nähe waren. Zum Beispiel in einem Restaurant, Kino oder Wartezimmer. Diese Personen müssen allerdings auch die App benutzen.<br><br>Dank CoronaMelder können wir schneller eingreifen und Neuansteckungen verhindern. Nur gemeinsam bekommen wir Corona unter Kontrolle.";
 "help.faq.upload_keys.title" = "Kann ich anderen eine Nachricht schicken, wenn ich Corona habe?";
-"help.faq.upload_keys.description" = "Sie können nur eine Nachricht an andere schicken, wenn sich nach einem Test herausstellt, dass Sie Corona haben. Der GGD ruft Sie in diesem Fall an.<br><br>Bei diesem Gespräch kontrolliert ein GGD-Mitarbeiter Ihren GGD-Schlüssel. Sie finden ihn in der App. So wird immer sichergestellt, dass nur Personen Nachrichten verschicken können, die wirklich Corona haben.<br><br>Nach der Kontrolle Ihres GGD-Schlüssels können Sie die Codes teilen, die Ihr Telefon in den letzten 14 Tagen an andere Telefone geschickt hat.<br><br>So können die Personen, in deren Nähe Sie waren, als Sie ansteckend waren, eine anonyme Nachricht erhalten. Aber nur, wenn diese Personen auch die App nutzen.";
+"help.faq.upload_keys.description" = "Sie können nur eine Nachricht an andere schicken, wenn sich nach einem Test herausstellt, dass Sie Corona haben. Der GGD ruft Sie in diesem Fall an.<br><br>Bei diesem Gespräch kontrolliert ein GGD-Mitarbeiter Ihren GGD-Schlüssel. Sie finden ihn in der App. So wird immer sichergestellt, dass nur Personen Nachrichten verschicken können, die wirklich Corona haben.<br><br>Nach der Kontrolle Ihres GGD-Schlüssels können Sie die Codes teilen, die Ihr Telefon in den letzten 14 Tagen an andere Telefone geschickt hat.<br><br>So können die Personen, in deren Nähe Sie waren, als Sie ansteckend waren, eine Nachricht erhalten. Aber nur, wenn diese Personen auch die App nutzen.";
 "help.faq.deletion.title" = "Wie lösche ich meine Daten?";
 "help.faq.privacy_policy.title" = "Datenschutzerklärung";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -193,7 +201,7 @@
 
 "help.technical_explanation.title" = "Technische Erläuterungen";
 "help.technical_explanation.step1.title" = "1. Die App erstellt für jedes Telefon einen eigenen Code.";
-"help.technical_explanation.step1.description" = "Der Code enthält keine Informationen über Sie oder Ihr Telefon. Der Code ist völlig anonym und ändert sich alle 15 Minuten.";
+"help.technical_explanation.step1.description" = "Der Code enthält keine Informationen über Sie oder Ihr Telefon. Der Code ist völlig willkürlich und ändert sich alle 15 Minuten.";
 "help.technical_explanation.step2.title" = "2. Telefone tauschen ihre Codes aus, wenn sie dicht beieinander sind.";
 "help.technical_explanation.step2.description" = "Hat die Person, der Sie begegnen, auch die App? Dann tauschen beide Telefone ihre Codes über Bluetooth Low Energy miteinander aus. So weiß die App, welche Telefone dicht beieinander waren. Die App weiß nicht, zu wem die Telefone gehören oder wo Sie gewesen sind.";
 "help.technical_explanation.step3.title" = "3. Wenn eine Person Corona hat, kann sie ihre Codes auf eine Liste setzen.";
@@ -216,7 +224,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "help.what_to_do_with_notification.title" = "Was können Sie tun, wenn Sie in der Nähe einer Person mit Corona waren?";
 "help.what_to_do_with_notification.description" = "Befolgen Sie den Ratschlägen in der App. Die Ratschläge hängen von Ihrer persönlichen Situation ab. Ob Sie Symptome haben, die zu Corona passen. Und an welchem Tag Sie in der Nähe der Person mit Corona waren.<br><br>Bleiben Sie auf jeden Fall zu Hause bis Sie sicher wissen, dass Sie kein Corona haben. So verhindern Sie, dass Sie andere unbewusst anstecken.<br><br>Erhalten Sie vom GGD andere Anweisungen als in der App? Befolgen Sie dann den Anweisungen des GGD.";
 "help.other_reports.title" = "Andere Nachrichten";
-"help.other_reports.description" = "CoronaMelder kann Ihnen auch eine Nachricht schicken, wenn es ein technisches Problem gibt. Zum Beispiel, wenn bei Ihnen Bluetooth deaktiviert ist. Oder wenn es länger als einen Tag keine Internetverbindung gab. Die App hilft Ihnen, das zu lösen.<br><br>Haben Sie eine solche Meldung erhalten, obwohl die App ganz normal aktiviert ist? Dann wurde das Problem in der Zwischenzeit gelöst.<br><br>Manchmal erhalten Sie auch Nachrichten, in denen steht, dass Ihr Telefon COVID-19-Überprüfungen durchführt. Öffnen Sie  dann CoronaMelder. Gut zu wissen: Meistens ist alles in Ordnung.";
+"help.other_reports.description" = "CoronaMelder kann Ihnen auch eine Nachricht schicken, wenn es ein technisches Problem gibt. Zum Beispiel, wenn Bluetooth bei Ihnen deaktiviert ist. Oder wenn es länger als einen Tag keine Internetverbindung gab. Die App hilft Ihnen, das zu lösen.<br><br>Haben Sie eine solche Meldung erhalten, obwohl die App ganz normal aktiviert ist? Dann wurde das Problem in der Zwischenzeit gelöst.<br><br>Manchmal erhalten Sie auch Nachrichten, in denen steht, dass Ihr Telefon COVID-19-Überprüfungen durchführt. Öffnen Sie  dann CoronaMelder. Gut zu wissen: Meistens ist alles in Ordnung.";
 "help.other_what_does_report_say.title" = "Was steht in der Nachricht?";
 "help.other_what_does_report_say.content1" = "Die App schickt eine Nachricht, wenn Sie mindestens 15 Minuten in der Nähe einer Person waren, bei der später Corona festgestellt wurde.";
 "help.other_what_does_report_say.content2" = "Die Nachricht erscheint auf dem Startbildschirm Ihres Telefons, genau wie die Nachrichten von anderen Apps. Die Nachricht hat das Symbol des CoronaMelders.<br><br> Haben Sie eine Nachricht erhalten? Dann öffnen Sie den CoronaMelder. Dort können Sie lesen, was in diesem Fall zu tun ist.";
@@ -277,7 +285,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.cell.requestTest.subtitle" = "Erfahren Sie schnellstmöglich, ob Sie selbst Corona haben.";
 
 "moreInformation.cell.infected.title" = "GGD-Schlüssel weiterleiten";
-"moreInformation.cell.infected.subtitle" = "Schicken Sie mit dem GGD eine anonyme Nachricht an andere, wenn Sie Corona haben.";
+"moreInformation.cell.infected.subtitle" = "Gehen Sie hierhin, wenn der GGD Sie mit dem Corona-Testergebnis anruft.";
 
 "moreInformation.info.title" = "Sie brauchen dazu Ihre Bürgerservicenummer. Diese steht auf Ihrem Pass oder Ausweis.";
 
@@ -304,7 +312,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 
 "moreInformation.about.faq.reason" = "Warum ist diese App wichtig?";
 "moreInformation.about.faq.location" = " Kann die App meinen Standort erkennen?";
-"moreInformation.about.faq.anonymous" = "Wie kann die App anonym funktionieren?";
+"moreInformation.about.faq.anonymous" = "Weiß die App wer ich bin und wen ich begegnet bin?";
 "moreInformation.about.faq.notification" = "Wann bekomme ich eine App-Nachricht?";
 "moreInformation.about.faq.upload_keys" = "Kann ich anderen eine Nachricht schicken, wenn ich Corona habe?";
 "moreInformation.about.faq.bluetooth" = "Funktioniert Bluetooth durch Wände hindurch?";
@@ -325,11 +333,11 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.infected.error" = "Die App konnte keinen GGD-Schlüssel laden. Kontrollieren Sie Ihre Internetverbindung.";
 "moreInformation.infected.error.upload" = "Beim Verschicken der Nachricht ist ein Fehler aufgetreten.";
 
-"moreInformation.infected.header" = "Wurden Sie getestet und haben Sie Corona? Dann ruft Sie ein GGD-Mitarbeiter an. Sie benötigen dazu Ihren GGD-Schlüssel.";
+"moreInformation.infected.header" = "Wurden Sie getestet und haben Sie Corona? Dann ruft Sie ein GGD-Mitarbeiter an. Der Mitarbeiter wird Ihnen dabei helfen, anderen zu warnen, die in Ihrer Nähe waren. Sie benötigen dazu Ihren GGD-Schlüssel.";
 "moreInformation.infected.how_does_it_work" = "Wie funktioniert das?";
 "moreInformation.infected.step1" = "Leiten Sie diesen GGD-Schlüssel an den GGD-Mitarbeiter weiter:";
 "moreInformation.infected.step2" = "Warten Sie auf den GGD-Mitarbeiter, bevor Sie fortfahren.";
-"moreInformation.infected.step3" = "Warnen Sie andere mit einer anonymen Nachricht.";
+"moreInformation.infected.step3" = "Warnen Sie andere durch das Senden einer Nachricht.";
 "moreInformation.infected.tryAgain.description" = "Die App konnte keinen GGD-Schlüssel laden. Kontrollieren Sie Ihre Internetverbindung.";
 "moreInformation.infected.action" = "Weiter";
 
@@ -423,10 +431,12 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "privacyAgreement.title" = "Zustimmung zur Datennutzung";
 "privacyAgreement.message" = "Zur Verwendung von CoronaMelder müssen Sie der %@ zustimmen. Wichtig: ";
 "privacyAgreement.message.link" = "Datenschutzerklärung";
+"privacyAgreement.list.step0" = "Die Verwendung von CoronaMelder ist immer freiwillig.";
 "privacyAgreement.list.step1" = "Die App sendet verschlüsselte Bluetooth-Daten.";
 "privacyAgreement.list.step2" = "Andere Benutzer, mit denen Sie Kontakt hatten, speichern diese Daten höchstens 14 Tage.";
 "privacyAgreement.list.step3" = "Ergibt ein Coronatest, dass Sie Corona haben? Dann können Sie dies in der App melden, um andere Benutzer zu warnen.";
 "privacyAgreement.list.step4" = "Sie können die Daten auf Ihrem Telefon jederzeit löschen.";
 "privacyAgreement.consent.button" = "Ich habe die Datenschutzerklärung gelesen und erkläre mich damit einverstanden.";
 
-
+"notification.update_required.title" = "Update erforderlich";
+"notification.update_required.description" = "Es gibt eine neue Version von CoronaMelder. Die veraltete Version funktioniert nicht mehr gut. Weitere Anweisungen finden Sie in der App.";

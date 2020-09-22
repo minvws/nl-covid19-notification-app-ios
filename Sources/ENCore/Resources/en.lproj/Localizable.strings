@@ -7,31 +7,31 @@
 "contamination.what_to_do.title" = "What can you do now?";
 "contamination.what_to_do.step1" = "Stay at home up to and including %@ and look out for symptoms related to the coronavirus";
 "contamination.what_to_do.step2" = "Do you have (mild) symptoms related to the coronavirus? Get tested for coronavirus and stay home up to and including %@";
-"contamination.what_to_do.step3" = "Do you have serious symptoms like a high fever or trouble breathing? Or are you part of a high-risk group and get a fever? Call your doctor";
-"contamination.what_to_do.description" = "Do you get advice from the GGD that's different from the advice given by the app? Follow the advice from the GGD.";
+"contamination.what_to_do.step3" = "Do you have serious symptoms like a high fever or shortness of breath? Or are you part of a high-risk group and have a fever? Call your doctor first.";
+"contamination.what_to_do.description" = "Were you called by the GGD? Follow the advice given by the GGD, not the advice given by the app.";
 
 "contamination.stay_home.title" = "Stay home up to and including %@";
-"contamination.stay_home.step1" = "Ask someone else to get groceries. If this is impossible and you don't have any symptoms? You can go outside to get groceries. Keep 1,5 meter distance and don't touch anyone.";
-"contamination.stay_home.step2" = "You can use your own garden or balcony.";
-"contamination.stay_home.step3" = "Kids between 4-12 years of age can go to school and practice sports.";
+"contamination.stay_home.step1" = "Ask someone else to get groceries. Is this impossible and are you free of symptoms? Then it's alright if you quickly go to the shop. Keep a 1,5 metre distance and don't touch anyone.";
+"contamination.stay_home.step2" = "You're allowed to enjoy your own yard or balcony.";
+"contamination.stay_home.step3" = "Children between the ages of 4 and 12 are allowed to go to school and/or play sports.";
 
-"contamination.visitors.title" = "Don't see visitors";
-"contamination.visitors.step1" = "The people that live with you, can stay in the same house. Keep 1,5 meter distance. No cuddling, no kissing and no sex.";
+"contamination.visitors.title" = "Don't receive any visitors";
+"contamination.visitors.step1" = "Only the people who live with you are allowed to be in the same house as you. Stay away from each other and keep a 1,5 metre distance. That means no cuddling, no kissing and no sex.";
 
-"contamination.medical_help.title" = "Do you need medical help?";
-"contamination.medical_help.step1" = "Don't see your physician or go to the hospital, but call your doctor first. Mention that you've been in contact with someone that has the coronavirus.";
-"contamination.medical_help.step2" = "Your doctor and other medical personnel is allowed to visit you.";
+"contamination.medical_help.title" = "Need medical assistance?";
+"contamination.medical_help.step1" = "Don't go to see your doctor or go to the hospital, but call your doctor first. Tell them you've been in contact with someone who has coronavirus.";
+"contamination.medical_help.step2" = "Your doctor and other medical personnel are allowed to visit you.";
 
 "contamination.after.title" = "After %@";
-"contamination.after.description" = "No symptoms up to and including %@? You don't have to stay at home anymore. Do keep following the basic rules.";
+"contamination.after.description" = "Haven't had symptoms until %@? Then you won't have to stay at home anymore. But do keep following the general coronavirus-related rules.";
 
 "contamination.complaints.title" = "Possible coronavirus symptoms";
-"contamination.complaints.step1" = "nasal cold, runny nose, sneezing";
+"contamination.complaints.step1" = "cold symptoms like nasal cold, runny nose, sneezing, sore throat";
 "contamination.complaints.step2" = "sore throat";
 "contamination.complaints.step3" = "coughing";
-"contamination.complaints.step4" = "sudden loss of smell or taste";
-"contamination.complaints.step5" = "temperature above 37,5 degrees (slight temperature or fever)";
-"contamination.complaints.step6" = "fast or difficult breathing";
+"contamination.complaints.step4" = "sudden loss of smell or taste (without nasal congestion)";
+"contamination.complaints.step5" = "elevated temperature or fever";
+"contamination.complaints.step6" = "shortness of breath";
 /* MARK: - Status */
 "status.icon.accessibility.ok" = "Green circle with checkmark that shows the app has been set up properly";
 "status.icon.accessibility.inactive" = "Yellow circle with exclamation mark as warning ";
@@ -126,6 +126,14 @@
 "consentStep4PrimaryButton" = "Share app";
 "consentStep4SecondaryButton" = "Continue";
 
+/* MARK: - Onboarding permissions */
+"onboarding.permissions.title" = "Turn on CoronaMelder";
+"onboarding.permissions.description" = "CoronaMelder can only warn you when you give the app permission to:";
+"onboarding.permissions.description.list1" = "Send you notifications";
+"onboarding.permissions.description.list2" = "Track encounters with other app users";
+"onboarding.permissions.secondary_button" = "How does the app work?";
+"onboarding.permissions.primary_button" = "Turn on";
+
 /* MARK: - Bluetooth */
 "enableBluetoothTitle" = "Turn on Bluetooth";
 "enableBluetoothSettingIndexRow1" = "1.";
@@ -157,15 +165,15 @@
 "help.faq.notification.title" = "When does the app send notifications?";
 "help.faq.location.title" = "Can the app see my location?";
 "help.faq.location.description" = "No. Using Bluetooth, the app only sees if you're near other people who also have the app. Bluetooth isn't linked to your location, so the app never sees where you are.<br><br>Bluetooth only wirelessly connects 2 devices that are near each other. Like your phone and a speaker, or a pair of wireless headphones.<br><br>The app can estimate the distance between 2 phones using the strength of the Bluetooth signal.";
-"help.faq.anonymous.title" = "How can the app be anonymous?";
-"help.faq.anonymous.description_1" = "The app exchanges random codes with other phones. These codes don't include any personal or location data. The code exchange happens when you're near a person who also has the app.";
-"help.faq.anonymous.description_2" = "Was this person later found to have coronavirus? Together with the GGD they can add their code to a list of codes of infected people. By doing so the infection can be confirmed. <br><br>After this, you and others who have these codes on their phones get a notification. This notification only says when they've been close to an infected person. Not who this person is and where they've encountered them.";
+"help.faq.anonymous.title" = "Does the app know who I am and who I've encountered?";
+"help.faq.anonymous.description_1" = "The app exchanges codes with other phones. These codes don't include any personal or location data. They're completely random. The code exchange happens when you're near a person who also has the app.";
+"help.faq.anonymous.description_2" = "Was this person later found to have coronavirus? Together with the GGD, they can add their code to a list of codes of infected people. By doing so the infection can be confirmed.<br><br>After this, a notification is sent to all people who have these codes on their phones. This notification only says when they've been near an infected person. Not who this person is and where they've encountered them.";
 "help.bluetooth.title" = "Can the Bluetooth signal pass through walls?";
 
 "help.faq.reason.title" = "Why is this app important?";
 "help.faq.reason.description" = "The app can quickly warn you after you've been near someone who has coronavirus. Even before you show symptoms. Because it's possible to have coronavirus and be contagious without having symptoms. <br><br>If you get a warning through the app, you'll get instructions on what to do next. And if you should get tested. So you prevent unknowingly infecting people in your environment.<br><br>Did you get tested, and do you have coronavirus? Together with the GGD, you can warn people who were near you for an extended amount of time. Including people you don't know. In a restaurant, cinema or waiting room, and if those people also used the app.<br><br>Thanks to CoronaMelder we can act quicker and prevent new infections. Only together can we get coronavirus under control.";
 "help.faq.upload_keys.title" = "Can I send others a notification if I have coronavirus?";
-"help.faq.upload_keys.description" = "You can only send a notification to others if you were tested and have coronavirus. In this case, you'll get a call from the GGD with the test results.<br><br>During this call a GGD employee checks your GGD key. You can find this key in the app. Using this method we make sure only people who are really infected can send notifications to others.<br><br>After your GGD key is checked you can share the codes your phone has sent to other phones in the last 14 days.<br><br>By doing so the people who were near you while you were contagious are notified anonymously. Only if these people also use the app.";
+"help.faq.upload_keys.description" = "You can only send a notification to others if you were tested and found to have coronavirus. In this case, the GGD calls you with the test results.<br><br>During this phone call, a GGD employee checks your GGD key. You can find this key in the app. This way, we make sure only people who are truly infected can send notifications to others.<br><br>After your GGD key is checked, you can share the codes your phone has sent to other phones in the last 14 days.<br><br>By doing so, the people who were near you while you were contagious are notified. But only if these people also use the app.";
 "help.faq.deletion.title" = "How do I delete my data?";
 "help.faq.privacy_policy.title" = "Privacy statement";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -192,7 +200,7 @@
 
 "help.technical_explanation.title" = "Technical explanation";
 "help.technical_explanation.step1.title" = "1. The app makes a unique code for each phone";
-"help.technical_explanation.step1.description" = "This code doesn't include any information about you or your phone. The code is completely anonymous and changes every 15 minutes.";
+"help.technical_explanation.step1.description" = "This code doesn't include any information about you or your phone. The code is completely random and changes every 15 minutes.";
 "help.technical_explanation.step2.title" = "2. Phones only exchange codes when they're near each other";
 "help.technical_explanation.step2.description" = "If the person you’re near also has the app, then your phones use Bluetooth Low Energy to exchange codes. This way, the app knows which phones were near you. The app doesn't know who the phones belong to. And it doesn't know where you were.";
 "help.technical_explanation.step3.title" = "3. If someone has coronavirus, they can put their codes on a list";
@@ -200,7 +208,7 @@
 "help.technical_explanation.step4.title" = "4. Each phone checks whether it has seen the codes on the GGD's list before";
 "help.technical_explanation.step4.description" = "A few times a day, the app checks the list which has codes of infected people. And it compares these codes with the codes saved on your phone. This is how the app sees whether you've been exposed to a higher risk of infection.";
 "help.technical_explanation.step5.title" = "5. You get a notification if an infected person's codes are on your phone";
-"help.technical_explanation.step5.description" = "This notification tells you when you've been near an infected person. Not who this person is, or where you've run into them. The app lets you know what you can do next. Your own codes aren't on the list of infected codes. They're saved on your phone for 14 days.";
+"help.technical_explanation.step5.description" = "This notification tells you when you've been near an infected person. Not who this person is, or where you've encountered them. The app lets you know what you can do next. Your own codes aren't on the list of infected codes. They're saved on your phone for 14 days.";
 
 "help.technical_explanation.github.title" = "View source code";
 "help.technical_explanation.github.subtitle" = "Go to GitHub";
@@ -214,13 +222,13 @@
 "help.what_to_do_with_notification.title" = "What can you do after you've been near someone with coronavirus?";
 "help.what_to_do_with_notification.description" = "Follow the advice from the app. This advice is different based on your situation. It depends on whether you have symptoms related to coronavirus. And on which day you were possibly exposed.<br><br>In any case, stay home until you know for sure you don't have the coronavirus. So you’ll prevent unknowingly infecting others.<br><br>Were you near someone who has your contact details, and were you called by the GGD? Follow the advice given by the GGD, not the advice given by the app.";
 "help.other_reports.title" = "Other notifications";
-"help.other_reports.description" = "The app can also send you a notification if there's a technical problem. If your Bluetooth is turned off, for example. Or if your phone hasn't been connected to the internet for longer than a day. The app helps you resolve these problems.<br><br>Did you get such a notification while the app is working correctly? This means the problem was fixed in the meantime.<br><br>You will also get notifications which tell you that your phone did COVID-19 checks. Open the CoronaMelder app when in doubt. Good to know: most of the time there is nothing to report.";
-"help.other_what_does_report_say.title" = "What does it mean when you get a notification?";
-"help.other_what_does_report_say.content1" = "The app sends you a notification if you've spent 15 minutes near someone who was later found to have coronavirus.";
+"help.other_reports.description" = "The app can also send you a notification if there's a technical problem. If your Bluetooth is turned off, for example. Or if your phone hasn't been connected to the internet for longer than a day. The app helps you resolve these problems.<br><br>Did you get such a notification even though the app is working correctly? This means the problem was fixed in the meantime.<br><br>Sometimes you'll get notifications that say your phone performed COVID-19 checks. If that happens, open the CoronaMelder app. Good to know: there's usually no cause for concern.";
+"help.other_what_does_report_say.title" = "What does a notification say?";
+"help.other_what_does_report_say.content1" = "The app sends you a notification if you've spent at least 15 minutes near someone who was later found to have coronavirus.";
 "help.other_what_does_report_say.content2" = "The notification looks like what you see when you receive a text message. Just like messages from other apps. The notification has the CoronaMelder icon.<br><br>Did you receive a notification? Open CoronaMelder. You'll find instructions on what to do in the app.";
 
 "help.pause_app.title" = "Can I pause the app?";
-"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. Do this through <b>Settings > Bluetooth</b>. If you turn off Bluetooth, the app won't exchange codes anymore. After this, you get a reminder to turn on the app again every 24 hours.<br><br>However, it's mostly not recommended to pause the app. Because you might forget to turn it on again. You can pause the app in certain moments. For example, when you're near (potential) corona patients and you're wearing the appropriate medical protection.";
+"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. To turn off Bluetooth, go to <b>Settings > Bluetooth</b>. If you turn off Bluetooth, the app won't exchange codes anymore. After this, every 24 hours you get a reminder to turn on the app back on.<br><br>So even though you can, we don't recommend turning the app off. Because you might forget to turn it on again. In certain situations, you can pause the app. For example, when you're near (potential) coronavirus patients and you're sure you're wearing the appropriate medical protection.";
 
 "help.apps_other_countries.title" = "Does CoronaMelder work with apps from other countries?";
 "help.apps_other_countries.description" = "Not yet, unfortunately. However, we expect this feature in September. Then, CoronaMelder will be able to exchange codes with certain apps from other countries. Like the German app, for example.<br><br>If you install the German Corona-Warn-App alongside CoronaMelder, your phone will tell you that only 1 app can be active. This is the app you're currently using to check your encounters. If you want to do this in other countries, you need to switch apps yourself. You can then get notifications from the app you switched to. If you switch apps once a day, both apps will check your encounters. This way you won’t miss anything.<br><br>From mid-September, you'll likely be able to always keep using your own country's app. And you won't need to make a daily app switch anymore.";
@@ -275,15 +283,15 @@
 "moreInformation.cell.requestTest.subtitle" = "Find out as soon as possible if you're infected";
 
 "moreInformation.cell.infected.title" = "Share the GGD key";
-"moreInformation.cell.infected.subtitle" = "Send an anonymous notification with the GGD to others if you're infected";
+"moreInformation.cell.infected.subtitle" = "Go here if the GGD calls you with your coronavirus test results";
 
-"moreInformation.info.title" = "Have your citizen service number (BSN) ready. You'll find it on your passport, identity card or nationality certificate.";
+"moreInformation.info.title" = "Have your citizen service number (BSN) ready. You'll find it on your Dutch passport or nationality certificate.";
 
 "moreInformation.complaints.item1" = "cold symptoms like nasal cold, runny nose, sneezing, sore throat";
 "moreInformation.complaints.item2" = "coughing";
-"moreInformation.complaints.item3" = "stuffiness";
+"moreInformation.complaints.item3" = "shortness of breath";
 "moreInformation.complaints.item4" = "elevated temperature or fever";
-"moreInformation.complaints.item5" = "sudden loss of taste and/or smell (without stuffed nose)";
+"moreInformation.complaints.item5" = "sudden loss of smell or taste (without nasal congestion)";
 "moreInformation.complaints.title" = "Possible coronavirus symptoms";
 "moreInformation.complaints.content" = "Do you have symptoms? Stay home as much as possible. Are your symptoms severe? Call your doctor.";
 
@@ -302,8 +310,8 @@
 
 "moreInformation.about.faq.reason" = "Why is this app important?";
 "moreInformation.about.faq.location" = "Can the app see my location?";
-"moreInformation.about.faq.anonymous" = "How can the app be anonymous?";
-"moreInformation.about.faq.notification" = "When does the app send me notifications?";
+"moreInformation.about.faq.anonymous" = "Does the app know who I am and who I've encountered?";
+"moreInformation.about.faq.notification" = "When does the app send me a notification?";
 "moreInformation.about.faq.upload_keys" = "Can I send others a notification if I have coronavirus?";
 "moreInformation.about.faq.bluetooth" = "Can the Bluetooth signal pass through walls?";
 "moreInformation.about.faq.power_usage" = "How much power does the app use?";
@@ -323,12 +331,12 @@
 "moreInformation.infected.error" = "The app couldn't retrieve a GGD key. Please check your internet connection.";
 "moreInformation.infected.error.upload" = "Something went wrong while sending the notification";
 
-"moreInformation.infected.header" = "Were you tested and do you have coronavirus? You'll get a call from the GGD. You'll need your GGD key for this call.";
+"moreInformation.infected.header" = "Were you tested and found to have coronavirus? A GGD employee calls you. This employee helps you protect the people that were near you. You need your GGD key for this call.";
 "moreInformation.infected.how_does_it_work" = "How does this work?";
 "moreInformation.infected.step1" = "Give this GGD key to the GGD employee.";
 "moreInformation.infected.step2" = "Wait for the GGD employee for the next step";
-"moreInformation.infected.step3" = "Warn others by sending an anonymous notification";
-"moreInformation.infected.tryAgain.description" = "The app couldn't retrieve a GGD key. Please check your internet connection.";
+"moreInformation.infected.step3" = "Warn others by sending a notification";
+"moreInformation.infected.tryAgain.description" = "The app couldn't retrieve a GGD key. Check your internet connection.";
 "moreInformation.infected.action" = "Continue";
 
 /* MARK: - MoreInformation | Infected | Thank You */
@@ -421,6 +429,7 @@
 "privacyAgreement.title" = "Permission to use data";
 "privacyAgreement.message" = "To use CoronaMelder, you have to accept the %@. Important to know:";
 "privacyAgreement.message.link" = "privacy statement";
+"privacyAgreement.list.step0" = "Using CoronaMelder is never mandatory.";
 "privacyAgreement.list.step1" = "Your app sends out encrypted Bluetooth data.";
 "privacyAgreement.list.step2" = "Other users who've been in contact with you save this data for a maximum of 14 days.";
 "privacyAgreement.list.step3" = "If you've been tested and have coronavirus, you can report it in the app to warn other users.";
@@ -428,4 +437,4 @@
 "privacyAgreement.consent.button" = "I've read and accepted the privacy statement";
 
 "notification.update_required.title" = "Necessary update";
-"notification.update_required.description" = "A new version of CoronaMelder is available. This version isn't working correctly anymore. Check the app for instructions on how to update.";
+"notification.update_required.description" = "A new version of CoronaMelder is available. The current version isn't working correctly anymore. Check the app for instructions on how to update.";

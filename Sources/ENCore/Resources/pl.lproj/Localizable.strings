@@ -2,15 +2,15 @@
 "contamination.title" = "Możliwość zarażenia";
 
 "contamination.near_someone_with_corona.title" = "Znajdowałeś się w pobliżu osoby z koronawirusem";
-"contamination.near_someone_with_corona.description" = "W piątek %@ mogłeś zostać zarażony. Tego dnia znajdowałeś się przez co najmniej 15 minut w pobliżu osoby zarażonej koronawirusem.<br><br>Jeśli rzeczywiście jesteś zarażony, możesz przekazywać wirusa innym. Nawet jeśli teraz nie czujesz się chory.";
+"contamination.near_someone_with_corona.description" = "%@ mogłeś zostać zarażony. Tego dnia znajdowałeś się przez co najmniej 15 minut w pobliżu osoby zarażonej koronawirusem.<br><br>Jeśli rzeczywiście jesteś zarażony, możesz przekazywać wirusa innym. Nawet jeśli teraz nie czujesz się chory.";
 
 "contamination.what_to_do.title" = "Co możesz teraz zrobić?";
-"contamination.what_to_do.step1" = "Pozostań w domu do %@ i zwróć szczególną uwagę na dolegliwości typowe dla koronawirusa";
-"contamination.what_to_do.step2" = "Masz (łagodne) dolegliwości, które są typowe dla koronawirusa? Zrób test na obecność koronawirusa i pozostań w domu do %@";
-"contamination.what_to_do.step3" = "Masz poważne dolegliwości tj. wysoką gorączkę lub trudności z oddychaniem? Albo znajdujesz się w grupie wysokiego ryzyka i masz gorączkę? W pierwszej kolejności zadzwoń do swojego lekarza rodzinnego";
+"contamination.what_to_do.step1" = "Pozostań w domu do %@ włącznie i zwróć szczególną uwagę na dolegliwości typowe dla koronawirusa";
+"contamination.what_to_do.step2" = "Masz (łagodne) dolegliwości, które są typowe dla koronawirusa? Zrób test na obecność koronawirusa i pozostań w domu do %@ włącznie";
+"contamination.what_to_do.step3" = "Masz poważne dolegliwości tj. wysoką gorączkę lub trudności z oddychaniem? Albo znajdujesz się w grupie wysokiego ryzyka i masz gorączkę? W pierwszej kolejności zadzwoń do swojego lekarza rodzinnego.";
 "contamination.what_to_do.description" = "GGD w rozmowie telefonicznej podaje inne zalecenia niż aplikacja? Postępuj zgodnie z zaleceniami GGD.";
 
-"contamination.stay_home.title" = "Pozostań w domu do %@";
+"contamination.stay_home.title" = "Pozostań w domu do %@ włącznie";
 "contamination.stay_home.step1" = "Niech inni zrobią za Ciebie zakupy. Naprawdę nikt nie może tego zrobić, a Ty nie masz żadnych dolegliwości? W takim razie możesz wyjść, aby zrobić zakupy. Zachowuj 1,5 metra odległości i nikogo nie dotykaj.";
 "contamination.stay_home.step2" = "Możesz przebywać w ogrodzie lub siedzieć na balkonie.";
 "contamination.stay_home.step3" = "Dzieci w wieku 4-12 lat mogą chodzić do szkoły lub uprawiać sport.";
@@ -23,15 +23,15 @@
 "contamination.medical_help.step2" = "Twój lekarz rodzinny lub inna pomoc medyczna może przyjść do Ciebie.";
 
 "contamination.after.title" = "Po %@";
-"contamination.after.description" = "Do %@ nie pojawiły się żadne dolegliwości? A więc nie musisz dłużej pozostawać w domu. Jednak trzymaj się ogólnych zasad zapobiegających koronawirusowi.";
+"contamination.after.description" = "Do %@ włącznie nie pojawiły się żadne dolegliwości? A więc nie musisz dłużej pozostawać w domu. Jednak trzymaj się ogólnych zasad zapobiegających koronawirusowi.";
 
 "contamination.complaints.title" = "Dolegliwości typowe dla koronawirusa";
-"contamination.complaints.step1" = "przeziębienie, katar, kichanie";
+"contamination.complaints.step1" = "objawy przeziębienia takie jak nieżyt nosa, katar, kichanie, ból gardła";
 "contamination.complaints.step2" = "ból gardła";
 "contamination.complaints.step3" = "kaszel";
-"contamination.complaints.step4" = "nagła utrata zmysłu zapachu lub smaku";
-"contamination.complaints.step5" = "temepratura ciała przekraczająca 37,5 stopni (podwyższenie temperatury lub gorączka)";
-"contamination.complaints.step6" = "szybsze oddychanie lub trudności z oddychaniem";
+"contamination.complaints.step4" = "nagła utrata zmysłu zapachu lub smaku (bez przekrwienia nosa)";
+"contamination.complaints.step5" = "podwyższona temperatura ciała";
+"contamination.complaints.step6" = "duszności";
 /* MARK: - Status */
 "status.icon.accessibility.ok" = "Zielone kółko z ptaszkiem oznacza, że ustawienia aplikacji są prawidłowe";
 "status.icon.accessibility.inactive" = "Żółte kółko z wykrzyknikiem to ostrzeżenie";
@@ -126,6 +126,14 @@
 "consentStep4PrimaryButton" = "Udostępnij aplikację";
 "consentStep4SecondaryButton" = "Dalej";
 
+/* MARK: - Onboarding permissions */
+"onboarding.permissions.title" = "Włącz CoronaMelder";
+"onboarding.permissions.description" = "CoronaMelder może Cię ostrzegać wyłącznie, jeśli wyrazisz zgodę na:";
+"onboarding.permissions.description.list1" = "Wysyłanie powiadomień";
+"onboarding.permissions.description.list2" = "Śledzenie spotkań z innymi użytkownikami aplikacji";
+"onboarding.permissions.secondary_button" = "Jak dokładnie działa ta aplikacja?";
+"onboarding.permissions.primary_button" = "Włącz";
+
 /* MARK: - Bluetooth */
 "enableBluetoothTitle" = "Włącz Bluetooth";
 "enableBluetoothSettingIndexRow1" = "1.";
@@ -157,7 +165,7 @@
 "help.faq.notification.title" = "Kiedy dostaję powiadomienie od aplikacji?";
 "help.faq.location.title" = "Czy aplikacja może zobaczyć moją lokalizację?";
 "help.faq.location.description" = "Nie. Za pomocą Bluetooth aplikacja widzi wyłącznie, czy w pobliżu znajdują się osoby, które również korzystają z aplikacji na swoim telefonie. Aplikacja nigdy nie widzi, gdzie się znajdujesz.<br><br>Bluetooth jest przeznaczony do nawiązywania bezprzewodowego połączenia pomiędzy dwoma urządzeniami, znajdującymi się w pobliżu siebie. Jak twój telefon i głośnik lub słuchawki.<br><br>Aplikacja może oszacować odległość pomiędzy dwoma telefonami przy pomocy siły sygnału Bluetooth.";
-"help.faq.anonymous.title" = "Jak aplikacja może być anonimowa?";
+"help.faq.anonymous.title" = "Czy aplikacja wie, kim jestem i kogo spotkałem?";
 "help.faq.anonymous.description_1" = "Aplikacja wymienia kody z innymi telefonami. Kody te nie zawierają żadnych Twoich danych osobowych ani lokalizacyjnych. Są one całkowicie losowe. Wymiana kodów ma miejsce, gdy jesteś blisko osoby, która również posiada aplikację.";
 "help.faq.anonymous.description_2" = "Okazuje się później, że dana osoba miała koronawirusa? W takim przypadku może ona, razem z GGD, dodać w aplikacji swoje kody do listy kodów osób zarażonych. W ten sposób można potwierdzić zakażenie.<br><br>Następnie zostają wysłane powiadomienia wszystkim osobom, mającym te kody w swoich telefonach. Powiadomienie zawiera wyłącznie informację o tym, kiedy miały one kontakt z osobą zarażoną. Nie o tym, kto to jest i gdzie spotkały tę osobę.";
 "help.bluetooth.title" = "Czy Bluetooth działa przez ściany?";
@@ -165,7 +173,7 @@
 "help.faq.reason.title" = "Dlaczego ta aplikacja jest ważna?";
 "help.faq.reason.description" = "Aplikacja może Cię szybko ostrzec w przypadku, gdy znalazłeś się w pobliżu osoby z koronawirusem. Jeszcze zanim pojawią się dolegliwości. Możesz mieć koronawirusa i zarażać innych nawet nie zdając sobie z tego sprawy.<br><br>Gdy otrzymasz ostrzeżenie za pośrednictwem aplikacji, przeczytasz w aplikacji co możesz zrobić. A także czy musisz poddać się testowi na obecność koronawirusa. W ten sposób unikasz nieświadomego zarażenia ludzi wokół siebie.<br><br>Zrobiłeś test i masz koronawirusa? W takim przypadku, razem z GGD, możesz ostrzec ludzi, z którymi miałeś styczność. Także tych, których nie znasz. Spotkanych w restauracji, kinie lub poczekalni. Oczywiście, jeśli korzystają z aplikacji.<br><br>Dzięki aplikacji CoronaMelder możemy szybciej interweniować i zapobiegać nowym zakażeniom. Tylko wspólnymi siłami możemy uzyskać kontrolę nad koronawirusem.";
 "help.faq.upload_keys.title" = "Czy mogę wysłać powiadomienie innym, gdy okaże się, że mam koronawirusa?";
-"help.faq.upload_keys.description" = "Możesz wysłać innym powiadomienie tylko wtedy, gdy zrobiłeś test i okazało się, że masz koronawirusa. W tym przypadku GGD zadzwoni do Ciebie z wynikiem testu.<br><br>Podczas rozmowy telefonicznej pracownik GGD sprawdzi Twój klucz GGD. Możesz go znaleźć w aplikacji. Dzięki temu powiadomienia są wysyłane wyłącznie przez osoby rzeczywiście zarażone.<br><br>Po sprawdzeniu Twojego klucza GGD, możesz udostępnić kody, które Twój telefon wysłał w przeciągu ostatnich 14 dni do innych telefonów.<br><br>W ten sposób osoby, z którymi miałeś kontakt, gdy byłeś zarażony, mogą otrzymać anonimowe powiadomienie. Tylko, jeśli oni również używają aplikacji.";
+"help.faq.upload_keys.description" = "Możesz wysłać innym powiadomienie tylko wtedy, gdy zrobiłeś test i okazało się, że masz koronawirusa. W tym przypadku GGD zadzwoni do Ciebie z wynikiem testu.<br><br>Podczas rozmowy telefonicznej pracownik GGD sprawdzi Twój klucz GGD. Możesz go znaleźć w aplikacji. Dzięki temu powiadomienia są wysyłane wyłącznie przez osoby rzeczywiście zarażone.<br><br>Po sprawdzeniu Twojego klucza GGD, możesz udostępnić kody, które Twój telefon wysłał w przeciągu ostatnich 14 dni do innych telefonów.<br><br>W ten sposób osoby, z którymi miałeś kontakt, gdy byłeś zarażony, mogą otrzymać powiadomienie. Tylko, jeśli oni również używają aplikacji.";
 "help.faq.deletion.title" = "Jak mogę usunąć moje dane?";
 "help.faq.privacy_policy.title" = "Oświadczenie o ochronie prywatności";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -192,7 +200,7 @@
 
 "help.technical_explanation.title" = "Objaśnienie techniczne";
 "help.technical_explanation.step1.title" = "1. Aplikacja tworzy swój własny kod dla każdego telefonu";
-"help.technical_explanation.step1.description" = "Ten kod nie zawiera żadnych informacji o Tobie ani o Twoim telefonie. Kod jest całkowicie anonimowy i zmienia się co 15 minut.";
+"help.technical_explanation.step1.description" = "Ten kod nie zawiera żadnych informacji o Tobie ani o Twoim telefonie. Kod jest całkowicie losowy i zmienia się co 15 minut.";
 "help.technical_explanation.step2.title" = "2. Telefony dzielą się swoimi kodami, gdy znajdują się blisko siebie.";
 "help.technical_explanation.step2.description" = "Osoba, którą spotkałeś również posiada tę aplikację? W takim razie wasze telefony wymieniają się swoimi kodami przez Bluetooth Low Energy. W ten sposób aplikacja wie, które telefony były w pobliżu. Aplikacja nie wie, do kogo one należą, ani gdzie się znajdowały.";
 "help.technical_explanation.step3.title" = "3. Osoba zarażona koronawirusem może wpisać swoje kody na listę";
@@ -275,16 +283,16 @@
 "moreInformation.cell.requestTest.subtitle" = "Dowiedz się możliwie jak najszybciej, czy sam jesteś zarażony";
 
 "moreInformation.cell.infected.title" = "Przekaż klucz GGD";
-"moreInformation.cell.infected.subtitle" = "Wyślij razem z GDD anonimowe powiadomienie do innych osób, jeśli jesteś zarażony";
+"moreInformation.cell.infected.subtitle" = "Przejdź tutaj, gdy GGD zadzwoni do Ciebie z wynikami testu na obecność koronawirusa";
 
 "moreInformation.info.title" = "Miej pod ręką swój numer obsługi mieszkańca (BSN). Znajdziesz go w paszporcie lub na dowodzie osobistym";
 
-"moreInformation.complaints.item1" = "objawy przeziębienia tj. nieżyt nosa, katar, kichanie, ból gardła";
+"moreInformation.complaints.item1" = "objawy przeziębienia takie jak nieżyt nosa, katar, kichanie, ból gardła";
 "moreInformation.complaints.item2" = "kaszel";
 "moreInformation.complaints.item3" = "duszności";
 "moreInformation.complaints.item4" = "podwyższona temperatura ciała";
 "moreInformation.complaints.item5" = "nagła utrata zmysłu zapachu lub smaku (bez przekrwienia nosa)";
-"moreInformation.complaints.title" = "Dolegliwości typowe dla koronawirusa (COVID-19)";
+"moreInformation.complaints.title" = "Dolegliwości typowe dla koronawirusa";
 "moreInformation.complaints.content" = "Masz dolegliwości? Pozostań w miarę możliwości w domu. Są to poważne dolegliwości? Zadzwoń do swojego lekarza rodzinnego.";
 
 /* MARK: - MoreInformation | About */
@@ -302,7 +310,7 @@
 
 "moreInformation.about.faq.reason" = "Dlaczego ta aplikacja jest ważna?";
 "moreInformation.about.faq.location" = " Czy aplikacja może zobaczyć moją lokalizację?";
-"moreInformation.about.faq.anonymous" = "Jak aplikacja może być anonimowa?";
+"moreInformation.about.faq.anonymous" = "Czy aplikacja wie, kim jestem i kogo spotkałem?";
 "moreInformation.about.faq.notification" = "Kiedy dostanę powiadomienie od aplikacji?";
 "moreInformation.about.faq.upload_keys" = "Czy mogę wysłać powiadomienie innym, gdy okaże się, że mam koronawirusa?";
 "moreInformation.about.faq.bluetooth" = "Czy Bluetooth działa przez ściany?";
@@ -323,11 +331,11 @@
 "moreInformation.infected.error" = "Aplikacja nie mogła uzyskać klucza GGD. Sprawdź swoje połączenie internetowe.";
 "moreInformation.infected.error.upload" = "Coś poszło nie tak z wysłaniem powiadomienia";
 
-"moreInformation.infected.header" = "Zrobiłeś test i masz koronawirusa? W takim przypadku zadzwoni do Ciebie pracownik GGD. Będziesz potrzebować klucza GGD.";
+"moreInformation.infected.header" = "Zrobiłeś test i masz koronawirusa? W takim przypadku zadzwoni do Ciebie pracownik GGD, który pomoże Ci ostrzec ludzi, którzy znajdowali się w pobliżu Ciebie. Będziesz potrzebować klucza GGD.";
 "moreInformation.infected.how_does_it_work" = "Jak to działa?";
 "moreInformation.infected.step1" = "Przekaż ten klucz GGD pracownikowi GGD.";
 "moreInformation.infected.step2" = "Poczekaj z następnym krokiem na pracownika GGD";
-"moreInformation.infected.step3" = "Wyślij anonimowe powiadomienie, aby ostrzec innych";
+"moreInformation.infected.step3" = "Wyślij powiadomienie, aby ostrzec innych";
 "moreInformation.infected.tryAgain.description" = "Aplikacja nie mogła uzyskać klucza GGD. Sprawdź swoje połączenie internetowe.";
 "moreInformation.infected.action" = "Dalej";
 
@@ -422,10 +430,12 @@ zadzwoń do swojego lekarza rodzinnego.";
 "privacyAgreement.title" = "Zgoda na użycie danych";
 "privacyAgreement.message" = "Aby korzystać z CoronaMelder musisz wyrazić zgodę na %@. Warto wiedzieć: ";
 "privacyAgreement.message.link" = "oświadczenie o ochronie prywatności";
+"privacyAgreement.list.step0" = "Korzystanie z CoronaMelder jest zawsze dobrowolne.";
 "privacyAgreement.list.step1" = "Twoja aplikacja przesyła zaszyfrowane dane Bluetooth.";
 "privacyAgreement.list.step2" = "Dane te są przechowywane maksymalnie 14 dni przez innych użytkowników, z którymi miałeś kontakt.";
 "privacyAgreement.list.step3" = "Jeśli po przeprowadzeniu testu na obecność koronawirusa okaże się, że jesteś zarażony, możesz zgłosić to w aplikacji, aby ostrzec innych użytkowników.";
 "privacyAgreement.list.step4" = "W każdym momencie możesz usunąć dane z telefonu.";
 "privacyAgreement.consent.button" = "Przeczytałem i zgadzam się z oświadczeniem o ochronie prywatności";
 
-
+"notification.update_required.title" = "Konieczna jest aktualizacja";
+"notification.update_required.description" = "Dostępna jest nowa wersja CoronaMelder. Ta wersja nie działa już poprawnie. Sprawdź aplikację, aby znaleźć instrukcje.";

@@ -7,7 +7,7 @@
 "contamination.what_to_do.title" = "Wat kun je nu doen?";
 "contamination.what_to_do.step1" = "Blijf tot en met %@ thuis en let extra goed op klachten die kunnen passen bij corona";
 "contamination.what_to_do.step2" = "Heb je (lichte) klachten die passen bij het coronavirus? Doe een coronatest en blijf thuis tot en met %@";
-"contamination.what_to_do.step3" = "Heb je ernstige klachten zoals hoge koorts of moeite met ademhalen? Of zit je een risicogroep en krijg je koorts? Bel eerst je huisarts";
+"contamination.what_to_do.step3" = "Heb je ernstige klachten zoals hoge koorts of moeite met ademhalen? Of zit je in een risicogroep en krijg je koorts? Bel eerst je huisarts.";
 "contamination.what_to_do.description" = "Geeft de GGD je aan de telefoon andere adviezen dan de app? Volg dan het advies van de GGD.";
 
 "contamination.stay_home.title" = "Blijf tot en met %@ thuis";
@@ -26,12 +26,12 @@
 "contamination.after.description" = "Heb je tot en met %@ geen klachten gekregen? Dan hoef je niet meer thuis te blijven. Blijf wel de algemene regels tegen corona volgen.";
 
 "contamination.complaints.title" = "Klachten die passen bij het coronavirus";
-"contamination.complaints.step1" = "verkoudheid, loopneus, niezen";
+"contamination.complaints.step1" = "verkoudheidsklachten zoals neusverkoudheid, loopneus, niezen, keelpijn";
 "contamination.complaints.step2" = "keelpijn";
 "contamination.complaints.step3" = "hoesten";
-"contamination.complaints.step4" = "opeens niets meer ruiken of proeven";
-"contamination.complaints.step5" = "temperatuur boven 37,5 graden (verhoging of koorts)";
-"contamination.complaints.step6" = "snel of moeilijk ademen";
+"contamination.complaints.step4" = "plotseling verlies van reuk en/of smaak (zonder neusverstopping)";
+"contamination.complaints.step5" = "verhoging of koorts";
+"contamination.complaints.step6" = "benauwdheid";
 /* MARK: - Status */
 "status.icon.accessibility.ok" = "Groen rondje met vinkje dat aangeeft dat de app goed staat ingesteld";
 "status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
@@ -166,7 +166,7 @@
 "help.faq.location.title" = "Kan de app mijn locatie zien?";
 "help.faq.location.description" = "Nee, de app ziet via bluetooth alleen of je in de buurt bent van andere mensen die de app ook op hun telefoon hebben. De app ziet nooit waar je bent.<br><br>Bluetooth is bedoeld om een draadloze verbinding te maken tussen 2 apparaten die bij elkaar in de buurt zijn. Zoals je telefoon en een geluidsbox of koptelefoon.<br><br>De app kan de afstand tussen 2 telefoons schatten door de sterkte van het bluetoothsignaal.
 ";
-"help.faq.anonymous.title" = "Hoe kan de app anoniem zijn?";
+"help.faq.anonymous.title" = "Weet de app wie ik ben en wie ik heb ontmoet?";
 "help.faq.anonymous.description_1" = "De app wisselt codes uit met andere telefoons. In deze codes staan geen persoonsgegevens of locatiegegevens. Ze zijn helemaal willekeurig. Het uitwisselen van codes gebeurt op het moment dat je dicht bij een persoon bent die ook de app heeft.";
 "help.faq.anonymous.description_2" = "Blijkt deze persoon later corona te hebben? Dan kan diegene samen met de GGD zijn of haar codes aan een lijst met codes van besmette personen toevoegen. Zo kan de besmetting bevestigd worden.<br><br>Daarna wordt er een melding verstuurd naar alle andere mensen die deze codes op hun telefoon hebben. In deze melding staat alleen wanneer ze in de buurt zijn geweest van een besmet persoon. Niet wie dit is en waar ze die persoon zijn tegengekomen.";
 "help.bluetooth.title" = "Werkt bluetooth door muren heen?";
@@ -174,7 +174,7 @@
 "help.faq.reason.title" = "Waarom is deze app belangrijk?";
 "help.faq.reason.description" = "De app kan je snel waarschuwen nadat je in de buurt bent geweest van iemand die corona heeft. Al voordat je klachten krijgt. Je kunt namelijk corona hebben en besmettelijk zijn zonder dat je het zelf doorhebt.<br><br>Als je via de app een waarschuwing krijgt, lees je in de app wat je kunt doen. En of je je moet laten testen. Zo voorkom je dat je onbewust mensen in je omgeving besmet.<br><br>Ben je getest en heb je corona? Dan kun je samen met de GGD de mensen waarschuwen die lang bij jou in de buurt zijn geweest. Ook onbekenden. In een restaurant, bioscoop of wachtkamer. Zolang deze mensen ook de app gebruiken.<br><br>Dankzij CoronaMelder kunnen we sneller ingrijpen en nieuwe besmettingen voorkomen. Alleen samen krijgen we corona onder controle.";
 "help.faq.upload_keys.title" = "Kan ik anderen een melding sturen als ik corona heb?";
-"help.faq.upload_keys.description" = "Je kunt alleen een melding naar anderen sturen als je getest bent en corona blijkt te hebben. De GGD belt je in dat geval met de uitslag van de test.<br><br>Tijdens dit telefoongesprek controleert een GGD-medewerker jouw GGD-sleutel. Deze vind je in de app. Zo is altijd zeker dat alleen mensen die echt besmet zijn meldingen kunnen versturen.<br><br>Nadat je GGD-sleutel is gecontroleerd kun je de codes delen die jouw telefoon de afgelopen 14 dagen naar andere telefoons heeft verzonden.<br><br>Zo kunnen de mensen bij wie je in de buurt bent geweest toen je besmettelijk was een anonieme melding krijgen. Alleen als deze mensen ook de app gebruiken.";
+"help.faq.upload_keys.description" = "Je kunt alleen een melding naar anderen sturen als je getest bent en corona blijkt te hebben. De GGD belt je in dat geval met de uitslag van de test.<br><br>Tijdens dit telefoongesprek controleert een GGD-medewerker jouw GGD-sleutel. Deze vind je in de app. Zo is altijd zeker dat alleen mensen die echt besmet zijn meldingen kunnen versturen.<br><br>Nadat je GGD-sleutel is gecontroleerd kun je de codes delen die jouw telefoon de afgelopen 14 dagen naar andere telefoons heeft verzonden.<br><br>Zo kunnen mensen, bij wie je in de buurt bent geweest toen je besmettelijk was, een melding krijgen. Alleen als deze mensen ook de app gebruiken.";
 "help.faq.deletion.title" = "Hoe verwijder ik mijn gegevens?";
 "help.faq.privacy_policy.title" = "Privacyverklaring";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -201,7 +201,7 @@
 
 "help.technical_explanation.title" = "Technische uitleg";
 "help.technical_explanation.step1.title" = "1. De app maakt voor elke telefoon een eigen code";
-"help.technical_explanation.step1.description" = "In deze code staat geen informatie over jou of je telefoon. De code is helemaal anoniem en verandert elk kwartier.";
+"help.technical_explanation.step1.description" = "In deze code staat geen informatie over jou of je telefoon. De code is helemaal willekeurig en verandert elk kwartier.";
 "help.technical_explanation.step2.title" = "2. Telefoons delen hun codes als ze bij elkaar in de buurt zijn";
 "help.technical_explanation.step2.description" = "Heeft de persoon die je tegenkomt ook de app? Dan wisselen jullie telefoons hun codes uit via Bluetooth Low Energy. Zo weet de app welke telefoons in de buurt waren. De app weet niet van wie de telefoons zijn en ook niet waar jullie waren.";
 "help.technical_explanation.step3.title" = "3. Als iemand corona heeft kan deze persoon zijn of haar codes op een lijst zetten";
@@ -223,7 +223,7 @@
 "help.what_to_do_with_notification.title" = "Wat kun je doen als je in de buurt was van iemand met corona?";
 "help.what_to_do_with_notification.description" = "Volg het advies in de app. Het advies hangt af van je situatie. Of je klachten hebt die bij corona passen. En op welke dag je in de buurt was van de besmette persoon.<br><br>Blijf in ieder geval thuis tot je zeker weet dat je geen corona hebt. Zo voorkom je dat je onbewust anderen besmet.<br><br>Geeft de GGD je aan de telefoon andere adviezen dan de app? Volg dan het advies van de GGD.";
 "help.other_reports.title" = "Andere meldingen";
-"help.other_reports.description" = "CoronaMelder kan je ook een melding sturen als er een technisch probleem is. Bijvoorbeeld als je Bluetooth uitstaat. Of als er langer dan een dag geen internetverbindig was. De app helpt je dit op te lossen.<br><br>Heb je zo’n melding ontvangen, en is de app wel gewoon actief? Dan is het probleem in de tussentijd al opgelost.<br><br>Je krijgt soms ook meldingen waarin staat dat je telefoon COVID-19 controles uitvoert. Open dan CoronaMelder. Goed om te weten: meestal is er niks aan de hand.";
+"help.other_reports.description" = "CoronaMelder kan je ook een melding sturen als er een technisch probleem is. Bijvoorbeeld als je bluetooth uitstaat. Of als er langer dan een dag geen internetverbinding was. De app helpt je dit op te lossen.<br><br>Heb je zo’n melding ontvangen, en is de app wel gewoon actief? Dan is het probleem in de tussentijd al opgelost.<br><br>Je krijgt soms ook meldingen waarin staat dat je telefoon COVID-19 controles uitvoert. Open dan CoronaMelder. Goed om te weten: meestal is er niks aan de hand.";
 "help.other_what_does_report_say.title" = "Wat staat er in een melding?";
 "help.other_what_does_report_say.content1" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben.";
 "help.other_what_does_report_say.content2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
@@ -284,11 +284,11 @@
 "moreInformation.cell.requestTest.subtitle" = "Ontdek zo snel mogelijk of je zelf besmet bent";
 
 "moreInformation.cell.infected.title" = "GGD-sleutel doorgeven";
-"moreInformation.cell.infected.subtitle" = "Stuur met de GGD een anonieme melding naar anderen als je besmet bent";
+"moreInformation.cell.infected.subtitle" = "Ga hierheen als de GGD je belt met de uitslag van je coronatest";
 
 "moreInformation.info.title" = "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart";
 
-"moreInformation.complaints.item1" = "verkoudheidklachten zoals neusverkoudheid, loopneus, niezen, keelpijn";
+"moreInformation.complaints.item1" = "verkoudheidsklachten zoals neusverkoudheid, loopneus, niezen, keelpijn";
 "moreInformation.complaints.item2" = "hoesten";
 "moreInformation.complaints.item3" = "benauwdheid";
 "moreInformation.complaints.item4" = "verhoging of koorts";
@@ -311,7 +311,7 @@
 
 "moreInformation.about.faq.reason" = "Waarom is deze app belangrijk?";
 "moreInformation.about.faq.location" = " Kan de app mijn locatie zien?";
-"moreInformation.about.faq.anonymous" = "Hoe kan de app anoniem zijn?";
+"moreInformation.about.faq.anonymous" = "Weet de app wie ik ben en wie ik heb ontmoet?";
 "moreInformation.about.faq.notification" = "Wanneer krijg ik een melding van de app?";
 "moreInformation.about.faq.upload_keys" = "Kan ik anderen een melding sturen als ik corona heb?";
 "moreInformation.about.faq.bluetooth" = "Werkt bluetooth door muren heen?";
@@ -332,11 +332,11 @@
 "moreInformation.infected.error" = "De app kon geen GGD-sleutel ophalen. Controleer je internetverbinding.";
 "moreInformation.infected.error.upload" = "Er ging iets mis tijdens het versturen van de melding";
 
-"moreInformation.infected.header" = "Ben je getest en heb je corona? Dan belt een GGD-medewerker je. Je hebt hierbij je GGD-sleutel nodig.";
+"moreInformation.infected.header" = "Ben je getest en heb je corona? Dan belt een GGD-medewerker je. De medewerker helpt je om anderen te waarschuwen die bij jou in de buurt waren. Je hebt hierbij je GGD-sleutel nodig.";
 "moreInformation.infected.how_does_it_work" = "Hoe werkt dit?";
 "moreInformation.infected.step1" = "Geef deze GGD-sleutel door aan de GGD-medewerker:";
 "moreInformation.infected.step2" = "Wacht op de GGD-medewerker voor de volgende stap";
-"moreInformation.infected.step3" = "Waarschuw anderen door een anonieme melding te versturen";
+"moreInformation.infected.step3" = "Waarschuw anderen door een melding te versturen";
 "moreInformation.infected.tryAgain.description" = "De app kon geen GGD-sleutel ophalen. Controleer je internetverbinding.";
 "moreInformation.infected.action" = "Ga door";
 
@@ -438,4 +438,4 @@
 "privacyAgreement.consent.button" = "Ik heb de privacyverklaring gelezen en ga hiermee akkoord";
 
 "notification.update_required.title" = "Update noodzakelijk";
-"notification.update_required.description" = "Er is een nieuwe versie van CoronaMelder. Deze versie werkt niet meer goed. Controleer de app voor update instructies.";
+"notification.update_required.description" = "Er is een nieuwe versie van CoronaMelder. Deze versie werkt niet meer goed. Controleer de app voor instructies.";

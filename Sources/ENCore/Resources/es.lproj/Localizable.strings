@@ -2,7 +2,7 @@
 "contamination.title" = "Riesgo de contagio";
 
 "contamination.near_someone_with_corona.title" = "Has estado cerca de alguien con coronavirus";
-"contamination.near_someone_with_corona.description" = "El viernes %@ corriste riesgo de contagio. Estuviste ese día al menos 15 minutos cerca de alguien con coronavirus.<br><br>Si estás realmente contagiado, puedes transmitir el virus a otros, incluso aunque no te sientas mal ahora.";
+"contamination.near_someone_with_corona.description" = "El %@ corriste riesgo de contagio. Estuviste ese día al menos 15 minutos cerca de alguien con coronavirus.<br><br>Si estás realmente contagiado, puedes transmitir el virus a otros, incluso aunque no te sientas mal ahora.";
 
 "contamination.what_to_do.title" = "¿Qué puedo hacer ahora?";
 "contamination.what_to_do.step1" = "Quédate en casa hasta el %@  y estate atento para ver si muestras síntomas relacionados con el coronavirus";
@@ -26,11 +26,11 @@
 "contamination.after.description" = "¿No has mostrado ningún síntoma hasta el %@? Entonces ya no tienes que quedarte en casa. Aun así, no te olvides de seguir respetando las medidas generales contra el coronavirus.";
 
 "contamination.complaints.title" = "Síntomas relacionados con el coronavirus";
-"contamination.complaints.step1" = "congestión nasal, moqueo, estornudos";
+"contamination.complaints.step1" = "síntomas de resfriado como congestión nasal, moqueo, estornudos, dolor de garganta";
 "contamination.complaints.step2" = "dolor de garganta";
 "contamination.complaints.step3" = "tos";
-"contamination.complaints.step4" = "una pérdida súbita del olfato o el gusto";
-"contamination.complaints.step5" = "una temperatura superior a 37,5 grados (fiebre)";
+"contamination.complaints.step4" = "una pérdida súbita del olfato o el gusto (sin congestión nasal)";
+"contamination.complaints.step5" = "fiebre";
 "contamination.complaints.step6" = "dificultad para respirar";
 /* MARK: - Status */
 "status.icon.accessibility.ok" = "Círculo verde con una marca que indica que la app está ajustada correctamente";
@@ -127,6 +127,14 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "consentStep4PrimaryButton" = "Compartir la app";
 "consentStep4SecondaryButton" = "Continuar";
 
+/* MARK: - Onboarding permissions */
+"onboarding.permissions.title" = "Activar CoronaMelder";
+"onboarding.permissions.description" = "CoronaMelder solo puede avisarte si permites a la app:";
+"onboarding.permissions.description.list1" = "Enviarte notificaciones";
+"onboarding.permissions.description.list2" = "Registrar encuentros con otros usuarios de la app";
+"onboarding.permissions.secondary_button" = "¿Cómo funciona la app exactamente?";
+"onboarding.permissions.primary_button" = "Activar";
+
 /* MARK: - Bluetooth */
 "enableBluetoothTitle" = "Activar Bluetooth";
 "enableBluetoothSettingIndexRow1" = "1.";
@@ -158,7 +166,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.faq.notification.title" = "¿Cuándo recibo notificaciones de la app?";
 "help.faq.location.title" = "¿La app puede ver mi localización?";
 "help.faq.location.description" = "No. La app solo ve mediante Bluetooth si estás cerca de otras personas que también tienen la app. La app nunca sabe dónde estás.<br><br>Bluetooth está diseñado para conectar inalámbricamente 2 dispositivos que se encuentran cerca, como tu teléfono a un altavoz o unos auriculares.<br><br>La app puede calcular la distancia entre 2 teléfonos mediante la potencia de la señal de Bluetooth.";
-"help.faq.anonymous.title" = "¿Cómo hace la app para mantener mi anonimato?";
+"help.faq.anonymous.title" = "¿Sabe la app quién soy y con quién me he encontrado?";
 "help.faq.anonymous.description_1" = "La app intercambia códigos con otros teléfonos. Estos códigos no contienen datos personales ni de localización y son totalmente aleatorios. El intercambio de códigos ocurre en el momento en que te encuentras cerca de una persona que también tiene la app.";
 "help.faq.anonymous.description_2" = "Si resulta más tarde que esa persona tiene coronavirus, podrá añadir sus códigos con ayuda del GGD (servicio de salud municipal) a una lista con códigos de personas contagiadas. De esta forma, se puede confirmar el contagio.<br><br>Después de confirmarlo, se podrán enviar notificaciones a todas las personas que tengan esos códigos en sus teléfonos. En la notificación solo pone cuándo han estado cerca de una persona contagiada; nunca dirá quién ni dónde fue.";
 "help.bluetooth.title" = "¿Funciona Bluetooth a través de las paredes?";
@@ -227,7 +235,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.apps_other_countries.description" = "Lamentablemente, aún no, pero se espera que pueda hacerlo hacia septiembre. Entonces CoronaMelder también podrá intercambiar códigos con algunas apps de otros países, como por ejemplo la de Alemania.<br><br>Si instalas Corona-Warn-App de Alemania junto con CoronaMelder, tu teléfono te notificará que solo puedes tener una de las dos apps activada al mismo tiempo. Es decir, la app que uses en ese momento para controlar tus encuentros. Si lo quieres hacer en más países, entonces tendrás que cambiar de app. Así recibirás notificaciones de esa app en concreto. Si cambias de app una vez al día, ambas controlarán tus encuentros para que estés siempre informado.<br><br>Desde mediados de septiembre probablemente ya puedas seguir usando la app de tu propio país, y ya no hará falta que cambies diariamente.";
 
 /* MARK: - Message */
-"message.default.title" = "Has estado cerca de alguien con coronavirus ";
+"message.default.title" = "Has estado cerca de alguien con coronavirus";
 "message.default.body" = "Estuviste hace %@ cerca de alguien que resultó tener coronavirus. En ese caso, has corrido riesgo de contagio. Si estás contagiado, puedes transmitir el virus a otros, incluso aunque no te sientas mal ahora.";
 /* MARK: - Message */
 "message.title" = "Recibir notificación";
@@ -276,7 +284,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.cell.requestTest.subtitle" = "Descubre lo antes posible si tú estás contagiado";
 
 "moreInformation.cell.infected.title" = "Enviar clave GGD";
-"moreInformation.cell.infected.subtitle" = "Envía a través del GGD (servicio de salud municipal) una notificación anónima a otras personas si estás contagiado";
+"moreInformation.cell.infected.subtitle" = "Pulsa aquí si te llama el GGD con los resultados de tu test";
 
 "moreInformation.info.title" = "Ten a mano tu número de seguridad social (burgerservicenummer). Este número lo puedes encontrar en tu pasaporte o tarjeta de identidad.";
 
@@ -285,7 +293,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.complaints.item3" = "problemas respiratorios";
 "moreInformation.complaints.item4" = "fiebre";
 "moreInformation.complaints.item5" = "una pérdida súbita del olfato o el gusto (sin congestión nasal)";
-"moreInformation.complaints.title" = "Síntomas relacionados con el coronavirus (COVID-19)";
+"moreInformation.complaints.title" = "Síntomas relacionados con el coronavirus";
 "moreInformation.complaints.content" = "¿Muestras síntomas? Quédate en casa tanto como sea posible ¿Muestras síntomas graves? Llama a tu médico de cabecera.";
 
 /* MARK: - MoreInformation | About */
@@ -303,7 +311,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 
 "moreInformation.about.faq.reason" = "¿Por qué es importante esta app?";
 "moreInformation.about.faq.location" = "¿La app puede ver mi localización?";
-"moreInformation.about.faq.anonymous" = "¿Cómo hace la app para mantener mi anonimato?";
+"moreInformation.about.faq.anonymous" = "¿Sabe la app quién soy y con quién me he encontrado?";
 "moreInformation.about.faq.notification" = "¿Cuándo recibo notificaciones de la app?";
 "moreInformation.about.faq.upload_keys" = "¿Puedo enviar una notificación a otras personas si tengo coronavirus?";
 "moreInformation.about.faq.bluetooth" = "¿Funciona Bluetooth a través de las paredes?";
@@ -324,11 +332,11 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.infected.error" = "La app no ha podido descargar una clave GGD. Comprueba tu conexión a internet.";
 "moreInformation.infected.error.upload" = "Ha habido un error durante el envío de la notificación";
 
-"moreInformation.infected.header" = "¿Te has hecho el test y tienes coronavirus? En ese caso, te llamará un asistente del GGD (servicio de salud municipal). Necesitarás tu clave GGD.";
+"moreInformation.infected.header" = "¿Te has hecho el test y tienes coronavirus? En ese caso, te llamará un asistente del GGD (servicio de salud municipal) que te ayudará a avisar a las personas que estuvieron cerca de ti. Necesitarás tu clave GGD para ello.";
 "moreInformation.infected.how_does_it_work" = "¿Cómo funciona?";
 "moreInformation.infected.step1" = "Dale la clave GGD al asistente del GGD (servicio de salud municipal):";
 "moreInformation.infected.step2" = "Espera al asistente GGD para seguir con el siguiente paso";
-"moreInformation.infected.step3" = "Avisa a otros mandando una notificación anónima";
+"moreInformation.infected.step3" = "Avisa a otros enviando una notificación";
 "moreInformation.infected.tryAgain.description" = "La app no ha podido descargar una clave GGD. Comprueba tu conexión a internet.";
 "moreInformation.infected.action" = "Continuar";
 
@@ -422,10 +430,13 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "privacyAgreement.title" = "Permitir el uso de datos";
 "privacyAgreement.message" = "Para utilizar CoronaMelder, tienes que aceptar la %@. Importante: ";
 "privacyAgreement.message.link" = "declaración de privacidad";
+"privacyAgreement.list.step0" = "El uso de CoronaMelder siempre es voluntario.
+";
 "privacyAgreement.list.step1" = "La app envía datos de Bluetooth encriptados.";
 "privacyAgreement.list.step2" = "Otros usuarios que han estado en contacto contigo guardarán estos datos hasta 14 días.";
 "privacyAgreement.list.step3" = "Si te has hecho un test y tienes coronavirus, puedes usar la app para avisar a otros usuarios.";
 "privacyAgreement.list.step4" = "Puedes eliminar los datos de tu teléfono en cualquier momento.";
 "privacyAgreement.consent.button" = "He leído y acepto la declaración de privacidad";
 
-
+"notification.update_required.title" = "Necesita actualizarse";
+"notification.update_required.description" = "Hay una nueva versión de CoronaMelder. Esta versión ya no funciona bien. Consulta la app para más información.";
