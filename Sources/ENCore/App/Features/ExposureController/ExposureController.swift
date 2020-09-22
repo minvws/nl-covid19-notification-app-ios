@@ -338,7 +338,7 @@ final class ExposureController: ExposureControlling, Logging {
                 case let .failure(error):
                     self?.logError("Error completing sequence \(error.localizedDescription)")
                 }
-            })
+        })
             .eraseToAnyPublisher()
     }
 
@@ -390,29 +390,32 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.logDebug("App Update Required Check Started")
 
-                if let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-                    self.getAppVersionInformation { appVersionInformation in
+                guard let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else {
+                    self.logError("Error retrieving app current version")
+                    return promise(.success(()))
+                }
 
-                        guard let appVersionInformation = appVersionInformation else {
-                            self.logError("Error retrieving app version information")
+                self.getAppVersionInformation { appVersionInformation in
+
+                    guard let appVersionInformation = appVersionInformation else {
+                        self.logError("Error retrieving app version information")
+                        return promise(.success(()))
+                    }
+
+                    if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
+
+                        guard let minimumVersionMessage = appVersionInformation.minimumVersionMessage.isEmpty ? nil : appVersionInformation.minimumVersionMessage else {
+                            self.logError("Error retrieving minimum app version")
                             return promise(.success(()))
                         }
 
-                        if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
+                        let content = UNMutableNotificationContent()
+                        content.body = minimumVersionMessage
+                        content.sound = .default
+                        content.badge = 0
 
-                            guard let minimumVersionMessage = appVersionInformation.minimumVersionMessage.isEmpty ? nil : appVersionInformation.minimumVersionMessage else {
-                                self.logError("Error retrieving minimum app version")
-                                return promise(.success(()))
-                            }
-
-                            let content = UNMutableNotificationContent()
-                            content.body = minimumVersionMessage
-                            content.sound = .default
-                            content.badge = 0
-
-                            self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
-                                promise(.success(()))
-                            }
+                        self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
+                            promise(.success(()))
                         }
                     }
                 }

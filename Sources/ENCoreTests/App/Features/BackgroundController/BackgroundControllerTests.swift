@@ -58,6 +58,9 @@ final class BackgroundControllerTests: XCTestCase {
         exposureController.updateAndProcessPendingUploadsHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+        exposureController.appUpdateRequiredCheckHandler = {
+            Just(()).eraseToAnyPublisher()
+        }
     }
 
     // MARK: - Tests
