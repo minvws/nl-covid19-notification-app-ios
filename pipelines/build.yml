@@ -65,7 +65,7 @@ steps:
     configuration: ${{ parameters.configuration }}
     xcWorkspacePath: 'EN.xcodeproj'
     scheme: 'EN'
-    xcodeVersion: '12'
+    xcodeVersion: '12.0'
     provisioningProfileName: ${{ parameters.provisioningProfileName }}
     signingOption: ${{ parameters.signingOption }}
     packageApp: ${{ parameters.packageApp }}
@@ -79,7 +79,7 @@ steps:
     configuration: Debug
     xcWorkspacePath: EN.xcodeproj
     scheme: ENCore
-    xcodeVersion: '12'
+    xcodeVersion: '12.0'
     destinationPlatformOption: iOS
     destinationSimulators: 'iPhone 11,OS=13.7'
     publishJUnitResults: true
