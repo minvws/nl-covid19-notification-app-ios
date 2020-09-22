@@ -2,17 +2,16 @@
 "contamination.title" = "Risque de contamination";
 
 "contamination.near_someone_with_corona.title" = "Vous étiez à proximité de quelqu'un qui a le Covid-19";
-"contamination.near_someone_with_corona.description" = "Vendredi %@ vous avez peut-être été contaminé(e). Ce jour-là, vous avez été en contact pendant au moins 15 minutes avec quelqu'un qui a le Covid-19.<br><br>Si vous êtes effectivement contaminé(e), vous pouvez transmettre le virus à ceux qui vous entourent, même si vous n'avez aucun symptôme.
-";
+"contamination.near_someone_with_corona.description" = "Le %@, vous avez peut-être été contaminé(e). Ce jour-là, vous avez été en contact pendant au moins 15 minutes avec quelqu'un qui a le Covid-19.<br><br>Si vous êtes effectivement contaminé(e), vous pouvez transmettre le virus à ceux qui vous entourent, même si vous n'avez aucun symptôme.";
 
 "contamination.what_to_do.title" = "Que pouvez-vous faire maintenant ?";
-"contamination.what_to_do.step1" = "Restez chez vous jusqu'au %@ et faites bien attention aux symptômes qui peuvent correspondre à ceux du Covid-19
+"contamination.what_to_do.step1" = "Restez chez vous jusqu'au %@ et faites bien attention aux symptômes qui pourraient correspondre à ceux du Covid-19
 ";
 "contamination.what_to_do.step2" = "Vous avez de (légers) symptômes qui correspondent à ceux du Covid-19 ? Faites un test de dépistage du Covid-19 et restez chez vous jusqu'au %@";
-"contamination.what_to_do.step3" = "Vous avez de graves symptômes comme une forte fièvre ou des difficultés à respirer ? Ou vous faites partie d'un groupe à risques et vous avez de la fièvre ? Appelez d'abord votre médecin traitant";
+"contamination.what_to_do.step3" = "Vous avez de graves symptômes comme une forte fièvre ou des difficultés à respirer ? Ou vous faites partie d'un groupe à risques et vous avez de la fièvre ? Appelez d'abord votre médecin traitant.";
 "contamination.what_to_do.description" = "Au téléphone, le GGD vous donne d'autres conseils que ceux de l'application ? Suivez alors les conseils du GGD.";
 
-"contamination.stay_home.title" = "Restez chez vous jusqu'au %@
+"contamination.stay_home.title" = "Restez chez vous jusqu'au %@ inclus
 ";
 "contamination.stay_home.step1" = "Faites faire vos courses par d'autres personnes. Si ce n'est vraiment pas possible et que vous n'avez aucun symptômes vous pouvez sortir pour faire vos courses. Veillez à maintenir une distance d'1,5 mètre et ne touchez personne.";
 "contamination.stay_home.step2" = "Vous pouvez vous installer au jardin ou sur votre balcon.";
@@ -26,15 +25,15 @@
 "contamination.medical_help.step2" = "Votre médecin traitant ou une autre assistance médicale peut passer chez vous.";
 
 "contamination.after.title" = "Après le %@";
-"contamination.after.description" = "Si vous n'avez pas de symptôme jusqu'au %@, vous ne devez plus rester chez vous. Continuez toutefois à suivre les règles générales de lutte contre la diffusion du Covid-19.";
+"contamination.after.description" = "Si vous n'avez pas de symptôme jusqu'au %@, il n'est plus nécessaire de rester chez vous. Continuez toutefois à suivre les règles générales de lutte contre la diffusion du Covid-19.";
 
 "contamination.complaints.title" = "Symptômes correspondant au Covid-19";
-"contamination.complaints.step1" = "rhume, nez qui coule, éternuements";
-"contamination.complaints.step2" = "mal de gorge";
+"contamination.complaints.step1" = "symtômes comme rhume, nez qui coule, éternuements, mal à la gorge";
+"contamination.complaints.step2" = "mal à la gorge";
 "contamination.complaints.step3" = "toux";
-"contamination.complaints.step4" = "perte soudaine du goût ou de l'odorat";
-"contamination.complaints.step5" = "température supérieure à 37,5 degrés (fièvre)";
-"contamination.complaints.step6" = "respiration rapide ou difficile";
+"contamination.complaints.step4" = "perte soudaine de l'odorat et/ou du goût (sans congestion nasale)";
+"contamination.complaints.step5" = "fièvre";
+"contamination.complaints.step6" = "difficultés à respirer";
 /* MARK: - Status */
 "status.icon.accessibility.ok" = "Cercle vert coché qui indique que l'application est paramétrée correctement";
 "status.icon.accessibility.inactive" = "Cercle jaune avec point d'exclamation comme avertissement";
@@ -129,6 +128,14 @@
 "consentStep4PrimaryButton" = "Partager l'application";
 "consentStep4SecondaryButton" = "Continuer";
 
+/* MARK: - Onboarding permissions */
+"onboarding.permissions.title" = "Activer CoronaMelder";
+"onboarding.permissions.description" = "CoronaMelder ne peut vous avertir que si vous autorisez l'application à :";
+"onboarding.permissions.description.list1" = "Pouvoir envoyer des notifications";
+"onboarding.permissions.description.list2" = "Enregistrer les rencontres avec d'autres utilisateurs de l'application";
+"onboarding.permissions.secondary_button" = "Comment fonctionne exactement l'application ?";
+"onboarding.permissions.primary_button" = "Ouvrir l'application";
+
 /* MARK: - Bluetooth */
 "enableBluetoothTitle" = "Activer le Bluetooth";
 "enableBluetoothSettingIndexRow1" = "1.";
@@ -161,7 +168,7 @@
 "help.faq.notification.title" = "Quand l'application m'envoie-t-elle une notification ?";
 "help.faq.location.title" = "L'application peut-elle percevoir mes données de géolocalisation ?";
 "help.faq.location.description" = "Non. L'application ne voit via le Bluetooth que si vous êtes à proximité d'autres personnes qui ont également l'application sur leur téléphone. L'application ne voit jamais où vous êtes.<br><br>Le Bluetooth est destiné à établir une connexion sans fil entre 2 appareils qui sont proches l'un de l'autre. Comme votre téléphone avec un haut-parleur ou un écouteur.<br><br>L'application peut évaluer la distance entre 2 téléphones par la puissance du signal Bluetooth.";
-"help.faq.anonymous.title" = "Comment l'application peut-elle préserver mon anonymat ?";
+"help.faq.anonymous.title" = "L'application sait-elle qui je suis et qui j'ai rencontré ?";
 "help.faq.anonymous.description_1" = "L'application échange des codes aléatoires avec d'autres téléphones. Aucune donnée personnelle ni de localisation vous concernant ne se trouve dans ces codes. Ils sont entièrement arbitraires. L'échange des codes se fait au moment où vous êtes proche d'une personne qui a également l'application.";
 "help.faq.anonymous.description_2" = "Il s'avère par la suite que cette personne a le Covid-19 ? Alors, dans l'application, celle-ci peut ajouter ses codes à une liste de codes des personnes contaminées. L'ajout de ces codes ne peut se faire qu'après que la personne contaminée ait communiqué un code GGD au GGD. La contamination peut alors être confirmée.<br><br> À l'issue de ce contrôle, il est possible d'envoyer une notification à toutes les autres personnes qui ont ces codes sur leur téléphone. Cette notification indique uniquement quand elles ont été en contact avec une personne infectée, mais pas qui elle est ni où elle l'a rencontrée.";
 "help.bluetooth.title" = "Le Bluetooth fonctionne-t-il à travers les murs ? ";
@@ -196,7 +203,7 @@
 
 "help.technical_explanation.title" = "Explication technique";
 "help.technical_explanation.step1.title" = "1. L'application crée un code personnel pour chaque téléphone";
-"help.technical_explanation.step1.description" = "Ce code ne contient pas d'informations sur vous ou votre téléphone. Le code est entièrement anonyme et change tous les quarts d'heure.";
+"help.technical_explanation.step1.description" = "Ce code ne contient pas d'informations sur vous ou votre téléphone. Le code est entièrement aléatoire et change tous les quarts d'heure.";
 "help.technical_explanation.step2.title" = "2. Les téléphones partagent leurs codes s'ils sont proches les uns des autres";
 "help.technical_explanation.step2.description" = "La personne que vous rencontrez a également l'application ? Alors vos téléphones échangent leurs codes via le Bluetooth Low Energy. L'application sait quels étaient les téléphones proches les uns des autres. L'application ne sait pas à qui appartiennent les téléphones ni où vous étiez.";
 "help.technical_explanation.step3.title" = "3. Si une personne a le Covid-19,  elle peut placer ses codes sur une liste";
@@ -218,7 +225,7 @@
 "help.what_to_do_with_notification.title" = "Que pouvez-vous faire si vous avez été en contact avec quelqu'un qui a le Covid-19 ?";
 "help.what_to_do_with_notification.description" = "Suivez les conseils de l'application. Ce conseil dépend de votre situation. Ou si vous avez des symptômes qui correspondent à ceux du Covid-19. Et du jour où vous avez été en contact avec la personne contaminée.<br><br>Restez en tous cas chez vous jusqu'à ce que vous soyez certain(e) de ne pas avoir le Covid-19. Vous évitez ainsi de contaminer sans le savoir les personnes qui vous entourent.<br><br>Si le GGD vous donne par téléphone d'autres conseils que ceux de l'application, suivez les conseils du GGD.";
 "help.other_reports.title" = "Autres notifications";
-"help.other_reports.description" = "CoronaMelder peut aussi vous envoyer une notification en cas de problème technique. Par exemple si votre Bluetooth est désactivé. Ou si la connexion internet a été interrompue depuis plus d’une journée. L’application vous aide à résoudre le problème.<br><br>Avez-vous reçu une telle notification et l’application est activée ? Alors le problème a été résolu entre-temps.<br><br>Vous recevez aussi parfois des notifications qui vous indiquent que votre téléphone effectue des contrôles COVID-19. Ouvrez alors CoronaMelder. Bon à savoir : généralement, ce n'est rien de grave.";
+"help.other_reports.description" = "CoronaMelder peut aussi vous envoyer une notification en cas de problème technique. Par exemple si votre Bluetooth est désactivé. Ou si la connexion internet a été interrompue depuis plus d’une journée. L’application vous aide à résoudre tout cela.<br><br>Avez-vous reçu une telle notification et l’application est néanmoins activée ? Alors le problème a été résolu entre-temps.<br><br>Vous recevez aussi parfois des notifications qui vous indiquent que votre téléphone effectue des contrôles COVID-19. Ouvrez alors CoronaMelder. Bon à savoir : généralement, il n'y a aucun problème.";
 "help.other_what_does_report_say.title" = "Que contient une notification ?";
 "help.other_what_does_report_say.content1" = "L'application envoie une notification si vous avez été au moins pendant 15 minutes à proximité de quelqu'un qui, par la suite, s'avère avoir le Covid-19.";
 "help.other_what_does_report_say.content2" = "La notification s'affiche sur l'écran d'accueil de votre téléphone. Tout comme les messages des autres applications. La notification a le symbole de CoronaMelder.<br><br>Avez-vous reçu une notification ? Ouvrez alors CoronaMelder. Vous y lirez ce que vous pouvez faire.";
@@ -280,16 +287,16 @@
 "moreInformation.cell.requestTest.subtitle" = "Découvrez le plus vite possible si vous êtes contaminé(e)";
 
 "moreInformation.cell.infected.title" = "Transmettre le code GGD";
-"moreInformation.cell.infected.subtitle" = "Envoyez via le GGD un notification anonyme à vos contacts récents si vous êtes contaminé(e)";
+"moreInformation.cell.infected.subtitle" = "Rendez-vous là-bas si le GGD vous appelle avec le résultat de votre test.";
 
 "moreInformation.info.title" = "Gardez votre numéro national (BSN) à portée de main. Celui-ci figure sur votre passeport ou carte d'identité. ";
 
-"moreInformation.complaints.item1" = "symptômes d'un rhume comme le nez qui coule, éternuements, mal de gorge";
+"moreInformation.complaints.item1" = "symptômes d'un rhume comme un nez qui coule, des éternuements, mal à la gorge";
 "moreInformation.complaints.item2" = "toux";
-"moreInformation.complaints.item3" = "angoisse";
+"moreInformation.complaints.item3" = "difficultés à respirer";
 "moreInformation.complaints.item4" = "fièvre";
 "moreInformation.complaints.item5" = "perte soudaine de l'odorat et/ou du goût (sans congestion nasale)";
-"moreInformation.complaints.title" = "Symptômes pouvant être ceux du Covid-19";
+"moreInformation.complaints.title" = "Symptômes pouvant correspondre à ceux du Covid-19";
 "moreInformation.complaints.content" = "Vous avez des symptômes ? Restez le plus possible chez vous. Les symptômes sont graves ? Appelez votre médecin traitant.";
 
 /* MARK: - MoreInformation | About */
@@ -307,7 +314,7 @@
 
 "moreInformation.about.faq.reason" = "Pourquoi cette application est-elle importante ?";
 "moreInformation.about.faq.location" = "L'application peut-elle percevoir mes données de géolocalisation ?";
-"moreInformation.about.faq.anonymous" = "Comment l'application peut-elle préserver mon anonymat ?";
+"moreInformation.about.faq.anonymous" = "L'application sait-elle qui je suis et qui j'ai rencontré ?";
 "moreInformation.about.faq.notification" = "Quand l'application m'envoie-t-elle une notification ?";
 "moreInformation.about.faq.upload_keys" = "Puis-je envoyer une notification aux autres si j'ai le Covid-19 ?";
 "moreInformation.about.faq.bluetooth" = "Le Bluetooth fonctionne-t-il à travers les murs ?";
@@ -328,11 +335,11 @@
 "moreInformation.infected.error" = "L'application n'a pas pu récupérer le code GGD. Veuillez contrôler votre connexion internet.";
 "moreInformation.infected.error.upload" = "Une erreur est survenue pendant l'envoi de la notification";
 
-"moreInformation.infected.header" = "Vous avez fait le test et vous avez le Covid-19 ? Dans ce cas, un employé du GGD va vous contacter. Vous aurez alors besoin de votre code GGD.";
+"moreInformation.infected.header" = "Vous avez fait le test et vous avez le Covid-19 ? Dans ce cas, un employé du GGD va vous contacter pour vous aider à prévenir les autres qui étaient dans votre entourage. Ã cet effet, vous aurez besoin de votre code GGD.";
 "moreInformation.infected.how_does_it_work" = "Comment ça fonctionne ?";
 "moreInformation.infected.step1" = "Communiquez le code GGD à l'employé du GGD :";
 "moreInformation.infected.step2" = "Veuillez attendre l'employé GGD pour l'étape suivante";
-"moreInformation.infected.step3" = "Prévenez les personnes qui vous entourent en envoyant une notification anonyme";
+"moreInformation.infected.step3" = "Prévenez les personnes qui vous entourent en envoyant une notification";
 "moreInformation.infected.tryAgain.description" = "L'application n'a pas pu récupérer le code GGD. Veuillez contrôler votre connexion internet.";
 "moreInformation.infected.action" = "Continuer";
 
@@ -432,4 +439,5 @@
 "privacyAgreement.list.step4" = "Vous pouvez à tout moment supprimer les données de votre téléphone.";
 "privacyAgreement.consent.button" = "J'ai lu la déclaration de protection de la vie privée et je donne mon accord sur son contenu";
 
-
+"notification.update_required.title" = "Mise à jour nécessaire";
+"notification.update_required.description" = "Il existe une nouvelle version de CoronaMelder. La version actuelle ne fonctionne plus correctement. Consultez l'application pour obtenir des instructions.";
