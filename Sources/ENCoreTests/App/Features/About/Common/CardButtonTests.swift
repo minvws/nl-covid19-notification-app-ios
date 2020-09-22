@@ -13,6 +13,12 @@ import XCTest
 
 final class CardButtonTests: TestCase {
 
+    override func setUp() {
+        super.setUp()
+
+        recordSnapshots = false
+    }
+
     // MARK: - Tests
 
     func test_snapshot_cardButton_typeShort_rendersCorrectly() {
