@@ -65,8 +65,8 @@ steps:
     configuration: ${{ parameters.configuration }}
     xcWorkspacePath: 'EN.xcodeproj'
     scheme: 'EN'
-    xcodeVersion: '12.0'
-    xcodeDeveloperDir: '/Applications/Xcode_12.app/Contents/Developer'
+    xcodeVersion: 'specifyPath'
+    xcodeDeveloperDir: '/Applications/Xcode_12.app'
     provisioningProfileName: ${{ parameters.provisioningProfileName }}
     signingOption: ${{ parameters.signingOption }}
     packageApp: ${{ parameters.packageApp }}
@@ -80,8 +80,8 @@ steps:
     configuration: Debug
     xcWorkspacePath: EN.xcodeproj
     scheme: ENCore
-    xcodeVersion: '12.0'
-    xcodeDeveloperDir: '/Applications/Xcode_12.app/Contents/Developer'
+    xcodeVersion: 'specifyPath'
+    xcodeDeveloperDir: '/Applications/Xcode_12.app'
     destinationPlatformOption: iOS
     destinationSimulators: 'iPhone 11,OS=13.7'
     publishJUnitResults: true
