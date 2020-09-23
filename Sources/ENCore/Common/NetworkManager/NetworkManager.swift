@@ -85,7 +85,7 @@ final class NetworkManager: NetworkManaging, Logging {
                                 completion(.failure(error))
                             }
                         },
-                        receiveValue: { data in
+                        receiveValue: { (data: AppConfig) in
                             completion(.success(data))
                         })
                     .store(in: &self.disposeBag)
