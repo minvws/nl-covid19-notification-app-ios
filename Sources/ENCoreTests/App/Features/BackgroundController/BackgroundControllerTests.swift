@@ -103,6 +103,7 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertNotNil(task.completed)
         XCTAssertEqual(exposureController.updateAndProcessPendingUploadsCallCount, 1)
         XCTAssertEqual(exposureController.exposureNotificationStatusCheckCallCount, 1)
+        XCTAssertEqual(exposureController.appUpdateRequiredCheckCallCount, 1)
     }
 
     func test_handleBackgroundDecoyRegister() {

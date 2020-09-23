@@ -18,6 +18,7 @@ final class ExposureControllerTests: TestCase {
     private let userNotificationCenter = UserNotificationCenterMock()
     private var mutableBluetoothStateStream = MutableBluetoothStateStreamingMock()
     private let networkStatusStream = NetworkStatusStreamingMock(networkStatusStream: CurrentValueSubject<Bool, Never>(true).eraseToAnyPublisher())
+    private let currentAppVersion = "1.0"
 
     override func setUp() {
         super.setUp()
@@ -28,7 +29,8 @@ final class ExposureControllerTests: TestCase {
                                         dataController: dataController,
                                         networkStatusStream: networkStatusStream,
                                         userNotificationCenter: userNotificationCenter,
-                                        mutableBluetoothStateStream: mutableBluetoothStateStream)
+                                        mutableBluetoothStateStream: mutableBluetoothStateStream,
+                                        currentAppVersion: currentAppVersion)
 
         dataController.lastSuccessfulProcessingDate = Date()
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher() }
