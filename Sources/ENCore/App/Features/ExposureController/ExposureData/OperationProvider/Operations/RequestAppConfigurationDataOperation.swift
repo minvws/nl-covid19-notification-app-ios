@@ -61,6 +61,9 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
 
     private func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
         return Future { promise in
+            guard appConfiguration.version > 0, appConfiguration.manifestRefreshFrequency > 0 else {
+                return promise(.failure(.serverError))
+            }
             self.storageController.store(object: appConfiguration,
                                          identifiedBy: ExposureDataStorageKey.appConfiguration,
                                          completion: { _ in
