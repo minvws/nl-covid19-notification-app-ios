@@ -34,6 +34,7 @@ steps:
     shareLogsEnabled: true
     exportPath: "ipa/test"
     exportMethod: "ad-hoc"
+    enDeveloperRegion: "TEST_NL_TEST"
 - publish: "ipa/test"
   displayName: Publish test IPA
   artifact: ipa-test
@@ -55,6 +56,7 @@ steps:
     shareLogsEnabled: true
     exportPath: "ipa/acc"
     exportMethod: "ad-hoc"
+    enDeveloperRegion: "TEST_NL_ACC"
 - publish: "ipa/acc"
   displayName: Publish acceptance IPA
   artifact: ipa-acc
@@ -74,6 +76,7 @@ steps:
     packageApp: true
     exportPath: "ipa/prod"
     exportMethod: "app-store"
+    enDeveloperRegion: "NL"
 - publish: "ipa/prod"
   displayName: Publish production IPA
   artifact: ipa-prod

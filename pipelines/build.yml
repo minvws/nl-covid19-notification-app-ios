@@ -39,6 +39,9 @@ parameters:
 - name: configuration
   type: string
   default: Release
+- name: enDeveloperRegion
+  type: string
+  default: 'NL'
 
 steps:
 - task: InstallAppleProvisioningProfile@1
@@ -57,6 +60,7 @@ steps:
     RELEASE_PROVISIONING_PROFILE: ${{ parameters.provisioningProfileName }}
     USE_DEVELOPER_MENU: ${{ parameters.debugMenu }}
     SHARE_LOGS_ENABLED: ${{ parameters.shareLogsEnabled }}
+    EN_DEVELOPER_REGION: ${{ parameters.enDeveloperRegion }}
 - task: Xcode@5
   displayName: 'Build'
   inputs:
