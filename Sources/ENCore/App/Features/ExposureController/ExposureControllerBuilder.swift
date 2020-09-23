@@ -74,6 +74,9 @@ protocol ExposureControlling: AnyObject {
     /// Checks the status of the EN framework for the last 24h
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
 
+    /// Checks if the app needs to be updated
+    func appUpdateRequiredCheck() -> AnyPublisher<(), Never>
+
     // MARK: - Onboarding
 
     /// Whether the user runs the app for the first time
@@ -157,6 +160,10 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     fileprivate var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
     }
+
+    fileprivate var currentAppVersion: String? {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
 }
 
 final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, ExposureControllerBuildable {
@@ -168,6 +175,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
                                   dataController: dependencyProvider.dataController,
                                   networkStatusStream: dependencyProvider.dependency.networkStatusStream,
                                   userNotificationCenter: dependencyProvider.userNotificationCenter,
-                                  mutableBluetoothStateStream: dependencyProvider.dependency.mutableBluetoothStateStream)
+                                  mutableBluetoothStateStream: dependencyProvider.dependency.mutableBluetoothStateStream,
+                                  currentAppVersion: dependencyProvider.currentAppVersion)
     }
 }

@@ -89,20 +89,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         LogHandler.setup()
 
-        /// Check if the app is the minimum version. If not, show the app update screen
-        if let currentAppVersion = currentAppVersion {
-            exposureController.getAppVersionInformation { appVersionInformation in
-                guard let appVersionInformation = appVersionInformation else {
-                    return
-                }
-                if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
-                    let minimumVersionMessage = appVersionInformation.minimumVersionMessage.isEmpty ? nil : appVersionInformation.minimumVersionMessage
-                    self.routeToUpdateApp(animated: true,
-                                          appStoreURL: appVersionInformation.appStoreURL,
-                                          minimumVersionMessage: minimumVersionMessage)
-                }
-            }
-        }
+        checkIfAppUpdateIsRequired()
 
         if exposureController.didCompleteOnboarding {
             routeToMain()
@@ -142,6 +129,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     strongSelf.routeToCallGGD()
                 case .enStatusDisabled:
                     () // Do nothing
+                case .appUpdateRequired:
+                    () // Do nothing
                 }
             }.store(in: &disposeBag)
     }
@@ -161,6 +150,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 }
                 })
             .store(in: &disposeBag)
+
+        checkIfAppUpdateIsRequired()
     }
 
     func didEnterForeground() {
@@ -329,6 +320,25 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         let developerMenuViewController = developerMenuBuilder.build(listener: viewController)
         self.developerMenuViewController = developerMenuViewController
+    }
+
+    private func checkIfAppUpdateIsRequired() {
+
+        /// Check if the app is the minimum version. If not, show the app update screen
+
+        if let currentAppVersion = currentAppVersion {
+            exposureController.getAppVersionInformation { appVersionInformation in
+                guard let appVersionInformation = appVersionInformation else {
+                    return
+                }
+                if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
+                    let minimumVersionMessage = appVersionInformation.minimumVersionMessage.isEmpty ? nil : appVersionInformation.minimumVersionMessage
+                    self.routeToUpdateApp(animated: true,
+                                          appStoreURL: appVersionInformation.appStoreURL,
+                                          minimumVersionMessage: minimumVersionMessage)
+                }
+            }
+        }
     }
 
     private let currentAppVersion: String?
