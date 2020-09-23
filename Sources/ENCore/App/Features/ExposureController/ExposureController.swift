@@ -17,13 +17,15 @@ final class ExposureController: ExposureControlling, Logging {
          dataController: ExposureDataControlling,
          networkStatusStream: NetworkStatusStreaming,
          userNotificationCenter: UserNotificationCenter,
-         mutableBluetoothStateStream: MutableBluetoothStateStreaming) {
+         mutableBluetoothStateStream: MutableBluetoothStateStreaming,
+         currentAppVersion: String?) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
         self.networkStatusStream = networkStatusStream
         self.userNotificationCenter = userNotificationCenter
         self.mutableBluetoothStateStream = mutableBluetoothStateStream
+        self.currentAppVersion = currentAppVersion
     }
 
     deinit {
@@ -390,7 +392,7 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.logDebug("App Update Required Check Started")
 
-                guard let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else {
+                guard let currentAppVersion = self.currentAppVersion else {
                     self.logError("Error retrieving app current version")
                     return promise(.success(()))
                 }
@@ -403,20 +405,18 @@ final class ExposureController: ExposureControlling, Logging {
                     }
 
                     if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
-
-                        guard let minimumVersionMessage = appVersionInformation.minimumVersionMessage.isEmpty ? nil : appVersionInformation.minimumVersionMessage else {
-                            self.logError("Error retrieving minimum app version")
-                            return promise(.success(()))
-                        }
+                        let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
 
                         let content = UNMutableNotificationContent()
-                        content.body = minimumVersionMessage
+                        content.body = message
                         content.sound = .default
                         content.badge = 0
 
                         self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
                             promise(.success(()))
                         }
+                    } else {
+                        promise(.success(()))
                     }
                 }
             }
@@ -627,6 +627,7 @@ final class ExposureController: ExposureControlling, Logging {
     private var isPushNotificationsEnabled = false
     private let userNotificationCenter: UserNotificationCenter
     private var updateStream: AnyPublisher<(), ExposureDataError>?
+    private let currentAppVersion: String?
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {

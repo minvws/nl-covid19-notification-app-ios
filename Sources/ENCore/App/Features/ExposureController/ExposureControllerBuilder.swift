@@ -160,6 +160,10 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     fileprivate var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
     }
+
+    fileprivate var currentAppVersion: String? {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
 }
 
 final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, ExposureControllerBuildable {
@@ -171,6 +175,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
                                   dataController: dependencyProvider.dataController,
                                   networkStatusStream: dependencyProvider.dependency.networkStatusStream,
                                   userNotificationCenter: dependencyProvider.userNotificationCenter,
-                                  mutableBluetoothStateStream: dependencyProvider.dependency.mutableBluetoothStateStream)
+                                  mutableBluetoothStateStream: dependencyProvider.dependency.mutableBluetoothStateStream,
+                                  currentAppVersion: dependencyProvider.currentAppVersion)
     }
 }
