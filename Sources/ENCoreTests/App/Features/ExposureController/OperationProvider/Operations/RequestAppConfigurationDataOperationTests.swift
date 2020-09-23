@@ -23,5 +23,35 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
                                                          appConfigurationIdentifier: "test")
     }
 
-    // TODO: Write tests
+    func test_getAppConfig() {
+
+        networkController.applicationConfigurationHandler = { _ in
+
+            let appConfig = ApplicationConfiguration(version: 0,
+                                                     manifestRefreshFrequency: 0,
+                                                     decoyProbability: 0,
+                                                     creationDate: Date(),
+                                                     identifier: "test",
+                                                     minimumVersion: "",
+                                                     minimumVersionMessage: "",
+                                                     appStoreURL: "",
+                                                     requestMinimumSize: 0,
+                                                     requestMaximumSize: 0,
+                                                     repeatedUploadDelay: 0,
+                                                     decativated: false,
+                                                     testPhase: true)
+            return Just(appConfig)
+                .setFailureType(to: NetworkError.self)
+                .eraseToAnyPublisher()
+        }
+
+        XCTAssertEqual(networkController.applicationConfigurationCallCount, 0)
+
+        operation.execute()
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(networkController.applicationConfigurationCallCount, 1)
+    }
 }
