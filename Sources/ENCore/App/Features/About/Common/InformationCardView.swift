@@ -25,6 +25,7 @@ final class InformationCardView: View {
 
         titleLabel.attributedText = title
         titleLabel.font = theme.fonts.title3
+        titleLabel.accessibilityTraits = .header
 
         messageLabel.attributedText = message
         messageLabel.font = theme.fonts.body
