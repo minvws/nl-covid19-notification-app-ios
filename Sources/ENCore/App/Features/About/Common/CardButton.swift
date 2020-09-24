@@ -25,6 +25,10 @@ final class CardButton: Button {
         cardTitleLabel.text = title
         subtitleLabel.text = subtitle
 
+        /// Fix for making the button accessible for voice over
+        self.title = title + "\n" + subtitle
+        self.titleLabel?.alpha = 0
+
         build()
         setupConstraints()
     }
