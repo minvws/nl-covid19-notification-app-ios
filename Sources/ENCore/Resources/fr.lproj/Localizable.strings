@@ -433,6 +433,7 @@
 "privacyAgreement.title" = "Autorisation d'utilisation des données";
 "privacyAgreement.message" = "Pour utiliser CoronaMelder, vous devez accepter les %@. Important à savoir :";
 "privacyAgreement.message.link" = "Déclaration de protection de la vie privée";
+"privacyAgreement.list.step0" = "L'utilisation de CoronaMelder est toujours volontaire";
 "privacyAgreement.list.step1" = "Votre application diffuse des données Bluetooth cryptées.";
 "privacyAgreement.list.step2" = "Les autres utilisateurs qui ont été en contact avec vous conservent ces données pendant un maximum de 14 jours.";
 "privacyAgreement.list.step3" = "Si un test de dépistage révèle que vous avez le Covid-19, vous pouvez le signaler dans l'application pour avertir les autres utilisateurs.";
