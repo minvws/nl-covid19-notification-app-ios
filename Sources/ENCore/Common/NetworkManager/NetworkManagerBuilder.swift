@@ -62,7 +62,7 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
                            encoding: .ascii)?
             .trimmingCharacters(in: .controlCharacters) ?? "Unknown model"
 
-        let systemVersion = UIDevice().systemVersion
+        let systemVersion = UIDevice.current.systemVersion
 
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = ["User-Agent": "CoronaMelder/(\(buildNumber)) (\(model)) iOS (\(systemVersion))"]
