@@ -65,7 +65,7 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
         let systemVersion = UIDevice().systemVersion
 
         let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = ["User-Agent": "CoronaMelder/(\(buildNumber) (\(model) iOS (\(systemVersion)"]
+        configuration.httpAdditionalHeaders = ["User-Agent": "CoronaMelder/(\(buildNumber)) (\(model)) iOS (\(systemVersion))"]
 
         return URLSession(configuration: configuration,
                           delegate: sessionDelegate,
