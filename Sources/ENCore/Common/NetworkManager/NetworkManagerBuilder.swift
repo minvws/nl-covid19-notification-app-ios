@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import UIKit
 
 enum NetworkError: Error {
     case invalidRequest
@@ -51,7 +52,20 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
     }()
 
     var session: URLSession {
+
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown build"
+
+        var sysinfo = utsname()
+        uname(&sysinfo)
+        let model = String(bytes: Data(bytes: &sysinfo.machine,
+                                       count: Int(_SYS_NAMELEN)),
+                           encoding: .ascii)?
+            .trimmingCharacters(in: .controlCharacters) ?? "Unknown model"
+
+        let systemVersion = UIDevice.current.systemVersion
+
         let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = ["User-Agent": "CoronaMelder/(\(buildNumber)) (\(model)) iOS (\(systemVersion))"]
 
         return URLSession(configuration: configuration,
                           delegate: sessionDelegate,
