@@ -8,6 +8,7 @@
 import BackgroundTasks
 import Combine
 @testable import ENCore
+import ENFoundation
 import Foundation
 import XCTest
 
@@ -69,8 +70,10 @@ final class BackgroundControllerTests: XCTestCase {
         exposureController.isAppDeactivatedHandler = {
             return Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+        let date = Date(timeIntervalSince1970: 1599745276000)
+        DateTimeTestingOverrides.overriddenCurrentDate = date
         let calendar = Calendar.current
-        let today = calendar.dateComponents([.day], from: Date()).day ?? 0
+        let today = calendar.dateComponents([.day], from: date).day ?? 0
         let exp = expectation(description: "asyncTask")
         taskScheduler.submitHandler = { task in
             if task.identifier.contains(BackgroundTaskIdentifiers.decoySequence.rawValue) {

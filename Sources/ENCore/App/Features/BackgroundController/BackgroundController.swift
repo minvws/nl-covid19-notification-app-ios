@@ -167,7 +167,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private func scheduleDecoyStopKeys(task: BGProcessingTask) {
         let percentage = Int.random(in: 0 ... 10)
         let delay = percentage == 0 ? Int.random(in: configuration.decoyDelayRangeLowerBound) : Int.random(in: configuration.decoyDelayRangeUpperBound)
-        let date = Date().addingTimeInterval(Double(delay))
+        let date = currentDate().addingTimeInterval(Double(delay))
 
         schedule(identifier: .decoyRegister, date: date, requiresNetworkConnectivity: true) { result in
             task.setTaskCompleted(success: result)
@@ -229,7 +229,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func scheduleRefresh() {
         let timeInterval = refreshInterval * 60
-        let date = Date().addingTimeInterval(timeInterval)
+        let date = currentDate().addingTimeInterval(timeInterval)
 
         schedule(identifier: .refresh, date: date, requiresNetworkConnectivity: true)
     }
@@ -330,7 +330,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     // E.g. date(hour: 1, minute: 0) returns 1:00 am for the next day
     private func date(hour: Int, minute: Int, dayOffset: Int = 1) -> Date? {
         let calendar = Calendar.current
-        guard let tomorrow = calendar.date(byAdding: .day, value: dayOffset, to: Date()) else {
+        guard let tomorrow = calendar.date(byAdding: .day, value: dayOffset, to: currentDate()) else {
             return nil
         }
 
