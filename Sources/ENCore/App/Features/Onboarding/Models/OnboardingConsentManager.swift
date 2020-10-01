@@ -132,7 +132,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             .exposureState
             .first()
             .sink { value in
-                if value.activeState == .notAuthorized {
+                if value.activeState == .notAuthorized || value.activeState == .inactive(.disabled) {
                     completion(false)
                 } else {
                     completion(true)
