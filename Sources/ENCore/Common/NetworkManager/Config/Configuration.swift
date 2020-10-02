@@ -102,7 +102,7 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "productie.coronamelder-dist.nl",
             port: nil,
-            path: ["v1"],
+            path: ["v2"],
             sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2Signature],
             tokenParams: [:]
         )
