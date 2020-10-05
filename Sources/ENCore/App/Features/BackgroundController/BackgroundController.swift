@@ -207,12 +207,16 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
+        self.logDebug("Decoy `/postkeys` started")
         let cancellable = exposureController
             .getPadding()
             .flatMap { padding in
                 self.networkController
                     .stopKeys(padding: padding)
-                    .mapError { $0.asExposureDataError }
+                    .mapError {
+                        self.logDebug("Decoy `/postkeys` error: \($0.asExposureDataError)")
+                        return $0.asExposureDataError
+                    }
             }.sink(receiveCompletion: { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/postkeys` complete")
@@ -221,6 +225,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         // Handle running out of time
         task.expirationHandler = {
+            self.logDebug("Decoy `/postkeys` expired")
             cancellable.cancel()
         }
     }
