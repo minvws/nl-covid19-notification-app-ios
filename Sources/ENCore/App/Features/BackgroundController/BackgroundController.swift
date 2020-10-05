@@ -169,7 +169,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         let delay = percentage == 0 ? Int.random(in: configuration.decoyDelayRangeLowerBound) : Int.random(in: configuration.decoyDelayRangeUpperBound)
         let date = currentDate().addingTimeInterval(Double(delay))
 
-        schedule(identifier: .decoyRegister, date: date, requiresNetworkConnectivity: true) { result in
+        schedule(identifier: .decoyStopKeys, date: date, requiresNetworkConnectivity: true) { result in
             task.setTaskCompleted(success: result)
         }
     }
