@@ -28,6 +28,7 @@ final class CardButton: Button {
         /// Fix for making the button accessible for voice over
         self.title = title + "\n" + subtitle
         self.titleLabel?.alpha = 0
+        self.accessibilityTraits = .button
 
         build()
         setupConstraints()
