@@ -203,6 +203,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         // Handle running out of time
         task.expirationHandler = {
             // TODO: We need to actually stop the `requestLabConfirmationKey` request
+            self.logDebug("Decoy `/register` expired")
         }
     }
 
