@@ -64,6 +64,7 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
         cell.textLabel?.accessibilityTraits = .header
+        cell.accessibilityTraits = .button
 
         cell.accessoryType = .disclosureIndicator
 

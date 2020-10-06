@@ -35,6 +35,7 @@ final class LinkedContentTableViewManager: NSObject, UITableViewDelegate, UITabl
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.bodyBold
         cell.textLabel?.accessibilityTraits = .header
+        cell.accessibilityTraits = .button
 
         return cell
     }

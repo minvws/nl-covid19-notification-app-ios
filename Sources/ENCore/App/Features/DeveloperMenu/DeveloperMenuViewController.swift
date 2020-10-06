@@ -418,9 +418,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             }
 
             return "Yes"
+        #else
+            return "No"
         #endif
-
-        return "No"
     }
 
     private func getDailyLimit() -> String {
