@@ -321,6 +321,25 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
+    func test_updateWhenRequired_callsDataControllerWhenBluetoothInactive() {
+        mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))
+        mutableStateStream.exposureState = Just(mutableStateStream.currentExposureState!).eraseToAnyPublisher()
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in
+            return Just(())
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+
+        controller
+            .updateWhenRequired()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
+    }
+
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
         dataController.lastSuccessfulProcessingDate = Date().addingTimeInterval(-24 * 60 * 60 - 1)
         exposureManager.activateHandler = { $0(.active) }

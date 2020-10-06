@@ -134,18 +134,13 @@ final class ExposureController: ExposureControlling, Logging {
             return updateStream.share().eraseToAnyPublisher()
         }
 
-        // update when active, or when inactive due to no recent updates
-        guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(mutableStateStream.currentExposureState?.activeState) else {
-            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-        }
-
         let updateStream = mutableStateStream
             .exposureState
             .first()
             .setFailureType(to: ExposureDataError.self)
             .flatMap { (state: ExposureState) -> AnyPublisher<(), ExposureDataError> in
                 // update when active, or when inactive due to no recent updates
-                guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications)].contains(state.activeState) else {
+                guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications), .inactive(.bluetoothOff)].contains(state.activeState) else {
                     self.logDebug("Not updating as inactive")
                     return Just(())
                         .setFailureType(to: ExposureDataError.self)
