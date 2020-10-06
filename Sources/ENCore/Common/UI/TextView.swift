@@ -17,4 +17,19 @@ class TextView: UITextView {
         textContainerInset = UIEdgeInsets.zero
         textContainer.lineFragmentPadding = 0
     }
+
+    // Point detection on this textview is overridden to only allow touch on links, not on normal text
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return linkExists(atPoint: point)
+    }
+
+    private func linkExists(atPoint point: CGPoint) -> Bool {
+        guard let pos = closestPosition(to: point),
+            let range = tokenizer.rangeEnclosingPosition(pos, with: .character, inDirection: .storage(.backward)) else {
+            return false
+        }
+
+        let startIndex = offset(from: beginningOfDocument, to: range.start)
+        return attributedText.attribute(.link, at: startIndex, effectiveRange: nil) != nil
+    }
 }
