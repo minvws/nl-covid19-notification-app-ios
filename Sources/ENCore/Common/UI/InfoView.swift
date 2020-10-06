@@ -207,18 +207,27 @@ final class InfoView: View {
     }
 }
 
-final class InfoSectionContentView: View {
+final class InfoSectionContentView: View, UITextViewDelegate {
 
-    private let contentLabel: Label
+    private let contentTextView: TextView
     var linkHandler: ((String) -> ())?
 
     // MARK: - Init
 
     init(theme: Theme, content: NSAttributedString) {
-        self.contentLabel = Label(frame: .zero)
+        self.contentTextView = TextView(frame: .zero)
+        contentTextView.isScrollEnabled = false
+
         super.init(theme: theme)
 
-        contentLabel.attributedText = content
+        contentTextView.attributedText = content
+        contentTextView.delegate = self
+        contentTextView.isEditable = false
+    }
+
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        linkHandler?(URL.absoluteString)
+        return true
     }
 
     // MARK: - Overrides
@@ -226,49 +235,21 @@ final class InfoSectionContentView: View {
     override func build() {
         super.build()
 
-        contentLabel.numberOfLines = 0
-        contentLabel.accessibilityTraits = .header
+        contentTextView.accessibilityTraits = .header
+        contentTextView.textContainerInset = .zero
+        contentTextView.textContainer.lineFragmentPadding = 0
 
-        addSubview(contentLabel)
-
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapLabel(_:)))
-        addGestureRecognizer(tapGestureRecognizer)
+        addSubview(contentTextView)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        contentLabel.snp.makeConstraints { maker in
+        contentTextView.snp.makeConstraints { maker in
             maker.top.equalToSuperview().offset(0)
             maker.bottom.equalToSuperview()
             maker.leading.trailing.equalToSuperview().inset(16)
         }
-    }
-
-    // MARK: - Private
-
-    @objc
-    private func didTapLabel(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard let linkHandler = linkHandler else { return }
-
-        let range = NSRange(location: 0, length: contentLabel.attributedText?.length ?? 0)
-
-        let handlePotentialMatch: (Any?, NSRange, UnsafeMutablePointer<ObjCBool>) -> () = { value, range, `continue` in
-            guard let value = value as? String else {
-                return
-            }
-
-            if gestureRecognizer.didTapAttributedTextInLabel(label: self.contentLabel, inRange: range) {
-                linkHandler(value)
-
-                `continue`.pointee = true
-            }
-        }
-
-        contentLabel.attributedText?.enumerateAttribute(.link,
-                                                        in: range,
-                                                        options: [],
-                                                        using: handlePotentialMatch)
     }
 }
 
