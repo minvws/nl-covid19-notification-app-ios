@@ -400,7 +400,7 @@
 "enableSettings.exposureNotifications.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
 // supports HTML
 "enableSettings.exposureNotifications.step2" = "Zet contactmeldingen aan";
-"enableSettings.exposureNotifications.step2.action.title" = "Meldingen over blootstelling aan COVID-19";
+"enableSettings.exposureNotifications.step2.action.title" = "Deel informatie over je blootstelling";
 
 "enableSettings.bluetooth.title" = "Bluetooth aanzetten";
 "enableSettings.bluetooth.action" = "Open Instellingen";
