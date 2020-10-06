@@ -216,17 +216,17 @@ final class InfoSectionContentView: View, UITextViewDelegate {
 
     init(theme: Theme, content: NSAttributedString) {
         self.contentTextView = TextView(frame: .zero)
-        contentTextView.isScrollEnabled = false
 
         super.init(theme: theme)
 
         contentTextView.attributedText = content
-        contentTextView.delegate = self
-        contentTextView.isEditable = false
     }
 
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        linkHandler?(URL.absoluteString)
+        if let linkHandler = linkHandler {
+            linkHandler(URL.absoluteString)
+            return false
+        }
         return true
     }
 
@@ -235,10 +235,9 @@ final class InfoSectionContentView: View, UITextViewDelegate {
     override func build() {
         super.build()
 
-        contentTextView.accessibilityTraits = .header
-        contentTextView.textContainerInset = .zero
-        contentTextView.textContainer.lineFragmentPadding = 0
-
+        contentTextView.delegate = self
+        contentTextView.isEditable = false
+        contentTextView.isScrollEnabled = false
         addSubview(contentTextView)
     }
 
