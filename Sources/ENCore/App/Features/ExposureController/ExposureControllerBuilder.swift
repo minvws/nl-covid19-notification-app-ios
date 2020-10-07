@@ -132,6 +132,7 @@ protocol ExposureControllerDependency {
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
     var networkStatusStream: NetworkStatusStreaming { get }
     var mutableBluetoothStateStream: MutableBluetoothStateStreaming { get }
 }
@@ -145,6 +146,10 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
 
     var storageController: StorageControlling {
         return dependency.storageController
+    }
+
+    var applicationSignatureController: ApplicationSignatureControlling {
+        return dependency.applicationSignatureController
     }
 
     var exposureManager: ExposureManaging {

@@ -124,6 +124,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()
 
+    lazy var applicationSignatureController: ApplicationSignatureControlling = {
+        return ApplicationSignatureController(storageController: storageController)
+    }()
+
     /// Exposure state stream, informs about the current exposure states
     var exposureStateStream: ExposureStateStreaming {
         return mutableExposureStateStream

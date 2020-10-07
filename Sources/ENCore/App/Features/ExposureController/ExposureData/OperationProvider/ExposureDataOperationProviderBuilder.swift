@@ -40,6 +40,7 @@ protocol ExposureDataOperationProviderBuildable {
 protocol ExposureDataOperationProviderDependency {
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
 }
 
 private final class ExposureDataOperationProviderDependencyProvider: DependencyProvider<ExposureDataOperationProviderDependency> {
@@ -58,6 +59,7 @@ final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationP
 
         return ExposureDataOperationProviderImpl(networkController: dependencyProvider.dependency.networkController,
                                                  storageController: dependencyProvider.dependency.storageController,
+                                                 applicationSignatureController: dependencyProvider.dependency.applicationSignatureController,
                                                  localPathProvider: dependencyProvider.localPathProvider,
                                                  userNotificationCenter: dependencyProvider.userNotificationCenter)
     }
