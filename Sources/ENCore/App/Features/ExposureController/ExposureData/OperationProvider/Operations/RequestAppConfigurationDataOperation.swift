@@ -27,24 +27,25 @@ struct ApplicationConfiguration: Codable {
 }
 
 final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {
-    typealias Result = ApplicationConfiguration
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
+         applicationSignatureController: ApplicationSignatureControlling,
          appConfigurationIdentifier: String) {
         self.networkController = networkController
         self.storageController = storageController
+        self.applicationSignatureController = applicationSignatureController
         self.appConfigurationIdentifier = appConfigurationIdentifier
     }
 
     // MARK: - ExposureDataOperation
 
     func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        if let appConfiguration = retrieveStoredConfiguration(),
-            let storedSignature = retrieveStoredSignature(),
+        if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
+            let storedSignature = applicationSignatureController.retrieveStoredSignature(),
             appConfiguration.identifier == appConfigurationIdentifier {
 
-            if storedSignature == signature(for: appConfiguration) {
+            if storedSignature == applicationSignatureController.signature(for: appConfiguration) {
                 return Just(appConfiguration)
                     .setFailureType(to: ExposureDataError.self)
                     .eraseToAnyPublisher()
@@ -57,55 +58,25 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
             .applicationConfiguration(identifier: appConfigurationIdentifier)
             .mapError { $0.asExposureDataError }
             .flatMap(store(appConfiguration:))
-            .flatMap(storeSignature(appConfiguration:))
+            .flatMap(storeSignature(for:))
             .share()
             .eraseToAnyPublisher()
     }
 
-    // MARK: - Private
-
-    private func retrieveStoredConfiguration() -> ApplicationConfiguration? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration)
+    func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+        return self.applicationSignatureController.store(appConfiguration: appConfiguration)
+            .share()
+            .eraseToAnyPublisher()
     }
 
-    private func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return Future { promise in
-            guard appConfiguration.version > 0, appConfiguration.manifestRefreshFrequency > 0 else {
-                return promise(.failure(.serverError))
-            }
-            self.storageController.store(object: appConfiguration,
-                                         identifiedBy: ExposureDataStorageKey.appConfiguration,
-                                         completion: { _ in
-                                             promise(.success(appConfiguration))
-                                         })
-        }
-        .eraseToAnyPublisher()
-    }
-
-    private func retrieveStoredSignature() -> Data? {
-        return storageController.retrieveData(identifiedBy: ExposureDataStorageKey.appConfigurationSignature)
-    }
-
-    private func storeSignature(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return Future { promise in
-            guard let sha = self.signature(for: appConfiguration) else {
-                promise(.failure(ExposureDataError.internalError))
-                return
-            }
-
-            self.storageController.store(data: sha, identifiedBy: ExposureDataStorageKey.appConfigurationSignature) { _ in
-                promise(.success(appConfiguration))
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-
-    private func signature(for appConfiguration: ApplicationConfiguration) -> Data? {
-        guard let encoded = try? JSONEncoder().encode(appConfiguration) else { return nil }
-        return SHA256.hash(data: encoded).description.data(using: .utf8)
+    func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+        return self.applicationSignatureController.storeSignature(for: appConfiguration)
+            .share()
+            .eraseToAnyPublisher()
     }
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let applicationSignatureController: ApplicationSignatureControlling
     private let appConfigurationIdentifier: String
 }
