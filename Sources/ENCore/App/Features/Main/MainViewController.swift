@@ -338,14 +338,14 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 }).store(in: &disposeBag)
     }
 
-    private func requestExposureNotificationPermission(completition: ((Bool) -> ())? = nil) {
+    private func requestExposureNotificationPermission(completion: ((Bool) -> ())? = nil) {
         exposureController.requestExposureNotificationPermission { error in
             guard let error = error else {
-                completition?(true)
+                completion?(true)
                 return
             }
             self.logError("Error `requestExposureNotificationPermission`: \(error.localizedDescription)")
-            completition?(false)
+            completion?(false)
         }
     }
 }

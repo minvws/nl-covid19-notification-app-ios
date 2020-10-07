@@ -73,15 +73,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_activate_isExposureNotificationEnabled() {
         exposureManager.isExposureNotificationEnabledHandler = { true }
-        exposureManager.setExposureNotificationEnabledHandler = { _, completion in
-            completion(.success(()))
-        }
-        exposureManager.activateHandler = { completition in
-            completition(.active)
-        }
-        userNotificationCenter.getAuthorizationStatusHandler = { completition in
-            completition(.authorized)
-        }
+        setupActivation()
 
         let exp = XCTestExpectation(description: "")
 
@@ -97,15 +89,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_activate_isExposureNotificationDisabled() {
         exposureManager.isExposureNotificationEnabledHandler = { false }
-        exposureManager.setExposureNotificationEnabledHandler = { _, completion in
-            completion(.success(()))
-        }
-        exposureManager.activateHandler = { completition in
-            completition(.active)
-        }
-        userNotificationCenter.getAuthorizationStatusHandler = { completition in
-            completition(.authorized)
-        }
+        setupActivation()
 
         let exp = XCTestExpectation(description: "")
 
@@ -550,10 +534,20 @@ final class ExposureControllerTests: TestCase {
 
     // MARK: - Private
 
-    private func activate() {
+    private func setupActivation() {
+        exposureManager.setExposureNotificationEnabledHandler = { _, completion in
+            completion(.success(()))
+        }
         exposureManager.activateHandler = { completion in
             completion(.active)
         }
+        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.authorized)
+        }
+    }
+
+    private func activate() {
+        setupActivation()
         controller.activate(inBackgroundMode: false)
     }
 
