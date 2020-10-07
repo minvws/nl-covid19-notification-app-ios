@@ -42,7 +42,9 @@ final class ExposureControllerTests: TestCase {
         }
         mutableStateStream.exposureState = stream.eraseToAnyPublisher()
 
+        exposureManager.authorizationStatus = .authorized
         exposureManager.getExposureNotificationStatusHandler = { .active }
+        exposureManager.isExposureNotificationEnabledHandler = { true }
 
         userNotificationCenter.getAuthorizationStatusHandler = { handler in
             handler(.authorized)
@@ -67,6 +69,38 @@ final class ExposureControllerTests: TestCase {
         controller.deactivate()
 
         XCTAssertEqual(exposureManager.deactivateCallCount, 1)
+    }
+
+    func test_activate_isExposureNotificationEnabled() {
+        exposureManager.isExposureNotificationEnabledHandler = { true }
+        setupActivation()
+
+        let exp = XCTestExpectation(description: "")
+
+        controller
+            .activate(inBackgroundMode: false).sink(receiveCompletion: { _ in exp.fulfill() }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 0)
+        XCTAssert(mutableStateStream.updateCallCount > 1)
+    }
+
+    func test_activate_isExposureNotificationDisabled() {
+        exposureManager.isExposureNotificationEnabledHandler = { false }
+        setupActivation()
+
+        let exp = XCTestExpectation(description: "")
+
+        controller
+            .activate(inBackgroundMode: false).sink(receiveCompletion: { _ in exp.fulfill() }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
+        XCTAssert(mutableStateStream.updateCallCount > 1)
     }
 
     func test_requestExposureNotificationPermission_callsManager_updatesStream() {
@@ -361,6 +395,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
         dataController.lastSuccessfulProcessingDate = Date().addingTimeInterval(-24 * 60 * 60 - 1)
+        exposureManager.isExposureNotificationEnabledHandler = { true }
         exposureManager.activateHandler = { $0(.active) }
 
         controller.activate(inBackgroundMode: false)
@@ -499,10 +534,20 @@ final class ExposureControllerTests: TestCase {
 
     // MARK: - Private
 
-    private func activate() {
+    private func setupActivation() {
+        exposureManager.setExposureNotificationEnabledHandler = { _, completion in
+            completion(.success(()))
+        }
         exposureManager.activateHandler = { completion in
             completion(.active)
         }
+        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.authorized)
+        }
+    }
+
+    private func activate() {
+        setupActivation()
         controller.activate(inBackgroundMode: false)
     }
 
