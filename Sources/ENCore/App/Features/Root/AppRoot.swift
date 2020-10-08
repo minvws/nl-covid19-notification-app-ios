@@ -12,16 +12,16 @@ import UIKit
 
 @available(iOS 13.5,*)
 @objc public final class ENAppRoot: NSObject, Logging {
-    private let rootBuilder = RootBuilder()
-    private var appEntryPoint: AppEntryPoint?
-
-    static var version: String {
+    private static var version: String {
         let dictionary = Bundle.main.infoDictionary
         let version = dictionary?["CFBundleShortVersionString"] as? String ?? "n/a"
         let build = dictionary?["CFBundleVersion"] as? String ?? "n/a"
 
         return "OS: \(UIDevice.current.systemVersion) App: \(version)-(\(build))"
     }
+
+    private let rootBuilder = RootBuilder()
+    private var appEntryPoint: AppEntryPoint?
 
     @objc
     public func attach(toWindow window: UIWindow) {
