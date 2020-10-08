@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import CocoaLumberjackSwift
 import ENFoundation
 import ExposureNotification
 import Foundation
@@ -213,6 +214,7 @@ extension Error {
                 // usually when receiving unsupported something is off with the signature validation
                 status = .signatureValidationFailed
             default:
+                DDLogDebug("🐞 `asExposureManagerError` raw error \(error.localizedDescription) \(error.errorCode)")
                 status = .unknown
             }
 
