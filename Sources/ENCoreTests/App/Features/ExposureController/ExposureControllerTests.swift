@@ -51,7 +51,7 @@ final class ExposureControllerTests: TestCase {
         }
     }
 
-    func test_activate_activesAndUpdatesStream() {
+    func test_activate_activesAndDoesntUpdatesStream() {
         exposureManager.activateHandler = { completion in completion(.active) }
 
         XCTAssertEqual(exposureManager.activateCallCount, 0)
@@ -61,6 +61,24 @@ final class ExposureControllerTests: TestCase {
 
         XCTAssertEqual(exposureManager.activateCallCount, 1)
         XCTAssert(mutableStateStream.updateCallCount > 1)
+    }
+
+    func test_activate_activesAndUpdatesStream_inBackground() {
+        exposureManager.activateHandler = { completion in completion(.active) }
+
+        XCTAssertEqual(exposureManager.activateCallCount, 0)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 0)
+
+        let exp = XCTestExpectation(description: "")
+
+        controller
+            .activate(inBackgroundMode: true).sink(receiveCompletion: { _ in exp.fulfill() }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertEqual(exposureManager.activateCallCount, 1)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 1)
     }
 
     func test_deactive_callsDeactivate() {
