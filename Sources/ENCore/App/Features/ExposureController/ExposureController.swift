@@ -65,16 +65,24 @@ final class ExposureController: ExposureControlling, Logging {
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
                 self.exposureManager.activate { _ in
-                    self.logDebug("EN framework activated")
                     self.isActivated = true
+                    self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
 
-                    if inBackgroundMode == false {
-                        self.postExposureManagerActivation()
+                    func postActivation() {
+                        if inBackgroundMode == false {
+                            self.postExposureManagerActivation()
+                        }
+                        resolve(.success(()))
                     }
 
-                    self.updateStatusStream()
-
-                    resolve(.success(()))
+                    if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled() {
+                        self.exposureManager.setExposureNotificationEnabled(true) { _ in
+                            self.updateStatusStream()
+                            postActivation()
+                        }
+                    } else {
+                        postActivation()
+                    }
                 }
             }
         }

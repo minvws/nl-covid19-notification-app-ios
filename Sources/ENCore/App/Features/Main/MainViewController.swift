@@ -290,7 +290,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case let .inactive(reason) where reason == .bluetoothOff:
             router?.routeToEnableSetting(.enableBluetooth)
         case let .inactive(reason) where reason == .disabled:
-            router?.routeToEnableSetting(.enableExposureNotifications)
+            requestExposureNotificationPermission { result in
+                if result == false {
+                    self.router?.routeToEnableSetting(.enableExposureNotifications)
+                }
+            }
         case let .inactive(reason) where reason == .pushNotifications:
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 DispatchQueue.main.async {
@@ -334,12 +338,14 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 }).store(in: &disposeBag)
     }
 
-    private func requestExposureNotificationPermission() {
+    private func requestExposureNotificationPermission(completion: ((Bool) -> ())? = nil) {
         exposureController.requestExposureNotificationPermission { error in
             guard let error = error else {
+                completion?(true)
                 return
             }
             self.logError("Error `requestExposureNotificationPermission`: \(error.localizedDescription)")
+            completion?(false)
         }
     }
 }
