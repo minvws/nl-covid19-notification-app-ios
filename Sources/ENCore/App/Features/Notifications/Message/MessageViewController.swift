@@ -35,7 +35,9 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
         super.viewDidLoad()
 
         hasBottomMargin = true
-        title = .contaminationChanceTitle
+
+        setThemeNavigationBar(withTitle: .contaminationChanceTitle)
+
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))

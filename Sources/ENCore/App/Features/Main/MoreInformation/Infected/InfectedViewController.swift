@@ -61,7 +61,9 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         super.viewDidLoad()
 
         hasBottomMargin = true
-        title = .moreInformationInfectedTitle
+
+        setThemeNavigationBar(withTitle: .moreInformationInfectedTitle)
+
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
@@ -245,6 +247,17 @@ private final class InfectedView: View {
         return InfoSectionContentView(theme: theme, content: content)
     }()
 
+    fileprivate lazy var stepStackView: UIView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 2
+
+        stackView.addArrangedSubview(controlCode)
+        stackView.addArrangedSubview(waitForTheGGD)
+        stackView.addArrangedSubview(shareYourCodes)
+        return stackView
+    }()
+
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
                                       title: .moreInformationInfectedStep1,
@@ -260,7 +273,8 @@ private final class InfectedView: View {
     private lazy var shareYourCodes: View = {
         InfoSectionStepView(theme: theme,
                             title: .moreInformationInfectedStep3,
-                            stepImage: .moreInformationStep3)
+                            stepImage: .moreInformationStep3,
+                            isLastStep: true)
     }()
 
     private lazy var cardContentView: View = View(theme: theme)
@@ -281,9 +295,7 @@ private final class InfectedView: View {
 
         infoView.addSections([
             contentView,
-            controlCode,
-            waitForTheGGD,
-            shareYourCodes,
+            stepStackView,
             cardContentView
         ])
 

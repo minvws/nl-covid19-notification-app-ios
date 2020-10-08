@@ -14,6 +14,7 @@ public protocol Fonts {
     var title2: UIFont { get }
     var title3: UIFont { get }
     var headline: UIFont { get }
+    var headlineBold: UIFont { get }
     var body: UIFont { get }
     var bodyBold: UIFont { get }
     var callout: UIFont { get }
@@ -46,6 +47,10 @@ final class ENFonts: Fonts {
 
     var headline: UIFont {
         font(textStyle: .headline) // Size 17 points
+    }
+
+    var headlineBold: UIFont {
+        font(textStyle: .headline, isBold: true) // Size 17 points
     }
 
     var body: UIFont {
