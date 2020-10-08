@@ -89,6 +89,31 @@
     return isMatch;
 }
 
+- (const char *)getCommonName:(NSData *)certificateData {
+    BIO *certificateBlob = BIO_new_mem_buf(certificateData.bytes, (int)certificateData.length);
+    
+    if (certificateBlob == NULL) {
+        return NULL;
+    }
+    
+    X509 *certificate = PEM_read_bio_X509(certificateBlob, NULL, 0, NULL);
+    BIO_free(certificateBlob); certificateBlob = NULL;
+    
+    if (certificate == NULL) {
+        return NULL;
+    }
+    
+    X509_NAME *certificateSubjectName = X509_get_subject_name(certificate);
+//    const char *subjectName = X509_NAME_oneline(certificateSubjectName, 0, 0);
+    
+    static char commonName[256];
+    X509_NAME_get_text_by_NID(certificateSubjectName, NID_commonName, commonName, 256);
+    
+    X509_NAME_free(certificateSubjectName); certificateSubjectName = NULL;
+    
+    return commonName;
+}
+
 - (BOOL)validatePKCS7Signature:(NSData *)signatureData
                    contentData:(NSData *)contentData
                certificateData:(NSData *)certificateData

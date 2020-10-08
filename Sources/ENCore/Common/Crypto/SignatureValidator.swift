@@ -41,6 +41,11 @@ final class SignatureValidator: SignatureValidating {
             return nil
         }
 
+        let subjectName = String(cString: openssl.getCommonName(certificateData))
+        guard subjectName == SignatureConfiguration.rootCommonName else {
+            return nil
+        }
+
         return certificateData
     }
 }
