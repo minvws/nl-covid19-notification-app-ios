@@ -71,15 +71,13 @@ final class ExposureController: ExposureControlling, Logging {
                     func postActivation() {
                         if inBackgroundMode == false {
                             self.postExposureManagerActivation()
-                        } else {
-                            self.updateStatusStream()
                         }
+                        self.updateStatusStream()
                         resolve(.success(()))
                     }
 
                     if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled() {
                         self.exposureManager.setExposureNotificationEnabled(true) { _ in
-                            self.updateStatusStream()
                             postActivation()
                         }
                     } else {
