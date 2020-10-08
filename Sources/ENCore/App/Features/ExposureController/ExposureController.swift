@@ -71,6 +71,8 @@ final class ExposureController: ExposureControlling, Logging {
                     func postActivation() {
                         if inBackgroundMode == false {
                             self.postExposureManagerActivation()
+                        } else {
+                            self.updateStatusStream()
                         }
                         resolve(.success(()))
                     }
@@ -315,7 +317,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
-        logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus)")
+        logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
         guard exposureManager.authorizationStatus == .authorized else {
             return Fail(error: .notAuthorized).eraseToAnyPublisher()
@@ -469,8 +471,9 @@ final class ExposureController: ExposureControlling, Logging {
 
     private func updateStatusStream() {
         guard isActivated else {
-            return
+            return logDebug("Not Updating Status Stream as not `isActivated`")
         }
+        logDebug("Updating Status Stream")
 
         let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
         let hasBeenTooLongSinceLastUpdate: Bool
@@ -503,7 +506,7 @@ final class ExposureController: ExposureControlling, Logging {
             // Unknown can happen when iOS cannot retrieve the status correctly at this moment.
             // This can happen when the user just switched from the bluetooth settings screen.
             // Don't propagate this state as it only leads to confusion, just maintain the current state
-            return
+            return self.logDebug("No Update Status Stream as not `.inactive(.unknown)` returned")
         case let .inactive(error) where error == .internalTypeMismatch:
             activeState = .inactive(.disabled)
         case .inactive where !isPushNotificationsEnabled:
