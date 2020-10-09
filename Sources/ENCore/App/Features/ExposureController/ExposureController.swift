@@ -77,7 +77,7 @@ final class ExposureController: ExposureControlling, Logging {
                         resolve(.success(()))
                     }
 
-                    if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled() {
+                    if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled(), self.didCompleteOnboarding {
                         self.logDebug("Calling `setExposureNotificationEnabled`")
                         self.exposureManager.setExposureNotificationEnabled(true) { result in
                             if case let .failure(error) = result {

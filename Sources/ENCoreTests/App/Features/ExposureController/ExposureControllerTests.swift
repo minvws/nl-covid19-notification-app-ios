@@ -106,6 +106,7 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_activate_isExposureNotificationDisabled() {
+        dataController.didCompleteOnboarding = true
         exposureManager.isExposureNotificationEnabledHandler = { false }
         setupActivation()
 
