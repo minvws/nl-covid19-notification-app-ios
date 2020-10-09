@@ -69,6 +69,7 @@ final class ExposureController: ExposureControlling, Logging {
                     self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
 
                     func postActivation() {
+                        self.logDebug("started `postActivation`")
                         if inBackgroundMode == false {
                             self.postExposureManagerActivation()
                         }
@@ -77,7 +78,13 @@ final class ExposureController: ExposureControlling, Logging {
                     }
 
                     if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled() {
-                        self.exposureManager.setExposureNotificationEnabled(true) { _ in
+                        self.logDebug("Calling `setExposureNotificationEnabled`")
+                        self.exposureManager.setExposureNotificationEnabled(true) { result in
+                            if case let .failure(error) = result {
+                                self.logDebug("`setExposureNotificationEnabled` error: \(error.localizedDescription)")
+                            } else {
+                                self.logDebug("Returned from `setExposureNotificationEnabled` (success)")
+                            }
                             postActivation()
                         }
                     } else {
@@ -192,7 +199,10 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
+        logDebug("`requestExposureNotificationPermission` started")
         exposureManager.setExposureNotificationEnabled(true) { result in
+            self.logDebug("`requestExposureNotificationPermission` returned result \(result)")
+
             // wait for 0.2s, there seems to be a glitch in the framework
             // where after successful activation it returns '.disabled' for a
             // split second
@@ -435,6 +445,8 @@ final class ExposureController: ExposureControlling, Logging {
     // MARK: - Private
 
     private func postExposureManagerActivation() {
+        logDebug("`postExposureManagerActivation`")
+
         mutableStateStream
             .exposureState
             .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in

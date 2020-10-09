@@ -24,7 +24,7 @@ protocol OnboardingConsentManaging {
     func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ())
 }
 
-final class OnboardingConsentManager: OnboardingConsentManaging {
+final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
     var onboardingConsentSteps: [OnboardingConsentStep] = []
     private var disposeBag = Set<AnyCancellable>()
@@ -148,8 +148,10 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
     }
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ())) {
+        logDebug("`askEnableExposureNotifications` started")
         if let exposureActiveState = exposureStateStream.currentExposureState?.activeState,
             exposureActiveState != .notAuthorized, exposureActiveState != .inactive(.disabled) {
+            logDebug("`askEnableExposureNotifications` already authorised")
             // already authorized
             completion(exposureActiveState)
             return
@@ -165,9 +167,11 @@ final class OnboardingConsentManager: OnboardingConsentManaging {
             .sink { [weak self] state in
                 self?.exposureStateSubscription = nil
 
+                self?.logDebug("`askEnableExposureNotifications` active state changed to \(state.activeState)")
                 completion(state.activeState)
             }
 
+        logDebug("`askEnableExposureNotifications` calling `requestExposureNotificationPermission`")
         exposureController.requestExposureNotificationPermission(nil)
     }
 
