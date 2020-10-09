@@ -247,7 +247,7 @@ private final class InfectedView: View {
         return InfoSectionContentView(theme: theme, content: content)
     }()
 
-    fileprivate lazy var stepStackView: UIView = {
+    private lazy var stepStackView: UIView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 2
