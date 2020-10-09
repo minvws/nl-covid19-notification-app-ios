@@ -231,12 +231,6 @@ final class OnboardingConsentView: View {
 
         hasBottomMargin = true
 
-        scrollView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
-            maker.width.equalToSuperview()
-            maker.bottom.equalTo(primaryButton.snp.top).inset(-16)
-        }
-
         primaryButton.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.height.equalTo(50)
@@ -357,6 +351,12 @@ final class OnboardingConsentView: View {
             maker.leading.trailing.equalTo(self).inset(16)
             maker.height.greaterThanOrEqualTo(50)
             maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
+        }
+
+        scrollView.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.width.equalToSuperview()
+            maker.bottom.equalTo(consentStep?.secondaryButtonTitle == nil ? primaryButton.snp.top : secondaryButton.snp.top).inset(-16)
         }
     }
 
