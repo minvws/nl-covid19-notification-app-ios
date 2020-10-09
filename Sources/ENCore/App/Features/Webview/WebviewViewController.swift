@@ -56,13 +56,20 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
                                                           action: #selector(didTapClose))
 }
 
-private final class WebviewView: View {
+private final class WebviewView: View, WKNavigationDelegate {
 
     lazy var webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.allowsBackForwardNavigationGestures = false
+        webView.navigationDelegate = self
         return webView
+    }()
+
+    private lazy var errorView: ErrorView = {
+        let errorView = ErrorView(theme: theme)
+        errorView.translatesAutoresizingMaskIntoConstraints = false
+        return errorView
     }()
 
     private lazy var gradientImageView: UIImageView = {
@@ -78,6 +85,9 @@ private final class WebviewView: View {
         super.build()
         addSubview(webView)
         addSubview(gradientImageView)
+        addSubview(errorView)
+
+        errorView.isHidden = true
     }
 
     override func setupConstraints() {
@@ -87,9 +97,59 @@ private final class WebviewView: View {
             maker.edges.equalToSuperview()
         }
 
+        errorView.snp.makeConstraints { maker in
+            maker.center.equalToSuperview()
+        }
+
         gradientImageView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalToSuperview()
             maker.height.equalTo(25)
+        }
+    }
+
+    private func showError(show: Bool) {
+        webView.isHidden = show
+        gradientImageView.isHidden = show
+        errorView.isHidden = !show
+    }
+
+    // MARK: - WKNavigationDelegate
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        showError(show: true)
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        showError(show: true)
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        showError(show: false)
+    }
+}
+
+private final class ErrorView: View {
+
+    private lazy var imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.alpha = 0.5
+        imageView.image = .warning
+        return imageView
+    }()
+
+    override func build() {
+        super.build()
+        addSubview(imageView)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        imageView.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+            maker.width.equalTo(100)
+            maker.height.equalTo(100)
         }
     }
 }
