@@ -89,26 +89,34 @@
     return isMatch;
 }
 
-- (BOOL)validateCommonNameForCertificate:(X509 *)certificate {
+- (BOOL)validateCommonNameForCertificate:(X509 *)certificate
+                         requiredContent:(NSString *)requiredContent
+                         requiredSuffix:(NSString *)requiredSuffix {
     
+    // Get subject from certificate
     X509_NAME *certificateSubjectName = X509_get_subject_name(certificate);
     
+    // Get Common Name from certificate subject
     char certificateCommonName[256];
     X509_NAME_get_text_by_NID(certificateSubjectName, NID_commonName, certificateCommonName, 256);
+    NSString *cnString = [NSString stringWithUTF8String:certificateCommonName];
     
-    char *suffix = strrchr(certificateCommonName, '.');
-    BOOL hasCorrectSuffix = suffix && strcmp(suffix, ".nl") == 0;
-    BOOL containsAppName = strstr(certificateCommonName, "coronamelder") != NULL;
+    // Compare Common Name to required content and required suffix
+    BOOL containsRequiredContent = [cnString containsString:requiredContent];
+    BOOL hasCorrectSuffix = [cnString hasSuffix:requiredSuffix];    
     
-    X509_NAME_free(certificateSubjectName); certificateSubjectName = NULL;
+    X509_NAME_free(certificateSubjectName);
+    certificateSubjectName = NULL;
     
-    return hasCorrectSuffix && containsAppName;
+    return hasCorrectSuffix && containsRequiredContent;
 }
     
 - (BOOL)validatePKCS7Signature:(NSData *)signatureData
                    contentData:(NSData *)contentData
                certificateData:(NSData *)certificateData
-        authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData {
+        authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData
+     requiredCommonNameContent:(NSString *)requiredCommonNameContent
+      requiredCommonNameSuffix:(NSString *)requiredCommonNameSuffix {
     
     BIO *signatureBlob = BIO_new_mem_buf(signatureData.bytes, (int)signatureData.length);
     if (signatureBlob == NULL) {
@@ -151,7 +159,10 @@
     X509 *signingCert = sk_X509_value(signers, 0);
     
     BOOL isAuthorityKeyIdentifierValid = [self validateAuthorityKeyIdentifierData:expectedAuthorityKeyIdentifierData signingCertificate:signingCert];
-    BOOL isCommonNameValid = [self validateCommonNameForCertificate:signingCert];
+    BOOL isCommonNameValid = [self validateCommonNameForCertificate:signingCert
+                                                    requiredContent:requiredCommonNameContent
+                                                     requiredSuffix:requiredCommonNameSuffix];
+    
     if (!isAuthorityKeyIdentifierValid || !isCommonNameValid) {
         BIO_free(signatureBlob); signatureBlob = NULL;
         BIO_free(contentBlob); contentBlob = NULL;

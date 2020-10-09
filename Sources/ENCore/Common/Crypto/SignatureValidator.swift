@@ -23,7 +23,10 @@ final class SignatureValidator: SignatureValidating {
         return openssl.validatePKCS7Signature(signature,
                                               contentData: content,
                                               certificateData: rootCertificateData,
-                                              authorityKeyIdentifier: SignatureConfiguration.authorityKeyIdentifier)
+                                              authorityKeyIdentifier: SignatureConfiguration.authorityKeyIdentifier,
+                                              requiredCommonNameContent: "coronamelder",
+                                              requiredCommonNameSuffix: ".nl"
+        )
     }
 
     private func validatedRootCertificateData() -> Data? {
