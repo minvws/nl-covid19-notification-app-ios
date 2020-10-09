@@ -195,7 +195,10 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
+        logDebug("`requestExposureNotificationPermission` started")
         exposureManager.setExposureNotificationEnabled(true) { result in
+            self.logDebug("`requestExposureNotificationPermission` returned result \(result)")
+
             // wait for 0.2s, there seems to be a glitch in the framework
             // where after successful activation it returns '.disabled' for a
             // split second
