@@ -102,7 +102,7 @@
     NSString *cnString = [NSString stringWithUTF8String:certificateCommonName];
     
     // Compare Common Name to required content and required suffix
-    BOOL containsRequiredContent = [cnString containsString:requiredContent];
+    BOOL containsRequiredContent = [cnString rangeOfString:requiredContent options:NSCaseInsensitiveSearch].location != NSNotFound;
     BOOL hasCorrectSuffix = [cnString hasSuffix:requiredSuffix];    
     
     X509_NAME_free(certificateSubjectName);
