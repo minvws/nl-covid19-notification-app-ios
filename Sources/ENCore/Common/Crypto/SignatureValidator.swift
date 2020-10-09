@@ -24,8 +24,8 @@ final class SignatureValidator: SignatureValidating {
                                               contentData: content,
                                               certificateData: rootCertificateData,
                                               authorityKeyIdentifier: SignatureConfiguration.authorityKeyIdentifier,
-                                              requiredCommonNameContent: "coronamelder",
-                                              requiredCommonNameSuffix: ".nl"
+                                              requiredCommonNameContent: SignatureConfiguration.commonNameContent,
+                                              requiredCommonNameSuffix: SignatureConfiguration.commonNameSuffix
         )
     }
 
