@@ -12,7 +12,7 @@ import UIKit
 /// @mockable
 protocol OnboardingConsentViewControllable: ViewControllable {}
 
-final class OnboardingConsentStepViewController: ViewController, OnboardingConsentViewControllable {
+final class OnboardingConsentStepViewController: ViewController, OnboardingConsentViewControllable, Logging {
 
     private lazy var skipStepButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
@@ -76,11 +76,16 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     // MARK: - Functions
 
     @objc private func primaryButtonPressed() {
+        logDebug("`primaryButtonPressed` consentstep: \(String(describing: consentStep))")
+
         if let consentStep = consentStep {
             switch consentStep.step {
             case .en:
                 onboardingConsentManager.askNotificationsAuthorization {
+                    self.logDebug("after `onboardingConsentManager.askNotificationsAuthorization`")
                     self.onboardingConsentManager.askEnableExposureNotifications { activeState in
+                        self.logDebug("after `onboardingConsentManager.askEnableExposureNotifications`")
+
                         switch activeState {
                         case .notAuthorized:
                             self.closeConsent()
