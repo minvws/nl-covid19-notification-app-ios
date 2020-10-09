@@ -84,7 +84,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                 onboardingConsentManager.askNotificationsAuthorization {
                     self.logDebug("after `onboardingConsentManager.askNotificationsAuthorization`")
                     self.onboardingConsentManager.askEnableExposureNotifications { activeState in
-                        self.logDebug("after `onboardingConsentManager.askEnableExposureNotifications`")
+                        self.logDebug("after `onboardingConsentManager.askEnableExposureNotifications`. activeState: \(activeState)")
 
                         switch activeState {
                         case .notAuthorized:
