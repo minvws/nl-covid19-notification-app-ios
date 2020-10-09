@@ -80,7 +80,11 @@ final class ExposureController: ExposureControlling, Logging {
                     if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled() {
                         self.logDebug("Calling `setExposureNotificationEnabled`")
                         self.exposureManager.setExposureNotificationEnabled(true) { result in
-                            self.logDebug("Returned from `setExposureNotificationEnabled`: \(result)")
+                            if case let .failure(error) = result {
+                                self.logDebug("`setExposureNotificationEnabled` error: \(error.localizedDescription)")
+                            } else {
+                                self.logDebug("Returned from `setExposureNotificationEnabled` (success)")
+                            }
                             postActivation()
                         }
                     } else {
@@ -441,7 +445,7 @@ final class ExposureController: ExposureControlling, Logging {
     // MARK: - Private
 
     private func postExposureManagerActivation() {
-        self.logDebug("`postExposureManagerActivation`")
+        logDebug("`postExposureManagerActivation`")
 
         mutableStateStream
             .exposureState
