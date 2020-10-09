@@ -256,12 +256,16 @@ final class InfoSectionStepView: View {
 
     private let iconImageView: UIImageView
     private let titleLabel: Label
+    private let progressLine: View
+    private let isLastStep: Bool
 
     // MARK: - Init
 
-    init(theme: Theme, title: String, stepImage: UIImage?) {
+    init(theme: Theme, title: String, stepImage: UIImage?, isLastStep: Bool = false) {
         self.iconImageView = UIImageView(image: stepImage)
         self.titleLabel = Label(frame: .zero)
+        self.progressLine = View(theme: theme)
+        self.isLastStep = isLastStep
         super.init(theme: theme)
 
         titleLabel.text = title
@@ -276,7 +280,11 @@ final class InfoSectionStepView: View {
         titleLabel.font = theme.fonts.title3
         titleLabel.accessibilityTraits = .header
 
+        progressLine.backgroundColor = theme.colors.tertiary
+        progressLine.isHidden = isLastStep
+
         addSubview(iconImageView)
+        addSubview(progressLine)
         addSubview(titleLabel)
     }
 
@@ -290,11 +298,17 @@ final class InfoSectionStepView: View {
             maker.top.equalToSuperview()
             maker.width.height.equalTo(32)
         }
+        progressLine.snp.makeConstraints { maker in
+            maker.centerX.equalTo(iconImageView)
+            maker.top.equalTo(iconImageView.snp.bottom).offset(2)
+            maker.bottom.equalToSuperview()
+            maker.width.equalTo(4)
+        }
         titleLabel.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
             maker.trailing.equalToSuperview().inset(16)
             maker.leading.equalTo(iconImageView.snp.trailing).offset(16)
-            maker.bottom.equalToSuperview()
+            maker.bottom.equalToSuperview().inset(isLastStep ? 0 : 40)
         }
     }
 }
@@ -473,6 +487,7 @@ final class InfoSectionDynamicCalloutView: View {
     private let iconImageView: UIImageView
     private let titleLabel: Label
     private let contentView: View
+    private let progressLine: View
 
     // MARK: - Init
 
@@ -480,6 +495,7 @@ final class InfoSectionDynamicCalloutView: View {
         self.iconImageView = UIImageView(image: stepImage)
         self.titleLabel = Label(frame: .zero)
         self.contentView = View(theme: theme)
+        self.progressLine = View(theme: theme)
         super.init(theme: theme)
 
         titleLabel.text = title
@@ -496,7 +512,10 @@ final class InfoSectionDynamicCalloutView: View {
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title3
 
+        progressLine.backgroundColor = theme.colors.tertiary
+
         addSubview(iconImageView)
+        addSubview(progressLine)
         addSubview(titleLabel)
         addSubview(contentView)
     }
@@ -509,6 +528,12 @@ final class InfoSectionDynamicCalloutView: View {
             maker.top.equalToSuperview()
             maker.width.height.equalTo(32)
         }
+        progressLine.snp.makeConstraints { maker in
+            maker.centerX.equalTo(iconImageView)
+            maker.top.equalTo(iconImageView.snp.bottom).offset(2)
+            maker.bottom.equalToSuperview()
+            maker.width.equalTo(4)
+        }
         titleLabel.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
             maker.trailing.equalToSuperview().inset(16)
@@ -517,7 +542,7 @@ final class InfoSectionDynamicCalloutView: View {
         contentView.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
             maker.leading.trailing.equalTo(titleLabel)
-            maker.bottom.equalToSuperview()
+            maker.bottom.equalToSuperview().inset(40)
         }
     }
 

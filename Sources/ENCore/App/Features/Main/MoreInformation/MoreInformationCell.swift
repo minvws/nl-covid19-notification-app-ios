@@ -102,7 +102,7 @@ final class MoreInformationCell: UIControl, Themeable {
         }
         titleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.leading.equalTo(iconImageView.snp.trailing).offset(16)
-            maker.top.equalTo(iconImageView)
+            maker.top.equalTo(iconImageView).offset(-3)
             maker.trailing.equalToSuperview().inset(40)
         }
         subtitleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
