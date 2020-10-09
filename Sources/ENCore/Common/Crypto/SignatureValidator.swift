@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 
 /// @mockable
@@ -12,7 +13,7 @@ protocol SignatureValidating {
     func validate(signature: Data, content: Data) -> Bool
 }
 
-final class SignatureValidator: SignatureValidating {
+final class SignatureValidator: SignatureValidating, Logging {
     private let openssl = OpenSSL()
 
     func validate(signature: Data, content: Data) -> Bool {
@@ -20,13 +21,18 @@ final class SignatureValidator: SignatureValidating {
             return false
         }
 
-        return openssl.validatePKCS7Signature(signature,
-                                              contentData: content,
-                                              certificateData: rootCertificateData,
-                                              authorityKeyIdentifier: SignatureConfiguration.authorityKeyIdentifier,
-                                              requiredCommonNameContent: SignatureConfiguration.commonNameContent,
-                                              requiredCommonNameSuffix: SignatureConfiguration.commonNameSuffix
-        )
+        guard openssl.validatePKCS7Signature(
+            signature,
+            contentData: content,
+            certificateData: rootCertificateData,
+            authorityKeyIdentifier: SignatureConfiguration.authorityKeyIdentifier,
+            requiredCommonNameContent: SignatureConfiguration.commonNameContent,
+            requiredCommonNameSuffix: SignatureConfiguration.commonNameSuffix) else {
+            logError("PKCS7Signature is invalid")
+            return false
+        }
+
+        return true
     }
 
     private func validatedRootCertificateData() -> Data? {
