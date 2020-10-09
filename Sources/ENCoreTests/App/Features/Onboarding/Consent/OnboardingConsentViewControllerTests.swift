@@ -21,7 +21,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = true
+        recordSnapshots = false
 
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,
