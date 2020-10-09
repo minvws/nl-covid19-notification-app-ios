@@ -161,6 +161,8 @@ final class ExposureManager: ExposureManaging, Logging {
             isiOS14OrHigher = false
         }
 
+        logDebug("`getExposureNotificationStatus`. authorisationStatus: \(authorisationStatus.rawValue). exposureNotificationStatus: \(manager.exposureNotificationStatus.rawValue)")
+
         switch authorisationStatus {
         case .unknown where isiOS14OrHigher:
             fallthrough

@@ -69,6 +69,7 @@ final class ExposureController: ExposureControlling, Logging {
                     self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
 
                     func postActivation() {
+                        self.logDebug("started `postActivation`")
                         if inBackgroundMode == false {
                             self.postExposureManagerActivation()
                         }
@@ -77,7 +78,9 @@ final class ExposureController: ExposureControlling, Logging {
                     }
 
                     if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled() {
-                        self.exposureManager.setExposureNotificationEnabled(true) { _ in
+                        self.logDebug("Calling `setExposureNotificationEnabled`")
+                        self.exposureManager.setExposureNotificationEnabled(true) { result in
+                            self.logDebug("Returned from `setExposureNotificationEnabled`: \(result)")
                             postActivation()
                         }
                     } else {
@@ -435,6 +438,8 @@ final class ExposureController: ExposureControlling, Logging {
     // MARK: - Private
 
     private func postExposureManagerActivation() {
+        self.logDebug("`postExposureManagerActivation`")
+
         mutableStateStream
             .exposureState
             .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in
