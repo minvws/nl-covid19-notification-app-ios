@@ -76,7 +76,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     // MARK: - Functions
 
     @objc private func primaryButtonPressed() {
-        logDebug("`primaryButtonPressed` consentstep: \(String(describing: consentStep))")
+        logDebug("`primaryButtonPressed` consentstep: \(String(describing: consentStep?.step))")
 
         if let consentStep = consentStep {
             switch consentStep.step {
