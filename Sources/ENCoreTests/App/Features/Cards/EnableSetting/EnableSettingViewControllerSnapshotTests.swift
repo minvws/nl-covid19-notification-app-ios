@@ -30,6 +30,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
     }
 
     func test_enableExposureNotifications() {
+        FeatureFlags.exposureNotificationExplanation.enabled = false
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableExposureNotifications,

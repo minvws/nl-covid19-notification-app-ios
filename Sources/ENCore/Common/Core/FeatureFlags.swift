@@ -11,7 +11,7 @@ class FeatureFlags {
 
     struct FeatureFlag {
         let description: String
-        let enabled: Bool
+        var enabled: Bool
     }
 
     static var exposureNotificationExplanation = FeatureFlag(description: "iOS 13.7+ EN setting instructions screen", enabled: false)
