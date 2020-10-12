@@ -21,9 +21,12 @@
 "update.software.os.title" = "Vous devez mettre à jour le logiciel sur votre téléphone";
 "update.software.os.description" = "CoronaMelder a besoin de la version la plus récente d'iOS pour continuer à fonctionner sur votre téléphone.";
 "update.software.os.detail.title" = "Mettez à jour votre téléphone";
+"update.software.os.detail.step1.detail" = "Paramètres";
+"update.software.os.detail.step2.detail" = "Généralités";
+"update.software.os.detail.step3.detail" = "Mise à jour du logiciel";
 "update.software.os.detail.step1" = "1. Ouvrez Paramètres sur votre téléphone via le bouton ci-dessous";
-"update.software.os.detail.step2" = "2. Allez à \"Général\"";
-"update.software.os.detail.step3" = "3. Allez à \"Mise à jour du software\"";
+"update.software.os.detail.step2" = "2. Allez à \"Généralités\"";
+"update.software.os.detail.step3" = "3. Allez à \"Mise à jour du logiciel\"";
 "update.software.os.detail.step4" = "4. Sélectionnez \"Télécharger et installer\"";
 
 "update.hardware.title" = "Malheureusement, l'application ne fonctionne pas sur votre téléphone";
