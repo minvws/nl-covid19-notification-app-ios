@@ -14,14 +14,18 @@ final class EnableSettingActionView: View {
     private lazy var contentLabel = Label()
     private lazy var chevronView = UIImageView(image: Image.named("Chevron"))
 
-    private let actionView: UIView
+    private let actionView: UIView?
     private let actionViewRect: CGRect
     private let action: EnableSettingStep.Action
     private let showChevron: Bool
 
     init(theme: Theme, action: EnableSettingStep.Action) {
         switch action {
-        case .cell:
+        case .linkCell:
+            actionView = nil
+            actionViewRect = CGRect(x: 0, y: 15, width: 24, height: 24)
+            showChevron = false
+        case .notification:
             actionView = UIImageView(image: Image.named("Notification"))
             actionViewRect = CGRect(x: 0, y: 15, width: 24, height: 24)
             showChevron = true
@@ -47,10 +51,16 @@ final class EnableSettingActionView: View {
 
         contentLabel.numberOfLines = 0
         contentLabel.text = action.content
+        if case .linkCell = action {
+            contentLabel.textColor = theme.colors.primary
+        }
 
         addSubview(contentView)
         contentView.addSubview(contentLabel)
-        contentView.addSubview(actionView)
+
+        if let actionView = actionView {
+            contentView.addSubview(actionView)
+        }
 
         if showChevron {
             contentView.addSubview(chevronView)
@@ -72,16 +82,22 @@ final class EnableSettingActionView: View {
             make.edges.equalToSuperview()
         }
 
-        actionView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(16)
-            make.top.equalToSuperview().inset(actionViewRect.origin.y)
-            make.height.equalTo(actionViewRect.height)
-            make.width.equalTo(actionViewRect.width)
+        var leftContentAnchor = self.snp.leading
+
+        if let actionView = actionView {
+            actionView.snp.makeConstraints { make in
+                make.leading.equalToSuperview().inset(16)
+                make.top.equalToSuperview().inset(actionViewRect.origin.y)
+                make.height.equalTo(actionViewRect.height)
+                make.width.equalTo(actionViewRect.width)
+            }
+
+            leftContentAnchor = actionView.snp.trailing
         }
 
         contentLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(16)
-            make.leading.equalTo(actionView.snp.trailing).offset(16)
+            make.leading.equalTo(leftContentAnchor).offset(16)
             make.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().inset(16)
         }
@@ -99,7 +115,9 @@ final class EnableSettingActionView: View {
 private extension EnableSettingStep.Action {
     var content: String {
         switch self {
-        case let .cell(description: description):
+        case let .linkCell(description: description):
+            return description
+        case let .notification(description: description):
             return description
         case let .toggle(description: description):
             return description

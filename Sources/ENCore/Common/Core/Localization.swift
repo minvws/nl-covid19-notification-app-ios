@@ -444,6 +444,15 @@ extension String {
     static var enableSettingsExposureNotificationsStep2: String { return Localization.string(for: "enableSettings.exposureNotifications.step2") }
     static var enableSettingsExposureNotificationsStep2ActionTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.step2.action.title") }
 
+    // MARK: - Enable Settings | Exposure Notifications | iOS 13.7+
+
+    static var enableSettingsExposureNotifications137Step2: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step2") }
+    static var enableSettingsExposureNotifications137Step2ActionTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step2.action.title") }
+    static var enableSettingsExposureNotifications137Step3: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step3") }
+    static var enableSettingsExposureNotifications137Step3ActionTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step3.action.title") }
+    static var enableSettingsExposureNotifications137Step4: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step4") }
+    static var enableSettingsExposureNotifications137Step4ActionTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step4.action.title") }
+
     // MARK: - Enable Settings | Bluetooth
 
     static var enableSettingsBluetoothTitle: String { return Localization.string(for: "enableSettings.bluetooth.title") }
