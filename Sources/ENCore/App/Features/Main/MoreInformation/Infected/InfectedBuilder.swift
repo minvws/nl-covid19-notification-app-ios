@@ -27,6 +27,7 @@ protocol InfectedDependency {
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
+    var environmentController: EnvironmentControlling { get }
 }
 
 private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency, HelpDetailDependency {
@@ -53,6 +54,10 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
 
     var bluetoothStateStream: BluetoothStateStreaming {
         return dependency.bluetoothStateStream
+    }
+
+    var environmentController: EnvironmentControlling {
+        return dependency.environmentController
     }
 }
 
