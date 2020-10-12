@@ -25,10 +25,6 @@ final class EnableSettingActionView: View {
             actionView = nil
             actionViewRect = CGRect(x: 0, y: 15, width: 24, height: 24)
             showChevron = false
-        case .notification:
-            actionView = UIImageView(image: Image.named("Notification"))
-            actionViewRect = CGRect(x: 0, y: 15, width: 24, height: 24)
-            showChevron = true
         case .toggle:
             actionView = UIImageView(image: Image.named("Switch"))
             actionViewRect = CGRect(x: 0, y: 20, width: 24, height: 16)
@@ -116,8 +112,6 @@ private extension EnableSettingStep.Action {
     var content: String {
         switch self {
         case let .linkCell(description: description):
-            return description
-        case let .notification(description: description):
             return description
         case let .toggle(description: description):
             return description

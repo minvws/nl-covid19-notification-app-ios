@@ -122,7 +122,7 @@ struct EnableSettingModel {
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep1),
                                           action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep2),
-                                          action: .notification(description: .enableSettingsLocalNotificationsStep2ActionTitle))
+                                          action: .custom(image: Image.named("Notification"), description: .enableSettingsLocalNotificationsStep2ActionTitle, showChevron: true))
             let step3 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep3),
                                           action: .toggle(description: .enableSettingsLocalNotificationsStep3ActionTitle))
 
@@ -138,7 +138,6 @@ struct EnableSettingStep {
     enum Action {
         case linkCell(description: String)
         case toggle(description: String)
-        case notification(description: String)
         case custom(image: UIImage?, description: String, showChevron: Bool)
     }
 
