@@ -60,7 +60,7 @@ struct EnableSettingModel {
                                                                            textColor: .black,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
-            if #available(iOS 13.7, *), FeatureFlags.exposureNotificationExplanation.enabled {
+            if #available(iOS 13.7, *) {
                 let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
                                               action: nil)
                 let step2 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotifications137Step2),
