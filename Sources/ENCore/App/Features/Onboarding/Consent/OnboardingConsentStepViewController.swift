@@ -280,7 +280,7 @@ final class OnboardingConsentView: View {
         self.contentLabel.attributedText = step.attributedContent
         self.primaryButton.title = step.primaryButtonTitle
 
-        if let title = step.secondaryButtonTitle {
+        if step.hasSecondaryButton, let title = step.secondaryButtonTitle {
             self.secondaryButton.title = title
             self.secondaryButton.isHidden = false
         }
@@ -356,7 +356,7 @@ final class OnboardingConsentView: View {
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.width.equalToSuperview()
-            maker.bottom.equalTo(consentStep?.secondaryButtonTitle == nil ? primaryButton.snp.top : secondaryButton.snp.top).inset(-16)
+            maker.bottom.equalTo(consentStep?.hasSecondaryButton == true ? primaryButton.snp.top : secondaryButton.snp.top).inset(-16)
         }
     }
 
