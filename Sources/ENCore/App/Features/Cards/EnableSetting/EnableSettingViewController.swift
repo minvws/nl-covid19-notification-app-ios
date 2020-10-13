@@ -15,10 +15,12 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     init(listener: EnableSettingListener,
          theme: Theme,
          setting: EnableSetting,
-         bluetoothStateStream: BluetoothStateStreaming) {
+         bluetoothStateStream: BluetoothStateStreaming,
+         environmentController: EnvironmentControlling) {
         self.listener = listener
         self.setting = setting
         self.bluetoothStateStream = bluetoothStateStream
+        self.environmentController = environmentController
 
         super.init(theme: theme)
         presentationController?.delegate = self
@@ -38,7 +40,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.update(model: setting.model(theme: theme), actionCompletion: { [weak self] in
+        internalView.update(model: setting.model(theme: theme, environmentController: environmentController), actionCompletion: { [weak self] in
             self?.listener?.enableSettingDidTriggerAction()
         })
 
@@ -65,6 +67,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
     private let setting: EnableSetting
     private let bluetoothStateStream: BluetoothStateStreaming
+    private let environmentController: EnvironmentControlling
     private var disposeBag = Set<AnyCancellable>()
 
     @objc private func didTapCloseButton() {

@@ -35,10 +35,14 @@ enum EnableSetting {
     case enableBluetooth
     case enableLocalNotifications
 
-    func model(theme: Theme) -> EnableSettingModel {
+    func model(theme: Theme, environmentController: EnvironmentControlling) -> EnableSettingModel {
         switch self {
         case .enableExposureNotifications:
-            return EnableSettingModel.enableExposureNotifications(theme)
+            if environmentController.isiOS137orHigher {
+                return EnableSettingModel.enableExposureNotificationsExtended(theme)
+            } else {
+                return EnableSettingModel.enableExposureNotifications(theme)
+            }
         case .enableBluetooth:
             return EnableSettingModel.enableBluetooth(theme)
         case .enableLocalNotifications:
@@ -67,6 +71,31 @@ struct EnableSettingModel {
 
             return .init(title: .enableSettingsExposureNotificationsTitle,
                          steps: [step1, step2],
+                         action: .openSettings,
+                         actionTitle: .enableSettingsExposureNotificationsAction)
+        }
+    }
+
+    static var enableExposureNotificationsExtended: (Theme) -> EnableSettingModel {
+        return { theme in
+            let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
+                                                                           font: theme.fonts.body,
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
+
+            let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
+                                          action: nil)
+            let step2 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotifications137Step2),
+                                          action: .custom(image: Image.named("ExposureNotifications"), description: .enableSettingsExposureNotifications137Step2ActionTitle, showChevron: true))
+
+            let step3 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotifications137Step3),
+                                          action: .toggle(description: .enableSettingsExposureNotifications137Step3ActionTitle))
+
+            let step4 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotifications137Step4),
+                                          action: .linkCell(description: .enableSettingsExposureNotifications137Step4ActionTitle))
+
+            return .init(title: .enableSettingsExposureNotificationsTitle,
+                         steps: [step1, step2, step3, step4],
                          action: .openSettings,
                          actionTitle: .enableSettingsExposureNotificationsAction)
         }
@@ -103,7 +132,7 @@ struct EnableSettingModel {
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep1),
                                           action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep2),
-                                          action: .cell(description: .enableSettingsLocalNotificationsStep2ActionTitle))
+                                          action: .custom(image: Image.named("Notification"), description: .enableSettingsLocalNotificationsStep2ActionTitle, showChevron: true))
             let step3 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep3),
                                           action: .toggle(description: .enableSettingsLocalNotificationsStep3ActionTitle))
 
@@ -117,8 +146,8 @@ struct EnableSettingModel {
 
 struct EnableSettingStep {
     enum Action {
+        case linkCell(description: String)
         case toggle(description: String)
-        case cell(description: String)
         case custom(image: UIImage?, description: String, showChevron: Bool)
     }
 

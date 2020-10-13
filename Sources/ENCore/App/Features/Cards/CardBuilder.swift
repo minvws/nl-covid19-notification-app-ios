@@ -28,6 +28,7 @@ protocol CardBuildable {
 protocol CardDependency {
     var theme: Theme { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
+    var environmentController: EnvironmentControlling { get }
 }
 
 private final class CardDependencyProvider: DependencyProvider<CardDependency>, EnableSettingDependency {
@@ -42,6 +43,10 @@ private final class CardDependencyProvider: DependencyProvider<CardDependency>, 
 
     var theme: Theme {
         return dependency.theme
+    }
+
+    var environmentController: EnvironmentControlling {
+        return dependency.environmentController
     }
 }
 

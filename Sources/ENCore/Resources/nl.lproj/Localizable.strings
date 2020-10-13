@@ -268,7 +268,7 @@
 "status.notified.moreInfo" = "Wat kan ik nu doen?";
 "status.notified.removeNotification" = "Melding verwijderen";
 
-/* The title for the table of items in more infromation */
+/* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Meer informatie";
 
 "moreInformation.cell.about.title" = "Vragen over de app?";
@@ -401,6 +401,17 @@
 // supports HTML
 "enableSettings.exposureNotifications.step2" = "Zet contactmeldingen aan";
 "enableSettings.exposureNotifications.step2.action.title" = "Meldingen over blootstelling aan COVID-19";
+
+// supports HTML
+"enableSettings.exposureNotifications.137.step2" = "Ga naar <b>Blootstellingsmeldingen</b>";
+"enableSettings.exposureNotifications.137.step2.action.title" = "Blootstellingsmeldingen";
+// supports HTML
+"enableSettings.exposureNotifications.137.step3" = "Zet <b>Deel informatie over je blootstelling</b> aan";
+"enableSettings.exposureNotifications.137.step3.action.title" = "Deel informatie over je blootstelling";
+// supports HTML
+"enableSettings.exposureNotifications.137.step4" = "Controleer als laatste stap: is <b>Stel in als actieve regio</b> blauw? Zo ja, druk hier dan op";
+// Should match setting name in iOS
+"enableSettings.exposureNotifications.137.step4.action.title" = "Stel in als actieve regio";
 
 "enableSettings.bluetooth.title" = "Bluetooth aanzetten";
 "enableSettings.bluetooth.action" = "Open Instellingen";
