@@ -253,6 +253,7 @@
     }
 
     BOOL isMatch = ASN1_OCTET_STRING_cmp(authorityKeyIdentifier, expectedAuthorityKeyIdentifier) == 0;
+    authorityKeyIdentifier = NULL;
     ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
             
     return isMatch;
