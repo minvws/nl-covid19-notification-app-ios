@@ -32,7 +32,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
     }
 
     func test_enableExposureNotifications() {
-        environmentController.isExtendedENSettingsAvailable = false
+        environmentController.isiOS137orHigher = false
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableExposureNotifications,
@@ -43,7 +43,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
     }
 
     func test_enableExposureNotifications_extended() {
-        environmentController.isExtendedENSettingsAvailable = true
+        environmentController.isiOS137orHigher = true
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableExposureNotifications,

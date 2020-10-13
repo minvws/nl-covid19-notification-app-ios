@@ -38,7 +38,7 @@ enum EnableSetting {
     func model(theme: Theme, environmentController: EnvironmentControlling) -> EnableSettingModel {
         switch self {
         case .enableExposureNotifications:
-            if environmentController.isExtendedENSettingsAvailable {
+            if environmentController.isiOS137orHigher {
                 return EnableSettingModel.enableExposureNotificationsExtended(theme)
             } else {
                 return EnableSettingModel.enableExposureNotifications(theme)
