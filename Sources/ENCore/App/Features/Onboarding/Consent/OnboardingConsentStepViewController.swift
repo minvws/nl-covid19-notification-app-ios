@@ -356,7 +356,7 @@ final class OnboardingConsentView: View {
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.width.equalToSuperview()
-            maker.bottom.equalTo(consentStep?.hasSecondaryButton == true ? primaryButton.snp.top : secondaryButton.snp.top).inset(-16)
+            maker.bottom.equalTo(consentStep?.hasSecondaryButton == true ? secondaryButton.snp.top : primaryButton.snp.top).inset(-16)
         }
     }
 
