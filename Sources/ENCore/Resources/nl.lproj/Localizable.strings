@@ -286,7 +286,7 @@
 "moreInformation.cell.infected.title" = "GGD-sleutel doorgeven";
 "moreInformation.cell.infected.subtitle" = "Ga hierheen als de GGD je belt met de uitslag van je coronatest";
 
-"moreInformation.info.title" = "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart";
+"moreInformation.info.title" = "Houd je burgerservicenummer bij de hand. Dit vind je op je paspoort of identiteitskaart.";
 
 "moreInformation.complaints.item1" = "verkoudheidsklachten zoals neusverkoudheid, loopneus, niezen, keelpijn";
 "moreInformation.complaints.item2" = "hoesten";

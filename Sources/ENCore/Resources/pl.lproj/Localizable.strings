@@ -285,7 +285,7 @@
 "moreInformation.cell.infected.title" = "Przekaż klucz GGD";
 "moreInformation.cell.infected.subtitle" = "Przejdź tutaj, gdy GGD zadzwoni do Ciebie z wynikami testu na obecność koronawirusa";
 
-"moreInformation.info.title" = "Miej pod ręką swój numer obsługi mieszkańca (BSN). Znajdziesz go w paszporcie lub na dowodzie osobistym";
+"moreInformation.info.title" = "Miej pod ręką swój numer obsługi mieszkańca (BSN). Znajdziesz go w paszporcie lub na dowodzie osobistym.";
 
 "moreInformation.complaints.item1" = "objawy przeziębienia takie jak nieżyt nosa, katar, kichanie, ból gardła";
 "moreInformation.complaints.item2" = "kaszel";
