@@ -10,7 +10,7 @@ import CryptoKit
 import ENFoundation
 import Foundation
 
-struct ApplicationConfiguration: Codable {
+struct ApplicationConfiguration: Codable, Equatable {
     let version: Int
     let manifestRefreshFrequency: Int
     let decoyProbability: Float
@@ -63,13 +63,13 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
             .eraseToAnyPublisher()
     }
 
-    func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+    private func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
         return self.applicationSignatureController.store(appConfiguration: appConfiguration)
             .share()
             .eraseToAnyPublisher()
     }
 
-    func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
         return self.applicationSignatureController.storeSignature(for: appConfiguration)
             .share()
             .eraseToAnyPublisher()
