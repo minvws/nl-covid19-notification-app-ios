@@ -20,8 +20,10 @@ protocol ApplicationSignatureControlling {
 
 final class ApplicationSignatureController: ApplicationSignatureControlling {
 
-    init(storageController: StorageControlling) {
+    init(storageController: StorageControlling,
+         cryptoUtility: CryptoUtility) {
         self.storageController = storageController
+        self.cryptoUtility = cryptoUtility
     }
 
     // MARK: - ApplicationSignatureController
@@ -64,10 +66,11 @@ final class ApplicationSignatureController: ApplicationSignatureControlling {
 
     func signature(for appConfiguration: ApplicationConfiguration) -> Data? {
         guard let encoded = try? JSONEncoder().encode(appConfiguration) else { return nil }
-        return SHA256.hash(data: encoded).description.data(using: .utf8)
+        return cryptoUtility.sha256(data: encoded)?.data(using: .utf8)
     }
 
     // MARK: - Private
 
     private let storageController: StorageControlling
+    private let cryptoUtility: CryptoUtility
 }
