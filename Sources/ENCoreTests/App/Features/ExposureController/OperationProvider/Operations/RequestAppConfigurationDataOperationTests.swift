@@ -51,6 +51,8 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             }
             .disposeOnTearDown(of: self)
 
+        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 0)
+
         waitForExpectations(timeout: 1, handler: nil)
     }
 
@@ -177,6 +179,8 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
 
         waitForExpectations(timeout: 1, handler: nil)
     }
+
+    // MARK: - Helper functions
 
     private func createApplicationConfiguration(withIdentifier identifier: String = "test") -> ApplicationConfiguration {
         return ApplicationConfiguration(
