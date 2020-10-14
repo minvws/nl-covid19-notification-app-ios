@@ -143,7 +143,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             .disposeOnTearDown(of: self)
 
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
-        XCTAssertEqual(mockApplicationSignatureController.storeCallCount, 1)
+        XCTAssertEqual(mockApplicationSignatureController.storeAppConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeSignatureCallCount, 1)
 
         waitForExpectations(timeout: 1, handler: nil)
@@ -217,7 +217,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         mockApplicationSignatureController.signatureHandler = { _ in signatureForStoredConfiguration }
 
         if let networkConfiguration = networkConfiguration {
-            mockApplicationSignatureController.storeHandler = { _ in
+            mockApplicationSignatureController.storeAppConfigurationHandler = { _ in
                 Just(networkConfiguration)
                     .setFailureType(to: ExposureDataError.self)
                     .eraseToAnyPublisher()

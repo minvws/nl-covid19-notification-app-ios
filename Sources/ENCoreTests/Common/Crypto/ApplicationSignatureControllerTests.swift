@@ -45,7 +45,7 @@ class ApplicationSignatureControllerTests: TestCase {
         }
 
         let exp = expectation(description: "Completion")
-        sut.store(appConfiguration: appConfig).sink { completion in
+        sut.storeAppConfiguration(appConfig).sink { completion in
             guard case let .failure(error) = completion,
                 case .serverError = error else {
                 XCTFail("Call expected to return an error but succeeded instead")
@@ -67,7 +67,7 @@ class ApplicationSignatureControllerTests: TestCase {
         let appConfig = createApplicationConfiguration(withVersion: 1, manifestRefreshFrequency: 0)
 
         let exp = expectation(description: "Completion")
-        sut.store(appConfiguration: appConfig).sink { completion in
+        sut.storeAppConfiguration(appConfig).sink { completion in
             guard case let .failure(error) = completion,
                 case .serverError = error else {
                 XCTFail("Call expected to return an error but succeeded instead")
@@ -96,7 +96,7 @@ class ApplicationSignatureControllerTests: TestCase {
             storageExpectation.fulfill()
         }
 
-        sut.store(appConfiguration: appConfig)
+        sut.storeAppConfiguration(appConfig)
             .assertNoFailure()
             .sink(receiveValue: { receivedConfiguration in
                 XCTAssertEqual(receivedConfiguration, appConfig)

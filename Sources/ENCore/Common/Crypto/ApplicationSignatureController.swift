@@ -12,7 +12,7 @@ import Foundation
 /// @mockable
 protocol ApplicationSignatureControlling {
     func retrieveStoredConfiguration() -> ApplicationConfiguration?
-    func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError>
+    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError>
     func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError>
     func retrieveStoredSignature() -> Data?
     func signature(for appConfiguration: ApplicationConfiguration) -> Data?
@@ -32,7 +32,7 @@ final class ApplicationSignatureController: ApplicationSignatureControlling {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration)
     }
 
-    func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
         return Future { promise in
             guard appConfiguration.version > 0, appConfiguration.manifestRefreshFrequency > 0 else {
                 return promise(.failure(.serverError))

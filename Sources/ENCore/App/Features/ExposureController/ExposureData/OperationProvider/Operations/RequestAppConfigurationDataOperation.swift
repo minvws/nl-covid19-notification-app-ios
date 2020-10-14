@@ -57,14 +57,14 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
         return networkController
             .applicationConfiguration(identifier: appConfigurationIdentifier)
             .mapError { $0.asExposureDataError }
-            .flatMap(store(appConfiguration:))
+            .flatMap(storeAppConfiguration)
             .flatMap(storeSignature(for:))
             .share()
             .eraseToAnyPublisher()
     }
 
-    private func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return self.applicationSignatureController.store(appConfiguration: appConfiguration)
+    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+        return self.applicationSignatureController.storeAppConfiguration(appConfiguration)
             .share()
             .eraseToAnyPublisher()
     }
