@@ -24,6 +24,7 @@ struct Endpoint {
     static func appConfig(identifier: String) -> Path { Path(components: "appconfig", identifier) }
     static func exposureKeySet(identifier: String) -> Path { Path(components: "exposurekeyset", identifier) }
     static func riskCalculationParameters(identifier: String) -> Path { Path(components: "riskcalculationparameters", identifier) }
+    static func treatmentPerspectiveMessage(identifier: String) -> Path { Path(components: "resourcebundle", identifier) }
 
     // MARK: - API
 

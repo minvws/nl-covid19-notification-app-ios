@@ -17,9 +17,11 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     // MARK: - Init
 
-    init(listener: MessageListener, theme: Theme, exposureDate: Date) {
+    init(listener: MessageListener, theme: Theme, exposureDate: Date, messageManager: MessageManaging) {
         self.listener = listener
         self.exposureDate = exposureDate
+        self.messageManager = messageManager
+        self.treatmentPerspectiveMessage = messageManager.getTreatmentPerspectiveMessage()
 
         super.init(theme: theme)
     }
@@ -85,11 +87,13 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
     }
 
     private lazy var internalView: MessageView = {
-        MessageView(theme: self.theme, formattedExposureDate: formattedExposureDate(), formattedFutureDate: formattedTenDaysAfterExposure())
+        MessageView(theme: self.theme, formattedExposureDate: formattedExposureDate(), formattedFutureDate: formattedTenDaysAfterExposure(), treatmentPerspectiveMessage: treatmentPerspectiveMessage)
     }()
 
     private let exposureDate: Date
     private weak var listener: MessageListener?
+    private let messageManager: MessageManaging
+    private let treatmentPerspectiveMessage: TreatmentPerspectiveMessage
 }
 
 private final class MessageView: View {
@@ -100,7 +104,7 @@ private final class MessageView: View {
 
     // MARK: - Init
 
-    init(theme: Theme, formattedExposureDate: String, formattedFutureDate: String) {
+    init(theme: Theme, formattedExposureDate: String, formattedFutureDate: String, treatmentPerspectiveMessage: TreatmentPerspectiveMessage) {
         self.formattedExposureDate = formattedExposureDate
         self.formattedFutureDate = formattedFutureDate
         let config = InfoViewConfig(actionButtonTitle: .messageButtonTitle,
@@ -108,6 +112,7 @@ private final class MessageView: View {
                                     headerBackgroundViewColor: theme.colors.headerBackgroundRed,
                                     stickyButtons: true)
         self.infoView = InfoView(theme: theme, config: config)
+        self.treatmentPerspectiveMessage = treatmentPerspectiveMessage
         super.init(theme: theme)
     }
 
@@ -116,15 +121,14 @@ private final class MessageView: View {
     override func build() {
         super.build()
 
-        infoView.addSections([
-            nearSomeoneWithCorona(),
-            whatCanYouDo(),
-            stayHome(),
-            visitors(),
-            medicalHelp(),
-            after(),
-            complaints()
-        ])
+        var sections: [View] = []
+
+        treatmentPerspectiveMessage.paragraphs.forEach {
+            sections.append(InfoSectionTextView(theme: theme,
+                                                title: $0.title,
+                                                content: [$0.body]))
+        }
+        infoView.addSections(sections)
 
         addSubview(infoView)
     }
@@ -139,83 +143,5 @@ private final class MessageView: View {
 
     // MARK: - Private
 
-    private func nearSomeoneWithCorona() -> View {
-        InfoSectionTextView(theme: theme,
-                            title: .contaminationChanceNearSomeoneWithCoronaTitle,
-                            content: [NSAttributedString.makeFromHtml(text: .contaminationChanceNearSomeoneWithCoronaDescription(formattedExposureDate),
-                                                                      font: theme.fonts.body,
-                                                                      textColor: theme.colors.gray)])
-    }
-
-    private func whatCanYouDo() -> View {
-        let list: [String] = [
-            .contaminationChanceWhatToDoStep1(formattedFutureDate),
-            .contaminationChanceWhatToDoStep2(formattedFutureDate),
-            .contaminationChanceWhatToDoStep3
-        ]
-
-        var content = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-        content.append(NSAttributedString.makeFromHtml(text: .contaminationChanceWhatToDoDescription,
-                                                       font: theme.fonts.body,
-                                                       textColor: theme.colors.gray))
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .contaminationChanceWhatToDoTitle,
-                                   content: content)
-    }
-
-    private func stayHome() -> View {
-        let list: [String] = [
-            .contaminationChanceStayHomeStep1,
-            .contaminationChanceStayHomeStep2,
-            .contaminationChanceStayHomeStep3
-        ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .contaminationChanceStayHomeTitle(formattedFutureDate),
-                                   content: bulletList)
-    }
-
-    private func visitors() -> View {
-        let list: [String] = [.contaminationChanceVisitorsStep1]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .contaminationChanceVisitorsTitle,
-                                   content: bulletList)
-    }
-
-    private func medicalHelp() -> View {
-        let list: [String] = [
-            .contaminationChanceMedicalHelpStep1,
-            .contaminationChanceMedicalHelpStep2
-        ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .contaminationChanceMedicalHelpTitle,
-                                   content: bulletList)
-    }
-
-    private func after() -> View {
-        InfoSectionTextView(theme: theme,
-                            title: .contaminationChanceAfterTitle(formattedFutureDate),
-                            content: [String.contaminationChanceAfterDescription(formattedFutureDate).attributed()])
-    }
-
-    private func complaints() -> View {
-        let list: [String] = [
-            .moreInformationComplaintsItem1,
-            .moreInformationComplaintsItem2,
-            .moreInformationComplaintsItem3,
-            .moreInformationComplaintsItem4,
-            .moreInformationComplaintsItem5
-        ]
-        let bulletList = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-
-        return InfoSectionTextView(theme: theme,
-                                   title: .contaminationChanceComplaintsTitle,
-                                   content: bulletList)
-    }
+    private let treatmentPerspectiveMessage: TreatmentPerspectiveMessage
 }

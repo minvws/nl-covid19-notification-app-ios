@@ -35,7 +35,14 @@ extension Manifest {
         return ApplicationManifest(exposureKeySetsIdentifiers: exposureKeySets,
                                    riskCalculationParametersIdentifier: riskCalculationParameters,
                                    appConfigurationIdentifier: appConfig,
-                                   creationDate: Date())
+                                   creationDate: Date(),
+                                   resourceBundleId: resourceBundleId)
+    }
+}
+
+extension TreatmentPerspectiveMessage {
+    var asTreatmentPerspectiveMessage: TreatmentPerspectiveMessage {
+        return TreatmentPerspectiveMessage(paragraphs: paragraphs)
     }
 }
 

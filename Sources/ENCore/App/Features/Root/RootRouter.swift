@@ -152,6 +152,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .store(in: &disposeBag)
 
         checkIfAppUpdateIsRequired()
+        updateTreatmentPerspectiveMessage()
     }
 
     func didEnterForeground() {
@@ -339,6 +340,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 }
             }
         }
+    }
+
+    private func updateTreatmentPerspectiveMessage() {
+
+        exposureController
+            .updateTreatmentPerspectiveMessage()
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { _ in })
+            .store(in: &disposeBag)
     }
 
     private let currentAppVersion: String?

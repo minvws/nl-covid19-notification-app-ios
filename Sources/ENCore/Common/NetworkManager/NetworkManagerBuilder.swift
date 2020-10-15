@@ -25,6 +25,7 @@ protocol NetworkManaging {
     // MARK: CDN
 
     func getManifest(completion: @escaping (Result<Manifest, NetworkError>) -> ())
+    func getTreatmentPerspectiveMessage(identifier: String, completion: @escaping (Result<TreatmentPerspectiveMessage, NetworkError>) -> ())
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ())
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ())
     func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ())

@@ -38,6 +38,9 @@ struct ExposureDataStorageKey {
                                                              storeType: .insecure(volatile: false))
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
                                                              storeType: .insecure(volatile: false))
+
+    static let treatmentPerspectiveMessage = CodableStorageKey<TreatmentPerspectiveMessage>(name: "treatmentPerspectiveMessage",
+                                                                                            storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
@@ -55,6 +58,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     // MARK: - ExposureDataControlling
+
+    func requestTreatmentPerspectiveMessage() -> AnyPublisher<TreatmentPerspectiveMessage, ExposureDataError> {
+        self.operationProvider
+            .requestTreatmentPerspectiveMessageDataOperation
+            .execute()
+            .eraseToAnyPublisher()
+    }
 
     // MARK: - Exposure Detection
 
@@ -217,6 +227,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     func updateLastLocalNotificationExposureDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
+    }
+
+    func getTreatmentPerspectiveMessage() -> TreatmentPerspectiveMessage? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage)
     }
 
     var didCompleteOnboarding: Bool {

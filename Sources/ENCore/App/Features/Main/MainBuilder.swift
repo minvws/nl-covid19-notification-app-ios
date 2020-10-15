@@ -81,6 +81,13 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var environmentController: EnvironmentControlling {
         return EnvironmentController()
     }
+
+    /// Local Storage
+    lazy var storageController: StorageControlling = StorageControllerBuilder().build()
+
+    var messageManager: MessageManaging {
+        return MessageManager(storageController: storageController, theme: dependency.theme)
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {

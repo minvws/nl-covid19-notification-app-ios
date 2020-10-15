@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Foundation
 import UIKit
 
 public extension NSAttributedString {
@@ -125,5 +126,103 @@ public extension NSAttributedString {
         }
 
         return bulletList
+    }
+
+    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
+
+        var textToFormat = makeFromHtml(text: text, font: font, textColor: textColor)
+
+        if !containsHtml(text) {
+            textToFormat = make(text: text, font: font, textColor: textColor)
+        }
+
+        if textToFormat.string.contains("\t•\t") {
+
+            var bulletList = [NSAttributedString]()
+
+            for bulletPoint in textToFormat.string.components(separatedBy: "\t•\t")
+                .filter({ $0.count > 0 }) {
+
+                let newLineComponents = bulletPoint.components(separatedBy: "\n")
+
+                for (index, newLine) in newLineComponents.enumerated() {
+
+                    let useTrailingNewLine = index != newLineComponents.count - 1
+
+                    if !newLine.isEmpty {
+                        if index == 0 {
+                            bulletList.append(bullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine))
+                        } else {
+                            bulletList.append(bullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine, bullet: ""))
+                        }
+                    }
+                }
+            }
+
+            if !bulletList.isEmpty {
+                let list = NSMutableAttributedString()
+                bulletList.forEach {
+                    list.append($0)
+                }
+                textToFormat = list
+            }
+        }
+
+        return textToFormat
+    }
+
+    static func bullet(_ string: String,
+                       theme: Theme,
+                       font: UIFont,
+                       useTrailingNewLine: Bool,
+                       bullet: String = "\u{25CF}",
+                       indentation: CGFloat = 16,
+                       paragraphSpacing: CGFloat = 12) -> NSAttributedString {
+
+        let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
+
+        let bulletFont = font.withSize(10)
+        let bulletAttributes: [NSAttributedString.Key: Any] = [
+            .font: bulletFont,
+            .foregroundColor: theme.colors.primary,
+            .baselineOffset: (font.xHeight - bulletFont.xHeight) / 2
+        ]
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        let nonOptions = [NSTextTab.OptionKey: Any]()
+        paragraphStyle.tabStops = [
+            NSTextTab(textAlignment: .left, location: indentation, options: nonOptions)
+        ]
+        paragraphStyle.defaultTabInterval = indentation
+        paragraphStyle.paragraphSpacing = paragraphSpacing
+        paragraphStyle.headIndent = indentation
+
+        var formattedString = "\(bullet)\t\(string)"
+
+        if useTrailingNewLine {
+            formattedString += "\n"
+        }
+
+        let attributedString = NSMutableAttributedString(string: formattedString)
+
+        attributedString.addAttributes(
+            [NSAttributedString.Key.paragraphStyle: paragraphStyle],
+            range: NSMakeRange(0, attributedString.length))
+
+        attributedString.addAttributes(
+            textAttributes,
+            range: NSMakeRange(0, attributedString.length))
+
+        let string: NSString = NSString(string: formattedString)
+        let rangeForBullet: NSRange = string.range(of: bullet)
+        attributedString.addAttributes(bulletAttributes, range: rangeForBullet)
+
+        return attributedString
+    }
+
+    private static func containsHtml(_ value: String) -> Bool {
+        let range = NSRange(location: 0, length: value.utf16.count)
+        let regex = try! NSRegularExpression(pattern: "<[^>]+>")
+        return regex.firstMatch(in: value, options: [], range: range) != nil
     }
 }

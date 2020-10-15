@@ -11,4 +11,5 @@ struct Manifest: Codable {
     let exposureKeySets: [String]
     let riskCalculationParameters: String
     let appConfig: String
+    let resourceBundleId: String
 }

@@ -23,15 +23,25 @@ protocol MessageBuildable {
 
 protocol MessageDependency {
     var theme: Theme { get }
+    var messageManager: MessageManaging { get }
 }
 
-private final class MessageDependencyProvider: DependencyProvider<MessageDependency> {}
+private final class MessageDependencyProvider: DependencyProvider<MessageDependency> {
+
+    /// Local Storage
+    lazy var storageController: StorageControlling = StorageControllerBuilder().build()
+
+    var messageManager: MessageManaging {
+        return MessageManager(storageController: storageController, theme: dependency.theme)
+    }
+}
 
 final class MessageBuilder: Builder<MessageDependency>, MessageBuildable {
     func build(withListener listener: MessageListener, exposureDate: Date) -> ViewControllable {
         let dependencyProvider = MessageDependencyProvider(dependency: dependency)
         return MessageViewController(listener: listener,
                                      theme: dependencyProvider.dependency.theme,
-                                     exposureDate: exposureDate)
+                                     exposureDate: exposureDate,
+                                     messageManager: dependencyProvider.dependency.messageManager)
     }
 }
