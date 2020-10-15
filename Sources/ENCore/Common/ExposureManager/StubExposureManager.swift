@@ -55,7 +55,7 @@ final class StubExposureManager: ExposureManaging {
         completion(.success(summary))
     }
 
-    func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
+    func getDiagnosisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
         completion(.success([]))
     }
 
