@@ -15,8 +15,14 @@ protocol SignatureValidating {
 
 final class SignatureValidator: SignatureValidating, Logging {
     private let openssl = OpenSSL()
+    private let signatureConfiguration: SignatureConfiguration
+
+    init(signatureConfiguration: SignatureConfiguration = DefaultSignatureConfiguration()) {
+        self.signatureConfiguration = signatureConfiguration
+    }
 
     func validate(signature: Data, content: Data) -> Bool {
+
         guard let rootCertificateData = validatedRootCertificateData() else {
             return false
         }
@@ -25,9 +31,9 @@ final class SignatureValidator: SignatureValidating, Logging {
             signature,
             contentData: content,
             certificateData: rootCertificateData,
-            authorityKeyIdentifier: SignatureConfiguration.authorityKeyIdentifier,
-            requiredCommonNameContent: SignatureConfiguration.commonNameContent,
-            requiredCommonNameSuffix: SignatureConfiguration.commonNameSuffix) else {
+            authorityKeyIdentifier: signatureConfiguration.authorityKeyIdentifier,
+            requiredCommonNameContent: signatureConfiguration.commonNameContent,
+            requiredCommonNameSuffix: signatureConfiguration.commonNameSuffix) else {
             logError("PKCS7Signature is invalid")
             return false
         }
@@ -36,20 +42,21 @@ final class SignatureValidator: SignatureValidating, Logging {
     }
 
     private func validatedRootCertificateData() -> Data? {
-        guard let certificateData = SignatureConfiguration.rootCertificateData else {
+
+        guard let rootCertificateData = signatureConfiguration.rootCertificateData else {
             return nil
         }
 
-        guard openssl.validateSerialNumber(SignatureConfiguration.rootSerial,
-                                           forCertificateData: certificateData) else {
+        guard openssl.validateSerialNumber(signatureConfiguration.rootSerial,
+                                           forCertificateData: rootCertificateData) else {
             return nil
         }
 
-        guard openssl.validateSubjectKeyIdentifier(SignatureConfiguration.rootSubjectKeyIdentifier,
-                                                   forCertificateData: certificateData) else {
+        guard openssl.validateSubjectKeyIdentifier(signatureConfiguration.rootSubjectKeyIdentifier,
+                                                   forCertificateData: rootCertificateData) else {
             return nil
         }
 
-        return certificateData
+        return rootCertificateData
     }
 }
