@@ -10,48 +10,55 @@ import XCTest
 
 final class SignatureValidatorTests: XCTestCase {
 
-    func test_signatureValidator_withValidSignature() {
+    func test_signatureValidator_withEmbeddedRootCertificate() {
         let signatureValidator = SignatureValidator()
 
         let validSignature = dataFromFile(withName: "signature", fileType: "sig")
         let content = dataFromFile(withName: "export", fileType: "bin")
 
-        let result = signatureValidator.validate(signature: validSignature, content: content)
+        let result = signatureValidator.validate(signature: validSignature, content: content, validateRootCertificate: true)
 
-        XCTAssertTrue(result)
+        XCTAssertEqual(result, .SIGNATUREVALIDATIONRESULT_SUCCESS)
     }
 
-    func test_signatureValidator_withInvalidSignature() {
-        let signatureValidator = SignatureValidator()
-
-        let signature = dataFromFile(withName: "signature-incorrectcommonname", fileType: "sig")
-        let content = dataFromFile(withName: "export", fileType: "bin")
-
-        let result = signatureValidator.validate(signature: signature, content: content)
-
-        XCTAssertFalse(result)
-    }
-
-    // This test is using the new certificates sent by yorim.
-    func test_signatureValidator_withInvalidSignature_new() throws {
+    func test_signatureValidator_incorrectCommonName() {
         let signature = dataFromFile(withName: "CNTestfile", fileType: "sig")
         let content = dataFromFile(withName: "CNTestfile", fileType: "txt")
         let rootCertificate = dataFromFile(withName: "testroot", fileType: "pem")
 
         let configurationMock = SignatureConfigurationMock()
         configurationMock.rootCertificateData = rootCertificate
-        configurationMock.rootSubjectKeyIdentifier = "04143ebd1363a152e330842def2c1869ca979073d062".hexaData
-        configurationMock.authorityKeyIdentifier = "301680143ebd1363a152e330842def2c1869ca979073d062".hexaData
-        configurationMock.commonNameContent = "coronamelder"
-        configurationMock.commonNameSuffix = ".nl"
-//        configurationMock.rootSerial = 673612227079512554895200720572022748667272347336
-//        configurationMock.rootSerial = 140491522854880
+        configurationMock.rootSubjectKeyIdentifier = "04143EBD1363A152E330842DEF2C1869CA979073D062".hexaData
+        configurationMock.authorityKeyIdentifier = "04143EBD1363A152E330842DEF2C1869CA979073D062".hexaData
+        configurationMock.commonNameContent = "CoronaMelder"
+        configurationMock.commonNameSuffix = "nl"
+        configurationMock.rootSerial = 1912602624
 
         let signatureValidator = SignatureValidator(signatureConfiguration: configurationMock)
 
-        let result = signatureValidator.validate(signature: signature, content: content)
+        let result = signatureValidator.validate(signature: signature, content: content, validateRootCertificate: false)
 
-        XCTAssertFalse(result)
+        XCTAssertEqual(result, SignatureValidationResult.SIGNATUREVALIDATIONRESULT_INCORRECTCOMMONNAME)
+    }
+
+    func test_signatureValidator_chainBroken_byMissingAuthorityKeyIdentifier() {
+        let signature = dataFromFile(withName: "CNTestfile-noaki", fileType: "sig")
+        let content = dataFromFile(withName: "CNTestfile-noaki", fileType: "txt")
+        let rootCertificate = dataFromFile(withName: "testroot-noaki", fileType: "pem")
+
+        let configurationMock = SignatureConfigurationMock()
+        configurationMock.rootCertificateData = rootCertificate
+        configurationMock.rootSubjectKeyIdentifier = "0414F5E3DA7FADAB66396D90B7F1800129E3C91182BA".hexaData
+        configurationMock.authorityKeyIdentifier = "0414F5E3DA7FADAB66396D90B7F1800129E3C91182BA".hexaData
+        configurationMock.commonNameContent = "TestIncorrectCN"
+        configurationMock.commonNameSuffix = ""
+        configurationMock.rootSerial = 1912602624
+
+        let signatureValidator = SignatureValidator(signatureConfiguration: configurationMock)
+
+        let result = signatureValidator.validate(signature: signature, content: content, validateRootCertificate: false)
+
+        XCTAssertEqual(result, .SIGNATUREVALIDATIONRESULT_INCORRECTAUTHORITYKEYIDENTIFIER)
     }
 
     private func dataFromFile(withName fileName: String, fileType: String) -> Data {

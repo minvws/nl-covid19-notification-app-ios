@@ -30,10 +30,10 @@ final class CryptoUtilityImpl: CryptoUtility {
 
     func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ()) {
         DispatchQueue.global().async {
-            let result = self.signatureValidator.validate(signature: signature, content: data)
+            let result = self.signatureValidator.validate(signature: signature, content: data, validateRootCertificate: true)
 
             DispatchQueue.main.async {
-                completion(result)
+                completion(result == SignatureValidationResult.SIGNATUREVALIDATIONRESULT_SUCCESS)
             }
         }
     }
