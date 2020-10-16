@@ -28,7 +28,7 @@ private final class AboutDependencyProvider: DependencyProvider<AboutDependency>
     // MARK: - HelpOverviewDependency
 
     var aboutManager: AboutManaging {
-        return AboutManager(testPhaseStream: dependency.exposureController.isTestPhase())
+        return AboutManager()
     }
 
     // MARK: - Forwarding Dependencies

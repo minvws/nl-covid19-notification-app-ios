@@ -172,14 +172,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .eraseToAnyPublisher()
     }
 
-    func isTestPhase() -> AnyPublisher<Bool, ExposureDataError> {
-        requestApplicationConfiguration()
-            .map { applicationConfiguration in
-                return applicationConfiguration.testPhase
-            }
-            .eraseToAnyPublisher()
-    }
-
     func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in

@@ -22,7 +22,6 @@ protocol ExposureControlling: AnyObject {
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError>
-    func isTestPhase() -> AnyPublisher<Bool, Never>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>

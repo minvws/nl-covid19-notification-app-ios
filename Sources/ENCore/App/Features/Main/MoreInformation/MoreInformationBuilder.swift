@@ -38,10 +38,6 @@ protocol MoreInformationDependency {
 
 private final class MoreInformationDependencyProvider: DependencyProvider<MoreInformationDependency> {
 
-    fileprivate var testPhaseStream: AnyPublisher<Bool, Never> {
-        return dependency.exposureController.isTestPhase()
-    }
-
     fileprivate var bundleInfoDictionary: [String: Any]? {
         return Bundle.main.infoDictionary
     }
@@ -53,7 +49,6 @@ final class MoreInformationBuilder: Builder<MoreInformationDependency>, MoreInfo
 
         return MoreInformationViewController(listener: listener,
                                              theme: dependencyProvider.dependency.theme,
-                                             testPhaseStream: dependencyProvider.testPhaseStream,
                                              bundleInfoDictionary: dependencyProvider.bundleInfoDictionary)
     }
 }

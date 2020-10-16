@@ -39,9 +39,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     init(listener: MoreInformationListener,
          theme: Theme,
-         testPhaseStream: AnyPublisher<Bool, Never>, bundleInfoDictionary: [String: Any]?) {
+         bundleInfoDictionary: [String: Any]?) {
         self.listener = listener
-        self.testPhaseStream = testPhaseStream
         self.bundleInfoDictionary = bundleInfoDictionary
 
         super.init(theme: theme)
@@ -69,14 +68,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             let hash = dictionary["GitHash"] as? String {
             let buildAndHash = "\(build)-\(hash)"
             moreInformationView.version = "\(version) (\(buildAndHash))"
-
-            testPhaseStream
-                .sink(receiveValue: { isTestPhase in
-                    if isTestPhase {
-                        self.moreInformationView.version = .testVersionTitle(version, buildAndHash)
-                        self.moreInformationView.learnMoreButton.isHidden = false
-                    }
-                }).store(in: &disposeBag)
         }
 
         moreInformationView.learnMoreButton.addTarget(self, action: #selector(didTapLearnMore(sender:)), for: .touchUpInside)
@@ -138,7 +129,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
     private weak var listener: MoreInformationListener?
-    private let testPhaseStream: AnyPublisher<Bool, Never>
     private var disposeBag = Set<AnyCancellable>()
     private let bundleInfoDictionary: [String: Any]?
 

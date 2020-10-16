@@ -27,7 +27,6 @@ final class MoreInformationViewControllerTests: TestCase {
 
         viewController = MoreInformationViewController(listener: listener,
                                                        theme: theme,
-                                                       testPhaseStream: Just(false).eraseToAnyPublisher(),
                                                        bundleInfoDictionary: nil)
     }
 
@@ -40,7 +39,7 @@ final class MoreInformationViewControllerTests: TestCase {
     func test_snapshot_moreInformationViewController_testVersion() {
         let viewController = MoreInformationViewController(listener: listener,
                                                            theme: theme,
-                                                           testPhaseStream: Just(true).eraseToAnyPublisher(), bundleInfoDictionary: ["CFBundleShortVersionString": "1.0", "CFBundleVersion": "12345"])
+                                                           bundleInfoDictionary: ["CFBundleShortVersionString": "1.0", "CFBundleVersion": "12345"])
 
         self.snapshots(matching: viewController)
     }

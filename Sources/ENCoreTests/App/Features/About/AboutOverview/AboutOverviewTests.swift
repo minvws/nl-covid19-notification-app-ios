@@ -26,7 +26,7 @@ final class AboutOverviewViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_aboutOverviewViewController_renderCorrectly() {
-        let aboutManager = AboutManager(testPhaseStream: Just(false).eraseToAnyPublisher())
+        let aboutManager = AboutManager()
         let viewController = AboutOverviewViewController(listener: listener,
                                                          aboutManager: aboutManager,
                                                          theme: theme)
@@ -34,7 +34,7 @@ final class AboutOverviewViewControllerTests: TestCase {
     }
 
     func test_snapshot_aboutOverviewViewController_testVersion_rendersCorrectly() {
-        let aboutManager = AboutManager(testPhaseStream: Just(true).eraseToAnyPublisher())
+        let aboutManager = AboutManager()
         let viewController = AboutOverviewViewController(listener: listener,
                                                          aboutManager: aboutManager,
                                                          theme: theme)
