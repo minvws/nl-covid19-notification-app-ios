@@ -10,21 +10,21 @@ import XCTest
 
 final class SignatureValidatorTests: XCTestCase {
 
-    func test_signatureValidator_withEmbeddedRootCertificate() {
+    func test_validateSignature_withEmbeddedRootCertificate() {
         let signatureValidator = SignatureValidator()
 
-        let validSignature = dataFromFile(withName: "signature", fileType: "sig")
-        let content = dataFromFile(withName: "export", fileType: "bin")
+        let validSignature = dataFromFile(withName: "signature-valid", fileType: "sig")
+        let content = dataFromFile(withName: "content-valid", fileType: "bin")
 
         let result = signatureValidator.validate(signature: validSignature, content: content, validateRootCertificate: true)
 
         XCTAssertEqual(result, .SIGNATUREVALIDATIONRESULT_SUCCESS)
     }
 
-    func test_signatureValidator_incorrectCommonName() {
-        let signature = dataFromFile(withName: "CNTestfile", fileType: "sig")
-        let content = dataFromFile(withName: "CNTestfile", fileType: "txt")
-        let rootCertificate = dataFromFile(withName: "testroot", fileType: "pem")
+    func test_validateSignature_incorrectCommonName() {
+        let signature = dataFromFile(withName: "signature-incorrectCommonName", fileType: "sig")
+        let content = dataFromFile(withName: "content-incorrectCommonName", fileType: "txt")
+        let rootCertificate = dataFromFile(withName: "rootcertificate-incorrectCommonName", fileType: "pem")
 
         let configurationMock = SignatureConfigurationMock()
         configurationMock.rootCertificateData = rootCertificate
@@ -41,10 +41,10 @@ final class SignatureValidatorTests: XCTestCase {
         XCTAssertEqual(result, SignatureValidationResult.SIGNATUREVALIDATIONRESULT_INCORRECTCOMMONNAME)
     }
 
-    func test_signatureValidator_chainBroken_byMissingAuthorityKeyIdentifier() {
-        let signature = dataFromFile(withName: "CNTestfile-noaki", fileType: "sig")
-        let content = dataFromFile(withName: "CNTestfile-noaki", fileType: "txt")
-        let rootCertificate = dataFromFile(withName: "testroot-noaki", fileType: "pem")
+    func test_validateSignature_chainBroken_byMissingAuthorityKeyIdentifier() {
+        let signature = dataFromFile(withName: "signature-noAuthorityKeyIdentifier", fileType: "sig")
+        let content = dataFromFile(withName: "content-noAuthorityKeyIdentifier", fileType: "txt")
+        let rootCertificate = dataFromFile(withName: "rootcertificate-noAuthorityKeyIdentifier", fileType: "pem")
 
         let configurationMock = SignatureConfigurationMock()
         configurationMock.rootCertificateData = rootCertificate
