@@ -173,7 +173,6 @@ private final class SectionHeaderView: View {
         titleLabel.numberOfLines = 0
         titleLabel.accessibilityTraits = .header
         titleLabel.font = theme.fonts.largeTitle
-        titleLabel.accessibilityTraits = .header
 
         sectionHeaderLabel.numberOfLines = 0
         sectionHeaderLabel.accessibilityTraits = .header

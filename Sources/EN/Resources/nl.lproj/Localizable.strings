@@ -12,8 +12,8 @@
 "update.button.update" = "Updaten";
 "update.button.openSettings" = "Open Instellingen";
 
-"update.software.app.title" = "Deze versie van CoronaMelder werkt niet meer";
-"update.software.app.description" = "Update de app op je telefoon om te zorgen dat CoronaMelder weer werkt.";
+"update.software.app.title" = "Je hebt een verouderde versie van CoronaMelder";
+"update.software.app.description" = "Update de app op je telefoon om te zorgen dat CoronaMelder goed blijft werken.";
 "update.software.app.detail.title" = "Update de app";
 "update.software.app.detail.step1" = "1. Open Instellingen op je telefoon via de knop hieronder";
 "update.software.app.detail.step2" = "2. Klik op ‘Werk bij’ om de app te updaten.";
@@ -21,13 +21,13 @@
 "update.software.os.title" = "Je moet de software op je telefoon updaten";
 "update.software.os.description" = "CoronaMelder heeft de nieuwste versie van iOS nodig om goed te blijven werken op je telefoon.";
 "update.software.os.detail.title" = "Update je telefoon";
-"update.software.os.detail.step1" = "1. Open <b>Instellingen</b> op je telefoon";
 "update.software.os.detail.step1.detail" = "Instellingen";
-"update.software.os.detail.step2" = "2. Ga naar <b>Algemeen</b>";
 "update.software.os.detail.step2.detail" = "Algemeen";
-"update.software.os.detail.step3" = "3. Ga naar <b>Software-update</b>";
 "update.software.os.detail.step3.detail" = "Software-update";
-"update.software.os.detail.step4" = "4. Kies <b>Download en installeer</b>";
+"update.software.os.detail.step1" = "1. Open Instellingen op je telefoon via de knop hieronder";
+"update.software.os.detail.step2" = "2. Ga naar ‘Algemeen’";
+"update.software.os.detail.step3" = "3. Ga naar ‘Software-update’";
+"update.software.os.detail.step4" = "4. Kies ‘Download en installeer’";
 
 "update.hardware.title" = "De app werkt helaas niet op je telefoon";
 "update.hardware.description" = "CoronaMelder werkt alleen op telefoons met iOS 13.5 of hoger. Je telefoon is niet geschikt voor deze software.";

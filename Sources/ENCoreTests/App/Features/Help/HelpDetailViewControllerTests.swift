@@ -47,7 +47,7 @@ final class HelpDetailViewControllerTests: TestCase {
     }
 
     func test_snapshot_helpDetailViewController_aboutManager() {
-        let aboutManager = AboutManager(testPhaseStream: Just(false).eraseToAnyPublisher())
+        let aboutManager = AboutManager()
         let detailEntries = aboutManager.questionsSection.entries.filter {
             if case .question = $0 {
                 return true

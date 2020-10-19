@@ -77,6 +77,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var webviewBuilder: WebviewBuildable {
         return WebviewBuilder(dependency: self)
     }
+
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {

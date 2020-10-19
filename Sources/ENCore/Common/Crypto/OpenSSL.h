@@ -17,7 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)validatePKCS7Signature:(NSData *)signatureData
                    contentData:(NSData *)contentData
                certificateData:(NSData *)certificateData
-        authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData;
+        authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData
+     requiredCommonNameContent:(NSString *)requiredCommonNameContent
+      requiredCommonNameSuffix:(NSString *)requiredCommonNameSuffix;
 
 @end
 

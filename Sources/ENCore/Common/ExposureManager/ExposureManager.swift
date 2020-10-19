@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import CocoaLumberjackSwift
 import ENFoundation
 import ExposureNotification
 import Foundation
@@ -160,6 +161,8 @@ final class ExposureManager: ExposureManaging, Logging {
             isiOS14OrHigher = false
         }
 
+        logDebug("`getExposureNotificationStatus`. authorisationStatus: \(authorisationStatus.rawValue). exposureNotificationStatus: \(manager.exposureNotificationStatus.rawValue)")
+
         switch authorisationStatus {
         case .unknown where isiOS14OrHigher:
             fallthrough
@@ -213,6 +216,7 @@ extension Error {
                 // usually when receiving unsupported something is off with the signature validation
                 status = .signatureValidationFailed
             default:
+                DDLogDebug("🐞 `asExposureManagerError` raw error \(error.localizedDescription) \(error.errorCode)")
                 status = .unknown
             }
 

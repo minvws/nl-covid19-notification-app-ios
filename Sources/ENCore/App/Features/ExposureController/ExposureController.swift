@@ -65,16 +65,31 @@ final class ExposureController: ExposureControlling, Logging {
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
                 self.exposureManager.activate { _ in
-                    self.logDebug("EN framework activated")
                     self.isActivated = true
+                    self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
 
-                    if inBackgroundMode == false {
-                        self.postExposureManagerActivation()
+                    func postActivation() {
+                        self.logDebug("started `postActivation`")
+                        if inBackgroundMode == false {
+                            self.postExposureManagerActivation()
+                        }
+                        self.updateStatusStream()
+                        resolve(.success(()))
                     }
 
-                    self.updateStatusStream()
-
-                    resolve(.success(()))
+                    if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled(), self.didCompleteOnboarding {
+                        self.logDebug("Calling `setExposureNotificationEnabled`")
+                        self.exposureManager.setExposureNotificationEnabled(true) { result in
+                            if case let .failure(error) = result {
+                                self.logDebug("`setExposureNotificationEnabled` error: \(error.localizedDescription)")
+                            } else {
+                                self.logDebug("Returned from `setExposureNotificationEnabled` (success)")
+                            }
+                            postActivation()
+                        }
+                    } else {
+                        postActivation()
+                    }
                 }
             }
         }
@@ -102,10 +117,6 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.isAppDectivated()
     }
 
-    func isTestPhase() -> AnyPublisher<Bool, Never> {
-        return dataController.isTestPhase().replaceError(with: false).eraseToAnyPublisher()
-    }
-
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
         return dataController.getAppRefreshInterval()
     }
@@ -125,6 +136,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
+
         logDebug("Update when required started")
 
         if let updateStream = updateStream {
@@ -139,7 +151,7 @@ final class ExposureController: ExposureControlling, Logging {
             .setFailureType(to: ExposureDataError.self)
             .flatMap { (state: ExposureState) -> AnyPublisher<(), ExposureDataError> in
                 // update when active, or when inactive due to no recent updates
-                guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications)].contains(state.activeState) else {
+                guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications), .inactive(.bluetoothOff)].contains(state.activeState) else {
                     self.logDebug("Not updating as inactive")
                     return Just(())
                         .setFailureType(to: ExposureDataError.self)
@@ -183,7 +195,10 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
+        logDebug("`requestExposureNotificationPermission` started")
         exposureManager.setExposureNotificationEnabled(true) { result in
+            self.logDebug("`requestExposureNotificationPermission` returned result \(result)")
+
             // wait for 0.2s, there seems to be a glitch in the framework
             // where after successful activation it returns '.disabled' for a
             // split second
@@ -306,7 +321,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
-        logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus)")
+        logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
         guard exposureManager.authorizationStatus == .authorized else {
             return Fail(error: .notAuthorized).eraseToAnyPublisher()
@@ -426,10 +441,12 @@ final class ExposureController: ExposureControlling, Logging {
     // MARK: - Private
 
     private func postExposureManagerActivation() {
+        logDebug("`postExposureManagerActivation`")
+
         mutableStateStream
             .exposureState
             .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in
-                return [.active, .inactive(.noRecentNotificationUpdates)].contains(exposureState.activeState)
+                return [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
                     && networkState
             }
             .filter { $0 }
@@ -460,8 +477,9 @@ final class ExposureController: ExposureControlling, Logging {
 
     private func updateStatusStream() {
         guard isActivated else {
-            return
+            return logDebug("Not Updating Status Stream as not `isActivated`")
         }
+        logDebug("Updating Status Stream")
 
         let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
         let hasBeenTooLongSinceLastUpdate: Bool
@@ -494,7 +512,7 @@ final class ExposureController: ExposureControlling, Logging {
             // Unknown can happen when iOS cannot retrieve the status correctly at this moment.
             // This can happen when the user just switched from the bluetooth settings screen.
             // Don't propagate this state as it only leads to confusion, just maintain the current state
-            return
+            return self.logDebug("No Update Status Stream as not `.inactive(.unknown)` returned")
         case let .inactive(error) where error == .internalTypeMismatch:
             activeState = .inactive(.disabled)
         case .inactive where !isPushNotificationsEnabled:

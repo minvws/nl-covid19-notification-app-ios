@@ -65,7 +65,7 @@ final class HelpTableViewCell: UITableViewCell {
         textLabel?.snp.makeConstraints { maker in
             maker.trailing.equalToSuperview().inset(16)
             maker.leading.trailing.equalToSuperview().inset(16)
-            maker.bottom.top.equalToSuperview().inset(12)
+            maker.bottom.top.equalToSuperview().inset(14)
         }
     }
 

@@ -40,7 +40,7 @@ extension ViewControllable where Self: ViewController {
         navigationBar.tintColor = theme.colors.primary
         navigationBar.shadowImage = UIImage()
         navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .regular),
+            NSAttributedString.Key.font: theme.fonts.headlineBold,
             NSAttributedString.Key.foregroundColor: UIColor.black
         ]
 

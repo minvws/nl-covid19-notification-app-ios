@@ -132,8 +132,8 @@ struct NetworkConfiguration {
         return self.combine(path: Endpoint.postKeys, fromCdn: false, params: ["sig": signature])
     }
 
-    var stopKeysUrl: URL? {
-        return self.combine(path: Endpoint.stopKeys, fromCdn: false)
+    func stopKeysUrl(signature: String) -> URL? {
+        return self.combine(path: Endpoint.stopKeys, fromCdn: false, params: ["sig": signature])
     }
 
     private func combine(path: Path, fromCdn: Bool, params: [String: String] = [:]) -> URL? {

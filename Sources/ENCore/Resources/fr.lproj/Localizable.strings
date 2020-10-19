@@ -46,11 +46,6 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"testVersionTitle" = "Version test et analyse %@ (%@)";
-
-"help.faq.testVersion.title" = "Que veut dire version test et analyse ?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
-
 "moreInformation.situation.title" = "Que pouvez-vous faire dans une telle situation ?";
 "moreInformation.situation.step1" = "Vous n'avez aucun symptôme ? Faites un test de dépistage du Covid-19 et restez chez vous jusqu'à ce que vous receviez le résultat";
 "moreInformation.situation.step2" = "Vous avez de (légers) symptômes qui correspondent à ceux du Covid-19 ? Faites un test de dépistage et restez chez vous jusqu'à ce que vous receviez le résultat";
