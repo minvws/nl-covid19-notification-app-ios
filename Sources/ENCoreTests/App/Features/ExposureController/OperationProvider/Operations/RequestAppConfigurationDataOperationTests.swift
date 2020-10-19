@@ -100,28 +100,29 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func test_execute_withStoredConfiguration_andNonMatchingSignature_shouldReturnError() {
+    func test_execute_withStoredConfiguration_andNonMatchingSignature_shouldRetrieveFromNetwork() {
 
         let appConfig = createApplicationConfiguration()
+        let networkAppConfig = createApplicationConfiguration(withIdentifier: "appconfig from network")
 
         mockApplicationConfigurationResults(storedConfiguration: appConfig,
+                                            networkConfiguration: networkAppConfig,
                                             storedSignature: appConfig.signature,
                                             signatureForStoredConfiguration: "incorrectsignature".data(using: .utf8))
 
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .sink(receiveCompletion: { result in
-                guard case let .failure(error) = result,
-                    case ExposureDataError.internalError = error else {
-                    XCTFail("Call expected to return an error but succeeded instead")
-                    return
-                }
-
+            .assertNoFailure()
+            .sink { configuration in
+                XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
-
-            }, receiveValue: { _ in })
+            }
             .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
+        XCTAssertEqual(mockApplicationSignatureController.storeAppConfigurationCallCount, 1)
+        XCTAssertEqual(mockApplicationSignatureController.storeSignatureCallCount, 1)
 
         waitForExpectations(timeout: 1, handler: nil)
     }

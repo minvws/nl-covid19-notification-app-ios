@@ -42,15 +42,12 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
     func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
         if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
             let storedSignature = applicationSignatureController.retrieveStoredSignature(),
-            appConfiguration.identifier == appConfigurationIdentifier {
+            appConfiguration.identifier == appConfigurationIdentifier,
+            storedSignature == applicationSignatureController.signature(for: appConfiguration) {
 
-            if storedSignature == applicationSignatureController.signature(for: appConfiguration) {
-                return Just(appConfiguration)
-                    .setFailureType(to: ExposureDataError.self)
-                    .eraseToAnyPublisher()
-            }
-
-            return Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
+            return Just(appConfiguration)
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
         }
 
         return networkController
