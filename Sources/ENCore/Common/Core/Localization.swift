@@ -85,8 +85,6 @@ extension String {
     static var errorTitle: String { return Localization.string(for: "error.title") }
     static var learnMore: String { return Localization.string(for: "learnMore") }
 
-    static func testVersionTitle(_ version: String, _ build: String) -> String { return Localization.string(for: "testVersionTitle", [version, build]) }
-
     // MARK: - Update App
 
     static var updateAppErrorMessage: String { return Localization.string(for: "updateApp.error.message") }
@@ -211,9 +209,6 @@ extension String {
     static var helpPauseAppDescription: String { return Localization.string(for: "help.pause_app.description") }
     static var helpOtherCountriesTitle: String { return Localization.string(for: "help.apps_other_countries.title") }
     static var helpOtherCountriesDescription: String { return Localization.string(for: "help.apps_other_countries.description") }
-
-    static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
-    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link", [currentLanguageIdentifier]) }
 
     // MARK: - About - What the app do
 

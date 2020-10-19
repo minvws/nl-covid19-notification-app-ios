@@ -69,8 +69,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             let buildAndHash = "\(build)-\(hash)"
             moreInformationView.version = "\(version) (\(buildAndHash))"
         }
-
-        moreInformationView.learnMoreButton.addTarget(self, action: #selector(didTapLearnMore(sender:)), for: .touchUpInside)
     }
 
     // MARK: - MoreInformationCellListner
@@ -131,13 +129,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     private weak var listener: MoreInformationListener?
     private var disposeBag = Set<AnyCancellable>()
     private let bundleInfoDictionary: [String: Any]?
-
-    @objc private func didTapLearnMore(sender: Button) {
-        guard let url = URL(string: .helpTestVersionLink) else {
-            return logError("Cannot create URL from: \(String.helpTestVersionLink)")
-        }
-        listener?.moreInformationRequestsRedirect(to: url)
-    }
 }
 
 private final class MoreInformationView: View {
@@ -150,14 +141,12 @@ private final class MoreInformationView: View {
 
     private let stackView: UIStackView
     private let versionLabel: Label
-    fileprivate let learnMoreButton: Button
 
     // MARK: - Init
 
     override init(theme: Theme) {
         self.stackView = UIStackView(frame: .zero)
         self.versionLabel = Label()
-        self.learnMoreButton = Button(title: .learnMore, theme: theme)
         super.init(theme: theme)
     }
 
@@ -172,13 +161,9 @@ private final class MoreInformationView: View {
         versionLabel.font = theme.fonts.footnote
         versionLabel.textColor = theme.colors.gray
         versionLabel.textAlignment = .center
-        learnMoreButton.style = .info
-        learnMoreButton.titleLabel?.font = theme.fonts.footnote
-        learnMoreButton.isHidden = true
 
         addSubview(stackView)
         addSubview(versionLabel)
-        addSubview(learnMoreButton)
     }
 
     override func setupConstraints() {
@@ -193,10 +178,6 @@ private final class MoreInformationView: View {
         }
         versionLabel.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview()
-        }
-        learnMoreButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview()
-            maker.top.equalTo(versionLabel.snp.bottom)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }

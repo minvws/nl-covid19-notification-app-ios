@@ -32,13 +32,4 @@ final class AboutOverviewViewControllerTests: TestCase {
                                                          theme: theme)
         snapshots(matching: viewController)
     }
-
-    func test_snapshot_aboutOverviewViewController_testVersion_rendersCorrectly() {
-        let aboutManager = AboutManager()
-        let viewController = AboutOverviewViewController(listener: listener,
-                                                         aboutManager: aboutManager,
-                                                         theme: theme)
-
-        snapshots(matching: viewController)
-    }
 }

@@ -44,11 +44,6 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"testVersionTitle" = "Versión de prueba e investigación %@ (%@)";
-
-"help.faq.testVersion.title" = "¿Qué significa la versión de prueba e investigación?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
-
 "moreInformation.situation.title" = "¿Qué hacer en este caso?";
 "moreInformation.situation.step1" = "¿No muestras síntomas? Hazte un test y quédate en casa hasta que sepas los resultados";
 "moreInformation.situation.step2" = "¿Muestras síntomas, aunque sean leves, relacionados con el coronavirus? Hazte un test y quédate en casa hasta que sepas los resultados";

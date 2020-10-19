@@ -19,7 +19,6 @@ protocol MoreInformationListener: AnyObject {
     func moreInformationRequestsReceivedNotification()
     func moreInformationRequestsInfected()
     func moreInformationRequestsRequestTest()
-    func moreInformationRequestsRedirect(to url: URL)
 }
 
 /// @mockable
