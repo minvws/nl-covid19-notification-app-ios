@@ -44,11 +44,6 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"testVersionTitle" = "Test ve araştırma versiyonu %@ (%@)";
-
-"help.faq.testVersion.title" = "Test ve araştırma versiyonu ne anlama gelir?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
-
 "moreInformation.situation.title" = "Bu durumda ne yapabilirsiniz?";
 "moreInformation.situation.step1" = "Şikayetiniz yok mu? Korona testi yaptırın ve sonucu öğrenene kadar evde kalın.";
 "moreInformation.situation.step2" = "Korona'ya uyan (hafif) şikayetleriniz mi var? Korona testi yaptırın ve sonucu öğrenene kadar evde kalın.";

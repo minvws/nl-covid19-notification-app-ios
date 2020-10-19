@@ -25,24 +25,21 @@ final class MoreInformationViewControllerTests: TestCase {
 
         recordSnapshots = false
 
-        viewController = MoreInformationViewController(listener: listener,
-                                                       theme: theme,
-                                                       testPhaseStream: Just(false).eraseToAnyPublisher(),
-                                                       bundleInfoDictionary: nil)
+        viewController = MoreInformationViewController(
+            listener: listener,
+            theme: theme,
+            bundleInfoDictionary: [
+                "CFBundleShortVersionString": "1.0",
+                "CFBundleVersion": "12345",
+                "GitHash": "5ec9b"
+            ]
+        )
     }
 
     // MARK: - Tests
 
     func test_snapshot_moreInformationViewController() {
         snapshots(matching: viewController)
-    }
-
-    func test_snapshot_moreInformationViewController_testVersion() {
-        let viewController = MoreInformationViewController(listener: listener,
-                                                           theme: theme,
-                                                           testPhaseStream: Just(true).eraseToAnyPublisher(), bundleInfoDictionary: ["CFBundleShortVersionString": "1.0", "CFBundleVersion": "12345"])
-
-        self.snapshots(matching: viewController)
     }
 
     func test_didSelectItem_about() {
