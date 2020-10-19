@@ -80,7 +80,7 @@ final class MessageViewControllerTests: TestCase {
             return emptyTreatmentPerspectiveMessage
         }
 
-        dynamicNotification.guidance.layouts.forEach {
+        dynamicNotification.guidance.layout.forEach {
 
             paragraphs.append(
                 Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),

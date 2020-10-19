@@ -20,15 +20,10 @@ struct DynamicNotification: Codable {
 
 struct Guidance: Codable {
     let quarantineDays: Int
-    let layouts: [Layout]
-
-    enum CodingKeys: String, CodingKey {
-        case quarantineDays
-        case layouts = "layout"
-    }
+    let layout: [LayoutElement]
 }
 
-struct Layout: Codable {
+struct LayoutElement: Codable {
     let title, body, type: String
 }
 
@@ -170,7 +165,7 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
             return emptyTreatmentPerspectiveMessage
         }
 
-        dynamicNotification.guidance.layouts.forEach {
+        dynamicNotification.guidance.layout.forEach {
 
             paragraphs.append(
                 Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),
