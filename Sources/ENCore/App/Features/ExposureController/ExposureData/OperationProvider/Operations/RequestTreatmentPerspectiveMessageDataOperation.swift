@@ -119,10 +119,7 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
                 .eraseToAnyPublisher()
         }
 
-        let fallback = retrieveFallbackTreatmentPerspectiveMessage()
-        self.silentStore(treatmentPerspectiveMessage: fallback)
-
-        return Just(fallback)
+        return Just(retrieveFallbackTreatmentPerspectiveMessage())
             .setFailureType(to: ExposureDataError.self)
             .eraseToAnyPublisher()
     }
