@@ -129,14 +129,14 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
 
     private func retrieveFallbackTreatmentPerspectiveMessage() -> TreatmentPerspectiveMessage {
 
-        guard let path = Bundle(for: RequestTreatmentPerspectiveMessageDataOperation.self).path(forResource: "DynamicNotificationTest", ofType: "json") else {
-            self.logError("DynamicNotificationTest.json not found")
+        guard let path = Bundle(for: RequestTreatmentPerspectiveMessageDataOperation.self).path(forResource: "DefaultDynamicNotification", ofType: "json") else {
+            self.logError("DefaultDynamicNotification.json not found")
             return emptyTreatmentPerspectiveMessage
         }
 
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: path),
                                    options: .mappedIfSafe) else {
-            self.logError("Could not transform DynamicNotificationTest.json into data")
+            self.logError("Could not transform DefaultDynamicNotification.json into data")
             return emptyTreatmentPerspectiveMessage
         }
 
