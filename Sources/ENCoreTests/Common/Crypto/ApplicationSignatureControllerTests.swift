@@ -185,8 +185,7 @@ class ApplicationSignatureControllerTests: TestCase {
             requestMinimumSize: 0,
             requestMaximumSize: 0,
             repeatedUploadDelay: 0,
-            decativated: false,
-            testPhase: true
+            decativated: false
         )
     }
 }
