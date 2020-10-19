@@ -19,9 +19,8 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     init(listener: MessageListener, theme: Theme, exposureDate: Date, messageManager: MessageManaging) {
         self.listener = listener
-        self.exposureDate = exposureDate
         self.messageManager = messageManager
-        self.treatmentPerspectiveMessage = messageManager.getTreatmentPerspectiveMessage()
+        self.treatmentPerspectiveMessage = messageManager.getTreatmentPerspectiveMessage(withExposureDate: exposureDate)
 
         super.init(theme: theme)
     }
@@ -61,36 +60,14 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     // MARK: - Private
 
-    private func formattedExposureDate() -> String {
-        let now = currentDate()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-
-        let dateString = dateFormatter.string(from: exposureDate)
-        let days = now.days(sinceDate: exposureDate) ?? 0
-
-        return "\(dateString) (\(String.statusNotifiedDaysAgo(days: days)))"
-    }
-
-    private func formattedTenDaysAfterExposure() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-
-        let tenDays: TimeInterval = 60 * 60 * 24 * 10
-        let tenDaysAfterExposure = exposureDate.advanced(by: tenDays)
-
-        return dateFormatter.string(from: tenDaysAfterExposure)
-    }
-
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.messageWantsDismissal(shouldDismissViewController: true)
     }
 
     private lazy var internalView: MessageView = {
-        MessageView(theme: self.theme, formattedExposureDate: formattedExposureDate(), formattedFutureDate: formattedTenDaysAfterExposure(), treatmentPerspectiveMessage: treatmentPerspectiveMessage)
+        MessageView(theme: self.theme, treatmentPerspectiveMessage: treatmentPerspectiveMessage)
     }()
 
-    private let exposureDate: Date
     private weak var listener: MessageListener?
     private let messageManager: MessageManaging
     private let treatmentPerspectiveMessage: TreatmentPerspectiveMessage
@@ -98,15 +75,9 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
 private final class MessageView: View {
 
-    fileprivate let infoView: InfoView
-    private let formattedExposureDate: String
-    private let formattedFutureDate: String
-
     // MARK: - Init
 
-    init(theme: Theme, formattedExposureDate: String, formattedFutureDate: String, treatmentPerspectiveMessage: TreatmentPerspectiveMessage) {
-        self.formattedExposureDate = formattedExposureDate
-        self.formattedFutureDate = formattedFutureDate
+    init(theme: Theme, treatmentPerspectiveMessage: TreatmentPerspectiveMessage) {
         let config = InfoViewConfig(actionButtonTitle: .messageButtonTitle,
                                     headerImage: .messageHeader,
                                     headerBackgroundViewColor: theme.colors.headerBackgroundRed,
@@ -121,13 +92,12 @@ private final class MessageView: View {
     override func build() {
         super.build()
 
-        var sections: [View] = []
-
-        treatmentPerspectiveMessage.paragraphs.forEach {
-            sections.append(InfoSectionTextView(theme: theme,
-                                                title: $0.title,
-                                                content: [$0.body]))
+        let sections = treatmentPerspectiveMessage.paragraphs.map {
+            InfoSectionTextView(theme: theme,
+                                title: $0.title.string,
+                                content: [$0.body])
         }
+
         infoView.addSections(sections)
 
         addSubview(infoView)
@@ -144,4 +114,5 @@ private final class MessageView: View {
     // MARK: - Private
 
     private let treatmentPerspectiveMessage: TreatmentPerspectiveMessage
+    fileprivate let infoView: InfoView
 }

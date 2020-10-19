@@ -11,6 +11,7 @@ import Foundation
 
 struct TreatmentPerspectiveMessage: Codable {
     let paragraphs: [Paragraph]
+    let quarantineDays: Int
 }
 
 struct DynamicNotification: Codable {
@@ -42,7 +43,7 @@ enum ParagraphType: String {
 
 class Paragraph: Codable {
 
-    let title: String
+    var title: NSAttributedString
     var body: NSAttributedString
     let type: ParagraphType.RawValue
 
@@ -50,7 +51,7 @@ class Paragraph: Codable {
         case title, body, type
     }
 
-    init(title: String, body: NSAttributedString, type: ParagraphType) {
+    init(title: NSAttributedString, body: NSAttributedString, type: ParagraphType) {
         self.title = title
         self.body = body
         self.type = type.rawValue
@@ -58,7 +59,11 @@ class Paragraph: Codable {
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
+        if let title = try container.decodeIfPresent(Data.self, forKey: .title) {
+            self.title = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: title) ?? NSAttributedString()
+        } else {
+            self.title = NSAttributedString()
+        }
         if let body = try container.decodeIfPresent(Data.self, forKey: .body) {
             self.body = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: body) ?? NSAttributedString()
         } else {
@@ -69,7 +74,7 @@ class Paragraph: Codable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(title, forKey: .title)
+        try container.encode(NSKeyedArchiver.archivedData(withRootObject: title, requiringSecureCoding: false), forKey: .title)
         try container.encode(NSKeyedArchiver.archivedData(withRootObject: body, requiringSecureCoding: false), forKey: .body)
         try container.encode(type, forKey: .type)
     }
@@ -79,9 +84,10 @@ enum MessageType: CodingKey {
     case paragraph, notificationCode
 }
 
-let emptyTreatmentPerspectiveMessage = TreatmentPerspectiveMessage(paragraphs: [Paragraph(title: "",
+let emptyTreatmentPerspectiveMessage = TreatmentPerspectiveMessage(paragraphs: [Paragraph(title: NSAttributedString(string: ""),
                                                                                           body: NSAttributedString(string: ""),
-                                                                                          type: ParagraphType.unknown)])
+                                                                                          type: ParagraphType.unknown)],
+quarantineDays: 10)
 
 final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperation, Logging {
     typealias Result = TreatmentPerspectiveMessage
@@ -165,13 +171,14 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
         dynamicNotification.guidance.layouts.forEach {
 
             paragraphs.append(
-                Paragraph(title: resource[$0.title] ?? "",
+                Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),
                           body: NSAttributedString(string: resource[$0.body] ?? ""),
                           type: ParagraphType(rawValue: $0.type) ?? .unknown)
             )
         }
 
-        return TreatmentPerspectiveMessage(paragraphs: paragraphs)
+        return TreatmentPerspectiveMessage(paragraphs: paragraphs,
+                                           quarantineDays: dynamicNotification.guidance.quarantineDays)
     }
 
     private func retrieveStoredManifest() -> ApplicationManifest? {

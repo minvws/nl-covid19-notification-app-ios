@@ -42,7 +42,7 @@ extension Manifest {
 
 extension TreatmentPerspectiveMessage {
     var asTreatmentPerspectiveMessage: TreatmentPerspectiveMessage {
-        return TreatmentPerspectiveMessage(paragraphs: paragraphs)
+        return TreatmentPerspectiveMessage(paragraphs: paragraphs, quarantineDays: quarantineDays)
     }
 }
 

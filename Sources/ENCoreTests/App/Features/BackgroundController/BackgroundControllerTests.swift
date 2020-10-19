@@ -62,6 +62,9 @@ final class BackgroundControllerTests: XCTestCase {
         exposureController.appUpdateRequiredCheckHandler = {
             Just(()).eraseToAnyPublisher()
         }
+        exposureController.updateTreatmentPerspectiveMessageHandler = {
+            Just(emptyTreatmentPerspectiveMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
     }
 
     // MARK: - Tests

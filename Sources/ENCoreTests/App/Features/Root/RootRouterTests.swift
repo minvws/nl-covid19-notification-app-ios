@@ -39,6 +39,10 @@ final class RootRouterTests: XCTestCase {
             return Just(()).eraseToAnyPublisher()
         }
 
+        exposureController.updateTreatmentPerspectiveMessageHandler = {
+            Just(emptyTreatmentPerspectiveMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
         mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
         router = RootRouter(viewController: viewController,
