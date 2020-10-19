@@ -18,6 +18,7 @@ protocol MainDependency {
     var exposureStateStream: ExposureStateStreaming { get }
     var exposureController: ExposureControlling { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
+    var storageController: StorageControlling { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency {
@@ -32,6 +33,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var exposureStateStream: ExposureStateStreaming {
         return dependency.exposureStateStream
+    }
+
+    var storageController: StorageControlling {
+        return dependency.storageController
     }
 
     var statusBuilder: StatusBuildable {
@@ -81,9 +86,6 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var environmentController: EnvironmentControlling {
         return EnvironmentController()
     }
-
-    /// Local Storage
-    lazy var storageController: StorageControlling = StorageControllerBuilder().build()
 
     var messageManager: MessageManaging {
         return MessageManager(storageController: storageController, theme: dependency.theme)

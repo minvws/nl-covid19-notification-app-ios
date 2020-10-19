@@ -41,7 +41,7 @@ enum ParagraphType: String {
     case unknown
 }
 
-class Paragraph: Codable {
+final class Paragraph: Codable {
 
     var title: NSAttributedString
     var body: NSAttributedString
@@ -84,10 +84,12 @@ enum MessageType: CodingKey {
     case paragraph, notificationCode
 }
 
-let emptyTreatmentPerspectiveMessage = TreatmentPerspectiveMessage(paragraphs: [Paragraph(title: NSAttributedString(string: ""),
-                                                                                          body: NSAttributedString(string: ""),
-                                                                                          type: ParagraphType.unknown)],
-quarantineDays: 10)
+var emptyTreatmentPerspectiveMessage: TreatmentPerspectiveMessage {
+    return TreatmentPerspectiveMessage(paragraphs: [Paragraph(title: NSAttributedString(string: ""),
+                                                              body: NSAttributedString(string: ""),
+                                                              type: ParagraphType.unknown)],
+    quarantineDays: 10)
+}
 
 final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperation, Logging {
     typealias Result = TreatmentPerspectiveMessage

@@ -81,53 +81,6 @@ public extension NSAttributedString {
         return NSAttributedString(string: text)
     }
 
-    static func bulletList(_ stringList: [String],
-                           theme: Theme,
-                           font: UIFont,
-                           bullet: String = "\u{25CF}",
-                           indentation: CGFloat = 16,
-                           paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
-
-        let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
-
-        let bulletFont = font.withSize(10)
-        let bulletAttributes: [NSAttributedString.Key: Any] = [
-            .font: bulletFont,
-            .foregroundColor: theme.colors.primary,
-            .baselineOffset: (font.xHeight - bulletFont.xHeight) / 2
-        ]
-
-        let paragraphStyle = NSMutableParagraphStyle()
-        let nonOptions = [NSTextTab.OptionKey: Any]()
-        paragraphStyle.tabStops = [
-            NSTextTab(textAlignment: .left, location: indentation, options: nonOptions)
-        ]
-        paragraphStyle.defaultTabInterval = indentation
-        paragraphStyle.paragraphSpacing = paragraphSpacing
-        paragraphStyle.headIndent = indentation
-
-        var bulletList = [NSMutableAttributedString]()
-        for string in stringList {
-            let formattedString = "\(bullet)\t\(string)"
-            let attributedString = NSMutableAttributedString(string: formattedString)
-
-            attributedString.addAttributes(
-                [NSAttributedString.Key.paragraphStyle: paragraphStyle],
-                range: NSMakeRange(0, attributedString.length))
-
-            attributedString.addAttributes(
-                textAttributes,
-                range: NSMakeRange(0, attributedString.length))
-
-            let string: NSString = NSString(string: formattedString)
-            let rangeForBullet: NSRange = string.range(of: bullet)
-            attributedString.addAttributes(bulletAttributes, range: rangeForBullet)
-            bulletList.append(attributedString)
-        }
-
-        return bulletList
-    }
-
     static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
 
         var textToFormat = makeFromHtml(text: text, font: font, textColor: textColor)
@@ -151,9 +104,9 @@ public extension NSAttributedString {
 
                     if !newLine.isEmpty {
                         if index == 0 {
-                            bulletList.append(bullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine))
+                            bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine))
                         } else {
-                            bulletList.append(bullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine, bullet: ""))
+                            bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine, bullet: ""))
                         }
                     }
                 }
@@ -171,13 +124,13 @@ public extension NSAttributedString {
         return textToFormat
     }
 
-    static func bullet(_ string: String,
-                       theme: Theme,
-                       font: UIFont,
-                       useTrailingNewLine: Bool,
-                       bullet: String = "\u{25CF}",
-                       indentation: CGFloat = 16,
-                       paragraphSpacing: CGFloat = 12) -> NSAttributedString {
+    static func makeBullet(_ string: String,
+                           theme: Theme,
+                           font: UIFont,
+                           useTrailingNewLine: Bool,
+                           bullet: String = "\u{25CF}",
+                           indentation: CGFloat = 16,
+                           paragraphSpacing: CGFloat = 12) -> NSAttributedString {
 
         let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
 
@@ -218,6 +171,24 @@ public extension NSAttributedString {
         attributedString.addAttributes(bulletAttributes, range: rangeForBullet)
 
         return attributedString
+    }
+
+    static func bulletList(_ stringList: [String],
+                           theme: Theme,
+                           font: UIFont,
+                           useTrailingNewLine: Bool,
+                           bullet: String = "\u{25CF}",
+                           indentation: CGFloat = 16,
+                           paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
+
+        let bulletList = stringList.map {
+            makeBullet($0,
+                       theme: theme,
+                       font: font,
+                       useTrailingNewLine: useTrailingNewLine)
+        }
+
+        return bulletList
     }
 
     private static func containsHtml(_ value: String) -> Bool {

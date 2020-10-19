@@ -28,11 +28,8 @@ protocol MessageDependency {
 
 private final class MessageDependencyProvider: DependencyProvider<MessageDependency> {
 
-    /// Local Storage
-    lazy var storageController: StorageControlling = StorageControllerBuilder().build()
-
     var messageManager: MessageManaging {
-        return MessageManager(storageController: storageController, theme: dependency.theme)
+        return dependency.messageManager
     }
 }
 

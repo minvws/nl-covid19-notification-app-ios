@@ -133,7 +133,7 @@ private final class RequestTestView: View {
             .moreInformationComplaintsItem4,
             .moreInformationComplaintsItem5
         ]
-        var string = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
+        var string = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body, useTrailingNewLine: false)
         string.append(NSAttributedString(string: " ")) // Should be a space to ensure the correct line spacing
         string.append(NSAttributedString(string: .moreInformationRequestTestComplaints))
 
