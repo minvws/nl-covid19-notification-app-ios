@@ -11,7 +11,7 @@ import UIKit
 
 /// @mockable
 protocol MessageManaging: AnyObject {
-    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> TreatmentPerspectiveMessage
+    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> TreatmentPerspective.Message
 }
 
 final class MessageManager: MessageManaging, Logging {
@@ -29,11 +29,11 @@ final class MessageManager: MessageManaging, Logging {
         self.theme = theme
     }
 
-    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> TreatmentPerspectiveMessage {
+    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> TreatmentPerspective.Message {
 
         guard let treatmentPerspectiveMessage = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage) else {
             self.logError("No Treatment Perspective Message found, returning empty one")
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
         treatmentPerspectiveMessage.paragraphs.forEach {

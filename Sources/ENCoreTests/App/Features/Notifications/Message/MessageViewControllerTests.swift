@@ -51,45 +51,45 @@ final class MessageViewControllerTests: TestCase {
         XCTAssertEqual(listern.messageWantsDismissalCallCount, 1)
     }
 
-    private func retrieveFallbackTreatmentPerspectiveMessage() -> TreatmentPerspectiveMessage {
+    private func retrieveFallbackTreatmentPerspectiveMessage() -> TreatmentPerspective.Message {
 
         guard let path = Bundle(for: RequestTreatmentPerspectiveMessageDataOperation.self).path(forResource: "DefaultDynamicNotification", ofType: "json") else {
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: path),
                                    options: .mappedIfSafe) else {
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
-        var paragraphs = [Paragraph]()
+        var paragraphs = [TreatmentPerspective.Paragraph]()
 
-        guard let dynamicNotification = try? JSONDecoder().decode(DynamicNotification.self, from: data) else {
-            return emptyTreatmentPerspectiveMessage
+        guard let dynamicNotification = try? JSONDecoder().decode(TreatmentPerspective.DynamicNotification.self, from: data) else {
+            return TreatmentPerspective.emptyMessage
         }
 
         guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
-        guard let resources = json[Keys.resources.rawValue] as? [String: Any] else {
-            return emptyTreatmentPerspectiveMessage
+        guard let resources = json[TreatmentPerspective.Keys.resources.rawValue] as? [String: Any] else {
+            return TreatmentPerspective.emptyMessage
         }
 
         guard let resource = resources[.currentLanguageIdentifier] as? [String: String] else {
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
         dynamicNotification.guidance.layout.forEach {
 
             paragraphs.append(
-                Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),
-                          body: NSAttributedString(string: resource[$0.body] ?? ""),
-                          type: ParagraphType(rawValue: $0.type) ?? .unknown)
+                TreatmentPerspective.Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),
+                                               body: NSAttributedString(string: resource[$0.body] ?? ""),
+                                               type: TreatmentPerspective.ParagraphType(rawValue: $0.type) ?? .unknown)
             )
         }
 
-        return TreatmentPerspectiveMessage(paragraphs: paragraphs,
-                                           quarantineDays: dynamicNotification.guidance.quarantineDays)
+        return TreatmentPerspective.Message(paragraphs: paragraphs,
+                                            quarantineDays: dynamicNotification.guidance.quarantineDays)
     }
 }

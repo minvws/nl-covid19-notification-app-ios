@@ -70,14 +70,14 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     private weak var listener: MessageListener?
     private let messageManager: MessageManaging
-    private let treatmentPerspectiveMessage: TreatmentPerspectiveMessage
+    private let treatmentPerspectiveMessage: TreatmentPerspective.Message
 }
 
 private final class MessageView: View {
 
     // MARK: - Init
 
-    init(theme: Theme, treatmentPerspectiveMessage: TreatmentPerspectiveMessage) {
+    init(theme: Theme, treatmentPerspectiveMessage: TreatmentPerspective.Message) {
         let config = InfoViewConfig(actionButtonTitle: .messageButtonTitle,
                                     headerImage: .messageHeader,
                                     headerBackgroundViewColor: theme.colors.headerBackgroundRed,
@@ -92,11 +92,12 @@ private final class MessageView: View {
     override func build() {
         super.build()
 
-        let sections = treatmentPerspectiveMessage.paragraphs.map {
-            InfoSectionTextView(theme: theme,
-                                title: $0.title.string,
-                                content: [$0.body])
-        }
+        let sections = treatmentPerspectiveMessage.paragraphs
+            .map {
+                InfoSectionTextView(theme: theme,
+                                    title: $0.title.string,
+                                    content: [$0.body])
+            }
 
         infoView.addSections(sections)
 
@@ -113,6 +114,6 @@ private final class MessageView: View {
 
     // MARK: - Private
 
-    private let treatmentPerspectiveMessage: TreatmentPerspectiveMessage
+    private let treatmentPerspectiveMessage: TreatmentPerspective.Message
     fileprivate let infoView: InfoView
 }

@@ -40,7 +40,7 @@ final class RootRouterTests: XCTestCase {
         }
 
         exposureController.updateTreatmentPerspectiveMessageHandler = {
-            Just(emptyTreatmentPerspectiveMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            Just(TreatmentPerspective.emptyMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
         mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()

@@ -53,8 +53,8 @@ protocol ExposureDataControlling: AnyObject {
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
-    func getTreatmentPerspectiveMessage() -> TreatmentPerspectiveMessage?
-    func requestTreatmentPerspectiveMessage() -> AnyPublisher<TreatmentPerspectiveMessage, ExposureDataError>
+    func getTreatmentPerspectiveMessage() -> TreatmentPerspective.Message?
+    func requestTreatmentPerspectiveMessage() -> AnyPublisher<TreatmentPerspective.Message, ExposureDataError>
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
 }

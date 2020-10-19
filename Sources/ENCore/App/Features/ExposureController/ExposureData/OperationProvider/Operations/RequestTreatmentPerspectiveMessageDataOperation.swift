@@ -9,85 +9,88 @@ import Combine
 import ENFoundation
 import Foundation
 
-struct TreatmentPerspectiveMessage: Codable {
-    let paragraphs: [Paragraph]
-    let quarantineDays: Int
-}
+enum TreatmentPerspective {
 
-struct DynamicNotification: Codable {
-    let guidance: Guidance
-}
-
-struct Guidance: Codable {
-    let quarantineDays: Int
-    let layout: [LayoutElement]
-}
-
-struct LayoutElement: Codable {
-    let title, body, type: String
-}
-
-enum Keys: String {
-    case resources
-}
-
-enum ParagraphType: String {
-    case paragraph
-    case unknown
-}
-
-final class Paragraph: Codable {
-
-    var title: NSAttributedString
-    var body: NSAttributedString
-    let type: ParagraphType.RawValue
-
-    enum CodingKeys: String, CodingKey {
-        case title, body, type
+    struct Message: Codable {
+        let paragraphs: [Paragraph]
+        let quarantineDays: Int
     }
 
-    init(title: NSAttributedString, body: NSAttributedString, type: ParagraphType) {
-        self.title = title
-        self.body = body
-        self.type = type.rawValue
+    struct DynamicNotification: Codable {
+        let guidance: Guidance
     }
 
-    public required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let title = try container.decodeIfPresent(Data.self, forKey: .title) {
-            self.title = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: title) ?? NSAttributedString()
-        } else {
-            self.title = NSAttributedString()
+    struct Guidance: Codable {
+        let quarantineDays: Int
+        let layout: [LayoutElement]
+    }
+
+    struct LayoutElement: Codable {
+        let title, body, type: String
+    }
+
+    enum Keys: String {
+        case resources
+    }
+
+    enum ParagraphType: String {
+        case paragraph
+        case unknown
+    }
+
+    final class Paragraph: Codable {
+
+        var title: NSAttributedString
+        var body: NSAttributedString
+        let type: ParagraphType.RawValue
+
+        enum CodingKeys: String, CodingKey {
+            case title, body, type
         }
-        if let body = try container.decodeIfPresent(Data.self, forKey: .body) {
-            self.body = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: body) ?? NSAttributedString()
-        } else {
-            self.body = NSAttributedString()
+
+        init(title: NSAttributedString, body: NSAttributedString, type: ParagraphType) {
+            self.title = title
+            self.body = body
+            self.type = type.rawValue
         }
-        self.type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
+
+        public required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            if let title = try container.decodeIfPresent(Data.self, forKey: .title) {
+                self.title = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: title) ?? NSAttributedString()
+            } else {
+                self.title = NSAttributedString()
+            }
+            if let body = try container.decodeIfPresent(Data.self, forKey: .body) {
+                self.body = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSAttributedString.self, from: body) ?? NSAttributedString()
+            } else {
+                self.body = NSAttributedString()
+            }
+            self.type = try container.decodeIfPresent(String.self, forKey: .type) ?? ""
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(NSKeyedArchiver.archivedData(withRootObject: title, requiringSecureCoding: false), forKey: .title)
+            try container.encode(NSKeyedArchiver.archivedData(withRootObject: body, requiringSecureCoding: false), forKey: .body)
+            try container.encode(type, forKey: .type)
+        }
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(NSKeyedArchiver.archivedData(withRootObject: title, requiringSecureCoding: false), forKey: .title)
-        try container.encode(NSKeyedArchiver.archivedData(withRootObject: body, requiringSecureCoding: false), forKey: .body)
-        try container.encode(type, forKey: .type)
+    enum MessageType: CodingKey {
+        case paragraph, notificationCode
     }
-}
 
-enum MessageType: CodingKey {
-    case paragraph, notificationCode
-}
-
-var emptyTreatmentPerspectiveMessage: TreatmentPerspectiveMessage {
-    return TreatmentPerspectiveMessage(paragraphs: [Paragraph(title: NSAttributedString(string: ""),
-                                                              body: NSAttributedString(string: ""),
-                                                              type: ParagraphType.unknown)],
-    quarantineDays: 10)
+    static var emptyMessage: Message {
+        return Message(paragraphs: [Paragraph(title: NSAttributedString(string: ""),
+                                              body: NSAttributedString(string: ""),
+                                              type: ParagraphType.unknown)],
+        quarantineDays: 10)
+    }
 }
 
 final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperation, Logging {
-    typealias Result = TreatmentPerspectiveMessage
+    typealias Result = TreatmentPerspective.Message
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {
@@ -97,7 +100,7 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<TreatmentPerspectiveMessage, ExposureDataError> {
+    func execute() -> AnyPublisher<TreatmentPerspective.Message, ExposureDataError> {
 
         if let manifest = retrieveStoredManifest(),
             let identifier = manifest.resourceBundleId {
@@ -126,63 +129,63 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
 
     // MARK: - Private
 
-    private func retrieveStoredTreatmentPerspectiveMessage() -> TreatmentPerspectiveMessage? {
+    private func retrieveStoredTreatmentPerspectiveMessage() -> TreatmentPerspective.Message? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage)
     }
 
-    private func retrieveFallbackTreatmentPerspectiveMessage() -> TreatmentPerspectiveMessage {
+    private func retrieveFallbackTreatmentPerspectiveMessage() -> TreatmentPerspective.Message {
 
         guard let path = Bundle(for: RequestTreatmentPerspectiveMessageDataOperation.self).path(forResource: "DefaultDynamicNotification", ofType: "json") else {
             self.logError("DefaultDynamicNotification.json not found")
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: path),
                                    options: .mappedIfSafe) else {
             self.logError("Could not transform DefaultDynamicNotification.json into data")
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
-        var paragraphs = [Paragraph]()
+        var paragraphs = [TreatmentPerspective.Paragraph]()
 
-        guard let dynamicNotification = try? JSONDecoder().decode(DynamicNotification.self, from: data) else {
+        guard let dynamicNotification = try? JSONDecoder().decode(TreatmentPerspective.DynamicNotification.self, from: data) else {
             self.logError("Could not decode dynamicNotification")
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
         guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
             self.logError("Could not serialize JSON")
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
-        guard let resources = json[Keys.resources.rawValue] as? [String: Any] else {
+        guard let resources = json[TreatmentPerspective.Keys.resources.rawValue] as? [String: Any] else {
             self.logError("Could not fromat resources")
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
         guard let resource = resources[.currentLanguageIdentifier] as? [String: String] else {
             self.logError("Could not find language")
-            return emptyTreatmentPerspectiveMessage
+            return TreatmentPerspective.emptyMessage
         }
 
         dynamicNotification.guidance.layout.forEach {
 
             paragraphs.append(
-                Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),
-                          body: NSAttributedString(string: resource[$0.body] ?? ""),
-                          type: ParagraphType(rawValue: $0.type) ?? .unknown)
+                TreatmentPerspective.Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),
+                                               body: NSAttributedString(string: resource[$0.body] ?? ""),
+                                               type: TreatmentPerspective.ParagraphType(rawValue: $0.type) ?? .unknown)
             )
         }
 
-        return TreatmentPerspectiveMessage(paragraphs: paragraphs,
-                                           quarantineDays: dynamicNotification.guidance.quarantineDays)
+        return TreatmentPerspective.Message(paragraphs: paragraphs,
+                                            quarantineDays: dynamicNotification.guidance.quarantineDays)
     }
 
     private func retrieveStoredManifest() -> ApplicationManifest? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)
     }
 
-    private func silentStore(treatmentPerspectiveMessage: TreatmentPerspectiveMessage) {
+    private func silentStore(treatmentPerspectiveMessage: TreatmentPerspective.Message) {
         self.storageController.store(object: treatmentPerspectiveMessage,
                                      identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage,
                                      completion: { error in
@@ -192,7 +195,7 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
             })
     }
 
-    private func store(treatmentPerspectiveMessage: TreatmentPerspectiveMessage) -> AnyPublisher<TreatmentPerspectiveMessage, ExposureDataError> {
+    private func store(treatmentPerspectiveMessage: TreatmentPerspective.Message) -> AnyPublisher<TreatmentPerspective.Message, ExposureDataError> {
         return Future { promise in
             self.storageController.store(object: treatmentPerspectiveMessage,
                                          identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage,

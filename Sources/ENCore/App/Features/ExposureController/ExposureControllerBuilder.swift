@@ -78,7 +78,7 @@ protocol ExposureControlling: AnyObject {
     func appUpdateRequiredCheck() -> AnyPublisher<(), Never>
 
     /// Updates the treatment perspecive message
-    func updateTreatmentPerspectiveMessage() -> AnyPublisher<TreatmentPerspectiveMessage, ExposureDataError>
+    func updateTreatmentPerspectiveMessage() -> AnyPublisher<TreatmentPerspective.Message, ExposureDataError>
 
     // MARK: - Onboarding
 

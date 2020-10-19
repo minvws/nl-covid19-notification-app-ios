@@ -64,7 +64,7 @@ final class NetworkManager: NetworkManaging, Logging {
     /// - Parameters:
     ///   - id: id of the resourceBundleId
     ///   - completion: executed on complete or failure
-    func getTreatmentPerspectiveMessage(identifier: String, completion: @escaping (Result<TreatmentPerspectiveMessage, NetworkError>) -> ()) {
+    func getTreatmentPerspectiveMessage(identifier: String, completion: @escaping (Result<TreatmentPerspective.Message, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
@@ -87,7 +87,7 @@ final class NetworkManager: NetworkManaging, Logging {
                                 completion(.failure(error))
                             }
                         },
-                        receiveValue: { (data: TreatmentPerspectiveMessage) in
+                        receiveValue: { (data: TreatmentPerspective.Message) in
                             completion(.success(data))
                         })
                     .store(in: &self.disposeBag)
