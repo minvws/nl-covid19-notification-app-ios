@@ -30,6 +30,8 @@ class ApplicationSignatureControllerTests: TestCase {
             try! JSONEncoder().encode(appConfig)
         }
 
+        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 0)
+
         let result = sut.retrieveStoredConfiguration()
 
         XCTAssertEqual(mockStorageController.retrieveDataCallCount, 1)
@@ -96,6 +98,8 @@ class ApplicationSignatureControllerTests: TestCase {
             storageExpectation.fulfill()
         }
 
+        XCTAssertEqual(mockStorageController.storeCallCount, 0)
+
         sut.storeAppConfiguration(appConfig)
             .assertNoFailure()
             .sink(receiveValue: { receivedConfiguration in
@@ -139,6 +143,8 @@ class ApplicationSignatureControllerTests: TestCase {
             completion(nil)
             storageExpectation.fulfill()
         }
+
+        XCTAssertEqual(mockStorageController.storeCallCount, 0)
 
         sut.storeSignature(for: appConfig)
             .assertNoFailure()
