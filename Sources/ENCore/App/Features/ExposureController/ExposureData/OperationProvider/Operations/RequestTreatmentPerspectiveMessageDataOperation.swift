@@ -81,6 +81,32 @@ enum TreatmentPerspective {
         case paragraph, notificationCode
     }
 
+    static var fallbackMessage: TreatmentPerspective.Message {
+
+        guard let path = Bundle(for: RequestTreatmentPerspectiveMessageDataOperation.self).path(forResource: "DefaultDynamicNotification", ofType: "json"),
+            let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+            let dynamicNotification = try? JSONDecoder().decode(TreatmentPerspective.DynamicNotification.self, from: data),
+            let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+            let resources = json[TreatmentPerspective.Keys.resources.rawValue] as? [String: Any],
+            let resource = resources[.currentLanguageIdentifier] as? [String: String] else {
+            return TreatmentPerspective.emptyMessage
+        }
+
+        var paragraphs = [TreatmentPerspective.Paragraph]()
+
+        dynamicNotification.guidance.layout.forEach {
+
+            paragraphs.append(
+                Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),
+                          body: NSAttributedString(string: resource[$0.body] ?? ""),
+                          type: TreatmentPerspective.ParagraphType(rawValue: $0.type) ?? .unknown)
+            )
+        }
+
+        return Message(paragraphs: paragraphs,
+                       quarantineDays: dynamicNotification.guidance.quarantineDays)
+    }
+
     static var emptyMessage: Message {
         return Message(paragraphs: [Paragraph(title: NSAttributedString(string: ""),
                                               body: NSAttributedString(string: ""),
@@ -119,7 +145,7 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
                 .eraseToAnyPublisher()
         }
 
-        return Just(retrieveFallbackTreatmentPerspectiveMessage())
+        return Just(TreatmentPerspective.fallbackMessage)
             .setFailureType(to: ExposureDataError.self)
             .eraseToAnyPublisher()
     }
@@ -128,54 +154,6 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
 
     private func retrieveStoredTreatmentPerspectiveMessage() -> TreatmentPerspective.Message? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage)
-    }
-
-    private func retrieveFallbackTreatmentPerspectiveMessage() -> TreatmentPerspective.Message {
-
-        guard let path = Bundle(for: RequestTreatmentPerspectiveMessageDataOperation.self).path(forResource: "DefaultDynamicNotification", ofType: "json") else {
-            self.logError("DefaultDynamicNotification.json not found")
-            return TreatmentPerspective.emptyMessage
-        }
-
-        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path),
-                                   options: .mappedIfSafe) else {
-            self.logError("Could not transform DefaultDynamicNotification.json into data")
-            return TreatmentPerspective.emptyMessage
-        }
-
-        var paragraphs = [TreatmentPerspective.Paragraph]()
-
-        guard let dynamicNotification = try? JSONDecoder().decode(TreatmentPerspective.DynamicNotification.self, from: data) else {
-            self.logError("Could not decode dynamicNotification")
-            return TreatmentPerspective.emptyMessage
-        }
-
-        guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-            self.logError("Could not serialize JSON")
-            return TreatmentPerspective.emptyMessage
-        }
-
-        guard let resources = json[TreatmentPerspective.Keys.resources.rawValue] as? [String: Any] else {
-            self.logError("Could not fromat resources")
-            return TreatmentPerspective.emptyMessage
-        }
-
-        guard let resource = resources[.currentLanguageIdentifier] as? [String: String] else {
-            self.logError("Could not find language")
-            return TreatmentPerspective.emptyMessage
-        }
-
-        dynamicNotification.guidance.layout.forEach {
-
-            paragraphs.append(
-                TreatmentPerspective.Paragraph(title: NSAttributedString(string: resource[$0.title] ?? ""),
-                                               body: NSAttributedString(string: resource[$0.body] ?? ""),
-                                               type: TreatmentPerspective.ParagraphType(rawValue: $0.type) ?? .unknown)
-            )
-        }
-
-        return TreatmentPerspective.Message(paragraphs: paragraphs,
-                                            quarantineDays: dynamicNotification.guidance.quarantineDays)
     }
 
     private func retrieveStoredManifest() -> ApplicationManifest? {

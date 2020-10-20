@@ -31,10 +31,8 @@ final class MessageManager: MessageManaging, Logging {
 
     func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> TreatmentPerspective.Message {
 
-        guard let treatmentPerspectiveMessage = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage) else {
-            self.logError("No Treatment Perspective Message found, returning empty one")
-            return TreatmentPerspective.emptyMessage
-        }
+        let treatmentPerspectiveMessage = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage) ??
+            TreatmentPerspective.fallbackMessage
 
         treatmentPerspectiveMessage.paragraphs.forEach {
 
