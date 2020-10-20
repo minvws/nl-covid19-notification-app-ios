@@ -435,8 +435,8 @@
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Herinnering: %@";
 
-"privacyAgreement.title" = "Toestemming gegevensgebruik";
-"privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de %@.";
+"privacyAgreement.title" = "Zo gebruikt CoronaMelder je gegevens";
+"privacyAgreement.message" = "In de %@ staat hoe CoronaMelder jouw gegevens gebruikt";
 "privacyAgreement.message.link" = "privacyverklaring";
 "privacyAgreement.list.step0" = "Gebruik van CoronaMelder is altijd vrijwillig.";
 "privacyAgreement.list.step1" = "Je app zendt versleutelde bluetoothgegevens uit.";
