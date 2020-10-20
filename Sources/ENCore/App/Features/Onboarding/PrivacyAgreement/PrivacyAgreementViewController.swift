@@ -86,6 +86,16 @@ private final class PrivacyAgreementView: View {
         return label
     }()
 
+    lazy var stepsTitleLabel: Label = {
+        let label = Label(frame: .zero)
+        label.isUserInteractionEnabled = true
+        label.font = theme.fonts.body
+        label.textColor = theme.colors.gray
+        label.text = .privacyAgreementStepsTitle
+        label.numberOfLines = 0
+        return label
+    }()
+
     init(theme: Theme, informationSteps: [OnboardingConsentSummaryStep]) {
         self.stepViews = informationSteps.map { OnboardingConsentSummaryStepView(with: $0, theme: theme) }
         super.init(theme: theme)
@@ -97,6 +107,7 @@ private final class PrivacyAgreementView: View {
         scrollView.addSubview(stackView)
         scrollView.addSubview(titleLabel)
         scrollView.addSubview(readPrivacyAgreementLabel)
+        scrollView.addSubview(stepsTitleLabel)
 
         stepViews.forEach { stackView.addArrangedSubview($0) }
 
@@ -124,6 +135,11 @@ private final class PrivacyAgreementView: View {
         readPrivacyAgreementLabel.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
+        }
+
+        stepsTitleLabel.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.top.equalTo(readPrivacyAgreementLabel.snp.bottom).offset(5)
         }
 
         stackView.snp.makeConstraints { maker in

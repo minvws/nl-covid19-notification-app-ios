@@ -475,6 +475,7 @@ extension String {
     static var privacyAgreementTitle: String { return Localization.string(for: "privacyAgreement.title") }
     static var privacyAgreementMessage: String { return Localization.string(for: "privacyAgreement.message") }
     static var privacyAgreementMessageLink: String { return Localization.string(for: "privacyAgreement.message.link") }
+    static var privacyAgreementStepsTitle: String { return Localization.string(for: "privacyAgreement.steps.title") }
     static var privacyAgreementStep0: String { return Localization.string(for: "privacyAgreement.list.step0") }
     static var privacyAgreementStep1: String { return Localization.string(for: "privacyAgreement.list.step1") }
     static var privacyAgreementStep2: String { return Localization.string(for: "privacyAgreement.list.step2") }
