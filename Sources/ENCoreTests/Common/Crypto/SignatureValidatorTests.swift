@@ -40,7 +40,7 @@ final class SignatureValidatorTests: XCTestCase {
         XCTAssertEqual(result, SignatureValidationResult.SIGNATUREVALIDATIONRESULT_INCORRECTCOMMONNAME)
     }
 
-    func test_validateSignature_chainBroken_byMissingAuthorityKeyIdentifier() {
+    func test_validateSignature_missingAuthorityKeyIdentifier() {
         let signature = dataFromFile(withName: "signature-noAuthorityKeyIdentifier", fileType: "sig")
         let content = dataFromFile(withName: "content-noAuthorityKeyIdentifier", fileType: "txt")
         let rootCertificate = dataFromFile(withName: "rootcertificate-noAuthorityKeyIdentifier", fileType: "pem")
