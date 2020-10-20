@@ -9,6 +9,7 @@
 // Should match setting name in iOS
 "enableSettings.exposureNotifications.137.step4.action.title" = "Paramétrez comme région active";
 
+"privacyAgreement.steps.title"= "Voici les points essentiels :";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risque de contamination";
 
@@ -50,6 +51,9 @@
 "status.icon.accessibility.inactive" = "Cercle jaune avec point d'exclamation comme avertissement";
 "status.icon.accessibility.notified" = "Cercle rouge avec sonnette d'alarme qui indique qu'une action est nécessaire";
 "status.notified.today" = "aujourd'hui";
+"testVersionTitle" = "Version test et analyse %@ (%@)";
+"help.faq.testVersion.title" = "Que veut dire version test et analyse ?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -437,7 +441,7 @@
 "exposure.notification.reminder" = "Rappel : %@";
 
 "privacyAgreement.title" = "Comment CoronaMelder utilise vos données.";
-"privacyAgreement.message" = "Dans les %@, vous verrez comment CoronaMelder utilise vos données. Voici les points essentiels :";
+"privacyAgreement.message" = "Dans les %@, vous verrez comment CoronaMelder utilise vos données.";
 "privacyAgreement.message.link" = "Déclaration de protection de la vie privée";
 "privacyAgreement.list.step0" = "L'utilisation de CoronaMelder est toujours volontaire";
 "privacyAgreement.list.step1" = "Votre application diffuse des données Bluetooth cryptées.";

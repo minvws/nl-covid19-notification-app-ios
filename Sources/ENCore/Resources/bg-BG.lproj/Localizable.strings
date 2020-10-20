@@ -9,6 +9,7 @@
 // Should match setting name in iOS
 "enableSettings.exposureNotifications.137.step4.action.title" = "Задай като активен регион";
 
+"privacyAgreement.steps.title"= "Това са най-важните неща:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Риск от заразяване";
 
@@ -48,6 +49,9 @@
 "status.icon.accessibility.inactive" = "Жълто кръгче с удивителен знак като предупреждение";
 "status.icon.accessibility.notified" = "Червено кръгче с алармен звънец, който показва, че в момента трябва да се направи нещо";
 "status.notified.today" = "днес";
+"testVersionTitle" = "Версия за тестване и изследване %@ (%@)";
+"help.faq.testVersion.title" = "Какво означава версия за тестване и изследване?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -433,7 +437,7 @@
 "exposure.notification.reminder" = "Напомняне: %@";
 
 "privacyAgreement.title" = "CoronaMelder използва данните ти по следния начин";
-"privacyAgreement.message" = "В %@ е посочено как CoronaMelder използва данните ти. Това са най-важните неща:";
+"privacyAgreement.message" = "В %@ е посочено как CoronaMelder използва данните ти.";
 "privacyAgreement.message.link" = "декларация за поверителност";
 "privacyAgreement.list.step0" = "Използването на  CoronaMelder винаги е доброволно";
 "privacyAgreement.list.step1" = "Твоето приложение изпраща кодирани bluetooth данни.";

@@ -9,6 +9,7 @@
 // Should match setting name in iOS
 "enableSettings.exposureNotifications.137.step4.action.title" = "Aktif bölge olarak ayarla";
 
+"privacyAgreement.steps.title"= "Önemli noktalar şunlardır:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Enfeksiyon riski";
 
@@ -48,6 +49,9 @@
 "status.icon.accessibility.inactive" = "Uyarı olarak sarı daire içinde ünlem işareti";
 "status.icon.accessibility.notified" = "Eyleme geçmenin gerekli olduğunu gösteren alarm zilli kırmızı daire";
 "status.notified.today" = "bugün";
+"testVersionTitle" = "Test ve araştırma versiyonu %@ (%@)";
+"help.faq.testVersion.title" = "Test ve araştırma versiyonu ne anlama gelir?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -434,7 +438,7 @@
 "exposure.notification.reminder" = "Hatırlatma: %@";
 
 "privacyAgreement.title" = "CoronaMelder verilerinizi böyle kullanır";
-"privacyAgreement.message" = "%@, CoronaMelder'ın verilerinizi nasıl kullandığı yazılıdır. Önemli noktalar şunlardır:";
+"privacyAgreement.message" = "%@, CoronaMelder'ın verilerinizi nasıl kullandığı yazılıdır.";
 "privacyAgreement.message.link" = "gizlilik beyanı";
 "privacyAgreement.list.step0" = "CoronaMelder'ın kullanımı her zaman gönüllüdür";
 "privacyAgreement.list.step1" = "Uygulamanız şifrelenmiş Bluetooth verileri yayınlar.";

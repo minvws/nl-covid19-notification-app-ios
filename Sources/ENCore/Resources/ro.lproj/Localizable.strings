@@ -9,6 +9,7 @@
 // Should match setting name in iOS
 "enableSettings.exposureNotifications.137.step4.action.title" = "Setați ca regiune activă";
 
+"privacyAgreement.steps.title"= "Cele mai importante puncte sunt:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risc de infectare";
 
@@ -48,6 +49,9 @@
 "status.icon.accessibility.inactive" = "Cercul galben cu semn de exclamare ca avertisment";
 "status.icon.accessibility.notified" = "Cerc roșu cu clopoțel de alarmă care indică faptul că o acțiune este acum necesară";
 "status.notified.today" = "Astăzi";
+"testVersionTitle" = "Versiunea de testare și de investigare %@ (%@)";
+"help.faq.testVersion.title" = "Ce înseamnă versiunea de testare și de investigare?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -434,7 +438,7 @@
 "exposure.notification.reminder" = "Reapel: %@";
 
 "privacyAgreement.title" = "Cum folosește CoronaMelder datele dvs.";
-"privacyAgreement.message" = "În  %@ se menționează cum folosește CoronaMelder datele dvs. Cele mai importante puncte sunt:";
+"privacyAgreement.message" = "În %@ se menționează cum folosește CoronaMelder datele dvs.";
 "privacyAgreement.message.link" = "declarația de confidențialitate";
 "privacyAgreement.list.step0" = "Utilizarea aplicației CoronaMelder este întotdeauna voluntară.";
 "privacyAgreement.list.step1" = "Aplicația transmite date Bluetooth criptate.";

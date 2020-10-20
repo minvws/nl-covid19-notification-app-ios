@@ -9,6 +9,7 @@
 // Should match setting name in iOS
 "enableSettings.exposureNotifications.137.step4.action.title" = "تحديد المنطقة النشطة";
 
+"privacyAgreement.steps.title"= "هذه هي النقاط الرئيسية:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "احتمالية الإصابة بالعدوى";
 
@@ -48,6 +49,9 @@
 "status.icon.accessibility.inactive" = "دائرة صفراء مع علامة تعجب كتحذير";
 "status.icon.accessibility.notified" = "دائرة حمراء مع جرس إنذار تشير إلى أنه عليك التصرف الآن";
 "status.notified.today" = "اليوم";
+"testVersionTitle" = "إصدار الفحص والبحث %@ (%@)";
+"help.faq.testVersion.title" = "ماذا يعني إصدار الفحص والبحث؟";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -440,7 +444,7 @@
 "exposure.notification.reminder" = "تذكير: %@";
 
 "privacyAgreement.title" = "هكذا يتعامل CoronaMelder مع بياناتك ";
-"privacyAgreement.message" = "في %@ يتم توضيح كيفية معاملة CoronaMelder مع بياناتك. هذه هي النقاط الرئيسية:";
+"privacyAgreement.message" = "في %@ يتم توضيح كيفية معاملة CoronaMelder مع بياناتك.";
 "privacyAgreement.message.link" = "بيان حماية الخصوصية";
 "privacyAgreement.list.step0" = "استخدام CoronaMelder طوعي دائمًا";
 "privacyAgreement.list.step1" = "يرسل تطبيقك بيانات بلوتوث مشفرة.";

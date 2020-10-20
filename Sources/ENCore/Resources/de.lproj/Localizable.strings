@@ -9,6 +9,7 @@
 // Should match setting name in iOS
 "enableSettings.exposureNotifications.137.step4.action.title" = "Als aktive Region festlegen";
 
+"privacyAgreement.steps.title"= "Das sind die wichtigsten Punkte:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risiko einer Ansteckung";
 
@@ -48,6 +49,9 @@
 "status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen ist eine Warnung.";
 "status.icon.accessibility.notified" = "Ein roter Kreis mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist.";
 "status.notified.today" = "heute";
+"testVersionTitle" = "Test- und Untersuchungsversion %@ (%@)";
+"help.faq.testVersion.title" = "Was bedeutet Test- und Untersuchungsversion?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -435,7 +439,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "exposure.notification.reminder" = "Erinnerung: %@";
 
 "privacyAgreement.title" = "So verwendet CoronaMelder Ihre Daten";
-"privacyAgreement.message" = "In der %@ steht, wie CoronaMelder Ihre Daten verwendet. Das sind die wichtigsten Punkte:";
+"privacyAgreement.message" = "In der %@ steht, wie CoronaMelder Ihre Daten verwendet.";
 "privacyAgreement.message.link" = "Datenschutzerklärung";
 "privacyAgreement.list.step0" = "Die Verwendung von CoronaMelder ist immer freiwillig.";
 "privacyAgreement.list.step1" = "Die App sendet verschlüsselte Bluetooth-Daten.";

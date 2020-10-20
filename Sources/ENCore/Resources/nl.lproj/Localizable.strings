@@ -9,6 +9,7 @@
 // Should match setting name in iOS
 "enableSettings.exposureNotifications.137.step4.action.title" = "Stel in als actieve regio";
 
+"privacyAgreement.steps.title"= "Dit zijn de belangrijkste punten:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Kans op besmetting";
 
@@ -48,6 +49,9 @@
 "status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
 "status.icon.accessibility.notified" = "Rood rondje met alarmbel dat aangeeft dat er nu actie nodig is";
 "status.notified.today" = "vandaag";
+"testVersionTitle" = "Test- en onderzoeksversie %@ (%@)";
+"help.faq.testVersion.title" = "Wat betekent test- en onderzoeksversie?";
+"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -434,9 +438,8 @@
 "exposure.notification.reminder" = "Herinnering: %@";
 
 "privacyAgreement.title" = "Zo gebruikt CoronaMelder je gegevens";
-"privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de %@.";
+"privacyAgreement.message" = "In de %@ staat hoe CoronaMelder jouw gegevens gebruikt";
 "privacyAgreement.message.link" = "privacyverklaring";
-"privacyAgreement.steps.title"= "Belangrijk om te weten: ";
 "privacyAgreement.list.step0" = "Gebruik van CoronaMelder is altijd vrijwillig.";
 "privacyAgreement.list.step1" = "Je app zendt versleutelde bluetoothgegevens uit.";
 "privacyAgreement.list.step2" = "Andere gebruikers die met jou in contact zijn geweest bewaren deze gegevens maximaal 14 dagen.";
