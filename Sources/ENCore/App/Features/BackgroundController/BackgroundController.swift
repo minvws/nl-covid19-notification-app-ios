@@ -245,7 +245,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             { self.exposureController.activate(inBackgroundMode: true) },
             processUpdate,
             processENStatusCheck,
-            appUpdateRequiredCheck
+            appUpdateRequiredCheck,
+            updateTreatmentPerspectiveMessage
         ]
 
         logDebug("Background: starting refresh task")
@@ -328,6 +329,27 @@ final class BackgroundController: BackgroundControlling, Logging {
                     }
                 },
                 receiveCancel: { [weak self] in self?.logDebug("Background: App Update Required Check Cancelled") }
+            )
+            .eraseToAnyPublisher()
+    }
+
+    private func updateTreatmentPerspectiveMessage() -> AnyPublisher<(), Never> {
+        logDebug("Background: Update Treatment Perspective Message Function Called")
+
+        return exposureController
+            .updateTreatmentPerspectiveMessage()
+            .map { _ in return () }
+            .replaceError(with: ())
+            .handleEvents(
+                receiveCompletion: { [weak self] completion in
+                    switch completion {
+                    case .finished:
+                        self?.logDebug("Background: Update Treatment Perspective Message Completed")
+                    case .failure:
+                        self?.logDebug("Background: Update Treatment Perspective Message Failed")
+                    }
+                },
+                receiveCancel: { [weak self] in self?.logDebug("Background: Update Treatment Perspective Message Cancelled") }
             )
             .eraseToAnyPublisher()
     }
