@@ -89,6 +89,8 @@ private final class PrivacyAgreementView: View {
     lazy var stepsTitleLabel: Label = {
         let label = Label(frame: .zero)
         label.isUserInteractionEnabled = true
+        label.font = theme.fonts.body
+        label.textColor = theme.colors.gray
         label.text = .privacyAgreementStepsTitle
         label.numberOfLines = 0
         return label
