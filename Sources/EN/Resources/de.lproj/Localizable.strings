@@ -12,8 +12,8 @@
 "update.button.update" = "Aktualisieren";
 "update.button.openSettings" = "Einstellungen öffnen";
 
-"update.software.app.title" = "Diese Version von CoronaMelder funktioniert nicht mehr.";
-"update.software.app.description" = "Aktualisieren Sie die App auf Ihrem Telefon, damit CoronaMelder wieder funktioniert.";
+"update.software.app.title" = "Sie haben eine veraltete Version von CoronaMelder";
+"update.software.app.description" = "Aktualisieren Sie die App auf Ihrem Telefon, damit CoronaMelder weiterhin gut funktioniert.";
 "update.software.app.detail.title" = "App aktualisieren";
 "update.software.app.detail.step1" = "1. Öffnen Sie die Einstellungen auf Ihrem Telefon über nachstehende Schaltfläche.";
 "update.software.app.detail.step2" = "2. Klicken Sie auf ‘Aktualisieren’, um die App zu aktualiseren.";

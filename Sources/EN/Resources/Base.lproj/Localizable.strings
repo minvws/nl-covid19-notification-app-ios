@@ -12,8 +12,8 @@
 "update.button.update" = "Update";
 "update.button.openSettings" = "Open Settings";
 
-"update.software.app.title" = "This version of CoronaMelder doesn't work anymore";
-"update.software.app.description" = "Update the app on your phone to use CoronaMelder again.";
+"update.software.app.title" = "You have an outdated version of CoronaMelder";
+"update.software.app.description" = "Update the app on your phone to make sure CoronaMelder keeps working correctly.";
 "update.software.app.detail.title" = "Update the app";
 "update.software.app.detail.step1" = "1. Open Settings on your phone using the button below";
 "update.software.app.detail.step2" = "2. Tap 'Update' to update the app.";
