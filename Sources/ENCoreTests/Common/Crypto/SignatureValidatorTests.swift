@@ -10,11 +10,10 @@ import XCTest
 
 final class SignatureValidatorTests: XCTestCase {
 
-    func test_validateSignature_withEmbeddedRootCertificate() {
-        let signatureValidator = SignatureValidator()
-
+    func test_validateSignature_withDefaultSignatureConfiguration() {
         let validSignature = dataFromFile(withName: "signature-valid", fileType: "sig")
         let content = dataFromFile(withName: "content-valid", fileType: "bin")
+        let signatureValidator = SignatureValidator(signatureConfiguration: DefaultSignatureConfiguration())
 
         let result = signatureValidator.validate(signature: validSignature, content: content, validateRootCertificate: true)
 
@@ -26,15 +25,15 @@ final class SignatureValidatorTests: XCTestCase {
         let content = dataFromFile(withName: "content-incorrectCommonName", fileType: "txt")
         let rootCertificate = dataFromFile(withName: "rootcertificate-incorrectCommonName", fileType: "pem")
 
-        let configurationMock = SignatureConfigurationMock()
-        configurationMock.rootCertificateData = rootCertificate
-        configurationMock.rootSubjectKeyIdentifier = "04143EBD1363A152E330842DEF2C1869CA979073D062".hexaData
-        configurationMock.authorityKeyIdentifier = "04143EBD1363A152E330842DEF2C1869CA979073D062".hexaData
-        configurationMock.commonNameContent = "CoronaMelder"
-        configurationMock.commonNameSuffix = "nl"
-        configurationMock.rootSerial = 1912602624
+        let mockSignatureConfiguration = SignatureConfigurationMock()
+        mockSignatureConfiguration.rootCertificateData = rootCertificate
+        mockSignatureConfiguration.rootSubjectKeyIdentifier = "04143EBD1363A152E330842DEF2C1869CA979073D062".hexaData
+        mockSignatureConfiguration.authorityKeyIdentifier = "04143EBD1363A152E330842DEF2C1869CA979073D062".hexaData
+        mockSignatureConfiguration.commonNameContent = "CoronaMelder"
+        mockSignatureConfiguration.commonNameSuffix = "nl"
+        mockSignatureConfiguration.rootSerial = 1912602624
 
-        let signatureValidator = SignatureValidator(signatureConfiguration: configurationMock)
+        let signatureValidator = SignatureValidator(signatureConfiguration: mockSignatureConfiguration)
 
         let result = signatureValidator.validate(signature: signature, content: content, validateRootCertificate: false)
 
@@ -46,15 +45,15 @@ final class SignatureValidatorTests: XCTestCase {
         let content = dataFromFile(withName: "content-noAuthorityKeyIdentifier", fileType: "txt")
         let rootCertificate = dataFromFile(withName: "rootcertificate-noAuthorityKeyIdentifier", fileType: "pem")
 
-        let configurationMock = SignatureConfigurationMock()
-        configurationMock.rootCertificateData = rootCertificate
-        configurationMock.rootSubjectKeyIdentifier = "0414F5E3DA7FADAB66396D90B7F1800129E3C91182BA".hexaData
-        configurationMock.authorityKeyIdentifier = "0414F5E3DA7FADAB66396D90B7F1800129E3C91182BA".hexaData
-        configurationMock.commonNameContent = "TestIncorrectCN"
-        configurationMock.commonNameSuffix = ""
-        configurationMock.rootSerial = 1912602624
+        let mockSignatureConfiguration = SignatureConfigurationMock()
+        mockSignatureConfiguration.rootCertificateData = rootCertificate
+        mockSignatureConfiguration.rootSubjectKeyIdentifier = "0414F5E3DA7FADAB66396D90B7F1800129E3C91182BA".hexaData
+        mockSignatureConfiguration.authorityKeyIdentifier = "0414F5E3DA7FADAB66396D90B7F1800129E3C91182BA".hexaData
+        mockSignatureConfiguration.commonNameContent = "TestIncorrectCN"
+        mockSignatureConfiguration.commonNameSuffix = ""
+        mockSignatureConfiguration.rootSerial = 1912602624
 
-        let signatureValidator = SignatureValidator(signatureConfiguration: configurationMock)
+        let signatureValidator = SignatureValidator(signatureConfiguration: mockSignatureConfiguration)
 
         let result = signatureValidator.validate(signature: signature, content: content, validateRootCertificate: false)
 
