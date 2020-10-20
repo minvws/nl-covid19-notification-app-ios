@@ -12,8 +12,8 @@
 "update.button.update" = "Actualizare";
 "update.button.openSettings" = "Accesați Configurări";
 
-"update.software.app.title" = "Această versiune a CoronaMelder nu mai funcționează";
-"update.software.app.description" = "Actualizați aplicația pe telefonul dvs. pentru ca CoronaMelder să funcționeze din nou.";
+"update.software.app.title" = "Aveți o versiune veche a aplicației CoronaMelder";
+"update.software.app.description" = "Actualizați aplicația pe telefonul dvs. pentru ca aplicația CoronaMelder să funcționeze corect în continuare.";
 "update.software.app.detail.title" = "Actualizați aplicația";
 "update.software.app.detail.step1" = "Accesați <b>Configurări</b> pe telefonul dvs. folosind butonul de mai jos";
 "update.software.app.detail.step2" = "2. Apăsați pe \"Actualizare\" pentru a actualiza aplicația.";

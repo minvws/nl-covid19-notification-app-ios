@@ -12,8 +12,8 @@
 "update.button.update" = "Güncellemek";
 "update.button.openSettings" = "Ayarları aç";
 
-"update.software.app.title" = "CoronaMelder'ın bu sürümü artık çalışmıyor";
-"update.software.app.description" = "CoronaMelder'in tekrar çalışmasını sağlamak için telefonunuzdaki uygulamayı güncelleyin.";
+"update.software.app.title" = "CoronaMelder'ın eski bir sürümüne sahipsiniz";
+"update.software.app.description" = "CoronaMelder'in düzgün çalışmasını sağlamak için telefonunuzdaki uygulamayı güncelleyin.";
 "update.software.app.detail.title" = "Uygulamayı güncelleyin";
 "update.software.app.detail.step1" = "Aşağıdaki düğmeyi kullanarak telefonunuzda ayarları açın";
 "update.software.app.detail.step2" = "2. Uygulamayı güncellemek için \"Güncelle\" yi tıklayın.";

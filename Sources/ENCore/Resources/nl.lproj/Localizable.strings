@@ -1,3 +1,14 @@
+// supports HTML
+"enableSettings.exposureNotifications.137.step2" = "Ga naar <b>Blootstellingsmeldingen</b>";
+"enableSettings.exposureNotifications.137.step2.action.title" = "Blootstellingsmeldingen";
+// supports HTML
+"enableSettings.exposureNotifications.137.step3" = "Zet <b>Deel informatie over je blootstelling</b> aan";
+"enableSettings.exposureNotifications.137.step3.action.title" = "Deel informatie over je blootstelling";
+// supports HTML
+"enableSettings.exposureNotifications.137.step4" = "Controleer als laatste stap: is <b>Stel in als actieve regio</b> blauw? Zo ja, druk hier dan op";
+// Should match setting name in iOS
+"enableSettings.exposureNotifications.137.step4.action.title" = "Stel in als actieve regio";
+
 /* MARK: - Chance of contamination */
 "contamination.title" = "Kans op besmetting";
 
@@ -13,7 +24,7 @@
 "contamination.stay_home.title" = "Blijf tot en met %@ thuis";
 "contamination.stay_home.step1" = "Laat anderen boodschappen doen. Kan dit echt niet en heb je geen klachten? Dan mag je wel even naar buiten om boodschappen te doen. Houd 1,5 meter afstand en raak niemand aan.";
 "contamination.stay_home.step2" = "Je mag in de tuin of op het balkon zitten.";
-"contamination.stay_home.step3" = "Kinderen van 4-12 jaar mogen naar school en/of sporten.";
+"contamination.stay_home.step3" = "Schoolgaande kinderen onder de 18 jaar mogen naar school en/of sporten.";
 
 "contamination.visitors.title" = "Ontvang geen bezoek";
 "contamination.visitors.step1" = "Alleen de mensen die bij je wonen, mogen samen met jou in huis zijn. Blijf bij elkaar uit de buurt en houd 1,5 meter afstand. Dus niet knuffelen, niet zoenen en geen seks.";
@@ -197,8 +208,8 @@
 "help.technical_explanation.title" = "Technische uitleg";
 "help.technical_explanation.step1.title" = "1. De app maakt voor elke telefoon een eigen code";
 "help.technical_explanation.step1.description" = "In deze code staat geen informatie over jou of je telefoon. De code is helemaal willekeurig en verandert elk kwartier.";
-"help.technical_explanation.step2.title" = "2. Telefoons delen hun codes als ze bij elkaar in de buurt zijn";
-"help.technical_explanation.step2.description" = "Heeft de persoon die je tegenkomt ook de app? Dan wisselen jullie telefoons hun codes uit via Bluetooth Low Energy. Zo weet de app welke telefoons in de buurt waren. De app weet niet van wie de telefoons zijn en ook niet waar jullie waren.";
+"help.technical_explanation.step2.title" = "2. Telefoons delen codes als ze bij elkaar in de buurt zijn";
+"help.technical_explanation.step2.description" = "Heeft de persoon die je tegenkomt ook de app? Dan wisselen jullie telefoons codes uit via Bluetooth Low Energy. Zo weet de app welke telefoons in de buurt waren. De app weet niet van wie de telefoons zijn en ook niet waar jullie waren.";
 "help.technical_explanation.step3.title" = "3. Als iemand corona heeft kan deze persoon zijn of haar codes op een lijst zetten";
 "help.technical_explanation.step3.description" = "Deze lijst bevat alleen codes van besmette personen. Om de codes toe te voegen moet een besmet persoon eerst een GGD-sleutel doorgeven aan de GGD. Zo is altijd zeker dat de toegevoegde codes ook echt horen bij iemand die corona heeft. Alle codes ouder dan 14 dagen worden automatisch van de lijst verwijderd.";
 "help.technical_explanation.step4.title" = "4. Elke telefoon controleert of het de codes op de lijst eerder is tegengekomen";
@@ -359,7 +370,7 @@
 "moreInformation.requestTest.button.title" = "Coronatest aanvragen";
 "moreInformation.requestTest.receivedNotification.title" = "Heb je klachten die passen bij corona? Vraag een test aan";
 "moreInformation.requestTest.receivedNotification.content" = "Heb je (lichte) klachten die passen bij het coronavirus? Laat je gratis testen. Het duurt niet lang en je kunt meestal snel een afspraak maken.<br><br>De uitslag is binnen 48 uur bekend. Blijf thuis tot je de uitslag weet.";
-"moreInformation.requestTest.complaints" = "Heb je ernstige klachten zoals hoge koorts of moeite met ademhalen? Of zit je een risicogroep en krijg je koorts? Bel eerst je huisarts.";
+"moreInformation.requestTest.complaints" = "Heb je ernstige klachten zoals hoge koorts of moeite met ademhalen? Of zit je in een risicogroep en krijg je koorts? Bel eerst je huisarts.";
 "moreInformation.requestTest.link" = "Ga naar coronatest.nl";
 "moreInformation.requestTest.phone" = "Bel 0800-1202";
 
@@ -397,17 +408,6 @@
 "enableSettings.exposureNotifications.step2" = "Zet contactmeldingen aan";
 "enableSettings.exposureNotifications.step2.action.title" = "Meldingen over blootstelling aan COVID-19";
 
-// supports HTML
-"enableSettings.exposureNotifications.137.step2" = "Ga naar <b>Blootstellingsmeldingen</b>";
-"enableSettings.exposureNotifications.137.step2.action.title" = "Blootstellingsmeldingen";
-// supports HTML
-"enableSettings.exposureNotifications.137.step3" = "Zet <b>Deel informatie over je blootstelling</b> aan";
-"enableSettings.exposureNotifications.137.step3.action.title" = "Deel informatie over je blootstelling";
-// supports HTML
-"enableSettings.exposureNotifications.137.step4" = "Controleer als laatste stap: is <b>Stel in als actieve regio</b> blauw? Zo ja, druk hier dan op";
-// Should match setting name in iOS
-"enableSettings.exposureNotifications.137.step4.action.title" = "Stel in als actieve regio";
-
 "enableSettings.bluetooth.title" = "Bluetooth aanzetten";
 "enableSettings.bluetooth.action" = "Open Instellingen";
 // supports HTML
@@ -433,15 +433,15 @@
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Herinnering: %@";
 
-"privacyAgreement.title" = "Toestemming gegevensgebruik";
-"privacyAgreement.message" = "Om CoronaMelder te gebruiken moet je akkoord gaan met de %@. Belangrijk om te weten: ";
+"privacyAgreement.title" = "Zo gebruikt CoronaMelder je gegevens";
+"privacyAgreement.message" = "In de %@ staat hoe CoronaMelder jouw gegevens gebruikt. Dit zijn de belangrijkste punten:";
 "privacyAgreement.message.link" = "privacyverklaring";
 "privacyAgreement.list.step0" = "Gebruik van CoronaMelder is altijd vrijwillig.";
 "privacyAgreement.list.step1" = "Je app zendt versleutelde bluetoothgegevens uit.";
 "privacyAgreement.list.step2" = "Andere gebruikers die met jou in contact zijn geweest bewaren deze gegevens maximaal 14 dagen.";
 "privacyAgreement.list.step3" = "Als uit een coronatest blijkt dat je corona hebt, kun je dit in de app melden om andere gebruikers te waarschuwen.";
 "privacyAgreement.list.step4" = "Je kunt op ieder moment de gegevens van je telefoon verwijderen.";
-"privacyAgreement.consent.button" = "Ik heb de privacyverklaring gelezen en ga hiermee akkoord";
+"privacyAgreement.consent.button" = "Ik heb de privacyverklaring gelezen en begrijp hoe CoronaMelder mijn gegevens gebruikt";
 
 "notification.update_required.title" = "Update noodzakelijk";
 "notification.update_required.description" = "Er is een nieuwe versie van CoronaMelder. Deze versie werkt niet meer goed. Controleer de app voor instructies.";
