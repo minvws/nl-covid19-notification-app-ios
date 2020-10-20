@@ -49,9 +49,7 @@
 "status.icon.accessibility.inactive" = "Cercul galben cu semn de exclamare ca avertisment";
 "status.icon.accessibility.notified" = "Cerc roșu cu clopoțel de alarmă care indică faptul că o acțiune este acum necesară";
 "status.notified.today" = "Astăzi";
-"testVersionTitle" = "Versiunea de testare și de investigare %@ (%@)";
-"help.faq.testVersion.title" = "Ce înseamnă versiunea de testare și de investigare?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2

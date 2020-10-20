@@ -49,9 +49,7 @@
 "status.icon.accessibility.inactive" = "Żółte kółko z wykrzyknikiem to ostrzeżenie";
 "status.icon.accessibility.notified" = "Czerwone kółko z dzwonkiem alarmowym oznacza, że konieczne jest podjęcie działań";
 "status.notified.today" = "dzisiaj";
-"testVersionTitle" = "Wersja testowa i badawcza %@ (%@)";
-"help.faq.testVersion.title" = "Co oznacza wersja testowa i badawcza?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2

@@ -49,9 +49,7 @@
 "status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen ist eine Warnung.";
 "status.icon.accessibility.notified" = "Ein roter Kreis mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist.";
 "status.notified.today" = "heute";
-"testVersionTitle" = "Test- und Untersuchungsversion %@ (%@)";
-"help.faq.testVersion.title" = "Was bedeutet Test- und Untersuchungsversion?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2

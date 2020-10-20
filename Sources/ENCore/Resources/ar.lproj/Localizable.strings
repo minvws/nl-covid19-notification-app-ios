@@ -49,9 +49,7 @@
 "status.icon.accessibility.inactive" = "دائرة صفراء مع علامة تعجب كتحذير";
 "status.icon.accessibility.notified" = "دائرة حمراء مع جرس إنذار تشير إلى أنه عليك التصرف الآن";
 "status.notified.today" = "اليوم";
-"testVersionTitle" = "إصدار الفحص والبحث %@ (%@)";
-"help.faq.testVersion.title" = "ماذا يعني إصدار الفحص والبحث؟";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2

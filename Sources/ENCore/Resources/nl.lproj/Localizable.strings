@@ -49,9 +49,7 @@
 "status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
 "status.icon.accessibility.notified" = "Rood rondje met alarmbel dat aangeeft dat er nu actie nodig is";
 "status.notified.today" = "vandaag";
-"testVersionTitle" = "Test- en onderzoeksversie %@ (%@)";
-"help.faq.testVersion.title" = "Wat betekent test- en onderzoeksversie?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2

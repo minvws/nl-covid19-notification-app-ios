@@ -49,9 +49,7 @@
 "status.icon.accessibility.inactive" = "Círculo amarillo con signo de exclamación como aviso";
 "status.icon.accessibility.notified" = "Círculo rojo con campana de alerta que indica que hay que reaccionar urgentemente";
 "status.notified.today" = "hoy";
-"testVersionTitle" = "Versión de prueba e investigación %@ (%@)";
-"help.faq.testVersion.title" = "¿Qué significa la versión de prueba e investigación?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2

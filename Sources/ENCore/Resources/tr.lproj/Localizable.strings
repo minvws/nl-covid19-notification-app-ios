@@ -49,9 +49,7 @@
 "status.icon.accessibility.inactive" = "Uyarı olarak sarı daire içinde ünlem işareti";
 "status.icon.accessibility.notified" = "Eyleme geçmenin gerekli olduğunu gösteren alarm zilli kırmızı daire";
 "status.notified.today" = "bugün";
-"testVersionTitle" = "Test ve araştırma versiyonu %@ (%@)";
-"help.faq.testVersion.title" = "Test ve araştırma versiyonu ne anlama gelir?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
