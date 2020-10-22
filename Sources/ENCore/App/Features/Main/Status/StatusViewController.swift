@@ -31,12 +31,13 @@ final class StatusViewController: ViewController, StatusViewControllable {
     private var cardRouter: Routing & CardTypeSettable
 
     init(exposureStateStream: ExposureStateStreaming,
+         deviceOrientationStream: DeviceOrientationStreaming,
          cardBuilder: CardBuildable,
          listener: StatusListener,
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?) {
         self.exposureStateStream = exposureStateStream
-        self.deviceOrientationStream = DeviceOrientationStream()
+        self.deviceOrientationStream = deviceOrientationStream
         self.listener = listener
         self.topAnchor = topAnchor
 

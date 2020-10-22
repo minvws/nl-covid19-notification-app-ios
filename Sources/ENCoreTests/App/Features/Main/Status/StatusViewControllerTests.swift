@@ -14,6 +14,7 @@ import XCTest
 
 final class StatusViewControllerTests: TestCase {
     private var exposureStateStream = ExposureStateStreamingMock()
+    private var deviceOrientationStream = DeviceOrientationStreamingMock()
     private var viewController: StatusViewController!
     private let router = StatusRoutingMock()
     private let cardBuilder = CardBuildableMock()
@@ -25,6 +26,7 @@ final class StatusViewControllerTests: TestCase {
 
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
+        deviceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         cardBuilder.buildHandler = { type in
             return CardRouter(viewController: CardViewController(theme: self.theme, type: type),
@@ -32,6 +34,7 @@ final class StatusViewControllerTests: TestCase {
         }
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream,
+                                              deviceOrientationStream: deviceOrientationStream,
                                               cardBuilder: cardBuilder,
                                               listener: StatusListenerMock(),
                                               theme: theme,
