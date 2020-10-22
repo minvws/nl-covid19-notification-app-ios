@@ -20,11 +20,12 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     weak var router: StatusRouting?
 
+    private let deviceOrientationStream: DeviceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
-    private var exposureStateStreamCancellable: AnyCancellable?
+    private var stateStreamCancellable: AnyCancellable?
 
     private let cardBuilder: CardBuildable
     private var cardRouter: Routing & CardTypeSettable
@@ -35,6 +36,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?) {
         self.exposureStateStream = exposureStateStream
+        self.deviceOrientationStream = DeviceOrientationStream()
         self.listener = listener
         self.topAnchor = topAnchor
 
@@ -59,8 +61,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
-        if let currentState = exposureStateStream.currentExposureState {
-            update(exposureState: currentState)
+        if let currentState = exposureStateStream.currentExposureState,
+            let isLandscape = deviceOrientationStream.currentOrientationIsLandscape {
+            update(exposureState: currentState, isLandscape: isLandscape)
         }
     }
 
@@ -79,29 +82,32 @@ final class StatusViewController: ViewController, StatusViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        exposureStateStreamCancellable = exposureStateStream.exposureState.sink { [weak self] status in
-            guard let strongSelf = self else {
-                return
-            }
+        stateStreamCancellable = exposureStateStream
+            .exposureState
+            .combineLatest(deviceOrientationStream.isLandscape)
+            .sink { [weak self] status, isLandscape in
+                guard let strongSelf = self else {
+                    return
+                }
 
-            strongSelf.update(exposureState: status)
-        }
+                strongSelf.update(exposureState: status, isLandscape: isLandscape)
+            }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillDisappear(false)
 
-        exposureStateStreamCancellable = nil
+        stateStreamCancellable = nil
     }
 
     // MARK: - Private
 
-    private func update(exposureState status: ExposureState) {
+    private func update(exposureState status: ExposureState, isLandscape: Bool) {
         let statusViewModel: StatusViewModel
 
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
-            statusViewModel = .activeWithNotNotified
+            statusViewModel = .activeWithNotNotified(showScene: !isLandscape)
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
         case let (.inactive(reason), .notified(date)):
@@ -242,9 +248,14 @@ private final class StatusView: View {
             maker.top.equalToSuperview().priority(.low)
         }
         contentStretchGuide.snp.makeConstraints { maker in
-            maker.leading.trailing.centerY.equalTo(contentContainer)
+            maker.centerY.equalTo(contentContainer)
             maker.height.greaterThanOrEqualTo(contentContainer.snp.height)
             maker.bottom.equalTo(stretchGuide.snp.bottom).priority(.high)
+        }
+        contentContainer.snp.makeConstraints { maker in
+            maker.centerX.equalToSuperview()
+            maker.leading.greaterThanOrEqualTo(safeAreaLayoutGuide.snp.leadingMargin).inset(16)
+            maker.trailing.lessThanOrEqualTo(safeAreaLayoutGuide.snp.trailingMargin).inset(16)
         }
         iconView.snp.makeConstraints { maker in
             maker.width.height.equalTo(48)
