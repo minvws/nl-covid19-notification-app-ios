@@ -353,7 +353,9 @@ final class ExposureController: ExposureControlling, Logging {
                 switch result {
                 case .finished:
                     self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
-                    self?.notifyUserIfRequired()
+                    // FIXME: disabled for `57704`
+                    // self?.exposureController.notifyUserIfRequired()
+                    self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
                 case let .failure(error):
                     self?.logError("Error completing sequence \(error.localizedDescription)")
                 }
@@ -624,15 +626,26 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private func notifyUserAppNeedsUpdate() {
-        let content = UNMutableNotificationContent()
-        content.title = .statusAppStateInactiveTitle
-        content.body = String(format: .statusAppStateInactiveDescription)
-        content.sound = UNNotificationSound.default
-        content.badge = 0
+        let unc = UNUserNotificationCenter.current()
+        unc.getNotificationSettings { settings in
+            guard settings.authorizationStatus == .authorized else {
+                return
+            }
+            let content = UNMutableNotificationContent()
+            content.title = .statusAppStateInactiveTitle
+            content.body = String(format: .statusAppStateInactiveDescription)
+            content.sound = UNNotificationSound.default
+            content.badge = 0
 
-        sendNotification(content: content, identifier: .inactive) { success in
-            if success {
-                self.dataController.updateLastLocalNotificationExposureDate(Date())
+            let identifier = PushNotificationIdentifier.inactive.rawValue
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+            unc.add(request) { [weak self] error in
+                if let error = error {
+                    self?.logError("\(error.localizedDescription)")
+                } else {
+                    self?.dataController.updateLastLocalNotificationExposureDate(Date())
+                }
             }
         }
     }
