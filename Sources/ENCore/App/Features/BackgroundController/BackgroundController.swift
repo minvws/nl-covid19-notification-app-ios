@@ -37,12 +37,12 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Init
 
     init(exposureController: ExposureControlling,
-        networkController: NetworkControlling,
-        configuration: BackgroundTaskConfiguration,
-        exposureManager: ExposureManaging,
-        userNotificationCenter: UserNotificationCenter,
-        taskScheduler: TaskScheduling,
-        bundleIdentifier: String) {
+         networkController: NetworkControlling,
+         configuration: BackgroundTaskConfiguration,
+         exposureManager: ExposureManaging,
+         userNotificationCenter: UserNotificationCenter,
+         taskScheduler: TaskScheduling,
+         bundleIdentifier: String) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
@@ -65,14 +65,14 @@ final class BackgroundController: BackgroundControlling, Logging {
                 .sink(receiveCompletion: { _ in
                     // Do nothing
                 }, receiveValue: { (isDeactivated: Bool) in
-                        if isDeactivated {
-                            self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
-                            self.removeAllTasks()
-                        } else {
-                            self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
-                            self.scheduleRefresh()
-                            self.scheduleDecoySequence()
-                        }
+                    if isDeactivated {
+                        self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
+                        self.removeAllTasks()
+                    } else {
+                        self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
+                        self.scheduleRefresh()
+                        self.scheduleDecoySequence()
+                    }
                     }).store(in: &self.disposeBag)
         }
 
@@ -188,7 +188,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             .getDecoyProbability()
             .sink(receiveCompletion: { _ in
             }, receiveValue: { value in
-                    execute(decoyProbability: value)
+                execute(decoyProbability: value)
                 })
             .store(in: &disposeBag)
     }
@@ -217,7 +217,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     .mapError {
                         self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
                         return $0.asExposureDataError
-                }
+                    }
             }.sink(receiveCompletion: { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
@@ -264,7 +264,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     task.setTaskCompleted(success: false)
                 }
             }, receiveValue: { [weak self] _ in
-                    self?.logDebug("Background: Completed refresh task")
+                self?.logDebug("Background: Completed refresh task")
                 })
 
         cancellable.store(in: &disposeBag)
@@ -332,7 +332,6 @@ final class BackgroundController: BackgroundControlling, Logging {
             )
             .eraseToAnyPublisher()
     }
-
 
     private func processLastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
         return exposureController.lastOpenedNotificationCheck()

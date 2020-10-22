@@ -139,7 +139,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.refreshStatus()
 
-
         exposureController
             .isAppDeactivated()
             .sink(receiveCompletion: { _ in

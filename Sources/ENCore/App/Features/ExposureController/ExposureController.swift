@@ -13,12 +13,12 @@ import UIKit
 final class ExposureController: ExposureControlling, Logging {
 
     init(mutableStateStream: MutableExposureStateStreaming,
-        exposureManager: ExposureManaging,
-        dataController: ExposureDataControlling,
-        networkStatusStream: NetworkStatusStreaming,
-        userNotificationCenter: UserNotificationCenter,
-        mutableBluetoothStateStream: MutableBluetoothStateStreaming,
-        currentAppVersion: String?) {
+         exposureManager: ExposureManaging,
+         dataController: ExposureDataControlling,
+         networkStatusStream: NetworkStatusStreaming,
+         userNotificationCenter: UserNotificationCenter,
+         mutableBluetoothStateStream: MutableBluetoothStateStreaming,
+         currentAppVersion: String?) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
@@ -93,7 +93,7 @@ final class ExposureController: ExposureControlling, Logging {
                 }
             }
         }
-            .eraseToAnyPublisher()
+        .eraseToAnyPublisher()
     }
 
     func deactivate() {
@@ -181,8 +181,8 @@ final class ExposureController: ExposureControlling, Logging {
         guard
             let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
             lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
-            else {
-                return
+        else {
+            return
         }
         guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
             // We haven't shown a notification to the user before so we should show one now
@@ -288,7 +288,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
-        completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
+                           completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
         let receiveCompletion: (Subscribers.Completion<ExposureManagerError>) -> () = { result in
             if case let .failure(error) = result {
                 let result: ExposureControllerUploadKeysResult
@@ -310,21 +310,19 @@ final class ExposureController: ExposureControlling, Logging {
 
         let receiveValue: ([DiagnosisKey]) -> () = { keys in
             self.upload(diagnosisKeys: keys,
-                labConfirmationKey: labConfirmationKey,
-                completion: completion)
+                        labConfirmationKey: labConfirmationKey,
+                        completion: completion)
         }
 
         requestDiagnosisKeys()
             .sink(receiveCompletion: receiveCompletion,
-                receiveValue: receiveValue)
+                  receiveValue: receiveValue)
             .store(in: &disposeBag)
     }
-
 
     func updateLastLaunch() {
         dataController.setLastAppLaunchDate(Date())
     }
-
 
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
         logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
@@ -344,23 +342,22 @@ final class ExposureController: ExposureControlling, Logging {
 
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
         return Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
-        // execute them one by one
-        .flatMap(maxPublishers: .max(1)) { $0 }
-        // collect them
-        .collect()
-        // merge
-        .compactMap { _ in () }
-        // notify the user if required
-        .handleEvents(receiveCompletion: { [weak self] result in
-            switch result {
-            case .finished:
-                self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
-                self?.notifyUserIfRequired()
-            case let .failure(error):
-                self?.logError("Error completing sequence \(error.localizedDescription)")
-            }
-        })
-            .eraseToAnyPublisher()
+            // execute them one by one
+            .flatMap(maxPublishers: .max(1)) { $0 }
+            // collect them
+            .collect()
+            // merge
+            .compactMap { _ in () }
+            // notify the user if required
+            .handleEvents(receiveCompletion: { [weak self] result in
+                switch result {
+                case .finished:
+                    self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
+                    self?.notifyUserIfRequired()
+                case let .failure(error):
+                    self?.logError("Error completing sequence \(error.localizedDescription)")
+                }
+        }).eraseToAnyPublisher()
     }
 
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never> {
@@ -479,7 +476,6 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.sendNotification(content: content, identifier: .enStatusDisabled) { _ in
                     promise(.success(()))
-
                 }
             }
         }.eraseToAnyPublisher()
@@ -512,12 +508,12 @@ final class ExposureController: ExposureControlling, Logging {
             .networkStatusStream
             .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
             .filter { networkStatus in return true } // only update when internet is active
-        .flatMap { [weak self] (_) -> AnyPublisher<(), Never> in
-            return self?
-                .updateWhenRequired()
-                .replaceError(with: ())
-                .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
-        }
+            .flatMap { [weak self] (_) -> AnyPublisher<(), Never> in
+                return self?
+                    .updateWhenRequired()
+                    .replaceError(with: ())
+                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
+            }
             .sink(receiveValue: { _ in })
             .store(in: &disposeBag)
     }
@@ -587,13 +583,13 @@ final class ExposureController: ExposureControlling, Logging {
         return Future { promise in
             self.exposureManager.getDiagnonisKeys(completion: promise)
         }
-            .share()
-            .eraseToAnyPublisher()
+        .share()
+        .eraseToAnyPublisher()
     }
 
     private func upload(diagnosisKeys keys: [DiagnosisKey],
-        labConfirmationKey: LabConfirmationKey,
-        completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
+                        labConfirmationKey: LabConfirmationKey,
+                        completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
         let mapExposureDataError: (ExposureDataError) -> ExposureControllerUploadKeysResult = { error in
             switch error {
             case .internalError, .networkUnreachable, .serverError:
@@ -623,7 +619,7 @@ final class ExposureController: ExposureControlling, Logging {
             .map { _ in return ExposureControllerUploadKeysResult.success }
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: receiveCompletion,
-                receiveValue: completion)
+                  receiveValue: completion)
             .store(in: &disposeBag)
     }
 
@@ -656,8 +652,8 @@ final class ExposureController: ExposureControlling, Logging {
             }
 
             let request = UNNotificationRequest(identifier: identifier.rawValue,
-                content: content,
-                trigger: nil)
+                                                content: content,
+                                                trigger: nil)
 
             self.userNotificationCenter.add(request) { error in
                 guard let error = error else {
@@ -693,4 +689,3 @@ extension LabConfirmationKey: ExposureConfirmationKey {
         return validUntil
     }
 }
-
