@@ -23,6 +23,11 @@ then
       BUILD_ID="1"
 fi
 
+if [ -z "$BUNDLE_IDENTIFIER" ]
+then
+      BUNDLE_IDENTIFIER="nl.rijksoverheid.en"
+fi
+
 if [ -z "$BUNDLE_SHORT_VERSION" ]
 then 
       BUNDLE_SHORT_VERSION="${BUNDLE_VERSION}"

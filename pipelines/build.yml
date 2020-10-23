@@ -15,6 +15,9 @@ parameters:
 - name: bundleShortVersion
   type: string
   default: ''
+- name: bundleIdentifier
+  type: string
+  default: 'nl.rijksoverheid.en'
 - name: debugMenu
   type: string
   default: ''
@@ -57,6 +60,7 @@ steps:
     BUILD_ID: $(Build.BuildId)
     BUNDLE_SHORT_VERSION: ${{ parameters.bundleShortVersion }}
     BUNDLE_DISPLAY_NAME: ${{ parameters.bundleDisplayName }}
+    BUNDLE_IDENTIFIER: ${{ parameters.bundleIdentifier }}
     RELEASE_PROVISIONING_PROFILE: ${{ parameters.provisioningProfileName }}
     USE_DEVELOPER_MENU: ${{ parameters.debugMenu }}
     SHARE_LOGS_ENABLED: ${{ parameters.shareLogsEnabled }}
