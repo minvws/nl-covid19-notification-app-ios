@@ -46,8 +46,8 @@ steps:
 #   displayName: Distribute test build
 - template: build.yml
   parameters:
-    provisioningProfileSecureFile: CoronaMelder_Test.mobileprovision
-    provisioningProfileName: "CoronaMelder_TST"
+    provisioningProfileSecureFile: CoronaMelder_TST_13_5.mobileprovision
+    provisioningProfileName: "CoronaMelder_TST_13_5"
     networkConfiguration: Test
     logLevel: debug
     configuration: Debug
