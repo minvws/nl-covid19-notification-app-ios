@@ -50,6 +50,11 @@ then
       EN_DEVELOPER_REGION="TEST_NL_TEST"
 fi
 
+if [ -z "$BUNDLE_IDENTIFIER" ]
+then
+      BUNDLE_IDENTIFIER="nl.rijksoverheid.en"
+fi
+
 yq w -i project.yml "targets.EN.info.properties.SHARE_LOGS_ENABLED" ${SHARE_LOGS_ENABLED}
 yq w -i project.yml "targets.EN.info.properties.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
 yq w -i project.yml "targets.EN.info.properties.LOG_LEVEL" ${LOG_LEVEL}

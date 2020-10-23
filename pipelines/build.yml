@@ -42,6 +42,9 @@ parameters:
 - name: enDeveloperRegion
   type: string
   default: 'NL'
+- name: bundleIdentifier
+  type: string
+  default: 'nl.rijksoverheid.en'
 
 steps:
 - task: InstallAppleProvisioningProfile@1
@@ -57,6 +60,7 @@ steps:
     BUILD_ID: $(Build.BuildId)
     BUNDLE_SHORT_VERSION: ${{ parameters.bundleShortVersion }}
     BUNDLE_DISPLAY_NAME: ${{ parameters.bundleDisplayName }}
+    BUNDLE_IDENTIFIER: ${{ parameters.bundleDisplayName }}
     RELEASE_PROVISIONING_PROFILE: ${{ parameters.provisioningProfileName }}
     USE_DEVELOPER_MENU: ${{ parameters.debugMenu }}
     SHARE_LOGS_ENABLED: ${{ parameters.shareLogsEnabled }}

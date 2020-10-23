@@ -20,6 +20,30 @@ steps:
 - script: |
     echo "##vso[task.setvariable variable=GOOGLE_APPLICATION_CREDENTIALS]$(firebaseCredentials.secureFilePath)"
   displayName: Set Firebase credentials
+# - template: build.yml
+#   parameters:
+#     provisioningProfileSecureFile: CoronaMelder_Test.mobileprovision
+#     provisioningProfileName: "CoronaMelder_TST"
+#     networkConfiguration: Test
+#     logLevel: debug
+#     configuration: Debug
+#     bundleDisplayName: "🐞 CoronaMelder"
+#     bundleShortVersion: tst
+#     debugMenu: true
+#     packageApp: true
+#     shareLogsEnabled: true
+#     exportPath: "ipa/test"
+#     exportMethod: "ad-hoc"
+#     enDeveloperRegion: "TEST_NL_TEST"
+# - publish: "ipa/test"
+#   displayName: Publish test IPA
+#   artifact: ipa-test
+# - script: |
+#     firebase appdistribution:distribute ipa/test/CoronaMelder.ipa \
+#     --app 1:937920499570:ios:3fa1c661e8189087f957eb \
+#     --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+#     --groups ios-latest
+#   displayName: Distribute test build
 - template: build.yml
   parameters:
     provisioningProfileSecureFile: CoronaMelder_Test.mobileprovision
@@ -32,51 +56,52 @@ steps:
     debugMenu: true
     packageApp: true
     shareLogsEnabled: true
-    exportPath: "ipa/test"
+    exportPath: "ipa/test-13-6"
     exportMethod: "ad-hoc"
     enDeveloperRegion: "TEST_NL_TEST"
-- publish: "ipa/test"
+    bundleIdentifier: "nl.rijksoverheid.en.test"
+- publish: "ipa/test-13-6"
   displayName: Publish test IPA
-  artifact: ipa-test
+  artifact: ipa-test-13-6
 - script: |
-    firebase appdistribution:distribute ipa/test/CoronaMelder.ipa \
-    --app 1:937920499570:ios:3fa1c661e8189087f957eb \
+    firebase appdistribution:distribute ipa/test-13-6/CoronaMelder.ipa \
+    --app 1:937920499570:ios:ada965c6b5534d48f957eb \
     --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-latest
-  displayName: Distribute test build
-- template: build.yml
-  parameters:
-    provisioningProfileSecureFile: CoronaMelder_Acceptance.mobileprovision
-    provisioningProfileName: "CoronaMelder_ACC"
-    networkConfiguration: ACC
-    logLevel: debug
-    bundleDisplayName: "β CoronaMelder"
-    bundleShortVersion: acc
-    packageApp: true
-    shareLogsEnabled: true
-    exportPath: "ipa/acc"
-    exportMethod: "ad-hoc"
-    enDeveloperRegion: "TEST_NL_ACC"
-- publish: "ipa/acc"
-  displayName: Publish acceptance IPA
-  artifact: ipa-acc
-- script: |
-    firebase appdistribution:distribute ipa/acc/CoronaMelder.ipa \
-    --app 1:937920499570:ios:3fa1c661e8189087f957eb \
-    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
-    --groups ios-acceptance
-  displayName: Distribute acceptance build  
-- template: build.yml
-  parameters:
-    provisioningProfileSecureFile: CoronaMelder_Production.mobileprovision
-    provisioningProfileName: "CoronaMelder_PROD"
-    networkConfiguration: Production
-    logLevel: none
-    bundleDisplayName: "CoronaMelder"
-    packageApp: true
-    exportPath: "ipa/prod"
-    exportMethod: "app-store"
-    enDeveloperRegion: "NL"
-- publish: "ipa/prod"
-  displayName: Publish production IPA
-  artifact: ipa-prod
+  displayName: Distribute test build - < 13.7
+# - template: build.yml
+#   parameters:
+#     provisioningProfileSecureFile: CoronaMelder_Acceptance.mobileprovision
+#     provisioningProfileName: "CoronaMelder_ACC"
+#     networkConfiguration: ACC
+#     logLevel: debug
+#     bundleDisplayName: "β CoronaMelder"
+#     bundleShortVersion: acc
+#     packageApp: true
+#     shareLogsEnabled: true
+#     exportPath: "ipa/acc"
+#     exportMethod: "ad-hoc"
+#     enDeveloperRegion: "TEST_NL_ACC"
+# - publish: "ipa/acc"
+#   displayName: Publish acceptance IPA
+#   artifact: ipa-acc
+# - script: |
+#     firebase appdistribution:distribute ipa/acc/CoronaMelder.ipa \
+#     --app 1:937920499570:ios:3fa1c661e8189087f957eb \
+#     --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+#     --groups ios-acceptance
+#   displayName: Distribute acceptance build  
+# - template: build.yml
+#   parameters:
+#     provisioningProfileSecureFile: CoronaMelder_Production.mobileprovision
+#     provisioningProfileName: "CoronaMelder_PROD"
+#     networkConfiguration: Production
+#     logLevel: none
+#     bundleDisplayName: "CoronaMelder"
+#     packageApp: true
+#     exportPath: "ipa/prod"
+#     exportMethod: "app-store"
+#     enDeveloperRegion: "NL"
+# - publish: "ipa/prod"
+#   displayName: Publish production IPA
+#   artifact: ipa-prod
