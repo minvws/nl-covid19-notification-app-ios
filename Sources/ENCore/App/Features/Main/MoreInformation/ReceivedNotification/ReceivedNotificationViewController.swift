@@ -142,30 +142,31 @@ private final class ReceivedNotificationView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.bottom.leading.trailing.equalToSuperview()
+            maker.top.bottom.leading.trailing.equalTo(safeAreaLayoutGuide)
         }
 
         exampleCaption.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.top.equalToSuperview()
         }
         exampleExposureImageView.snp.makeConstraints { maker in
             let aspectRatio = exampleExposureImageView.image?.aspectRatio ?? 1
 
             maker.top.equalTo(exampleCaption.snp.bottom).offset(15)
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(exampleExposureImageView.snp.width).dividedBy(aspectRatio)
             maker.bottom.equalToSuperview()
         }
         examplePushNotificationImageView.snp.makeConstraints { maker in
             let aspectRatio = examplePushNotificationImageView.image?.aspectRatio ?? 1
 
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(examplePushNotificationImageView.snp.width).dividedBy(aspectRatio)
             maker.top.bottom.equalToSuperview()
         }
         tableView.snp.makeConstraints { maker in
-            maker.leading.trailing.top.bottom.width.equalToSuperview()
+            maker.leading.trailing.top.bottom.equalTo(safeAreaLayoutGuide)
+            maker.width.equalToSuperview()
             maker.height.equalTo(0)
         }
     }
