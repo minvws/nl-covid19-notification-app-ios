@@ -52,6 +52,7 @@ steps:
     logLevel: debug
     configuration: Debug
     bundleDisplayName: "🐞 CoronaMelder"
+    bundleIdentifier: "nl.rijksoverheid.en.test"
     bundleShortVersion: tst
     debugMenu: true
     packageApp: true
@@ -59,7 +60,6 @@ steps:
     exportPath: "ipa/test-13-6"
     exportMethod: "ad-hoc"
     enDeveloperRegion: "TEST_NL_TEST"
-    bundleIdentifier: "nl.rijksoverheid.en.test"
 - publish: "ipa/test-13-6"
   displayName: Publish test IPA
   artifact: ipa-test-13-6
