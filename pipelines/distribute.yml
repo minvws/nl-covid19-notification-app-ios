@@ -52,19 +52,19 @@ steps:
     logLevel: debug
     configuration: Debug
     bundleDisplayName: "🐞 CoronaMelder"
-    bundleIdentifier: "nl.rijksoverheid.en.test"
-    bundleShortVersion: tst
+    bundleIdentifier: nl.rijksoverheid.en.test
+    bundleShortVersion: tst-13-5
     debugMenu: true
     packageApp: true
     shareLogsEnabled: true
-    exportPath: "ipa/test-13-6"
+    exportPath: "ipa/test-13-5"
     exportMethod: "ad-hoc"
     enDeveloperRegion: "TEST_NL_TEST"
-- publish: "ipa/test-13-6"
+- publish: "ipa/test-13-5"
   displayName: Publish test IPA
-  artifact: ipa-test-13-6
+  artifact: ipa-test-13-5
 - script: |
-    firebase appdistribution:distribute ipa/test-13-6/CoronaMelder.ipa \
+    firebase appdistribution:distribute ipa/test-13-5/CoronaMelder.ipa \
     --app 1:937920499570:ios:ada965c6b5534d48f957eb \
     --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-latest

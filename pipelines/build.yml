@@ -15,6 +15,9 @@ parameters:
 - name: bundleShortVersion
   type: string
   default: ''
+- name: bundleIdentifier
+  type: string
+  default: 'nl.rijksoverheid.en'
 - name: debugMenu
   type: string
   default: ''
@@ -42,9 +45,6 @@ parameters:
 - name: enDeveloperRegion
   type: string
   default: 'NL'
-- name: bundleIdentifier
-  type: string
-  default: 'nl.rijksoverheid.en'
 
 steps:
 - task: InstallAppleProvisioningProfile@1
