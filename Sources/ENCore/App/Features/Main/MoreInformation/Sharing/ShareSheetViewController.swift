@@ -126,8 +126,7 @@ final class ShareSheetView: View {
 
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
-            maker.width.equalToSuperview()
-            maker.bottom.equalTo(self).inset(-16)
+            maker.bottom.equalTo(button.snp.top).inset(-16)
         }
 
         if let width = imageView.image?.size.width,
@@ -144,20 +143,20 @@ final class ShareSheetView: View {
         }
 
         titleLabel.snp.makeConstraints { maker in
-            maker.leading.trailing.equalTo(self).inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
             maker.top.equalTo(imageView.snp.bottom).offset(25)
         }
 
         contentLabel.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
-            maker.leading.trailing.equalTo(self).inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
             maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
         }
 
         button.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(50)
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
