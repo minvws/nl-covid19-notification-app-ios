@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import UIKit
@@ -14,8 +15,12 @@ protocol ShareSheetViewControllable: ViewControllable {}
 
 final class ShareSheetViewController: ViewController, ShareSheetViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
-    init(listener: ShareSheetListener, theme: Theme) {
+    init(listener: ShareSheetListener,
+         theme: Theme,
+         deviceOrientationStream: DeviceOrientationStreaming) {
         self.listener = listener
+
+        self.deviceOrientationStream = deviceOrientationStream
 
         super.init(theme: theme)
     }
@@ -31,6 +36,7 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
 
         navigationItem.rightBarButtonItem = closeBarButtonItem
 
+        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
         internalView.button.action = { [weak self] in
             if let viewController = self {
                 self?.listener?.displayShareSheet(usingViewController: viewController, completion: { completed in
@@ -42,6 +48,22 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
                 self?.logError("Couldn't retreive a viewcontroller")
             }
         }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        deviceOrientationStreamCancellable = deviceOrientationStream
+            .isLandscape
+            .sink(receiveValue: { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+        })
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        deviceOrientationStreamCancellable = nil
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -57,6 +79,8 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
         listener?.shareSheetDidComplete(shouldHideViewController: true)
     }
 
+    private let deviceOrientationStream: DeviceOrientationStreaming
+    private var deviceOrientationStreamCancellable: AnyCancellable?
     private weak var listener: ShareSheetListener?
     private lazy var internalView: ShareSheetView = ShareSheetView(theme: self.theme)
     private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
@@ -99,6 +123,13 @@ final class ShareSheetView: View {
 
     private lazy var viewsInDisplayOrder = [imageView, titleLabel, contentLabel]
 
+    var showVisual: Bool = true {
+        didSet {
+            setupConstraints()
+            imageView.isHidden = !showVisual
+        }
+    }
+
     override func build() {
         super.build()
 
@@ -129,7 +160,8 @@ final class ShareSheetView: View {
             maker.bottom.equalTo(button.snp.top).inset(-16)
         }
 
-        if let width = imageView.image?.size.width,
+        if showVisual,
+            let width = imageView.image?.size.width,
             let height = imageView.image?.size.height,
             width > 0, height > 0 {
 
@@ -142,20 +174,24 @@ final class ShareSheetView: View {
             }
         }
 
-        titleLabel.snp.makeConstraints { maker in
+        titleLabel.snp.remakeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
-            maker.top.equalTo(imageView.snp.bottom).offset(25)
+            if showVisual {
+                maker.top.equalTo(imageView.snp.bottom).offset(25)
+            } else {
+                maker.top.equalToSuperview()
+            }
         }
 
-        contentLabel.snp.makeConstraints { maker in
+        contentLabel.snp.remakeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
             maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
         }
 
-        button.snp.makeConstraints { maker in
+        button.snp.remakeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(50)
 

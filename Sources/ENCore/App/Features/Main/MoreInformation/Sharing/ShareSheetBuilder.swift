@@ -16,6 +16,7 @@ protocol ShareSheetListener: AnyObject {
 
 protocol ShareSheetDependency {
     var theme: Theme { get }
+    var deviceOrientationStream: DeviceOrientationStreaming { get }
 }
 
 /// @mockable
@@ -34,6 +35,7 @@ final class ShareSheetBuilder: Builder<ShareSheetDependency>, ShareSheetBuildabl
     func build(withListener listener: ShareSheetListener, items: [Any]) -> ViewControllable {
         let dependencyProvider = ShareSheetDependencyProvider(dependency: dependency)
         return ShareSheetViewController(listener: listener,
-                                        theme: dependencyProvider.dependency.theme)
+                                        theme: dependencyProvider.dependency.theme,
+                                        deviceOrientationStream: dependencyProvider.dependency.deviceOrientationStream)
     }
 }

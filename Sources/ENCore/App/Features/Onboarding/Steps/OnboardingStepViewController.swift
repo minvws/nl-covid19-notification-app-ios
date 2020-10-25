@@ -5,8 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Lottie
+import SnapKit
 import UIKit
 
 protocol OnboardingStepViewControllable: ViewControllable {}
@@ -19,12 +21,14 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
          onboardingStepBuilder: OnboardingStepBuildable,
          listener: OnboardingStepListener,
          theme: Theme,
-         index: Int) {
+         index: Int,
+         deviceOrientationStream: DeviceOrientationStreaming) {
 
         self.onboardingManager = onboardingManager
         self.onboardingStepBuilder = onboardingStepBuilder
         self.listener = listener
         self.index = index
+        self.deviceOrientationStream = deviceOrientationStream
 
         guard let step = self.onboardingManager.getStep(index) else { fatalError("OnboardingStep index out of range") }
 
@@ -36,11 +40,11 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.internalView.onboardingStep = self.onboardingStep
-
+        internalView.onboardingStep = onboardingStep
+        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
         setThemeNavigationBar()
 
-        internalView.button.title = self.onboardingStep.buttonTitle
+        internalView.button.title = onboardingStep.buttonTitle
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
 
@@ -48,12 +52,20 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         super.viewWillAppear(animated)
 
         self.internalView.playAnimation()
+
+        deviceOrientationStreamCancellable = deviceOrientationStream
+            .isLandscape
+            .sink(receiveValue: { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+        })
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         self.internalView.stopAnimation()
+
+        deviceOrientationStreamCancellable = nil
     }
 
     // MARK: - ViewController Lifecycle
@@ -71,6 +83,8 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     private var onboardingStep: OnboardingStep
     private let onboardingManager: OnboardingManaging
     private let onboardingStepBuilder: OnboardingStepBuildable
+    private let deviceOrientationStream: DeviceOrientationStreaming
+    private var deviceOrientationStreamCancellable: AnyCancellable?
 
     // MARK: - Setups
 
@@ -94,6 +108,8 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 final class OnboardingStepView: View {
 
     private lazy var scrollView = UIScrollView()
+    private var imageEnabledConstraints = [Constraint]()
+    private var imageDisabledConstraints = [Constraint]()
 
     fileprivate lazy var button: Button = {
         return Button(theme: self.theme)
@@ -133,6 +149,12 @@ final class OnboardingStepView: View {
         }
     }
 
+    var showVisual: Bool = true {
+        didSet {
+            updateView()
+        }
+    }
+
     override func build() {
         super.build()
 
@@ -160,8 +182,9 @@ final class OnboardingStepView: View {
 
         titleLabel.snp.makeConstraints { maker in
             // no need for offset as the images include whitespace
-            maker.top.greaterThanOrEqualTo(imageView.snp.bottom)
-            maker.top.greaterThanOrEqualTo(animationView.snp.bottom)
+            imageEnabledConstraints.append(maker.top.greaterThanOrEqualTo(imageView.snp.bottom).constraint)
+            imageEnabledConstraints.append(maker.top.greaterThanOrEqualTo(animationView.snp.bottom).constraint)
+            imageDisabledConstraints.append(maker.top.equalToSuperview().constraint)
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
         }
 
@@ -181,6 +204,18 @@ final class OnboardingStepView: View {
 
         self.titleLabel.attributedText = step.attributedTitle
         self.contentLabel.attributedText = step.attributedContent
+
+        guard showVisual else {
+            animationView.isHidden = true
+            imageView.isHidden = true
+
+            imageEnabledConstraints.forEach { $0.deactivate() }
+            imageDisabledConstraints.forEach { $0.activate() }
+            return
+        }
+
+        imageDisabledConstraints.forEach { $0.deactivate() }
+        imageEnabledConstraints.forEach { $0.activate() }
 
         switch step.illustration {
         case let .image(named: name):

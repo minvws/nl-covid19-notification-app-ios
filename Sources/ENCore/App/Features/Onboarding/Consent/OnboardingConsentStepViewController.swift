@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Lottie
 import UIKit
@@ -25,15 +26,19 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     private let onboardingConsentManager: OnboardingConsentManaging
     private let consentStep: OnboardingConsentStep?
+    private let deviceOrientationStream: DeviceOrientationStreaming
+    private var deviceOrientationStreamCancellable: AnyCancellable?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
          listener: OnboardingConsentListener,
          theme: Theme,
-         index: Int) {
+         index: Int,
+         deviceOrientationStream: DeviceOrientationStreaming) {
 
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         self.consentStep = self.onboardingConsentManager.getStep(index)
+        self.deviceOrientationStream = deviceOrientationStream
 
         super.init(theme: theme)
     }
@@ -50,6 +55,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         hasBottomMargin = true
 
         internalView.consentStep = consentStep
+        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
         internalView.primaryButton.addTarget(self, action: #selector(primaryButtonPressed), for: .touchUpInside)
         internalView.secondaryButton.addTarget(self, action: #selector(secondaryButtonPressed), for: .touchUpInside)
 
@@ -65,12 +71,19 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.internalView.playAnimation()
+
+        deviceOrientationStreamCancellable = deviceOrientationStream
+            .isLandscape
+            .sink(receiveValue: { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+        })
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         self.internalView.stopAnimation()
+        deviceOrientationStreamCancellable = nil
     }
 
     // MARK: - Functions
@@ -216,6 +229,13 @@ final class OnboardingConsentView: View {
         }
     }
 
+    var showVisual: Bool = true {
+        didSet {
+            updateView()
+            updateViewConstraints()
+        }
+    }
+
     override func build() {
         super.build()
 
@@ -285,6 +305,12 @@ final class OnboardingConsentView: View {
             self.secondaryButton.isHidden = false
         }
 
+        guard showVisual else {
+            animationView.isHidden = true
+            imageView.isHidden = true
+            return
+        }
+
         switch step.illustration {
         case let .image(image: image):
             imageView.image = image
@@ -335,10 +361,17 @@ final class OnboardingConsentView: View {
             }
         }
 
+        var visualVisible = true
+        if case .none = step.illustration {
+            visualVisible = false
+        } else {
+            visualVisible = showVisual
+        }
+
         titleLabel.snp.remakeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
-            if case .none = step.illustration {
+            if !visualVisible {
                 maker.top.equalTo(scrollView.snp.top).offset(25)
             } else {
                 maker.top.greaterThanOrEqualTo(imageView.snp.bottom)

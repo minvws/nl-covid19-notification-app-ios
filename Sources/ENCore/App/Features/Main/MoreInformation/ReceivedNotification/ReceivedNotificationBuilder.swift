@@ -27,6 +27,7 @@ protocol ReceivedNotificationBuildable {
 
 protocol ReceivedNotificationDependency {
     var theme: Theme { get }
+    var deviceOrientationStream: DeviceOrientationStreaming { get }
 }
 
 private final class ReceivedNotificationDependencyProvider: DependencyProvider<ReceivedNotificationDependency> {}
@@ -37,6 +38,7 @@ final class ReceivedNotificationBuilder: Builder<ReceivedNotificationDependency>
         return ReceivedNotificationViewController(listener: listener,
                                                   linkedContent: linkedContent,
                                                   actionButtonTitle: actionButtonTitle,
-                                                  theme: dependencyProvider.dependency.theme)
+                                                  theme: dependencyProvider.dependency.theme,
+                                                  deviceOrientationStream: dependencyProvider.dependency.deviceOrientationStream)
     }
 }

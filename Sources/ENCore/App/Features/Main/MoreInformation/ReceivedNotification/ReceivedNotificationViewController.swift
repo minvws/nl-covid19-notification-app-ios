@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import SnapKit
@@ -17,11 +18,15 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
 
     // MARK: - Init
 
-    init(listener: ReceivedNotificationListener, linkedContent: [LinkedContent], actionButtonTitle: String?, theme: Theme) {
+    init(listener: ReceivedNotificationListener,
+         linkedContent: [LinkedContent],
+         actionButtonTitle: String?, theme: Theme,
+         deviceOrientationStream: DeviceOrientationStreaming) {
         self.listener = listener
         self.linkedContentTableViewManager = LinkedContentTableViewManager(content: linkedContent, theme: theme)
         self.shouldDisplayLinkedQuestions = linkedContent.isEmpty == false
         self.actionButtonTitle = actionButtonTitle
+        self.deviceOrientationStream = deviceOrientationStream
         super.init(theme: theme)
     }
 
@@ -41,6 +46,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
+        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
+
         internalView.buttonActionHandler = { [weak self] in
             self?.listener?.receivedNotificationActionButtonTapped()
         }
@@ -55,6 +62,12 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
         if shouldDisplayLinkedQuestions {
             internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
         }
+
+        deviceOrientationStreamCancellable = deviceOrientationStream
+            .isLandscape
+            .sink(receiveValue: { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+        })
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -62,6 +75,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
         if shouldDisplayLinkedQuestions {
             internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
         }
+
+        deviceOrientationStreamCancellable = nil
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -82,6 +97,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     private let linkedContentTableViewManager: LinkedContentTableViewManager
     private let shouldDisplayLinkedQuestions: Bool
     private let actionButtonTitle: String?
+    private let deviceOrientationStream: DeviceOrientationStreaming
+    private var deviceOrientationStreamCancellable: AnyCancellable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.receivedNotificationWantsDismissal(shouldDismissViewController: true)
@@ -101,6 +118,12 @@ private final class ReceivedNotificationView: View {
     var buttonActionHandler: (() -> ())? {
         get { infoView.actionHandler }
         set { infoView.actionHandler = newValue }
+    }
+
+    var showVisual: Bool = true {
+        didSet {
+            infoView.showHeader = showVisual
+        }
     }
 
     // MARK: - Init
