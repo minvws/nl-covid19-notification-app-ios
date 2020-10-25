@@ -147,7 +147,7 @@ final class OnboardingStepView: View {
         hasBottomMargin = true
 
         scrollView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.leading.trailing.equalToSuperview()
             maker.bottom.equalTo(button.snp.top).offset(-16)
         }
 
@@ -162,12 +162,12 @@ final class OnboardingStepView: View {
             // no need for offset as the images include whitespace
             maker.top.greaterThanOrEqualTo(imageView.snp.bottom)
             maker.top.greaterThanOrEqualTo(animationView.snp.bottom)
-            maker.leading.trailing.equalTo(self).inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
         }
 
         contentLabel.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
-            maker.leading.trailing.equalTo(self).inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.bottom.lessThanOrEqualTo(scrollView)
         }
 

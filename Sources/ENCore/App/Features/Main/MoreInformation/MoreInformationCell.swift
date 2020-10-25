@@ -96,14 +96,14 @@ final class MoreInformationCell: UIControl, Themeable {
     private func setupConstraints() {
 
         iconImageView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.leading.equalTo(safeAreaLayoutGuide.snp.leading).offset(16)
+            maker.leading.equalToSuperview().offset(16)
             maker.top.equalToSuperview().offset(23)
             maker.width.height.equalTo(32)
         }
         titleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.leading.equalTo(iconImageView.snp.trailing).offset(16)
             maker.top.equalTo(iconImageView).offset(-3)
-            maker.trailing.equalTo(safeAreaLayoutGuide.snp.trailing).inset(40)
+            maker.trailing.equalToSuperview().inset(40)
         }
         subtitleLabel.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(titleLabel.snp.bottom).offset(4)
@@ -111,7 +111,7 @@ final class MoreInformationCell: UIControl, Themeable {
             maker.bottom.equalToSuperview().inset(20)
         }
         chevronImageView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.trailing.equalTo(safeAreaLayoutGuide.snp.trailing).inset(16)
+            maker.trailing.equalToSuperview().inset(16)
             maker.width.equalTo(8)
             maker.height.equalTo(16)
             maker.centerY.equalTo(titleLabel)
@@ -119,7 +119,7 @@ final class MoreInformationCell: UIControl, Themeable {
         borderView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.leading.equalTo(titleLabel)
             maker.top.equalTo(subtitleLabel.snp.bottom).offset(20)
-            maker.trailing.equalTo(safeAreaLayoutGuide.snp.trailing)
+            maker.trailing.equalToSuperview()
             maker.height.equalTo(1)
         }
     }

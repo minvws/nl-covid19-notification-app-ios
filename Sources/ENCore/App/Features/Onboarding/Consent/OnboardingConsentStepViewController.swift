@@ -232,14 +232,14 @@ final class OnboardingConsentView: View {
         hasBottomMargin = true
 
         primaryButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(50)
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
 
         secondaryButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(50)
 
             maker.bottom.equalTo(primaryButton.snp.top).inset(-16)
@@ -336,7 +336,7 @@ final class OnboardingConsentView: View {
         }
 
         titleLabel.snp.remakeConstraints { maker in
-            maker.leading.trailing.equalTo(self).inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
             if case .none = step.illustration {
                 maker.top.equalTo(scrollView.snp.top).offset(25)
@@ -348,14 +348,13 @@ final class OnboardingConsentView: View {
 
         contentLabel.snp.remakeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
-            maker.leading.trailing.equalTo(self).inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
             maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
         }
 
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
-            maker.width.equalToSuperview()
             maker.bottom.equalTo(consentStep?.hasSecondaryButton == true ? secondaryButton.snp.top : primaryButton.snp.top).inset(-16)
         }
     }

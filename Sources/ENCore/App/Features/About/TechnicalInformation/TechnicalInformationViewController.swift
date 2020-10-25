@@ -108,7 +108,7 @@ private final class TechnicalInformationView: View {
         super.setupConstraints()
 
         scrollableStackView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.bottom.equalToSuperview()
+            maker.top.leading.trailing.bottom.equalTo(safeAreaLayoutGuide)
         }
 
         appInfoButton.snp.makeConstraints { maker in

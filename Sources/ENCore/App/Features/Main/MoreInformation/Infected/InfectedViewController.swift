@@ -306,7 +306,7 @@ private final class InfectedView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.bottom.leading.trailing.equalToSuperview()
+            maker.top.bottom.leading.trailing.equalTo(safeAreaLayoutGuide)
         }
     }
 

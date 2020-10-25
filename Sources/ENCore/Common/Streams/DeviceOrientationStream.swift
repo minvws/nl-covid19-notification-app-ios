@@ -18,8 +18,8 @@ protocol DeviceOrientationStreaming {
 final class DeviceOrientationStream: DeviceOrientationStreaming {
 
     init() {
+        currentOrientationIsLandscape = UIDevice.current.orientation.isLandscape
         NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            self?.currentOrientationIsLandscape = UIDevice.current.orientation.isLandscape
             self?.subject.send(UIDevice.current.orientation.isLandscape)
         }
     }
