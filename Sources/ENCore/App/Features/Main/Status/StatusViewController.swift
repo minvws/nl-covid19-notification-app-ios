@@ -229,12 +229,15 @@ private final class StatusView: View {
         containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(equalTo: contentStretchGuide.bottomAnchor, constant: -48)
         heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
+        let sceneImageAspectRatio = sceneImageView.animation.map { $0.size.width / $0.size.height } ?? 1
+
         cloudsView.snp.makeConstraints { maker in
             maker.centerY.equalTo(iconView.snp.centerY)
             maker.leading.trailing.equalTo(stretchGuide)
         }
         sceneImageView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalTo(stretchGuide)
+            maker.width.equalTo(sceneImageView.snp.height).multipliedBy(sceneImageAspectRatio)
             maker.height.equalTo(300)
         }
         stretchGuide.snp.makeConstraints { maker in
@@ -246,14 +249,9 @@ private final class StatusView: View {
             maker.top.equalToSuperview().priority(.low)
         }
         contentStretchGuide.snp.makeConstraints { maker in
-            maker.centerY.equalTo(contentContainer)
+            maker.leading.trailing.centerY.equalTo(contentContainer)
             maker.height.greaterThanOrEqualTo(contentContainer.snp.height)
             maker.bottom.equalTo(stretchGuide.snp.bottom).priority(.high)
-        }
-        contentContainer.snp.makeConstraints { maker in
-            maker.centerX.equalToSuperview()
-            maker.leading.greaterThanOrEqualTo(safeAreaLayoutGuide.snp.leadingMargin).inset(16)
-            maker.trailing.lessThanOrEqualTo(safeAreaLayoutGuide.snp.trailingMargin).inset(16)
         }
         iconView.snp.makeConstraints { maker in
             maker.width.height.equalTo(48)
