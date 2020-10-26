@@ -184,7 +184,7 @@ final class OnboardingStepView: View {
             // no need for offset as the images include whitespace
             imageEnabledConstraints.append(maker.top.greaterThanOrEqualTo(imageView.snp.bottom).constraint)
             imageEnabledConstraints.append(maker.top.greaterThanOrEqualTo(animationView.snp.bottom).constraint)
-            imageDisabledConstraints.append(maker.top.equalToSuperview().constraint)
+            imageDisabledConstraints.append(maker.top.equalToSuperview().offset(16).constraint)
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
         }
 
