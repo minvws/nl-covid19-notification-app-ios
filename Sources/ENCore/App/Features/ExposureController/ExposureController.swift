@@ -320,6 +320,10 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
+    func updateLastLaunch() {
+        dataController.setLastAppLaunchDate(Date())
+    }
+
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
         logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
@@ -355,8 +359,7 @@ final class ExposureController: ExposureControlling, Logging {
                 case let .failure(error):
                     self?.logError("Error completing sequence \(error.localizedDescription)")
                 }
-        })
-            .eraseToAnyPublisher()
+        }).eraseToAnyPublisher()
     }
 
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never> {
@@ -433,6 +436,48 @@ final class ExposureController: ExposureControlling, Logging {
                     } else {
                         promise(.success(()))
                     }
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+
+    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
+        return Deferred {
+            Future { promise in
+
+                guard let lastAppLaunch = self.dataController.lastAppLaunchDate else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastAppLaunchDate`")
+                    return promise(.success(()))
+                }
+                guard let lastExposure = self.dataController.lastExposure else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastExposureDate`")
+                    return promise(.success(()))
+                }
+
+                let timeInterval = TimeInterval(60 * 60 * 3) // 3 hours
+
+                guard lastAppLaunch.advanced(by: timeInterval) < Date() else {
+                    promise(.success(()))
+                    return self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
+                }
+
+                self.logDebug("User has not opened the app in 3 hours.")
+
+                let calendar = Calendar.current
+
+                let today = calendar.startOfDay(for: Date())
+                let lastExposureDate = calendar.startOfDay(for: lastExposure.date)
+
+                let components = calendar.dateComponents([.day], from: today, to: lastExposureDate)
+                let days = components.day ?? 0
+
+                let content = UNMutableNotificationContent()
+                content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: days)))
+                content.sound = .default
+                content.badge = 0
+
+                self.sendNotification(content: content, identifier: .enStatusDisabled) { _ in
+                    promise(.success(()))
                 }
             }
         }.eraseToAnyPublisher()

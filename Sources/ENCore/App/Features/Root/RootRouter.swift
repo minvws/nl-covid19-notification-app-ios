@@ -152,6 +152,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .store(in: &disposeBag)
 
         checkIfAppUpdateIsRequired()
+
+        exposureController.updateLastLaunch()
     }
 
     func didEnterForeground() {
