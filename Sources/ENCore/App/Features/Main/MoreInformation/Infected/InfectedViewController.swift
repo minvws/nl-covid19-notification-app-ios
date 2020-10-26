@@ -39,10 +39,11 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
     init(theme: Theme,
          exposureController: ExposureControlling,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         deviceOrientationStream: DeviceOrientationStreaming) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
-
+        self.deviceOrientationStream = deviceOrientationStream
         super.init(theme: theme)
     }
 
@@ -68,6 +69,8 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
+        internalView.infoView.showHeader = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
+
         internalView.infoView.actionHandler = { [weak self] in
             self?.uploadCodes()
         }
@@ -82,6 +85,13 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
             .exposureState
             .sink { state in
                 self.update(exposureState: state)
+            }
+            .store(in: &disposeBag)
+
+        deviceOrientationStream
+            .isLandscape
+            .sink { [weak self] isLandscape in
+                self?.internalView.infoView.showHeader = !isLandscape
             }
             .store(in: &disposeBag)
     }
@@ -182,6 +192,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
     private var disposeBag = Set<AnyCancellable>()
+    private let deviceOrientationStream: DeviceOrientationStreaming
 
     private var cardViewController: ViewControllable?
 
