@@ -236,7 +236,7 @@ private final class StatusView: View {
             maker.leading.trailing.equalTo(stretchGuide)
         }
         sceneImageView.snp.makeConstraints { maker in
-            maker.centerX.bottom.equalTo(stretchGuide)
+            maker.leading.trailing.bottom.equalTo(stretchGuide)
             maker.width.equalTo(sceneImageView.snp.height).multipliedBy(sceneImageAspectRatio)
             maker.height.equalTo(300)
         }

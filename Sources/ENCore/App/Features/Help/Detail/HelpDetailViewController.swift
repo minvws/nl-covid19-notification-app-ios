@@ -149,7 +149,8 @@ private final class HelpView: View {
         super.setupConstraints()
 
         scrollView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.equalToSuperview()
 
             let bottomAnchor = shouldDisplayButton ? acceptButton.snp.top : snp.bottom
             maker.bottom.equalTo(bottomAnchor)

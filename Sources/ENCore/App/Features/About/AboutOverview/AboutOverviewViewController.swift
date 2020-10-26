@@ -157,7 +157,8 @@ private final class AboutView: View {
     override func setupConstraints() {
         super.setupConstraints()
         tableView.snp.makeConstraints { maker in
-            maker.edges.equalTo(safeAreaLayoutGuide)
+            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.bottom.equalToSuperview()
         }
     }
 }
