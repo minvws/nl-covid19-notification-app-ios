@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import SnapshotTesting
@@ -13,14 +14,18 @@ import XCTest
 final class SharingViewControllerTests: TestCase {
     private var viewController: ShareSheetViewController!
     private let listener = ShareSheetListenerMock()
+    private var deviceOrientationStream = DeviceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
+        deviceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+
         viewController = ShareSheetViewController(listener: listener,
-                                                  theme: theme)
+                                                  theme: theme,
+                                                  deviceOrientationStream: deviceOrientationStream)
     }
 
     // MARK: - Tests

@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
@@ -14,6 +15,7 @@ import XCTest
 final class OnboardingStepViewControllerTests: TestCase {
     private let stepBuilder = OnboardingStepBuildableMock()
     private let listener = OnboardingStepListenerMock()
+    private var deviceOrientationStream = DeviceOrientationStreamingMock()
 
     private var manager: OnboardingManager!
 
@@ -21,7 +23,9 @@ final class OnboardingStepViewControllerTests: TestCase {
         super.setUp()
 
         recordSnapshots = false
+
         manager = OnboardingManager(theme: theme)
+        deviceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         AnimationTestingOverrides.animationsEnabled = false
     }
@@ -34,7 +38,8 @@ final class OnboardingStepViewControllerTests: TestCase {
                                                               onboardingStepBuilder: stepBuilder,
                                                               listener: listener,
                                                               theme: theme,
-                                                              index: index)
+                                                              index: index,
+                                                              deviceOrientationStream: deviceOrientationStream)
             snapshots(matching: viewController, named: "\(#function)\(index)")
         }
     }
