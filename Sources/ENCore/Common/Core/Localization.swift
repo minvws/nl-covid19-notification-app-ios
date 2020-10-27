@@ -57,6 +57,10 @@ public final class Localization {
     }
 
     public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
+
+    static var usingDutchLanguage: Bool {
+        Locale.current.languageCode?.lowercased() != "nl"
+    }
 }
 
 extension String {
@@ -66,6 +70,7 @@ extension String {
     static var helpDeskPhoneNumber = "tel://08001280"
     static var coronaTestPhoneNumber = "tel://08001202"
     static var coronaTestWebUrl = "https://coronatest.nl"
+    static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
 
     // MARK: - Share App
 

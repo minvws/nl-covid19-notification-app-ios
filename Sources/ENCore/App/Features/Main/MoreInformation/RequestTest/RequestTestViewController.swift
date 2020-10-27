@@ -40,8 +40,11 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
                                                             action: #selector(didTapCloseButton(sender:)))
 
         internalView.linkButtonActionHandler = { [weak self] in
-            guard let url = URL(string: .coronaTestWebUrl) else {
-                self?.logError("Unable to open \(String.coronaTestWebUrl)")
+
+            let testWebsiteUrl: String = Localization.usingDutchLanguage ? .coronaTestWebUrl : .coronaTestWebUrlInternational
+
+            guard let url = URL(string: testWebsiteUrl) else {
+                self?.logError("Unable to open \(testWebsiteUrl)")
                 return
             }
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
