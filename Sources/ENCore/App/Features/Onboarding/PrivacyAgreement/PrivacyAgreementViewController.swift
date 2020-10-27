@@ -93,6 +93,7 @@ private final class PrivacyAgreementView: View {
         label.textColor = theme.colors.gray
         label.text = .privacyAgreementStepsTitle
         label.numberOfLines = 0
+        label.accessibilityTraits = .header
         return label
     }()
 
