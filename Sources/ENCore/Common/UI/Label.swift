@@ -14,26 +14,12 @@ class Label: UILabel {
 
         isUserInteractionEnabled = canBeCopied
 
-        if !canBeCopied {
-
-            guard let availableGestureRecognizers = gestureRecognizers else {
-                return
-            }
-
-            for (index, gestureRecognizer) in availableGestureRecognizers.enumerated() {
-                if let _ = gestureRecognizer as? UILongPressGestureRecognizer {
-                    gestureRecognizers?.remove(at: index)
-                }
-            }
+        if canBeCopied == false {
+            removeGestureRecognizer(longPressGestureRecognizer)
             return
         }
 
-        addGestureRecognizer(
-            UILongPressGestureRecognizer(
-                target: self,
-                action: #selector(handleLongPress(_:))
-            )
-        )
+        addGestureRecognizer(longPressGestureRecognizer)
     }
 
     override var canBecomeFirstResponder: Bool {
@@ -43,8 +29,6 @@ class Label: UILabel {
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         return action == #selector(copy(_:))
     }
-
-    // MARK: - UIResponderStandardEditActions
 
     override func copy(_ sender: Any?) {
         UIPasteboard.general.string = text
@@ -58,4 +42,9 @@ class Label: UILabel {
             UIMenuController.shared.showMenu(from: recognizerSuperview, rect: recognizerView.frame)
         }
     }
+
+    private lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        return gesture
+    }()
 }
