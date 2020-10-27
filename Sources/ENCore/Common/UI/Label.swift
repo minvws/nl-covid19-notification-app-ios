@@ -7,4 +7,44 @@
 
 import UIKit
 
-class Label: UILabel {}
+class Label: UILabel {
+
+    func textCanBeCopied(_ canBeCopied: Bool = true) {
+        super.awakeFromNib()
+
+        isUserInteractionEnabled = canBeCopied
+
+        if canBeCopied == false {
+            removeGestureRecognizer(longPressGestureRecognizer)
+            return
+        }
+
+        addGestureRecognizer(longPressGestureRecognizer)
+    }
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return action == #selector(copy(_:))
+    }
+
+    override func copy(_ sender: Any?) {
+        UIPasteboard.general.string = text
+    }
+
+    @objc private func handleLongPress(_ recognizer: UIGestureRecognizer) {
+        if recognizer.state == .began,
+            let recognizerView = recognizer.view,
+            let recognizerSuperview = recognizerView.superview {
+            recognizerView.becomeFirstResponder()
+            UIMenuController.shared.showMenu(from: recognizerSuperview, rect: recognizerView.frame)
+        }
+    }
+
+    private lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        return gesture
+    }()
+}
