@@ -24,6 +24,8 @@ final class InterfaceOrientationStream: InterfaceOrientationStreaming {
 
         currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
 
+        // We listen for device orientation changes (which are more sensitive)
+        // but we use the interface orientation of the key window to actually determine the rotation of the UI
         NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
             self?.currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
             self?.subject.send(windowScene.interfaceOrientation.isLandscape)
