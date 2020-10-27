@@ -26,19 +26,19 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     private let onboardingConsentManager: OnboardingConsentManaging
     private let consentStep: OnboardingConsentStep?
-    private let deviceOrientationStream: DeviceOrientationStreaming
-    private var deviceOrientationStreamCancellable: AnyCancellable?
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
          listener: OnboardingConsentListener,
          theme: Theme,
          index: Int,
-         deviceOrientationStream: DeviceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
 
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         self.consentStep = self.onboardingConsentManager.getStep(index)
-        self.deviceOrientationStream = deviceOrientationStream
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         super.init(theme: theme)
     }
@@ -55,7 +55,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         hasBottomMargin = true
 
         internalView.consentStep = consentStep
-        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
         internalView.primaryButton.addTarget(self, action: #selector(primaryButtonPressed), for: .touchUpInside)
         internalView.secondaryButton.addTarget(self, action: #selector(secondaryButtonPressed), for: .touchUpInside)
 
@@ -72,7 +72,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         super.viewWillAppear(animated)
         self.internalView.playAnimation()
 
-        deviceOrientationStreamCancellable = deviceOrientationStream
+        interfaceOrientationStreamCancellable = interfaceOrientationStream
             .isLandscape
             .sink(receiveValue: { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
@@ -83,7 +83,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         super.viewDidDisappear(animated)
 
         self.internalView.stopAnimation()
-        deviceOrientationStreamCancellable = nil
+        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - Functions

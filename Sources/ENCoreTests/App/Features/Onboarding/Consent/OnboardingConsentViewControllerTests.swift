@@ -18,14 +18,14 @@ final class OnboardingConsentViewControllerTests: TestCase {
     private let exposureStateStream = ExposureStateStreamingMock()
     private let exposureController = ExposureControllingMock()
     private var manager: OnboardingConsentManager!
-    private var deviceOrientationStream = DeviceOrientationStreamingMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        deviceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,
@@ -42,7 +42,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
                                                                      listener: listener,
                                                                      theme: theme,
                                                                      index: index,
-                                                                     deviceOrientationStream: deviceOrientationStream)
+                                                                     interfaceOrientationStream: interfaceOrientationStream)
 
             snapshots(matching: viewController, named: "\(#function)\(index)")
         }

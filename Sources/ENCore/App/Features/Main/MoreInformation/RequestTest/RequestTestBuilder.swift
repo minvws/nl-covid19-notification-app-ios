@@ -23,7 +23,7 @@ protocol RequestTestBuildable {
 
 protocol RequestTestDependency {
     var theme: Theme { get }
-    var deviceOrientationStream: DeviceOrientationStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class RequestTestDependencyProvider: DependencyProvider<RequestTestDependency> {}
@@ -33,6 +33,6 @@ final class RequestTestBuilder: Builder<RequestTestDependency>, RequestTestBuild
         let dependencyProvider = RequestTestDependencyProvider(dependency: dependency)
         return RequestTestViewController(listener: listener,
                                          theme: dependencyProvider.dependency.theme,
-                                         deviceOrientationStream: dependencyProvider.dependency.deviceOrientationStream)
+                                         interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
     }
 }

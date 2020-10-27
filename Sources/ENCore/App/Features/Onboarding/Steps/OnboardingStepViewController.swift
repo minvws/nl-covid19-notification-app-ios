@@ -22,13 +22,13 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
          listener: OnboardingStepListener,
          theme: Theme,
          index: Int,
-         deviceOrientationStream: DeviceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
 
         self.onboardingManager = onboardingManager
         self.onboardingStepBuilder = onboardingStepBuilder
         self.listener = listener
         self.index = index
-        self.deviceOrientationStream = deviceOrientationStream
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         guard let step = self.onboardingManager.getStep(index) else { fatalError("OnboardingStep index out of range") }
 
@@ -41,7 +41,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
         super.viewDidLoad()
 
         internalView.onboardingStep = onboardingStep
-        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
         setThemeNavigationBar()
 
         internalView.button.title = onboardingStep.buttonTitle
@@ -53,7 +53,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
         self.internalView.playAnimation()
 
-        deviceOrientationStreamCancellable = deviceOrientationStream
+        interfaceOrientationStreamCancellable = interfaceOrientationStream
             .isLandscape
             .sink(receiveValue: { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
@@ -65,7 +65,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
         self.internalView.stopAnimation()
 
-        deviceOrientationStreamCancellable = nil
+        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - ViewController Lifecycle
@@ -83,8 +83,8 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     private var onboardingStep: OnboardingStep
     private let onboardingManager: OnboardingManaging
     private let onboardingStepBuilder: OnboardingStepBuildable
-    private let deviceOrientationStream: DeviceOrientationStreaming
-    private var deviceOrientationStreamCancellable: AnyCancellable?
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     // MARK: - Setups
 

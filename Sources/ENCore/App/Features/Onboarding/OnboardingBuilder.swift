@@ -22,7 +22,7 @@ protocol OnboardingDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
-    var deviceOrientationStream: DeviceOrientationStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 ///
@@ -82,8 +82,8 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
         return WebviewBuilder(dependency: self)
     }
 
-    var deviceOrientationStream: DeviceOrientationStreaming {
-        return dependency.deviceOrientationStream
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
     }
 }
 

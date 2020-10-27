@@ -20,9 +20,9 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     init(listener: RequestTestListener,
          theme: Theme,
-         deviceOrientationStream: DeviceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
-        self.deviceOrientationStream = deviceOrientationStream
+        self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
 
@@ -42,7 +42,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
-        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 
         internalView.linkButtonActionHandler = { [weak self] in
             guard let url = URL(string: .coronaTestWebUrl) else {
@@ -63,7 +63,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        deviceOrientationStreamCancellable = deviceOrientationStream
+        interfaceOrientationStreamCancellable = interfaceOrientationStream
             .isLandscape
             .sink(receiveValue: { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
@@ -73,7 +73,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        deviceOrientationStreamCancellable = nil
+        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -86,8 +86,8 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     private weak var listener: RequestTestListener?
     private lazy var internalView: RequestTestView = RequestTestView(theme: self.theme)
-    private let deviceOrientationStream: DeviceOrientationStreaming
-    private var deviceOrientationStreamCancellable: AnyCancellable?
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.requestTestWantsDismissal(shouldDismissViewController: true)

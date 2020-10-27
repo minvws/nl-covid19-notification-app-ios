@@ -14,20 +14,20 @@ import XCTest
 final class ReceivedNotificationViewControllerTests: TestCase {
     private var viewController: ReceivedNotificationViewController!
     private let listener = ReceivedNotificationListenerMock()
-    private var deviceOrientationStream = DeviceOrientationStreamingMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        deviceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         viewController = ReceivedNotificationViewController(listener: listener,
                                                             linkedContent: [],
                                                             actionButtonTitle: nil,
                                                             theme: theme,
-                                                            deviceOrientationStream: deviceOrientationStream)
+                                                            interfaceOrientationStream: interfaceOrientationStream)
     }
 
     // MARK: - Tests

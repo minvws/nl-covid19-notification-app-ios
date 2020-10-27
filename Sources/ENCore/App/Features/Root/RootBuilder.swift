@@ -137,8 +137,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableBluetoothStateStream
     }
 
-    var deviceOrientationStream: DeviceOrientationStreaming {
-        return DeviceOrientationStream()
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return InterfaceOrientationStream()
     }
 
     let theme: Theme = ENTheme()

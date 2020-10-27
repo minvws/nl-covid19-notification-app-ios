@@ -28,7 +28,7 @@ protocol InfectedDependency {
     var exposureStateStream: ExposureStateStreaming { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
-    var deviceOrientationStream: DeviceOrientationStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency, HelpDetailDependency {
@@ -68,7 +68,7 @@ final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
         let viewController = InfectedViewController(theme: dependencyProvider.dependency.theme,
                                                     exposureController: dependencyProvider.dependency.exposureController,
                                                     exposureStateStream: dependencyProvider.dependency.exposureStateStream,
-                                                    deviceOrientationStream: dependencyProvider.dependency.deviceOrientationStream)
+                                                    interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
 
         return InfectedRouter(listener: listener,
                               viewController: viewController,

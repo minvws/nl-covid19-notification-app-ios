@@ -10,12 +10,12 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol DeviceOrientationStreaming {
+protocol InterfaceOrientationStreaming {
     var isLandscape: AnyPublisher<Bool, Never> { get }
     var currentOrientationIsLandscape: Bool? { get }
 }
 
-final class DeviceOrientationStream: DeviceOrientationStreaming {
+final class InterfaceOrientationStream: InterfaceOrientationStreaming {
 
     init() {
         guard let windowScene = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene else {
@@ -30,7 +30,7 @@ final class DeviceOrientationStream: DeviceOrientationStreaming {
         }
     }
 
-    // MARK: - DeviceOrientationStreaming
+    // MARK: - InterfaceOrientationStreaming
 
     var isLandscape: AnyPublisher<Bool, Never> {
         return subject

@@ -21,7 +21,7 @@ protocol AboutBuildable {
 protocol AboutDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
-    var deviceOrientationStream: DeviceOrientationStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class AboutDependencyProvider: DependencyProvider<AboutDependency>, AboutOverviewDependency, HelpDetailDependency, AppInformationDependency, TechnicalInformationDependency, WebviewDependency, ReceivedNotificationDependency {
@@ -38,8 +38,8 @@ private final class AboutDependencyProvider: DependencyProvider<AboutDependency>
         return dependency.theme
     }
 
-    var deviceOrientationStream: DeviceOrientationStreaming {
-        dependency.deviceOrientationStream
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        dependency.interfaceOrientationStream
     }
 
     // MARK: - Child Builders

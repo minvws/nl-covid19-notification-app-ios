@@ -17,10 +17,10 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
 
     init(listener: ShareSheetListener,
          theme: Theme,
-         deviceOrientationStream: DeviceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
 
-        self.deviceOrientationStream = deviceOrientationStream
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         super.init(theme: theme)
     }
@@ -36,7 +36,7 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
 
         navigationItem.rightBarButtonItem = closeBarButtonItem
 
-        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
         internalView.button.action = { [weak self] in
             if let viewController = self {
                 self?.listener?.displayShareSheet(usingViewController: viewController, completion: { completed in
@@ -53,7 +53,7 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        deviceOrientationStreamCancellable = deviceOrientationStream
+        interfaceOrientationStreamCancellable = interfaceOrientationStream
             .isLandscape
             .sink(receiveValue: { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
@@ -63,7 +63,7 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        deviceOrientationStreamCancellable = nil
+        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -79,8 +79,8 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
         listener?.shareSheetDidComplete(shouldHideViewController: true)
     }
 
-    private let deviceOrientationStream: DeviceOrientationStreaming
-    private var deviceOrientationStreamCancellable: AnyCancellable?
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var interfaceOrientationStreamCancellable: AnyCancellable?
     private weak var listener: ShareSheetListener?
     private lazy var internalView: ShareSheetView = ShareSheetView(theme: self.theme)
     private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,

@@ -21,12 +21,12 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     init(listener: ReceivedNotificationListener,
          linkedContent: [LinkedContent],
          actionButtonTitle: String?, theme: Theme,
-         deviceOrientationStream: DeviceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
         self.linkedContentTableViewManager = LinkedContentTableViewManager(content: linkedContent, theme: theme)
         self.shouldDisplayLinkedQuestions = linkedContent.isEmpty == false
         self.actionButtonTitle = actionButtonTitle
-        self.deviceOrientationStream = deviceOrientationStream
+        self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
 
@@ -46,7 +46,7 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
-        internalView.showVisual = !(deviceOrientationStream.currentOrientationIsLandscape ?? false)
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 
         internalView.buttonActionHandler = { [weak self] in
             self?.listener?.receivedNotificationActionButtonTapped()
@@ -63,7 +63,7 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
             internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
         }
 
-        deviceOrientationStreamCancellable = deviceOrientationStream
+        interfaceOrientationStreamCancellable = interfaceOrientationStream
             .isLandscape
             .sink(receiveValue: { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
@@ -76,7 +76,7 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
             internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
         }
 
-        deviceOrientationStreamCancellable = nil
+        interfaceOrientationStreamCancellable = nil
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -97,8 +97,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     private let linkedContentTableViewManager: LinkedContentTableViewManager
     private let shouldDisplayLinkedQuestions: Bool
     private let actionButtonTitle: String?
-    private let deviceOrientationStream: DeviceOrientationStreaming
-    private var deviceOrientationStreamCancellable: AnyCancellable?
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.receivedNotificationWantsDismissal(shouldDismissViewController: true)

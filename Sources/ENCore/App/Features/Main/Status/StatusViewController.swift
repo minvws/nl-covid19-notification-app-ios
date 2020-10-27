@@ -20,7 +20,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     weak var router: StatusRouting?
 
-    private let deviceOrientationStream: DeviceOrientationStreaming
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
@@ -31,13 +31,13 @@ final class StatusViewController: ViewController, StatusViewControllable {
     private var cardRouter: Routing & CardTypeSettable
 
     init(exposureStateStream: ExposureStateStreaming,
-         deviceOrientationStream: DeviceOrientationStreaming,
+         interfaceOrientationStream: InterfaceOrientationStreaming,
          cardBuilder: CardBuildable,
          listener: StatusListener,
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?) {
         self.exposureStateStream = exposureStateStream
-        self.deviceOrientationStream = deviceOrientationStream
+        self.interfaceOrientationStream = interfaceOrientationStream
         self.listener = listener
         self.topAnchor = topAnchor
 
@@ -63,7 +63,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
         if let currentState = exposureStateStream.currentExposureState,
-            let isLandscape = deviceOrientationStream.currentOrientationIsLandscape {
+            let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
             update(exposureState: currentState, isLandscape: isLandscape)
         }
     }
@@ -85,7 +85,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         stateStreamCancellable = exposureStateStream
             .exposureState
-            .combineLatest(deviceOrientationStream.isLandscape)
+            .combineLatest(interfaceOrientationStream.isLandscape)
             .sink { [weak self] status, isLandscape in
                 guard let strongSelf = self else {
                     return

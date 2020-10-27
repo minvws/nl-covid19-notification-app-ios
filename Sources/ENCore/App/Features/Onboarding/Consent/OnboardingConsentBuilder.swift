@@ -29,7 +29,7 @@ protocol OnboardingConsentListener: AnyObject {
 protocol OnboardingConsentDependency {
     var theme: Theme { get }
     var onboardingConsentManager: OnboardingConsentManaging { get }
-    var deviceOrientationStream: DeviceOrientationStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class OnboardingConsentDependencyProvider: DependencyProvider<OnboardingConsentDependency> {}
@@ -48,6 +48,6 @@ final class OnboardingConsentBuilder: Builder<OnboardingConsentDependency>, Onbo
             listener: listener,
             theme: dependencyProvider.dependency.theme,
             index: index,
-            deviceOrientationStream: dependencyProvider.dependency.deviceOrientationStream)
+            interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
     }
 }

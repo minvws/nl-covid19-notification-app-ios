@@ -14,18 +14,18 @@ import XCTest
 final class RequestTestViewControllerTests: TestCase {
     private var viewController: RequestTestViewController!
     private let listener = RequestTestListenerMock()
-    private var deviceOrientationStream = DeviceOrientationStreamingMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        deviceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         viewController = RequestTestViewController(listener: listener,
                                                    theme: theme,
-                                                   deviceOrientationStream: deviceOrientationStream)
+                                                   interfaceOrientationStream: interfaceOrientationStream)
     }
 
     // MARK: - Tests

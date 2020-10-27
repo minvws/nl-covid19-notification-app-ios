@@ -15,7 +15,7 @@ import XCTest
 final class OnboardingStepViewControllerTests: TestCase {
     private let stepBuilder = OnboardingStepBuildableMock()
     private let listener = OnboardingStepListenerMock()
-    private var deviceOrientationStream = DeviceOrientationStreamingMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     private var manager: OnboardingManager!
 
@@ -25,7 +25,7 @@ final class OnboardingStepViewControllerTests: TestCase {
         recordSnapshots = false
 
         manager = OnboardingManager(theme: theme)
-        deviceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         AnimationTestingOverrides.animationsEnabled = false
     }
@@ -39,7 +39,7 @@ final class OnboardingStepViewControllerTests: TestCase {
                                                               listener: listener,
                                                               theme: theme,
                                                               index: index,
-                                                              deviceOrientationStream: deviceOrientationStream)
+                                                              interfaceOrientationStream: interfaceOrientationStream)
             snapshots(matching: viewController, named: "\(#function)\(index)")
         }
     }

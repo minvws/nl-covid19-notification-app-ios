@@ -17,7 +17,7 @@ protocol OnboardingStepBuildable {
 protocol OnboardingStepDependency {
     var theme: Theme { get }
     var onboardingManager: OnboardingManaging { get }
-    var deviceOrientationStream: DeviceOrientationStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 /// @mockable
@@ -42,6 +42,6 @@ final class OnboardingStepBuilder: Builder<OnboardingStepDependency>, Onboarding
                                             listener: listener,
                                             theme: dependencyProvider.dependency.theme,
                                             index: initialIndex,
-                                            deviceOrientationStream: dependencyProvider.dependency.deviceOrientationStream)
+                                            interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
     }
 }
