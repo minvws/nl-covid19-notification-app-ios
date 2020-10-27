@@ -641,6 +641,7 @@ private final class InfoSectionDynamicSuccessView: View {
         super.init(theme: theme)
 
         titleLabel.text = title
+        titleLabel.textCanBeCopied()
 
         let accessibilityText = title.replacingOccurrences(of: "-", with: "").lowercased()
         titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText, attributes: [.accessibilitySpeechSpellOut: true])
