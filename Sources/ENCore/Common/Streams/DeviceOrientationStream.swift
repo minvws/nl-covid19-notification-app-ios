@@ -18,9 +18,15 @@ protocol DeviceOrientationStreaming {
 final class DeviceOrientationStream: DeviceOrientationStreaming {
 
     init() {
-        currentOrientationIsLandscape = UIDevice.current.orientation.isLandscape
+        guard let windowScene = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene else {
+            return
+        }
+
+        currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
+
         NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            self?.subject.send(UIDevice.current.orientation.isLandscape)
+            self?.currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
+            self?.subject.send(windowScene.interfaceOrientation.isLandscape)
         }
     }
 
