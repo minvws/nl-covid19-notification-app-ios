@@ -127,7 +127,7 @@ final class ShareSheetView: View {
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.width.equalToSuperview()
-            maker.bottom.equalTo(self).inset(-16)
+            maker.bottom.equalTo(button.snp.top).inset(-16)
         }
 
         if let width = imageView.image?.size.width,
