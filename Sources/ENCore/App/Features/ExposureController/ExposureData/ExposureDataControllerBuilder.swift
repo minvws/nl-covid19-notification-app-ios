@@ -65,6 +65,7 @@ protocol ExposureDataControllerBuildable {
 protocol ExposureDataControllerDependency {
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
 }
 
 private final class ExposureDataControllerDependencyProvider: DependencyProvider<ExposureDataControllerDependency>, ExposureDataOperationProviderDependency {
@@ -77,6 +78,10 @@ private final class ExposureDataControllerDependencyProvider: DependencyProvider
 
     var storageController: StorageControlling {
         return dependency.storageController
+    }
+
+    var applicationSignatureController: ApplicationSignatureControlling {
+        return dependency.applicationSignatureController
     }
 
     // MARK: - Private Dependencies

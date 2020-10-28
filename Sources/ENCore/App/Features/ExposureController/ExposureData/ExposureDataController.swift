@@ -16,6 +16,8 @@ struct ExposureDataStorageKey {
                                                                     storeType: .insecure(volatile: true))
     static let appConfiguration = CodableStorageKey<ApplicationConfiguration>(name: "appConfiguration",
                                                                               storeType: .insecure(volatile: true))
+    static let appConfigurationSignature = CodableStorageKey<ApplicationConfiguration>(name: "appConfigurationSignature",
+                                                                                       storeType: .secure)
     static let exposureKeySetsHolders = CodableStorageKey<[ExposureKeySetHolder]>(name: "exposureKeySetsHolders",
                                                                                   storeType: .insecure(volatile: false))
     static let lastExposureReport = CodableStorageKey<ExposureReport>(name: "exposureReport",
