@@ -82,6 +82,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     let mutablePushNotificationStream: MutablePushNotificationStreaming
 
     func start() {
+
         guard mainRouter == nil, onboardingRouter == nil else {
             // already started
             return
@@ -99,8 +100,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         } else {
             routeToOnboarding()
         }
-
-        exposureController.activate(inBackgroundMode: false)
 
         #if USE_DEVELOPER_MENU || DEBUG
             attachDeveloperMenu()
