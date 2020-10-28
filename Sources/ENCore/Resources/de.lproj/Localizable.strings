@@ -1,3 +1,15 @@
+// supports HTML
+"enableSettings.exposureNotifications.137.step2" = "Gehen Sie zu <b>Begegnungsmitteilungen</b>";
+"enableSettings.exposureNotifications.137.step2.action.title" = "Begegnungsmitteilungen";
+// supports HTML
+"enableSettings.exposureNotifications.137.step3" = "Aktivieren Sie <b>Begegnungsinformationen teilen</b>";
+"enableSettings.exposureNotifications.137.step3.action.title" = "Begegnungsinformationen teilen";
+// supports HTML
+"enableSettings.exposureNotifications.137.step4" = "Kontrollieren Sie als letzten Schritt: Ist <b>Als aktive Region festlegen</b> blau? Wenn ja, drücken Sie dann darauf";
+// Should match setting name in iOS
+"enableSettings.exposureNotifications.137.step4.action.title" = "Als aktive Region festlegen";
+
+"privacyAgreement.steps.title"= "Das sind die wichtigsten Punkte:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risiko einer Ansteckung";
 
@@ -7,13 +19,13 @@
 "contamination.what_to_do.title" = "Was können Sie nun tun?";
 "contamination.what_to_do.step1" = "Bleiben Sie bis einschließlich %@ zu Hause und achten Sie genau auf Beschwerden, die zu Corona passen können.";
 "contamination.what_to_do.step2" = "Haben Sie (leichte) Beschwerden, die zum Corona-Virus passen?  Machen Sie einen Coronatest und bleiben Sie bis einschließlich %@ zu Hause.";
-"contamination.what_to_do.step3" = "Haben Sie ernste Symptome, wie hohes Fieber oder Atembeschwerden? Oder gehören Sie zu einer Risikogruppe und bekommen Sie Fieber? Rufen Sie zuerst Ihren Hausarzt an.";
+"contamination.what_to_do.step3" = "Haben Sie ernste Beschwerden, wie hohes Fieber oder Atembeschwerden? Oder gehören Sie zu einer Risikogruppe und bekommen Fieber? Rufen Sie dann zuerst Ihren Hausarzt an.";
 "contamination.what_to_do.description" = "Gibt Ihnen der GGD andere Anweisungen per Telefon als die App? Befolgen Sie dann die Anweisungen des GGD.";
 
 "contamination.stay_home.title" = "Bleiben Sie bis einschließlich %@ zu Hause.";
 "contamination.stay_home.step1" = "Lassen Sie Ihre Einkäufe von anderen machen. Ist dies nicht möglich und haben Sie keine Symptome? Dann können Sie für kurze Zeit das Haus verlassen, um Ihre Einkäufe zu erledigen. Halten Sie einen Abstand von 1,5 Metern ein und berühren Sie niemanden.";
 "contamination.stay_home.step2" = "Sie dürfen im Garten oder auf dem Balkon sitzen.";
-"contamination.stay_home.step3" = "Kinder im Alter von 4 - 12 Jahren dürfen in die Schule und/oder zum Sport.";
+"contamination.stay_home.step3" = "Schulkinder unter 18 Jahren dürfen in die Schule und/oder zum Sport.";
 
 "contamination.visitors.title" = "Empfangen Sie keinen Besuch.";
 "contamination.visitors.step1" = "Es dürfen nur Personen, die bei Ihnen wohnen, in Ihrer Wohnung sein. Bleiben Sie sich fern und halten Sie 1,5 Meter abstand. Also keine Umarmungen, keine Küsse und kein Sex.";
@@ -37,6 +49,7 @@
 "status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen ist eine Warnung.";
 "status.icon.accessibility.notified" = "Ein roter Kreis mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist.";
 "status.notified.today" = "heute";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -228,7 +241,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "help.pause_app.description" = "Ja, das geht, wenn Sie Bluetooth deaktivieren. Dies geht über <b>Einstellungen > Bluetooth</b>. Wenn Sie Bluetooth deaktivieren, tauscht die App keine Codes mehr aus. Sie erhalten dann automatisch alle 24 Stunden eine Erinnerung, um die App wieder einzuschalten.<br><br>Es ist jedoch in der Regel nicht ratsam, die App anzuhalten, da Sie vergessen könnten, sie wieder einzuschalten. Sie können die App jedoch in besonderen Situationen anhalten. Zum Beispiel, wenn Sie in die Nähe von (möglichen) Corona-Patienten kommen, aber sicher sind, dass Sie medizinische Schutzausrüstung tragen.";
 
 "help.apps_other_countries.title" = "Funktioniert CoronaMelder auch mit Apps aus anderen Ländern?";
-"help.apps_other_countries.description" = "Leider geht dies momentan noch nicht, aber wir erwarten, dass dies ab Ende September möglich sein wird. Dann kann CoronaMelder auch Codes mit einigen Apps aus anderen Ländern auswechseln, wie zum Beispiel die deutsche App. <br><br>Wenn Sie neben CoronaMelder auch die deutsche Corona-Warn-App installieren, dann sagt Ihr Mobiltelefon, dass nur 1 App gleichzeitig aktiv sein kann. Die App, die Sie dann wählen, ist die einzige App, die an dem Moment Ihre Begegnungen überprüft. Wenn Sie das in mehreren Ländern machen möchten, müssen Sie selbst zur anderen App wechseln. Sie erhalten dann Nachrichten von der aktivierten App. Wenn Sie 1 Mal täglich die App wechseln, kontrollieren beide Apps Ihre Begegnungen. So verpassen Sie nichts. <br><br>Ab Ende September können Sie wahrscheinlich die App aus Ihrem Land dauerhaft benutzen. Sie müssen dann nicht mehr täglich wechseln.";
+"help.apps_other_countries.description" = "Leider noch nicht, aber wir arbeiten intensiv daran, dies zu ermöglichen. Dann wird CoronaMelder auch in der Lage sein, Codes mit einigen Apps aus anderen Ländern auszutauschen. Zum Beispiel mit der deutschen App.<br><br>Wenn Sie neben CoronaMelder auch die deutsche Corona-Warn-App installieren, meldet Ihr Telefon, dass nur 1 App gleichzeitig aktiv sein kann. Die App, die Sie wählen, ist die einzige App, die zu diesem Zeitpunkt Ihre Begegnungen überprüft. Wenn Sie das in mehreren Ländern machen möchten, müssen Sie also selbst zur anderen App wechseln. Sie erhalten dann Nachrichten von der aktivierten App. Wenn Sie 1 Mal täglich die App wechseln, kontrollieren beide Apps Ihre Begegnungen. So verpassen Sie nichts.<br><br>In Zukunft können Sie wahrscheinlich die App Ihres eigenen Lands weiterhin benutzen und müssen nicht mehr täglich wechseln.";
 
 /* MARK: - Message */
 "message.default.title" = "Sie waren in der Nähe einer Person mit Corona.";
@@ -264,7 +277,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.notified.moreInfo" = "Was kann ich jetzt machen?";
 "status.notified.removeNotification" = "Nachricht löschen";
 
-/* The title for the table of items in more infromation */
+/* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mehr Informationen";
 
 "moreInformation.cell.about.title" = "Fragen über die App?";
@@ -360,7 +373,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.requestTest.button.title" = "Coronatest anfordern";
 "moreInformation.requestTest.receivedNotification.title" = "Haben Sie Beschwerden, die zu Corona passen? Fordern Sie dann einen Test an.";
 "moreInformation.requestTest.receivedNotification.content" = "Haben Sie (leichte) Beschwerden, die zu Corona passen? Lassen Sie sich kostenlos testen. Das dauert nicht lange und Sie können meistens schnell einen Termin vereinbaren.<br><br>Das Ergebnis ist innerhalb von 48 Stunden bekannt. Bleiben Sie zu Hause, bis Sie das Ergebnis haben.";
-"moreInformation.requestTest.complaints" = "Haben Sie ernste Beschwerden, wie hohes Fieber oder Atembeschwerden? Oder gehören Sie zu einer Risikogruppe und haben Sie Fieber? Dann rufen Sie zuerst Ihren Hausarzt an.";
+"moreInformation.requestTest.complaints" = "Haben Sie ernste Beschwerden, wie hohes Fieber oder Atembeschwerden? Oder gehören Sie zu einer Risikogruppe und bekommen Fieber? Rufen Sie dann zuerst Ihren Hausarzt an.";
 "moreInformation.requestTest.link" = "Gehen Sie zu coronatest.nl";
 "moreInformation.requestTest.phone" = "Rufen Sie 0800-1202 an";
 
@@ -423,15 +436,15 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Erinnerung: %@";
 
-"privacyAgreement.title" = "Zustimmung zur Datennutzung";
-"privacyAgreement.message" = "Zur Verwendung von CoronaMelder müssen Sie der %@ zustimmen. Wichtig: ";
+"privacyAgreement.title" = "So verwendet CoronaMelder Ihre Daten";
+"privacyAgreement.message" = "In der %@ steht, wie CoronaMelder Ihre Daten verwendet.";
 "privacyAgreement.message.link" = "Datenschutzerklärung";
 "privacyAgreement.list.step0" = "Die Verwendung von CoronaMelder ist immer freiwillig.";
 "privacyAgreement.list.step1" = "Die App sendet verschlüsselte Bluetooth-Daten.";
 "privacyAgreement.list.step2" = "Andere Benutzer, mit denen Sie Kontakt hatten, speichern diese Daten höchstens 14 Tage.";
 "privacyAgreement.list.step3" = "Ergibt ein Coronatest, dass Sie Corona haben? Dann können Sie dies in der App melden, um andere Benutzer zu warnen.";
 "privacyAgreement.list.step4" = "Sie können die Daten auf Ihrem Telefon jederzeit löschen.";
-"privacyAgreement.consent.button" = "Ich habe die Datenschutzerklärung gelesen und erkläre mich damit einverstanden.";
+"privacyAgreement.consent.button" = "Ich habe die Datenschutzerklärung gelesen und verstehe, wie CoronaMelder meine Daten verwendet.";
 
 "notification.update_required.title" = "Update erforderlich";
 "notification.update_required.description" = "Es gibt eine neue Version von CoronaMelder. Die veraltete Version funktioniert nicht mehr gut. Weitere Anweisungen finden Sie in der App.";

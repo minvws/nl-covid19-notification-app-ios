@@ -1,3 +1,15 @@
+// supports HTML
+"enableSettings.exposureNotifications.137.step2" = "Mergeți la <b>Notificări de expunere</b>";
+"enableSettings.exposureNotifications.137.step2.action.title" = "Notificări de expunere";
+// supports HTML
+"enableSettings.exposureNotifications.137.step3" = "Activați <b>Partajați informații despre expunerea dvs.</b>";
+"enableSettings.exposureNotifications.137.step3.action.title" = "Partajați informații despre expunerea dvs.";
+// supports HTML
+"enableSettings.exposureNotifications.137.step4" = "Controlați ca un ultim pas: este <b>Setați ca regiune activă</b> albastru? Atunci apăsați aici";
+// Should match setting name in iOS
+"enableSettings.exposureNotifications.137.step4.action.title" = "Setați ca regiune activă";
+
+"privacyAgreement.steps.title"= "Cele mai importante puncte sunt:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risc de infectare";
 
@@ -13,7 +25,7 @@
 "contamination.stay_home.title" = "Rămâneți acasă până la data de %@ (inclusiv)";
 "contamination.stay_home.step1" = "Lăsați-i pe alții să facă cumpărături. Dacă acest lucru nu este posibil și nu aveți simptome, atunci puteți ieși din casă pentru a face cumpărături. Păstrați distanța de 1,5 metri și nu atingeți alte persoane.";
 "contamination.stay_home.step2" = "Aveți voie să stați în gradină sau pe balcon.";
-"contamination.stay_home.step3" = "Copiii între 4 și 12 ani au voie să meargă la școală și/sau să facă sport.";
+"contamination.stay_home.step3" = "Elevii sub 18 ani  au voie să meargă la școală și/sau să facă sport.";
 
 "contamination.visitors.title" = "Nu primiți vizite.";
 "contamination.visitors.step1" = "Doar persoanele cu care locuiți au voie să se afle cu dvs. în casă. Stați departe unul de celălalt și păstrați distanța de 1,5 metri. Deci, nu vă îmbrățișați, nu vă sărutați, nu întrețineți rapoarte sexuale.";
@@ -37,6 +49,7 @@
 "status.icon.accessibility.inactive" = "Cercul galben cu semn de exclamare ca avertisment";
 "status.icon.accessibility.notified" = "Cerc roșu cu clopoțel de alarmă care indică faptul că o acțiune este acum necesară";
 "status.notified.today" = "Astăzi";
+
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -226,8 +239,8 @@
 "help.pause_app.title" = "Pot pune aplicația pe pauză?";
 "help.pause_app.description" = "Da, puteți face acest lucru dezactivând Bluetooth. Mergeți  la<b>Configurări > Bluetooth</b>. Dacă dezactivați Bluetooth, aplicația nu va mai face schimb de coduri. Veți primi o dată la 24 de  ore o notificare pentru a activa din nou aplicația.<br><br>Totuși, de cele mai multe ori, nu este recomandat să dezactivați temporar aplicația deoarece s-ar putea să uitați să o activați. Puteți dezactiva temporar aplicația în anumite situații, de exemplu, dacă vă aflați în apropierea unor (posibili) pacienți infectați cu coronavirus  dar sunteți sigur că purtați mijloace de protecție.";
 
-"help.apps_other_countries.title" = "Colaborează CoronaMelder și cu aplicații din alte tări?";
-"help.apps_other_countries.description" = "Din păcate, încă nu, dar este de așteptat ca, în cursul lunii septembrie, acest lucru să fie posibil. CoronaMelder va putea, de asemenea, să schimbe coduri cu anumite aplicații din alte țări, cum ar fi Germania. <br><br>Dacă, pe lângă CoronaMelder, instalați și aplicația germană Corona-Warn-App, telefonul vă va înștiința că doar 1 aplicație poate fi activă în același timp. Aplicația pe care o alegeți este singura aplicație care, în acel moment, verifică întâlnirile dvs. Dacă doriți să verificați acest lucru în mai multe țări, atunci trebuie să alternați între aplicații. Veți primi notificări de la aplicația activată la acel moment. Dacă faceți acest lucru o dată pe zi, ambele aplicații verifică întâlnirile, deci nu pierdeți nici o informație.<br><br> De la sfârșitul lunii septembrie, probabil veți putea folosi în paralel și aplicația din țara dvs., fără a fi necesară alternarea aplicațiilor în fiecare zi.  ";
+"help.apps_other_countries.title" = "Colaborează CoronaMelder și cu aplicații din alte țări?";
+"help.apps_other_countries.description" = "Din păcate, încă nu, dar se fac eforturi mari pentru ca acest lucru să fie posibil. CoronaMelder va putea, de asemenea, să schimbe coduri cu anumite aplicații din alte țări, cum ar fi Germania. <br><br>Dacă, pe lângă CoronaMelder, instalați și aplicația germană Corona-Warn-App, telefonul vă va înștiința că doar 1 aplicație poate fi activă în același timp. Aplicația pe care o alegeți este singura aplicație care, în acel moment, verifică întâlnirile dvs. Dacă doriți să verificați acest lucru în mai multe țări, atunci trebuie să alternați între aplicații. Veți primi notificări de la aplicația activată la acel moment. Dacă faceți acest lucru o dată pe zi, ambele aplicații verifică întâlnirile, deci nu pierdeți nici o informație.<br><br>În viitor probabil veți putea folosi în paralel și aplicația din țara dvs., fără a fi necesară alternarea aplicațiilor în fiecare zi.";
 
 /* MARK: - Message */
 "message.default.title" = "Ați fost aproape de cineva infectat cu coronavirus";
@@ -263,7 +276,7 @@
 "status.notified.moreInfo" = "Ce pot face acum?";
 "status.notified.removeNotification" = "Ștergere notificare";
 
-/* The title for the table of items in more infromation */
+/* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mai multe informații";
 
 "moreInformation.cell.about.title" = "Aveți întrebări despre aplicație?";
@@ -359,7 +372,7 @@
 "moreInformation.requestTest.button.title" = "Solicitați un test pentru coronavirus";
 "moreInformation.requestTest.receivedNotification.title" = "Aveți simptome care ar putea indica infectarea cu coronavirus? Solicitați un test";
 "moreInformation.requestTest.receivedNotification.content" = "Aveți simptome (ușoare) care pot fi asociate cu coronavirus? Testați-vă gratuit.  Nu durează mult și, de regulă, puteți face repede o programare.<br><br>Rezultatul va fi cunoscut în timp de 48 de ore. Rămâneți acasă până aflați rezultatul.";
-"moreInformation.requestTest.complaints" = "Aveți simptome grave cum ar fi febra sau dificultate la respirație sau faceți parte dintr-o categorie de risc și faceți temperatură? Sunați întâi medicul de familie.";
+"moreInformation.requestTest.complaints" = "Aveți simptome grave cum ar fi febra mare sau dificultate la respirație sau faceți parte dintr-o categorie de risc și aveți temperatură? Sunați întâi medicul de familie.";
 "moreInformation.requestTest.link" = "Accesați coronatest.nl";
 "moreInformation.requestTest.phone" = "Sunați la 0800-1202";
 
@@ -422,15 +435,15 @@
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Reapel: %@";
 
-"privacyAgreement.title" = "Autorizație pentru utilizarea datelor";
-"privacyAgreement.message" = "Pentru a utiliza CoronaMelder trebuie să acceptați %@. Important de știut: ";
+"privacyAgreement.title" = "Cum folosește CoronaMelder datele dvs.";
+"privacyAgreement.message" = "În %@ se menționează cum folosește CoronaMelder datele dvs.";
 "privacyAgreement.message.link" = "declarația de confidențialitate";
 "privacyAgreement.list.step0" = "Utilizarea aplicației CoronaMelder este întotdeauna voluntară.";
 "privacyAgreement.list.step1" = "Aplicația transmite date Bluetooth criptate.";
 "privacyAgreement.list.step2" = "Alți utilizatori care au fost în contact cu dvs. păstrează aceste date timp de maximum 14 zile.";
 "privacyAgreement.list.step3" = "Dacă în urma unui test pentru coronavirus reiese că sunteți infectat, puteți raporta acest lucru în aplicație pentru a avertiza alți utilizatori.";
 "privacyAgreement.list.step4" = "Puteți șterge în orice moment datele din telefon.";
-"privacyAgreement.consent.button" = "Am citit declarația de confidențialitate și sunt de acord cu ea.";
+"privacyAgreement.consent.button" = "Am citit declarația de confidențialitate și înțeleg cum folosește CoronaMelder datele mele.";
 
 "notification.update_required.title" = "Este necesară actualizarea";
 "notification.update_required.description" = "Este disponibilă o noua versiune a aplicației CoronaMelder. Această versiune nu mai funcționează corect. Controlați aplicația pentru instrucții";

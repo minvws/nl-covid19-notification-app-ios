@@ -57,6 +57,10 @@ public final class Localization {
     }
 
     public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
+
+    static var isUsingDutchLanguage: Bool {
+        Locale.current.languageCode?.lowercased() == "nl"
+    }
 }
 
 extension String {
@@ -66,6 +70,7 @@ extension String {
     static var helpDeskPhoneNumber = "tel://08001280"
     static var coronaTestPhoneNumber = "tel://08001202"
     static var coronaTestWebUrl = "https://coronatest.nl"
+    static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
 
     // MARK: - Share App
 
@@ -470,11 +475,14 @@ extension String {
 
     static func exposureNotificationUserExplanation(_ one: String) -> String { return Localization.string(for: "exposure.notification.userExplanation", [one]) }
 
+    static func exposureNotificationReminder(_ one: String) -> String { return Localization.string(for: "exposure.notification.reminder", [one]) }
+
     // MARK: - Privacy Agreement
 
     static var privacyAgreementTitle: String { return Localization.string(for: "privacyAgreement.title") }
     static var privacyAgreementMessage: String { return Localization.string(for: "privacyAgreement.message") }
     static var privacyAgreementMessageLink: String { return Localization.string(for: "privacyAgreement.message.link") }
+    static var privacyAgreementStepsTitle: String { return Localization.string(for: "privacyAgreement.steps.title") }
     static var privacyAgreementStep0: String { return Localization.string(for: "privacyAgreement.list.step0") }
     static var privacyAgreementStep1: String { return Localization.string(for: "privacyAgreement.list.step1") }
     static var privacyAgreementStep2: String { return Localization.string(for: "privacyAgreement.list.step2") }

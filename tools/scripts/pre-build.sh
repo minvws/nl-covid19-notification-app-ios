@@ -6,7 +6,9 @@ brew install yq
 
 BUNDLE_VERSION=$(yq r project.yml targets.EN.info.properties.CFBundleShortVersionString)
 BUNDLE_VERSION=${BUNDLE_VERSION%%-tst}
+BUNDLE_VERSION=${BUNDLE_VERSION%%-tst-13-5}
 BUNDLE_VERSION=${BUNDLE_VERSION%%-acc}
+BUNDLE_VERSION=${BUNDLE_VERSION%%-acc-13-5}
 
 if [ -z "$NETWORK_CONFIGURATION" ]
 then
@@ -21,6 +23,11 @@ fi
 if [ -z "$BUILD_ID" ]
 then
       BUILD_ID="1"
+fi
+
+if [ -z "$BUNDLE_IDENTIFIER" ]
+then
+      BUNDLE_IDENTIFIER="nl.rijksoverheid.en"
 fi
 
 if [ -z "$BUNDLE_SHORT_VERSION" ]

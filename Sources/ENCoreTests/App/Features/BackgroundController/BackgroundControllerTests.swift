@@ -59,7 +59,12 @@ final class BackgroundControllerTests: XCTestCase {
         exposureController.updateAndProcessPendingUploadsHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+
         exposureController.appUpdateRequiredCheckHandler = {
+            Just(()).eraseToAnyPublisher()
+        }
+
+        exposureController.lastOpenedNotificationCheckHandler = {
             Just(()).eraseToAnyPublisher()
         }
     }
@@ -106,7 +111,9 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertNotNil(task.completed)
         XCTAssertEqual(exposureController.updateAndProcessPendingUploadsCallCount, 1)
         XCTAssertEqual(exposureController.exposureNotificationStatusCheckCallCount, 1)
+
         XCTAssertEqual(exposureController.appUpdateRequiredCheckCallCount, 1)
+        XCTAssertEqual(exposureController.lastOpenedNotificationCheckCallCount, 1)
     }
 
     func test_handleBackgroundDecoyRegister() {

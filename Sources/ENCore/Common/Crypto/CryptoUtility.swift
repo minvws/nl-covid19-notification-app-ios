@@ -14,6 +14,7 @@ import Security
 protocol CryptoUtility {
     func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ())
     func signature(forData data: Data, key: Data) -> Data
+    func sha256<D>(data: D) -> String? where D: DataProtocol
 }
 
 /// Crypto Utility for validating and generating signatures
@@ -44,6 +45,10 @@ final class CryptoUtilityImpl: CryptoUtility {
         let signature = HMAC<SHA256>.authenticationCode(for: data, using: key)
 
         return Data(signature)
+    }
+
+    func sha256<D>(data: D) -> String? where D: DataProtocol {
+        return SHA256.hash(data: data).description
     }
 
     // MARK: - Private

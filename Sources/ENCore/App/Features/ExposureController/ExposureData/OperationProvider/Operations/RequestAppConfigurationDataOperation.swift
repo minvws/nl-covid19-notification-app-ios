@@ -9,7 +9,7 @@ import Combine
 import ENFoundation
 import Foundation
 
-struct ApplicationConfiguration: Codable {
+struct ApplicationConfiguration: Codable, Equatable {
     let version: Int
     let manifestRefreshFrequency: Int
     let decoyProbability: Float
@@ -25,20 +25,25 @@ struct ApplicationConfiguration: Codable {
 }
 
 final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {
-    typealias Result = ApplicationConfiguration
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
+         applicationSignatureController: ApplicationSignatureControlling,
          appConfigurationIdentifier: String) {
         self.networkController = networkController
         self.storageController = storageController
+        self.applicationSignatureController = applicationSignatureController
         self.appConfigurationIdentifier = appConfigurationIdentifier
     }
 
     // MARK: - ExposureDataOperation
 
     func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        if let appConfiguration = retrieveStoredConfiguration(), appConfiguration.identifier == appConfigurationIdentifier {
+        if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
+            let storedSignature = applicationSignatureController.retrieveStoredSignature(),
+            appConfiguration.identifier == appConfigurationIdentifier,
+            storedSignature == applicationSignatureController.signature(for: appConfiguration) {
+
             return Just(appConfiguration)
                 .setFailureType(to: ExposureDataError.self)
                 .eraseToAnyPublisher()
@@ -47,32 +52,26 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
         return networkController
             .applicationConfiguration(identifier: appConfigurationIdentifier)
             .mapError { $0.asExposureDataError }
-            .flatMap(store(appConfiguration:))
+            .flatMap(storeAppConfiguration)
+            .flatMap(storeSignature(for:))
             .share()
             .eraseToAnyPublisher()
     }
 
-    // MARK: - Private
-
-    private func retrieveStoredConfiguration() -> ApplicationConfiguration? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration)
+    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+        return self.applicationSignatureController.storeAppConfiguration(appConfiguration)
+            .share()
+            .eraseToAnyPublisher()
     }
 
-    private func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return Future { promise in
-            guard appConfiguration.version > 0, appConfiguration.manifestRefreshFrequency > 0 else {
-                return promise(.failure(.serverError))
-            }
-            self.storageController.store(object: appConfiguration,
-                                         identifiedBy: ExposureDataStorageKey.appConfiguration,
-                                         completion: { _ in
-                                             promise(.success(appConfiguration))
-                                         })
-        }
-        .eraseToAnyPublisher()
+    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+        return self.applicationSignatureController.storeSignature(for: appConfiguration)
+            .share()
+            .eraseToAnyPublisher()
     }
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let applicationSignatureController: ApplicationSignatureControlling
     private let appConfigurationIdentifier: String
 }

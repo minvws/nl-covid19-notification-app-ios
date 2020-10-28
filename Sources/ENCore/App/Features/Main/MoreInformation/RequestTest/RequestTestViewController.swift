@@ -45,8 +45,11 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
         internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 
         internalView.linkButtonActionHandler = { [weak self] in
-            guard let url = URL(string: .coronaTestWebUrl) else {
-                self?.logError("Unable to open \(String.coronaTestWebUrl)")
+
+            let testWebsiteUrl: String = Localization.isUsingDutchLanguage ? .coronaTestWebUrl : .coronaTestWebUrlInternational
+
+            guard let url = URL(string: testWebsiteUrl) else {
+                self?.logError("Unable to open \(testWebsiteUrl)")
                 return
             }
             UIApplication.shared.open(url, options: [:], completionHandler: nil)

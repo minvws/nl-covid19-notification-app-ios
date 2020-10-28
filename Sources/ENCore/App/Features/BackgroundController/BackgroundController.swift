@@ -245,7 +245,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             { self.exposureController.activate(inBackgroundMode: true) },
             processUpdate,
             processENStatusCheck,
-            appUpdateRequiredCheck
+            appUpdateRequiredCheck,
+            processLastOpenedNotificationCheck
         ]
 
         logDebug("Background: starting refresh task")
@@ -332,9 +333,14 @@ final class BackgroundController: BackgroundControlling, Logging {
             .eraseToAnyPublisher()
     }
 
+    private func processLastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
+        return exposureController.lastOpenedNotificationCheck()
+    }
+
     // Returns a Date with the specified hour and minute, for the next day
     // E.g. date(hour: 1, minute: 0) returns 1:00 am for the next day
     private func date(hour: Int, minute: Int, dayOffset: Int = 1) -> Date? {
+
         let calendar = Calendar.current
         guard let tomorrow = calendar.date(byAdding: .day, value: dayOffset, to: currentDate()) else {
             return nil

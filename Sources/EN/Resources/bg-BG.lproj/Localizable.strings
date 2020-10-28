@@ -12,8 +12,8 @@
 "update.button.update" = "Актуализиране";
 "update.button.openSettings" = "Отвори Настройки";
 
-"update.software.app.title" = "Тази версия на CoronaMelder вече не работи";
-"update.software.app.description" = "Актуализирай приложението в телефона си, за да подновиш работата на CoronaMelder.";
+"update.software.app.title" = "Имаш стара версия на CoronaMelder";
+"update.software.app.description" = "Актуализирай приложението на телефона си, за да може CoronaMelder да работи добре.";
 "update.software.app.detail.title" = "Актуализирай приложението";
 "update.software.app.detail.step1" = "1. Отвори Настройки на телефона си чрез натискане на копчето по-долу";
 "update.software.app.detail.step2" = "2. Натисни ‘Настрой’, за да актуализираш приложението.";
