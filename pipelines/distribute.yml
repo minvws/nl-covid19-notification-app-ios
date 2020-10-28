@@ -46,31 +46,6 @@ steps:
   displayName: Distribute test build
 - template: build.yml
   parameters:
-    provisioningProfileSecureFile: CoronaMelder_TST_13_5.mobileprovision
-    provisioningProfileName: "CoronaMelder_TST_13_5"
-    networkConfiguration: Test
-    logLevel: debug
-    configuration: Debug
-    bundleDisplayName: "🐞 CoronaMelder"
-    bundleIdentifier: nl.rijksoverheid.en.test
-    bundleShortVersion: tst-13-5
-    debugMenu: true
-    packageApp: true
-    shareLogsEnabled: true
-    exportPath: "ipa/test-13-5"
-    exportMethod: "ad-hoc"
-    enDeveloperRegion: "NL"
-- publish: "ipa/test-13-5"
-  displayName: Publish test IPA
-  artifact: ipa-test-13-5
-- script: |
-    firebase appdistribution:distribute ipa/test-13-5/CoronaMelder.ipa \
-    --app 1:937920499570:ios:ada965c6b5534d48f957eb \
-    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
-    --groups ios-latest
-  displayName: Distribute test build - < 13.7
-- template: build.yml
-  parameters:
     provisioningProfileSecureFile: CoronaMelder_Acceptance.mobileprovision
     provisioningProfileName: "CoronaMelder_ACC"
     networkConfiguration: ACC
