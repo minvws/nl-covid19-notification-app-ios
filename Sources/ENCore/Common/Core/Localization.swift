@@ -58,8 +58,8 @@ public final class Localization {
 
     public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
 
-    static var usingDutchLanguage: Bool {
-        Locale.current.languageCode?.lowercased() != "nl"
+    static var isUsingDutchLanguage: Bool {
+        Locale.current.languageCode?.lowercased() == "nl"
     }
 }
 

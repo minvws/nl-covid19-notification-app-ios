@@ -41,7 +41,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         internalView.linkButtonActionHandler = { [weak self] in
 
-            let testWebsiteUrl: String = Localization.usingDutchLanguage ? .coronaTestWebUrl : .coronaTestWebUrlInternational
+            let testWebsiteUrl: String = Localization.isUsingDutchLanguage ? .coronaTestWebUrl : .coronaTestWebUrlInternational
 
             guard let url = URL(string: testWebsiteUrl) else {
                 self?.logError("Unable to open \(testWebsiteUrl)")
