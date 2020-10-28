@@ -13,6 +13,7 @@ import UserNotifications
 protocol BackgroundControlling {
     func scheduleTasks()
     func handle(task: BGTask)
+    func removeAllTasks()
 }
 
 protocol BackgroundDependency {

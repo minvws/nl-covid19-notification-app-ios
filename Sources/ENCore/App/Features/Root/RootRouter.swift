@@ -89,6 +89,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         LogHandler.setup()
 
+        checkIfAppIsDeactivated()
+
         checkIfAppUpdateIsRequired()
 
         if exposureController.didCompleteOnboarding {
@@ -139,17 +141,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.refreshStatus()
 
-        exposureController
-            .isAppDeactivated()
-            .sink(receiveCompletion: { _ in
-                // Do nothing
-            }, receiveValue: { [weak self] isDectivated in
-                if isDectivated {
-                    self?.routeToEndOfLife()
-                    self?.exposureController.deactivate()
-                }
-                })
-            .store(in: &disposeBag)
+        checkIfAppIsDeactivated()
 
         checkIfAppUpdateIsRequired()
 
@@ -323,6 +315,35 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         let developerMenuViewController = developerMenuBuilder.build(listener: viewController)
         self.developerMenuViewController = developerMenuViewController
+    }
+
+    private func checkIfAppIsDeactivated() {
+
+        exposureController
+            .isAppDeactivated()
+            .sink(receiveCompletion: { [weak self] completion in
+
+                if completion == .failure(.networkUnreachable) ||
+                    completion == .failure(.serverError) ||
+                    completion == .failure(.internalError) ||
+                    completion == .failure(.responseCached) {
+
+                    self?.exposureController.activate(inBackgroundMode: false)
+                }
+            }, receiveValue: { [weak self] isDectivated in
+                if isDectivated {
+
+                    self?.routeToEndOfLife()
+
+                    self?.exposureController.deactivate()
+
+                    self?.backgroundController.removeAllTasks()
+
+                } else {
+                    self?.exposureController.activate(inBackgroundMode: false)
+                }
+                })
+            .store(in: &disposeBag)
     }
 
     private func checkIfAppUpdateIsRequired() {
