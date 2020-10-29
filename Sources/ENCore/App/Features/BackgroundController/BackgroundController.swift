@@ -231,6 +231,11 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
+    func removeAllTasks() {
+        logDebug("Background: Removing all scheduled tasks")
+        taskScheduler.cancelAllTaskRequests()
+    }
+
     // MARK: - Refresh
 
     private func scheduleRefresh() {
@@ -371,10 +376,5 @@ final class BackgroundController: BackgroundControlling, Logging {
             logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
         }
-    }
-
-    private func removeAllTasks() {
-        logDebug("Background: Removing all scheduled tasks")
-        taskScheduler.cancelAllTaskRequests()
     }
 }
