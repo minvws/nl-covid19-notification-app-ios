@@ -463,13 +463,7 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.logDebug("User has not opened the app in 3 hours.")
 
-                let calendar = Calendar.current
-
-                let today = calendar.startOfDay(for: Date())
-                let lastExposureDate = calendar.startOfDay(for: lastExposure.date)
-
-                let components = calendar.dateComponents([.day], from: lastExposureDate, to: today)
-                let days = components.day ?? 0
+                let days = self.daysAgo(lastExposure.date)
 
                 let content = UNMutableNotificationContent()
                 content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: days)))
@@ -481,6 +475,17 @@ final class ExposureController: ExposureControlling, Logging {
                 }
             }
         }.eraseToAnyPublisher()
+    }
+
+    private func daysAgo(_ date: Date) -> Int {
+
+        let calendar = Calendar.current
+
+        let today = calendar.startOfDay(for: Date())
+        let compareDate = calendar.startOfDay(for: date)
+
+        let components = calendar.dateComponents([.day], from: compareDate, to: today)
+        return components.day ?? 0
     }
 
     // MARK: - Private
