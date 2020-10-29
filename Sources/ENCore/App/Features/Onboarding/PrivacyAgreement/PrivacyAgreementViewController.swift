@@ -125,7 +125,8 @@ private final class PrivacyAgreementView: View {
         hasBottomMargin = true
 
         scrollView.snp.makeConstraints { maker in
-            maker.leading.trailing.top.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.equalToSuperview()
             maker.bottom.equalTo(bottomStackView.snp.top)
         }
 
@@ -149,7 +150,7 @@ private final class PrivacyAgreementView: View {
         }
 
         bottomStackView.snp.makeConstraints { maker in
-            maker.leading.trailing.width.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
 

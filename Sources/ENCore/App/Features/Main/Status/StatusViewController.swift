@@ -20,21 +20,24 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     weak var router: StatusRouting?
 
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
-    private var exposureStateStreamCancellable: AnyCancellable?
+    private var stateStreamCancellable: AnyCancellable?
 
     private let cardBuilder: CardBuildable
     private var cardRouter: Routing & CardTypeSettable
 
     init(exposureStateStream: ExposureStateStreaming,
+         interfaceOrientationStream: InterfaceOrientationStreaming,
          cardBuilder: CardBuildable,
          listener: StatusListener,
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?) {
         self.exposureStateStream = exposureStateStream
+        self.interfaceOrientationStream = interfaceOrientationStream
         self.listener = listener
         self.topAnchor = topAnchor
 
@@ -59,8 +62,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
-        if let currentState = exposureStateStream.currentExposureState {
-            update(exposureState: currentState)
+        if let currentState = exposureStateStream.currentExposureState,
+            let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
+            update(exposureState: currentState, isLandscape: isLandscape)
         }
     }
 
@@ -79,29 +83,32 @@ final class StatusViewController: ViewController, StatusViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        exposureStateStreamCancellable = exposureStateStream.exposureState.sink { [weak self] status in
-            guard let strongSelf = self else {
-                return
-            }
+        stateStreamCancellable = exposureStateStream
+            .exposureState
+            .combineLatest(interfaceOrientationStream.isLandscape)
+            .sink { [weak self] status, isLandscape in
+                guard let strongSelf = self else {
+                    return
+                }
 
-            strongSelf.update(exposureState: status)
-        }
+                strongSelf.update(exposureState: status, isLandscape: isLandscape)
+            }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillDisappear(false)
 
-        exposureStateStreamCancellable = nil
+        stateStreamCancellable = nil
     }
 
     // MARK: - Private
 
-    private func update(exposureState status: ExposureState) {
+    private func update(exposureState status: ExposureState, isLandscape: Bool) {
         let statusViewModel: StatusViewModel
 
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
-            statusViewModel = .activeWithNotNotified
+            statusViewModel = .activeWithNotNotified(showScene: !isLandscape)
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
         case let (.inactive(reason), .notified(date)):
@@ -164,6 +171,11 @@ private final class StatusView: View {
 
     private var containerToSceneVerticalConstraint: NSLayoutConstraint?
     private var heightConstraint: NSLayoutConstraint?
+    private var sceneImageHeightConstraint: NSLayoutConstraint?
+
+    private var sceneImageAspectRatio: CGFloat {
+        sceneImageView.animation.map { $0.size.height / $0.size.width } ?? 1
+    }
 
     init(theme: Theme, cardView: UIView) {
         self.cardView = cardView
@@ -222,7 +234,8 @@ private final class StatusView: View {
         containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(equalTo: contentStretchGuide.bottomAnchor, constant: -48)
         heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
-        let sceneImageAspectRatio = sceneImageView.animation.map { $0.size.width / $0.size.height } ?? 1
+        sceneImageHeightConstraint = sceneImageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * sceneImageAspectRatio)
+        sceneImageHeightConstraint?.isActive = true
 
         cloudsView.snp.makeConstraints { maker in
             maker.centerY.equalTo(iconView.snp.centerY)
@@ -230,8 +243,7 @@ private final class StatusView: View {
         }
         sceneImageView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalTo(stretchGuide)
-            maker.width.equalTo(sceneImageView.snp.height).multipliedBy(sceneImageAspectRatio)
-            maker.height.equalTo(300)
+            maker.centerX.equalTo(stretchGuide)
         }
         stretchGuide.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(contentStretchGuide).inset(-16)
@@ -259,6 +271,7 @@ private final class StatusView: View {
         gradientLayer.frame = stretchGuide.layoutFrame
         CATransaction.commit()
 
+        evaluateImageSize()
         evaluateHeight()
     }
 
@@ -290,6 +303,7 @@ private final class StatusView: View {
         cloudsView.isHidden = !viewModel.showClouds
 
         evaluateHeight()
+        evaluateImageSize()
     }
 
     // MARK: - Private
@@ -303,6 +317,11 @@ private final class StatusView: View {
         let size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         heightConstraint?.constant = size.height
         heightConstraint?.isActive = true
+    }
+
+    /// Manually adjusts sceneImage height constraint after layout pass
+    private func evaluateImageSize() {
+        sceneImageHeightConstraint?.constant = UIScreen.main.bounds.width * sceneImageAspectRatio
     }
 }
 

@@ -173,7 +173,7 @@ private final class MoreInformationView: View {
 
         stackView.snp.makeConstraints { maker in
             maker.top.equalToSuperview().offset(16)
-            maker.leading.trailing.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.bottom.equalTo(versionLabel.snp.top).offset(-16)
         }
         versionLabel.snp.makeConstraints { maker in

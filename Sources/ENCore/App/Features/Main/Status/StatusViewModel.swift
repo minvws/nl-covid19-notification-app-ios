@@ -118,17 +118,20 @@ struct StatusViewModel {
         )
     }
 
-    static let activeWithNotNotified = StatusViewModel(
-        icon: .ok,
-        title: .init(string: .statusAppState),
-        description: .init(string: String(format: .statusActiveDescription)),
-        buttons: [],
-        footer: nil,
-        shouldShowHideMessage: false,
-        gradientColor: \.statusGradientActive,
-        showScene: true,
-        showClouds: true
-    )
+    static func activeWithNotNotified(showScene: Bool) -> StatusViewModel {
+
+        return StatusViewModel(
+            icon: .ok,
+            title: .init(string: .statusAppState),
+            description: .init(string: String(format: .statusActiveDescription)),
+            buttons: [],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.statusGradientActive,
+            showScene: showScene,
+            showClouds: true
+        )
+    }
 
     static func inactiveWithNotified(date: Date) -> StatusViewModel {
         let description = timeAgo(from: date)

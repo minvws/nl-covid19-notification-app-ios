@@ -16,11 +16,14 @@ final class InfectedViewControllerSnapshotTests: TestCase {
     private let router = InfectedRoutingMock()
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
+
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         exposureStateStream.exposureState = Just(ExposureState(
             notifiedState: .notNotified,
@@ -30,7 +33,8 @@ final class InfectedViewControllerSnapshotTests: TestCase {
 
         viewController = InfectedViewController(theme: theme,
                                                 exposureController: exposureController,
-                                                exposureStateStream: exposureStateStream)
+                                                exposureStateStream: exposureStateStream,
+                                                interfaceOrientationStream: interfaceOrientationStream)
         viewController.router = router
     }
 

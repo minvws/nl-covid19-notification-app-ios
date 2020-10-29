@@ -18,6 +18,7 @@ protocol MainDependency {
     var exposureStateStream: ExposureStateStreaming { get }
     var exposureController: ExposureControlling { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency {
@@ -32,6 +33,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var exposureStateStream: ExposureStateStreaming {
         return dependency.exposureStateStream
+    }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
     }
 
     var statusBuilder: StatusBuildable {

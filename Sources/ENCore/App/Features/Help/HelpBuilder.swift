@@ -26,6 +26,7 @@ protocol HelpBuildable {
 protocol HelpDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class HelpDependencyProvider: DependencyProvider<HelpDependency>, HelpOverviewDependency, HelpDetailDependency, ReceivedNotificationDependency {
@@ -38,6 +39,10 @@ private final class HelpDependencyProvider: DependencyProvider<HelpDependency>, 
 
     var theme: Theme {
         return dependency.theme
+    }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        dependency.interfaceOrientationStream
     }
 
     // MARK: - Child Builders

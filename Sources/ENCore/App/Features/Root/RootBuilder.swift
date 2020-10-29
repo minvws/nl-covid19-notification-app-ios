@@ -146,6 +146,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableBluetoothStateStream
     }
 
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return InterfaceOrientationStream()
+    }
+
     let theme: Theme = ENTheme()
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController

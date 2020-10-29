@@ -59,6 +59,8 @@ targets:
           - telephony
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
         UIUserInterfaceStyle: Light
         UIViewControllerBasedStatusBarAppearance: true
         ENDeveloperRegion: TEST_NL_TEST

@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import SafariServices
 import SnapKit
@@ -17,9 +18,11 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     // MARK: - Init
 
-    init(listener: RequestTestListener, theme: Theme) {
+    init(listener: RequestTestListener,
+         theme: Theme,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
-
+        self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
 
@@ -38,6 +41,8 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
+
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 
         internalView.linkButtonActionHandler = { [weak self] in
 
@@ -58,6 +63,22 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        interfaceOrientationStreamCancellable = interfaceOrientationStream
+            .isLandscape
+            .sink(receiveValue: { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+        })
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        interfaceOrientationStreamCancellable = nil
+    }
+
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -68,6 +89,8 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     private weak var listener: RequestTestListener?
     private lazy var internalView: RequestTestView = RequestTestView(theme: self.theme)
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.requestTestWantsDismissal(shouldDismissViewController: true)
@@ -83,6 +106,12 @@ private final class RequestTestView: View {
     var linkButtonActionHandler: (() -> ())? {
         get { infoView.actionHandler }
         set { infoView.actionHandler = newValue }
+    }
+
+    var showVisual: Bool = true {
+        didSet {
+            infoView.showHeader = showVisual
+        }
     }
 
     private let infoView: InfoView
@@ -116,7 +145,8 @@ private final class RequestTestView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.bottom.leading.trailing.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.bottom.equalToSuperview()
         }
     }
 

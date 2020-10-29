@@ -26,6 +26,7 @@ protocol StatusBuildable {
 protocol StatusDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
 }
@@ -50,6 +51,10 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
     var environmentController: EnvironmentControlling {
         return dependency.environmentController
     }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
+    }
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
@@ -58,6 +63,7 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
 
         let viewController = StatusViewController(
             exposureStateStream: dependencyProvider.exposureStateStream,
+            interfaceOrientationStream: dependencyProvider.interfaceOrientationStream,
             cardBuilder: dependencyProvider.cardBuilder,
             listener: listener,
             theme: dependencyProvider.dependency.theme,
