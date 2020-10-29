@@ -476,7 +476,7 @@ final class ExposureController: ExposureControlling, Logging {
                 content.sound = .default
                 content.badge = 0
 
-                self.sendNotification(content: content, identifier: .enStatusDisabled) { _ in
+                self.sendNotification(content: content, identifier: .exposure) { _ in
                     promise(.success(()))
                 }
             }
