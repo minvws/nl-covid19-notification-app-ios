@@ -329,8 +329,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                     self?.exposureController.activate(inBackgroundMode: false)
                 }
-            }, receiveValue: { [weak self] isDectivated in
-                if isDectivated {
+            }, receiveValue: { [weak self] isDeactivated in
+                if isDeactivated {
 
                     self?.routeToEndOfLife()
 
