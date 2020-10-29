@@ -51,7 +51,6 @@
 "status.icon.accessibility.inactive" = "Cercle jaune avec point d'exclamation comme avertissement";
 "status.icon.accessibility.notified" = "Cercle rouge avec sonnette d'alarme qui indique qu'une action est nécessaire";
 "status.notified.today" = "aujourd'hui";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -266,10 +265,10 @@
 "status.appState" = "L'application est activée";
 "status.appState.inactive.title" = "L'application n'est pas activée";
 "status.appState.inactive.description" = "CoronaMelder ne fonctionne que si les paramètres nécessaires ont été activés.";
-"status.appState.inactive.no_recent_updates.description" = "L'application n'a pas pu établir de connexion internet ces dernières 24 heures. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
+"status.appState.inactive.no_recent_updates.description" = "L'application n'a pas pu vérifier pendant 24 heures si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
 "status.appState.card.title" = "L'application n'est pas activée";
 "status.appState.card.description" = "CoronaMelder ne fonctionne que si les paramètres nécessaires ont été activés";
-"status.appState.card.no_recent_updates.description" = "L'application n'a pas pu établir de connexion internet ces dernières 24 heures. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
+"status.appState.card.no_recent_updates.description" = "L'application n'a pas pu vérifier pendant 24 heures si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
 "status.appState.card.button" = "Ouvrir l'application";
 "status.appState.card.try_again" = "Veuillez réessayer";
 "status.active.description" = "Les rencontres sont sauvegardées, même si vous fermez l'application";

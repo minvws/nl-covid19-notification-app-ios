@@ -49,7 +49,6 @@
 "status.icon.accessibility.inactive" = "Círculo amarillo con signo de exclamación como aviso";
 "status.icon.accessibility.notified" = "Círculo rojo con campana de alerta que indica que hay que reaccionar urgentemente";
 "status.notified.today" = "hoy";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -210,8 +209,8 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.technical_explanation.title" = "Explicación técnica";
 "help.technical_explanation.step1.title" = "1. La aplicación crea un código único para cada teléfono";
 "help.technical_explanation.step1.description" = "En este código, no hay información sobre ti ni tu teléfono. El código es completamente anónimo y cambia cada cuarto de hora. ";
-"help.technical_explanation.step2.title" = "2. Los teléfonos comparten sus códigos si están cerca el uno del otro";
-"help.technical_explanation.step2.description" = "Si la persona con la que te encuentras también tiene la app, entonces vuestros teléfonos intercambiarán sus códigos mediante Bluetooth Low Energy. Así la app sabe qué teléfonos había cerca. La app no sabe de quién son los teléfonos ni dónde estabais.";
+"help.technical_explanation.step2.title" = "2. Los teléfonos comparten códigos si están cerca el uno del otro";
+"help.technical_explanation.step2.description" = "Si la persona con la que te encuentras también tiene la app, entonces vuestros teléfonos intercambiarán códigos mediante Bluetooth Low Energy. Así la app sabe qué teléfonos había cerca. La app no sabe de quién son los teléfonos ni dónde estabais.";
 "help.technical_explanation.step3.title" = "3. Si alguien tiene el coronavirus, esa persona puede añadir sus códigos a una lista";
 "help.technical_explanation.step3.description" = "Esta lista solo contiene códigos de personas contagiadas. Para poder añadir los códigos, la persona contagiada tiene que enviar primero una clave GGD al GGD (servicio de salud municipal). De esta forma, se está siempre seguro de que los código añadidos son de personas que realmente tienen coronavirus. Todos los códigos que tengan más de 14 días se eliminan automáticamente de la lista.";
 "help.technical_explanation.step4.title" = "4. Cada teléfono comprueba si se ha encontrado anteriormente con un código en la lista";
@@ -263,10 +262,10 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.appState" = "La app está activada";
 "status.appState.inactive.title" = "La app no está activada";
 "status.appState.inactive.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios";
-"status.appState.inactive.no_recent_updates.description" = "La app no ha podido conectarse a internet en las últimas 24 horas. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
+"status.appState.inactive.no_recent_updates.description" = "La app no ha podido controlar si las personas con las que te has encontrado resultaron tener coronavirus. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
 "status.appState.card.title" = "La app no está activada";
 "status.appState.card.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios.";
-"status.appState.card.no_recent_updates.description" = "La app no ha podido conectarse a internet en las últimas 24 horas. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
+"status.appState.card.no_recent_updates.description" = "La app no ha podido controlar si las personas con las que te has encontrado resultaron tener coronavirus. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
 "status.appState.card.button" = "Activar la app";
 "status.appState.card.try_again" = "Prueba otra vez";
 "status.active.description" = "Los encuentros seguirán registrándose, incluso aunque cierres la app";

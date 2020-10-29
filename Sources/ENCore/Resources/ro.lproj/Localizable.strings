@@ -49,7 +49,6 @@
 "status.icon.accessibility.inactive" = "Cercul galben cu semn de exclamare ca avertisment";
 "status.icon.accessibility.notified" = "Cerc roșu cu clopoțel de alarmă care indică faptul că o acțiune este acum necesară";
 "status.notified.today" = "Astăzi";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -263,10 +262,10 @@
 "status.appState" = "Aplicația este activă";
 "status.appState.inactive.title" = "Aplicația nu este activă";
 "status.appState.inactive.description" = "CoronaMelder funcționează doar dacă configurările necesare sunt activate.";
-"status.appState.inactive.no_recent_updates.description" = "Aplicația nu a putut să se conecteze la internet în ultimele 24 de ore. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
+"status.appState.inactive.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
 "status.appState.card.title" = "Aplicația nu este activă";
 "status.appState.card.description" = "CoronaMelder funcționează doar dacă setările necesare sunt activate";
-"status.appState.card.no_recent_updates.description" = "Aplicația nu a putut să se conecteze la internet în ultimele 24 de ore. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
+"status.appState.card.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
 "status.appState.card.button" = "Activare aplicație";
 "status.appState.card.try_again" = "Încercați din nou";
 "status.active.description" = "Chiar dacă închideți aplicația, se va ține, în continuare, evidența întâlnirilor.";

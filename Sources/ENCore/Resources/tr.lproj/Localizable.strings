@@ -49,7 +49,6 @@
 "status.icon.accessibility.inactive" = "Uyarı olarak sarı daire içinde ünlem işareti";
 "status.icon.accessibility.notified" = "Eyleme geçmenin gerekli olduğunu gösteren alarm zilli kırmızı daire";
 "status.notified.today" = "bugün";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -263,10 +262,10 @@
 "status.appState" = "Uygulama etkindir";
 "status.appState.inactive.title" = "Uygulama etkin değil";
 "status.appState.inactive.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır";
-"status.appState.inactive.no_recent_updates.description" = "Uygulama, son 24 saat içinde internete bağlanamadı. Wifi veya mobil verilerinizin açık olup olmadığını kontrol edin ve tekrar deneyin.";
+"status.appState.inactive.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
 "status.appState.card.title" = "Uygulama etkin değil";
 "status.appState.card.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır.";
-"status.appState.card.no_recent_updates.description" = "Uygulama, son 24 saat içinde internete bağlanamadı. Wifi veya mobil verilerinizin açık olup olmadığını kontrol edin ve tekrar deneyin.";
+"status.appState.card.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
 "status.appState.card.button" = "Uygulamayı açmak";
 "status.appState.card.try_again" = "Tekrar deneyin";
 "status.active.description" = "Uygulamayı kapatsanız bile buluşmalar izlenir";
