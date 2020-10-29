@@ -468,7 +468,7 @@ final class ExposureController: ExposureControlling, Logging {
                 let today = calendar.startOfDay(for: Date())
                 let lastExposureDate = calendar.startOfDay(for: lastExposure.date)
 
-                let components = calendar.dateComponents([.day], from: today, to: lastExposureDate)
+                let components = calendar.dateComponents([.day], from: lastExposureDate, to: today)
                 let days = components.day ?? 0
 
                 let content = UNMutableNotificationContent()
