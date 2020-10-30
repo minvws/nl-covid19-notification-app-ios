@@ -49,7 +49,6 @@
 "status.icon.accessibility.inactive" = "Yellow circle with exclamation mark as warning ";
 "status.icon.accessibility.notified" = "Red circle with alarm bell that shows you need to take action immediately";
 "status.notified.today" = "today";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -262,10 +261,10 @@
 "status.appState" = "The app is active";
 "status.appState.inactive.title" = "The app is not active";
 "status.appState.inactive.description" = "CoronaMelder only works if the necessary settings are turned on.";
-"status.appState.inactive.no_recent_updates.description" = "The app couldn't connect to the internet for the past 24 hours. Check if your Wi-Fi or mobile data is turned on and try again.";
+"status.appState.inactive.no_recent_updates.description" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona. Check if your Wi-Fi or mobile data are turned on and try again.";
 "status.appState.card.title" = "App not active";
 "status.appState.card.description" = "%@ only works if the necessary settings are turned on.";
-"status.appState.card.no_recent_updates.description" = "The app couldn't connect to the internet for the past 24 hours. Check if your Wi-Fi or mobile data is turned on and try again.";
+"status.appState.card.no_recent_updates.description" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona. Check if your Wi-Fi or mobile data are turned on and try again.";
 "status.appState.card.button" = "Turn on app";
 "status.appState.card.try_again" = "Try again";
 "status.active.description" = "Encounters will be tracked, even when you close the app";

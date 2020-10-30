@@ -49,7 +49,6 @@
 "status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen ist eine Warnung.";
 "status.icon.accessibility.notified" = "Ein roter Kreis mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist.";
 "status.notified.today" = "heute";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -264,10 +263,10 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.appState" = "Die App ist aktiv.";
 "status.appState.inactive.title" = "Die App ist nicht aktiv.";
 "status.appState.inactive.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
-"status.appState.inactive.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden keine Internetverbindung herstellen. Stellen Sie sicher, dass WLAN bzw. Mobildaten aktiviert sind, und versuchen Sie es erneut.";
+"status.appState.inactive.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. Mobildaten aktiviert sind. Versuchen Sie es dann erneut.";
 "status.appState.card.title" = "App ist nicht aktiv.";
 "status.appState.card.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
-"status.appState.card.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden keine Internetverbindung herstellen. Stellen Sie sicher, dass WLAN bzw. Mobildaten aktiviert sind, und versuchen Sie es erneut.";
+"status.appState.card.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. Mobildaten aktiviert sind. Versuchen Sie es dann erneut.";
 "status.appState.card.button" = "App aktivieren";
 "status.appState.card.try_again" = "Versuchen Sie es erneut.";
 "status.active.description" = "Ihre Begegnungen werden nachverfolgt, auch wenn Sie die App schließen.";

@@ -49,7 +49,6 @@
 "status.icon.accessibility.inactive" = "Żółte kółko z wykrzyknikiem to ostrzeżenie";
 "status.icon.accessibility.notified" = "Czerwone kółko z dzwonkiem alarmowym oznacza, że konieczne jest podjęcie działań";
 "status.notified.today" = "dzisiaj";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -262,10 +261,10 @@
 "status.appState" = "Aplikacja jest aktywna";
 "status.appState.inactive.title" = "Aplikacja nie jest aktywna";
 "status.appState.inactive.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia";
-"status.appState.inactive.no_recent_updates.description" = "Aplikacja nie mogła połączyć się z internetem w ciągu ostatnich 24 godzin. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.inactive.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronwirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.title" = "Aplikacja nie jest aktywna";
 "status.appState.card.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia.";
-"status.appState.card.no_recent_updates.description" = "Aplikacja nie mogła połączyć się z internetem w ciągu ostatnich 24 godzin. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.card.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronwirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.button" = "Włącz aplikację";
 "status.appState.card.try_again" = "Spróbuj ponownie";
 "status.active.description" = "Spotkania są kontrolowane również, gdy aplikacja jest zamknięta";
