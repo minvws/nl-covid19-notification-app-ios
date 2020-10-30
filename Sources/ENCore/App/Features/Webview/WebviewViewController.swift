@@ -32,7 +32,8 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
         super.viewDidLoad()
 
         if webViewLoadingEnabled() {
-            internalView.webView.load(URLRequest(url: url))
+//            internalView.webView.load(URLRequest(url: url))
+            internalView.webView.load(URLRequest(url: URL(string: "http://www.bsdfsdfsdfsfsd.hl")!))
         } else {
             logDebug("`webViewLoading` disabled")
         }
@@ -69,7 +70,14 @@ private final class WebviewView: View, WKNavigationDelegate {
     private lazy var errorView: ErrorView = {
         let errorView = ErrorView(theme: theme)
         errorView.translatesAutoresizingMaskIntoConstraints = false
+        errorView.actionButton.addTarget(self, action: #selector(didTapReloadButton(sender:)), for: .touchUpInside)
         return errorView
+    }()
+
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.hidesWhenStopped = true
+        return indicator
     }()
 
     private lazy var gradientImageView: UIImageView = {
@@ -86,6 +94,7 @@ private final class WebviewView: View, WKNavigationDelegate {
         addSubview(webView)
         addSubview(gradientImageView)
         addSubview(errorView)
+        addSubview(activityIndicator)
 
         errorView.isHidden = true
     }
@@ -98,58 +107,135 @@ private final class WebviewView: View, WKNavigationDelegate {
         }
 
         errorView.snp.makeConstraints { maker in
-            maker.center.equalToSuperview()
+            maker.edges.equalToSuperview()
         }
 
         gradientImageView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalToSuperview()
             maker.height.equalTo(25)
         }
+
+        activityIndicator.snp.makeConstraints { maker in
+            maker.height.width.equalTo(40)
+            maker.center.equalToSuperview()
+        }
     }
 
-    private func showError(show: Bool) {
-        webView.isHidden = show
-        gradientImageView.isHidden = show
-        errorView.isHidden = !show
+    private func loadingFinished(withError hasError: Bool) {
+        webView.isHidden = hasError
+        errorView.isHidden = !hasError
+        activityIndicator.stopAnimating()
+    }
+
+    private func loadingStarted() {
+        webView.isHidden = true
+        errorView.isHidden = true
+        activityIndicator.startAnimating()
     }
 
     // MARK: - WKNavigationDelegate
 
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        loadingStarted()
+    }
+
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        showError(show: true)
+        loadingFinished(withError: true)
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        showError(show: true)
+        loadingFinished(withError: true)
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        showError(show: false)
+        loadingFinished(withError: false)
+    }
+
+    // MARK: - Private
+
+    @objc private func didTapReloadButton(sender: Button) {
+        webView.reload()
     }
 }
 
 private final class ErrorView: View {
 
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 32
+        stackView.alignment = .center
+
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(subtitleLabel)
+
+        return stackView
+    }()
+
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.alpha = 0.5
-        imageView.image = .warning
+        imageView.image = .loadingError
+        imageView.contentMode = .scaleAspectFit
         return imageView
+    }()
+
+    private lazy var titleLabel: Label = {
+        let label = Label()
+        label.text = "Deze pagina kan niet geladen worden"
+        label.font = theme.fonts.title2
+        label.accessibilityTraits = .header
+        label.numberOfLines = 0
+        return label
+    }()
+
+    private lazy var subtitleLabel: Label = {
+        let label = Label()
+        label.text = "Er gaat iets mis hier. Kom later terug of probeer de pagina opnieuw te laden"
+        label.font = theme.fonts.body
+        label.accessibilityTraits = .staticText
+        label.numberOfLines = 0
+        return label
+    }()
+
+    lazy var actionButton: Button = {
+        let button = Button(theme: theme)
+        button.style = .secondary
+        button.setTitle("Probeer opnieuw", for: .normal)
+        return button
     }()
 
     override func build() {
         super.build()
-        addSubview(imageView)
+        addSubview(stackView)
+        addSubview(actionButton)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
+        stackView.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(34)
+            maker.centerY.equalToSuperview()
+        }
+
         imageView.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview()
-            maker.width.equalTo(100)
-            maker.height.equalTo(100)
+            maker.width.equalTo(self).multipliedBy(0.6)
+        }
+
+        titleLabel.snp.makeConstraints { maker in
+            maker.width.equalTo(stackView)
+        }
+
+        subtitleLabel.snp.makeConstraints { maker in
+            maker.width.equalTo(stackView)
+        }
+
+        actionButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+            maker.height.equalTo(50)
+
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }
 }
