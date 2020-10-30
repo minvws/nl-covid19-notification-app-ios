@@ -40,9 +40,9 @@ extension Manifest {
     }
 }
 
-extension TreatmentPerspective.Message {
-    var asTreatmentPerspectiveMessage: TreatmentPerspective.Message {
-        return TreatmentPerspective.Message(paragraphs: paragraphs, quarantineDays: quarantineDays)
+extension TreatmentPerspective {
+    var asTreatmentPerspectiveMessage: TreatmentPerspective {
+        return self
     }
 }
 

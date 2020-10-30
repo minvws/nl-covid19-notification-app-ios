@@ -442,7 +442,7 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    func updateTreatmentPerspectiveMessage() -> AnyPublisher<TreatmentPerspective.Message, ExposureDataError> {
+    func updateTreatmentPerspectiveMessage() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
         return self.dataController
             .requestTreatmentPerspectiveMessage()
             .eraseToAnyPublisher()

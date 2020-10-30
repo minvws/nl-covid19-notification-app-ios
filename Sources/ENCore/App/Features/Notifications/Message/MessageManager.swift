@@ -11,7 +11,7 @@ import UIKit
 
 /// @mockable
 protocol MessageManaging: AnyObject {
-    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> TreatmentPerspective.Message
+    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective
 }
 
 final class MessageManager: MessageManaging, Logging {
@@ -29,32 +29,62 @@ final class MessageManager: MessageManaging, Logging {
         self.theme = theme
     }
 
-    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> TreatmentPerspective.Message {
+    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective {
 
-        let treatmentPerspectiveMessage = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage) ??
+        let treatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage) ??
             TreatmentPerspective.fallbackMessage
 
-        treatmentPerspectiveMessage.paragraphs.forEach {
-
-            $0.title = replacePlaceholders($0.title,
-                                           withExposureDate: exposureDate,
-                                           quarantineDays: treatmentPerspectiveMessage.quarantineDays)
-
-            $0.body = replacePlaceholders($0.body,
-                                          withExposureDate: exposureDate,
-                                          quarantineDays: treatmentPerspectiveMessage.quarantineDays)
-
-            $0.body = .htmlWithBulletList(text: $0.body.string,
-                                          font: theme.fonts.body,
-                                          textColor: .black, theme: theme)
+        guard let resource = treatmentPerspective.resources[.currentLanguageIdentifier] else {
+            return .emptyMessage
         }
 
-        return treatmentPerspectiveMessage
+        let paragraphs = paragraphsFromLayout(
+            treatmentPerspective.guidance.layout,
+            exposureDate: exposureDate,
+            quarantineDays: treatmentPerspective.guidance.quarantineDays,
+            withLanguageResource: resource
+        )
+
+        return LocalizedTreatmentPerspective(paragraphs: paragraphs,
+                                             quarantineDays: treatmentPerspective.guidance.quarantineDays)
     }
 
     // MARK: - Private
 
-    private func replacePlaceholders(_ attributedString: NSAttributedString, withExposureDate exposureDate: Date, quarantineDays: Int) -> NSAttributedString {
+    private func paragraphsFromLayout(
+        _ layoutElements: [TreatmentPerspective.LayoutElement],
+        exposureDate: Date,
+        quarantineDays: Int,
+        withLanguageResource resource: [String: String]
+    ) -> [LocalizedTreatmentPerspective.Paragraph] {
+
+        return layoutElements.compactMap {
+
+            guard let title = $0.title, let resourceTitle = resource[title],
+                let body = $0.body, let resourceBody = resource[body] else {
+                return nil
+            }
+
+            let paragraphTitle = replacePlaceholders(inString: NSAttributedString(string: resourceTitle),
+                                                     withExposureDate: exposureDate,
+                                                     quarantineDays: quarantineDays)
+
+            var paragraphBody = replacePlaceholders(inString: NSAttributedString(string: resourceBody),
+                                                    withExposureDate: exposureDate,
+                                                    quarantineDays: quarantineDays)
+            paragraphBody = .htmlWithBulletList(text: paragraphBody.string,
+                                                font: theme.fonts.body,
+                                                textColor: .black, theme: theme)
+
+            return LocalizedTreatmentPerspective.Paragraph(
+                title: paragraphTitle,
+                body: paragraphBody,
+                type: LocalizedTreatmentPerspective.Paragraph.ParagraphType(rawValue: $0.type) ?? .unknown
+            )
+        }
+    }
+
+    private func replacePlaceholders(inString attributedString: NSAttributedString, withExposureDate exposureDate: Date, quarantineDays: Int) -> NSAttributedString {
 
         let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
         var text = mutableAttributedString.string

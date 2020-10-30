@@ -36,7 +36,7 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func treatmentPerspectiveMessage(identifier: String) -> AnyPublisher<TreatmentPerspective.Message, NetworkError> {
+    func treatmentPerspectiveMessage(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError> {
         return Deferred {
             Future { promise in
                 self.networkManager.getTreatmentPerspectiveMessage(identifier: identifier) { result in

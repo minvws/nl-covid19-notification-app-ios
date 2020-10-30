@@ -70,14 +70,14 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     private weak var listener: MessageListener?
     private let messageManager: MessageManaging
-    private let treatmentPerspectiveMessage: TreatmentPerspective.Message
+    private let treatmentPerspectiveMessage: LocalizedTreatmentPerspective
 }
 
 private final class MessageView: View {
 
     // MARK: - Init
 
-    init(theme: Theme, treatmentPerspectiveMessage: TreatmentPerspective.Message) {
+    init(theme: Theme, treatmentPerspectiveMessage: LocalizedTreatmentPerspective) {
         let config = InfoViewConfig(actionButtonTitle: .messageButtonTitle,
                                     headerImage: .messageHeader,
                                     headerBackgroundViewColor: theme.colors.headerBackgroundRed,
@@ -114,6 +114,6 @@ private final class MessageView: View {
 
     // MARK: - Private
 
-    private let treatmentPerspectiveMessage: TreatmentPerspective.Message
+    private let treatmentPerspectiveMessage: LocalizedTreatmentPerspective
     fileprivate let infoView: InfoView
 }
