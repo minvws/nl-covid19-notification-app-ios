@@ -5,12 +5,21 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import UIKit
 
 class Label: UILabel {
 
-    func textCanBeCopied(_ canBeCopied: Bool = true) {
+    private var removeCharacters: String?
+
+    /// Indicates that the text in this label can or can not be copied by using the long press gesture
+    /// - Parameters:
+    ///   - canBeCopied: Enable or disable copying
+    ///   - characters: Characters in this string will be removed from the contents of the label when it is copied
+    func textCanBeCopied(_ canBeCopied: Bool = true, removeCharacters characters: String? = nil) {
         super.awakeFromNib()
+
+        self.removeCharacters = characters
 
         isUserInteractionEnabled = canBeCopied
 
@@ -31,7 +40,12 @@ class Label: UILabel {
     }
 
     override func copy(_ sender: Any?) {
-        UIPasteboard.general.string = text
+        var copiedText = text
+        if let removeCharacters = removeCharacters {
+            copiedText = copiedText?.removingCharacters(from: removeCharacters)
+        }
+
+        UIPasteboard.general.string = copiedText
     }
 
     @objc private func handleLongPress(_ recognizer: UIGestureRecognizer) {
