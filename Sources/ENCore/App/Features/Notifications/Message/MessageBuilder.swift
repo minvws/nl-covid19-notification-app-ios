@@ -23,6 +23,7 @@ protocol MessageBuildable {
 
 protocol MessageDependency {
     var theme: Theme { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class MessageDependencyProvider: DependencyProvider<MessageDependency> {}
@@ -32,6 +33,7 @@ final class MessageBuilder: Builder<MessageDependency>, MessageBuildable {
         let dependencyProvider = MessageDependencyProvider(dependency: dependency)
         return MessageViewController(listener: listener,
                                      theme: dependencyProvider.dependency.theme,
-                                     exposureDate: exposureDate)
+                                     exposureDate: exposureDate,
+                                     interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
     }
 }
