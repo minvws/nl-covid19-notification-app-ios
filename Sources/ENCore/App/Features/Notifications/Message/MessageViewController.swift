@@ -20,7 +20,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
     init(listener: MessageListener, theme: Theme, exposureDate: Date, messageManager: MessageManaging) {
         self.listener = listener
         self.messageManager = messageManager
-        self.treatmentPerspectiveMessage = messageManager.getTreatmentPerspectiveMessage(withExposureDate: exposureDate)
+        self.treatmentPerspectiveMessage = messageManager.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
 
         super.init(theme: theme)
     }

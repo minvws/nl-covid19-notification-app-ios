@@ -11,12 +11,12 @@ import UIKit
 
 /// @mockable
 protocol MessageManaging: AnyObject {
-    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective
+    func getLocalizedTreatmentPerspective(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective
 }
 
 final class MessageManager: MessageManaging, Logging {
 
-    enum TreatmentPerspectiveMessagePlaceholder: String {
+    enum TreatmentPerspectivePlaceholder: String {
         case exposureDate = "{ExposureDate}"
         case exposureDaysAgo = "{ExposureDaysAgo}"
         case stayHomeUntilDate = "{StayHomeUntilDate}"
@@ -29,9 +29,9 @@ final class MessageManager: MessageManaging, Logging {
         self.theme = theme
     }
 
-    func getTreatmentPerspectiveMessage(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective {
+    func getLocalizedTreatmentPerspective(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective {
 
-        let treatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage) ??
+        let treatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) ??
             TreatmentPerspective.fallbackMessage
 
         guard let resource = treatmentPerspective.resources[.currentLanguageIdentifier] else {
@@ -106,9 +106,9 @@ final class MessageManager: MessageManaging, Logging {
         let dateString = dateFormatter.string(from: exposureDate)
         let days = now.days(sinceDate: exposureDate) ?? 0
 
-        text = text.replacingOccurrences(of: TreatmentPerspectiveMessagePlaceholder.exposureDate.rawValue,
+        text = text.replacingOccurrences(of: TreatmentPerspectivePlaceholder.exposureDate.rawValue,
                                          with: dateString)
-        text = text.replacingOccurrences(of: TreatmentPerspectiveMessagePlaceholder.exposureDaysAgo.rawValue,
+        text = text.replacingOccurrences(of: TreatmentPerspectivePlaceholder.exposureDaysAgo.rawValue,
                                          with: String.statusNotifiedDaysAgo(days: days))
 
         return text
@@ -122,7 +122,7 @@ final class MessageManager: MessageManaging, Logging {
         let days: TimeInterval = TimeInterval(60 * 60 * 24 * quarantineDays)
         let daysAfterExposure = exposureDate.advanced(by: days)
 
-        text = text.replacingOccurrences(of: TreatmentPerspectiveMessagePlaceholder.stayHomeUntilDate.rawValue,
+        text = text.replacingOccurrences(of: TreatmentPerspectivePlaceholder.stayHomeUntilDate.rawValue,
                                          with: dateFormatter.string(from: daysAfterExposure))
 
         return text

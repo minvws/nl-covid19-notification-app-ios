@@ -66,9 +66,9 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                storageController: storageController)
     }
 
-    var requestTreatmentPerspectiveMessageDataOperation: RequestTreatmentPerspectiveMessageDataOperation {
-        return RequestTreatmentPerspectiveMessageDataOperation(networkController: networkController,
-                                                               storageController: storageController)
+    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperation {
+        return RequestTreatmentPerspectiveDataOperation(networkController: networkController,
+                                                        storageController: storageController)
     }
 
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation {

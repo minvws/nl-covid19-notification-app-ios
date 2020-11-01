@@ -9,7 +9,7 @@ import Combine
 import ENFoundation
 import Foundation
 
-final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperation, Logging {
+final class RequestTreatmentPerspectiveDataOperation: ExposureDataOperation, Logging {
     typealias Result = TreatmentPerspective
 
     init(networkController: NetworkControlling,
@@ -33,7 +33,7 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
                 .eraseToAnyPublisher()
         }
 
-        if let storedTreatmentPerspectiveMessage = retrieveStoredTreatmentPerspectiveMessage() {
+        if let storedTreatmentPerspectiveMessage = retrieveStoredTreatmentPerspective() {
             return Just(storedTreatmentPerspectiveMessage)
                 .setFailureType(to: ExposureDataError.self)
                 .eraseToAnyPublisher()
@@ -46,8 +46,8 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
 
     // MARK: - Private
 
-    private func retrieveStoredTreatmentPerspectiveMessage() -> TreatmentPerspective? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage)
+    private func retrieveStoredTreatmentPerspective() -> TreatmentPerspective? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective)
     }
 
     private func retrieveStoredManifest() -> ApplicationManifest? {
@@ -56,7 +56,7 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
 
     private func silentStore(treatmentPerspectiveMessage: TreatmentPerspective) {
         self.storageController.store(object: treatmentPerspectiveMessage,
-                                     identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage,
+                                     identifiedBy: ExposureDataStorageKey.treatmentPerspective,
                                      completion: { error in
                                          if let error = error {
                                              self.logError(error.localizedDescription)
@@ -67,7 +67,7 @@ final class RequestTreatmentPerspectiveMessageDataOperation: ExposureDataOperati
     private func store(treatmentPerspectiveMessage: TreatmentPerspective) -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
         return Future { promise in
             self.storageController.store(object: treatmentPerspectiveMessage,
-                                         identifiedBy: ExposureDataStorageKey.treatmentPerspectiveMessage,
+                                         identifiedBy: ExposureDataStorageKey.treatmentPerspective,
                                          completion: { _ in
                                              promise(.success(treatmentPerspectiveMessage))
                 })

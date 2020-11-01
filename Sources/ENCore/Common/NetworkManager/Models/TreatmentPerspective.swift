@@ -25,7 +25,7 @@ struct TreatmentPerspective: Codable {
 
 extension TreatmentPerspective {
     static var fallbackMessage: TreatmentPerspective {
-        guard let path = Bundle(for: RequestTreatmentPerspectiveMessageDataOperation.self).path(forResource: "DefaultDynamicNotification", ofType: "json"),
+        guard let path = Bundle(for: RequestTreatmentPerspectiveDataOperation.self).path(forResource: "DefaultTreatmentPerspective", ofType: "json"),
             let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
             let treatmentPerspective = try? JSONDecoder().decode(TreatmentPerspective.self, from: data) else {
             return .emptyMessage
