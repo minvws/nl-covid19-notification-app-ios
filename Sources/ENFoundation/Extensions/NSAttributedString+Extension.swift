@@ -93,21 +93,22 @@ public extension NSAttributedString {
 
             var bulletList = [NSAttributedString]()
 
-            for bulletPoint in textToFormat.string.components(separatedBy: "\t•\t")
-                .filter({ $0.count > 0 }) {
+            let bulletPoints = textToFormat.string
+                .components(separatedBy: "\t•\t")
+                .filter { $0.count > 0 }
 
-                let newLineComponents = bulletPoint.components(separatedBy: "\n")
+            for bulletPoint in bulletPoints {
+
+                let newLineComponents = bulletPoint.components(separatedBy: "\n").filter { !$0.isEmpty }
 
                 for (index, newLine) in newLineComponents.enumerated() {
 
-                    let useTrailingNewLine = index != newLineComponents.count - 1
+                    let useTrailingNewLine = (index != newLineComponents.count - 1) || bulletPoint != bulletPoints.last
 
-                    if !newLine.isEmpty {
-                        if index == 0 {
-                            bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine))
-                        } else {
-                            bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine, bullet: ""))
-                        }
+                    if index == 0 {
+                        bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine))
+                    } else {
+                        bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine, bullet: ""))
                     }
                 }
             }
