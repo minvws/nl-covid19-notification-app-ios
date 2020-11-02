@@ -159,9 +159,9 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
     }
 
     /// Generates a UNCalendarNotificationTrigger if the current time is outside the GGD working hours
-    private func triggerIfNeeded() -> UNCalendarNotificationTrigger? {
+    func triggerIfNeeded() -> UNCalendarNotificationTrigger? {
 
-        let date = Date()
+        let date = currentDate()
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
 

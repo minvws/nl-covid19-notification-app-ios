@@ -7,6 +7,7 @@
 
 import Combine
 @testable import ENCore
+import ENFoundation
 import Foundation
 import XCTest
 
@@ -170,6 +171,16 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         XCTAssertNotNil(receivedRequests)
         XCTAssertEqual(receivedRequests.count, 1)
         XCTAssertEqual(receivedRequests[0], request)
+    }
+
+    func test_NotScheduledNotification() {
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        XCTAssertNil(operation.triggerIfNeeded())
+    }
+
+    func test_ScheduledNotification() {
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
+        XCTAssertNotNil(operation.triggerIfNeeded())
     }
 
     // MARK: - Private
