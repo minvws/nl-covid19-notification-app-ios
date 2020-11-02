@@ -140,7 +140,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
             let request = UNNotificationRequest(identifier: PushNotificationIdentifier.uploadFailed.rawValue,
                                                 content: content,
-                                                trigger: triggerIfNeeded())
+                                                trigger: getCalendarTriggerForGGDOpeningHourIfNeeded())
 
             userNotificationCenter.add(request) { error in
                 if let error = error {
@@ -159,7 +159,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
     }
 
     /// Generates a UNCalendarNotificationTrigger if the current time is outside the GGD working hours
-    func triggerIfNeeded() -> UNCalendarNotificationTrigger? {
+    func getCalendarTriggerForGGDOpeningHourIfNeeded() -> UNCalendarNotificationTrigger? {
 
         let date = currentDate()
         let calendar = Calendar.current

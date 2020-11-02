@@ -180,7 +180,15 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
 
     func test_ScheduledNotification() {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
-        XCTAssertNotNil(operation.triggerIfNeeded())
+
+        let trigger = operation.triggerIfNeeded()
+
+        XCTAssertNotNil(trigger)
+
+        /// GGD working hours
+        XCTAssertEqual(trigger?.dateComponents.hour, 8)
+        XCTAssertEqual(trigger?.dateComponents.minute, 0)
+        XCTAssertEqual(trigger?.dateComponents.timeZone, TimeZone(identifier: "Europe/Amsterdam"))
     }
 
     // MARK: - Private
