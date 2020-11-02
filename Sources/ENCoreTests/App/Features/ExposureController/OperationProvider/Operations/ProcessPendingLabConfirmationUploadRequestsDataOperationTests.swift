@@ -175,13 +175,13 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
 
     func test_NotScheduledNotification() {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
-        XCTAssertNil(operation.triggerIfNeeded())
+        XCTAssertNil(operation.getCalendarTriggerForGGDOpeningHourIfNeeded())
     }
 
     func test_ScheduledNotification() {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
 
-        let trigger = operation.triggerIfNeeded()
+        let trigger = operation.getCalendarTriggerForGGDOpeningHourIfNeeded()
 
         XCTAssertNotNil(trigger)
 
