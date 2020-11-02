@@ -140,7 +140,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
             let request = UNNotificationRequest(identifier: PushNotificationIdentifier.uploadFailed.rawValue,
                                                 content: content,
-                                                trigger: nil)
+                                                trigger: triggerIfNeeded())
 
             userNotificationCenter.add(request) { error in
                 if let error = error {
@@ -156,6 +156,25 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
             }
             notify()
         }
+    }
+
+    /// Generates a UNCalendarNotificationTrigger if the current time is outside the GGD working hours
+    private func triggerIfNeeded() -> UNCalendarNotificationTrigger? {
+
+        let date = Date()
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: date)
+
+        if hour > 20 || hour < 8 {
+
+            var dateComponents = DateComponents()
+            dateComponents.hour = 8
+            dateComponents.minute = 0
+            dateComponents.timeZone = TimeZone(identifier: "Europe/Amsterdam")
+            return UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        }
+
+        return nil
     }
 
     private let networkController: NetworkControlling
