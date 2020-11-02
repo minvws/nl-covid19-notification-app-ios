@@ -74,7 +74,8 @@ final class MessageManager: MessageManaging, Logging {
                                                     quarantineDays: quarantineDays)
             paragraphBody = .htmlWithBulletList(text: paragraphBody.string,
                                                 font: theme.fonts.body,
-                                                textColor: .black, theme: theme)
+                                                textColor: theme.colors.gray,
+                                                theme: theme)
 
             return LocalizedTreatmentPerspective.Paragraph(
                 title: paragraphTitle,

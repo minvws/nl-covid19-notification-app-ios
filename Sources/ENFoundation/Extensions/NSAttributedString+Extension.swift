@@ -89,37 +89,40 @@ public extension NSAttributedString {
             textToFormat = make(text: text, font: font, textColor: textColor)
         }
 
-        if textToFormat.string.contains("\t•\t") {
+        guard textToFormat.string.contains("\t•\t") else {
+            return textToFormat
+        }
 
-            var bulletList = [NSAttributedString]()
+        var bulletList = [NSAttributedString]()
 
-            let bulletPoints = textToFormat.string
-                .components(separatedBy: "\t•\t")
-                .filter { $0.count > 0 }
+        let bulletPoints = textToFormat.string
+            .components(separatedBy: "\t•\t")
+            .filter { $0.count > 0 }
 
-            for bulletPoint in bulletPoints {
+        for bulletPoint in bulletPoints {
 
-                let newLineComponents = bulletPoint.components(separatedBy: "\n").filter { !$0.isEmpty }
+            let newLineComponents = bulletPoint.components(separatedBy: "\n").filter { !$0.isEmpty }
 
-                for (index, newLine) in newLineComponents.enumerated() {
+            for (index, newLine) in newLineComponents.enumerated() {
 
-                    let useTrailingNewLine = (index != newLineComponents.count - 1) || bulletPoint != bulletPoints.last
+                let useTrailingNewLine = (index != newLineComponents.count - 1) || bulletPoint != bulletPoints.last
 
-                    if index == 0 {
-                        bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine))
-                    } else {
-                        bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine, bullet: ""))
-                    }
+                if index == 0 {
+                    bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine))
+                } else {
+                    // if a bulletpoint contains a new line, we treat that 2nd line as a separate paragraph that is not
+                    // part of the bulletpoint itself and has no indentation.
+                    bulletList.append(make(text: newLine, font: font, textColor: theme.colors.gray))
                 }
             }
+        }
 
-            if !bulletList.isEmpty {
-                let list = NSMutableAttributedString()
-                bulletList.forEach {
-                    list.append($0)
-                }
-                textToFormat = list
+        if !bulletList.isEmpty {
+            let list = NSMutableAttributedString()
+            bulletList.forEach {
+                list.append($0)
             }
+            textToFormat = list
         }
 
         return textToFormat
