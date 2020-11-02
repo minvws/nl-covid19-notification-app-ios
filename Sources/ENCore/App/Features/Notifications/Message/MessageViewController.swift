@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import SnapKit
@@ -17,9 +18,13 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     // MARK: - Init
 
-    init(listener: MessageListener, theme: Theme, exposureDate: Date) {
+    init(listener: MessageListener,
+         theme: Theme,
+         exposureDate: Date,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
         self.exposureDate = exposureDate
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         super.init(theme: theme)
     }
@@ -49,6 +54,14 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
                 self?.logError("Unable to open \(String.coronaTestPhoneNumber)")
             }
         }
+
+        internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+        interfaceOrientationStream
+            .isLandscape
+            .sink { [weak self] isLandscape in
+                self?.internalView.infoView.showHeader = !isLandscape
+            }
+            .store(in: &disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -90,6 +103,8 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
     private let exposureDate: Date
     private weak var listener: MessageListener?
+    private var disposeBag = Set<AnyCancellable>()
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
 }
 
 private final class MessageView: View {
@@ -133,7 +148,8 @@ private final class MessageView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.edges.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.bottom.equalToSuperview()
         }
     }
 

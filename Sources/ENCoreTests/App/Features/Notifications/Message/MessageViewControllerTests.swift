@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
@@ -13,7 +14,8 @@ import XCTest
 
 final class MessageViewControllerTests: TestCase {
     private var viewController: MessageViewController!
-    private let listern = MessageListenerMock()
+    private let listener = MessageListenerMock()
+    private let mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
@@ -21,9 +23,12 @@ final class MessageViewControllerTests: TestCase {
         recordSnapshots = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
 
-        viewController = MessageViewController(listener: listern,
+        mockInterfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+
+        viewController = MessageViewController(listener: listener,
                                                theme: theme,
-                                               exposureDate: Date(timeIntervalSince1970: 1593290000)) // 27/06/20 20:33
+                                               exposureDate: Date(timeIntervalSince1970: 1593290000), // 27/06/20 20:33
+                                               interfaceOrientationStream: mockInterfaceOrientationStream)
     }
 
     // MARK: - Tests
@@ -33,12 +38,12 @@ final class MessageViewControllerTests: TestCase {
     }
 
     func testPresentationControllerDidDismissCallsListener() {
-        listern.messageWantsDismissalHandler = { value in
+        listener.messageWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }
 
         viewController.presentationControllerDidDismiss(UIPresentationController(presentedViewController: viewController, presenting: nil))
 
-        XCTAssertEqual(listern.messageWantsDismissalCallCount, 1)
+        XCTAssertEqual(listener.messageWantsDismissalCallCount, 1)
     }
 }
