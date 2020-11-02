@@ -10,16 +10,16 @@ import UIKit
 
 class Label: UILabel {
 
-    private var removeCharacters: String?
+    private var charactersToRemove: String?
 
     /// Indicates that the text in this label can or can not be copied by using the long press gesture
     /// - Parameters:
     ///   - canBeCopied: Enable or disable copying
     ///   - characters: Characters in this string will be removed from the contents of the label when it is copied
-    func textCanBeCopied(_ canBeCopied: Bool = true, removeCharacters characters: String? = nil) {
+    func textCanBeCopied(_ canBeCopied: Bool = true, charactersToRemove: String? = nil) {
         super.awakeFromNib()
 
-        self.removeCharacters = characters
+        self.charactersToRemove = charactersToRemove
 
         isUserInteractionEnabled = canBeCopied
 
@@ -41,8 +41,8 @@ class Label: UILabel {
 
     override func copy(_ sender: Any?) {
         var copiedText = text
-        if let removeCharacters = removeCharacters {
-            copiedText = copiedText?.removingCharacters(from: removeCharacters)
+        if let charactersToRemove = charactersToRemove {
+            copiedText = copiedText?.removingCharacters(from: charactersToRemove)
         }
 
         UIPasteboard.general.string = copiedText

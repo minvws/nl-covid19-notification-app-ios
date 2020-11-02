@@ -32,7 +32,7 @@ class LabelTests: XCTestCase {
     func test_copy_shouldRemoveCharactersFromCopiedString() throws {
         // Arrange
         sut.text = "Some-Text"
-        sut.textCanBeCopied(removeCharacters: "-")
+        sut.textCanBeCopied(charactersToRemove: "-")
         UIPasteboard.general.string = ""
 
         // Act
