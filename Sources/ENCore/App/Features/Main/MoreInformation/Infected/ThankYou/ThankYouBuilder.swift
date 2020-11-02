@@ -24,6 +24,7 @@ protocol ThankYouBuildable {
 
 protocol ThankYouDependency {
     var theme: Theme { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class ThankYouDependencyProvider: DependencyProvider<ThankYouDependency> {}
@@ -33,6 +34,7 @@ final class ThankYouBuilder: Builder<ThankYouDependency>, ThankYouBuildable {
         let dependencyProvider = ThankYouDependencyProvider(dependency: dependency)
         return ThankYouViewController(listener: listener,
                                       theme: dependencyProvider.dependency.theme,
-                                      exposureConfirmationKey: exposureConfirmationKey)
+                                      exposureConfirmationKey: exposureConfirmationKey,
+                                      interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
     }
 }

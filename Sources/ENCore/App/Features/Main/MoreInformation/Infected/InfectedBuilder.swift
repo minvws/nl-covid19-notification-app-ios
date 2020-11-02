@@ -60,6 +60,10 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
     var environmentController: EnvironmentControlling {
         return dependency.environmentController
     }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
+    }
 }
 
 final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
