@@ -60,6 +60,26 @@ final class SignatureValidatorTests: XCTestCase {
         XCTAssertEqual(result, .SIGNATUREVALIDATIONRESULT_INCORRECTAUTHORITYKEYIDENTIFIER)
     }
 
+    func test_validateSignature_missinglink() {
+        let signature = dataFromFile(withName: "signature-missinglink", fileType: "sig")
+        let content = dataFromFile(withName: "content-missinglink", fileType: "txt")
+        let rootCertificate = dataFromFile(withName: "rootcertificate-missinglink", fileType: "pem")
+
+        let mockSignatureConfiguration = SignatureConfigurationMock()
+        mockSignatureConfiguration.rootCertificateData = rootCertificate
+        mockSignatureConfiguration.rootSubjectKeyIdentifier = "0414E3AC978E46443441C26E3121C05691BB7C333A2B".hexaData
+        mockSignatureConfiguration.authorityKeyIdentifier = "0414E3AC978E46443441C26E3121C05691BB7C333A2B".hexaData
+        mockSignatureConfiguration.commonNameContent = "TestLeaf"
+        mockSignatureConfiguration.commonNameSuffix = ""
+        mockSignatureConfiguration.rootSerial = 1912602624
+
+        let signatureValidator = SignatureValidator(signatureConfiguration: mockSignatureConfiguration)
+
+        let result = signatureValidator.validate(signature: signature, content: content, validateRootCertificate: false)
+
+        XCTAssertEqual(result, .SIGNATUREVALIDATIONRESULT_INCORRECTAUTHORITYKEYIDENTIFIER)
+    }
+
     private func dataFromFile(withName fileName: String, fileType: String) -> Data {
         let url = URL(fileURLWithPath: Bundle(for: SignatureValidatorTests.self).path(forResource: fileName, ofType: fileType)!)
         return try! Data(contentsOf: url)
