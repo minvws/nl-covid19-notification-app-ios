@@ -477,7 +477,7 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    private func daysAgo(_ date: Date) -> Int {
+    func daysAgo(_ date: Date) -> Int {
 
         let calendar = Calendar.current
 
