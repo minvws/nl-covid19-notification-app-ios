@@ -14,7 +14,7 @@ struct ApplicationManifest: Codable {
     let riskCalculationParametersIdentifier: String
     let appConfigurationIdentifier: String
     let creationDate: Date
-    let resourceBundleId: String?
+    let resourceBundle: String?
 }
 
 final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {

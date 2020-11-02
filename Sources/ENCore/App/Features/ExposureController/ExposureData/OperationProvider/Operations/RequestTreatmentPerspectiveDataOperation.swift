@@ -23,7 +23,7 @@ final class RequestTreatmentPerspectiveDataOperation: ExposureDataOperation, Log
     func execute() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
 
         if let manifest = retrieveStoredManifest(),
-            let identifier = manifest.resourceBundleId {
+            let identifier = manifest.resourceBundle {
 
             return networkController
                 .treatmentPerspective(identifier: identifier)

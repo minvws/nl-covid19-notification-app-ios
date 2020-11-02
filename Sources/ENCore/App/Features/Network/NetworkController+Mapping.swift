@@ -36,7 +36,7 @@ extension Manifest {
                                    riskCalculationParametersIdentifier: riskCalculationParameters,
                                    appConfigurationIdentifier: appConfig,
                                    creationDate: Date(),
-                                   resourceBundleId: resourceBundleId)
+                                   resourceBundle: resourceBundle)
     }
 }
 
