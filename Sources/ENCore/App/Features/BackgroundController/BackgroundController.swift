@@ -251,7 +251,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             processUpdate,
             processENStatusCheck,
             appUpdateRequiredCheck,
-            updateTreatmentPerspectiveMessage,
+            updateTreatmentPerspective,
             processLastOpenedNotificationCheck
         ]
 
@@ -339,11 +339,11 @@ final class BackgroundController: BackgroundControlling, Logging {
             .eraseToAnyPublisher()
     }
 
-    private func updateTreatmentPerspectiveMessage() -> AnyPublisher<(), Never> {
+    private func updateTreatmentPerspective() -> AnyPublisher<(), Never> {
         logDebug("Background: Update Treatment Perspective Message Function Called")
 
         return exposureController
-            .updateTreatmentPerspectiveMessage()
+            .updateTreatmentPerspective()
             .map { _ in return () }
             .replaceError(with: ())
             .handleEvents(

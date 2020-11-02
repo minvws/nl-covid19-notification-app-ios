@@ -40,12 +40,6 @@ extension Manifest {
     }
 }
 
-extension TreatmentPerspective {
-    var asTreatmentPerspectiveMessage: TreatmentPerspective {
-        return self
-    }
-}
-
 extension AppConfig {
     func asApplicationConfiguration(identifier: String) -> ApplicationConfiguration {
         return ApplicationConfiguration(version: version ?? 1,

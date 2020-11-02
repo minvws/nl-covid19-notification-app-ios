@@ -39,7 +39,7 @@ final class RootRouterTests: XCTestCase {
             return Just(()).eraseToAnyPublisher()
         }
 
-        exposureController.updateTreatmentPerspectiveMessageHandler = {
+        exposureController.updateTreatmentPerspectiveHandler = {
             Just(TreatmentPerspective.emptyMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 

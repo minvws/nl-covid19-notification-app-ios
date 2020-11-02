@@ -36,11 +36,11 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func treatmentPerspectiveMessage(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError> {
+    func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError> {
         return Deferred {
             Future { promise in
-                self.networkManager.getTreatmentPerspectiveMessage(identifier: identifier) { result in
-                    promise(result.map { $0.asTreatmentPerspectiveMessage })
+                self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
+                    promise(result)
                 }
             }
         }

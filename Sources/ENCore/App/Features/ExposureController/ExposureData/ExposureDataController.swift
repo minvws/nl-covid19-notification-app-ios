@@ -63,7 +63,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - ExposureDataControlling
 
-    func requestTreatmentPerspectiveMessage() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
+    func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
         self.operationProvider
             .requestTreatmentPerspectiveDataOperation
             .execute()
@@ -233,7 +233,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
     }
 
-    func getTreatmentPerspectiveMessage() -> TreatmentPerspective? {
+    func getTreatmentPerspective() -> TreatmentPerspective? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective)
     }
 

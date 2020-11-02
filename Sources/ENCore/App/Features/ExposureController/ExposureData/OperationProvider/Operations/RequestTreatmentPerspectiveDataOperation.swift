@@ -26,15 +26,15 @@ final class RequestTreatmentPerspectiveDataOperation: ExposureDataOperation, Log
             let identifier = manifest.resourceBundleId {
 
             return networkController
-                .treatmentPerspectiveMessage(identifier: identifier)
+                .treatmentPerspective(identifier: identifier)
                 .mapError { $0.asExposureDataError }
-                .flatMap(store(treatmentPerspectiveMessage:))
+                .flatMap(store(treatmentPerspective:))
                 .share()
                 .eraseToAnyPublisher()
         }
 
-        if let storedTreatmentPerspectiveMessage = retrieveStoredTreatmentPerspective() {
-            return Just(storedTreatmentPerspectiveMessage)
+        if let storedTreatmentPerspective = retrieveStoredTreatmentPerspective() {
+            return Just(storedTreatmentPerspective)
                 .setFailureType(to: ExposureDataError.self)
                 .eraseToAnyPublisher()
         }
@@ -54,8 +54,8 @@ final class RequestTreatmentPerspectiveDataOperation: ExposureDataOperation, Log
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)
     }
 
-    private func silentStore(treatmentPerspectiveMessage: TreatmentPerspective) {
-        self.storageController.store(object: treatmentPerspectiveMessage,
+    private func silentStore(treatmentPerspective: TreatmentPerspective) {
+        self.storageController.store(object: treatmentPerspective,
                                      identifiedBy: ExposureDataStorageKey.treatmentPerspective,
                                      completion: { error in
                                          if let error = error {
@@ -64,12 +64,12 @@ final class RequestTreatmentPerspectiveDataOperation: ExposureDataOperation, Log
             })
     }
 
-    private func store(treatmentPerspectiveMessage: TreatmentPerspective) -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
+    private func store(treatmentPerspective: TreatmentPerspective) -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
         return Future { promise in
-            self.storageController.store(object: treatmentPerspectiveMessage,
+            self.storageController.store(object: treatmentPerspective,
                                          identifiedBy: ExposureDataStorageKey.treatmentPerspective,
                                          completion: { _ in
-                                             promise(.success(treatmentPerspectiveMessage))
+                                             promise(.success(treatmentPerspective))
                 })
         }
         .share()

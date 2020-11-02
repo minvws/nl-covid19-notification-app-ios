@@ -64,11 +64,11 @@ final class NetworkManager: NetworkManaging, Logging {
     /// - Parameters:
     ///   - id: id of the resourceBundleId
     ///   - completion: executed on complete or failure
-    func getTreatmentPerspectiveMessage(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
+    func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let urlRequest = constructRequest(url: configuration.getTreatmentPerspectiveMessageUrl(identifier: identifier),
+        let urlRequest = constructRequest(url: configuration.getTreatmentPerspectiveUrl(identifier: identifier),
                                           method: .GET,
                                           headers: headers)
 
