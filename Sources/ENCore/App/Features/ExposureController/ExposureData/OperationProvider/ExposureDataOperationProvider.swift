@@ -11,10 +11,12 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
+         applicationSignatureController: ApplicationSignatureControlling,
          localPathProvider: LocalPathProviding,
          userNotificationCenter: UserNotificationCenter) {
         self.networkController = networkController
         self.storageController = storageController
+        self.applicationSignatureController = applicationSignatureController
         self.localPathProvider = localPathProvider
         self.userNotificationCenter = userNotificationCenter
     }
@@ -45,6 +47,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,
+                                                    applicationSignatureController: applicationSignatureController,
                                                     appConfigurationIdentifier: identifier)
     }
 
@@ -91,6 +94,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let applicationSignatureController: ApplicationSignatureControlling
     private let localPathProvider: LocalPathProviding
     private let userNotificationCenter: UserNotificationCenter
 }

@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
@@ -17,11 +18,14 @@ final class OnboardingConsentViewControllerTests: TestCase {
     private let exposureStateStream = ExposureStateStreamingMock()
     private let exposureController = ExposureControllingMock()
     private var manager: OnboardingConsentManager!
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
+
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,
@@ -37,7 +41,8 @@ final class OnboardingConsentViewControllerTests: TestCase {
             let viewController = OnboardingConsentStepViewController(onboardingConsentManager: manager,
                                                                      listener: listener,
                                                                      theme: theme,
-                                                                     index: index)
+                                                                     index: index,
+                                                                     interfaceOrientationStream: interfaceOrientationStream)
 
             snapshots(matching: viewController, named: "\(#function)\(index)")
         }

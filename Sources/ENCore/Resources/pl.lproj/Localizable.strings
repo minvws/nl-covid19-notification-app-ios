@@ -1,3 +1,15 @@
+// supports HTML
+"enableSettings.exposureNotifications.137.step2" = "Idź do <b>Powiadomienia o ekspozycji</b>";
+"enableSettings.exposureNotifications.137.step2.action.title" = "Powiadomienia o ekspozycji";
+// supports HTML
+"enableSettings.exposureNotifications.137.step3" = "Włącz<b>Udostępnij informacje o swojej ekspozycji</b>";
+"enableSettings.exposureNotifications.137.step3.action.title" = "Udostępnij informacje o swojej ekspozycji";
+// supports HTML
+"enableSettings.exposureNotifications.137.step4" = "W ostatnim kroku sprawdź, czy napis <b>Ustaw jako aktywny region</b> jest niebieski. Jeśli tak, kliknij go.";
+// Should match setting name in iOS
+"enableSettings.exposureNotifications.137.step4.action.title" = "Ustaw jako aktywny region";
+
+"privacyAgreement.steps.title"= "Najważniejsze punkty to:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Możliwość zarażenia";
 
@@ -13,7 +25,7 @@
 "contamination.stay_home.title" = "Pozostań w domu do %@ włącznie";
 "contamination.stay_home.step1" = "Niech inni zrobią za Ciebie zakupy. Naprawdę nikt nie może tego zrobić, a Ty nie masz żadnych dolegliwości? W takim razie możesz wyjść, aby zrobić zakupy. Zachowuj 1,5 metra odległości i nikogo nie dotykaj.";
 "contamination.stay_home.step2" = "Możesz przebywać w ogrodzie lub siedzieć na balkonie.";
-"contamination.stay_home.step3" = "Dzieci w wieku 4-12 lat mogą chodzić do szkoły lub uprawiać sport.";
+"contamination.stay_home.step3" = "Dzieci w wieku szkolnym poniżej 18 roku życia mogą chodzić do szkoły lub uprawiać sport.";
 
 "contamination.visitors.title" = "Nie przyjmuj gości";
 "contamination.visitors.step1" = "Wyłącznie osoby, z którymi mieszkasz, mogą przebywać razem z Tobą w mieszkaniu. Trzymajcie się z dala od siebie i zachowujcie 1,5 metra odległości. Należy się powstrzymać od przytualania, całowania i uprawiania seksu.";
@@ -43,11 +55,6 @@
 *
 *  SPDX-License-Identifier: EUPL-1.2
 */
-
-"testVersionTitle" = "Wersja testowa i badawcza %@ (%@)";
-
-"help.faq.testVersion.title" = "Co oznacza wersja testowa i badawcza?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Co możesz zrobić w tej sytuacji?";
 "moreInformation.situation.step1" = "Nie masz żadnych dolegliwości? Zrób test na obecność koronawirusa i pozostań w domu do momentu otrzymania wyników";
@@ -201,8 +208,8 @@
 "help.technical_explanation.title" = "Objaśnienie techniczne";
 "help.technical_explanation.step1.title" = "1. Aplikacja tworzy swój własny kod dla każdego telefonu";
 "help.technical_explanation.step1.description" = "Ten kod nie zawiera żadnych informacji o Tobie ani o Twoim telefonie. Kod jest całkowicie losowy i zmienia się co 15 minut.";
-"help.technical_explanation.step2.title" = "2. Telefony dzielą się swoimi kodami, gdy znajdują się blisko siebie.";
-"help.technical_explanation.step2.description" = "Osoba, którą spotkałeś również posiada tę aplikację? W takim razie wasze telefony wymieniają się swoimi kodami przez Bluetooth Low Energy. W ten sposób aplikacja wie, które telefony były w pobliżu. Aplikacja nie wie, do kogo one należą, ani gdzie się znajdowały.";
+"help.technical_explanation.step2.title" = "2. Telefony dzielą się kodami, gdy znajdują się blisko siebie.";
+"help.technical_explanation.step2.description" = "Osoba, którą spotkałeś również posiada tę aplikację? W takim razie wasze telefony wymieniają się kodami przez Bluetooth Low Energy. W ten sposób aplikacja wie, które telefony były w pobliżu. Aplikacja nie wie, do kogo one należą, ani gdzie się znajdowały.";
 "help.technical_explanation.step3.title" = "3. Osoba zarażona koronawirusem może wpisać swoje kody na listę";
 "help.technical_explanation.step3.description" = "Lista ta zawiera kody wyłącznie zarażonych osób. Aby dodać kody na listę, zarażona osoba musi najpierw przekazać GGD klucz GGD. W ten sposób pewne jest, że dodane kody naprawdę należą do kogoś zarażonego koronawirusem. Wszystkie kody starsze niż 14 dni są automatycznie usuwane z listy.";
 "help.technical_explanation.step4.title" = "4. Każdy telefon sprawdza, czy nie spotkał wcześniej kodów z listy.";
@@ -231,7 +238,7 @@
 "help.pause_app.description" = "Tak, możesz to zrobić poprzez wyłączenie swojego Bluetooth. Należy przejść do <b>Ustawienia > Bluetooth</b>. Po wyłączeniu Bluetooth, aplikacja nie wymienia już żadnych kodów. Co 24 godziny będziesz automatycznie otrzymywał powiadomienia, przypominające o ponownym włączeniu aplikacji.<br><br>Nie zaleca się jednak wstrzymywania aplikacji, ponieważ możesz zapomnieć o jej ponownym uruchomieniu. Aplikację można wstrzymać w szczególnych przypadkach. Na przykład jeśli znajdujesz się w pobliżu (potencjalnych) pacjentów z koronawirusem, jednak jesteś pewien, że masz na sobie środki ochronne do celów medycznych.";
 
 "help.apps_other_countries.title" = "Czy CoronaMelder współpracuje również z aplikacjami z innych krajów?";
-"help.apps_other_countries.description" = "Niestety na razie jeszcze nie, jednak mamy nadzieję, że będzie to możliwe pod koniec września. Wtedy aplikacja Corona Melder będzie mogła wymieniać kody z niektórymi aplikacjami z innych krajów. Na przykład z niemiecką aplikacją.<br><br>Jeśli oprócz CoronaMelder zainstalujesz niemiecką aplikację Corona-Warn-App, Twój telefon poinformuje Cię, że tylko 1 aplikacja może być aktywna w danym momencie. Wybrana przez Ciebie aplikacja będzie w danym momencie kontrolować Twoje spotkania. Jeśli chcesz robić to w więcej niż jednym kraju, musisz samodzielnie przełączać aplikacje. Będziesz otrzymywał powiadomienia od wybranej przez siebie aplikacji. Jeśli raz dziennie przełączasz aplikacje, obie kontrolują Twoje spotkania. W ten sposób nic Ci nie umyka.<br><br>Prawdopodobnie od końca września będziesz mógł korzystać wyłącznie z aplikacji swojego kraju, bez konieczności codziennego przełączania aplikacji.";
+"help.apps_other_countries.description" = "Niestety na razie jeszcze nie, jednak ciężko pracujemy nad tym, aby było to możliwe. Wtedy aplikacja Corona Melder będzie mogła wymieniać kody z niektórymi aplikacjami z innych krajów. Na przykład z niemiecką aplikacją.<br><br>Jeśli oprócz CoronaMelder zainstalujesz niemiecką aplikację Corona-Warn-App, Twój telefon poinformuje Cię, że tylko 1 aplikacja może być aktywna w danym momencie. Wybrana przez Ciebie aplikacja będzie w danym momencie kontrolować Twoje spotkania. Jeśli chcesz robić to w więcej niż jednym kraju, musisz samodzielnie przełączać aplikacje. Będziesz otrzymywał powiadomienia od wybranej przez siebie aplikacji. Jeśli raz dziennie przełączasz aplikacje, obie kontrolują Twoje spotkania. W ten sposób nic Ci nie umyka.<br><br>Prawdopodobnie w przyszłości będziesz mógł korzystać wyłącznie z aplikacji swojego kraju, bez konieczności codziennego przełączania aplikacji.";
 
 /* MARK: - Message */
 "message.default.title" = "Znajdowałeś się w pobliżu osoby z koronawirusem";
@@ -254,10 +261,10 @@
 "status.appState" = "Aplikacja jest aktywna";
 "status.appState.inactive.title" = "Aplikacja nie jest aktywna";
 "status.appState.inactive.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia";
-"status.appState.inactive.no_recent_updates.description" = "Aplikacja nie mogła połączyć się z internetem w ciągu ostatnich 24 godzin. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.inactive.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronwirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.title" = "Aplikacja nie jest aktywna";
 "status.appState.card.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia.";
-"status.appState.card.no_recent_updates.description" = "Aplikacja nie mogła połączyć się z internetem w ciągu ostatnich 24 godzin. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.card.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronwirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.button" = "Włącz aplikację";
 "status.appState.card.try_again" = "Spróbuj ponownie";
 "status.active.description" = "Spotkania są kontrolowane również, gdy aplikacja jest zamknięta";
@@ -267,7 +274,7 @@
 "status.notified.moreInfo" = "Co mogę teraz zrobić?";
 "status.notified.removeNotification" = "Usuń powiadomienie";
 
-/* The title for the table of items in more infromation */
+/* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Więcej informacji";
 
 "moreInformation.cell.about.title" = "Masz pytania dotyczące aplikacji?";
@@ -285,7 +292,7 @@
 "moreInformation.cell.infected.title" = "Przekaż klucz GGD";
 "moreInformation.cell.infected.subtitle" = "Przejdź tutaj, gdy GGD zadzwoni do Ciebie z wynikami testu na obecność koronawirusa";
 
-"moreInformation.info.title" = "Miej pod ręką swój numer obsługi mieszkańca (BSN). Znajdziesz go w paszporcie lub na dowodzie osobistym";
+"moreInformation.info.title" = "Miej pod ręką swój numer obsługi mieszkańca (BSN). Znajdziesz go w paszporcie lub na dowodzie osobistym.";
 
 "moreInformation.complaints.item1" = "objawy przeziębienia takie jak nieżyt nosa, katar, kichanie, ból gardła";
 "moreInformation.complaints.item2" = "kaszel";
@@ -363,7 +370,7 @@
 "moreInformation.requestTest.button.title" = "Poproś o test na koronawirusa";
 "moreInformation.requestTest.receivedNotification.title" = "Masz dolegliwości typowe dla koronawirusa? Poproś o test";
 "moreInformation.requestTest.receivedNotification.content" = "Masz (łagodne) dolegliwości, które są typowe dla koronawirusa? Zrób darmowy test. To nie zajmuje dużo czasu i zazwyczaj można się szybko umówić.<br><br>Wyniki są znane w ciągu 48 godzin. Pozostań w domu do momentu otrzymania wyników.";
-"moreInformation.requestTest.complaints" = "Masz poważne dolegliwości tj. wysoka gorączka lub trudności z oddychaniem? Albo znajdujesz się w grupie wysokiego ryzyka i masz gorączkę? W pierwszej kolejności Z
+"moreInformation.requestTest.complaints" = "Masz poważne dolegliwości takie jak wysoka gorączka lub trudności z oddychaniem? Albo znajdujesz się w grupie wysokiego ryzyka i masz gorączkę? W pierwszej kolejności Z
 zadzwoń do swojego lekarza rodzinnego.";
 "moreInformation.requestTest.link" = "Przejdź na stronę coronatest.nl";
 "moreInformation.requestTest.phone" = "Zadzwoń pod numer 0800-1202";
@@ -427,15 +434,15 @@ zadzwoń do swojego lekarza rodzinnego.";
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Przypomnienie: %@";
 
-"privacyAgreement.title" = "Zgoda na użycie danych";
-"privacyAgreement.message" = "Aby korzystać z CoronaMelder musisz wyrazić zgodę na %@. Warto wiedzieć: ";
+"privacyAgreement.title" = "W ten sposób CoronaMelder używa Twoich danych";
+"privacyAgreement.message" = "W %@ znajduje się informacja, w jaki sposób CoronaMelder używa Twoich danych.";
 "privacyAgreement.message.link" = "oświadczenie o ochronie prywatności";
 "privacyAgreement.list.step0" = "Korzystanie z CoronaMelder jest zawsze dobrowolne.";
 "privacyAgreement.list.step1" = "Twoja aplikacja przesyła zaszyfrowane dane Bluetooth.";
 "privacyAgreement.list.step2" = "Dane te są przechowywane maksymalnie 14 dni przez innych użytkowników, z którymi miałeś kontakt.";
 "privacyAgreement.list.step3" = "Jeśli po przeprowadzeniu testu na obecność koronawirusa okaże się, że jesteś zarażony, możesz zgłosić to w aplikacji, aby ostrzec innych użytkowników.";
 "privacyAgreement.list.step4" = "W każdym momencie możesz usunąć dane z telefonu.";
-"privacyAgreement.consent.button" = "Przeczytałem i zgadzam się z oświadczeniem o ochronie prywatności";
+"privacyAgreement.consent.button" = "Przeczytałem oświadczenie o ochronie prywatności i rozumiem w jaki sposób CoronaMelder używa moich danych.";
 
 "notification.update_required.title" = "Konieczna jest aktualizacja";
 "notification.update_required.description" = "Dostępna jest nowa wersja CoronaMelder. Ta wersja nie działa już poprawnie. Sprawdź aplikację, aby znaleźć instrukcje.";

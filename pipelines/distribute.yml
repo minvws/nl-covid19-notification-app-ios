@@ -68,6 +68,29 @@ steps:
   displayName: Distribute acceptance build  
 - template: build.yml
   parameters:
+    provisioningProfileSecureFile: CoronaMelder_ACC_13_5.mobileprovision
+    provisioningProfileName: "CoronaMelder_ACC_13_5"
+    networkConfiguration: ACC
+    logLevel: debug
+    bundleDisplayName: "β CoronaMelder"
+    bundleIdentifier: nl.rijksoverheid.en.acc
+    bundleShortVersion: acc-13-5
+    packageApp: true
+    shareLogsEnabled: true
+    exportPath: "ipa/acc-13-5"
+    exportMethod: "ad-hoc"
+    enDeveloperRegion: "NL"
+- publish: "ipa/acc-13-5"
+  displayName: Publish acceptance IPA
+  artifact: ipa-acc-13-5
+- script: |
+    firebase appdistribution:distribute ipa/acc-13-5/CoronaMelder.ipa \
+    --app 1:937920499570:ios:eb6aa0819a7abff0f957eb \
+    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+    --groups ios-acceptance
+  displayName: Distribute acceptance build  - < 13.7
+- template: build.yml
+  parameters:
     provisioningProfileSecureFile: CoronaMelder_Production.mobileprovision
     provisioningProfileName: "CoronaMelder_PROD"
     networkConfiguration: Production

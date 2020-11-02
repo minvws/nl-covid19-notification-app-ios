@@ -12,19 +12,22 @@
 "update.button.update" = "تحديث";
 "update.button.openSettings" = "فتح الإعدادات";
 
-"update.software.app.title" = "هذا الإصدار من تطبيق التحذير من كورونا (CoronaMelder) لم يعد يعمل";
-"update.software.app.description" = "حدّث التطبيق في هاتفك حتى تتأكد من أن تطبيق التحذير من كورونا (CoronaMelder) يعمل مجددًا.";
+"update.software.app.title" = "لديك إصدار قديم لـ CoronaMelder ";
+"update.software.app.description" = "حدّث التطبيق في هاتفك ليستمر CoronaMelder في العمل بشكل صحيح.";
 "update.software.app.detail.title" = "حدّث التطبيق";
 "update.software.app.detail.step1" = "افتح الإعدادات في هاتفك باستخدام الزر أسفله.";
 "update.software.app.detail.step2" = "2. انقر على 'تحديث\" من أجل تحديث التطبيق.";
 
 "update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
-"update.software.os.description" = "تطبيق التحذير من كورونا (CoronaMelder) يحتاج إلى الإصدار الأحدث ل آي أو إس كي يستمر في العمل بصورة صحيحة على هاتفك.";
+"update.software.os.description" = "يحتاج CoronaMelder إلى الإصدار الأحدث لـ IOS كي يستمر في العمل بصورة صحيحة على هاتفك.";
 "update.software.os.detail.title" = "حدّث هاتفك";
+"update.software.os.detail.step1.detail" = "الإعدادات";
+"update.software.os.detail.step2.detail" = "العامة";
+"update.software.os.detail.step3.detail" = "تحديث البرنامج";
 "update.software.os.detail.step1" = "افتح الإعدادات في هاتفك باستخدام الزر أسفله.";
 "update.software.os.detail.step2" = "انتقل إلى \"العامة\"";
 "update.software.os.detail.step3" = "3. انتقل إلى \"تحديث البرامج\"";
 "update.software.os.detail.step4" = "4. انقرعلى \"تحميل البرنامج وتثبيته\"";
 
-"update.hardware.title" = "لسوء الحظ لا يعمل التطبيق على هاتفك";
-"update.hardware.description" = "لا يعمل تطبيق التحذير من كورونا إلا على هواتف مزودة بإصدار آي أو إس 13.5 فما فوق. هاتفك ليس مناسبًا لهذا البرنامج.";
+"update.hardware.title" = "للأسف لا يعمل التطبيق على هاتفك";
+"update.hardware.description" = "لا يعمل CoronaMelder إلا على هواتف مزودة بإصدار IOS 13.5 أو ما فوق. هاتفك ليس مناسبًا لهذا البرنامج.";

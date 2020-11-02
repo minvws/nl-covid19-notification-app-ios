@@ -183,6 +183,7 @@ private final class EnableSettingView: View {
         var yAnchor: View?
 
         stepViews.forEach { view in
+
             view.snp.makeConstraints { make in
                 make.leading.trailing.equalToSuperview()
                 make.width.equalTo(scrollView)
@@ -191,6 +192,11 @@ private final class EnableSettingView: View {
                     make.top.equalTo(titleLabel.snp.bottom).offset(32)
                 } else if let yAnchor = yAnchor {
                     make.top.equalTo(yAnchor.snp.bottom).offset(8)
+                }
+
+                // Anchor the last stepview to the bottom of the scrollview
+                if view == stepViews.last {
+                    make.bottom.equalTo(scrollView.snp.bottom).inset(32)
                 }
             }
 

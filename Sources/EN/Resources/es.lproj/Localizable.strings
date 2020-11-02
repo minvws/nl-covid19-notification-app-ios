@@ -5,23 +5,26 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"alertTitle" = "Advertencia";
+"alertTitle" = "Aviso";
 "alertMessage" = "No se pueden abrir los Ajustes";
 "alertButton" = "OK";
 
 "update.button.update" = "Actualizar";
 "update.button.openSettings" = "Abrir Ajustes";
 
-"update.software.app.title" = "Esta versión de CoronaMelder ya no funciona";
-"update.software.app.description" = "Actualiza la app en tu teléfono para que vuelva a funcionar CoronaMelder.";
+"update.software.app.title" = "Estás usando una versión obsoleta de CoronaMelder";
+"update.software.app.description" = "Actualiza CoronaMelder en tu teléfono para asegurar su buen funcionamiento.";
 "update.software.app.detail.title" = "Actualizar la app";
-"update.software.app.detail.step1" = "1. Abre los Ajustes de tu teléfono presionando el siguiente botón";
-"update.software.app.detail.step2" = "2. Presiona \"Actualizar\" para actualizar la app.";
+"update.software.app.detail.step1" = "1. Abre los Ajustes de tu teléfono pulsando el siguiente botón";
+"update.software.app.detail.step2" = "2. Pulsa \"Actualizar\" para actualizar la app.";
 
 "update.software.os.title" = "Tienes que actualizar el software de tu teléfono";
-"update.software.os.description" = "CoronaMelder necesita la versión más actualizada de iOS para seguir funcionando bien en tu teléfono.";
+"update.software.os.description" = "CoronaMelder necesita la versión más reciente de iOS para poder seguir funcionando bien en tu teléfono.";
 "update.software.os.detail.title" = "Actualiza tu teléfono";
-"update.software.os.detail.step1" = "1. Abre los Ajustes de tu teléfono presionando el siguiente botón";
+"update.software.os.detail.step1.detail" = "Ajustes";
+"update.software.os.detail.step2.detail" = "General";
+"update.software.os.detail.step3.detail" = "Actualización de software";
+"update.software.os.detail.step1" = "1. Abre los Ajustes de tu teléfono pulsando el siguiente botón";
 "update.software.os.detail.step2" = "2. Ve a \"General\"";
 "update.software.os.detail.step3" = "3. Ve a \"Actualización de software\"";
 "update.software.os.detail.step4" = "4. Elige \"Descargar e instalar\"";

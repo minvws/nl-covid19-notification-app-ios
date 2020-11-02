@@ -35,7 +35,7 @@ targets:
         CFBundleDisplayName: "🐞 CoronaMelder"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
-        CFBundleShortVersionString: '1.0.10'
+        CFBundleShortVersionString: '1.0.11'
         CFBundleVersion: "1"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes:
@@ -59,6 +59,8 @@ targets:
           - telephony
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
         UIUserInterfaceStyle: Light
         UIViewControllerBasedStatusBarAppearance: true
         ENDeveloperRegion: TEST_NL_TEST

@@ -16,6 +16,8 @@ struct ExposureDataStorageKey {
                                                                     storeType: .insecure(volatile: true))
     static let appConfiguration = CodableStorageKey<ApplicationConfiguration>(name: "appConfiguration",
                                                                               storeType: .insecure(volatile: true))
+    static let appConfigurationSignature = CodableStorageKey<ApplicationConfiguration>(name: "appConfigurationSignature",
+                                                                                       storeType: .secure)
     static let exposureKeySetsHolders = CodableStorageKey<[ExposureKeySetHolder]>(name: "exposureKeySetsHolders",
                                                                                   storeType: .insecure(volatile: false))
     static let lastExposureReport = CodableStorageKey<ExposureReport>(name: "exposureReport",
@@ -25,6 +27,8 @@ struct ExposureDataStorageKey {
     static let lastLocalNotificationExposureDate = CodableStorageKey<Date>(name: "lastLocalNotificationExposureDate",
                                                                            storeType: .insecure(volatile: false))
     static let lastENStatusCheck = CodableStorageKey<Date>(name: "lastENStatusCheck",
+                                                           storeType: .insecure(volatile: false))
+    static let lastAppLaunchDate = CodableStorageKey<Date>(name: "lastAppLaunchDate",
                                                            storeType: .insecure(volatile: false))
     static let exposureConfiguration = CodableStorageKey<ExposureRiskConfiguration>(name: "exposureConfiguration",
                                                                                     storeType: .insecure(volatile: false))
@@ -92,8 +96,16 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastENStatusCheck)
     }
 
+    var lastAppLaunchDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastAppLaunchDate)
+    }
+
     func setLastENStatusCheckDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastENStatusCheck, completion: { _ in })
+    }
+
+    func setLastAppLaunchDate(_ date: Date) {
+        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastAppLaunchDate, completion: { _ in })
     }
 
     func removeLastExposure() -> AnyPublisher<(), Never> {
@@ -178,14 +190,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decativated
-            }
-            .eraseToAnyPublisher()
-    }
-
-    func isTestPhase() -> AnyPublisher<Bool, ExposureDataError> {
-        requestApplicationConfiguration()
-            .map { applicationConfiguration in
-                return applicationConfiguration.testPhase
             }
             .eraseToAnyPublisher()
     }

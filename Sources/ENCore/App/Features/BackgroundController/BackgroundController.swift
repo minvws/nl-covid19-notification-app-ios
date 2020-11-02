@@ -208,27 +208,32 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
-        self.logDebug("Decoy `/postkeys` started")
+        self.logDebug("Decoy `/stopkeys` started")
         let cancellable = exposureController
             .getPadding()
             .flatMap { padding in
                 self.networkController
                     .stopKeys(padding: padding)
                     .mapError {
-                        self.logDebug("Decoy `/postkeys` error: \($0.asExposureDataError)")
+                        self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
                         return $0.asExposureDataError
                     }
             }.sink(receiveCompletion: { _ in
                 // Note: We ignore the response
-                self.logDebug("Decoy `/postkeys` complete")
+                self.logDebug("Decoy `/stopkeys` complete")
                 task.setTaskCompleted(success: true)
             }, receiveValue: { _ in })
 
         // Handle running out of time
         task.expirationHandler = {
-            self.logDebug("Decoy `/postkeys` expired")
+            self.logDebug("Decoy `/stopkeys` expired")
             cancellable.cancel()
         }
+    }
+
+    func removeAllTasks() {
+        logDebug("Background: Removing all scheduled tasks")
+        taskScheduler.cancelAllTaskRequests()
     }
 
     // MARK: - Refresh
@@ -246,7 +251,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             processUpdate,
             processENStatusCheck,
             appUpdateRequiredCheck,
-            updateTreatmentPerspectiveMessage
+            updateTreatmentPerspectiveMessage,
+            processLastOpenedNotificationCheck
         ]
 
         logDebug("Background: starting refresh task")
@@ -354,9 +360,14 @@ final class BackgroundController: BackgroundControlling, Logging {
             .eraseToAnyPublisher()
     }
 
+    private func processLastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
+        return exposureController.lastOpenedNotificationCheck()
+    }
+
     // Returns a Date with the specified hour and minute, for the next day
     // E.g. date(hour: 1, minute: 0) returns 1:00 am for the next day
     private func date(hour: Int, minute: Int, dayOffset: Int = 1) -> Date? {
+
         let calendar = Calendar.current
         guard let tomorrow = calendar.date(byAdding: .day, value: dayOffset, to: currentDate()) else {
             return nil
@@ -387,10 +398,5 @@ final class BackgroundController: BackgroundControlling, Logging {
             logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
         }
-    }
-
-    private func removeAllTasks() {
-        logDebug("Background: Removing all scheduled tasks")
-        taskScheduler.cancelAllTaskRequests()
     }
 }

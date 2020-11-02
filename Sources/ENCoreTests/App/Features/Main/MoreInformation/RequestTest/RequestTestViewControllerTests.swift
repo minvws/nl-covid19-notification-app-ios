@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import SnapshotTesting
@@ -12,14 +13,19 @@ import XCTest
 
 final class RequestTestViewControllerTests: TestCase {
     private var viewController: RequestTestViewController!
-    private let listern = RequestTestListenerMock()
+    private let listener = RequestTestListenerMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        viewController = RequestTestViewController(listener: listern, theme: theme)
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+
+        viewController = RequestTestViewController(listener: listener,
+                                                   theme: theme,
+                                                   interfaceOrientationStream: interfaceOrientationStream)
     }
 
     // MARK: - Tests
@@ -29,12 +35,12 @@ final class RequestTestViewControllerTests: TestCase {
     }
 
     func testPresentationControllerDidDismissCallsListener() {
-        listern.requestTestWantsDismissalHandler = { value in
+        listener.requestTestWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }
 
         viewController.presentationControllerDidDismiss(UIPresentationController(presentedViewController: viewController, presenting: nil))
 
-        XCTAssertEqual(listern.requestTestWantsDismissalCallCount, 1)
+        XCTAssertEqual(listener.requestTestWantsDismissalCallCount, 1)
     }
 }

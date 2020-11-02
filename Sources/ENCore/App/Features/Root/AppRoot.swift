@@ -16,8 +16,9 @@ import UIKit
         let dictionary = Bundle.main.infoDictionary
         let version = dictionary?["CFBundleShortVersionString"] as? String ?? "n/a"
         let build = dictionary?["CFBundleVersion"] as? String ?? "n/a"
+        let bundleIdentifier = Bundle.main.bundleIdentifier ?? "n/a"
 
-        return "OS: \(UIDevice.current.systemVersion) App: \(version)-(\(build))"
+        return "OS: \(UIDevice.current.systemVersion) App: \(version)-(\(build)) Bundle Identifier: \(bundleIdentifier)"
     }
 
     private let rootBuilder = RootBuilder()

@@ -57,6 +57,10 @@ public final class Localization {
     }
 
     public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
+
+    static var isUsingDutchLanguage: Bool {
+        Locale.current.languageCode?.lowercased() == "nl"
+    }
 }
 
 extension String {
@@ -66,6 +70,7 @@ extension String {
     static var helpDeskPhoneNumber = "tel://08001280"
     static var coronaTestPhoneNumber = "tel://08001202"
     static var coronaTestWebUrl = "https://coronatest.nl"
+    static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
 
     // MARK: - Share App
 
@@ -84,8 +89,6 @@ extension String {
     static var close: String { return Localization.string(for: "close") }
     static var errorTitle: String { return Localization.string(for: "error.title") }
     static var learnMore: String { return Localization.string(for: "learnMore") }
-
-    static func testVersionTitle(_ version: String, _ build: String) -> String { return Localization.string(for: "testVersionTitle", [version, build]) }
 
     // MARK: - Update App
 
@@ -211,9 +214,6 @@ extension String {
     static var helpPauseAppDescription: String { return Localization.string(for: "help.pause_app.description") }
     static var helpOtherCountriesTitle: String { return Localization.string(for: "help.apps_other_countries.title") }
     static var helpOtherCountriesDescription: String { return Localization.string(for: "help.apps_other_countries.description") }
-
-    static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
-    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link", [currentLanguageIdentifier]) }
 
     // MARK: - About - What the app do
 
@@ -475,11 +475,14 @@ extension String {
 
     static func exposureNotificationUserExplanation(_ one: String) -> String { return Localization.string(for: "exposure.notification.userExplanation", [one]) }
 
+    static func exposureNotificationReminder(_ one: String) -> String { return Localization.string(for: "exposure.notification.reminder", [one]) }
+
     // MARK: - Privacy Agreement
 
     static var privacyAgreementTitle: String { return Localization.string(for: "privacyAgreement.title") }
     static var privacyAgreementMessage: String { return Localization.string(for: "privacyAgreement.message") }
     static var privacyAgreementMessageLink: String { return Localization.string(for: "privacyAgreement.message.link") }
+    static var privacyAgreementStepsTitle: String { return Localization.string(for: "privacyAgreement.steps.title") }
     static var privacyAgreementStep0: String { return Localization.string(for: "privacyAgreement.list.step0") }
     static var privacyAgreementStep1: String { return Localization.string(for: "privacyAgreement.list.step1") }
     static var privacyAgreementStep2: String { return Localization.string(for: "privacyAgreement.list.step2") }

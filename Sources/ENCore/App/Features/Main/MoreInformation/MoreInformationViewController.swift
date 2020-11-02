@@ -39,9 +39,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     init(listener: MoreInformationListener,
          theme: Theme,
-         testPhaseStream: AnyPublisher<Bool, Never>, bundleInfoDictionary: [String: Any]?) {
+         bundleInfoDictionary: [String: Any]?) {
         self.listener = listener
-        self.testPhaseStream = testPhaseStream
         self.bundleInfoDictionary = bundleInfoDictionary
 
         super.init(theme: theme)
@@ -69,17 +68,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             let hash = dictionary["GitHash"] as? String {
             let buildAndHash = "\(build)-\(hash)"
             moreInformationView.version = "\(version) (\(buildAndHash))"
-
-            testPhaseStream
-                .sink(receiveValue: { isTestPhase in
-                    if isTestPhase {
-                        self.moreInformationView.version = .testVersionTitle(version, buildAndHash)
-                        self.moreInformationView.learnMoreButton.isHidden = false
-                    }
-                }).store(in: &disposeBag)
         }
-
-        moreInformationView.learnMoreButton.addTarget(self, action: #selector(didTapLearnMore(sender:)), for: .touchUpInside)
     }
 
     // MARK: - MoreInformationCellListner
@@ -138,16 +127,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
     private weak var listener: MoreInformationListener?
-    private let testPhaseStream: AnyPublisher<Bool, Never>
     private var disposeBag = Set<AnyCancellable>()
     private let bundleInfoDictionary: [String: Any]?
-
-    @objc private func didTapLearnMore(sender: Button) {
-        guard let url = URL(string: .helpTestVersionLink) else {
-            return logError("Cannot create URL from: \(String.helpTestVersionLink)")
-        }
-        listener?.moreInformationRequestsRedirect(to: url)
-    }
 }
 
 private final class MoreInformationView: View {
@@ -160,14 +141,12 @@ private final class MoreInformationView: View {
 
     private let stackView: UIStackView
     private let versionLabel: Label
-    fileprivate let learnMoreButton: Button
 
     // MARK: - Init
 
     override init(theme: Theme) {
         self.stackView = UIStackView(frame: .zero)
         self.versionLabel = Label()
-        self.learnMoreButton = Button(title: .learnMore, theme: theme)
         super.init(theme: theme)
     }
 
@@ -182,13 +161,9 @@ private final class MoreInformationView: View {
         versionLabel.font = theme.fonts.footnote
         versionLabel.textColor = theme.colors.gray
         versionLabel.textAlignment = .center
-        learnMoreButton.style = .info
-        learnMoreButton.titleLabel?.font = theme.fonts.footnote
-        learnMoreButton.isHidden = true
 
         addSubview(stackView)
         addSubview(versionLabel)
-        addSubview(learnMoreButton)
     }
 
     override func setupConstraints() {
@@ -198,15 +173,11 @@ private final class MoreInformationView: View {
 
         stackView.snp.makeConstraints { maker in
             maker.top.equalToSuperview().offset(16)
-            maker.leading.trailing.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.bottom.equalTo(versionLabel.snp.top).offset(-16)
         }
         versionLabel.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview()
-        }
-        learnMoreButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview()
-            maker.top.equalTo(versionLabel.snp.bottom)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }

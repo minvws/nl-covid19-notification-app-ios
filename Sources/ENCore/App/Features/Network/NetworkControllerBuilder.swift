@@ -35,6 +35,7 @@ protocol NetworkControllerBuildable {
 }
 
 protocol NetworkControllerDependency {
+    var cryptoUtility: CryptoUtility { get }
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
     var storageController: StorageControlling { get }
     var mutableNetworkStatusStream: MutableNetworkStatusStreaming { get }
@@ -44,10 +45,6 @@ private final class NetworkControllerDependencyProvider: DependencyProvider<Netw
     lazy var networkManager: NetworkManaging = {
         return NetworkManagerBuilder(dependency: self).build()
     }()
-
-    var cryptoUtility: CryptoUtility {
-        return CryptoUtilityBuilder().build()
-    }
 
     var networkConfigurationProvider: NetworkConfigurationProvider {
         return dependency.networkConfigurationProvider
@@ -64,7 +61,7 @@ final class NetworkControllerBuilder: Builder<NetworkControllerDependency>, Netw
         let dependencyProvider = NetworkControllerDependencyProvider(dependency: dependency)
 
         return NetworkController(networkManager: dependencyProvider.networkManager,
-                                 cryptoUtility: dependencyProvider.cryptoUtility,
+                                 cryptoUtility: dependencyProvider.dependency.cryptoUtility,
                                  mutableNetworkStatusStream: dependencyProvider.dependency.mutableNetworkStatusStream)
     }
 }

@@ -17,13 +17,17 @@ final class InfectedViewControllerTests: TestCase {
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
     private let exposureStateSubject = PassthroughSubject<ExposureState, Never>()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+
         viewController = InfectedViewController(theme: theme,
                                                 exposureController: exposureController,
-                                                exposureStateStream: exposureStateStream)
+                                                exposureStateStream: exposureStateStream,
+                                                interfaceOrientationStream: interfaceOrientationStream)
         viewController.router = router
 
         exposureStateStream.exposureState = exposureStateSubject.eraseToAnyPublisher()

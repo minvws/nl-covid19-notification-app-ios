@@ -227,7 +227,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let urlRequest = constructRequest(url: configuration.postKeysUrl(signature: signature),
+        let urlRequest = constructRequest(url: configuration.stopKeysUrl(signature: signature),
                                           method: .POST,
                                           body: request,
                                           headers: headers)
