@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import SnapKit
@@ -17,9 +18,13 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
 
     // MARK: - Init
 
-    init(listener: ThankYouListener, theme: Theme, exposureConfirmationKey: ExposureConfirmationKey) {
+    init(listener: ThankYouListener,
+         theme: Theme,
+         exposureConfirmationKey: ExposureConfirmationKey,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
         self.exposureConfirmationKey = exposureConfirmationKey
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         super.init(theme: theme)
     }
@@ -44,6 +49,13 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
         internalView.infoView.actionHandler = { [weak self] in
             self?.listener?.thankYouWantsDismissal()
         }
+
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+        interfaceOrientationStream
+            .isLandscape
+            .sink { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+            }.store(in: &disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -57,6 +69,8 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
     private weak var listener: ThankYouListener?
     private lazy var internalView: ThankYouView = ThankYouView(theme: self.theme, exposureConfirmationKey: exposureConfirmationKey)
     private let exposureConfirmationKey: ExposureConfirmationKey
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var disposeBag = Set<AnyCancellable>()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.thankYouWantsDismissal()
@@ -67,6 +81,12 @@ private final class ThankYouView: View {
 
     fileprivate let infoView: InfoView
     private let exposureConfirmationKey: ExposureConfirmationKey
+
+    var showVisual: Bool = true {
+        didSet {
+            infoView.showHeader = showVisual
+        }
+    }
 
     // MARK: - Init
 
@@ -114,7 +134,8 @@ private final class ThankYouView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.edges.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.bottom.equalToSuperview()
         }
     }
 
