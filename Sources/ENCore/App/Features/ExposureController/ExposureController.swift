@@ -454,6 +454,11 @@ final class ExposureController: ExposureControlling, Logging {
                     return promise(.success(()))
                 }
 
+                guard lastAppLaunch < lastExposure.date else {
+                    promise(.success(()))
+                    return self.logDebug("`lastOpenedNotificationCheck` skipped as the app has been opened after the notification")
+                }
+
                 let timeInterval = TimeInterval(60 * 60 * 3) // 3 hours
 
                 guard lastAppLaunch.advanced(by: timeInterval) < Date() else {
