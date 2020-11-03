@@ -81,7 +81,8 @@ final class MessageManager: MessageManaging, Logging {
             paragraphBody = .htmlWithBulletList(text: paragraphBody.string,
                                                 font: theme.fonts.body,
                                                 textColor: theme.colors.gray,
-                                                theme: theme)
+                                                theme: theme,
+                                                textAlignment: Localization.isRTL ? .right : .left)
 
             return LocalizedTreatmentPerspective.Paragraph(
                 title: paragraphTitle,

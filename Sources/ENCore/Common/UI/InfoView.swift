@@ -351,6 +351,7 @@ final class InfoSectionTextView: View {
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
         titleLabel.accessibilityTraits = .header
+        titleLabel.textAlignment = Localization.isRTL ? .right : .left
 
         contentStack.axis = .vertical
         contentStack.alignment = .top

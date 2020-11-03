@@ -38,6 +38,7 @@ final class MessageViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotMessageViewController_withList() {
+
         messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
             self.fakeMessageWithList
         }
@@ -58,8 +59,17 @@ final class MessageViewControllerTests: TestCase {
     }
 
     func testSnapshotMessageViewController_rtl() {
-        // TODO: create RTL snapshot here
-        XCTFail()
+        LocalizationOverrides.overriddenIsRTL = true
+
+        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+            self.fakeMessageRTLWithList
+        }
+
+        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, messageManager: messageManager)
+
+        snapshots(matching: viewController)
+
+        LocalizationOverrides.overriddenIsRTL = nil
     }
 
     func testPresentationControllerDidDismissCallsListener() {
@@ -83,7 +93,15 @@ final class MessageViewControllerTests: TestCase {
     private lazy var fakeMessageWithList: LocalizedTreatmentPerspective = {
         LocalizedTreatmentPerspective(paragraphs: [
             .init(title: NSAttributedString(string: "Paragraph Title"),
-                  body: .htmlWithBulletList(text: "Intro text.\n\nSecond intro.\n\n<ul><li>List Item 1</li><li>List Item 2</li></ul>\nText below list", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme),
+                  body: .htmlWithBulletList(text: "Intro text.\n\nSecond intro.\n\n<ul><li>List Item 1</li><li>List Item 2</li></ul>\nText below list", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
+                  type: .paragraph)
+        ], quarantineDays: 10)
+    }()
+
+    private lazy var fakeMessageRTLWithList: LocalizedTreatmentPerspective = {
+        LocalizedTreatmentPerspective(paragraphs: [
+            .init(title: NSAttributedString(string: "هل أنت بحاجة الى مساعدة طبية؟"),
+                  body: .htmlWithBulletList(text: "هل أنت بحاجة الى مساعدة طبية؟\n\n<ul><li>لا تذهب إلى الطبيب أو المستشفى، ولكن اتصل بطبيبك أولاً. قل له أنك كنت بالقرب من شخص مصاب بفيروس كورونا.</li><li>.بإمكان طبيب العائلة أو مساعدة طبية أخرى القيام بزيارتك.</li></ul>", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .right),
                   type: .paragraph)
         ], quarantineDays: 10)
     }()
@@ -91,7 +109,7 @@ final class MessageViewControllerTests: TestCase {
     private lazy var fakeMessageWithoutList: LocalizedTreatmentPerspective = {
         LocalizedTreatmentPerspective(paragraphs: [
             .init(title: NSAttributedString(string: "Paragraph Title"),
-                  body: .htmlWithBulletList(text: "Some paragraph of text that is not followed by a list\n\nSome other paragraph of text", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme),
+                  body: .htmlWithBulletList(text: "Some paragraph of text that is not followed by a list\n\nSome other paragraph of text", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
                   type: .paragraph)
         ], quarantineDays: 10)
     }()

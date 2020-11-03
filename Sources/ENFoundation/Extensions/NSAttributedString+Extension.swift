@@ -81,15 +81,15 @@ public extension NSAttributedString {
         return NSAttributedString(string: text)
     }
 
-    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme) -> NSAttributedString {
+    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment) -> NSAttributedString {
 
         let inputString = text.replacingOccurrences(of: "\n\n", with: "<br /><br />")
 
         guard containsHtml(inputString) else {
-            return NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor))
+            return NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
         }
 
-        let textToFormat = NSMutableAttributedString(attributedString: makeFromHtml(text: inputString, font: font, textColor: textColor))
+        let textToFormat = NSMutableAttributedString(attributedString: makeFromHtml(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
 
         let bullet = "\t•\t"
 
@@ -103,7 +103,7 @@ public extension NSAttributedString {
             .filter { $0.hasPrefix(bullet) }
             .forEach { line in
                 if let lineRange = textToFormat.string.range(of: line) {
-                    let attributedLine = makeBullet(line.replacingOccurrences(of: bullet, with: ""), theme: theme, font: font, useTrailingNewLine: false)
+                    let attributedLine = makeBullet(line.replacingOccurrences(of: bullet, with: ""), theme: theme, font: font, useTrailingNewLine: false, textAlignment: textAlignment)
                     textToFormat.replaceCharacters(in: NSRange(lineRange, in: line), with: attributedLine)
                 }
             }
@@ -117,7 +117,8 @@ public extension NSAttributedString {
                            useTrailingNewLine: Bool,
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
-                           paragraphSpacing: CGFloat = 12) -> NSAttributedString {
+                           paragraphSpacing: CGFloat = 12,
+                           textAlignment: NSTextAlignment = .left) -> NSAttributedString {
 
         let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
 
@@ -131,11 +132,12 @@ public extension NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         let nonOptions = [NSTextTab.OptionKey: Any]()
         paragraphStyle.tabStops = [
-            NSTextTab(textAlignment: .left, location: indentation, options: nonOptions)
+            NSTextTab(textAlignment: textAlignment, location: indentation, options: nonOptions)
         ]
         paragraphStyle.defaultTabInterval = indentation
         paragraphStyle.paragraphSpacing = paragraphSpacing
         paragraphStyle.headIndent = indentation
+        paragraphStyle.alignment = textAlignment
 
         var formattedString = "\(bullet)\t\(string)"
 
