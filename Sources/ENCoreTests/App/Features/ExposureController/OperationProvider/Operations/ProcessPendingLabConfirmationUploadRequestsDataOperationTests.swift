@@ -182,7 +182,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
     }
 
     func test_ScheduledNotification() {
-        let date = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
+        let date = Date(timeIntervalSince1970: 1593311000) // 28/06/20 02:23
         DateTimeTestingOverrides.overriddenCurrentDate = date
 
         let trigger = operation.getCalendarTriggerForGGDOpeningHourIfNeeded()
