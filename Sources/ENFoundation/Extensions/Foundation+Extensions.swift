@@ -84,6 +84,7 @@ public func localization() -> String? {
 
     public struct LocalizationOverrides {
         public static var overriddenLocalization: String?
+        public static var overriddenCurrentLanguageIdentifier: String?
     }
 #endif
 

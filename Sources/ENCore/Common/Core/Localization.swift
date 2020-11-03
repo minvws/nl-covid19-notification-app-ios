@@ -535,6 +535,12 @@ extension String {
     }
 
     static var currentLanguageIdentifier: String {
+        #if DEBUG
+            if let overriddenIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
+                return overriddenIdentifier
+            }
+        #endif
+
         let defaultLanguageIdentifier = "en"
         let supportedLanguageCodes = Bundle.main.localizations
 

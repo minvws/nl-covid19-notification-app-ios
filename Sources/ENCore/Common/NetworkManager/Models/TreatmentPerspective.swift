@@ -39,19 +39,18 @@ extension TreatmentPerspective {
     }
 }
 
-struct LocalizedTreatmentPerspective {
+struct LocalizedTreatmentPerspective: Equatable {
 
     var paragraphs: [Paragraph]
     let quarantineDays: Int
 
-    struct Paragraph {
+    struct Paragraph: Equatable {
         var title: NSAttributedString
         var body: NSAttributedString
         let type: ParagraphType
 
         enum ParagraphType: String {
             case paragraph
-            case unknown
         }
     }
 }

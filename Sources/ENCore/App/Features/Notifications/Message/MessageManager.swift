@@ -61,7 +61,8 @@ final class MessageManager: MessageManaging, Logging {
         return layoutElements.compactMap {
 
             guard let title = $0.title, let resourceTitle = resource[title],
-                let body = $0.body, let resourceBody = resource[body] else {
+                let body = $0.body, let resourceBody = resource[body],
+                let type = LocalizedTreatmentPerspective.Paragraph.ParagraphType(rawValue: $0.type) else {
                 return nil
             }
 
@@ -80,7 +81,7 @@ final class MessageManager: MessageManaging, Logging {
             return LocalizedTreatmentPerspective.Paragraph(
                 title: paragraphTitle,
                 body: paragraphBody,
-                type: LocalizedTreatmentPerspective.Paragraph.ParagraphType(rawValue: $0.type) ?? .unknown
+                type: type
             )
         }
     }
@@ -91,7 +92,7 @@ final class MessageManager: MessageManaging, Logging {
         var text = mutableAttributedString.string
 
         text = formatExposureDate(&text, withExposureDate: exposureDate)
-        text = formatTenDaysAfterExposure(&text, withExposureDate: exposureDate, andQuarantineDays: quarantineDays)
+        text = formatStayHomeUntilDate(&text, withExposureDate: exposureDate, andQuarantineDays: quarantineDays)
 
         mutableAttributedString.mutableString.setString(text)
 
@@ -115,13 +116,17 @@ final class MessageManager: MessageManaging, Logging {
         return text
     }
 
-    private func formatTenDaysAfterExposure(_ text: inout String, withExposureDate exposureDate: Date, andQuarantineDays quarantineDays: Int) -> String {
+    private func formatStayHomeUntilDate(_ text: inout String, withExposureDate exposureDate: Date, andQuarantineDays quarantineDays: Int) -> String {
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .long
 
-        let days: TimeInterval = TimeInterval(60 * 60 * 24 * quarantineDays)
-        let daysAfterExposure = exposureDate.advanced(by: days)
+        var addingDaysComponents = DateComponents()
+        addingDaysComponents.day = quarantineDays
+
+        guard let daysAfterExposure = Calendar.current.date(byAdding: addingDaysComponents, to: exposureDate) else {
+            return text
+        }
 
         text = text.replacingOccurrences(of: TreatmentPerspectivePlaceholder.stayHomeUntilDate.rawValue,
                                          with: dateFormatter.string(from: daysAfterExposure))

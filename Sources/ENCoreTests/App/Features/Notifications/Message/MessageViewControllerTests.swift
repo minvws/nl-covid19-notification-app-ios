@@ -47,6 +47,11 @@ final class MessageViewControllerTests: TestCase {
         snapshots(matching: viewController)
     }
 
+    func testSnapshotMessageViewController_rtl() {
+        // TODO: create RTL snapshot here
+        XCTFail()
+    }
+
     func testPresentationControllerDidDismissCallsListener() {
         listener.messageWantsDismissalHandler = { value in
             XCTAssertFalse(value)
