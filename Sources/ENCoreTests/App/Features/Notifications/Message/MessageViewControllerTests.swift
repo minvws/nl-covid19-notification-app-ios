@@ -26,24 +26,30 @@ final class MessageViewControllerTests: TestCase {
         storageController = StorageControllingMock()
         messageManager = MessageManagingMock()
 
-        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
-            self.fakeMessage
-        }
-
         recordSnapshots = false
-
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         exposureDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
-
-        viewController = MessageViewController(listener: listener,
-                                               theme: theme,
-                                               exposureDate: exposureDate,
-                                               messageManager: messageManager)
     }
 
     // MARK: - Tests
 
-    func testSnapshotMessageViewController() {
+    func testSnapshotMessageViewController_withList() {
+        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+            self.fakeMessageWithList
+        }
+
+        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, messageManager: messageManager)
+
+        snapshots(matching: viewController)
+    }
+
+    func testSnapshotMessageViewController_withoutList() {
+        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+            self.fakeMessageWithoutList
+        }
+
+        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, messageManager: messageManager)
+
         snapshots(matching: viewController)
     }
 
@@ -53,6 +59,12 @@ final class MessageViewControllerTests: TestCase {
     }
 
     func testPresentationControllerDidDismissCallsListener() {
+        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+            self.fakeMessageWithList
+        }
+
+        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, messageManager: messageManager)
+
         listener.messageWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }
@@ -64,10 +76,18 @@ final class MessageViewControllerTests: TestCase {
 
     // MARK: - Private
 
-    private lazy var fakeMessage: LocalizedTreatmentPerspective = {
+    private lazy var fakeMessageWithList: LocalizedTreatmentPerspective = {
         LocalizedTreatmentPerspective(paragraphs: [
             .init(title: NSAttributedString(string: "Paragraph Title"),
-                  body: .htmlWithBulletList(text: "<ul><li>List Item 1</li><li>List Item 2</li></ul>Some Other Paragraph", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme),
+                  body: .htmlWithBulletList(text: "Intro text.\n\nSecond intro.\n\n<ul><li>List Item 1</li><li>List Item 2</li></ul>\nText below list", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme),
+                  type: .paragraph)
+        ], quarantineDays: 10)
+    }()
+
+    private lazy var fakeMessageWithoutList: LocalizedTreatmentPerspective = {
+        LocalizedTreatmentPerspective(paragraphs: [
+            .init(title: NSAttributedString(string: "Paragraph Title"),
+                  body: .htmlWithBulletList(text: "Some paragraph of text that is not followed by a list\n\nSome other paragraph of text", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme),
                   type: .paragraph)
         ], quarantineDays: 10)
     }()

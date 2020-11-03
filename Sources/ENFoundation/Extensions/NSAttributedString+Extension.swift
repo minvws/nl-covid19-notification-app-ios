@@ -81,49 +81,32 @@ public extension NSAttributedString {
         return NSAttributedString(string: text)
     }
 
-    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
+    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme) -> NSAttributedString {
 
-        var textToFormat = makeFromHtml(text: text, font: font, textColor: textColor)
+        let inputString = text.replacingOccurrences(of: "\n\n", with: "<br /><br />")
 
-        if !containsHtml(text) {
-            textToFormat = make(text: text, font: font, textColor: textColor)
+        guard containsHtml(inputString) else {
+            return NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor))
         }
 
-        guard textToFormat.string.contains("\t•\t") else {
+        let textToFormat = NSMutableAttributedString(attributedString: makeFromHtml(text: inputString, font: font, textColor: textColor))
+
+        let bullet = "\t•\t"
+
+        guard textToFormat.string.contains(bullet) else {
             return textToFormat
         }
 
-        var bulletList = [NSAttributedString]()
-
-        let bulletPoints = textToFormat.string
-            .components(separatedBy: "\t•\t")
-            .filter { $0.count > 0 }
-
-        for bulletPoint in bulletPoints {
-
-            let newLineComponents = bulletPoint.components(separatedBy: "\n").filter { !$0.isEmpty }
-
-            for (index, newLine) in newLineComponents.enumerated() {
-
-                let useTrailingNewLine = (index != newLineComponents.count - 1) || bulletPoint != bulletPoints.last
-
-                if index == 0 {
-                    bulletList.append(makeBullet(newLine, theme: theme, font: font, useTrailingNewLine: useTrailingNewLine))
-                } else {
-                    // if a bulletpoint contains a new line, we treat that 2nd line as a separate paragraph that is not
-                    // part of the bulletpoint itself and has no indentation.
-                    bulletList.append(make(text: newLine, font: font, textColor: theme.colors.gray))
+        // Replace all lines starting with bullets with our own custom-formatted bulleted line
+        textToFormat.string
+            .components(separatedBy: "\n")
+            .filter { $0.hasPrefix(bullet) }
+            .forEach { line in
+                if let lineRange = textToFormat.string.range(of: line) {
+                    let attributedLine = makeBullet(line.replacingOccurrences(of: bullet, with: ""), theme: theme, font: font, useTrailingNewLine: false)
+                    textToFormat.replaceCharacters(in: NSRange(lineRange, in: line), with: attributedLine)
                 }
             }
-        }
-
-        if !bulletList.isEmpty {
-            let list = NSMutableAttributedString()
-            bulletList.forEach {
-                list.append($0)
-            }
-            textToFormat = list
-        }
 
         return textToFormat
     }
