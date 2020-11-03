@@ -324,8 +324,8 @@ final class ExposureController: ExposureControlling, Logging {
         dataController.setLastAppLaunchDate(Date())
     }
 
-    func removeUnseenExposureNotificationDate() {
-        dataController.setLastUnseenExposureNotificationDate(nil)
+    func clearUnseenExposureNotificationDate() {
+        dataController.clearLastUnseenExposureNotificationDate()
     }
 
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {

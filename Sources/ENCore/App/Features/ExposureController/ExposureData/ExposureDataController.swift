@@ -100,12 +100,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastAppLaunchDate, completion: { _ in })
     }
 
-    func setLastUnseenExposureNotificationDate(_ date: Date?) {
-        guard let date = date else {
-            storageController.removeData(for: ExposureDataStorageKey.lastUnseenExposureNotificationDate, completion: { _ in })
-            return
-        }
-        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate, completion: { _ in })
+    func clearLastUnseenExposureNotificationDate() {
+        storageController.removeData(for: ExposureDataStorageKey.lastUnseenExposureNotificationDate, completion: { _ in })
     }
 
     var lastUnseenExposureNotificationDate: Date? {

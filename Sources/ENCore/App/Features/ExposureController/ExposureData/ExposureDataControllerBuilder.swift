@@ -40,7 +40,7 @@ protocol ExposureDataControlling: AnyObject {
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
     func setLastENStatusCheckDate(_ date: Date)
     func setLastAppLaunchDate(_ date: Date)
-    func setLastUnseenExposureNotificationDate(_ date: Date?)
+    func clearLastUnseenExposureNotificationDate()
 
     // MARK: - Lab Flow
 
