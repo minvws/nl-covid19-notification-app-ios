@@ -4,7 +4,7 @@
 
 This repository contains the native iOS implementation of the Dutch COVID-19 Notification App CoronaMelder. 
 
-* The iOS app is located in the repository you are currently viewing.
+* The iOS app is located in the repository you are currently viewing
 * The Android app can be found here: https://github.com/minvws/nl-covid19-notification-app-android
 * The backend can be found here: https://github.com/minvws/nl-covid19-notification-app-backend
 * The designs that are used as a basis to develop the apps can be found here: https://github.com/minvws/nl-covid19-notification-app-design
