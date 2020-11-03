@@ -40,25 +40,23 @@ class MessageManagerTests: TestCase {
         XCTAssertNotNil(result)
     }
 
-    func test_getLocalizedTreatmentPerspective_nonExistingLanguageShouldReturnEmptyMessage() throws {
+    func test_getLocalizedTreatmentPerspective_nonExistingStringForLanguageShouldDefaultToEnglish() throws {
         // Arrange
-        let calledStorageControllerExpectation = expectation(description: "called storagecontroller")
-
-        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "BLAH_BLAH" // non-existing language identifier
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "fr"
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593624480) // 01/07/20 17:28
         let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
 
         mockStorageController.retrieveDataHandler = { key in
-            XCTAssertTrue(key is CodableStorageKey<TreatmentPerspective>)
-            calledStorageControllerExpectation.fulfill()
-            return try! JSONEncoder().encode(TreatmentPerspective.fallbackMessage)
+            return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithPlaceholders)
         }
 
         // Act
         let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
 
         // Assert
-        waitForExpectations(timeout: 2.0, handler: nil)
-        XCTAssertEqual(result, LocalizedTreatmentPerspective.emptyMessage)
+        XCTAssertEqual(result.paragraphs.count, 2)
+        XCTAssertEqual(result.paragraphs.last?.title.string, "Title 2 French")
+        XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2") // Uses english resource because french stirng doesn't exist
     }
 
     func test_getLocalizedTreatmentPerspective_shouldReplacePlaceHolders() throws {
@@ -101,14 +99,45 @@ class MessageManagerTests: TestCase {
         XCTAssertEqual(result.paragraphs.first?.body.string, "●\tsome bullet point\n●\tanother bullet point\nand some followup text")
     }
 
+    /// Makes sure all the resource keys are available in all languages
+    func test_defaultTreatmentPerspective_sanityCheck() {
+        let model = TreatmentPerspective.fallbackMessage
+
+        // Quarantine days must be set
+        XCTAssertNotEqual(model.guidance.quarantineDays, 0)
+
+        // English (base) resource should always be available
+        XCTAssertTrue(model.resources.contains(where: { $0.key == "en" }))
+
+        // All referenced resource keys must be available in all languages
+        model.guidance.layout.forEach { layoutElement in
+            model.resources.forEach { resource in
+                if let title = layoutElement.title {
+                    XCTAssertNotNil(resource.value[title], "resource with key `\(resource.key)` does not contain string with key `\(title)`")
+                }
+                if let body = layoutElement.body {
+                    XCTAssertNotNil(resource.value[body], "resource with key `\(resource.key)` does not contain string with key `\(body)`")
+                }
+                XCTAssertNotNil(LocalizedTreatmentPerspective.Paragraph.ParagraphType(rawValue: layoutElement.type), "paragraph type is not implemented in app")
+            }
+        }
+    }
+
+    // MARK: - Private
+
     private var fakeTreatmentPerspectiveWithPlaceholders: TreatmentPerspective {
         TreatmentPerspective(
-            resources: ["en": [
-                "some_resource_title": "Title ExposureDate:{ExposureDate}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
-                "some_resource_body": "Body ExposureDate:{ExposureDate}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
-                "some_resource_title2": "Title 2",
-                "some_resource_body2": "Body 2"
-            ]],
+            resources: [
+                "en": [
+                    "some_resource_title": "Title ExposureDate:{ExposureDate}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
+                    "some_resource_body": "Body ExposureDate:{ExposureDate}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
+                    "some_resource_title2": "Title 2",
+                    "some_resource_body2": "Body 2"
+                ],
+                "fr": [
+                    "some_resource_title2": "Title 2 French"
+                ]
+            ],
             guidance: .init(quarantineDays: 10,
                             layout: [
                                 .init(title: "some_resource_title", body: "some_resource_body", type: "paragraph"),

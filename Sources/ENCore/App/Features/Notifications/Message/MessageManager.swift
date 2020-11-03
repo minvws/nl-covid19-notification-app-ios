@@ -34,7 +34,10 @@ final class MessageManager: MessageManaging, Logging {
         let treatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) ??
             TreatmentPerspective.fallbackMessage
 
-        guard let resource = treatmentPerspective.resources[.currentLanguageIdentifier] else {
+        let resource = treatmentPerspective.resources[.currentLanguageIdentifier]
+        let fallbackResource = treatmentPerspective.resources["en"]
+
+        guard resource != nil || fallbackResource != nil else {
             return .emptyMessage
         }
 
@@ -42,7 +45,8 @@ final class MessageManager: MessageManaging, Logging {
             treatmentPerspective.guidance.layout,
             exposureDate: exposureDate,
             quarantineDays: treatmentPerspective.guidance.quarantineDays,
-            withLanguageResource: resource
+            withLanguageResource: resource,
+            languageResourceFallback: fallbackResource
         )
 
         return LocalizedTreatmentPerspective(paragraphs: paragraphs,
@@ -55,13 +59,14 @@ final class MessageManager: MessageManaging, Logging {
         _ layoutElements: [TreatmentPerspective.LayoutElement],
         exposureDate: Date,
         quarantineDays: Int,
-        withLanguageResource resource: [String: String]
+        withLanguageResource resource: [String: String]?,
+        languageResourceFallback fallback: [String: String]?
     ) -> [LocalizedTreatmentPerspective.Paragraph] {
 
         return layoutElements.compactMap {
 
-            guard let title = $0.title, let resourceTitle = resource[title],
-                let body = $0.body, let resourceBody = resource[body],
+            guard let title = $0.title, let resourceTitle = resource?[title] ?? fallback?[title],
+                let body = $0.body, let resourceBody = resource?[body] ?? fallback?[body],
                 let type = LocalizedTreatmentPerspective.Paragraph.ParagraphType(rawValue: $0.type) else {
                 return nil
             }
