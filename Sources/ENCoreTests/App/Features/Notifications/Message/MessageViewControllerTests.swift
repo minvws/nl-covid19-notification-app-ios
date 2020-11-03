@@ -93,7 +93,7 @@ final class MessageViewControllerTests: TestCase {
     private lazy var fakeMessageWithList: LocalizedTreatmentPerspective = {
         LocalizedTreatmentPerspective(paragraphs: [
             .init(title: NSAttributedString(string: "Paragraph Title"),
-                  body: .htmlWithBulletList(text: "Intro text.\n\nSecond intro.\n\n<ul><li>List Item 1</li><li>List Item 2</li></ul>\nText below list", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
+                  body: .htmlWithBulletList(text: "<b>Intro text</b>.\n\n<i>Second intro</i>.\n\n<ul><li>List Item 1</li><li>List Item 2</li></ul>\nText below list", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
                   type: .paragraph)
         ], quarantineDays: 10)
     }()

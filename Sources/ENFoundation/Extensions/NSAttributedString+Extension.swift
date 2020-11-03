@@ -59,16 +59,21 @@ public extension NSAttributedString {
             let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitBold)
             let boldFont = boldFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
 
+            let italicFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitItalic)
+            let italicFont = italicFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
+
             // replace default font with desired font - maintain bold style if possible
             attributedTitle.enumerateAttribute(.font, in: fullRange, options: []) { value, range, finished in
                 guard let currentFont = value as? UIFont else { return }
 
-                let newFont: UIFont
+                var newFont = currentFont
+
+                if let italicFont = italicFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitItalic) {
+                    newFont = italicFont
+                }
 
                 if let boldFont = boldFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitBold) {
                     newFont = boldFont
-                } else {
-                    newFont = font
                 }
 
                 attributedTitle.removeAttribute(.font, range: range)
