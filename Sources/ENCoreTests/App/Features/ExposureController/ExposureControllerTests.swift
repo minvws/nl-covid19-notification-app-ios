@@ -576,6 +576,15 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(userNotificationCenter.addCallCount, 0)
     }
 
+    func test_lastOpenedNotificationCheck_48Hours_ToDays() {
+        let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
+        dataController.lastExposure = ExposureReport(date: Date().advanced(by: -timeInterval))
+
+        let days = controller.daysAgo(dataController.lastExposure!.date)
+
+        XCTAssertEqual(days, 2)
+    }
+
     // MARK: - Private
 
     private func setupActivation() {

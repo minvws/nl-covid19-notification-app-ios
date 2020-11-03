@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import SnapshotTesting
@@ -12,14 +13,18 @@ import XCTest
 
 final class CallGGDControllerTests: TestCase {
     private var viewController: CallGGDViewController!
-    private let listern = CallGGDListenerMock()
+    private let listener = CallGGDListenerMock()
+    private let interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
+        interfaceOrientationStream.isLandscape = Just<Bool>(false).eraseToAnyPublisher()
 
-        viewController = CallGGDViewController(listener: listern, theme: theme)
+        viewController = CallGGDViewController(listener: listener,
+                                               theme: theme,
+                                               interfaceOrientationStream: interfaceOrientationStream)
     }
 
     // MARK: - Tests
@@ -29,12 +34,12 @@ final class CallGGDControllerTests: TestCase {
     }
 
     func testPresentationControllerDidDismissCallsListener() {
-        listern.callGGDWantsDismissalHandler = { value in
+        listener.callGGDWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }
 
         viewController.presentationControllerDidDismiss(UIPresentationController(presentedViewController: viewController, presenting: nil))
 
-        XCTAssertEqual(listern.callGGDWantsDismissalCallCount, 1)
+        XCTAssertEqual(listener.callGGDWantsDismissalCallCount, 1)
     }
 }

@@ -23,6 +23,7 @@ protocol CallGGDBuildable {
 
 protocol CallGGDDependency {
     var theme: Theme { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class CallGGDDependencyProvider: DependencyProvider<CallGGDDependency> {}
@@ -31,6 +32,8 @@ final class CallGGDBuilder: Builder<CallGGDDependency>, CallGGDBuildable {
     func build(withListener listener: CallGGDListener) -> ViewControllable {
         let dependencyProvider = CallGGDDependencyProvider(dependency: dependency)
 
-        return CallGGDViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        return CallGGDViewController(listener: listener,
+                                     theme: dependencyProvider.dependency.theme,
+                                     interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
     }
 }

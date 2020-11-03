@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
@@ -18,6 +19,7 @@ final class MessageViewControllerTests: TestCase {
     private var storageController: StorageControllingMock!
     private var messageManager: MessageManagingMock!
     private var exposureDate: Date!
+    private let mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
@@ -29,6 +31,8 @@ final class MessageViewControllerTests: TestCase {
         recordSnapshots = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         exposureDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
+
+        mockInterfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
     }
 
     // MARK: - Tests
@@ -38,7 +42,7 @@ final class MessageViewControllerTests: TestCase {
             self.fakeMessageWithList
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, messageManager: messageManager)
 
         snapshots(matching: viewController)
     }
@@ -48,7 +52,7 @@ final class MessageViewControllerTests: TestCase {
             self.fakeMessageWithoutList
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, messageManager: messageManager)
 
         snapshots(matching: viewController)
     }
@@ -63,7 +67,7 @@ final class MessageViewControllerTests: TestCase {
             self.fakeMessageWithList
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, messageManager: messageManager)
 
         listener.messageWantsDismissalHandler = { value in
             XCTAssertFalse(value)
