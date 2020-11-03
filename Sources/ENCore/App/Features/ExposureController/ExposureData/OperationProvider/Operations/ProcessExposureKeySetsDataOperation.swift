@@ -45,13 +45,15 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
          exposureManager: ExposureManaging,
          exposureKeySetsStorageUrl: URL,
          configuration: ExposureConfiguration,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         application: ApplicationControlling) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
         self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
+        self.application = application
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
@@ -445,16 +447,17 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                                         content: content,
                                                         trigger: nil)
 
-                    /// Store the unseen notification date, but only when the app is in the background
-                    if UIApplication.shared.applicationState == .background {
-                        self.storageController.requestExclusiveAccess { storageController in
-                            storageController.store(object: Date(),
-                                                    identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { _ in }
-                        }
-                    }
-
                     self.userNotificationCenter.add(request) { error in
                         guard let error = error else {
+
+                            /// Store the unseen notification date, but only when the app is in the background
+                            if self.application.isInBackground {
+                                self.storageController.requestExclusiveAccess { storageController in
+                                    storageController.store(object: Date(),
+                                                            identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { _ in }
+                                }
+                            }
+
                             return promise(.success(value))
                         }
                         self.logError("Error posting notification: \(error.localizedDescription)")
@@ -586,4 +589,5 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let exposureKeySetsStorageUrl: URL
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter
+    private let application: ApplicationControlling
 }

@@ -13,12 +13,14 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
          storageController: StorageControlling,
          applicationSignatureController: ApplicationSignatureControlling,
          localPathProvider: LocalPathProviding,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         application: ApplicationControlling) {
         self.networkController = networkController
         self.storageController = storageController
         self.applicationSignatureController = applicationSignatureController
         self.localPathProvider = localPathProvider
         self.userNotificationCenter = userNotificationCenter
+        self.application = application
     }
 
     // MARK: - ExposureDataOperationProvider
@@ -34,7 +36,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                    exposureManager: exposureManager,
                                                    exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
                                                    configuration: configuration,
-                                                   userNotificationCenter: userNotificationCenter)
+                                                   userNotificationCenter: userNotificationCenter,
+                                                   application: application)
     }
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
@@ -92,6 +95,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     private let applicationSignatureController: ApplicationSignatureControlling
     private let localPathProvider: LocalPathProviding
     private let userNotificationCenter: UserNotificationCenter
+    private let application: ApplicationControlling
 }
 
 extension NetworkError {
