@@ -444,6 +444,15 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                     let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
                                                         content: content,
                                                         trigger: nil)
+
+                    /// Store the unseen notification date, but only when the app is in the background
+                    if UIApplication.shared.applicationState == .background {
+                        self.storageController.requestExclusiveAccess { storageController in
+                            storageController.store(object: Date(),
+                                                    identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { _ in }
+                        }
+                    }
+
                     self.userNotificationCenter.add(request) { error in
                         guard let error = error else {
                             return promise(.success(value))
@@ -498,7 +507,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                             identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
                                             completion: { _ in
                                                 promise(.success(value))
-                                            })
+                        })
                 }
             }
         }

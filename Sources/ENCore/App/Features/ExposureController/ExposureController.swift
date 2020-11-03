@@ -324,6 +324,10 @@ final class ExposureController: ExposureControlling, Logging {
         dataController.setLastAppLaunchDate(Date())
     }
 
+    func removeUnseenExposureNotificationDate() {
+        dataController.setLastUnseenExposureNotificationDate(nil)
+    }
+
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
         logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
@@ -454,7 +458,12 @@ final class ExposureController: ExposureControlling, Logging {
                     return promise(.success(()))
                 }
 
-                guard lastAppLaunch < lastExposure.date else {
+                guard let lastUnseenExposureNotificationDate = self.dataController.lastUnseenExposureNotificationDate else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastUnseenExposureNotificationDate`")
+                    return promise(.success(()))
+                }
+
+                guard lastAppLaunch < lastUnseenExposureNotificationDate else {
                     promise(.success(()))
                     return self.logDebug("`lastOpenedNotificationCheck` skipped as the app has been opened after the notification")
                 }

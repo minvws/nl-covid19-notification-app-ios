@@ -145,6 +145,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         checkIfAppUpdateIsRequired()
 
         exposureController.updateLastLaunch()
+
+        exposureController.removeUnseenExposureNotificationDate()
     }
 
     func didEnterForeground() {
