@@ -176,24 +176,6 @@ final class ExposureController: ExposureControlling, Logging {
             .processPendingUploadRequests()
     }
 
-    func notifyUserIfRequired() {
-        let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
-        guard
-            let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
-            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
-        else {
-            return
-        }
-        guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
-            // We haven't shown a notification to the user before so we should show one now
-            return notifyUserAppNeedsUpdate()
-        }
-        guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
-            return
-        }
-        notifyUserAppNeedsUpdate()
-    }
-
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
         logDebug("`requestExposureNotificationPermission` started")
         exposureManager.setExposureNotificationEnabled(true) { result in
@@ -357,7 +339,7 @@ final class ExposureController: ExposureControlling, Logging {
                 switch result {
                 case .finished:
                     self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
-                    self?.notifyUserIfRequired()
+                    self?.notifyUser24HoursNoCheckIfRequired()
                 case let .failure(error):
                     self?.logError("Error completing sequence \(error.localizedDescription)")
                 }
@@ -500,6 +482,51 @@ final class ExposureController: ExposureControlling, Logging {
         return components.day ?? 0
     }
 
+    func notifyUser24HoursNoCheckIfRequired() {
+
+        func notifyUser() {
+            let unc = UNUserNotificationCenter.current()
+            unc.getNotificationSettings { settings in
+                guard settings.authorizationStatus == .authorized else {
+                    return
+                }
+                let content = UNMutableNotificationContent()
+                content.title = .statusAppStateInactiveTitle
+                content.body = String(format: .statusAppStateInactiveDescription)
+                content.sound = UNNotificationSound.default
+                content.badge = 0
+
+                let identifier = PushNotificationIdentifier.inactive.rawValue
+                let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+                unc.add(request) { [weak self] error in
+                    if let error = error {
+                        self?.logError("\(error.localizedDescription)")
+                    } else {
+                        self?.dataController.updateLastLocalNotificationExposureDate(Date())
+                    }
+                }
+            }
+        }
+
+        let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
+        guard
+            let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
+            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
+        else {
+            return
+        }
+        guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
+            // We haven't shown a notification to the user before so we should show one now
+            return notifyUser()
+        }
+        guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
+            return
+        }
+
+        notifyUser()
+    }
+
     // MARK: - Private
 
     private func postExposureManagerActivation() {
@@ -640,31 +667,6 @@ final class ExposureController: ExposureControlling, Logging {
             .sink(receiveCompletion: receiveCompletion,
                   receiveValue: completion)
             .store(in: &disposeBag)
-    }
-
-    private func notifyUserAppNeedsUpdate() {
-        let unc = UNUserNotificationCenter.current()
-        unc.getNotificationSettings { settings in
-            guard settings.authorizationStatus == .authorized else {
-                return
-            }
-            let content = UNMutableNotificationContent()
-            content.title = .statusAppStateInactiveTitle
-            content.body = String(format: .statusAppStateInactiveDescription)
-            content.sound = UNNotificationSound.default
-            content.badge = 0
-
-            let identifier = PushNotificationIdentifier.inactive.rawValue
-            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-
-            unc.add(request) { [weak self] error in
-                if let error = error {
-                    self?.logError("\(error.localizedDescription)")
-                } else {
-                    self?.dataController.updateLastLocalNotificationExposureDate(Date())
-                }
-            }
-        }
     }
 
     private func updatePushNotificationState(completition: @escaping () -> ()) {
