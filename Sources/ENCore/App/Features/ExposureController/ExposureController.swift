@@ -485,28 +485,23 @@ final class ExposureController: ExposureControlling, Logging {
     func notifyUser24HoursNoCheckIfRequired() {
 
         func notifyUser() {
-            let unc = UNUserNotificationCenter.current()
-            unc.getNotificationSettings { settings in
-                guard settings.authorizationStatus == .authorized else {
-                    return
-                }
-                let content = UNMutableNotificationContent()
-                content.title = .statusAppStateInactiveTitle
-                content.body = String(format: .statusAppStateInactiveDescription)
-                content.sound = UNNotificationSound.default
-                content.badge = 0
 
-                let identifier = PushNotificationIdentifier.inactive.rawValue
-                let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+            let content = UNMutableNotificationContent()
+            content.title = .statusAppStateInactiveTitle
+            content.body = String(format: .statusAppStateInactiveDescription)
+            content.sound = UNNotificationSound.default
+            content.badge = 0
 
-                unc.add(request) { [weak self] error in
-                    if let error = error {
-                        self?.logError("\(error.localizedDescription)")
-                    } else {
-                        self?.dataController.updateLastLocalNotificationExposureDate(Date())
-                    }
+            let identifier = PushNotificationIdentifier.inactive.rawValue
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+            userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
+                if let error = error {
+                    self?.logError("\(error.localizedDescription)")
+                } else {
+                    self?.dataController.updateLastLocalNotificationExposureDate(Date())
                 }
-            }
+            })
         }
 
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
