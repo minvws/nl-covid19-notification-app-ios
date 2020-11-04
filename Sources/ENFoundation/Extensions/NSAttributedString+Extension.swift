@@ -66,7 +66,7 @@ public extension NSAttributedString {
             attributedTitle.enumerateAttribute(.font, in: fullRange, options: []) { value, range, finished in
                 guard let currentFont = value as? UIFont else { return }
 
-                var newFont = currentFont
+                var newFont = font
 
                 if let italicFont = italicFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitItalic) {
                     newFont = italicFont
@@ -113,7 +113,7 @@ public extension NSAttributedString {
                 }
             }
 
-        return textToFormat
+        return textToFormat.attributedStringByTrimmingCharacterSet(charSet: .whitespacesAndNewlines)
     }
 
     static func makeBullet(_ string: String,
@@ -189,5 +189,30 @@ public extension NSAttributedString {
         let range = NSRange(location: 0, length: value.utf16.count)
         let regex = try! NSRegularExpression(pattern: "<[^>]+>")
         return regex.firstMatch(in: value, options: [], range: range) != nil
+    }
+
+    func attributedStringByTrimmingCharacterSet(charSet: CharacterSet) -> NSAttributedString {
+        let modifiedString = NSMutableAttributedString(attributedString: self)
+        modifiedString.trimCharactersInSet(charSet: charSet)
+        return NSAttributedString(attributedString: modifiedString)
+    }
+}
+
+extension NSMutableAttributedString {
+    func trimCharactersInSet(charSet: CharacterSet) {
+        var range = (string as NSString).rangeOfCharacter(from: charSet as CharacterSet)
+
+        // Trim leading characters from character set.
+        while range.length != 0, range.location == 0 {
+            replaceCharacters(in: range, with: "")
+            range = (string as NSString).rangeOfCharacter(from: charSet)
+        }
+
+        // Trim trailing characters from character set.
+        range = (string as NSString).rangeOfCharacter(from: charSet, options: .backwards)
+        while range.length != 0, NSMaxRange(range) == length {
+            replaceCharacters(in: range, with: "")
+            range = (string as NSString).rangeOfCharacter(from: charSet, options: .backwards)
+        }
     }
 }

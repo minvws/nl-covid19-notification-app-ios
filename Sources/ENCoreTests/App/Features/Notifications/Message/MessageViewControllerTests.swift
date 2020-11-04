@@ -37,10 +37,21 @@ final class MessageViewControllerTests: TestCase {
 
     // MARK: - Tests
 
-    func testSnapshotMessageViewController_withList() {
+    func testSnapshotMessageViewController_withListAndText() {
 
         messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
-            self.fakeMessageWithList
+            self.fakeMessageWithListAndText
+        }
+
+        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, messageManager: messageManager)
+
+        snapshots(matching: viewController)
+    }
+
+    func testSnapshotMessageViewController_withListOnly() {
+
+        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+            self.fakeMessageWithListOnly
         }
 
         viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, messageManager: messageManager)
@@ -74,7 +85,7 @@ final class MessageViewControllerTests: TestCase {
 
     func testPresentationControllerDidDismissCallsListener() {
         messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
-            self.fakeMessageWithList
+            self.fakeMessageWithListAndText
         }
 
         viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, messageManager: messageManager)
@@ -90,10 +101,24 @@ final class MessageViewControllerTests: TestCase {
 
     // MARK: - Private
 
-    private lazy var fakeMessageWithList: LocalizedTreatmentPerspective = {
+    private lazy var fakeMessageWithListAndText: LocalizedTreatmentPerspective = {
         LocalizedTreatmentPerspective(paragraphs: [
             .init(title: NSAttributedString(string: "Paragraph Title"),
                   body: .htmlWithBulletList(text: "<b>Intro text</b>.\n\n<i>Second intro</i>.\n\n<ul><li>List Item 1</li><li>List Item 2</li></ul>\nText below list", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
+                  type: .paragraph),
+            .init(title: NSAttributedString(string: "Paragraph Title"),
+                  body: .htmlWithBulletList(text: "<b>Intro text</b>.\n\n<i>Second intro</i>.\n\n<ul><li>List Item 1</li><li>List Item 2</li></ul>\nText below list", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
+                  type: .paragraph)
+        ], quarantineDays: 10)
+    }()
+
+    private lazy var fakeMessageWithListOnly: LocalizedTreatmentPerspective = {
+        LocalizedTreatmentPerspective(paragraphs: [
+            .init(title: NSAttributedString(string: "Paragraph Title"),
+                  body: .htmlWithBulletList(text: "<ul><li>List Item 1</li><li>List Item 2</li></ul>", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
+                  type: .paragraph),
+            .init(title: NSAttributedString(string: "Paragraph 2 Title"),
+                  body: .htmlWithBulletList(text: "<ul><li>List Item 1</li><li>List Item 2</li></ul>", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
                   type: .paragraph)
         ], quarantineDays: 10)
     }()
@@ -108,6 +133,9 @@ final class MessageViewControllerTests: TestCase {
 
     private lazy var fakeMessageWithoutList: LocalizedTreatmentPerspective = {
         LocalizedTreatmentPerspective(paragraphs: [
+            .init(title: NSAttributedString(string: "Paragraph Title"),
+                  body: .htmlWithBulletList(text: "Some paragraph of text that is not followed by a list\n\nSome other paragraph of text", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
+                  type: .paragraph),
             .init(title: NSAttributedString(string: "Paragraph Title"),
                   body: .htmlWithBulletList(text: "Some paragraph of text that is not followed by a list\n\nSome other paragraph of text", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
                   type: .paragraph)
