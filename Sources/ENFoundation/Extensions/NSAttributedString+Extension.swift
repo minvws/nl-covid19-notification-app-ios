@@ -88,7 +88,9 @@ public extension NSAttributedString {
 
     static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment) -> NSAttributedString {
 
-        let inputString = text.replacingOccurrences(of: "\n\n", with: "<br /><br />")
+        let inputString = text
+            .replacingOccurrences(of: "\\n", with: "\n")
+            .replacingOccurrences(of: "\n\n", with: "<br /><br />")
 
         guard containsHtml(inputString) else {
             return NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
