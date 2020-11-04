@@ -66,6 +66,11 @@ final class StatusViewController: ViewController, StatusViewControllable {
             let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
             update(exposureState: currentState, isLandscape: isLandscape)
         }
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateExposureStateView),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
     }
 
     override func didMove(toParent parent: UIViewController?) {
@@ -83,6 +88,21 @@ final class StatusViewController: ViewController, StatusViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        updateExposureStateView()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewWillDisappear(false)
+
+        stateStreamCancellable = nil
+
+        NotificationCenter.default.removeObserver(self, forKeyPath: UIApplication.didBecomeActiveNotification.rawValue)
+    }
+
+    // MARK: - Private
+
+    @objc private func updateExposureStateView() {
+
         stateStreamCancellable = exposureStateStream
             .exposureState
             .combineLatest(interfaceOrientationStream.isLandscape)
@@ -94,14 +114,6 @@ final class StatusViewController: ViewController, StatusViewControllable {
                 strongSelf.update(exposureState: status, isLandscape: isLandscape)
             }
     }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewWillDisappear(false)
-
-        stateStreamCancellable = nil
-    }
-
-    // MARK: - Private
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
         let statusViewModel: StatusViewModel
