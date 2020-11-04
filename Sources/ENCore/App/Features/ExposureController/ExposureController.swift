@@ -357,9 +357,7 @@ final class ExposureController: ExposureControlling, Logging {
                 switch result {
                 case .finished:
                     self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
-                    // FIXME: disabled for `57704`
-                    // self?.exposureController.notifyUserIfRequired()
-                    self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
+                    self?.notifyUserIfRequired()
                 case let .failure(error):
                     self?.logError("Error completing sequence \(error.localizedDescription)")
                 }
