@@ -544,8 +544,8 @@ extension String {
 
     static var currentLanguageIdentifier: String {
         #if DEBUG
-            if let overriddenIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
-                return overriddenIdentifier
+            if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
+                return overriddenCurrentLanguageIdentifier
             }
         #endif
 

@@ -70,7 +70,7 @@ final class OnboardingConsentStep: NSObject {
                                                                                           textColor: theme.colors.gray,
                                                                                           textAlignment: Localization.isRTL ? .right : .left))
 
-        for bullet in NSAttributedString.bulletList(bulletItems, theme: theme, font: theme.fonts.body, useTrailingNewLine: false) {
+        for bullet in NSAttributedString.bulletList(bulletItems, theme: theme, font: theme.fonts.body) {
             attributedContent.append("\n".attributed())
             attributedContent.append(bullet)
         }

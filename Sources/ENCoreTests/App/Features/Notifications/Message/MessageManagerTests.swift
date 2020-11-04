@@ -55,7 +55,7 @@ class MessageManagerTests: TestCase {
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
-        XCTAssertEqual(result.paragraphs.last?.title.string, "Title 2 French")
+        XCTAssertEqual(result.paragraphs.last?.title, "Title 2 French")
         XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2") // Uses english resource because french stirng doesn't exist
     }
 
@@ -75,9 +75,9 @@ class MessageManagerTests: TestCase {
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
-        XCTAssertEqual(result.paragraphs.first?.title.string, "Title ExposureDate:June 30, 2020, ExposureDaysAgo:1 day ago, StayHomeUntilDate:July 10, 2020")
+        XCTAssertEqual(result.paragraphs.first?.title, "Title ExposureDate:June 30, 2020, ExposureDaysAgo:1 day ago, StayHomeUntilDate:July 10, 2020")
         XCTAssertEqual(result.paragraphs.first?.body.string, "Body ExposureDate:June 30, 2020, ExposureDaysAgo:1 day ago, StayHomeUntilDate:July 10, 2020")
-        XCTAssertEqual(result.paragraphs.last?.title.string, "Title 2")
+        XCTAssertEqual(result.paragraphs.last?.title, "Title 2")
         XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2")
     }
 
@@ -95,7 +95,7 @@ class MessageManagerTests: TestCase {
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 1)
-        XCTAssertEqual(result.paragraphs.first?.title.string, "Title")
+        XCTAssertEqual(result.paragraphs.first?.title, "Title")
         XCTAssertEqual(result.paragraphs.first?.body.string, "●\tsome bullet point\n●\tanother bullet point\nand some followup text")
     }
 

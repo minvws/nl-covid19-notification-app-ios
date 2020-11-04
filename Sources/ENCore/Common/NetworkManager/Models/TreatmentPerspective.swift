@@ -45,7 +45,7 @@ struct LocalizedTreatmentPerspective: Equatable {
     let quarantineDays: Int
 
     struct Paragraph: Equatable {
-        var title: NSAttributedString
+        var title: String
         var body: NSAttributedString
         let type: ParagraphType
 

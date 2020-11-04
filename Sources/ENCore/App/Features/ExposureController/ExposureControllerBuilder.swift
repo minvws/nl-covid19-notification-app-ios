@@ -82,7 +82,7 @@ protocol ExposureControlling: AnyObject {
     /// Checks if the app needs to be updated
     func appUpdateRequiredCheck() -> AnyPublisher<(), Never>
 
-    /// Updates the treatment perspecive message
+    /// Updates the treatment perspective message
     func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
 
     // MARK: - Onboarding

@@ -85,7 +85,7 @@ final class MessageManager: MessageManaging, Logging {
                                                 textAlignment: Localization.isRTL ? .right : .left)
 
             return LocalizedTreatmentPerspective.Paragraph(
-                title: paragraphTitle,
+                title: paragraphTitle.string,
                 body: paragraphBody,
                 type: type
             )

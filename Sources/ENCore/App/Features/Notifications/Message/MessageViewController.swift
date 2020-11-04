@@ -109,12 +109,9 @@ private final class MessageView: View {
     override func build() {
         super.build()
 
-        let sections = treatmentPerspectiveMessage.paragraphs
-            .map {
-                InfoSectionTextView(theme: theme,
-                                    title: $0.title.string,
-                                    content: [$0.body])
-            }
+        let sections = treatmentPerspectiveMessage
+            .paragraphs
+            .map { InfoSectionTextView(theme: theme, title: $0.title, content: [$0.body]) }
 
         infoView.addSections(sections)
 

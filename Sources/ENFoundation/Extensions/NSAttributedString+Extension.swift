@@ -110,7 +110,7 @@ public extension NSAttributedString {
             .filter { $0.hasPrefix(bullet) }
             .forEach { line in
                 if let lineRange = textToFormat.string.range(of: line) {
-                    let attributedLine = makeBullet(line.replacingOccurrences(of: bullet, with: ""), theme: theme, font: font, useTrailingNewLine: false, textAlignment: textAlignment)
+                    let attributedLine = makeBullet(line.replacingOccurrences(of: bullet, with: ""), theme: theme, font: font, textAlignment: textAlignment)
                     textToFormat.replaceCharacters(in: NSRange(lineRange, in: line), with: attributedLine)
                 }
             }
@@ -121,7 +121,6 @@ public extension NSAttributedString {
     static func makeBullet(_ string: String,
                            theme: Theme,
                            font: UIFont,
-                           useTrailingNewLine: Bool,
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12,
@@ -146,11 +145,7 @@ public extension NSAttributedString {
         paragraphStyle.headIndent = indentation
         paragraphStyle.alignment = textAlignment
 
-        var formattedString = "\(bullet)\t\(string)"
-
-        if useTrailingNewLine {
-            formattedString += "\n"
-        }
+        let formattedString = "\(bullet)\t\(string)"
 
         let attributedString = NSMutableAttributedString(string: formattedString)
 
@@ -172,7 +167,6 @@ public extension NSAttributedString {
     static func bulletList(_ stringList: [String],
                            theme: Theme,
                            font: UIFont,
-                           useTrailingNewLine: Bool,
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
@@ -180,8 +174,7 @@ public extension NSAttributedString {
         let bulletList = stringList.map {
             makeBullet($0,
                        theme: theme,
-                       font: font,
-                       useTrailingNewLine: useTrailingNewLine)
+                       font: font)
         }
 
         return bulletList
