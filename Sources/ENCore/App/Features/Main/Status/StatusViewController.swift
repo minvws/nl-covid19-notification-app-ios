@@ -96,7 +96,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         stateStreamCancellable = nil
 
-        NotificationCenter.default.removeObserver(self, forKeyPath: UIApplication.didBecomeActiveNotification.rawValue)
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIApplication.didBecomeActiveNotification,
+                                                  object: nil)
     }
 
     // MARK: - Private
