@@ -552,6 +552,7 @@ final class ExposureControllerTests: TestCase {
         let timeInterval = TimeInterval(60 * 60 * 4) // 4 hours
         dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
         dataController.lastExposure = ExposureReport(date: Date())
+        dataController.lastUnseenExposureNotificationDate = Date().advanced(by: -timeInterval)
 
         controller
             .lastOpenedNotificationCheck()
@@ -566,6 +567,7 @@ final class ExposureControllerTests: TestCase {
         let timeInterval = TimeInterval(60 * 60 * 2) // 2 hours
         dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
         dataController.lastExposure = ExposureReport(date: Date())
+        dataController.lastUnseenExposureNotificationDate = Date().advanced(by: -timeInterval)
 
         controller
             .lastOpenedNotificationCheck()
