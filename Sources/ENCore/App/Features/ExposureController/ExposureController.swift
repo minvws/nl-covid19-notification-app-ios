@@ -324,6 +324,10 @@ final class ExposureController: ExposureControlling, Logging {
         dataController.setLastAppLaunchDate(Date())
     }
 
+    func clearUnseenExposureNotificationDate() {
+        dataController.clearLastUnseenExposureNotificationDate()
+    }
+
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
         logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
@@ -454,11 +458,21 @@ final class ExposureController: ExposureControlling, Logging {
                     return promise(.success(()))
                 }
 
+                guard let lastUnseenExposureNotificationDate = self.dataController.lastUnseenExposureNotificationDate else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastUnseenExposureNotificationDate`")
+                    return promise(.success(()))
+                }
+
+                guard lastAppLaunch < lastUnseenExposureNotificationDate else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as the app has been opened after the notification")
+                    return promise(.success(()))
+                }
+
                 let timeInterval = TimeInterval(60 * 60 * 3) // 3 hours
 
                 guard lastAppLaunch.advanced(by: timeInterval) < Date() else {
-                    promise(.success(()))
-                    return self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
+                    return promise(.success(()))
                 }
 
                 self.logDebug("User has not opened the app in 3 hours.")

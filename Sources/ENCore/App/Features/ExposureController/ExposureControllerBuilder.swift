@@ -70,6 +70,9 @@ protocol ExposureControlling: AnyObject {
     /// Updates the last app launch date
     func updateLastLaunch()
 
+    /// Removes the unseen exposure notification date
+    func clearUnseenExposureNotificationDate()
+
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
 

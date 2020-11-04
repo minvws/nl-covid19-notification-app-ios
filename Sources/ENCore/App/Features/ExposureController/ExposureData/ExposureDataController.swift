@@ -42,6 +42,8 @@ struct ExposureDataStorageKey {
                                                              storeType: .insecure(volatile: false))
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
                                                              storeType: .insecure(volatile: false))
+    static let lastUnseenExposureNotificationDate = CodableStorageKey<Date>(name: "lastUnseenExposureNotificationDate",
+                                                                            storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
@@ -96,6 +98,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     func setLastAppLaunchDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastAppLaunchDate, completion: { _ in })
+    }
+
+    func clearLastUnseenExposureNotificationDate() {
+        storageController.removeData(for: ExposureDataStorageKey.lastUnseenExposureNotificationDate, completion: { _ in })
+    }
+
+    var lastUnseenExposureNotificationDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate)
     }
 
     func removeLastExposure() -> AnyPublisher<(), Never> {
