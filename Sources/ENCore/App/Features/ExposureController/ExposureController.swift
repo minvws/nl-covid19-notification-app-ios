@@ -445,6 +445,12 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
+    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
+        return self.dataController
+            .requestTreatmentPerspective()
+            .eraseToAnyPublisher()
+    }
+
     func lastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
         return Deferred {
             Future { promise in

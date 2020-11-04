@@ -18,6 +18,7 @@ protocol MainDependency {
     var exposureStateStream: ExposureStateStreaming { get }
     var exposureController: ExposureControlling { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
+    var storageController: StorageControlling { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
@@ -33,6 +34,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var exposureStateStream: ExposureStateStreaming {
         return dependency.exposureStateStream
+    }
+
+    var storageController: StorageControlling {
+        return dependency.storageController
     }
 
     var interfaceOrientationStream: InterfaceOrientationStreaming {
@@ -85,6 +90,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var environmentController: EnvironmentControlling {
         return EnvironmentController()
+    }
+
+    var messageManager: MessageManaging {
+        return MessageManager(storageController: storageController, theme: dependency.theme)
     }
 }
 

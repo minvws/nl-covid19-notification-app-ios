@@ -23,10 +23,20 @@ protocol MessageBuildable {
 
 protocol MessageDependency {
     var theme: Theme { get }
+    var messageManager: MessageManaging { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
-private final class MessageDependencyProvider: DependencyProvider<MessageDependency> {}
+private final class MessageDependencyProvider: DependencyProvider<MessageDependency> {
+
+    var messageManager: MessageManaging {
+        return dependency.messageManager
+    }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
+    }
+}
 
 final class MessageBuilder: Builder<MessageDependency>, MessageBuildable {
     func build(withListener listener: MessageListener, exposureDate: Date) -> ViewControllable {
@@ -34,6 +44,7 @@ final class MessageBuilder: Builder<MessageDependency>, MessageBuildable {
         return MessageViewController(listener: listener,
                                      theme: dependencyProvider.dependency.theme,
                                      exposureDate: exposureDate,
-                                     interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
+                                     interfaceOrientationStream: dependencyProvider.interfaceOrientationStream,
+                                     messageManager: dependencyProvider.messageManager)
     }
 }

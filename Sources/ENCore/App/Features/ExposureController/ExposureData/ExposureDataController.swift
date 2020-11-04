@@ -42,6 +42,8 @@ struct ExposureDataStorageKey {
                                                              storeType: .insecure(volatile: false))
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
                                                              storeType: .insecure(volatile: false))
+    static let treatmentPerspective = CodableStorageKey<TreatmentPerspective>(name: "treatmentPerspective",
+                                                                              storeType: .insecure(volatile: false))
     static let lastUnseenExposureNotificationDate = CodableStorageKey<Date>(name: "lastUnseenExposureNotificationDate",
                                                                             storeType: .insecure(volatile: false))
 }
@@ -61,6 +63,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     // MARK: - ExposureDataControlling
+
+    func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
+        self.operationProvider
+            .requestTreatmentPerspectiveDataOperation
+            .execute()
+            .eraseToAnyPublisher()
+    }
 
     // MARK: - Exposure Detection
 

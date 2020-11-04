@@ -35,7 +35,8 @@ extension Manifest {
         return ApplicationManifest(exposureKeySetsIdentifiers: exposureKeySets,
                                    riskCalculationParametersIdentifier: riskCalculationParameters,
                                    appConfigurationIdentifier: appConfig,
-                                   creationDate: Date())
+                                   creationDate: Date(),
+                                   resourceBundle: resourceBundle)
     }
 }
 

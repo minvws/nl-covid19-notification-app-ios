@@ -136,6 +136,10 @@ struct NetworkConfiguration {
         return self.combine(path: Endpoint.stopKeys, fromCdn: false, params: ["sig": signature])
     }
 
+    func getTreatmentPerspectiveUrl(identifier: String) -> URL? {
+        return self.combine(path: Endpoint.treatmentPerspective(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    }
+
     private func combine(path: Path, fromCdn: Bool, params: [String: String] = [:]) -> URL? {
         let config = fromCdn ? cdn : api
 

@@ -162,6 +162,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
 
     lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
+
+    var messageManager: MessageManaging {
+        return MessageManager(storageController: storageController, theme: theme)
+    }
 }
 
 /// Interface describing the builder that builds

@@ -143,6 +143,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         checkIfAppIsDeactivated()
 
         checkIfAppUpdateIsRequired()
+        updateTreatmentPerspective()
 
         exposureController.updateLastLaunch()
 
@@ -364,6 +365,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 }
             }
         }
+    }
+
+    private func updateTreatmentPerspective() {
+
+        exposureController
+            .updateTreatmentPerspective()
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { _ in })
+            .store(in: &disposeBag)
     }
 
     private let currentAppVersion: String?

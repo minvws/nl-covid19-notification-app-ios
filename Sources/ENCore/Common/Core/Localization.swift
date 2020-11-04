@@ -56,7 +56,15 @@ public final class Localization {
         }
     }
 
-    public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
+    public static var isRTL: Bool {
+        #if DEBUG
+            if let overriddenIsRTL = LocalizationOverrides.overriddenIsRTL {
+                return overriddenIsRTL
+            }
+        #endif
+
+        return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft
+    }
 
     static var isUsingDutchLanguage: Bool {
         Locale.current.languageCode?.lowercased() == "nl"
@@ -535,6 +543,12 @@ extension String {
     }
 
     static var currentLanguageIdentifier: String {
+        #if DEBUG
+            if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
+                return overriddenCurrentLanguageIdentifier
+            }
+        #endif
+
         let defaultLanguageIdentifier = "en"
         let supportedLanguageCodes = Bundle.main.localizations
 
