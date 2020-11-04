@@ -261,6 +261,7 @@
 "status.appState" = "Приложението е активно";
 "status.appState.inactive.title" = "Приложението не е активно";
 "status.appState.inactive.description" = "CoronaMelder работи само ако са включени необходимите настройки.";
+"status.appState.inactive.notification" = "24 часа приложението не можа да контролира дали при хората, с които си се срещал, по-късно е установен коронавирус. Провери дали са включени wifi или мобилните ти данни и опитай отново.";
 "status.appState.inactive.no_recent_updates.description" = "24 часа приложението не можа да контролира дали при хората, с които си се срещал, по-късно е установен коронавирус. Провери дали са включени wifi или мобилните ти данни и опитай отново.";
 "status.appState.card.title" = "Приложението не е активно";
 "status.appState.card.description" = "CoronaMelder работи само ако са включени необходимите настройки.";

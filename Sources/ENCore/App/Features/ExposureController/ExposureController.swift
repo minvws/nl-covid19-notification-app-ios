@@ -488,7 +488,7 @@ final class ExposureController: ExposureControlling, Logging {
 
             let content = UNMutableNotificationContent()
             content.title = .statusAppStateInactiveTitle
-            content.body = String(format: .statusAppStateInactiveDescription)
+            content.body = String(format: .statusAppStateInactiveNotification)
             content.sound = UNNotificationSound.default
             content.badge = 0
 

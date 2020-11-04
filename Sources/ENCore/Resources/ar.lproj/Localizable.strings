@@ -266,6 +266,7 @@
 "status.appState" = "التطبيق نشط";
 "status.appState.inactive.title" = "التطبيق غير نشط";
 "status.appState.inactive.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة.";
+"status.appState.inactive.notification" = "لم يتمكن التطبيق من التحقق لمدة 24 ساعة فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا.";
 "status.appState.inactive.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
 "status.appState.card.title" = "التطبيق غير نشط";
 "status.appState.card.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة..";

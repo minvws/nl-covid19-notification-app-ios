@@ -261,6 +261,7 @@
 "status.appState" = "Aplikacja jest aktywna";
 "status.appState.inactive.title" = "Aplikacja nie jest aktywna";
 "status.appState.inactive.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia";
+"status.appState.inactive.notification" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś.";
 "status.appState.inactive.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronwirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.title" = "Aplikacja nie jest aktywna";
 "status.appState.card.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia.";

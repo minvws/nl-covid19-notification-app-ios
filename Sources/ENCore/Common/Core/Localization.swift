@@ -287,6 +287,7 @@ extension String {
     static var statusAppState: String { return Localization.string(for: "status.appState") }
     static var statusAppStateInactiveTitle: String { return Localization.string(for: "status.appState.inactive.title") }
     static var statusAppStateInactiveDescription: String { return Localization.string(for: "status.appState.inactive.description") }
+    static var statusAppStateInactiveNotification: String { return Localization.string(for: "status.appState.inactive.notification") }
     static var statusAppStateInactiveNoRecentUpdatesDescription: String { return Localization.string(for: "status.appState.inactive.no_recent_updates.description") }
     static var statusAppStateCardTitle: String { return Localization.string(for: "status.appState.card.title") }
     static var statusAppStateCardDescription: String { return Localization.string(for: "status.appState.card.description") }
