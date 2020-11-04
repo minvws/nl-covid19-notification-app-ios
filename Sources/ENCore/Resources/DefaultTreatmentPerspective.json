@@ -128,6 +128,22 @@
             "symptoms_title": "الأعراض التي تتناسب مع فيروس كورونا",
             "symptoms_body": "<ul><li>أعراص الزكام مثل حساسية الأنف وسيلان الأنف والعطس وألم في الحلق</li><li>السعال </li><li>ضيق في التنفس</li><li>ارتفاع في درجة حرارة الجسم</li><li>فقدان مفاجئ لحاسة الشم و/أو التذوق (بدون احتقان في الأنف)</li></ul>"
         },
+        "fy": {
+            "exposure_notification_title": "Do wiest yn 'e buert fan immen mei it koroanafirus",
+            "exposure_notification_body": "Op {ExposureDate} ({ExposureDaysAgo}) bist mooglik besmet rekke. Do wiest dy dei op syn minst 15 minuten ticht by immen mei koroana.\n\nAst yndie besmet bist, kinst it firus oan oaren trochjaan. Ek ast dy no net siik fielst.",
+            "next_steps_title": "Wat kinst no dwaan?",
+            "next_steps_body": "<ul><li>Bliuw oant en mei {StayHomeUntilDate} thús en hâld klachten dy't by koroana passe ekstra goed yn 'e gaten</li><li>Hast (lichte) klachten dy't passe by it koroanafirus? Doch in koroanatest en bliuw thús oant en mei {StayHomeUntilDate}</li><li>Hast earnstige klachten lykas hege koarts of muoite mei sykheljen? Of sitst yn in risikogroep en krigest koarts? Belje earst dyn húsdokter</li></ul>\nJout de GGD dy oan de telefoan oare advizen as de app? Folgje dan it advys fan de GGD.",
+            "stay_home_title": "Bliuw oant en mei {StayHomeUntilDate} thús.",
+            "stay_home_body": "<ul><li>Lit oaren boadskippen dwaan. Kin dat echt net en hast gjin klachten? Dan meist wol efkes nei bûten om boadskippen te dwaan. Hâld 1,5 meter ôfstân en reitsje nimmen oan.</li><li>Do meist yn 'e tún of op it balkon sitte.</li><li>Skoalgeande bern ûnder de 18 jier meie nei skoalle en/of sporte.</li></ul>",
+            "no_visitors_title": "Untfang gjin besite",
+            "no_visitors_body": "<ul><li>Allinne de minsken dy't by dy wenje, meie by dy yn 'e hûs wêze. Bliuw byinoar út 'e buert en hâld 1,5 meter ôfstân. Dus net oankrûpe, net tútsje en gjin seks.</li></ul>",
+            "medical_help_title": "Medyske help nedich?",
+            "medical_help_body": "<ul><li>Gean net nei de húsdokter of it sikehûs, mar belje earst mei dyn húsdokter. Fertel datst yn 'e buert fan immen, dy't it koroanafirus hat, west hast.</li><li>Dyn húsdokter of oare medyske help mei wol by dy lânskomme.</li></ul>",
+            "after_stay_home_title": "Nei {StayHomeUntilDate}",
+            "after_stay_home_body": "Hast oant en mei {StayHomeUntilDate} gjin klachten krige? Dan hoechst net mear thús te bliuwen. Hâld wol de algemiene regels tsjin koroana yn acht.",
+            "symptoms_title": "Klachten dy't by it koroanafirus passe",
+            "symptoms_body": "<ul><li>ferkâldheidsklachten lykas noasferkâldheid, dripnoas, prûste, seare kiel</li><li>hoastje</li><li>benaudens</li><li>ferheging of koarts</li><li>ynienen gjin rook en/of smaak mear hawwe (sûnder dat de noas ferstoppe is)</li></ul>"
+        },
         "es": {
             "exposure_notification_title": "Has estado cerca de alguien con coronavirus",
             "exposure_notification_body": "El {ExposureDate} ({ExposureDaysAgo}) corriste riesgo de contagio. Estuviste ese día al menos 15 minutos cerca de alguien con coronavirus.\n\nSi estás realmente contagiado, puedes transmitir el virus a otros, incluso aunque no te sientas mal ahora.",
@@ -163,34 +179,42 @@
     },
     "guidance": {
         "quarantineDays": 10,
-        "layout": [{
-            "title": "exposure_notification_title",
-            "body": "exposure_notification_body",
-            "type": "paragraph"
-        }, {
-            "title": "next_steps_title",
-            "body": "next_steps_body",
-            "type": "paragraph"
-        }, {
-            "title": "stay_home_title",
-            "body": "stay_home_body",
-            "type": "paragraph"
-        }, {
-            "title": "no_visitors_title",
-            "body": "no_visitors_body",
-            "type": "paragraph"
-        }, {
-            "title": "medical_help_title",
-            "body": "medical_help_body",
-            "type": "paragraph"
-        }, {
-            "title": "after_stay_home_title",
-            "body": "after_stay_home_body",
-            "type": "paragraph"
-        }, {
-            "title": "symptoms_title",
-            "body": "symptoms_body",
-            "type": "paragraph"
-        }]
+        "layout": [
+            {
+                "title": "exposure_notification_title",
+                "body": "exposure_notification_body",
+                "type": "paragraph"
+            },
+            {
+                "title": "next_steps_title",
+                "body": "next_steps_body",
+                "type": "paragraph"
+            },
+            {
+                "title": "stay_home_title",
+                "body": "stay_home_body",
+                "type": "paragraph"
+            },
+            {
+                "title": "no_visitors_title",
+                "body": "no_visitors_body",
+                "type": "paragraph"
+            },
+            {
+                "title": "medical_help_title",
+                "body": "medical_help_body",
+                "type": "paragraph"
+            },
+            {
+                "title": "after_stay_home_title",
+                "body": "after_stay_home_body",
+                "type": "paragraph"
+            },
+            {
+                "title": "symptoms_title",
+                "body": "symptoms_body",
+                "type": "paragraph"
+            }
+        ]
     }
 }
