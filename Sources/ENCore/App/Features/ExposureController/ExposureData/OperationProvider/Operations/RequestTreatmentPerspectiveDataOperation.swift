@@ -54,16 +54,6 @@ final class RequestTreatmentPerspectiveDataOperation: ExposureDataOperation, Log
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)
     }
 
-    private func silentStore(treatmentPerspective: TreatmentPerspective) {
-        self.storageController.store(object: treatmentPerspective,
-                                     identifiedBy: ExposureDataStorageKey.treatmentPerspective,
-                                     completion: { error in
-                                         if let error = error {
-                                             self.logError(error.localizedDescription)
-                                         }
-            })
-    }
-
     private func store(treatmentPerspective: TreatmentPerspective) -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
         return Future { promise in
             self.storageController.store(object: treatmentPerspective,
