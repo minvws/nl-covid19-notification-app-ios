@@ -242,10 +242,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
     }
 
-    func getTreatmentPerspective() -> TreatmentPerspective? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective)
-    }
-
     var didCompleteOnboarding: Bool {
         get {
             return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.onboardingCompleted) ?? false
