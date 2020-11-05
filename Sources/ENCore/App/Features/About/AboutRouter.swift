@@ -58,8 +58,16 @@ final class AboutRouter: Router<AboutViewControllable>, AboutRouting, Logging {
             routeToHelpQuestion(entry: entry)
         case .rate:
             routeToRateApp()
-        case let .link(_, urlString):
-            routeToWebView(urlString: urlString)
+        case let .link(_, urlString, openInExternalBrowser):
+            if openInExternalBrowser {
+                guard let url = URL(string: urlString) else {
+                    self.logError("Cannot create URL from: \(urlString)")
+                    return
+                }
+                UIApplication.shared.open(url)
+            } else {
+                routeToWebView(urlString: urlString)
+            }
         case let .notificationExplanation(_, linkedContent):
             routeToNotificationExplanation(linkedContent: linkedContent)
         case .appInformation:
