@@ -262,6 +262,7 @@
 "status.appState" = "De app is actief";
 "status.appState.inactive.title" = "De app is niet actief";
 "status.appState.inactive.description" = "CoronaMelder werkt alleen als de noodzakelijke instellingen aanstaan.";
+"status.appState.inactive.notification" = "De app kon 24 uur niet controleren of de mensen die jij hebt ontmoet later corona bleken te hebben.";
 "status.appState.inactive.no_recent_updates.description" = "De app kon 24 uur niet controleren of de mensen die jij hebt ontmoet later corona bleken te hebben. Controleer of je wifi of mobiele data aanstaan en probeer het opnieuw.";
 "status.appState.card.title" = "App is niet actief";
 "status.appState.card.description" = "CoronaMelder werkt alleen als de noodzakelijke instellingen aanstaan.";

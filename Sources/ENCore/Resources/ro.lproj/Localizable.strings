@@ -262,6 +262,7 @@
 "status.appState" = "Aplicația este activă";
 "status.appState.inactive.title" = "Aplicația nu este activă";
 "status.appState.inactive.description" = "CoronaMelder funcționează doar dacă configurările necesare sunt activate.";
+"status.appState.inactive.notification" = "Aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedid a fi infectate cu coronavirus.";
 "status.appState.inactive.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
 "status.appState.card.title" = "Aplicația nu este activă";
 "status.appState.card.description" = "CoronaMelder funcționează doar dacă setările necesare sunt activate";

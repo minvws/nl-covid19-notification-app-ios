@@ -263,6 +263,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.appState" = "Die App ist aktiv.";
 "status.appState.inactive.title" = "Die App ist nicht aktiv.";
 "status.appState.inactive.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
+"status.appState.inactive.notification" = "Die App konnte in den vergangenen 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde.";
 "status.appState.inactive.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. Mobildaten aktiviert sind. Versuchen Sie es dann erneut.";
 "status.appState.card.title" = "App ist nicht aktiv.";
 "status.appState.card.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";

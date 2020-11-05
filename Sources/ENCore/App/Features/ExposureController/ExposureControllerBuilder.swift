@@ -33,7 +33,7 @@ protocol ExposureControlling: AnyObject {
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
-    func notifyUserIfRequired()
+    func notifyUser24HoursNoCheckIfRequired()
 
     // MARK: - Permissions
 

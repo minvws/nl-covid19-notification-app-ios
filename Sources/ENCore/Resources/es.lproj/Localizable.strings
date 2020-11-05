@@ -262,6 +262,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.appState" = "La app está activada";
 "status.appState.inactive.title" = "La app no está activada";
 "status.appState.inactive.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios";
+"status.appState.inactive.notification" = "La app no ha podido controlar en las últimas 24 horas si las personas con las que te encontraste resultaron tener coronavirus.";
 "status.appState.inactive.no_recent_updates.description" = "La app no ha podido controlar si las personas con las que te has encontrado resultaron tener coronavirus. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
 "status.appState.card.title" = "La app no está activada";
 "status.appState.card.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios.";
