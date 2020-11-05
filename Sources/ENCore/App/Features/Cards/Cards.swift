@@ -10,6 +10,7 @@ import Foundation
 
 enum CardAction {
     case openEnableSetting(EnableSetting)
+    case openWebsite(url: URL)
     case custom(action: () -> ())
 }
 
@@ -60,6 +61,17 @@ struct Card {
         return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
                     action: .openEnableSetting(.enableLocalNotifications),
+                    actionTitle: action)
+    }
+
+    static func interopAnnouncement(theme: Theme) -> Card {
+        let title: String = "Goed om te weten"
+        let content: String = "CoronaMelder werkt vanaf 30 november samen met corona-apps uit andere Europese landen"
+        let action: String = "Meer informatie"
+
+        return Card(title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
+                    action: .openWebsite(url: URL(string: "http://www.nu.nl")!),
                     actionTitle: action)
     }
 }

@@ -12,14 +12,15 @@ import UIKit
 /// @mockable
 protocol CardRouting: Routing {
     func route(to enableSetting: EnableSetting)
+    func route(to url: URL)
     func detachEnableSetting(hideViewController: Bool)
 }
 
 final class CardViewController: ViewController, CardViewControllable {
 
     init(theme: Theme,
-         type: CardType) {
-        self.type = type
+         types: [CardType]) {
+        self.types = types
 
         super.init(theme: theme)
     }
@@ -27,23 +28,20 @@ final class CardViewController: ViewController, CardViewControllable {
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-        self.view = internalView
+        self.view = stackView
         self.view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        internalView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
-
-        let card = type.card(theme: theme)
-        internalView.update(with: card, action: buttonAction(for: card))
+        recreateCards()
     }
 
     // MARK: - CardViewControllable
 
-    func update(cardType: CardType) {
-        self.type = cardType
+    func update(cardTypes: [CardType]) {
+        self.types = cardTypes
     }
 
     func present(viewController: ViewControllable) {
@@ -73,23 +71,39 @@ final class CardViewController: ViewController, CardViewControllable {
             switch card.action {
             case let .openEnableSetting(enableSetting):
                 self.router?.route(to: enableSetting)
+            case let .openWebsite(url: url):
+                self.router?.route(to: url)
             case let .custom(action: action):
                 action()
             }
         }
     }
 
-    private var type: CardType {
+    private var types: [CardType] {
         didSet {
             if isViewLoaded {
-                let card = type.card(theme: theme)
-                internalView.update(with: card, action: buttonAction(for: card))
+                recreateCards()
             }
         }
     }
 
+    private func recreateCards() {
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        types.forEach { cardType in
+            let card = cardType.card(theme: theme)
+            let cardView = CardView(theme: theme)
+            cardView.update(with: card, action: buttonAction(for: card))
+            stackView.addArrangedSubview(cardView)
+        }
+    }
+
     weak var router: CardRouting?
-    private lazy var internalView: CardView = CardView(theme: theme)
+    private lazy var stackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 16
+        return view
+    }()
 }
 
 private final class CardView: View {
@@ -111,6 +125,7 @@ private final class CardView: View {
 
         layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         layer.cornerRadius = 12
+        backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
 
         // container
         container.axis = .vertical
@@ -188,6 +203,8 @@ private extension CardType {
             return .noInternet(theme: theme, retryHandler: retryHandler)
         case .noLocalNotifications:
             return .noLocalNotifications(theme: theme)
+        case .interopAnnouncement:
+            return .interopAnnouncement(theme: theme)
         }
     }
 }

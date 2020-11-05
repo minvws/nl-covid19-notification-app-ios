@@ -16,7 +16,7 @@ final class CardViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        viewController = CardViewController(theme: theme, type: .bluetoothOff)
+        viewController = CardViewController(theme: theme, types: [.bluetoothOff])
         viewController.router = router
     }
 

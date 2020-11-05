@@ -13,6 +13,7 @@ enum CardType {
     case bluetoothOff
     case noInternet(retryHandler: () -> ())
     case noLocalNotifications
+    case interopAnnouncement
 }
 
 protocol CardTypeSettable {
@@ -55,7 +56,7 @@ final class CardBuilder: Builder<CardDependency>, CardBuildable {
         let dependencyProvider = CardDependencyProvider(dependency: dependency)
 
         let viewController = CardViewController(theme: dependencyProvider.dependency.theme,
-                                                type: type)
+                                                types: [type])
 
         return CardRouter(viewController: viewController,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder)

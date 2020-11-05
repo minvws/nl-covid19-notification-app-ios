@@ -6,12 +6,13 @@
  */
 
 import Foundation
+import UIKit
 
 /// @mockable
 protocol CardViewControllable: ViewControllable, EnableSettingListener {
     var router: CardRouting? { get set }
 
-    func update(cardType: CardType)
+    func update(cardTypes: [CardType])
     func present(viewController: ViewControllable)
     func dismiss(viewController: ViewControllable)
 }
@@ -37,6 +38,12 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
         self.viewController.present(viewController: viewController)
     }
 
+    func route(to url: URL) {
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
+
     func detachEnableSetting(hideViewController: Bool) {
         guard let viewController = enableSettingViewController else {
             return
@@ -53,7 +60,7 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
 
     var type: CardType = .bluetoothOff {
         didSet {
-            viewController.update(cardType: type)
+            viewController.update(cardTypes: [type])
         }
     }
 

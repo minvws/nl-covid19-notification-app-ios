@@ -29,7 +29,7 @@ final class StatusViewControllerTests: TestCase {
         interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         cardBuilder.buildHandler = { type in
-            return CardRouter(viewController: CardViewController(theme: self.theme, type: type),
+            return CardRouter(viewController: CardViewController(theme: self.theme, types: [type]),
                               enableSettingBuilder: EnableSettingBuildableMock())
         }
 

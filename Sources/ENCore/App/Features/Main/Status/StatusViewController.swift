@@ -119,26 +119,33 @@ final class StatusViewController: ViewController, StatusViewControllable {
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
             statusViewModel = .activeWithNotNotified(showScene: !isLandscape)
+
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
+
         case let (.inactive(reason), .notified(date)):
             let cardType = reason.cardType(listener: listener)
 
             statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
+
         case (.inactive, .notNotified):
             statusViewModel = .inactiveWithNotNotified
+
         case let (.authorizationDenied, .notified(date)):
             statusViewModel = StatusViewModel
                 .inactiveWithNotified(date: date)
                 .with(cardType: .exposureOff)
+
         case (.authorizationDenied, .notNotified):
             statusViewModel = .inactiveWithNotNotified
+
         case let (.notAuthorized, .notified(date)):
             statusViewModel = StatusViewModel
                 .inactiveWithNotified(date: date)
                 .with(cardType: .exposureOff)
+
         case (.notAuthorized, .notNotified):
             statusViewModel = .inactiveWithNotNotified
         }

@@ -64,7 +64,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
                                                                             confirmationKey: Data(),
                                                                             validUntil: Date()))
         let cardViewController = CardViewController(theme: theme,
-                                                    type: .exposureOff)
+                                                    types: [.exposureOff])
         viewController.set(cardViewController: cardViewController)
 
         snapshots(matching: viewController)

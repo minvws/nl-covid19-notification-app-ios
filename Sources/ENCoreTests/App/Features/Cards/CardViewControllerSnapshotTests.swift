@@ -20,25 +20,31 @@ final class CardViewControllerSnapshotTests: TestCase {
     }
 
     func test_cardViewController_bluetoothOff() {
-        viewController = CardViewController(theme: theme, type: .bluetoothOff)
+        viewController = CardViewController(theme: theme, types: [.bluetoothOff])
 
         snapshots(matching: viewController)
     }
 
+//    func test_cardViewController_bluetoothOffAndInteropAnnouncement() {
+//        viewController = CardViewController(theme: theme, types: [.bluetoothOff, .interopAnnouncement])
+//
+//        snapshots(matching: viewController)
+//    }
+
     func test_cardViewController_exposureOff() {
-        viewController = CardViewController(theme: theme, type: .exposureOff)
+        viewController = CardViewController(theme: theme, types: [.exposureOff])
 
         snapshots(matching: viewController)
     }
 
     func test_cardViewController_noLocalNotifications() {
-        viewController = CardViewController(theme: theme, type: .noLocalNotifications)
+        viewController = CardViewController(theme: theme, types: [.noLocalNotifications])
 
         snapshots(matching: viewController)
     }
 
     func test_cardViewController_noInternet() {
-        viewController = CardViewController(theme: theme, type: .noInternet(retryHandler: {}))
+        viewController = CardViewController(theme: theme, types: [.noInternet(retryHandler: {})])
 
         snapshots(matching: viewController)
     }

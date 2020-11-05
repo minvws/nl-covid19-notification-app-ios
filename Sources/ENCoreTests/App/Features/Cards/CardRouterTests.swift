@@ -71,8 +71,8 @@ final class CardRouterTests: TestCase {
     }
 
     func test_setCardType_forwardToViewController() {
-        var receivedCardType: CardType!
-        viewController.updateHandler = { receivedCardType = $0 }
+        var receivedCardTypes: [CardType]!
+        viewController.updateHandler = { receivedCardTypes = $0 }
 
         XCTAssertEqual(viewController.updateCallCount, 0)
 
@@ -80,7 +80,7 @@ final class CardRouterTests: TestCase {
 
         XCTAssertEqual(viewController.updateCallCount, 1)
 
-        guard case .bluetoothOff = receivedCardType else {
+        guard case .bluetoothOff = receivedCardTypes.first else {
             XCTFail("Expected bluetoothOff cardType")
             return
         }
