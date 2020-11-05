@@ -121,7 +121,8 @@ final class AboutManager: AboutManaging {
             .question(otherCountries.appending(linkedContent: [
                 technicalInformationEntry,
                 AboutEntry.question(notification),
-                AboutEntry.question(location)
+                AboutEntry.question(location),
+                AboutEntry.link(title: "@TODO", link: "@TODO", openInExternalBrowser: true)
             ]))
 
         ])
