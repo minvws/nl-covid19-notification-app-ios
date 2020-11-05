@@ -93,6 +93,9 @@ protocol ExposureControlling: AnyObject {
     /// Whether the user has completed onboarding
     var didCompleteOnboarding: Bool { get set }
 
+    /// The version of the app that the user completed the onboarding process in
+    var onboardingCompletedVersion: String? { get set }
+
     /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
     func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
 }

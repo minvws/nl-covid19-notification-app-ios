@@ -42,6 +42,8 @@ struct ExposureDataStorageKey {
                                                              storeType: .insecure(volatile: false))
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
                                                              storeType: .insecure(volatile: false))
+    static let onboardingCompletedVersion = CodableStorageKey<String>(name: "onboardingCompletedVersion",
+                                                                      storeType: .insecure(volatile: false))
     static let treatmentPerspective = CodableStorageKey<TreatmentPerspective>(name: "treatmentPerspective",
                                                                               storeType: .insecure(volatile: false))
     static let lastUnseenExposureNotificationDate = CodableStorageKey<Date>(name: "lastUnseenExposureNotificationDate",
@@ -250,6 +252,21 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             storageController.store(object: newValue,
                                     identifiedBy: ExposureDataStorageKey.onboardingCompleted,
                                     completion: { _ in })
+        }
+    }
+
+    var onboardingCompletedVersion: String? {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.onboardingCompletedVersion)
+        }
+        set {
+            if let val = newValue {
+                storageController.store(object: val,
+                                        identifiedBy: ExposureDataStorageKey.onboardingCompletedVersion,
+                                        completion: { _ in })
+            } else {
+                storageController.removeData(for: ExposureDataStorageKey.onboardingCompletedVersion, completion: { _ in })
+            }
         }
     }
 

@@ -192,6 +192,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
         exposureController.didCompleteOnboarding = true
+        exposureController.onboardingCompletedVersion = currentAppVersion
+
         backgroundController.scheduleTasks()
 
         routeToMain()
