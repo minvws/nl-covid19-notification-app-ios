@@ -42,7 +42,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
         self.topAnchor = topAnchor
 
         self.cardBuilder = cardBuilder
-        self.cardRouter = cardBuilder.build(type: .bluetoothOff)
+        self.cardRouter = cardBuilder.build(types: [.bluetoothOff])
 
         super.init(theme: theme)
     }
@@ -115,6 +115,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
         let statusViewModel: StatusViewModel
+        var cardTypes = [CardType]()
 
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
@@ -124,9 +125,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
             statusViewModel = .activeWithNotified(date: date)
 
         case let (.inactive(reason), .notified(date)):
-            let cardType = reason.cardType(listener: listener)
+            statusViewModel = StatusViewModel.activeWithNotified(date: date)
+            cardTypes.append(reason.cardType(listener: listener))
 
-            statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
 
@@ -134,17 +135,15 @@ final class StatusViewController: ViewController, StatusViewControllable {
             statusViewModel = .inactiveWithNotNotified
 
         case let (.authorizationDenied, .notified(date)):
-            statusViewModel = StatusViewModel
-                .inactiveWithNotified(date: date)
-                .with(cardType: .exposureOff)
+            statusViewModel = .inactiveWithNotified(date: date)
+            cardTypes.append(.exposureOff)
 
         case (.authorizationDenied, .notNotified):
             statusViewModel = .inactiveWithNotNotified
 
         case let (.notAuthorized, .notified(date)):
-            statusViewModel = StatusViewModel
-                .inactiveWithNotified(date: date)
-                .with(cardType: .exposureOff)
+            statusViewModel = .inactiveWithNotified(date: date)
+            cardTypes.append(.exposureOff)
 
         case (.notAuthorized, .notNotified):
             statusViewModel = .inactiveWithNotNotified
@@ -152,12 +151,11 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         statusView.update(with: statusViewModel)
 
-        if let cardType = statusViewModel.cardType {
-            cardRouter.type = cardType
-            cardRouter.viewControllable.uiviewController.view.isHidden = false
-        } else {
-            cardRouter.viewControllable.uiviewController.view.isHidden = true
-        }
+        // TODO: Add logic here to determine if interopAnnouncement should be shown
+        cardTypes.append(.interopAnnouncement)
+
+        cardRouter.types = cardTypes
+        cardRouter.viewControllable.uiviewController.view.isHidden = cardTypes.isEmpty
     }
 
     private lazy var statusView: StatusView = StatusView(theme: self.theme,

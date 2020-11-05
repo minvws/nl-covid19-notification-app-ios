@@ -28,8 +28,8 @@ final class StatusViewControllerTests: TestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
         interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
-        cardBuilder.buildHandler = { type in
-            return CardRouter(viewController: CardViewController(theme: self.theme, types: [type]),
+        cardBuilder.buildHandler = { cardTypes in
+            return CardRouter(viewController: CardViewController(theme: self.theme, types: cardTypes),
                               enableSettingBuilder: EnableSettingBuildableMock())
         }
 

@@ -76,7 +76,7 @@ final class CardRouterTests: TestCase {
 
         XCTAssertEqual(viewController.updateCallCount, 0)
 
-        router.type = .bluetoothOff
+        router.types = [.bluetoothOff]
 
         XCTAssertEqual(viewController.updateCallCount, 1)
 

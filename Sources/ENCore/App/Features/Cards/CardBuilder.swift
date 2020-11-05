@@ -17,13 +17,13 @@ enum CardType {
 }
 
 protocol CardTypeSettable {
-    var type: CardType { get set }
+    var types: [CardType] { get set }
 }
 
 /// @mockable
 protocol CardBuildable {
     /// Builds CardViewController
-    func build(type: CardType) -> Routing & CardTypeSettable
+    func build(types: [CardType]) -> Routing & CardTypeSettable
 }
 
 protocol CardDependency {
@@ -52,11 +52,11 @@ private final class CardDependencyProvider: DependencyProvider<CardDependency>, 
 }
 
 final class CardBuilder: Builder<CardDependency>, CardBuildable {
-    func build(type: CardType) -> Routing & CardTypeSettable {
+    func build(types: [CardType]) -> Routing & CardTypeSettable {
         let dependencyProvider = CardDependencyProvider(dependency: dependency)
 
         let viewController = CardViewController(theme: dependencyProvider.dependency.theme,
-                                                types: [type])
+                                                types: types)
 
         return CardRouter(viewController: viewController,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder)

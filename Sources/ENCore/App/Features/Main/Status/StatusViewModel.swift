@@ -86,20 +86,11 @@ struct StatusViewModel {
     var title: NSAttributedString
     var description: NSAttributedString
     var buttons: [StatusViewButtonModel]
-    var cardType: CardType?
     var footer: NSAttributedString?
     var shouldShowHideMessage: Bool
     var gradientColor: ThemeColor
     var showScene: Bool
     var showClouds: Bool
-
-    func with(cardType: CardType?) -> Self {
-        var result = self
-        if let cardType = cardType {
-            result.cardType = cardType
-        }
-        return result
-    }
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
         let description = timeAgo(from: date)

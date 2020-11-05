@@ -58,9 +58,9 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
 
     // MARK: - CardTypeSettable
 
-    var type: CardType = .bluetoothOff {
+    var types: [CardType] = [.bluetoothOff] {
         didSet {
-            viewController.update(cardTypes: [type])
+            viewController.update(cardTypes: types)
         }
     }
 
