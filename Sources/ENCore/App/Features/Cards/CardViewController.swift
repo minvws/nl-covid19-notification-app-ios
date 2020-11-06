@@ -79,6 +79,17 @@ final class CardViewController: ViewController, CardViewControllable {
         }
     }
 
+    private func secondaryButtonAction(for card: Card) -> (() -> ())? {
+        return {
+            switch card.secondaryAction {
+            case let .openWebsite(url: url):
+                self.router?.route(to: url)
+            case .openEnableSetting, .custom, .none:
+                return
+            }
+        }
+    }
+
     private var types: [CardType] {
         didSet {
             if isViewLoaded {
@@ -92,7 +103,9 @@ final class CardViewController: ViewController, CardViewControllable {
         types.forEach { cardType in
             let card = cardType.card(theme: theme)
             let cardView = CardView(theme: theme)
-            cardView.update(with: card, action: buttonAction(for: card))
+            cardView.update(with: card,
+                            action: buttonAction(for: card),
+                            secondaryAction: secondaryButtonAction(for: card))
             stackView.addArrangedSubview(cardView)
         }
     }
@@ -116,7 +129,11 @@ private final class CardView: View {
     private let headerTitleLabel = Label()
 
     private let descriptionLabel = Label()
-    fileprivate lazy var button: Button = {
+    fileprivate lazy var primaryButton: Button = {
+        Button(theme: self.theme)
+    }()
+
+    fileprivate lazy var secondaryButton: Button = {
         Button(theme: self.theme)
     }()
 
@@ -155,9 +172,13 @@ private final class CardView: View {
         container.addArrangedSubview(descriptionLabel)
 
         //  button
-        button.titleEdgeInsets = UIEdgeInsets(top: 40, left: 41, bottom: 40, right: 41)
-        button.layer.cornerRadius = 8
-        container.addArrangedSubview(button)
+        primaryButton.titleEdgeInsets = UIEdgeInsets(top: 40, left: 41, bottom: 40, right: 41)
+        primaryButton.layer.cornerRadius = 8
+        container.addArrangedSubview(primaryButton)
+
+        secondaryButton.titleEdgeInsets = UIEdgeInsets(top: 40, left: 41, bottom: 40, right: 41)
+        secondaryButton.layer.cornerRadius = 8
+        container.addArrangedSubview(secondaryButton)
 
         addSubview(container)
     }
@@ -176,19 +197,28 @@ private final class CardView: View {
             headerIconView.widthAnchor.constraint(equalToConstant: 40),
             headerIconView.heightAnchor.constraint(equalToConstant: 40),
 
-            button.heightAnchor.constraint(greaterThanOrEqualToConstant: 48)
+            primaryButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 48),
+            secondaryButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 48)
         ])
     }
 
-    func update(with card: Card, action: @escaping () -> ()) {
-        headerIconView.image = Image.named("StatusInactive")
+    func update(with card: Card, action: @escaping () -> (), secondaryAction: (() -> ())?) {
+        headerIconView.image = card.icon.image
         headerTitleLabel.attributedText = card.title
         descriptionLabel.attributedText = card.message
 
-        button.setTitle(card.actionTitle, for: .normal)
-        button.style = .primary
+        primaryButton.setTitle(card.actionTitle, for: .normal)
+        primaryButton.style = .primary
+        primaryButton.action = action
 
-        button.action = action
+        if let secondaryAction = secondaryAction, let secondaryActionTitle = card.secondaryActionTitle {
+            secondaryButton.setTitle(secondaryActionTitle, for: .normal)
+            secondaryButton.style = .secondaryLight
+            secondaryButton.action = secondaryAction
+            secondaryButton.isHidden = false
+        } else {
+            secondaryButton.isHidden = true
+        }
     }
 }
 

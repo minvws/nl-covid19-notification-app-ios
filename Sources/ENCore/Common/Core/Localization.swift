@@ -445,6 +445,13 @@ extension String {
     static var cardsNotificationsOffContent: String { return Localization.string(for: "cards.notificationsOff.content") }
     static var cardsNotificationsOffAction: String { return Localization.string(for: "cards.notificationsOff.action") }
 
+    // MARK: - Cards | Interop Announcement
+
+    static var cardsInteropAnnouncementTitle: String { return Localization.string(for: "cards.interopannouncement.title") }
+    static var cardsInteropAnnouncementContent: String { return Localization.string(for: "cards.interopannouncement.content") }
+    static var cardsInteropAnnouncementAction: String { return Localization.string(for: "cards.interopannouncement.action") }
+    static var cardsInteropAnnouncementSecondaryAction: String { return Localization.string(for: "cards.interopannouncement.secondaryaction") }
+
     // MARK: - Enable Settings | Exposure Notifications
 
     static var enableSettingsExposureNotificationsTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.title") }

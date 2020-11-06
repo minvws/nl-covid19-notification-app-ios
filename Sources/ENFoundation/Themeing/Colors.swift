@@ -10,6 +10,7 @@ import UIKit
 
 public protocol Colors: AnyObject {
     var primary: UIColor { get }
+    var secondaryLight: UIColor { get }
     var tertiary: UIColor { get }
     var warning: UIColor { get }
 
@@ -36,6 +37,10 @@ public protocol Colors: AnyObject {
 final class ENColors: Colors, Logging {
     var primary: UIColor {
         return color(for: "PrimaryColor")
+    }
+
+    var secondaryLight: UIColor {
+        return color(for: "SecondaryLight")
     }
 
     var tertiary: UIColor {
