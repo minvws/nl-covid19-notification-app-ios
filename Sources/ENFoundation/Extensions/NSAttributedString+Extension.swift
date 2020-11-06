@@ -55,30 +55,7 @@ public extension NSAttributedString {
 
             let fullRange = NSRange(location: 0, length: attributedTitle.length)
             attributedTitle.addAttributes(attributes, range: fullRange)
-
-            let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitBold)
-            let boldFont = boldFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
-
-            let italicFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitItalic)
-            let italicFont = italicFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
-
-            // replace default font with desired font - maintain bold style if possible
-            attributedTitle.enumerateAttribute(.font, in: fullRange, options: []) { value, range, finished in
-                guard let currentFont = value as? UIFont else { return }
-
-                var newFont = font
-
-                if let italicFont = italicFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitItalic) {
-                    newFont = italicFont
-                }
-
-                if let boldFont = boldFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitBold) {
-                    newFont = boldFont
-                }
-
-                attributedTitle.removeAttribute(.font, range: range)
-                attributedTitle.addAttribute(.font, value: newFont, range: range)
-            }
+            attributedTitle.replaceBoldAndItalicAttributes(font: font)
 
             return attributedTitle
         }
@@ -109,10 +86,12 @@ public extension NSAttributedString {
             .components(separatedBy: "\n")
             .filter { $0.hasPrefix(bullet) }
             .forEach { line in
-                if let lineRange = textToFormat.string.range(of: line) {
-                    let attributedLine = makeBullet(line.replacingOccurrences(of: bullet, with: ""), theme: theme, font: font, textAlignment: textAlignment)
-                    textToFormat.replaceCharacters(in: NSRange(lineRange, in: line), with: attributedLine)
+                guard let lineRange = textToFormat.string.range(of: line) else {
+                    return
                 }
+                let attributedLine = NSMutableAttributedString(attributedString: textToFormat.attributedSubstring(from: NSRange(lineRange, in: line)))
+                attributedLine.reformatBulletPoint(font: font, theme: theme, textAlignment: textAlignment)
+                textToFormat.replaceCharacters(in: NSRange(lineRange, in: line), with: attributedLine)
             }
 
         return textToFormat.attributedStringByTrimmingCharacterSet(charSet: .whitespacesAndNewlines)
@@ -209,5 +188,63 @@ extension NSMutableAttributedString {
             replaceCharacters(in: range, with: "")
             range = (string as NSString).rangeOfCharacter(from: charSet, options: .backwards)
         }
+    }
+
+    func replaceBoldAndItalicAttributes(font: UIFont) {
+
+        let fullRange = NSRange(location: 0, length: length)
+
+        let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitBold)
+        let boldFont = boldFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
+
+        let italicFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitItalic)
+        let italicFont = italicFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
+
+        // replace default font with desired font - maintain bold style if possible
+        self.enumerateAttribute(.font, in: fullRange, options: []) { value, range, finished in
+            guard let currentFont = value as? UIFont else { return }
+
+            var newFont = font
+
+            if let italicFont = italicFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitItalic) {
+                newFont = italicFont
+            }
+
+            if let boldFont = boldFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitBold) {
+                newFont = boldFont
+            }
+
+            self.removeAttribute(.font, range: range)
+            self.addAttribute(.font, value: newFont, range: range)
+        }
+    }
+
+    func reformatBulletPoint(font: UIFont, theme: Theme, textAlignment: NSTextAlignment) {
+
+        let bullet = "\t•\t"
+
+        if let bulletRange = self.string.range(of: bullet) {
+
+            let bulletFont = font.withSize(10)
+            let bulletAttributes: [NSAttributedString.Key: Any] = [
+                .font: bulletFont,
+                .foregroundColor: theme.colors.primary,
+                .baselineOffset: (font.xHeight - bulletFont.xHeight) / 2
+            ]
+            let newBullet = NSMutableAttributedString(string: "\u{25CF}\t", attributes: bulletAttributes)
+            self.replaceCharacters(in: NSRange(bulletRange, in: self.string), with: newBullet)
+        }
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        let nonOptions = [NSTextTab.OptionKey: Any]()
+        paragraphStyle.tabStops = [
+            NSTextTab(textAlignment: textAlignment, location: 16, options: nonOptions)
+        ]
+        paragraphStyle.defaultTabInterval = 16
+        paragraphStyle.headIndent = 16
+        paragraphStyle.alignment = textAlignment
+        paragraphStyle.paragraphSpacing = 5
+
+        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: NSMakeRange(0, self.length))
     }
 }
