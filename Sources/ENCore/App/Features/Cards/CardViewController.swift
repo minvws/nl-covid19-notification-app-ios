@@ -39,6 +39,8 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = nil
+
         recreateCards()
     }
 
@@ -83,7 +85,6 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
                 self.router?.route(to: url)
             case let .dismissAnnouncement(announcement):
                 self.dismissAnnouncement(announcement)
-                self.listener?.dismissedAnnouncement()
             case let .custom(action: action):
                 action()
             }
@@ -91,7 +92,11 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     }
 
     private func dismissAnnouncement(_ announcement: Announcement) {
-        dataController.seenAnnouncements.append(announcement)
+        var seenAnnouncements = dataController.seenAnnouncements
+        seenAnnouncements.append(announcement)
+        dataController.seenAnnouncements = seenAnnouncements
+
+        listener?.dismissedAnnouncement()
     }
 
     private var types: [CardType] {
@@ -103,16 +108,16 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     }
 
     private func recreateCards() {
-        UIView.animate(withDuration: 0.3) {
-            self.stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-            self.types.forEach { cardType in
-                let card = cardType.card(theme: self.theme)
-                let cardView = CardView(theme: self.theme)
-                cardView.update(with: card,
-                                action: self.buttonAction(forAction: card.action),
-                                secondaryAction: self.buttonAction(forAction: card.secondaryAction))
-                self.stackView.addArrangedSubview(cardView)
-            }
+
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        types.forEach { cardType in
+            let card = cardType.card(theme: theme)
+            let cardView = CardView(theme: theme)
+            cardView.update(with: card,
+                            action: buttonAction(forAction: card.action),
+                            secondaryAction: buttonAction(forAction: card.secondaryAction))
+            stackView.addArrangedSubview(cardView)
         }
     }
 

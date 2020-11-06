@@ -67,10 +67,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
-        if let currentState = exposureStateStream.currentExposureState,
-            let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
-            update(exposureState: currentState, isLandscape: isLandscape)
-        }
+        refreshCurrentState()
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updateExposureStateView),
@@ -116,6 +113,13 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
                 strongSelf.update(exposureState: status, isLandscape: isLandscape)
             }
+    }
+
+    private func refreshCurrentState() {
+        if let currentState = exposureStateStream.currentExposureState,
+            let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
+            update(exposureState: currentState, isLandscape: isLandscape)
+        }
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
@@ -174,7 +178,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     func dismissedAnnouncement() {
-        updateExposureStateView()
+        refreshCurrentState()
     }
 
     private lazy var statusView: StatusView = StatusView(theme: self.theme,
