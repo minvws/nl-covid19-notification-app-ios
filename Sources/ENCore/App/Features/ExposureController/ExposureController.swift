@@ -51,12 +51,12 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    var onboardingCompletedVersion: String? {
+    var seenAnnouncements: [Announcement] {
         get {
-            return dataController.onboardingCompletedVersion
+            return dataController.seenAnnouncements
         }
         set {
-            dataController.onboardingCompletedVersion = newValue
+            dataController.seenAnnouncements = newValue
         }
     }
 

@@ -12,11 +12,33 @@ import UIKit
 enum CardAction {
     case openEnableSetting(EnableSetting)
     case openWebsite(url: URL)
+    case dismissAnnouncement(_ announcement: Announcement)
     case custom(action: () -> ())
 }
 
+enum CardIcon {
+    case info
+    case warning
+
+    var image: UIImage? {
+        switch self {
+        case .info: return Image.named("InfoBordered")
+        case .warning: return Image.named("StatusInactive")
+        }
+    }
+}
+
 struct Card {
-    init(icon: Icon,
+
+    let icon: CardIcon
+    let title: NSAttributedString
+    let message: NSAttributedString
+    let action: CardAction
+    let actionTitle: String
+    let secondaryAction: CardAction?
+    let secondaryActionTitle: String?
+
+    init(icon: CardIcon,
          title: NSAttributedString,
          message: NSAttributedString,
          action: CardAction,
@@ -31,26 +53,6 @@ struct Card {
         self.secondaryAction = secondaryAction
         self.secondaryActionTitle = secondaryActionTitle
     }
-
-    enum Icon {
-        case info
-        case warning
-
-        var image: UIImage? {
-            switch self {
-            case .info: return Image.named("InfoBordered")
-            case .warning: return Image.named("StatusInactive")
-            }
-        }
-    }
-
-    let icon: Icon
-    let title: NSAttributedString
-    let message: NSAttributedString
-    let action: CardAction
-    let actionTitle: String
-    let secondaryAction: CardAction?
-    let secondaryActionTitle: String?
 
     static func bluetoothOff(theme: Theme) -> Card {
         let title: String = .cardsBluetoothOffTitle
@@ -106,7 +108,7 @@ struct Card {
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
                     action: .openWebsite(url: URL(string: "http://www.nu.nl")!),
                     actionTitle: action,
-                    secondaryAction: .openWebsite(url: URL(string: "http://www.nu.nl")!),
+                    secondaryAction: .dismissAnnouncement(.interopAnnouncement),
                     secondaryActionTitle: secondaryAction)
     }
 }

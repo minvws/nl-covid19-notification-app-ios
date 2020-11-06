@@ -192,7 +192,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
         exposureController.didCompleteOnboarding = true
-        exposureController.onboardingCompletedVersion = currentAppVersion
+
+        // Mark all announcements that were made during the onboarding process as "seen"
+        exposureController.seenAnnouncements = [.interopAnnouncement]
 
         backgroundController.scheduleTasks()
 

@@ -23,13 +23,18 @@ protocol CardTypeSettable {
 /// @mockable
 protocol CardBuildable {
     /// Builds CardViewController
-    func build(types: [CardType]) -> Routing & CardTypeSettable
+    func build(listener: CardListener?, types: [CardType]) -> Routing & CardTypeSettable
 }
 
 protocol CardDependency {
     var theme: Theme { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
+    var dataController: ExposureDataControlling { get }
+}
+
+protocol CardListener: AnyObject {
+    func dismissedAnnouncement()
 }
 
 private final class CardDependencyProvider: DependencyProvider<CardDependency>, EnableSettingDependency {
@@ -49,14 +54,20 @@ private final class CardDependencyProvider: DependencyProvider<CardDependency>, 
     var environmentController: EnvironmentControlling {
         return dependency.environmentController
     }
+
+    var dataController: ExposureDataControlling {
+        return dependency.dataController
+    }
 }
 
 final class CardBuilder: Builder<CardDependency>, CardBuildable {
-    func build(types: [CardType]) -> Routing & CardTypeSettable {
+    func build(listener: CardListener?, types: [CardType]) -> Routing & CardTypeSettable {
         let dependencyProvider = CardDependencyProvider(dependency: dependency)
 
-        let viewController = CardViewController(theme: dependencyProvider.dependency.theme,
-                                                types: types)
+        let viewController = CardViewController(listener: listener,
+                                                theme: dependencyProvider.dependency.theme,
+                                                types: types,
+                                                dataController: dependencyProvider.dataController)
 
         return CardRouter(viewController: viewController,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder)

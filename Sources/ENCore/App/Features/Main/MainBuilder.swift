@@ -20,6 +20,7 @@ protocol MainDependency {
     var bluetoothStateStream: BluetoothStateStreaming { get }
     var storageController: StorageControlling { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
+    var dataController: ExposureDataControlling { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency {
@@ -94,6 +95,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var messageManager: MessageManaging {
         return MessageManager(storageController: storageController, theme: dependency.theme)
+    }
+
+    var dataController: ExposureDataControlling {
+        dependency.dataController
     }
 }
 

@@ -16,11 +16,15 @@ protocol CardRouting: Routing {
     func detachEnableSetting(hideViewController: Bool)
 }
 
-final class CardViewController: ViewController, CardViewControllable {
+final class CardViewController: ViewController, CardViewControllable, Logging {
 
-    init(theme: Theme,
-         types: [CardType]) {
+    init(listener: CardListener?,
+         theme: Theme,
+         types: [CardType],
+         dataController: ExposureDataControlling) {
         self.types = types
+        self.listener = listener
+        self.dataController = dataController
 
         super.init(theme: theme)
     }
@@ -66,28 +70,28 @@ final class CardViewController: ViewController, CardViewControllable {
 
     // MARK: - Private
 
-    private func buttonAction(for card: Card) -> () -> () {
+    private func buttonAction(forAction action: CardAction?) -> () -> () {
+        guard let action = action else {
+            return {}
+        }
+
         return {
-            switch card.action {
+            switch action {
             case let .openEnableSetting(enableSetting):
                 self.router?.route(to: enableSetting)
             case let .openWebsite(url: url):
                 self.router?.route(to: url)
+            case let .dismissAnnouncement(announcement):
+                self.dismissAnnouncement(announcement)
+                self.listener?.dismissedAnnouncement()
             case let .custom(action: action):
                 action()
             }
         }
     }
 
-    private func secondaryButtonAction(for card: Card) -> (() -> ())? {
-        return {
-            switch card.secondaryAction {
-            case let .openWebsite(url: url):
-                self.router?.route(to: url)
-            case .openEnableSetting, .custom, .none:
-                return
-            }
-        }
+    private func dismissAnnouncement(_ announcement: Announcement) {
+        dataController.seenAnnouncements.append(announcement)
     }
 
     private var types: [CardType] {
@@ -99,18 +103,23 @@ final class CardViewController: ViewController, CardViewControllable {
     }
 
     private func recreateCards() {
-        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        types.forEach { cardType in
-            let card = cardType.card(theme: theme)
-            let cardView = CardView(theme: theme)
-            cardView.update(with: card,
-                            action: buttonAction(for: card),
-                            secondaryAction: secondaryButtonAction(for: card))
-            stackView.addArrangedSubview(cardView)
+        UIView.animate(withDuration: 0.3) {
+            self.stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            self.types.forEach { cardType in
+                let card = cardType.card(theme: self.theme)
+                let cardView = CardView(theme: self.theme)
+                cardView.update(with: card,
+                                action: self.buttonAction(forAction: card.action),
+                                secondaryAction: self.buttonAction(forAction: card.secondaryAction))
+                self.stackView.addArrangedSubview(cardView)
+            }
         }
     }
 
     weak var router: CardRouting?
+    weak var listener: CardListener?
+    private let dataController: ExposureDataControlling
+
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical

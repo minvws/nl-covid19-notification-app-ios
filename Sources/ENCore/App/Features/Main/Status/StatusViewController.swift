@@ -14,7 +14,7 @@ import UIKit
 /// @mockable
 protocol StatusRouting: Routing {}
 
-final class StatusViewController: ViewController, StatusViewControllable {
+final class StatusViewController: ViewController, StatusViewControllable, CardListener {
 
     // MARK: - StatusViewControllable
 
@@ -22,27 +22,32 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
+    private let dataController: ExposureDataControlling
+
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
     private var stateStreamCancellable: AnyCancellable?
 
     private let cardBuilder: CardBuildable
-    private var cardRouter: Routing & CardTypeSettable
+    private lazy var cardRouter: Routing & CardTypeSettable = {
+        cardBuilder.build(listener: self, types: [.bluetoothOff])
+    }()
 
     init(exposureStateStream: ExposureStateStreaming,
          interfaceOrientationStream: InterfaceOrientationStreaming,
          cardBuilder: CardBuildable,
          listener: StatusListener,
          theme: Theme,
-         topAnchor: NSLayoutYAxisAnchor?) {
+         topAnchor: NSLayoutYAxisAnchor?,
+         dataController: ExposureDataControlling) {
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
+        self.dataController = dataController
         self.listener = listener
         self.topAnchor = topAnchor
 
         self.cardBuilder = cardBuilder
-        self.cardRouter = cardBuilder.build(types: [.bluetoothOff])
 
         super.init(theme: theme)
     }
@@ -151,11 +156,25 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         statusView.update(with: statusViewModel)
 
-        // TODO: Add logic here to determine if interopAnnouncement should be shown
-        cardTypes.append(.interopAnnouncement)
+        cardTypes.append(contentsOf: getAnnouncementCardTypes())
 
         cardRouter.types = cardTypes
         cardRouter.viewControllable.uiviewController.view.isHidden = cardTypes.isEmpty
+    }
+
+    private func getAnnouncementCardTypes() -> [CardType] {
+        var cardTypes = [CardType]()
+
+        // Interop announcement
+        if !dataController.seenAnnouncements.contains(.interopAnnouncement) {
+            cardTypes.append(.interopAnnouncement)
+        }
+
+        return cardTypes
+    }
+
+    func dismissedAnnouncement() {
+        updateExposureStateView()
     }
 
     private lazy var statusView: StatusView = StatusView(theme: self.theme,

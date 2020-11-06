@@ -56,7 +56,7 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
     }
 
     func showInactiveCard() {
-        let cardRouter = cardBuilder.build(types: [.exposureOff])
+        let cardRouter = cardBuilder.build(listener: nil, types: [.exposureOff])
         self.cardRouter = cardRouter
 
         viewController.set(cardViewController: cardRouter.viewControllable)
