@@ -12,39 +12,58 @@ import XCTest
 
 final class CardViewControllerSnapshotTests: TestCase {
     private var viewController: CardViewController!
+    private var mockCardListener: CardListeningMock!
+    private var mockExposureDataController: ExposureDataControllingMock!
 
     override func setUp() {
         super.setUp()
+
+        mockCardListener = CardListeningMock()
+        mockExposureDataController = ExposureDataControllingMock()
 
         recordSnapshots = false
     }
 
     func test_cardViewController_bluetoothOff() {
-        viewController = CardViewController(theme: theme, types: [.bluetoothOff])
+        viewController = CardViewController(listener: mockCardListener,
+                                            theme: theme,
+                                            types: [.bluetoothOff],
+                                            dataController: mockExposureDataController)
 
         snapshots(matching: viewController)
     }
 
-//    func test_cardViewController_bluetoothOffAndInteropAnnouncement() {
-//        viewController = CardViewController(theme: theme, types: [.bluetoothOff, .interopAnnouncement])
-//
-//        snapshots(matching: viewController)
-//    }
+    func test_cardViewController_bluetoothOffAndInteropAnnouncement() {
+        viewController = CardViewController(listener: mockCardListener,
+                                            theme: theme,
+                                            types: [.bluetoothOff, .interopAnnouncement],
+                                            dataController: mockExposureDataController)
+
+        snapshots(matching: viewController)
+    }
 
     func test_cardViewController_exposureOff() {
-        viewController = CardViewController(theme: theme, types: [.exposureOff])
+        viewController = CardViewController(listener: mockCardListener,
+                                            theme: theme,
+                                            types: [.exposureOff],
+                                            dataController: mockExposureDataController)
 
         snapshots(matching: viewController)
     }
 
     func test_cardViewController_noLocalNotifications() {
-        viewController = CardViewController(theme: theme, types: [.noLocalNotifications])
-
+        viewController = CardViewController(listener: mockCardListener,
+                                            theme: theme,
+                                            types: [.noLocalNotifications],
+                                            dataController: mockExposureDataController)
         snapshots(matching: viewController)
     }
 
     func test_cardViewController_noInternet() {
-        viewController = CardViewController(theme: theme, types: [.noInternet(retryHandler: {})])
+        viewController = CardViewController(listener: mockCardListener,
+                                            theme: theme,
+                                            types: [.noInternet(retryHandler: {})],
+                                            dataController: mockExposureDataController)
 
         snapshots(matching: viewController)
     }

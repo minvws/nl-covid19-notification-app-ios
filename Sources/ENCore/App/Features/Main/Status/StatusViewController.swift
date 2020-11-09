@@ -14,7 +14,7 @@ import UIKit
 /// @mockable
 protocol StatusRouting: Routing {}
 
-final class StatusViewController: ViewController, StatusViewControllable, CardListener {
+final class StatusViewController: ViewController, StatusViewControllable, CardListening {
 
     // MARK: - StatusViewControllable
 
@@ -160,8 +160,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
         statusView.update(with: statusViewModel)
 
+        // Add any non-status related card types and update the CardViewController via the router
         cardTypes.append(contentsOf: getAnnouncementCardTypes())
-
         cardRouter.types = cardTypes
         cardRouter.viewControllable.uiviewController.view.isHidden = cardTypes.isEmpty
     }

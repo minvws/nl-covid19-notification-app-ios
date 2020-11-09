@@ -18,7 +18,7 @@ protocol CardRouting: Routing {
 
 final class CardViewController: ViewController, CardViewControllable, Logging {
 
-    init(listener: CardListener?,
+    init(listener: CardListening?,
          theme: Theme,
          types: [CardType],
          dataController: ExposureDataControlling) {
@@ -122,7 +122,7 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     }
 
     weak var router: CardRouting?
-    weak var listener: CardListener?
+    weak var listener: CardListening?
     private let dataController: ExposureDataControlling
 
     private lazy var stackView: UIStackView = {
@@ -133,7 +133,7 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     }()
 }
 
-private final class CardView: View {
+final class CardView: View {
     private let container = UIStackView()
     private let header = UIStackView()
 
@@ -143,11 +143,11 @@ private final class CardView: View {
     private let headerTitleLabel = Label()
 
     private let descriptionLabel = Label()
-    fileprivate lazy var primaryButton: Button = {
+    lazy var primaryButton: Button = {
         Button(theme: self.theme)
     }()
 
-    fileprivate lazy var secondaryButton: Button = {
+    lazy var secondaryButton: Button = {
         Button(theme: self.theme)
     }()
 
@@ -156,40 +156,40 @@ private final class CardView: View {
 
         layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         layer.cornerRadius = 12
-        backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
+        backgroundColor = theme.colors.cardBackground
 
         // container
         container.axis = .vertical
         container.spacing = 16
 
-        //  header
+        // header
         header.axis = .horizontal
         header.spacing = 16
         header.alignment = .center
 
-        //   headerIconView
+        // headerIconView
         header.addArrangedSubview(headerIconView)
 
-        //   headerTitleLabel
+        // headerTitleLabel
         headerTitleLabel.adjustsFontForContentSizeCategory = true
         headerTitleLabel.font = theme.fonts.title3
         headerTitleLabel.numberOfLines = 0
         headerTitleLabel.preferredMaxLayoutWidth = 1000
         header.addArrangedSubview(headerTitleLabel)
-
         container.addArrangedSubview(header)
 
-        //  descriptionLabel
+        // descriptionLabel
         descriptionLabel.adjustsFontForContentSizeCategory = true
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
         container.addArrangedSubview(descriptionLabel)
 
-        //  button
+        // primary button
         primaryButton.titleEdgeInsets = UIEdgeInsets(top: 40, left: 41, bottom: 40, right: 41)
         primaryButton.layer.cornerRadius = 8
         container.addArrangedSubview(primaryButton)
 
+        // secondary button
         secondaryButton.titleEdgeInsets = UIEdgeInsets(top: 40, left: 41, bottom: 40, right: 41)
         secondaryButton.layer.cornerRadius = 8
         container.addArrangedSubview(secondaryButton)

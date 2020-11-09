@@ -20,8 +20,10 @@ protocol CardViewControllable: ViewControllable, EnableSettingListener {
 final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSettable {
 
     init(viewController: CardViewControllable,
-         enableSettingBuilder: EnableSettingBuildable) {
+         enableSettingBuilder: EnableSettingBuildable,
+         applicationController: ApplicationControlling) {
         self.enableSettingBuilder = enableSettingBuilder
+        self.applicationController = applicationController
 
         super.init(viewController: viewController)
 
@@ -39,8 +41,8 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
     }
 
     func route(to url: URL) {
-        if UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        if applicationController.canOpenURL(url) {
+            applicationController.open(url)
         }
     }
 
@@ -66,6 +68,7 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
 
     // MARK: - Private
 
+    private let applicationController: ApplicationControlling
     private let enableSettingBuilder: EnableSettingBuildable
     private var enableSettingViewController: ViewControllable?
 }

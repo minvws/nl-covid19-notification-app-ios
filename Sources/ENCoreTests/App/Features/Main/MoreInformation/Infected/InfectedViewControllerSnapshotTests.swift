@@ -17,12 +17,16 @@ final class InfectedViewControllerSnapshotTests: TestCase {
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
     private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
+    private var mockCardListener: CardListeningMock!
+    private var mockExposureDataController: ExposureDataControllingMock!
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
+        mockCardListener = CardListeningMock()
+        mockExposureDataController = ExposureDataControllingMock()
         interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         exposureStateStream.exposureState = Just(ExposureState(
@@ -63,8 +67,12 @@ final class InfectedViewControllerSnapshotTests: TestCase {
                                                                             bucketIdentifier: Data(),
                                                                             confirmationKey: Data(),
                                                                             validUntil: Date()))
-        let cardViewController = CardViewController(theme: theme,
-                                                    types: [.exposureOff])
+
+        let cardViewController = CardViewController(listener: mockCardListener,
+                                                    theme: theme,
+                                                    types: [.exposureOff],
+                                                    dataController: mockExposureDataController)
+
         viewController.set(cardViewController: cardViewController)
 
         snapshots(matching: viewController)

@@ -18,19 +18,31 @@ final class StatusViewControllerTests: TestCase {
     private var viewController: StatusViewController!
     private let router = StatusRoutingMock()
     private let cardBuilder = CardBuildableMock()
+    private var mockExposureDataController: ExposureDataControllingMock!
+    private var mockCardListener: CardListeningMock!
+    private var mockApplicationController: ApplicationControllingMock!
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
+        mockCardListener = CardListeningMock()
+        mockExposureDataController = ExposureDataControllingMock()
+        mockExposureDataController.seenAnnouncements = [.interopAnnouncement]
+        mockApplicationController = ApplicationControllingMock()
+
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
         interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
-        cardBuilder.buildHandler = { cardTypes in
-            return CardRouter(viewController: CardViewController(theme: self.theme, types: cardTypes),
-                              enableSettingBuilder: EnableSettingBuildableMock())
+        cardBuilder.buildHandler = { listener, cardTypes in
+            return CardRouter(viewController: CardViewController(listener: self.mockCardListener,
+                                                                 theme: self.theme,
+                                                                 types: cardTypes,
+                                                                 dataController: self.mockExposureDataController),
+                              enableSettingBuilder: EnableSettingBuildableMock(),
+                              applicationController: self.mockApplicationController)
         }
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream,
@@ -38,7 +50,8 @@ final class StatusViewControllerTests: TestCase {
                                               cardBuilder: cardBuilder,
                                               listener: StatusListenerMock(),
                                               theme: theme,
-                                              topAnchor: nil)
+                                              topAnchor: nil,
+                                              dataController: mockExposureDataController)
         viewController.router = router
     }
 
@@ -64,6 +77,12 @@ final class StatusViewControllerTests: TestCase {
     }
 
     func test_snapshot_authorized_denied_notified() {
+        set(activeState: .authorizationDenied, notified: true)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_authorized_denied_notified_whith_announcement() {
+        mockExposureDataController.seenAnnouncements = []
         set(activeState: .authorizationDenied, notified: true)
         snapshots(matching: viewController)
     }
