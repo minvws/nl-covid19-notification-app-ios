@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: macos-10.15
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -15,7 +15,9 @@ jobs:
         run: ./tools/scripts/ci/030_cibuild
       - name: CItest-iphone11
         run: |
+          sudo xcode-select -s /Applications/Xcode_11.7.app
           xcodebuild clean test \
+          -version \
           -project EN.xcodeproj \
           -scheme ENCore \
           -destination "platform=iOS Simulator,OS=latest,name=iPhone 11" \
