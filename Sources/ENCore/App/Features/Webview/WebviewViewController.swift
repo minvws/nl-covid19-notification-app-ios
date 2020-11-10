@@ -70,7 +70,9 @@ private final class WebviewView: View, WKNavigationDelegate {
     private lazy var errorView: ErrorView = {
         let errorView = ErrorView(theme: theme)
         errorView.translatesAutoresizingMaskIntoConstraints = false
-        errorView.actionButton.addTarget(self, action: #selector(didTapReloadButton(sender:)), for: .touchUpInside)
+        errorView.actionButton.action = {
+            self.webView.reload()
+        }
         return errorView
     }()
 
@@ -150,12 +152,6 @@ private final class WebviewView: View, WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         loadingFinished(withError: false)
     }
-
-    // MARK: - Private
-
-    @objc private func didTapReloadButton(sender: Button) {
-        webView.reload()
-    }
 }
 
 private final class ErrorView: View {
@@ -193,6 +189,7 @@ private final class ErrorView: View {
         let label = Label()
         label.text = "Er gaat iets mis hier. Kom later terug of probeer de pagina opnieuw te laden"
         label.font = theme.fonts.body
+        label.textColor = theme.colors.gray
         label.accessibilityTraits = .staticText
         label.numberOfLines = 0
         return label
@@ -200,7 +197,7 @@ private final class ErrorView: View {
 
     lazy var actionButton: Button = {
         let button = Button(theme: theme)
-        button.style = .secondary
+        button.style = .primary
         button.setTitle("Probeer opnieuw", for: .normal)
         return button
     }()
