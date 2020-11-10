@@ -83,8 +83,8 @@ private final class WebviewView: View, WKNavigationDelegate {
         return webView
     }()
 
-    private lazy var errorView: ErrorView = {
-        let errorView = ErrorView(theme: theme)
+    private lazy var errorView: UIView = {
+        let errorView = WebViewErrorView(theme: theme)
         errorView.translatesAutoresizingMaskIntoConstraints = false
         errorView.actionButton.action = {
             self.webView.reload()
@@ -181,88 +181,5 @@ private final class WebviewView: View, WKNavigationDelegate {
         }
 
         decisionHandler(.allow)
-    }
-}
-
-private final class ErrorView: View {
-
-    private lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 32
-        stackView.alignment = .center
-
-        stackView.addArrangedSubview(imageView)
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(subtitleLabel)
-
-        return stackView
-    }()
-
-    private lazy var imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = .loadingError
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-
-    private lazy var titleLabel: Label = {
-        let label = Label()
-        label.text = .webviewLoadingFailedTitle
-        label.font = theme.fonts.title2
-        label.accessibilityTraits = .header
-        label.numberOfLines = 0
-        return label
-    }()
-
-    private lazy var subtitleLabel: Label = {
-        let label = Label()
-        label.text = .webviewLoadingFailedSubTitle
-        label.font = theme.fonts.body
-        label.textColor = theme.colors.gray
-        label.accessibilityTraits = .staticText
-        label.numberOfLines = 0
-        return label
-    }()
-
-    lazy var actionButton: Button = {
-        let button = Button(theme: theme)
-        button.style = .primary
-        button.setTitle(.webviewLoadingFailedTryAgain, for: .normal)
-        return button
-    }()
-
-    override func build() {
-        super.build()
-        addSubview(stackView)
-        addSubview(actionButton)
-    }
-
-    override func setupConstraints() {
-        super.setupConstraints()
-
-        stackView.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(34)
-            maker.centerY.equalToSuperview()
-        }
-
-        imageView.snp.makeConstraints { maker in
-            maker.width.equalTo(self).multipliedBy(0.6)
-        }
-
-        titleLabel.snp.makeConstraints { maker in
-            maker.width.equalTo(stackView)
-        }
-
-        subtitleLabel.snp.makeConstraints { maker in
-            maker.width.equalTo(stackView)
-        }
-
-        actionButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
-            maker.height.equalTo(50)
-
-            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
-        }
     }
 }
