@@ -258,6 +258,11 @@
 "main.confirmNotificationRemoval.message" = "Je kunt de datum daarna niet meer terugvinden in de app. Onthoud deze dus goed.";
 "main.confirmNotificationRemoval.confirm" = "Verwijder";
 
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "Deze pagina kan niet geladen worden";
+"webview.loadingfailed.subtitle" = "Er gaat iets mis hier. Kom later terug of probeer de pagina opnieuw te laden";
+"webview.loadingfailed.try_again" = "Probeer opnieuw";
+
 /* MARK: - Status */
 "status.appState" = "De app is actief";
 "status.appState.inactive.title" = "De app is niet actief";

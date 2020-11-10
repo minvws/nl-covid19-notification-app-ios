@@ -208,7 +208,7 @@ private final class ErrorView: View {
 
     private lazy var titleLabel: Label = {
         let label = Label()
-        label.text = "Deze pagina kan niet geladen worden"
+        label.text = .webviewLoadingFailedTitle
         label.font = theme.fonts.title2
         label.accessibilityTraits = .header
         label.numberOfLines = 0
@@ -217,7 +217,7 @@ private final class ErrorView: View {
 
     private lazy var subtitleLabel: Label = {
         let label = Label()
-        label.text = "Er gaat iets mis hier. Kom later terug of probeer de pagina opnieuw te laden"
+        label.text = .webviewLoadingFailedSubTitle
         label.font = theme.fonts.body
         label.textColor = theme.colors.gray
         label.accessibilityTraits = .staticText
@@ -228,7 +228,7 @@ private final class ErrorView: View {
     lazy var actionButton: Button = {
         let button = Button(theme: theme)
         button.style = .primary
-        button.setTitle("Probeer opnieuw", for: .normal)
+        button.setTitle(.webviewLoadingFailedTryAgain, for: .normal)
         return button
     }()
 
