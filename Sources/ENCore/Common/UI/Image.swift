@@ -19,6 +19,7 @@ extension UIImage {
     static var gradient: UIImage? { return Image.named("Gradient") }
     static var chevron: UIImage? { return Image.named("Chevron") }
     static var about: UIImage? { return Image.named("About") }
+    static var settings: UIImage? { return Image.named("Settings") }
     static var share: UIImage? { return Image.named("Share") }
     static var warning: UIImage? { return Image.named("Warning") }
     static var coronatest: UIImage? { return Image.named("Coronatest") }
