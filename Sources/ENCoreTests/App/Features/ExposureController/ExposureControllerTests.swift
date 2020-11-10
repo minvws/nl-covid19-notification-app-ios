@@ -12,6 +12,7 @@ import XCTest
 
 final class ExposureControllerTests: TestCase {
     private var controller: ExposureController!
+    private var exposureController = ExposureControllingMock()
     private let mutableStateStream = MutableExposureStateStreamingMock()
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
@@ -46,8 +47,11 @@ final class ExposureControllerTests: TestCase {
         exposureManager.getExposureNotificationStatusHandler = { .active }
         exposureManager.isExposureNotificationEnabledHandler = { true }
 
-        userNotificationCenter.getAuthorizationStatusHandler = { handler in
-            handler(.authorized)
+        userNotificationCenter.getAuthorizationStatusHandler = { completition in
+            completition(.authorized)
+        }
+        userNotificationCenter.addHandler = { _, completition in
+            completition?(nil)
         }
     }
 
@@ -285,7 +289,7 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_requestUploadKeys_exposureManagerReturnsKeys_callsCompletionWithKeys() {
-        exposureManager.getDiagnonisKeysHandler = { completion in
+        exposureManager.getDiagnosisKeysHandler = { completion in
             let keys = [
                 DiagnosisKey(keyData: Data(),
                              rollingPeriod: 0,
@@ -302,7 +306,7 @@ final class ExposureControllerTests: TestCase {
                 .eraseToAnyPublisher()
         }
 
-        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
+        XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 0)
         XCTAssertEqual(dataController.uploadCallCount, 0)
 
         let exp = expectation(description: "Scheduling complete")
@@ -315,16 +319,16 @@ final class ExposureControllerTests: TestCase {
 
         wait(for: [exp], timeout: 1)
 
-        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
+        XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 1)
         XCTAssertEqual(dataController.uploadCallCount, 1)
         XCTAssertNotNil(receivedResult)
         XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.success)
     }
 
     func test_requestUploadKeys_failsWithNotAuthorizedError_callsCompletionWithNotAuthorized() {
-        exposureManager.getDiagnonisKeysHandler = { completion in completion(.failure(.notAuthorized)) }
+        exposureManager.getDiagnosisKeysHandler = { completion in completion(.failure(.notAuthorized)) }
 
-        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
+        XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 0)
         XCTAssertEqual(dataController.uploadCallCount, 0)
 
         var receivedResult: ExposureControllerUploadKeysResult!
@@ -332,16 +336,16 @@ final class ExposureControllerTests: TestCase {
             receivedResult = result
         }
 
-        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
+        XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 1)
         XCTAssertEqual(dataController.uploadCallCount, 0)
         XCTAssertNotNil(receivedResult)
         XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.notAuthorized)
     }
 
     func test_requestUploadKeys_failsWithOtherError_callsCompletionWithNotActive() {
-        exposureManager.getDiagnonisKeysHandler = { completion in completion(.failure(.unknown)) }
+        exposureManager.getDiagnosisKeysHandler = { completion in completion(.failure(.unknown)) }
 
-        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 0)
+        XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 0)
         XCTAssertEqual(dataController.uploadCallCount, 0)
 
         var receivedResult: ExposureControllerUploadKeysResult!
@@ -349,7 +353,7 @@ final class ExposureControllerTests: TestCase {
             receivedResult = result
         }
 
-        XCTAssertEqual(exposureManager.getDiagnonisKeysCallCount, 1)
+        XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 1)
         XCTAssertEqual(dataController.uploadCallCount, 0)
         XCTAssertNotNil(receivedResult)
         XCTAssertEqual(receivedResult, ExposureControllerUploadKeysResult.inactive)
@@ -531,12 +535,6 @@ final class ExposureControllerTests: TestCase {
         exposureManager.getExposureNotificationStatusHandler = {
             return .inactive(.disabled)
         }
-        userNotificationCenter.getAuthorizationStatusHandler = { completition in
-            completition(.authorized)
-        }
-        userNotificationCenter.addHandler = { _, completition in
-            completition?(nil)
-        }
 
         let timeInterval = TimeInterval(60 * 60 * 25) // 25 hours
         dataController.lastENStatusCheckDate = Date().advanced(by: -timeInterval)
@@ -549,6 +547,72 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
         XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
         XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+    }
+
+    func test_lastOpenedNotificationCheck_moreThan3Hours_postsNotification() {
+        let timeInterval = TimeInterval(60 * 60 * 4) // 4 hours
+        dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
+        dataController.lastExposure = ExposureReport(date: Date())
+        dataController.lastUnseenExposureNotificationDate = Date().advanced(by: -timeInterval)
+
+        controller
+            .lastOpenedNotificationCheck()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
+        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+    }
+
+    func test_lastOpenedNotificationCheck_lessThan3Hours_doesntPostNotification() {
+        let timeInterval = TimeInterval(60 * 60 * 2) // 2 hours
+        dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
+        dataController.lastExposure = ExposureReport(date: Date())
+        dataController.lastUnseenExposureNotificationDate = Date().advanced(by: -timeInterval)
+
+        controller
+            .lastOpenedNotificationCheck()
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
+        XCTAssertEqual(userNotificationCenter.addCallCount, 0)
+    }
+
+    func test_lastOpenedNotificationCheck_48Hours_ToDays() {
+        let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
+        dataController.lastExposure = ExposureReport(date: Date().advanced(by: -timeInterval))
+
+        let days = controller.daysAgo(dataController.lastExposure!.date)
+
+        XCTAssertEqual(days, 2)
+    }
+
+    func test_notifyUser24HoursNoCheck() {
+
+        let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
+        let lastLocalNotificationExposureDate = Date().advanced(by: -timeInterval)
+        let lastSuccessfulProcessingDate = Date().advanced(by: -timeInterval)
+
+        dataController.lastSuccessfulProcessingDate = lastSuccessfulProcessingDate
+        dataController.lastLocalNotificationExposureDate = lastLocalNotificationExposureDate
+
+        controller.notifyUser24HoursNoCheckIfRequired()
+
+        XCTAssertEqual(dataController.lastLocalNotificationExposureDate, lastLocalNotificationExposureDate)
+    }
+
+    func test_notNotifyUser24HoursDidCheck() {
+
+        let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
+        let lastLocalNotificationExposureDate = Date().advanced(by: -timeInterval)
+
+        dataController.lastSuccessfulProcessingDate = Date()
+        dataController.lastLocalNotificationExposureDate = lastLocalNotificationExposureDate
+
+        controller.notifyUser24HoursNoCheckIfRequired()
+
+        XCTAssertEqual(dataController.lastLocalNotificationExposureDate, lastLocalNotificationExposureDate)
     }
 
     // MARK: - Private

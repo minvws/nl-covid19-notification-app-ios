@@ -39,6 +39,10 @@ final class RootRouterTests: XCTestCase {
             return Just(()).eraseToAnyPublisher()
         }
 
+        exposureController.updateTreatmentPerspectiveHandler = {
+            Just(TreatmentPerspective.emptyMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
         mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
         router = RootRouter(viewController: viewController,
@@ -128,10 +132,12 @@ final class RootRouterTests: XCTestCase {
         router.start()
 
         XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 0)
+        XCTAssertEqual(backgroundController.scheduleTasksCallCount, 0)
 
         router.detachOnboardingAndRouteToMain(animated: true)
 
         XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 1)
+        XCTAssertEqual(backgroundController.scheduleTasksCallCount, 1)
     }
 
     func test_start_activatesExposureController() {

@@ -41,6 +41,14 @@ final class InfoView: View {
     }
     var secondaryActionHandler: (() -> ())?
 
+    var showHeader: Bool = true {
+        didSet {
+            headerImageView.isHidden = !showHeader
+            headerBackgroundView.isHidden = !showHeader
+            setupConstraints()
+        }
+    }
+
     private let scrollView: UIScrollView
     private let contentView: UIView
     private let headerBackgroundView: UIView
@@ -122,7 +130,7 @@ final class InfoView: View {
 
         hasBottomMargin = true
 
-        scrollView.snp.makeConstraints { (maker: ConstraintMaker) in
+        scrollView.snp.remakeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.equalToSuperview()
 
             if !stickyButtons {
@@ -130,26 +138,30 @@ final class InfoView: View {
             }
         }
 
-        headerBackgroundView.snp.makeConstraints { (maker: ConstraintMaker) in
+        headerBackgroundView.snp.remakeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(self.snp.top)
             maker.bottom.greaterThanOrEqualTo(scrollView.snp.top)
             maker.leading.trailing.equalTo(self)
         }
 
-        contentView.snp.makeConstraints { (maker: ConstraintMaker) in
+        contentView.snp.remakeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(scrollView)
             maker.bottom.equalTo(scrollView)
             maker.leading.trailing.equalTo(self)
         }
 
         let imageAspectRatio = headerImageView.image?.aspectRatio ?? 1.0
-        headerImageView.snp.makeConstraints { (maker: ConstraintMaker) in
+        headerImageView.snp.remakeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.equalToSuperview()
             maker.height.equalTo(headerImageView.snp.width).dividedBy(imageAspectRatio)
         }
 
-        stackView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.equalTo(headerImageView.snp.bottom).offset(24)
+        stackView.snp.remakeConstraints { (maker: ConstraintMaker) in
+            if showHeader {
+                maker.top.equalTo(headerImageView.snp.bottom).offset(24)
+            } else {
+                maker.top.equalToSuperview()
+            }
             maker.leading.trailing.equalToSuperview()
 
             if !showButtons {
@@ -161,7 +173,7 @@ final class InfoView: View {
             }
         }
         if showButtons {
-            buttonStackView.snp.makeConstraints { (maker: ConstraintMaker) in
+            buttonStackView.snp.remakeConstraints { (maker: ConstraintMaker) in
                 let count = buttonStackView.arrangedSubviews.count
                 if count > 0 {
                     let height = Float((count * 48) + ((count - 1) * 20))
@@ -180,7 +192,7 @@ final class InfoView: View {
         }
 
         if showButtons, stickyButtons {
-            buttonSeparator.snp.makeConstraints { maker in
+            buttonSeparator.snp.remakeConstraints { maker in
                 maker.bottom.equalTo(buttonStackView.snp.top).offset(-16)
                 maker.leading.trailing.equalToSuperview()
                 maker.height.equalTo(16)
@@ -339,6 +351,7 @@ final class InfoSectionTextView: View {
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
         titleLabel.accessibilityTraits = .header
+        titleLabel.textAlignment = Localization.isRTL ? .right : .left
 
         contentStack.axis = .vertical
         contentStack.alignment = .top
@@ -641,6 +654,7 @@ private final class InfoSectionDynamicSuccessView: View {
         super.init(theme: theme)
 
         titleLabel.text = title
+        titleLabel.textCanBeCopied(charactersToRemove: "-")
 
         let accessibilityText = title.replacingOccurrences(of: "-", with: "").lowercased()
         titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText, attributes: [.accessibilitySpeechSpellOut: true])

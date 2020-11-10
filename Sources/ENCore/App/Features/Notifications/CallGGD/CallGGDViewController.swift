@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import SnapKit
@@ -15,8 +16,11 @@ protocol CallGGDViewControllable: ViewControllable {}
 
 final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAdaptivePresentationControllerDelegate {
 
-    init(listener: CallGGDListener, theme: Theme) {
+    init(listener: CallGGDListener,
+         theme: Theme,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         super.init(theme: theme)
     }
@@ -36,6 +40,13 @@ final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAd
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
+
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+        interfaceOrientationStream
+            .isLandscape
+            .sink { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+            }.store(in: &disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -48,6 +59,8 @@ final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAd
 
     private weak var listener: CallGGDListener?
     private lazy var internalView: CallGGDView = CallGGDView(theme: self.theme)
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var disposeBag = Set<AnyCancellable>()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.callGGDWantsDismissal(shouldDismissViewController: true)
@@ -57,6 +70,12 @@ final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAd
 private final class CallGGDView: View {
 
     fileprivate let infoView: InfoView
+
+    var showVisual: Bool = true {
+        didSet {
+            infoView.showHeader = showVisual
+        }
+    }
 
     // MARK: - Init
 
@@ -84,7 +103,8 @@ private final class CallGGDView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.edges.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.bottom.equalToSuperview()
         }
     }
 }

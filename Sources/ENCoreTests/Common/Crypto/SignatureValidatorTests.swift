@@ -9,21 +9,29 @@
 import XCTest
 
 final class SignatureValidatorTests: XCTestCase {
-    private var content: Data!
+    private var validSignature: Data!
+    private var invalidSignature: Data!
     private var export: Data!
     private let signatureValidator = SignatureValidator()
 
     override func setUp() {
         super.setUp()
 
-        let contentUrl = URL(fileURLWithPath: Bundle(for: SignatureValidatorTests.self).path(forResource: "content", ofType: "sig")!)
+        let validSignatureUrl = URL(fileURLWithPath: Bundle(for: SignatureValidatorTests.self).path(forResource: "signature", ofType: "sig")!)
+        let invalidSignatureUrl = URL(fileURLWithPath: Bundle(for: SignatureValidatorTests.self).path(forResource: "signature-incorrectcommonname", ofType: "sig")!)
+
         let exportUrl = URL(fileURLWithPath: Bundle(for: SignatureValidatorTests.self).path(forResource: "export", ofType: "bin")!)
 
-        content = try! Data(contentsOf: contentUrl)
+        validSignature = try! Data(contentsOf: validSignatureUrl)
+        invalidSignature = try! Data(contentsOf: invalidSignatureUrl)
         export = try! Data(contentsOf: exportUrl)
     }
 
-    func test_signatureValidator() {
-        XCTAssertTrue(signatureValidator.validate(signature: content, content: export))
+    func test_signatureValidator_withValidSignature() {
+        XCTAssertTrue(signatureValidator.validate(signature: validSignature, content: export))
+    }
+
+    func test_signatureValidator_withInvalidSignature() {
+        XCTAssertFalse(signatureValidator.validate(signature: invalidSignature, content: export))
     }
 }

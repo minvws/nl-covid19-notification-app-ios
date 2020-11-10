@@ -82,12 +82,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     let mutablePushNotificationStream: MutablePushNotificationStreaming
 
     func start() {
+
         guard mainRouter == nil, onboardingRouter == nil else {
             // already started
             return
         }
 
         LogHandler.setup()
+
+        checkIfAppIsDeactivated()
 
         checkIfAppUpdateIsRequired()
 
@@ -97,8 +100,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         } else {
             routeToOnboarding()
         }
-
-        exposureController.activate(inBackgroundMode: false)
 
         #if USE_DEVELOPER_MENU || DEBUG
             attachDeveloperMenu()
@@ -139,19 +140,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.refreshStatus()
 
-        exposureController
-            .isAppDeactivated()
-            .sink(receiveCompletion: { _ in
-                // Do nothing
-            }, receiveValue: { [weak self] isDectivated in
-                if isDectivated {
-                    self?.routeToEndOfLife()
-                    self?.exposureController.deactivate()
-                }
-                })
-            .store(in: &disposeBag)
+        checkIfAppIsDeactivated()
 
         checkIfAppUpdateIsRequired()
+        updateTreatmentPerspective()
+
+        exposureController.updateLastLaunch()
+
+        exposureController.clearUnseenExposureNotificationDate()
     }
 
     func didEnterForeground() {
@@ -196,6 +192,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
         exposureController.didCompleteOnboarding = true
+        backgroundController.scheduleTasks()
 
         routeToMain()
         detachOnboarding(animated: animated)
@@ -322,6 +319,35 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.developerMenuViewController = developerMenuViewController
     }
 
+    private func checkIfAppIsDeactivated() {
+
+        exposureController
+            .isAppDeactivated()
+            .sink(receiveCompletion: { [weak self] completion in
+
+                if completion == .failure(.networkUnreachable) ||
+                    completion == .failure(.serverError) ||
+                    completion == .failure(.internalError) ||
+                    completion == .failure(.responseCached) {
+
+                    self?.exposureController.activate(inBackgroundMode: false)
+                }
+            }, receiveValue: { [weak self] isDeactivated in
+                if isDeactivated {
+
+                    self?.routeToEndOfLife()
+
+                    self?.exposureController.deactivate()
+
+                    self?.backgroundController.removeAllTasks()
+
+                } else {
+                    self?.exposureController.activate(inBackgroundMode: false)
+                }
+                })
+            .store(in: &disposeBag)
+    }
+
     private func checkIfAppUpdateIsRequired() {
 
         /// Check if the app is the minimum version. If not, show the app update screen
@@ -339,6 +365,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 }
             }
         }
+    }
+
+    private func updateTreatmentPerspective() {
+
+        exposureController
+            .updateTreatmentPerspective()
+            .sink(receiveCompletion: { _ in },
+                  receiveValue: { _ in })
+            .store(in: &disposeBag)
     }
 
     private let currentAppVersion: String?

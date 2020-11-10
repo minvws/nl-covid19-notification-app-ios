@@ -9,11 +9,11 @@ import ENFoundation
 import UIKit
 import WebKit
 
-final class WebviewViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate {
+final class WebviewViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate, WebviewViewDelegate {
 
     init(listener: WebviewListener, url: URL, theme: Theme) {
         self.listener = listener
-        self.url = url
+        self.initialURL = url
 
         super.init(theme: theme)
 
@@ -26,14 +26,14 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
     override func loadView() {
         self.view = internalView
         self.view.frame = UIScreen.main.bounds
+        internalView.delegate = self
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         if webViewLoadingEnabled() {
-//            internalView.webView.load(URLRequest(url: url))
-            internalView.webView.load(URLRequest(url: URL(string: "http://www.bsdfsdfsdfsfsd.hl")!))
+            internalView.webView.load(URLRequest(url: initialURL))
         } else {
             logDebug("`webViewLoading` disabled")
         }
@@ -47,17 +47,33 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
         listener?.webviewRequestsDismissal(shouldHideViewController: true)
     }
 
+    // MARK: - WebviewViewDelegate
+
+    fileprivate func webView(_ webView: WebviewView, didClickLink linkURL: URL) {
+        if UIApplication.shared.canOpenURL(linkURL) {
+            UIApplication.shared.open(linkURL, options: [:], completionHandler: nil)
+        } else {
+            logError("Unable to open \(linkURL)")
+        }
+    }
+
     // MARK: - Private
 
     private lazy var internalView: WebviewView = WebviewView(theme: theme)
     private weak var listener: WebviewListener?
-    private let url: URL
+    private let initialURL: URL
     private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
                                                           target: self,
                                                           action: #selector(didTapClose))
 }
 
+private protocol WebviewViewDelegate: AnyObject {
+    func webView(_ webView: WebviewView, didClickLink withURL: URL)
+}
+
 private final class WebviewView: View, WKNavigationDelegate {
+
+    weak var delegate: WebviewViewDelegate?
 
     lazy var webView: WKWebView = {
         let webView = WKWebView()
@@ -151,6 +167,20 @@ private final class WebviewView: View, WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         loadingFinished(withError: false)
+    }
+
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> ()) {
+
+        if navigationAction.navigationType == .linkActivated,
+            let url = navigationAction.request.url,
+            let delegate = delegate {
+
+            delegate.webView(self, didClickLink: url)
+            decisionHandler(.cancel)
+            return
+        }
+
+        decisionHandler(.allow)
     }
 }
 

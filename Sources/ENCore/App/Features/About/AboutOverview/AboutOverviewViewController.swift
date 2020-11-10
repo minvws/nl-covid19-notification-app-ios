@@ -157,7 +157,8 @@ private final class AboutView: View {
     override func setupConstraints() {
         super.setupConstraints()
         tableView.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview()
+            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.bottom.equalToSuperview()
         }
     }
 }
@@ -173,7 +174,6 @@ private final class SectionHeaderView: View {
         titleLabel.numberOfLines = 0
         titleLabel.accessibilityTraits = .header
         titleLabel.font = theme.fonts.largeTitle
-        titleLabel.accessibilityTraits = .header
 
         sectionHeaderLabel.numberOfLines = 0
         sectionHeaderLabel.accessibilityTraits = .header

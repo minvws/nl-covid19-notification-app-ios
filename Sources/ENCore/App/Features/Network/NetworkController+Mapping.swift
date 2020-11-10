@@ -35,7 +35,8 @@ extension Manifest {
         return ApplicationManifest(exposureKeySetsIdentifiers: exposureKeySets,
                                    riskCalculationParametersIdentifier: riskCalculationParameters,
                                    appConfigurationIdentifier: appConfig,
-                                   creationDate: Date())
+                                   creationDate: Date(),
+                                   resourceBundle: resourceBundle)
     }
 }
 
@@ -52,8 +53,7 @@ extension AppConfig {
                                         requestMinimumSize: requestMinimumSize ?? 1800,
                                         requestMaximumSize: requestMaximumSize ?? 17000,
                                         repeatedUploadDelay: repeatedUploadDelay ?? 14400,
-                                        decativated: coronaMelderDeactivated == "deactivated",
-                                        testPhase: coronaMelderTestPhase == true)
+                                        decativated: coronaMelderDeactivated == "deactivated")
     }
 }
 

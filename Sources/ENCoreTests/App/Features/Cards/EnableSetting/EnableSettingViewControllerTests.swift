@@ -13,6 +13,7 @@ final class EnableSettingViewControllerTests: TestCase {
     private var viewController: EnableSettingViewController!
     private let listener = EnableSettingListenerMock()
     private var bluetoothStateStream = BluetoothStateStreamingMock()
+    private var environmentController = EnvironmentControllingMock()
 
     override func setUp() {
         super.setUp()
@@ -20,7 +21,8 @@ final class EnableSettingViewControllerTests: TestCase {
         viewController = EnableSettingViewController(listener: listener,
                                                      theme: theme,
                                                      setting: .enableBluetooth,
-                                                     bluetoothStateStream: bluetoothStateStream)
+                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     environmentController: environmentController)
     }
 
     func test_presentationControllerDidDismiss_callsListener() {

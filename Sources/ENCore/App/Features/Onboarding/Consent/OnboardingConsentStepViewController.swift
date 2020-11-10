@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Lottie
 import UIKit
@@ -25,15 +26,19 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     private let onboardingConsentManager: OnboardingConsentManaging
     private let consentStep: OnboardingConsentStep?
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     init(onboardingConsentManager: OnboardingConsentManaging,
          listener: OnboardingConsentListener,
          theme: Theme,
-         index: Int) {
+         index: Int,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
 
         self.onboardingConsentManager = onboardingConsentManager
         self.listener = listener
         self.consentStep = self.onboardingConsentManager.getStep(index)
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         super.init(theme: theme)
     }
@@ -50,6 +55,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         hasBottomMargin = true
 
         internalView.consentStep = consentStep
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
         internalView.primaryButton.addTarget(self, action: #selector(primaryButtonPressed), for: .touchUpInside)
         internalView.secondaryButton.addTarget(self, action: #selector(secondaryButtonPressed), for: .touchUpInside)
 
@@ -65,12 +71,19 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.internalView.playAnimation()
+
+        interfaceOrientationStreamCancellable = interfaceOrientationStream
+            .isLandscape
+            .sink(receiveValue: { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+        })
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         self.internalView.stopAnimation()
+        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - Functions
@@ -182,6 +195,7 @@ final class OnboardingConsentView: View {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
+        label.accessibilityTraits = .header
         return label
     }()
 
@@ -216,6 +230,13 @@ final class OnboardingConsentView: View {
         }
     }
 
+    var showVisual: Bool = true {
+        didSet {
+            updateView()
+            updateViewConstraints()
+        }
+    }
+
     override func build() {
         super.build()
 
@@ -231,21 +252,15 @@ final class OnboardingConsentView: View {
 
         hasBottomMargin = true
 
-        scrollView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
-            maker.width.equalToSuperview()
-            maker.bottom.equalTo(primaryButton.snp.top).inset(-16)
-        }
-
         primaryButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(50)
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
 
         secondaryButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(50)
 
             maker.bottom.equalTo(primaryButton.snp.top).inset(-16)
@@ -286,9 +301,15 @@ final class OnboardingConsentView: View {
         self.contentLabel.attributedText = step.attributedContent
         self.primaryButton.title = step.primaryButtonTitle
 
-        if let title = step.secondaryButtonTitle {
+        if step.hasSecondaryButton, let title = step.secondaryButtonTitle {
             self.secondaryButton.title = title
             self.secondaryButton.isHidden = false
+        }
+
+        guard showVisual else {
+            animationView.isHidden = true
+            imageView.isHidden = true
+            return
         }
 
         switch step.illustration {
@@ -341,10 +362,17 @@ final class OnboardingConsentView: View {
             }
         }
 
+        var visualVisible = true
+        if case .none = step.illustration {
+            visualVisible = false
+        } else {
+            visualVisible = showVisual
+        }
+
         titleLabel.snp.remakeConstraints { maker in
-            maker.leading.trailing.equalTo(self).inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
-            if case .none = step.illustration {
+            if !visualVisible {
                 maker.top.equalTo(scrollView.snp.top).offset(25)
             } else {
                 maker.top.greaterThanOrEqualTo(imageView.snp.bottom)
@@ -354,9 +382,14 @@ final class OnboardingConsentView: View {
 
         contentLabel.snp.remakeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
-            maker.leading.trailing.equalTo(self).inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
             maker.bottom.lessThanOrEqualTo(scrollView.snp.bottom)
+        }
+
+        scrollView.snp.makeConstraints { maker in
+            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.bottom.equalTo(consentStep?.hasSecondaryButton == true ? secondaryButton.snp.top : primaryButton.snp.top).inset(-16)
         }
     }
 

@@ -124,6 +124,15 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()
 
+    var cryptoUtility: CryptoUtility {
+        return CryptoUtilityBuilder().build()
+    }
+
+    lazy var applicationSignatureController: ApplicationSignatureControlling = {
+        return ApplicationSignatureController(storageController: storageController,
+                                              cryptoUtility: cryptoUtility)
+    }()
+
     /// Exposure state stream, informs about the current exposure states
     var exposureStateStream: ExposureStateStreaming {
         return mutableExposureStateStream
@@ -135,6 +144,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     var bluetoothStateStream: BluetoothStateStreaming {
         return mutableBluetoothStateStream
+    }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return InterfaceOrientationStream()
     }
 
     let theme: Theme = ENTheme()
@@ -149,6 +162,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
 
     lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
+
+    var messageManager: MessageManaging {
+        return MessageManager(storageController: storageController, theme: theme)
+    }
 }
 
 /// Interface describing the builder that builds

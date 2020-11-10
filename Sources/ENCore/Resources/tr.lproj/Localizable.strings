@@ -1,3 +1,15 @@
+// supports HTML
+"enableSettings.exposureNotifications.137.step2" = "<b>Maruziyet Bildirimleri</b>'ne gidin";
+"enableSettings.exposureNotifications.137.step2.action.title" = "Maruziyet Bildirimleri";
+// supports HTML
+"enableSettings.exposureNotifications.137.step3" = "<b>Maruziyetinizle ilgili bilgileri paylaşın</b> seçeneğini açın";
+"enableSettings.exposureNotifications.137.step3.action.title" = "Maruziyetinizle ilgili bilgileri paylaşın";
+// supports HTML
+"enableSettings.exposureNotifications.137.step4" = "Son adım olarak, kontrol edin: <b>Aktif bölge olarak ayarla</b> mavi mi? Öyleyse buraya basın";
+// Should match setting name in iOS
+"enableSettings.exposureNotifications.137.step4.action.title" = "Aktif bölge olarak ayarla";
+
+"privacyAgreement.steps.title"= "Önemli noktalar şunlardır:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "Enfeksiyon riski";
 
@@ -13,7 +25,7 @@
 "contamination.stay_home.title" = "%@ (dahil olmak üzere) tarihine kadar evde kalın";
 "contamination.stay_home.step1" = "Alışverişlerinizi başkalarına yaptırın. Bu gerçekten mümkün değil mi ve hiç şikayetiniz yok mu? O zaman alışveriş yapmak için dışarı çıkabilirsiniz. 1,5 metre mesafe koruyun ve kimseye dokunmayın.";
 "contamination.stay_home.step2" = "Bahçede veya balkonda oturabilirsiniz.";
-"contamination.stay_home.step3" = "4-12 yaş arası çocuklar okula gidebilirler ve / veya spor yapabilirler.";
+"contamination.stay_home.step3" = "18 yaşın altında olan okul çağındaki çocuklar okula gidebilirler ve / veya spor yapabilirler.";
 
 "contamination.visitors.title" = "Ziyaretçi kabul etmeyin";
 "contamination.visitors.step1" = "Ancak sizinle birlikte yaşayanlar sizinle birlikte aynı evde bulunabilirler. Birbirinizden uzak durun ve 1,5 metre mesafe koruyun. Yani sarılmak, öpüşmek ve sevişmek yok.";
@@ -43,11 +55,6 @@
 *
 *  SPDX-License-Identifier: EUPL-1.2
 */
-
-"testVersionTitle" = "Test ve araştırma versiyonu %@ (%@)";
-
-"help.faq.testVersion.title" = "Test ve araştırma versiyonu ne anlama gelir?";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "Bu durumda ne yapabilirsiniz?";
 "moreInformation.situation.step1" = "Şikayetiniz yok mu? Korona testi yaptırın ve sonucu öğrenene kadar evde kalın.";
@@ -202,8 +209,8 @@
 "help.technical_explanation.title" = "Teknik açıklama";
 "help.technical_explanation.step1.title" = "1. Uygulama her telefon için kendi kodunu oluşturur";
 "help.technical_explanation.step1.description" = "Bu kod siz veya telefonunuz hakkında hiçbir bilgi içermez. Kod tamamen rastgeledir ve her 15 dakikada bir değişir.";
-"help.technical_explanation.step2.title" = "2. Telefonlar birbirlerinin yakınında olduklarında kodlarını paylaşırlar";
-"help.technical_explanation.step2.description" = "Karşılaştığınız kişinin de uygulaması var mı? Ardından telefonlarınız  kodlarını Bluetooth Düşük Enerji ile karşılıklı olarak değiştirir. Bu şekilde, uygulama hangi telefonların yakında olduğunu bilir. Uygulama, telefonların ait olduğunu veya nerede olduğunuzu bilmez.";
+"help.technical_explanation.step2.title" = "Telefonlar birbirlerinin yakınında olduklarında kodlarını paylaşırlar";
+"help.technical_explanation.step2.description" = "Karşılaştığınız kişide de uygulama var mı? Telefonlarınız ardından kodlarını Bluetooth Düşük Enerji ile karşılıklı olarak değiştirir. Bu şekilde, uygulama hangi telefonların yakında olduğunu bilir. Uygulama, telefonların ait olduğunu veya nerede olduğunuzu bilmez.";
 "help.technical_explanation.step3.title" = "3. Birinde korona varsa, bu kişi kodlarını bir listeye ekleyebilir";
 "help.technical_explanation.step3.description" = "Bu liste yalnızca virüs bulaşmış kişilerin kodlarını içerir. Kodları eklemek için, virüs bulaşmış bir kişinin önce GGD anahtarını GGD'ye vermesi gerekir. Bu şekilde eklenen kodların gerçekte Korona bulaşmış birine ait olduğu her zaman kesindir. 14 günden daha eski olan tüm kodlar otomatik olarak listeden silinir.";
 "help.technical_explanation.step4.title" = "4. Her telefon daha önce listedeki kodlarla karşılaşıp karşılaşmadığını kontrol eder";
@@ -232,7 +239,7 @@
 "help.pause_app.description" = "Evet, bunu bluetooth'unuzu kapatarak yapabilirsiniz. Bunu<b>Ayarlar> Bluetooth</b>ile yapabilirsiniz. Bluetooth'u kapatırsanız, uygulama artık kod değişimi yapmayacaktır. Bundan sonra, her 24 saatte bir uygulamayı tekrar açmanız için otomatik olarak bir hatırlatıcı mesaj alacaksınız.<br><br>Yine de, tekrar açmayı unutabileceğiniz için genellikle uygulamayı duraklatmanız önerilmez. Özel durumlarda uygulamayı duraklatabilirsiniz. Örneğin, (olası) Korona hastalarına yaklaşırsanız, ancak tıbbi koruyucu ekipman giydiğinizden eminseniz.";
 
 "help.apps_other_countries.title" = "CoronaMelder diğer ülkelerdeki uygulamalarla da çalışıyor mu?";
-"help.apps_other_countries.description" = "Ne yazık ki henüz değil, ancak Eylül ayı sonunda mümkün olması bekleniyor. Ardından CoronaMelder, diğer ülkelerdeki bazı uygulamalarla da kod değişimi yapabilecek. Örneğin, Alman uygulaması. <br><br>CoronaMelder'e ek olarak Almanca Corona-Warn-Uygulamasını yüklerseniz, telefonunuz aynı anda yalnızca 1 uygulamanın etkin olabileceğini söyler. Seçtiğiniz uygulama, o anda temaslarınızı izleyen tek uygulama olur. Bunu birden fazla ülkede yapmak istiyorsanız, uygulamaları kendiniz değiştirmelisiniz. Daha sonra o uygulamadan bildirim alabilirsiniz. Günde bir kez uygulama değiştirirseniz her iki uygulama da temaslarınızı kontrol eder. Bu şekilde hiçbir şeyi kaçırmazsınız.<br><br>Eylül ayının sonundan itibaren muhtemelen kendi ülkenizin uygulamasını kullanmaya devam edebilirsiniz ve artık her gün değiştirmeniz gerekmez.";
+"help.apps_other_countries.description" = "Ne yazık ki henüz değil, ancak bunu mümkün kılmak için çok çalışıyoruz. O zaman CoronaMelder, diğer ülkelerdeki bazı uygulamalarla da kod değişimi yapabilecek. Örneğin, Alman uygulaması. <br><br>CoronaMelder'e ek olarak Almanca Corona-Warn-Uygulamasını yüklerseniz, telefonunuz aynı anda yalnızca 1 uygulamanın etkin olabileceğini söyler. Seçtiğiniz uygulama, o anda temaslarınızı izleyen tek uygulama olur. Bunu birden fazla ülkede yapmak istiyorsanız, uygulamaları kendiniz değiştirmelisiniz. Daha sonra o uygulamadan bildirim alabilirsiniz. Günde bir kez uygulama değiştirirseniz her iki uygulama da temaslarınızı kontrol eder. Bu şekilde hiçbir şeyi kaçırmazsınız.<br><br>Gelecekte muhtemelen kendi ülkenizin uygulamasını kullanmaya devam edebilirsiniz ve artık her gün değiştirmenize gerek kalmaz.";
 
 /* MARK: - Message */
 "message.default.title" = "Korona olan birisinin yakınında bulundunuz";
@@ -255,10 +262,11 @@
 "status.appState" = "Uygulama etkindir";
 "status.appState.inactive.title" = "Uygulama etkin değil";
 "status.appState.inactive.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır";
-"status.appState.inactive.no_recent_updates.description" = "Uygulama, son 24 saat içinde internete bağlanamadı. Wifi veya mobil verilerinizin açık olup olmadığını kontrol edin ve tekrar deneyin.";
+"status.appState.inactive.notification" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat kontrol edemedi.";
+"status.appState.inactive.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
 "status.appState.card.title" = "Uygulama etkin değil";
 "status.appState.card.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır.";
-"status.appState.card.no_recent_updates.description" = "Uygulama, son 24 saat içinde internete bağlanamadı. Wifi veya mobil verilerinizin açık olup olmadığını kontrol edin ve tekrar deneyin.";
+"status.appState.card.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
 "status.appState.card.button" = "Uygulamayı açmak";
 "status.appState.card.try_again" = "Tekrar deneyin";
 "status.active.description" = "Uygulamayı kapatsanız bile buluşmalar izlenir";
@@ -268,7 +276,7 @@
 "status.notified.moreInfo" = "Şimdi ne yapabilirim?";
 "status.notified.removeNotification" = "Bildirimi silin";
 
-/* The title for the table of items in more infromation */
+/* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Daha fazla bilgi";
 
 "moreInformation.cell.about.title" = "Uygulama hakkında sorularınız mı var?";
@@ -286,7 +294,7 @@
 "moreInformation.cell.infected.title" = "GGD anahtarını paylaşmak";
 "moreInformation.cell.infected.subtitle" = "GGD sizi Korona testinizin sonuçları ile ilgili aradığında buraya gidin";
 
-"moreInformation.info.title" = "Sosyal güvenlik numaranızı hazır bulundurun. Bunu pasaportunuzda veya kimlik kartınızda bulabilirsiniz";
+"moreInformation.info.title" = "Sosyal güvenlik numaranızı hazır bulundurun. Bunu pasaportunuzda veya kimlik kartınızda bulabilirsiniz.";
 
 "moreInformation.complaints.item1" = "burun nezlesi, burun akıntısı, hapşırma, boğaz ağrısı gibi soğuk algınlığı şikayetleri";
 "moreInformation.complaints.item2" = "öksürük";
@@ -364,7 +372,7 @@
 "moreInformation.requestTest.button.title" = "Korona testi talep edin";
 "moreInformation.requestTest.receivedNotification.title" = "Korona ile uyumlu şikayetleriniz mi var? Test talep edin";
 "moreInformation.requestTest.receivedNotification.content" = "Korona virüsü ile uyumlu olan (hafif) şikayetleriniz mi var? Kendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz.<br><br>Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.";
-"moreInformation.requestTest.complaints" = "Yüksek ateş veya nefes almada güçlük çekme gibi ciddi şikayetleriniz mi var? Veya risk grubunda mısınız ve ateşiniz mi var? Önce doktorunuzu arayın.";
+"moreInformation.requestTest.complaints" = "Yüksek ateş veya nefes almada güçlük çekme gibi ciddi şikayetleriniz mi var? Veya risk grubuna dahil misiniz ve ateşiniz mi çıkıyor? Önce doktorunuzu arayın.";
 "moreInformation.requestTest.link" = "Coronatest.nl adresine gidin";
 "moreInformation.requestTest.phone" = "0800-1202'yi arayın";
 
@@ -427,16 +435,15 @@
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "Hatırlatma: %@";
 
-"privacyAgreement.title" = "Veri kullanımı için onay";
-"privacyAgreement.message" = "CoronaMelder'i kullanmak için %@' ni kabul etmelisiniz. 
-Bilinmesi gerekenler:";
+"privacyAgreement.title" = "CoronaMelder verilerinizi böyle kullanır";
+"privacyAgreement.message" = "%@, CoronaMelder'ın verilerinizi nasıl kullandığı yazılıdır.";
 "privacyAgreement.message.link" = "gizlilik beyanı";
 "privacyAgreement.list.step0" = "CoronaMelder'ın kullanımı her zaman gönüllüdür";
 "privacyAgreement.list.step1" = "Uygulamanız şifrelenmiş Bluetooth verileri yayınlar.";
 "privacyAgreement.list.step2" = "Sizinle temasta bulunmuş olan diğer kullanıcılar bu verileri en fazla 14 gün saklarlar.";
 "privacyAgreement.list.step3" = "Bir Korona testi, Korona olduğunuzu gösterirse, diğer kullanıcıları uyarmak için bunu uygulamada bildirebilirsiniz.";
 "privacyAgreement.list.step4" = "Verileri telefonunuzdan istediğiniz zaman silebilirsiniz.";
-"privacyAgreement.consent.button" = "Gizlilik bildirimini okudum ve kabul ediyorum";
+"privacyAgreement.consent.button" = "Gizlilik bildirimini okudum ve CoronaMelder'ın verilerimi nasıl kullandığını anladım";
 
 "notification.update_required.title" = "Güncelleme gerekiyor";
 "notification.update_required.description" = "CoronaMelder'ın yeni bir sürümü var. Bu sürüm artık iyi çalışmıyor. Talimatlar için uygulamayı kontrol edin.";

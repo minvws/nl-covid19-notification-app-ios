@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Foundation
 import SnapKit
@@ -17,11 +18,15 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
 
     // MARK: - Init
 
-    init(listener: ReceivedNotificationListener, linkedContent: [LinkedContent], actionButtonTitle: String?, theme: Theme) {
+    init(listener: ReceivedNotificationListener,
+         linkedContent: [LinkedContent],
+         actionButtonTitle: String?, theme: Theme,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
         self.linkedContentTableViewManager = LinkedContentTableViewManager(content: linkedContent, theme: theme)
         self.shouldDisplayLinkedQuestions = linkedContent.isEmpty == false
         self.actionButtonTitle = actionButtonTitle
+        self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
 
@@ -41,6 +46,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+
         internalView.buttonActionHandler = { [weak self] in
             self?.listener?.receivedNotificationActionButtonTapped()
         }
@@ -55,6 +62,12 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
         if shouldDisplayLinkedQuestions {
             internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
         }
+
+        interfaceOrientationStreamCancellable = interfaceOrientationStream
+            .isLandscape
+            .sink(receiveValue: { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+        })
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -62,6 +75,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
         if shouldDisplayLinkedQuestions {
             internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
         }
+
+        interfaceOrientationStreamCancellable = nil
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -82,6 +97,8 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     private let linkedContentTableViewManager: LinkedContentTableViewManager
     private let shouldDisplayLinkedQuestions: Bool
     private let actionButtonTitle: String?
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.receivedNotificationWantsDismissal(shouldDismissViewController: true)
@@ -101,6 +118,12 @@ private final class ReceivedNotificationView: View {
     var buttonActionHandler: (() -> ())? {
         get { infoView.actionHandler }
         set { infoView.actionHandler = newValue }
+    }
+
+    var showVisual: Bool = true {
+        didSet {
+            infoView.showHeader = showVisual
+        }
     }
 
     // MARK: - Init
@@ -142,31 +165,33 @@ private final class ReceivedNotificationView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.bottom.leading.trailing.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.bottom.equalToSuperview()
         }
 
         exampleCaption.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.top.equalToSuperview()
         }
         exampleExposureImageView.snp.makeConstraints { maker in
             let aspectRatio = exampleExposureImageView.image?.aspectRatio ?? 1
 
             maker.top.equalTo(exampleCaption.snp.bottom).offset(15)
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(exampleExposureImageView.snp.width).dividedBy(aspectRatio)
             maker.bottom.equalToSuperview()
         }
         examplePushNotificationImageView.snp.makeConstraints { maker in
             let aspectRatio = examplePushNotificationImageView.image?.aspectRatio ?? 1
 
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.equalTo(examplePushNotificationImageView.snp.width).dividedBy(aspectRatio)
             maker.top.bottom.equalToSuperview()
         }
         tableView.snp.makeConstraints { maker in
-            maker.leading.trailing.top.bottom.width.equalToSuperview()
-            maker.height.equalTo(0)
+            maker.leading.trailing.top.bottom.equalTo(safeAreaLayoutGuide)
+            maker.width.equalToSuperview()
+            maker.height.equalTo(0).priority(.high)
         }
     }
 

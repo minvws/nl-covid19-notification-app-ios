@@ -93,7 +93,7 @@ final class ExposureManager: ExposureManaging, Logging {
         .resume()
     }
 
-    func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
+    func getDiagnosisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
         #if DEBUG
             assert(Thread.isMainThread)
         #endif

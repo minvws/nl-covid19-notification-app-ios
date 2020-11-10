@@ -89,10 +89,35 @@
     return isMatch;
 }
 
+- (BOOL)validateCommonNameForCertificate:(X509 *)certificate
+                         requiredContent:(NSString *)requiredContent
+                         requiredSuffix:(NSString *)requiredSuffix {
+    
+    // Get subject from certificate
+    X509_NAME *certificateSubjectName = X509_get_subject_name(certificate);
+    
+    // Get Common Name from certificate subject
+    char certificateCommonName[256];
+    X509_NAME_get_text_by_NID(certificateSubjectName, NID_commonName, certificateCommonName, 256);
+    NSString *cnString = [NSString stringWithUTF8String:certificateCommonName];
+    
+    // Compare Common Name to required content and required suffix
+    BOOL containsRequiredContent = [cnString rangeOfString:requiredContent options:NSCaseInsensitiveSearch].location != NSNotFound;
+    BOOL hasCorrectSuffix = [cnString hasSuffix:requiredSuffix];    
+    
+    X509_NAME_free(certificateSubjectName);
+    certificateSubjectName = NULL;
+    
+    return hasCorrectSuffix && containsRequiredContent;
+}
+    
 - (BOOL)validatePKCS7Signature:(NSData *)signatureData
                    contentData:(NSData *)contentData
                certificateData:(NSData *)certificateData
-        authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData {
+        authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData
+     requiredCommonNameContent:(NSString *)requiredCommonNameContent
+      requiredCommonNameSuffix:(NSString *)requiredCommonNameSuffix {
+    
     BIO *signatureBlob = BIO_new_mem_buf(signatureData.bytes, (int)signatureData.length);
     if (signatureBlob == NULL) {
         return NO;
@@ -122,52 +147,27 @@
         return NO;
     }
     
-    if (expectedAuthorityKeyIdentifierData != NULL) {
-        const unsigned char * bytes = expectedAuthorityKeyIdentifierData.bytes;
-        ASN1_OCTET_STRING *expectedAuthorityKeyIdentifier = d2i_ASN1_OCTET_STRING(NULL,
-                                                                                  &bytes,
-                                                                                  (int)expectedAuthorityKeyIdentifierData.length);
-
-        STACK_OF(X509) *signers = PKCS7_get0_signers(p7, NULL, 0);
-        
-        if (expectedAuthorityKeyIdentifier == NULL) {
-            BIO_free(signatureBlob); signatureBlob = NULL;
-            BIO_free(contentBlob); contentBlob = NULL;
-            BIO_free(certificateBlob); certificateBlob = NULL;
-            
-            return NO;
-        }
-        
-        if (signers == NULL || sk_X509_num(signers) == 0) {
-            BIO_free(signatureBlob); signatureBlob = NULL;
-            BIO_free(contentBlob); contentBlob = NULL;
-            BIO_free(certificateBlob); certificateBlob = NULL;
-            
-            ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
-            
-            return NO;
-        }
-
-        X509 *signingCert = sk_X509_value(signers, 0);
-        const ASN1_OCTET_STRING * authorityKeyIdentifier = X509_get0_authority_key_id(signingCert);
-        
-        if (authorityKeyIdentifier == NULL) {
-            BIO_free(signatureBlob); signatureBlob = NULL;
-            BIO_free(contentBlob); contentBlob = NULL;
-            BIO_free(certificateBlob); certificateBlob = NULL;
-            
-            ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
-            
-            return NO;
-        }
-
-        BOOL isMatch = ASN1_OCTET_STRING_cmp(authorityKeyIdentifier, expectedAuthorityKeyIdentifier) == 0;
-        
-        ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
-                
-        if (isMatch == false) {
-            return NO;
-        }
+    STACK_OF(X509) *signers = PKCS7_get0_signers(p7, NULL, 0);
+    
+    if (signers == NULL || sk_X509_num(signers) == 0) {
+        BIO_free(signatureBlob); signatureBlob = NULL;
+        BIO_free(contentBlob); contentBlob = NULL;
+        BIO_free(certificateBlob); certificateBlob = NULL;
+        return NO;
+    }
+    
+    X509 *signingCert = sk_X509_value(signers, 0);
+    
+    BOOL isAuthorityKeyIdentifierValid = [self validateAuthorityKeyIdentifierData:expectedAuthorityKeyIdentifierData signingCertificate:signingCert];
+    BOOL isCommonNameValid = [self validateCommonNameForCertificate:signingCert
+                                                    requiredContent:requiredCommonNameContent
+                                                     requiredSuffix:requiredCommonNameSuffix];
+    
+    if (!isAuthorityKeyIdentifierValid || !isCommonNameValid) {
+        BIO_free(signatureBlob); signatureBlob = NULL;
+        BIO_free(contentBlob); contentBlob = NULL;
+        BIO_free(certificateBlob); certificateBlob = NULL;
+        return NO;
     }
     
     X509 *cert = PEM_read_bio_X509(certificateBlob, NULL, 0, NULL);
@@ -229,4 +229,33 @@
     return result == 1;
 }
 
+- (BOOL)validateAuthorityKeyIdentifierData:(NSData *)expectedAuthorityKeyIdentifierData
+                        signingCertificate:(X509 *)signingCert {
+    
+    if (expectedAuthorityKeyIdentifierData == NULL) {
+        return NO;
+    }
+    
+    const unsigned char * bytes = expectedAuthorityKeyIdentifierData.bytes;
+    ASN1_OCTET_STRING *expectedAuthorityKeyIdentifier = d2i_ASN1_OCTET_STRING(NULL,
+                                                                              &bytes,
+                                                                              (int)expectedAuthorityKeyIdentifierData.length);
+
+    if (expectedAuthorityKeyIdentifier == NULL) {
+        return NO;
+    }
+    
+    const ASN1_OCTET_STRING * authorityKeyIdentifier = X509_get0_authority_key_id(signingCert);
+    
+    if (authorityKeyIdentifier == NULL) {
+        ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
+        return NO;
+    }
+
+    BOOL isMatch = ASN1_OCTET_STRING_cmp(authorityKeyIdentifier, expectedAuthorityKeyIdentifier) == 0;
+    authorityKeyIdentifier = NULL;
+    ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
+            
+    return isMatch;
+}
 @end

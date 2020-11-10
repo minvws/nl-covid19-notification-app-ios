@@ -45,13 +45,15 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
          exposureManager: ExposureManaging,
          exposureKeySetsStorageUrl: URL,
          configuration: ExposureConfiguration,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         application: ApplicationControlling) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
         self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
+        self.application = application
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
@@ -444,8 +446,18 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                     let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
                                                         content: content,
                                                         trigger: nil)
+
                     self.userNotificationCenter.add(request) { error in
                         guard let error = error else {
+
+                            /// Store the unseen notification date, but only when the app is in the background
+                            if self.application.isInBackground {
+                                self.storageController.requestExclusiveAccess { storageController in
+                                    storageController.store(object: Date(),
+                                                            identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { _ in }
+                                }
+                            }
+
                             return promise(.success(value))
                         }
                         self.logError("Error posting notification: \(error.localizedDescription)")
@@ -498,7 +510,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                             identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
                                             completion: { _ in
                                                 promise(.success(value))
-                                            })
+                        })
                 }
             }
         }
@@ -577,4 +589,5 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let exposureKeySetsStorageUrl: URL
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter
+    private let application: ApplicationControlling
 }

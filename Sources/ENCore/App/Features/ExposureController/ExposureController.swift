@@ -117,10 +117,6 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.isAppDectivated()
     }
 
-    func isTestPhase() -> AnyPublisher<Bool, Never> {
-        return dataController.isTestPhase().replaceError(with: false).eraseToAnyPublisher()
-    }
-
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
         return dataController.getAppRefreshInterval()
     }
@@ -178,24 +174,6 @@ final class ExposureController: ExposureControlling, Logging {
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
         return dataController
             .processPendingUploadRequests()
-    }
-
-    func notifyUserIfRequired() {
-        let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
-        guard
-            let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
-            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
-        else {
-            return
-        }
-        guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
-            // We haven't shown a notification to the user before so we should show one now
-            return notifyUserAppNeedsUpdate()
-        }
-        guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
-            return
-        }
-        notifyUserAppNeedsUpdate()
     }
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
@@ -324,6 +302,14 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
+    func updateLastLaunch() {
+        dataController.setLastAppLaunchDate(Date())
+    }
+
+    func clearUnseenExposureNotificationDate() {
+        dataController.clearLastUnseenExposureNotificationDate()
+    }
+
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
         logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
@@ -353,14 +339,11 @@ final class ExposureController: ExposureControlling, Logging {
                 switch result {
                 case .finished:
                     self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
-                    // FIXME: disabled for `57704`
-                    // self?.exposureController.notifyUserIfRequired()
-                    self?.logDebug("Should call `notifyUserIfRequired` - disabled for `57704`")
+                    self?.notifyUser24HoursNoCheckIfRequired()
                 case let .failure(error):
                     self?.logError("Error completing sequence \(error.localizedDescription)")
                 }
-        })
-            .eraseToAnyPublisher()
+        }).eraseToAnyPublisher()
     }
 
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never> {
@@ -440,6 +423,109 @@ final class ExposureController: ExposureControlling, Logging {
                 }
             }
         }.eraseToAnyPublisher()
+    }
+
+    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
+        return self.dataController
+            .requestTreatmentPerspective()
+            .eraseToAnyPublisher()
+    }
+
+    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
+        return Deferred {
+            Future { promise in
+
+                guard let lastAppLaunch = self.dataController.lastAppLaunchDate else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastAppLaunchDate`")
+                    return promise(.success(()))
+                }
+                guard let lastExposure = self.dataController.lastExposure else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastExposureDate`")
+                    return promise(.success(()))
+                }
+
+                guard let lastUnseenExposureNotificationDate = self.dataController.lastUnseenExposureNotificationDate else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastUnseenExposureNotificationDate`")
+                    return promise(.success(()))
+                }
+
+                guard lastAppLaunch < lastUnseenExposureNotificationDate else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as the app has been opened after the notification")
+                    return promise(.success(()))
+                }
+
+                let timeInterval = TimeInterval(60 * 60 * 3) // 3 hours
+
+                guard lastAppLaunch.advanced(by: timeInterval) < Date() else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
+                    return promise(.success(()))
+                }
+
+                self.logDebug("User has not opened the app in 3 hours.")
+
+                let days = self.daysAgo(lastExposure.date)
+
+                let content = UNMutableNotificationContent()
+                content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: days)))
+                content.sound = .default
+                content.badge = 0
+
+                self.sendNotification(content: content, identifier: .exposure) { _ in
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+
+    func daysAgo(_ date: Date) -> Int {
+
+        let calendar = Calendar.current
+
+        let today = calendar.startOfDay(for: Date())
+        let compareDate = calendar.startOfDay(for: date)
+
+        let components = calendar.dateComponents([.day], from: compareDate, to: today)
+        return components.day ?? 0
+    }
+
+    func notifyUser24HoursNoCheckIfRequired() {
+
+        func notifyUser() {
+
+            let content = UNMutableNotificationContent()
+            content.title = .statusAppStateInactiveTitle
+            content.body = String(format: .statusAppStateInactiveNotification)
+            content.sound = UNNotificationSound.default
+            content.badge = 0
+
+            let identifier = PushNotificationIdentifier.inactive.rawValue
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+            userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
+                if let error = error {
+                    self?.logError("\(error.localizedDescription)")
+                } else {
+                    self?.dataController.updateLastLocalNotificationExposureDate(Date())
+                }
+            })
+        }
+
+        let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
+        guard
+            let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
+            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
+        else {
+            return
+        }
+        guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
+            // We haven't shown a notification to the user before so we should show one now
+            return notifyUser()
+        }
+        guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
+            return
+        }
+
+        notifyUser()
     }
 
     // MARK: - Private
@@ -542,7 +628,7 @@ final class ExposureController: ExposureControlling, Logging {
 
     private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {
         return Future { promise in
-            self.exposureManager.getDiagnonisKeys(completion: promise)
+            self.exposureManager.getDiagnosisKeys(completion: promise)
         }
         .share()
         .eraseToAnyPublisher()
@@ -582,31 +668,6 @@ final class ExposureController: ExposureControlling, Logging {
             .sink(receiveCompletion: receiveCompletion,
                   receiveValue: completion)
             .store(in: &disposeBag)
-    }
-
-    private func notifyUserAppNeedsUpdate() {
-        let unc = UNUserNotificationCenter.current()
-        unc.getNotificationSettings { settings in
-            guard settings.authorizationStatus == .authorized else {
-                return
-            }
-            let content = UNMutableNotificationContent()
-            content.title = .statusAppStateInactiveTitle
-            content.body = String(format: .statusAppStateInactiveDescription)
-            content.sound = UNNotificationSound.default
-            content.badge = 0
-
-            let identifier = PushNotificationIdentifier.inactive.rawValue
-            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-
-            unc.add(request) { [weak self] error in
-                if let error = error {
-                    self?.logError("\(error.localizedDescription)")
-                } else {
-                    self?.dataController.updateLastLocalNotificationExposureDate(Date())
-                }
-            }
-        }
     }
 
     private func updatePushNotificationState(completition: @escaping () -> ()) {

@@ -161,10 +161,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToRequestTest()
     }
 
-    func moreInformationRequestsRedirect(to url: URL) {
-        router?.routeToWebview(url: url)
-    }
-
     // MARK: - WebviewListener
 
     func webviewRequestsDismissal(shouldHideViewController: Bool) {

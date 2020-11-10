@@ -22,7 +22,6 @@ protocol ExposureControlling: AnyObject {
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError>
-    func isTestPhase() -> AnyPublisher<Bool, Never>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
@@ -34,7 +33,7 @@ protocol ExposureControlling: AnyObject {
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
-    func notifyUserIfRequired()
+    func notifyUser24HoursNoCheckIfRequired()
 
     // MARK: - Permissions
 
@@ -68,6 +67,12 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Misc
 
+    /// Updates the last app launch date
+    func updateLastLaunch()
+
+    /// Removes the unseen exposure notification date
+    func clearUnseenExposureNotificationDate()
+
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
 
@@ -77,6 +82,9 @@ protocol ExposureControlling: AnyObject {
     /// Checks if the app needs to be updated
     func appUpdateRequiredCheck() -> AnyPublisher<(), Never>
 
+    /// Updates the treatment perspective message
+    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+
     // MARK: - Onboarding
 
     /// Whether the user runs the app for the first time
@@ -84,6 +92,9 @@ protocol ExposureControlling: AnyObject {
 
     /// Whether the user has completed onboarding
     var didCompleteOnboarding: Bool { get set }
+
+    /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
+    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
 }
 
 /// Represents a ConfirmationKey for the Lab Flow
@@ -132,6 +143,7 @@ protocol ExposureControllerDependency {
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
     var networkStatusStream: NetworkStatusStreaming { get }
     var mutableBluetoothStateStream: MutableBluetoothStateStreaming { get }
 }
@@ -145,6 +157,10 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
 
     var storageController: StorageControlling {
         return dependency.storageController
+    }
+
+    var applicationSignatureController: ApplicationSignatureControlling {
+        return dependency.applicationSignatureController
     }
 
     var exposureManager: ExposureManaging {

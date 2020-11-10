@@ -30,6 +30,10 @@ final class OnboardingConsentStep: NSObject {
     var secondaryButtonTitle: String?
     var hasNavigationBarSkipButton: Bool = false
 
+    var hasSecondaryButton: Bool {
+        return secondaryButtonTitle != nil
+    }
+
     convenience init(step: Index,
                      theme: Theme,
                      title: String,

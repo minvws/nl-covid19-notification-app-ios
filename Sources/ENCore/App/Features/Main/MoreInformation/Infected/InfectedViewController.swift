@@ -39,10 +39,11 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
     init(theme: Theme,
          exposureController: ExposureControlling,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
-
+        self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
 
@@ -68,6 +69,8 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
                                                             target: self,
                                                             action: #selector(didTapCloseButton(sender:)))
 
+        internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+
         internalView.infoView.actionHandler = { [weak self] in
             self?.uploadCodes()
         }
@@ -82,6 +85,13 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
             .exposureState
             .sink { state in
                 self.update(exposureState: state)
+            }
+            .store(in: &disposeBag)
+
+        interfaceOrientationStream
+            .isLandscape
+            .sink { [weak self] isLandscape in
+                self?.internalView.infoView.showHeader = !isLandscape
             }
             .store(in: &disposeBag)
     }
@@ -182,6 +192,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
     private var disposeBag = Set<AnyCancellable>()
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
 
     private var cardViewController: ViewControllable?
 
@@ -306,7 +317,8 @@ private final class InfectedView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.bottom.leading.trailing.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.bottom.equalToSuperview()
         }
     }
 

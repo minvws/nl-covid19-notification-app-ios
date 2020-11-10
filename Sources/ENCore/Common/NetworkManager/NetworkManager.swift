@@ -60,6 +60,41 @@ final class NetworkManager: NetworkManaging, Logging {
         }
     }
 
+    /// Fetches the treatment perspective message from server
+    /// - Parameters:
+    ///   - id: id of the resourceBundleId
+    ///   - completion: executed on complete or failure
+    func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
+        let expectedContentType = HTTPContentType.json
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
+        let urlRequest = constructRequest(url: configuration.getTreatmentPerspectiveUrl(identifier: identifier),
+                                          method: .GET,
+                                          headers: headers)
+
+        download(request: urlRequest) { result in
+            switch result {
+            case let .failure(error):
+                completion(.failure(error))
+            case let .success(result):
+                self
+                    .responseToData(for: result.0, url: result.1)
+                    .flatMap(self.decodeJson(data:))
+                    .mapError { $0.asNetworkError }
+                    .sink(
+                        receiveCompletion: { result in
+                            if case let .failure(error) = result {
+                                completion(.failure(error))
+                            }
+                        },
+                        receiveValue: { (data: TreatmentPerspective) in
+                            completion(.success(data))
+                        })
+                    .store(in: &self.disposeBag)
+            }
+        }
+    }
+
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
     /// - Parameter completion: completion description
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ()) {
@@ -192,7 +227,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let urlRequest = constructRequest(url: configuration.postKeysUrl(signature: signature),
+        let urlRequest = constructRequest(url: configuration.stopKeysUrl(signature: signature),
                                           method: .POST,
                                           body: request,
                                           headers: headers)

@@ -56,7 +56,19 @@ public final class Localization {
         }
     }
 
-    public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
+    public static var isRTL: Bool {
+        #if DEBUG
+            if let overriddenIsRTL = LocalizationOverrides.overriddenIsRTL {
+                return overriddenIsRTL
+            }
+        #endif
+
+        return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft
+    }
+
+    static var isUsingDutchLanguage: Bool {
+        Locale.current.languageCode?.lowercased() == "nl"
+    }
 }
 
 extension String {
@@ -66,6 +78,7 @@ extension String {
     static var helpDeskPhoneNumber = "tel://08001280"
     static var coronaTestPhoneNumber = "tel://08001202"
     static var coronaTestWebUrl = "https://coronatest.nl"
+    static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
 
     // MARK: - Share App
 
@@ -84,8 +97,6 @@ extension String {
     static var close: String { return Localization.string(for: "close") }
     static var errorTitle: String { return Localization.string(for: "error.title") }
     static var learnMore: String { return Localization.string(for: "learnMore") }
-
-    static func testVersionTitle(_ version: String, _ build: String) -> String { return Localization.string(for: "testVersionTitle", [version, build]) }
 
     // MARK: - Update App
 
@@ -212,9 +223,6 @@ extension String {
     static var helpOtherCountriesTitle: String { return Localization.string(for: "help.apps_other_countries.title") }
     static var helpOtherCountriesDescription: String { return Localization.string(for: "help.apps_other_countries.description") }
 
-    static var helpTestVersionTitle: String { return Localization.string(for: "help.faq.testVersion.title") }
-    static var helpTestVersionLink: String { return Localization.string(for: "help.faq.testVersion.link", [currentLanguageIdentifier]) }
-
     // MARK: - About - What the app do
 
     static var helpWhatAppDoesTitle: String { return Localization.string(for: "help.what_does_the_app_do.title") }
@@ -287,6 +295,7 @@ extension String {
     static var statusAppState: String { return Localization.string(for: "status.appState") }
     static var statusAppStateInactiveTitle: String { return Localization.string(for: "status.appState.inactive.title") }
     static var statusAppStateInactiveDescription: String { return Localization.string(for: "status.appState.inactive.description") }
+    static var statusAppStateInactiveNotification: String { return Localization.string(for: "status.appState.inactive.notification") }
     static var statusAppStateInactiveNoRecentUpdatesDescription: String { return Localization.string(for: "status.appState.inactive.no_recent_updates.description") }
     static var statusAppStateCardTitle: String { return Localization.string(for: "status.appState.card.title") }
     static var statusAppStateCardDescription: String { return Localization.string(for: "status.appState.card.description") }
@@ -444,6 +453,15 @@ extension String {
     static var enableSettingsExposureNotificationsStep2: String { return Localization.string(for: "enableSettings.exposureNotifications.step2") }
     static var enableSettingsExposureNotificationsStep2ActionTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.step2.action.title") }
 
+    // MARK: - Enable Settings | Exposure Notifications | iOS 13.7+
+
+    static var enableSettingsExposureNotifications137Step2: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step2") }
+    static var enableSettingsExposureNotifications137Step2ActionTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step2.action.title") }
+    static var enableSettingsExposureNotifications137Step3: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step3") }
+    static var enableSettingsExposureNotifications137Step3ActionTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step3.action.title") }
+    static var enableSettingsExposureNotifications137Step4: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step4") }
+    static var enableSettingsExposureNotifications137Step4ActionTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.137.step4.action.title") }
+
     // MARK: - Enable Settings | Bluetooth
 
     static var enableSettingsBluetoothTitle: String { return Localization.string(for: "enableSettings.bluetooth.title") }
@@ -466,11 +484,14 @@ extension String {
 
     static func exposureNotificationUserExplanation(_ one: String) -> String { return Localization.string(for: "exposure.notification.userExplanation", [one]) }
 
+    static func exposureNotificationReminder(_ one: String) -> String { return Localization.string(for: "exposure.notification.reminder", [one]) }
+
     // MARK: - Privacy Agreement
 
     static var privacyAgreementTitle: String { return Localization.string(for: "privacyAgreement.title") }
     static var privacyAgreementMessage: String { return Localization.string(for: "privacyAgreement.message") }
     static var privacyAgreementMessageLink: String { return Localization.string(for: "privacyAgreement.message.link") }
+    static var privacyAgreementStepsTitle: String { return Localization.string(for: "privacyAgreement.steps.title") }
     static var privacyAgreementStep0: String { return Localization.string(for: "privacyAgreement.list.step0") }
     static var privacyAgreementStep1: String { return Localization.string(for: "privacyAgreement.list.step1") }
     static var privacyAgreementStep2: String { return Localization.string(for: "privacyAgreement.list.step2") }
@@ -523,6 +544,12 @@ extension String {
     }
 
     static var currentLanguageIdentifier: String {
+        #if DEBUG
+            if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
+                return overriddenCurrentLanguageIdentifier
+            }
+        #endif
+
         let defaultLanguageIdentifier = "en"
         let supportedLanguageCodes = Bundle.main.localizations
 

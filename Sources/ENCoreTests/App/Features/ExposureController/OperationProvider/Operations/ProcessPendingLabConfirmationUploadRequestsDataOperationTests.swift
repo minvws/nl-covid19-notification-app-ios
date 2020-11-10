@@ -7,6 +7,7 @@
 
 import Combine
 @testable import ENCore
+import ENFoundation
 import Foundation
 import XCTest
 
@@ -170,6 +171,29 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         XCTAssertNotNil(receivedRequests)
         XCTAssertEqual(receivedRequests.count, 1)
         XCTAssertEqual(receivedRequests[0], request)
+    }
+
+    func test_NotScheduledNotification() {
+        let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        DateTimeTestingOverrides.overriddenCurrentDate = date
+
+        XCTAssertEqual(date, currentDate())
+        XCTAssertNil(operation.getCalendarTriggerForGGDOpeningHourIfNeeded())
+    }
+
+    func test_ScheduledNotification() {
+        let date = Date(timeIntervalSince1970: 1593311000) // 28/06/20 02:23
+        DateTimeTestingOverrides.overriddenCurrentDate = date
+
+        let trigger = operation.getCalendarTriggerForGGDOpeningHourIfNeeded()
+
+        XCTAssertEqual(date, currentDate())
+        XCTAssertNotNil(trigger)
+
+        /// GGD working hours
+        XCTAssertEqual(trigger?.dateComponents.hour, 8)
+        XCTAssertEqual(trigger?.dateComponents.minute, 0)
+        XCTAssertEqual(trigger?.dateComponents.timeZone, TimeZone(identifier: "Europe/Amsterdam"))
     }
 
     // MARK: - Private
