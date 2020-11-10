@@ -1,3 +1,15 @@
+"moreInformation.cell.settings.title" = "Instellingen";
+"moreInformation.cell.settings.subtitle" = "Pas je instellingen aan voor het gebruik van mobiele data";
+
+/* MARK: - MoreInformation | Settings */
+
+"moreInformation.settings.title" = "Instellingen";
+"moreInformation.settings.description" = "CoronaMelder controleert een paar keer per dag of je in de buurt bent geweest van iemand met corona. Als je mobiele data uitzet, doet de app dit alleen nog als je op wifi zit. Je ontmoetingen worden ook bijgehouden als je geen internetverbinding hebt.";
+"moreInformation.settings.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
+"moreInformation.settings.step2" = "Zet mobiele data voor CoronaMelder aan of uit";
+"moreInformation.settings.step2.row.title" = "Mobiele data";
+"moreInformation.settings.button" = "Open Instellingen";
+
 // supports HTML
 "enableSettings.exposureNotifications.137.step2" = "Ga naar <b>Blootstellingsmeldingen</b>";
 "enableSettings.exposureNotifications.137.step2.action.title" = "Blootstellingsmeldingen";
@@ -231,7 +243,7 @@
 "help.what_to_do_with_notification.description" = "Volg het advies in de app. Het advies hangt af van je situatie. Of je klachten hebt die bij corona passen. En op welke dag je in de buurt was van de besmette persoon.<br><br>Blijf in ieder geval thuis tot je zeker weet dat je geen corona hebt. Zo voorkom je dat je onbewust anderen besmet.<br><br>Geeft de GGD je aan de telefoon andere adviezen dan de app? Volg dan het advies van de GGD.";
 "help.other_reports.title" = "Andere meldingen";
 "help.other_reports.description" = "CoronaMelder kan je ook een melding sturen als er een technisch probleem is. Bijvoorbeeld als je bluetooth uitstaat. Of als er langer dan een dag geen internetverbinding was. De app helpt je dit op te lossen.<br><br>Heb je zo’n melding ontvangen, en is de app wel gewoon actief? Dan is het probleem in de tussentijd al opgelost.<br><br>Je krijgt soms ook meldingen waarin staat dat je telefoon COVID-19 controles uitvoert. Open dan CoronaMelder. Goed om te weten: meestal is er niks aan de hand.";
-"help.other_what_does_report_say.title" = "Wat staat er in een melding?";
+"help.other_what_does_report_say.title" = "Hoe herken ik een melding?";
 "help.other_what_does_report_say.content1" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben.";
 "help.other_what_does_report_say.content2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
 
@@ -258,6 +270,11 @@
 "main.confirmNotificationRemoval.message" = "Je kunt de datum daarna niet meer terugvinden in de app. Onthoud deze dus goed.";
 "main.confirmNotificationRemoval.confirm" = "Verwijder";
 
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "Deze pagina kan niet geladen worden";
+"webview.loadingfailed.subtitle" = "Er gaat iets mis hier. Kom later terug of probeer de pagina opnieuw te laden";
+"webview.loadingfailed.try_again" = "Probeer opnieuw";
+
 /* MARK: - Status */
 "status.appState" = "De app is actief";
 "status.appState.inactive.title" = "De app is niet actief";
@@ -279,14 +296,14 @@
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Meer informatie";
 
-"moreInformation.cell.about.title" = "Vragen over de app?";
+"moreInformation.cell.about.title" = "Vragen over de app";
 "moreInformation.cell.about.subtitle" = "Bekijk hoe de app werkt en wat dit voor je privacy betekent";
 
 "moreInformation.cell.share.title" = "Mensen uitnodigen voor de app";
 "moreInformation.cell.share.subtitle" = "Deel de app met anderen om samen corona onder controle te krijgen";
 
-"moreInformation.cell.receivedNotification.title" = "Wat staat er in een melding?";
-"moreInformation.cell.receivedNotification.subtitle" = "Lees wat je kunt doen nadat je in de buurt bent geweest van iemand met corona";
+"moreInformation.cell.receivedNotification.title" = "Hoe herken ik een melding?";
+"moreInformation.cell.receivedNotification.subtitle" = "Ontdek hoe een melding eruitziet en wat je kunt doen als je er een krijgt";
 
 "moreInformation.cell.requestTest.title" = "Coronatest aanvragen";
 "moreInformation.cell.requestTest.subtitle" = "Ontdek zo snel mogelijk of je zelf besmet bent";
@@ -326,6 +343,8 @@
 "moreInformation.about.faq.power_usage" = "Hoeveel stroom gebruikt de app?";
 "moreInformation.about.faq.deletion" = "Hoe verwijder ik de bluetoothgegevens van mijn telefoon?";
 "moreInformation.about.faq.deletion.description" = "Je kunt de bluetoothgegevens die CoronaMelder heeft bewaard zelf verwijderen. Dat gaat als volgt.<br><br>Ga op je telefoon naar Instellingen > Blootstellingsmeldingen > Status van 'Blootstelling bijhouden'. Klik op Verwijder blootstellingslogbestand.<br><br>Wil je dat de app geen nieuwe bluetoothgegevens meer bewaart? Verwijder dan de app.";
+
+"moreInformation.about.interoperability.title" = "Met welke buitenlandse apps werkt CoronaMelder samen?";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Laat anderen weten dat jij helpt het virus te stoppen";
@@ -399,6 +418,11 @@
 "cards.notificationsOff.title" = "Meldingen staan <u>uit</u>";
 "cards.notificationsOff.content" = "Zet algemene meldingen aan zodat de app direct informatie kan delen wanneer dat nodig is.";
 "cards.notificationsOff.action" = "Meldingen aanzetten";
+
+"cards.interopannouncement.title" = "Goed om te weten";
+"cards.interopannouncement.content" = "CoronaMelder werkt vanaf 30 november samen met corona-apps uit andere Europese landen";
+"cards.interopannouncement.action" = "Meer informatie";
+"cards.interopannouncement.secondaryaction" = "Sluiten";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Contactmeldingen aanzetten";

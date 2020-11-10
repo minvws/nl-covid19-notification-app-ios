@@ -322,6 +322,9 @@ extension String {
     static var moreInformationCellAboutTitle: String { return Localization.string(for: "moreInformation.cell.about.title") }
     static var moreInformationCellAboutSubtitle: String { return Localization.string(for: "moreInformation.cell.about.subtitle") }
 
+    static var moreInformationCellSettingsTitle: String { return Localization.string(for: "moreInformation.cell.settings.title") }
+    static var moreInformationCellSettingsSubtitle: String { return Localization.string(for: "moreInformation.cell.settings.subtitle") }
+
     static var moreInformationCellShareTitle: String { return Localization.string(for: "moreInformation.cell.share.title") }
     static var moreInformationCellShareSubtitle: String { return Localization.string(for: "moreInformation.cell.share.subtitle") }
 
@@ -352,6 +355,15 @@ extension String {
     static var aboutAppInformationDescription: String { return Localization.string(for: "moreInformation.about.onboarding.description") }
     static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
+
+    // MARK: - MoreInformation | Settings
+
+    static var moreInformationSettingsTitle: String { return Localization.string(for: "moreInformation.settings.title") }
+    static var moreInformationSettingsDescription: String { return Localization.string(for: "moreInformation.settings.description") }
+    static var moreInformationSettingsStep1: String { return Localization.string(for: "moreInformation.settings.step1") }
+    static var moreInformationSettingsStep2: String { return Localization.string(for: "moreInformation.settings.step2") }
+    static var moreInformationSettingsStep2RowTitle: String { return Localization.string(for: "moreInformation.settings.step2.row.title") }
+    static var moreInformationSettingsButton: String { return Localization.string(for: "moreInformation.settings.button") }
 
     // MARK: - MoreInformation | Share
 
