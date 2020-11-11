@@ -165,6 +165,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func scheduleDecoyStopKeys(task: BGProcessingTask) {
+
         let percentage = Int.random(in: 0 ... 10)
         let delay = percentage == 0 ? Int.random(in: configuration.decoyDelayRangeLowerBound) : Int.random(in: configuration.decoyDelayRangeUpperBound)
         let date = currentDate().addingTimeInterval(Double(delay))
@@ -175,6 +176,13 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleDecoySequence(task: BGProcessingTask) {
+
+        guard isExposureManagerActive else {
+            task.setTaskCompleted(success: true)
+            logDebug("ExposureManager inactive - Not handling \(task.identifier)")
+            return
+        }
+
         func execute(decoyProbability: Float) {
             let r = Float.random(in: configuration.decoyProbabilityRange)
             guard r < decoyProbability else {
@@ -194,6 +202,13 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleDecoyRegister(task: BGProcessingTask) {
+
+        guard isExposureManagerActive else {
+            task.setTaskCompleted(success: true)
+            logDebug("ExposureManager inactive - Not handling \(task.identifier)")
+            return
+        }
+
         exposureController.requestLabConfirmationKey { _ in
             // Note: We ignore the response
             self.logDebug("Decoy `/register` complete")
@@ -208,6 +223,13 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
+
+        guard isExposureManagerActive else {
+            task.setTaskCompleted(success: true)
+            logDebug("ExposureManager inactive - Not handling \(task.identifier)")
+            return
+        }
+
         self.logDebug("Decoy `/stopkeys` started")
         let cancellable = exposureController
             .getPadding()
@@ -398,5 +420,9 @@ final class BackgroundController: BackgroundControlling, Logging {
             logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
         }
+    }
+
+    private var isExposureManagerActive: Bool {
+        self.exposureManager.getExposureNotificationStatus() == .active
     }
 }
