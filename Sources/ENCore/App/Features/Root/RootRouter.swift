@@ -148,6 +148,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController.updateLastLaunch()
 
         exposureController.clearUnseenExposureNotificationDate()
+
+        removeNotificationsFromNotificationsCenter()
     }
 
     func didEnterForeground() {
@@ -374,6 +376,20 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .sink(receiveCompletion: { _ in },
                   receiveValue: { _ in })
             .store(in: &disposeBag)
+    }
+
+    private func removeNotificationsFromNotificationsCenter() {
+
+        let identifiers = [
+            PushNotificationIdentifier.exposure.rawValue,
+            PushNotificationIdentifier.inactive.rawValue,
+            PushNotificationIdentifier.enStatusDisabled.rawValue,
+            PushNotificationIdentifier.appUpdateRequired.rawValue
+        ]
+
+        UNUserNotificationCenter
+            .current()
+            .removeDeliveredNotifications(withIdentifiers: identifiers)
     }
 
     private let currentAppVersion: String?
