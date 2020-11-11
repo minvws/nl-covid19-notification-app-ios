@@ -13,7 +13,7 @@ struct NetworkConfiguration {
         let host: String
         let port: Int?
         let path: [String]
-        let sslSignatures: [Certificate.Signature]? // SSL pinning certificate, nil = no pinning
+        let sslSignatures: [Certificate.Fingerprint]? // SSL pinning certificate, nil = no pinning
         let tokenParams: [String: String]
     }
 
@@ -21,7 +21,7 @@ struct NetworkConfiguration {
     let api: EndpointConfiguration
     let cdn: EndpointConfiguration
 
-    func sslSignatures(forHost host: String) -> [Certificate.Signature]? {
+    func sslSignatures(forHost host: String) -> [Certificate.Fingerprint]? {
         if api.host == host { return api.sslSignatures }
         if cdn.host == host { return cdn.sslSignatures }
 
