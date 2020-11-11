@@ -198,6 +198,9 @@ private final class StatusView: View {
     override func build() {
         super.build()
 
+        /// Initially hide the status. It will become visible after the first update
+        showStatus(false)
+
         contentContainer.axis = .vertical
         contentContainer.spacing = 32
         contentContainer.alignment = .center
@@ -288,6 +291,7 @@ private final class StatusView: View {
     // MARK: - Internal
 
     func update(with viewModel: StatusViewModel) {
+
         iconView.update(with: viewModel.icon)
 
         titleLabel.attributedText = viewModel.title
@@ -314,6 +318,8 @@ private final class StatusView: View {
 
         evaluateHeight()
         evaluateImageSize()
+
+        showStatus(true)
     }
 
     // MARK: - Private
@@ -332,6 +338,12 @@ private final class StatusView: View {
     /// Manually adjusts sceneImage height constraint after layout pass
     private func evaluateImageSize() {
         sceneImageHeightConstraint?.constant = UIScreen.main.bounds.width * sceneImageAspectRatio
+    }
+
+    private func showStatus(_ show: Bool) {
+        titleLabel.alpha = show ? 1 : 0
+        descriptionLabel.alpha = show ? 1 : 0
+        iconView.alpha = show ? 1 : 0
     }
 }
 
