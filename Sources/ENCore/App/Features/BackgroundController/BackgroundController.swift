@@ -386,6 +386,8 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         taskScheduler.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
 
+        notifyUser24HoursNoCheckIfRequired()
+
         let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
         request.requiresNetworkConnectivity = requiresNetworkConnectivity
         request.earliestBeginDate = date
@@ -398,5 +400,9 @@ final class BackgroundController: BackgroundControlling, Logging {
             logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
         }
+    }
+
+    private func notifyUser24HoursNoCheckIfRequired() {
+        exposureController.notifyUser24HoursNoCheckIfRequired()
     }
 }
