@@ -75,8 +75,8 @@ class MessageManagerTests: TestCase {
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
-        XCTAssertEqual(result.paragraphs.first?.title, "Title ExposureDate:June 30, 2020, ExposureDaysAgo:1 day ago, StayHomeUntilDate:July 10, 2020")
-        XCTAssertEqual(result.paragraphs.first?.body.string, "Body ExposureDate:June 30, 2020, ExposureDaysAgo:1 day ago, StayHomeUntilDate:July 10, 2020")
+        XCTAssertEqual(result.paragraphs.first?.title, "Title ExposureDate:Tuesday, June 30, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
+        XCTAssertEqual(result.paragraphs.first?.body.string, "Body ExposureDate:Tuesday, June 30, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
         XCTAssertEqual(result.paragraphs.last?.title, "Title 2")
         XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2")
     }
@@ -129,8 +129,8 @@ class MessageManagerTests: TestCase {
         TreatmentPerspective(
             resources: [
                 "en": [
-                    "some_resource_title": "Title ExposureDate:{ExposureDate}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
-                    "some_resource_body": "Body ExposureDate:{ExposureDate}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
+                    "some_resource_title": "Title ExposureDate:{ExposureDate}, ExposureDateShort:{ExposureDateShort}, ExposureDateShortWithCalculation:{ExposureDateShort+2}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
+                    "some_resource_body": "Body ExposureDate:{ExposureDate}, ExposureDateShort:{ExposureDateShort}, ExposureDateShortWithCalculation:{ExposureDateShort+2}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
                     "some_resource_title2": "Title 2",
                     "some_resource_body2": "Body 2"
                 ],
