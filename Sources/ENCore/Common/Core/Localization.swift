@@ -79,6 +79,7 @@ extension String {
     static var coronaTestPhoneNumber = "tel://08001202"
     static var coronaTestWebUrl = "https://coronatest.nl"
     static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
+    static var interoperabilityLink = "https://coronamelder.nl/%@/operabiliteit"
 
     // MARK: - Share App
 
@@ -353,7 +354,7 @@ extension String {
     static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
     static var aboutInteroperabilityTitle: String { return Localization.string(for: "moreInformation.about.interoperability.title") }
-    static var aboutInteroperabilityLink: String { return "@TODO" }
+    static var aboutInteroperabilityLink: String { return Localization.string(for: .interoperabilityLink, [currentLanguageIdentifier]) }
 
     // MARK: - MoreInformation | Share
 
