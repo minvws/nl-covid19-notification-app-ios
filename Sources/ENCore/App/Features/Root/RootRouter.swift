@@ -44,6 +44,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          backgroundController: BackgroundControlling,
          updateAppBuilder: UpdateAppBuildable,
          webviewBuilder: WebviewBuildable,
+         userNotificationCenter: UserNotificationCenter,
          currentAppVersion: String?) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
@@ -63,6 +64,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         self.updateAppBuilder = updateAppBuilder
         self.currentAppVersion = currentAppVersion
+
+        self.userNotificationCenter = userNotificationCenter
 
         super.init(viewController: viewController)
 
@@ -387,9 +390,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             PushNotificationIdentifier.appUpdateRequired.rawValue
         ]
 
-        UNUserNotificationCenter
-            .current()
-            .removeDeliveredNotifications(withIdentifiers: identifiers)
+        userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
     }
 
     private let currentAppVersion: String?
@@ -425,6 +426,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
+
+    private let userNotificationCenter: UserNotificationCenter
 }
 
 private extension ExposureActiveState {
