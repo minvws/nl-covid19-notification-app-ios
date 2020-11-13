@@ -89,7 +89,7 @@ class MessageManagerTests: TestCase {
         let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         let treatmentPerspective = TreatmentPerspective(
             resources: [
-                "en": ["some_resource_title": "{SomeUnknownPlaceholder} {ExposureDate}", "some_resource_body": "{SomeUnknownPlaceholder} {ExposureDate}"]
+                "en": ["some_resource_title": "{SomeUnknownPlaceholder} {ExposureDate}, {ExposureDate+0}", "some_resource_body": "{SomeUnknownPlaceholder} {ExposureDate}"]
             ],
             guidance: .init(
                 quarantineDays: 10,
@@ -105,7 +105,7 @@ class MessageManagerTests: TestCase {
         let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
 
         // Assert
-        XCTAssertEqual(result.paragraphs.first?.title, "{SomeUnknownPlaceholder} Tuesday, June 30")
+        XCTAssertEqual(result.paragraphs.first?.title, "{SomeUnknownPlaceholder} Tuesday, June 30, Tuesday, June 30")
         XCTAssertEqual(result.paragraphs.first?.body.string, "{SomeUnknownPlaceholder} Tuesday, June 30")
     }
 
