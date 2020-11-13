@@ -16,6 +16,7 @@ protocol MessageManaging: AnyObject {
 
 final class MessageManager: MessageManaging, Logging {
 
+    /// The following placeholders can be used in message text as "{PLACEHOLDERNAME}". They will be replaced with locally-known information by the app.
     enum TreatmentPerspectivePlaceholder: String {
         case exposureDate = "ExposureDate"
         case exposureDaysAgo = "ExposureDaysAgo"
@@ -97,42 +98,44 @@ final class MessageManager: MessageManaging, Logging {
     private func replacePlaceholders(inString attributedString: NSAttributedString, withExposureDate exposureDate: Date, quarantineDays: Int) -> NSAttributedString {
 
         let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
-        var originalText = mutableAttributedString.string
+        let originalText = mutableAttributedString.string
         var modifiedText = mutableAttributedString.string
 
+        // Find all placeholders in the string
         let fullRange = NSRange(location: 0, length: originalText.utf16.count)
-        let regex = try! NSRegularExpression(pattern: "\\{[a-zA-Z]+[+]?[0-9]?\\}")
+        let regex = try! NSRegularExpression(pattern: "\\{[a-zA-Z]+[+]?[0-9]*\\}")
         regex.matches(in: originalText, options: [], range: fullRange).forEach { match in
-            let token = originalText[match.range.lowerBound ..< match.range.upperBound]
-            let trimmed = token.trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
-            let components = trimmed.components(separatedBy: CharacterSet(charactersIn: "+-"))
+            let placeholder = originalText[match.range.lowerBound ..< match.range.upperBound]
+            let trimmedPlaceholder = placeholder.trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
 
-            guard let knownPlaceholder = TreatmentPerspectivePlaceholder(rawValue: components[0]) else {
+            // Placeholders can contain a number like so: {SomeDatePlaceHolder+3}
+            // in which case that number is the number of days that should be added to the date.
+            // Split the placeholder on the plus-sign to see if this is the case
+            let placeholderComponents = trimmedPlaceholder.components(separatedBy: CharacterSet(charactersIn: "+"))
+
+            guard let knownPlaceholder = TreatmentPerspectivePlaceholder(rawValue: placeholderComponents[0]) else {
                 return
             }
 
             var daysAdded = 0
-            if let dayComponent = components[safe: 1] {
+            if let dayComponent = placeholderComponents[safe: 1] {
                 daysAdded = Int(dayComponent) ?? 0
             }
 
-            var replacementString = token
+            var replacementString = placeholder
 
             switch knownPlaceholder {
             case .exposureDate:
                 replacementString = formatDate(exposureDate, fromTemplate: "EEEEdMMMM", addingDays: daysAdded)
-
             case .exposureDateShort:
                 replacementString = formatDate(exposureDate, fromTemplate: "dMMMM", addingDays: daysAdded)
-
             case .exposureDaysAgo:
                 replacementString = statusNotifiedDaysAgo(withExposureDate: exposureDate)
-
             case .stayHomeUntilDate:
                 replacementString = formatStayHomeUntilDate(withExposureDate: exposureDate, andQuarantineDays: quarantineDays) ?? replacementString
             }
 
-            modifiedText = modifiedText.replacingOccurrences(of: token, with: replacementString)
+            modifiedText = modifiedText.replacingOccurrences(of: placeholder, with: replacementString)
         }
 
         mutableAttributedString.mutableString.setString(modifiedText)
@@ -175,18 +178,4 @@ final class MessageManager: MessageManaging, Logging {
 
     private let storageController: StorageControlling
     private let theme: Theme
-}
-
-extension String {
-    subscript(_ range: CountableRange<Int>) -> String {
-        let start = index(startIndex, offsetBy: max(0, range.lowerBound))
-        let end = index(start, offsetBy: min(self.count - range.lowerBound,
-                                             range.upperBound - range.lowerBound))
-        return String(self[start ..< end])
-    }
-
-    subscript(_ range: CountablePartialRangeFrom<Int>) -> String {
-        let start = index(startIndex, offsetBy: max(0, range.lowerBound))
-        return String(self[start...])
-    }
 }
