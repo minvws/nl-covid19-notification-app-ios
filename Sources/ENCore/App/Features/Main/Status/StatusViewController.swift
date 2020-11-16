@@ -59,6 +59,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         statusView.listener = listener
 
+        displayCard(false)
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
@@ -114,6 +115,9 @@ final class StatusViewController: ViewController, StatusViewControllable {
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
+
+        displayCard(false)
+
         let statusViewModel: StatusViewModel
 
         switch (status.activeState, status.notifiedState) {
@@ -147,10 +151,12 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         if let cardType = statusViewModel.cardType {
             cardRouter.type = cardType
-            cardRouter.viewControllable.uiviewController.view.isHidden = false
-        } else {
-            cardRouter.viewControllable.uiviewController.view.isHidden = true
+            displayCard(true)
         }
+    }
+
+    private func displayCard(_ display: Bool) {
+        cardRouter.viewControllable.uiviewController.view.isHidden = !display
     }
 
     private lazy var statusView: StatusView = StatusView(theme: self.theme,
