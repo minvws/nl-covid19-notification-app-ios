@@ -59,7 +59,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         statusView.listener = listener
 
-        displayCard(false)
+        showCard(false)
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
@@ -116,8 +116,6 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
 
-        displayCard(false)
-
         let statusViewModel: StatusViewModel
 
         switch (status.activeState, status.notifiedState) {
@@ -127,7 +125,6 @@ final class StatusViewController: ViewController, StatusViewControllable {
             statusViewModel = .activeWithNotified(date: date)
         case let (.inactive(reason), .notified(date)):
             let cardType = reason.cardType(listener: listener)
-
             statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
@@ -149,13 +146,16 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         statusView.update(with: statusViewModel)
 
-        if let cardType = statusViewModel.cardType {
-            cardRouter.type = cardType
-            displayCard(true)
+        guard let cardType = statusViewModel.cardType else {
+            showCard(false)
+            return
         }
+
+        cardRouter.type = cardType
+        showCard(true)
     }
 
-    private func displayCard(_ display: Bool) {
+    private func showCard(_ display: Bool) {
         cardRouter.viewControllable.uiviewController.view.isHidden = !display
     }
 
