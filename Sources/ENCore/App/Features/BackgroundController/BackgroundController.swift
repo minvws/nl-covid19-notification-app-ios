@@ -29,8 +29,8 @@ struct BackgroundTaskConfiguration {
 
 /// BackgroundController
 ///
-/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `print("🐞 Scheduled Update")` statement and background the application.
-/// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.background-update"]`
+/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `logDebug("Background: Scheduled `\(identifier)` ✅")` statement and background the application.
+/// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.exposure-notification"]`
 /// and resume the application. The background task will be run.
 final class BackgroundController: BackgroundControlling, Logging {
 
@@ -40,6 +40,7 @@ final class BackgroundController: BackgroundControlling, Logging {
          networkController: NetworkControlling,
          configuration: BackgroundTaskConfiguration,
          exposureManager: ExposureManaging,
+         dataController: ExposureDataControlling,
          userNotificationCenter: UserNotificationCenter,
          taskScheduler: TaskScheduling,
          bundleIdentifier: String) {
@@ -47,6 +48,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.configuration = configuration
         self.networkController = networkController
         self.exposureManager = exposureManager
+        self.dataController = dataController
         self.userNotificationCenter = userNotificationCenter
         self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
@@ -59,19 +61,32 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
+
+        func scheduleRefreshAndDecoy() {
+            self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
+            self.scheduleRefresh()
+            self.scheduleDecoySequence()
+        }
+
         let scheduleTasks: () -> () = {
             self.exposureController
                 .isAppDeactivated()
-                .sink(receiveCompletion: { _ in
-                    // Do nothing
+                .sink(receiveCompletion: { error in
+
+                    if error == .failure(.serverError) ||
+                        error == .failure(.networkUnreachable) ||
+                        error == .failure(.internalError) ||
+                        error == .failure(.responseCached) {
+
+                        scheduleRefreshAndDecoy()
+                    }
+
                 }, receiveValue: { (isDeactivated: Bool) in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
                         self.removeAllTasks()
                     } else {
-                        self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
-                        self.scheduleRefresh()
-                        self.scheduleDecoySequence()
+                        scheduleRefreshAndDecoy()
                     }
                     }).store(in: &self.disposeBag)
         }
@@ -122,6 +137,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let exposureManager: ExposureManaging
     private let userNotificationCenter: UserNotificationCenter
     private let exposureController: ExposureControlling
+    private let dataController: ExposureDataControlling
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
@@ -159,7 +175,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             return logError("Error creating date")
         }
 
-        schedule(identifier: .decoyRegister, date: date, requiresNetworkConnectivity: true) { result in
+        schedule(identifier: .decoyRegister, date: date) { result in
             task.setTaskCompleted(success: result)
         }
     }
@@ -169,7 +185,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         let delay = percentage == 0 ? Int.random(in: configuration.decoyDelayRangeLowerBound) : Int.random(in: configuration.decoyDelayRangeUpperBound)
         let date = currentDate().addingTimeInterval(Double(delay))
 
-        schedule(identifier: .decoyStopKeys, date: date, requiresNetworkConnectivity: true) { result in
+        schedule(identifier: .decoyStopKeys, date: date) { result in
             task.setTaskCompleted(success: result)
         }
     }
@@ -242,7 +258,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         let timeInterval = refreshInterval * 60
         let date = currentDate().addingTimeInterval(timeInterval)
 
-        schedule(identifier: .refresh, date: date, requiresNetworkConnectivity: true)
+        schedule(identifier: .refresh, date: date)
     }
 
     private func refresh(task: BGProcessingTask) {
@@ -252,7 +268,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             processENStatusCheck,
             appUpdateRequiredCheck,
             updateTreatmentPerspective,
-            processLastOpenedNotificationCheck
+            processLastOpenedNotificationCheck,
+            notifyUser24HoursNoCheckIfRequired
         ]
 
         logDebug("Background: starting refresh task")
@@ -364,6 +381,51 @@ final class BackgroundController: BackgroundControlling, Logging {
         return exposureController.lastOpenedNotificationCheck()
     }
 
+    private func notifyUser24HoursNoCheckIfRequired() -> AnyPublisher<(), Never> {
+        return Deferred {
+            Future { promise in
+
+                func notifyUser() {
+
+                    let content = UNMutableNotificationContent()
+                    content.title = .statusAppStateInactiveTitle
+                    content.body = String(format: .statusAppStateInactiveNotification)
+                    content.sound = UNNotificationSound.default
+                    content.badge = 0
+
+                    let identifier = PushNotificationIdentifier.inactive.rawValue
+                    let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+                    self.userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
+                        if let error = error {
+                            self?.logError("\(error.localizedDescription)")
+                        } else {
+                            self?.dataController.updateLastLocalNotificationExposureDate(Date())
+                        }
+                        return promise(.success(()))
+                    })
+                }
+
+                let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
+                guard
+                    let lastSuccessfulProcessingDate = self.dataController.lastSuccessfulProcessingDate,
+                    lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
+                else {
+                    return promise(.success(()))
+                }
+                guard let lastLocalNotificationExposureDate = self.dataController.lastLocalNotificationExposureDate else {
+                    // We haven't shown a notification to the user before so we should show one now
+                    return notifyUser()
+                }
+                guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
+                    return promise(.success(()))
+                }
+
+                notifyUser()
+            }
+        }.eraseToAnyPublisher()
+    }
+
     // Returns a Date with the specified hour and minute, for the next day
     // E.g. date(hour: 1, minute: 0) returns 1:00 am for the next day
     private func date(hour: Int, minute: Int, dayOffset: Int = 1) -> Date? {
@@ -379,17 +441,14 @@ final class BackgroundController: BackgroundControlling, Logging {
         return Calendar.current.date(from: components)
     }
 
-    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, requiresNetworkConnectivity: Bool = false, completion: ((Bool) -> ())? = nil) {
+    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, completion: ((Bool) -> ())? = nil) {
         let backgroundTaskIdentifier = bundleIdentifier + "." + identifier.rawValue
 
-        logDebug("Background: Scheduling `\(identifier)` for earliestDate \(String(describing: date)), requiresNetwork: \(requiresNetworkConnectivity)")
+        logDebug("Background: Scheduling `\(identifier)` for earliestDate \(String(describing: date))")
 
         taskScheduler.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
 
-        notifyUser24HoursNoCheckIfRequired()
-
         let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
-        request.requiresNetworkConnectivity = requiresNetworkConnectivity
         request.earliestBeginDate = date
 
         do {
@@ -400,9 +459,5 @@ final class BackgroundController: BackgroundControlling, Logging {
             logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
         }
-    }
-
-    private func notifyUser24HoursNoCheckIfRequired() {
-        exposureController.notifyUser24HoursNoCheckIfRequired()
     }
 }
