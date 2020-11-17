@@ -16,6 +16,7 @@ final class BackgroundControllerTests: XCTestCase {
     private var controller: BackgroundController!
 
     private let exposureController = ExposureControllingMock()
+    private let dataController = ExposureDataControllingMock()
     private let networkController = NetworkControllingMock()
     private let taskScheduler = TaskSchedulingMock()
 
@@ -37,6 +38,7 @@ final class BackgroundControllerTests: XCTestCase {
                                           networkController: networkController,
                                           configuration: configuration,
                                           exposureManager: exposureManager,
+                                          dataController: dataController,
                                           userNotificationCenter: userNotificationCenter,
                                           taskScheduler: taskScheduler,
                                           bundleIdentifier: "nl.rijksoverheid.en")
