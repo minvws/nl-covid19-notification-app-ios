@@ -59,19 +59,27 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
+
+        func scheduleRefreshAndDecoy() {
+            self.scheduleRefresh()
+            self.scheduleDecoySequence()
+        }
+
         let scheduleTasks: () -> () = {
             self.exposureController
                 .isAppDeactivated()
-                .sink(receiveCompletion: { _ in
-                    // Do nothing
+                .sink(receiveCompletion: { error in
+                    self.logDebug("Background: ExposureController activated state error: \(error)")
+                    self.logDebug("Background: Scheduling refresh and decoy")
+                    scheduleRefreshAndDecoy()
+
                 }, receiveValue: { (isDeactivated: Bool) in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
                         self.removeAllTasks()
                     } else {
                         self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
-                        self.scheduleRefresh()
-                        self.scheduleDecoySequence()
+                        scheduleRefreshAndDecoy()
                     }
                     }).store(in: &self.disposeBag)
         }
@@ -362,6 +370,52 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func processLastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
         return exposureController.lastOpenedNotificationCheck()
+    }
+
+    private func notifyUser24HoursNoCheckIfRequired() -> AnyPublisher<(), Never> {
+        return Deferred {
+            Future { promise in
+
+                func notifyUser() {
+
+                    let content = UNMutableNotificationContent()
+                    content.title = .statusAppStateInactiveTitle
+                    content.body = String(format: .statusAppStateInactiveNotification)
+                    content.sound = UNNotificationSound.default
+                    content.badge = 0
+
+                    let identifier = PushNotificationIdentifier.inactive.rawValue
+                    let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+                    self.userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
+                        if let error = error {
+                            self?.logError("\(error.localizedDescription)")
+                        } else {
+                            self?.logDebug("Background: > 24h ago last succesful data processing - Sending push notification")
+                            self?.dataController.updateLastLocalNotificationExposureDate(Date())
+                        }
+                        return promise(.success(()))
+                    })
+                }
+
+                let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
+                guard
+                    let lastSuccessfulProcessingDate = self.dataController.lastSuccessfulProcessingDate,
+                    lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
+                else {
+                    return promise(.success(()))
+                }
+                guard let lastLocalNotificationExposureDate = self.dataController.lastLocalNotificationExposureDate else {
+                    // We haven't shown a notification to the user before so we should show one now
+                    return notifyUser()
+                }
+                guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
+                    return promise(.success(()))
+                }
+
+                notifyUser()
+            }
+        }.eraseToAnyPublisher()
     }
 
     // Returns a Date with the specified hour and minute, for the next day
