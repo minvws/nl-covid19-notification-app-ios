@@ -63,7 +63,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     func scheduleTasks() {
 
         func scheduleRefreshAndDecoy() {
-            self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
             self.scheduleRefresh()
             self.scheduleDecoySequence()
         }
@@ -72,20 +71,15 @@ final class BackgroundController: BackgroundControlling, Logging {
             self.exposureController
                 .isAppDeactivated()
                 .sink(receiveCompletion: { error in
-
-                    if error == .failure(.serverError) ||
-                        error == .failure(.networkUnreachable) ||
-                        error == .failure(.internalError) ||
-                        error == .failure(.responseCached) {
-
-                        scheduleRefreshAndDecoy()
-                    }
-
+                    self.logDebug("Background: ExposureController activated state error: \(error)")
+                    self.logDebug("Background: Scheduling refresh and decoy")
+                    scheduleRefreshAndDecoy()
                 }, receiveValue: { (isDeactivated: Bool) in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
                         self.removeAllTasks()
                     } else {
+                        self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
                         scheduleRefreshAndDecoy()
                     }
                     }).store(in: &self.disposeBag)
@@ -400,6 +394,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                         if let error = error {
                             self?.logError("\(error.localizedDescription)")
                         } else {
+                            self?.logDebug("Background: > 24h ago last succesful data processing - Sending push notification")
                             self?.dataController.updateLastLocalNotificationExposureDate(Date())
                         }
                         return promise(.success(()))
