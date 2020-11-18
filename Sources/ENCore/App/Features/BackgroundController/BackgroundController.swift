@@ -68,10 +68,12 @@ final class BackgroundController: BackgroundControlling, Logging {
         let scheduleTasks: () -> () = {
             self.exposureController
                 .isAppDeactivated()
-                .sink(receiveCompletion: { error in
-                    self.logDebug("Background: ExposureController activated state error: \(error)")
-                    self.logDebug("Background: Scheduling refresh and decoy")
-                    scheduleRefreshAndDecoy()
+                .sink(receiveCompletion: { result in
+                    if result != .finished {
+                        self.logDebug("Background: ExposureController activated state result: \(result)")
+                        self.logDebug("Background: Scheduling refresh and decoy")
+                        scheduleRefreshAndDecoy()
+                    }
 
                 }, receiveValue: { (isDeactivated: Bool) in
                     if isDeactivated {
