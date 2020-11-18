@@ -339,7 +339,6 @@ final class ExposureController: ExposureControlling, Logging {
                 switch result {
                 case .finished:
                     self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
-                    self?.notifyUser24HoursNoCheckIfRequired()
                 case let .failure(error):
                     self?.logError("Error completing sequence \(error.localizedDescription)")
                 }
@@ -486,46 +485,6 @@ final class ExposureController: ExposureControlling, Logging {
 
         let components = calendar.dateComponents([.day], from: compareDate, to: today)
         return components.day ?? 0
-    }
-
-    func notifyUser24HoursNoCheckIfRequired() {
-
-        func notifyUser() {
-
-            let content = UNMutableNotificationContent()
-            content.title = .statusAppStateInactiveTitle
-            content.body = String(format: .statusAppStateInactiveNotification)
-            content.sound = UNNotificationSound.default
-            content.badge = 0
-
-            let identifier = PushNotificationIdentifier.inactive.rawValue
-            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-
-            userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
-                if let error = error {
-                    self?.logError("\(error.localizedDescription)")
-                } else {
-                    self?.dataController.updateLastLocalNotificationExposureDate(Date())
-                }
-            })
-        }
-
-        let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
-        guard
-            let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
-            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
-        else {
-            return
-        }
-        guard let lastLocalNotificationExposureDate = dataController.lastLocalNotificationExposureDate else {
-            // We haven't shown a notification to the user before so we should show one now
-            return notifyUser()
-        }
-        guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
-            return
-        }
-
-        notifyUser()
     }
 
     // MARK: - Private
