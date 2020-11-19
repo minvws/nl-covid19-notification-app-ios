@@ -56,7 +56,7 @@ protocol ExposureManaging {
                          completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ())
 
     /// Returns this device's diagnosis keys
-    func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ())
+    func getDiagnosisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ())
 
     /// Enabled exposure notifications. Successful when completion is
     /// called without an error

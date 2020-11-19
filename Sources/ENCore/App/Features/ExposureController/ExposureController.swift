@@ -637,7 +637,7 @@ final class ExposureController: ExposureControlling, Logging {
 
     private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {
         return Future { promise in
-            self.exposureManager.getDiagnonisKeys(completion: promise)
+            self.exposureManager.getDiagnosisKeys(completion: promise)
         }
         .share()
         .eraseToAnyPublisher()

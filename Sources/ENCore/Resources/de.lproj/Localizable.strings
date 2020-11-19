@@ -1,9 +1,21 @@
+"moreInformation.cell.settings.title" = "Einstellungen";
+"moreInformation.cell.settings.subtitle" = "Passen Sie Ihre Einstellungen für die Verwendung von mobilen Daten an";
+
+/* MARK: - MoreInformation | Settings */
+
+"moreInformation.settings.title" = "Einstellungen";
+"moreInformation.settings.description" = "CoronaMelder kontrolliert mehrmals pro Tag, ob Sie in der Nähe einer Person mit Corona waren. Wenn Sie mobile Daten deaktivieren, kontrolliert die App nur noch, wenn Sie WLAN nutzen. Ihre Begegnungen werden auch registriert, wenn Sie keine Internetverbindung haben.";
+"moreInformation.settings.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Schaltfläche.";
+"moreInformation.settings.step2" = "Aktivieren oder deaktivieren Sie mobile Daten für CoronaMelder";
+"moreInformation.settings.step2.row.title" = "Mobile Daten";
+"moreInformation.settings.button" = "Einstellungen öffnen";
+
 // supports HTML
-"enableSettings.exposureNotifications.137.step2" = "Gehen Sie zu <b>Begegnungsmitteilungen</b>";
-"enableSettings.exposureNotifications.137.step2.action.title" = "Begegnungsmitteilungen";
+"enableSettings.exposureNotifications.137.step2" = "Gehen Sie zu <b>Covid-19-Kontakt-Benachrichtigungen</b>";
+"enableSettings.exposureNotifications.137.step2.action.title" = "Covid-19-Kontakt-Benachrichtigungen";
 // supports HTML
-"enableSettings.exposureNotifications.137.step3" = "Aktivieren Sie <b>Begegnungsinformationen teilen</b>";
-"enableSettings.exposureNotifications.137.step3.action.title" = "Begegnungsinformationen teilen";
+"enableSettings.exposureNotifications.137.step3" = "Aktivieren Sie <b>Kontaktinformationen teilen</b>";
+"enableSettings.exposureNotifications.137.step3.action.title" = "Kontaktinformationen teilen";
 // supports HTML
 "enableSettings.exposureNotifications.137.step4" = "Kontrollieren Sie als letzten Schritt: Ist <b>Als aktive Region festlegen</b> blau? Wenn ja, drücken Sie dann darauf";
 // Should match setting name in iOS
@@ -209,8 +221,8 @@
 "help.technical_explanation.title" = "Technische Erläuterungen";
 "help.technical_explanation.step1.title" = "1. Die App erstellt für jedes Telefon einen eigenen Code.";
 "help.technical_explanation.step1.description" = "Der Code enthält keine Informationen über Sie oder Ihr Telefon. Der Code ist völlig willkürlich und ändert sich alle 15 Minuten.";
-"help.technical_explanation.step2.title" = "2. Telefone tauschen ihre Codes aus, wenn sie dicht beieinander sind.";
-"help.technical_explanation.step2.description" = "Hat die Person, der Sie begegnen, auch die App? Dann tauschen beide Telefone ihre Codes über Bluetooth Low Energy miteinander aus. So weiß die App, welche Telefone dicht beieinander waren. Die App weiß nicht, zu wem die Telefone gehören oder wo Sie gewesen sind.";
+"help.technical_explanation.step2.title" = "2. Telefone tauschen Codes aus, wenn sie dicht beieinander sind.";
+"help.technical_explanation.step2.description" = "Hat die Person, der Sie begegnen, auch die App? Dann tauschen beide Telefone Codes über Bluetooth Low Energy aus. So weiß die App, welche Telefone dicht beieinander waren. Die App weiß nicht, zu wem die Telefone gehören oder wo Sie gewesen sind.";
 "help.technical_explanation.step3.title" = "3. Wenn eine Person Corona hat, kann sie ihre Codes auf eine Liste setzen.";
 "help.technical_explanation.step3.description" = "Diese Liste enthält nur Codes von Personen mit Corona. Um Codes hinzufügen zu können, muss eine Person mit Corona erst einen GGD-Schlüssel an den GGD weiterleiten. So ist immer sichergestellt, dass die hinzugefügten Codes auch wirklich zu einer Person gehören, die Corona hat. Alle Codes, die älter sind als 14 Tage, werden automatisch aus der Liste gelöscht.";
 "help.technical_explanation.step4.title" = "4. Jedes Telefon kontrolliert, ob es die Codes auf der Liste schon kennt.";
@@ -232,15 +244,15 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "help.what_to_do_with_notification.description" = "Befolgen Sie den Ratschlägen in der App. Die Ratschläge hängen von Ihrer persönlichen Situation ab. Ob Sie Symptome haben, die zu Corona passen. Und an welchem Tag Sie in der Nähe der Person mit Corona waren.<br><br>Bleiben Sie auf jeden Fall zu Hause bis Sie sicher wissen, dass Sie kein Corona haben. So verhindern Sie, dass Sie andere unbewusst anstecken.<br><br>Erhalten Sie vom GGD andere Anweisungen als in der App? Befolgen Sie dann den Anweisungen des GGD.";
 "help.other_reports.title" = "Andere Nachrichten";
 "help.other_reports.description" = "CoronaMelder kann Ihnen auch eine Nachricht schicken, wenn es ein technisches Problem gibt. Zum Beispiel, wenn Bluetooth bei Ihnen deaktiviert ist. Oder wenn es länger als einen Tag keine Internetverbindung gab. Die App hilft Ihnen, das zu lösen.<br><br>Haben Sie eine solche Meldung erhalten, obwohl die App ganz normal aktiviert ist? Dann wurde das Problem in der Zwischenzeit gelöst.<br><br>Manchmal erhalten Sie auch Nachrichten, in denen steht, dass Ihr Telefon COVID-19-Überprüfungen durchführt. Öffnen Sie  dann CoronaMelder. Gut zu wissen: Meistens ist alles in Ordnung.";
-"help.other_what_does_report_say.title" = "Was steht in der Nachricht?";
+"help.other_what_does_report_say.title" = "Wie erkenne ich eine Nachricht?";
 "help.other_what_does_report_say.content1" = "Die App schickt eine Nachricht, wenn Sie mindestens 15 Minuten in der Nähe einer Person waren, bei der später Corona festgestellt wurde.";
 "help.other_what_does_report_say.content2" = "Die Nachricht erscheint auf dem Startbildschirm Ihres Telefons, genau wie die Nachrichten von anderen Apps. Die Nachricht hat das Symbol des CoronaMelders.<br><br> Haben Sie eine Nachricht erhalten? Dann öffnen Sie den CoronaMelder. Dort können Sie lesen, was in diesem Fall zu tun ist.";
 
 "help.pause_app.title" = "Kann ich die App anhalten?";
-"help.pause_app.description" = "Ja, das geht, wenn Sie Bluetooth deaktivieren. Dies geht über <b>Einstellungen > Bluetooth</b>. Wenn Sie Bluetooth deaktivieren, tauscht die App keine Codes mehr aus. Sie erhalten dann automatisch alle 24 Stunden eine Erinnerung, um die App wieder einzuschalten.<br><br>Es ist jedoch in der Regel nicht ratsam, die App anzuhalten, da Sie vergessen könnten, sie wieder einzuschalten. Sie können die App jedoch in besonderen Situationen anhalten. Zum Beispiel, wenn Sie in die Nähe von (möglichen) Corona-Patienten kommen, aber sicher sind, dass Sie medizinische Schutzausrüstung tragen.";
+"help.pause_app.description" = "Ja, das geht, wenn Sie Bluetooth deaktivieren. Dies geht über <b>Einstellungen > Bluetooth</b>. Beachten Sie: Sie können die App durch Deaktivierung von Bluetooth nicht vorübergehend anhalten. Wenn Sie Bluetooth deaktivieren, tauscht die App keine Codes mehr aus. Sie erhalten dann automatisch alle 24 Stunden eine Erinnerung, um die App wieder zu aktivieren.<br><br>Es ist jedoch in der Regel nicht ratsam, die App anzuhalten, da Sie vergessen könnten, sie wieder zu aktivieren. Sie können die App jedoch in besonderen Situationen anhalten. Zum Beispiel, wenn Sie in die Nähe von (möglichen) Corona-Patienten kommen, aber sicher sind, dass Sie medizinische Schutzausrüstung tragen.";
 
 "help.apps_other_countries.title" = "Funktioniert CoronaMelder auch mit Apps aus anderen Ländern?";
-"help.apps_other_countries.description" = "Leider noch nicht, aber wir arbeiten intensiv daran, dies zu ermöglichen. Dann wird CoronaMelder auch in der Lage sein, Codes mit einigen Apps aus anderen Ländern auszutauschen. Zum Beispiel mit der deutschen App.<br><br>Wenn Sie neben CoronaMelder auch die deutsche Corona-Warn-App installieren, meldet Ihr Telefon, dass nur 1 App gleichzeitig aktiv sein kann. Die App, die Sie wählen, ist die einzige App, die zu diesem Zeitpunkt Ihre Begegnungen überprüft. Wenn Sie das in mehreren Ländern machen möchten, müssen Sie also selbst zur anderen App wechseln. Sie erhalten dann Nachrichten von der aktivierten App. Wenn Sie 1 Mal täglich die App wechseln, kontrollieren beide Apps Ihre Begegnungen. So verpassen Sie nichts.<br><br>In Zukunft können Sie wahrscheinlich die App Ihres eigenen Lands weiterhin benutzen und müssen nicht mehr täglich wechseln.";
+"help.apps_other_countries.description" = "CoronaMelder arbeitet mit einigen Apps aus anderen europäischen Ländern zusammen. Zum Beispiel mit Deutschland, Irland und Italien.<br><br>Angenommen, Sie waren längere Zeit in der Nähe eines Nutzers der deutschen Corona-Warn-App. Diese Person wird in Deutschland getestet. Es stellt sich heraus, dass sie Corona hat. Wenn diese Person ihre Codes mit der deutschen Gesundheitsbehörde teilt, bekommen Sie über CoronaMelder eine Nachricht. Umgekehrt gilt dasselbe. Da die Corona-Apps miteinander zusammenarbeiten, müssen Sie nur 1 App aktiviert haben.<br><br>CoronaMelder kontrolliert ab 30. November 2020 täglich die Codes von Nutzern aus verschiedenen Ländern. Deshalb verbraucht die App mehr mobile Daten als früher. Über <strong>Einstellungen</strong> im Hauptmenü können Sie einstellen, dass die App nur über WLAN kontrolliert, ob Sie in der Nähe einer Person mit Corona waren.";
 
 /* MARK: - Message */
 "message.default.title" = "Sie waren in der Nähe einer Person mit Corona.";
@@ -259,15 +271,20 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "main.confirmNotificationRemoval.message" = "Sie können das Datum danach nicht mehr in der App finden. Merken Sie es sich deshalb gut.";
 "main.confirmNotificationRemoval.confirm" = "Löschen";
 
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "Diese Seite kann nicht geladen werden.";
+"webview.loadingfailed.subtitle" = "Es ist ein Fehler aufgetreten. Kommen Sie später zurück oder laden Sie die Seite erneut.";
+"webview.loadingfailed.try_again" = "Erneut versuchen";
+
 /* MARK: - Status */
 "status.appState" = "Die App ist aktiv.";
 "status.appState.inactive.title" = "Die App ist nicht aktiv.";
 "status.appState.inactive.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
 "status.appState.inactive.notification" = "Die App konnte in den vergangenen 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde.";
-"status.appState.inactive.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. Mobildaten aktiviert sind. Versuchen Sie es dann erneut.";
+"status.appState.inactive.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. mobile Daten aktiviert sind. Versuchen Sie es dann erneut.";
 "status.appState.card.title" = "App ist nicht aktiv.";
 "status.appState.card.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
-"status.appState.card.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. Mobildaten aktiviert sind. Versuchen Sie es dann erneut.";
+"status.appState.card.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. mobile Daten aktiviert sind. Versuchen Sie es dann erneut.";
 "status.appState.card.button" = "App aktivieren";
 "status.appState.card.try_again" = "Versuchen Sie es erneut.";
 "status.active.description" = "Ihre Begegnungen werden nachverfolgt, auch wenn Sie die App schließen.";
@@ -280,14 +297,14 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mehr Informationen";
 
-"moreInformation.cell.about.title" = "Fragen über die App?";
+"moreInformation.cell.about.title" = "Fragen über die App";
 "moreInformation.cell.about.subtitle" = "Schauen Sie sich an, wie die App funktioniert und was das für den Datenschutz bedeutet.";
 
 "moreInformation.cell.share.title" = "Andere einladen, die App zu verwenden";
 "moreInformation.cell.share.subtitle" = "Teilen Sie die App mit anderen, damit wir gemeinsam Corona unter Kontrolle bekommen.";
 
-"moreInformation.cell.receivedNotification.title" = "Was steht in der Nachricht?";
-"moreInformation.cell.receivedNotification.subtitle" = "Lesen Sie, was Sie tun können, wenn Sie in der Nähe einer Person mit Corona waren.";
+"moreInformation.cell.receivedNotification.title" = "Wie erkenne ich eine Nachricht?";
+"moreInformation.cell.receivedNotification.subtitle" = "Entdecken Sie, wie eine Nachricht aussieht und was Sie tun können, wenn Sie eine Nachricht bekommen.";
 
 "moreInformation.cell.requestTest.title" = "Coronatest anfordern";
 "moreInformation.cell.requestTest.subtitle" = "Erfahren Sie schnellstmöglich, ob Sie selbst Corona haben.";
@@ -326,7 +343,9 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.about.faq.bluetooth" = "Funktioniert Bluetooth durch Wände hindurch?";
 "moreInformation.about.faq.power_usage" = "Wieviel Akku verbraucht die App?";
 "moreInformation.about.faq.deletion" = "Wie lösche ich die Bluetooth-Daten auf meinem Telefon?";
-"moreInformation.about.faq.deletion.description" = "Sie können die Bluetooth-Daten, die CoronaMelder gespeichert hat, selbst löschen. Das geht wie folgt:<br><br>Gehen Sie auf Ihrem Telefon zu Einstellungen > Risiko-Begegnungen > Risiko-Begegnungen nachverfolgen. Tippen Sie auf Datei der Risiko-Begegnungen löschen. <br><br>Möchten Sie, dass die App keine neuen Bluetooth-Daten mehr speichert? Entfernen Sie dann die App.";
+"moreInformation.about.faq.deletion.description" = "Sie können die Bluetooth-Daten, die CoronaMelder gespeichert hat, selbst löschen. Das geht wie folgt:<br><br>Gehen Sie auf Ihrem Telefon zu Einstellungen > Covid-19-Kontakt-Benachrichtigungen > Covid-19-Kontakte nachverfolgen. Tippen Sie auf Datei der Covid-19-Kontakte löschen. <br><br>Möchten Sie, dass die App keine neuen Bluetooth-Daten mehr speichert? Entfernen Sie dann die App.";
+
+"moreInformation.about.interoperability.title" = "Mit welchen ausländischen Apps arbeitet CoronaMelder zusammen?";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Teilen Sie anderen mit, dass Sie dazu beitragen, das Virus zu stoppen.";
@@ -400,6 +419,11 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "cards.notificationsOff.title" = "Nachrichten sind <u>deaktiviert</u>.";
 "cards.notificationsOff.content" = "Aktivieren Sie allgemeine Nachrichten, damit die App sofort Informationen teilen kann, wenn das notwendig ist.";
 "cards.notificationsOff.action" = "Nachrichten aktivieren";
+
+"cards.interopannouncement.title" = "Gut zu wissen";
+"cards.interopannouncement.content" = "CoronaMelder arbeitet ab 30. November mit Corona-Apps aus anderen europäischen Ländern zusammen.";
+"cards.interopannouncement.action" = "Mehr Informationen";
+"cards.interopannouncement.secondaryaction" = "Schließen";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Kontaktnachrichten aktivieren";

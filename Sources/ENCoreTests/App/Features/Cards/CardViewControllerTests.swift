@@ -6,6 +6,8 @@
  */
 
 @testable import ENCore
+import ENFoundation
+
 import Foundation
 import XCTest
 
@@ -18,6 +20,7 @@ final class CardViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
+        recordSnapshots = false
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
 
@@ -53,6 +56,8 @@ final class CardViewControllerTests: TestCase {
     }
 
     func test_interopAnnouncement_primaryButton_shouldRouteToURL() throws {
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
+
         viewController.update(cardTypes: [.interopAnnouncement])
         let stackView = try XCTUnwrap(viewController.view as? UIStackView)
         let cardView = try XCTUnwrap(stackView.arrangedSubviews.first as? CardView)
@@ -60,8 +65,7 @@ final class CardViewControllerTests: TestCase {
         let routingExpectation = expectation(description: "route")
 
         mockRouter.routeToHandler = { url in
-            // URL is still unknown for now. Make sure test keeps failing until we have a final URL
-            XCTAssertEqual(url, URL(string: "http://www.blah.nl")!)
+            XCTAssertEqual(url, URL(string: "https://coronamelder.nl/en/operabiliteit")!)
             routingExpectation.fulfill()
         }
 
@@ -69,6 +73,46 @@ final class CardViewControllerTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
         XCTAssertEqual(mockRouter.routeToCallCount, 1)
+    }
+
+    func test_interopAnnouncement_shouldChangeURLBasedOnLanguageCode() throws {
+
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "ar"
+
+        viewController.update(cardTypes: [.interopAnnouncement])
+        let stackView = try XCTUnwrap(viewController.view as? UIStackView)
+        let cardView = try XCTUnwrap(stackView.arrangedSubviews.first as? CardView)
+
+        let routingExpectation = expectation(description: "route")
+
+        mockRouter.routeToHandler = { url in
+            XCTAssertEqual(url, URL(string: "https://coronamelder.nl/ar/operabiliteit")!)
+            routingExpectation.fulfill()
+        }
+
+        cardView.primaryButton.action?()
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func test_interopAnnouncement_shouldChooseSupportedLanguageCode() throws {
+
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "blah" // unsupported language code on purpose
+
+        viewController.update(cardTypes: [.interopAnnouncement])
+        let stackView = try XCTUnwrap(viewController.view as? UIStackView)
+        let cardView = try XCTUnwrap(stackView.arrangedSubviews.first as? CardView)
+
+        let routingExpectation = expectation(description: "route")
+
+        mockRouter.routeToHandler = { url in
+            XCTAssertEqual(url, URL(string: "https://coronamelder.nl/en/operabiliteit")!)
+            routingExpectation.fulfill()
+        }
+
+        cardView.primaryButton.action?()
+
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
     func test_interopAnnouncement_secondaryButton_shouldDismissAnnouncementAndCallListener() throws {
