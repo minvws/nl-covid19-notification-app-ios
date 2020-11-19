@@ -4,7 +4,7 @@
 /* MARK: - MoreInformation | Settings */
 
 "moreInformation.settings.title" = "Settings";
-"moreInformation.settings.description" = "CoronaMelder check a few times a day if you've been near someone who has corona. If you turn off your mobile data, the app will only do so if you're using WiFi. Your encounters are also recorded if you don't have an internet connection.";
+"moreInformation.settings.description" = "CoronaMelder checks a few times a day if you've been near someone who has corona. If you turn off your mobile data, the app will only do so if you're using WiFi. Your encounters are also tracked if you don't have an internet connection.";
 "moreInformation.settings.step1" = "Open <b>Settings</b> on your phone using the button below";
 "moreInformation.settings.step2" = "Turn your mobile data for CoronaMelder on or off";
 "moreInformation.settings.step2.row.title" = "Mobile data";
