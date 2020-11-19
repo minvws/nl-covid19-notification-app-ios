@@ -343,6 +343,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 } else {
                     self?.exposureController.activate(inBackgroundMode: false)
+                    self?.backgroundController.decoyRegisterAndScheduleStopKeys()
                 }
                 })
             .store(in: &disposeBag)
