@@ -13,7 +13,7 @@ struct NetworkConfiguration {
         let host: String
         let port: Int?
         let path: [String]
-        let sslSignatures: [Certificate.Signature]? // SSL pinning certificate, nil = no pinning
+        let sslFingerprints: [Certificate.Fingerprint]? // SSL pinning certificate, nil = no pinning
         let tokenParams: [String: String]
     }
 
@@ -21,9 +21,9 @@ struct NetworkConfiguration {
     let api: EndpointConfiguration
     let cdn: EndpointConfiguration
 
-    func sslSignatures(forHost host: String) -> [Certificate.Signature]? {
-        if api.host == host { return api.sslSignatures }
-        if cdn.host == host { return cdn.sslSignatures }
+    func sslFingerprints(forHost host: String) -> [Certificate.Fingerprint]? {
+        if api.host == host { return api.sslFingerprints }
+        if cdn.host == host { return cdn.sslFingerprints }
 
         return nil
     }
@@ -35,7 +35,7 @@ struct NetworkConfiguration {
             host: "localhost",
             port: 5004,
             path: ["v01"],
-            sslSignatures: nil,
+            sslFingerprints: nil,
             tokenParams: [:]
         ),
         cdn: .init(
@@ -43,7 +43,7 @@ struct NetworkConfiguration {
             host: "localhost",
             port: 5004,
             path: ["v01"],
-            sslSignatures: nil,
+            sslFingerprints: nil,
             tokenParams: [:]
         )
     )
@@ -55,7 +55,7 @@ struct NetworkConfiguration {
             host: "test.coronamelder-api.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.apiSignature, Certificate.SSL.apiV2Signature],
+            sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
         cdn: .init(
@@ -63,7 +63,7 @@ struct NetworkConfiguration {
             host: "test.coronamelder-dist.nl",
             port: nil,
             path: ["v3"],
-            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2V3Signature],
+            sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
     )
@@ -75,7 +75,7 @@ struct NetworkConfiguration {
             host: "acceptatie.coronamelder-api.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.apiSignature, Certificate.SSL.apiV2Signature],
+            sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
         cdn: .init(
@@ -83,7 +83,7 @@ struct NetworkConfiguration {
             host: "acceptatie.coronamelder-dist.nl",
             port: nil,
             path: ["v3"],
-            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2V3Signature],
+            sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
     )
@@ -95,7 +95,7 @@ struct NetworkConfiguration {
             host: "coronamelder-api.nl",
             port: nil,
             path: ["v1"],
-            sslSignatures: [Certificate.SSL.apiSignature, Certificate.SSL.apiV2Signature],
+            sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
         cdn: .init(
@@ -103,7 +103,7 @@ struct NetworkConfiguration {
             host: "productie.coronamelder-dist.nl",
             port: nil,
             path: ["v3"],
-            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2V3Signature],
+            sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
     )

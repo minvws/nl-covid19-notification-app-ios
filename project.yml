@@ -35,11 +35,11 @@ targets:
         CFBundleDisplayName: "🐞 CoronaMelder"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
-        CFBundleShortVersionString: '1.0.12'
+        CFBundleShortVersionString: '1.1.0'
         CFBundleVersion: "1"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes:
-          - ''
+          - 'https'
         LSRequiresIPhoneOS: true
         NSBluetoothPeripheralUsageDescription: To securely exchange unique id's
         UIAppFonts: []

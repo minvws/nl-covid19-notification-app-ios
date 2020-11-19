@@ -1,6 +1,7 @@
 name: '$(Date:yyyyMMdd)$(Rev:.r)-$(BuildID)'
 trigger:
   - master
+  - release/*
 
 #variables:
 
