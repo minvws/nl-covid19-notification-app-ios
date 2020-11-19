@@ -1,3 +1,15 @@
+"moreInformation.cell.settings.title" = "Ayarlar";
+"moreInformation.cell.settings.subtitle" = "Ayarlarınızı mobil veri kullanımı için uyarlayın";
+
+/* MARK: - MoreInformation | Settings */
+
+"moreInformation.settings.title" = "Ayarlar";
+"moreInformation.settings.description" = "CoronaMelder, günde birkaç kez Korona olan birinin yakınında bulunmuş olup olmadığınızı kontrol eder. Mobil verileri kapatırsanız, uygulama bunu yalnızca WiFi kullandığınızda yapacaktır. Buluşmalarınız internet bağlantınız olmasa bile takip edilir.";
+"moreInformation.settings.step1" = "Aşağıdaki düğmeyi kullanarak telefonunuzda <b>ayarlar</b> ’ı açın";
+"moreInformation.settings.step2" = "CoronaMelder için mobil verileri açın veya kapatın";
+"moreInformation.settings.step2.row.title" = "Mobil veriler";
+"moreInformation.settings.button" = "Ayarları aç";
+
 // supports HTML
 "enableSettings.exposureNotifications.137.step2" = "<b>Maruziyet Bildirimleri</b>'ne gidin";
 "enableSettings.exposureNotifications.137.step2.action.title" = "Maruziyet Bildirimleri";
@@ -231,15 +243,15 @@
 "help.what_to_do_with_notification.description" = "Uygulamadaki tavsiyelere uyun. Tavsiye, durumunuza bağlıdır. Koronaya uyan şikayetlerinizin olup olmadığına bağlıdır. Ve enfekte olan kişinin yakınında hangi gün bulunduğunuza bağlıdır.<br><br>Her durumda, sizde Korona olmadığından emin olana kadar evde kalın. Böylelikle, bilinçsizce başkalarına bulaştırmayı önlersiniz.<br><br> GGD size telefonda uygulamadan farklı tavsiyeler mi verdi? O zaman GGD'nin tavsiyelerine uyun.";
 "help.other_reports.title" = "Diğer bildirimler";
 "help.other_reports.description" = "CoronaMelder, teknik bir sorun olması durumunda da size bir bildirim gönderebilir. Örneğin, Bluetooth'unuz kapalıysa. Veya bir günden fazla bir süredir internet bağlantısı yoksa. Uygulama bunu çözmenize yardımcı olacaktır.<br><br>Böyle bir bildirim mi aldınız ve uygulama hala aktif mi? O zaman sorun bu meyanda çözülmüştür.<br><br>Bazen telefonunuzun COVID-19 kontrolleri yaptığını söyleyen bildirimler alırsınız. O zaman CoronaMelder'ı açın. Bilmekte fayda var: genellikle hiçbir sorun yoktur.";
-"help.other_what_does_report_say.title" = "Bildirimde ne yazar?";
+"help.other_what_does_report_say.title" = "Bildirimi nasıl tanırım?";
 "help.other_what_does_report_say.content1" = "Daha sonra Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
 "help.other_what_does_report_say.content2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 
 "help.pause_app.title" = "Uygulamayı duraklatabilir miyim?";
-"help.pause_app.description" = "Evet, bunu bluetooth'unuzu kapatarak yapabilirsiniz. Bunu<b>Ayarlar> Bluetooth</b>ile yapabilirsiniz. Bluetooth'u kapatırsanız, uygulama artık kod değişimi yapmayacaktır. Bundan sonra, her 24 saatte bir uygulamayı tekrar açmanız için otomatik olarak bir hatırlatıcı mesaj alacaksınız.<br><br>Yine de, tekrar açmayı unutabileceğiniz için genellikle uygulamayı duraklatmanız önerilmez. Özel durumlarda uygulamayı duraklatabilirsiniz. Örneğin, (olası) Korona hastalarına yaklaşırsanız, ancak tıbbi koruyucu ekipman giydiğinizden eminseniz.";
+"help.pause_app.description" = "Evet, bunu Bluetooth'unuzu kapatarak yapabilirsiniz. Bunu<b>Ayarlar> Bluetooth</b>ile yapabilirsiniz. Dikkat: Bluetooth'u kontrol panelinden kapatarak uygulamayı duraklatamazsınız. Bluetooth'u kapatırsanız, uygulama artık kod alışverişi yapmayacaktır. Bundan sonra, her 24 saatte bir uygulamayı tekrar açmanız için otomatik olarak bir hatırlatıcı mesaj alacaksınız.<br><br>Buna rağmen, tekrar açmayı unutabileceğiniz için genellikle uygulamayı duraklatmanız önerilmez. Özel durumlarda uygulamayı duraklatabilirsiniz. Örneğin, (olası) Korona hastalarına yaklaşırsanız, fakat tıbbi koruyucu ekipman giydiğinizden eminseniz.";
 
 "help.apps_other_countries.title" = "CoronaMelder diğer ülkelerdeki uygulamalarla da çalışıyor mu?";
-"help.apps_other_countries.description" = "Ne yazık ki henüz değil, ancak bunu mümkün kılmak için çok çalışıyoruz. O zaman CoronaMelder, diğer ülkelerdeki bazı uygulamalarla da kod değişimi yapabilecek. Örneğin, Alman uygulaması. <br><br>CoronaMelder'e ek olarak Almanca Corona-Warn-Uygulamasını yüklerseniz, telefonunuz aynı anda yalnızca 1 uygulamanın etkin olabileceğini söyler. Seçtiğiniz uygulama, o anda temaslarınızı izleyen tek uygulama olur. Bunu birden fazla ülkede yapmak istiyorsanız, uygulamaları kendiniz değiştirmelisiniz. Daha sonra o uygulamadan bildirim alabilirsiniz. Günde bir kez uygulama değiştirirseniz her iki uygulama da temaslarınızı kontrol eder. Bu şekilde hiçbir şeyi kaçırmazsınız.<br><br>Gelecekte muhtemelen kendi ülkenizin uygulamasını kullanmaya devam edebilirsiniz ve artık her gün değiştirmenize gerek kalmaz.";
+"help.apps_other_countries.description" = "CoronaMelder, aralarında Almanya, İrlanda ve İtalya’nın bulunduğu Avrupa ülkelerinden bir dizi uygulamayla birlikte çalışır. <br> <br> Uzun bir süredir Alman Corona-Warn-App kullanıcısının yakınında bulunduğunuzu varsayalım. Bu kişi Almanya'da test edildi ve Korona olduğu anlaşıldı. Bu kişi kodlarını Alman GGD ile paylaşırsa, CoronaMelder aracılığıyla bir bildirim alacaksınız. Aynı şey tam tersi için de geçerli. Korona uygulamaları birlikte çalıştığından, yalnızca bir uygulamanızın açık olması yeterlidir.<br><br>CoronaMelder, 30 Kasım 2020'den itibaren farklı ülkelerden kullanıcıların kodlarını günlük olarak kontrol edecektir. Sonuç olarak, uygulama öncekinden daha fazla mobil veri kullanır. Ana ekrandaki<b>Ayarlar </b> aracılığıyla, uygulamayı yalnızca Korona olan birinin yakınında bulunmuş olup olmadığınızı WiFi üzerinden kontrol edecek şekilde ayarlayabilirsiniz.";
 
 /* MARK: - Message */
 "message.default.title" = "Korona olan birisinin yakınında bulundunuz";
@@ -258,11 +270,16 @@
 "main.confirmNotificationRemoval.message" = "Tarihi daha sonra uygulama içinde bulamazsınız. Bu yüzden bunu iyi hatırlayın.";
 "main.confirmNotificationRemoval.confirm" = "Silin";
 
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "Bu sayfa yüklenilemiyor";
+"webview.loadingfailed.subtitle" = "Burada bir şeyler ters gidiyor. Daha sonra tekrar kontrol edin veya sayfayı yeniden yüklemeyi deneyin";
+"webview.loadingfailed.try_again" = "Tekrar deneyin";
+
 /* MARK: - Status */
 "status.appState" = "Uygulama etkindir";
 "status.appState.inactive.title" = "Uygulama etkin değil";
 "status.appState.inactive.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır";
-"status.appState.inactive.notification" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat kontrol edemedi.";
+"status.appState.inactive.notification" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi.";
 "status.appState.inactive.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
 "status.appState.card.title" = "Uygulama etkin değil";
 "status.appState.card.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır.";
@@ -279,14 +296,14 @@
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Daha fazla bilgi";
 
-"moreInformation.cell.about.title" = "Uygulama hakkında sorularınız mı var?";
+"moreInformation.cell.about.title" = "Uygulama hakkında sorular";
 "moreInformation.cell.about.subtitle" = "Uygulamanın nasıl çalıştığını ve gizliliğiniz için ne anlama geldiğini görün";
 
 "moreInformation.cell.share.title" = "Başkalarını uygulamaya davet etmek";
 "moreInformation.cell.share.subtitle" = "Korona'yı birlikte kontrol altına almak için uygulamayı başkalarıyla paylaşın";
 
-"moreInformation.cell.receivedNotification.title" = "Bildirimde ne yazar?";
-"moreInformation.cell.receivedNotification.subtitle" = "Korona olan birisinin yakınında bulunmuş olduğunuzu ögrendikten sonra neler yapabileceğinizi okuyun";
+"moreInformation.cell.receivedNotification.title" = "Bildirimi nasıl tanırım?";
+"moreInformation.cell.receivedNotification.subtitle" = "Bir bildirimin nasıl göründüğünü ve aldığınızda ne yapmanız gerektiğini öğrenin";
 
 "moreInformation.cell.requestTest.title" = "Korona testi talep etmek";
 "moreInformation.cell.requestTest.subtitle" = "Size bulaşmış olup olmadığını en kısa sürede öğrenin";
@@ -326,6 +343,8 @@
 "moreInformation.about.faq.power_usage" = "Uygulama ne kadar elektrik kullanıyor?";
 "moreInformation.about.faq.deletion" = "Bluetooth verilerini telefonumdan nasıl silerim?";
 "moreInformation.about.faq.deletion.description" = "CoronaMelder'ın kaydettiği bluetooth verilerini silebilirsiniz. Bunu nasıl yapacağınız aşağıda açıklanmıştır.<br><br>Telefonunuzda Ayarlar> Karşılaşma Uyarıları> \"Maruz Kalmayı İzle\" Durumuna gidin.Karşılaşma Günlüğünü Sil'i tıklayın.<br><br>Uygulamanın yeni Bluetooth verilerini kaydetmeyi durdurmasını mı istiyorsunuz? O zaman uygulamayı silin.";
+
+"moreInformation.about.interoperability.title" = "CoronaMelder hangi yabancı uygulamalarla çalışıyor?";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Virüsün durdurulmasına yardımcı olduğunuzu başkalarına bildirin";
@@ -399,6 +418,11 @@
 "cards.notificationsOff.title" = "Bildirimler <u>kapalı</u>";
 "cards.notificationsOff.content" = "Uygulamanın gerektiğinde bilgileri anında paylaşabilmesi için genel bildirimleri açın.";
 "cards.notificationsOff.action" = "Bildirimleri açmak";
+
+"cards.interopannouncement.title" = "Bilmekte fayda var";
+"cards.interopannouncement.content" = "CoronaMelder 30 Kasım'dan itibaren, diğer Avrupa ülkelerindeki Korona uygulamalarıyla çalışacak.";
+"cards.interopannouncement.action" = "Daha fazla bilgi";
+"cards.interopannouncement.secondaryaction" = "Kapat";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Temas bildirimlerini açmak";

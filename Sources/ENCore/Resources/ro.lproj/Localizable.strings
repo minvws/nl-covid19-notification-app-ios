@@ -1,3 +1,15 @@
+"moreInformation.cell.settings.title" = "Configurări";
+"moreInformation.cell.settings.subtitle" = "Schimbați configurările pentru folosirea datelor celulare";
+
+/* MARK: - MoreInformation | Settings */
+
+"moreInformation.settings.title" = "Configurări";
+"moreInformation.settings.description" = "CoronaMelder controlează de câteva ori pe zi dacă v-ați aflat în apropierea unei persoane infectată cu coronavirus. Dacă dezactivați datele celulare, aplicația va face acest lucru doar dacă folosiți wifi. Întâlnirile sunt urmărite chiar dacă nu aveți legătură la internet.";
+"moreInformation.settings.step1" = "Accesați <b>Configurări</b> pe telefonul dvs. folosind butonul de mai jos";
+"moreInformation.settings.step2" = "Activați sau dezactivați datele celulare pentru CoronaMelder";
+"moreInformation.settings.step2.row.title" = "Date celulare";
+"moreInformation.settings.button" = "Accesați Configurări";
+
 // supports HTML
 "enableSettings.exposureNotifications.137.step2" = "Mergeți la <b>Notificări de expunere</b>";
 "enableSettings.exposureNotifications.137.step2.action.title" = "Notificări de expunere";
@@ -25,7 +37,7 @@
 "contamination.stay_home.title" = "Rămâneți acasă până la data de %@ (inclusiv)";
 "contamination.stay_home.step1" = "Lăsați-i pe alții să facă cumpărături. Dacă acest lucru nu este posibil și nu aveți simptome, atunci puteți ieși din casă pentru a face cumpărături. Păstrați distanța de 1,5 metri și nu atingeți alte persoane.";
 "contamination.stay_home.step2" = "Aveți voie să stați în gradină sau pe balcon.";
-"contamination.stay_home.step3" = "Elevii sub 18 ani  au voie să meargă la școală și/sau să facă sport.";
+"contamination.stay_home.step3" = "Elevii sub 18 ani au voie să meargă la școală și/sau să facă sport.";
 
 "contamination.visitors.title" = "Nu primiți vizite.";
 "contamination.visitors.step1" = "Doar persoanele cu care locuiți au voie să se afle cu dvs. în casă. Stați departe unul de celălalt și păstrați distanța de 1,5 metri. Deci, nu vă îmbrățișați, nu vă sărutați, nu întrețineți rapoarte sexuale.";
@@ -209,8 +221,8 @@
 "help.technical_explanation.title" = "Explicație tehnică";
 "help.technical_explanation.step1.title" = "1. Aplicația creează pentru fiecare telefon un cod propriu.";
 "help.technical_explanation.step1.description" = "În acest cod nu se găsesc informații despre dvs. sau despre telefonul dvs. Codul este aleatoriu și se schimbă la fiecare sfert de oră.";
-"help.technical_explanation.step2.title" = "2. Telefoanele schimbă coduri între ele când sunt unul în apropierea celuilalt.";
-"help.technical_explanation.step2.description" = "Are persoana pe care o întâlnești aplicația activată? Atunci, telefoanele voastre fac schimb de coduri prin Bluetooth Low Energy. În acest fel, aplicația știe ce telefoane erau în apropiere. Aplicația nu știe nici cui aparțin telefoanele, nici unde erați.";
+"help.technical_explanation.step2.title" = "2. Telefoanele schimbă coduri între ele când se află unul în apropierea celuilalt.";
+"help.technical_explanation.step2.description" = "Are și persoana pe care o întâlnești aplicația activată? Atunci, telefoanele voastre fac schimb de coduri prin Bluetooth Low Energy. În acest fel, aplicația știe ce telefoane au fost în apropiere. Aplicația nu știe nici cui aparțin telefoanele, nici unde erați.";
 "help.technical_explanation.step3.title" = "3. Dacă cineva este infectat cu coronavirus, această persoană poate adăuga pe o listă codurile ei/lui.";
 "help.technical_explanation.step3.description" = "Această listă conține doar coduri ale persoanelor infectate. Pentru a adăuga codurile, o persoană infectată trebuie să transmită mai întâi o cheie GGD către GGD (Serviciul de Sănătate Municipal). Această cheie garantează că doar codurile unei persoane infectate pot fi adăugate pe listă. Toate codurile mai vechi de 14 zile sunt eliminate automat din listă.";
 "help.technical_explanation.step4.title" = "4. Fiecare telefon verifică dacă a întâlnit anterior codurile de pe listă";
@@ -231,15 +243,15 @@
 "help.what_to_do_with_notification.description" = "Urmați recomandările din aplicație. Recomandările depind de situație, dacă aveți simptome care care pot fi asociate cu coronavirus și în ce zi v-ați aflat în apropierea persoanei infectate.   <br><br>În orice caz, rămâneți acasă până știți sigur că nu sunteți infectat cu coronavirus. În acest fel preveniți infectarea, în mod involuntar, a altora.<br><br> Primiți telefonic alte recomandări de la GGD (Serviciul de Sănătate Municipal) decât cele din aplicație? Atunci trebuie să urmați recomandările de la GGD.";
 "help.other_reports.title" = "Alte notificări";
 "help.other_reports.description" = "Aplicația vă poate trimite și notificări în cazul unor probleme tehnice. De exemplu, dacă bluetooth este dezactivat sau dacă nu ați avut legătură la internet mai mult de o zi. Aplicația vă ajută să soluționați problema.<br><br>Ați primit o astfel de notificare dar aplicația este activă? Înseamnă că problema a fost rezolvată între timp.<br><br> Uneori primiți notificări în care se menționează că telefonul dvs. face controale COVID-19.  Deschideți aplicația CoronaMelder. Bine de reținut: de cele mai multe ori, nu este nici o problemă.";
-"help.other_what_does_report_say.title" = "Ce conține o notificare?";
+"help.other_what_does_report_say.title" = "Cum recunosc o notificare?";
 "help.other_what_does_report_say.content1" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei persoane care se dovedește ulterior a fi infectată cu coronavirus.  ";
 "help.other_what_does_report_say.content2" = "Notificarea apare pe ecranul telefonului dvs., la fel ca mesajele primite prin alte aplicații. Notificarea are simbolul aplicației CoronaMelder.<br><br>Ați primit o notificare? Atunci deschideți CoronaMelder. În aplicație veți citi ce puteți face mai departe.";
 
 "help.pause_app.title" = "Pot pune aplicația pe pauză?";
-"help.pause_app.description" = "Da, puteți face acest lucru dezactivând Bluetooth. Mergeți  la<b>Configurări > Bluetooth</b>. Dacă dezactivați Bluetooth, aplicația nu va mai face schimb de coduri. Veți primi o dată la 24 de  ore o notificare pentru a activa din nou aplicația.<br><br>Totuși, de cele mai multe ori, nu este recomandat să dezactivați temporar aplicația deoarece s-ar putea să uitați să o activați. Puteți dezactiva temporar aplicația în anumite situații, de exemplu, dacă vă aflați în apropierea unor (posibili) pacienți infectați cu coronavirus  dar sunteți sigur că purtați mijloace de protecție.";
+"help.pause_app.description" = "Da, puteți face acest lucru dezactivând Bluetooth. Faceți acest lucru prin <b>Configurări > Bluetooth</b>. Atenție: nu puteți dezactiva temporar aplicația dacă dezactivați Bluetooth prin centrul de control. Dacă dezactivați Bluetooth, aplicația nu va mai face schimb de coduri. Veți primi la fiecare 24 de ore o notificare pentru a reactiva aplicația.<br><br>Totuși, de cele mai multe ori, nu este recomandat să dezactivați temporar aplicația deoarece s-ar putea să uitați să o reactivați. Puteți dezactiva temporar aplicația în anumite situații, de exemplu, dacă vă aflați în apropierea unor (posibili) pacienți infectați cu coronavirus  dar sunteți sigur că purtați echipament de protecție medicală.";
 
 "help.apps_other_countries.title" = "Colaborează CoronaMelder și cu aplicații din alte țări?";
-"help.apps_other_countries.description" = "Din păcate, încă nu, dar se fac eforturi mari pentru ca acest lucru să fie posibil. CoronaMelder va putea, de asemenea, să schimbe coduri cu anumite aplicații din alte țări, cum ar fi Germania. <br><br>Dacă, pe lângă CoronaMelder, instalați și aplicația germană Corona-Warn-App, telefonul vă va înștiința că doar 1 aplicație poate fi activă în același timp. Aplicația pe care o alegeți este singura aplicație care, în acel moment, verifică întâlnirile dvs. Dacă doriți să verificați acest lucru în mai multe țări, atunci trebuie să alternați între aplicații. Veți primi notificări de la aplicația activată la acel moment. Dacă faceți acest lucru o dată pe zi, ambele aplicații verifică întâlnirile, deci nu pierdeți nici o informație.<br><br>În viitor probabil veți putea folosi în paralel și aplicația din țara dvs., fără a fi necesară alternarea aplicațiilor în fiecare zi.";
+"help.apps_other_countries.description" = "CoronaMelder colaborează cu câteva aplicații din alte țări, printre care Germania, Irlanda și Italia.  <br><br>Să presupunem că ați fost pentru un timp mai îndelungat în apropierea unui utilizator al aplicației germane Corona-Warn-App. Această persoană este testată în Germania și reiese că este infectată cu coronavirus. Dacă acea persoană partajează codurile ei cu GGD-ul german (Serviciul Municipal de Sănătate), atunci veți primi prin CoronaMelder o notificare. Și invers este valabil acest lucru. Deoarece aplicațiile corona colaborează, este suficient să aveți activată doar una dintre aplicații.<br><br>Începând cu 30 noiembrie 2020, CoronaMelder verifică zilnic codurile utilizatorilor din diferite țări. Din această cauză aplicația folosește mai multe date celulare decât înainte.    Prin <b>Configurări</b> în ecranul principal puteți configura ca aplicația să controleze dacă ați fost în apropierea unei persoane infectată cu coronavirus doar prin rețeaua wifi.";
 
 /* MARK: - Message */
 "message.default.title" = "Ați fost aproape de cineva infectat cu coronavirus";
@@ -257,6 +269,11 @@
 "main.confirmNotificationRemoval.title" = "Sunteți sigur că doriți să ștergeți această notificare?";
 "main.confirmNotificationRemoval.message" = "Nu mai puteți regăsi data în aplicație. Deci rețineți-o bine.";
 "main.confirmNotificationRemoval.confirm" = "Șterge";
+
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "Această pagină nu poate fi încărcată";
+"webview.loadingfailed.subtitle" = "Ceva nu funcționează bine aici. Reveniți mai târziu sau încercați să reîncărcați pagina";
+"webview.loadingfailed.try_again" = "Încercați încă o dată";
 
 /* MARK: - Status */
 "status.appState" = "Aplicația este activă";
@@ -279,14 +296,14 @@
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mai multe informații";
 
-"moreInformation.cell.about.title" = "Aveți întrebări despre aplicație?";
+"moreInformation.cell.about.title" = "Întrebări despre aplicație";
 "moreInformation.cell.about.subtitle" = "Vedeți cum funcționează aplicația și ce înseamnă pentru confidențialitatea dvs.";
 
 "moreInformation.cell.share.title" = "Invitați alte persoane să folosească aplicația";
 "moreInformation.cell.share.subtitle" = "Distribuiți aplicația cât mai multor persoane pentru ca împreună să ținem coronavirus sub control";
 
-"moreInformation.cell.receivedNotification.title" = "Ce conține o notificare?";
-"moreInformation.cell.receivedNotification.subtitle" = "Citiți ce puteți face după ați fost în apropierea cuiva infectat cu coronavirus.";
+"moreInformation.cell.receivedNotification.title" = "Cum recunosc o notificare?";
+"moreInformation.cell.receivedNotification.subtitle" = "Aflați cum arată și ce puteți face dacă ați primit o notificare.";
 
 "moreInformation.cell.requestTest.title" = "Solicitați un test pentru coronavirus";
 "moreInformation.cell.requestTest.subtitle" = "Aflați repede dacă sunteți infectat";
@@ -326,6 +343,8 @@
 "moreInformation.about.faq.power_usage" = "Câtă baterie consumă aplicația?";
 "moreInformation.about.faq.deletion" = "Cum pot șterge datele Bluetooth din telefonul meu?";
 "moreInformation.about.faq.deletion.description" = "Puteți șterge datele Bluetooth stocate de CoronaMelder. Procedați în felul următor:  <br><br>accesați pe telefonul dvs. Configurări> Notificări expuneri > Status \"Evidențiere expuneri\". Dați click pe Ștergere  fișier log expuneri. <br><br>Nu mai doriți ca aplicația să  stocheze noi date Bluetooth?  Atunci ștergeți aplicația.";
+
+"moreInformation.about.interoperability.title" = "Cu ce alte aplicații străine colaborează CoronaMelder?";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Înștiințați-i pe ceilalți că ajutați la oprirea virusului.";
@@ -399,6 +418,11 @@
 "cards.notificationsOff.title" = "Notificările <u>nu</u> sunt activate";
 "cards.notificationsOff.content" = "Activați notificările generale, astfel încât aplicația să poată distribui instantaneu informații atunci când este nevoie.";
 "cards.notificationsOff.action" = "Activare de notificări";
+
+"cards.interopannouncement.title" = "Bine de știut";
+"cards.interopannouncement.content" = "Începând cu 30 noiembrie CoronaMelder colaborează cu aplicații din alte țări europene.";
+"cards.interopannouncement.action" = "Mai multe informații";
+"cards.interopannouncement.secondaryaction" = "Închideți";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Activare de notificări de contacte";
