@@ -194,13 +194,13 @@ final class BackgroundController: BackgroundControlling, Logging {
             scheduleDecoyRegister(task: task)
         }
 
-        exposureController
+        self.exposureController
             .getDecoyProbability()
             .sink(receiveCompletion: { _ in
             }, receiveValue: { value in
                 execute(decoyProbability: value)
                 })
-            .store(in: &disposeBag)
+            .store(in: &self.disposeBag)
     }
 
     private func handleDecoyRegister(task: BGProcessingTask) {
@@ -239,6 +239,36 @@ final class BackgroundController: BackgroundControlling, Logging {
             self.logDebug("Decoy `/stopkeys` expired")
             cancellable.cancel()
         }
+    }
+
+    func decoyRegisterAndScheduleStopKeys() {
+
+        func execute(decoyProbability: Float) {
+
+            let r = Float.random(in: configuration.decoyProbabilityRange)
+            guard r < decoyProbability else {
+                return logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
+            }
+            exposureController.requestLabConfirmationKey { _ in
+
+                self.logDebug("Decoy `/register` complete")
+
+                let date = Date().addingTimeInterval(
+                    TimeInterval(Int.random(in: 0 ... 900)) // random number between 0 and 15 minutes
+                )
+                self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
+            }
+        }
+
+        exposureController
+            .getDecoyProbability()
+            .delay(for: .seconds(Int.random(in: 1 ... 60)), // random number between 1 and 60 seconds
+                   scheduler: RunLoop.current)
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { value in
+                execute(decoyProbability: value)
+                })
+            .store(in: &disposeBag)
     }
 
     func removeAllTasks() {
