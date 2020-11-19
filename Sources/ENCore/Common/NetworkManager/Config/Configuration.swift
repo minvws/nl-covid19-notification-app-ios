@@ -62,8 +62,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "test.coronamelder-dist.nl",
             port: nil,
-            path: ["v2"],
-            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2Signature],
+            path: ["v3"],
+            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2V3Signature],
             tokenParams: [:]
         )
     )
@@ -82,8 +82,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "acceptatie.coronamelder-dist.nl",
             port: nil,
-            path: ["v2"],
-            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2Signature],
+            path: ["v3"],
+            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2V3Signature],
             tokenParams: [:]
         )
     )
@@ -102,8 +102,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "productie.coronamelder-dist.nl",
             port: nil,
-            path: ["v2"],
-            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2Signature],
+            path: ["v3"],
+            sslSignatures: [Certificate.SSL.cdnSignature, Certificate.SSL.cdnV2V3Signature],
             tokenParams: [:]
         )
     )
