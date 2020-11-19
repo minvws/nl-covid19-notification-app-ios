@@ -40,6 +40,6 @@ extension Certificate {
         static let apiFingerprint: Certificate.Fingerprint = "PE+wuVq4swAy9DK4b1Nf4XLBhdD9OYZYN882GH+m9Cg="
         static let apiV2Fingerprint: Certificate.Fingerprint = "TSSRQUz+lWdG7Ezvps9vcuKKEylDL52KkHrEy12twVo="
         static let cdnFingerprint: Certificate.Fingerprint = "PE+wuVq4swAy9DK4b1Nf4XLBhdD9OYZYN882GH+m9Cg="
-        static let cdnV2Fingerprint: Certificate.Fingerprint = "TSSRQUz+lWdG7Ezvps9vcuKKEylDL52KkHrEy12twVo="
+        static let cdnV2V3Fingerprint: Certificate.Fingerprint = "TSSRQUz+lWdG7Ezvps9vcuKKEylDL52KkHrEy12twVo="
     }
 }

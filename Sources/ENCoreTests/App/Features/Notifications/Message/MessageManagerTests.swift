@@ -75,10 +75,38 @@ class MessageManagerTests: TestCase {
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
-        XCTAssertEqual(result.paragraphs.first?.title, "Title ExposureDate:June 30, 2020, ExposureDaysAgo:1 day ago, StayHomeUntilDate:July 10, 2020")
-        XCTAssertEqual(result.paragraphs.first?.body.string, "Body ExposureDate:June 30, 2020, ExposureDaysAgo:1 day ago, StayHomeUntilDate:July 10, 2020")
+        XCTAssertEqual(result.paragraphs.first?.title, "Title ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
+        XCTAssertEqual(result.paragraphs.first?.body.string, "Body ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
         XCTAssertEqual(result.paragraphs.last?.title, "Title 2")
         XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2")
+    }
+
+    func test_getLocalizedTreatmentPerspective_unknownPlaceHolderShouldNotbeReplaced() throws {
+        // Arrange
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593624480) // 01/07/20 17:28
+
+        let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        let treatmentPerspective = TreatmentPerspective(
+            resources: [
+                "en": ["some_resource_title": "{SomeUnknownPlaceholder} {ExposureDate}, {ExposureDate+0}", "some_resource_body": "{SomeUnknownPlaceholder} {ExposureDate}"]
+            ],
+            guidance: .init(
+                quarantineDays: 10,
+                layout: [.init(title: "some_resource_title", body: "some_resource_body", type: "paragraph")]
+            )
+        )
+
+        mockStorageController.retrieveDataHandler = { key in
+            return try! JSONEncoder().encode(treatmentPerspective)
+        }
+
+        // Act
+        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+
+        // Assert
+        XCTAssertEqual(result.paragraphs.first?.title, "{SomeUnknownPlaceholder} Tuesday, June 30, Tuesday, June 30")
+        XCTAssertEqual(result.paragraphs.first?.body.string, "{SomeUnknownPlaceholder} Tuesday, June 30")
     }
 
     func test_getLocalizedTreatmentPerspective_shouldFormatBulletPoints() throws {
@@ -129,8 +157,8 @@ class MessageManagerTests: TestCase {
         TreatmentPerspective(
             resources: [
                 "en": [
-                    "some_resource_title": "Title ExposureDate:{ExposureDate}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
-                    "some_resource_body": "Body ExposureDate:{ExposureDate}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
+                    "some_resource_title": "Title ExposureDate:{ExposureDate}, ExposureDateWithCalculation:{ExposureDate+20}, ExposureDateShort:{ExposureDateShort}, ExposureDateShortWithCalculation:{ExposureDateShort+2}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
+                    "some_resource_body": "Body ExposureDate:{ExposureDate}, ExposureDateWithCalculation:{ExposureDate+20}, ExposureDateShort:{ExposureDateShort}, ExposureDateShortWithCalculation:{ExposureDateShort+2}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
                     "some_resource_title2": "Title 2",
                     "some_resource_body2": "Body 2"
                 ],
