@@ -23,7 +23,6 @@ protocol SettingsBuildable {
 
 protocol SettingsDependency {
     var theme: Theme { get }
-    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class SettingsDependencyProvider: DependencyProvider<SettingsDependency> {}
@@ -32,7 +31,6 @@ final class SettingsBuilder: Builder<SettingsDependency>, SettingsBuildable {
     func build(withListener listener: SettingsListener) -> ViewControllable {
         let dependencyProvider = SettingsDependencyProvider(dependency: dependency)
         return SettingsViewController(listener: listener,
-                                      theme: dependencyProvider.dependency.theme,
-                                      interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
+                                      theme: dependencyProvider.dependency.theme)
     }
 }

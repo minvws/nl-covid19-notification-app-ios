@@ -14,18 +14,14 @@ import XCTest
 final class SettingsViewControllerTests: TestCase {
     private var viewController: SettingsViewController!
     private let listener = SettingsListenerMock()
-    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
-
         viewController = SettingsViewController(listener: listener,
-                                                theme: theme,
-                                                interfaceOrientationStream: interfaceOrientationStream)
+                                                theme: theme)
     }
 
     // MARK: - Tests

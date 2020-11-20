@@ -19,10 +19,8 @@ final class SettingsViewController: ViewController, SettingsViewControllable, UI
     // MARK: - Init
 
     init(listener: SettingsListener,
-         theme: Theme,
-         interfaceOrientationStream: InterfaceOrientationStreaming) {
+         theme: Theme) {
         self.listener = listener
-        self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
 
@@ -54,12 +52,6 @@ final class SettingsViewController: ViewController, SettingsViewControllable, UI
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        interfaceOrientationStreamCancellable = nil
-    }
-
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -70,8 +62,6 @@ final class SettingsViewController: ViewController, SettingsViewControllable, UI
 
     private weak var listener: SettingsListener?
     private lazy var internalView: SettingsView = SettingsView(theme: self.theme)
-    private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.settingsWantsDismissal(shouldDismissViewController: true)
