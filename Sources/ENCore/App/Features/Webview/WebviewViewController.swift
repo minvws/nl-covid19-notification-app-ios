@@ -33,7 +33,7 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
         super.viewDidLoad()
 
         if webViewLoadingEnabled() {
-            internalView.webView.load(URLRequest(url: initialURL))
+            internalView.load(url: initialURL)
         } else {
             logDebug("`webViewLoading` disabled")
         }
@@ -74,8 +74,9 @@ private protocol WebviewViewDelegate: AnyObject {
 private final class WebviewView: View, WKNavigationDelegate {
 
     weak var delegate: WebviewViewDelegate?
+    private var url: URL?
 
-    lazy var webView: WKWebView = {
+    private lazy var webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.allowsBackForwardNavigationGestures = false
@@ -87,7 +88,9 @@ private final class WebviewView: View, WKNavigationDelegate {
         let errorView = WebViewErrorView(theme: theme)
         errorView.translatesAutoresizingMaskIntoConstraints = false
         errorView.actionButton.action = {
-            self.webView.reload()
+            if let url = self.url {
+                self.load(url: url)
+            }
         }
         return errorView
     }()
@@ -137,6 +140,11 @@ private final class WebviewView: View, WKNavigationDelegate {
             maker.height.width.equalTo(40)
             maker.center.equalToSuperview()
         }
+    }
+
+    func load(url: URL) {
+        self.url = url
+        webView.load(URLRequest(url: url))
     }
 
     private func loadingFinished(withError hasError: Bool) {
