@@ -86,7 +86,7 @@ struct EnableSettingModel {
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
                                           action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotifications137Step2),
-                                          action: .custom(image: Image.named("ExposureNotifications"), description: .enableSettingsExposureNotifications137Step2ActionTitle, showChevron: true))
+                                          action: .custom(image: Image.named("ExposureNotifications"), description: .enableSettingsExposureNotifications137Step2ActionTitle, showChevron: true, showSwitch: false))
 
             let step3 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotifications137Step3),
                                           action: .toggle(description: .enableSettingsExposureNotifications137Step3ActionTitle))
@@ -109,9 +109,9 @@ struct EnableSettingModel {
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow1),
-                                          action: .custom(image: Image.named("SettingsIcon"), description: .enableBluetoothSettingTitleSettingRow1, showChevron: false))
+                                          action: .custom(image: Image.named("SettingsIcon"), description: .enableBluetoothSettingTitleSettingRow1, showChevron: false, showSwitch: false))
             let step2 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow2),
-                                          action: .custom(image: Image.named("BluetoothIcon"), description: .enableBluetoothSettingTitleSettingRow2, showChevron: true))
+                                          action: .custom(image: Image.named("BluetoothIcon"), description: .enableBluetoothSettingTitleSettingRow2, showChevron: true, showSwitch: false))
             let step3 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow3),
                                           action: .toggle(description: .enableBluetoothSettingTitleSettingRow3))
 
@@ -132,7 +132,7 @@ struct EnableSettingModel {
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep1),
                                           action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep2),
-                                          action: .custom(image: Image.named("Notification"), description: .enableSettingsLocalNotificationsStep2ActionTitle, showChevron: true))
+                                          action: .custom(image: Image.named("Notification"), description: .enableSettingsLocalNotificationsStep2ActionTitle, showChevron: true, showSwitch: false))
             let step3 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep3),
                                           action: .toggle(description: .enableSettingsLocalNotificationsStep3ActionTitle))
 
@@ -142,13 +142,31 @@ struct EnableSettingModel {
                          actionTitle: .enableSettingsLocalNotificationsAction)
         }
     }
+
+    static var enableMobileDataUsage: (Theme) -> EnableSettingModel {
+        return { theme in
+            let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
+                                                                           font: theme.fonts.body,
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
+
+            let step1 = EnableSettingStep(description: fromHtml(.moreInformationSettingsStep1),
+                                          action: nil)
+            let step2 = EnableSettingStep(description: fromHtml(.moreInformationSettingsStep2),
+                                          action: .custom(image: Image.named("MobileData"), description: .moreInformationSettingsStep2RowTitle, showChevron: false, showSwitch: true))
+            return .init(title: .moreInformationSettingsTitle,
+                         steps: [step1, step2],
+                         action: nil,
+                         actionTitle: .moreInformationSettingsButton)
+        }
+    }
 }
 
 struct EnableSettingStep {
     enum Action {
         case linkCell(description: String)
         case toggle(description: String)
-        case custom(image: UIImage?, description: String, showChevron: Bool)
+        case custom(image: UIImage?, description: String, showChevron: Bool, showSwitch: Bool)
     }
 
     let description: NSAttributedString

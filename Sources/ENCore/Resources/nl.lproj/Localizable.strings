@@ -4,8 +4,11 @@
 /* MARK: - MoreInformation | Settings */
 
 "moreInformation.settings.title" = "Instellingen";
-"moreInformation.settings.description" = "Zet de instelling aan dat CoronaMelder ook codes van andere Europese corona-apps kan controleren. Zo kun jij een melding krijgen als je in het buitenland kans op besmetting hebt gelopen. En kan Nederland samen met andere Europese landen de verspreiding van het virus stoppen.";
-"moreInformation.settings.toggle.description" = "Controleer ook buitenlandse codes";
+"moreInformation.settings.description" = "CoronaMelder controleert een paar keer per dag of je in de buurt bent geweest van iemand met corona. Als je mobiele data uitzet, doet de app dit alleen nog als je wifi gebruikt. Je ontmoetingen worden ook bijgehouden als je geen internetverbinding hebt.";
+"moreInformation.settings.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
+"moreInformation.settings.step2" = "Zet mobiele data voor CoronaMelder aan of uit";
+"moreInformation.settings.step2.row.title" = "Mobiele data";
+"moreInformation.settings.button" = "Open Instellingen";
 
 // supports HTML
 "enableSettings.exposureNotifications.137.step2" = "Ga naar <b>Blootstellingsmeldingen</b>";
@@ -245,10 +248,12 @@
 "help.other_what_does_report_say.content2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
 
 "help.pause_app.title" = "Kan ik de app pauzeren?";
-"help.pause_app.description" = "Ja, dat kan door je bluetooth uit te zetten. Dit doe je via <b>Instellingen > Bluetooth</b>. Als je bluetooth uitzet, wisselt de app geen codes meer uit. Je krijgt hierna elke 24 uur automatisch een herinnering om de app weer aan te zetten.<br><br>Toch is het meestal niet aan te raden om de app te pauzeren, omdat je misschien vergeet hem weer aan te zetten. Je kunt de app wel pauzeren in bijzondere situaties. Bijvoorbeeld als je in de buurt komt van (mogelijke) coronapatiënten, maar zeker weet dat je medische beschermingsmiddelen draagt.";
+"help.pause_app.description" = "Ja, dat kan door je bluetooth uit te zetten. Dit doe je via <b>Instellingen > Bluetooth</b>. Let op: je kunt de app niet pauzeren door bluetooth uit te zetten via het bedieningspaneel. Als je bluetooth uitzet, wisselt de app geen codes meer uit. Je krijgt hierna elke 24 uur automatisch een herinnering om de app weer aan te zetten.<br><br>Toch is het meestal niet aan te raden om de app te pauzeren, omdat je misschien vergeet hem weer aan te zetten. Je kunt de app wel pauzeren in bijzondere situaties. Bijvoorbeeld als je in de buurt komt van (mogelijke) coronapatiënten, maar zeker weet dat je medische beschermingsmiddelen draagt.";
 
 "help.apps_other_countries.title" = "Werkt CoronaMelder ook samen met apps uit andere landen?";
-"help.apps_other_countries.description" = "Helaas nu nog niet, maar er wordt hard gewerkt om dit mogelijk te maken. Dan zal CoronaMelder ook codes kunnen uitwisselen met sommige apps uit andere landen. Bijvoorbeeld de Duitse app.<br><br>Als je naast CoronaMelder de Duitse Corona-Warn-App installeert, zegt je telefoon dat er maar 1 app tegelijk actief kan zijn. De app die je kiest is de enige app die op dat moment jouw ontmoetingen controleert. Wil je dat in meerdere landen doen, dan moet je dus zelf wisselen van app. Van die app kun je dan meldingen ontvangen. Als je 1 keer per dag wisselt van app, controleren beide apps je ontmoetingen. Zo mis je niks.<br><br>In de toekomst kun je waarschijnlijk de app van je eigen land blijven gebruiken, en hoef je niet meer dagelijks te wisselen.";
+"help.apps_other_countries.description" = "CoronaMelder werkt samen met een aantal apps uit andere Europese landen. Onder andere Duitsland, Ierland en Italië.<br><br>Stel, je bent langere tijd in de buurt geweest bij een gebruiker van de Duitse Corona-Warn-App. Deze persoon wordt in Duitsland getest en blijkt corona te hebben. Als die persoon zijn codes deelt met de Duitse GGD, dan krijg jij via CoronaMelder een melding. Andersom geldt hetzelfde. Omdat de corona-apps onderling samenwerken, hoef je dus maar één app aan te hebben staan.<br><br>CoronaMelder controleert vanaf 30 november 2020 dagelijks de codes van gebruikers uit verschillende landen. Hierdoor verbruikt de app meer mobiele data dan vroeger. 
+
+Je kunt via <b>Instellingen</b> op het hoofdscherm instellen dat de app alleen via wifi controleert of je in de buurt bent geweest van iemand met corona.";
 
 /* MARK: - Message */
 "message.default.title" = "Je was in de buurt van iemand met corona";
@@ -417,7 +422,7 @@
 "cards.notificationsOff.action" = "Meldingen aanzetten";
 
 "cards.interopannouncement.title" = "Goed om te weten";
-"cards.interopannouncement.content" = "CoronaMelder werkt vanaf 30 november samen met corona-apps uit andere Europese landen";
+"cards.interopannouncement.content" = "CoronaMelder werkt vanaf 30 november samen met corona-apps uit andere Europese landen.";
 "cards.interopannouncement.action" = "Meer informatie";
 "cards.interopannouncement.secondaryaction" = "Sluiten";
 

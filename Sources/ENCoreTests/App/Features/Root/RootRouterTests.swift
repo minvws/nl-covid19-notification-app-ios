@@ -140,6 +140,16 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(backgroundController.scheduleTasksCallCount, 1)
     }
 
+    func test_detachOnboardingAndRouteToMain_marksInteropAnnouncementAsSeen() {
+        router.start()
+
+        XCTAssertEqual(exposureController.seenAnnouncements, [])
+
+        router.detachOnboardingAndRouteToMain(animated: true)
+
+        XCTAssertEqual(exposureController.seenAnnouncements, [.interopAnnouncement])
+    }
+
     func test_start_activatesExposureController() {
         XCTAssertEqual(exposureController.activateCallCount, 0)
 

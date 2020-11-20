@@ -297,6 +297,8 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.removeData(for: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.seenAnnouncements, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.treatmentPerspective, completion: { _ in })
     }
 
     private func uploadKeys() {

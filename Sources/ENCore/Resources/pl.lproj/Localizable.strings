@@ -1,3 +1,15 @@
+"moreInformation.cell.settings.title" = "Ustawienia";
+"moreInformation.cell.settings.subtitle" = "Dostosuj swoje ustawienia dla korzystania z danych komórkowych";
+
+/* MARK: - MoreInformation | Settings */
+
+"moreInformation.settings.title" = "Ustawienia";
+"moreInformation.settings.description" = "CoronaMelder sprawdza kilka razy dziennie, czy znajdowałeś się w pobliżu zarażonej osoby. Jeśli wyłączysz dane komórkowe, aplikacja będzie to robić przy połączeniu z wi-fi. Spotkania są kontrolowane również, gdy nie masz połączenia internetowego.";
+"moreInformation.settings.step1" = "Otwórz <b>Ustawienia</b> w swoim telefonie poprzez poniższy przycisk";
+"moreInformation.settings.step2" = "Włącz lub wyłącz dane komórkowe dla CoronaMelder";
+"moreInformation.settings.step2.row.title" = "Dane komórkowe";
+"moreInformation.settings.button" = "Otwórz Ustawienia";
+
 // supports HTML
 "enableSettings.exposureNotifications.137.step2" = "Idź do <b>Powiadomienia o ekspozycji</b>";
 "enableSettings.exposureNotifications.137.step2.action.title" = "Powiadomienia o ekspozycji";
@@ -230,15 +242,15 @@
 "help.what_to_do_with_notification.description" = "Stosuj się do zaleceń, które podaje aplikacja. Są one uzależnione od Twojej sytuacji. Od tego, czy masz dolegliwości, które są typowe dla koronawirusa oraz kiedy znajdowałeś się w pobliżu osoby z koronawirusem.<br><br>W każdym razie pozostań w domu do momentu, aż będziesz pewien, że nie masz koronawirusa. W ten sposób unikasz nieświadomego zarażenia innych.<br><br>GGD w rozmowie telefonicznej podaje inne zalecenia niż aplikacja? Postępuj zgodnie z zaleceniami GGD.";
 "help.other_reports.title" = "Inne powiadomienia";
 "help.other_reports.description" = "CoronaMelder może przesłać powiadomienie w przypadku problemu technicznego. Na przykład gdy Bluetooth jest wyłączony albo jeśli nie ma połączenia internetowego przez więcej niż jeden dzień. Aplikacja pomoże Ci to rozwiązać.<br><br>Otrzymałeś takie powiadomienie, a aplikacja jest aktywna? W międzyczasie problem został rozwiązany.<br><br>Czasami otrzymujesz również powiadomienie informujące o przeprowadzanej przez Twój telefon kontroli COVID-19. W takim przypadku otwórz CoronaMelder. Dobrze jest wiedzieć, że zazwyczaj nie dzieje się nic poważnego.";
-"help.other_what_does_report_say.title" = "Jakie informacje znajdują się w powiadomieniu?";
+"help.other_what_does_report_say.title" = "Jak rozpoznać powiadomienie?";
 "help.other_what_does_report_say.content1" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której potem wykryto koronawirusa.";
 "help.other_what_does_report_say.content2" = "Powiadomienie pojawia się na ekranie głównym Twojego telefonu. Podobnie jak wiadomości od innych aplikacji. Powiadomienie posiada symbol CoronaMelder.<br><br>Otrzymałeś powiadomienie? Otwórz CoronaMelder. Tam przeczytasz co możesz zrobić.";
 
 "help.pause_app.title" = "Czy mogę wstrzymać aplikację?";
-"help.pause_app.description" = "Tak, możesz to zrobić poprzez wyłączenie swojego Bluetooth. Należy przejść do <b>Ustawienia > Bluetooth</b>. Po wyłączeniu Bluetooth, aplikacja nie wymienia już żadnych kodów. Co 24 godziny będziesz automatycznie otrzymywał powiadomienia, przypominające o ponownym włączeniu aplikacji.<br><br>Nie zaleca się jednak wstrzymywania aplikacji, ponieważ możesz zapomnieć o jej ponownym uruchomieniu. Aplikację można wstrzymać w szczególnych przypadkach. Na przykład jeśli znajdujesz się w pobliżu (potencjalnych) pacjentów z koronawirusem, jednak jesteś pewien, że masz na sobie środki ochronne do celów medycznych.";
+"help.pause_app.description" = "Tak, możesz to zrobić poprzez wyłączenie swojego Bluetooth. Należy przejść do <b>Ustawienia > Bluetooth</b>. Uwaga: nie możesz wstrzymać aplikacji wyłączając Bluetooth w panelu sterowania. Po wyłączeniu Bluetooth, aplikacja nie wymienia już żadnych kodów. Co 24 godziny będziesz automatycznie otrzymywał powiadomienia, przypominające o ponownym włączeniu aplikacji.<br><br>Nie zaleca się jednak wstrzymywania aplikacji, ponieważ możesz zapomnieć o jej ponownym uruchomieniu. Aplikację można wstrzymać w szczególnych przypadkach. Na przykład jeśli znajdujesz się w pobliżu (potencjalnych) pacjentów z koronawirusem, jednak jesteś pewien, że masz na sobie środki ochronne do celów medycznych.";
 
 "help.apps_other_countries.title" = "Czy CoronaMelder współpracuje również z aplikacjami z innych krajów?";
-"help.apps_other_countries.description" = "Niestety na razie jeszcze nie, jednak ciężko pracujemy nad tym, aby było to możliwe. Wtedy aplikacja Corona Melder będzie mogła wymieniać kody z niektórymi aplikacjami z innych krajów. Na przykład z niemiecką aplikacją.<br><br>Jeśli oprócz CoronaMelder zainstalujesz niemiecką aplikację Corona-Warn-App, Twój telefon poinformuje Cię, że tylko 1 aplikacja może być aktywna w danym momencie. Wybrana przez Ciebie aplikacja będzie w danym momencie kontrolować Twoje spotkania. Jeśli chcesz robić to w więcej niż jednym kraju, musisz samodzielnie przełączać aplikacje. Będziesz otrzymywał powiadomienia od wybranej przez siebie aplikacji. Jeśli raz dziennie przełączasz aplikacje, obie kontrolują Twoje spotkania. W ten sposób nic Ci nie umyka.<br><br>Prawdopodobnie w przyszłości będziesz mógł korzystać wyłącznie z aplikacji swojego kraju, bez konieczności codziennego przełączania aplikacji.";
+"help.apps_other_countries.description" = "CoronaMelder współpracuje z kilkoma aplikacjami z innych krajów europejskich m.in. z Niemiec, Irlandii i Włoch.<br><br>Przypuśćmy, że przez dłuższy czas znajdowałeś się w pobliżu użytkownika niemieckiej Corona-Warn-App. Osoba ta wykonała w Niemczech test na obecność koronawirusa i uzyskała pozytywny wynik. Jeśli przekaże swoje kody niemieckiemu GGD, otrzymasz powiadomienie z CoronaMelder. Działa to tak samo w drugą stronę. Ponieważ aplikacje dotyczące koronawirusa współpracują ze sobą, wystarczy, abyś aktywował jedną aplikację.<br><br>Od 30 listopada 2020 r. aplikacja CoronaMelder będzie codziennie kontrolowała kody użytkowników z różnych krajów. W rezultacie, aplikacja zużywa więcej danych komórkowych niż wcześniej.   Należy przejść do <b>Ustawienia</b> na głównym ekranie, aby zezwolić aplikacji na sprawdzanie, czy znajdowałeś się w pobliżu zarażonej osoby, wyłącznie przy połączeniu wi-fi.";
 
 /* MARK: - Message */
 "message.default.title" = "Znajdowałeś się w pobliżu osoby z koronawirusem";
@@ -257,15 +269,20 @@
 "main.confirmNotificationRemoval.message" = "Później nie będziesz mógł znaleźć tej daty w aplikacji. Dlatego zapamiętaj ją dobrze.";
 "main.confirmNotificationRemoval.confirm" = "Usuń";
 
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "Nie można załadować tej strony";
+"webview.loadingfailed.subtitle" = "Coś poszło nie tak. Spróbuj ponownie później lub załaduj ponownie stronę";
+"webview.loadingfailed.try_again" = "Spróbuj ponownie";
+
 /* MARK: - Status */
 "status.appState" = "Aplikacja jest aktywna";
 "status.appState.inactive.title" = "Aplikacja nie jest aktywna";
 "status.appState.inactive.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia";
 "status.appState.inactive.notification" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś.";
-"status.appState.inactive.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronwirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.inactive.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.title" = "Aplikacja nie jest aktywna";
 "status.appState.card.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia.";
-"status.appState.card.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronwirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.card.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.button" = "Włącz aplikację";
 "status.appState.card.try_again" = "Spróbuj ponownie";
 "status.active.description" = "Spotkania są kontrolowane również, gdy aplikacja jest zamknięta";
@@ -278,14 +295,14 @@
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Więcej informacji";
 
-"moreInformation.cell.about.title" = "Masz pytania dotyczące aplikacji?";
+"moreInformation.cell.about.title" = "Pytania dotyczące aplikacji";
 "moreInformation.cell.about.subtitle" = "Zobacz jak działa aplikacja i co to oznacza dla Twojej prywatności";
 
 "moreInformation.cell.share.title" = "Zaproś znajomych do aplikacji";
 "moreInformation.cell.share.subtitle" = "Udostępnij aplikację innym, aby razem uzyskać kontrolę nad koronawirusem";
 
-"moreInformation.cell.receivedNotification.title" = "Jakie informacje znajdują się w powiadomieniu?";
-"moreInformation.cell.receivedNotification.subtitle" = "Przeczytaj, co możesz zrobić, gdy okaże się, że znajdowałeś się w pobliżu osoby z koronawirusem";
+"moreInformation.cell.receivedNotification.title" = "Jak rozpoznać powiadomienie?";
+"moreInformation.cell.receivedNotification.subtitle" = "Sprawdź jak wygląda zgłoszenie i co możesz zrobić, gdy je otrzymasz";
 
 "moreInformation.cell.requestTest.title" = "Poproś o test na koronawirusa";
 "moreInformation.cell.requestTest.subtitle" = "Dowiedz się możliwie jak najszybciej, czy sam jesteś zarażony";
@@ -325,6 +342,8 @@
 "moreInformation.about.faq.power_usage" = "Ile energii zużywa aplikacja?";
 "moreInformation.about.faq.deletion" = "Jak mogę usunąć dane Bluetooth z telefonu?";
 "moreInformation.about.faq.deletion.description" = "Dane Bluetooth przechowywane przez CoronaMelder możesz usunąć samodzielnie. Możesz to zrobić w następujący sposób.<br><br>Przejdź w telefonie do Ustawień > Powiadomienia o ekspozycji > Status \"Śledzenia ekspozycji\". Kliknij przycisk Usuń rejestr ekspozycji.<br><br>Czy chcesz, aby aplikacja przestała przechowywać nowe dane Bluetooth? W takim przypadku usuń aplikację.";
+
+"moreInformation.about.interoperability.title" = "Z którymi zagranicznymi aplikacjami współpracuje CoronaMelder?";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Przekaż innym, że pomagasz w powstrzymaniu rozprzestrzeniania się koronawirusa.";
@@ -399,6 +418,11 @@ zadzwoń do swojego lekarza rodzinnego.";
 "cards.notificationsOff.title" = "Powiadomienia są <u>wyłączone</u>";
 "cards.notificationsOff.content" = "Włącz powiadomienia ogólne, aby w razie potrzeby aplikacja mogła natychmiastowo udostępnić informacje.";
 "cards.notificationsOff.action" = "Włącz powiadomienia";
+
+"cards.interopannouncement.title" = "Warto wiedzieć";
+"cards.interopannouncement.content" = "Od 30 listopada CoronaMelder współpracuje z aplikacjami dotyczącymi koronawirusa z innych krajów europejskich.";
+"cards.interopannouncement.action" = "Więcej informacji";
+"cards.interopannouncement.secondaryaction" = "Zamknij";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Włącz powiadomienia o kontaktach";

@@ -51,6 +51,15 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
+    var seenAnnouncements: [Announcement] {
+        get {
+            return dataController.seenAnnouncements
+        }
+        set {
+            dataController.seenAnnouncements = newValue
+        }
+    }
+
     @discardableResult
     func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never> {
         logDebug("Request EN framework activation")

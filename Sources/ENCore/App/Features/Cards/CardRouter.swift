@@ -6,12 +6,13 @@
  */
 
 import Foundation
+import UIKit
 
 /// @mockable
 protocol CardViewControllable: ViewControllable, EnableSettingListener {
     var router: CardRouting? { get set }
 
-    func update(cardType: CardType)
+    func update(cardTypes: [CardType])
     func present(viewController: ViewControllable)
     func dismiss(viewController: ViewControllable)
 }
@@ -19,8 +20,10 @@ protocol CardViewControllable: ViewControllable, EnableSettingListener {
 final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSettable {
 
     init(viewController: CardViewControllable,
-         enableSettingBuilder: EnableSettingBuildable) {
+         enableSettingBuilder: EnableSettingBuildable,
+         applicationController: ApplicationControlling) {
         self.enableSettingBuilder = enableSettingBuilder
+        self.applicationController = applicationController
 
         super.init(viewController: viewController)
 
@@ -37,6 +40,12 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
         self.viewController.present(viewController: viewController)
     }
 
+    func route(to url: URL) {
+        if applicationController.canOpenURL(url) {
+            applicationController.open(url)
+        }
+    }
+
     func detachEnableSetting(hideViewController: Bool) {
         guard let viewController = enableSettingViewController else {
             return
@@ -51,14 +60,15 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
 
     // MARK: - CardTypeSettable
 
-    var type: CardType = .bluetoothOff {
+    var types: [CardType] = [.bluetoothOff] {
         didSet {
-            viewController.update(cardType: type)
+            viewController.update(cardTypes: types)
         }
     }
 
     // MARK: - Private
 
+    private let applicationController: ApplicationControlling
     private let enableSettingBuilder: EnableSettingBuildable
     private var enableSettingViewController: ViewControllable?
 }
