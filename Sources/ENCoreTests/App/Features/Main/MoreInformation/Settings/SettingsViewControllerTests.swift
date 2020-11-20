@@ -26,11 +26,11 @@ final class SettingsViewControllerTests: TestCase {
 
     // MARK: - Tests
 
-    func testSnapshotRequestTestViewController() {
+    func testSnapshotSettingsViewController() {
         snapshots(matching: viewController)
     }
 
-    func testPresentationControllerDidDismissCallsListener() {
+    func testSettingsPresentationControllerDidDismissCallsListener() {
         listener.settingsWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }
