@@ -18,6 +18,9 @@ protocol MainRouting: Routing {
     func routeToAboutApp()
     func detachAboutApp(shouldHideViewController: Bool)
 
+    func routeToSettings()
+    func detachSettings(shouldDismissViewController: Bool)
+
     func routeToSharing()
     func detachSharing(shouldHideViewController: Bool)
 
@@ -141,6 +144,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToAboutApp()
     }
 
+    func moreInformationRequestsSettings() {
+        router?.routeToSettings()
+    }
+
     func moreInformationRequestsSharing() {
         router?.routeToSharing()
     }
@@ -171,6 +178,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func aboutRequestsDismissal(shouldHideViewController: Bool) {
         router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
+    }
+
+    // MARK: - SettingsListner
+
+    func settingsWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachSettings(shouldDismissViewController: shouldDismissViewController)
     }
 
     // MARK: - HelpListener

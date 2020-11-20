@@ -23,7 +23,7 @@ protocol MainDependency {
     var dataController: ExposureDataControlling { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -55,6 +55,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var aboutBuilder: AboutBuildable {
         return AboutBuilder(dependency: self)
+    }
+
+    var settingsBuilder: SettingsBuildable {
+        return SettingsBuilder(dependency: self)
     }
 
     var shareBuilder: ShareSheetBuildable {
@@ -119,6 +123,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           infectedBuilder: dependencyProvider.infectedBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
-                          webviewBuilder: dependencyProvider.webviewBuilder)
+                          webviewBuilder: dependencyProvider.webviewBuilder,
+                          settingsBuilder: dependencyProvider.settingsBuilder)
     }
 }

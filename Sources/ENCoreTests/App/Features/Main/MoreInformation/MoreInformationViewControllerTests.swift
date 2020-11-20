@@ -42,6 +42,12 @@ final class MoreInformationViewControllerTests: TestCase {
         snapshots(matching: viewController)
     }
 
+    func test_didSelectItem_settings() {
+        viewController.didSelect(identifier: .settings)
+
+        XCTAssertEqual(listener.moreInformationRequestsSettingsCallCount, 1)
+    }
+
     func test_didSelectItem_about() {
         viewController.didSelect(identifier: .about)
 
