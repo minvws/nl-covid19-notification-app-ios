@@ -182,7 +182,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     // MARK: - SettingsListner
 
-    func settingstWantsDismissal(shouldDismissViewController: Bool) {
+    func settingsWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachSettings(shouldDismissViewController: shouldDismissViewController)
     }
 

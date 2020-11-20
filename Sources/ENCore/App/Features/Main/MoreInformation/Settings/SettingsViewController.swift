@@ -63,7 +63,7 @@ final class SettingsViewController: ViewController, SettingsViewControllable, UI
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        listener?.settingstWantsDismissal(shouldDismissViewController: false)
+        listener?.settingsWantsDismissal(shouldDismissViewController: false)
     }
 
     // MARK: - Private
@@ -74,7 +74,7 @@ final class SettingsViewController: ViewController, SettingsViewControllable, UI
     private var interfaceOrientationStreamCancellable: AnyCancellable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
-        listener?.settingstWantsDismissal(shouldDismissViewController: true)
+        listener?.settingsWantsDismissal(shouldDismissViewController: true)
     }
 }
 

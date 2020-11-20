@@ -35,12 +35,12 @@ final class SettingsViewControllerTests: TestCase {
     }
 
     func testPresentationControllerDidDismissCallsListener() {
-        listener.settingstWantsDismissalHandler = { value in
+        listener.settingsWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }
 
         viewController.presentationControllerDidDismiss(UIPresentationController(presentedViewController: viewController, presenting: nil))
 
-        XCTAssertEqual(listener.settingstWantsDismissalCallCount, 1)
+        XCTAssertEqual(listener.settingsWantsDismissalCallCount, 1)
     }
 }

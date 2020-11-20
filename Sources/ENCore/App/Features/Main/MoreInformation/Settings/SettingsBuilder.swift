@@ -10,7 +10,7 @@ import Foundation
 
 /// @mockable
 protocol SettingsListener: AnyObject {
-    func settingstWantsDismissal(shouldDismissViewController: Bool)
+    func settingsWantsDismissal(shouldDismissViewController: Bool)
 }
 
 /// @mockable
