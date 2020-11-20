@@ -59,6 +59,7 @@ protocol ExposureDataControlling: AnyObject {
     func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
+    var seenAnnouncements: [Announcement] { get set }
 }
 
 protocol ExposureDataControllerBuildable {

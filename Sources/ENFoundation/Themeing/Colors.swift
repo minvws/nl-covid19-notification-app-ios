@@ -10,6 +10,7 @@ import UIKit
 
 public protocol Colors: AnyObject {
     var primary: UIColor { get }
+    var secondaryLight: UIColor { get }
     var tertiary: UIColor { get }
     var warning: UIColor { get }
 
@@ -31,11 +32,16 @@ public protocol Colors: AnyObject {
     var lightOrange: UIColor { get }
 
     var captionGray: UIColor { get }
+    var cardBackground: UIColor { get }
 }
 
 final class ENColors: Colors, Logging {
     var primary: UIColor {
         return color(for: "PrimaryColor")
+    }
+
+    var secondaryLight: UIColor {
+        return color(for: "SecondaryLight")
     }
 
     var tertiary: UIColor {
@@ -92,6 +98,10 @@ final class ENColors: Colors, Logging {
 
     var captionGray: UIColor {
         return color(for: "CaptionGray")
+    }
+
+    var cardBackground: UIColor {
+        return color(for: "CardBackground")
     }
 
     // MARK: - Private

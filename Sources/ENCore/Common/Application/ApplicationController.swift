@@ -10,10 +10,20 @@ import UIKit
 /// @mockable
 protocol ApplicationControlling {
     var isInBackground: Bool { get }
+    func canOpenURL(_ url: URL) -> Bool
+    func open(_ url: URL)
 }
 
 class ApplicationController: ApplicationControlling {
     var isInBackground: Bool {
         return UIApplication.shared.applicationState == .background
+    }
+
+    func open(_ url: URL) {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+
+    func canOpenURL(_ url: URL) -> Bool {
+        UIApplication.shared.canOpenURL(url)
     }
 }

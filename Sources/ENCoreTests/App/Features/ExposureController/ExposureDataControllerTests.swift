@@ -23,7 +23,7 @@ final class ExposureDataControllerTests: TestCase {
     }
 
     func test_firstRun_erasesStorage() {
-        // These values are incremented during inti of `ExposureDataController`,
+        // These values are incremented during init of `ExposureDataController`,
         // if tests are breaking due to this assert update the call counts accordingly.
         XCTAssertEqual(storageController.storeCallCount, 1)
         XCTAssertEqual(storageController.removeDataCallCount, 3)

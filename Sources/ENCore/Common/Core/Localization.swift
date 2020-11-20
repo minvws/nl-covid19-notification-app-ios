@@ -11,6 +11,19 @@ import UIKit
 
 public final class Localization {
 
+    enum SupportedLanguageIdentifier: String {
+        case ar
+        case bg
+        case de
+        case es
+        case pl
+        case ro
+        case tr
+        case nl
+        case en
+        case fr
+    }
+
     /// Get the Localized string for the current bundle.
     /// If the key has not been localized this will fallback to the Base project strings
     public static func string(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> String {
@@ -444,6 +457,14 @@ extension String {
     static var cardsNotificationsOffTitle: String { return Localization.string(for: "cards.notificationsOff.title") }
     static var cardsNotificationsOffContent: String { return Localization.string(for: "cards.notificationsOff.content") }
     static var cardsNotificationsOffAction: String { return Localization.string(for: "cards.notificationsOff.action") }
+
+    // MARK: - Cards | Interop Announcement
+
+    static var cardsInteropAnnouncementTitle: String { return Localization.string(for: "cards.interopannouncement.title") }
+    static var cardsInteropAnnouncementContent: String { return Localization.string(for: "cards.interopannouncement.content") }
+    static var cardsInteropAnnouncementAction: String { return Localization.string(for: "cards.interopannouncement.action") }
+    static var cardsInteropAnnouncementSecondaryAction: String { return Localization.string(for: "cards.interopannouncement.secondaryaction") }
+    static func interopabilityURL(withLanguageCode languageCode: String) -> String { return "https://coronamelder.nl/\(languageCode)/operabiliteit" }
 
     // MARK: - Enable Settings | Exposure Notifications
 

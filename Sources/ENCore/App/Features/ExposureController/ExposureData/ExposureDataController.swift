@@ -9,6 +9,10 @@ import Combine
 import ENFoundation
 import Foundation
 
+enum Announcement: String, Codable {
+    case interopAnnouncement
+}
+
 struct ExposureDataStorageKey {
     static let labConfirmationKey = CodableStorageKey<LabConfirmationKey>(name: "labConfirmationKey",
                                                                           storeType: .secure)
@@ -46,6 +50,8 @@ struct ExposureDataStorageKey {
                                                                               storeType: .insecure(volatile: false))
     static let lastUnseenExposureNotificationDate = CodableStorageKey<Date>(name: "lastUnseenExposureNotificationDate",
                                                                             storeType: .insecure(volatile: false))
+    static let seenAnnouncements = CodableStorageKey<[Announcement]>(name: "seenAnnouncements",
+                                                                     storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
@@ -249,6 +255,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         set {
             storageController.store(object: newValue,
                                     identifiedBy: ExposureDataStorageKey.onboardingCompleted,
+                                    completion: { _ in })
+        }
+    }
+
+    var seenAnnouncements: [Announcement] {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.seenAnnouncements) ?? []
+        }
+        set {
+            storageController.store(object: newValue,
+                                    identifiedBy: ExposureDataStorageKey.seenAnnouncements,
                                     completion: { _ in })
         }
     }
