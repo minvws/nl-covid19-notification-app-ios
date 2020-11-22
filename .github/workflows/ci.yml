@@ -16,7 +16,7 @@ jobs:
       - name: CItest-iphone12
         run: |
           sudo xcode-select -s /Applications/Xcode_12.2.app
-          xcodebuild clean test -version \
+          xcodebuild clean test \
           -project EN.xcodeproj \
           -scheme ENCore \
           -destination "platform=iOS Simulator,OS=latest,name=iPhone 12" \
