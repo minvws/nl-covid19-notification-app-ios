@@ -189,7 +189,7 @@ private final class ReceivedNotificationView: View {
             maker.top.bottom.equalToSuperview()
         }
         tableView.snp.makeConstraints { maker in
-            maker.leading.trailing.top.bottom.equalTo(safeAreaLayoutGuide)
+            maker.leading.trailing.top.bottom.equalToSuperview()
             maker.width.equalToSuperview()
             maker.height.equalTo(0).priority(.high)
         }

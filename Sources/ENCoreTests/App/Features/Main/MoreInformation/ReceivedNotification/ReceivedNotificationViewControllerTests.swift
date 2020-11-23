@@ -23,8 +23,10 @@ final class ReceivedNotificationViewControllerTests: TestCase {
 
         interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
+        let uploadKeys = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
+
         viewController = ReceivedNotificationViewController(listener: listener,
-                                                            linkedContent: [],
+                                                            linkedContent: [AboutEntry.question(uploadKeys)],
                                                             actionButtonTitle: nil,
                                                             theme: theme,
                                                             interfaceOrientationStream: interfaceOrientationStream)
