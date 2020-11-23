@@ -39,7 +39,7 @@ protocol CardListening: AnyObject {
     func dismissedAnnouncement()
 }
 
-private final class CardDependencyProvider: DependencyProvider<CardDependency>, EnableSettingDependency {
+private final class CardDependencyProvider: DependencyProvider<CardDependency>, EnableSettingDependency, WebviewDependency {
 
     var bluetoothStateStream: BluetoothStateStreaming {
         return dependency.bluetoothStateStream
@@ -61,8 +61,8 @@ private final class CardDependencyProvider: DependencyProvider<CardDependency>, 
         return dependency.dataController
     }
 
-    var applicationController: ApplicationControlling {
-        return ApplicationController()
+    var webviewBuilder: WebviewBuildable {
+        return WebviewBuilder(dependency: self)
     }
 }
 
@@ -77,6 +77,6 @@ final class CardBuilder: Builder<CardDependency>, CardBuildable {
 
         return CardRouter(viewController: viewController,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
-                          applicationController: dependencyProvider.applicationController)
+                          webviewBuilder: dependencyProvider.webviewBuilder)
     }
 }

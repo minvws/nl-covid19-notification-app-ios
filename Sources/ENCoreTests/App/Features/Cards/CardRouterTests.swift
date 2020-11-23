@@ -13,18 +13,18 @@ final class CardRouterTests: TestCase {
     private var router: CardRouter!
     private var mockViewController = CardViewControllableMock()
     private var mockEnableSettingBuilder = EnableSettingBuildableMock()
-    private var mockApplicationController: ApplicationControllingMock!
+    private var mockWebviewBuildable: WebviewBuildableMock!
 
     override func setUp() {
         super.setUp()
 
         mockViewController = CardViewControllableMock()
         mockEnableSettingBuilder = EnableSettingBuildableMock()
-        mockApplicationController = ApplicationControllingMock()
+        mockWebviewBuildable = WebviewBuildableMock()
 
         router = CardRouter(viewController: mockViewController,
                             enableSettingBuilder: mockEnableSettingBuilder,
-                            applicationController: mockApplicationController)
+                            webviewBuilder: mockWebviewBuildable)
     }
 
     func test_routeToEnableSetting_buildsAndPresents() {
@@ -92,45 +92,30 @@ final class CardRouterTests: TestCase {
         }
     }
 
-    func test_routeToURL_shouldCallApplicationController() {
+    func test_routeToURL_shouldPresentWebViewController() {
 
         let routeToURL = URL(string: "http://www.someurl.com")!
-        let openURLExpectation = expectation(description: "openURL")
+        let presentExpectation = expectation(description: "present")
+        let mockCreatedViewController = ViewControllableMock()
 
-        mockApplicationController.canOpenURLHandler = { url in
+        mockWebviewBuildable.buildHandler = { listener, url in
             XCTAssertEqual(url, routeToURL)
-            return true
+            return mockCreatedViewController
         }
 
-        mockApplicationController.openHandler = { url in
-            XCTAssertEqual(url, routeToURL)
-            openURLExpectation.fulfill()
+        mockViewController.presentViewControllerHandler = { viewController, animated, inNavigationController in
+            XCTAssertTrue(viewController === mockCreatedViewController)
+            XCTAssertTrue(animated)
+            XCTAssertTrue(inNavigationController)
+            presentExpectation.fulfill()
         }
 
         router.route(to: routeToURL)
 
         waitForExpectations(timeout: 2.0, handler: nil)
-    }
 
-    func test_routeToURL_shouldNotRouteIfURLIsUnsupported() {
-
-        let routeToURL = URL(string: "http://www.someurl.com")!
-        let openURLExpectation = expectation(description: "openURL")
-        openURLExpectation.isInverted = true
-
-        mockApplicationController.canOpenURLHandler = { url in
-            XCTAssertEqual(url, routeToURL)
-            return false
-        }
-
-        mockApplicationController.openHandler = { url in
-            XCTAssertEqual(url, routeToURL)
-            openURLExpectation.fulfill()
-        }
-
-        router.route(to: routeToURL)
-
-        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertEqual(mockWebviewBuildable.buildCallCount, 1)
+        XCTAssertEqual(mockViewController.presentViewControllerCallCount, 1)
     }
 
     func test_setTypes_shouldUpdateTypesOnViewController() {
