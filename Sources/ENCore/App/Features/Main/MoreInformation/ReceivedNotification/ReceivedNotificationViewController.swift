@@ -196,8 +196,9 @@ private final class ReceivedNotificationView: View {
     }
 
     func updateTableViewHeight() {
+
         tableView.snp.updateConstraints { maker in
-            maker.height.equalTo(tableView.contentSize.height)
+            maker.height.equalTo(tableView.contentSize.height).priority(.high)
         }
     }
 
