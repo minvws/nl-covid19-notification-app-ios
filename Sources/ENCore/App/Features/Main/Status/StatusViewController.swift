@@ -124,11 +124,12 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
         let statusViewModel: StatusViewModel
+        let announcementCardTypes = getAnnouncementCardTypes()
         var cardTypes = [CardType]()
 
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
-            statusViewModel = .activeWithNotNotified(showScene: !isLandscape)
+            statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
 
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
@@ -161,7 +162,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         statusView.update(with: statusViewModel)
 
         // Add any non-status related card types and update the CardViewController via the router
-        cardTypes.append(contentsOf: getAnnouncementCardTypes())
+        cardTypes.append(contentsOf: announcementCardTypes)
         cardRouter.types = cardTypes
         cardRouter.viewControllable.uiviewController.view.isHidden = cardTypes.isEmpty
     }
