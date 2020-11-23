@@ -14,6 +14,7 @@ protocol CardRouting: Routing {
     func route(to enableSetting: EnableSetting)
     func route(to url: URL)
     func detachEnableSetting(hideViewController: Bool)
+    func detachWebview(shouldDismissViewController: Bool)
 }
 
 final class CardViewController: ViewController, CardViewControllable, Logging {
@@ -56,6 +57,31 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
                                  completion: nil)
     }
 
+    func present(viewController: ViewControllable, animated: Bool, inNavigationController: Bool) {
+        guard inNavigationController else {
+            present(viewController.uiviewController, animated: true, completion: nil)
+            return
+        }
+
+        let navigationController: NavigationController
+
+        if let navController = viewController as? NavigationController {
+            navigationController = navController
+        } else {
+            navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
+        }
+
+        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
+            navigationController.presentationController?.delegate = presentationDelegate
+        }
+
+        if let presentedViewController = presentedViewController {
+            presentedViewController.present(navigationController, animated: true, completion: nil)
+        } else {
+            present(navigationController, animated: animated, completion: nil)
+        }
+    }
+
     func dismiss(viewController: ViewControllable) {
         viewController.uiviewController.dismiss(animated: true, completion: nil)
     }
@@ -68,6 +94,12 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
 
     func enableSettingDidTriggerAction() {
         router?.detachEnableSetting(hideViewController: true)
+    }
+
+    // MARK: - WebViewListener
+
+    func webviewRequestsDismissal(shouldHideViewController: Bool) {
+        router?.detachWebview(shouldDismissViewController: shouldHideViewController)
     }
 
     // MARK: - Private

@@ -122,7 +122,7 @@ final class AboutManager: AboutManaging {
                 technicalInformationEntry,
                 AboutEntry.question(notification),
                 AboutEntry.question(location),
-                AboutEntry.link(title: .aboutInteroperabilityTitle, link: .aboutInteroperabilityLink, openInExternalBrowser: true)
+                AboutEntry.link(title: .aboutInteroperabilityTitle, link: .aboutInteroperabilityFAQLink, openInExternalBrowser: true)
             ]))
 
         ])
