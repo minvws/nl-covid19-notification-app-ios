@@ -93,6 +93,7 @@ extension String {
     static var coronaTestWebUrl = "https://coronatest.nl"
     static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
     static var interoperabilityLink = "https://coronamelder.nl/%@/operabiliteit"
+    static var interoperabilityFAQLink = "https://coronamelder.nl/%@/faq/13-gebruik-app-uit-ander-land/"
 
     // MARK: - Share App
 
@@ -370,7 +371,10 @@ extension String {
     static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
     static var aboutInteroperabilityTitle: String { return Localization.string(for: "moreInformation.about.interoperability.title") }
-    static var aboutInteroperabilityLink: String { return Localization.string(for: .interoperabilityLink, [currentLanguageIdentifier]) }
+    static var aboutInteroperabilityFAQLink: String {
+        let interopURLLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
+        return Localization.string(for: .interoperabilityFAQLink, [interopURLLanguage.rawValue])
+    }
 
     // MARK: - MoreInformation | Settings
 
@@ -479,7 +483,10 @@ extension String {
     static var cardsInteropAnnouncementContent: String { return Localization.string(for: "cards.interopannouncement.content") }
     static var cardsInteropAnnouncementAction: String { return Localization.string(for: "cards.interopannouncement.action") }
     static var cardsInteropAnnouncementSecondaryAction: String { return Localization.string(for: "cards.interopannouncement.secondaryaction") }
-    static func interopabilityURL(withLanguageCode languageCode: String) -> String { return "https://coronamelder.nl/\(languageCode)/operabiliteit" }
+    static var cardsInteropabilityURL: String {
+        let interopURLLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
+        return Localization.string(for: .interoperabilityLink, [interopURLLanguage.rawValue])
+    }
 
     // MARK: - Enable Settings | Exposure Notifications
 
