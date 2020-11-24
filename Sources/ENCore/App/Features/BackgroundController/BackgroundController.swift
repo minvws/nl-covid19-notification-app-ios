@@ -66,7 +66,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 .sink(receiveCompletion: { result in
                     if result != .finished {
                         self.logDebug("Background: ExposureController activated state result: \(result)")
-                        self.logDebug("Background: Scheduling refresh and decoy")
+                        self.logDebug("Background: Scheduling refresh sequence")
                         self.scheduleRefresh()
                     }
                 }, receiveValue: { (isDeactivated: Bool) in
@@ -74,7 +74,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
                         self.removeAllTasks()
                     } else {
-                        self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
+                        self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
                         self.scheduleRefresh()
                     }
                     }).store(in: &self.disposeBag)
