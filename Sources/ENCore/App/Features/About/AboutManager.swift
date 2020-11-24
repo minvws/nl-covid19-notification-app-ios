@@ -119,10 +119,10 @@ final class AboutManager: AboutManaging {
             ])),
 
             .question(otherCountries.appending(linkedContent: [
+                AboutEntry.link(title: .aboutInteroperabilityTitle, link: .aboutInteroperabilityFAQLink, openInExternalBrowser: true),
                 technicalInformationEntry,
                 AboutEntry.question(notification),
-                AboutEntry.question(location),
-                AboutEntry.link(title: .aboutInteroperabilityTitle, link: .aboutInteroperabilityFAQLink, openInExternalBrowser: true)
+                AboutEntry.question(location)
             ]))
 
         ])
