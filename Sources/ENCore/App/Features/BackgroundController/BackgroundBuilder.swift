@@ -14,7 +14,7 @@ protocol BackgroundControlling {
     func scheduleTasks()
     func handle(task: BGTask)
     func removeAllTasks()
-    func decoyRegisterAndScheduleStopKeys()
+    func performDecoySequenceIfNeeded()
 }
 
 protocol BackgroundDependency {
