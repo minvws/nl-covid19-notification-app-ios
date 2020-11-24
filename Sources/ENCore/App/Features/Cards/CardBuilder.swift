@@ -8,12 +8,21 @@
 import ENFoundation
 import Foundation
 
-enum CardType {
+enum CardType: Equatable {
     case exposureOff
     case bluetoothOff
     case noInternet(retryHandler: () -> ())
     case noLocalNotifications
     case interopAnnouncement
+
+    static func == (lhs: CardType, rhs: CardType) -> Bool {
+        switch (lhs, rhs) {
+        case (.exposureOff, .exposureOff), (.bluetoothOff, .bluetoothOff), (.noInternet, .noInternet), (.noLocalNotifications, .noLocalNotifications), (.interopAnnouncement, .interopAnnouncement):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 protocol CardTypeSettable {

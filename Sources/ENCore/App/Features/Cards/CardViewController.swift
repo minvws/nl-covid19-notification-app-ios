@@ -133,7 +133,7 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
 
     private var types: [CardType] {
         didSet {
-            if isViewLoaded {
+            if isViewLoaded, oldValue != types {
                 recreateCards()
             }
         }
