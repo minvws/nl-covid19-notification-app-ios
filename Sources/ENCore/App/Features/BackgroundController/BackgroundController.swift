@@ -154,10 +154,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     func decoyRegisterAndScheduleStopKeys() {
 
         guard self.dataController.canProcessDecoySequence else {
-            if let date = self.dataController.lastDecoyProcessDate {
-                return self.logDebug("Not running decoy `/register` Process already run today (\(date)")
-            }
-            return self.logDebug("Not running decoy `/register` Process already run but date unknown")
+            return self.logDebug("Not running decoy `/register` Process already run today (\(date)")
         }
 
         func execute(decoyProbability: Float) {
@@ -377,11 +374,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             Future { promise in
 
                 guard self.dataController.canProcessDecoySequence else {
-                    if let date = self.dataController.lastDecoyProcessDate {
-                        self.logDebug("Not running decoy `/register` Process already run today (\(date)")
-                        return promise(.success(()))
-                    }
-                    self.logDebug("Not running decoy `/register` Process already run but date unknown")
+                    self.logDebug("Not running decoy `/register` Process already run today")
                     return promise(.success(()))
                 }
 
