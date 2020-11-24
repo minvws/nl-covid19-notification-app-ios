@@ -393,7 +393,7 @@
 "moreInformation.requestTest.receivedNotification.content" = "Korona virüsü ile uyumlu olan (hafif) şikayetleriniz mi var? Kendinizi ücretsiz test ettirin. Test uzun sürmez ve genellikle çok çabuk randevu alabilirsiniz.<br><br>Sonuçlar 48 saat içinde belli olur. Sonucu öğrenene kadar evde kalın.";
 "moreInformation.requestTest.complaints" = "Yüksek ateş veya nefes almada güçlük çekme gibi ciddi şikayetleriniz mi var? Veya risk grubuna dahil misiniz ve ateşiniz mi çıkıyor? Önce doktorunuzu arayın.";
 "moreInformation.requestTest.link" = "Coronatest.nl adresine gidin";
-"moreInformation.requestTest.phone" = "0800-1202'yi arayın";
+"moreInformation.requestTest.phone" = "%@'yi arayın";
 
 "moreInformation.notification.measures.title" = "Önlemlere uymaya devam edin:";
 "moreInformation.notification.measures.step1" = "Ellerinizi düzenli olarak yıkayın";

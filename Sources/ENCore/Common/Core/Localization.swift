@@ -88,12 +88,17 @@ extension String {
 
     // MARK: - Helpdesk Phone Number
 
-    static var helpDeskPhoneNumber = "tel://08001280"
-    static var coronaTestPhoneNumber = "tel://08001202"
+    static var helpDeskPhoneNumber = "0800-1280"
+    static var coronaTestPhoneNumber = "0800-1202"
+    static var coronaTestExposedPhoneNumber = "0800-2035" // Only shown/used when we know the user was exposed to an affected person
     static var coronaTestWebUrl = "https://coronatest.nl"
     static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
     static var interoperabilityLink = "https://coronamelder.nl/%@/operabiliteit"
     static var interoperabilityFAQLink = "https://coronamelder.nl/%@/faq/13-gebruik-app-uit-ander-land/"
+
+    static func phoneNumberLink(from phoneNumber: String) -> String {
+        return "tel://\(phoneNumber.replacingOccurrences(of: "-", with: ""))"
+    }
 
     // MARK: - Share App
 
@@ -451,7 +456,7 @@ extension String {
 
     static var moreInformationRequestTestComplaints: String { return Localization.string(for: "moreInformation.requestTest.complaints") }
     static var moreInformationRequestTestLink: String { return Localization.string(for: "moreInformation.requestTest.link") }
-    static var moreInformationRequestTestPhone: String { return Localization.string(for: "moreInformation.requestTest.phone") }
+    static func moreInformationRequestTestPhone(_ phonenumber: String) -> String { return Localization.string(for: "moreInformation.requestTest.phone", [phonenumber]) }
 
     // MARK: - Cards | Exposure Off
 

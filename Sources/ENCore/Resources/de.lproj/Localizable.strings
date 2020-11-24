@@ -394,7 +394,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.requestTest.receivedNotification.content" = "Haben Sie (leichte) Beschwerden, die zu Corona passen? Lassen Sie sich kostenlos testen. Das dauert nicht lange und Sie können meistens schnell einen Termin vereinbaren.<br><br>Das Ergebnis ist innerhalb von 48 Stunden bekannt. Bleiben Sie zu Hause, bis Sie das Ergebnis haben.";
 "moreInformation.requestTest.complaints" = "Haben Sie ernste Beschwerden, wie hohes Fieber oder Atembeschwerden? Oder gehören Sie zu einer Risikogruppe und bekommen Fieber? Rufen Sie dann zuerst Ihren Hausarzt an.";
 "moreInformation.requestTest.link" = "Gehen Sie zu coronatest.nl";
-"moreInformation.requestTest.phone" = "Rufen Sie 0800-1202 an";
+"moreInformation.requestTest.phone" = "Rufen Sie %@ an";
 
 "moreInformation.notification.measures.title" = "Halten Sie sich weiterhin an die Regeln:";
 "moreInformation.notification.measures.step1" = "Waschen Sie regelmäßig die Hände.";

@@ -399,7 +399,7 @@
 "moreInformation.requestTest.receivedNotification.content" = "هل لديك أعراض(خفيفة) تتناسب مع أعراض فيروس كورونا؟ قم بطلب إجراء الفحص مجانًا. لا يستغرق الأمر وقتًا طويلاً وتستطيع في معظم الحالات تحديد موعد بسرعة.<br><br>ستعرف النتيجة خلال 48 ساعة. إبق في المنزل حتى تعرف النتيجة.";
 "moreInformation.requestTest.complaints" = "هل لديك أعراض خطيرة كالحمى أو صعوبة في التنفس؟ أو هل أنت من ضمن مجموعة معرضة للخطر ولديك حمى؟ اتصل أولاً بطبيب العائلة الخاص بك.";
 "moreInformation.requestTest.link" = "راجع الموقع Coronatest.nl";
-"moreInformation.requestTest.phone" = "اتصل بالرقم 0800-1202";
+"moreInformation.requestTest.phone" = "%@ اتصل بالرقم";
 
 "moreInformation.notification.measures.title" = "إحرص على الالتزم بالإجراءات جيدًا:";
 "moreInformation.notification.measures.step1" = "قم بغسل يديك بانتظام";

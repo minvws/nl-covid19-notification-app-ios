@@ -20,9 +20,18 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     init(listener: RequestTestListener,
          theme: Theme,
-         interfaceOrientationStream: InterfaceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming,
+         exposureStateStream: ExposureStateStreaming) {
         self.listener = listener
         self.interfaceOrientationStream = interfaceOrientationStream
+
+        var isExposed = false
+        if case .notified = exposureStateStream.currentExposureState?.notifiedState {
+            isExposed = true
+        }
+
+        self.testPhoneNumber = isExposed ? .coronaTestExposedPhoneNumber : .coronaTestPhoneNumber
+
         super.init(theme: theme)
     }
 
@@ -55,10 +64,12 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
         internalView.phoneButtonActionHandler = { [weak self] in
-            if let url = URL(string: .coronaTestPhoneNumber), UIApplication.shared.canOpenURL(url) {
+            guard let strongSelf = self else { return }
+            let phoneNumberLink: String = .phoneNumberLink(from: strongSelf.testPhoneNumber)
+            if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                self?.logError("Unable to open \(String.coronaTestPhoneNumber)")
+                strongSelf.logError("Unable to open \(phoneNumberLink)")
             }
         }
     }
@@ -88,7 +99,10 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     // MARK: - Private
 
     private weak var listener: RequestTestListener?
-    private lazy var internalView: RequestTestView = RequestTestView(theme: self.theme)
+    private let testPhoneNumber: String
+
+    private lazy var internalView = RequestTestView(theme: self.theme, testPhoneNumber: testPhoneNumber)
+
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private var interfaceOrientationStreamCancellable: AnyCancellable?
 
@@ -118,9 +132,12 @@ private final class RequestTestView: View {
 
     // MARK: - Init
 
-    override init(theme: Theme) {
+    init(theme: Theme, testPhoneNumber: String) {
+
+        let callButtonTitle: String = .moreInformationRequestTestPhone(testPhoneNumber)
+
         let config = InfoViewConfig(actionButtonTitle: .moreInformationRequestTestLink,
-                                    secondaryButtonTitle: .moreInformationRequestTestPhone,
+                                    secondaryButtonTitle: callButtonTitle,
                                     headerImage: .coronatestHeader,
                                     stickyButtons: true)
         self.infoView = InfoView(theme: theme, config: config)

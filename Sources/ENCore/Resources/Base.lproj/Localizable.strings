@@ -394,7 +394,7 @@
 "moreInformation.requestTest.receivedNotification.content" = "Do you have (mild) symptoms related to the coronavirus? Get a free test. It doesn't take long to get tested and waiting times are usually short.<br><br>You get the results within 48 hours. In the meantime, stay home.";
 "moreInformation.requestTest.complaints" = "Do you have serious symptoms like a high fever or trouble breathing? Or are you part of a high-risk group and get a fever? Call your doctor first.";
 "moreInformation.requestTest.link" = "Go to coronatest.nl";
-"moreInformation.requestTest.phone" = "Call 0800-1202";
+"moreInformation.requestTest.phone" = "Call %@";
 
 "moreInformation.notification.measures.title" = "Keep following the rules:";
 "moreInformation.notification.measures.step1" = "Regularly wash your hands";

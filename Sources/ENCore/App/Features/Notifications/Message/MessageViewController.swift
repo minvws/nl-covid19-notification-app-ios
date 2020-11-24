@@ -51,10 +51,13 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
                                                             action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.actionHandler = { [weak self] in
-            if let url = URL(string: .coronaTestPhoneNumber), UIApplication.shared.canOpenURL(url) {
+            // Because the current screen is only shown on exposed devices, we can use the phonenumber that is exclusively for exposed persons
+            let phoneNumberLink: String = .phoneNumberLink(from: .coronaTestExposedPhoneNumber)
+
+            if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                self?.logError("Unable to open \(String.coronaTestPhoneNumber)")
+                self?.logError("Unable to open \(phoneNumberLink)")
             }
         }
 
