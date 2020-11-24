@@ -151,6 +151,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             cancellable.cancel()
         }
     }
+
     ///    When the user opens the app
     ///        if (config.decoyProbability),
     ///        rand(1-x) seconds after the manifest run ‘register decoy’ in the foreground,
@@ -158,7 +159,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///
     ///     Ensure only 1 decoy per day
     ///     x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
-    ///     y = about 5 minutes (about less, e.g. 250 sec) and/or new param: iOS decoyDelayBetweenRegisterAndUpload (this param value depends on how long a prioritized task is allowed to run)
+    ///     y = about 5 minutes (about less, e.g. 250 sec) this param value depends on how long a prioritized task is allowed to run
     func performDecoySequenceIfNeeded() {
 
         guard self.dataController.canProcessDecoySequence else {
