@@ -151,7 +151,14 @@ final class BackgroundController: BackgroundControlling, Logging {
             cancellable.cancel()
         }
     }
-
+    ///    When the user opens the app
+    ///        if (config.decoyProbability),
+    ///        rand(1-x) seconds after the manifest run ‘register decoy’ in the foreground,
+    ///        Schedule the ‘stopkeys’ decoy’ as a normal/regular background task rand(0-15) minutes later (the chance that this bg task works is high, because the user used the app less than x ago)
+    ///
+    ///     Ensure only 1 decoy per day
+    ///     x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
+    ///     y = about 5 minutes (about less, e.g. 250 sec) and/or new param: iOS decoyDelayBetweenRegisterAndUpload (this param value depends on how long a prioritized task is allowed to run)
     func performDecoySequenceIfNeeded() {
 
         guard self.dataController.canProcessDecoySequence else {
@@ -323,6 +330,14 @@ final class BackgroundController: BackgroundControlling, Logging {
         return exposureController.lastOpenedNotificationCheck()
     }
 
+    ///    Every prioritized background run,
+    ///       if (config.decoyProbability) then:
+    ///       rand(1-x) seconds after the manifest run ‘register decoy’
+    ///       rand(0-y) minutes later, run ‘stopkeys decoy’ (during the prioritized background run)
+    ///
+    ///    x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
+    ///    Ensure only 1 decoy per day
+    ///    y = about 5 minutes (about less, e.g. 250 sec) and/or new param: iOS decoyDelayBetweenRegisterAndUpload (this param value depends on how long a prioritized task is allowed to run)
     private func processDecoyRegisterAndStopKeys() -> AnyPublisher<(), Never> {
         return Deferred {
             Future { promise in
@@ -370,6 +385,8 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 self.exposureController
                     .getDecoyProbability()
+                    .delay(for: .seconds(Int.random(in: 1 ... 60)),
+                           scheduler: RunLoop.current)
                     .sink(receiveCompletion: { _ in
                     }, receiveValue: { value in
                         processDecoyRegister(decoyProbability: value)
