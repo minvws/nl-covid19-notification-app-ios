@@ -119,10 +119,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate)
     }
 
-    var lastDecoyProcessDate: Date? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
-    }
-
     func setLastDecoyProcessDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate, completion: { _ in })
     }
@@ -271,6 +267,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     // MARK: - Private
+
+    private var lastDecoyProcessDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
+    }
 
     private func detectFirstRunAndEraseKeychainIfRequired() {
         guard storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.firstRunIdentifier) == nil else {

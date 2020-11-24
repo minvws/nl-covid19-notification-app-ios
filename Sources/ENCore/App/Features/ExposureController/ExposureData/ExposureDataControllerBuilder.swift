@@ -36,7 +36,6 @@ protocol ExposureDataControlling: AnyObject {
     var lastAppLaunchDate: Date? { get }
     var lastUnseenExposureNotificationDate: Date? { get }
 
-    var lastDecoyProcessDate: Date? { get }
     func setLastDecoyProcessDate(_ date: Date)
     var canProcessDecoySequence: Bool { get }
 
