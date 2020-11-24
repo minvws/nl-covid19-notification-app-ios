@@ -151,10 +151,10 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
-    func decoyRegisterAndScheduleStopKeys() {
+    func performDecoySequenceIfNeeded() {
 
         guard self.dataController.canProcessDecoySequence else {
-            return self.logDebug("Not running decoy `/register` Process already run today (\(date)")
+            return self.logDebug("Not running decoy `/register` Process already run today")
         }
 
         func execute(decoyProbability: Float) {
