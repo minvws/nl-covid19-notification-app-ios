@@ -211,7 +211,6 @@ final class BackgroundController: BackgroundControlling, Logging {
             appUpdateRequiredCheck,
             updateTreatmentPerspective,
             processLastOpenedNotificationCheck,
-            notifyUser24HoursNoCheckIfRequired,
             processDecoyRegisterAndStopKeys
         ]
 
@@ -324,52 +323,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         return exposureController.lastOpenedNotificationCheck()
     }
 
-    private func notifyUser24HoursNoCheckIfRequired() -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { promise in
-
-                func notifyUser() {
-
-                    let content = UNMutableNotificationContent()
-                    content.title = .statusAppStateInactiveTitle
-                    content.body = String(format: .statusAppStateInactiveNotification)
-                    content.sound = UNNotificationSound.default
-                    content.badge = 0
-
-                    let identifier = PushNotificationIdentifier.inactive.rawValue
-                    let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-
-                    self.userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
-                        if let error = error {
-                            self?.logError("\(error.localizedDescription)")
-                        } else {
-                            self?.logDebug("Background: > 24h ago last succesful data processing - Sending push notification")
-                            self?.dataController.updateLastLocalNotificationExposureDate(currentDate())
-                        }
-                        return promise(.success(()))
-                    })
-                }
-
-                let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
-                guard
-                    let lastSuccessfulProcessingDate = self.dataController.lastSuccessfulProcessingDate,
-                    lastSuccessfulProcessingDate.advanced(by: timeInterval) < currentDate()
-                else {
-                    return promise(.success(()))
-                }
-                guard let lastLocalNotificationExposureDate = self.dataController.lastLocalNotificationExposureDate else {
-                    // We haven't shown a notification to the user before so we should show one now
-                    return notifyUser()
-                }
-                guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < currentDate() else {
-                    return promise(.success(()))
-                }
-
-                notifyUser()
-            }
-        }.eraseToAnyPublisher()
-    }
-
     private func processDecoyRegisterAndStopKeys() -> AnyPublisher<(), Never> {
         return Deferred {
             Future { promise in
@@ -448,8 +401,6 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         taskScheduler.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
 
-        notifyUser24HoursNoCheckIfRequired()
-
         let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
         request.earliestBeginDate = date
 
@@ -461,9 +412,5 @@ final class BackgroundController: BackgroundControlling, Logging {
             logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
         }
-    }
-
-    private func notifyUser24HoursNoCheckIfRequired() {
-        exposureController.notifyUser24HoursNoCheckIfRequired()
     }
 }
