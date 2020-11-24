@@ -21,6 +21,7 @@ protocol BackgroundDependency {
     var exposureManager: ExposureManaging { get }
     var exposureController: ExposureControlling { get }
     var networkController: NetworkControlling { get }
+    var dataController: ExposureDataControlling { get }
 }
 
 /// @mockable
@@ -60,6 +61,7 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
                                     networkController: dependencyProvider.dependency.networkController,
                                     configuration: configuration,
                                     exposureManager: dependencyProvider.dependency.exposureManager,
+                                    dataController: dependencyProvider.dependency.dataController,
                                     userNotificationCenter: dependencyProvider.userNotificationCenter,
                                     taskScheduler: BGTaskScheduler.shared,
                                     bundleIdentifier: dependencyProvider.bundleIdentifier)

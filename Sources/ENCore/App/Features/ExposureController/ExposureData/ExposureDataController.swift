@@ -54,7 +54,6 @@ struct ExposureDataStorageKey {
                                                                      storeType: .insecure(volatile: false))
     static let lastDecoyProcessDate = CodableStorageKey<Date>(name: "lastDecoyProcessDate",
                                                               storeType: .insecure(volatile: false))
-
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {

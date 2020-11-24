@@ -27,8 +27,8 @@ struct BackgroundTaskConfiguration {
 
 /// BackgroundController
 ///
-/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `print("🐞 Scheduled Update")` statement and background the application.
-/// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.background-update"]`
+/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `logDebug("Background: Scheduled `\(identifier)` ✅")` statement and background the application.
+/// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.exposure-notification"]`
 /// and resume the application. The background task will be run.
 final class BackgroundController: BackgroundControlling, Logging {
 
@@ -38,6 +38,7 @@ final class BackgroundController: BackgroundControlling, Logging {
          networkController: NetworkControlling,
          configuration: BackgroundTaskConfiguration,
          exposureManager: ExposureManaging,
+         dataController: ExposureDataControlling,
          userNotificationCenter: UserNotificationCenter,
          taskScheduler: TaskScheduling,
          bundleIdentifier: String) {
@@ -45,6 +46,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.configuration = configuration
         self.networkController = networkController
         self.exposureManager = exposureManager
+        self.dataController = dataController
         self.userNotificationCenter = userNotificationCenter
         self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
@@ -67,7 +69,6 @@ final class BackgroundController: BackgroundControlling, Logging {
                         self.logDebug("Background: Scheduling refresh sequence")
                         self.scheduleRefresh()
                     }
-
                 }, receiveValue: { (isDeactivated: Bool) in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
@@ -120,12 +121,12 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let exposureManager: ExposureManaging
     private let userNotificationCenter: UserNotificationCenter
     private let exposureController: ExposureControlling
+    private let dataController: ExposureDataControlling
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
     private let bundleIdentifier: String
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
-
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
         self.logDebug("Decoy `/stopkeys` started")
@@ -199,7 +200,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         let timeInterval = refreshInterval * 60
         let date = currentDate().addingTimeInterval(timeInterval)
 
-        schedule(identifier: .refresh, date: date, requiresNetworkConnectivity: true)
+        schedule(identifier: .refresh, date: date)
     }
 
     private func refresh(task: BGProcessingTask) {
@@ -440,17 +441,16 @@ final class BackgroundController: BackgroundControlling, Logging {
         return Calendar.current.date(from: components)
     }
 
-    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, requiresNetworkConnectivity: Bool = false, completion: ((Bool) -> ())? = nil) {
+    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, completion: ((Bool) -> ())? = nil) {
         let backgroundTaskIdentifier = bundleIdentifier + "." + identifier.rawValue
 
-        logDebug("Background: Scheduling `\(identifier)` for earliestDate \(String(describing: date)), requiresNetwork: \(requiresNetworkConnectivity)")
+        logDebug("Background: Scheduling `\(identifier)` for earliestDate \(String(describing: date))")
 
         taskScheduler.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
 
         notifyUser24HoursNoCheckIfRequired()
 
         let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
-        request.requiresNetworkConnectivity = requiresNetworkConnectivity
         request.earliestBeginDate = date
 
         do {

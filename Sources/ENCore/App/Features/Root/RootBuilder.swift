@@ -125,6 +125,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return BackgroundControllerBuilder(dependency: self).build()
     }()
 
+    fileprivate var dataController: ExposureDataControlling {
+        return ExposureDataControllerBuilder(dependency: self).build()
+    }
+
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()
 
