@@ -395,7 +395,7 @@
 "moreInformation.requestTest.receivedNotification.content" = "Vous avez de (légers) symptômes qui correspondent à ceux du Covid-19 ? Faites un test de dépistage gratuit. Il ne dure pas longtemps et vous pouvez généralement fixer rapidement un rendez-vous.<br><br>Le résultat est connu dans les 48 heures. Restez chez vous jusqu'à ce que l'on vous communique le résultat.";
 "moreInformation.requestTest.complaints" = "Vous avez de graves symptômes comme une forte fièvre ou des difficultés à respirer? Ou vous faites partie d'un groupe à risques? Appelez d'abord votre médecin traitant.";
 "moreInformation.requestTest.link" = "Consultez coronatest.nl";
-"moreInformation.requestTest.phone" = "Composez le 0800-1202";
+"moreInformation.requestTest.phone" = "Composez le %@";
 
 "moreInformation.notification.measures.title" = "Respectez strictement les mesures :";
 "moreInformation.notification.measures.step1" = "Lavez-vous régulièrement les mains";

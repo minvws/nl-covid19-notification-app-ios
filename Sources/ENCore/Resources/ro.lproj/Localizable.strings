@@ -393,7 +393,7 @@
 "moreInformation.requestTest.receivedNotification.content" = "Aveți simptome (ușoare) care pot fi asociate cu coronavirus? Testați-vă gratuit.  Nu durează mult și, de regulă, puteți face repede o programare.<br><br>Rezultatul va fi cunoscut în timp de 48 de ore. Rămâneți acasă până aflați rezultatul.";
 "moreInformation.requestTest.complaints" = "Aveți simptome grave cum ar fi febra mare sau dificultate la respirație sau faceți parte dintr-o categorie de risc și aveți temperatură? Sunați întâi medicul de familie.";
 "moreInformation.requestTest.link" = "Accesați coronatest.nl";
-"moreInformation.requestTest.phone" = "Sunați la 0800-1202";
+"moreInformation.requestTest.phone" = "Sunați la %@";
 
 "moreInformation.notification.measures.title" = "Respectați măsurile:";
 "moreInformation.notification.measures.step1" = "Spălați-vă des pe mâini";

@@ -393,7 +393,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.requestTest.receivedNotification.content" = "¿Muestras síntomas, aunque sean leves, relacionados con el coronavirus? Hazte un test gratis. No tarda mucho en hacerse y normalmente puedes concertar la cita rápidamente.<br><br>Recibirás los resultados en 48 horas. Quédate en casa hasta que sepas los resultados.";
 "moreInformation.requestTest.complaints" = "¿Muestras síntomas graves, como fiebre alta o problemas de respiración, o formas parte de un grupo de riesgo y tienes fiebre? Llama primero a tu médico de cabecera.";
 "moreInformation.requestTest.link" = "Ir a coronatest.nl";
-"moreInformation.requestTest.phone" = "Llama al 0800-1202";
+"moreInformation.requestTest.phone" = "Llama al %@";
 
 "moreInformation.notification.measures.title" = "Respeta las medidas:";
 "moreInformation.notification.measures.step1" = "Lávate las manos a menudo";

@@ -393,7 +393,7 @@
 "moreInformation.requestTest.complaints" = "Masz poważne dolegliwości takie jak wysoka gorączka lub trudności z oddychaniem? Albo znajdujesz się w grupie wysokiego ryzyka i masz gorączkę? W pierwszej kolejności Z
 zadzwoń do swojego lekarza rodzinnego.";
 "moreInformation.requestTest.link" = "Przejdź na stronę coronatest.nl";
-"moreInformation.requestTest.phone" = "Zadzwoń pod numer 0800-1202";
+"moreInformation.requestTest.phone" = "Zadzwoń pod numer %@";
 
 "moreInformation.notification.measures.title" = "Przestrzegaj środków ostrożności:";
 "moreInformation.notification.measures.step1" = "Regularnie myj ręce";

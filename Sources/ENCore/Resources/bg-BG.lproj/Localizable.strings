@@ -392,7 +392,7 @@
 "moreInformation.requestTest.receivedNotification.content" = "Имаш (леки) оплаквания, които са характерни за коронавируса? Направи си безплатен тест. Не отнема много време и в повечето случаи лесно се записва час.<br><br>Резултатът става известен в рамките на 48 часа. Остани вкъщи, докато научиш резултата.";
 "moreInformation.requestTest.complaints" = "Имаш сериозни оплаквания като висока температура или затруднено дишане? Или се намираш в рискова група и си вдигнал температура? Обади се първо на личния си лекар.";
 "moreInformation.requestTest.link" = "Отиди на coronatest.nl";
-"moreInformation.requestTest.phone" = "Обади се на 0800-1202";
+"moreInformation.requestTest.phone" = "Обади се на %@";
 
 "moreInformation.notification.measures.title" = "Изпълнявай стриктно следните мерки:";
 "moreInformation.notification.measures.step1" = "Мий ръцете си редовно.";
