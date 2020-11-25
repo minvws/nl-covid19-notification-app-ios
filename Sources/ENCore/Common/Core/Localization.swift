@@ -302,6 +302,12 @@ extension String {
     static var mainConfirmNotificationRemovalMessage: String { Localization.string(for: "main.confirmNotificationRemoval.message") }
     static var mainConfirmNotificationRemovalConfirm: String { Localization.string(for: "main.confirmNotificationRemoval.confirm") }
 
+    // MARK: - WebView
+
+    static var webviewLoadingFailedTitle: String { Localization.string(for: "webview.loadingfailed.title") }
+    static var webviewLoadingFailedSubTitle: String { Localization.string(for: "webview.loadingfailed.subtitle") }
+    static var webviewLoadingFailedTryAgain: String { Localization.string(for: "webview.loadingfailed.try_again") }
+
     // MARK: - Status
 
     static var statusIconAccessibilityOk: String { return Localization.string(for: "status.icon.accessibility.ok") }

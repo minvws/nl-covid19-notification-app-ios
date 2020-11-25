@@ -70,6 +70,7 @@ extension UIImage {
     static var helpNotificationExample: UIImage? { return Image.named("notification-example") }
     static var helpPushNotificationExample: UIImage? { return Image.named("PushNotification-Example") }
     static var onboardingPermissionsHeader: UIImage? { return Image.named("OnboardingPermissionsHeader") }
+    static var loadingError: UIImage? { return Image.named("LoadingError") }
 }
 
 extension UIImage {
