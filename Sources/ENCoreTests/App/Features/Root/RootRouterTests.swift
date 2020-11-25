@@ -26,6 +26,7 @@ final class RootRouterTests: XCTestCase {
     private let updateAppBuilder = UpdateAppBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
     private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
+    private let userNotificationCenter = UserNotificationCenterMock()
 
     private var router: RootRouter!
 
@@ -59,6 +60,7 @@ final class RootRouterTests: XCTestCase {
                             backgroundController: backgroundController,
                             updateAppBuilder: updateAppBuilder,
                             webviewBuilder: webviewBuilder,
+                            userNotificationCenter: userNotificationCenter,
                             currentAppVersion: "1.0")
         set(activeState: .notAuthorized)
     }

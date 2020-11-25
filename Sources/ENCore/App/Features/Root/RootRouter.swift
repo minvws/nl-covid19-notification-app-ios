@@ -44,6 +44,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          backgroundController: BackgroundControlling,
          updateAppBuilder: UpdateAppBuildable,
          webviewBuilder: WebviewBuildable,
+         userNotificationCenter: UserNotificationCenter,
          currentAppVersion: String?) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
@@ -63,6 +64,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         self.updateAppBuilder = updateAppBuilder
         self.currentAppVersion = currentAppVersion
+
+        self.userNotificationCenter = userNotificationCenter
 
         super.init(viewController: viewController)
 
@@ -148,6 +151,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController.updateLastLaunch()
 
         exposureController.clearUnseenExposureNotificationDate()
+
+        removeNotificationsFromNotificationsCenter()
     }
 
     func didEnterForeground() {
@@ -380,6 +385,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .store(in: &disposeBag)
     }
 
+    private func removeNotificationsFromNotificationsCenter() {
+
+        let identifiers = [
+            PushNotificationIdentifier.exposure.rawValue,
+            PushNotificationIdentifier.inactive.rawValue,
+            PushNotificationIdentifier.enStatusDisabled.rawValue,
+            PushNotificationIdentifier.appUpdateRequired.rawValue
+        ]
+
+        userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
+    }
+
     private let currentAppVersion: String?
 
     private let networkController: NetworkControlling
@@ -413,6 +430,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
+
+    private let userNotificationCenter: UserNotificationCenter
 }
 
 private extension ExposureActiveState {

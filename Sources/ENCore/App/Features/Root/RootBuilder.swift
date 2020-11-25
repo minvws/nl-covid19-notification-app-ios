@@ -170,6 +170,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     var messageManager: MessageManaging {
         return MessageManager(storageController: storageController, theme: theme)
     }
+
+    fileprivate var userNotificationCenter: UserNotificationCenter {
+        return UNUserNotificationCenter.current()
+    }
 }
 
 /// Interface describing the builder that builds
@@ -211,6 +215,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           backgroundController: dependencyProvider.backgroundController,
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
+                          userNotificationCenter: dependencyProvider.userNotificationCenter,
                           currentAppVersion: currentAppVersion)
     }
 }
