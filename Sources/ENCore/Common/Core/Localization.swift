@@ -456,7 +456,7 @@ extension String {
 
     static var moreInformationRequestTestComplaints: String { return Localization.string(for: "moreInformation.requestTest.complaints") }
     static var moreInformationRequestTestLink: String { return Localization.string(for: "moreInformation.requestTest.link") }
-    static func moreInformationRequestTestPhone(_ phonenumber: String) -> String { return Localization.string(for: "moreInformation.requestTest.phone", [phonenumber]) }
+    static var moreInformationRequestTestPhone: String { Localization.string(for: "moreInformation.requestTest.phone") }
 
     // MARK: - Cards | Exposure Off
 
