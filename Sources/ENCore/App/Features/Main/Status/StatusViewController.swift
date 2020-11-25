@@ -14,7 +14,7 @@ import UIKit
 /// @mockable
 protocol StatusRouting: Routing {}
 
-final class StatusViewController: ViewController, StatusViewControllable {
+final class StatusViewController: ViewController, StatusViewControllable, CardListening {
 
     // MARK: - StatusViewControllable
 
@@ -22,27 +22,32 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
+    private let dataController: ExposureDataControlling
+
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
     private var stateStreamCancellable: AnyCancellable?
 
     private let cardBuilder: CardBuildable
-    private var cardRouter: Routing & CardTypeSettable
+    private lazy var cardRouter: Routing & CardTypeSettable = {
+        cardBuilder.build(listener: self, types: [.bluetoothOff])
+    }()
 
     init(exposureStateStream: ExposureStateStreaming,
          interfaceOrientationStream: InterfaceOrientationStreaming,
          cardBuilder: CardBuildable,
          listener: StatusListener,
          theme: Theme,
-         topAnchor: NSLayoutYAxisAnchor?) {
+         topAnchor: NSLayoutYAxisAnchor?,
+         dataController: ExposureDataControlling) {
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
+        self.dataController = dataController
         self.listener = listener
         self.topAnchor = topAnchor
 
         self.cardBuilder = cardBuilder
-        self.cardRouter = cardBuilder.build(type: .bluetoothOff)
 
         super.init(theme: theme)
     }
@@ -63,10 +68,7 @@ final class StatusViewController: ViewController, StatusViewControllable {
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
-        if let currentState = exposureStateStream.currentExposureState,
-            let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
-            update(exposureState: currentState, isLandscape: isLandscape)
-        }
+        refreshCurrentState()
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updateExposureStateView),
@@ -114,49 +116,77 @@ final class StatusViewController: ViewController, StatusViewControllable {
             }
     }
 
+    private func refreshCurrentState() {
+        if let currentState = exposureStateStream.currentExposureState,
+            let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
+            update(exposureState: currentState, isLandscape: isLandscape)
+        }
+    }
+
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
 
         let statusViewModel: StatusViewModel
+        let announcementCardTypes = getAnnouncementCardTypes()
+        var cardTypes = [CardType]()
 
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
-            statusViewModel = .activeWithNotNotified(showScene: !isLandscape)
+            statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
+
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
+
         case let (.inactive(reason), .notified(date)):
-            let cardType = reason.cardType(listener: listener)
-            statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
+            statusViewModel = StatusViewModel.activeWithNotified(date: date)
+            cardTypes.append(reason.cardType(listener: listener))
+
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
+
         case (.inactive, .notNotified):
             statusViewModel = .inactiveWithNotNotified
+
         case let (.authorizationDenied, .notified(date)):
-            statusViewModel = StatusViewModel
-                .inactiveWithNotified(date: date)
-                .with(cardType: .exposureOff)
+            statusViewModel = .inactiveWithNotified(date: date)
+            cardTypes.append(.exposureOff)
+
         case (.authorizationDenied, .notNotified):
             statusViewModel = .inactiveWithNotNotified
+
         case let (.notAuthorized, .notified(date)):
-            statusViewModel = StatusViewModel
-                .inactiveWithNotified(date: date)
-                .with(cardType: .exposureOff)
+            statusViewModel = .inactiveWithNotified(date: date)
+            cardTypes.append(.exposureOff)
+
         case (.notAuthorized, .notNotified):
             statusViewModel = .inactiveWithNotNotified
         }
 
         statusView.update(with: statusViewModel)
 
-        guard let cardType = statusViewModel.cardType else {
-            showCard(false)
-            return
+        // Add any non-status related card types and update the CardViewController via the router
+        cardTypes.append(contentsOf: announcementCardTypes)
+        cardRouter.types = cardTypes
+
+        showCard(!cardTypes.isEmpty)
+    }
+
+    private func getAnnouncementCardTypes() -> [CardType] {
+        var cardTypes = [CardType]()
+
+        // Interop announcement
+        if !dataController.seenAnnouncements.contains(.interopAnnouncement) {
+            cardTypes.append(.interopAnnouncement)
         }
 
-        cardRouter.type = cardType
-        showCard(true)
+        return cardTypes
     }
 
     private func showCard(_ display: Bool) {
         cardRouter.viewControllable.uiviewController.view.isHidden = !display
+    }
+
+    func dismissedAnnouncement() {
+        refreshCurrentState()
     }
 
     private lazy var statusView: StatusView = StatusView(theme: self.theme,
@@ -411,7 +441,7 @@ private final class StatusAnimationView: View {
                                            repeats: false,
                                            block: { [weak self] _ in
                                                self?.playAnimation()
-            })
+                                           })
     }
 
     private func playAnimation() {

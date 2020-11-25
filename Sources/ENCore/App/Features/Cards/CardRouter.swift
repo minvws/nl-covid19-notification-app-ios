@@ -6,21 +6,25 @@
  */
 
 import Foundation
+import UIKit
 
 /// @mockable
-protocol CardViewControllable: ViewControllable, EnableSettingListener {
+protocol CardViewControllable: ViewControllable, EnableSettingListener, WebviewListener {
     var router: CardRouting? { get set }
 
-    func update(cardType: CardType)
+    func update(cardTypes: [CardType])
     func present(viewController: ViewControllable)
+    func present(viewController: ViewControllable, animated: Bool, inNavigationController: Bool)
     func dismiss(viewController: ViewControllable)
 }
 
 final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSettable {
 
     init(viewController: CardViewControllable,
-         enableSettingBuilder: EnableSettingBuildable) {
+         enableSettingBuilder: EnableSettingBuildable,
+         webviewBuilder: WebviewBuildable) {
         self.enableSettingBuilder = enableSettingBuilder
+        self.webviewBuilder = webviewBuilder
 
         super.init(viewController: viewController)
 
@@ -37,6 +41,16 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
         self.viewController.present(viewController: viewController)
     }
 
+    func route(to url: URL) {
+
+        guard webviewViewController == nil else { return }
+
+        let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)
+        self.webviewViewController = webviewViewController
+
+        viewController.present(viewController: webviewViewController, animated: true, inNavigationController: true)
+    }
+
     func detachEnableSetting(hideViewController: Bool) {
         guard let viewController = enableSettingViewController else {
             return
@@ -49,11 +63,22 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
         }
     }
 
+    func detachWebview(shouldDismissViewController: Bool) {
+        guard let webviewViewController = webviewViewController else {
+            return
+        }
+        self.webviewViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: webviewViewController)
+        }
+    }
+
     // MARK: - CardTypeSettable
 
-    var type: CardType = .bluetoothOff {
+    var types: [CardType] = [.bluetoothOff] {
         didSet {
-            viewController.update(cardType: type)
+            viewController.update(cardTypes: types)
         }
     }
 
@@ -61,4 +86,7 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
 
     private let enableSettingBuilder: EnableSettingBuildable
     private var enableSettingViewController: ViewControllable?
+
+    private let webviewBuilder: WebviewBuildable
+    private var webviewViewController: ViewControllable?
 }

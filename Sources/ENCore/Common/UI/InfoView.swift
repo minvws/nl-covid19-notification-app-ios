@@ -62,10 +62,11 @@ final class InfoView: View {
 
     private let showButtons: Bool
     private let stickyButtons: Bool
+    private var itemSpacing: CGFloat
 
     // MARK: - Init
 
-    init(theme: Theme, config: InfoViewConfig) {
+    init(theme: Theme, config: InfoViewConfig, itemSpacing: CGFloat = 40) {
         self.contentView = UIView(frame: .zero)
         self.headerImageView = UIImageView(image: config.headerImage)
         self.stackView = UIStackView(frame: .zero)
@@ -82,6 +83,7 @@ final class InfoView: View {
         self.showButtons = config.showButtons
         self.stickyButtons = config.stickyButtons
         self.headerBackgroundView.backgroundColor = config.headerBackgroundViewColor ?? theme.colors.headerBackgroundBlue
+        self.itemSpacing = itemSpacing
         super.init(theme: theme)
     }
 
@@ -92,7 +94,7 @@ final class InfoView: View {
 
         headerImageView.contentMode = .scaleAspectFill
         stackView.axis = .vertical
-        stackView.spacing = 40
+        stackView.spacing = itemSpacing
         stackView.distribution = .equalSpacing
         contentView.backgroundColor = .clear
 

@@ -11,78 +11,127 @@ import XCTest
 
 final class CardRouterTests: TestCase {
     private var router: CardRouter!
-    private let viewController = CardViewControllableMock()
-    private let enableSettingBuilder = EnableSettingBuildableMock()
+    private var mockViewController = CardViewControllableMock()
+    private var mockEnableSettingBuilder = EnableSettingBuildableMock()
+    private var mockWebviewBuildable: WebviewBuildableMock!
 
     override func setUp() {
         super.setUp()
 
-        router = CardRouter(viewController: viewController,
-                            enableSettingBuilder: enableSettingBuilder)
+        mockViewController = CardViewControllableMock()
+        mockEnableSettingBuilder = EnableSettingBuildableMock()
+        mockWebviewBuildable = WebviewBuildableMock()
+
+        router = CardRouter(viewController: mockViewController,
+                            enableSettingBuilder: mockEnableSettingBuilder,
+                            webviewBuilder: mockWebviewBuildable)
     }
 
     func test_routeToEnableSetting_buildsAndPresents() {
         var receivedListener: EnableSettingListener!
         var receivedSetting: EnableSetting!
-        enableSettingBuilder.buildHandler = { listener, setting in
+        mockEnableSettingBuilder.buildHandler = { listener, setting in
             receivedListener = listener
             receivedSetting = setting
 
             return ViewControllableMock()
         }
 
-        XCTAssertEqual(enableSettingBuilder.buildCallCount, 0)
-        XCTAssertEqual(viewController.presentCallCount, 0)
+        XCTAssertEqual(mockEnableSettingBuilder.buildCallCount, 0)
+        XCTAssertEqual(mockViewController.presentCallCount, 0)
 
         router.route(to: .enableBluetooth)
 
-        XCTAssertEqual(enableSettingBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.presentCallCount, 1)
-        XCTAssert(receivedListener === viewController)
+        XCTAssertEqual(mockEnableSettingBuilder.buildCallCount, 1)
+        XCTAssertEqual(mockViewController.presentCallCount, 1)
+        XCTAssert(receivedListener === mockViewController)
         XCTAssertEqual(receivedSetting, .enableBluetooth)
     }
 
     func test_detachEnableSetting_hideViewController_callsViewController() {
         router.route(to: .enableBluetooth)
 
-        XCTAssertEqual(viewController.dismissCallCount, 0)
+        XCTAssertEqual(mockViewController.dismissCallCount, 0)
 
         router.detachEnableSetting(hideViewController: true)
 
-        XCTAssertEqual(viewController.dismissCallCount, 1)
+        XCTAssertEqual(mockViewController.dismissCallCount, 1)
     }
 
     func test_detachEnableSetting_dontHideViewController_doesNotCallViewController() {
         router.route(to: .enableBluetooth)
 
-        XCTAssertEqual(viewController.dismissCallCount, 0)
+        XCTAssertEqual(mockViewController.dismissCallCount, 0)
 
         router.detachEnableSetting(hideViewController: false)
 
-        XCTAssertEqual(viewController.dismissCallCount, 0)
+        XCTAssertEqual(mockViewController.dismissCallCount, 0)
     }
 
     func test_detachEnableSetting_hideViewController_notPresentedBefore_doesNotCallViewController() {
-        XCTAssertEqual(viewController.dismissCallCount, 0)
+        XCTAssertEqual(mockViewController.dismissCallCount, 0)
 
         router.detachEnableSetting(hideViewController: true)
 
-        XCTAssertEqual(viewController.dismissCallCount, 0)
+        XCTAssertEqual(mockViewController.dismissCallCount, 0)
     }
 
     func test_setCardType_forwardToViewController() {
-        var receivedCardType: CardType!
-        viewController.updateHandler = { receivedCardType = $0 }
+        var receivedCardTypes: [CardType]!
+        mockViewController.updateHandler = { receivedCardTypes = $0 }
 
-        XCTAssertEqual(viewController.updateCallCount, 0)
+        XCTAssertEqual(mockViewController.updateCallCount, 0)
 
-        router.type = .bluetoothOff
+        router.types = [.bluetoothOff]
 
-        XCTAssertEqual(viewController.updateCallCount, 1)
+        XCTAssertEqual(mockViewController.updateCallCount, 1)
 
-        guard case .bluetoothOff = receivedCardType else {
+        guard case .bluetoothOff = receivedCardTypes.first else {
             XCTFail("Expected bluetoothOff cardType")
             return
         }
+    }
+
+    func test_routeToURL_shouldPresentWebViewController() {
+
+        let routeToURL = URL(string: "http://www.someurl.com")!
+        let presentExpectation = expectation(description: "present")
+        let mockCreatedViewController = ViewControllableMock()
+
+        mockWebviewBuildable.buildHandler = { listener, url in
+            XCTAssertEqual(url, routeToURL)
+            return mockCreatedViewController
+        }
+
+        mockViewController.presentViewControllerHandler = { viewController, animated, inNavigationController in
+            XCTAssertTrue(viewController === mockCreatedViewController)
+            XCTAssertTrue(animated)
+            XCTAssertTrue(inNavigationController)
+            presentExpectation.fulfill()
+        }
+
+        router.route(to: routeToURL)
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+
+        XCTAssertEqual(mockWebviewBuildable.buildCallCount, 1)
+        XCTAssertEqual(mockViewController.presentViewControllerCallCount, 1)
+    }
+
+    func test_setTypes_shouldUpdateTypesOnViewController() {
+        let newTypes: [CardType] = [.bluetoothOff]
+
+        let updateExpectation = expectation(description: "update")
+        mockViewController.updateHandler = { types in
+            guard case .bluetoothOff = types.first else {
+                XCTFail("viewcontroller not updated with correct card types")
+                return
+            }
+            updateExpectation.fulfill()
+        }
+
+        router.types = newTypes
+
+        waitForExpectations(timeout: 2, handler: nil)
     }
 }

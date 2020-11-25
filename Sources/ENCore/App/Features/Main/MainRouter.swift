@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener {
 
     var router: MainRouting? { get set }
 
@@ -31,7 +31,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          infectedBuilder: InfectedBuildable,
          messageBuilder: MessageBuildable,
          enableSettingBuilder: EnableSettingBuildable,
-         webviewBuilder: WebviewBuildable) {
+         webviewBuilder: WebviewBuildable,
+         settingsBuilder: SettingsBuildable) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
@@ -42,6 +43,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.messageBuilder = messageBuilder
         self.enableSettingBuilder = enableSettingBuilder
         self.webviewBuilder = webviewBuilder
+        self.settingsBuilder = settingsBuilder
 
         super.init(viewController: viewController)
 
@@ -86,6 +88,28 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
         if shouldHideViewController {
             viewController.dismiss(viewController: aboutRouter.viewControllable, animated: true)
+        }
+    }
+
+    func routeToSettings() {
+        guard settingsViewController == nil else {
+            return
+        }
+
+        let settingsViewController = settingsBuilder.build(withListener: viewController)
+        self.settingsViewController = settingsViewController
+
+        viewController.present(viewController: settingsViewController, animated: true)
+    }
+
+    func detachSettings(shouldDismissViewController: Bool) {
+        guard let settingsViewController = settingsViewController else {
+            return
+        }
+        self.settingsViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: settingsViewController, animated: true)
         }
     }
 
@@ -253,6 +277,9 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let aboutBuilder: AboutBuildable
     private var aboutRouter: Routing?
+
+    private let settingsBuilder: SettingsBuildable
+    private var settingsViewController: ViewControllable?
 
     private let shareBuilder: ShareSheetBuildable
     private var shareViewController: ViewControllable?
