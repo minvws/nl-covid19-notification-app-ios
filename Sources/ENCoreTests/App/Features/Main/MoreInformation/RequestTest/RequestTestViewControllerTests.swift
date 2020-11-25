@@ -37,6 +37,17 @@ final class RequestTestViewControllerTests: TestCase {
         snapshots(matching: viewController)
     }
 
+    func testSnapshotRequestTestViewControllerExposed() {
+        exposureStateStream.currentExposureState = .init(notifiedState: .notified(Date()), activeState: .active)
+
+        viewController = RequestTestViewController(listener: listener,
+                                                   theme: theme,
+                                                   interfaceOrientationStream: interfaceOrientationStream,
+                                                   exposureStateStream: exposureStateStream)
+
+        snapshots(matching: viewController)
+    }
+
     // Tests the screen with arabic (RTL) language to ensure proper formatting of phone numbers in text and buttons
     // Be aware that although we override the RTL setting. Some text in this screen will still appear left-to-right because
     // the iOS labels listen to the actual device RTL setting and not our custom setting
