@@ -9,6 +9,10 @@ import UIKit
 
 final class WebViewErrorView: View {
 
+    private lazy var contentContainer: UIView = {
+        UIView()
+    }()
+
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -26,6 +30,7 @@ final class WebViewErrorView: View {
         let imageView = UIImageView()
         imageView.image = .loadingError
         imageView.contentMode = .scaleAspectFit
+        imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         return imageView
     }()
 
@@ -57,16 +62,27 @@ final class WebViewErrorView: View {
 
     override func build() {
         super.build()
-        addSubview(stackView)
+        addSubview(contentContainer)
+        contentContainer.addSubview(stackView)
         addSubview(actionButton)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        stackView.snp.makeConstraints { maker in
+        hasBottomMargin = true
+
+        contentContainer.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(34)
-            maker.centerY.equalToSuperview()
+            maker.top.equalToSuperview().offset(16)
+            maker.bottom.equalTo(actionButton.snp.top).offset(-16)
+        }
+
+        stackView.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview()
+            maker.centerY.equalToSuperview().priority(.low)
+            maker.top.greaterThanOrEqualToSuperview()
+            maker.bottom.lessThanOrEqualToSuperview()
         }
 
         imageView.snp.makeConstraints { maker in
