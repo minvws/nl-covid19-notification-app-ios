@@ -64,6 +64,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
         statusView.listener = listener
 
+        showCard(false)
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
@@ -123,6 +124,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
+
         let statusViewModel: StatusViewModel
         let announcementCardTypes = getAnnouncementCardTypes()
         var cardTypes = [CardType]()
@@ -164,7 +166,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         // Add any non-status related card types and update the CardViewController via the router
         cardTypes.append(contentsOf: announcementCardTypes)
         cardRouter.types = cardTypes
-        cardRouter.viewControllable.uiviewController.view.isHidden = cardTypes.isEmpty
+
+        showCard(!cardTypes.isEmpty)
     }
 
     private func getAnnouncementCardTypes() -> [CardType] {
@@ -176,6 +179,10 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         }
 
         return cardTypes
+    }
+
+    private func showCard(_ display: Bool) {
+        cardRouter.viewControllable.uiviewController.view.isHidden = !display
     }
 
     func dismissedAnnouncement() {
@@ -226,6 +233,9 @@ private final class StatusView: View {
 
     override func build() {
         super.build()
+
+        /// Initially hide the status. It will become visible after the first update
+        showStatus(false)
 
         contentContainer.axis = .vertical
         contentContainer.spacing = 32
@@ -317,6 +327,7 @@ private final class StatusView: View {
     // MARK: - Internal
 
     func update(with viewModel: StatusViewModel) {
+
         iconView.update(with: viewModel.icon)
 
         titleLabel.attributedText = viewModel.title
@@ -343,6 +354,8 @@ private final class StatusView: View {
 
         evaluateHeight()
         evaluateImageSize()
+
+        showStatus(true)
     }
 
     // MARK: - Private
@@ -361,6 +374,12 @@ private final class StatusView: View {
     /// Manually adjusts sceneImage height constraint after layout pass
     private func evaluateImageSize() {
         sceneImageHeightConstraint?.constant = UIScreen.main.bounds.width * sceneImageAspectRatio
+    }
+
+    private func showStatus(_ show: Bool) {
+        titleLabel.alpha = show ? 1 : 0
+        descriptionLabel.alpha = show ? 1 : 0
+        iconView.alpha = show ? 1 : 0
     }
 }
 
@@ -422,7 +441,7 @@ private final class StatusAnimationView: View {
                                            repeats: false,
                                            block: { [weak self] _ in
                                                self?.playAnimation()
-            })
+                                           })
     }
 
     private func playAnimation() {
