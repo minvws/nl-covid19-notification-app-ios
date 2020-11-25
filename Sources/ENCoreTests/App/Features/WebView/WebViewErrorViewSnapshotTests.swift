@@ -14,7 +14,6 @@ class WebViewErrorViewSnapshotTests: TestCase {
     private var sut: WebViewErrorView!
 
     override func setUpWithError() throws {
-        recordSnapshots = true
         sut = WebViewErrorView(theme: theme)
     }
 
