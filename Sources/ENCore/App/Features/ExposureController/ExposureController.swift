@@ -397,6 +397,32 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
+    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError> {
+        return Deferred {
+            Future { promise in
+
+                self.logDebug("App Update Required Check Started")
+
+                guard let currentAppVersion = self.currentAppVersion else {
+                    self.logError("Error retrieving app current version")
+                    return promise(.success(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)))
+                }
+
+                self.getAppVersionInformation { appVersionInformation in
+
+                    guard let appVersionInformation = appVersionInformation else {
+                        self.logError("Error retrieving app version information")
+                        return promise(.success(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)))
+                    }
+
+                    let shouldUpdate = appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending
+
+                    promise(.success(AppUpdateInformation(shouldUpdate: shouldUpdate, versionInformation: appVersionInformation)))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+
     func appUpdateRequiredCheck() -> AnyPublisher<(), Never> {
         return Deferred {
             Future { promise in

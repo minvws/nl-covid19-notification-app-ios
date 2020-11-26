@@ -45,7 +45,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          updateAppBuilder: UpdateAppBuildable,
          webviewBuilder: WebviewBuildable,
          userNotificationCenter: UserNotificationCenter,
-         currentAppVersion: String?) {
+         currentAppVersion: String) {
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.endOfLifeBuilder = endOfLifeBuilder
@@ -93,15 +93,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         LogHandler.setup()
 
-        checkIfAppIsDeactivated()
+        routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
 
-        checkIfAppUpdateIsRequired()
+            guard !didRoute, let strongSelf = self else {
+                return
+            }
 
-        if exposureController.didCompleteOnboarding {
-            routeToMain()
-            backgroundController.scheduleTasks()
-        } else {
-            routeToOnboarding()
+            if strongSelf.exposureController.didCompleteOnboarding {
+                strongSelf.routeToMain()
+                strongSelf.backgroundController.scheduleTasks()
+            } else {
+                strongSelf.routeToOnboarding()
+            }
         }
 
         #if USE_DEVELOPER_MENU || DEBUG
@@ -143,16 +146,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.refreshStatus()
 
-        checkIfAppIsDeactivated()
+        routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] _ in
+            self?.updateTreatmentPerspective()
 
-        checkIfAppUpdateIsRequired()
-        updateTreatmentPerspective()
+            self?.exposureController.updateLastLaunch()
 
-        exposureController.updateLastLaunch()
+            self?.exposureController.clearUnseenExposureNotificationDate()
 
-        exposureController.clearUnseenExposureNotificationDate()
-
-        removeNotificationsFromNotificationsCenter()
+            self?.removeNotificationsFromNotificationsCenter()
+        }
     }
 
     func didEnterForeground() {
@@ -328,20 +330,24 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.developerMenuViewController = developerMenuViewController
     }
 
-    private func checkIfAppIsDeactivated() {
+    private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: @escaping (_ didRoute: Bool) -> ()) {
 
         exposureController
             .isAppDeactivated()
-            .sink(receiveCompletion: { [weak self] completion in
+            .combineLatest(exposureController.appShouldUpdateCheck())
+            .sink(receiveCompletion: { [weak self] exposureControllerCompletion in
 
-                if completion == .failure(.networkUnreachable) ||
-                    completion == .failure(.serverError) ||
-                    completion == .failure(.internalError) ||
-                    completion == .failure(.responseCached) {
+                if exposureControllerCompletion == .failure(.networkUnreachable) ||
+                    exposureControllerCompletion == .failure(.serverError) ||
+                    exposureControllerCompletion == .failure(.internalError) ||
+                    exposureControllerCompletion == .failure(.responseCached) {
 
                     self?.exposureController.activate(inBackgroundMode: false)
+
+                    completion(false)
                 }
-            }, receiveValue: { [weak self] isDeactivated in
+            }, receiveValue: { [weak self] isDeactivated, updateInformation in
+
                 if isDeactivated {
 
                     self?.routeToEndOfLife()
@@ -350,30 +356,29 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                     self?.backgroundController.removeAllTasks()
 
-                } else {
-                    self?.exposureController.activate(inBackgroundMode: false)
-                }
-                })
-            .store(in: &disposeBag)
-    }
+                    completion(true)
 
-    private func checkIfAppUpdateIsRequired() {
-
-        /// Check if the app is the minimum version. If not, show the app update screen
-
-        if let currentAppVersion = currentAppVersion {
-            exposureController.getAppVersionInformation { appVersionInformation in
-                guard let appVersionInformation = appVersionInformation else {
                     return
                 }
-                if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
-                    let minimumVersionMessage = appVersionInformation.minimumVersionMessage.isEmpty ? nil : appVersionInformation.minimumVersionMessage
-                    self.routeToUpdateApp(animated: true,
-                                          appStoreURL: appVersionInformation.appStoreURL,
-                                          minimumVersionMessage: minimumVersionMessage)
+
+                if updateInformation.shouldUpdate, let versionInformation = updateInformation.versionInformation {
+
+                    let minimumVersionMessage = versionInformation.minimumVersionMessage.isEmpty ? nil : versionInformation.minimumVersionMessage
+
+                    self?.routeToUpdateApp(animated: true,
+                                           appStoreURL: versionInformation.appStoreURL,
+                                           minimumVersionMessage: minimumVersionMessage)
+
+                    completion(true)
+                    return
                 }
-            }
-        }
+
+                self?.exposureController.activate(inBackgroundMode: false)
+
+                completion(false)
+
+                })
+            .store(in: &disposeBag)
     }
 
     private func updateTreatmentPerspective() {
@@ -397,7 +402,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
     }
 
-    private let currentAppVersion: String?
+    private let currentAppVersion: String
 
     private let networkController: NetworkControlling
     private let backgroundController: BackgroundControlling
