@@ -18,7 +18,7 @@ final class ExposureController: ExposureControlling, Logging {
          networkStatusStream: NetworkStatusStreaming,
          userNotificationCenter: UserNotificationCenter,
          mutableBluetoothStateStream: MutableBluetoothStateStreaming,
-         currentAppVersion: String?) {
+         currentAppVersion: String) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
@@ -403,11 +403,6 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.logDebug("App Update Required Check Started")
 
-                guard let currentAppVersion = self.currentAppVersion else {
-                    self.logError("Error retrieving app current version")
-                    return promise(.success(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)))
-                }
-
                 self.getAppVersionInformation { appVersionInformation in
 
                     guard let appVersionInformation = appVersionInformation else {
@@ -415,7 +410,7 @@ final class ExposureController: ExposureControlling, Logging {
                         return promise(.success(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)))
                     }
 
-                    let shouldUpdate = appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending
+                    let shouldUpdate = appVersionInformation.minimumVersion.compare(self.currentAppVersion, options: .numeric) == .orderedDescending
 
                     promise(.success(AppUpdateInformation(shouldUpdate: shouldUpdate, versionInformation: appVersionInformation)))
                 }
@@ -423,16 +418,11 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    func appUpdateRequiredCheck() -> AnyPublisher<(), Never> {
+    func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never> {
         return Deferred {
             Future { promise in
 
                 self.logDebug("App Update Required Check Started")
-
-                guard let currentAppVersion = self.currentAppVersion else {
-                    self.logError("Error retrieving app current version")
-                    return promise(.success(()))
-                }
 
                 self.getAppVersionInformation { appVersionInformation in
 
@@ -441,7 +431,7 @@ final class ExposureController: ExposureControlling, Logging {
                         return promise(.success(()))
                     }
 
-                    if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
+                    if appVersionInformation.minimumVersion.compare(self.currentAppVersion, options: .numeric) == .orderedDescending {
                         let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
 
                         let content = UNMutableNotificationContent()
@@ -745,7 +735,7 @@ final class ExposureController: ExposureControlling, Logging {
     private var isPushNotificationsEnabled = false
     private let userNotificationCenter: UserNotificationCenter
     private var updateStream: AnyPublisher<(), ExposureDataError>?
-    private let currentAppVersion: String?
+    private let currentAppVersion: String
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {

@@ -82,8 +82,8 @@ protocol ExposureControlling: AnyObject {
     /// Checks if the app needs to be updated and returns true if it should
     func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError>
 
-    /// Checks if the app needs to be updated and sends a local notification if
-    func appUpdateRequiredCheck() -> AnyPublisher<(), Never>
+    /// Checks if the app needs to be updated and sends a local notification if it should
+    func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never>
 
     /// Updates the treatment perspective message
     func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
@@ -188,8 +188,8 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
         return UNUserNotificationCenter.current()
     }
 
-    fileprivate var currentAppVersion: String? {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    fileprivate var currentAppVersion: String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
 }
 

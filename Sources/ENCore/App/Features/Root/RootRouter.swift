@@ -95,21 +95,26 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
 
-            guard !didRoute, let strongSelf = self else {
+            guard let strongSelf = self else { return }
+
+            if strongSelf.exposureController.didCompleteOnboarding {
+                strongSelf.backgroundController.scheduleTasks()
+            }
+
+            guard !didRoute else {
                 return
             }
 
             if strongSelf.exposureController.didCompleteOnboarding {
                 strongSelf.routeToMain()
-                strongSelf.backgroundController.scheduleTasks()
             } else {
                 strongSelf.routeToOnboarding()
             }
-        }
 
-        #if USE_DEVELOPER_MENU || DEBUG
-            attachDeveloperMenu()
-        #endif
+            #if USE_DEVELOPER_MENU || DEBUG
+                strongSelf.attachDeveloperMenu()
+            #endif
+        }
 
         mutablePushNotificationStream
             .pushNotificationStream
@@ -146,15 +151,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.refreshStatus()
 
-        routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] _ in
-            self?.updateTreatmentPerspective()
+        routeToDeactivatedOrUpdateScreenIfNeeded()
 
-            self?.exposureController.updateLastLaunch()
+        updateTreatmentPerspective()
 
-            self?.exposureController.clearUnseenExposureNotificationDate()
+        exposureController.updateLastLaunch()
 
-            self?.removeNotificationsFromNotificationsCenter()
-        }
+        exposureController.clearUnseenExposureNotificationDate()
+
+        removeNotificationsFromNotificationsCenter()
     }
 
     func didEnterForeground() {
@@ -330,7 +335,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.developerMenuViewController = developerMenuViewController
     }
 
-    private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: @escaping (_ didRoute: Bool) -> ()) {
+    private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: ((_ didRoute: Bool) -> ())? = nil) {
 
         exposureController
             .isAppDeactivated()
@@ -344,7 +349,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                     self?.exposureController.activate(inBackgroundMode: false)
 
-                    completion(false)
+                    completion?(false)
                 }
             }, receiveValue: { [weak self] isDeactivated, updateInformation in
 
@@ -356,7 +361,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                     self?.backgroundController.removeAllTasks()
 
-                    completion(true)
+                    completion?(true)
 
                     return
                 }
@@ -369,13 +374,13 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                                            appStoreURL: versionInformation.appStoreURL,
                                            minimumVersionMessage: minimumVersionMessage)
 
-                    completion(true)
+                    completion?(true)
                     return
                 }
 
                 self?.exposureController.activate(inBackgroundMode: false)
 
-                completion(false)
+                completion?(false)
 
                 })
             .store(in: &disposeBag)

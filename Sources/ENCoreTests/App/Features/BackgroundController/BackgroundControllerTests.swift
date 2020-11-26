@@ -60,7 +60,7 @@ final class BackgroundControllerTests: XCTestCase {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        exposureController.appUpdateRequiredCheckHandler = {
+        exposureController.sendNotificationIfAppShouldUpdateHandler = {
             Just(()).eraseToAnyPublisher()
         }
         exposureController.updateTreatmentPerspectiveHandler = {
@@ -100,7 +100,7 @@ final class BackgroundControllerTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
 
-    func test_handeRefresh() {
+    func test_handleRefresh() {
         let exp = expectation(description: "asyncTask")
         let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
         task.completion = {
@@ -115,7 +115,7 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertEqual(exposureController.updateAndProcessPendingUploadsCallCount, 1)
         XCTAssertEqual(exposureController.exposureNotificationStatusCheckCallCount, 1)
 
-        XCTAssertEqual(exposureController.appUpdateRequiredCheckCallCount, 1)
+        XCTAssertEqual(exposureController.sendNotificationIfAppShouldUpdateCallCount, 1)
         XCTAssertEqual(exposureController.lastOpenedNotificationCheckCallCount, 1)
     }
 
