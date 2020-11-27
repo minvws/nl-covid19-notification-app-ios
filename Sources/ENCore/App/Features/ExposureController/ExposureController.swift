@@ -403,16 +403,8 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.logDebug("App Update Required Check Started")
 
-                self.getAppVersionInformation { appVersionInformation in
-
-                    guard let appVersionInformation = appVersionInformation else {
-                        self.logError("Error retrieving app version information")
-                        return promise(.success(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)))
-                    }
-
-                    let shouldUpdate = appVersionInformation.minimumVersion.compare(self.currentAppVersion, options: .numeric) == .orderedDescending
-
-                    promise(.success(AppUpdateInformation(shouldUpdate: shouldUpdate, versionInformation: appVersionInformation)))
+                self.shouldAppUpdate { updateInformation in
+                    return promise(.success(updateInformation))
                 }
             }
         }.eraseToAnyPublisher()
@@ -424,25 +416,20 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.logDebug("App Update Required Check Started")
 
-                self.getAppVersionInformation { appVersionInformation in
+                self.shouldAppUpdate { updateInformation in
 
-                    guard let appVersionInformation = appVersionInformation else {
-                        self.logError("Error retrieving app version information")
+                    guard updateInformation.shouldUpdate, let appVersionInformation = updateInformation.versionInformation else {
                         return promise(.success(()))
                     }
 
-                    if appVersionInformation.minimumVersion.compare(self.currentAppVersion, options: .numeric) == .orderedDescending {
-                        let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
+                    let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
 
-                        let content = UNMutableNotificationContent()
-                        content.body = message
-                        content.sound = .default
-                        content.badge = 0
+                    let content = UNMutableNotificationContent()
+                    content.body = message
+                    content.sound = .default
+                    content.badge = 0
 
-                        self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
-                            promise(.success(()))
-                        }
-                    } else {
+                    self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
                         promise(.success(()))
                     }
                 }
@@ -554,6 +541,20 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     // MARK: - Private
+
+    private func shouldAppUpdate(completion: @escaping (AppUpdateInformation) -> ()) {
+        getAppVersionInformation { appVersionInformation in
+
+            guard let appVersionInformation = appVersionInformation else {
+                self.logError("Error retrieving app version information")
+                return completion(AppUpdateInformation(shouldUpdate: false, versionInformation: nil))
+            }
+
+            let shouldUpdate = appVersionInformation.minimumVersion.compare(self.currentAppVersion, options: .numeric) == .orderedDescending
+
+            completion(AppUpdateInformation(shouldUpdate: shouldUpdate, versionInformation: appVersionInformation))
+        }
+    }
 
     private func postExposureManagerActivation() {
         logDebug("`postExposureManagerActivation`")
