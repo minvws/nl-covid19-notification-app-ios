@@ -401,7 +401,7 @@ final class ExposureController: ExposureControlling, Logging {
         return Deferred {
             Future { promise in
 
-                self.logDebug("App Update Required Check Started")
+                self.logDebug("appShouldUpdateCheck Started")
 
                 self.shouldAppUpdate { updateInformation in
                     return promise(.success(updateInformation))
@@ -414,7 +414,7 @@ final class ExposureController: ExposureControlling, Logging {
         return Deferred {
             Future { promise in
 
-                self.logDebug("App Update Required Check Started")
+                self.logDebug("sendNotificationIfAppShouldUpdate Started")
 
                 self.shouldAppUpdate { updateInformation in
 
