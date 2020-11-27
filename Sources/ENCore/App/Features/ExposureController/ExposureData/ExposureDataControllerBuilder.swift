@@ -36,6 +36,9 @@ protocol ExposureDataControlling: AnyObject {
     var lastAppLaunchDate: Date? { get }
     var lastUnseenExposureNotificationDate: Date? { get }
 
+    func setLastDecoyProcessDate(_ date: Date)
+    var canProcessDecoySequence: Bool { get }
+
     func removeLastExposure() -> AnyPublisher<(), Never>
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
     func setLastENStatusCheckDate(_ date: Date)

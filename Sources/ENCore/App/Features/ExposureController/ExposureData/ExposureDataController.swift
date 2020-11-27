@@ -52,6 +52,8 @@ struct ExposureDataStorageKey {
                                                                             storeType: .insecure(volatile: false))
     static let seenAnnouncements = CodableStorageKey<[Announcement]>(name: "seenAnnouncements",
                                                                      storeType: .insecure(volatile: false))
+    static let lastDecoyProcessDate = CodableStorageKey<Date>(name: "lastDecoyProcessDate",
+                                                              storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
@@ -121,6 +123,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     var lastUnseenExposureNotificationDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate)
+    }
+
+    func setLastDecoyProcessDate(_ date: Date) {
+        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate, completion: { _ in })
+    }
+
+    var canProcessDecoySequence: Bool {
+        guard let date = lastDecoyProcessDate else {
+            return true
+        }
+        return !Calendar.current.isDateInToday(date)
     }
 
     func removeLastExposure() -> AnyPublisher<(), Never> {
@@ -271,6 +284,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     // MARK: - Private
+
+    private var lastDecoyProcessDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
+    }
 
     private func detectFirstRunAndEraseKeychainIfRequired() {
         guard storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.firstRunIdentifier) == nil else {

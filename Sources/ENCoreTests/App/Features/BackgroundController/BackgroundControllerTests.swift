@@ -16,6 +16,7 @@ final class BackgroundControllerTests: XCTestCase {
     private var controller: BackgroundController!
 
     private let exposureController = ExposureControllingMock()
+    private let dataController = ExposureDataControllingMock()
     private let networkController = NetworkControllingMock()
     private let taskScheduler = TaskSchedulingMock()
 
@@ -37,6 +38,7 @@ final class BackgroundControllerTests: XCTestCase {
                                           networkController: networkController,
                                           configuration: configuration,
                                           exposureManager: exposureManager,
+                                          dataController: dataController,
                                           userNotificationCenter: userNotificationCenter,
                                           taskScheduler: taskScheduler,
                                           bundleIdentifier: "nl.rijksoverheid.en")
@@ -74,32 +76,6 @@ final class BackgroundControllerTests: XCTestCase {
 
     // MARK: - Tests
 
-    func test_scheduleDecoySequence() {
-        exposureController.isAppDeactivatedHandler = {
-            return Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-        }
-        let date = Date(timeIntervalSince1970: 1599745276000)
-        DateTimeTestingOverrides.overriddenCurrentDate = date
-        let calendar = Calendar.current
-        let today = calendar.dateComponents([.day], from: date).day ?? 0
-        let exp = expectation(description: "asyncTask")
-        taskScheduler.submitHandler = { task in
-            if task.identifier.contains(BackgroundTaskIdentifiers.decoySequence.rawValue) {
-                guard let date = task.earliestBeginDate else {
-                    return XCTFail()
-                }
-                let components = calendar.dateComponents([.hour, .day], from: date)
-                XCTAssert(components.day == (today + 1))
-                XCTAssert(components.hour == 1)
-                exp.fulfill()
-            }
-        }
-
-        controller.scheduleTasks()
-
-        wait(for: [exp], timeout: 1)
-    }
-
     func test_handeRefresh() {
         let exp = expectation(description: "asyncTask")
         let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
@@ -117,30 +93,6 @@ final class BackgroundControllerTests: XCTestCase {
 
         XCTAssertEqual(exposureController.appUpdateRequiredCheckCallCount, 1)
         XCTAssertEqual(exposureController.lastOpenedNotificationCheckCallCount, 1)
-    }
-
-    func test_handleBackgroundDecoyRegister() {
-        let exp = expectation(description: "HandleBackgroundDecoyRegister")
-
-        exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(self.labConfirmationKey))
-            // Async magic, no one likes it, but sometimes we have to do it.
-            // Internally when scheduling an async process runs so we need to
-            // have a delay here before we can fulfill the expectation
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                exp.fulfill()
-            }
-        }
-
-        let task = MockBGProcessingTask(identifier: .decoyRegister)
-
-        controller.handle(task: task)
-        wait(for: [exp], timeout: 2)
-
-        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
-
-        XCTAssertNotNil(task.completed)
-        XCTAssert(task.completed!)
     }
 
     func test_handleBackgroundDecoyStopKeys() {
