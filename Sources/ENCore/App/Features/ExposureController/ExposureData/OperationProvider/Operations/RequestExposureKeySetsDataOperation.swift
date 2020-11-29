@@ -64,12 +64,24 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         // requests if necessary
         return Publishers.Sequence<[AnyPublisher<(String, URL), NetworkError>], NetworkError>(sequence: exposureKeySetStreams)
             .flatMap { $0 }
-            .mapError { error in error.asExposureDataError }
+            .mapError { error in
+                self.logError("RequestExposureKeySetsDataOperation Error: \(error)")
+                return error.asExposureDataError
+            }
             .collect()
             .flatMap(createKeySetHolders)
             .flatMap(storeDownloadedKeySetsHolders)
             .handleEvents(
-                receiveCompletion: { _ in self.logDebug("--- END REQUESTING KEYSETS ---") },
+                receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        self.logDebug("Background: Exposure Notification Status Check Completed")
+                    case .failure:
+                        self.logDebug("Background: Exposure Notification Status Check Failed")
+                    }
+
+                    self.logDebug("--- END REQUESTING KEYSETS ---")
+                },
                 receiveCancel: { self.logDebug("--- REQUESTING KEYSETS CANCELLED ---") }
             )
             .share()
