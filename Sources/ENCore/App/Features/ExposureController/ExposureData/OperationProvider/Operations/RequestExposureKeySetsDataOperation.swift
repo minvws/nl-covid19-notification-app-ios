@@ -39,8 +39,13 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         logDebug("--- START REQUESTING KEYSETS ---")
 
         let storedKeySetsHolders = getStoredKeySetsHolders()
-        let identifiers = removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from: exposureKeySetIdentifiers,
-                                                                              storedKeySetsHolders: storedKeySetsHolders)
+
+        logDebug("Total KeySetIdentifiers: \(exposureKeySetIdentifiers.count)")
+
+        let identifiers = Set(removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from: exposureKeySetIdentifiers,
+                                                                                  storedKeySetsHolders: storedKeySetsHolders))
+
+        logDebug("KeySetIdentifiers after removing already downloaded or processed identifiers: \(identifiers)")
 
         guard identifiers.count > 0 else {
             logDebug("No additional key sets to download")
@@ -51,10 +56,13 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
-        logDebug("Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
+        let maximumBatchSize = identifiers.count // Set an optional batch size here
+        let batchedIdentifiers = identifiers.prefix(maximumBatchSize)
+
+        logDebug("Requesting \(batchedIdentifiers.count) (out of \(identifiers.count)) Exposure KeySets: \(batchedIdentifiers.joined(separator: "\n"))")
 
         // download remaining keysets
-        let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = identifiers.map { identifier in
+        let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = batchedIdentifiers.map { identifier in
             self.networkController
                 .fetchExposureKeySet(identifier: identifier)
                 .eraseToAnyPublisher()
@@ -68,9 +76,13 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 self.logError("RequestExposureKeySetsDataOperation Error: \(error)")
                 return error.asExposureDataError
             }
-            .collect()
-            .flatMap(createKeySetHolders)
-            .flatMap(storeDownloadedKeySetsHolders)
+            .flatMap { identifierUrlCombo in
+                self.createKeySetHolders(forDownloadedKeySets: [identifierUrlCombo])
+            }
+            .flatMap { keySetHolders in
+                self.storeDownloadedKeySetsHolders(keySetHolders)
+            }
+            .collect() // Collect is called only after the creation and storage of keysetholders. This means that if at any point during this process the app is killed due to high CPU usage, the previous progress will not be lost and the app will only have to download the remaining keysets
             .handleEvents(
                 receiveCompletion: { completion in
                     switch completion {
@@ -84,6 +96,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 },
                 receiveCancel: { self.logDebug("--- REQUESTING KEYSETS CANCELLED ---") }
             )
+            .compactMap { _ in () }
             .share()
             .eraseToAnyPublisher()
     }
