@@ -51,7 +51,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
-        logDebug("Requesting Exposure KeySets: \(identifiers.joined(separator: "\n"))")
+        logDebug("Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
 
         // download remaining keysets
         let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = identifiers.map { identifier in
@@ -166,7 +166,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                         }
                     }
 
-                    self.logDebug("Storing final keySets to process: \(keySetHolders.map { $0.identifier }.joined(separator: "\n"))")
+                    self.logDebug("Storing \(keySetHolders.count) final keySets to process: \(keySetHolders.map { $0.identifier }.joined(separator: "\n"))")
 
                     storageController.store(object: keySetHolders,
                                             identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in

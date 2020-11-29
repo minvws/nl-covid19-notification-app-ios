@@ -65,7 +65,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .filter { $0.processed == false }
 
         if exposureKeySetHolders.count > 0 {
-            logDebug("Processing KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
+            logDebug("Processing \(exposureKeySetHolders.count) KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
         } else {
             // keep processing to make sure lastProcessDate is updated
             logDebug("No additional keysets to process")
@@ -188,10 +188,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             [signatureFileUrl(forKeySetHolder: $0), binaryFileUrl(forKeySetHolder: $0)]
         }
 
-        logDebug("Detect exposures for keySets: \(keySetHoldersToProcess.map { $0.identifier })")
+        logDebug("Detect exposures for \(keySetHoldersToProcess.count) keySets: \(keySetHoldersToProcess.map { $0.identifier })")
 
         let executeExposureDetection: AnyPublisher<ExposureDetectionResult, ExposureDataError> = Deferred {
             Future { promise in
+
+                self.logDebug("Detecting exposures for \(diagnosisKeyUrls.count) diagnosisKeyUrls")
+
                 self.exposureManager.detectExposures(configuration: self.configuration,
                                                      diagnosisKeyURLs: diagnosisKeyUrls) { result in
                     switch result {
@@ -336,35 +339,22 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     private func selectKeySetHoldersToProcess(from keySetsHolders: [ExposureKeySetHolder]) -> [ExposureKeySetHolder] {
-        let numberOfKeySetsLeftToProcess: Int
+        var numberOfKeySetsLeftToProcess: Int
+
+        if #available(iOS 13.6, *) {
+            let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
+            logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
+
+            numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
+        } else {
+            numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
+        }
 
         #if USE_DEVELOPER_MENU || DEBUG
-
-            if ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets {
-                if #available(iOS 13.6, *) {
-                    let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
-                    logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
-
-                    numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
-                } else {
-                    numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
-                }
-
-            } else {
+            if !ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets {
+                logDebug("overriding numberOfKeySetsLeftToProcess. Ignoring 24 limit of 15 keysets/API calls")
                 numberOfKeySetsLeftToProcess = Int.max
             }
-
-        #else
-
-            if #available(iOS 13.6, *) {
-                let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
-                logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
-
-                numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
-            } else {
-                numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
-            }
-
         #endif
 
         logDebug("Number of keysets left to process today: \(numberOfKeySetsLeftToProcess)")
