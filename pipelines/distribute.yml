@@ -1,3 +1,8 @@
+parameters:
+- name: masterReleaseType
+  type: string
+  default: ''
+  
 steps:
 - task: InstallAppleCertificate@2
   displayName: 'Install Apple certificate'
@@ -41,7 +46,7 @@ steps:
 - script: |
     firebase appdistribution:distribute ipa/test/CoronaMelder.ipa \
     --app 1:937920499570:ios:3fa1c661e8189087f957eb \
-    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+    --release-notes "${{ parameters.masterReleaseType }} branch - $BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-latest
   displayName: Distribute test build
 - template: build.yml
@@ -63,7 +68,7 @@ steps:
 - script: |
     firebase appdistribution:distribute ipa/acc/CoronaMelder.ipa \
     --app 1:937920499570:ios:3fa1c661e8189087f957eb \
-    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+    --release-notes "${{ parameters.masterReleaseType }} branch - $BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-acceptance
   displayName: Distribute acceptance build  
 - template: build.yml
@@ -81,12 +86,12 @@ steps:
     exportMethod: "ad-hoc"
     enDeveloperRegion: "NL"
 - publish: "ipa/acc-13-5"
-  displayName: Publish acceptance IPA
+  displayName: Publish acceptance 13.5 IPA
   artifact: ipa-acc-13-5
 - script: |
     firebase appdistribution:distribute ipa/acc-13-5/CoronaMelder.ipa \
     --app 1:937920499570:ios:eb6aa0819a7abff0f957eb \
-    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+    --release-notes "${{ parameters.masterReleaseType }} branch - $BUILD_SOURCEVERSIONMESSAGE" \
     --groups ios-acceptance
   displayName: Distribute acceptance build  - < 13.7
 - template: build.yml
