@@ -42,8 +42,8 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         logDebug("Total KeySetIdentifiers: \(exposureKeySetIdentifiers.count)")
 
-        let identifiers = Set(removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from: exposureKeySetIdentifiers,
-                                                                                  storedKeySetsHolders: storedKeySetsHolders))
+        let identifiers = removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from: exposureKeySetIdentifiers,
+                                                                              storedKeySetsHolders: storedKeySetsHolders)
 
         logDebug("KeySetIdentifiers after removing already downloaded or processed identifiers: \(identifiers)")
 
@@ -56,22 +56,22 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
-        let maximumBatchSize = identifiers.count // Set an optional batch size here
-        let batchedIdentifiers = identifiers.prefix(maximumBatchSize)
-
-        logDebug("Requesting \(batchedIdentifiers.count) (out of \(identifiers.count)) Exposure KeySets: \(batchedIdentifiers.joined(separator: "\n"))")
+        logDebug("Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
 
         // download remaining keysets
-        let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = batchedIdentifiers.map { identifier in
+        let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = identifiers.map { identifier in
             self.networkController
                 .fetchExposureKeySet(identifier: identifier)
                 .eraseToAnyPublisher()
         }
 
-        // schedule all downloads at once - the networking layer should limit the number of parallel
-        // requests if necessary
+        let start = CFAbsoluteTimeGetCurrent()
+
+        // Optionally limit the number of concurrent requests we are doing. This might help to not overload the network connection or the CPU
+        let maximumConcurrentFetches = exposureKeySetStreams.count
+
         return Publishers.Sequence<[AnyPublisher<(String, URL), NetworkError>], NetworkError>(sequence: exposureKeySetStreams)
-            .flatMap { $0 }
+            .flatMap(maxPublishers: .max(maximumConcurrentFetches)) { $0 }
             .mapError { error in
                 self.logError("RequestExposureKeySetsDataOperation Error: \(error)")
                 return error.asExposureDataError
@@ -85,6 +85,10 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .collect() // Collect is called only after the creation and storage of keysetholders. This means that if at any point during this process the app is killed due to high CPU usage, the previous progress will not be lost and the app will only have to download the remaining keysets
             .handleEvents(
                 receiveCompletion: { completion in
+
+                    let diff = CFAbsoluteTimeGetCurrent() - start
+                    self.logDebug("Requesting Keysets Took \(diff) seconds")
+
                     switch completion {
                     case .finished:
                         self.logDebug("Requesting KeySets Completed")
@@ -161,7 +165,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                     keySetHolders.append(keySetHolder)
 
                     let diff = CFAbsoluteTimeGetCurrent() - start
-                    print("Creating KeySetHolder Took \(diff) seconds")
+                    self.logDebug("Creating KeySetHolder Took \(diff) seconds")
                 }
 
                 promise(.success(keySetHolders))
@@ -192,7 +196,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                             identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
 
                         let diff = CFAbsoluteTimeGetCurrent() - start
-                        print("Storing KeySetHolders Took \(diff) seconds")
+                        self.logDebug("Storing KeySetHolders Took \(diff) seconds")
 
                         // ignore any storage error - in that case the keyset will be downloaded and processed again
                         promise(.success(()))
@@ -208,4 +212,12 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let storageController: StorageControlling
     private let localPathProvider: LocalPathProviding
     private let exposureKeySetIdentifiers: [String]
+}
+
+extension Array {
+    func chunked(into size: Int) -> [[Element]] {
+        return stride(from: 0, to: count, by: size).map {
+            Array(self[$0 ..< Swift.min($0 + size, count)])
+        }
+    }
 }
