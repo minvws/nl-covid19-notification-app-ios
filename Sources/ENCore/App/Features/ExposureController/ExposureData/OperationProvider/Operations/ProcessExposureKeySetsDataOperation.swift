@@ -339,22 +339,35 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     private func selectKeySetHoldersToProcess(from keySetsHolders: [ExposureKeySetHolder]) -> [ExposureKeySetHolder] {
-        var numberOfKeySetsLeftToProcess: Int
-
-        if #available(iOS 13.6, *) {
-            let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
-            logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
-
-            numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
-        } else {
-            numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
-        }
+        let numberOfKeySetsLeftToProcess: Int
 
         #if USE_DEVELOPER_MENU || DEBUG
-            if !ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets {
-                logDebug("overriding numberOfKeySetsLeftToProcess. Ignoring 24 limit of 15 keysets/API calls")
+
+            if ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets {
+                if #available(iOS 13.6, *) {
+                    let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
+                    logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
+
+                    numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
+                } else {
+                    numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
+                }
+
+            } else {
                 numberOfKeySetsLeftToProcess = Int.max
             }
+
+        #else
+
+            if #available(iOS 13.6, *) {
+                let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
+                logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
+
+                numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
+            } else {
+                numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
+            }
+
         #endif
 
         logDebug("Number of keysets left to process today: \(numberOfKeySetsLeftToProcess)")
