@@ -415,6 +415,8 @@ final class NetworkManager: NetworkManaging, Logging {
             .setFailureType(to: NetworkResponseHandleError.self)
             .eraseToAnyPublisher()
 
+        let start = CFAbsoluteTimeGetCurrent()
+
         // unzip
         let unzipResponseHandler = responseHandlerProvider.unzipNetworkResponseHandler
         if unzipResponseHandler.isApplicable(for: response, input: url) {
@@ -423,6 +425,9 @@ final class NetworkManager: NetworkManaging, Logging {
                 .flatMap { localUrl in unzipResponseHandler.process(response: response, input: localUrl) }
                 .eraseToAnyPublisher()
         }
+
+        let diff = CFAbsoluteTimeGetCurrent() - start
+        print("Unzip Took \(diff) seconds")
 
         // verify signature
         let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler

@@ -116,6 +116,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private func createKeySetHolders(forDownloadedKeySets keySets: [(String, URL)]) -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
         return Deferred {
             return Future<[ExposureKeySetHolder], ExposureDataError> { promise in
+
                 guard let keySetStorageUrl = self.localPathProvider.path(for: .exposureKeySets) else {
                     promise(.failure(.internalError))
                     return
@@ -124,6 +125,8 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 var keySetHolders: [ExposureKeySetHolder] = []
 
                 keySets.forEach { keySet in
+                    let start = CFAbsoluteTimeGetCurrent()
+
                     let (identifier, localUrl) = keySet
                     let srcSignatureUrl = localUrl.appendingPathComponent(self.signatureFilename)
                     let srcBinaryUrl = localUrl.appendingPathComponent(self.binaryFilename)
@@ -156,6 +159,9 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                                             processDate: nil,
                                                             creationDate: Date())
                     keySetHolders.append(keySetHolder)
+
+                    let diff = CFAbsoluteTimeGetCurrent() - start
+                    print("Creating KeySetHolder Took \(diff) seconds")
                 }
 
                 promise(.success(keySetHolders))
@@ -168,6 +174,8 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private func storeDownloadedKeySetsHolders(_ downloadedKeySetsHolders: [ExposureKeySetHolder]) -> AnyPublisher<(), ExposureDataError> {
         return Deferred {
             Future { promise in
+                let start = CFAbsoluteTimeGetCurrent()
+
                 self.storageController.requestExclusiveAccess { storageController in
                     var keySetHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
 
@@ -175,14 +183,17 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                         let matchesKeySetsHolder: (ExposureKeySetHolder) -> Bool = { $0.identifier == keySetHolder.identifier }
 
                         if !keySetHolders.contains(where: matchesKeySetsHolder) {
+                            self.logDebug("Adding \(keySetHolder.identifier) to stored keysetholders")
                             keySetHolders.append(keySetHolder)
                         }
                     }
 
-                    self.logDebug("Storing \(keySetHolders.count) final keySets to process: \(keySetHolders.map { $0.identifier }.joined(separator: "\n"))")
-
                     storageController.store(object: keySetHolders,
                                             identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
+
+                        let diff = CFAbsoluteTimeGetCurrent() - start
+                        print("Storing KeySetHolders Took \(diff) seconds")
+
                         // ignore any storage error - in that case the keyset will be downloaded and processed again
                         promise(.success(()))
                     }
