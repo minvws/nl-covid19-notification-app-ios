@@ -87,9 +87,9 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 receiveCompletion: { completion in
                     switch completion {
                     case .finished:
-                        self.logDebug("Background: Exposure Notification Status Check Completed")
+                        self.logDebug("Requesting KeySets Completed")
                     case .failure:
-                        self.logDebug("Background: Exposure Notification Status Check Failed")
+                        self.logDebug("Requesting KeySets Failed")
                     }
 
                     self.logDebug("--- END REQUESTING KEYSETS ---")
