@@ -71,9 +71,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - ExposureDataControlling
 
     func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        self.operationProvider
-            .requestTreatmentPerspectiveDataOperation
-            .execute()
+        return requestApplicationManifest()
+            .flatMap { _ in
+                self.operationProvider
+                    .requestTreatmentPerspectiveDataOperation
+                    .execute()
+            }
             .eraseToAnyPublisher()
     }
 
