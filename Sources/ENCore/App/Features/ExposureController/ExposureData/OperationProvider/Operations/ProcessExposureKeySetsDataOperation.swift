@@ -389,8 +389,6 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
     private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
 
-        logDebug("Triggering local notification")
-
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
             return Just((result, nil))

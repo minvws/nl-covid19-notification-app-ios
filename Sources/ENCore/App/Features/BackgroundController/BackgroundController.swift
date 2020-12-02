@@ -15,8 +15,6 @@ import UserNotifications
 enum BackgroundTaskIdentifiers: String {
     case refresh = "exposure-notification"
     case decoyStopKeys = "background-decoy-stop-keys"
-    case decoySequence = "background-decoy-sequence"
-    case decoyRegister = "background-decoy-register"
 }
 
 struct BackgroundTaskConfiguration {
@@ -29,7 +27,7 @@ struct BackgroundTaskConfiguration {
 
 /// BackgroundController
 ///
-/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `print("🐞 Scheduled Update")` statement and background the application.
+/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `logDebug("Background: Scheduled `\(identifier)` ✅")` statement and background the application.
 /// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.exposure-notification"]`
 /// and resume the application. The background task will be run.
 final class BackgroundController: BackgroundControlling, Logging {
@@ -40,6 +38,7 @@ final class BackgroundController: BackgroundControlling, Logging {
          networkController: NetworkControlling,
          configuration: BackgroundTaskConfiguration,
          exposureManager: ExposureManaging,
+         dataController: ExposureDataControlling,
          userNotificationCenter: UserNotificationCenter,
          taskScheduler: TaskScheduling,
          bundleIdentifier: String) {
@@ -47,6 +46,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.configuration = configuration
         self.networkController = networkController
         self.exposureManager = exposureManager
+        self.dataController = dataController
         self.userNotificationCenter = userNotificationCenter
         self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
@@ -59,19 +59,23 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
+
         let scheduleTasks: () -> () = {
             self.exposureController
                 .isAppDeactivated()
-                .sink(receiveCompletion: { _ in
-                    // Do nothing
+                .sink(receiveCompletion: { result in
+                    if result != .finished {
+                        self.logDebug("Background: ExposureController activated state result: \(result)")
+                        self.logDebug("Background: Scheduling refresh sequence")
+                        self.scheduleRefresh()
+                    }
                 }, receiveValue: { (isDeactivated: Bool) in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
                         self.removeAllTasks()
                     } else {
-                        self.logDebug("Background: ExposureController is activated - Schedule refresh and decoy")
+                        self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
                         self.scheduleRefresh()
-                        self.scheduleDecoySequence()
                     }
                     }).store(in: &self.disposeBag)
         }
@@ -92,11 +96,6 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         let handleTask: () -> () = {
             switch identifier {
-            case .decoySequence:
-                self.handleDecoySequence(task: task)
-                self.scheduleDecoySequence()
-            case .decoyRegister:
-                self.handleDecoyRegister(task: task)
             case .decoyStopKeys:
                 self.handleDecoyStopkeys(task: task)
             case .refresh:
@@ -122,90 +121,12 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let exposureManager: ExposureManaging
     private let userNotificationCenter: UserNotificationCenter
     private let exposureController: ExposureControlling
+    private let dataController: ExposureDataControlling
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
     private let bundleIdentifier: String
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
-
-    // MARK: - Decoy Scheduling
-
-    /// Review document at https://github.com/minvws/nl-covid19-notification-app-coordination-private/blob/master/architecture/Traffic%20Analysis%20Mitigation%20With%20Decoys.md
-    ///
-    /// Sequence of scheduling a decoy
-    ///
-    /// 1. Every day at 1:00 AM, determine whether a decoy traffic sequence is to be scheduled with a probability of Appconfig.decoyProbability (taken from the `/appconfig` response). This is a value between `0` and `1`. The default value when the app has not successfully retrieved Appconfig yet, is the aforementioned `0.00118`. So take a number `R = random_float(0..1)` and only if `R < Appconfig.decoyProbability`, continue with the next step. Otherwise, stop this procedure and wait for the next round (in 24 hours).
-    /// 2. Pick a random time decoyTime between `00:00` and `24:00` of the current day. (Note: we do not take into account Sundays and holidays that may have no genuine upload traffic since health authority offices may be closed.)
-    /// 3. Schedule a decoy transmission job (simulating a `/register` call) at decoyTime.
-    /// 4a. If `random_int(0..10) == 0: decoyInterval = random_int(1..(24*60*60)) `   (i.e. with chance of 10%, decoyInterval is between 1 sec and 24 hours)
-    /// 4b. Otherwise: `decoyInterval = random_int(1..900)`      (i.e. with chance of 90%, decoyInterval is between 1 sec and 15 minutes)
-    /// 5. Schedule a second decoy transmission job (simulating a `/postkeys` call) for time decoyTime + decoyInterval.
-
-    private func scheduleDecoySequence() {
-        // The decoy sequence should be run at 1am.
-        guard let date = date(hour: 1, minute: 0, dayOffset: 1) else {
-            return logError("Error creating date")
-        }
-
-        schedule(identifier: BackgroundTaskIdentifiers.decoySequence, date: date)
-    }
-
-    private func scheduleDecoyRegister(task: BGProcessingTask) {
-        let hour = Int.random(in: configuration.decoyHourRange)
-        let minute = Int.random(in: configuration.decoyMinuteRange)
-
-        guard let date = date(hour: hour, minute: minute, dayOffset: 0) else {
-            task.setTaskCompleted(success: false)
-            return logError("Error creating date")
-        }
-
-        schedule(identifier: .decoyRegister, date: date, requiresNetworkConnectivity: true) { result in
-            task.setTaskCompleted(success: result)
-        }
-    }
-
-    private func scheduleDecoyStopKeys(task: BGProcessingTask) {
-        let percentage = Int.random(in: 0 ... 10)
-        let delay = percentage == 0 ? Int.random(in: configuration.decoyDelayRangeLowerBound) : Int.random(in: configuration.decoyDelayRangeUpperBound)
-        let date = currentDate().addingTimeInterval(Double(delay))
-
-        schedule(identifier: .decoyStopKeys, date: date, requiresNetworkConnectivity: true) { result in
-            task.setTaskCompleted(success: result)
-        }
-    }
-
-    private func handleDecoySequence(task: BGProcessingTask) {
-        func execute(decoyProbability: Float) {
-            let r = Float.random(in: configuration.decoyProbabilityRange)
-            guard r < decoyProbability else {
-                task.setTaskCompleted(success: true)
-                return logDebug("Not scheduling decoy \(r) >= \(decoyProbability)")
-            }
-            scheduleDecoyRegister(task: task)
-        }
-
-        exposureController
-            .getDecoyProbability()
-            .sink(receiveCompletion: { _ in
-            }, receiveValue: { value in
-                execute(decoyProbability: value)
-                })
-            .store(in: &disposeBag)
-    }
-
-    private func handleDecoyRegister(task: BGProcessingTask) {
-        exposureController.requestLabConfirmationKey { _ in
-            // Note: We ignore the response
-            self.logDebug("Decoy `/register` complete")
-            self.scheduleDecoyStopKeys(task: task)
-        }
-
-        // Handle running out of time
-        task.expirationHandler = {
-            // TODO: We need to actually stop the `requestLabConfirmationKey` request
-            self.logDebug("Decoy `/register` expired")
-        }
-    }
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
         self.logDebug("Decoy `/stopkeys` started")
@@ -231,6 +152,51 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
+    ///    When the user opens the app
+    ///        if (config.decoyProbability),
+    ///        rand(1-x) seconds after the manifest run ‘register decoy’ in the foreground,
+    ///        Schedule the ‘stopkeys’ decoy’ as a normal/regular background task rand(0-15) minutes later (the chance that this bg task works is high, because the user used the app less than x ago)
+    ///
+    ///     Ensure only 1 decoy per day
+    ///     x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
+    ///     y = about 5 minutes (about less, e.g. 250 sec) this param value depends on how long a prioritized task is allowed to run
+    func performDecoySequenceIfNeeded() {
+
+        guard self.dataController.canProcessDecoySequence else {
+            return self.logDebug("Not running decoy `/register` Process already run today")
+        }
+
+        func execute(decoyProbability: Float) {
+
+            let r = Float.random(in: configuration.decoyProbabilityRange)
+            guard r < decoyProbability else {
+                return logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
+            }
+
+            self.dataController.setLastDecoyProcessDate(currentDate())
+
+            exposureController.requestLabConfirmationKey { _ in
+
+                self.logDebug("Decoy `/register` complete")
+
+                let date = currentDate().addingTimeInterval(
+                    TimeInterval(Int.random(in: 0 ... 900)) // random number between 0 and 15 minutes
+                )
+                self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
+            }
+        }
+
+        exposureController
+            .getDecoyProbability()
+            .delay(for: .seconds(Int.random(in: 1 ... 60)), // random number between 1 and 60 seconds
+                   scheduler: RunLoop.current)
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { value in
+                execute(decoyProbability: value)
+                })
+            .store(in: &disposeBag)
+    }
+
     func removeAllTasks() {
         logDebug("Background: Removing all scheduled tasks")
         taskScheduler.cancelAllTaskRequests()
@@ -242,7 +208,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         let timeInterval = refreshInterval * 60
         let date = currentDate().addingTimeInterval(timeInterval)
 
-        schedule(identifier: .refresh, date: date, requiresNetworkConnectivity: true)
+        schedule(identifier: .refresh, date: date)
     }
 
     private func refresh(task: BGProcessingTask) {
@@ -252,7 +218,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             processENStatusCheck,
             appUpdateRequiredCheck,
             updateTreatmentPerspective,
-            processLastOpenedNotificationCheck
+            processLastOpenedNotificationCheck,
+            processDecoyRegisterAndStopKeys
         ]
 
         logDebug("Background: starting refresh task")
@@ -364,6 +331,72 @@ final class BackgroundController: BackgroundControlling, Logging {
         return exposureController.lastOpenedNotificationCheck()
     }
 
+    ///    Every prioritized background run,
+    ///       if (config.decoyProbability) then:
+    ///       rand(1-x) seconds after the manifest run ‘register decoy’
+    ///       rand(0-y) minutes later, run ‘stopkeys decoy’ (during the prioritized background run)
+    ///
+    ///    x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
+    ///    Ensure only 1 decoy per day
+    ///    y = about 5 minutes (about less, e.g. 250 sec) and/or new param: iOS decoyDelayBetweenRegisterAndUpload (this param value depends on how long a prioritized task is allowed to run)
+    private func processDecoyRegisterAndStopKeys() -> AnyPublisher<(), Never> {
+        return Deferred {
+            Future { promise in
+
+                guard self.dataController.canProcessDecoySequence else {
+                    self.logDebug("Not running decoy `/register` Process already run today")
+                    return promise(.success(()))
+                }
+
+                func processStopKeys() {
+                    self.exposureController
+                        .getPadding()
+                        .delay(for: .seconds(Int.random(in: 1 ... 250)),
+                               scheduler: RunLoop.current)
+                        .flatMap { padding in
+                            self.networkController
+                                .stopKeys(padding: padding)
+                                .mapError {
+                                    self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
+                                    return $0.asExposureDataError
+                                }
+                        }.sink(receiveCompletion: { _ in
+                            // Note: We ignore the response
+                            self.logDebug("Decoy `/stopkeys` complete")
+                            return promise(.success(()))
+                        }, receiveValue: { _ in })
+                        .store(in: &self.disposeBag)
+                }
+
+                func processDecoyRegister(decoyProbability: Float) {
+
+                    let r = Float.random(in: self.configuration.decoyProbabilityRange)
+                    guard r < decoyProbability else {
+                        self.logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
+                        return promise(.success(()))
+                    }
+
+                    self.dataController.setLastDecoyProcessDate(currentDate())
+
+                    self.exposureController.requestLabConfirmationKey { _ in
+                        self.logDebug("Decoy `/register` complete")
+                        processStopKeys()
+                    }
+                }
+
+                self.exposureController
+                    .getDecoyProbability()
+                    .delay(for: .seconds(Int.random(in: 1 ... 60)),
+                           scheduler: RunLoop.current)
+                    .sink(receiveCompletion: { _ in
+                    }, receiveValue: { value in
+                        processDecoyRegister(decoyProbability: value)
+                        })
+                    .store(in: &self.disposeBag)
+            }
+        }.eraseToAnyPublisher()
+    }
+
     // Returns a Date with the specified hour and minute, for the next day
     // E.g. date(hour: 1, minute: 0) returns 1:00 am for the next day
     private func date(hour: Int, minute: Int, dayOffset: Int = 1) -> Date? {
@@ -379,15 +412,14 @@ final class BackgroundController: BackgroundControlling, Logging {
         return Calendar.current.date(from: components)
     }
 
-    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, requiresNetworkConnectivity: Bool = false, completion: ((Bool) -> ())? = nil) {
+    private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, completion: ((Bool) -> ())? = nil) {
         let backgroundTaskIdentifier = bundleIdentifier + "." + identifier.rawValue
 
-        logDebug("Background: Scheduling `\(identifier)` for earliestDate \(String(describing: date)), requiresNetwork: \(requiresNetworkConnectivity)")
+        logDebug("Background: Scheduling `\(identifier)` for earliestDate \(String(describing: date))")
 
         taskScheduler.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
 
         let request = BGProcessingTaskRequest(identifier: backgroundTaskIdentifier)
-        request.requiresNetworkConnectivity = requiresNetworkConnectivity
         request.earliestBeginDate = date
 
         do {

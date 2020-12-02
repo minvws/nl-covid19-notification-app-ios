@@ -583,36 +583,9 @@ final class ExposureControllerTests: TestCase {
         let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
         dataController.lastExposure = ExposureReport(date: Date().advanced(by: -timeInterval))
 
-        let days = controller.daysAgo(dataController.lastExposure!.date)
+        let days = Date().days(sinceDate: dataController.lastExposure!.date)
 
         XCTAssertEqual(days, 2)
-    }
-
-    func test_notifyUser24HoursNoCheck() {
-
-        let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
-        let lastLocalNotificationExposureDate = Date().advanced(by: -timeInterval)
-        let lastSuccessfulProcessingDate = Date().advanced(by: -timeInterval)
-
-        dataController.lastSuccessfulProcessingDate = lastSuccessfulProcessingDate
-        dataController.lastLocalNotificationExposureDate = lastLocalNotificationExposureDate
-
-        controller.notifyUser24HoursNoCheckIfRequired()
-
-        XCTAssertEqual(dataController.lastLocalNotificationExposureDate, lastLocalNotificationExposureDate)
-    }
-
-    func test_notNotifyUser24HoursDidCheck() {
-
-        let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
-        let lastLocalNotificationExposureDate = Date().advanced(by: -timeInterval)
-
-        dataController.lastSuccessfulProcessingDate = Date()
-        dataController.lastLocalNotificationExposureDate = lastLocalNotificationExposureDate
-
-        controller.notifyUser24HoursNoCheckIfRequired()
-
-        XCTAssertEqual(dataController.lastLocalNotificationExposureDate, lastLocalNotificationExposureDate)
     }
 
     // MARK: - Private

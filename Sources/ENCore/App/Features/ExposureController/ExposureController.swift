@@ -463,16 +463,21 @@ final class ExposureController: ExposureControlling, Logging {
                     return promise(.success(()))
                 }
 
-                let timeInterval = TimeInterval(60 * 60 * 3) // 3 hours
+                let notificationThreshold = TimeInterval(60 * 60 * 3) // 3 hours
 
-                guard lastAppLaunch.advanced(by: timeInterval) < Date() else {
+                guard lastUnseenExposureNotificationDate.advanced(by: notificationThreshold) < Date() else {
+                    self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h after initial notification")
+                    return promise(.success(()))
+                }
+
+                guard lastAppLaunch.advanced(by: notificationThreshold) < Date() else {
                     self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
                     return promise(.success(()))
                 }
 
                 self.logDebug("User has not opened the app in 3 hours.")
 
-                let days = self.daysAgo(lastExposure.date)
+                let days = Date().days(sinceDate: lastExposure.date) ?? 0
 
                 let content = UNMutableNotificationContent()
                 content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: days)))
@@ -484,17 +489,6 @@ final class ExposureController: ExposureControlling, Logging {
                 }
             }
         }.eraseToAnyPublisher()
-    }
-
-    func daysAgo(_ date: Date) -> Int {
-
-        let calendar = Calendar.current
-
-        let today = calendar.startOfDay(for: Date())
-        let compareDate = calendar.startOfDay(for: date)
-
-        let components = calendar.dateComponents([.day], from: compareDate, to: today)
-        return components.day ?? 0
     }
 
     func notifyUser24HoursNoCheckIfRequired() {
