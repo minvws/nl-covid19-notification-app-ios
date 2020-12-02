@@ -191,7 +191,7 @@ protocol RootBuildable {
 /// interface.
 ///
 /// - Tag: RootBuilder
-final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
+final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
 
     // MARK: - RootBuildable
 
@@ -200,6 +200,12 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
         let viewController = RootViewController(theme: dependencyProvider.theme)
 
         let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+
+        guard let unwrappedCurrentAppVersion = currentAppVersion else {
+            let error = "Bundle version could not be retrieved from infodictionary, app is in an incorrect state"
+            self.logError(error)
+            fatalError(error)
+        }
 
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
@@ -216,6 +222,6 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
                           userNotificationCenter: dependencyProvider.userNotificationCenter,
-                          currentAppVersion: currentAppVersion)
+                          currentAppVersion: unwrappedCurrentAppVersion)
     }
 }
