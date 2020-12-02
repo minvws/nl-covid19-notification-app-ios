@@ -77,7 +77,13 @@ final class NetworkController: NetworkControlling, Logging {
     func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError> {
         return Deferred {
             Future { promise in
+                let start = CFAbsoluteTimeGetCurrent()
+
                 self.networkManager.getExposureKeySet(identifier: identifier) { result in
+
+                    let diff = CFAbsoluteTimeGetCurrent() - start
+                    print("Fetching ExposureKeySet Took \(diff) seconds")
+
                     promise(result
                         .map { localUrl in (identifier, localUrl) }
                     )

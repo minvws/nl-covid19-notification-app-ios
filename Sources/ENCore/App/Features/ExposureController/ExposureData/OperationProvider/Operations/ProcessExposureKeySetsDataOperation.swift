@@ -65,7 +65,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .filter { $0.processed == false }
 
         if exposureKeySetHolders.count > 0 {
-            logDebug("Processing KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
+            logDebug("Processing \(exposureKeySetHolders.count) KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
         } else {
             // keep processing to make sure lastProcessDate is updated
             logDebug("No additional keysets to process")
@@ -188,10 +188,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             [signatureFileUrl(forKeySetHolder: $0), binaryFileUrl(forKeySetHolder: $0)]
         }
 
-        logDebug("Detect exposures for keySets: \(keySetHoldersToProcess.map { $0.identifier })")
+        logDebug("Detect exposures for \(keySetHoldersToProcess.count) keySets: \(keySetHoldersToProcess.map { $0.identifier })")
 
         let executeExposureDetection: AnyPublisher<ExposureDetectionResult, ExposureDataError> = Deferred {
             Future { promise in
+
+                self.logDebug("Detecting exposures for \(diagnosisKeyUrls.count) diagnosisKeyUrls")
+
                 self.exposureManager.detectExposures(configuration: self.configuration,
                                                      diagnosisKeyURLs: diagnosisKeyUrls) { result in
                     switch result {
