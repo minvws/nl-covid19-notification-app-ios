@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Foundation
+import UIKit
 
 final class NetworkManager: NetworkManaging, Logging {
 
@@ -169,17 +170,26 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let urlRequest = constructRequest(url: configuration.exposureKeySetUrl(identifier: identifier),
+        let url = configuration.exposureKeySetUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url,
                                           method: .GET,
                                           headers: headers)
 
+        logDebug("KeySet: Downloading \(identifier)")
+
         download(request: urlRequest) { result in
+
             switch result {
             case let .failure(error):
+                self.logDebug("KeySet: Downloading \(String(describing: url)) FAILED")
                 completion(.failure(error))
             case let .success(result):
+
+                self.logDebug("KeySet: Downloading \(identifier) SUCCESS")
+
                 self
-                    .responseToLocalUrl(for: result.0, url: result.1)
+                    .responseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
+                    .receive(on: DispatchQueue.main)
                     .mapError { $0.asNetworkError }
                     .sink(
                         receiveCompletion: { result in
@@ -410,10 +420,16 @@ final class NetworkManager: NetworkManaging, Logging {
         completion(.success((response, object)))
     }
 
-    private func responseToLocalUrl(for response: URLResponse, url: URL) -> AnyPublisher<URL, NetworkResponseHandleError> {
+    private func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> AnyPublisher<URL, NetworkResponseHandleError> {
         var localUrl = Just(url)
             .setFailureType(to: NetworkResponseHandleError.self)
             .eraseToAnyPublisher()
+
+        if backgroundThreadIfPossible, UIApplication.shared.applicationState != .background {
+            localUrl = localUrl
+                .subscribe(on: DispatchQueue.global(qos: .utility))
+                .eraseToAnyPublisher()
+        }
 
         let start = CFAbsoluteTimeGetCurrent()
 
