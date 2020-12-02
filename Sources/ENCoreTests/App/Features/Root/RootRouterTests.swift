@@ -36,6 +36,11 @@ final class RootRouterTests: XCTestCase {
         exposureController.isAppDeactivatedHandler = {
             Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+
+        exposureController.appShouldUpdateCheckHandler = {
+            Just(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
         exposureController.activateHandler = { _ in
             return Just(()).eraseToAnyPublisher()
         }
@@ -186,16 +191,21 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_start_getMinimumVersion_showsUpdateAppViewController() {
-        exposureController.getAppVersionInformationHandler = { handler in
-            handler(.init(minimumVersion: "1.1",
-                          minimumVersionMessage: "Version too low",
-                          appStoreURL: "appstore://url"))
+        let appVersionInformation = ExposureDataAppVersionInformation(
+            minimumVersion: "1.1",
+            minimumVersionMessage: "Version too low",
+            appStoreURL: "appstore://url"
+        )
+
+        exposureController.appShouldUpdateCheckHandler = {
+            Just(AppUpdateInformation(shouldUpdate: true, versionInformation: appVersionInformation))
+                .setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
         router.start()
 
         XCTAssertEqual(updateAppBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.presentCallCount, 2)
+        XCTAssertEqual(viewController.presentCallCount, 1)
     }
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {

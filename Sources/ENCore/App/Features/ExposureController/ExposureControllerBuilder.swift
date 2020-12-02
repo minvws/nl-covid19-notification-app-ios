@@ -79,8 +79,11 @@ protocol ExposureControlling: AnyObject {
     /// Checks the status of the EN framework for the last 24h
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
 
-    /// Checks if the app needs to be updated
-    func appUpdateRequiredCheck() -> AnyPublisher<(), Never>
+    /// Checks if the app needs to be updated and returns true if it should
+    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError>
+
+    /// Checks if the app needs to be updated and sends a local notification if it should
+    func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never>
 
     /// Updates the treatment perspective message
     func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
@@ -107,6 +110,11 @@ protocol ExposureControlling: AnyObject {
 protocol ExposureConfirmationKey {
     var key: String { get }
     var expiration: Date { get }
+}
+
+struct AppUpdateInformation {
+    let shouldUpdate: Bool
+    let versionInformation: ExposureDataAppVersionInformation?
 }
 
 /// Result of the requestUploadKeys
@@ -180,8 +188,8 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
         return UNUserNotificationCenter.current()
     }
 
-    fileprivate var currentAppVersion: String? {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    fileprivate var currentAppVersion: String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
 }
 
