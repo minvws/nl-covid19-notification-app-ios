@@ -40,12 +40,12 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         let storedKeySetsHolders = getStoredKeySetsHolders()
 
-        logDebug("Total KeySetIdentifiers: \(exposureKeySetIdentifiers.count)")
+        logDebug("KeySet: Total KeySetIdentifiers: \(exposureKeySetIdentifiers.count)")
 
         let identifiers = removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from: exposureKeySetIdentifiers,
                                                                               storedKeySetsHolders: storedKeySetsHolders)
 
-        logDebug("KeySetIdentifiers after removing already downloaded or processed identifiers: \(identifiers)")
+        logDebug("KeySet: KeySetIdentifiers after removing already downloaded or processed identifiers: \(identifiers)")
 
         guard identifiers.count > 0 else {
             logDebug("No additional key sets to download")
@@ -56,7 +56,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
-        logDebug("Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
+        logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
 
         // download remaining keysets
         let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = identifiers.map { identifier in
@@ -73,7 +73,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         return Publishers.Sequence<[AnyPublisher<(String, URL), NetworkError>], NetworkError>(sequence: exposureKeySetStreams)
             .flatMap(maxPublishers: .max(maximumConcurrentFetches)) { $0 }
             .mapError { error in
-                self.logError("RequestExposureKeySetsDataOperation Error: \(error)")
+                self.logError("KeySet: RequestExposureKeySetsDataOperation Error: \(error)")
                 return error.asExposureDataError
             }
             .flatMap { identifierUrlCombo in
@@ -87,13 +87,13 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 receiveCompletion: { completion in
 
                     let diff = CFAbsoluteTimeGetCurrent() - start
-                    self.logDebug("Requesting Keysets Took \(diff) seconds")
+                    self.logDebug("KeySet: Requesting Keysets Took \(diff) seconds")
 
                     switch completion {
                     case .finished:
-                        self.logDebug("Requesting KeySets Completed")
+                        self.logDebug("KeySet: Requesting KeySets Completed")
                     case .failure:
-                        self.logDebug("Requesting KeySets Failed")
+                        self.logDebug("KeySet: Requesting KeySets Failed")
                     }
 
                     self.logDebug("--- END REQUESTING KEYSETS ---")
