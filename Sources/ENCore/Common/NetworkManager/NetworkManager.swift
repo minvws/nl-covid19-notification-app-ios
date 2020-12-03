@@ -189,7 +189,6 @@ final class NetworkManager: NetworkManaging, Logging {
 
                 self
                     .responseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
-                    .receive(on: DispatchQueue.main)
                     .mapError { $0.asNetworkError }
                     .sink(
                         receiveCompletion: { result in
