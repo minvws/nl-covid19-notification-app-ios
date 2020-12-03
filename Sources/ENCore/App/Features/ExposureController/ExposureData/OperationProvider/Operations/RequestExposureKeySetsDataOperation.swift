@@ -11,11 +11,12 @@ import Foundation
 
 struct ExposureKeySetHolder: Codable {
     let identifier: String
-    let signatureFilename: String
-    let binaryFilename: String
+    let signatureFilename: String?
+    let binaryFilename: String?
     let processDate: Date?
     let creationDate: Date
 
+    var ignored: Bool { processed && signatureFilename == nil && binaryFilename == nil }
     var processed: Bool { processDate != nil }
 }
 
@@ -53,6 +54,32 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
             return Just(())
                 .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
+        // The first time we retrieve keysets, we ignore the entire batch because:
+        // - We are not that interested in previous key files if the app didn't have the app yet
+        // - We want to prevent app crashed when we are downloading too many keyfiles in the background
+        if !(storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored) ?? false) {
+
+            self.logDebug("KeySet: Ignoring KeySets because it is the first batch after install: \(identifiers.joined(separator: "\n"))")
+
+            return createIgnoredKeySetHolders(forKeySetIdentifiers: identifiers)
+                .flatMap { keySetHolders in
+                    self.storeDownloadedKeySetsHolders(keySetHolders)
+                }
+                .handleEvents(
+                    receiveCompletion: { completion in
+
+                        switch completion {
+                        case .finished:
+                            self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                        case .failure:
+                            self.logDebug("KeySet: Creating ignored keysets failed ")
+                        }
+                    },
+                    receiveCancel: {}
+                )
                 .eraseToAnyPublisher()
         }
 
@@ -166,6 +193,28 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
                     let diff = CFAbsoluteTimeGetCurrent() - start
                     self.logDebug("Creating KeySetHolder Took \(diff) seconds")
+                }
+
+                promise(.success(keySetHolders))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private func createIgnoredKeySetHolders(forKeySetIdentifiers identifiers: [String]) -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
+        return Deferred {
+            return Future<[ExposureKeySetHolder], ExposureDataError> { promise in
+
+                var keySetHolders: [ExposureKeySetHolder] = []
+
+                identifiers.forEach { identifier in
+
+                    let keySetHolder = ExposureKeySetHolder(identifier: identifier,
+                                                            signatureFilename: nil,
+                                                            binaryFilename: nil,
+                                                            processDate: Date(),
+                                                            creationDate: Date())
+                    keySetHolders.append(keySetHolder)
                 }
 
                 promise(.success(keySetHolders))
