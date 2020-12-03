@@ -58,7 +58,7 @@
         },
         "tr": {
             "test_negative_title": "Test sizde Korona virüsü bulamadıysa",
-            "test_negative_body": "<ul><li>Artık evde kalmak zorunda değilsiniz, ancak sağlığınıza daha fazla dikkat edin. Şikayetleriniz mi oluştu? O halde evde kalın ve hemen tekrar test yaptırın.</li><li> {ExposureDate +10} tarihinden sonra 10 güne kadar, sağlığı zayıf veya risk altında olan kişilerden uzak durun. Kalabalık yerlerden kaçının ve 1,5 metre mesafe uygulayın.</li></ul>",
+            "test_negative_body": "<ul><li>Artık evde kalmak zorunda değilsiniz, ancak sağlığınıza daha fazla dikkat edin. Şikayetleriniz mi oluştu? O halde evde kalın ve hemen tekrar test yaptırın.</li><li> {ExposureDate+10} tarihinden sonra 10 güne kadar, sağlığı zayıf veya risk altında olan kişilerden uzak durun. Kalabalık yerlerden kaçının ve 1,5 metre mesafe uygulayın.</li></ul>",
             "exposure_notification_title": "Koronavirüs olan birisinin yakınında bulundunuz",
             "exposure_notification_body": "{ExposureDate} ({ExposureDaysAgo}) tarihinde enfekte olmuş olabilirsiniz. O gün Korona olan birinin en az 15 dakika yakınında bulundunuz.  \n\nGerçekten enfekte olursanız, virüsü başkalarına bulaştırabilirsiniz. Şimdilik kendinizi hasta hissetmeseniz bile. Bu nedenle evde kalın ve test yaptırın.",
             "next_steps_title": "Korona testi yaptırın ve sonucu öğrenene kadar evde kalın",
