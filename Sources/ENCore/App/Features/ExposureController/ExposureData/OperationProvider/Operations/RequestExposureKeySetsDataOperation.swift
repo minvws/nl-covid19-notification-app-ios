@@ -16,7 +16,6 @@ struct ExposureKeySetHolder: Codable {
     let processDate: Date?
     let creationDate: Date
 
-    var ignored: Bool { processed && signatureFilename == nil && binaryFilename == nil }
     var processed: Bool { processDate != nil }
 }
 
@@ -205,16 +204,12 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         return Deferred {
             return Future<[ExposureKeySetHolder], ExposureDataError> { promise in
 
-                var keySetHolders: [ExposureKeySetHolder] = []
-
-                identifiers.forEach { identifier in
-
-                    let keySetHolder = ExposureKeySetHolder(identifier: identifier,
-                                                            signatureFilename: nil,
-                                                            binaryFilename: nil,
-                                                            processDate: Date(),
-                                                            creationDate: Date())
-                    keySetHolders.append(keySetHolder)
+                let keySetHolders = identifiers.map { identifier in
+                    ExposureKeySetHolder(identifier: identifier,
+                                         signatureFilename: nil,
+                                         binaryFilename: nil,
+                                         processDate: Date(),
+                                         creationDate: Date())
                 }
 
                 promise(.success(keySetHolders))
