@@ -40,6 +40,8 @@ struct ExposureDataStorageKey {
                                                                                                    storeType: .secure)
     static let firstRunIdentifier = CodableStorageKey<Bool>(name: "firstRunIdentifier",
                                                             storeType: .insecure(volatile: false))
+    static let initialKeySetsIgnored = CodableStorageKey<Bool>(name: "initialKeySetsIgnored",
+                                                               storeType: .insecure(volatile: false))
     static let exposureApiCallDates = CodableStorageKey<[Date]>(name: "exposureApiCalls",
                                                                 storeType: .insecure(volatile: false))
     static let onboardingCompleted = CodableStorageKey<Bool>(name: "onboardingCompleted",
