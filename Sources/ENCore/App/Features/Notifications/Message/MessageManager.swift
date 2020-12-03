@@ -33,8 +33,7 @@ final class MessageManager: MessageManaging, Logging {
 
     func getLocalizedTreatmentPerspective(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective {
 
-        let treatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) ??
-            TreatmentPerspective.fallbackMessage
+        let treatmentPerspective: TreatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) ?? .fallbackMessage
 
         let resource = treatmentPerspective.resources[.currentLanguageIdentifier]
         let fallbackResource = treatmentPerspective.resources["en"]
@@ -104,39 +103,44 @@ final class MessageManager: MessageManaging, Logging {
         // Find all placeholders in the string
         let fullRange = NSRange(location: 0, length: originalText.utf16.count)
         let regex = try! NSRegularExpression(pattern: "\\{[a-zA-Z]+[+]?[0-9]*\\}")
-        regex.matches(in: originalText, options: [], range: fullRange).forEach { match in
-            let placeholder = originalText[match.range.lowerBound ..< match.range.upperBound]
-            let trimmedPlaceholder = placeholder.trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
 
-            // Placeholders can contain a number like so: {SomeDatePlaceHolder+3}
-            // in which case that number is the number of days that should be added to the date.
-            // Split the placeholder on the plus-sign to see if this is the case
-            let placeholderComponents = trimmedPlaceholder.components(separatedBy: CharacterSet(charactersIn: "+"))
+        regex
+            .matches(in: originalText, options: [], range: fullRange)
+            .compactMap { Range($0.range, in: originalText) }
+            .forEach { placeholderRange in
 
-            guard let knownPlaceholder = TreatmentPerspectivePlaceholder(rawValue: placeholderComponents[0]) else {
-                return
+                let placeholder = String(originalText[placeholderRange])
+                let trimmedPlaceholder = placeholder.trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
+
+                // Placeholders can contain a number like so: {SomeDatePlaceHolder+3}
+                // in which case that number is the number of days that should be added to the date.
+                // Split the placeholder on the plus-sign to see if this is the case
+                let placeholderComponents = trimmedPlaceholder.components(separatedBy: CharacterSet(charactersIn: "+"))
+
+                guard let knownPlaceholder = TreatmentPerspectivePlaceholder(rawValue: placeholderComponents[0]) else {
+                    return
+                }
+
+                var daysAdded = 0
+                if let dayComponent = placeholderComponents[safe: 1] {
+                    daysAdded = Int(dayComponent) ?? 0
+                }
+
+                var replacementString = placeholder
+
+                switch knownPlaceholder {
+                case .exposureDate:
+                    replacementString = formatDate(exposureDate, fromTemplate: "EEEEdMMMM", addingDays: daysAdded)
+                case .exposureDateShort:
+                    replacementString = formatDate(exposureDate, fromTemplate: "dMMMM", addingDays: daysAdded)
+                case .exposureDaysAgo:
+                    replacementString = statusNotifiedDaysAgo(withExposureDate: exposureDate)
+                case .stayHomeUntilDate:
+                    replacementString = formatStayHomeUntilDate(withExposureDate: exposureDate, andQuarantineDays: quarantineDays) ?? replacementString
+                }
+
+                modifiedText = modifiedText.replacingOccurrences(of: placeholder, with: replacementString)
             }
-
-            var daysAdded = 0
-            if let dayComponent = placeholderComponents[safe: 1] {
-                daysAdded = Int(dayComponent) ?? 0
-            }
-
-            var replacementString = placeholder
-
-            switch knownPlaceholder {
-            case .exposureDate:
-                replacementString = formatDate(exposureDate, fromTemplate: "EEEEdMMMM", addingDays: daysAdded)
-            case .exposureDateShort:
-                replacementString = formatDate(exposureDate, fromTemplate: "dMMMM", addingDays: daysAdded)
-            case .exposureDaysAgo:
-                replacementString = statusNotifiedDaysAgo(withExposureDate: exposureDate)
-            case .stayHomeUntilDate:
-                replacementString = formatStayHomeUntilDate(withExposureDate: exposureDate, andQuarantineDays: quarantineDays) ?? replacementString
-            }
-
-            modifiedText = modifiedText.replacingOccurrences(of: placeholder, with: replacementString)
-        }
 
         mutableAttributedString.mutableString.setString(modifiedText)
 
