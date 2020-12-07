@@ -17,6 +17,7 @@ final class RequestTestViewControllerTests: TestCase {
     private let listener = RequestTestListenerMock()
     private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
     private var exposureStateStream = MutableExposureStateStreamingMock()
+    private var datacontroller = ExposureDataControllingMock()
 
     override func setUp() {
         super.setUp()
@@ -25,10 +26,15 @@ final class RequestTestViewControllerTests: TestCase {
 
         interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
+        datacontroller.getAppointmentPhoneNumberHandler = {
+            return Just(.coronaTestPhoneNumber).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
         viewController = RequestTestViewController(listener: listener,
                                                    theme: theme,
                                                    interfaceOrientationStream: interfaceOrientationStream,
-                                                   exposureStateStream: exposureStateStream)
+                                                   exposureStateStream: exposureStateStream,
+                                                   dataController: datacontroller)
     }
 
     // MARK: - Tests
@@ -43,7 +49,8 @@ final class RequestTestViewControllerTests: TestCase {
         viewController = RequestTestViewController(listener: listener,
                                                    theme: theme,
                                                    interfaceOrientationStream: interfaceOrientationStream,
-                                                   exposureStateStream: exposureStateStream)
+                                                   exposureStateStream: exposureStateStream,
+                                                   dataController: datacontroller)
 
         snapshots(matching: viewController)
     }

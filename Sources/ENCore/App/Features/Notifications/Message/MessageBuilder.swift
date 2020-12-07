@@ -25,6 +25,7 @@ protocol MessageDependency {
     var theme: Theme { get }
     var messageManager: MessageManaging { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
+    var dataController: ExposureDataControlling { get }
 }
 
 private final class MessageDependencyProvider: DependencyProvider<MessageDependency> {
@@ -45,6 +46,7 @@ final class MessageBuilder: Builder<MessageDependency>, MessageBuildable {
                                      theme: dependencyProvider.dependency.theme,
                                      exposureDate: exposureDate,
                                      interfaceOrientationStream: dependencyProvider.interfaceOrientationStream,
+                                     dataController: dependency.dataController,
                                      messageManager: dependencyProvider.messageManager)
     }
 }
