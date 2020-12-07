@@ -129,6 +129,13 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
+
+        guard isExposureManagerActive else {
+            task.setTaskCompleted(success: true)
+            logDebug("ExposureManager inactive - Not handling \(task.identifier)")
+            return
+        }
+
         self.logDebug("Decoy `/stopkeys` started")
         let cancellable = exposureController
             .getPadding()
@@ -343,6 +350,11 @@ final class BackgroundController: BackgroundControlling, Logging {
         return Deferred {
             Future { promise in
 
+                guard self.isExposureManagerActive else {
+                    self.logDebug("ExposureManager inactive - Not handling processDecoyRegisterAndStopKeys")
+                    return promise(.success(()))
+                }
+
                 guard self.dataController.canProcessDecoySequence else {
                     self.logDebug("Not running decoy `/register` Process already run today")
                     return promise(.success(()))
@@ -430,5 +442,9 @@ final class BackgroundController: BackgroundControlling, Logging {
             logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
         }
+    }
+
+    private var isExposureManagerActive: Bool {
+        exposureManager.getExposureNotificationStatus() == .active
     }
 }
