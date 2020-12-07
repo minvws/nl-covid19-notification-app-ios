@@ -145,10 +145,13 @@ private final class RequestTestView: View {
 
     var testPhoneNumber: String {
         didSet {
+            // This string is manually formatted to ensure the phone number is always displayed left-to-right.
+            // \u{202A} starts left-to-right text, \u{202C} pops directional formatting
             formattedPhoneNumber = String(format: .moreInformationRequestTestPhone, arguments: ["\u{202A}\(testPhoneNumber)\u{202C}"])
             infoView.secondaryButton?.title = formattedPhoneNumber
         }
     }
+
     var formattedPhoneNumber: String = ""
 
     private let infoView: InfoView
@@ -157,11 +160,7 @@ private final class RequestTestView: View {
 
     init(theme: Theme, testPhoneNumber: String) {
 
-        // This string is manually formatted to ensure the phone number is always displayed left-to-right.
-        // \u{202A} starts left-to-right text, \u{202C} pops directional formatting
-
         self.testPhoneNumber = testPhoneNumber
-
         let callButtonTitle = formattedPhoneNumber
 
         let config = InfoViewConfig(actionButtonTitle: .moreInformationRequestTestLink,
