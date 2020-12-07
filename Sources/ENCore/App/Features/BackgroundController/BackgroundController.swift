@@ -438,6 +438,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private var isExposureManagerActive: Bool {
-        self.exposureManager.getExposureNotificationStatus() == .active
+        exposureManager.getExposureNotificationStatus() == .active
     }
 }

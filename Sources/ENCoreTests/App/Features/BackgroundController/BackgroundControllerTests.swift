@@ -131,22 +131,13 @@ final class BackgroundControllerTests: XCTestCase {
             return .inactive(.disabled)
         }
 
-        exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(self.labConfirmationKey))
-            // Async magic, no one likes it, but sometimes we have to do it.
-            // Internally when scheduling an async process runs so we need to
-            // have a delay here before we can fulfill the expectation
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                exp.fulfill()
-            }
-        }
-
         let task = MockBGProcessingTask(identifier: .decoyRegister)
-
-        controller.handle(task: task)
         task.completion = {
             exp.fulfill()
         }
+
+        controller.handle(task: task)
+
         wait(for: [exp], timeout: 2)
 
         XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
@@ -160,14 +151,6 @@ final class BackgroundControllerTests: XCTestCase {
 
         exposureManager.getExposureNotificationStatusHandler = {
             return .inactive(.disabled)
-        }
-
-        exposureController.getPaddingHandler = {
-            return Just(Padding(minimumRequestSize: 0, maximumRequestSize: 1)).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-        }
-
-        networkController.stopKeysHandler = { _ in
-            return Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher()
         }
 
         let task = MockBGProcessingTask(identifier: .decoyStopKeys)
