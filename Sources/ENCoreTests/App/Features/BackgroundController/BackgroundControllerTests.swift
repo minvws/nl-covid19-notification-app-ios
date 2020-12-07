@@ -131,7 +131,7 @@ final class BackgroundControllerTests: XCTestCase {
             return .inactive(.disabled)
         }
 
-        let task = MockBGProcessingTask(identifier: .decoyRegister)
+        let task = MockBGProcessingTask(identifier: .refresh)
         task.completion = {
             exp.fulfill()
         }
