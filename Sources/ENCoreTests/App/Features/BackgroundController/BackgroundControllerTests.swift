@@ -153,6 +153,14 @@ final class BackgroundControllerTests: XCTestCase {
             return .inactive(.disabled)
         }
 
+        exposureController.getPaddingHandler = {
+            return Just(Padding(minimumRequestSize: 0, maximumRequestSize: 1)).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
+        networkController.stopKeysHandler = { _ in
+            return Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher()
+        }
+
         let task = MockBGProcessingTask(identifier: .decoyStopKeys)
         task.completion = {
             exp.fulfill()

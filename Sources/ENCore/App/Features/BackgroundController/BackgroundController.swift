@@ -35,13 +35,13 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Init
 
     init(exposureController: ExposureControlling,
-        networkController: NetworkControlling,
-        configuration: BackgroundTaskConfiguration,
-        exposureManager: ExposureManaging,
-        dataController: ExposureDataControlling,
-        userNotificationCenter: UserNotificationCenter,
-        taskScheduler: TaskScheduling,
-        bundleIdentifier: String) {
+         networkController: NetworkControlling,
+         configuration: BackgroundTaskConfiguration,
+         exposureManager: ExposureManaging,
+         dataController: ExposureDataControlling,
+         userNotificationCenter: UserNotificationCenter,
+         taskScheduler: TaskScheduling,
+         bundleIdentifier: String) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
@@ -70,13 +70,13 @@ final class BackgroundController: BackgroundControlling, Logging {
                         self.scheduleRefresh()
                     }
                 }, receiveValue: { (isDeactivated: Bool) in
-                        if isDeactivated {
-                            self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
-                            self.removeAllTasks()
-                        } else {
-                            self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
-                            self.scheduleRefresh()
-                        }
+                    if isDeactivated {
+                        self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
+                        self.removeAllTasks()
+                    } else {
+                        self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
+                        self.scheduleRefresh()
+                    }
                     }).store(in: &self.disposeBag)
         }
 
@@ -129,6 +129,13 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
+
+        guard isExposureManagerActive else {
+            task.setTaskCompleted(success: true)
+            logDebug("ExposureManager inactive - Not handling \(task.identifier)")
+            return
+        }
+
         self.logDebug("Decoy `/stopkeys` started")
         let cancellable = exposureController
             .getPadding()
@@ -138,7 +145,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     .mapError {
                         self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
                         return $0.asExposureDataError
-                }
+                    }
             }.sink(receiveCompletion: { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
@@ -189,10 +196,10 @@ final class BackgroundController: BackgroundControlling, Logging {
         exposureController
             .getDecoyProbability()
             .delay(for: .seconds(Int.random(in: 1 ... 60)), // random number between 1 and 60 seconds
-                scheduler: RunLoop.current)
+                   scheduler: RunLoop.current)
             .sink(receiveCompletion: { _ in
             }, receiveValue: { value in
-                    execute(decoyProbability: value)
+                execute(decoyProbability: value)
                 })
             .store(in: &disposeBag)
     }
@@ -237,7 +244,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     task.setTaskCompleted(success: false)
                 }
             }, receiveValue: { [weak self] _ in
-                    self?.logDebug("Background: Completed refresh task")
+                self?.logDebug("Background: Completed refresh task")
                 })
 
         cancellable.store(in: &disposeBag)
@@ -357,14 +364,14 @@ final class BackgroundController: BackgroundControlling, Logging {
                     self.exposureController
                         .getPadding()
                         .delay(for: .seconds(Int.random(in: 1 ... 250)),
-                            scheduler: RunLoop.current)
+                               scheduler: RunLoop.current)
                         .flatMap { padding in
                             self.networkController
                                 .stopKeys(padding: padding)
                                 .mapError {
                                     self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
                                     return $0.asExposureDataError
-                            }
+                                }
                         }.sink(receiveCompletion: { _ in
                             // Note: We ignore the response
                             self.logDebug("Decoy `/stopkeys` complete")
@@ -392,10 +399,10 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.exposureController
                     .getDecoyProbability()
                     .delay(for: .seconds(Int.random(in: 1 ... 60)),
-                        scheduler: RunLoop.current)
+                           scheduler: RunLoop.current)
                     .sink(receiveCompletion: { _ in
                     }, receiveValue: { value in
-                            processDecoyRegister(decoyProbability: value)
+                        processDecoyRegister(decoyProbability: value)
                         })
                     .store(in: &self.disposeBag)
             }
