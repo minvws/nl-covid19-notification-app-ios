@@ -177,6 +177,32 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .eraseToAnyPublisher()
     }
 
+    func updateNumberOfApiCallsMade(inBackground: Bool, maximumDailyBackgroundExposureDetectionAPICalls: Int, maximumDailyForegroundExposureDetectionAPICalls: Int) -> AnyPublisher<(), ExposureDataError> {
+        return Deferred {
+            return Future { promise in
+                self.storageController.requestExclusiveAccess { storageController in
+                    let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
+                    var calls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
+
+                    calls = [Date()] + calls
+                    self.logDebug("Most recent API calls \(calls)")
+
+                    let maximumNumberOfAPICalls = inBackground ? maximumDailyBackgroundExposureDetectionAPICalls : maximumDailyForegroundExposureDetectionAPICalls
+
+                    if calls.count > maximumNumberOfAPICalls {
+                        calls = Array(calls.prefix(maximumNumberOfAPICalls))
+                    }
+
+                    storageController.store(object: calls,
+                                            identifiedBy: storageKey) { _ in
+                        promise(.success(()))
+                    }
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
     // MARK: - LabFlow
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {

@@ -38,8 +38,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     // the detectExposures API is limited to 15 keysets or calls a day
     // https://developer.apple.com/documentation/exposurenotification/enmanager/3586331-detectexposures
     private let maximumDailyOfKeySetsToProcess = 15 // iOS 13.5
-    private let maximumDailyForegroundExposureDetectionAPICalls = 9 // iOS 13.6+
-    private let maximumDailyBackgroundExposureDetectionAPICalls = 6 // iOS 13.6+
+
+    // iOS 16+ is limited to 15 GAEN API calls in total per 24 hours
+    // Because we want to make sure the scheduled background processes
+    // can always execute, we explicitly reserve 6 of those calls for the background.
+    private let maximumDailyForegroundExposureDetectionAPICalls = 9
+    private let maximumDailyBackgroundExposureDetectionAPICalls = 6
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
@@ -47,7 +51,8 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
          exposureKeySetsStorageUrl: URL,
          configuration: ExposureConfiguration,
          userNotificationCenter: UserNotificationCenter,
-         application: ApplicationControlling) {
+         application: ApplicationControlling,
+         fileManager: FileManaging) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
@@ -55,6 +60,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
         self.application = application
+        self.fileManager = fileManager
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
@@ -111,13 +117,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         var isDirectory = ObjCBool(booleanLiteral: false)
 
         // verify whether sig and bin files are present
-        guard FileManager.default.fileExists(atPath: signatureFileUrl(forKeySetHolder: keySetHolder).path,
-                                             isDirectory: &isDirectory), isDirectory.boolValue == false else {
+        guard fileManager.fileExists(atPath: signatureFileUrl(forKeySetHolder: keySetHolder).path,
+                                     isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
-        guard FileManager.default.fileExists(atPath: binaryFileUrl(forKeySetHolder: keySetHolder).path,
-                                             isDirectory: &isDirectory), isDirectory.boolValue == false else {
+        guard fileManager.fileExists(atPath: binaryFileUrl(forKeySetHolder: keySetHolder).path,
+                                     isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
@@ -251,7 +257,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         }
         .eraseToAnyPublisher()
 
-        return updateNumberOfApiCallsMade(inBackground: applicationIsInBackground)
+        return ExposureDataController updateNumberOfApiCallsMade(inBackground: applicationIsInBackground)
             .flatMap { _ in executeExposureDetection }
             .eraseToAnyPublisher()
     }
@@ -305,8 +311,8 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .map { $0.keySetHolder }
 
         keySetHolders.forEach { keySetHolder in
-            try? FileManager.default.removeItem(at: signatureFileUrl(forKeySetHolder: keySetHolder))
-            try? FileManager.default.removeItem(at: binaryFileUrl(forKeySetHolder: keySetHolder))
+            try? fileManager.removeItem(at: signatureFileUrl(forKeySetHolder: keySetHolder))
+            try? fileManager.removeItem(at: binaryFileUrl(forKeySetHolder: keySetHolder))
         }
     }
 
@@ -531,32 +537,6 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         .eraseToAnyPublisher()
     }
 
-    private func updateNumberOfApiCallsMade(inBackground: Bool) -> AnyPublisher<(), ExposureDataError> {
-        return Deferred {
-            return Future { promise in
-                self.storageController.requestExclusiveAccess { storageController in
-                    let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
-                    var calls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
-
-                    calls = [Date()] + calls
-                    self.logDebug("Most recent API calls \(calls)")
-
-                    let maximumNumberOfAPICalls = inBackground ? self.maximumDailyBackgroundExposureDetectionAPICalls : self.maximumDailyForegroundExposureDetectionAPICalls
-
-                    if calls.count > maximumNumberOfAPICalls {
-                        calls = Array(calls.prefix(maximumNumberOfAPICalls))
-                    }
-
-                    storageController.store(object: calls,
-                                            identifiedBy: storageKey) { _ in
-                        promise(.success(()))
-                    }
-                }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-
     private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL {
         return exposureKeySetsStorageUrl.appendingPathComponent(keySetHolder.signatureFilename)
     }
@@ -607,4 +587,5 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter
     private let application: ApplicationControlling
+    private let fileManager: FileManaging
 }
