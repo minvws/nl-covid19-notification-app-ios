@@ -58,28 +58,17 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         // The first time we retrieve keysets, we ignore the entire batch because:
         // - We are not that interested in previous key files if the app didn't have the app yet
-        // - We want to prevent app crashed when we are downloading too many keyfiles in the background
-        if !(storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored) ?? false) {
+        // - We want to prevent app crashes when we are downloading too many keyfiles in the background
+        var ignoredInitialKeySets = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored) ?? false
 
-            self.logDebug("KeySet: Ignoring KeySets because it is the first batch after install: \(identifiers.joined(separator: "\n"))")
+        // If we have keysets, we already ignored the initial set (the user probably updated from an earlier version without this logic)
+        if !storedKeySetsHolders.isEmpty, !ignoredInitialKeySets {
+            storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+            ignoredInitialKeySets = true
+        }
 
-            return createIgnoredKeySetHolders(forKeySetIdentifiers: identifiers)
-                .flatMap { keySetHolders in
-                    self.storeDownloadedKeySetsHolders(keySetHolders)
-                }
-                .handleEvents(
-                    receiveCompletion: { completion in
-
-                        switch completion {
-                        case .finished:
-                            self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
-                        case .failure:
-                            self.logDebug("KeySet: Creating ignored keysets failed ")
-                        }
-                    },
-                    receiveCancel: {}
-                )
-                .eraseToAnyPublisher()
+        if !ignoredInitialKeySets {
+            return ignoreFirstKeySetBatch(keySetIdentifiers: identifiers)
         }
 
         logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
@@ -132,6 +121,28 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     // MARK: - Private
+
+    private func ignoreFirstKeySetBatch(keySetIdentifiers: [String]) -> AnyPublisher<(), ExposureDataError> {
+        logDebug("KeySet: Ignoring KeySets because it is the first batch after first install: \(keySetIdentifiers.joined(separator: "\n"))")
+
+        return createIgnoredKeySetHolders(forKeySetIdentifiers: keySetIdentifiers)
+            .flatMap { keySetHolders in
+                self.storeDownloadedKeySetsHolders(keySetHolders)
+            }
+            .handleEvents(
+                receiveCompletion: { completion in
+
+                    switch completion {
+                    case .finished:
+                        self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                    case .failure:
+                        self.logDebug("KeySet: Creating ignored keysets failed ")
+                    }
+                },
+                receiveCancel: {}
+            )
+            .eraseToAnyPublisher()
+    }
 
     private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
