@@ -39,7 +39,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     // https://developer.apple.com/documentation/exposurenotification/enmanager/3586331-detectexposures
     private let maximumDailyOfKeySetsToProcess = 15 // iOS 13.5
 
-    // iOS 16+ is limited to 15 GAEN API calls in total per 24 hours
+    // iOS 13.6+ is limited to 15 GAEN API calls in total per 24 hours
     // Because we want to make sure the scheduled background processes
     // can always execute, we explicitly reserve 6 of those calls for the background.
     private let maximumDailyForegroundExposureDetectionAPICalls = 9
