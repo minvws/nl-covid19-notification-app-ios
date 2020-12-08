@@ -59,7 +59,15 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         // The first time we retrieve keysets, we ignore the entire batch because:
         // - We are not that interested in previous key files if the app didn't have the app yet
         // - We want to prevent app crashed when we are downloading too many keyfiles in the background
-        if !(storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored) ?? false) {
+        var ignoredInitialKeySets = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored) ?? false
+
+        // If we have keysets, we already ignored the initial set
+        if !storedKeySetsHolders.isEmpty, !ignoredInitialKeySets {
+            self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+            ignoredInitialKeySets = true
+        }
+
+        if !ignoredInitialKeySets {
 
             self.logDebug("KeySet: Ignoring KeySets because it is the first batch after install: \(identifiers.joined(separator: "\n"))")
 
