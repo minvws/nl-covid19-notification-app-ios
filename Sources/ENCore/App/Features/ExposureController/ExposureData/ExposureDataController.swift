@@ -86,7 +86,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .flatMap { _ in
                 self.fetchAndStoreExposureKeySets()
             }
-            .flatMap {
+            .flatMap { _ in
+                self.processStoredExposureKeySets(exposureManager: exposureManager)
+            }
+            .catch { _ in
                 self.processStoredExposureKeySets(exposureManager: exposureManager)
             }
             .share()
