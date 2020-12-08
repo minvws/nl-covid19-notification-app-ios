@@ -152,8 +152,7 @@ private final class RequestTestView: View {
         }
     }
 
-    var formattedPhoneNumber: String = ""
-
+    private var formattedPhoneNumber: String = ""
     private let infoView: InfoView
 
     // MARK: - Init
