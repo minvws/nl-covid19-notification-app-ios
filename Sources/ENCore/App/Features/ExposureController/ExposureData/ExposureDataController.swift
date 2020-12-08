@@ -84,9 +84,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
         return requestApplicationConfiguration()
             .flatMap { _ in
-                self.fetchAndStoreExposureKeySets()
+                self.fetchAndStoreExposureKeySets().catch { _ in
+                    self.processStoredExposureKeySets(exposureManager: exposureManager)
+                }
             }
-            .flatMap {
+            .flatMap { _ in
                 self.processStoredExposureKeySets(exposureManager: exposureManager)
             }
             .share()
