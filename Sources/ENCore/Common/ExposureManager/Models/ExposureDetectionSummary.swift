@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// @mockable
 protocol ExposureDetectionSummary {
     var attenuationDurations: [NSNumber] { get }
     var daysSinceLastExposure: Int { get }

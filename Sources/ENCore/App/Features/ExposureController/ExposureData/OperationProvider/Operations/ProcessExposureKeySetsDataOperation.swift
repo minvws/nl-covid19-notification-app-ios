@@ -52,7 +52,8 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
          configuration: ExposureConfiguration,
          userNotificationCenter: UserNotificationCenter,
          application: ApplicationControlling,
-         fileManager: FileManaging) {
+         fileManager: FileManaging,
+         environmentController: EnvironmentControlling) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
@@ -61,6 +62,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         self.userNotificationCenter = userNotificationCenter
         self.application = application
         self.fileManager = fileManager
+        self.environmentController = environmentController
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
@@ -84,13 +86,21 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         // Batch detect exposures
         return detectExposures(for: exposureKeySetHolders, fakeProcessKeySets: markKeySetsAsProcessedFirstTimeOnly)
             // persist keySetHolders in local storage to remember which ones have been processed correctly
-            .flatMap(self.persistResult(_:))
+            .flatMap(
+                self.persistResult(_:)
+            )
             // create an exposureReport and trigger a local notification
-            .flatMap(self.createReportAndTriggerNotification(forResult:))
+            .flatMap(
+                self.createReportAndTriggerNotification(forResult:)
+            )
             // persist the ExposureReport
-            .flatMap(self.persist(exposureReport:))
+            .flatMap(
+                self.persist(exposureReport:)
+            )
             // update last processing date
-            .flatMap(self.updateLastProcessingDate)
+            .flatMap(
+                self.updateLastProcessingDate
+            )
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
@@ -257,7 +267,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         }
         .eraseToAnyPublisher()
 
-        return ExposureDataController updateNumberOfApiCallsMade(inBackground: applicationIsInBackground)
+        return updateNumberOfApiCallsMade(inBackground: applicationIsInBackground)
             .flatMap { _ in executeExposureDetection }
             .eraseToAnyPublisher()
     }
@@ -334,6 +344,32 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .count
     }
 
+    func updateNumberOfApiCallsMade(inBackground: Bool) -> AnyPublisher<(), ExposureDataError> {
+        return Deferred {
+            return Future { promise in
+                self.storageController.requestExclusiveAccess { storageController in
+                    let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
+                    var calls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
+
+                    calls = [Date()] + calls
+                    self.logDebug("Most recent API calls \(calls)")
+
+                    let maximumNumberOfAPICalls = inBackground ? self.maximumDailyBackgroundExposureDetectionAPICalls : self.maximumDailyForegroundExposureDetectionAPICalls
+
+                    if calls.count > maximumNumberOfAPICalls {
+                        calls = Array(calls.prefix(maximumNumberOfAPICalls))
+                    }
+
+                    storageController.store(object: calls,
+                                            identifiedBy: storageKey) { _ in
+                        promise(.success(()))
+                    }
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
     private func getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: Bool = false) -> Int {
         let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
         let apiCalls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
@@ -354,7 +390,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private func getNumberOfDailyAPICallsLeft(inBackground: Bool) -> Int {
         var numberOfCallsLeft = Int.max
 
-        if #available(iOS 13.6, *) {
+        if environmentController.isiOS136orHigher {
             let totalMaximumCalls = maximumDailyBackgroundExposureDetectionAPICalls + maximumDailyForegroundExposureDetectionAPICalls
             let maximumNumberOfAPICalls = inBackground ? maximumDailyBackgroundExposureDetectionAPICalls : maximumDailyForegroundExposureDetectionAPICalls
             let backgroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: true)
@@ -374,7 +410,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     private func getNumberOfDailyKeySetsLeft() -> Int {
-        if #available(iOS 13.6, *) {
+        if environmentController.isiOS136orHigher {
             // iOS 13.6+ is not limited in the number of daily keysets but in the number of API calls
             logDebug("Number of keysets left to process today: infinite (no limit on iOS 13.6+)")
             return Int.max
@@ -568,7 +604,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     /// Future versions will address this in a more elegant matter (instead of just
     /// skipping any initial keySet)
     private func determineSkipAllExposureSetsForTheFirstTime() -> Bool {
-        if #available(iOS 13.6, *) {
+        if environmentController.isiOS136orHigher {
             // never skip the initial keysets on iOS 13.6 as it does not rate limit
             // by the number of keysets, but rather by the number of API calls
             return false
@@ -588,4 +624,5 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let userNotificationCenter: UserNotificationCenter
     private let application: ApplicationControlling
     private let fileManager: FileManaging
+    private let environmentController: EnvironmentControlling
 }

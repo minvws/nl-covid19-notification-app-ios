@@ -45,8 +45,6 @@ protocol ExposureDataControlling: AnyObject {
     func setLastAppLaunchDate(_ date: Date)
     func clearLastUnseenExposureNotificationDate()
 
-    func updateNumberOfApiCallsMade(inBackground: Bool, maximumDailyBackgroundExposureDetectionAPICalls: Int, maximumDailyForegroundExposureDetectionAPICalls: Int) -> AnyPublisher<(), ExposureDataError>
-
     // MARK: - Lab Flow
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
