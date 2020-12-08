@@ -22,9 +22,11 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
          theme: Theme,
          exposureDate: Date,
          interfaceOrientationStream: InterfaceOrientationStreaming,
+         dataController: ExposureDataControlling,
          messageManager: MessageManaging) {
         self.listener = listener
         self.interfaceOrientationStream = interfaceOrientationStream
+        self.dataController = dataController
         self.messageManager = messageManager
 
         self.treatmentPerspectiveMessage = messageManager.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
@@ -51,14 +53,24 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
                                                             action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.actionHandler = { [weak self] in
-            // Because the current screen is only shown on exposed devices, we can use the phonenumber that is exclusively for exposed persons
-            let phoneNumberLink: String = .phoneNumberLink(from: .coronaTestExposedPhoneNumber)
-
-            if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            } else {
-                self?.logError("Unable to open \(phoneNumberLink)")
+            guard let strongSelf = self else {
+                return
             }
+            strongSelf.dataController
+                .getAppointmentPhoneNumber()
+                .sink(
+                    receiveCompletion: { result in },
+                    receiveValue: { (phoneNumber: String) in
+                        // Because the current screen is only shown on exposed devices, we can use the phonenumber that is exclusively for exposed persons
+                        let phoneNumberLink: String = .phoneNumberLink(from: phoneNumber)
+
+                        if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
+                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                        } else {
+                            strongSelf.logError("Unable to open \(phoneNumberLink)")
+                        }
+                    })
+                .store(in: &strongSelf.disposeBag)
         }
 
         internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
@@ -89,6 +101,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
     private weak var listener: MessageListener?
     private let messageManager: MessageManaging
     private let treatmentPerspectiveMessage: LocalizedTreatmentPerspective
+    private let dataController: ExposureDataControlling
     private var disposeBag = Set<AnyCancellable>()
     private let interfaceOrientationStream: InterfaceOrientationStreaming
 }

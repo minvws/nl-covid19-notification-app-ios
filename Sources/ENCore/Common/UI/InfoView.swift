@@ -49,6 +49,8 @@ final class InfoView: View {
         }
     }
 
+    let secondaryButton: Button?
+
     private let scrollView: UIScrollView
     private let contentView: UIView
     private let headerBackgroundView: UIView
@@ -58,7 +60,6 @@ final class InfoView: View {
     private let buttonStackView: UIStackView
     private let buttonSeparator: GradientView
     private let actionButton: Button
-    private let secondaryButton: Button?
 
     private let showButtons: Bool
     private let stickyButtons: Bool

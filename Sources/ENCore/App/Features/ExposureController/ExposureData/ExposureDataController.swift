@@ -287,6 +287,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
+    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError> {
+        requestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return applicationConfiguration.appointmentPhoneNumber
+            }
+            .eraseToAnyPublisher()
+    }
+
     // MARK: - Private
 
     private var lastDecoyProcessDate: Date? {

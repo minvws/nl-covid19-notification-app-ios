@@ -21,16 +21,16 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     init(listener: RequestTestListener,
          theme: Theme,
          interfaceOrientationStream: InterfaceOrientationStreaming,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         dataController: ExposureDataControlling) {
         self.listener = listener
         self.interfaceOrientationStream = interfaceOrientationStream
+        self.dataController = dataController
 
-        var isExposed = false
+        isExposed = false
         if case .notified = exposureStateStream.currentExposureState?.notifiedState {
             isExposed = true
         }
-
-        self.testPhoneNumber = isExposed ? .coronaTestExposedPhoneNumber : .coronaTestPhoneNumber
 
         super.init(theme: theme)
     }
@@ -77,17 +77,24 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        interfaceOrientationStreamCancellable = interfaceOrientationStream
+        interfaceOrientationStream
             .isLandscape
             .sink(receiveValue: { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-        })
+            }).store(in: &disposeBag)
+
+        dataController
+            .getAppointmentPhoneNumber()
+            .sink(
+                receiveCompletion: { result in },
+                receiveValue: { (phoneNumber: String) in
+                    self.testPhoneNumber = self.isExposed ? .coronaTestExposedPhoneNumber : phoneNumber
+                })
+            .store(in: &disposeBag)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
-        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -99,12 +106,20 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     // MARK: - Private
 
     private weak var listener: RequestTestListener?
-    private let testPhoneNumber: String
+
+    private var testPhoneNumber: String = "" {
+        didSet {
+            internalView.testPhoneNumber = testPhoneNumber
+        }
+    }
+
+    private var isExposed: Bool
 
     private lazy var internalView = RequestTestView(theme: self.theme, testPhoneNumber: testPhoneNumber)
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var interfaceOrientationStreamCancellable: AnyCancellable?
+    private let dataController: ExposureDataControlling
+    private var disposeBag = Set<AnyCancellable>()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.requestTestWantsDismissal(shouldDismissViewController: true)
@@ -128,15 +143,24 @@ private final class RequestTestView: View {
         }
     }
 
+    var testPhoneNumber: String {
+        didSet {
+            // This string is manually formatted to ensure the phone number is always displayed left-to-right.
+            // \u{202A} starts left-to-right text, \u{202C} pops directional formatting
+            formattedPhoneNumber = String(format: .moreInformationRequestTestPhone, arguments: ["\u{202A}\(testPhoneNumber)\u{202C}"])
+            infoView.secondaryButton?.title = formattedPhoneNumber
+        }
+    }
+
+    private var formattedPhoneNumber: String = ""
     private let infoView: InfoView
 
     // MARK: - Init
 
     init(theme: Theme, testPhoneNumber: String) {
 
-        // This string is manually formatted to ensure the phone number is always displayed left-to-right.
-        // \u{202A} starts left-to-right text, \u{202C} pops directional formatting
-        let callButtonTitle = String(format: .moreInformationRequestTestPhone, arguments: ["\u{202A}\(testPhoneNumber)\u{202C}"])
+        self.testPhoneNumber = testPhoneNumber
+        let callButtonTitle = formattedPhoneNumber
 
         let config = InfoViewConfig(actionButtonTitle: .moreInformationRequestTestLink,
                                     secondaryButtonTitle: callButtonTitle,

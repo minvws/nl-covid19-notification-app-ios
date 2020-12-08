@@ -53,7 +53,8 @@ extension AppConfig {
                                         requestMinimumSize: requestMinimumSize ?? 1800,
                                         requestMaximumSize: requestMaximumSize ?? 17000,
                                         repeatedUploadDelay: repeatedUploadDelay ?? 14400,
-                                        decativated: coronaMelderDeactivated == "deactivated")
+                                        decativated: coronaMelderDeactivated == "deactivated",
+                                        appointmentPhoneNumber: appointmentPhoneNumber ?? .coronaTestExposedPhoneNumber)
     }
 }
 

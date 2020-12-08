@@ -196,7 +196,8 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             requestMinimumSize: 0,
             requestMaximumSize: 0,
             repeatedUploadDelay: 0,
-            decativated: false
+            decativated: false,
+            appointmentPhoneNumber: ""
         )
     }
 
