@@ -215,11 +215,13 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         return Deferred {
             return Future<[ExposureKeySetHolder], ExposureDataError> { promise in
 
+                // mark all keysets as processed
+                // ensure processDate is in the past to not have these keysets count towards the rate limit
                 let keySetHolders = identifiers.map { identifier in
                     ExposureKeySetHolder(identifier: identifier,
                                          signatureFilename: nil,
                                          binaryFilename: nil,
-                                         processDate: Date(),
+                                         processDate: Date().addingTimeInterval(-60 * 60 * 24),
                                          creationDate: Date())
                 }
 
