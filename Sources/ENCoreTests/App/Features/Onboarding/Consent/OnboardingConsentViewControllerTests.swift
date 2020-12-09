@@ -47,4 +47,12 @@ final class OnboardingConsentViewControllerTests: TestCase {
             snapshots(matching: viewController, named: "\(#function)\(index)")
         }
     }
+
+    func test_didCompleteConsent() {
+
+        manager.didCompleteConsent()
+
+        XCTAssertEqual(exposureController.seenAnnouncements, [.interopAnnouncement])
+        XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 1)
+    }
 }

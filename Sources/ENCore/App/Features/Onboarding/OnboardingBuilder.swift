@@ -11,6 +11,7 @@ import Foundation
 /// @mockable
 protocol OnboardingListener: AnyObject {
     func didCompleteOnboarding()
+    func didCompleteConsent()
 }
 
 /// @mockable

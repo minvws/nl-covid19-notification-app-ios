@@ -15,6 +15,9 @@ protocol RootRouting: Routing {
     /// Presents the onboarding flow
     func routeToOnboarding()
 
+    /// Schedule the EN background tasks
+    func scheduleTasks()
+
     /// Detaches the onboarding feature and calls completion when done.
     /// When the onboarding flow is not attached, completion is called immediately
     ///
@@ -97,6 +100,10 @@ final class RootViewController: ViewController, RootViewControllable {
 
     func didCompleteOnboarding() {
         router?.detachOnboardingAndRouteToMain(animated: true)
+    }
+
+    func didCompleteConsent() {
+        router?.scheduleTasks()
     }
 
     // MARK: - MessageListner
