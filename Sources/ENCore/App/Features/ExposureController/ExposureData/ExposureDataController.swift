@@ -40,6 +40,8 @@ struct ExposureDataStorageKey {
                                                                                                    storeType: .secure)
     static let firstRunIdentifier = CodableStorageKey<Bool>(name: "firstRunIdentifier",
                                                             storeType: .insecure(volatile: false))
+    static let initialKeySetsIgnored = CodableStorageKey<Bool>(name: "initialKeySetsIgnored",
+                                                               storeType: .insecure(volatile: false))
     static let exposureApiCallDates = CodableStorageKey<[Date]>(name: "exposureApiCalls",
                                                                 storeType: .insecure(volatile: false))
     static let exposureApiBackgroundCallDates = CodableStorageKey<[Date]>(name: "exposureApiBackgroundCallDates",
@@ -75,9 +77,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - ExposureDataControlling
 
     func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        self.operationProvider
-            .requestTreatmentPerspectiveDataOperation
-            .execute()
+        return requestApplicationManifest()
+            .flatMap { _ in
+                self.operationProvider
+                    .requestTreatmentPerspectiveDataOperation
+                    .execute()
+            }
             .eraseToAnyPublisher()
     }
 

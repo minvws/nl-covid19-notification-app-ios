@@ -11,8 +11,8 @@ import Foundation
 
 struct ExposureKeySetHolder: Codable {
     let identifier: String
-    let signatureFilename: String
-    let binaryFilename: String
+    let signatureFilename: String?
+    let binaryFilename: String?
     let processDate: Date?
     let creationDate: Date
 
@@ -40,12 +40,12 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         let storedKeySetsHolders = getStoredKeySetsHolders()
 
-        logDebug("Total KeySetIdentifiers: \(exposureKeySetIdentifiers.count)")
+        logDebug("KeySet: Total KeySetIdentifiers: \(exposureKeySetIdentifiers.count)")
 
         let identifiers = removeAlreadyDownloadedOrProcessedKeySetIdentifiers(from: exposureKeySetIdentifiers,
                                                                               storedKeySetsHolders: storedKeySetsHolders)
 
-        logDebug("KeySetIdentifiers after removing already downloaded or processed identifiers: \(identifiers)")
+        logDebug("KeySet: KeySetIdentifiers after removing already downloaded or processed identifiers: \(identifiers)")
 
         guard identifiers.count > 0 else {
             logDebug("No additional key sets to download")
@@ -56,7 +56,22 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
-        logDebug("Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
+        // The first time we retrieve keysets, we ignore the entire batch because:
+        // - We are not that interested in previous key files if the app didn't have the app yet
+        // - We want to prevent app crashes when we are downloading too many keyfiles in the background
+        var ignoredInitialKeySets = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored) ?? false
+
+        // If we have keysets, we already ignored the initial set (the user probably updated from an earlier version without this logic)
+        if !storedKeySetsHolders.isEmpty, !ignoredInitialKeySets {
+            storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+            ignoredInitialKeySets = true
+        }
+
+        if !ignoredInitialKeySets {
+            return ignoreFirstKeySetBatch(keySetIdentifiers: identifiers)
+        }
+
+        logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
 
         // download remaining keysets
         let exposureKeySetStreams: [AnyPublisher<(String, URL), NetworkError>] = identifiers.map { identifier in
@@ -73,7 +88,7 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         return Publishers.Sequence<[AnyPublisher<(String, URL), NetworkError>], NetworkError>(sequence: exposureKeySetStreams)
             .flatMap(maxPublishers: .max(maximumConcurrentFetches)) { $0 }
             .mapError { error in
-                self.logError("RequestExposureKeySetsDataOperation Error: \(error)")
+                self.logError("KeySet: RequestExposureKeySetsDataOperation Error: \(error)")
                 return error.asExposureDataError
             }
             .flatMap { identifierUrlCombo in
@@ -87,13 +102,13 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 receiveCompletion: { completion in
 
                     let diff = CFAbsoluteTimeGetCurrent() - start
-                    self.logDebug("Requesting Keysets Took \(diff) seconds")
+                    self.logDebug("KeySet: Requesting Keysets Took \(diff) seconds")
 
                     switch completion {
                     case .finished:
-                        self.logDebug("Requesting KeySets Completed")
+                        self.logDebug("KeySet: Requesting KeySets Completed")
                     case .failure:
-                        self.logDebug("Requesting KeySets Failed")
+                        self.logDebug("KeySet: Requesting KeySets Failed")
                     }
 
                     self.logDebug("--- END REQUESTING KEYSETS ---")
@@ -106,6 +121,28 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     // MARK: - Private
+
+    private func ignoreFirstKeySetBatch(keySetIdentifiers: [String]) -> AnyPublisher<(), ExposureDataError> {
+        logDebug("KeySet: Ignoring KeySets because it is the first batch after first install: \(keySetIdentifiers.joined(separator: "\n"))")
+
+        return createIgnoredKeySetHolders(forKeySetIdentifiers: keySetIdentifiers)
+            .flatMap { keySetHolders in
+                self.storeDownloadedKeySetsHolders(keySetHolders)
+            }
+            .handleEvents(
+                receiveCompletion: { completion in
+
+                    switch completion {
+                    case .finished:
+                        self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                    case .failure:
+                        self.logDebug("KeySet: Creating ignored keysets failed ")
+                    }
+                },
+                receiveCancel: {}
+            )
+            .eraseToAnyPublisher()
+    }
 
     private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
@@ -166,6 +203,24 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
                     let diff = CFAbsoluteTimeGetCurrent() - start
                     self.logDebug("Creating KeySetHolder Took \(diff) seconds")
+                }
+
+                promise(.success(keySetHolders))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private func createIgnoredKeySetHolders(forKeySetIdentifiers identifiers: [String]) -> AnyPublisher<[ExposureKeySetHolder], ExposureDataError> {
+        return Deferred {
+            return Future<[ExposureKeySetHolder], ExposureDataError> { promise in
+
+                let keySetHolders = identifiers.map { identifier in
+                    ExposureKeySetHolder(identifier: identifier,
+                                         signatureFilename: nil,
+                                         binaryFilename: nil,
+                                         processDate: Date(),
+                                         creationDate: Date())
                 }
 
                 promise(.success(keySetHolders))

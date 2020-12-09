@@ -119,13 +119,15 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         var isDirectory = ObjCBool(booleanLiteral: false)
 
         // verify whether sig and bin files are present
-        guard fileManager.fileExists(atPath: signatureFileUrl(forKeySetHolder: keySetHolder).path,
-                                     isDirectory: &isDirectory), isDirectory.boolValue == false else {
+        guard let sigPath = signatureFileUrl(forKeySetHolder: keySetHolder)?.path,
+            fileManager.fileExists(atPath: sigPath,
+                                   isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
-        guard fileManager.fileExists(atPath: binaryFileUrl(forKeySetHolder: keySetHolder).path,
-                                     isDirectory: &isDirectory), isDirectory.boolValue == false else {
+        guard let binPath = binaryFileUrl(forKeySetHolder: keySetHolder)?.path,
+            fileManager.fileExists(atPath: binPath,
+                                   isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
@@ -198,8 +200,11 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
-        let diagnosisKeyUrls = keySetHoldersToProcess.flatMap {
-            [signatureFileUrl(forKeySetHolder: $0), binaryFileUrl(forKeySetHolder: $0)]
+        let diagnosisKeyUrls = keySetHoldersToProcess.flatMap { (keySetHolder) -> [URL] in
+            if let sigFile = signatureFileUrl(forKeySetHolder: keySetHolder), let binFile = binaryFileUrl(forKeySetHolder: keySetHolder) {
+                return [sigFile, binFile]
+            }
+            return []
         }
 
         logDebug("Detect exposures for \(keySetHoldersToProcess.count) keySets: \(keySetHoldersToProcess.map { $0.identifier })")
@@ -313,8 +318,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .map { $0.keySetHolder }
 
         keySetHolders.forEach { keySetHolder in
-            try? fileManager.removeItem(at: signatureFileUrl(forKeySetHolder: keySetHolder))
-            try? fileManager.removeItem(at: binaryFileUrl(forKeySetHolder: keySetHolder))
+            if let sigFileURL = signatureFileUrl(forKeySetHolder: keySetHolder) {
+                try? fileManager.removeItem(at: sigFileURL)
+            }
+
+            if let binFileURL = binaryFileUrl(forKeySetHolder: keySetHolder) {
+                try? fileManager.removeItem(at: binFileURL)
+            }
         }
     }
 
@@ -558,19 +568,27 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                             identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
                                             completion: { _ in
                                                 promise(.success(value))
-                        })
+                                            })
                 }
             }
         }
         .eraseToAnyPublisher()
     }
 
-    private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL {
-        return exposureKeySetsStorageUrl.appendingPathComponent(keySetHolder.signatureFilename)
+    private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {
+        guard let signatureFilename = keySetHolder.signatureFilename else {
+            return nil
+        }
+
+        return exposureKeySetsStorageUrl.appendingPathComponent(signatureFilename)
     }
 
-    private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL {
-        return exposureKeySetsStorageUrl.appendingPathComponent(keySetHolder.binaryFilename)
+    private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {
+        guard let binaryFilename = keySetHolder.binaryFilename else {
+            return nil
+        }
+
+        return exposureKeySetsStorageUrl.appendingPathComponent(binaryFilename)
     }
 
     private func lastStoredExposureReport() -> ExposureReport? {

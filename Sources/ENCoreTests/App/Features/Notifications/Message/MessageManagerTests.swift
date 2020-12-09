@@ -59,7 +59,7 @@ class MessageManagerTests: TestCase {
         XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2") // Uses english resource because french stirng doesn't exist
     }
 
-    func test_getLocalizedTreatmentPerspective_shouldReplacePlaceHolders() throws {
+    func test_getLocalizedTreatmentPerspective_shouldReplacePlaceHolders() {
         // Arrange
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593624480) // 01/07/20 17:28
@@ -79,6 +79,31 @@ class MessageManagerTests: TestCase {
         XCTAssertEqual(result.paragraphs.first?.body.string, "Body ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
         XCTAssertEqual(result.paragraphs.last?.title, "Title 2")
         XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2")
+    }
+
+    func test_getLocalizedTreatmentPerspective_shouldReplacePlaceHolders_Arabic() throws {
+        // Arrange
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "ar"
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593624480) // 01/07/20 17:28
+
+        let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+
+        mockStorageController.retrieveDataHandler = { key in
+
+            let initialBodyString = self.fakeTreatmentPerspectiveWithPlaceholders.resources["ar"]!["some_resource_body"]!
+            XCTAssertTrue(initialBodyString.contains("{ExposureDate+5}"))
+            XCTAssertTrue(initialBodyString.contains("{ExposureDate+10}"))
+
+            return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithPlaceholders)
+        }
+
+        // Act
+        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+
+        // Assert
+        let bodyString = try XCTUnwrap(result.paragraphs.first?.body.string)
+        XCTAssertFalse(bodyString.contains("{ExposureDate+5}"))
+        XCTAssertFalse(bodyString.contains("{ExposureDate+10}"))
     }
 
     func test_getLocalizedTreatmentPerspective_unknownPlaceHolderShouldNotbeReplaced() throws {
@@ -164,6 +189,12 @@ class MessageManagerTests: TestCase {
                 ],
                 "fr": [
                     "some_resource_title2": "Title 2 French"
+                ],
+                "ar": [
+                    "some_resource_title": "Title",
+                    "some_resource_body": "<ul><li>هل ظهرت لديك مؤخرًا أعراض جديدة تتناسب مع فيروس كورونا؟ قم بإجراء اختبار كورونا في أسرع وقت ممكن.</li><li> أليست لديك أعراض؟ اتصل من أجل إجراء اختبار كورونا في أو بعد {ExposureDate+5}. فقط اعتبارًا من هذا التاريخ تكون نتيجة اختبار كورونا في حالتك موثوقة بدرجة كافية. </li><li> ألم تتمكن من إجراء الاختبار؟ ابق في المنزل حتى{ExposureDate+10}. تستطيع بعد ذلك الخروج من المنزل إذا لم تظهر لديك أعراض.</li><li> هل لديك أعراض خطيرة كارتفاع درجة الحرارة أو صعوبة في التنفس؟ أم أنك من ضمن مجموعة معرضة للخطر وأصبت بالحمى؟ اتصل بطبيبك أولاً </li></ul>\n<b> هل تعطيك الـ GGD عبر الهاتف نصائح مختلفة عن النصائح الموجودة في التطبيق؟ اتبع إذًا نصيحة الـ GGD.</b>",
+                    "some_resource_title2": "Title 2",
+                    "some_resource_body2": "<ul><li>هل ظهرت لديك مؤخرًا أعراض جديدة تتناسب مع فيروس كورونا؟ قم بإجراء اختبار كورونا في أسرع وقت ممكن.</li><li> أليست لديك أعراض؟ اتصل من أجل إجراء اختبار كورونا في أو بعد {ExposureDate+5}. فقط اعتبارًا من هذا التاريخ تكون نتيجة اختبار كورونا في حالتك موثوقة بدرجة كافية. </li><li> ألم تتمكن من إجراء الاختبار؟ ابق في المنزل حتى{ExposureDate+10}. تستطيع بعد ذلك الخروج من المنزل إذا لم تظهر لديك أعراض.</li><li> هل لديك أعراض خطيرة كارتفاع درجة الحرارة أو صعوبة في التنفس؟ أم أنك من ضمن مجموعة معرضة للخطر وأصبت بالحمى؟ اتصل بطبيبك أولاً </li></ul>\n<b> هل تعطيك الـ GGD عبر الهاتف نصائح مختلفة عن النصائح الموجودة في التطبيق؟ اتبع إذًا نصيحة الـ GGD.</b>"
                 ]
             ],
             guidance: .init(quarantineDays: 10,
