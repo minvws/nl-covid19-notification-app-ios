@@ -24,7 +24,6 @@ protocol OnboardingConsentListener: AnyObject {
     func displayHelp()
     func displayBluetoothSettings()
     func displayShareApp(completion: (() -> ())?)
-    func didCompleteConsent()
 }
 
 protocol OnboardingConsentDependency {

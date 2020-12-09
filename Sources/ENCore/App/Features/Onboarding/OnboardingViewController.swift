@@ -80,17 +80,14 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     // MARK: - OnboardingConsentListener
 
-    func didCompleteConsent() {
-        self.onboardingConsentManager.didCompleteConsent()
-        listener?.didCompleteConsent()
-    }
-
     func consentClose() {
         listener?.didCompleteOnboarding()
     }
 
     func consentRequest(step: OnboardingConsentStep.Index) {
-        if step == .share {}
+        if step == .share {
+            didCompleteConsent()
+        }
         router?.routeToConsent(withIndex: step.rawValue, animated: true)
     }
 
@@ -184,6 +181,11 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     // MARK: - Private
+
+    private func didCompleteConsent() {
+        self.onboardingConsentManager.didCompleteConsent()
+        listener?.didCompleteConsent()
+    }
 
     private weak var listener: OnboardingListener?
     private let onboardingConsentManager: OnboardingConsentManaging
