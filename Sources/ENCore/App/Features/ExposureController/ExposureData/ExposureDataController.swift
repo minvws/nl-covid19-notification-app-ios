@@ -42,6 +42,8 @@ struct ExposureDataStorageKey {
                                                             storeType: .insecure(volatile: false))
     static let exposureApiCallDates = CodableStorageKey<[Date]>(name: "exposureApiCalls",
                                                                 storeType: .insecure(volatile: false))
+    static let exposureApiBackgroundCallDates = CodableStorageKey<[Date]>(name: "exposureApiBackgroundCallDates",
+                                                                          storeType: .insecure(volatile: false))
     static let onboardingCompleted = CodableStorageKey<Bool>(name: "onboardingCompleted",
                                                              storeType: .insecure(volatile: false))
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
@@ -84,9 +86,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
         return requestApplicationConfiguration()
             .flatMap { _ in
-                self.fetchAndStoreExposureKeySets()
+                self.fetchAndStoreExposureKeySets().catch { _ in
+                    self.processStoredExposureKeySets(exposureManager: exposureManager)
+                }
             }
-            .flatMap {
+            .flatMap { _ in
                 self.processStoredExposureKeySets(exposureManager: exposureManager)
             }
             .share()

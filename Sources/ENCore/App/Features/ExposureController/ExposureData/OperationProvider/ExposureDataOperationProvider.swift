@@ -14,13 +14,17 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
          applicationSignatureController: ApplicationSignatureControlling,
          localPathProvider: LocalPathProviding,
          userNotificationCenter: UserNotificationCenter,
-         application: ApplicationControlling) {
+         application: ApplicationControlling,
+         fileManager: FileManaging,
+         environmentController: EnvironmentControlling) {
         self.networkController = networkController
         self.storageController = storageController
         self.applicationSignatureController = applicationSignatureController
         self.localPathProvider = localPathProvider
         self.userNotificationCenter = userNotificationCenter
         self.application = application
+        self.fileManager = fileManager
+        self.environmentController = environmentController
     }
 
     // MARK: - ExposureDataOperationProvider
@@ -37,7 +41,9 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                    exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
                                                    configuration: configuration,
                                                    userNotificationCenter: userNotificationCenter,
-                                                   application: application)
+                                                   application: application,
+                                                   fileManager: fileManager,
+                                                   environmentController: environmentController)
     }
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
@@ -101,6 +107,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     private let localPathProvider: LocalPathProviding
     private let userNotificationCenter: UserNotificationCenter
     private let application: ApplicationControlling
+    private let fileManager: FileManaging
+    private let environmentController: EnvironmentControlling
 }
 
 extension NetworkError {
