@@ -26,6 +26,7 @@ final class RootRouterTests: XCTestCase {
     private let updateAppBuilder = UpdateAppBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
     private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
+    private let userNotificationCenter = UserNotificationCenterMock()
 
     private var router: RootRouter!
 
@@ -35,8 +36,17 @@ final class RootRouterTests: XCTestCase {
         exposureController.isAppDeactivatedHandler = {
             Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+
+        exposureController.appShouldUpdateCheckHandler = {
+            Just(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
         exposureController.activateHandler = { _ in
             return Just(()).eraseToAnyPublisher()
+        }
+
+        exposureController.updateTreatmentPerspectiveHandler = {
+            Just(TreatmentPerspective.emptyMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
         mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
@@ -55,6 +65,7 @@ final class RootRouterTests: XCTestCase {
                             backgroundController: backgroundController,
                             updateAppBuilder: updateAppBuilder,
                             webviewBuilder: webviewBuilder,
+                            userNotificationCenter: userNotificationCenter,
                             currentAppVersion: "1.0")
         set(activeState: .notAuthorized)
     }
@@ -136,6 +147,16 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(backgroundController.scheduleTasksCallCount, 1)
     }
 
+    func test_detachOnboardingAndRouteToMain_marksInteropAnnouncementAsSeen() {
+        router.start()
+
+        XCTAssertEqual(exposureController.seenAnnouncements, [])
+
+        router.detachOnboardingAndRouteToMain(animated: true)
+
+        XCTAssertEqual(exposureController.seenAnnouncements, [.interopAnnouncement])
+    }
+
     func test_start_activatesExposureController() {
         XCTAssertEqual(exposureController.activateCallCount, 0)
 
@@ -170,16 +191,21 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_start_getMinimumVersion_showsUpdateAppViewController() {
-        exposureController.getAppVersionInformationHandler = { handler in
-            handler(.init(minimumVersion: "1.1",
-                          minimumVersionMessage: "Version too low",
-                          appStoreURL: "appstore://url"))
+        let appVersionInformation = ExposureDataAppVersionInformation(
+            minimumVersion: "1.1",
+            minimumVersionMessage: "Version too low",
+            appStoreURL: "appstore://url"
+        )
+
+        exposureController.appShouldUpdateCheckHandler = {
+            Just(AppUpdateInformation(shouldUpdate: true, versionInformation: appVersionInformation))
+                .setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
         router.start()
 
         XCTAssertEqual(updateAppBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.presentCallCount, 2)
+        XCTAssertEqual(viewController.presentCallCount, 1)
     }
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {

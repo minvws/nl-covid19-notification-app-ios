@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import SnapshotTesting
@@ -12,14 +13,23 @@ import XCTest
 
 final class ReceivedNotificationViewControllerTests: TestCase {
     private var viewController: ReceivedNotificationViewController!
-    private let listern = ReceivedNotificationListenerMock()
+    private let listener = ReceivedNotificationListenerMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        viewController = ReceivedNotificationViewController(listener: listern, linkedContent: [], actionButtonTitle: nil, theme: theme)
+        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+
+        let uploadKeys = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
+
+        viewController = ReceivedNotificationViewController(listener: listener,
+                                                            linkedContent: [AboutEntry.question(uploadKeys)],
+                                                            actionButtonTitle: nil,
+                                                            theme: theme,
+                                                            interfaceOrientationStream: interfaceOrientationStream)
     }
 
     // MARK: - Tests
@@ -29,12 +39,12 @@ final class ReceivedNotificationViewControllerTests: TestCase {
     }
 
     func testPresentationControllerDidDismissCallsListener() {
-        listern.receivedNotificationWantsDismissalHandler = { value in
+        listener.receivedNotificationWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }
 
         viewController.presentationControllerDidDismiss(UIPresentationController(presentedViewController: viewController, presenting: nil))
 
-        XCTAssertEqual(listern.receivedNotificationWantsDismissalCallCount, 1)
+        XCTAssertEqual(listener.receivedNotificationWantsDismissalCallCount, 1)
     }
 }

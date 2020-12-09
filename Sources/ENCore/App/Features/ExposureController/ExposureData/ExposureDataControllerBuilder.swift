@@ -33,10 +33,17 @@ protocol ExposureDataControlling: AnyObject {
     var lastSuccessfulProcessingDate: Date? { get }
     var lastLocalNotificationExposureDate: Date? { get }
     var lastENStatusCheckDate: Date? { get }
+    var lastAppLaunchDate: Date? { get }
+    var lastUnseenExposureNotificationDate: Date? { get }
+
+    func setLastDecoyProcessDate(_ date: Date)
+    var canProcessDecoySequence: Bool { get }
 
     func removeLastExposure() -> AnyPublisher<(), Never>
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
     func setLastENStatusCheckDate(_ date: Date)
+    func setLastAppLaunchDate(_ date: Date)
+    func clearLastUnseenExposureNotificationDate()
 
     // MARK: - Lab Flow
 
@@ -51,9 +58,12 @@ protocol ExposureDataControlling: AnyObject {
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
+    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
+    func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
+    var seenAnnouncements: [Announcement] { get set }
 }
 
 protocol ExposureDataControllerBuildable {
@@ -63,6 +73,7 @@ protocol ExposureDataControllerBuildable {
 protocol ExposureDataControllerDependency {
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
 }
 
 private final class ExposureDataControllerDependencyProvider: DependencyProvider<ExposureDataControllerDependency>, ExposureDataOperationProviderDependency {
@@ -75,6 +86,10 @@ private final class ExposureDataControllerDependencyProvider: DependencyProvider
 
     var storageController: StorageControlling {
         return dependency.storageController
+    }
+
+    var applicationSignatureController: ApplicationSignatureControlling {
+        return dependency.applicationSignatureController
     }
 
     // MARK: - Private Dependencies

@@ -28,6 +28,9 @@ protocol InfectedDependency {
     var exposureStateStream: ExposureStateStreaming { get }
     var bluetoothStateStream: BluetoothStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
+    var storageController: StorageControlling { get }
+    var dataController: ExposureDataControlling { get }
 }
 
 private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency, HelpDetailDependency {
@@ -59,6 +62,18 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
     var environmentController: EnvironmentControlling {
         return dependency.environmentController
     }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
+    }
+
+    var storageController: StorageControlling {
+        return dependency.storageController
+    }
+
+    var dataController: ExposureDataControlling {
+        dependency.dataController
+    }
 }
 
 final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
@@ -66,7 +81,8 @@ final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
         let dependencyProvider = InfectedDependencyProvider(dependency: dependency)
         let viewController = InfectedViewController(theme: dependencyProvider.dependency.theme,
                                                     exposureController: dependencyProvider.dependency.exposureController,
-                                                    exposureStateStream: dependencyProvider.dependency.exposureStateStream)
+                                                    exposureStateStream: dependencyProvider.dependency.exposureStateStream,
+                                                    interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
 
         return InfectedRouter(listener: listener,
                               viewController: viewController,

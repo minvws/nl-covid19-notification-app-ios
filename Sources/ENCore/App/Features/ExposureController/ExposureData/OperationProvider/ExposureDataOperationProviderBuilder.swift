@@ -26,6 +26,7 @@ protocol ExposureDataOperationProvider {
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
 
     var requestManifestOperation: RequestAppManifestDataOperation { get }
+    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperation { get }
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
@@ -40,6 +41,7 @@ protocol ExposureDataOperationProviderBuildable {
 protocol ExposureDataOperationProviderDependency {
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
 }
 
 private final class ExposureDataOperationProviderDependencyProvider: DependencyProvider<ExposureDataOperationProviderDependency> {
@@ -50,6 +52,18 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
     var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
     }
+
+    var application: ApplicationControlling {
+        return ApplicationController()
+    }
+
+    var fileManager: FileManaging {
+        return FileManager.default
+    }
+
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
 }
 
 final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationProviderDependency>, ExposureDataOperationProviderBuildable {
@@ -58,7 +72,11 @@ final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationP
 
         return ExposureDataOperationProviderImpl(networkController: dependencyProvider.dependency.networkController,
                                                  storageController: dependencyProvider.dependency.storageController,
+                                                 applicationSignatureController: dependencyProvider.dependency.applicationSignatureController,
                                                  localPathProvider: dependencyProvider.localPathProvider,
-                                                 userNotificationCenter: dependencyProvider.userNotificationCenter)
+                                                 userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                                 application: dependencyProvider.application,
+                                                 fileManager: dependencyProvider.fileManager,
+                                                 environmentController: dependencyProvider.environmentController)
     }
 }

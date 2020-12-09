@@ -11,12 +11,20 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
+         applicationSignatureController: ApplicationSignatureControlling,
          localPathProvider: LocalPathProviding,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         application: ApplicationControlling,
+         fileManager: FileManaging,
+         environmentController: EnvironmentControlling) {
         self.networkController = networkController
         self.storageController = storageController
+        self.applicationSignatureController = applicationSignatureController
         self.localPathProvider = localPathProvider
         self.userNotificationCenter = userNotificationCenter
+        self.application = application
+        self.fileManager = fileManager
+        self.environmentController = environmentController
     }
 
     // MARK: - ExposureDataOperationProvider
@@ -32,7 +40,10 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
                                                    exposureManager: exposureManager,
                                                    exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
                                                    configuration: configuration,
-                                                   userNotificationCenter: userNotificationCenter)
+                                                   userNotificationCenter: userNotificationCenter,
+                                                   application: application,
+                                                   fileManager: fileManager,
+                                                   environmentController: environmentController)
     }
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
@@ -45,6 +56,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,
+                                                    applicationSignatureController: applicationSignatureController,
                                                     appConfigurationIdentifier: identifier)
     }
 
@@ -64,6 +76,11 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     var requestManifestOperation: RequestAppManifestDataOperation {
         return RequestAppManifestDataOperation(networkController: networkController,
                                                storageController: storageController)
+    }
+
+    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperation {
+        return RequestTreatmentPerspectiveDataOperation(networkController: networkController,
+                                                        storageController: storageController)
     }
 
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation {
@@ -86,8 +103,12 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let applicationSignatureController: ApplicationSignatureControlling
     private let localPathProvider: LocalPathProviding
     private let userNotificationCenter: UserNotificationCenter
+    private let application: ApplicationControlling
+    private let fileManager: FileManaging
+    private let environmentController: EnvironmentControlling
 }
 
 extension NetworkError {

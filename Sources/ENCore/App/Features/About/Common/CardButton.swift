@@ -95,7 +95,12 @@ final class CardButton: Button {
             } else {
                 maker.leading.trailing.equalToSuperview().inset(16)
                 maker.top.equalTo(subtitleLabel.snp.bottom).offset(4)
-                maker.height.equalTo(cardImageView.snp.width).dividedBy(imageAspectRatio)
+
+                // Height constraint has a sightly lower priority to prevent
+                // constraint errors during device rotation
+                maker.height.equalTo(cardImageView.snp.width)
+                    .dividedBy(imageAspectRatio)
+                    .priority(.high)
             }
         }
 

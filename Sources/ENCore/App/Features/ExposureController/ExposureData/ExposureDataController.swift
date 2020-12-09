@@ -9,6 +9,10 @@ import Combine
 import ENFoundation
 import Foundation
 
+enum Announcement: String, Codable {
+    case interopAnnouncement
+}
+
 struct ExposureDataStorageKey {
     static let labConfirmationKey = CodableStorageKey<LabConfirmationKey>(name: "labConfirmationKey",
                                                                           storeType: .secure)
@@ -16,6 +20,8 @@ struct ExposureDataStorageKey {
                                                                     storeType: .insecure(volatile: true))
     static let appConfiguration = CodableStorageKey<ApplicationConfiguration>(name: "appConfiguration",
                                                                               storeType: .insecure(volatile: true))
+    static let appConfigurationSignature = CodableStorageKey<ApplicationConfiguration>(name: "appConfigurationSignature",
+                                                                                       storeType: .secure)
     static let exposureKeySetsHolders = CodableStorageKey<[ExposureKeySetHolder]>(name: "exposureKeySetsHolders",
                                                                                   storeType: .insecure(volatile: false))
     static let lastExposureReport = CodableStorageKey<ExposureReport>(name: "exposureReport",
@@ -26,18 +32,32 @@ struct ExposureDataStorageKey {
                                                                            storeType: .insecure(volatile: false))
     static let lastENStatusCheck = CodableStorageKey<Date>(name: "lastENStatusCheck",
                                                            storeType: .insecure(volatile: false))
+    static let lastAppLaunchDate = CodableStorageKey<Date>(name: "lastAppLaunchDate",
+                                                           storeType: .insecure(volatile: false))
     static let exposureConfiguration = CodableStorageKey<ExposureRiskConfiguration>(name: "exposureConfiguration",
                                                                                     storeType: .insecure(volatile: false))
     static let pendingLabUploadRequests = CodableStorageKey<[PendingLabConfirmationUploadRequest]>(name: "pendingLabUploadRequests",
                                                                                                    storeType: .secure)
     static let firstRunIdentifier = CodableStorageKey<Bool>(name: "firstRunIdentifier",
                                                             storeType: .insecure(volatile: false))
+    static let initialKeySetsIgnored = CodableStorageKey<Bool>(name: "initialKeySetsIgnored",
+                                                               storeType: .insecure(volatile: false))
     static let exposureApiCallDates = CodableStorageKey<[Date]>(name: "exposureApiCalls",
                                                                 storeType: .insecure(volatile: false))
+    static let exposureApiBackgroundCallDates = CodableStorageKey<[Date]>(name: "exposureApiBackgroundCallDates",
+                                                                          storeType: .insecure(volatile: false))
     static let onboardingCompleted = CodableStorageKey<Bool>(name: "onboardingCompleted",
                                                              storeType: .insecure(volatile: false))
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
                                                              storeType: .insecure(volatile: false))
+    static let treatmentPerspective = CodableStorageKey<TreatmentPerspective>(name: "treatmentPerspective",
+                                                                              storeType: .insecure(volatile: false))
+    static let lastUnseenExposureNotificationDate = CodableStorageKey<Date>(name: "lastUnseenExposureNotificationDate",
+                                                                            storeType: .insecure(volatile: false))
+    static let seenAnnouncements = CodableStorageKey<[Announcement]>(name: "seenAnnouncements",
+                                                                     storeType: .insecure(volatile: false))
+    static let lastDecoyProcessDate = CodableStorageKey<Date>(name: "lastDecoyProcessDate",
+                                                              storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
@@ -56,12 +76,28 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - ExposureDataControlling
 
+    func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
+        return requestApplicationManifest()
+            .flatMap { _ in
+                self.operationProvider
+                    .requestTreatmentPerspectiveDataOperation
+                    .execute()
+            }
+            .eraseToAnyPublisher()
+    }
+
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
         return requestApplicationConfiguration()
-            .flatMap { _ in self.fetchAndStoreExposureKeySets() }
-            .flatMap { self.processStoredExposureKeySets(exposureManager: exposureManager) }
+            .flatMap { _ in
+                self.fetchAndStoreExposureKeySets().catch { _ in
+                    self.processStoredExposureKeySets(exposureManager: exposureManager)
+                }
+            }
+            .flatMap { _ in
+                self.processStoredExposureKeySets(exposureManager: exposureManager)
+            }
             .share()
             .eraseToAnyPublisher()
     }
@@ -82,8 +118,35 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastENStatusCheck)
     }
 
+    var lastAppLaunchDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastAppLaunchDate)
+    }
+
     func setLastENStatusCheckDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastENStatusCheck, completion: { _ in })
+    }
+
+    func setLastAppLaunchDate(_ date: Date) {
+        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastAppLaunchDate, completion: { _ in })
+    }
+
+    func clearLastUnseenExposureNotificationDate() {
+        storageController.removeData(for: ExposureDataStorageKey.lastUnseenExposureNotificationDate, completion: { _ in })
+    }
+
+    var lastUnseenExposureNotificationDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate)
+    }
+
+    func setLastDecoyProcessDate(_ date: Date) {
+        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate, completion: { _ in })
+    }
+
+    var canProcessDecoySequence: Bool {
+        guard let date = lastDecoyProcessDate else {
+            return true
+        }
+        return !Calendar.current.isDateInToday(date)
     }
 
     func removeLastExposure() -> AnyPublisher<(), Never> {
@@ -222,7 +285,30 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
+    var seenAnnouncements: [Announcement] {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.seenAnnouncements) ?? []
+        }
+        set {
+            storageController.store(object: newValue,
+                                    identifiedBy: ExposureDataStorageKey.seenAnnouncements,
+                                    completion: { _ in })
+        }
+    }
+
+    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError> {
+        requestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return applicationConfiguration.appointmentPhoneNumber
+            }
+            .eraseToAnyPublisher()
+    }
+
     // MARK: - Private
+
+    private var lastDecoyProcessDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
+    }
 
     private func detectFirstRunAndEraseKeychainIfRequired() {
         guard storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.firstRunIdentifier) == nil else {

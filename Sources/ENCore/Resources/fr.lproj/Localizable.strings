@@ -1,3 +1,15 @@
+"moreInformation.cell.settings.title" = "Paramètres";
+"moreInformation.cell.settings.subtitle" = "Adaptez vos paramètres pour l'utilisation des données mobiles";
+
+/* MARK: - MoreInformation | Settings */
+
+"moreInformation.settings.title" = "Paramètres";
+"moreInformation.settings.description" = "CoronaMelder contrôle plusieurs fois par jour si vous avez été proche de quelqu'un qui a le coronavirus. Si vous désactivez vos données mobiles, l'application ne le fait plus que si vous utilisez le WiFi. Vos rencontres sont également enregistrées si vous n'avez pas de connexion à Internet.";
+"moreInformation.settings.step1" = "Ouvrez <b>Paramètres</b> sur votre téléphone via le bouton ci-dessous";
+"moreInformation.settings.step2" = "Activez ou désactivez les données mobiles pour CoronaMelder";
+"moreInformation.settings.step2.row.title" = "Données mobiles";
+"moreInformation.settings.button" = "Ouvrir les paramètres";
+
 // supports HTML
 "enableSettings.exposureNotifications.137.step2" = "Allez à <b>Notifications d'exposition</b>";
 "enableSettings.exposureNotifications.137.step2.action.title" = "Notifications d'exposition";
@@ -51,7 +63,6 @@
 "status.icon.accessibility.inactive" = "Cercle jaune avec point d'exclamation comme avertissement";
 "status.icon.accessibility.notified" = "Cercle rouge avec sonnette d'alarme qui indique qu'une action est nécessaire";
 "status.notified.today" = "aujourd'hui";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -212,8 +223,8 @@
 "help.technical_explanation.title" = "Explication technique";
 "help.technical_explanation.step1.title" = "1. L'application crée un code personnel pour chaque téléphone";
 "help.technical_explanation.step1.description" = "Ce code ne contient pas d'informations sur vous ou votre téléphone. Le code est entièrement aléatoire et change tous les quarts d'heure.";
-"help.technical_explanation.step2.title" = "2. Les téléphones partagent leurs codes s'ils sont proches les uns des autres";
-"help.technical_explanation.step2.description" = "La personne que vous rencontrez a également l'application ? Alors vos téléphones échangent leurs codes via le Bluetooth Low Energy. L'application sait quels étaient les téléphones proches les uns des autres. L'application ne sait pas à qui appartiennent les téléphones ni où vous étiez.";
+"help.technical_explanation.step2.title" = "2. Les téléphones partagent des codes s'ils sont proches les uns des autres";
+"help.technical_explanation.step2.description" = "La personne que vous rencontrez a également l'application ? Alors vos téléphones échangent des codes via le Bluetooth Low Energy. L'application sait ainsi quels étaient les téléphones proches les uns des autres. L'application ne sait pas à qui appartiennent les téléphones ni où vous étiez.";
 "help.technical_explanation.step3.title" = "3. Si une personne a le Covid-19,  elle peut placer ses codes sur une liste";
 "help.technical_explanation.step3.description" = "Cette liste contient uniquement les codes des personnes contaminées. Pour ajouter les codes, une personne contaminée doit d'abord communiquer un code GGD au GGD. Il est donc toujours certain que les codes ajoutés appartiennent vraiment à quelqu'un qui a le Covid-19. Tous les codes de plus de 14 jours sont automatiquement supprimés de la liste.";
 "help.technical_explanation.step4.title" = "4. Chaque téléphone contrôle si les codes de la liste ont été rencontrés plus tôt";
@@ -234,16 +245,15 @@
 "help.what_to_do_with_notification.description" = "Suivez les conseils de l'application. Ce conseil dépend de votre situation. Ou si vous avez des symptômes qui correspondent à ceux du Covid-19. Et du jour où vous avez été en contact avec la personne contaminée.<br><br>Restez en tous cas chez vous jusqu'à ce que vous soyez certain(e) de ne pas avoir le Covid-19. Vous évitez ainsi de contaminer sans le savoir les personnes qui vous entourent.<br><br>Si le GGD vous donne par téléphone d'autres conseils que ceux de l'application, suivez les conseils du GGD.";
 "help.other_reports.title" = "Autres notifications";
 "help.other_reports.description" = "CoronaMelder peut aussi vous envoyer une notification en cas de problème technique. Par exemple si votre Bluetooth est désactivé. Ou si la connexion internet a été interrompue depuis plus d’une journée. L’application vous aide à résoudre tout cela.<br><br>Avez-vous reçu une telle notification et l’application est néanmoins activée ? Alors le problème a été résolu entre-temps.<br><br>Vous recevez aussi parfois des notifications qui vous indiquent que votre téléphone effectue des contrôles COVID-19. Ouvrez alors CoronaMelder. Bon à savoir : généralement, il n'y a aucun problème.";
-"help.other_what_does_report_say.title" = "Que contient une notification ?";
+"help.other_what_does_report_say.title" = "Comment reconnaître une notification ?";
 "help.other_what_does_report_say.content1" = "L'application envoie une notification si vous avez été au moins pendant 15 minutes à proximité de quelqu'un qui, par la suite, s'avère avoir le Covid-19.";
 "help.other_what_does_report_say.content2" = "La notification s'affiche sur l'écran d'accueil de votre téléphone. Tout comme les messages des autres applications. La notification a le symbole de CoronaMelder.<br><br>Avez-vous reçu une notification ? Ouvrez alors CoronaMelder. Vous y lirez ce que vous pouvez faire.";
 
 "help.pause_app.title" = "Puis-je mettre l'application en pause ?";
-"help.pause_app.description" = "Oui, vous pouvez le faire en désactivant votre Bluetooth. Vous pouvez le faire en allant dans <b>Paramètres > Bluetooth</b>. Si vous désactivez votre bluetooth, l'application n'échange plus de codes. Vous recevez alors toutes les 24 heures un rappel automatique de réactivation de l'application.<br><br>Il n'est toutefois généralement pas conseillé de mettre l'application en pause parce que vous risquez d'oublier de la réactiver. Vous pouvez toutefois le faire dans certaines situations. Par exemple si vous vous trouvez à proximité de patients (potentiellement) atteints du Covid-19 mais que vous êtes certain(e) de ne pas être contaminé(e) parce que vous portez vos équipements de protection médicaux.";
+"help.pause_app.description" = "Oui, vous pouvez le faire en désactivant votre Bluetooth. Vous pouvez le faire en allant dans <b>Paramètres > Bluetooth</b>. Attention : vous ne pouvez pas mettre l'application en pause en désactivant le bluetooth via le panneau de contrôle. Si vous désactivez le bluetooth, l'application n'échange plus de codes. Vous recevez alors toutes les 24 heures un rappel automatique de réactivation de l'application.<br><br>Il n'est toutefois généralement pas conseillé de mettre l'application en pause parce que vous risquez d'oublier de la réactiver. Vous pouvez toutefois le faire dans certaines situations. Par exemple si vous vous trouvez à proximité de patients (potentiellement) atteints du Covid-19 mais que vous êtes certain(e) de ne pas être contaminé(e) parce que vous portez vos équipements de protection médicaux.";
 
 "help.apps_other_countries.title" = "Est-ce que CoronaMelder fonctionne aussi avec des applications d’autres pays?";
-"help.apps_other_countries.description" = "Malheureusement pas encore, mais nous travaillons activement pour que ce soit possible. CoronaMelder pourra alors aussi échanger des codes avec certaines applications d'autres pays. Par exemple l'application allemande.<br><br>Si, en plus de CoronaMelder, vous installez l'application allemande Corona-Warn, votre téléphone vous informera qu'1 seule application peut être activée à la fois. L'application que vous choisissez est la seule application qui contrôle vos rencontres à ce moment-là. Si vous voulez le faire dans plusieurs pays, vous devez changer d'application. Vous pourrez recevoir des notifications de cette application. Si vous changez d'application 1 fois par jour, les deux applications contrôlent vos rencontres. Vous ne ratez donc rien.<br><br>À partir de fin septembre, vous pourrez probablement continuer à utiliser l'application de votre pays sans devoir la changer tous les jours.
-";
+"help.apps_other_countries.description" = "CoronaMelder fonctionne avec une série d'applications d'autres pays européens. Y compris l'Allemagne, l'Irlande et l'Italie.<br><br>Supposez que vous avez été proche pendant un certain temps d'un utilisateur de l'application allemande Corona-Warn. Cette personne est testée en Allemagne et s'avère avoir le coronavirus. Si cette personne partage ses codes avec le GGD allemand, CoronaMelder vous enverra une notification. C'est la même chose dans le sens inverse. Comme les applications coronavirus collaborent les unes avec les autres, vous ne devez donc activer qu'une seule application.<br><br>CoronaMelder contrôlera, tous les jours à partir du 30 novembre 2020, les codes des utilisateurs des différents pays. De ce fait, l'application utilise plus de données mobiles qu'auparavant. Dans les  <b>Paramètres</b> de l'écran principal, vous pouvez définir que l'application ne contrôle votre proximité avec quelqu'un qui a le Coronavirus que par le biais du WiFi.";
 
 /* MARK: - Message */
 "message.default.title" = "Vous étiez à proximité de quelqu'un qui a le Covid-19";
@@ -262,14 +272,20 @@
 "main.confirmNotificationRemoval.message" = "Vous ne retrouverez plus la date dans l'application. Pensez alors à la noter.";
 "main.confirmNotificationRemoval.confirm" = "Supprimer";
 
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "Impossible d'afficher cette page.";
+"webview.loadingfailed.subtitle" = "Une erreur s'est produite. Revenez plus tard ou réessayez d'afficher la page.";
+"webview.loadingfailed.try_again" = "Veuillez réessayer.";
+
 /* MARK: - Status */
 "status.appState" = "L'application est activée";
 "status.appState.inactive.title" = "L'application n'est pas activée";
 "status.appState.inactive.description" = "CoronaMelder ne fonctionne que si les paramètres nécessaires ont été activés.";
-"status.appState.inactive.no_recent_updates.description" = "L'application n'a pas pu établir de connexion internet ces dernières 24 heures. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
+"status.appState.inactive.notification" = "L'application n'a pas pu vérifier pendant 24 heures si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19 par la suite.";
+"status.appState.inactive.no_recent_updates.description" = "L'application n'a pas pu vérifier pendant 24 heures si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
 "status.appState.card.title" = "L'application n'est pas activée";
 "status.appState.card.description" = "CoronaMelder ne fonctionne que si les paramètres nécessaires ont été activés";
-"status.appState.card.no_recent_updates.description" = "L'application n'a pas pu établir de connexion internet ces dernières 24 heures. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
+"status.appState.card.no_recent_updates.description" = "L'application n'a pas pu vérifier pendant 24 heures si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
 "status.appState.card.button" = "Ouvrir l'application";
 "status.appState.card.try_again" = "Veuillez réessayer";
 "status.active.description" = "Les rencontres sont sauvegardées, même si vous fermez l'application";
@@ -282,14 +298,14 @@
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Plus d'informations";
 
-"moreInformation.cell.about.title" = "Des questions à propos de l'application ?";
+"moreInformation.cell.about.title" = "Questions à propos de l'application";
 "moreInformation.cell.about.subtitle" = "Découvrez le fonctionnement de l'application et ce qu'elle signifie pour votre vie privée";
 
 "moreInformation.cell.share.title" = "Inviter vos proches à utiliser l'application";
 "moreInformation.cell.share.subtitle" = "Partager l'application avec vos proches pour stopper ensemble le Covid-19";
 
-"moreInformation.cell.receivedNotification.title" = "Que contient une notification ?";
-"moreInformation.cell.receivedNotification.subtitle" = "Lisez ce que vous pouvez faire après avoir été en contact avec quelqu'un qui a le Covid-19";
+"moreInformation.cell.receivedNotification.title" = "Comment reconnaître une notification ?";
+"moreInformation.cell.receivedNotification.subtitle" = "Découvrez à quoi ressemble une notification et ce que vous pouvez faire après en avoir reçu une.";
 
 "moreInformation.cell.requestTest.title" = "Demander un test de dépistage du Covid-19";
 "moreInformation.cell.requestTest.subtitle" = "Découvrez le plus vite possible si vous êtes contaminé(e)";
@@ -329,6 +345,8 @@
 "moreInformation.about.faq.power_usage" = "Quel est l'impact de l'application sur ma batterie ?";
 "moreInformation.about.faq.deletion" = "Comment supprimer les données Bluetooth de mon téléphone ? ";
 "moreInformation.about.faq.deletion.description" = "Vous pouvez supprimer vous-même les données Bluetooth que CoronaMelder a conservées. Voici comment faire.<br><br>Allez aux paramètres de votre téléphone > Notifications d'exposition > Statut de 'Suivre les expositions'. Cliquez sur Supprimer le fichier journal des expositions.<br><br>Si vous souhaitez que l'application ne conserve plus de nouvelles données Bluetooth, supprimez l'application.";
+
+"moreInformation.about.interoperability.title" = "Avec quelles applications étrangères collabore CoronaMelder?";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Faites savoir à vos proches que vous contribuez à stopper la progression du virus";
@@ -377,7 +395,7 @@
 "moreInformation.requestTest.receivedNotification.content" = "Vous avez de (légers) symptômes qui correspondent à ceux du Covid-19 ? Faites un test de dépistage gratuit. Il ne dure pas longtemps et vous pouvez généralement fixer rapidement un rendez-vous.<br><br>Le résultat est connu dans les 48 heures. Restez chez vous jusqu'à ce que l'on vous communique le résultat.";
 "moreInformation.requestTest.complaints" = "Vous avez de graves symptômes comme une forte fièvre ou des difficultés à respirer? Ou vous faites partie d'un groupe à risques? Appelez d'abord votre médecin traitant.";
 "moreInformation.requestTest.link" = "Consultez coronatest.nl";
-"moreInformation.requestTest.phone" = "Composez le 0800-1202";
+"moreInformation.requestTest.phone" = "Composez le %@";
 
 "moreInformation.notification.measures.title" = "Respectez strictement les mesures :";
 "moreInformation.notification.measures.step1" = "Lavez-vous régulièrement les mains";
@@ -402,6 +420,11 @@
 "cards.notificationsOff.title" = "Les notifications sont <u>désactivées</u>";
 "cards.notificationsOff.content" = "Activez les notifications de manière à ce que l'application puisse partager directement les informations lorsque c'est nécessaire.";
 "cards.notificationsOff.action" = "Activer les notifications";
+
+"cards.interopannouncement.title" = "Bon à savoir";
+"cards.interopannouncement.content" = "À partir du 30 novembre, CoronaMelder fonctionnera avec des applications coronavirus d'autres pays européens.";
+"cards.interopannouncement.action" = "Plus d'informations";
+"cards.interopannouncement.secondaryaction" = "Fermer";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Activer les notifications des contacts";

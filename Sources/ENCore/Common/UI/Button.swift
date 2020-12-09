@@ -13,6 +13,7 @@ class Button: UIButton, Themeable {
     enum ButtonType {
         case primary
         case secondary
+        case secondaryLight
         case tertiary
         case warning
         case info
@@ -92,6 +93,9 @@ class Button: UIButton, Themeable {
             }
         case .secondary:
             backgroundColor = theme.colors.tertiary
+            setTitleColor(theme.colors.primary, for: .normal)
+        case .secondaryLight:
+            backgroundColor = theme.colors.secondaryLight
             setTitleColor(theme.colors.primary, for: .normal)
         case .tertiary:
             backgroundColor = theme.colors.tertiary

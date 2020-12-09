@@ -131,10 +131,11 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
         let helpdeskButton = CardButton(title: .aboutHelpdeskTitle, subtitle: .aboutHelpdeskSubtitle, image: UIImage.aboutHelpdesk, theme: theme)
         helpdeskButton.backgroundColor = theme.colors.headerBackgroundBlue
         helpdeskButton.action = { [weak self] in
-            if let url = URL(string: .helpDeskPhoneNumber), UIApplication.shared.canOpenURL(url) {
+            let phoneNumberLink: String = .phoneNumberLink(from: .helpDeskPhoneNumber)
+            if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                self?.logError("Unable to open \(String.helpDeskPhoneNumber)")
+                self?.logError("Unable to open \(phoneNumberLink)")
             }
         }
 
@@ -157,7 +158,8 @@ private final class AboutView: View {
     override func setupConstraints() {
         super.setupConstraints()
         tableView.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview()
+            maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.bottom.equalToSuperview()
         }
     }
 }

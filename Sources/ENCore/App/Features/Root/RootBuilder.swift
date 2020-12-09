@@ -37,7 +37,7 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency {
 
     // MARK: - Child Builders
 
@@ -121,8 +121,21 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return BackgroundControllerBuilder(dependency: self).build()
     }()
 
+    fileprivate var dataController: ExposureDataControlling {
+        return ExposureDataControllerBuilder(dependency: self).build()
+    }
+
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()
+
+    var cryptoUtility: CryptoUtility {
+        return CryptoUtilityBuilder().build()
+    }
+
+    lazy var applicationSignatureController: ApplicationSignatureControlling = {
+        return ApplicationSignatureController(storageController: storageController,
+                                              cryptoUtility: cryptoUtility)
+    }()
 
     /// Exposure state stream, informs about the current exposure states
     var exposureStateStream: ExposureStateStreaming {
@@ -137,6 +150,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableBluetoothStateStream
     }
 
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return InterfaceOrientationStream()
+    }
+
     let theme: Theme = ENTheme()
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
@@ -149,6 +166,14 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
 
     lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
+
+    var messageManager: MessageManaging {
+        return MessageManager(storageController: storageController, theme: theme)
+    }
+
+    fileprivate var userNotificationCenter: UserNotificationCenter {
+        return UNUserNotificationCenter.current()
+    }
 }
 
 /// Interface describing the builder that builds
@@ -166,7 +191,7 @@ protocol RootBuildable {
 /// interface.
 ///
 /// - Tag: RootBuilder
-final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
+final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
 
     // MARK: - RootBuildable
 
@@ -175,6 +200,12 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
         let viewController = RootViewController(theme: dependencyProvider.theme)
 
         let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+
+        guard let unwrappedCurrentAppVersion = currentAppVersion else {
+            let error = "Bundle version could not be retrieved from infodictionary, app is in an incorrect state"
+            self.logError(error)
+            fatalError(error)
+        }
 
         return RootRouter(viewController: viewController,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
@@ -190,6 +221,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable {
                           backgroundController: dependencyProvider.backgroundController,
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
-                          currentAppVersion: currentAppVersion)
+                          userNotificationCenter: dependencyProvider.userNotificationCenter,
+                          currentAppVersion: unwrappedCurrentAppVersion)
     }
 }

@@ -38,20 +38,31 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     // the detectExposures API is limited to 15 keysets or calls a day
     // https://developer.apple.com/documentation/exposurenotification/enmanager/3586331-detectexposures
     private let maximumDailyOfKeySetsToProcess = 15 // iOS 13.5
-    private let maximumDailyExposureDetectionAPICalls = 15 // iOS 13.6+
+
+    // iOS 13.6+ is limited to 15 GAEN API calls in total per 24 hours
+    // Because we want to make sure the scheduled background processes
+    // can always execute, we explicitly reserve 6 of those calls for the background.
+    private let maximumDailyForegroundExposureDetectionAPICalls = 9
+    private let maximumDailyBackgroundExposureDetectionAPICalls = 6
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          exposureManager: ExposureManaging,
          exposureKeySetsStorageUrl: URL,
          configuration: ExposureConfiguration,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         application: ApplicationControlling,
+         fileManager: FileManaging,
+         environmentController: EnvironmentControlling) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
         self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
+        self.application = application
+        self.fileManager = fileManager
+        self.environmentController = environmentController
     }
 
     func execute() -> AnyPublisher<(), ExposureDataError> {
@@ -63,7 +74,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .filter { $0.processed == false }
 
         if exposureKeySetHolders.count > 0 {
-            logDebug("Processing KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
+            logDebug("Processing \(exposureKeySetHolders.count) KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
         } else {
             // keep processing to make sure lastProcessDate is updated
             logDebug("No additional keysets to process")
@@ -108,13 +119,15 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         var isDirectory = ObjCBool(booleanLiteral: false)
 
         // verify whether sig and bin files are present
-        guard FileManager.default.fileExists(atPath: signatureFileUrl(forKeySetHolder: keySetHolder).path,
-                                             isDirectory: &isDirectory), isDirectory.boolValue == false else {
+        guard let sigPath = signatureFileUrl(forKeySetHolder: keySetHolder)?.path,
+            fileManager.fileExists(atPath: sigPath,
+                                   isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
-        guard FileManager.default.fileExists(atPath: binaryFileUrl(forKeySetHolder: keySetHolder).path,
-                                             isDirectory: &isDirectory), isDirectory.boolValue == false else {
+        guard let binPath = binaryFileUrl(forKeySetHolder: keySetHolder)?.path,
+            fileManager.fileExists(atPath: binPath,
+                                   isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
@@ -162,10 +175,15 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                                  isValid: false)
         }
 
-        // get most recent keySetHolders and limit by maxNumber
-        let keySetHoldersToProcess = selectKeySetHoldersToProcess(from: validKeySetHolders)
+        // Determine if we are limited by the number of daily API calls or KeySets
+        let applicationIsInBackground = application.isInBackground
+        let numberOfDailyAPICallsLeft = getNumberOfDailyAPICallsLeft(inBackground: applicationIsInBackground)
+        let numberOfDailyKeySetsLeft = getNumberOfDailyKeySetsLeft()
 
-        guard !keySetHoldersToProcess.isEmpty else {
+        // get most recent keySetHolders and limit by `numberOfDailyKeysetsLeft`
+        let keySetHoldersToProcess = selectKeySetHoldersToProcess(from: validKeySetHolders, maximum: numberOfDailyKeySetsLeft)
+
+        guard !keySetHoldersToProcess.isEmpty, numberOfDailyAPICallsLeft > 0 else {
             logDebug("Nothing left to process")
 
             // nothing (left) to process, return an empty summary
@@ -182,14 +200,20 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                 .eraseToAnyPublisher()
         }
 
-        let diagnosisKeyUrls = keySetHoldersToProcess.flatMap {
-            [signatureFileUrl(forKeySetHolder: $0), binaryFileUrl(forKeySetHolder: $0)]
+        let diagnosisKeyUrls = keySetHoldersToProcess.flatMap { (keySetHolder) -> [URL] in
+            if let sigFile = signatureFileUrl(forKeySetHolder: keySetHolder), let binFile = binaryFileUrl(forKeySetHolder: keySetHolder) {
+                return [sigFile, binFile]
+            }
+            return []
         }
 
-        logDebug("Detect exposures for keySets: \(keySetHoldersToProcess.map { $0.identifier })")
+        logDebug("Detect exposures for \(keySetHoldersToProcess.count) keySets: \(keySetHoldersToProcess.map { $0.identifier })")
 
         let executeExposureDetection: AnyPublisher<ExposureDetectionResult, ExposureDataError> = Deferred {
             Future { promise in
+
+                self.logDebug("Detecting exposures for \(diagnosisKeyUrls.count) diagnosisKeyUrls")
+
                 self.exposureManager.detectExposures(configuration: self.configuration,
                                                      diagnosisKeyURLs: diagnosisKeyUrls) { result in
                     switch result {
@@ -240,7 +264,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         }
         .eraseToAnyPublisher()
 
-        return updateNumberOfApiCallsMade()
+        return updateNumberOfApiCallsMade(inBackground: applicationIsInBackground)
             .flatMap { _ in executeExposureDetection }
             .eraseToAnyPublisher()
     }
@@ -294,8 +318,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .map { $0.keySetHolder }
 
         keySetHolders.forEach { keySetHolder in
-            try? FileManager.default.removeItem(at: signatureFileUrl(forKeySetHolder: keySetHolder))
-            try? FileManager.default.removeItem(at: binaryFileUrl(forKeySetHolder: keySetHolder))
+            if let sigFileURL = signatureFileUrl(forKeySetHolder: keySetHolder) {
+                try? fileManager.removeItem(at: sigFileURL)
+            }
+
+            if let binFileURL = binaryFileUrl(forKeySetHolder: keySetHolder) {
+                try? fileManager.removeItem(at: binFileURL)
+            }
         }
     }
 
@@ -317,8 +346,35 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .count
     }
 
-    private func getNumberOfExposureDetectionApiCallsInLast24Hours() -> Int {
-        let apiCalls = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureApiCallDates) ?? []
+    func updateNumberOfApiCallsMade(inBackground: Bool) -> AnyPublisher<(), ExposureDataError> {
+        return Deferred {
+            return Future { promise in
+                self.storageController.requestExclusiveAccess { storageController in
+                    let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
+                    var calls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
+
+                    calls = [Date()] + calls
+                    self.logDebug("Most recent API calls \(calls)")
+
+                    let maximumNumberOfAPICalls = inBackground ? self.maximumDailyBackgroundExposureDetectionAPICalls : self.maximumDailyForegroundExposureDetectionAPICalls
+
+                    if calls.count > maximumNumberOfAPICalls {
+                        calls = Array(calls.prefix(maximumNumberOfAPICalls))
+                    }
+
+                    storageController.store(object: calls,
+                                            identifiedBy: storageKey) { _ in
+                        promise(.success(()))
+                    }
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private func getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: Bool = false) -> Int {
+        let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
+        let apiCalls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
 
         guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) else {
             return 0
@@ -333,43 +389,49 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .count
     }
 
-    private func selectKeySetHoldersToProcess(from keySetsHolders: [ExposureKeySetHolder]) -> [ExposureKeySetHolder] {
-        let numberOfKeySetsLeftToProcess: Int
+    private func getNumberOfDailyAPICallsLeft(inBackground: Bool) -> Int {
+        var numberOfCallsLeft = Int.max
+
+        if environmentController.isiOS136orHigher {
+            let totalMaximumCalls = maximumDailyBackgroundExposureDetectionAPICalls + maximumDailyForegroundExposureDetectionAPICalls
+            let maximumNumberOfAPICalls = inBackground ? maximumDailyBackgroundExposureDetectionAPICalls : maximumDailyForegroundExposureDetectionAPICalls
+            let backgroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: true)
+            let foregroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: false)
+            let callsDoneInCurrentState = inBackground ? backgroundCallsDone : foregroundCallsDone
+            numberOfCallsLeft = maximumNumberOfAPICalls - callsDoneInCurrentState
+
+            // For legacy reasons, we also check if the combined total of calls doesn't exceed the combined daily maximum
+            if (backgroundCallsDone + foregroundCallsDone) >= totalMaximumCalls {
+                numberOfCallsLeft = 0
+            }
+        }
+
+        logDebug("Number of API Calls (\(inBackground ? "in background" : "in foreground") left today: \(numberOfCallsLeft)")
+
+        return numberOfCallsLeft
+    }
+
+    private func getNumberOfDailyKeySetsLeft() -> Int {
+        if environmentController.isiOS136orHigher {
+            // iOS 13.6+ is not limited in the number of daily keysets but in the number of API calls
+            logDebug("Number of keysets left to process today: infinite (no limit on iOS 13.6+)")
+            return Int.max
+        }
 
         #if USE_DEVELOPER_MENU || DEBUG
-
-            if ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets {
-                if #available(iOS 13.6, *) {
-                    let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
-                    logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
-
-                    numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
-                } else {
-                    numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
-                }
-
-            } else {
-                numberOfKeySetsLeftToProcess = Int.max
+            if !ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets {
+                logDebug("Number of keysets left to process today: infinite (ignoring limit via Developer Menu)")
+                return Int.max
             }
-
-        #else
-
-            if #available(iOS 13.6, *) {
-                let numberOfApiCallsLeft = maximumDailyExposureDetectionAPICalls - getNumberOfExposureDetectionApiCallsInLast24Hours()
-                logDebug("Number of API calls left: \(numberOfApiCallsLeft)")
-
-                numberOfKeySetsLeftToProcess = numberOfApiCallsLeft > 0 ? Int.max : 0
-            } else {
-                numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
-            }
-
         #endif
 
+        let numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
         logDebug("Number of keysets left to process today: \(numberOfKeySetsLeftToProcess)")
 
-        guard numberOfKeySetsLeftToProcess > 0 else {
-            return []
-        }
+        return numberOfKeySetsLeftToProcess
+    }
+
+    private func selectKeySetHoldersToProcess(from keySetsHolders: [ExposureKeySetHolder], maximum: Int) -> [ExposureKeySetHolder] {
 
         let keySetHoldersToProcess = keySetsHolders
             .sorted(by: { first, second in first.creationDate < second.creationDate })
@@ -378,13 +440,11 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             return []
         }
 
-        return Array(keySetHoldersToProcess.prefix(numberOfKeySetsLeftToProcess))
+        return Array(keySetHoldersToProcess.prefix(maximum))
     }
 
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
     private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
-
-        logDebug("Triggering local notification")
 
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
@@ -444,8 +504,18 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                     let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
                                                         content: content,
                                                         trigger: nil)
+
                     self.userNotificationCenter.add(request) { error in
                         guard let error = error else {
+
+                            /// Store the unseen notification date, but only when the app is in the background
+                            if self.application.isInBackground {
+                                self.storageController.requestExclusiveAccess { storageController in
+                                    storageController.store(object: Date(),
+                                                            identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { _ in }
+                                }
+                            }
+
                             return promise(.success(value))
                         }
                         self.logError("Error posting notification: \(error.localizedDescription)")
@@ -505,35 +575,20 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         .eraseToAnyPublisher()
     }
 
-    private func updateNumberOfApiCallsMade() -> AnyPublisher<(), ExposureDataError> {
-        return Deferred {
-            return Future { promise in
-                self.storageController.requestExclusiveAccess { storageController in
-                    var calls = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureApiCallDates) ?? []
-
-                    calls = [Date()] + calls
-                    self.logDebug("Most recent API calls \(calls)")
-
-                    if calls.count > self.maximumDailyExposureDetectionAPICalls {
-                        calls = Array(calls.prefix(self.maximumDailyExposureDetectionAPICalls))
-                    }
-
-                    storageController.store(object: calls,
-                                            identifiedBy: ExposureDataStorageKey.exposureApiCallDates) { _ in
-                        promise(.success(()))
-                    }
-                }
-            }
+    private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {
+        guard let signatureFilename = keySetHolder.signatureFilename else {
+            return nil
         }
-        .eraseToAnyPublisher()
+
+        return exposureKeySetsStorageUrl.appendingPathComponent(signatureFilename)
     }
 
-    private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL {
-        return exposureKeySetsStorageUrl.appendingPathComponent(keySetHolder.signatureFilename)
-    }
+    private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {
+        guard let binaryFilename = keySetHolder.binaryFilename else {
+            return nil
+        }
 
-    private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL {
-        return exposureKeySetsStorageUrl.appendingPathComponent(keySetHolder.binaryFilename)
+        return exposureKeySetsStorageUrl.appendingPathComponent(binaryFilename)
     }
 
     private func lastStoredExposureReport() -> ExposureReport? {
@@ -559,7 +614,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     /// Future versions will address this in a more elegant matter (instead of just
     /// skipping any initial keySet)
     private func determineSkipAllExposureSetsForTheFirstTime() -> Bool {
-        if #available(iOS 13.6, *) {
+        if environmentController.isiOS136orHigher {
             // never skip the initial keysets on iOS 13.6 as it does not rate limit
             // by the number of keysets, but rather by the number of API calls
             return false
@@ -577,4 +632,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let exposureKeySetsStorageUrl: URL
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter
+    private let application: ApplicationControlling
+    private let fileManager: FileManaging
+    private let environmentController: EnvironmentControlling
 }

@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Foundation
 import UIKit
 
 public extension NSAttributedString {
@@ -54,25 +55,7 @@ public extension NSAttributedString {
 
             let fullRange = NSRange(location: 0, length: attributedTitle.length)
             attributedTitle.addAttributes(attributes, range: fullRange)
-
-            let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitBold)
-            let boldFont = boldFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
-
-            // replace default font with desired font - maintain bold style if possible
-            attributedTitle.enumerateAttribute(.font, in: fullRange, options: []) { value, range, finished in
-                guard let currentFont = value as? UIFont else { return }
-
-                let newFont: UIFont
-
-                if let boldFont = boldFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitBold) {
-                    newFont = boldFont
-                } else {
-                    newFont = font
-                }
-
-                attributedTitle.removeAttribute(.font, range: range)
-                attributedTitle.addAttribute(.font, value: newFont, range: range)
-            }
+            attributedTitle.replaceBoldAndItalicAttributes(font: font)
 
             return attributedTitle
         }
@@ -80,12 +63,47 @@ public extension NSAttributedString {
         return NSAttributedString(string: text)
     }
 
-    static func bulletList(_ stringList: [String],
+    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment) -> NSAttributedString {
+
+        let inputString = text
+            .replacingOccurrences(of: "\\n", with: "\n")
+            .replacingOccurrences(of: "\n\n", with: "<br /><br />")
+
+        guard containsHtml(inputString) else {
+            return NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
+        }
+
+        let textToFormat = NSMutableAttributedString(attributedString: makeFromHtml(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
+
+        let bullet = "\t•\t"
+
+        guard textToFormat.string.contains(bullet) else {
+            return textToFormat
+        }
+
+        // Replace all lines starting with bullets with our own custom-formatted bulleted line
+        textToFormat.string
+            .components(separatedBy: "\n")
+            .filter { $0.hasPrefix(bullet) }
+            .forEach { line in
+                guard let lineRange = textToFormat.string.range(of: line) else {
+                    return
+                }
+                let attributedLine = NSMutableAttributedString(attributedString: textToFormat.attributedSubstring(from: NSRange(lineRange, in: line)))
+                attributedLine.reformatBulletPoint(font: font, theme: theme, textAlignment: textAlignment)
+                textToFormat.replaceCharacters(in: NSRange(lineRange, in: line), with: attributedLine)
+            }
+
+        return textToFormat.attributedStringByTrimmingCharacterSet(charSet: .whitespacesAndNewlines)
+    }
+
+    static func makeBullet(_ string: String,
                            theme: Theme,
                            font: UIFont,
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
-                           paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
+                           paragraphSpacing: CGFloat = 12,
+                           textAlignment: NSTextAlignment = .left) -> NSAttributedString {
 
         let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
 
@@ -99,31 +117,134 @@ public extension NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         let nonOptions = [NSTextTab.OptionKey: Any]()
         paragraphStyle.tabStops = [
-            NSTextTab(textAlignment: .left, location: indentation, options: nonOptions)
+            NSTextTab(textAlignment: textAlignment, location: indentation, options: nonOptions)
         ]
         paragraphStyle.defaultTabInterval = indentation
         paragraphStyle.paragraphSpacing = paragraphSpacing
         paragraphStyle.headIndent = indentation
+        paragraphStyle.alignment = textAlignment
 
-        var bulletList = [NSMutableAttributedString]()
-        for string in stringList {
-            let formattedString = "\(bullet)\t\(string)"
-            let attributedString = NSMutableAttributedString(string: formattedString)
+        let formattedString = "\(bullet)\t\(string)"
 
-            attributedString.addAttributes(
-                [NSAttributedString.Key.paragraphStyle: paragraphStyle],
-                range: NSMakeRange(0, attributedString.length))
+        let attributedString = NSMutableAttributedString(string: formattedString)
 
-            attributedString.addAttributes(
-                textAttributes,
-                range: NSMakeRange(0, attributedString.length))
+        attributedString.addAttributes(
+            [NSAttributedString.Key.paragraphStyle: paragraphStyle],
+            range: NSMakeRange(0, attributedString.length))
 
-            let string: NSString = NSString(string: formattedString)
-            let rangeForBullet: NSRange = string.range(of: bullet)
-            attributedString.addAttributes(bulletAttributes, range: rangeForBullet)
-            bulletList.append(attributedString)
+        attributedString.addAttributes(
+            textAttributes,
+            range: NSMakeRange(0, attributedString.length))
+
+        let string: NSString = NSString(string: formattedString)
+        let rangeForBullet: NSRange = string.range(of: bullet)
+        attributedString.addAttributes(bulletAttributes, range: rangeForBullet)
+
+        return attributedString
+    }
+
+    static func bulletList(_ stringList: [String],
+                           theme: Theme,
+                           font: UIFont,
+                           bullet: String = "\u{25CF}",
+                           indentation: CGFloat = 16,
+                           paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
+
+        let bulletList = stringList.map {
+            makeBullet($0,
+                       theme: theme,
+                       font: font)
         }
 
         return bulletList
+    }
+
+    private static func containsHtml(_ value: String) -> Bool {
+        let range = NSRange(location: 0, length: value.utf16.count)
+        let regex = try! NSRegularExpression(pattern: "<[^>]+>")
+        return regex.firstMatch(in: value, options: [], range: range) != nil
+    }
+
+    func attributedStringByTrimmingCharacterSet(charSet: CharacterSet) -> NSAttributedString {
+        let modifiedString = NSMutableAttributedString(attributedString: self)
+        modifiedString.trimCharactersInSet(charSet: charSet)
+        return NSAttributedString(attributedString: modifiedString)
+    }
+}
+
+extension NSMutableAttributedString {
+    func trimCharactersInSet(charSet: CharacterSet) {
+        var range = (string as NSString).rangeOfCharacter(from: charSet as CharacterSet)
+
+        // Trim leading characters from character set.
+        while range.length != 0, range.location == 0 {
+            replaceCharacters(in: range, with: "")
+            range = (string as NSString).rangeOfCharacter(from: charSet)
+        }
+
+        // Trim trailing characters from character set.
+        range = (string as NSString).rangeOfCharacter(from: charSet, options: .backwards)
+        while range.length != 0, NSMaxRange(range) == length {
+            replaceCharacters(in: range, with: "")
+            range = (string as NSString).rangeOfCharacter(from: charSet, options: .backwards)
+        }
+    }
+
+    func replaceBoldAndItalicAttributes(font: UIFont) {
+
+        let fullRange = NSRange(location: 0, length: length)
+
+        let boldFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitBold)
+        let boldFont = boldFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
+
+        let italicFontDescriptor = font.fontDescriptor.withSymbolicTraits(.traitItalic)
+        let italicFont = italicFontDescriptor.map { UIFont(descriptor: $0, size: font.pointSize) }
+
+        // replace default font with desired font - maintain bold style if possible
+        self.enumerateAttribute(.font, in: fullRange, options: []) { value, range, finished in
+            guard let currentFont = value as? UIFont else { return }
+
+            var newFont = font
+
+            if let italicFont = italicFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitItalic) {
+                newFont = italicFont
+            }
+
+            if let boldFont = boldFont, currentFont.fontDescriptor.symbolicTraits.contains(.traitBold) {
+                newFont = boldFont
+            }
+
+            self.removeAttribute(.font, range: range)
+            self.addAttribute(.font, value: newFont, range: range)
+        }
+    }
+
+    func reformatBulletPoint(font: UIFont, theme: Theme, textAlignment: NSTextAlignment) {
+
+        let bullet = "\t•\t"
+
+        if let bulletRange = self.string.range(of: bullet) {
+
+            let bulletFont = font.withSize(10)
+            let bulletAttributes: [NSAttributedString.Key: Any] = [
+                .font: bulletFont,
+                .foregroundColor: theme.colors.primary,
+                .baselineOffset: (font.xHeight - bulletFont.xHeight) / 2
+            ]
+            let newBullet = NSMutableAttributedString(string: "\u{25CF}\t", attributes: bulletAttributes)
+            self.replaceCharacters(in: NSRange(bulletRange, in: self.string), with: newBullet)
+        }
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        let nonOptions = [NSTextTab.OptionKey: Any]()
+        paragraphStyle.tabStops = [
+            NSTextTab(textAlignment: textAlignment, location: 16, options: nonOptions)
+        ]
+        paragraphStyle.defaultTabInterval = 16
+        paragraphStyle.headIndent = 16
+        paragraphStyle.alignment = textAlignment
+        paragraphStyle.paragraphSpacing = 5
+
+        self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: NSMakeRange(0, self.length))
     }
 }

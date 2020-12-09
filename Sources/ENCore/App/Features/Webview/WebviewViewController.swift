@@ -33,7 +33,7 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
         super.viewDidLoad()
 
         if webViewLoadingEnabled() {
-            internalView.webView.load(URLRequest(url: initialURL))
+            internalView.load(url: initialURL)
         } else {
             logDebug("`webViewLoading` disabled")
         }
@@ -74,13 +74,31 @@ private protocol WebviewViewDelegate: AnyObject {
 private final class WebviewView: View, WKNavigationDelegate {
 
     weak var delegate: WebviewViewDelegate?
+    private var url: URL?
 
-    lazy var webView: WKWebView = {
+    private lazy var webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.allowsBackForwardNavigationGestures = false
         webView.navigationDelegate = self
         return webView
+    }()
+
+    private lazy var errorView: UIView = {
+        let errorView = WebViewErrorView(theme: theme)
+        errorView.translatesAutoresizingMaskIntoConstraints = false
+        errorView.actionButton.action = {
+            if let url = self.url {
+                self.load(url: url)
+            }
+        }
+        return errorView
+    }()
+
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.hidesWhenStopped = true
+        return indicator
     }()
 
     private lazy var gradientImageView: UIImageView = {
@@ -96,6 +114,10 @@ private final class WebviewView: View, WKNavigationDelegate {
         super.build()
         addSubview(webView)
         addSubview(gradientImageView)
+        addSubview(errorView)
+        addSubview(activityIndicator)
+
+        errorView.isHidden = true
     }
 
     override func setupConstraints() {
@@ -105,10 +127,54 @@ private final class WebviewView: View, WKNavigationDelegate {
             maker.edges.equalToSuperview()
         }
 
+        errorView.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+        }
+
         gradientImageView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalToSuperview()
             maker.height.equalTo(25)
         }
+
+        activityIndicator.snp.makeConstraints { maker in
+            maker.height.width.equalTo(40)
+            maker.center.equalToSuperview()
+        }
+    }
+
+    func load(url: URL) {
+        self.url = url
+        webView.load(URLRequest(url: url))
+    }
+
+    private func loadingFinished(withError hasError: Bool) {
+        webView.isHidden = hasError
+        errorView.isHidden = !hasError
+        activityIndicator.stopAnimating()
+    }
+
+    private func loadingStarted() {
+        webView.isHidden = true
+        errorView.isHidden = true
+        activityIndicator.startAnimating()
+    }
+
+    // MARK: - WKNavigationDelegate
+
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        loadingStarted()
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        loadingFinished(withError: true)
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        loadingFinished(withError: true)
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        loadingFinished(withError: false)
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> ()) {

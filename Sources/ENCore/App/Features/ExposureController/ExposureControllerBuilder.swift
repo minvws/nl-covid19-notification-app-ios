@@ -33,8 +33,6 @@ protocol ExposureControlling: AnyObject {
     func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
-    func notifyUserIfRequired()
-
     // MARK: - Permissions
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?)
@@ -67,14 +65,26 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Misc
 
+    /// Updates the last app launch date
+    func updateLastLaunch()
+
+    /// Removes the unseen exposure notification date
+    func clearUnseenExposureNotificationDate()
+
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
 
     /// Checks the status of the EN framework for the last 24h
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
 
-    /// Checks if the app needs to be updated
-    func appUpdateRequiredCheck() -> AnyPublisher<(), Never>
+    /// Checks if the app needs to be updated and returns true if it should
+    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError>
+
+    /// Checks if the app needs to be updated and sends a local notification if it should
+    func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never>
+
+    /// Updates the treatment perspective message
+    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
 
     // MARK: - Onboarding
 
@@ -83,6 +93,12 @@ protocol ExposureControlling: AnyObject {
 
     /// Whether the user has completed onboarding
     var didCompleteOnboarding: Bool { get set }
+
+    /// All announcements that the user has seen within the app or during the onboarding proces
+    var seenAnnouncements: [Announcement] { get set }
+
+    /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
+    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
 }
 
 /// Represents a ConfirmationKey for the Lab Flow
@@ -92,6 +108,11 @@ protocol ExposureControlling: AnyObject {
 protocol ExposureConfirmationKey {
     var key: String { get }
     var expiration: Date { get }
+}
+
+struct AppUpdateInformation {
+    let shouldUpdate: Bool
+    let versionInformation: ExposureDataAppVersionInformation?
 }
 
 /// Result of the requestUploadKeys
@@ -131,6 +152,7 @@ protocol ExposureControllerDependency {
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
     var networkStatusStream: NetworkStatusStreaming { get }
     var mutableBluetoothStateStream: MutableBluetoothStateStreaming { get }
 }
@@ -144,6 +166,10 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
 
     var storageController: StorageControlling {
         return dependency.storageController
+    }
+
+    var applicationSignatureController: ApplicationSignatureControlling {
+        return dependency.applicationSignatureController
     }
 
     var exposureManager: ExposureManaging {
@@ -160,8 +186,8 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
         return UNUserNotificationCenter.current()
     }
 
-    fileprivate var currentAppVersion: String? {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    fileprivate var currentAppVersion: String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
 }
 

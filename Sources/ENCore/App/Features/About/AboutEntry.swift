@@ -9,7 +9,7 @@ import Foundation
 
 enum AboutEntry: HelpDetailEntry, LinkedContent {
     case question(_ question: HelpQuestion)
-    case link(title: String, link: String)
+    case link(title: String, link: String, openInExternalBrowser: Bool = false)
     case rate(title: String)
     case notificationExplanation(title: String, linkedContent: [LinkedContent])
     case appInformation(linkedContent: [LinkedContent])
@@ -19,7 +19,7 @@ enum AboutEntry: HelpDetailEntry, LinkedContent {
         switch self {
         case let .question(question):
             return question.question
-        case let .rate(title), let .link(title, _), let .notificationExplanation(title, _), let .technicalInformation(title, _):
+        case let .rate(title), let .link(title, _, _), let .notificationExplanation(title, _), let .technicalInformation(title, _):
             return title
         default:
             return ""

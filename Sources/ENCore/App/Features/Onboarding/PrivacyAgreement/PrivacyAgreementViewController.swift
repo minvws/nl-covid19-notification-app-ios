@@ -93,6 +93,7 @@ private final class PrivacyAgreementView: View {
         label.textColor = theme.colors.gray
         label.text = .privacyAgreementStepsTitle
         label.numberOfLines = 0
+        label.accessibilityTraits = .header
         return label
     }()
 
@@ -124,7 +125,8 @@ private final class PrivacyAgreementView: View {
         hasBottomMargin = true
 
         scrollView.snp.makeConstraints { maker in
-            maker.leading.trailing.top.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.equalToSuperview()
             maker.bottom.equalTo(bottomStackView.snp.top)
         }
 
@@ -148,7 +150,7 @@ private final class PrivacyAgreementView: View {
         }
 
         bottomStackView.snp.makeConstraints { maker in
-            maker.leading.trailing.width.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
 
@@ -207,9 +209,13 @@ private final class PrivacyAgreementView: View {
 }
 
 private final class PrivacyAgreementButton: Button {
+
+    // This switch is only used to give correct accessibility traits and values to this button
+    private let shadowSwitch = UISwitch()
+
     required init(theme: Theme) {
         super.init(theme: theme)
-        accessibilityValue = .privacyAgreementConsentButton
+        accessibilityLabel = .privacyAgreementConsentButton
         isSelected = false
         style = .tertiary
         build()
@@ -224,9 +230,21 @@ private final class PrivacyAgreementButton: Button {
         fatalError("init(title:theme:) has not been implemented")
     }
 
+    override var accessibilityTraits: UIAccessibilityTraits {
+        get { shadowSwitch.accessibilityTraits }
+        set {}
+    }
+
+    override var accessibilityValue: String? {
+        get { shadowSwitch.accessibilityValue }
+        set {}
+    }
+
     override var isSelected: Bool {
         didSet {
+            shadowSwitch.isOn = isSelected
             checkmark.image = isSelected ? .checkmarkChecked : .checkmarkUnchecked
+            shadowSwitch.sendActions(for: .valueChanged)
         }
     }
 

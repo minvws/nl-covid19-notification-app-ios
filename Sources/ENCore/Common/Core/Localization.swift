@@ -11,6 +11,19 @@ import UIKit
 
 public final class Localization {
 
+    enum SupportedLanguageIdentifier: String {
+        case ar
+        case bg
+        case de
+        case es
+        case pl
+        case ro
+        case tr
+        case nl
+        case en
+        case fr
+    }
+
     /// Get the Localized string for the current bundle.
     /// If the key has not been localized this will fallback to the Base project strings
     public static func string(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> String {
@@ -56,16 +69,36 @@ public final class Localization {
         }
     }
 
-    public static var isRTL: Bool { return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft }
+    public static var isRTL: Bool {
+        #if DEBUG
+            if let overriddenIsRTL = LocalizationOverrides.overriddenIsRTL {
+                return overriddenIsRTL
+            }
+        #endif
+
+        return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft
+    }
+
+    static var isUsingDutchLanguage: Bool {
+        Locale.current.languageCode?.lowercased() == "nl"
+    }
 }
 
 extension String {
 
     // MARK: - Helpdesk Phone Number
 
-    static var helpDeskPhoneNumber = "tel://08001280"
-    static var coronaTestPhoneNumber = "tel://08001202"
+    static var helpDeskPhoneNumber = "0800-1280"
+    static var coronaTestPhoneNumber = "0800-1202"
+    static var coronaTestExposedPhoneNumber = "0800-2035" // Only shown/used when we know the user was exposed to an affected person
     static var coronaTestWebUrl = "https://coronatest.nl"
+    static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
+    static var interoperabilityLink = "https://coronamelder.nl/%@/operabiliteit"
+    static var interoperabilityFAQLink = "https://coronamelder.nl/%@/faq/13-gebruik-app-uit-ander-land/"
+
+    static func phoneNumberLink(from phoneNumber: String) -> String {
+        return "tel://\(phoneNumber.replacingOccurrences(of: "-", with: ""))"
+    }
 
     // MARK: - Share App
 
@@ -274,6 +307,12 @@ extension String {
     static var mainConfirmNotificationRemovalMessage: String { Localization.string(for: "main.confirmNotificationRemoval.message") }
     static var mainConfirmNotificationRemovalConfirm: String { Localization.string(for: "main.confirmNotificationRemoval.confirm") }
 
+    // MARK: - WebView
+
+    static var webviewLoadingFailedTitle: String { Localization.string(for: "webview.loadingfailed.title") }
+    static var webviewLoadingFailedSubTitle: String { Localization.string(for: "webview.loadingfailed.subtitle") }
+    static var webviewLoadingFailedTryAgain: String { Localization.string(for: "webview.loadingfailed.try_again") }
+
     // MARK: - Status
 
     static var statusIconAccessibilityOk: String { return Localization.string(for: "status.icon.accessibility.ok") }
@@ -282,6 +321,7 @@ extension String {
     static var statusAppState: String { return Localization.string(for: "status.appState") }
     static var statusAppStateInactiveTitle: String { return Localization.string(for: "status.appState.inactive.title") }
     static var statusAppStateInactiveDescription: String { return Localization.string(for: "status.appState.inactive.description") }
+    static var statusAppStateInactiveNotification: String { return Localization.string(for: "status.appState.inactive.notification") }
     static var statusAppStateInactiveNoRecentUpdatesDescription: String { return Localization.string(for: "status.appState.inactive.no_recent_updates.description") }
     static var statusAppStateCardTitle: String { return Localization.string(for: "status.appState.card.title") }
     static var statusAppStateCardDescription: String { return Localization.string(for: "status.appState.card.description") }
@@ -307,6 +347,9 @@ extension String {
 
     static var moreInformationCellAboutTitle: String { return Localization.string(for: "moreInformation.cell.about.title") }
     static var moreInformationCellAboutSubtitle: String { return Localization.string(for: "moreInformation.cell.about.subtitle") }
+
+    static var moreInformationCellSettingsTitle: String { return Localization.string(for: "moreInformation.cell.settings.title") }
+    static var moreInformationCellSettingsSubtitle: String { return Localization.string(for: "moreInformation.cell.settings.subtitle") }
 
     static var moreInformationCellShareTitle: String { return Localization.string(for: "moreInformation.cell.share.title") }
     static var moreInformationCellShareSubtitle: String { return Localization.string(for: "moreInformation.cell.share.subtitle") }
@@ -338,6 +381,20 @@ extension String {
     static var aboutAppInformationDescription: String { return Localization.string(for: "moreInformation.about.onboarding.description") }
     static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
+    static var aboutInteroperabilityTitle: String { return Localization.string(for: "moreInformation.about.interoperability.title") }
+    static var aboutInteroperabilityFAQLink: String {
+        let interopURLLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
+        return Localization.string(for: .interoperabilityFAQLink, [interopURLLanguage.rawValue])
+    }
+
+    // MARK: - MoreInformation | Settings
+
+    static var moreInformationSettingsTitle: String { return Localization.string(for: "moreInformation.settings.title") }
+    static var moreInformationSettingsDescription: String { return Localization.string(for: "moreInformation.settings.description") }
+    static var moreInformationSettingsStep1: String { return Localization.string(for: "moreInformation.settings.step1") }
+    static var moreInformationSettingsStep2: String { return Localization.string(for: "moreInformation.settings.step2") }
+    static var moreInformationSettingsStep2RowTitle: String { return Localization.string(for: "moreInformation.settings.step2.row.title") }
+    static var moreInformationSettingsButton: String { return Localization.string(for: "moreInformation.settings.button") }
 
     // MARK: - MoreInformation | Share
 
@@ -405,7 +462,7 @@ extension String {
 
     static var moreInformationRequestTestComplaints: String { return Localization.string(for: "moreInformation.requestTest.complaints") }
     static var moreInformationRequestTestLink: String { return Localization.string(for: "moreInformation.requestTest.link") }
-    static var moreInformationRequestTestPhone: String { return Localization.string(for: "moreInformation.requestTest.phone") }
+    static var moreInformationRequestTestPhone: String { Localization.string(for: "moreInformation.requestTest.phone") }
 
     // MARK: - Cards | Exposure Off
 
@@ -430,6 +487,17 @@ extension String {
     static var cardsNotificationsOffTitle: String { return Localization.string(for: "cards.notificationsOff.title") }
     static var cardsNotificationsOffContent: String { return Localization.string(for: "cards.notificationsOff.content") }
     static var cardsNotificationsOffAction: String { return Localization.string(for: "cards.notificationsOff.action") }
+
+    // MARK: - Cards | Interop Announcement
+
+    static var cardsInteropAnnouncementTitle: String { return Localization.string(for: "cards.interopannouncement.title") }
+    static var cardsInteropAnnouncementContent: String { return Localization.string(for: "cards.interopannouncement.content") }
+    static var cardsInteropAnnouncementAction: String { return Localization.string(for: "cards.interopannouncement.action") }
+    static var cardsInteropAnnouncementSecondaryAction: String { return Localization.string(for: "cards.interopannouncement.secondaryaction") }
+    static var cardsInteropabilityURL: String {
+        let interopURLLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
+        return Localization.string(for: .interoperabilityLink, [interopURLLanguage.rawValue])
+    }
 
     // MARK: - Enable Settings | Exposure Notifications
 
@@ -469,6 +537,8 @@ extension String {
     // MARK: - Exposure Notification Received - User Explanation
 
     static func exposureNotificationUserExplanation(_ one: String) -> String { return Localization.string(for: "exposure.notification.userExplanation", [one]) }
+
+    static func exposureNotificationReminder(_ one: String) -> String { return Localization.string(for: "exposure.notification.reminder", [one]) }
 
     // MARK: - Privacy Agreement
 
@@ -528,6 +598,12 @@ extension String {
     }
 
     static var currentLanguageIdentifier: String {
+        #if DEBUG
+            if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
+                return overriddenCurrentLanguageIdentifier
+            }
+        #endif
+
         let defaultLanguageIdentifier = "en"
         let supportedLanguageCodes = Bundle.main.localizations
 

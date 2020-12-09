@@ -1,3 +1,15 @@
+"moreInformation.cell.settings.title" = "Настройки";
+"moreInformation.cell.settings.subtitle" = "Промени настройките си за ползване на мобилни данни";
+
+/* MARK: - MoreInformation | Settings */
+
+"moreInformation.settings.title" = "Настройки";
+"moreInformation.settings.description" = "CoronaMelder проверява няколко пъти на ден дали си бил близо до някого с коронавирус. Ако изключиш мобилните си данни, приложението ще прави проверка само ако използваш wifi. Срещите ти продължават да се следят, ако при теб липсва интернет връзка.";
+"moreInformation.settings.step1" = "Отвори <b>Настройки</b> на телефона си чрез бутона по-долу";
+"moreInformation.settings.step2" = "Включи или изключи мобилни данни за CoronaMelder";
+"moreInformation.settings.step2.row.title" = "Мобилни данни";
+"moreInformation.settings.button" = "Отвори Настройки";
+
 // supports HTML
 "enableSettings.exposureNotifications.137.step2" = "Отиди на <b>Известия за контакти</b>";
 "enableSettings.exposureNotifications.137.step2.action.title" = "Известия за контакти";
@@ -49,7 +61,6 @@
 "status.icon.accessibility.inactive" = "Жълто кръгче с удивителен знак като предупреждение";
 "status.icon.accessibility.notified" = "Червено кръгче с алармен звънец, който показва, че в момента трябва да се направи нещо";
 "status.notified.today" = "днес";
-
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
 *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
@@ -231,15 +242,15 @@
 "help.what_to_do_with_notification.description" = "Следвай съветите в приложението. Съветите зависят от ситуацията ти. Дали имаш оплаквания, характерни за коронавируса. И на кой ден си бил близо до заразеното лице.<br><br>При всички положения си остани вкъщи, докато със сигурност не разбереш, че нямаш коронавирус. Така ще предотвратиш неволното заразяване на други хора.<br><br>Ако Общинската здравна инспекция (GGD) ти дава по телефона различни съвети от приложението, тогава следвай съветите на GGD.";
 "help.other_reports.title" = "Други известия";
 "help.other_reports.description" = "CoronaMelder може да ти изпрати известие и ако има технически проблем. Например ако bluetooth на телефона ти е изключен. Или ако повече от един ден няма връзка с интернет. Приложението ти помага да разрешиш този проблем.<br><br>Получил си такова известие и приложението все още е активно? Тогава проблемът междувременно вече е решен.<br><br>Понякога получаваш и известия, в които пише, че телефонът ти извършва проверки за COVID-19. Тогава отвори CoronaMelder. Добре е да знаеш: в повечето случаи няма нищо нередно.";
-"help.other_what_does_report_say.title" = "Какво пише в известието?";
+"help.other_what_does_report_say.title" = "Как да разпозная известие?";
 "help.other_what_does_report_say.content1" = "Приложението изпраща известие, ако си бил поне 15 минути близо до някой, при когото по-късно е установен коронавирус.";
 "help.other_what_does_report_say.content2" = "Съобщението се появява на екрана на телефона ти. Също като съобщения от други приложения. Известието носи символа на CoronaMelder.<br><br>Получил си известие? Тогава отвори CoronaMelder. Там ще прочетеш какво можеш да направиш по-нататък.";
 
 "help.pause_app.title" = "Мога ли да спра приложението на пауза?";
-"help.pause_app.description" = "Да, това може да стане, като изключиш bluetooth на телефона си. Това става през <b>Настройки > Bluetooth</b>. Ако си изключиш bluetooth-а, приложението престава да обменя кодове. След това на всеки 24 часа получаваш автоматично напомняне да включиш отново приложението.<br><br>Все пак в повечето случаи не е препоръчително приложението да се поставя на пауза, защото може да забравиш да го включиш отново. В особени ситуации може обаче да поставиш приложението на пауза. Например ако попаднеш в близост до (възможни) пациенти с коронавирус, но знаеш със сигурност, че носиш медицински предпазни средства.";
+"help.pause_app.description" = "Да, това може да стане, като изключиш bluetooth на телефона си. Това става през <b>Настройки > Bluetooth</b>. Внимание: не можеш да сложиш приложението на пауза, като изключиш bluetooth през контролния панел. Ако изключиш bluetooth, приложението престава да обменя кодове. След това на всеки 24 часа получаваш автоматично напомняне да включиш отново приложението.<br><br>Все пак в повечето случаи не е препоръчително приложението да се поставя на пауза, защото може да забравиш да го включиш отново. В особени ситуации обаче можеш да го поставиш на пауза. Например ако попаднеш в близост до (възможни) пациенти с коронавирус, но знаеш със сигурност, че носиш медицински предпазни средства.";
 
 "help.apps_other_countries.title" = "Работи ли CoronaMelder и заедно с приложения от други държави?";
-"help.apps_other_countries.description" = "За съжаление, все още не, но работим усилено, за да стане това възможно. Тогава CoronaMelder ще може да обменя кодове и с някои приложения от други държави. Например германското приложение.<br><br> Ако успоредно с  CoronaMelder инсталираш германското приложение Corona-Warn-App, телефонът ще ти каже, че едновременно може да е активно само едно приложение. Приложението, което избереш, е единственото приложение, което в момента контролира срещите ти. Ако искаш да направиш това в няколко страни, трябва сам да превключваш между приложенията. Тогава можеш да получаваш известия от съответното приложение. Ако превключваш между приложенията по веднъж на ден, и двете приложения контролират срещите ти. По този начин не пропускаш нищо.<br><br>В бъдеще вероятно ще можеш да използваш приложението на собствената си държава и вече няма да има нужда да превключваш ежедневно.";
+"help.apps_other_countries.description" = "CoronaMelder работи заедно с няколко приложения от други европейски държави, между които Германия, Ирландия и Италия.<br><br>Например: стоял си по-дълго време близо до потребител на германското приложение Corona-Warn-App. Този човек си е направил тест в Германия и се е оказал с коронавирус. Когато той обмени своите кодове с германската здравна инспекция, CoronaMelder ще ти изпрати известие. Същото важи и в обратния случай. Тъй като приложенията за коронавируса работят заедно едно с друго, е достатъчно при теб да е включено само едно от тях.<br><br>От 30.11.2020 CoronaMelder ежедневно проверява кодовете на потребителите от различни държави. По тази причина приложението използва повече мобилни данни от преди.   Чрез <b>Настройки</b> на главния екран можеш да посочиш, че приложението ще проверява само чрез wifi дали си бил близо до някого с коронавирус.";
 
 /* MARK: - Message */
 "message.default.title" = "Бил си близо до човек с коронавирус";
@@ -258,14 +269,20 @@
 "main.confirmNotificationRemoval.message" = "След това вече няма да можеш да намериш датата в приложението. Затова я запомни добре.";
 "main.confirmNotificationRemoval.confirm" = "Премахни";
 
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "Тази страница не може да бъде заредена";
+"webview.loadingfailed.subtitle" = "Тук нещо се обърка. Върни се по-късно или опитай отново да заредиш страницата.";
+"webview.loadingfailed.try_again" = "Опитай отново";
+
 /* MARK: - Status */
 "status.appState" = "Приложението е активно";
 "status.appState.inactive.title" = "Приложението не е активно";
 "status.appState.inactive.description" = "CoronaMelder работи само ако са включени необходимите настройки.";
-"status.appState.inactive.no_recent_updates.description" = "През последните 24 часа приложението няма връзка с интернет. Провери дали са включени wifi или мобилните данни  и опитай отново.";
+"status.appState.inactive.notification" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. ";
+"status.appState.inactive.no_recent_updates.description" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. Провери дали са включени wifi или мобилните ти данни и опитай отново.";
 "status.appState.card.title" = "Приложението не е активно";
 "status.appState.card.description" = "CoronaMelder работи само ако са включени необходимите настройки.";
-"status.appState.card.no_recent_updates.description" = "През последните 24 часа приложението няма връзка с интернет. Провери дали са включени wifi или мобилните данни  и опитай отново.";
+"status.appState.card.no_recent_updates.description" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. Провери дали са включени wifi или мобилните ти данни и опитай отново.";
 "status.appState.card.button" = "Включване на приложението";
 "status.appState.card.try_again" = "Опитай отново";
 "status.active.description" = "Срещите продължават да се следят дори като затвориш приложението.";
@@ -278,14 +295,14 @@
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Повече информация";
 
-"moreInformation.cell.about.title" = "Въпроси относно приложението?";
+"moreInformation.cell.about.title" = "Въпроси относно приложението";
 "moreInformation.cell.about.subtitle" = "Виж как работи приложението и какво значение има това за защитата на личните ти данни";
 
 "moreInformation.cell.share.title" = "Покани хора да използват приложението";
 "moreInformation.cell.share.subtitle" = "Сподели приложението с други хора, за да поставим коронавируса заедно под контрол";
 
-"moreInformation.cell.receivedNotification.title" = "Какво пише в едно известие?";
-"moreInformation.cell.receivedNotification.subtitle" = "Прочети какво можеш да направиш, след като си бил близо до някой с коронавирус.";
+"moreInformation.cell.receivedNotification.title" = "Как да разпозная известие?";
+"moreInformation.cell.receivedNotification.subtitle" = "Виж как изглежда едно известие и какво можеш да направиш, ако получиш такова";
 
 "moreInformation.cell.requestTest.title" = "Заявяване на тест за коронавирус";
 "moreInformation.cell.requestTest.subtitle" = "Разбери възможно най-бързо дали самият ти си заразен";
@@ -325,6 +342,8 @@
 "moreInformation.about.faq.power_usage" = "Колко ток използва приложението?";
 "moreInformation.about.faq.deletion" = "Как да премахна bluetooth данните от телефона си?";
 "moreInformation.about.faq.deletion.description" = "Можеш сам да изтриеш bluetooth данните, които CoronaMelder е запазило. Това става така.<br><br>В телефона си отиди на Настройки > Известия за излагане на риск > Статус на 'Следене на излагането на риск'. Кликни на Изтрий файла за запис на излагания на риск.<br><br>Ако не искаш приложението повече да съхранява нови bluetooth данни, тогава премахни приложението.";
+
+"moreInformation.about.interoperability.title" = "Заедно с кои чуждестранни приложения работи CoronaMelder? ";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "Съобщи на други хора, че помагаш за спирането на вируса";
@@ -371,9 +390,9 @@
 "moreInformation.requestTest.button.title" = "Заявяване на тест за коронавирус";
 "moreInformation.requestTest.receivedNotification.title" = "Имаш ли оплаквания, характерни за коронавируса? Заяви тест";
 "moreInformation.requestTest.receivedNotification.content" = "Имаш (леки) оплаквания, които са характерни за коронавируса? Направи си безплатен тест. Не отнема много време и в повечето случаи лесно се записва час.<br><br>Резултатът става известен в рамките на 48 часа. Остани вкъщи, докато научиш резултата.";
-"moreInformation.requestTest.complaints" = "Имаш сериозни оплаквания като висока температура или затруднено дишане? Или се намираш в рискова група и си вдигнал температура? Първо се обади на личния си лекар.";
+"moreInformation.requestTest.complaints" = "Имаш сериозни оплаквания като висока температура или затруднено дишане? Или се намираш в рискова група и си вдигнал температура? Обади се първо на личния си лекар.";
 "moreInformation.requestTest.link" = "Отиди на coronatest.nl";
-"moreInformation.requestTest.phone" = "Обади се на 0800-1202";
+"moreInformation.requestTest.phone" = "Обади се на %@";
 
 "moreInformation.notification.measures.title" = "Изпълнявай стриктно следните мерки:";
 "moreInformation.notification.measures.step1" = "Мий ръцете си редовно.";
@@ -398,6 +417,11 @@
 "cards.notificationsOff.title" = "Известията са <u>изключени</u>";
 "cards.notificationsOff.content" = "Включи общи известия, така че приложението директно да споделя информация, когато е необходимо.";
 "cards.notificationsOff.action" = "Включване на известия";
+
+"cards.interopannouncement.title" = "Добре е да се знае";
+"cards.interopannouncement.content" = "От 30.11 CoronaMelder работи заедно с приложения за коронавируса от други европейски държави.";
+"cards.interopannouncement.action" = "Повече информация";
+"cards.interopannouncement.secondaryaction" = "Затваряне";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Включване на известия за контакт";
@@ -435,7 +459,7 @@
 "exposure.notification.reminder" = "Напомняне: %@";
 
 "privacyAgreement.title" = "CoronaMelder използва данните ти по следния начин";
-"privacyAgreement.message" = "В %@ е посочено как CoronaMelder използва данните ти.";
+"privacyAgreement.message" = "В %@ е посочено как CoronaMelder използва данните ти";
 "privacyAgreement.message.link" = "декларация за поверителност";
 "privacyAgreement.list.step0" = "Използването на  CoronaMelder винаги е доброволно";
 "privacyAgreement.list.step1" = "Твоето приложение изпраща кодирани bluetooth данни.";
