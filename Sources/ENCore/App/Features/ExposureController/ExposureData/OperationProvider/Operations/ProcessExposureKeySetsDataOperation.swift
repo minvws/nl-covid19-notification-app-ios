@@ -120,14 +120,14 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         // verify whether sig and bin files are present
         guard let sigPath = signatureFileUrl(forKeySetHolder: keySetHolder)?.path,
-            fileManager.default.fileExists(atPath: sigPath,
-                                           isDirectory: &isDirectory), isDirectory.boolValue == false else {
+            fileManager.fileExists(atPath: sigPath,
+                                   isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
         guard let binPath = binaryFileUrl(forKeySetHolder: keySetHolder)?.path,
-            fileManager.default.fileExists(atPath: binPath,
-                                           isDirectory: &isDirectory), isDirectory.boolValue == false else {
+            fileManager.fileExists(atPath: binPath,
+                                   isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
@@ -319,11 +319,11 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         keySetHolders.forEach { keySetHolder in
             if let sigFileURL = signatureFileUrl(forKeySetHolder: keySetHolder) {
-                try? fileManager.default.removeItem(at: sigFileURL)
+                try? fileManager.removeItem(at: sigFileURL)
             }
 
             if let binFileURL = binaryFileUrl(forKeySetHolder: keySetHolder) {
-                try? fileManager.default.removeItem(at: binFileURL)
+                try? fileManager.removeItem(at: binFileURL)
             }
         }
     }
