@@ -178,7 +178,7 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     }
 
     private func dummyKeySetHolder(withIdentifier identifier: String = "identifier") -> ExposureKeySetHolder {
-        ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date())
+        ExposureKeySetHolder(identifier: identifier, signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date())
     }
 
     private func mockStorage(storedKeySetHolders: [ExposureKeySetHolder] = [],
