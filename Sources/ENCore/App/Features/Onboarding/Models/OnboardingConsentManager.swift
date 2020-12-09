@@ -22,6 +22,7 @@ protocol OnboardingConsentManaging {
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
     func getAppStoreUrl(_ completion: @escaping ((String?) -> ()))
     func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ())
+    func didCompleteConsent()
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
@@ -196,6 +197,13 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         exposureController.getAppVersionInformation { data in
             completion(data?.appStoreURL)
         }
+    }
+
+    func didCompleteConsent() {
+        exposureController.didCompleteOnboarding = true
+
+        // Mark all announcements that were made during the onboarding process as "seen"
+        exposureController.seenAnnouncements = [.interopAnnouncement]
     }
 
     private let exposureStateStream: ExposureStateStreaming

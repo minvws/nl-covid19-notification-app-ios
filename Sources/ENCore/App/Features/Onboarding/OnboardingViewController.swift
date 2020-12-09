@@ -80,11 +80,17 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     // MARK: - OnboardingConsentListener
 
+    func didCompleteConsent() {
+        self.onboardingConsentManager.didCompleteConsent()
+        listener?.didCompleteConsent()
+    }
+
     func consentClose() {
         listener?.didCompleteOnboarding()
     }
 
     func consentRequest(step: OnboardingConsentStep.Index) {
+        if step == .share {}
         router?.routeToConsent(withIndex: step.rawValue, animated: true)
     }
 

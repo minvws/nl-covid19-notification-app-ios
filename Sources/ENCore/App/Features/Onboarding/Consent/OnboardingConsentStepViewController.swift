@@ -135,6 +135,9 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             onboardingConsentManager.getNextConsentStep(consentStep.step, skippedCurrentStep: skipCurrentStep) { nextStep in
                 if let nextStep = nextStep {
                     self.listener?.consentRequest(step: nextStep)
+                    if nextStep == .share {
+                        self.listener?.didCompleteConsent()
+                    }
                 } else {
                     self.listener?.consentClose()
                 }

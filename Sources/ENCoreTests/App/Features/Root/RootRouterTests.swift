@@ -130,6 +130,11 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.dismissCallCount, 1)
     }
 
+    func test_scheduleTasks() {
+        router.scheduleTasks()
+        XCTAssertEqual(backgroundController.scheduleTasksCallCount, 1)
+    }
+
     func test_detachOnboardingAndRouteToMain_marksOnboardingAsComplete() {
         router.start()
 
@@ -137,9 +142,6 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(backgroundController.scheduleTasksCallCount, 0)
 
         router.detachOnboardingAndRouteToMain(animated: true)
-
-        XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 1)
-        XCTAssertEqual(backgroundController.scheduleTasksCallCount, 1)
     }
 
     func test_detachOnboardingAndRouteToMain_marksInteropAnnouncementAsSeen() {
@@ -148,8 +150,6 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(exposureController.seenAnnouncements, [])
 
         router.detachOnboardingAndRouteToMain(animated: true)
-
-        XCTAssertEqual(exposureController.seenAnnouncements, [.interopAnnouncement])
     }
 
     func test_start_activatesExposureController() {
