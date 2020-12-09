@@ -36,6 +36,9 @@ protocol ExposureDataControlling: AnyObject {
     var lastAppLaunchDate: Date? { get }
     var lastUnseenExposureNotificationDate: Date? { get }
 
+    func setLastDecoyProcessDate(_ date: Date)
+    var canProcessDecoySequence: Bool { get }
+
     func removeLastExposure() -> AnyPublisher<(), Never>
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
     func setLastENStatusCheckDate(_ date: Date)
@@ -55,6 +58,7 @@ protocol ExposureDataControlling: AnyObject {
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
+    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
     func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
     var isFirstRun: Bool { get }

@@ -44,6 +44,8 @@ struct ExposureDataStorageKey {
                                                                storeType: .insecure(volatile: false))
     static let exposureApiCallDates = CodableStorageKey<[Date]>(name: "exposureApiCalls",
                                                                 storeType: .insecure(volatile: false))
+    static let exposureApiBackgroundCallDates = CodableStorageKey<[Date]>(name: "exposureApiBackgroundCallDates",
+                                                                          storeType: .insecure(volatile: false))
     static let onboardingCompleted = CodableStorageKey<Bool>(name: "onboardingCompleted",
                                                              storeType: .insecure(volatile: false))
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
@@ -54,6 +56,8 @@ struct ExposureDataStorageKey {
                                                                             storeType: .insecure(volatile: false))
     static let seenAnnouncements = CodableStorageKey<[Announcement]>(name: "seenAnnouncements",
                                                                      storeType: .insecure(volatile: false))
+    static let lastDecoyProcessDate = CodableStorageKey<Date>(name: "lastDecoyProcessDate",
+                                                              storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
@@ -87,9 +91,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
         return requestApplicationConfiguration()
             .flatMap { _ in
-                self.fetchAndStoreExposureKeySets()
+                self.fetchAndStoreExposureKeySets().catch { _ in
+                    self.processStoredExposureKeySets(exposureManager: exposureManager)
+                }
             }
-            .flatMap {
+            .flatMap { _ in
                 self.processStoredExposureKeySets(exposureManager: exposureManager)
             }
             .share()
@@ -130,6 +136,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     var lastUnseenExposureNotificationDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate)
+    }
+
+    func setLastDecoyProcessDate(_ date: Date) {
+        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate, completion: { _ in })
+    }
+
+    var canProcessDecoySequence: Bool {
+        guard let date = lastDecoyProcessDate else {
+            return true
+        }
+        return !Calendar.current.isDateInToday(date)
     }
 
     func removeLastExposure() -> AnyPublisher<(), Never> {
@@ -279,7 +296,19 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
+    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError> {
+        requestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return applicationConfiguration.appointmentPhoneNumber
+            }
+            .eraseToAnyPublisher()
+    }
+
     // MARK: - Private
+
+    private var lastDecoyProcessDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
+    }
 
     private func detectFirstRunAndEraseKeychainIfRequired() {
         guard storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.firstRunIdentifier) == nil else {

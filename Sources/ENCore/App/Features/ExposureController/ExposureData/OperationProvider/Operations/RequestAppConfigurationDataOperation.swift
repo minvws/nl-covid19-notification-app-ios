@@ -22,6 +22,7 @@ struct ApplicationConfiguration: Codable, Equatable {
     let requestMaximumSize: Int
     let repeatedUploadDelay: Int
     let decativated: Bool
+    let appointmentPhoneNumber: String
 }
 
 final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {

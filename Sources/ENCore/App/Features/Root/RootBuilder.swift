@@ -87,10 +87,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return builder.build()
     }()
 
-    lazy var dataController: ExposureDataControlling = {
-        return ExposureDataControllerBuilder(dependency: self).build()
-    }()
-
     lazy var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming = {
         let networkConfiguration: NetworkConfiguration
 
@@ -124,6 +120,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var backgroundController: BackgroundControlling = {
         return BackgroundControllerBuilder(dependency: self).build()
     }()
+
+    fileprivate var dataController: ExposureDataControlling {
+        return ExposureDataControllerBuilder(dependency: self).build()
+    }
 
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()

@@ -34,7 +34,7 @@ enum ExposureManagerError: Error {
     case internalTypeMismatch // programmers error
 }
 
-/// @mockable
+/// @mockable(history: detectExposures = true)
 protocol ExposureManaging {
 
     var authorizationStatus: ENAuthorizationStatus { get }

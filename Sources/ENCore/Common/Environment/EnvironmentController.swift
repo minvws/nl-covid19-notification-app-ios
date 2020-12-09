@@ -10,11 +10,20 @@ import Foundation
 /// @mockable
 protocol EnvironmentControlling {
     var isiOS137orHigher: Bool { get }
+    var isiOS136orHigher: Bool { get }
 }
 
 class EnvironmentController: EnvironmentControlling {
     var isiOS137orHigher: Bool {
         if #available(iOS 13.7, *) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    var isiOS136orHigher: Bool {
+        if #available(iOS 13.6, *) {
             return true
         } else {
             return false

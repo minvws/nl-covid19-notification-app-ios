@@ -379,6 +379,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 }
 
                 self?.exposureController.activate(inBackgroundMode: false)
+                self?.backgroundController.performDecoySequenceIfNeeded()
 
                 completion?(false)
 

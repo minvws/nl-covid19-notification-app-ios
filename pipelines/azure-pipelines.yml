@@ -3,6 +3,8 @@ trigger:
   - master
   - release/*
 
+#variables:
+
 pool:
   vmImage: macos-latest
 
@@ -54,11 +56,5 @@ stages:
       - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
         displayName: 'Publish Quality Gate Result'
       # Run distribution on the master and release/ branches only          
-      - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+      - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')) }}:
         - template: distribute.yml
-          parameters:
-            masterReleaseType: Master
-      - ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/release/') }}:
-        - template: distribute.yml
-          parameters:
-            masterReleaseType: Release

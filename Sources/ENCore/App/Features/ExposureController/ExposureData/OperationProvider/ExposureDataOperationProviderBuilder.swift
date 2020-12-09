@@ -56,6 +56,14 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
     var application: ApplicationControlling {
         return ApplicationController()
     }
+
+    var fileManager: FileManaging {
+        return FileManager.default
+    }
+
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
 }
 
 final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationProviderDependency>, ExposureDataOperationProviderBuildable {
@@ -67,6 +75,8 @@ final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationP
                                                  applicationSignatureController: dependencyProvider.dependency.applicationSignatureController,
                                                  localPathProvider: dependencyProvider.localPathProvider,
                                                  userNotificationCenter: dependencyProvider.userNotificationCenter,
-                                                 application: dependencyProvider.application)
+                                                 application: dependencyProvider.application,
+                                                 fileManager: dependencyProvider.fileManager,
+                                                 environmentController: dependencyProvider.environmentController)
     }
 }

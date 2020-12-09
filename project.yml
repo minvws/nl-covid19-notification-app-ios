@@ -35,7 +35,7 @@ targets:
         CFBundleDisplayName: "🐞 CoronaMelder"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
-        CFBundleShortVersionString: '1.1.3'
+        CFBundleShortVersionString: '1.1.4'
         CFBundleVersion: "1"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes:
