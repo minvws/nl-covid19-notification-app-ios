@@ -10,7 +10,10 @@ import Foundation
 /// @mockable
 protocol FileManaging {
     func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool
+    func fileExists(atPath path: String) -> Bool
     func removeItem(at URL: URL) throws
+    func removeItem(atPath path: String) throws
+    func moveItem(at srcURL: URL, to dstURL: URL) throws
 }
 
 extension FileManager: FileManaging {}

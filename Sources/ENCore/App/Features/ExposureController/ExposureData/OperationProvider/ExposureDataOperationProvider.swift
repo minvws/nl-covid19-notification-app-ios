@@ -70,7 +70,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
         return RequestExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    localPathProvider: localPathProvider,
-                                                   exposureKeySetIdentifiers: identifiers)
+                                                   exposureKeySetIdentifiers: identifiers,
+                                                   fileManager: fileManager)
     }
 
     var requestManifestOperation: RequestAppManifestDataOperation {
