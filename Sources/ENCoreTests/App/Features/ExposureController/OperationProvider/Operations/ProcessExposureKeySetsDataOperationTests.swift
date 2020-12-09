@@ -51,6 +51,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldRetrieveStoredKeySetHolders() {
 
         let keySetExpectation = expectation(description: "keySetHoldersRequested")
+        keySetExpectation.expectedFulfillmentCount = 2
 
         mockStorageController.retrieveDataHandler = { key in
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
@@ -110,6 +111,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
+        mockEnvironmentController.isiOS136orHigher = true
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
@@ -177,6 +179,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
+        mockEnvironmentController.isiOS136orHigher = true
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
@@ -210,6 +213,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
+        mockEnvironmentController.isiOS136orHigher = true
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
