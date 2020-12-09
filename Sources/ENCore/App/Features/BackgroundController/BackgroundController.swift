@@ -298,7 +298,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         logDebug("Background: App Update Required Check Function Called")
 
         return exposureController
-            .appUpdateRequiredCheck()
+            .sendNotificationIfAppShouldUpdate()
             .handleEvents(
                 receiveCompletion: { [weak self] completion in
                     switch completion {

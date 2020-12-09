@@ -18,7 +18,7 @@ final class ExposureController: ExposureControlling, Logging {
          networkStatusStream: NetworkStatusStreaming,
          userNotificationCenter: UserNotificationCenter,
          mutableBluetoothStateStream: MutableBluetoothStateStreaming,
-         currentAppVersion: String?) {
+         currentAppVersion: String) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
@@ -397,36 +397,39 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    func appUpdateRequiredCheck() -> AnyPublisher<(), Never> {
+    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError> {
         return Deferred {
             Future { promise in
 
-                self.logDebug("App Update Required Check Started")
+                self.logDebug("appShouldUpdateCheck Started")
 
-                guard let currentAppVersion = self.currentAppVersion else {
-                    self.logError("Error retrieving app current version")
-                    return promise(.success(()))
+                self.shouldAppUpdate { updateInformation in
+                    return promise(.success(updateInformation))
                 }
+            }
+        }.eraseToAnyPublisher()
+    }
 
-                self.getAppVersionInformation { appVersionInformation in
+    func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never> {
+        return Deferred {
+            Future { promise in
 
-                    guard let appVersionInformation = appVersionInformation else {
-                        self.logError("Error retrieving app version information")
+                self.logDebug("sendNotificationIfAppShouldUpdate Started")
+
+                self.shouldAppUpdate { updateInformation in
+
+                    guard updateInformation.shouldUpdate, let appVersionInformation = updateInformation.versionInformation else {
                         return promise(.success(()))
                     }
 
-                    if appVersionInformation.minimumVersion.compare(currentAppVersion, options: .numeric) == .orderedDescending {
-                        let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
+                    let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
 
-                        let content = UNMutableNotificationContent()
-                        content.body = message
-                        content.sound = .default
-                        content.badge = 0
+                    let content = UNMutableNotificationContent()
+                    content.body = message
+                    content.sound = .default
+                    content.badge = 0
 
-                        self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
-                            promise(.success(()))
-                        }
-                    } else {
+                    self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
                         promise(.success(()))
                     }
                 }
@@ -532,6 +535,20 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     // MARK: - Private
+
+    private func shouldAppUpdate(completion: @escaping (AppUpdateInformation) -> ()) {
+        getAppVersionInformation { appVersionInformation in
+
+            guard let appVersionInformation = appVersionInformation else {
+                self.logError("Error retrieving app version information")
+                return completion(AppUpdateInformation(shouldUpdate: false, versionInformation: nil))
+            }
+
+            let shouldUpdate = appVersionInformation.minimumVersion.compare(self.currentAppVersion, options: .numeric) == .orderedDescending
+
+            completion(AppUpdateInformation(shouldUpdate: shouldUpdate, versionInformation: appVersionInformation))
+        }
+    }
 
     private func postExposureManagerActivation() {
         logDebug("`postExposureManagerActivation`")
@@ -713,7 +730,7 @@ final class ExposureController: ExposureControlling, Logging {
     private var isPushNotificationsEnabled = false
     private let userNotificationCenter: UserNotificationCenter
     private var updateStream: AnyPublisher<(), ExposureDataError>?
-    private let currentAppVersion: String?
+    private let currentAppVersion: String
 }
 
 extension LabConfirmationKey: ExposureConfirmationKey {
