@@ -74,7 +74,7 @@ steps:
     xcWorkspacePath: 'EN.xcodeproj'
     scheme: 'EN'
     xcodeVersion: 'specifyPath'
-    xcodeDeveloperDir: '/Applications/Xcode_12.app'
+    xcodeDeveloperDir: '/Applications/Xcode_12.2.app'
     provisioningProfileName: ${{ parameters.provisioningProfileName }}
     signingOption: ${{ parameters.signingOption }}
     packageApp: ${{ parameters.packageApp }}
@@ -89,7 +89,7 @@ steps:
     xcWorkspacePath: EN.xcodeproj
     scheme: ENCore
     xcodeVersion: 'specifyPath'
-    xcodeDeveloperDir: '/Applications/Xcode_12.app'
+    xcodeDeveloperDir: '/Applications/Xcode_12.2.app'
     destinationPlatformOption: iOS
-    destinationSimulators: 'iPhone 11,OS=14.0'
+    destinationSimulators: 'iPhone 12,OS=14.2'
     publishJUnitResults: true
