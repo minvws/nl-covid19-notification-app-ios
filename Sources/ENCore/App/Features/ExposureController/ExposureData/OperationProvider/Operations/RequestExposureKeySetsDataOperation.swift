@@ -26,11 +26,13 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          localPathProvider: LocalPathProviding,
-         exposureKeySetIdentifiers: [String]) {
+         exposureKeySetIdentifiers: [String],
+         fileManager: FileManaging) {
         self.networkController = networkController
         self.storageController = storageController
         self.localPathProvider = localPathProvider
         self.exposureKeySetIdentifiers = exposureKeySetIdentifiers
+        self.fileManager = fileManager
     }
 
     // MARK: - ExposureDataOperation
@@ -178,16 +180,16 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                     let dstBinaryUrl = keySetStorageUrl.appendingPathComponent(dstBinaryFilename)
 
                     do {
-                        if FileManager.default.fileExists(atPath: dstSignatureUrl.path) {
-                            try FileManager.default.removeItem(atPath: dstSignatureUrl.path)
+                        if self.fileManager.fileExists(atPath: dstSignatureUrl.path) {
+                            try self.fileManager.removeItem(atPath: dstSignatureUrl.path)
                         }
 
-                        if FileManager.default.fileExists(atPath: dstBinaryUrl.path) {
-                            try FileManager.default.removeItem(atPath: dstBinaryUrl.path)
+                        if self.fileManager.fileExists(atPath: dstBinaryUrl.path) {
+                            try self.fileManager.removeItem(atPath: dstBinaryUrl.path)
                         }
 
-                        try FileManager.default.moveItem(at: srcSignatureUrl, to: dstSignatureUrl)
-                        try FileManager.default.moveItem(at: srcBinaryUrl, to: dstBinaryUrl)
+                        try self.fileManager.moveItem(at: srcSignatureUrl, to: dstSignatureUrl)
+                        try self.fileManager.moveItem(at: srcBinaryUrl, to: dstBinaryUrl)
                     } catch {
                         self.logDebug("Error while moving KeySet \(identifier) to final destination: \(error)")
                         // do nothing, just ignore this keySetHolder
@@ -215,11 +217,13 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         return Deferred {
             return Future<[ExposureKeySetHolder], ExposureDataError> { promise in
 
+                // mark all keysets as processed
+                // ensure processDate is in the past to not have these keysets count towards the rate limit
                 let keySetHolders = identifiers.map { identifier in
                     ExposureKeySetHolder(identifier: identifier,
                                          signatureFilename: nil,
                                          binaryFilename: nil,
-                                         processDate: Date(),
+                                         processDate: Date().addingTimeInterval(-60 * 60 * 24),
                                          creationDate: Date())
                 }
 
@@ -267,12 +271,5 @@ final class RequestExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let storageController: StorageControlling
     private let localPathProvider: LocalPathProviding
     private let exposureKeySetIdentifiers: [String]
-}
-
-extension Array {
-    func chunked(into size: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: size).map {
-            Array(self[$0 ..< Swift.min($0 + size, count)])
-        }
-    }
+    private let fileManager: FileManaging
 }

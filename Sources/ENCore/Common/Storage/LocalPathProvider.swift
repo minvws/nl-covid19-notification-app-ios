@@ -14,6 +14,7 @@ enum LocalFolder {
     case exposureKeySets
 }
 
+/// @mockable
 protocol LocalPathProviding {
     func path(for folder: LocalFolder) -> URL?
 }
