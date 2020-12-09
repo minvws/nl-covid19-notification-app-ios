@@ -35,6 +35,19 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockFileManager = FileManagingMock()
         mockEnvironmentController = EnvironmentControllingMock()
 
+        // Default handlers
+        mockEnvironmentController.isiOS136orHigher = true
+        mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
+        mockUserNotificationCenter.addHandler = { $1?(nil) }
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            completion(.success(ExposureDetectionSummaryMock()))
+        }
+        mockFileManager.fileExistsHandler = { _, _ in true }
+        mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
+        mockStorageController.storeHandler = { object, identifiedBy, completion in
+            completion(nil)
+        }
+
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
             storageController: mockStorageController,
@@ -51,7 +64,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldRetrieveStoredKeySetHolders() {
 
         let keySetExpectation = expectation(description: "keySetHoldersRequested")
-        keySetExpectation.expectedFulfillmentCount = 2
 
         mockStorageController.retrieveDataHandler = { key in
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
@@ -76,18 +88,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
-        mockEnvironmentController.isiOS136orHigher = true
-        mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
-        mockUserNotificationCenter.addHandler = { $1?(nil) }
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            completion(.success(ExposureDetectionSummaryMock()))
-        }
-        mockFileManager.fileExistsHandler = { _, _ in true }
-        mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
-        mockStorageController.storeHandler = { object, identifiedBy, completion in
-            completion(nil)
-        }
 
         sut.execute()
             .assertNoFailure()
@@ -111,18 +112,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
-        mockEnvironmentController.isiOS136orHigher = true
-        mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
-        mockUserNotificationCenter.addHandler = { $1?(nil) }
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            completion(.success(ExposureDetectionSummaryMock()))
-        }
-        mockFileManager.fileExistsHandler = { _, _ in true }
-        mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
-        mockStorageController.storeHandler = { object, identifiedBy, completion in
-            completion(nil)
-        }
 
         sut.execute()
             .assertNoFailure()
@@ -144,18 +134,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
-        mockEnvironmentController.isiOS136orHigher = true
-        mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
-        mockUserNotificationCenter.addHandler = { $1?(nil) }
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            completion(.success(ExposureDetectionSummaryMock()))
-        }
-        mockFileManager.fileExistsHandler = { _, _ in true }
-        mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiCallDates: exposureApiForegroundCallDates)
-        mockStorageController.storeHandler = { object, identifiedBy, completion in
-            completion(nil)
-        }
 
         sut.execute()
             .assertNoFailure()
@@ -179,18 +158,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
-        mockEnvironmentController.isiOS136orHigher = true
-        mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
-        mockUserNotificationCenter.addHandler = { $1?(nil) }
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            completion(.success(ExposureDetectionSummaryMock()))
-        }
-        mockFileManager.fileExistsHandler = { _, _ in true }
-        mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiCallDates: exposureApiForegroundCallDates)
-        mockStorageController.storeHandler = { object, identifiedBy, completion in
-            completion(nil)
-        }
 
         sut.execute()
             .assertNoFailure()
@@ -213,18 +181,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
-        mockEnvironmentController.isiOS136orHigher = true
-        mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
-        mockUserNotificationCenter.addHandler = { $1?(nil) }
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            completion(.success(ExposureDetectionSummaryMock()))
-        }
-        mockFileManager.fileExistsHandler = { _, _ in true }
-        mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates, exposureApiCallDates: exposureApiForegroundCallDates)
-        mockStorageController.storeHandler = { object, identifiedBy, completion in
-            completion(nil)
-        }
 
         sut.execute()
             .assertNoFailure()
