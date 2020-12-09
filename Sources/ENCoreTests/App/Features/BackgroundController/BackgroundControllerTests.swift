@@ -76,32 +76,6 @@ final class BackgroundControllerTests: XCTestCase {
 
     // MARK: - Tests
 
-    func test_scheduleDecoySequence() {
-        exposureController.isAppDeactivatedHandler = {
-            return Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
-        }
-        let date = Date(timeIntervalSince1970: 1599745276000)
-        DateTimeTestingOverrides.overriddenCurrentDate = date
-        let calendar = Calendar.current
-        let today = calendar.dateComponents([.day], from: date).day ?? 0
-        let exp = expectation(description: "asyncTask")
-        taskScheduler.submitHandler = { task in
-            if task.identifier.contains(BackgroundTaskIdentifiers.decoySequence.rawValue) {
-                guard let date = task.earliestBeginDate else {
-                    return XCTFail()
-                }
-                let components = calendar.dateComponents([.hour, .day], from: date)
-                XCTAssert(components.day == (today + 1))
-                XCTAssert(components.hour == 1)
-                exp.fulfill()
-            }
-        }
-
-        controller.scheduleTasks()
-
-        wait(for: [exp], timeout: 1)
-    }
-
     func test_handleRefresh() {
         let exp = expectation(description: "asyncTask")
         let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
