@@ -235,7 +235,14 @@ final class ExposureController: ExposureControlling, Logging {
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
             .handleEvents(
                 receiveCompletion: { completion in
-                    self.logDebug("fetchAndProcessExposureKeySets Completed")
+
+                    switch completion {
+                    case .finished:
+                        self.logDebug("fetchAndProcessExposureKeySets Completed successfuly")
+                    case let .failure(error):
+                        self.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
+                    }
+
                     self.updateStatusStream()
                     self.exposureKeyUpdateStream = nil
                 },

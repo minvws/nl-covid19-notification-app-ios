@@ -5,9 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 
-final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
+final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
@@ -32,6 +33,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
                                          configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation? {
         guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
+            self.logDebug("ExposureDataOperationProviderImpl: localPathProvider lailed to find path for exposure keysets")
             return nil
         }
 
