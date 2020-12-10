@@ -66,9 +66,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private(set) var isFirstRun: Bool = false
 
     init(operationProvider: ExposureDataOperationProvider,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         environmentController: EnvironmentControlling) {
         self.operationProvider = operationProvider
         self.storageController = storageController
+        self.environmentController = environmentController
 
         detectFirstRunAndEraseKeychainIfRequired()
         compareAndUpdateLastRanAppVersion(isFirstRun: isFirstRun)
@@ -358,7 +360,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - Version Management
 
     private func compareAndUpdateLastRanAppVersion(isFirstRun: Bool) {
-        guard let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else {
+        guard let appVersion = environmentController.appVersion else {
             return
         }
 
@@ -374,6 +376,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func executeUpdate(from fromVersion: String, to toVersion: String) {
+
+        // Always clear the app manifest on update to prevent stale settings from being used
+        // Especially when switching to a new API version, manifest info like the resource bundle ID
+        // from the old manifest might not be appropriate for the new API version
+        storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
+
         if toVersion == "1.0.6" {
             // for people updating, mark onboarding as completed. OnboardingCompleted is a new
             // variable to keep track whether people have completed onboarding. For people who update
@@ -388,4 +396,5 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
+    private let environmentController: EnvironmentControlling
 }
