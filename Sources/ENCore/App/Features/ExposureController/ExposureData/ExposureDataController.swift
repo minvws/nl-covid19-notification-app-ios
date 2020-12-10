@@ -66,9 +66,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private(set) var isFirstRun: Bool = false
 
     init(operationProvider: ExposureDataOperationProvider,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         environmentController: EnvironmentControlling) {
         self.operationProvider = operationProvider
         self.storageController = storageController
+        self.environmentController = environmentController
 
         detectFirstRunAndEraseKeychainIfRequired()
         compareAndUpdateLastRanAppVersion(isFirstRun: isFirstRun)
@@ -358,7 +360,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - Version Management
 
     private func compareAndUpdateLastRanAppVersion(isFirstRun: Bool) {
-        guard let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else {
+        guard let appVersion = environmentController.appVersion else {
             return
         }
 
@@ -394,4 +396,5 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
+    private let environmentController: EnvironmentControlling
 }

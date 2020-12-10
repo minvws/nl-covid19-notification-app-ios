@@ -92,6 +92,10 @@ private final class ExposureDataControllerDependencyProvider: DependencyProvider
         return dependency.applicationSignatureController
     }
 
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
+
     // MARK: - Private Dependencies
 
     var operationProvider: ExposureDataOperationProvider {
@@ -104,6 +108,7 @@ final class ExposureDataControllerBuilder: Builder<ExposureDataControllerDepende
         let dependencyProvider = ExposureDataControllerDependencyProvider(dependency: dependency)
 
         return ExposureDataController(operationProvider: dependencyProvider.operationProvider,
-                                      storageController: dependencyProvider.storageController)
+                                      storageController: dependencyProvider.storageController,
+                                      environmentController: dependencyProvider.environmentController)
     }
 }

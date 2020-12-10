@@ -11,6 +11,7 @@ import Foundation
 protocol EnvironmentControlling {
     var isiOS137orHigher: Bool { get }
     var isiOS136orHigher: Bool { get }
+    var appVersion: String? { get }
 }
 
 class EnvironmentController: EnvironmentControlling {
@@ -28,5 +29,9 @@ class EnvironmentController: EnvironmentControlling {
         } else {
             return false
         }
+    }
+
+    var appVersion: String? {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     }
 }
