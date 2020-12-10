@@ -40,6 +40,8 @@ final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
                 .eraseToAnyPublisher()
         }
 
+        logDebug("Getting fresh manifest from network")
+
         return networkController
             .applicationManifest
             .mapError { $0.asExposureDataError }
