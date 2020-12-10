@@ -374,6 +374,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func executeUpdate(from fromVersion: String, to toVersion: String) {
+
+        // Always clear the app manifest on update to prevent stale settings from being used
+        // Especially when switching to a new API version, manifest info like the resource bundle ID
+        // from the old manifest might not be appropriate for the new API version
+        storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
+
         if toVersion == "1.0.6" {
             // for people updating, mark onboarding as completed. OnboardingCompleted is a new
             // variable to keep track whether people have completed onboarding. For people who update
