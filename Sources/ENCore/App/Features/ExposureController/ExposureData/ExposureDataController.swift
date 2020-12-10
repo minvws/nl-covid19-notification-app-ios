@@ -162,11 +162,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
+        self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
             .flatMap { (configuration) -> AnyPublisher<(), ExposureDataError> in
                 guard let operation = self.operationProvider
                     .processExposureKeySetsOperation(exposureManager: exposureManager,
                                                      configuration: configuration) else {
+                    self.logDebug("ExposureDataController: Failed to create processExposureKeySetsOperation")
                     return Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
                 }
 
@@ -176,6 +178,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func fetchAndStoreExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
+        self.logDebug("ExposureDataController: fetchAndStoreExposureKeySets")
         return requestApplicationManifest()
             .map { (manifest: ApplicationManifest) -> [String] in manifest.exposureKeySetsIdentifiers }
             .flatMap { exposureKeySetsIdentifiers in

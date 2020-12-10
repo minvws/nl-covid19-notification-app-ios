@@ -40,15 +40,21 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
     // MARK: - ExposureDataOperation
 
     func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+        self.logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
+
         if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
             let storedSignature = applicationSignatureController.retrieveStoredSignature(),
             appConfiguration.identifier == appConfigurationIdentifier,
             storedSignature == applicationSignatureController.signature(for: appConfiguration) {
 
+            self.logDebug("RequestAppConfigurationDataOperation: Using cached version")
+
             return Just(appConfiguration)
                 .setFailureType(to: ExposureDataError.self)
                 .eraseToAnyPublisher()
         }
+
+        self.logDebug("RequestAppConfigurationDataOperation: Using network version")
 
         return networkController
             .applicationConfiguration(identifier: appConfigurationIdentifier)
