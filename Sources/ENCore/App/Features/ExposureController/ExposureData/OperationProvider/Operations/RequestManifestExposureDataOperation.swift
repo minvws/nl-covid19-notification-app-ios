@@ -34,6 +34,7 @@ final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
         let updateFrequency = retrieveManifestUpdateFrequency()
 
         if let manifest = retrieveStoredManifest(), manifest.isValid(forUpdateFrequency: updateFrequency) {
+            logDebug("Using cached manifest")
             return Just(manifest)
                 .setFailureType(to: ExposureDataError.self)
                 .eraseToAnyPublisher()
