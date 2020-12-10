@@ -11,6 +11,7 @@ import ENFoundation
 import ExposureNotification
 import Foundation
 import UserNotifications
+import RxSwift
 
 enum BackgroundTaskIdentifiers: String {
     case refresh = "exposure-notification"
