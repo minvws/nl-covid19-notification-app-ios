@@ -202,6 +202,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }.eraseToAnyPublisher()
     }
 
+    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError> {
+        return operationProvider
+            .expiredLabConfirmationNotificationOperation()
+            .execute()
+    }
+
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
         return requestApplicationConfiguration()
             .map { (configuration: ApplicationConfiguration) in

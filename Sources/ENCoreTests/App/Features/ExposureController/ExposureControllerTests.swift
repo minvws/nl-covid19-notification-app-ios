@@ -444,6 +444,10 @@ final class ExposureControllerTests: TestCase {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
+        dataController.processExpiredUploadRequestsHandler = {
+            Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+
         mutableStateStream.exposureState = Just(.init(notifiedState: .notNotified, activeState: .active)).eraseToAnyPublisher()
         exposureManager.authorizationStatus = .authorized
 

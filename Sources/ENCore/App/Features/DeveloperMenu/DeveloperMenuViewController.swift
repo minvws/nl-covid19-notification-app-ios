@@ -173,12 +173,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Last time: \(getLastExposureFetchString()), total processed last 24h: \(getNumberOfProcessedKeySetsInLast24Hours()), total unprocessed left: \(getNumberOfUnprocessedKeySets())",
                               action: { [weak self] in self?.fetchAndProcessKeySets() },
                               enabled: !isFetchingKeys),
-                DeveloperItem(title: "Expire all pending upload requests",
-                              subtitle: "Pending Requests: \(getPendingUploadRequests())",
-                              action: { [weak self] in self?.expirePendingUploadRequests() }),
-                DeveloperItem(title: "Process Pending Upload Requests",
-                              subtitle: "Pending Requests: \(getPendingUploadRequests())",
+                DeveloperItem(title: "Retry Pending Upload Requests",
+                              subtitle: "Pending Unexpired Requests: \(getPendingUploadRequests())",
                               action: { [weak self] in self?.processPendingUploadRequests() }),
+                DeveloperItem(title: "Expire all pending upload requests",
+                              subtitle: "Pending Unexpired Requests: \(getPendingUploadRequests())",
+                              action: { [weak self] in self?.expirePendingUploadRequests() }),
+                DeveloperItem(title: "Process Expired Upload Requests",
+                              subtitle: "Expired Requests: \(getExpiredUploadRequests())",
+                              action: { [weak self] in self?.processExpiredUploadRequests() }),
                 DeveloperItem(title: "Ignore 24h limit of 15 keysets/API calls",
                               subtitle: "Only works with test entitlements, currently set: \(getDailyLimit()), API calls made in last 24h: \(getNumberOfAPICallsInLast24Hours())",
                               action: { [weak self] in self?.toggleDailyLimit() }),
@@ -398,6 +401,14 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             .store(in: &disposeBag)
     }
 
+    private func processExpiredUploadRequests() {
+        exposureController
+            .processExpiredUploadRequests()
+            .sink(receiveCompletion: { [weak self] _ in self?.internalView.tableView.reloadData() },
+                  receiveValue: { _ in })
+            .store(in: &disposeBag)
+    }
+
     private func expirePendingUploadRequests() {
         guard var pendingRequests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) else {
             return
@@ -493,7 +504,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             return "None"
         }
 
-        return "\(pendingRequests.count)"
+        return "\(pendingRequests.filter { !$0.isExpired }.count)"
+    }
+
+    private func getExpiredUploadRequests() -> String {
+        guard let pendingRequests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) else {
+            return "None"
+        }
+
+        return "\(pendingRequests.filter { $0.isExpired }.count)"
     }
 
     private func getLastStoredConfirmationKey() -> String {

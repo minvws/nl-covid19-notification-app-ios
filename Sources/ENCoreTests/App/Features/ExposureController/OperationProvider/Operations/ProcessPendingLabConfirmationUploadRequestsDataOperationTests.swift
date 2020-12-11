@@ -15,18 +15,15 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
     private var operation: ProcessPendingLabConfirmationUploadRequestsDataOperation!
     private let networkController = NetworkControllingMock()
     private let storageController = StorageControllingMock()
-    private let userNotificationCenter = UserNotificationCenterMock()
 
     override func setUp() {
         super.setUp()
 
         operation = ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
                                                                              storageController: storageController,
-                                                                             userNotificationCenter: userNotificationCenter,
                                                                              padding: Padding(minimumRequestSize: 0, maximumRequestSize: 0))
 
         storageController.requestExclusiveAccessHandler = { $0(self.storageController) }
-        userNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
     }
 
     func test_singlePendingRequest_callsPostKeys_andRemovesFromStorageWhenSuccessful() {
@@ -67,7 +64,6 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         XCTAssertEqual(storageController.retrieveDataCallCount, 2)
         XCTAssertEqual(storageController.storeCallCount, 1)
         XCTAssertEqual(storageController.requestExclusiveAccessCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.addCallCount, 0)
 
         XCTAssertNotNil(receivedNewPendingRequests)
         XCTAssertEqual(receivedNewPendingRequests.count, 0)
@@ -97,7 +93,6 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         wait(for: operation)
 
         XCTAssertEqual(networkController.postKeysCallCount, 3)
-        XCTAssertEqual(userNotificationCenter.addCallCount, 0)
     }
 
     func test_pendingRequestIsExpired_doesNotCallNetworkAndDoesNotStoreAgain() {
@@ -127,25 +122,6 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         XCTAssertEqual(receivedRequests.count, 0)
     }
 
-    func test_pendingRequestIsExpired_notifiesUser() {
-        let expiredRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
-                                                                 diagnosisKeys: createDiagnosisKeys(),
-                                                                 expiryDate: Date().addingTimeInterval(-1))
-
-        storageController.retrieveDataHandler = { _ in
-            let jsonEncoder = JSONEncoder()
-            return try! jsonEncoder.encode([expiredRequest])
-        }
-
-        storageController.storeHandler = { _, _, completion in
-            completion(nil)
-        }
-
-        wait(for: operation)
-
-        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
-    }
-
     func test_failedRequest_isScheduledAgain() {
         let request = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
                                                           diagnosisKeys: createDiagnosisKeys(),
@@ -171,29 +147,6 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         XCTAssertNotNil(receivedRequests)
         XCTAssertEqual(receivedRequests.count, 1)
         XCTAssertEqual(receivedRequests[0], request)
-    }
-
-    func test_NotScheduledNotification() {
-        let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
-        DateTimeTestingOverrides.overriddenCurrentDate = date
-
-        XCTAssertEqual(date, currentDate())
-        XCTAssertNil(operation.getCalendarTriggerForGGDOpeningHourIfNeeded())
-    }
-
-    func test_ScheduledNotification() {
-        let date = Date(timeIntervalSince1970: 1593311000) // 28/06/20 02:23
-        DateTimeTestingOverrides.overriddenCurrentDate = date
-
-        let trigger = operation.getCalendarTriggerForGGDOpeningHourIfNeeded()
-
-        XCTAssertEqual(date, currentDate())
-        XCTAssertNotNil(trigger)
-
-        /// GGD working hours
-        XCTAssertEqual(trigger?.dateComponents.hour, 8)
-        XCTAssertEqual(trigger?.dateComponents.minute, 0)
-        XCTAssertEqual(trigger?.dateComponents.timeZone, TimeZone(identifier: "Europe/Amsterdam"))
     }
 
     // MARK: - Private

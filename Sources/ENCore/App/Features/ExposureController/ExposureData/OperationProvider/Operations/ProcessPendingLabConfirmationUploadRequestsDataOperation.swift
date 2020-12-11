@@ -20,11 +20,9 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
-         userNotificationCenter: UserNotificationCenter,
          padding: Padding) {
         self.networkController = networkController
         self.storageController = storageController
-        self.userNotificationCenter = userNotificationCenter
         self.padding = padding
     }
 
@@ -42,16 +40,6 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
             // upload them and get a stream in return
             .map(self.uploadPendingRequest(_:))
 
-        let expiredRequests = allRequests.filter { $0.isExpired }
-
-        // All requests have expired we need to notify the user
-        // so they can manually try the upload again with the GGD
-        if !expiredRequests.isEmpty {
-            notifyUser()
-        }
-
-        logDebug("Expired requests: \(expiredRequests)")
-
         // bundle all streams
         return Publishers.Sequence<[AnyPublisher<(PendingLabConfirmationUploadRequest, Bool), Never>], Never>(sequence: requests)
             // execute one at the same time
@@ -64,7 +52,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
             .collect()
             // remove the successful ones from storage
             .flatMap {
-                self.removeSuccessRequestsFromStorage($0, expiredRequests: expiredRequests)
+                self.removeSuccessRequestsFromStorage($0)
             }
             // we cannot fail, but error type has to match
             .setFailureType(to: ExposureDataError.self)
@@ -105,18 +93,18 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
             .eraseToAnyPublisher()
     }
 
-    private func removeSuccessRequestsFromStorage(_ requests: [PendingLabConfirmationUploadRequest],
-                                                  expiredRequests: [PendingLabConfirmationUploadRequest]) -> AnyPublisher<(), Never> {
+    private func removeSuccessRequestsFromStorage(_ requests: [PendingLabConfirmationUploadRequest]) -> AnyPublisher<(), Never> {
         return Deferred {
             Future { promise in
                 self.storageController.requestExclusiveAccess { storageController in
+
                     // get stored pending requests
-                    var requestsToStore = storageController
+                    let previousRequests = storageController
                         .retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
 
-                    // filter out successful or expired requests
-                    requestsToStore = requestsToStore.filter { request in
-                        requests.contains(request) == false && expiredRequests.contains(request) == false
+                    let requestsToStore = previousRequests.filter { request in
+                        // filter out successful or expired requests
+                        requests.contains(request) == false && !request.isExpired
                     }
 
                     self.logDebug("Storing new pending requests: \(requestsToStore)")
@@ -131,60 +119,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
         .eraseToAnyPublisher()
     }
 
-    private func notifyUser() {
-        func notify() {
-            let content = UNMutableNotificationContent()
-            content.sound = UNNotificationSound.default
-            content.body = .notificationUploadFailedNotification
-            content.badge = 0
-
-            let request = UNNotificationRequest(identifier: PushNotificationIdentifier.uploadFailed.rawValue,
-                                                content: content,
-                                                trigger: getCalendarTriggerForGGDOpeningHourIfNeeded())
-
-            userNotificationCenter.add(request) { error in
-                if let error = error {
-                    self.logError("\(error.localizedDescription)")
-                }
-            }
-        }
-
-        userNotificationCenter.getAuthorizationStatus { status in
-            guard status == .authorized else {
-                self.logError("Cannot notify user `authorizationStatus`: \(status)")
-                return
-            }
-            notify()
-        }
-    }
-
-    /// Generates a UNCalendarNotificationTrigger if the current time is outside the GGD working hours
-    func getCalendarTriggerForGGDOpeningHourIfNeeded() -> UNCalendarNotificationTrigger? {
-
-        let date = currentDate()
-        let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: date)
-
-        if hour > 20 || hour < 8 {
-
-            var dateComponents = DateComponents()
-            dateComponents.hour = 8
-            dateComponents.minute = 0
-            dateComponents.timeZone = TimeZone(identifier: "Europe/Amsterdam")
-            return UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-        }
-
-        return nil
-    }
-
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
-    private let userNotificationCenter: UserNotificationCenter
     private let padding: Padding
-}
-
-private extension PendingLabConfirmationUploadRequest {
-    var isExpired: Bool {
-        return expiryDate < Date()
-    }
 }

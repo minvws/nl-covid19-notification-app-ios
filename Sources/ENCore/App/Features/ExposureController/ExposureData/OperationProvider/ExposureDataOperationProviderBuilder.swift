@@ -20,7 +20,7 @@ protocol ExposureDataOperationProvider {
                                          configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation?
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
-
+    func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
     func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
