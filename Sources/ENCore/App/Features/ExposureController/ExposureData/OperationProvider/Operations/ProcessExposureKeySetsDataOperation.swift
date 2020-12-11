@@ -383,7 +383,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             }
         }
 
-        logDebug("Number of API Calls (\(inBackground ? "in background" : "in foreground") left today: \(numberOfCallsLeft)")
+        logDebug("Number of API Calls (\(inBackground ? "in background" : "in foreground")) left today: \(numberOfCallsLeft)")
 
         return numberOfCallsLeft
     }
