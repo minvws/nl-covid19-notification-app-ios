@@ -173,6 +173,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Last time: \(getLastExposureFetchString()), total processed last 24h: \(getNumberOfProcessedKeySetsInLast24Hours()), total unprocessed left: \(getNumberOfUnprocessedKeySets())",
                               action: { [weak self] in self?.fetchAndProcessKeySets() },
                               enabled: !isFetchingKeys),
+                DeveloperItem(title: "Expire all pending upload requests",
+                              subtitle: "Pending Requests: \(getPendingUploadRequests())",
+                              action: { [weak self] in self?.expirePendingUploadRequests() }),
                 DeveloperItem(title: "Process Pending Upload Requests",
                               subtitle: "Pending Requests: \(getPendingUploadRequests())",
                               action: { [weak self] in self?.processPendingUploadRequests() }),
@@ -393,6 +396,18 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             .sink(receiveCompletion: { [weak self] _ in self?.internalView.tableView.reloadData() },
                   receiveValue: { _ in })
             .store(in: &disposeBag)
+    }
+
+    private func expirePendingUploadRequests() {
+        guard var pendingRequests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) else {
+            return
+        }
+
+        for (index, _) in pendingRequests.enumerated() { pendingRequests[index].expiryDate = Date() }
+
+        self.storageController.requestExclusiveAccess { storageController in
+            storageController.store(object: pendingRequests, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in }
+        }
     }
 
     private func toggleDailyLimit() {

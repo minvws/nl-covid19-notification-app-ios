@@ -13,7 +13,7 @@ import UserNotifications
 struct PendingLabConfirmationUploadRequest: Codable, Equatable {
     let labConfirmationKey: LabConfirmationKey
     let diagnosisKeys: [DiagnosisKey]
-    let expiryDate: Date
+    var expiryDate: Date
 }
 
 final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDataOperation, Logging {
