@@ -60,9 +60,9 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
                 .getAppointmentPhoneNumber()
                 .sink(
                     receiveCompletion: { result in },
-                    receiveValue: { (phoneNumber: String) in
+                    receiveValue: { (exposedPhoneNumber: String) in
                         // Because the current screen is only shown on exposed devices, we can use the phonenumber that is exclusively for exposed persons
-                        let phoneNumberLink: String = .phoneNumberLink(from: phoneNumber)
+                        let phoneNumberLink: String = .phoneNumberLink(from: exposedPhoneNumber)
 
                         if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
                             UIApplication.shared.open(url, options: [:], completionHandler: nil)

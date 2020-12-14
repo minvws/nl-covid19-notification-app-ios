@@ -87,8 +87,8 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
             .getAppointmentPhoneNumber()
             .sink(
                 receiveCompletion: { result in },
-                receiveValue: { (phoneNumber: String) in
-                    self.testPhoneNumber = self.isExposed ? .coronaTestExposedPhoneNumber : phoneNumber
+                receiveValue: { (exposedPhoneNumber: String) in
+                    self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
                 })
             .store(in: &disposeBag)
     }
