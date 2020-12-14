@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Lottie
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -53,19 +53,17 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
 
         self.internalView.playAnimation()
 
-        interfaceOrientationStreamCancellable = interfaceOrientationStream
+        interfaceOrientationStream
             .isLandscape
-            .sink(receiveValue: { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-        })
+            }.disposed(by: rxDisposeBag)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         self.internalView.stopAnimation()
-
-        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - ViewController Lifecycle
@@ -84,7 +82,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     private let onboardingManager: OnboardingManaging
     private let onboardingStepBuilder: OnboardingStepBuildable
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var interfaceOrientationStreamCancellable: AnyCancellable?
+    private var rxDisposeBag = DisposeBag()
 
     // MARK: - Setups
 

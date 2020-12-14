@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Lottie
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -27,7 +27,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
-    private var stateStreamCancellable: AnyCancellable?
+    private var rxDisposeBag = DisposeBag()
 
     private let cardBuilder: CardBuildable
     private lazy var cardRouter: Routing & CardTypeSettable = {
@@ -96,24 +96,22 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillDisappear(false)
-
-        stateStreamCancellable = nil
     }
 
     // MARK: - Private
 
+    #warning("TODO: This function must be migrated to RxSwift")
     @objc private func updateExposureStateView() {
 
-        stateStreamCancellable = exposureStateStream
-            .exposureState
-            .combineLatest(interfaceOrientationStream.isLandscape)
-            .sink { [weak self] status, isLandscape in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.update(exposureState: status, isLandscape: isLandscape)
-            }
+//        Observable.combineLatest(exposureStateStream.exposureState.asObservable(),
+//            interfaceOrientationStream.isLandscape.asObservable())
+//            .subscribe { [weak self] status, isLandscape in
+//                guard let strongSelf = self else {
+//                    return
+//                }
+//
+//                strongSelf.update(exposureState: status, isLandscape: isLandscape)
+//            }.disposed(by: rxDisposeBag)
     }
 
     private func refreshCurrentState() {
@@ -441,7 +439,7 @@ private final class StatusAnimationView: View {
                                            repeats: false,
                                            block: { [weak self] _ in
                                                self?.playAnimation()
-                                           })
+            })
     }
 
     private func playAnimation() {
