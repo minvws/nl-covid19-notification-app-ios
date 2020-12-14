@@ -180,6 +180,11 @@ final class ExposureController: ExposureControlling, Logging {
         return updateStream.share().eraseToAnyPublisher()
     }
 
+    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError> {
+        return dataController
+            .processExpiredUploadRequests()
+    }
+
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
         return dataController
             .processPendingUploadRequests()
@@ -336,8 +341,9 @@ final class ExposureController: ExposureControlling, Logging {
         logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState?.activeState)), activated before: \(isActivated)")
 
         let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
-            self.updateWhenRequired,
-            self.processPendingUploadRequests
+            self.processExpiredUploadRequests,
+            self.processPendingUploadRequests,
+            self.updateWhenRequired
         ]
 
         logDebug("Executing update sequence")

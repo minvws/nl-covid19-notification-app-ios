@@ -6,9 +6,10 @@
  */
 
 import Combine
+import ENFoundation
 import Foundation
 
-final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
+final class UploadDiagnosisKeysDataOperation: ExposureDataOperation, Logging {
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          diagnosisKeys: [DiagnosisKey],
@@ -40,6 +41,8 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation {
             let retryRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: labConfirmationKey,
                                                                    diagnosisKeys: diagnosisKeys,
                                                                    expiryDate: labConfirmationKey.expiration)
+
+            self.logDebug("Saving PendingLabConfirmationUploadRequest: \(retryRequest)")
 
             self.storageController.requestExclusiveAccess { storageController in
                 var requests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []

@@ -51,8 +51,12 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
         return ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
                                                                         storageController: storageController,
-                                                                        userNotificationCenter: userNotificationCenter,
                                                                         padding: padding)
+    }
+
+    func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation {
+        return ExpiredLabConfirmationNotificationDataOperation(storageController: storageController,
+                                                               userNotificationCenter: userNotificationCenter)
     }
 
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {

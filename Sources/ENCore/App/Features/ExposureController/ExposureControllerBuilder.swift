@@ -74,6 +74,9 @@ protocol ExposureControlling: AnyObject {
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
     func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
 
+    /// Shows a notification for expired lab key uploads and cleans up the requests
+    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
+
     /// Checks the status of the EN framework for the last 24h
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
 
