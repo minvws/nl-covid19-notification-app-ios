@@ -27,7 +27,7 @@ final class RequestTestViewControllerTests: TestCase {
         interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
 
         datacontroller.getAppointmentPhoneNumberHandler = {
-            return Just(.coronaTestPhoneNumber).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            return Just("0800-1234 (exposed)").setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
         viewController = RequestTestViewController(listener: listener,
