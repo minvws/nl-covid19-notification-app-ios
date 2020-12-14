@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import UIKit
 
 /// @mockable
@@ -53,17 +53,15 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        interfaceOrientationStreamCancellable = interfaceOrientationStream
+        interfaceOrientationStream
             .isLandscape
-            .sink(receiveValue: { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-        })
+            }.disposed(by: rxDisposeBag)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
-        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -80,7 +78,7 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
     }
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var interfaceOrientationStreamCancellable: AnyCancellable?
+    private var rxDisposeBag = DisposeBag()
     private weak var listener: ShareSheetListener?
     private lazy var internalView: ShareSheetView = ShareSheetView(theme: self.theme)
     private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,

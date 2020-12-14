@@ -7,6 +7,7 @@
 
 import Combine
 import ENFoundation
+import RxSwift
 import SafariServices
 import SnapKit
 import UIKit
@@ -79,9 +80,9 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         interfaceOrientationStream
             .isLandscape
-            .sink(receiveValue: { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }).store(in: &disposeBag)
+            }.disposed(by: rxDisposeBag)
 
         dataController
             .getAppointmentPhoneNumber()
@@ -120,6 +121,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let dataController: ExposureDataControlling
     private var disposeBag = Set<AnyCancellable>()
+    private var rxDisposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.requestTestWantsDismissal(shouldDismissViewController: true)

@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -74,12 +75,12 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
         }
 
         internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+
         interfaceOrientationStream
             .isLandscape
-            .sink { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.infoView.showHeader = !isLandscape
-            }
-            .store(in: &disposeBag)
+            }.disposed(by: rxDisposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -103,6 +104,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
     private let treatmentPerspectiveMessage: LocalizedTreatmentPerspective
     private let dataController: ExposureDataControlling
     private var disposeBag = Set<AnyCancellable>()
+    private var rxDisposeBag = DisposeBag()
     private let interfaceOrientationStream: InterfaceOrientationStreaming
 }
 

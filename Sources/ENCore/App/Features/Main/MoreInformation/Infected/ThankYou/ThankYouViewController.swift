@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -51,11 +51,12 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
         }
 
         internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+
         interfaceOrientationStream
             .isLandscape
-            .sink { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.store(in: &disposeBag)
+            }.disposed(by: rxDisposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -70,7 +71,7 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
     private lazy var internalView: ThankYouView = ThankYouView(theme: self.theme, exposureConfirmationKey: exposureConfirmationKey)
     private let exposureConfirmationKey: ExposureConfirmationKey
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var disposeBag = Set<AnyCancellable>()
+    private var rxDisposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.thankYouWantsDismissal()

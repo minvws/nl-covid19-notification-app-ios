@@ -5,13 +5,13 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 import UIKit
 
 /// @mockable
 protocol InterfaceOrientationStreaming {
-    var isLandscape: AnyPublisher<Bool, Never> { get }
+    var isLandscape: PublishSubject<Bool> { get }
     var currentOrientationIsLandscape: Bool? { get }
 }
 
@@ -28,20 +28,16 @@ final class InterfaceOrientationStream: InterfaceOrientationStreaming {
         // but we use the interface orientation of the key window to actually determine the rotation of the UI
         NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
             self?.currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
-            self?.subject.send(windowScene.interfaceOrientation.isLandscape)
+            self?.subject.onNext(windowScene.interfaceOrientation.isLandscape)
         }
     }
 
     // MARK: - InterfaceOrientationStreaming
 
-    var isLandscape: AnyPublisher<Bool, Never> {
+    var isLandscape: PublishSubject<Bool> {
         return subject
-            .removeDuplicates(by: ==)
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
     }
 
     var currentOrientationIsLandscape: Bool?
-    private let subject = CurrentValueSubject<Bool?, Never>(nil)
+    private let subject = PublishSubject<Bool>()
 }
