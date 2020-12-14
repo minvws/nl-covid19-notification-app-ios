@@ -18,18 +18,23 @@ protocol InterfaceOrientationStreaming {
 final class InterfaceOrientationStream: InterfaceOrientationStreaming {
 
     init() {
+
+        updateSubject()
+
+        // We listen for device orientation changes (which are more sensitive)
+        // but we use the interface orientation of the key window to actually determine the rotation of the UI
+        NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.updateSubject()
+        }
+    }
+
+    private func updateSubject() {
         guard let windowScene = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene else {
             return
         }
 
         currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
-
-        // We listen for device orientation changes (which are more sensitive)
-        // but we use the interface orientation of the key window to actually determine the rotation of the UI
-        NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            self?.currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
-            self?.subject.send(windowScene.interfaceOrientation.isLandscape)
-        }
+        subject.send(windowScene.interfaceOrientation.isLandscape)
     }
 
     // MARK: - InterfaceOrientationStreaming
