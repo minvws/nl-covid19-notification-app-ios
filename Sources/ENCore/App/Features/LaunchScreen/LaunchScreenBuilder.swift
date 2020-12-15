@@ -8,6 +8,7 @@
 import ENFoundation
 import Foundation
 
+/// @mockable
 protocol LaunchScreenBuildable {
     func build() -> Routing
 }

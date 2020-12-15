@@ -9,6 +9,7 @@ import ENFoundation
 import SnapKit
 import UIKit
 
+/// @mockable
 protocol LaunchScreenRouting: Routing {}
 
 final class LaunchScreenViewController: ViewController, LaunchScreenViewControllable {

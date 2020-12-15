@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// @mockable
 protocol LaunchScreenViewControllable: ViewControllable {
     var router: LaunchScreenRouting? { get set }
 }
