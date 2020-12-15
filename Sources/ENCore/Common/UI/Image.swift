@@ -71,6 +71,9 @@ extension UIImage {
     static var helpPushNotificationExample: UIImage? { return Image.named("PushNotification-Example") }
     static var onboardingPermissionsHeader: UIImage? { return Image.named("OnboardingPermissionsHeader") }
     static var loadingError: UIImage? { return Image.named("LoadingError") }
+    static var onlyTogetherCanWeControlCorona: UIImage? { return Image.named("OnlyTogetherCanWeControlCorona") }
+    static var rijkslint: UIImage? { return Image.named("Rijkslint") }
+    static var minVWS: UIImage? { return Image.named("MinVWS") }
 }
 
 extension UIImage {

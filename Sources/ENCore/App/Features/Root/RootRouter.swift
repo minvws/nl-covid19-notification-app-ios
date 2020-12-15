@@ -15,7 +15,7 @@ import UIKit
 /// from `RootBuilder`. `RootBuilder` returns an `AppEntryPoint` instance instead
 /// which is implemented by `RootRouter`.
 ///
-/// @mockable
+/// @mockable(history: present = true; dismiss = true)
 protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener, WebviewListener {
     var router: RootRouting? { get set }
 
@@ -31,6 +31,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     // MARK: - Initialisation
 
     init(viewController: RootViewControllable,
+         launchScreenBuilder: LaunchScreenBuildable,
          onboardingBuilder: OnboardingBuildable,
          mainBuilder: MainBuildable,
          endOfLifeBuilder: EndOfLifeBuildable,
@@ -46,6 +47,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          webviewBuilder: WebviewBuildable,
          userNotificationCenter: UserNotificationCenter,
          currentAppVersion: String) {
+        self.launchScreenBuilder = launchScreenBuilder
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.endOfLifeBuilder = endOfLifeBuilder
@@ -93,9 +95,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         LogHandler.setup()
 
+        // Copy of launch screen is shown to give the app time to determine the proper
+        // screen to route to. If the network is slow this can take a few seconds.
+        routeToLaunchScreen()
+
         routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
 
             guard let strongSelf = self else { return }
+
+            strongSelf.detachLaunchScreen(animated: false)
 
             if strongSelf.exposureController.didCompleteOnboarding {
                 strongSelf.backgroundController.scheduleTasks()
@@ -188,6 +196,20 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     // MARK: - RootRouting
+
+    func routeToLaunchScreen() {
+        guard launchScreenRouter == nil else {
+            // already presented
+            return
+        }
+
+        let router = launchScreenBuilder.build()
+        self.launchScreenRouter = router
+
+        viewController.present(viewController: router.viewControllable,
+                               animated: false,
+                               completion: nil)
+    }
 
     func routeToOnboarding() {
         guard onboardingRouter == nil else {
@@ -314,6 +336,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         viewController.presentInNavigationController(viewController: callGGDViewController, animated: true, presentFullScreen: false)
     }
 
+    private func detachLaunchScreen(animated: Bool) {
+        guard let launchScreenRouter = launchScreenRouter else {
+            return
+        }
+
+        self.launchScreenRouter = nil
+
+        viewController.dismiss(viewController: launchScreenRouter.viewControllable,
+                               animated: animated,
+                               completion: nil)
+    }
+
     private func detachOnboarding(animated: Bool) {
         guard let onboardingRouter = onboardingRouter else {
             return
@@ -413,6 +447,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
+
+    private var launchScreenBuilder: LaunchScreenBuildable
+    private var launchScreenRouter: Routing?
 
     private let onboardingBuilder: OnboardingBuildable
     private var onboardingRouter: Routing?
