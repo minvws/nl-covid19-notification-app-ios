@@ -9,6 +9,7 @@ import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -24,7 +25,7 @@ final class RequestTestViewControllerTests: TestCase {
 
         recordSnapshots = false
 
-        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         datacontroller.getAppointmentPhoneNumberHandler = {
             return Just("0800-1234 (exposed)").setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()

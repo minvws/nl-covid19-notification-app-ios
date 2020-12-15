@@ -11,7 +11,7 @@ import UIKit
 
 /// @mockable
 protocol InterfaceOrientationStreaming {
-    var isLandscape: PublishSubject<Bool> { get }
+    var isLandscape: BehaviorSubject<Bool> { get }
     var currentOrientationIsLandscape: Bool? { get }
 }
 
@@ -39,10 +39,10 @@ final class InterfaceOrientationStream: InterfaceOrientationStreaming {
 
     // MARK: - InterfaceOrientationStreaming
 
-    var isLandscape: PublishSubject<Bool> {
+    var isLandscape: BehaviorSubject<Bool> {
         return subject
     }
 
     var currentOrientationIsLandscape: Bool?
-    private let subject = PublishSubject<Bool>()
+    private let subject = BehaviorSubject(value: false)
 }

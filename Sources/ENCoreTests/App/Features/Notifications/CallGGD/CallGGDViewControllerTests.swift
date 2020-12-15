@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -20,7 +20,7 @@ final class CallGGDControllerTests: TestCase {
         super.setUp()
 
         recordSnapshots = false
-        interfaceOrientationStream.isLandscape = Just<Bool>(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         viewController = CallGGDViewController(listener: listener,
                                                theme: theme,
