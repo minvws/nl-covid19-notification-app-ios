@@ -163,6 +163,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func didEnterForeground() {
+
+        networkController.startObservingNetworkReachability()
+
         guard mainRouter != nil || onboardingRouter != nil else {
             // not started yet
             return
@@ -174,8 +177,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .sink(receiveCompletion: { _ in },
                   receiveValue: { _ in })
             .store(in: &disposeBag)
-
-        networkController.startObservingNetworkReachability()
     }
 
     func didEnterBackground() {

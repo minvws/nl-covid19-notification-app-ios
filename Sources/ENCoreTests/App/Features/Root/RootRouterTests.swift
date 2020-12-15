@@ -226,8 +226,6 @@ final class RootRouterTests: XCTestCase {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        router.routeToOnboarding()
-
         XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 0)
 
         router.didEnterForeground()
