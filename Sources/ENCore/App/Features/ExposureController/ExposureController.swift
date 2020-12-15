@@ -17,14 +17,12 @@ final class ExposureController: ExposureControlling, Logging {
          dataController: ExposureDataControlling,
          networkStatusStream: NetworkStatusStreaming,
          userNotificationCenter: UserNotificationCenter,
-         mutableBluetoothStateStream: MutableBluetoothStateStreaming,
          currentAppVersion: String) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
         self.networkStatusStream = networkStatusStream
         self.userNotificationCenter = userNotificationCenter
-        self.mutableBluetoothStateStream = mutableBluetoothStateStream
         self.currentAppVersion = currentAppVersion
     }
 
@@ -732,7 +730,6 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    private let mutableBluetoothStateStream: MutableBluetoothStateStreaming
     private let mutableStateStream: MutableExposureStateStreaming
     private let exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling
