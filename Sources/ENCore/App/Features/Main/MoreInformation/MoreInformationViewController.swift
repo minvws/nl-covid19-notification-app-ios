@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import SafariServices
 import SnapKit
@@ -45,10 +44,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         self.bundleInfoDictionary = bundleInfoDictionary
 
         super.init(theme: theme)
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - View Lifecycle
@@ -136,7 +131,6 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
     private weak var listener: MoreInformationListener?
-    private var disposeBag = Set<AnyCancellable>()
     private let bundleInfoDictionary: [String: Any]?
 }
 

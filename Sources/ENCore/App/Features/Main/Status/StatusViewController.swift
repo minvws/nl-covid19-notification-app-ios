@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import Lottie
 import RxSwift
@@ -27,6 +28,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
+    private var disposeBag = Set<AnyCancellable>()
     private var rxDisposeBag = DisposeBag()
 
     private let cardBuilder: CardBuildable
@@ -100,18 +102,15 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     // MARK: - Private
 
-    #warning("TODO: This function must be migrated to RxSwift")
     @objc private func updateExposureStateView() {
 
-//        Observable.combineLatest(exposureStateStream.exposureState.asObservable(),
-//            interfaceOrientationStream.isLandscape.asObservable())
-//            .subscribe { [weak self] status, isLandscape in
-//                guard let strongSelf = self else {
-//                    return
-//                }
-//
-//                strongSelf.update(exposureState: status, isLandscape: isLandscape)
-//            }.disposed(by: rxDisposeBag)
+        interfaceOrientationStream.isLandscape.subscribe { [weak self] _ in
+            self?.refreshCurrentState()
+        }.disposed(by: rxDisposeBag)
+
+        exposureStateStream.exposureState.sink { [weak self] _ in
+            self?.refreshCurrentState()
+        }.store(in: &disposeBag)
     }
 
     private func refreshCurrentState() {

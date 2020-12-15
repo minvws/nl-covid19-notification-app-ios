@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import UIKit
 
@@ -134,12 +133,4 @@ final class AboutManager: AboutManaging {
             .link(title: .helpColofonTitle, link: .helpColofonLink)
         ])
     }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
-    }
-
-    // MARK: - Private
-
-    private var disposeBag = Set<AnyCancellable>()
 }
