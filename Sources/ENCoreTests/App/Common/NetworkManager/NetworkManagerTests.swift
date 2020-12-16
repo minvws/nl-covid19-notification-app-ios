@@ -34,6 +34,8 @@ final class NetworkManagerTests: XCTestCase {
         mockVerifySignatureResponseHandler = RxVerifySignatureResponseHandlerProtocolMock()
         mockReadFromDiskResponseHandler = RxReadFromDiskResponseHandlerProtocolMock()
 
+        mockNetworkConfigurationProvider.configuration = .test
+
         mockNetworkResponseHandlerProvider.rxUnzipNetworkResponseHandler = {
             return self.mockUnzipResponseHandler
         }()
@@ -53,16 +55,8 @@ final class NetworkManagerTests: XCTestCase {
                              sessionDelegate: mockUrlSessionDelegate)
     }
 
-    func test_requestFailedShouldReturnError() {
-        let mockDataTask = URLSessionDataTaskProtocolMock()
-        mockNetworkConfigurationProvider.configuration = .test
-
-        mockUrlSession.resumableDataTaskHandler = { request, completion in
-            completion(nil, nil, nil)
-            return mockDataTask
-        }
-
-        mockDataTask.resumeHandler = {}
+    func test_getManifest_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
 
         let completionExpectation = expectation(description: "completion")
 
@@ -80,23 +74,13 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_requestSuccessShouldReturnManifest() throws {
+    func test_getManifest_requestSuccessShouldReturnManifest() throws {
 
         let mockManifest = Manifest(exposureKeySets: ["eks"], riskCalculationParameters: "riskCalculationParameters", appConfig: "appConfig", resourceBundle: "resourceBundle")
         let mockData = try JSONEncoder().encode(mockManifest)
 
+        mockUrlSession(mockData: mockData)
         mockResponseHandlers(readFromDiskData: mockData)
-
-        mockNetworkConfigurationProvider.configuration = .test
-
-        let mockDataTask = URLSessionDataTaskProtocolMock()
-        let mockURLResponse = HTTPURLResponse(url: URL(string: "http://someurl.com")!, statusCode: 200, httpVersion: "2", headerFields: nil)
-        mockUrlSession.resumableDataTaskHandler = { request, completion in
-            completion(mockData, mockURLResponse, nil)
-            return mockDataTask
-        }
-
-        mockDataTask.resumeHandler = {}
 
         let completionExpectation = expectation(description: "completion")
 
@@ -114,12 +98,106 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    private func mockResponseHandlers(readFromDiskData: Data) {
+    func test_getManifest_unzipErrorShouldReturnError() throws {
+
+        let mockManifest = Manifest(exposureKeySets: ["eks"], riskCalculationParameters: "riskCalculationParameters", appConfig: "appConfig", resourceBundle: "resourceBundle")
+        let mockData = try JSONEncoder().encode(mockManifest)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateUnzipError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getManifest { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getManifest_validateSignatureErrorShouldReturnError() throws {
+
+        let mockManifest = Manifest(exposureKeySets: ["eks"], riskCalculationParameters: "riskCalculationParameters", appConfig: "appConfig", resourceBundle: "resourceBundle")
+        let mockData = try JSONEncoder().encode(mockManifest)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateValidateSignatureError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getManifest { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getManifest_ReadFromDiskErrorShouldReturnError() throws {
+
+        let mockManifest = Manifest(exposureKeySets: ["eks"], riskCalculationParameters: "riskCalculationParameters", appConfig: "appConfig", resourceBundle: "resourceBundle")
+        let mockData = try JSONEncoder().encode(mockManifest)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateReadFromDiskError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getManifest { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    private func mockUrlSession(mockData: Data?) {
+        let mockDataTask = URLSessionDataTaskProtocolMock()
+        mockDataTask.resumeHandler = {}
+        let mockURLResponse = HTTPURLResponse(url: URL(string: "http://someurl.com")!, statusCode: 200, httpVersion: "2", headerFields: nil)
+        mockUrlSession.resumableDataTaskHandler = { request, completion in
+            completion(mockData, mockURLResponse, nil)
+            return mockDataTask
+        }
+    }
+
+    private func mockResponseHandlers(readFromDiskData: Data,
+                                      simulateUnzipError: Bool = false,
+                                      simulateValidateSignatureError: Bool = false,
+                                      simulateReadFromDiskError: Bool = false) {
         mockUnzipResponseHandler.isApplicableHandler = { _, _ in return true }
-        mockUnzipResponseHandler.processHandler = { _, _ in return .just(URL(string: "http://someurl.com")!) }
+        mockUnzipResponseHandler.processHandler = { _, _ in
+            if simulateUnzipError { return .error(NetworkResponseHandleError.cannotUnzip) }
+            else { return .just(URL(string: "http://someurl.com")!) }
+        }
         mockVerifySignatureResponseHandler.isApplicableHandler = { _, _ in return true }
-        mockVerifySignatureResponseHandler.processHandler = { _, _ in return .just(URL(string: "http://someurl.com")!) }
+        mockVerifySignatureResponseHandler.processHandler = { _, _ in
+            if simulateValidateSignatureError { return .error(NetworkResponseHandleError.invalidSignature) }
+            else { return .just(URL(string: "http://someurl.com")!) }
+        }
         mockReadFromDiskResponseHandler.isApplicableHandler = { _, _ in return true }
-        mockReadFromDiskResponseHandler.processHandler = { _, _ in return .just(readFromDiskData) }
+        mockReadFromDiskResponseHandler.processHandler = { _, _ in
+            if simulateReadFromDiskError { return .error(NetworkResponseHandleError.cannotDeserialize) }
+            else { return .just(readFromDiskData) }
+        }
     }
 }
