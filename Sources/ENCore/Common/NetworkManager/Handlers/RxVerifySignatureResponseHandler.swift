@@ -23,7 +23,7 @@ final class RxVerifySignatureResponseHandler: RxVerifySignatureResponseHandlerPr
         self.cryptoUtility = cryptoUtility
     }
 
-    // MARK: - NetworkResponseHandler
+    // MARK: - RxVerifySignatureResponseHandlerProtocol
 
     func isApplicable(for response: URLResponse, input: URL) -> Bool {
         return true

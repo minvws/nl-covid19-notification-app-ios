@@ -21,7 +21,7 @@ final class RxUnzipNetworkResponseHandler: RxUnzipNetworkResponseHandlerProtocol
         self.fileManager = fileManager
     }
 
-    // MARK: - NetworkResponseHandler
+    // MARK: - RxUnzipNetworkResponseHandlerProtocol
 
     func isApplicable(for response: URLResponse, input: URL) -> Bool {
         guard let response = response as? HTTPURLResponse else {

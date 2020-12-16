@@ -9,21 +9,12 @@ import Combine
 import Foundation
 import RxSwift
 
-/// @mockable
 protocol NetworkResponseHandler {
     associatedtype Input
     associatedtype Output
 
     func isApplicable(for response: URLResponse, input: Input) -> Bool
     func process(response: URLResponse, input: Input) -> AnyPublisher<Output, NetworkResponseHandleError>
-}
-
-protocol RxNetworkResponseHandler {
-    associatedtype Input
-    associatedtype Output
-
-    func isApplicable(for response: URLResponse, input: Input) -> Bool
-    func process(response: URLResponse, input: Input) -> Observable<Output>
 }
 
 /// @mockable
