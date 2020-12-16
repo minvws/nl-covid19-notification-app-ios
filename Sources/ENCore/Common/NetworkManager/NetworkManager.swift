@@ -34,35 +34,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getManifest(completion: @escaping (Result<Manifest, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.manifestUrl
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.manifestUrl,
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .rxResponseToData(for: result.0, url: result.1)
-                    .flatMap {
-                        self.rxDecodeJson(type: Manifest.self, data: $0)
-                    }
-                    .subscribe { event in
-                        switch event {
-                        case let .next(data):
-                            completion(.success(data))
-                        case let .error(error):
-                            self.logError("Error downloading manifest: \(error)")
-                            completion(.failure(error.asNetworkError))
-                        case .completed:
-                            self.logDebug("NetworkManager.getManifest completed")
-                        }
-                    }
-                    .disposed(by: self.rxDisposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: Manifest.self, completion: completion)
     }
 
     /// Fetches the treatment perspective message from server
@@ -72,32 +47,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.getTreatmentPerspectiveUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.getTreatmentPerspectiveUrl(identifier: identifier),
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .responseToData(for: result.0, url: result.1)
-                    .flatMap(self.decodeJson(data:))
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { (data: TreatmentPerspective) in
-                            completion(.success(data))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
     }
 
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
@@ -325,6 +278,36 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     // MARK: - Download Files
+
+    private func downloadAndDecodeURL<T: Decodable>(withURLRequest urlRequest: Result<URLRequest, NetworkError>,
+                                                    decodeAsType modelType: T.Type,
+                                                    completion: @escaping (Result<T, NetworkError>) -> ()) {
+
+        download(request: urlRequest) { result in
+            switch result {
+            case let .failure(error):
+                completion(.failure(error))
+            case let .success(result):
+                self
+                    .rxResponseToData(for: result.0, url: result.1)
+                    .flatMap {
+                        self.rxDecodeJson(type: modelType, data: $0)
+                    }
+                    .subscribe { event in
+                        switch event {
+                        case let .next(data):
+                            completion(.success(data))
+                        case let .error(error):
+                            self.logError("Error downloading manifest: \(error)")
+                            completion(.failure(error.asNetworkError))
+                        case .completed:
+                            self.logDebug("NetworkManager.getManifest completed")
+                        }
+                    }
+                    .disposed(by: self.rxDisposeBag)
+            }
+        }
+    }
 
     fileprivate func download(request: Result<URLRequest, NetworkError>, completion: @escaping (Result<(URLResponse, URL), NetworkError>) -> ()) {
         switch request {
