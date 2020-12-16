@@ -60,10 +60,6 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
             }.disposed(by: rxDisposeBag)
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-    }
-
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {

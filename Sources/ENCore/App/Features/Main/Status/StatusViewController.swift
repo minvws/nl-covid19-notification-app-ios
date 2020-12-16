@@ -96,24 +96,17 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         updateExposureStateView()
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewWillDisappear(false)
-    }
-
     // MARK: - Private
 
     @objc private func updateExposureStateView() {
-
-        interfaceOrientationStream.isLandscape.subscribe { [weak self] _ in
-            self?.refreshCurrentState()
-        }.disposed(by: rxDisposeBag)
 
         exposureStateStream.exposureState.sink { [weak self] status in
             guard let strongSelf = self else {
                 return
             }
-            let isLandscape = strongSelf.interfaceOrientationStream.currentOrientationIsLandscape ?? false
-            strongSelf.update(exposureState: status, isLandscape: isLandscape)
+            strongSelf.interfaceOrientationStream.isLandscape.subscribe { isLandscape in
+                strongSelf.update(exposureState: status, isLandscape: isLandscape)
+            }.disposed(by: strongSelf.rxDisposeBag)
         }.store(in: &disposeBag)
     }
 

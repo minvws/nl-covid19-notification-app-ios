@@ -32,17 +32,11 @@ final class InterfaceOrientationStream: InterfaceOrientationStreaming {
         guard let windowScene = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene else {
             return
         }
-
-        currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
-        subject.onNext(windowScene.interfaceOrientation.isLandscape)
+        isLandscape.onNext(windowScene.interfaceOrientation.isLandscape)
     }
 
     // MARK: - InterfaceOrientationStreaming
 
-    var isLandscape: BehaviorSubject<Bool> {
-        return subject
-    }
-
-    var currentOrientationIsLandscape: Bool?
-    private let subject = BehaviorSubject(value: false)
+    var isLandscape = BehaviorSubject(value: false)
+    var currentOrientationIsLandscape: Bool? { try? isLandscape.value() }
 }
