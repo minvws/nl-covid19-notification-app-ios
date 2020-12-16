@@ -137,6 +137,8 @@ extension NetworkError {
             return .internalError
         case .redirection:
             return .serverError
+        case .errorConversionError:
+            return .internalError
         }
     }
 }

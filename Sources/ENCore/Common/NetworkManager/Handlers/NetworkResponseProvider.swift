@@ -44,6 +44,20 @@ final class NetworkResponseHandlerProviderImpl: NetworkResponseHandlerProvider {
         return VerifySignatureResponseHandler(cryptoUtility: cryptoUtility)
     }
 
+    // MARK: - RxSwift Implementations
+
+    var rxReadFromDiskResponseHandler: RxReadFromDiskResponseHandler {
+        return RxReadFromDiskResponseHandler(fileManager: FileManager.default)
+    }
+
+    var rxUnzipNetworkResponseHandler: RxUnzipNetworkResponseHandler {
+        return RxUnzipNetworkResponseHandler(fileManager: FileManager.default)
+    }
+
+    var rxVerifySignatureResponseHandler: RxVerifySignatureResponseHandler {
+        return RxVerifySignatureResponseHandler(cryptoUtility: cryptoUtility)
+    }
+
     // MARK: - Private
 
     private let cryptoUtility: CryptoUtility

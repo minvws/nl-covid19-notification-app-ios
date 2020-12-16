@@ -17,6 +17,7 @@ enum NetworkError: Error {
     case resourceNotFound
     case encodingError
     case redirection
+    case errorConversionError
 }
 
 /// @mockable
