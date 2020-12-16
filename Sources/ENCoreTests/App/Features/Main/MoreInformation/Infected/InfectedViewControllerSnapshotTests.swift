@@ -8,6 +8,7 @@
 import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -27,7 +28,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
 
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
-        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         exposureStateStream.exposureState = Just(ExposureState(
             notifiedState: .notNotified,

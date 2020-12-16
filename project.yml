@@ -14,6 +14,8 @@ packages:
     path: vendor/swift-snapshot-testing
   ZIPFoundation:
     path: vendor/ZIPFoundation
+  RxSwift:
+    path: vendor/RxSwift
 targets:
   EN:
     dependencies:
@@ -96,6 +98,7 @@ targets:
     dependencies:
       - target: ENFoundation
       - package: ZIPFoundation
+      - package: RxSwift
       - package: SnapKit
       - package: Lottie
       - package: Reachability

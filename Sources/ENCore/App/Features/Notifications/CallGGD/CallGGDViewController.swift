@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -44,9 +44,9 @@ final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAd
         internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
         interfaceOrientationStream
             .isLandscape
-            .sink { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.store(in: &disposeBag)
+            }.disposed(by: rxDisposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -60,7 +60,7 @@ final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAd
     private weak var listener: CallGGDListener?
     private lazy var internalView: CallGGDView = CallGGDView(theme: self.theme)
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var disposeBag = Set<AnyCancellable>()
+    private var rxDisposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.callGGDWantsDismissal(shouldDismissViewController: true)

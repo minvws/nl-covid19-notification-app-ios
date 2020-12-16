@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Lottie
+import RxSwift
 import UIKit
 
 /// @mockable
@@ -27,7 +27,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     private let onboardingConsentManager: OnboardingConsentManaging
     private let consentStep: OnboardingConsentStep?
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var interfaceOrientationStreamCancellable: AnyCancellable?
+    private var rxDisposeBag = DisposeBag()
 
     init(onboardingConsentManager: OnboardingConsentManaging,
          listener: OnboardingConsentListener,
@@ -72,18 +72,17 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         super.viewWillAppear(animated)
         self.internalView.playAnimation()
 
-        interfaceOrientationStreamCancellable = interfaceOrientationStream
+        interfaceOrientationStream
             .isLandscape
-            .sink(receiveValue: { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-        })
+            }.disposed(by: rxDisposeBag)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         self.internalView.stopAnimation()
-        interfaceOrientationStreamCancellable = nil
     }
 
     // MARK: - Functions

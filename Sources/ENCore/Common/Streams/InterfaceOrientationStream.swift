@@ -5,13 +5,13 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 import UIKit
 
 /// @mockable
 protocol InterfaceOrientationStreaming {
-    var isLandscape: AnyPublisher<Bool, Never> { get }
+    var isLandscape: BehaviorSubject<Bool> { get }
     var currentOrientationIsLandscape: Bool? { get }
 }
 
@@ -32,21 +32,11 @@ final class InterfaceOrientationStream: InterfaceOrientationStreaming {
         guard let windowScene = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene else {
             return
         }
-
-        currentOrientationIsLandscape = windowScene.interfaceOrientation.isLandscape
-        subject.send(windowScene.interfaceOrientation.isLandscape)
+        isLandscape.onNext(windowScene.interfaceOrientation.isLandscape)
     }
 
     // MARK: - InterfaceOrientationStreaming
 
-    var isLandscape: AnyPublisher<Bool, Never> {
-        return subject
-            .removeDuplicates(by: ==)
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-
-    var currentOrientationIsLandscape: Bool?
-    private let subject = CurrentValueSubject<Bool?, Never>(nil)
+    var isLandscape = BehaviorSubject(value: false)
+    var currentOrientationIsLandscape: Bool? { try? isLandscape.value() }
 }

@@ -17,7 +17,6 @@ final class ExposureControllerTests: TestCase {
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
     private let userNotificationCenter = UserNotificationCenterMock()
-    private var mutableBluetoothStateStream = MutableBluetoothStateStreamingMock()
     private let networkStatusStream = NetworkStatusStreamingMock(networkStatusStream: CurrentValueSubject<Bool, Never>(true).eraseToAnyPublisher())
     private let currentAppVersion = "1.0"
 
@@ -30,7 +29,6 @@ final class ExposureControllerTests: TestCase {
                                         dataController: dataController,
                                         networkStatusStream: networkStatusStream,
                                         userNotificationCenter: userNotificationCenter,
-                                        mutableBluetoothStateStream: mutableBluetoothStateStream,
                                         currentAppVersion: currentAppVersion)
 
         dataController.lastSuccessfulProcessingDate = Date()

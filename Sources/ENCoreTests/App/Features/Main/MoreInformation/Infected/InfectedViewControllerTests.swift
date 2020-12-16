@@ -8,6 +8,7 @@
 import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -22,7 +23,7 @@ final class InfectedViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         viewController = InfectedViewController(theme: theme,
                                                 exposureController: exposureController,

@@ -5,10 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -33,7 +33,7 @@ final class MessageViewControllerTests: TestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         exposureDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
 
-        mockInterfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
     }
 
     // MARK: - Tests

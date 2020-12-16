@@ -7,6 +7,7 @@
 
 import Combine
 import ENFoundation
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -90,10 +91,9 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         interfaceOrientationStream
             .isLandscape
-            .sink { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.infoView.showHeader = !isLandscape
-            }
-            .store(in: &disposeBag)
+            }.disposed(by: rxDisposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -192,6 +192,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
     private var disposeBag = Set<AnyCancellable>()
+    private var rxDisposeBag = DisposeBag()
     private let interfaceOrientationStream: InterfaceOrientationStreaming
 
     private var cardViewController: ViewControllable?

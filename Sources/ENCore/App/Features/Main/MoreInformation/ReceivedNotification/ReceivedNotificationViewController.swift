@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -63,11 +63,11 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
             internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
         }
 
-        interfaceOrientationStreamCancellable = interfaceOrientationStream
+        interfaceOrientationStream
             .isLandscape
-            .sink(receiveValue: { [weak self] isLandscape in
+            .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-        })
+            }.disposed(by: rxDisposeBag)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -75,8 +75,6 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
         if shouldDisplayLinkedQuestions {
             internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
         }
-
-        interfaceOrientationStreamCancellable = nil
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -98,7 +96,7 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
     private let shouldDisplayLinkedQuestions: Bool
     private let actionButtonTitle: String?
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var interfaceOrientationStreamCancellable: AnyCancellable?
+    private var rxDisposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.receivedNotificationWantsDismissal(shouldDismissViewController: true)

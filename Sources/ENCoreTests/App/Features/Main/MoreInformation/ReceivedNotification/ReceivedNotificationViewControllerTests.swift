@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -21,7 +21,7 @@ final class ReceivedNotificationViewControllerTests: TestCase {
 
         recordSnapshots = false
 
-        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         let uploadKeys = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
 

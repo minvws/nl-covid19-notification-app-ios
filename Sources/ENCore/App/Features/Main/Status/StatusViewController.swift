@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Lottie
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -27,7 +28,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
-    private var stateStreamCancellable: AnyCancellable?
+    private var disposeBag = Set<AnyCancellable>()
+    private var rxDisposeBag = DisposeBag()
 
     private let cardBuilder: CardBuildable
     private lazy var cardRouter: Routing & CardTypeSettable = {
@@ -94,26 +96,18 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         updateExposureStateView()
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewWillDisappear(false)
-
-        stateStreamCancellable = nil
-    }
-
     // MARK: - Private
 
     @objc private func updateExposureStateView() {
 
-        stateStreamCancellable = exposureStateStream
-            .exposureState
-            .combineLatest(interfaceOrientationStream.isLandscape)
-            .sink { [weak self] status, isLandscape in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                strongSelf.update(exposureState: status, isLandscape: isLandscape)
+        exposureStateStream.exposureState.sink { [weak self] status in
+            guard let strongSelf = self else {
+                return
             }
+            strongSelf.interfaceOrientationStream.isLandscape.subscribe { isLandscape in
+                strongSelf.update(exposureState: status, isLandscape: isLandscape)
+            }.disposed(by: strongSelf.rxDisposeBag)
+        }.store(in: &disposeBag)
     }
 
     private func refreshCurrentState() {
@@ -441,7 +435,7 @@ private final class StatusAnimationView: View {
                                            repeats: false,
                                            block: { [weak self] _ in
                                                self?.playAnimation()
-                                           })
+            })
     }
 
     private func playAnimation() {

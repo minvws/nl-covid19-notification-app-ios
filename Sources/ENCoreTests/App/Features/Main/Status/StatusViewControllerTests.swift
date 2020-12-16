@@ -9,6 +9,7 @@ import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -34,7 +35,7 @@ final class StatusViewControllerTests: TestCase {
 
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
-        interfaceOrientationStream.isLandscape = Just(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         cardBuilder.buildHandler = { listener, cardTypes in
             return CardRouter(viewController: CardViewController(listener: self.mockCardListener,

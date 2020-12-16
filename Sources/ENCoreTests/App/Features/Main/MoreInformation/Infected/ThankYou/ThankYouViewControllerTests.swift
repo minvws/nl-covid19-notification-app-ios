@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -23,7 +23,7 @@ final class ThankYouViewControllerTests: TestCase {
 
         recordSnapshots = false
 
-        interfaceOrientationStream.isLandscape = Just<Bool>(false).eraseToAnyPublisher()
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         let key = LabConfirmationKey(identifier: "Key Here",
                                      bucketIdentifier: Data(),
