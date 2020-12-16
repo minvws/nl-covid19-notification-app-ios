@@ -16,6 +16,8 @@ packages:
     path: vendor/ZIPFoundation
   RxSwift:
     path: vendor/RxSwift
+  RxRelay:
+    path: vendor/RxSwift
 targets:
   EN:
     dependencies:
@@ -99,6 +101,7 @@ targets:
       - target: ENFoundation
       - package: ZIPFoundation
       - package: RxSwift
+      - package: RxRelay
       - package: SnapKit
       - package: Lottie
       - package: Reachability
