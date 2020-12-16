@@ -8,7 +8,13 @@
 import Foundation
 import RxSwift
 
-final class RxVerifySignatureResponseHandler: RxNetworkResponseHandler {
+/// @mockable
+protocol RxVerifySignatureResponseHandlerProtocol {
+    func isApplicable(for response: URLResponse, input: URL) -> Bool
+    func process(response: URLResponse, input: URL) -> Observable<URL>
+}
+
+final class RxVerifySignatureResponseHandler: RxVerifySignatureResponseHandlerProtocol {
     private let signatureFilename = "content.sig"
     private let contentFilename = "content.bin"
     private let tekFilename = "export.bin"

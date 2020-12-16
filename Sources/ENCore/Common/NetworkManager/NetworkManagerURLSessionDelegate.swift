@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate {
+final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLSessionDelegateProtocol {
     /// Initialise session delegate with certificate used for SSL pinning
     init(configurationProvider: NetworkConfigurationProvider) {
         self.configurationProvider = configurationProvider

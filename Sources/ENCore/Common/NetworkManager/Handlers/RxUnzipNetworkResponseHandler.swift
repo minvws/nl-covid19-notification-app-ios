@@ -9,9 +9,13 @@ import Foundation
 import RxSwift
 import ZIPFoundation
 
-final class RxUnzipNetworkResponseHandler: RxNetworkResponseHandler {
-    typealias Input = URL
-    typealias Output = URL
+/// @mockable
+protocol RxUnzipNetworkResponseHandlerProtocol {
+    func isApplicable(for response: URLResponse, input: URL) -> Bool
+    func process(response: URLResponse, input: URL) -> Observable<URL>
+}
+
+final class RxUnzipNetworkResponseHandler: RxUnzipNetworkResponseHandlerProtocol {
 
     init(fileManager: FileManaging) {
         self.fileManager = fileManager

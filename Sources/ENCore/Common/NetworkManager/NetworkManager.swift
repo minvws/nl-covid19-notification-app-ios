@@ -16,8 +16,8 @@ final class NetworkManager: NetworkManaging, Logging {
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          storageController: StorageControlling,
-         session: URLSession,
-         sessionDelegate: URLSessionDelegate?) {
+         session: URLSessionProtocol,
+         sessionDelegate: URLSessionDelegateProtocol?) {
         self.configurationProvider = configurationProvider
         self.responseHandlerProvider = responseHandlerProvider
         self.storageController = storageController
@@ -335,7 +335,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     fileprivate func download(request: URLRequest, completion: @escaping (Result<(URLResponse, URL), NetworkError>) -> ()) {
-        session.dataTask(with: request) { data, response, error in
+        session.resumableDataTask(with: request) { data, response, error in
             let localUrl: URL?
 
             if let data = data {
@@ -372,7 +372,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     private func data(request: URLRequest, completion: @escaping (Result<(URLResponse, Data), NetworkError>) -> ()) {
-        session.dataTask(with: request) { data, response, error in
+        session.resumableDataTask(with: request) { data, response, error in
             self.handleNetworkResponse(data,
                                        response: response,
                                        error: error,
@@ -596,8 +596,8 @@ final class NetworkManager: NetworkManaging, Logging {
     // MARK: - Private
 
     private let configurationProvider: NetworkConfigurationProvider
-    private let session: URLSession
-    private let sessionDelegate: URLSessionDelegate? // hold on to delegate to prevent deallocation
+    private let session: URLSessionProtocol
+    private let sessionDelegate: URLSessionDelegateProtocol? // hold on to delegate to prevent deallocation
     private let responseHandlerProvider: NetworkResponseHandlerProvider
     private let storageController: StorageControlling
 

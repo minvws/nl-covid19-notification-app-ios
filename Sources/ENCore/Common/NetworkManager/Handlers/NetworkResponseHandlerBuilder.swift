@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import RxSwift
 
-/// mockable
+/// @mockable
 protocol NetworkResponseHandler {
     associatedtype Input
     associatedtype Output
@@ -26,13 +26,14 @@ protocol RxNetworkResponseHandler {
     func process(response: URLResponse, input: Input) -> Observable<Output>
 }
 
+/// @mockable
 protocol NetworkResponseHandlerProvider {
     var readFromDiskResponseHandler: ReadFromDiskResponseHandler { get }
-    var rxReadFromDiskResponseHandler: RxReadFromDiskResponseHandler { get }
+    var rxReadFromDiskResponseHandler: RxReadFromDiskResponseHandlerProtocol { get }
     var unzipNetworkResponseHandler: UnzipNetworkResponseHandler { get }
-    var rxUnzipNetworkResponseHandler: RxUnzipNetworkResponseHandler { get }
+    var rxUnzipNetworkResponseHandler: RxUnzipNetworkResponseHandlerProtocol { get }
     var verifySignatureResponseHandler: VerifySignatureResponseHandler { get }
-    var rxVerifySignatureResponseHandler: RxVerifySignatureResponseHandler { get }
+    var rxVerifySignatureResponseHandler: RxVerifySignatureResponseHandlerProtocol { get }
 }
 
 /// @mockable

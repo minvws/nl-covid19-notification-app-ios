@@ -8,9 +8,13 @@
 import Foundation
 import RxSwift
 
-final class RxReadFromDiskResponseHandler: RxNetworkResponseHandler {
-    typealias Input = URL
-    typealias Output = Data
+/// @mockable
+protocol RxReadFromDiskResponseHandlerProtocol {
+    func isApplicable(for response: URLResponse, input: URL) -> Bool
+    func process(response: URLResponse, input: URL) -> Observable<Data>
+}
+
+final class RxReadFromDiskResponseHandler: RxReadFromDiskResponseHandlerProtocol {
 
     init(fileManager: FileManaging) {
         self.fileManager = fileManager
@@ -22,7 +26,7 @@ final class RxReadFromDiskResponseHandler: RxNetworkResponseHandler {
         return contentFileUrl(from: input) != nil
     }
 
-    func process(response: URLResponse, input: Input) -> Observable<Output> {
+    func process(response: URLResponse, input: URL) -> Observable<Data> {
         guard
             let url = contentFileUrl(from: input),
             let data = try? Data(contentsOf: url) else {
