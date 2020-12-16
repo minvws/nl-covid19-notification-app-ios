@@ -46,7 +46,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
     }
 
     private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> Observable<()> {
-        return Observable<()>.create { [weak self] observer in
+        return .create { [weak self] observer in
 
             guard let strongSelf = self else {
                 observer.onError(ExposureDataError.internalError)
