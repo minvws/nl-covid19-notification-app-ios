@@ -12,6 +12,7 @@ import XCTest
 
 final class RootRouterTests: XCTestCase {
     private let viewController = RootViewControllableMock()
+    private let launchScreenBuilder = LaunchScreenBuildableMock()
     private let onboardingBuilder = OnboardingBuildableMock()
     private let mainBuilder = MainBuildableMock()
     private let endOfLifeBuilder = EndOfLifeBuildableMock()
@@ -52,6 +53,7 @@ final class RootRouterTests: XCTestCase {
         mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
         router = RootRouter(viewController: viewController,
+                            launchScreenBuilder: launchScreenBuilder,
                             onboardingBuilder: onboardingBuilder,
                             mainBuilder: mainBuilder,
                             endOfLifeBuilder: endOfLifeBuilder,
@@ -74,6 +76,28 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.routerSetCallCount, 1)
     }
 
+    func test_start_buildsAndPresentsLaunchScreen() {
+        let routingMock = LaunchScreenRoutingMock()
+        let viewControllableMock = LaunchScreenViewControllableMock()
+        routingMock.viewControllable = viewControllableMock
+
+        onboardingBuilder.buildHandler = { _ in return OnboardingRoutingMock() }
+        launchScreenBuilder.buildHandler = { return routingMock }
+
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.presentCallCount, 0)
+
+        router.start()
+
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 1)
+        XCTAssertTrue(viewController.presentArgValues.first?.0 === viewControllableMock)
+        XCTAssertEqual(viewController.presentCallCount, 2)
+
+        // Test that the launchscreen is dismissed too
+        XCTAssertEqual(viewController.dismissCallCount, 1)
+        XCTAssertTrue(viewController.dismissArgValues.first?.0 === viewControllableMock)
+    }
+
     func test_start_buildsAndPresentsOnboarding() {
         onboardingBuilder.buildHandler = { _ in return OnboardingRoutingMock() }
 
@@ -84,9 +108,10 @@ final class RootRouterTests: XCTestCase {
 
         router.start()
 
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 1)
         XCTAssertEqual(onboardingBuilder.buildCallCount, 1)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
-        XCTAssertEqual(viewController.presentCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 2)
         XCTAssertEqual(viewController.embedCallCount, 0)
     }
 
@@ -101,9 +126,10 @@ final class RootRouterTests: XCTestCase {
         router.start()
         router.start()
 
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 1)
         XCTAssertEqual(onboardingBuilder.buildCallCount, 1)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
-        XCTAssertEqual(viewController.presentCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 2)
         XCTAssertEqual(viewController.embedCallCount, 0)
     }
 
@@ -117,9 +143,10 @@ final class RootRouterTests: XCTestCase {
 
         router.start()
 
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 1)
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.presentCallCount, 0)
+        XCTAssertEqual(viewController.presentCallCount, 1)
         XCTAssertEqual(viewController.embedCallCount, 1)
     }
 
@@ -127,12 +154,12 @@ final class RootRouterTests: XCTestCase {
         router.start()
 
         XCTAssertEqual(viewController.embedCallCount, 0)
-        XCTAssertEqual(viewController.dismissCallCount, 0)
+        XCTAssertEqual(viewController.dismissCallCount, 1)
 
         router.detachOnboardingAndRouteToMain(animated: true)
 
         XCTAssertEqual(viewController.embedCallCount, 1)
-        XCTAssertEqual(viewController.dismissCallCount, 1)
+        XCTAssertEqual(viewController.dismissCallCount, 2)
     }
 
     func test_scheduleTasks() {
@@ -204,8 +231,9 @@ final class RootRouterTests: XCTestCase {
 
         router.start()
 
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 1)
         XCTAssertEqual(updateAppBuilder.buildCallCount, 1)
-        XCTAssertEqual(viewController.presentCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 2)
     }
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {
@@ -225,8 +253,6 @@ final class RootRouterTests: XCTestCase {
         exposureController.updateWhenRequiredHandler = {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
-
-        router.routeToOnboarding()
 
         XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 0)
 

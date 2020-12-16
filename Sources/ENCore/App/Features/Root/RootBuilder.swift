@@ -37,9 +37,13 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency {
 
     // MARK: - Child Builders
+
+    fileprivate var launchScreenBuilder: LaunchScreenBuildable {
+        return LaunchScreenBuilder(dependency: self)
+    }
 
     fileprivate var onboardingBuilder: OnboardingBuildable {
         return OnboardingBuilder(dependency: self)
@@ -208,6 +212,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
         }
 
         return RootRouter(viewController: viewController,
+                          launchScreenBuilder: dependencyProvider.launchScreenBuilder,
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
                           endOfLifeBuilder: dependencyProvider.endOfLifeBuilder,
