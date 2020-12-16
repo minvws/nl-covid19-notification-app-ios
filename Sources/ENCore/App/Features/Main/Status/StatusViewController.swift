@@ -108,8 +108,12 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             self?.refreshCurrentState()
         }.disposed(by: rxDisposeBag)
 
-        exposureStateStream.exposureState.sink { [weak self] _ in
-            self?.refreshCurrentState()
+        exposureStateStream.exposureState.sink { [weak self] status in
+            guard let strongSelf = self else {
+                return
+            }
+            let isLandscape = strongSelf.interfaceOrientationStream.currentOrientationIsLandscape ?? false
+            strongSelf.update(exposureState: status, isLandscape: isLandscape)
         }.store(in: &disposeBag)
     }
 
