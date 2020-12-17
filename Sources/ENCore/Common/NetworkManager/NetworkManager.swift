@@ -237,25 +237,31 @@ final class NetworkManager: NetworkManaging, Logging {
     func postRegister(request: RegisterRequest, completion: @escaping (Result<LabInformation, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-
-        let urlRequest = constructRequest(url: configuration.registerUrl,
-                                          method: .POST,
-                                          body: request,
-                                          headers: headers)
+        let url = configuration.registerUrl
+        let urlRequest = constructRequest(url: url, method: .POST, body: request, headers: headers)
 
         data(request: urlRequest) { result in
-            self.jsonResponseHandler(result: result)
-                .sink(
-                    receiveCompletion: { result in
-                        if case let .failure(error) = result {
-                            completion(.failure(error))
-                        }
 
-                    },
-                    receiveValue: { value in
-                        completion(.success(value))
-                    })
-                .store(in: &self.disposeBag)
+            switch result {
+            case let .failure(error):
+                completion(.failure(error))
+
+            case let .success(result):
+
+                self.rxDecodeJson(type: LabInformation.self, data: result.1)
+                    .subscribe { event in
+                        switch event {
+                        case let .next(labInformation):
+                            completion(.success(labInformation))
+                        case let .error(error):
+                            self.logError("Error downloading from url: \(result.1): \(error)")
+                            completion(.failure(error.asNetworkError))
+                        case .completed:
+                            self.logDebug("Downloading from url \(result.1) completed")
+                        }
+                    }
+                    .disposed(by: self.rxDisposeBag)
+            }
         }
     }
 
@@ -495,18 +501,6 @@ final class NetworkManager: NetworkManaging, Logging {
         }
         .share()
         .eraseToAnyPublisher()
-    }
-
-    /// Response handler which decodes JSON
-    private func jsonResponseHandler<Object: Decodable>(result: Result<(URLResponse, Data), NetworkError>) -> AnyPublisher<Object, NetworkError> {
-        switch result {
-        case let .success(result):
-            return decodeJson(data: result.1)
-                .mapError { $0.asNetworkError }
-                .eraseToAnyPublisher()
-        case let .failure(error):
-            return Fail(error: error).eraseToAnyPublisher()
-        }
     }
 
     /// Checks for valid HTTPResponse and status codes
