@@ -80,32 +80,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.appConfigUrl(identifier: appConfig)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.appConfigUrl(identifier: appConfig),
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .responseToData(for: result.0, url: result.1)
-                    .flatMap(self.decodeJson(data:))
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { (data: AppConfig) in
-                            completion(.success(data))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: AppConfig.self, completion: completion)
     }
 
     /// Fetches risk parameters used by the ExposureManager
