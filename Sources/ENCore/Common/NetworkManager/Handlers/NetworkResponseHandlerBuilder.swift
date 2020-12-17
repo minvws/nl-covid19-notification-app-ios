@@ -5,26 +5,14 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
 import RxSwift
 
-protocol NetworkResponseHandler {
-    associatedtype Input
-    associatedtype Output
-
-    func isApplicable(for response: URLResponse, input: Input) -> Bool
-    func process(response: URLResponse, input: Input) -> AnyPublisher<Output, NetworkResponseHandleError>
-}
-
 /// @mockable
 protocol NetworkResponseHandlerProvider {
-    var readFromDiskResponseHandler: ReadFromDiskResponseHandler { get }
-    var rxReadFromDiskResponseHandler: RxReadFromDiskResponseHandlerProtocol { get }
-    var unzipNetworkResponseHandler: UnzipNetworkResponseHandler { get }
-    var rxUnzipNetworkResponseHandler: RxUnzipNetworkResponseHandlerProtocol { get }
-    var verifySignatureResponseHandler: VerifySignatureResponseHandler { get }
-    var rxVerifySignatureResponseHandler: RxVerifySignatureResponseHandlerProtocol { get }
+    var readFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocol { get }
+    var unzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol { get }
+    var verifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol { get }
 }
 
 /// @mockable
