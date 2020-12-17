@@ -320,7 +320,7 @@ final class NetworkManager: NetworkManaging, Logging {
                         case let .next(data):
                             completion(.success(data))
                         case let .error(error):
-                            self.logError("Error downloading manifest: \(error)")
+                            self.logError("Error downloading from url: \(result.1): \(error)")
                             completion(.failure(error.asNetworkError))
                         case .completed:
                             self.logDebug("NetworkManager.getManifest completed")
