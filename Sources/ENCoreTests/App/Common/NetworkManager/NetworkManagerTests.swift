@@ -172,6 +172,123 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
+    // MARK: - getAppConfig
+
+    func test_getAppConfig_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getAppConfig(appConfig: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getAppConfig_requestSuccessShouldReturnManifest() throws {
+
+        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil)
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getAppConfig(appConfig: "someIdentifier") { result in
+            guard case let .success(model) = result else {
+                XCTFail("Expected success but got error response instead")
+                return
+            }
+
+            XCTAssertEqual(model.version, 1)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getAppConfig_unzipErrorShouldReturnError() throws {
+
+        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil)
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateUnzipError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getAppConfig(appConfig: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getAppConfig_validateSignatureErrorShouldReturnError() throws {
+
+        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil)
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateValidateSignatureError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getAppConfig(appConfig: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getAppConfig_ReadFromDiskErrorShouldReturnError() throws {
+
+        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil)
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateReadFromDiskError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getAppConfig(appConfig: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
     // MARK: - getTreatmentPerspective
 
     func test_getTreatmentPerspective_requestFailedShouldReturnError() {
