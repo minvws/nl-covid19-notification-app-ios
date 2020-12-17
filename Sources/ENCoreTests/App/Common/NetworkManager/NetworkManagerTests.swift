@@ -87,12 +87,12 @@ final class NetworkManagerTests: XCTestCase {
         let completionExpectation = expectation(description: "completion")
 
         sut.getManifest { result in
-            guard case let .success(manifest) = result else {
+            guard case let .success(model) = result else {
                 XCTFail("Expected success but got error response instead")
                 return
             }
 
-            XCTAssertEqual(manifest.appConfig, "appConfig")
+            XCTAssertEqual(model.appConfig, "appConfig")
 
             completionExpectation.fulfill()
         }
