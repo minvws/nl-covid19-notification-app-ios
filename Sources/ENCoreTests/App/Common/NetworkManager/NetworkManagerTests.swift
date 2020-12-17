@@ -202,12 +202,12 @@ final class NetworkManagerTests: XCTestCase {
         let completionExpectation = expectation(description: "completion")
 
         sut.getRiskCalculationParameters(identifier: "someIdentifier") { result in
-            guard case let .success(manifest) = result else {
+            guard case let .success(model) = result else {
                 XCTFail("Expected success but got error response instead")
                 return
             }
 
-            XCTAssertEqual(manifest.minimumRiskScore, 1)
+            XCTAssertEqual(model.minimumRiskScore, 1)
 
             completionExpectation.fulfill()
         }
