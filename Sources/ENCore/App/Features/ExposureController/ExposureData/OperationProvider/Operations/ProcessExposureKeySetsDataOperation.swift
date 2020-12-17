@@ -413,7 +413,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         let keySetHoldersToProcess = keySetsHolders
             .sorted(by: { first, second in first.creationDate < second.creationDate })
 
-        guard keySetHoldersToProcess.isEmpty == false else {
+        guard keySetHoldersToProcess.isEmpty == false, maximum > 0 else {
             return []
         }
 
