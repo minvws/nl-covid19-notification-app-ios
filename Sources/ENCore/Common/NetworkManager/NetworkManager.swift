@@ -47,32 +47,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.getTreatmentPerspectiveUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.getTreatmentPerspectiveUrl(identifier: identifier),
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .responseToData(for: result.0, url: result.1)
-                    .flatMap(self.decodeJson(data:))
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { (data: TreatmentPerspective) in
-                            completion(.success(data))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
     }
 
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability

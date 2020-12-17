@@ -55,6 +55,8 @@ final class NetworkManagerTests: XCTestCase {
                              sessionDelegate: mockUrlSessionDelegate)
     }
 
+    // MARK: - getManifest
+
     func test_getManifest_requestFailedShouldReturnError() {
         mockUrlSession(mockData: nil)
 
@@ -169,6 +171,125 @@ final class NetworkManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }
+
+    // MARK: - getTreatmentPerspective
+
+    func test_getTreatmentPerspective_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getManifest { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getTreatmentPerspective_requestSuccessShouldReturnManifest() throws {
+
+        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
+        let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getTreatmentPerspective(identifier: "someIdentifier") { result in
+            guard case let .success(model) = result else {
+                XCTFail("Expected success but got error response instead")
+                return
+            }
+
+            XCTAssertEqual(model.resources["nl"]?["someKey"], "someValue")
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getTreatmentPerspective_unzipErrorShouldReturnError() throws {
+
+        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
+        let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateUnzipError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getTreatmentPerspective(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getTreatmentPerspective_validateSignatureErrorShouldReturnError() throws {
+
+        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
+        let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateValidateSignatureError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getTreatmentPerspective(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getTreatmentPerspective_ReadFromDiskErrorShouldReturnError() throws {
+
+        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
+        let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateReadFromDiskError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getTreatmentPerspective(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    // MARK: - Private Helper Functions
 
     private func mockUrlSession(mockData: Data?) {
         let mockDataTask = URLSessionDataTaskProtocolMock()
