@@ -170,6 +170,123 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
+    // MARK: - getExposureKeySet
+
+    func test_getExposureKeySet_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getExposureKeySet_requestSuccessShouldReturnManifest() throws {
+
+        let mockModel = URL(string: "http://someurl.com")
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .success(model) = result else {
+                XCTFail("Expected success but got error response instead")
+                return
+            }
+
+            XCTAssertEqual(model.absoluteString, "http://someurl.com")
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getExposureKeySet_unzipErrorShouldReturnError() throws {
+
+        let mockModel = URL(string: "http://someurl.com")
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateUnzipError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getExposureKeySet_validateSignatureErrorShouldReturnError() throws {
+
+        let mockModel = URL(string: "http://someurl.com")
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateValidateSignatureError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getExposureKeySet_ReadFromDiskErrorShouldReturnError() throws {
+
+        let mockModel = URL(string: "http://someurl.com")
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateReadFromDiskError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
     private func mockUrlSession(mockData: Data?) {
         let mockDataTask = URLSessionDataTaskProtocolMock()
         mockDataTask.resumeHandler = {}

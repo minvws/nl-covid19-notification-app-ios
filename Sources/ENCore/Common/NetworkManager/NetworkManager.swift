@@ -148,39 +148,12 @@ final class NetworkManager: NetworkManaging, Logging {
     func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-
         let url = configuration.exposureKeySetUrl(identifier: identifier)
-        let urlRequest = constructRequest(url: url,
-                                          method: .GET,
-                                          headers: headers)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         logDebug("KeySet: Downloading \(identifier)")
 
-        download(request: urlRequest) { result in
-
-            switch result {
-            case let .failure(error):
-                self.logDebug("KeySet: Downloading \(String(describing: url)) FAILED")
-                completion(.failure(error))
-            case let .success(result):
-
-                self.logDebug("KeySet: Downloading \(identifier) SUCCESS")
-
-                self
-                    .responseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { url in
-                            completion(.success(url))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: URL.self, backgroundThreadIfPossible: true, completion: completion)
     }
 
     /// Upload diagnosis keys (TEKs) to the server
@@ -303,6 +276,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
     private func downloadAndDecodeURL<T: Decodable>(withURLRequest urlRequest: Result<URLRequest, NetworkError>,
                                                     decodeAsType modelType: T.Type,
+                                                    backgroundThreadIfPossible: Bool = false,
                                                     completion: @escaping (Result<T, NetworkError>) -> ()) {
 
         download(request: urlRequest) { result in
@@ -311,7 +285,7 @@ final class NetworkManager: NetworkManaging, Logging {
                 completion(.failure(error))
             case let .success(result):
                 self
-                    .rxResponseToData(for: result.0, url: result.1)
+                    .rxResponseToData(for: result.0, url: result.1, backgroundThreadIfPossible: backgroundThreadIfPossible)
                     .flatMap {
                         self.rxDecodeJson(type: modelType, data: $0)
                     }
@@ -534,8 +508,8 @@ final class NetworkManager: NetworkManaging, Logging {
     // RxSwift
 
     /// Unzips, verifies signature and reads response in memory
-    private func rxResponseToData(for response: URLResponse, url: URL) -> Observable<Data> {
-        let localUrl = rxResponseToLocalUrl(for: response, url: url)
+    private func rxResponseToData(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<Data> {
+        let localUrl = rxResponseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
 
         let readFromDiskResponseHandler = responseHandlerProvider.rxReadFromDiskResponseHandler
         if readFromDiskResponseHandler.isApplicable(for: response, input: url) {
