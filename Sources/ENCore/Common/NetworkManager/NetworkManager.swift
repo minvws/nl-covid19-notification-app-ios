@@ -180,10 +180,10 @@ final class NetworkManager: NetworkManaging, Logging {
                         case let .next(labInformation):
                             completion(.success(labInformation))
                         case let .error(error):
-                            self.logError("Error downloading from url: \(result.1): \(error)")
+                            self.logError("Error posting to url: \(String(describing: url)): \(error)")
                             completion(.failure(error.asNetworkError))
                         case .completed:
-                            self.logDebug("Downloading from url \(result.1) completed")
+                            self.logDebug("Posting to url \(String(describing: url)) completed")
                         }
                     }
                     .disposed(by: self.disposeBag)
