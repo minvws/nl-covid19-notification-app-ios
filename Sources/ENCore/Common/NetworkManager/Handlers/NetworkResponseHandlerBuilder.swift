@@ -5,17 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
 import RxSwift
-
-protocol NetworkResponseHandler {
-    associatedtype Input
-    associatedtype Output
-
-    func isApplicable(for response: URLResponse, input: Input) -> Bool
-    func process(response: URLResponse, input: Input) -> AnyPublisher<Output, NetworkResponseHandleError>
-}
 
 /// @mockable
 protocol NetworkResponseHandlerProvider {
