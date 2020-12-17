@@ -263,30 +263,6 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_getExposureKeySet_ReadFromDiskErrorShouldReturnError() throws {
-
-        let mockModel = URL(string: "http://someurl.com")
-        let mockData = try JSONEncoder().encode(mockModel)
-
-        mockUrlSession(mockData: mockData)
-        mockResponseHandlers(readFromDiskData: mockData, simulateReadFromDiskError: true)
-
-        let completionExpectation = expectation(description: "completion")
-
-        sut.getExposureKeySet(identifier: "someIdentifier") { result in
-            guard case let .failure(error) = result else {
-                XCTFail("Expected error but got successful response instead")
-                return
-            }
-
-            XCTAssertEqual(error, .invalidResponse)
-
-            completionExpectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 2.0, handler: nil)
-    }
-
     private func mockUrlSession(mockData: Data?) {
         let mockDataTask = URLSessionDataTaskProtocolMock()
         mockDataTask.resumeHandler = {}

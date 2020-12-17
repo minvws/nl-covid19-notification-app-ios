@@ -153,7 +153,27 @@ final class NetworkManager: NetworkManaging, Logging {
 
         logDebug("KeySet: Downloading \(identifier)")
 
-        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: URL.self, backgroundThreadIfPossible: true, completion: completion)
+        download(request: urlRequest) { result in
+            switch result {
+            case let .failure(error):
+                completion(.failure(error))
+            case let .success(result):
+                self
+                    .rxResponseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
+                    .subscribe { event in
+                        switch event {
+                        case let .next(data):
+                            completion(.success(data))
+                        case let .error(error):
+                            self.logError("Error downloading from url: \(result.1): \(error)")
+                            completion(.failure(error.asNetworkError))
+                        case .completed:
+                            self.logDebug("NetworkManager.getManifest completed")
+                        }
+                    }
+                    .disposed(by: self.rxDisposeBag)
+            }
+        }
     }
 
     /// Upload diagnosis keys (TEKs) to the server
