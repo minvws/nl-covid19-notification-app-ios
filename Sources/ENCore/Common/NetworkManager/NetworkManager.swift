@@ -47,32 +47,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.getTreatmentPerspectiveUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.getTreatmentPerspectiveUrl(identifier: identifier),
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .responseToData(for: result.0, url: result.1)
-                    .flatMap(self.decodeJson(data:))
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { (data: TreatmentPerspective) in
-                            completion(.success(data))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
     }
 
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
@@ -80,32 +58,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.appConfigUrl(identifier: appConfig)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.appConfigUrl(identifier: appConfig),
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .responseToData(for: result.0, url: result.1)
-                    .flatMap(self.decodeJson(data:))
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { (data: AppConfig) in
-                            completion(.success(data))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: AppConfig.self, completion: completion)
     }
 
     /// Fetches risk parameters used by the ExposureManager
@@ -113,32 +69,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.riskCalculationParametersUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.riskCalculationParametersUrl(identifier: identifier),
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .responseToData(for: result.0, url: result.1)
-                    .flatMap(self.decodeJson(data:))
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { data in
-                            completion(.success(data))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: RiskCalculationParameters.self, completion: completion)
     }
 
     /// Fetches TEKS
@@ -148,37 +82,30 @@ final class NetworkManager: NetworkManaging, Logging {
     func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-
         let url = configuration.exposureKeySetUrl(identifier: identifier)
-        let urlRequest = constructRequest(url: url,
-                                          method: .GET,
-                                          headers: headers)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         logDebug("KeySet: Downloading \(identifier)")
 
         download(request: urlRequest) { result in
-
             switch result {
             case let .failure(error):
-                self.logDebug("KeySet: Downloading \(String(describing: url)) FAILED")
                 completion(.failure(error))
             case let .success(result):
-
-                self.logDebug("KeySet: Downloading \(identifier) SUCCESS")
-
                 self
-                    .responseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { url in
-                            completion(.success(url))
-                        })
-                    .store(in: &self.disposeBag)
+                    .rxResponseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
+                    .subscribe { event in
+                        switch event {
+                        case let .next(data):
+                            completion(.success(data))
+                        case let .error(error):
+                            self.logError("Error downloading from url: \(result.1): \(error)")
+                            completion(.failure(error.asNetworkError))
+                        case .completed:
+                            self.logDebug("NetworkManager.getManifest completed")
+                        }
+                    }
+                    .disposed(by: self.rxDisposeBag)
             }
         }
     }
@@ -309,6 +236,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
     private func downloadAndDecodeURL<T: Decodable>(withURLRequest urlRequest: Result<URLRequest, NetworkError>,
                                                     decodeAsType modelType: T.Type,
+                                                    backgroundThreadIfPossible: Bool = false,
                                                     completion: @escaping (Result<T, NetworkError>) -> ()) {
 
         download(request: urlRequest) { result in
@@ -317,7 +245,7 @@ final class NetworkManager: NetworkManaging, Logging {
                 completion(.failure(error))
             case let .success(result):
                 self
-                    .rxResponseToData(for: result.0, url: result.1)
+                    .rxResponseToData(for: result.0, url: result.1, backgroundThreadIfPossible: backgroundThreadIfPossible)
                     .flatMap {
                         self.rxDecodeJson(type: modelType, data: $0)
                     }
@@ -528,8 +456,8 @@ final class NetworkManager: NetworkManaging, Logging {
     // RxSwift
 
     /// Unzips, verifies signature and reads response in memory
-    private func rxResponseToData(for response: URLResponse, url: URL) -> Observable<Data> {
-        let localUrl = rxResponseToLocalUrl(for: response, url: url)
+    private func rxResponseToData(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<Data> {
+        let localUrl = rxResponseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
 
         let readFromDiskResponseHandler = responseHandlerProvider.rxReadFromDiskResponseHandler
         if readFromDiskResponseHandler.isApplicable(for: response, input: url) {
