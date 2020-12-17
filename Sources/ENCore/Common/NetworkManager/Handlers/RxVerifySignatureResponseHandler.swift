@@ -48,10 +48,10 @@ final class RxVerifySignatureResponseHandler: RxVerifySignatureResponseHandlerPr
 
                 if isValid {
                     observer.onNext(input)
+                    observer.onCompleted()
                 } else {
                     observer.onError(NetworkResponseHandleError.invalidSignature)
                 }
-                observer.on(.completed)
             }
 
             return Disposables.create()

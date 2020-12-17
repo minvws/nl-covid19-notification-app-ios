@@ -585,6 +585,7 @@ final class NetworkManager: NetworkManaging, Logging {
                 let object = try self.jsonDecoder.decode(Object.self, from: data)
                 self.logDebug("Response Object: \(object)")
                 observer.onNext(object)
+                observer.onCompleted()
             } catch {
                 if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     self.logDebug("Raw JSON: \(json)")
@@ -592,8 +593,6 @@ final class NetworkManager: NetworkManaging, Logging {
                 self.logError("Error Deserializing \(Object.self): \(error.localizedDescription)")
                 observer.onError(NetworkResponseHandleError.cannotDeserialize)
             }
-
-            observer.on(.completed)
 
             return Disposables.create()
         }
