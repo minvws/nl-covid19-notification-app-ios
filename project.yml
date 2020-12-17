@@ -16,6 +16,10 @@ packages:
     path: vendor/ZIPFoundation
   RxSwift:
     path: vendor/RxSwift
+  RxRelay:
+    path: vendor/RxSwift
+  RxCombine:
+    path: vendor/RxCombine
 targets:
   EN:
     dependencies:
@@ -99,9 +103,11 @@ targets:
       - target: ENFoundation
       - package: ZIPFoundation
       - package: RxSwift
+      - package: RxRelay
       - package: SnapKit
       - package: Lottie
       - package: Reachability
+      - package: RxCombine
       - framework: ExposureNotification.framework
         optional: true
       - framework: vendor/OpenSSL-for-iPhone/openssl.framework
@@ -125,7 +131,7 @@ targets:
   ENCoreTests:
     dependencies:
       - target: ENCore
-      - package: SnapshotTesting
+      - package: SnapshotTesting      
     deploymentTarget: '13.5'
     platform: iOS
     preBuildScripts:
