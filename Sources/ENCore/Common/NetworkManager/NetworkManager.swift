@@ -323,7 +323,7 @@ final class NetworkManager: NetworkManaging, Logging {
                             self.logError("Error downloading from url: \(result.1): \(error)")
                             completion(.failure(error.asNetworkError))
                         case .completed:
-                            self.logDebug("NetworkManager.getManifest completed")
+                            self.logDebug("Downloading from url \(result.1) completed")
                         }
                     }
                     .disposed(by: self.rxDisposeBag)
