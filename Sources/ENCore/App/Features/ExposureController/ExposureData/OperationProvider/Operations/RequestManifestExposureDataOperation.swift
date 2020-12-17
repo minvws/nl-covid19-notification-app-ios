@@ -27,8 +27,6 @@ final class RequestAppManifestDataOperation: Logging {
         self.storageController = storageController
     }
 
-    // MARK: - ExposureDataOperation
-
     func execute() -> Observable<ApplicationManifest> {
         let updateFrequency = retrieveManifestUpdateFrequency()
 
@@ -88,6 +86,8 @@ final class RequestAppManifestDataOperation: Logging {
 
 extension ApplicationManifest {
     func isValid(forUpdateFrequency updateFrequency: Int) -> Bool {
-        return creationDate.addingTimeInterval(TimeInterval(updateFrequency * 60)) >= Date()
+        let expirationTimeInSeconds = TimeInterval(updateFrequency * 60)
+        let expirationDate = creationDate.addingTimeInterval(expirationTimeInSeconds)
+        return expirationDate >= currentDate()
     }
 }
