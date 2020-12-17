@@ -9,7 +9,12 @@ import Combine
 import ENFoundation
 import Foundation
 
-final class RequestTreatmentPerspectiveDataOperation: ExposureDataOperation, Logging {
+/// @mockable
+protocol RequestTreatmentPerspectiveDataOperationProtocol {
+    func execute() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+}
+
+final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperationProtocol, Logging {
     typealias Result = TreatmentPerspective
 
     init(networkController: NetworkControlling,

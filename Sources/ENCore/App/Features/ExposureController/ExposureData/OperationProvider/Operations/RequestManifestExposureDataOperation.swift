@@ -17,7 +17,12 @@ struct ApplicationManifest: Codable {
     let resourceBundle: String?
 }
 
-final class RequestAppManifestDataOperation: Logging {
+/// @mockable
+protocol RequestAppManifestDataOperationProtocol {
+    func execute() -> Observable<ApplicationManifest>
+}
+
+final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProtocol, Logging {
 
     private let defaultRefreshFrequency = 60 * 4 // 4 hours
 
