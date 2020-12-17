@@ -170,6 +170,123 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
+    // MARK: - getRiskCalculationParameters
+
+    func test_getRiskCalculationParameters_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getRiskCalculationParameters(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getRiskCalculationParameters_requestSuccessShouldReturnManifest() throws {
+
+        let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getRiskCalculationParameters(identifier: "someIdentifier") { result in
+            guard case let .success(manifest) = result else {
+                XCTFail("Expected success but got error response instead")
+                return
+            }
+
+            XCTAssertEqual(manifest.minimumRiskScore, 1)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getRiskCalculationParameters_unzipErrorShouldReturnError() throws {
+
+        let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateUnzipError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getRiskCalculationParameters(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getRiskCalculationParameters_validateSignatureErrorShouldReturnError() throws {
+
+        let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateValidateSignatureError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getRiskCalculationParameters(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getRiskCalculationParameters_ReadFromDiskErrorShouldReturnError() throws {
+
+        let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateReadFromDiskError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getRiskCalculationParameters(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
     private func mockUrlSession(mockData: Data?) {
         let mockDataTask = URLSessionDataTaskProtocolMock()
         mockDataTask.resumeHandler = {}
