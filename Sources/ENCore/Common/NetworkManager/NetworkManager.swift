@@ -69,32 +69,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.riskCalculationParametersUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.riskCalculationParametersUrl(identifier: identifier),
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .responseToData(for: result.0, url: result.1)
-                    .flatMap(self.decodeJson(data:))
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { data in
-                            completion(.success(data))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: RiskCalculationParameters.self, completion: completion)
     }
 
     /// Fetches TEKS
