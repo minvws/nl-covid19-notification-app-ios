@@ -9,6 +9,7 @@ import Combine
 import ENFoundation
 import Foundation
 import Reachability
+import RxSwift
 
 final class NetworkController: NetworkControlling, Logging {
 
@@ -24,16 +25,19 @@ final class NetworkController: NetworkControlling, Logging {
 
     // MARK: - NetworkControlling
 
-    var applicationManifest: AnyPublisher<ApplicationManifest, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getManifest { result in
-                    promise(result.map { $0.asApplicationManifest })
+    var applicationManifest: Observable<ApplicationManifest> {
+        return .create { [weak self] observer in
+            self?.networkManager.getManifest { result in
+                switch result {
+                case let .failure(error):
+                    observer.onError(error)
+                case let .success(manifest):
+                    observer.onNext(manifest.asApplicationManifest)
+                    observer.onCompleted()
                 }
             }
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError> {
