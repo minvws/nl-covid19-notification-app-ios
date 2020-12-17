@@ -7,8 +7,8 @@
 
 import Combine
 import Foundation
+import RxSwift
 
-/// mockable
 protocol NetworkResponseHandler {
     associatedtype Input
     associatedtype Output
@@ -17,10 +17,14 @@ protocol NetworkResponseHandler {
     func process(response: URLResponse, input: Input) -> AnyPublisher<Output, NetworkResponseHandleError>
 }
 
+/// @mockable
 protocol NetworkResponseHandlerProvider {
     var readFromDiskResponseHandler: ReadFromDiskResponseHandler { get }
+    var rxReadFromDiskResponseHandler: RxReadFromDiskResponseHandlerProtocol { get }
     var unzipNetworkResponseHandler: UnzipNetworkResponseHandler { get }
+    var rxUnzipNetworkResponseHandler: RxUnzipNetworkResponseHandlerProtocol { get }
     var verifySignatureResponseHandler: VerifySignatureResponseHandler { get }
+    var rxVerifySignatureResponseHandler: RxVerifySignatureResponseHandlerProtocol { get }
 }
 
 /// @mockable

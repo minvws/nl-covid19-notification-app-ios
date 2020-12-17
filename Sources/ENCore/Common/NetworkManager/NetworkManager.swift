@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import UIKit
 
 final class NetworkManager: NetworkManaging, Logging {
@@ -15,8 +16,8 @@ final class NetworkManager: NetworkManaging, Logging {
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          storageController: StorageControlling,
-         session: URLSession,
-         sessionDelegate: URLSessionDelegate?) {
+         session: URLSessionProtocol,
+         sessionDelegate: URLSessionDelegateProtocol?) {
         self.configurationProvider = configurationProvider
         self.responseHandlerProvider = responseHandlerProvider
         self.storageController = storageController
@@ -33,32 +34,10 @@ final class NetworkManager: NetworkManaging, Logging {
     func getManifest(completion: @escaping (Result<Manifest, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+        let url = configuration.manifestUrl
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        let urlRequest = constructRequest(url: configuration.manifestUrl,
-                                          method: .GET,
-                                          headers: headers)
-
-        download(request: urlRequest) { result in
-            switch result {
-            case let .failure(error):
-                completion(.failure(error))
-            case let .success(result):
-                self
-                    .responseToData(for: result.0, url: result.1)
-                    .flatMap(self.decodeJson(data:))
-                    .mapError { $0.asNetworkError }
-                    .sink(
-                        receiveCompletion: { result in
-                            if case let .failure(error) = result {
-                                completion(.failure(error))
-                            }
-                        },
-                        receiveValue: { (data: Manifest) in
-                            completion(.success(data))
-                        })
-                    .store(in: &self.disposeBag)
-            }
-        }
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: Manifest.self, completion: completion)
     }
 
     /// Fetches the treatment perspective message from server
@@ -322,6 +301,36 @@ final class NetworkManager: NetworkManaging, Logging {
 
     // MARK: - Download Files
 
+    private func downloadAndDecodeURL<T: Decodable>(withURLRequest urlRequest: Result<URLRequest, NetworkError>,
+                                                    decodeAsType modelType: T.Type,
+                                                    completion: @escaping (Result<T, NetworkError>) -> ()) {
+
+        download(request: urlRequest) { result in
+            switch result {
+            case let .failure(error):
+                completion(.failure(error))
+            case let .success(result):
+                self
+                    .rxResponseToData(for: result.0, url: result.1)
+                    .flatMap {
+                        self.rxDecodeJson(type: modelType, data: $0)
+                    }
+                    .subscribe { event in
+                        switch event {
+                        case let .next(data):
+                            completion(.success(data))
+                        case let .error(error):
+                            self.logError("Error downloading from url: \(result.1): \(error)")
+                            completion(.failure(error.asNetworkError))
+                        case .completed:
+                            self.logDebug("Downloading from url \(result.1) completed")
+                        }
+                    }
+                    .disposed(by: self.rxDisposeBag)
+            }
+        }
+    }
+
     fileprivate func download(request: Result<URLRequest, NetworkError>, completion: @escaping (Result<(URLResponse, URL), NetworkError>) -> ()) {
         switch request {
         case let .success(request):
@@ -332,7 +341,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     fileprivate func download(request: URLRequest, completion: @escaping (Result<(URLResponse, URL), NetworkError>) -> ()) {
-        session.dataTask(with: request) { data, response, error in
+        session.resumableDataTask(with: request) { data, response, error in
             let localUrl: URL?
 
             if let data = data {
@@ -369,7 +378,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     private func data(request: URLRequest, completion: @escaping (Result<(URLResponse, Data), NetworkError>) -> ()) {
-        session.dataTask(with: request) { data, response, error in
+        session.resumableDataTask(with: request) { data, response, error in
             self.handleNetworkResponse(data,
                                        response: response,
                                        error: error,
@@ -522,11 +531,78 @@ final class NetworkManager: NetworkManaging, Logging {
         }
     }
 
+    // RxSwift
+
+    /// Unzips, verifies signature and reads response in memory
+    private func rxResponseToData(for response: URLResponse, url: URL) -> Observable<Data> {
+        let localUrl = rxResponseToLocalUrl(for: response, url: url)
+
+        let readFromDiskResponseHandler = responseHandlerProvider.rxReadFromDiskResponseHandler
+        if readFromDiskResponseHandler.isApplicable(for: response, input: url) {
+            return localUrl
+                .flatMap { localUrl in readFromDiskResponseHandler.process(response: response, input: localUrl) }
+        } else {
+            return .error(NetworkResponseHandleError.cannotDeserialize)
+        }
+    }
+
+    private func rxResponseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<URL> {
+        var localUrl = Observable<URL>.just(url)
+
+        if backgroundThreadIfPossible, UIApplication.shared.applicationState != .background {
+            localUrl = localUrl
+                .observe(on: concurrentUtilityScheduler)
+        }
+
+        let start = CFAbsoluteTimeGetCurrent()
+
+        // unzip
+        let unzipResponseHandler = responseHandlerProvider.rxUnzipNetworkResponseHandler
+        if unzipResponseHandler.isApplicable(for: response, input: url) {
+            localUrl = localUrl
+                .flatMap { localUrl in unzipResponseHandler.process(response: response, input: localUrl) }
+        }
+
+        let diff = CFAbsoluteTimeGetCurrent() - start
+        print("Unzip Took \(diff) seconds")
+
+        // verify signature
+        let verifySignatureResponseHandler = responseHandlerProvider.rxVerifySignatureResponseHandler
+        if verifySignatureResponseHandler.isApplicable(for: response, input: url) {
+            localUrl = localUrl
+                .flatMap { localUrl in verifySignatureResponseHandler.process(response: response, input: localUrl) }
+        }
+
+        return localUrl
+    }
+
+    /// Utility function to decode JSON
+    private func rxDecodeJson<Object: Decodable>(type: Object.Type, data: Data) -> Observable<Object> {
+
+        return .create { observer in
+
+            do {
+                let object = try self.jsonDecoder.decode(Object.self, from: data)
+                self.logDebug("Response Object: \(object)")
+                observer.onNext(object)
+                observer.onCompleted()
+            } catch {
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    self.logDebug("Raw JSON: \(json)")
+                }
+                self.logError("Error Deserializing \(Object.self): \(error.localizedDescription)")
+                observer.onError(NetworkResponseHandleError.cannotDeserialize)
+            }
+
+            return Disposables.create()
+        }
+    }
+
     // MARK: - Private
 
     private let configurationProvider: NetworkConfigurationProvider
-    private let session: URLSession
-    private let sessionDelegate: URLSessionDelegate? // hold on to delegate to prevent deallocation
+    private let session: URLSessionProtocol
+    private let sessionDelegate: URLSessionDelegateProtocol? // hold on to delegate to prevent deallocation
     private let responseHandlerProvider: NetworkResponseHandlerProvider
     private let storageController: StorageControlling
 
@@ -543,11 +619,30 @@ final class NetworkManager: NetworkManaging, Logging {
 
     private lazy var jsonEncoder = JSONEncoder()
     private var disposeBag = Set<AnyCancellable>()
+    private var rxDisposeBag = DisposeBag()
+    private let concurrentUtilityScheduler = ConcurrentDispatchQueueScheduler(qos: .utility)
 }
 
 extension NetworkResponseHandleError {
     var asNetworkError: NetworkError {
         switch self {
+        case .cannotDeserialize:
+            return .invalidResponse
+        case .cannotUnzip:
+            return .invalidResponse
+        case .invalidSignature:
+            return .invalidResponse
+        }
+    }
+}
+
+extension Error {
+    var asNetworkError: NetworkError {
+        guard let networkResponseHandleError = self as? NetworkResponseHandleError else {
+            return .errorConversionError
+        }
+
+        switch networkResponseHandleError {
         case .cannotDeserialize:
             return .invalidResponse
         case .cannotUnzip:

@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+/// @mockable
 protocol NetworkConfigurationProvider {
     var configuration: NetworkConfiguration { get }
 }
