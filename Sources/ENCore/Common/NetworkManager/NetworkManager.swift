@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
 import RxSwift
@@ -93,7 +92,7 @@ final class NetworkManager: NetworkManaging, Logging {
                 completion(.failure(error))
             case let .success(result):
                 self
-                    .rxResponseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
+                    .responseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
                     .subscribe { event in
                         switch event {
                         case let .next(data):
@@ -105,7 +104,7 @@ final class NetworkManager: NetworkManaging, Logging {
                             self.logDebug("NetworkManager.getManifest completed")
                         }
                     }
-                    .disposed(by: self.rxDisposeBag)
+                    .disposed(by: self.disposeBag)
             }
         }
     }
@@ -175,7 +174,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
             case let .success(result):
 
-                self.rxDecodeJson(type: LabInformation.self, data: result.1)
+                self.decodeJson(type: LabInformation.self, data: result.1)
                     .subscribe { event in
                         switch event {
                         case let .next(labInformation):
@@ -187,7 +186,7 @@ final class NetworkManager: NetworkManaging, Logging {
                             self.logDebug("Downloading from url \(result.1) completed")
                         }
                     }
-                    .disposed(by: self.rxDisposeBag)
+                    .disposed(by: self.disposeBag)
             }
         }
     }
@@ -245,9 +244,9 @@ final class NetworkManager: NetworkManaging, Logging {
                 completion(.failure(error))
             case let .success(result):
                 self
-                    .rxResponseToData(for: result.0, url: result.1, backgroundThreadIfPossible: backgroundThreadIfPossible)
+                    .responseToData(for: result.0, url: result.1, backgroundThreadIfPossible: backgroundThreadIfPossible)
                     .flatMap {
-                        self.rxDecodeJson(type: modelType, data: $0)
+                        self.decodeJson(type: modelType, data: $0)
                     }
                     .subscribe { event in
                         switch event {
@@ -260,7 +259,7 @@ final class NetworkManager: NetworkManaging, Logging {
                             self.logDebug("Downloading from url \(result.1) completed")
                         }
                     }
-                    .disposed(by: self.rxDisposeBag)
+                    .disposed(by: self.disposeBag)
             }
         }
     }
@@ -362,75 +361,6 @@ final class NetworkManager: NetworkManaging, Logging {
         completion(.success((response, object)))
     }
 
-    private func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> AnyPublisher<URL, NetworkResponseHandleError> {
-        var localUrl = Just(url)
-            .setFailureType(to: NetworkResponseHandleError.self)
-            .eraseToAnyPublisher()
-
-        if backgroundThreadIfPossible, UIApplication.shared.applicationState != .background {
-            localUrl = localUrl
-                .subscribe(on: DispatchQueue.global(qos: .utility))
-                .eraseToAnyPublisher()
-        }
-
-        let start = CFAbsoluteTimeGetCurrent()
-
-        // unzip
-        let unzipResponseHandler = responseHandlerProvider.unzipNetworkResponseHandler
-        if unzipResponseHandler.isApplicable(for: response, input: url) {
-
-            localUrl = localUrl
-                .flatMap { localUrl in unzipResponseHandler.process(response: response, input: localUrl) }
-                .eraseToAnyPublisher()
-        }
-
-        let diff = CFAbsoluteTimeGetCurrent() - start
-        print("Unzip Took \(diff) seconds")
-
-        // verify signature
-        let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler
-        if verifySignatureResponseHandler.isApplicable(for: response, input: url) {
-            localUrl = localUrl
-                .flatMap { localUrl in verifySignatureResponseHandler.process(response: response, input: localUrl) }
-                .eraseToAnyPublisher()
-        }
-
-        return localUrl
-    }
-
-    /// Unzips, verifies signature and reads response in memory
-    private func responseToData(for response: URLResponse, url: URL) -> AnyPublisher<Data, NetworkResponseHandleError> {
-        let localUrl = responseToLocalUrl(for: response, url: url)
-
-        let readFromDiskResponseHandler = responseHandlerProvider.readFromDiskResponseHandler
-        if readFromDiskResponseHandler.isApplicable(for: response, input: url) {
-            return localUrl
-                .flatMap { localUrl in readFromDiskResponseHandler.process(response: response, input: localUrl) }
-                .eraseToAnyPublisher()
-        } else {
-            return Fail(error: .cannotDeserialize).eraseToAnyPublisher()
-        }
-    }
-
-    /// Utility function to decode JSON
-    private func decodeJson<Object: Decodable>(data: Data) -> AnyPublisher<Object, NetworkResponseHandleError> {
-        return Future { promise in
-            do {
-                let object = try self.jsonDecoder.decode(Object.self, from: data)
-                self.logDebug("Response Object: \(object)")
-                promise(.success(object))
-            } catch {
-                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    self.logDebug("Raw JSON: \(json)")
-                }
-                self.logError("Error Deserializing \(Object.self): \(error.localizedDescription)")
-                promise(.failure(.cannotDeserialize))
-            }
-        }
-        .share()
-        .eraseToAnyPublisher()
-    }
-
     /// Checks for valid HTTPResponse and status codes
     private func inspect(response: URLResponse) -> NetworkError? {
         guard let response = response as? HTTPURLResponse else {
@@ -453,13 +383,11 @@ final class NetworkManager: NetworkManaging, Logging {
         }
     }
 
-    // RxSwift
-
     /// Unzips, verifies signature and reads response in memory
-    private func rxResponseToData(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<Data> {
-        let localUrl = rxResponseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
+    private func responseToData(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<Data> {
+        let localUrl = responseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
 
-        let readFromDiskResponseHandler = responseHandlerProvider.rxReadFromDiskResponseHandler
+        let readFromDiskResponseHandler = responseHandlerProvider.readFromDiskResponseHandler
         if readFromDiskResponseHandler.isApplicable(for: response, input: url) {
             return localUrl
                 .flatMap { localUrl in readFromDiskResponseHandler.process(response: response, input: localUrl) }
@@ -468,7 +396,7 @@ final class NetworkManager: NetworkManaging, Logging {
         }
     }
 
-    private func rxResponseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<URL> {
+    private func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<URL> {
         var localUrl = Observable<URL>.just(url)
 
         if backgroundThreadIfPossible, UIApplication.shared.applicationState != .background {
@@ -479,7 +407,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let start = CFAbsoluteTimeGetCurrent()
 
         // unzip
-        let unzipResponseHandler = responseHandlerProvider.rxUnzipNetworkResponseHandler
+        let unzipResponseHandler = responseHandlerProvider.unzipNetworkResponseHandler
         if unzipResponseHandler.isApplicable(for: response, input: url) {
             localUrl = localUrl
                 .flatMap { localUrl in unzipResponseHandler.process(response: response, input: localUrl) }
@@ -489,7 +417,7 @@ final class NetworkManager: NetworkManaging, Logging {
         print("Unzip Took \(diff) seconds")
 
         // verify signature
-        let verifySignatureResponseHandler = responseHandlerProvider.rxVerifySignatureResponseHandler
+        let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler
         if verifySignatureResponseHandler.isApplicable(for: response, input: url) {
             localUrl = localUrl
                 .flatMap { localUrl in verifySignatureResponseHandler.process(response: response, input: localUrl) }
@@ -499,7 +427,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     /// Utility function to decode JSON
-    private func rxDecodeJson<Object: Decodable>(type: Object.Type, data: Data) -> Observable<Object> {
+    private func decodeJson<Object: Decodable>(type: Object.Type, data: Data) -> Observable<Object> {
 
         return .create { observer in
 
@@ -540,8 +468,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }()
 
     private lazy var jsonEncoder = JSONEncoder()
-    private var disposeBag = Set<AnyCancellable>()
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     private let concurrentUtilityScheduler = ConcurrentDispatchQueueScheduler(qos: .utility)
 }
 

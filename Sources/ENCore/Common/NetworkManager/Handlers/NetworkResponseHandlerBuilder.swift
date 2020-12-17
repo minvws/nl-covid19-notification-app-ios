@@ -19,12 +19,9 @@ protocol NetworkResponseHandler {
 
 /// @mockable
 protocol NetworkResponseHandlerProvider {
-    var readFromDiskResponseHandler: ReadFromDiskResponseHandler { get }
-    var rxReadFromDiskResponseHandler: RxReadFromDiskResponseHandlerProtocol { get }
-    var unzipNetworkResponseHandler: UnzipNetworkResponseHandler { get }
-    var rxUnzipNetworkResponseHandler: RxUnzipNetworkResponseHandlerProtocol { get }
-    var verifySignatureResponseHandler: VerifySignatureResponseHandler { get }
-    var rxVerifySignatureResponseHandler: RxVerifySignatureResponseHandlerProtocol { get }
+    var readFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocol { get }
+    var unzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol { get }
+    var verifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol { get }
 }
 
 /// @mockable

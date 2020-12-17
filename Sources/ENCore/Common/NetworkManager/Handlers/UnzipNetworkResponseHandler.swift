@@ -5,19 +5,23 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 import ZIPFoundation
 
-final class UnzipNetworkResponseHandler: NetworkResponseHandler {
-    typealias Input = URL
-    typealias Output = URL
+/// @mockable
+protocol UnzipNetworkResponseHandlerProtocol {
+    func isApplicable(for response: URLResponse, input: URL) -> Bool
+    func process(response: URLResponse, input: URL) -> Observable<URL>
+}
 
-    init(fileManager: FileManager = FileManager.default) {
+final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol {
+
+    init(fileManager: FileManaging) {
         self.fileManager = fileManager
     }
 
-    // MARK: - NetworkResponseHandler
+    // MARK: - RxUnzipNetworkResponseHandlerProtocol
 
     func isApplicable(for response: URLResponse, input: URL) -> Bool {
         guard let response = response as? HTTPURLResponse else {
@@ -27,24 +31,22 @@ final class UnzipNetworkResponseHandler: NetworkResponseHandler {
         return response.value(forHTTPHeaderField: HTTPHeaderKey.contentType.rawValue) == HTTPContentType.zip.rawValue
     }
 
-    func process(response: URLResponse, input: URL) -> AnyPublisher<URL, NetworkResponseHandleError> {
+    func process(response: URLResponse, input: URL) -> Observable<URL> {
         guard let destinationURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString) else {
-            return Fail(error: .cannotUnzip).eraseToAnyPublisher()
+            return .error(NetworkResponseHandleError.cannotUnzip)
         }
 
         do {
             try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.unzipItem(at: input, to: destinationURL)
+            try fileManager.unzipItem(at: input, to: destinationURL, skipCRC32: false, progress: nil, preferredEncoding: nil)
         } catch {
-            return Fail(error: .cannotUnzip).eraseToAnyPublisher()
+            return .error(NetworkResponseHandleError.cannotUnzip)
         }
 
-        return Just(destinationURL)
-            .setFailureType(to: NetworkResponseHandleError.self)
-            .eraseToAnyPublisher()
+        return .just(destinationURL)
     }
 
     // MARK: - Private
 
-    private let fileManager: FileManager // TODO: Make mockable
+    private let fileManager: FileManaging
 }
