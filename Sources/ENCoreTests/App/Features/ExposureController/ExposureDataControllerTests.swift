@@ -85,4 +85,54 @@ final class ExposureDataControllerTests: TestCase {
     }
 
     func test_subsequentRun_doesNotEraseStorage() {}
+
+    // MARK: - requestTreatmentPerspective
+
+    func test_requestTreatmentPerspective_shouldRequestApplicationManifest() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        let streamExpectation = expectation(description: "stream")
+
+        let manifestOperationCalledExpectation = expectation(description: "manifestOperationCalled")
+        let manifestOperationMock = RequestAppManifestDataOperationProtocolMock()
+        manifestOperationMock.executeHandler = {
+            manifestOperationCalledExpectation.fulfill()
+            return .just(.testData())
+        }
+        mockOperationProvider.requestManifestOperation = manifestOperationMock
+
+        let treatmentPerspectiveOperationCalled = expectation(description: "treatmentPerspectiveOperationCalled")
+        let treatmentPerspectiveOperationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
+        treatmentPerspectiveOperationMock.executeHandler = {
+            treatmentPerspectiveOperationCalled.fulfill()
+            return Just(TreatmentPerspective.testData()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+        }
+        mockOperationProvider.requestTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
+
+        sut.requestTreatmentPerspective()
+            .sink(receiveCompletion: { _ in
+                streamExpectation.fulfill()
+            }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        waitForExpectations(timeout: 2, handler: nil)
+        XCTAssertEqual(manifestOperationMock.executeCallCount, 1)
+    }
+}
+
+private extension TreatmentPerspective {
+    static func testData(manifestRefreshFrequency: Int = 3600) -> TreatmentPerspective {
+        TreatmentPerspective(resources: ["nl": ["key": "value"]], guidance: .init(quarantineDays: 2, layout: []))
+    }
+}
+
+private extension ApplicationManifest {
+    static func testData(creationDate: Date = Date(), appConfigurationIdentifier: String = "appConfigurationIdentifier") -> ApplicationManifest {
+        ApplicationManifest(exposureKeySetsIdentifiers: [], riskCalculationParametersIdentifier: "riskCalculationParametersIdentifier", appConfigurationIdentifier: appConfigurationIdentifier, creationDate: creationDate, resourceBundle: "resourceBundle")
+    }
 }

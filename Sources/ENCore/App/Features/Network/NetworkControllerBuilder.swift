@@ -7,10 +7,11 @@
 
 import Combine
 import Foundation
+import RxSwift
 
 /// @mockable
 protocol NetworkControlling {
-    var applicationManifest: AnyPublisher<ApplicationManifest, NetworkError> { get }
+    var applicationManifest: Observable<ApplicationManifest> { get }
 
     func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError>
 
