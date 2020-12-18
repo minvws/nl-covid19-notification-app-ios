@@ -24,8 +24,6 @@ protocol RequestAppManifestDataOperationProtocol {
 
 final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProtocol, Logging {
 
-    private let defaultRefreshFrequency = 60 * 4 // 4 hours
-
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {
         self.networkController = networkController
@@ -66,7 +64,7 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
     }
 
     private func store(manifest: ApplicationManifest) -> Observable<ApplicationManifest> {
-        return .create { observer in
+        let observable: Observable<ApplicationManifest> = .create { observer in
 
             guard !manifest.appConfigurationIdentifier.isEmpty else {
                 observer.onError(ExposureDataError.serverError)
@@ -83,8 +81,11 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
 
             return Disposables.create()
         }
+
+        return observable.share()
     }
 
+    private let defaultRefreshFrequency = 60 * 4 // 4 hours
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
 }

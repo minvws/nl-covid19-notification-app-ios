@@ -26,8 +26,13 @@ final class NetworkController: NetworkControlling, Logging {
     // MARK: - NetworkControlling
 
     var applicationManifest: Observable<ApplicationManifest> {
-        return .create { [weak self] observer in
-            self?.networkManager.getManifest { result in
+        let observable: Observable<ApplicationManifest> = .create { [weak self] observer in
+            guard let strongSelf = self else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+
+            strongSelf.networkManager.getManifest { result in
                 switch result {
                 case let .failure(error):
                     observer.onError(error)
@@ -38,6 +43,8 @@ final class NetworkController: NetworkControlling, Logging {
             }
             return Disposables.create()
         }
+
+        return observable.observe(on: MainScheduler.instance)
     }
 
     func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError> {
