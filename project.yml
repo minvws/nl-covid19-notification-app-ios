@@ -1,4 +1,7 @@
 name: EN
+settings:
+  base:
+    CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: 'YES'
 options:
   developmentLanguage: en
 packages:
