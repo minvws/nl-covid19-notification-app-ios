@@ -33,7 +33,7 @@ final class UploadDiagnosisKeysDataOperation: UploadDiagnosisKeysDataOperationPr
 
         return networkController
             .postKeys(keys: keys, labConfirmationKey: labConfirmationKey, padding: padding)
-            .asObservable()
+            .subscribe(on: MainScheduler.instance)
             .catch { error in
 
                 guard let exposureDataError = (error as? NetworkError)?.asExposureDataError else {

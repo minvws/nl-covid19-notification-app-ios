@@ -30,10 +30,10 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
             receivedKeys = keys
-
-            return Just(())
-                .setFailureType(to: NetworkError.self)
-                .eraseToAnyPublisher()
+            return Observable<()>.create { observer in
+                observer.onCompleted()
+                return Disposables.create()
+            }
         }
 
         let keys = createDiagnosisKeys(withHighestRollingStartNumber: 65)
@@ -59,7 +59,10 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         operation = createOperation(withKeys: createDiagnosisKeys(withHighestRollingStartNumber: 65), expiryDate: expiryDate)
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
-            return Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher()
+            return Observable<()>.create { observer in
+                observer.onError(NetworkError.invalidRequest)
+                return Disposables.create()
+            }
         }
 
         storageController.requestExclusiveAccessHandler = { $0(self.storageController) }
@@ -102,7 +105,11 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     func test_noKeys_doesReachOutToNetwork() {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
-            return (Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher())
+            return Observable<()>.create { observer in
+                observer.onNext(())
+                observer.onCompleted()
+                return Disposables.create()
+            }
         }
 
         operation = createOperation(withKeys: [])

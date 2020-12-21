@@ -9,6 +9,7 @@ import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import XCTest
 
 final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestCase {
@@ -42,7 +43,11 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
             receivedKeys = keys
             receivedLabConfirmationKey = labConfirmationKey
 
-            return Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher()
+            return Observable<()>.create { observer in
+                observer.onNext(())
+                observer.onCompleted()
+                return Disposables.create()
+            }
         }
 
         var receivedNewPendingRequests: [PendingLabConfirmationUploadRequest]!
@@ -83,7 +88,11 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         }
 
         networkController.postKeysHandler = { keys, labConfirmationKey, padding in
-            return Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher()
+            return Observable<()>.create { observer in
+                observer.onNext(())
+                observer.onCompleted()
+                return Disposables.create()
+            }
         }
 
         storageController.storeHandler = { _, _, completion in completion(nil) }
@@ -132,7 +141,12 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
             return try! jsonEncoder.encode([request])
         }
 
-        networkController.postKeysHandler = { _, _, _ in Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher() }
+        networkController.postKeysHandler = { _, _, _ in
+            return Observable<()>.create { observer in
+                observer.onError(NetworkError.invalidRequest)
+                return Disposables.create()
+            }
+        }
 
         var receivedRequests: [PendingLabConfirmationUploadRequest]!
         storageController.storeHandler = { data, _, completion in
