@@ -106,6 +106,7 @@ private final class UpdateAppView: View {
         view.addArrangedSubview(titleLabel)
         view.addArrangedSubview(contentLabel)
 
+        view.setCustomSpacing(50, after: imageViewContainer)
         return view
     }()
 
@@ -119,7 +120,7 @@ private final class UpdateAppView: View {
     lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = .clear
         return imageView
     }()
@@ -189,8 +190,7 @@ private final class UpdateAppView: View {
             make.centerX.equalTo(imageViewContainer)
             make.width.equalToSuperview().inset(30)
             make.height.equalTo(imageView.snp.width).multipliedBy(0.83)
-            make.top.equalToSuperview()
-            make.bottom.equalToSuperview().inset(50)
+            make.top.bottom.equalToSuperview()
         }
     }
 }
