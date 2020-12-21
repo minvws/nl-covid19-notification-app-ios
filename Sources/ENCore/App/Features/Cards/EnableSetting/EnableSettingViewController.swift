@@ -15,11 +15,11 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     init(listener: EnableSettingListener,
          theme: Theme,
          setting: EnableSetting,
-         bluetoothStateStream: BluetoothStateStreaming,
+         exposureStateStream: ExposureStateStreaming,
          environmentController: EnvironmentControlling) {
         self.listener = listener
         self.setting = setting
-        self.bluetoothStateStream = bluetoothStateStream
+        self.exposureStateStream = exposureStateStream
         self.environmentController = environmentController
 
         super.init(theme: theme)
@@ -27,7 +27,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     }
 
     deinit {
-        disposeBag.forEach { $0.cancel() }
+        exposureStateCancellable = nil
     }
 
     // MARK: - ViewController Lifecycle
@@ -66,22 +66,28 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     private weak var listener: EnableSettingListener?
     private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
     private let setting: EnableSetting
-    private let bluetoothStateStream: BluetoothStateStreaming
+    private let exposureStateStream: ExposureStateStreaming
     private let environmentController: EnvironmentControlling
-    private var disposeBag = Set<AnyCancellable>()
+    private var exposureStateCancellable: AnyCancellable?
 
     @objc private func didTapCloseButton() {
         listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
     }
 
     @objc private func checkBluetoothStatus() {
-        bluetoothStateStream
-            .enabled
-            .sink(receiveValue: { isEnabled in
-                if isEnabled {
-                    self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
-                }
-            }).store(in: &disposeBag)
+        guard exposureStateCancellable == nil else {
+            return
+        }
+
+        exposureStateCancellable = exposureStateStream
+            .exposureState
+            .filter { (state) -> Bool in
+                state.activeState != .inactive(.bluetoothOff)
+            }
+            .first()
+            .sink { state in
+                self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+            }
     }
 }
 

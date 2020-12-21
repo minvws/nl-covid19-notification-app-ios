@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
 import Foundation
 import XCTest
@@ -12,7 +13,7 @@ import XCTest
 final class EnableSettingViewControllerTests: TestCase {
     private var viewController: EnableSettingViewController!
     private let listener = EnableSettingListenerMock()
-    private var bluetoothStateStream = BluetoothStateStreamingMock()
+    private var exposureStateStream = ExposureStateStreamingMock()
     private var environmentController = EnvironmentControllingMock()
 
     override func setUp() {
@@ -21,7 +22,7 @@ final class EnableSettingViewControllerTests: TestCase {
         viewController = EnableSettingViewController(listener: listener,
                                                      theme: theme,
                                                      setting: .enableBluetooth,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
     }
 
@@ -36,5 +37,20 @@ final class EnableSettingViewControllerTests: TestCase {
 
         XCTAssertEqual(listener.enableSettingRequestsDismissCallCount, 1)
         XCTAssertEqual(shouldDismissViewController, false)
+    }
+
+    func test_enablingBluetoothShouldDimissScreen() {
+
+        XCTAssertEqual(listener.enableSettingRequestsDismissCallCount, 0)
+
+        exposureStateStream.exposureState = Just(ExposureState(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))).eraseToAnyPublisher()
+
+        viewController.viewDidLoad()
+
+        exposureStateStream.exposureState = Just(ExposureState(notifiedState: .notNotified, activeState: .active)).eraseToAnyPublisher()
+
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        XCTAssertEqual(listener.enableSettingRequestsDismissCallCount, 1)
     }
 }
