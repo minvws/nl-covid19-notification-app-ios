@@ -7,26 +7,33 @@
 
 @testable import ENCore
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
 final class UpdateAppViewControllerTests: TestCase {
 
     private var viewController: UpdateAppViewController!
-    private let listener = UpdateAppListenerMock()
+    private var mockListener: UpdateAppListenerMock!
+    private var mockInterfaceOrientationStream: InterfaceOrientationStreamingMock!
 
     // MARK: - Setup
 
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        mockListener = UpdateAppListenerMock()
+        mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
+        mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+
+        recordSnapshots = true
 
         viewController = UpdateAppViewController(
-            listener: listener,
+            listener: mockListener,
             theme: theme,
             appStoreURL: "",
-            minimumVersionMessage: nil)
+            minimumVersionMessage: nil,
+            interfaceOrientationStream: mockInterfaceOrientationStream)
     }
 
     // MARK: - Tests
