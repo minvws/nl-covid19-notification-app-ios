@@ -52,6 +52,10 @@ final class RootRouterTests: XCTestCase {
 
         mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
+        viewController.dismissHandler = { _, _, completion in
+            completion?()
+        }
+
         router = RootRouter(viewController: viewController,
                             launchScreenBuilder: launchScreenBuilder,
                             onboardingBuilder: onboardingBuilder,
@@ -238,9 +242,17 @@ final class RootRouterTests: XCTestCase {
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {
 
+        // Inital call to setup normal routing. didBecomeActive only checks End Of Life if
+        // there is already a router installed (the app startup routine was already executed)
+        router.start()
+
         exposureController.isAppDeactivatedHandler = {
             Just(true).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
+
+        XCTAssertEqual(exposureController.deactivateCallCount, 0)
+        XCTAssertEqual(endOfLifeBuilder.buildCallCount, 0)
+        XCTAssertEqual(viewController.presentInNavigationControllerCallCount, 0)
 
         router.didBecomeActive()
 
