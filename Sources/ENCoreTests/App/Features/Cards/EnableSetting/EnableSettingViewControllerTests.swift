@@ -39,15 +39,19 @@ final class EnableSettingViewControllerTests: TestCase {
         XCTAssertEqual(shouldDismissViewController, false)
     }
 
-    func test_enablingBluetoothShouldDimissScreen() {
+    func test_enablingBluetoothShouldDismissScreen() {
 
         XCTAssertEqual(listener.enableSettingRequestsDismissCallCount, 0)
 
-        exposureStateStream.exposureState = Just(ExposureState(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))).eraseToAnyPublisher()
+        let bluetoothOffState = ExposureState(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))
+        let bluetoothOnState = ExposureState(notifiedState: .notNotified, activeState: .active)
+
+        exposureStateStream.exposureState = Just(bluetoothOffState).eraseToAnyPublisher()
+        exposureStateStream.currentExposureState = bluetoothOffState
 
         viewController.viewDidLoad()
 
-        exposureStateStream.exposureState = Just(ExposureState(notifiedState: .notNotified, activeState: .active)).eraseToAnyPublisher()
+        exposureStateStream.exposureState = Just(bluetoothOnState).eraseToAnyPublisher()
 
         NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 

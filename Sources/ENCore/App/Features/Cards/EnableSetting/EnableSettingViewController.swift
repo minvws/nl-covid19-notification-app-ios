@@ -47,7 +47,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
         internalView.navigationBar.topItem?.rightBarButtonItem?.target = self
         internalView.navigationBar.topItem?.rightBarButtonItem?.action = #selector(didTapCloseButton)
 
-        if self.setting == .enableBluetooth {
+        if self.setting == .enableBluetooth && exposureStateStream.currentExposureState?.activeState == .inactive(.bluetoothOff) {
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(checkBluetoothStatus),
                                                    name: UIApplication.didBecomeActiveNotification,
