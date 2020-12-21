@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 
 enum Announcement: String, Codable {
     case interopAnnouncement
@@ -62,7 +63,6 @@ struct ExposureDataStorageKey {
 
 final class ExposureDataController: ExposureDataControlling, Logging {
 
-    private var disposeBag = Set<AnyCancellable>()
     private(set) var isFirstRun: Bool = false
 
     init(operationProvider: ExposureDataOperationProvider,
@@ -350,9 +350,19 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func requestApplicationManifest() -> AnyPublisher<ApplicationManifest, ExposureDataError> {
-        return operationProvider
-            .requestManifestOperation
-            .execute()
+        return Deferred {
+            Future { promise in
+                self.operationProvider
+                    .requestManifestOperation
+                    .execute()
+                    .subscribe { manifest in
+                        return promise(.success(manifest))
+                    } onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    }.disposed(by: self.disposeBag)
+            }
+        }.eraseToAnyPublisher()
     }
 
     private func requestExposureRiskConfiguration() -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
@@ -406,4 +416,5 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
     private let environmentController: EnvironmentControlling
+    private let disposeBag = DisposeBag()
 }

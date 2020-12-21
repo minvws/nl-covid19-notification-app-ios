@@ -18,9 +18,9 @@ final class NetworkManagerTests: XCTestCase {
     private var mockStorageControlling: StorageControllingMock!
     private var mockUrlSession: URLSessionProtocolMock!
     private var mockUrlSessionDelegate: URLSessionDelegateProtocolMock!
-    private var mockUnzipResponseHandler: RxUnzipNetworkResponseHandlerProtocolMock!
-    private var mockVerifySignatureResponseHandler: RxVerifySignatureResponseHandlerProtocolMock!
-    private var mockReadFromDiskResponseHandler: RxReadFromDiskResponseHandlerProtocolMock!
+    private var mockUnzipResponseHandler: UnzipNetworkResponseHandlerProtocolMock!
+    private var mockVerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocolMock!
+    private var mockReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocolMock!
 
     override func setUp() {
         super.setUp()
@@ -30,21 +30,21 @@ final class NetworkManagerTests: XCTestCase {
         mockStorageControlling = StorageControllingMock()
         mockUrlSession = URLSessionProtocolMock()
         mockUrlSessionDelegate = URLSessionDelegateProtocolMock()
-        mockUnzipResponseHandler = RxUnzipNetworkResponseHandlerProtocolMock()
-        mockVerifySignatureResponseHandler = RxVerifySignatureResponseHandlerProtocolMock()
-        mockReadFromDiskResponseHandler = RxReadFromDiskResponseHandlerProtocolMock()
+        mockUnzipResponseHandler = UnzipNetworkResponseHandlerProtocolMock()
+        mockVerifySignatureResponseHandler = VerifySignatureResponseHandlerProtocolMock()
+        mockReadFromDiskResponseHandler = ReadFromDiskResponseHandlerProtocolMock()
 
         mockNetworkConfigurationProvider.configuration = .test
 
-        mockNetworkResponseHandlerProvider.rxUnzipNetworkResponseHandler = {
+        mockNetworkResponseHandlerProvider.unzipNetworkResponseHandler = {
             return self.mockUnzipResponseHandler
         }()
 
-        mockNetworkResponseHandlerProvider.rxVerifySignatureResponseHandler = {
+        mockNetworkResponseHandlerProvider.verifySignatureResponseHandler = {
             return self.mockVerifySignatureResponseHandler
         }()
 
-        mockNetworkResponseHandlerProvider.rxReadFromDiskResponseHandler = {
+        mockNetworkResponseHandlerProvider.readFromDiskResponseHandler = {
             return self.mockReadFromDiskResponseHandler
         }()
 
@@ -76,7 +76,7 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_getManifest_requestSuccessShouldReturnManifest() throws {
+    func test_getManifest_requestSuccessShouldReturnModel() throws {
 
         let mockManifest = Manifest(exposureKeySets: ["eks"], riskCalculationParameters: "riskCalculationParameters", appConfig: "appConfig", resourceBundle: "resourceBundle")
         let mockData = try JSONEncoder().encode(mockManifest)
@@ -193,7 +193,7 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_getAppConfig_requestSuccessShouldReturnManifest() throws {
+    func test_getAppConfig_requestSuccessShouldReturnModel() throws {
 
         let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil)
         let mockData = try JSONEncoder().encode(mockModel)
@@ -310,7 +310,7 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_getTreatmentPerspective_requestSuccessShouldReturnManifest() throws {
+    func test_getTreatmentPerspective_requestSuccessShouldReturnModel() throws {
 
         let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
         let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
@@ -427,7 +427,7 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_getRiskCalculationParameters_requestSuccessShouldReturnManifest() throws {
+    func test_getRiskCalculationParameters_requestSuccessShouldReturnModel() throws {
 
         let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
         let mockData = try JSONEncoder().encode(mockModel)
@@ -522,6 +522,145 @@ final class NetworkManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }
+
+    // MARK: - getExposureKeySet
+
+    func test_getExposureKeySet_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getExposureKeySet_requestSuccessShouldReturnModel() throws {
+
+        let mockModel = URL(string: "http://someurl.com")
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .success(model) = result else {
+                XCTFail("Expected success but got error response instead")
+                return
+            }
+
+            XCTAssertEqual(model.absoluteString, "http://someurl.com")
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getExposureKeySet_unzipErrorShouldReturnError() throws {
+
+        let mockModel = URL(string: "http://someurl.com")
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateUnzipError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_getExposureKeySet_validateSignatureErrorShouldReturnError() throws {
+
+        let mockModel = URL(string: "http://someurl.com")
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+        mockResponseHandlers(readFromDiskData: mockData, simulateValidateSignatureError: true)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    // MARK: - postRegister
+
+    func test_postRegister_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.postRegister(request: .init(padding: "000")) { result in
+            guard case let .failure(error) = result else {
+                XCTFail("Expected error but got successful response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_postRegister_requestSuccessShouldReturnModel() throws {
+
+        let mockModel = LabInformation(labConfirmationId: "labConfirmationId", bucketId: "bucketId", confirmationKey: "confirmationKey", validity: 1)
+        let mockData = try JSONEncoder().encode(mockModel)
+
+        mockUrlSession(mockData: mockData)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.postRegister(request: .init(padding: "000")) { result in
+            guard case let .success(model) = result else {
+                XCTFail("Expected success but got error response instead")
+                return
+            }
+
+            XCTAssertEqual(model.labConfirmationId, "labConfirmationId")
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    // MARK: - Private Helper Functions
 
     private func mockUrlSession(mockData: Data?) {
         let mockDataTask = URLSessionDataTaskProtocolMock()

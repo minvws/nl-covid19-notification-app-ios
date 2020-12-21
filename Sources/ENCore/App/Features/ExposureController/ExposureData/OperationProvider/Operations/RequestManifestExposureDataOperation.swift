@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 
 struct ApplicationManifest: Codable {
     let exposureKeySetsIdentifiers: [String]
@@ -17,10 +17,12 @@ struct ApplicationManifest: Codable {
     let resourceBundle: String?
 }
 
-final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
-    typealias Result = ApplicationManifest
+/// @mockable
+protocol RequestAppManifestDataOperationProtocol {
+    func execute() -> Observable<ApplicationManifest>
+}
 
-    private let defaultRefreshFrequency = 60 * 4 // 4 hours
+final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProtocol, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {
@@ -28,26 +30,23 @@ final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
         self.storageController = storageController
     }
 
-    // MARK: - ExposureDataOperation
-
-    func execute() -> AnyPublisher<ApplicationManifest, ExposureDataError> {
+    func execute() -> Observable<ApplicationManifest> {
         let updateFrequency = retrieveManifestUpdateFrequency()
 
         if let manifest = retrieveStoredManifest(), manifest.isValid(forUpdateFrequency: updateFrequency) {
             logDebug("Using cached manifest")
-            return Just(manifest)
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just(manifest)
         }
 
         logDebug("Getting fresh manifest from network")
 
         return networkController
             .applicationManifest
-            .mapError { $0.asExposureDataError }
+            .catch { error in
+                throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
+            }
             .flatMap(store(manifest:))
             .share()
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private
@@ -64,27 +63,37 @@ final class RequestAppManifestDataOperation: ExposureDataOperation, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)
     }
 
-    private func store(manifest: ApplicationManifest) -> AnyPublisher<ApplicationManifest, ExposureDataError> {
-        return Future { promise in
+    private func store(manifest: ApplicationManifest) -> Observable<ApplicationManifest> {
+        let observable: Observable<ApplicationManifest> = .create { observer in
+
             guard !manifest.appConfigurationIdentifier.isEmpty else {
-                return promise(.failure(.serverError))
+                observer.onError(ExposureDataError.serverError)
+                return Disposables.create()
             }
-            self.storageController.store(object: manifest,
-                                         identifiedBy: ExposureDataStorageKey.appManifest,
-                                         completion: { _ in
-                                             promise(.success(manifest))
-                                         })
+
+            self.storageController.store(
+                object: manifest,
+                identifiedBy: ExposureDataStorageKey.appManifest,
+                completion: { _ in
+                    observer.onNext(manifest)
+                    observer.onCompleted()
+                })
+
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
+
+        return observable.share()
     }
 
+    private let defaultRefreshFrequency = 60 * 4 // 4 hours
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
 }
 
 extension ApplicationManifest {
     func isValid(forUpdateFrequency updateFrequency: Int) -> Bool {
-        return creationDate.addingTimeInterval(TimeInterval(updateFrequency * 60)) >= Date()
+        let expirationTimeInSeconds = TimeInterval(updateFrequency * 60)
+        let expirationDate = creationDate.addingTimeInterval(expirationTimeInSeconds)
+        return expirationDate >= currentDate()
     }
 }

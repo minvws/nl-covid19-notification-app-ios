@@ -80,12 +80,12 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                    fileManager: fileManager)
     }
 
-    var requestManifestOperation: RequestAppManifestDataOperation {
+    var requestManifestOperation: RequestAppManifestDataOperationProtocol {
         return RequestAppManifestDataOperation(networkController: networkController,
                                                storageController: storageController)
     }
 
-    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperation {
+    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperationProtocol {
         return RequestTreatmentPerspectiveDataOperation(networkController: networkController,
                                                         storageController: storageController)
     }
