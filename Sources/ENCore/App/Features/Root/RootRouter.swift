@@ -97,30 +97,34 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         // Copy of launch screen is shown to give the app time to determine the proper
         // screen to route to. If the network is slow this can take a few seconds.
-        routeToLaunchScreen { [weak self] in
+        routeToLaunchScreen()
 
-            self?.routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
+        routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
+
+            guard let strongSelf = self else { return }
+
+            if strongSelf.exposureController.didCompleteOnboarding {
+                strongSelf.backgroundController.scheduleTasks()
+            }
+
+            guard !didRoute else {
+                return
+            }
+
+            strongSelf.detachLaunchScreenIfNeeded(animated: false) { [weak self] in
 
                 guard let strongSelf = self else { return }
-
-                if strongSelf.exposureController.didCompleteOnboarding {
-                    strongSelf.backgroundController.scheduleTasks()
-                }
-
-                guard !didRoute else {
-                    return
-                }
 
                 if strongSelf.exposureController.didCompleteOnboarding {
                     strongSelf.routeToMain()
                 } else {
                     strongSelf.routeToOnboarding()
                 }
-
-                #if USE_DEVELOPER_MENU || DEBUG
-                    strongSelf.attachDeveloperMenu()
-                #endif
             }
+
+            #if USE_DEVELOPER_MENU || DEBUG
+                strongSelf.attachDeveloperMenu()
+            #endif
         }
 
         mutablePushNotificationStream
@@ -199,10 +203,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     // MARK: - RootRouting
 
-    func routeToLaunchScreen(completion: (() -> ())?) {
+    func routeToLaunchScreen() {
         guard launchScreenRouter == nil else {
             // already presented
-            completion?()
             return
         }
 
@@ -211,7 +214,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         viewController.present(viewController: router.viewControllable,
                                animated: false,
-                               completion: completion)
+                               completion: nil)
     }
 
     func routeToOnboarding() {
@@ -409,7 +412,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                         self?.routeToUpdateApp(animated: true, appStoreURL: versionInformation.appStoreURL, minimumVersionMessage: minimumVersionMessage)
                         completion?(true)
                     }
-
                     return
                 }
 
