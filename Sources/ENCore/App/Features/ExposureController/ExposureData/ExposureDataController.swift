@@ -228,10 +228,20 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                 Padding(minimumRequestSize: configuration.requestMinimumSize,
                         maximumRequestSize: configuration.requestMaximumSize)
             }
-            .flatMap { (padding: Padding) in
-                return self.operationProvider
-                    .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
-                    .execute()
+            .flatMap { padding in
+                return Deferred {
+                    Future { promise in
+                        self.operationProvider
+                            .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
+                            .execute()
+                            .subscribe { _ in
+                                return promise(.success(()))
+                            } onError: { error in
+                                let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                                return promise(.failure(convertedError))
+                            }.disposed(by: self.rxDisposeBag)
+                    }
+                }.eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }
@@ -360,7 +370,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                     } onError: { error in
                         let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
                         return promise(.failure(convertedError))
-                    }.disposed(by: self.disposeBag)
+                    }.disposed(by: self.rxDisposeBag)
             }
         }.eraseToAnyPublisher()
     }
@@ -416,5 +426,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
     private let environmentController: EnvironmentControlling
-    private let disposeBag = DisposeBag()
+    private let rxDisposeBag = DisposeBag()
+    private var disposeBag = Set<AnyCancellable>()
 }

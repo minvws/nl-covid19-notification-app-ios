@@ -25,7 +25,12 @@ struct ApplicationConfiguration: Codable, Equatable {
     let appointmentPhoneNumber: String
 }
 
-final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {
+/// @mockable
+protocol RequestAppConfigurationDataOperationProtocol {
+    func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError>
+}
+
+final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOperationProtocol, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,

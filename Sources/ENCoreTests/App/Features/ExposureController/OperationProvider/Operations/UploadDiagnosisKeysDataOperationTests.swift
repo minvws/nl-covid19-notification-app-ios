@@ -8,12 +8,14 @@
 import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class UploadDiagnosisKeysDataOperationTests: TestCase {
     private var operation: UploadDiagnosisKeysDataOperation!
     private let networkController = NetworkControllingMock()
     private let storageController = StorageControllingMock()
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
@@ -40,8 +42,8 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(networkController.postKeysCallCount, 0)
 
         operation.execute()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(networkController.postKeysCallCount, 1)
         XCTAssertNotNil(receivedKeys)
@@ -86,8 +88,8 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(storageController.storeCallCount, 0)
 
         operation.execute()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(storageController.storeCallCount, 1)
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
@@ -108,8 +110,8 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(networkController.postKeysCallCount, 0)
 
         operation.execute()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(networkController.postKeysCallCount, 1)
     }

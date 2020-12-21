@@ -5,13 +5,17 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
 import RxCombine
 import RxSwift
 
-final class UploadDiagnosisKeysDataOperation: ExposureDataOperation, Logging {
+/// @mockable
+protocol UploadDiagnosisKeysDataOperationProtocol {
+    func execute() -> Observable<()>
+}
+
+final class UploadDiagnosisKeysDataOperation: UploadDiagnosisKeysDataOperationProtocol, Logging {
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          diagnosisKeys: [DiagnosisKey],
@@ -24,22 +28,21 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation, Logging {
         self.padding = padding
     }
 
-    func execute() -> AnyPublisher<(), ExposureDataError> {
+    func execute() -> Observable<()> {
         let keys = diagnosisKeys
 
         return networkController
-            // execute network request
             .postKeys(keys: keys, labConfirmationKey: labConfirmationKey, padding: padding)
-            .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
+            .asObservable()
             .catch { error in
-                self.scheduleRetryWhenFailed(error: error, diagnosisKeys: self.diagnosisKeys, labConfirmationKey: self.labConfirmationKey)
-                    .publisher
-                    .assertNoFailure()
-                    .setFailureType(to: ExposureDataError.self)
+
+                guard let exposureDataError = (error as? NetworkError)?.asExposureDataError else {
+                    throw ExposureDataError.internalError
+                }
+
+                return self.scheduleRetryWhenFailed(error: exposureDataError, diagnosisKeys: self.diagnosisKeys, labConfirmationKey: self.labConfirmationKey)
                     .share()
-                    .eraseToAnyPublisher()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private
@@ -65,6 +68,7 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation, Logging {
                 requests.append(retryRequest)
 
                 storageController.store(object: requests, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
+                    observer.onNext(())
                     observer.onCompleted()
                 }
             }

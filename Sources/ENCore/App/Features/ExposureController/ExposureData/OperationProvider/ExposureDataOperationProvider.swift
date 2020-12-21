@@ -59,7 +59,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                                userNotificationCenter: userNotificationCenter)
     }
 
-    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,
                                                     applicationSignatureController: applicationSignatureController,
@@ -98,7 +98,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
-                                      padding: Padding) -> UploadDiagnosisKeysDataOperation {
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperationProtocol {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: diagnosisKeys,
