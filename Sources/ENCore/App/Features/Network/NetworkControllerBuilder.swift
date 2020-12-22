@@ -22,9 +22,6 @@ protocol NetworkControlling {
     func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError>
     func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError>
-
-    func startObservingNetworkReachability()
-    func stopObservingNetworkReachability()
 }
 
 /// @mockable
@@ -39,7 +36,6 @@ protocol NetworkControllerDependency {
     var cryptoUtility: CryptoUtility { get }
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
     var storageController: StorageControlling { get }
-    var mutableNetworkStatusStream: MutableNetworkStatusStreaming { get }
 }
 
 private final class NetworkControllerDependencyProvider: DependencyProvider<NetworkControllerDependency>, NetworkManagerDependency {
@@ -62,7 +58,6 @@ final class NetworkControllerBuilder: Builder<NetworkControllerDependency>, Netw
         let dependencyProvider = NetworkControllerDependencyProvider(dependency: dependency)
 
         return NetworkController(networkManager: dependencyProvider.networkManager,
-                                 cryptoUtility: dependencyProvider.dependency.cryptoUtility,
-                                 mutableNetworkStatusStream: dependencyProvider.dependency.mutableNetworkStatusStream)
+                                 cryptoUtility: dependencyProvider.dependency.cryptoUtility)
     }
 }

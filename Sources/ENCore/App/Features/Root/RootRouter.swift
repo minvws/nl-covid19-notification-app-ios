@@ -39,6 +39,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          callGGDBuilder: CallGGDBuildable,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
+         mutableNetworkStatusStream: MutableNetworkStatusStreaming,
          developerMenuBuilder: DeveloperMenuBuildable,
          mutablePushNotificationStream: MutablePushNotificationStreaming,
          networkController: NetworkControlling,
@@ -68,6 +69,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.currentAppVersion = currentAppVersion
 
         self.userNotificationCenter = userNotificationCenter
+        self.mutableNetworkStatusStream = mutableNetworkStatusStream
 
         super.init(viewController: viewController)
 
@@ -172,7 +174,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didEnterForeground() {
 
-        networkController.startObservingNetworkReachability()
+        mutableNetworkStatusStream.startObservingNetworkReachability()
 
         guard mainRouter != nil || onboardingRouter != nil else {
             // not started yet
@@ -188,7 +190,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func didEnterBackground() {
-        networkController.stopObservingNetworkReachability()
+        mutableNetworkStatusStream.stopObservingNetworkReachability()
     }
 
     func handle(backgroundTask: BGTask) {
@@ -478,6 +480,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private var webviewViewController: ViewControllable?
 
     private let userNotificationCenter: UserNotificationCenter
+
+    private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
 }
 
 private extension ExposureActiveState {
