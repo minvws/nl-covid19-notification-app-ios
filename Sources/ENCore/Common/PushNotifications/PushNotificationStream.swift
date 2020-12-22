@@ -7,7 +7,6 @@
 
 import ENFoundation
 import Foundation
-import NotificationCenter
 import RxSwift
 
 enum PushNotificationIdentifier: String {
