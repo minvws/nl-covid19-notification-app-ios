@@ -5,9 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
+import ENFoundation
 import Foundation
 import NotificationCenter
+import RxSwift
 
 enum PushNotificationIdentifier: String {
     case exposure = "nl.rijksoverheid.en.exposure"
@@ -29,31 +30,30 @@ enum PushNotificationIdentifier: String {
 
 /// @mockable
 protocol PushNotificationStreaming {
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> { get }
+    var pushNotificationStream: Observable<PushNotificationIdentifier> { get }
 }
 
 /// @mockable
 protocol MutablePushNotificationStreaming: PushNotificationStreaming {
-    func update(response: UNNotificationResponse)
+    func update(identifier: PushNotificationIdentifier)
 }
 
-final class PushNotificaionStream: MutablePushNotificationStreaming {
+final class PushNotificationStream: MutablePushNotificationStreaming, Logging {
 
     // MARK: - PushNotificationStreaming
 
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
+    var pushNotificationStream: Observable<PushNotificationIdentifier> {
         return subject
-            .removeDuplicates(by: ==)
+            .subscribe(on: MainScheduler.instance)
+            .distinctUntilChanged()
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
     }
 
     // MARK: - MutablePushNotificationStreaming
 
-    func update(response: UNNotificationResponse) {
-        subject.send(response)
+    func update(identifier: PushNotificationIdentifier) {
+        subject.onNext(identifier)
     }
 
-    private let subject = CurrentValueSubject<UNNotificationResponse?, Never>(nil)
+    private let subject = BehaviorSubject<PushNotificationIdentifier?>(value: nil)
 }

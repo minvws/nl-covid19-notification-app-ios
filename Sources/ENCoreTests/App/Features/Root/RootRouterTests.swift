@@ -8,6 +8,7 @@
 import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class RootRouterTests: XCTestCase {
@@ -26,7 +27,6 @@ final class RootRouterTests: XCTestCase {
     private let backgroundController = BackgroundControllingMock()
     private let updateAppBuilder = UpdateAppBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
-    private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
     private let userNotificationCenter = UserNotificationCenterMock()
 
     private var router: RootRouter!
@@ -49,8 +49,6 @@ final class RootRouterTests: XCTestCase {
         exposureController.updateTreatmentPerspectiveHandler = {
             Just(TreatmentPerspective.emptyMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
-
-        mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
         router = RootRouter(viewController: viewController,
                             launchScreenBuilder: launchScreenBuilder,
@@ -267,6 +265,46 @@ final class RootRouterTests: XCTestCase {
         router.didEnterBackground()
 
         XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 1)
+    }
+
+    // MARK: - Handling Notifications
+
+    func test_receivingUploadFailedNotification_shouldRouteToCallGGD() {
+        exposureController.didCompleteOnboarding = true
+
+        let mockCallGGDViewController = ViewControllableMock()
+        callGGDBuilder.buildHandler = { _ in
+            mockCallGGDViewController
+        }
+        mutablePushNotificationStream.pushNotificationStream = .just(.uploadFailed)
+
+        router.start()
+
+        let lastPresenterViewController = viewController.presentInNavigationControllerArgValues.last?.0
+
+        XCTAssertTrue(lastPresenterViewController === mockCallGGDViewController)
+    }
+
+    func test_receivingExposureNotification_shouldRouteToMessage() {
+        exposureController.didCompleteOnboarding = true
+        exposureController.lastExposureDate = Date()
+
+        let messageBuilderExpectation = expectation(description: "messageBuilder")
+
+        let mockMessageViewController = ViewControllableMock()
+        messageBuilder.buildHandler = { _, date in
+            XCTAssertEqual(date, self.exposureController.lastExposureDate)
+            messageBuilderExpectation.fulfill()
+            return mockMessageViewController
+        }
+        mutablePushNotificationStream.pushNotificationStream = .just(.exposure)
+
+        router.start()
+
+        let lastPresenterViewController = viewController.presentInNavigationControllerArgValues.last?.0
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertTrue(lastPresenterViewController === mockMessageViewController)
     }
 
     // MARK: - Private
