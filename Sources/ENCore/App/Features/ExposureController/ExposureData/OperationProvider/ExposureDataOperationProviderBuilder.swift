@@ -17,7 +17,7 @@ protocol ExposureDataOperation {
 /// @mockable
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation?
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol?
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
     func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
