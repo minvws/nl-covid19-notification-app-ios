@@ -47,16 +47,20 @@ final class NetworkController: NetworkControlling, Logging {
         return observable.observe(on: MainScheduler.instance)
     }
 
-    func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
-                    promise(result)
+    func treatmentPerspective(identifier: String) -> Observable<TreatmentPerspective> {
+        return .create { observer in
+            self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
+                switch result {
+                case let .failure(error):
+                    observer.onError(error)
+                case let .success(treatmentPerspective):
+                    observer.onNext(treatmentPerspective)
+                    observer.onCompleted()
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError> {
