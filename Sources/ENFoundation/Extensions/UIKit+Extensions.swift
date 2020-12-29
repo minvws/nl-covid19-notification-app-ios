@@ -34,3 +34,17 @@ public extension UIDevice {
         return identifier
     }()
 }
+
+public extension UINavigationBar {
+    func makeTransparant() {
+        if #available(iOS 13.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground()
+            standardAppearance = appearance
+        } else {
+            setBackgroundImage(UIImage(), for: .default)
+            shadowImage = UIImage()
+            isTranslucent = true
+        }
+    }
+}

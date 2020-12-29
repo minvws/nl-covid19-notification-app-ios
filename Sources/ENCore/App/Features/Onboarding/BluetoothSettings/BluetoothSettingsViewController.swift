@@ -153,10 +153,7 @@ private final class BluetoothSettingsView: View {
         navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose(sender:)))
 
         navigationBar.setItems([navigationItem], animated: false)
-
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        navigationBar.standardAppearance = appearance
+        navigationBar.makeTransparant()
 
         viewsInDisplayOrder.forEach { addSubview($0) }
     }

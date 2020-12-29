@@ -44,9 +44,6 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
             self?.listener?.enableSettingDidTriggerAction()
         })
 
-        internalView.navigationBar.topItem?.rightBarButtonItem?.target = self
-        internalView.navigationBar.topItem?.rightBarButtonItem?.action = #selector(didTapCloseButton)
-
         if self.setting == .enableBluetooth {
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(checkBluetoothStatus),
@@ -113,10 +110,7 @@ private final class EnableSettingView: View {
         let navigationItem = UINavigationItem()
         navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
         navigationBar.setItems([navigationItem], animated: false)
-
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        navigationBar.standardAppearance = appearance
+        navigationBar.makeTransparant()
 
         button.isHidden = true
 
