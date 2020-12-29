@@ -10,11 +10,27 @@ import Foundation
 /// @mockable
 protocol EnvironmentControlling {
     var isiOS137orHigher: Bool { get }
-    var isiOS136orHigher: Bool { get }
+    var gaenRateLimitingType: GAENRateLimitingType { get }
     var appVersion: String? { get }
 }
 
+enum GAENRateLimitingType {
+
+    // The GAEN API has a limit of 15 calls to the `detectExposure` function
+    case dailyLimit
+
+    // The GAEN API has a limit of 15 processed keyset files per day
+    case fileLimit
+}
+
 class EnvironmentController: EnvironmentControlling {
+
+    private enum SupportedENAPIVersion {
+        case version2
+        case version1
+        case unsupported
+    }
+
     var isiOS137orHigher: Bool {
         if #available(iOS 13.7, *) {
             return true
@@ -23,15 +39,31 @@ class EnvironmentController: EnvironmentControlling {
         }
     }
 
-    var isiOS136orHigher: Bool {
-        if #available(iOS 13.6, *) {
-            return true
-        } else {
-            return false
+    var gaenRateLimitingType: GAENRateLimitingType {
+        if supportedExposureNotificationsVersion == .version1 {
+            return .fileLimit
         }
+
+        return .dailyLimit
     }
 
     var appVersion: String? {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+
+    private var supportedExposureNotificationsVersion: SupportedENAPIVersion {
+        if #available(iOS 13.7, *) {
+            return .version2
+        } else if #available(iOS 13.5, *) {
+            return .version1
+        } else if ENManagerIsAvailable() {
+            return .version2
+        } else {
+            return .unsupported
+        }
+    }
+
+    fileprivate func ENManagerIsAvailable() -> Bool {
+        return NSClassFromString("ENManager") != nil
     }
 }
