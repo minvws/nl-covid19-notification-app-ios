@@ -664,7 +664,12 @@ private final class InfoSectionDynamicSuccessView: View {
         titleLabel.textCanBeCopied(charactersToRemove: "-")
 
         let accessibilityText = title.replacingOccurrences(of: "-", with: "").lowercased()
-        titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText, attributes: [.accessibilitySpeechSpellOut: true])
+
+        if #available(iOS 13.0, *) {
+            titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText, attributes: [.accessibilitySpeechSpellOut: true])
+        } else {
+            titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText.stringForSpelling)
+        }
     }
 
     // MARK: - Overrides
