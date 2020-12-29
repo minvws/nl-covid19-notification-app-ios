@@ -96,9 +96,15 @@ private final class WebviewView: View, WKNavigationDelegate {
     }()
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.hidesWhenStopped = true
-        return indicator
+        if #available(iOS 13.0, *) {
+            let indicator = UIActivityIndicatorView(style: .large)
+            indicator.hidesWhenStopped = true
+            return indicator
+        } else {
+            let indicator = UIActivityIndicatorView(style: .gray)
+            indicator.hidesWhenStopped = true
+            return indicator
+        }
     }()
 
     private lazy var gradientImageView: UIImageView = {

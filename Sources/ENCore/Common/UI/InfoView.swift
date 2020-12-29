@@ -603,7 +603,11 @@ private final class InfoSectionDynamicLoadingView: View {
     // MARK: - Init
 
     init(theme: Theme, title: String) {
-        self.activityIndicator = UIActivityIndicatorView(style: .large)
+        if #available(iOS 13.0, *) {
+            self.activityIndicator = UIActivityIndicatorView(style: .large)
+        } else {
+            self.activityIndicator = UIActivityIndicatorView(style: .gray)
+        }
         self.loadingLabel = Label()
         super.init(theme: theme)
 
