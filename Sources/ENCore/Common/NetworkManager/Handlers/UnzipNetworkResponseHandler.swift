@@ -24,11 +24,12 @@ final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol {
     // MARK: - RxUnzipNetworkResponseHandlerProtocol
 
     func isApplicable(for response: URLResponse, input: URL) -> Bool {
-        guard let response = response as? HTTPURLResponse else {
+        guard let response = response as? HTTPURLResponse,
+            let contentTypeHeader = response.allHeaderFields[HTTPHeaderKey.contentType.rawValue] as? String else {
             return false
         }
 
-        return response.value(forHTTPHeaderField: HTTPHeaderKey.contentType.rawValue) == HTTPContentType.zip.rawValue
+        return contentTypeHeader.lowercased() == HTTPContentType.zip.rawValue.lowercased()
     }
 
     func process(response: URLResponse, input: URL) -> Observable<URL> {
