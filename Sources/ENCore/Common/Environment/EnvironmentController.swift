@@ -23,13 +23,13 @@ enum GAENRateLimitingType {
     case fileLimit
 }
 
-class EnvironmentController: EnvironmentControlling {
+enum SupportedENAPIVersion {
+    case version2
+    case version1
+    case unsupported
+}
 
-    private enum SupportedENAPIVersion {
-        case version2
-        case version1
-        case unsupported
-    }
+class EnvironmentController: EnvironmentControlling {
 
     var isiOS137orHigher: Bool {
         if #available(iOS 13.7, *) {
@@ -51,7 +51,7 @@ class EnvironmentController: EnvironmentControlling {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     }
 
-    private var supportedExposureNotificationsVersion: SupportedENAPIVersion {
+    var supportedExposureNotificationsVersion: SupportedENAPIVersion {
         if #available(iOS 13.7, *) {
             return .version2
         } else if #available(iOS 13.5, *) {
