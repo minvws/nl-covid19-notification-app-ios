@@ -49,9 +49,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
 
         setThemeNavigationBar(withTitle: .contaminationChanceTitle)
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.actionHandler = { [weak self] in
             guard let strongSelf = self else {

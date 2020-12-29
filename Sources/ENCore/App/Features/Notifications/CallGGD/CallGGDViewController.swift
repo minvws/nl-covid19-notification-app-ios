@@ -37,9 +37,7 @@ final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAd
 
         hasBottomMargin = true
         title = .notificationUploadFailedHeader
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
         interfaceOrientationStream

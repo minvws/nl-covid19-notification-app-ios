@@ -33,7 +33,6 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
         internalView.tableView.dataSource = self
         internalView.tableView.delegate = self
 
-        internalView.navigationBar.topItem?.rightBarButtonItem?.action = #selector(didTapClose)
         internalView.titleLabel.text = .enableBluetoothTitle
 
         NotificationCenter.default.addObserver(self, selector: #selector(checkBluetoothStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -79,10 +78,8 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
     // MARK: - Private
 
     private weak var listener: BluetoothSettingsListener?
-    private lazy var internalView: BluetoothSettingsView = BluetoothSettingsView(theme: self.theme)
-    @objc private func didTapClose(sender: UIBarButtonItem) {
-        self.listener?.bluetoothSettingsDidComplete()
-    }
+    private lazy var internalView: BluetoothSettingsView = BluetoothSettingsView(theme: self.theme, listener: listener)
+
     private lazy var settings: [BluetoothSettingsModel] = [
         BluetoothSettingsModel(index: .enableBluetoothSettingIndexRow1,
                                title: .makeFromHtml(text: .enableBluetoothSettingTitleRow1, font: theme.fonts.body, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
@@ -142,14 +139,19 @@ private final class BluetoothSettingsView: View {
     fileprivate lazy var navigationBar = UINavigationBar()
 
     private lazy var viewsInDisplayOrder = [tableView, titleLabel, navigationBar]
+    private weak var listener: BluetoothSettingsListener?
+
+    init(theme: Theme, listener: BluetoothSettingsListener?) {
+        self.listener = listener
+        super.init(theme: theme)
+    }
 
     override func build() {
         super.build()
 
         let navigationItem = UINavigationItem()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: nil,
-                                                            action: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose(sender:)))
+
         navigationBar.setItems([navigationItem], animated: false)
 
         let appearance = UINavigationBarAppearance()
@@ -157,6 +159,10 @@ private final class BluetoothSettingsView: View {
         navigationBar.standardAppearance = appearance
 
         viewsInDisplayOrder.forEach { addSubview($0) }
+    }
+
+    @objc private func didTapClose(sender: UIBarButtonItem) {
+        self.listener?.bluetoothSettingsDidComplete()
     }
 
     override func setupConstraints() {

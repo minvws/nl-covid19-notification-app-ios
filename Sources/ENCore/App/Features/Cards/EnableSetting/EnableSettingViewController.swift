@@ -64,7 +64,8 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     // MARK: - Private
 
     private weak var listener: EnableSettingListener?
-    private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme)
+    private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme, listener: listener)
+
     private let setting: EnableSetting
     private let bluetoothStateStream: BluetoothStateStreaming
     private let environmentController: EnvironmentControlling
@@ -92,6 +93,12 @@ private final class EnableSettingView: View {
     fileprivate lazy var navigationBar = UINavigationBar()
 
     private var stepViews: [EnableSettingStepView] = []
+    private weak var listener: EnableSettingListener?
+
+    init(theme: Theme, listener: EnableSettingListener?) {
+        self.listener = listener
+        super.init(theme: theme)
+    }
 
     override func build() {
         super.build()
@@ -104,9 +111,7 @@ private final class EnableSettingView: View {
         scrollView.addSubview(titleLabel)
 
         let navigationItem = UINavigationItem()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: nil,
-                                                            action: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
         navigationBar.setItems([navigationItem], animated: false)
 
         let appearance = UINavigationBarAppearance()
@@ -118,6 +123,10 @@ private final class EnableSettingView: View {
         addSubview(navigationBar)
         addSubview(scrollView)
         addSubview(button)
+    }
+
+    @objc func didTapClose() {
+        listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
     }
 
     override func setupConstraints() {

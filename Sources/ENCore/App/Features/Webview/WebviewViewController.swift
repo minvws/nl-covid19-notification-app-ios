@@ -62,9 +62,7 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
     private lazy var internalView: WebviewView = WebviewView(theme: theme)
     private weak var listener: WebviewListener?
     private let initialURL: URL
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                          target: self,
-                                                          action: #selector(didTapClose))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }
 
 private protocol WebviewViewDelegate: AnyObject {

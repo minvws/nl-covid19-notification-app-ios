@@ -42,9 +42,7 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
         hasBottomMargin = true
         title = .moreInformationThankYouTitle
         navigationItem.hidesBackButton = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.actionHandler = { [weak self] in
             self?.listener?.thankYouWantsDismissal()

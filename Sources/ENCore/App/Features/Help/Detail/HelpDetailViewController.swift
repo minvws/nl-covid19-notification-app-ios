@@ -86,7 +86,7 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     private lazy var internalView: HelpView = HelpView(theme: theme,
                                                        linkedContentTableViewManager: linkedContentTableViewManager,
                                                        shouldDisplayButton: shouldShowEnableAppButton)
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapClose))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
     private weak var listener: HelpDetailListener?
 
     private let shouldShowEnableAppButton: Bool
