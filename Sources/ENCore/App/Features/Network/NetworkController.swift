@@ -71,18 +71,20 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
-                    promise(result
-                        .map { $0.asExposureRiskConfiguration(identifier: identifier) }
-                    )
+    func exposureRiskConfigurationParameters(identifier: String) -> Observable<ExposureRiskConfiguration> {
+        return .create { observer in
+            self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
+                switch result {
+                case let .failure(error):
+                    observer.onError(error)
+                case let .success(parameters):
+                    observer.onNext(parameters.asExposureRiskConfiguration(identifier: identifier))
+                    observer.onCompleted()
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError> {

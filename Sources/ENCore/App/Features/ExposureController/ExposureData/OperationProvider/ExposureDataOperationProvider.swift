@@ -66,7 +66,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                     appConfigurationIdentifier: identifier)
     }
 
-    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation {
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol {
         return RequestExposureConfigurationDataOperation(networkController: networkController,
                                                          storageController: storageController,
                                                          exposureConfigurationIdentifier: identifier)

@@ -161,7 +161,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
+    private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
             .flatMap { (configuration) -> AnyPublisher<(), ExposureDataError> in
@@ -366,14 +366,29 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func requestExposureRiskConfiguration() -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
-        return requestApplicationManifest()
-            .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
-            .flatMap { identifier in
-                self.operationProvider
-                    .requestExposureConfigurationOperation(identifier: identifier)
-                    .execute()
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationManifest()
+                    .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
+                    .flatMap { identifier in
+                        self.operationProvider
+                            .requestExposureConfigurationOperation(identifier: identifier)
+                            .execute()
+                    }
+                    .subscribe(onNext: { riskConfiguration in
+                        promise(.success(riskConfiguration))
+                    }, onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    })
+                    .disposed(by: self.disposeBag)
             }
-            .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private func rxRequestApplicationManifest() -> Observable<ApplicationManifest> {
+        return operationProvider.requestManifestOperation.execute()
     }
 
     // MARK: - Version Management

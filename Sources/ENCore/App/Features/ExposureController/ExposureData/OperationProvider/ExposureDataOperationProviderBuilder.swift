@@ -22,7 +22,7 @@ protocol ExposureDataOperationProvider {
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
     func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
-    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
 
     var requestManifestOperation: RequestAppManifestDataOperationProtocol { get }

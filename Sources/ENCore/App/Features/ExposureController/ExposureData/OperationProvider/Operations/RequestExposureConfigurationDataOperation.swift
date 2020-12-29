@@ -7,8 +7,9 @@
 
 import Combine
 import Foundation
+import RxSwift
 
-struct ExposureRiskConfiguration: Codable, ExposureConfiguration {
+struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     let identifier: String
 
     let minimumRiskScope: UInt8
@@ -19,7 +20,11 @@ struct ExposureRiskConfiguration: Codable, ExposureConfiguration {
     let attenuationDurationThresholds: [Int]
 }
 
-final class RequestExposureConfigurationDataOperation: ExposureDataOperation {
+protocol RequestExposureConfigurationDataOperationProtocol {
+    func execute() -> Observable<ExposureConfiguration>
+}
+
+final class RequestExposureConfigurationDataOperation: RequestExposureConfigurationDataOperationProtocol {
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          exposureConfigurationIdentifier: String) {
@@ -30,19 +35,17 @@ final class RequestExposureConfigurationDataOperation: ExposureDataOperation {
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
+    func execute() -> Observable<ExposureConfiguration> {
         if let exposureConfiguration = retrieveStoredConfiguration(), exposureConfiguration.identifier == exposureConfigurationIdentifier {
-            return Just(exposureConfiguration)
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just(exposureConfiguration)
         }
 
         return networkController
             .exposureRiskConfigurationParameters(identifier: exposureConfigurationIdentifier)
-            .mapError { $0.asExposureDataError }
+            .subscribe(on: MainScheduler.instance)
+            .catch { throw $0.asExposureDataError }
             .flatMap(store(exposureConfiguration:))
             .share()
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private
@@ -51,15 +54,22 @@ final class RequestExposureConfigurationDataOperation: ExposureDataOperation {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureConfiguration)
     }
 
-    private func store(exposureConfiguration: ExposureRiskConfiguration) -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
-        return Future { promise in
-            self.storageController.store(object: exposureConfiguration,
-                                         identifiedBy: ExposureDataStorageKey.exposureConfiguration,
-                                         completion: { _ in
-                                             promise(.success(exposureConfiguration))
-                                         })
+    private func store(exposureConfiguration: ExposureRiskConfiguration) -> Observable<ExposureConfiguration> {
+        return .create { observer in
+            self.storageController.store(
+                object: exposureConfiguration,
+                identifiedBy: ExposureDataStorageKey.exposureConfiguration,
+                completion: { error in
+                    if error != nil {
+                        observer.onError(ExposureDataError.internalError)
+                    } else {
+                        observer.onNext(exposureConfiguration)
+                        observer.onCompleted()
+                    }
+                }
+            )
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     private let networkController: NetworkControlling
