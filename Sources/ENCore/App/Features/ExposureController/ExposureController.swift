@@ -388,7 +388,7 @@ final class ExposureController: ExposureControlling, Logging {
 
                 let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
 
-                guard lastENStatusCheckDate.advanced(by: timeInterval) < Date() else {
+                guard lastENStatusCheckDate.addingTimeInterval(timeInterval) < Date() else {
                     promise(.success(()))
                     return self.logDebug("`exposureNotificationStatusCheck` skipped as it hasn't been 24h")
                 }
@@ -479,12 +479,12 @@ final class ExposureController: ExposureControlling, Logging {
 
                 let notificationThreshold = TimeInterval(60 * 60 * 3) // 3 hours
 
-                guard lastUnseenExposureNotificationDate.advanced(by: notificationThreshold) < Date() else {
+                guard lastUnseenExposureNotificationDate.addingTimeInterval(notificationThreshold) < Date() else {
                     self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h after initial notification")
                     return promise(.success(()))
                 }
 
-                guard lastAppLaunch.advanced(by: notificationThreshold) < Date() else {
+                guard lastAppLaunch.addingTimeInterval(notificationThreshold) < Date() else {
                     self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
                     return promise(.success(()))
                 }
@@ -530,7 +530,7 @@ final class ExposureController: ExposureControlling, Logging {
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
         guard
             let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
-            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
+            lastSuccessfulProcessingDate.addingTimeInterval(timeInterval) < Date()
         else {
             return
         }
@@ -538,7 +538,7 @@ final class ExposureController: ExposureControlling, Logging {
             // We haven't shown a notification to the user before so we should show one now
             return notifyUser()
         }
-        guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
+        guard lastLocalNotificationExposureDate.addingTimeInterval(timeInterval) < Date() else {
             return
         }
 
@@ -606,7 +606,7 @@ final class ExposureController: ExposureControlling, Logging {
         let hasBeenTooLongSinceLastUpdate: Bool
 
         if let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate {
-            hasBeenTooLongSinceLastUpdate = lastSuccessfulProcessingDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
+            hasBeenTooLongSinceLastUpdate = lastSuccessfulProcessingDate.addingTimeInterval(noInternetIntervalForShowingWarning) < Date()
         } else {
             hasBeenTooLongSinceLastUpdate = false
         }
