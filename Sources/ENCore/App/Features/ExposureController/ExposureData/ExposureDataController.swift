@@ -203,9 +203,19 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError> {
-        return operationProvider
-            .expiredLabConfirmationNotificationOperation()
-            .execute()
+        return Deferred {
+            Future { promise in
+                self.operationProvider
+                    .expiredLabConfirmationNotificationOperation()
+                    .execute()
+                    .subscribe { manifest in
+                        return promise(.success(manifest))
+                    } onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    }.disposed(by: self.disposeBag)
+            }
+        }.eraseToAnyPublisher()
     }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
