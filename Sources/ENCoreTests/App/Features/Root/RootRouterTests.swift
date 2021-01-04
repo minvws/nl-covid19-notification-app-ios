@@ -242,7 +242,7 @@ final class RootRouterTests: XCTestCase {
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {
 
-        // Inital call to setup normal routing. didBecomeActive only checks End Of Life if
+        // Initial call to setup normal routing. didBecomeActive only checks End Of Life if
         // there is already a router installed (the app startup routine was already executed)
         router.start()
 
