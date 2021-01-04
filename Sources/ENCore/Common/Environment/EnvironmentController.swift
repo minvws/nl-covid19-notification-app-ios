@@ -40,7 +40,7 @@ class EnvironmentController: EnvironmentControlling {
     }
 
     var gaenRateLimitingType: GAENRateLimitingType {
-        if supportedExposureNotificationsVersion == .version1 {
+        if maximumSupportedExposureNotificationVersion == .version1 {
             return .fileLimit
         }
 
@@ -51,7 +51,7 @@ class EnvironmentController: EnvironmentControlling {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     }
 
-    var supportedExposureNotificationsVersion: SupportedENAPIVersion {
+    private var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion {
         if #available(iOS 13.7, *) {
             return .version2
         } else if #available(iOS 13.5, *) {
