@@ -5,14 +5,14 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 
 /// @mockable
 protocol ApplicationSignatureControlling {
     func retrieveStoredConfiguration() -> ApplicationConfiguration?
-    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError>
-    func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError>
+    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration>
+    func storeSignature(for appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration>
     func retrieveStoredSignature() -> Data?
     func signature(for appConfiguration: ApplicationConfiguration) -> Data?
 }
@@ -31,36 +31,44 @@ final class ApplicationSignatureController: ApplicationSignatureControlling {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration)
     }
 
-    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return Future { promise in
+    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration> {
+        return .create { (observer) -> Disposable in
             guard appConfiguration.version > 0, appConfiguration.manifestRefreshFrequency > 0 else {
-                return promise(.failure(.serverError))
+                observer.onError(ExposureDataError.serverError)
+                return Disposables.create()
             }
-            self.storageController.store(object: appConfiguration,
-                                         identifiedBy: ExposureDataStorageKey.appConfiguration,
-                                         completion: { _ in
-                                             promise(.success(appConfiguration))
+
+            self.storageController.store(
+                object: appConfiguration,
+                identifiedBy: ExposureDataStorageKey.appConfiguration,
+                completion: { _ in
+                    observer.onNext(appConfiguration)
+                    observer.onCompleted()
                 })
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     func retrieveStoredSignature() -> Data? {
         return storageController.retrieveData(identifiedBy: ExposureDataStorageKey.appConfigurationSignature)
     }
 
-    func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return Future { promise in
+    func storeSignature(for appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration> {
+        return .create { (observer) -> Disposable in
+
             guard let sha = self.signature(for: appConfiguration) else {
-                promise(.failure(ExposureDataError.internalError))
-                return
+                observer.onError(ExposureDataError.internalError)
+                return Disposables.create()
             }
 
             self.storageController.store(data: sha, identifiedBy: ExposureDataStorageKey.appConfigurationSignature) { _ in
-                promise(.success(appConfiguration))
+                observer.onNext(appConfiguration)
+                observer.onCompleted()
             }
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     func signature(for appConfiguration: ApplicationConfiguration) -> Data? {

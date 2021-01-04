@@ -349,14 +349,24 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return requestApplicationManifest()
-            .flatMap { manifest in
-                return self
-                    .operationProvider
-                    .requestAppConfigurationOperation(identifier: manifest.appConfigurationIdentifier)
-                    .execute()
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationManifest()
+                    .flatMap {
+                        self.operationProvider
+                            .requestAppConfigurationOperation(identifier: $0.appConfigurationIdentifier)
+                            .execute()
+                    }
+                    .subscribe(onNext: { appConfiguration in
+                        promise(.success(appConfiguration))
+                    }, onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    })
+                    .disposed(by: self.disposeBag)
             }
-            .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 
     private func requestApplicationManifest() -> AnyPublisher<ApplicationManifest, ExposureDataError> {
@@ -373,6 +383,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                     }.disposed(by: self.disposeBag)
             }
         }.eraseToAnyPublisher()
+    }
+
+    private func rxRequestApplicationManifest() -> Observable<ApplicationManifest> {
+        return operationProvider.requestManifestOperation.execute()
     }
 
     private func requestExposureRiskConfiguration() -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
