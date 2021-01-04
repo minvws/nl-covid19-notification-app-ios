@@ -17,11 +17,11 @@ protocol ExposureDataOperation {
 /// @mockable
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation?
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol?
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
     func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
-    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol
     func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
 
@@ -31,7 +31,7 @@ protocol ExposureDataOperationProvider {
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
-                                      padding: Padding) -> UploadDiagnosisKeysDataOperation
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperationProtocol
 }
 
 protocol ExposureDataOperationProviderBuildable {

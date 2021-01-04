@@ -5,11 +5,17 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxCombine
+import RxSwift
 
-final class UploadDiagnosisKeysDataOperation: ExposureDataOperation, Logging {
+/// @mockable
+protocol UploadDiagnosisKeysDataOperationProtocol {
+    func execute() -> Observable<()>
+}
+
+final class UploadDiagnosisKeysDataOperation: UploadDiagnosisKeysDataOperationProtocol, Logging {
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          diagnosisKeys: [DiagnosisKey],
@@ -22,40 +28,52 @@ final class UploadDiagnosisKeysDataOperation: ExposureDataOperation, Logging {
         self.padding = padding
     }
 
-    func execute() -> AnyPublisher<(), ExposureDataError> {
+    func execute() -> Observable<()> {
         let keys = diagnosisKeys
 
         return networkController
-            // execute network request
             .postKeys(keys: keys, labConfirmationKey: labConfirmationKey, padding: padding)
-            .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
-            .catch { error in self.scheduleRetryWhenFailed(error: error, diagnosisKeys: keys, labConfirmationKey: self.labConfirmationKey) }
-            .eraseToAnyPublisher()
+            .subscribe(on: MainScheduler.instance)
+            .catch { error in
+
+                guard let exposureDataError = (error as? NetworkError)?.asExposureDataError else {
+                    throw ExposureDataError.internalError
+                }
+
+                return self.scheduleRetryWhenFailed(error: exposureDataError, diagnosisKeys: self.diagnosisKeys, labConfirmationKey: self.labConfirmationKey)
+                    .share()
+            }
     }
 
     // MARK: - Private
 
-    private func scheduleRetryWhenFailed(error: ExposureDataError, diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
+    private func scheduleRetryWhenFailed(error: ExposureDataError, diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()> {
 
-        return Future { promise in
+        return .create { [weak self] observer in
+
+            guard let strongSelf = self else {
+                observer.onError(ExposureDataError.internalError)
+                return Disposables.create()
+            }
+
             let retryRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: labConfirmationKey,
                                                                    diagnosisKeys: diagnosisKeys,
                                                                    expiryDate: labConfirmationKey.expiration)
 
-            self.logDebug("Saving PendingLabConfirmationUploadRequest: \(retryRequest)")
+            strongSelf.logDebug("Saving PendingLabConfirmationUploadRequest: \(retryRequest)")
 
-            self.storageController.requestExclusiveAccess { storageController in
+            strongSelf.storageController.requestExclusiveAccess { storageController in
                 var requests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
 
                 requests.append(retryRequest)
 
                 storageController.store(object: requests, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
-                    promise(.success(()))
+                    observer.onNext(())
+                    observer.onCompleted()
                 }
             }
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
     private let networkController: NetworkControlling

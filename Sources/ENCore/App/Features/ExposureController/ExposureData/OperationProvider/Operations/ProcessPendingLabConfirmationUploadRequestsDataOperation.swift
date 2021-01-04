@@ -79,6 +79,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
         return networkController.postKeys(keys: request.diagnosisKeys,
                                           labConfirmationKey: request.labConfirmationKey,
                                           padding: padding)
+            .publisher
             .handleEvents(receiveCompletion: { [weak self] completion in
                 if case .finished = completion {
                     self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")

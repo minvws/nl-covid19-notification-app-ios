@@ -12,7 +12,11 @@ import RxCombine
 import RxSwift
 import UserNotifications
 
-final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperation, Logging {
+protocol ExpiredLabConfirmationNotificationDataOperationProtocol {
+    func execute() -> Observable<()>
+}
+
+final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmationNotificationDataOperationProtocol, Logging {
 
     init(storageController: StorageControlling,
          userNotificationCenter: UserNotificationCenter) {
@@ -22,7 +26,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<(), ExposureDataError> {
+    func execute() -> Observable<()> {
         let expiredRequests = getPendingRequests()
             .filter { $0.isExpired }
 
@@ -32,12 +36,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
         logDebug("Expired requests: \(expiredRequests)")
 
-        return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests)
-            .publisher
-            .assertNoFailure()
-            .setFailureType(to: ExposureDataError.self)
-            .share()
-            .eraseToAnyPublisher()
+        return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests).share()
     }
 
     // MARK: - Private
