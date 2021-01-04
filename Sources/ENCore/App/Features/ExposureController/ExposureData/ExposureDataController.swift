@@ -79,13 +79,24 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - ExposureDataControlling
 
     func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        return requestApplicationManifest()
-            .flatMap { _ in
-                self.operationProvider
-                    .requestTreatmentPerspectiveDataOperation
-                    .execute()
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationManifest()
+                    .flatMap { _ in
+                        self.operationProvider
+                            .requestTreatmentPerspectiveDataOperation
+                            .execute()
+                    }
+                    .subscribe(onNext: { treatmentPerspective in
+                        promise(.success(treatmentPerspective))
+                    }, onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    })
+                    .disposed(by: self.disposeBag)
             }
-            .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 
     // MARK: - Exposure Detection

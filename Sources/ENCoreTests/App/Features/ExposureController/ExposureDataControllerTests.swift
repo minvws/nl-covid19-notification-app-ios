@@ -8,6 +8,7 @@
 import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class ExposureDataControllerTests: TestCase {
@@ -110,7 +111,7 @@ final class ExposureDataControllerTests: TestCase {
         let treatmentPerspectiveOperationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
         treatmentPerspectiveOperationMock.executeHandler = {
             treatmentPerspectiveOperationCalled.fulfill()
-            return Just(TreatmentPerspective.testData()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            return .just(TreatmentPerspective.testData())
         }
         mockOperationProvider.requestTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
 

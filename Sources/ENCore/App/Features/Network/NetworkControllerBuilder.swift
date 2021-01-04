@@ -13,7 +13,7 @@ import RxSwift
 protocol NetworkControlling {
     var applicationManifest: Observable<ApplicationManifest> { get }
 
-    func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError>
+    func treatmentPerspective(identifier: String) -> Observable<TreatmentPerspective>
 
     func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration>
 
