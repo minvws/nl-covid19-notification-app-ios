@@ -102,8 +102,13 @@ final class ExposureDataControllerTests: TestCase {
         let manifestOperationCalledExpectation = expectation(description: "manifestOperationCalled")
         mockManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
 
-        let treatmentPerspectiveOperationCalledExpectation = expectation(description: "treatmentPerspectiveOperationCalled")
-        mockTreatmentPerspectiveOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: treatmentPerspectiveOperationCalledExpectation)
+        let treatmentPerspectiveOperationCalled = expectation(description: "treatmentPerspectiveOperationCalled")
+        let treatmentPerspectiveOperationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
+        treatmentPerspectiveOperationMock.executeHandler = {
+            treatmentPerspectiveOperationCalled.fulfill()
+            return .just(TreatmentPerspective.testData())
+        }
+        mockOperationProvider.requestTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
 
         sut.requestTreatmentPerspective()
             .sink(receiveCompletion: { _ in
@@ -188,7 +193,7 @@ final class ExposureDataControllerTests: TestCase {
         let operationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
         operationMock.executeHandler = {
             expectation?.fulfill()
-            return Just(testData).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            return .just(testData)
         }
         mockOperationProvider.requestTreatmentPerspectiveDataOperation = operationMock
     }
