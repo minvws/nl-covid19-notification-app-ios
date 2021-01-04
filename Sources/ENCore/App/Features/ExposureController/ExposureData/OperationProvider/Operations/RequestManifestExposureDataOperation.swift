@@ -42,9 +42,8 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
 
         return networkController
             .applicationManifest
-            .catch { error in
-                throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
-            }
+            .subscribe(on: MainScheduler.instance)
+            .catch { throw $0.asExposureDataError }
             .flatMap(store(manifest:))
             .share()
     }
