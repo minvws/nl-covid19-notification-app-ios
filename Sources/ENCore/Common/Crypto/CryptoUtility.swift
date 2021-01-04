@@ -6,7 +6,6 @@
  */
 
 import CommonCrypto
-import CryptoKit
 import Foundation
 import Security
 
@@ -14,7 +13,7 @@ import Security
 protocol CryptoUtility {
     func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ())
     func signature(forData data: Data, key: Data) -> Data
-    func sha256<D>(data: D) -> String? where D: DataProtocol
+    func sha256(data: Data) -> String?
 }
 
 /// Crypto Utility for validating and generating signatures
@@ -40,18 +39,35 @@ final class CryptoUtilityImpl: CryptoUtility {
     }
 
     func signature(forData data: Data, key: Data) -> Data {
-        let key = SymmetricKey(data: key)
 
-        let signature = HMAC<SHA256>.authenticationCode(for: data, using: key)
+        var digest = [CUnsignedChar](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
 
-        return Data(signature)
+        key.withUnsafeBytes { keyPtr in
+            data.withUnsafeBytes { dataPtr in
+                CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), keyPtr.baseAddress, key.count, dataPtr.baseAddress, data.count, &digest)
+            }
+        }
+
+        return Data(digest)
     }
 
-    func sha256<D>(data: D) -> String? where D: DataProtocol {
-        return SHA256.hash(data: data).description
+    func sha256(data: Data) -> String? {
+        let digest = data.sha256
+        let hexBytes = digest.map { String(format: "%02hhx", $0) }
+        return "SHA256 digest: \(hexBytes.joined())"
     }
 
     // MARK: - Private
 
     private let signatureValidator: SignatureValidating
+}
+
+extension Data {
+    var sha256: Data {
+        var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
+        self.withUnsafeBytes {
+            _ = CC_SHA256($0.baseAddress, CC_LONG(self.count), &digest)
+        }
+        return Data(digest)
+    }
 }

@@ -177,7 +177,7 @@ final class ExposureDataControllerTests: TestCase {
         let operationMock = RequestAppConfigurationDataOperationProtocolMock()
         operationMock.executeHandler = {
             expectation?.fulfill()
-            return Just(testData).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            return .just(testData)
         }
         mockOperationProvider.requestAppConfigurationOperationHandler = { identifier in operationMock }
     }

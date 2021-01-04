@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 
 struct ApplicationConfiguration: Codable, Equatable {
     let version: Int
@@ -27,7 +27,7 @@ struct ApplicationConfiguration: Codable, Equatable {
 
 /// @mockable
 protocol RequestAppConfigurationDataOperationProtocol {
-    func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError>
+    func execute() -> Observable<ApplicationConfiguration>
 }
 
 final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOperationProtocol, Logging {
@@ -44,7 +44,7 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+    func execute() -> Observable<ApplicationConfiguration> {
         self.logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
 
         if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
@@ -54,32 +54,26 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
 
             self.logDebug("RequestAppConfigurationDataOperation: Using cached version")
 
-            return Just(appConfiguration)
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just(appConfiguration)
         }
 
         self.logDebug("RequestAppConfigurationDataOperation: Using network version")
 
         return networkController
             .applicationConfiguration(identifier: appConfigurationIdentifier)
-            .mapError { $0.asExposureDataError }
+            .subscribe(on: MainScheduler.instance)
+            .catch { throw $0.asExposureDataError }
             .flatMap(storeAppConfiguration)
             .flatMap(storeSignature(for:))
             .share()
-            .eraseToAnyPublisher()
     }
 
-    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return self.applicationSignatureController.storeAppConfiguration(appConfiguration)
-            .share()
-            .eraseToAnyPublisher()
+    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration> {
+        return applicationSignatureController.storeAppConfiguration(appConfiguration).share()
     }
 
-    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return self.applicationSignatureController.storeSignature(for: appConfiguration)
-            .share()
-            .eraseToAnyPublisher()
+    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration> {
+        return applicationSignatureController.storeSignature(for: appConfiguration).share()
     }
 
     private let networkController: NetworkControlling

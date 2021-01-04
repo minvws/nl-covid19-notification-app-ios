@@ -15,7 +15,8 @@ protocol NetworkControlling {
 
     func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError>
 
-    func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError>
+    func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration>
+
     func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError>
     func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError>
 

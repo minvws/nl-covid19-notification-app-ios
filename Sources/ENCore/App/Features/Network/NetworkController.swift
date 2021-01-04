@@ -59,16 +59,20 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getAppConfig(appConfig: identifier) { result in
-                    promise(result.map { $0.asApplicationConfiguration(identifier: identifier) })
+    func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration> {
+        return .create { (observer) -> Disposable in
+            self.networkManager.getAppConfig(appConfig: identifier) { result in
+                switch result {
+                case let .success(configuration):
+                    observer.onNext(configuration.asApplicationConfiguration(identifier: identifier))
+                    observer.onCompleted()
+                case let .failure(error):
+                    observer.onError(error)
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError> {
