@@ -175,6 +175,30 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssert(task.completed!)
     }
 
+    func test_performDecoySequenceIfNeeded_shouldNotWorkIfENisInactive() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .inactive(.disabled)
+        }
+
+        controller.performDecoySequenceIfNeeded()
+
+        XCTAssertEqual(exposureController.getDecoyProbabilityCallCount, 0)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
+    }
+
+    func test_performDecoySequenceIfNeeded_shouldNotWorkIfDecoySequenceAlreadyDoneToday() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
+
+        dataController.canProcessDecoySequence = false
+
+        controller.performDecoySequenceIfNeeded()
+
+        XCTAssertEqual(exposureController.getDecoyProbabilityCallCount, 0)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
+    }
+
     // MARK: - Private
 
     private var labConfirmationKey: LabConfirmationKey {

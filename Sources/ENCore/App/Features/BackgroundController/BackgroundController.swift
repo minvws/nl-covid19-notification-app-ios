@@ -10,8 +10,8 @@ import Combine
 import ENFoundation
 import ExposureNotification
 import Foundation
-import UserNotifications
 import RxSwift
+import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
     case refresh = "exposure-notification"
@@ -169,6 +169,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///     x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
     ///     y = about 5 minutes (about less, e.g. 250 sec) this param value depends on how long a prioritized task is allowed to run
     func performDecoySequenceIfNeeded() {
+
+        guard self.isExposureManagerActive else {
+            self.logDebug("ExposureManager inactive - Not handling performDecoySequenceIfNeeded")
+            return
+        }
 
         guard self.dataController.canProcessDecoySequence else {
             return self.logDebug("Not running decoy `/register` Process already run today")
