@@ -7,6 +7,7 @@
 
 import Combine
 @testable import ENCore
+import RxSwift
 import XCTest
 
 final class NetworkControllerTests: TestCase {
@@ -124,33 +125,28 @@ final class NetworkControllerTests: TestCase {
         networkManager.postKeysHandler = { request, _, completion in
             let length = self.requestLength(object: request)
             XCTAssertEqual(length, 1813)
-            completion(.invalidRequest)
+            completion(nil)
         }
 
         cryptoUtility.signatureHandler = { _, _ in Data() }
-
-        var receivedCompletion: Subscribers.Completion<NetworkError>!
 
         let exp = expectation(description: "wait")
         let key = LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: Date())
 
         networkController
             .postKeys(keys: [], labConfirmationKey: key, padding: padding)
-            .sink(receiveCompletion: { completion in
-                receivedCompletion = completion
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            },
-            receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
-        wait(for: [exp], timeout: 1)
-
-        XCTAssertNotNil(receivedCompletion)
+        waitForExpectations(timeout: 2.0, handler: nil)
     }
 
     // MARK: - Private
 
     private let padding = Padding(minimumRequestSize: 1800, maximumRequestSize: 1800)
+    private var disposeBag = DisposeBag()
 
     private func requestLength<T: Encodable>(object: T) -> Int {
         do {
