@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import CryptoKit
 @testable import ENCore
 import Foundation
 import RxSwift
@@ -229,6 +228,6 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
 private extension ApplicationConfiguration {
     var signature: Data {
         let encoded = try! JSONEncoder().encode(self)
-        return SHA256.hash(data: encoded).description.data(using: .utf8)!
+        return encoded.sha256.description.data(using: .utf8)!
     }
 }
