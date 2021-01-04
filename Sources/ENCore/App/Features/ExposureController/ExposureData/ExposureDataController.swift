@@ -183,7 +183,20 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                     return Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
                 }
 
-                return operation.execute()
+                return Deferred {
+                    Future { promise in
+
+                        return operation
+                            .execute()
+                            .subscribe { result in
+                                return promise(.success(result))
+                            } onError: { error in
+                                let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                                return promise(.failure(convertedError))
+                            }.disposed(by: self.disposeBag)
+                    }
+                }
+                .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }

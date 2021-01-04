@@ -31,7 +31,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     // MARK: - ExposureDataOperationProvider
 
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation? {
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol? {
         guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
             self.logDebug("ExposureDataOperationProviderImpl: localPathProvider lailed to find path for exposure keysets")
             return nil
