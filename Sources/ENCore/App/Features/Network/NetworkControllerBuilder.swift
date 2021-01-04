@@ -20,7 +20,7 @@ protocol NetworkControlling {
     func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError>
 
     func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError>
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError>
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()>
     func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError>
 
     func startObservingNetworkReachability()

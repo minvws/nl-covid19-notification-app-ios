@@ -133,42 +133,41 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError> {
-        return Deferred {
-            Future { promise in
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()> {
+        return .create { (observer) -> Disposable in
 
-                let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
-                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+            let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
+            let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
 
-                let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
-                                              bucketId: labConfirmationKey.bucketIdentifier,
-                                              padding: generatedPadding)
+            let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
+                                          bucketId: labConfirmationKey.bucketIdentifier,
+                                          padding: generatedPadding)
 
-                guard let requestData = try? JSONEncoder().encode(request) else {
-                    promise(.failure(.encodingError))
+            guard let requestData = try? JSONEncoder().encode(request) else {
+                observer.onError(NetworkError.encodingError)
+                return Disposables.create()
+            }
+
+            let signature = self.cryptoUtility
+                .signature(forData: requestData, key: labConfirmationKey.confirmationKey)
+                .base64EncodedString()
+
+            let completion: (NetworkError?) -> () = { error in
+                if let error = error {
+                    observer.onError(error)
                     return
                 }
 
-                let signature = self.cryptoUtility
-                    .signature(forData: requestData, key: labConfirmationKey.confirmationKey)
-                    .base64EncodedString()
-
-                let completion: (NetworkError?) -> () = { error in
-                    if let error = error {
-                        promise(.failure(error))
-                        return
-                    }
-
-                    promise(.success(()))
-                }
-
-                self.networkManager.postKeys(request: request,
-                                             signature: signature,
-                                             completion: completion)
+                observer.onNext(())
+                observer.onCompleted()
             }
+
+            self.networkManager.postKeys(request: request,
+                                         signature: signature,
+                                         completion: completion)
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError> {

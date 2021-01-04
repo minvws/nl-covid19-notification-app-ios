@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import UserNotifications
 
 struct PendingLabConfirmationUploadRequest: Codable, Equatable {
@@ -16,7 +16,8 @@ struct PendingLabConfirmationUploadRequest: Codable, Equatable {
     var expiryDate: Date
 }
 
-final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDataOperation, Logging {
+protocol ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {}
+final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
@@ -28,7 +29,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<(), ExposureDataError> {
+    func execute() -> Observable<()> {
         let allRequests = getPendingRequests()
 
         logDebug("--- START PROCESSING PENDING UPLOAD REQUESTS ---")
@@ -36,35 +37,30 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
 
         let requests = allRequests
             // filter out the expired ones
-            .filter { $0.isExpired == false }
+            .filter { request in request.isExpired == false }
             // upload them and get a stream in return
             .map(self.uploadPendingRequest(_:))
 
-        // bundle all streams
-        return Publishers.Sequence<[AnyPublisher<(PendingLabConfirmationUploadRequest, Bool), Never>], Never>(sequence: requests)
+        return Observable.from(requests)
             // execute one at the same time
-            .flatMap(maxPublishers: .max(1)) { $0 }
+            .merge(maxConcurrent: 1)
             // filter out the unsuccessful ones
             .filter { _, success in success }
             // ditch the success boolean
             .map { tuple in tuple.0 }
             // convert them into an array
-            .collect()
+            .toArray()
             // remove the successful ones from storage
-            .flatMap {
-                self.removeSuccessRequestsFromStorage($0)
+            .flatMap { requestArray in
+                self.removeSuccessRequestsFromStorage(requestArray)
             }
-            // we cannot fail, but error type has to match
-            .setFailureType(to: ExposureDataError.self)
-            .handleEvents(
-                receiveCompletion: { [weak self] _ in
-                    self?.logDebug("--- ENDED PROCESSING PENDING UPLOAD REQUESTS ---")
-                },
-                receiveCancel: { [weak self] in
-                    self?.logDebug("--- PROCESSING PENDING UPLOAD REQUESTS WAS CANCELLED ---")
-                })
+            .do { [weak self] _ in
+                self?.logDebug("--- ENDED PROCESSING PENDING UPLOAD REQUESTS ---")
+            } onError: { [weak self] _ in
+                self?.logDebug("--- PROCESSING PENDING UPLOAD REQUESTS FAILED ---")
+            }
+            .asObservable()
             .share()
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private
@@ -73,50 +69,51 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ExposureDa
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
     }
 
-    private func uploadPendingRequest(_ request: PendingLabConfirmationUploadRequest) -> AnyPublisher<(PendingLabConfirmationUploadRequest, Bool), Never> {
+    private func uploadPendingRequest(_ request: PendingLabConfirmationUploadRequest) -> Observable<(PendingLabConfirmationUploadRequest, Bool)> {
         logDebug("Uploading pending request with key: \(request.labConfirmationKey.key)")
 
         return networkController.postKeys(keys: request.diagnosisKeys,
                                           labConfirmationKey: request.labConfirmationKey,
                                           padding: padding)
-            .handleEvents(receiveCompletion: { [weak self] completion in
-                if case .finished = completion {
-                    self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")
-                } else {
-                    self?.logDebug("Request with key: \(request.labConfirmationKey.key) failed")
-                }
+            .do(onError: { [weak self] _ in
+                self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")
+            }, onCompleted: { [weak self] in
+                self?.logDebug("Request with key: \(request.labConfirmationKey.key) failed")
             })
             // map results to include a boolean indicating success
             .map { _ in (request, true) }
             // convert errors into the sample tuple - with succuess = false
-            .catch { _ in Just((request, false)) }
-            .eraseToAnyPublisher()
+            .catchAndReturn((request, false))
     }
 
-    private func removeSuccessRequestsFromStorage(_ requests: [PendingLabConfirmationUploadRequest]) -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { promise in
-                self.storageController.requestExclusiveAccess { storageController in
+    private func removeSuccessRequestsFromStorage(_ requests: [PendingLabConfirmationUploadRequest]) -> Single<()> {
+        return .create { (observer) -> Disposable in
 
-                    // get stored pending requests
-                    let previousRequests = storageController
-                        .retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
+            self.storageController.requestExclusiveAccess { storageController in
 
-                    let requestsToStore = previousRequests.filter { request in
-                        // filter out successful or expired requests
-                        requests.contains(request) == false && !request.isExpired
-                    }
+                // get stored pending requests
+                let previousRequests = storageController
+                    .retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
 
-                    self.logDebug("Storing new pending requests: \(requestsToStore)")
+                let requestsToStore = previousRequests.filter { request in
+                    // filter out successful or expired requests
+                    requests.contains(request) == false && !request.isExpired
+                }
 
-                    // store back
-                    storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
-                        promise(.success(()))
+                self.logDebug("Storing new pending requests: \(requestsToStore)")
+
+                // store back
+                storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { error in
+                    if let error = error {
+                        observer(.failure(error))
+                    } else {
+                        observer(.success(()))
                     }
                 }
             }
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     private let networkController: NetworkControlling
