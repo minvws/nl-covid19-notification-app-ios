@@ -7,6 +7,7 @@
 
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -20,11 +21,13 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
     init(listener: UpdateAppListener,
          theme: Theme,
          appStoreURL: String?,
-         minimumVersionMessage: String?) {
+         minimumVersionMessage: String?,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
 
         self.listener = listener
         self.appStoreURL = appStoreURL
         self.minimumVersionMessage = minimumVersionMessage
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         super.init(theme: theme)
 
@@ -54,6 +57,10 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
             textColor: theme.colors.gray,
             textAlignment: Localization.isRTL ? .right : .left)
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+
+        interfaceOrientationStream.isLandscape.subscribe { isLandscape in
+            self.internalView.showImage = !isLandscape
+        }.disposed(by: disposeBag)
     }
 
     // MARK: - Functions
@@ -80,13 +87,28 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
     private weak var listener: UpdateAppListener?
     private lazy var internalView: UpdateAppView = {
-        UpdateAppView(theme: self.theme)
+        UpdateAppView(theme: self.theme, showImage: !(interfaceOrientationStream.currentOrientationIsLandscape ?? false))
     }()
     private var appStoreURL: String?
     private var minimumVersionMessage: String?
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var disposeBag = DisposeBag()
 }
 
 private final class UpdateAppView: View {
+
+    lazy var stackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 16
+
+        view.addArrangedSubview(imageViewContainer)
+        view.addArrangedSubview(titleLabel)
+        view.addArrangedSubview(contentLabel)
+
+        view.setCustomSpacing(50, after: imageViewContainer)
+        return view
+    }()
 
     lazy var button: Button = {
         let button = Button(theme: self.theme)
@@ -103,6 +125,12 @@ private final class UpdateAppView: View {
         return imageView
     }()
 
+    lazy var imageViewContainer: UIView = {
+        let container = UIView()
+        container.addSubview(imageView)
+        return container
+    }()
+
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -117,11 +145,16 @@ private final class UpdateAppView: View {
         return label
     }()
 
-    private lazy var viewsInDisplayOrder = [button, imageView, titleLabel, contentLabel]
+    var showImage: Bool {
+        didSet {
+            imageViewContainer.isHidden = !showImage
+        }
+    }
 
     // MARK: - Init
 
-    override init(theme: Theme) {
+    init(theme: Theme, showImage: Bool) {
+        self.showImage = showImage
 
         super.init(theme: theme)
     }
@@ -131,44 +164,33 @@ private final class UpdateAppView: View {
     override func build() {
         super.build()
 
-        viewsInDisplayOrder.forEach { addSubview($0) }
+        hasBottomMargin = true
+
+        addSubview(stackView)
+        addSubview(button)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        var constraints = [[NSLayoutConstraint]()]
+        stackView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(75)
+            make.leading.trailing.equalTo(self.safeAreaLayoutGuide).inset(20)
+            make.bottom.lessThanOrEqualTo(button.snp.top).offset(-50).priority(.high)
+        }
 
-        constraints.append([
-            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            button.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            button.heightAnchor.constraint(equalToConstant: 50)
-        ])
+        button.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(self.safeAreaLayoutGuide).inset(20)
+            make.height.equalTo(50)
 
-        constraints.append([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 75),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.83, constant: 1)
-        ])
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
+        }
 
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 50),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-        ])
-
-        constraints.append([
-            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            contentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            contentLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-        ])
-
-        for constraint in constraints { NSLayoutConstraint.activate(constraint) }
-
-        self.contentLabel.sizeToFit()
+        imageView.snp.makeConstraints { make in
+            make.centerX.equalTo(imageViewContainer)
+            make.width.equalToSuperview().inset(30)
+            make.height.equalTo(imageView.snp.width).multipliedBy(0.83)
+            make.top.bottom.equalToSuperview()
+        }
     }
 }
