@@ -253,16 +253,26 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize,
-                        maximumRequestSize: configuration.requestMaximumSize)
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationConfiguration()
+                    .map { (configuration: ApplicationConfiguration) in
+                        return Padding(minimumRequestSize: configuration.requestMinimumSize,
+                                       maximumRequestSize: configuration.requestMaximumSize)
+                    }
+                    .flatMap { (padding: Padding) in
+                        self.operationProvider
+                            .requestLabConfirmationKeyOperation(padding: padding)
+                            .execute()
+                    }
+                    .subscribe { labConfirmationKey in
+                        return promise(.success(labConfirmationKey))
+                    } onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    }.disposed(by: self.rxDisposeBag)
             }
-            .flatMap { (padding: Padding) in
-                return self.operationProvider
-                    .requestLabConfirmationKeyOperation(padding: padding)
-                    .execute()
-            }
+        }.eraseToAnyPublisher()
     }
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {

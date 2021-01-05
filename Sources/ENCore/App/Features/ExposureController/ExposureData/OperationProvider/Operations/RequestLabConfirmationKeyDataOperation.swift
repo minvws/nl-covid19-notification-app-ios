@@ -37,20 +37,18 @@ final class RequestLabConfirmationKeyDataOperation: RequestLabConfirmationKeyDat
     // MARK: - ExposureDataOperation
 
     func execute() -> Observable<LabConfirmationKey> {
-        return retrieveStoredKey()
-            .flatMap { confirmationKey -> Observable<LabConfirmationKey> in
-                if let confirmationKey = confirmationKey, confirmationKey.isValid {
-                    return .just(confirmationKey)
-                }
 
-                return self.requestNewKey()
-                    .flatMap(self.storeReceivedKey(key:))
-            }
+        if let storedConfirmationKey = retrieveStoredKey(), storedConfirmationKey.isValid {
+            return .just(storedConfirmationKey)
+        }
+
+        return self.requestNewKey()
+            .flatMap(self.storeReceivedKey(key:))
+            .subscribe(on: MainScheduler.instance)
     }
 
-    private func retrieveStoredKey() -> Observable<LabConfirmationKey?> {
-        let key = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)
-        return .just(key)
+    private func retrieveStoredKey() -> LabConfirmationKey? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)
     }
 
     private func storeReceivedKey(key: LabConfirmationKey) -> Observable<LabConfirmationKey> {
