@@ -37,7 +37,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockEnvironmentController = EnvironmentControllingMock()
 
         // Default handlers
-        mockEnvironmentController.isiOS136orHigher = true
+        mockEnvironmentController.gaenRateLimitingType = .dailyLimit
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
@@ -190,6 +190,55 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
     }
+
+    func test_shouldDetectExposuresIfFileLimitNotReached() {
+
+        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+
+        // 10 processed keysets should not trigger the file limit
+        let processedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: Date().addingTimeInterval(-200), creationDate: Date()), count: 10)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        mockStorage(storedKeySetHolders: processedKeySetHolders + unprocessedKeySetHolders)
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
+        XCTAssertEqual(mockExposureManager.detectExposuresArgValues.first?.1.first?.absoluteString, "http://someurl.com/signatureFilename")
+        XCTAssertEqual(mockExposureManager.detectExposuresArgValues.first?.1.last?.absoluteString, "http://someurl.com/binaryFilename")
+    }
+
+    func test_shouldNotDetectExposuresIfFileLimitReached() {
+
+        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+
+        let keySetHolder = ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: Date().addingTimeInterval(-200), creationDate: Date())
+        let processedKeySetHolders = Array(repeating: keySetHolder, count: 20)
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        mockStorage(storedKeySetHolders: processedKeySetHolders)
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
+    }
+
+    // MARK: - Private Helper Functions
 
     private var dummyKeySetHolder: ExposureKeySetHolder {
         ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date())

@@ -384,27 +384,31 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private func getNumberOfDailyAPICallsLeft(inBackground: Bool) -> Int {
         var numberOfCallsLeft = Int.max
 
-        if environmentController.isiOS136orHigher {
-            let totalMaximumCalls = maximumDailyBackgroundExposureDetectionAPICalls + maximumDailyForegroundExposureDetectionAPICalls
-            let maximumNumberOfAPICalls = inBackground ? maximumDailyBackgroundExposureDetectionAPICalls : maximumDailyForegroundExposureDetectionAPICalls
-            let backgroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: true)
-            let foregroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: false)
-            let callsDoneInCurrentState = inBackground ? backgroundCallsDone : foregroundCallsDone
-            numberOfCallsLeft = maximumNumberOfAPICalls - callsDoneInCurrentState
-
-            // For legacy reasons, we also check if the combined total of calls doesn't exceed the combined daily maximum
-            if (backgroundCallsDone + foregroundCallsDone) >= totalMaximumCalls {
-                numberOfCallsLeft = 0
-            }
+        defer {
+            logDebug("Number of API Calls (\(inBackground ? "in background" : "in foreground")) left today: \(numberOfCallsLeft)")
         }
 
-        logDebug("Number of API Calls (\(inBackground ? "in background" : "in foreground")) left today: \(numberOfCallsLeft)")
+        guard environmentController.gaenRateLimitingType == .dailyLimit else {
+            return numberOfCallsLeft
+        }
+
+        let totalMaximumCalls = maximumDailyBackgroundExposureDetectionAPICalls + maximumDailyForegroundExposureDetectionAPICalls
+        let maximumNumberOfAPICalls = inBackground ? maximumDailyBackgroundExposureDetectionAPICalls : maximumDailyForegroundExposureDetectionAPICalls
+        let backgroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: true)
+        let foregroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: false)
+        let callsDoneInCurrentState = inBackground ? backgroundCallsDone : foregroundCallsDone
+        numberOfCallsLeft = maximumNumberOfAPICalls - callsDoneInCurrentState
+
+        // For legacy reasons, we also check if the combined total of calls doesn't exceed the combined daily maximum
+        if (backgroundCallsDone + foregroundCallsDone) >= totalMaximumCalls {
+            numberOfCallsLeft = 0
+        }
 
         return numberOfCallsLeft
     }
 
     private func getNumberOfDailyKeySetsLeft() -> Int {
-        if environmentController.isiOS136orHigher {
+        guard environmentController.gaenRateLimitingType == .fileLimit else {
             // iOS 13.6+ is not limited in the number of daily keysets but in the number of API calls
             logDebug("Number of keysets left to process today: infinite (no limit on iOS 13.6+)")
             return Int.max
