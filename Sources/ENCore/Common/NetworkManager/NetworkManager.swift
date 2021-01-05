@@ -501,3 +501,12 @@ extension Error {
         }
     }
 }
+
+extension Error {
+    var asExposureDataError: ExposureDataError {
+        guard let networkError = self as? NetworkError else {
+            return ExposureDataError.internalError
+        }
+        return networkError.asExposureDataError
+    }
+}

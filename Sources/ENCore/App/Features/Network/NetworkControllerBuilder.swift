@@ -13,14 +13,15 @@ import RxSwift
 protocol NetworkControlling {
     var applicationManifest: Observable<ApplicationManifest> { get }
 
-    func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError>
+    func treatmentPerspective(identifier: String) -> Observable<TreatmentPerspective>
 
-    func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError>
-    func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError>
+    func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration>
+
+    func exposureRiskConfigurationParameters(identifier: String) -> Observable<ExposureRiskConfiguration>
     func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError>
 
     func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError>
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError>
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()>
     func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError>
 
     func startObservingNetworkReachability()

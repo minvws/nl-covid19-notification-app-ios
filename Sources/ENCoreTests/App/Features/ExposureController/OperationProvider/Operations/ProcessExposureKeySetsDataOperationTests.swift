@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 class ProcessExposureKeySetsDataOperationTests: TestCase {
@@ -22,6 +22,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockApplication: ApplicationControllingMock!
     private var mockFileManager: FileManagingMock!
     private var mockEnvironmentController: EnvironmentControllingMock!
+    private var disposeBag = DisposeBag()
 
     override func setUpWithError() throws {
 
@@ -91,11 +92,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -115,11 +115,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -137,11 +136,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiCallDates: exposureApiForegroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -161,11 +159,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiCallDates: exposureApiForegroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -184,11 +181,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates, exposureApiCallDates: exposureApiForegroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 

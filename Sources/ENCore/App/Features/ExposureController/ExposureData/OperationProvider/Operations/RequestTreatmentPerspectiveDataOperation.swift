@@ -5,13 +5,13 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 
 /// @mockable
 protocol RequestTreatmentPerspectiveDataOperationProtocol {
-    func execute() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+    func execute() -> Observable<TreatmentPerspective>
 }
 
 final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperationProtocol, Logging {
@@ -25,28 +25,24 @@ final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiv
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
+    func execute() -> Observable<TreatmentPerspective> {
 
         if let manifest = retrieveStoredManifest(),
             let identifier = manifest.resourceBundle {
 
             return networkController
                 .treatmentPerspective(identifier: identifier)
-                .mapError { $0.asExposureDataError }
+                .subscribe(on: MainScheduler.instance)
+                .catch { throw $0.asExposureDataError }
                 .flatMap(store(treatmentPerspective:))
                 .share()
-                .eraseToAnyPublisher()
         }
 
         if let storedTreatmentPerspective = retrieveStoredTreatmentPerspective() {
-            return Just(storedTreatmentPerspective)
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just(storedTreatmentPerspective)
         }
 
-        return Just(TreatmentPerspective.fallbackMessage)
-            .setFailureType(to: ExposureDataError.self)
-            .eraseToAnyPublisher()
+        return .just(TreatmentPerspective.fallbackMessage)
     }
 
     // MARK: - Private
@@ -59,16 +55,23 @@ final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiv
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)
     }
 
-    private func store(treatmentPerspective: TreatmentPerspective) -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        return Future { promise in
-            self.storageController.store(object: treatmentPerspective,
-                                         identifiedBy: ExposureDataStorageKey.treatmentPerspective,
-                                         completion: { _ in
-                                             promise(.success(treatmentPerspective))
+    private func store(treatmentPerspective: TreatmentPerspective) -> Observable<TreatmentPerspective> {
+        return .create { (observer) -> Disposable in
+
+            self.storageController.store(
+                object: treatmentPerspective,
+                identifiedBy: ExposureDataStorageKey.treatmentPerspective,
+                completion: { error in
+                    if error != nil {
+                        observer.onError(ExposureDataError.internalError)
+                    } else {
+                        observer.onNext(treatmentPerspective)
+                        observer.onCompleted()
+                    }
                 })
+
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
     private let networkController: NetworkControlling
