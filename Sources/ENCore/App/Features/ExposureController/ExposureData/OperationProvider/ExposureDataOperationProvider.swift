@@ -48,7 +48,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                    environmentController: environmentController)
     }
 
-    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {
         return ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
                                                                         storageController: storageController,
                                                                         padding: padding)

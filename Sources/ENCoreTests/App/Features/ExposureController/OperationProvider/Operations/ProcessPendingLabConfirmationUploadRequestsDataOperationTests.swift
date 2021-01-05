@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
@@ -14,17 +13,21 @@ import XCTest
 
 final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestCase {
     private var operation: ProcessPendingLabConfirmationUploadRequestsDataOperation!
-    private let networkController = NetworkControllingMock()
-    private let storageController = StorageControllingMock()
+    private var mockNetworkController: NetworkControllingMock!
+    private var mockStorageController: StorageControllingMock!
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
 
-        operation = ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
-                                                                             storageController: storageController,
+        mockNetworkController = NetworkControllingMock()
+        mockStorageController = StorageControllingMock()
+
+        operation = ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: mockNetworkController,
+                                                                             storageController: mockStorageController,
                                                                              padding: Padding(minimumRequestSize: 0, maximumRequestSize: 0))
 
-        storageController.requestExclusiveAccessHandler = { $0(self.storageController) }
+        mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
     }
 
     func test_singlePendingRequest_callsPostKeys_andRemovesFromStorageWhenSuccessful() {
@@ -32,14 +35,14 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
                                                                  diagnosisKeys: createDiagnosisKeys(),
                                                                  expiryDate: Date().addingTimeInterval(20))
 
-        storageController.retrieveDataHandler = { _ in
+        mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
             return try! jsonEncoder.encode([pendingRequest])
         }
 
         var receivedKeys: [DiagnosisKey]!
         var receivedLabConfirmationKey: LabConfirmationKey!
-        networkController.postKeysHandler = { keys, labConfirmationKey, padding in
+        mockNetworkController.postKeysHandler = { keys, labConfirmationKey, padding in
             receivedKeys = keys
             receivedLabConfirmationKey = labConfirmationKey
 
@@ -51,24 +54,24 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         }
 
         var receivedNewPendingRequests: [PendingLabConfirmationUploadRequest]!
-        storageController.storeHandler = { data, _, completion in
+        mockStorageController.storeHandler = { data, _, completion in
             let jsonDecoder = JSONDecoder()
             receivedNewPendingRequests = try! jsonDecoder.decode([PendingLabConfirmationUploadRequest].self, from: data)
 
             completion(nil)
         }
 
-        XCTAssertEqual(storageController.retrieveDataCallCount, 0)
-        XCTAssertEqual(networkController.postKeysCallCount, 0)
-        XCTAssertEqual(storageController.storeCallCount, 0)
-        XCTAssertEqual(storageController.requestExclusiveAccessCallCount, 0)
+        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 0)
+        XCTAssertEqual(mockNetworkController.postKeysCallCount, 0)
+        XCTAssertEqual(mockStorageController.storeCallCount, 0)
+        XCTAssertEqual(mockStorageController.requestExclusiveAccessCallCount, 0)
 
         wait(for: operation)
 
-        XCTAssertEqual(networkController.postKeysCallCount, 1)
-        XCTAssertEqual(storageController.retrieveDataCallCount, 2)
-        XCTAssertEqual(storageController.storeCallCount, 1)
-        XCTAssertEqual(storageController.requestExclusiveAccessCallCount, 1)
+        XCTAssertEqual(mockNetworkController.postKeysCallCount, 1)
+        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 2)
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
+        XCTAssertEqual(mockStorageController.requestExclusiveAccessCallCount, 1)
 
         XCTAssertNotNil(receivedNewPendingRequests)
         XCTAssertEqual(receivedNewPendingRequests.count, 0)
@@ -82,12 +85,12 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
                                                                  expiryDate: Date().addingTimeInterval(20))
         let pendingRequests = [pendingRequest, pendingRequest, pendingRequest]
 
-        storageController.retrieveDataHandler = { _ in
+        mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
             return try! jsonEncoder.encode(pendingRequests)
         }
 
-        networkController.postKeysHandler = { keys, labConfirmationKey, padding in
+        mockNetworkController.postKeysHandler = { keys, labConfirmationKey, padding in
             return Observable<()>.create { observer in
                 observer.onNext(())
                 observer.onCompleted()
@@ -95,13 +98,13 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
             }
         }
 
-        storageController.storeHandler = { _, _, completion in completion(nil) }
+        mockStorageController.storeHandler = { _, _, completion in completion(nil) }
 
-        XCTAssertEqual(networkController.postKeysCallCount, 0)
+        XCTAssertEqual(mockNetworkController.postKeysCallCount, 0)
 
         wait(for: operation)
 
-        XCTAssertEqual(networkController.postKeysCallCount, 3)
+        XCTAssertEqual(mockNetworkController.postKeysCallCount, 3)
     }
 
     func test_pendingRequestIsExpired_doesNotCallNetworkAndDoesNotStoreAgain() {
@@ -109,24 +112,24 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
                                                                  diagnosisKeys: createDiagnosisKeys(),
                                                                  expiryDate: Date().addingTimeInterval(-1))
 
-        storageController.retrieveDataHandler = { _ in
+        mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
             return try! jsonEncoder.encode([expiredRequest])
         }
 
         var receivedRequests: [PendingLabConfirmationUploadRequest]!
-        storageController.storeHandler = { data, _, completion in
+        mockStorageController.storeHandler = { data, _, completion in
             let jsonDecoder = JSONDecoder()
             receivedRequests = try! jsonDecoder.decode([PendingLabConfirmationUploadRequest].self, from: data)
 
             completion(nil)
         }
 
-        XCTAssertEqual(networkController.postKeysCallCount, 0)
+        XCTAssertEqual(mockNetworkController.postKeysCallCount, 0)
 
         wait(for: operation)
 
-        XCTAssertEqual(networkController.postKeysCallCount, 0)
+        XCTAssertEqual(mockNetworkController.postKeysCallCount, 0)
         XCTAssertNotNil(receivedRequests)
         XCTAssertEqual(receivedRequests.count, 0)
     }
@@ -136,12 +139,12 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
                                                           diagnosisKeys: createDiagnosisKeys(),
                                                           expiryDate: Date().addingTimeInterval(20))
 
-        storageController.retrieveDataHandler = { _ in
+        mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
             return try! jsonEncoder.encode([request])
         }
 
-        networkController.postKeysHandler = { _, _, _ in
+        mockNetworkController.postKeysHandler = { _, _, _ in
             return Observable<()>.create { observer in
                 observer.onError(NetworkError.invalidRequest)
                 return Disposables.create()
@@ -149,7 +152,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         }
 
         var receivedRequests: [PendingLabConfirmationUploadRequest]!
-        storageController.storeHandler = { data, _, completion in
+        mockStorageController.storeHandler = { data, _, completion in
             let jsonDecoder = JSONDecoder()
             receivedRequests = try! jsonDecoder.decode([PendingLabConfirmationUploadRequest].self, from: data)
 
@@ -168,10 +171,10 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
     private func wait(for operation: ProcessPendingLabConfirmationUploadRequestsDataOperation) {
         let exp = expectation(description: "wait")
         operation.execute()
-            .sink(receiveCompletion: { _ in exp.fulfill() },
-                  receiveValue: { _ in }
-            )
-            .disposeOnTearDown(of: self)
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
     }
