@@ -79,18 +79,18 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPen
                                           labConfirmationKey: request.labConfirmationKey,
                                           padding: padding)
             .do(onError: { [weak self] _ in
-                self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")
-            }, onCompleted: { [weak self] in
                 self?.logDebug("Request with key: \(request.labConfirmationKey.key) failed")
+            }, onCompleted: { [weak self] in
+                self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")
             })
             // map results to include a boolean indicating success
             .map { _ in (request, true) }
-            // convert errors into the sample tuple - with succuess = false
+            // convert errors into the sample tuple - with success = false
             .catchAndReturn((request, false))
     }
 
     private func removeSuccessRequestsFromStorage(_ requests: [PendingLabConfirmationUploadRequest]) -> Single<()> {
-        return .create { (observer) -> Disposable in
+        return .create { observer in
 
             self.storageController.requestExclusiveAccess { storageController in
 
