@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Lottie
 import RxSwift
@@ -28,8 +27,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
-    private var disposeBag = Set<AnyCancellable>()
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     private let cardBuilder: CardBuildable
     private lazy var cardRouter: Routing & CardTypeSettable = {
@@ -103,7 +101,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         Observable.combineLatest(exposureStateStream.exposureState, interfaceOrientationStream.isLandscape)
             .subscribe { [weak self] status, isLandscape in
                 self?.update(exposureState: status, isLandscape: isLandscape)
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
     }
 
     private func refreshCurrentState() {
