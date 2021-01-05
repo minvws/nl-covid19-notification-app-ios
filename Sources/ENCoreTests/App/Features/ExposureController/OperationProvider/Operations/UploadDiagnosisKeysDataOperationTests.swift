@@ -8,12 +8,14 @@
 import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class UploadDiagnosisKeysDataOperationTests: TestCase {
     private var operation: UploadDiagnosisKeysDataOperation!
     private let networkController = NetworkControllingMock()
     private let storageController = StorageControllingMock()
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
@@ -28,10 +30,10 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
             receivedKeys = keys
-
-            return Just(())
-                .setFailureType(to: NetworkError.self)
-                .eraseToAnyPublisher()
+            return Observable<()>.create { observer in
+                observer.onCompleted()
+                return Disposables.create()
+            }
         }
 
         let keys = createDiagnosisKeys(withHighestRollingStartNumber: 65)
@@ -40,8 +42,8 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(networkController.postKeysCallCount, 0)
 
         operation.execute()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(networkController.postKeysCallCount, 1)
         XCTAssertNotNil(receivedKeys)
@@ -57,7 +59,10 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         operation = createOperation(withKeys: createDiagnosisKeys(withHighestRollingStartNumber: 65), expiryDate: expiryDate)
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
-            return Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher()
+            return Observable<()>.create { observer in
+                observer.onError(NetworkError.invalidRequest)
+                return Disposables.create()
+            }
         }
 
         storageController.requestExclusiveAccessHandler = { $0(self.storageController) }
@@ -86,8 +91,8 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(storageController.storeCallCount, 0)
 
         operation.execute()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(storageController.storeCallCount, 1)
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
@@ -100,7 +105,11 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     func test_noKeys_doesReachOutToNetwork() {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
-            return (Just(()).setFailureType(to: NetworkError.self).eraseToAnyPublisher())
+            return Observable<()>.create { observer in
+                observer.onNext(())
+                observer.onCompleted()
+                return Disposables.create()
+            }
         }
 
         operation = createOperation(withKeys: [])
@@ -108,8 +117,8 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(networkController.postKeysCallCount, 0)
 
         operation.execute()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(networkController.postKeysCallCount, 1)
     }

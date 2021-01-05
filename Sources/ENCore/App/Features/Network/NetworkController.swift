@@ -47,42 +47,52 @@ final class NetworkController: NetworkControlling, Logging {
         return observable.observe(on: MainScheduler.instance)
     }
 
-    func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
-                    promise(result)
+    func treatmentPerspective(identifier: String) -> Observable<TreatmentPerspective> {
+        return .create { observer in
+            self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
+                switch result {
+                case let .failure(error):
+                    observer.onError(error)
+                case let .success(treatmentPerspective):
+                    observer.onNext(treatmentPerspective)
+                    observer.onCompleted()
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
-    func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getAppConfig(appConfig: identifier) { result in
-                    promise(result.map { $0.asApplicationConfiguration(identifier: identifier) })
+    func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration> {
+        return .create { (observer) -> Disposable in
+            self.networkManager.getAppConfig(appConfig: identifier) { result in
+                switch result {
+                case let .success(configuration):
+                    observer.onNext(configuration.asApplicationConfiguration(identifier: identifier))
+                    observer.onCompleted()
+                case let .failure(error):
+                    observer.onError(error)
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
-    func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
-                    promise(result
-                        .map { $0.asExposureRiskConfiguration(identifier: identifier) }
-                    )
+    func exposureRiskConfigurationParameters(identifier: String) -> Observable<ExposureRiskConfiguration> {
+        return .create { observer in
+            self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
+                switch result {
+                case let .failure(error):
+                    observer.onError(error)
+                case let .success(parameters):
+                    observer.onNext(parameters.asExposureRiskConfiguration(identifier: identifier))
+                    observer.onCompleted()
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError> {
@@ -134,7 +144,8 @@ final class NetworkController: NetworkControlling, Logging {
     }
 
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()> {
-        return .create { (observer) -> Disposable in
+
+        return .create { observer in
 
             let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
             let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)

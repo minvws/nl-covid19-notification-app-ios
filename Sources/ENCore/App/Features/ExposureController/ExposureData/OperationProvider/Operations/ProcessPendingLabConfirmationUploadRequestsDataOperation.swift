@@ -16,7 +16,10 @@ struct PendingLabConfirmationUploadRequest: Codable, Equatable {
     var expiryDate: Date
 }
 
-protocol ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {}
+protocol ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {
+    func execute() -> Observable<()>
+}
+
 final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol, Logging {
 
     init(networkController: NetworkControlling,
