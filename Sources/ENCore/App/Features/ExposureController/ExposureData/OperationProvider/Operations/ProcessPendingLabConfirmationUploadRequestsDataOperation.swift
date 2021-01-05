@@ -62,6 +62,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPen
             } onError: { [weak self] _ in
                 self?.logDebug("--- PROCESSING PENDING UPLOAD REQUESTS FAILED ---")
             }
+            .catch { _ in throw ExposureDataError.internalError }
             .asObservable()
             .share()
     }
