@@ -204,11 +204,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: processedKeySetHolders + unprocessedKeySetHolders)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -229,11 +228,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: processedKeySetHolders)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
