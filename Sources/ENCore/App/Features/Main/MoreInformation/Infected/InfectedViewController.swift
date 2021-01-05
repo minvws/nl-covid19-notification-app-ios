@@ -84,10 +84,10 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         exposureStateStream
             .exposureState
-            .sink { state in
+            .subscribe(onNext: { state in
                 self.update(exposureState: state)
-            }
-            .store(in: &disposeBag)
+            })
+            .disposed(by: rxDisposeBag)
 
         interfaceOrientationStream
             .isLandscape

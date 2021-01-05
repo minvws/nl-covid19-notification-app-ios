@@ -100,14 +100,10 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     @objc private func updateExposureStateView() {
 
-        exposureStateStream.exposureState.sink { [weak self] status in
-            guard let strongSelf = self else {
-                return
-            }
-            strongSelf.interfaceOrientationStream.isLandscape.subscribe { isLandscape in
-                strongSelf.update(exposureState: status, isLandscape: isLandscape)
-            }.disposed(by: strongSelf.rxDisposeBag)
-        }.store(in: &disposeBag)
+        Observable.combineLatest(exposureStateStream.exposureState, interfaceOrientationStream.isLandscape)
+            .subscribe { [weak self] status, isLandscape in
+                self?.update(exposureState: status, isLandscape: isLandscape)
+            }.disposed(by: rxDisposeBag)
     }
 
     private func refreshCurrentState() {

@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import RxSwift
 import UserNotifications
 
 /// @mockable
@@ -30,7 +31,7 @@ protocol ExposureControlling: AnyObject {
 
     func refreshStatus()
 
-    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
+    func updateWhenRequired() -> Completable
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Permissions
