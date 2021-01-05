@@ -253,7 +253,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                     .requestLabConfirmationKeyOperation(padding: padding)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {

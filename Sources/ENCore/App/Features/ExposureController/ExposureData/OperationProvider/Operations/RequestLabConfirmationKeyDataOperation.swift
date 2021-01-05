@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 
 struct LabConfirmationKey: Codable, Equatable {
     let identifier: String
@@ -19,7 +19,11 @@ extension LabConfirmationKey {
     var isValid: Bool { validUntil >= Date() }
 }
 
-final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
+protocol RequestLabConfirmationKeyDataOperationProtocol {
+    func execute() -> Observable<LabConfirmationKey>
+}
+
+final class RequestLabConfirmationKeyDataOperation: RequestLabConfirmationKeyDataOperationProtocol {
     typealias Result = LabConfirmationKey
 
     init(networkController: NetworkControlling,
@@ -32,47 +36,49 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
+    func execute() -> Observable<LabConfirmationKey> {
         return retrieveStoredKey()
-            .flatMap { confirmationKey -> AnyPublisher<LabConfirmationKey, ExposureDataError> in
+            .flatMap { confirmationKey -> Observable<LabConfirmationKey> in
                 if let confirmationKey = confirmationKey, confirmationKey.isValid {
-                    return Just(confirmationKey)
-                        .setFailureType(to: ExposureDataError.self)
-                        .eraseToAnyPublisher()
+                    return .just(confirmationKey)
                 }
 
                 return self.requestNewKey()
                     .flatMap(self.storeReceivedKey(key:))
-                    .eraseToAnyPublisher()
             }
-            .eraseToAnyPublisher()
     }
 
-    private func retrieveStoredKey() -> AnyPublisher<LabConfirmationKey?, ExposureDataError> {
+    private func retrieveStoredKey() -> Observable<LabConfirmationKey?> {
         let key = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)
-
-        return Just(key)
-            .setFailureType(to: ExposureDataError.self)
-            .eraseToAnyPublisher()
+        return .just(key)
     }
 
-    private func storeReceivedKey(key: LabConfirmationKey) -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        return Future { promise in
+    private func storeReceivedKey(key: LabConfirmationKey) -> Observable<LabConfirmationKey> {
+        let observable = Observable<LabConfirmationKey>.create { observer in
+
             self.storageController.store(object: key,
                                          identifiedBy: ExposureDataStorageKey.labConfirmationKey,
-                                         completion: { _ in
-                                             promise(.success(key))
+                                         completion: { error in
+                                             if error != nil {
+                                                 observer.onError(ExposureDataError.internalError)
+                                             } else {
+                                                 observer.onNext(key)
+                                                 observer.onCompleted()
+                                             }
                                          })
+
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
+
+        return observable.share()
     }
 
-    private func requestNewKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
+    private func requestNewKey() -> Observable<LabConfirmationKey> {
         return networkController
             .requestLabConfirmationKey(padding: padding)
-            .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
-            .eraseToAnyPublisher()
+            .catch { error in
+                throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
+            }
     }
 
     // MARK: - Private
