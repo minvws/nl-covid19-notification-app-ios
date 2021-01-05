@@ -8,7 +8,6 @@
 import Combine
 import ENFoundation
 import Foundation
-import Reachability
 import RxSwift
 
 final class NetworkController: NetworkControlling, Logging {
@@ -16,11 +15,9 @@ final class NetworkController: NetworkControlling, Logging {
     // MARK: - Init
 
     init(networkManager: NetworkManaging,
-         cryptoUtility: CryptoUtility,
-         mutableNetworkStatusStream: MutableNetworkStatusStreaming) {
+         cryptoUtility: CryptoUtility) {
         self.networkManager = networkManager
         self.cryptoUtility = cryptoUtility
-        self.mutableNetworkStatusStream = mutableNetworkStatusStream
     }
 
     // MARK: - NetworkControlling
@@ -219,41 +216,10 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func startObservingNetworkReachability() {
-        if reachability == nil {
-            do {
-                self.reachability = try Reachability()
-            } catch {
-                logError("Unable to instantiate Reachability")
-            }
-        }
-        reachability?.whenReachable = { [weak self] status in
-            self?.mutableNetworkStatusStream.update(isReachable: status.connection != .unavailable)
-        }
-        reachability?.whenUnreachable = { [weak self] status in
-            self?.mutableNetworkStatusStream.update(isReachable: !(status.connection == .unavailable))
-        }
-
-        do {
-            try reachability?.startNotifier()
-        } catch {
-            logError("Unable to start Reachability")
-        }
-    }
-
-    func stopObservingNetworkReachability() {
-        guard let reachability = reachability else {
-            return
-        }
-        reachability.stopNotifier()
-    }
-
     // MARK: - Private
 
     private let networkManager: NetworkManaging
     private let cryptoUtility: CryptoUtility
-    private var reachability: Reachability?
-    private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
 
     private func generatePadding<T: Encodable>(forObject object: T, padding: Padding) -> String {
         func randomString(length: Int) -> String {

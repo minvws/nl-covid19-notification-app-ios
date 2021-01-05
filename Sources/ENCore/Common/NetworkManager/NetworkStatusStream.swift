@@ -5,37 +5,72 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
+import ENFoundation
 import Foundation
+import Reachability
+import RxSwift
 
 /// @mockable
 protocol NetworkStatusStreaming {
-    var currentStatus: Bool { get }
-    var networkStatusStream: AnyPublisher<Bool, Never> { get }
+    var networkReachable: Bool { get }
+    var networkReachableStream: Observable<Bool> { get }
 }
 
 /// @mockable
 protocol MutableNetworkStatusStreaming: NetworkStatusStreaming {
-    func update(isReachable: Bool)
+    func startObservingNetworkReachability()
+    func stopObservingNetworkReachability()
 }
 
-final class NetworkStatusStream: MutableNetworkStatusStreaming {
+final class NetworkStatusStream: MutableNetworkStatusStreaming, Logging {
 
     // MARK: - PushNotificationStreaming
 
-    var currentStatus: Bool {
-        return subject.value
+    var networkReachable: Bool {
+        return (try? subject.value()) ?? false
     }
 
-    var networkStatusStream: AnyPublisher<Bool, Never> {
-        return subject.removeDuplicates(by: ==).eraseToAnyPublisher()
+    var networkReachableStream: Observable<Bool> {
+        return subject
+            .distinctUntilChanged()
+            .share()
     }
 
     // MARK: - MutablePushNotificationStreaming
 
-    func update(isReachable: Bool) {
-        subject.send(isReachable)
+    func startObservingNetworkReachability() {
+        if reachability == nil {
+            do {
+                self.reachability = try Reachability()
+            } catch {
+                logError("Unable to instantiate Reachability")
+            }
+        }
+        reachability?.whenReachable = { [weak self] status in
+            self?.subject.onNext(status.connection != .unavailable)
+        }
+        reachability?.whenUnreachable = { [weak self] status in
+            self?.subject.onNext(!(status.connection == .unavailable))
+        }
+
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            logError("Unable to start Reachability")
+        }
     }
 
-    private let subject = CurrentValueSubject<Bool, Never>(false)
+    func stopObservingNetworkReachability() {
+        guard let reachability = reachability else {
+            return
+        }
+        reachability.stopNotifier()
+    }
+
+    private func update(isReachable: Bool) {
+        subject.onNext(isReachable)
+    }
+
+    private let subject = BehaviorSubject<Bool>(value: false)
+    private var reachability: Reachability?
 }
