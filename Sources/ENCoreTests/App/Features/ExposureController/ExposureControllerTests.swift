@@ -17,13 +17,15 @@ final class ExposureControllerTests: TestCase {
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
     private let userNotificationCenter = UserNotificationCenterMock()
-    private let networkStatusStream = NetworkStatusStreamingMock(networkStatusStream: CurrentValueSubject<Bool, Never>(true).eraseToAnyPublisher())
+    private let networkStatusStream = NetworkStatusStreamingMock()
     private let currentAppVersion = "1.0"
 
     override func setUp() {
         super.setUp()
 
-        networkStatusStream.currentStatus = true
+        networkStatusStream.networkReachable = true
+        networkStatusStream.networkReachableStream = .just(true)
+
         controller = ExposureController(mutableStateStream: mutableStateStream,
                                         exposureManager: exposureManager,
                                         dataController: dataController,

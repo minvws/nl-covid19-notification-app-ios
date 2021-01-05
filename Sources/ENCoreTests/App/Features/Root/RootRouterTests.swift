@@ -28,6 +28,7 @@ final class RootRouterTests: XCTestCase {
     private let updateAppBuilder = UpdateAppBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
     private let userNotificationCenter = UserNotificationCenterMock()
+    private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
 
     private var router: RootRouter!
 
@@ -59,6 +60,7 @@ final class RootRouterTests: XCTestCase {
                             callGGDBuilder: callGGDBuilder,
                             exposureController: exposureController,
                             exposureStateStream: exposureStateStream,
+                            mutableNetworkStatusStream: mutableNetworkStatusStream,
                             developerMenuBuilder: developerMenuBuilder,
                             mutablePushNotificationStream: mutablePushNotificationStream,
                             networkController: networkController,
@@ -252,19 +254,19 @@ final class RootRouterTests: XCTestCase {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 0)
+        XCTAssertEqual(mutableNetworkStatusStream.startObservingNetworkReachabilityCallCount, 0)
 
         router.didEnterForeground()
 
-        XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 1)
+        XCTAssertEqual(mutableNetworkStatusStream.startObservingNetworkReachabilityCallCount, 1)
     }
 
     func test_didEnterBackground_startsObservingNetworkReachability() {
-        XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 0)
+        XCTAssertEqual(mutableNetworkStatusStream.stopObservingNetworkReachabilityCallCount, 0)
 
         router.didEnterBackground()
 
-        XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 1)
+        XCTAssertEqual(mutableNetworkStatusStream.stopObservingNetworkReachabilityCallCount, 1)
     }
 
     // MARK: - Handling Notifications

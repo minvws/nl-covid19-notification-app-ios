@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Foundation
+import RxCombine
 import UIKit
 
 final class ExposureController: ExposureControlling, Logging {
@@ -169,8 +170,13 @@ final class ExposureController: ExposureControlling, Logging {
                 return self.fetchAndProcessExposureKeySets()
             }
             .handleEvents(
-                receiveCompletion: { _ in self.updateStream = nil },
-                receiveCancel: { self.updateStream = nil }
+                receiveCompletion: { _ in
+                    self.updateStream = nil
+
+                },
+                receiveCancel: {
+                    self.updateStream = nil
+                }
             )
             .eraseToAnyPublisher()
 
@@ -566,9 +572,10 @@ final class ExposureController: ExposureControlling, Logging {
 
         mutableStateStream
             .exposureState
-            .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in
-                return [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
-                    && networkState
+            .flatMap { [weak self] (exposureState) -> AnyPublisher<Bool, Never> in
+                let stateActive = [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
+                    && (self?.networkStatusStream.networkReachable == true)
+                return Just(stateActive).eraseToAnyPublisher()
             }
             .filter { $0 }
             .first()
@@ -583,16 +590,19 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
 
         networkStatusStream
-            .networkStatusStream
-            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
-            .filter { networkStatus in return true } // only update when internet is active
-            .flatMap { [weak self] (_) -> AnyPublisher<(), Never> in
+            .networkReachableStream
+            .publisher
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.updateStatusStream()
+            })
+            .filter { $0 } // only update when internet is active
+            .map { [weak self] (_) -> AnyPublisher<(), Never> in
                 return self?
                     .updateWhenRequired()
                     .replaceError(with: ())
                     .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
             }
-            .sink(receiveValue: { _ in })
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
             .store(in: &disposeBag)
     }
 

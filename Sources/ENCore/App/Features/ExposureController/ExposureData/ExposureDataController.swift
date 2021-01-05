@@ -216,14 +216,24 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - LabFlow
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
-            }.flatMap { (padding: Padding) in
-                return self.operationProvider
-                    .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
-                    .execute()
-            }.eraseToAnyPublisher()
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationConfiguration()
+                    .map { (configuration: ApplicationConfiguration) in
+                        Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
+                    }.flatMap { (padding: Padding) in
+                        return self.operationProvider
+                            .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
+                            .execute()
+                    }
+                    .subscribe { result in
+                        return promise(.success(result))
+                    } onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    }.disposed(by: self.rxDisposeBag)
+            }
+        }.eraseToAnyPublisher()
     }
 
     func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError> {
@@ -400,6 +410,15 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
         }
         .eraseToAnyPublisher()
+    }
+
+    private func rxRequestApplicationConfiguration() -> Observable<ApplicationConfiguration> {
+        return self.rxRequestApplicationManifest()
+            .flatMap {
+                self.operationProvider
+                    .requestAppConfigurationOperation(identifier: $0.appConfigurationIdentifier)
+                    .execute()
+            }
     }
 
     private func requestApplicationManifest() -> AnyPublisher<ApplicationManifest, ExposureDataError> {

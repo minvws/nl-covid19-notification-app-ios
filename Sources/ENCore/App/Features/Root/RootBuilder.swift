@@ -220,6 +220,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,
+                          mutableNetworkStatusStream: dependencyProvider.mutableNetworkStatusStream,
                           developerMenuBuilder: dependencyProvider.developerMenuBuilder,
                           mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
                           networkController: dependencyProvider.networkController,
