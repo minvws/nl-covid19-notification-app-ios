@@ -186,7 +186,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Observable<()> {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
-            .asObservable()
             .flatMap { (configuration) -> Observable<()> in
                 guard let operation = self.operationProvider
                     .processExposureKeySetsOperation(exposureManager: exposureManager,
@@ -438,7 +437,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return operationProvider.requestManifestOperation.execute()
     }
 
-    private func requestExposureRiskConfiguration() -> Single<ExposureConfiguration> {
+    private func requestExposureRiskConfiguration() -> Observable<ExposureConfiguration> {
         rxRequestApplicationManifest()
             .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
             .flatMap { identifier in
@@ -446,7 +445,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                     .requestExposureConfigurationOperation(identifier: identifier)
                     .execute()
             }
-            .asSingle()
     }
 
     // MARK: - Version Management

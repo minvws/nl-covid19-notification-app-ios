@@ -58,7 +58,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             logDebug("No additional key sets to download")
             logDebug("--- END REQUESTING KEYSETS ---")
 
-            return .empty()
+            return .just(())
         }
 
         // The first time we retrieve keysets, we ignore the entire batch because:
@@ -97,10 +97,8 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             .flatMap { keySetHolder in
                 self.storeDownloadedKeySetsHolder(keySetHolder)
             }
-            .share()
             .toArray() // toArray is called only after the creation and storage of keysetholders. This means that if at any point during this process the app is killed due to high CPU usage, the previous progress will not be lost and the app will only have to download the remaining keysets
-            .compactMap { _ in () }
-            .do { [weak self] _ in
+            .do { [weak self] blah in
                 let diff = CFAbsoluteTimeGetCurrent() - start
                 self?.logDebug("KeySet: Requesting Keysets Took \(diff) seconds")
                 self?.logDebug("KeySet: Requesting KeySets Completed")
@@ -108,7 +106,9 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             } onError: { [weak self] _ in
                 self?.logDebug("KeySet: Requesting KeySets Failed")
             }
+            .compactMap { _ in () }
             .asObservable()
+            .share()
     }
 
     // MARK: - Private
@@ -123,12 +123,12 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             .flatMap { keySetHolder in
                 self.storeDownloadedKeySetsHolder(keySetHolder)
             }
-            .compactMap { _ in () }
             .do(onError: { _ in
                 self.logDebug("KeySet: Creating ignored keysets failed ")
             }, onCompleted: {
                 self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
             })
+            .compactMap { _ in () }
     }
 
     private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
@@ -225,7 +225,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                                         identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
 
                     let diff = CFAbsoluteTimeGetCurrent() - start
-                    self.logDebug("Storing KeySetHolders Took \(diff) seconds")
+                    self.logDebug("Storing KeySetHolder Took \(diff) seconds")
 
                     // ignore any storage error - in that case the keyset will be downloaded and processed again
                     observer(.completed)
