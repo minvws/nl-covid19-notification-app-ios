@@ -24,7 +24,6 @@ protocol RequestLabConfirmationKeyDataOperationProtocol {
 }
 
 final class RequestLabConfirmationKeyDataOperation: RequestLabConfirmationKeyDataOperationProtocol {
-    typealias Result = LabConfirmationKey
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
