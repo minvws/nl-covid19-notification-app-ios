@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 class RequestExposureKeySetsDataOperationTests: TestCase {
@@ -18,6 +18,7 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     private var mockLocalPathProvider: LocalPathProvidingMock!
     private var mockFileManager: FileManagingMock!
     private var exposureKeySetIdentifiers: [String]!
+    private var disposeBag = DisposeBag()
 
     override func setUpWithError() throws {
 
@@ -30,9 +31,7 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         // Default handlers
         mockFileManager.fileExistsHandler = { _, _ in true }
         mockNetworkController.fetchExposureKeySetHandler = { identifier in
-            return Just((identifier, URL(string: "http://someurl.com")!))
-                .setFailureType(to: NetworkError.self)
-                .eraseToAnyPublisher()
+            return .just((identifier, URL(string: "http://someurl.com")!))
         }
         mockLocalPathProvider.pathHandler = { localFolder in
             return URL(string: "http://someurl.com")!
@@ -59,11 +58,10 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder()])
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -81,11 +79,10 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         )
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -102,11 +99,10 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         )
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -123,11 +119,10 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         )
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -166,11 +161,10 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         }
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
