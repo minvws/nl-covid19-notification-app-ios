@@ -8,6 +8,7 @@
 import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class ExposureControllerTests: TestCase {
@@ -19,6 +20,8 @@ final class ExposureControllerTests: TestCase {
     private let userNotificationCenter = UserNotificationCenterMock()
     private let networkStatusStream = NetworkStatusStreamingMock()
     private let currentAppVersion = "1.0"
+
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
@@ -36,12 +39,12 @@ final class ExposureControllerTests: TestCase {
         dataController.lastSuccessfulProcessingDate = Date()
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher() }
 
-        let stream = PassthroughSubject<ExposureState, Never>()
+        let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
         mutableStateStream.updateHandler = { [weak self] state in
             self?.mutableStateStream.currentExposureState = state
-            stream.send(state)
+            stream.onNext(state)
         }
-        mutableStateStream.exposureState = stream.eraseToAnyPublisher()
+        mutableStateStream.exposureState = stream
 
         exposureManager.authorizationStatus = .authorized
         exposureManager.getExposureNotificationStatusHandler = { .active }
@@ -358,7 +361,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_updateWhenRequired_callsDataControllerWhenActive() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
-        mutableStateStream.exposureState = Just(mutableStateStream.currentExposureState!).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             return Just(())
                 .setFailureType(to: ExposureDataError.self)
@@ -369,15 +372,15 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
     func test_updateWhenRequired_callsDataControllerWhenBluetoothInactive() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))
-        mutableStateStream.exposureState = Just(mutableStateStream.currentExposureState!).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             return Just(())
                 .setFailureType(to: ExposureDataError.self)
@@ -388,15 +391,15 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
     func test_updateWhenRequired_callsDataControllerWhenNotificationsDisabled() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.pushNotifications))
-        mutableStateStream.exposureState = Just(mutableStateStream.currentExposureState!).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             return Just(())
                 .setFailureType(to: ExposureDataError.self)
@@ -407,8 +410,8 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
@@ -431,7 +434,7 @@ final class ExposureControllerTests: TestCase {
         controller.activate(inBackgroundMode: false)
 
         mutableStateStream.update(state: .init(notifiedState: .notNotified, activeState: .active))
-        mutableStateStream.exposureState = Just(.init(notifiedState: .notNotified, activeState: .active)).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(.init(notifiedState: .notNotified, activeState: .active))
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
@@ -445,7 +448,7 @@ final class ExposureControllerTests: TestCase {
             Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
         }
 
-        mutableStateStream.exposureState = Just(.init(notifiedState: .notNotified, activeState: .active)).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(.init(notifiedState: .notNotified, activeState: .active))
         exposureManager.authorizationStatus = .authorized
 
         let exp = expectation(description: "Wait for async")

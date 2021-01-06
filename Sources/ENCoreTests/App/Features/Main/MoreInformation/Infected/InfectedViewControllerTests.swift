@@ -14,62 +14,66 @@ import XCTest
 
 final class InfectedViewControllerTests: TestCase {
     private var viewController: InfectedViewController!
-    private let router = InfectedRoutingMock()
-    private let exposureController = ExposureControllingMock()
-    private let exposureStateStream = ExposureStateStreamingMock()
-    private let exposureStateSubject = PassthroughSubject<ExposureState, Never>()
-    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
+    private var mockRouter: InfectedRoutingMock!
+    private var mockExposureController: ExposureControllingMock!
+    private var mockExposureStateStream: ExposureStateStreamingMock!
+    private var mockInterfaceOrientationStream: InterfaceOrientationStreamingMock!
+
+    private let exposureStateSubject = PublishSubject<ExposureState>()
 
     override func setUp() {
         super.setUp()
 
-        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        mockRouter = InfectedRoutingMock()
+        mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
+        mockExposureController = ExposureControllingMock()
+        mockExposureStateStream = ExposureStateStreamingMock(exposureState: exposureStateSubject)
+
+        mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         viewController = InfectedViewController(theme: theme,
-                                                exposureController: exposureController,
-                                                exposureStateStream: exposureStateStream,
-                                                interfaceOrientationStream: interfaceOrientationStream)
-        viewController.router = router
-
-        exposureStateStream.exposureState = exposureStateSubject.eraseToAnyPublisher()
+                                                exposureController: mockExposureController,
+                                                exposureStateStream: mockExposureStateStream,
+                                                interfaceOrientationStream: mockInterfaceOrientationStream)
+        viewController.router = mockRouter
 
         // force viewDidLoad
         _ = viewController.view
     }
 
     func test_inactiveState_callsRouterToShowCard() {
-        XCTAssertEqual(router.showInactiveCardCallCount, 0)
+        XCTAssertEqual(mockRouter.showInactiveCardCallCount, 0)
 
-        exposureStateSubject.send(.init(notifiedState: .notNotified,
-                                        activeState: .authorizationDenied))
+        exposureStateSubject.onNext(.init(notifiedState: .notNotified,
+                                          activeState: .authorizationDenied))
 
-        XCTAssertEqual(router.showInactiveCardCallCount, 1)
+        XCTAssertEqual(mockRouter.showInactiveCardCallCount, 1)
     }
 
     func test_activeState_callsRouterToRemoveAnyCard() {
-        XCTAssertEqual(router.removeInactiveCardCallCount, 0)
+        XCTAssertEqual(mockRouter.removeInactiveCardCallCount, 0)
 
-        exposureStateSubject.send(.init(notifiedState: .notNotified,
-                                        activeState: .active))
+        exposureStateSubject.onNext(.init(notifiedState: .notNotified,
+                                          activeState: .active))
 
-        XCTAssertEqual(router.removeInactiveCardCallCount, 1)
+        XCTAssertEqual(mockRouter.removeInactiveCardCallCount, 1)
     }
 
     func test_activeState_requestsLabConfirmationKey() {
-        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
+        XCTAssertEqual(mockExposureController.requestLabConfirmationKeyCallCount, 0)
 
-        exposureStateSubject.send(.init(notifiedState: .notNotified,
-                                        activeState: .active))
+        exposureStateSubject.onNext(.init(notifiedState: .notNotified,
+                                          activeState: .active))
 
-        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
+        XCTAssertEqual(mockExposureController.requestLabConfirmationKeyCallCount, 1)
     }
 
     func test_inactiveState_doesNotRequestLabConfirmationKey() {
-        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
+        XCTAssertEqual(mockExposureController.requestLabConfirmationKeyCallCount, 0)
 
-        exposureStateSubject.send(.init(notifiedState: .notNotified,
-                                        activeState: .authorizationDenied))
+        exposureStateSubject.onNext(.init(notifiedState: .notNotified,
+                                          activeState: .authorizationDenied))
 
-        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
+        XCTAssertEqual(mockExposureController.requestLabConfirmationKeyCallCount, 0)
     }
 }

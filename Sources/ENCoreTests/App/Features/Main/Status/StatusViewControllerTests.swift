@@ -115,6 +115,6 @@ final class StatusViewControllerTests: TestCase {
         let notifiedState: ExposureNotificationState = notified ? .notified(Date(timeIntervalSince1970: 1593260000)) : .notNotified
         let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
-        exposureStateStream.exposureState = Just(state).eraseToAnyPublisher()
+        exposureStateStream.exposureState = .just(state)
     }
 }
