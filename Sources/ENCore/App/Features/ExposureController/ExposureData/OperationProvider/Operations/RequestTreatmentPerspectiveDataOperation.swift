@@ -15,7 +15,6 @@ protocol RequestTreatmentPerspectiveDataOperationProtocol {
 }
 
 final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperationProtocol, Logging {
-    typealias Result = TreatmentPerspective
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {

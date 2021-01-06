@@ -235,9 +235,7 @@ final class ExposureControllerTests: TestCase {
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
                                                         validUntil: expirationDate)
-            return Just(labConfirmationKey)
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just(labConfirmationKey)
         }
 
         XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 0)
@@ -262,8 +260,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_requestLabConfirmationKey_isFailure_callsCompletionWithFailure() {
         dataController.requestLabConfirmationKeyHandler = {
-            return Fail(error: ExposureDataError.serverError)
-                .eraseToAnyPublisher()
+            return .error(ExposureDataError.serverError)
         }
 
         XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 0)
