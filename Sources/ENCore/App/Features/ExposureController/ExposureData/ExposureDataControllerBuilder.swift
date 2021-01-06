@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import RxSwift
 
 enum ExposureDataError: Error, Equatable {
     case networkUnreachable
@@ -49,7 +50,7 @@ protocol ExposureDataControlling: AnyObject {
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
     func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
+    func requestLabConfirmationKey() -> Observable<LabConfirmationKey>
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Misc
