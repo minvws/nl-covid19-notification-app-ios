@@ -305,21 +305,15 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func requestLabConfirmationKey(completion: @escaping (Result<ExposureConfirmationKey, ExposureDataError>) -> ()) {
-        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
-            if case let .failure(error) = result {
-                completion(.failure(error))
-            }
-        }
-
-        let receiveValue: (ExposureConfirmationKey) -> () = { key in
-            completion(.success(key))
-        }
-
         dataController
             .requestLabConfirmationKey()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
-            .store(in: &disposeBag)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe { labConfirmationKey in
+                completion(.success(labConfirmationKey))
+            } onError: { error in
+                let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                completion(.failure(convertedError))
+            }.disposed(by: self.rxDisposeBag)
     }
 
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,

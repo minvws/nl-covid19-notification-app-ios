@@ -112,32 +112,30 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError> {
-        return Deferred {
-            Future { promise in
-                let preRequest = PreRegisterRequest()
+    func requestLabConfirmationKey(padding: Padding) -> Observable<LabConfirmationKey> {
+        let observable = Observable<LabConfirmationKey>.create { observer in
 
-                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
-                let request = RegisterRequest(padding: generatedPadding)
+            let preRequest = PreRegisterRequest()
 
-                self.networkManager.postRegister(request: request) { result in
+            let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+            let request = RegisterRequest(padding: generatedPadding)
 
-                    let convertLabConfirmationKey: (LabInformation) -> Result<LabConfirmationKey, NetworkError> = { labInformation in
-                        guard let labConfirmationKey = labInformation.asLabConfirmationKey else {
-                            return .failure(.invalidResponse)
-                        }
+            self.networkManager.postRegister(request: request) { result in
 
-                        return .success(labConfirmationKey)
-                    }
-
-                    promise(result
-                        .flatMap(convertLabConfirmationKey)
-                    )
+                guard case let .success(labInformation) = result,
+                    let labConfirmationKey = labInformation.asLabConfirmationKey else {
+                    observer.onError(NetworkError.invalidResponse)
+                    return
                 }
+
+                observer.onNext(labConfirmationKey)
+                observer.onCompleted()
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
+
+        return observable.subscribe(on: MainScheduler.instance)
     }
 
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()> {
