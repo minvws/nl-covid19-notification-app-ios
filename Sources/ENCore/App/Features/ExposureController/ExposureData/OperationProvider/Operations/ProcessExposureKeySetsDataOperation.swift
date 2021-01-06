@@ -97,13 +97,10 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
-            .do(onNext: removeBlobs(forResult:))
-            // ignore result
-            .map { _ in () }
+            .flatMap(self.removeBlobs(forResult:))
             .do(onCompleted: {
                 self.logDebug("--- END PROCESSING KEYSETS ---")
             })
-            .share()
     }
 
     // MARK: - Private
@@ -300,20 +297,28 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Removes binary files for processed or invalid keySetHolders
-    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?)) {
-        let keySetHolders = exposureResult.0
-            .keySetDetectionResults
-            .filter { $0.processDate != nil || $0.isValid == false }
-            .map { $0.keySetHolder }
+    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?)) -> Observable<()> {
 
-        keySetHolders.forEach { keySetHolder in
-            if let sigFileURL = signatureFileUrl(forKeySetHolder: keySetHolder) {
-                try? fileManager.removeItem(at: sigFileURL)
-            }
+        return .create { (observer) -> Disposable in
 
-            if let binFileURL = binaryFileUrl(forKeySetHolder: keySetHolder) {
-                try? fileManager.removeItem(at: binFileURL)
+            let keySetHolders = exposureResult.0
+                .keySetDetectionResults
+                .filter { $0.processDate != nil || $0.isValid == false }
+                .map { $0.keySetHolder }
+
+            keySetHolders.forEach { keySetHolder in
+                if let sigFileURL = self.signatureFileUrl(forKeySetHolder: keySetHolder) {
+                    try? self.fileManager.removeItem(at: sigFileURL)
+                }
+
+                if let binFileURL = self.binaryFileUrl(forKeySetHolder: keySetHolder) {
+                    try? self.fileManager.removeItem(at: binFileURL)
+                }
             }
+            observer.onNext(())
+            observer.onCompleted()
+
+            return Disposables.create()
         }
     }
 
