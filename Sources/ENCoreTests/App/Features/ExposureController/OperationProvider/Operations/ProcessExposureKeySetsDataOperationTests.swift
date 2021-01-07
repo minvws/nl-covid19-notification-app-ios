@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 class ProcessExposureKeySetsDataOperationTests: TestCase {
@@ -22,6 +22,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockApplication: ApplicationControllingMock!
     private var mockFileManager: FileManagingMock!
     private var mockEnvironmentController: EnvironmentControllingMock!
+    private var disposeBag = DisposeBag()
 
     override func setUpWithError() throws {
 
@@ -36,7 +37,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockEnvironmentController = EnvironmentControllingMock()
 
         // Default handlers
-        mockEnvironmentController.isiOS136orHigher = true
+        mockEnvironmentController.gaenRateLimitingType = .dailyLimit
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
@@ -91,11 +92,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -115,11 +115,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -137,11 +136,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiCallDates: exposureApiForegroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -161,11 +159,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiCallDates: exposureApiForegroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -184,16 +181,64 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates, exposureApiCallDates: exposureApiForegroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
     }
+
+    func test_shouldDetectExposuresIfFileLimitNotReached() {
+
+        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+
+        // 10 processed keysets should not trigger the file limit
+        let processedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: Date().addingTimeInterval(-200), creationDate: Date()), count: 10)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        mockStorage(storedKeySetHolders: processedKeySetHolders + unprocessedKeySetHolders)
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
+        XCTAssertEqual(mockExposureManager.detectExposuresArgValues.first?.1.first?.absoluteString, "http://someurl.com/signatureFilename")
+        XCTAssertEqual(mockExposureManager.detectExposuresArgValues.first?.1.last?.absoluteString, "http://someurl.com/binaryFilename")
+    }
+
+    func test_shouldNotDetectExposuresIfFileLimitReached() {
+
+        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+
+        let keySetHolder = ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: Date().addingTimeInterval(-200), creationDate: Date())
+        let processedKeySetHolders = Array(repeating: keySetHolder, count: 20)
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        mockStorage(storedKeySetHolders: processedKeySetHolders)
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
+    }
+
+    // MARK: - Private Helper Functions
 
     private var dummyKeySetHolder: ExposureKeySetHolder {
         ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date())

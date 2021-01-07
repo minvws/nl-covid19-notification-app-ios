@@ -31,7 +31,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     // MARK: - ExposureDataOperationProvider
 
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation? {
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol? {
         guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
             self.logDebug("ExposureDataOperationProviderImpl: localPathProvider lailed to find path for exposure keysets")
             return nil
@@ -48,7 +48,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                    environmentController: environmentController)
     }
 
-    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {
         return ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
                                                                         storageController: storageController,
                                                                         padding: padding)
@@ -59,14 +59,14 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                                userNotificationCenter: userNotificationCenter)
     }
 
-    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,
                                                     applicationSignatureController: applicationSignatureController,
                                                     appConfigurationIdentifier: identifier)
     }
 
-    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation {
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol {
         return RequestExposureConfigurationDataOperation(networkController: networkController,
                                                          storageController: storageController,
                                                          exposureConfigurationIdentifier: identifier)
@@ -98,7 +98,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
-                                      padding: Padding) -> UploadDiagnosisKeysDataOperation {
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperationProtocol {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: diagnosisKeys,

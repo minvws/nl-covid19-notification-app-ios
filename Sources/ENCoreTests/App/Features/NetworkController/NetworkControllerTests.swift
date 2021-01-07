@@ -7,6 +7,7 @@
 
 import Combine
 @testable import ENCore
+import RxSwift
 import XCTest
 
 final class NetworkControllerTests: TestCase {
@@ -14,14 +15,13 @@ final class NetworkControllerTests: TestCase {
     private var networkController: NetworkController!
     private let networkManager = NetworkManagingMock()
     private let cryptoUtility = CryptoUtilityMock()
-    private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
 
         networkController = NetworkController(networkManager: networkManager,
-                                              cryptoUtility: cryptoUtility,
-                                              mutableNetworkStatusStream: mutableNetworkStatusStream)
+                                              cryptoUtility: cryptoUtility)
     }
 
     func test_requestLabConfirmationKey_callsNetworkManager_returnsKeyOnSuccess() {
@@ -35,22 +35,17 @@ final class NetworkControllerTests: TestCase {
         }
 
         var receivedValue: LabConfirmationKey!
-        var receivedCompletion: Subscribers.Completion<NetworkError>!
 
         let exp = expectation(description: "wait")
 
         networkController
             .requestLabConfirmationKey(padding: padding)
-            .sink(
-                receiveCompletion: { completion in
-                    receivedCompletion = completion
-
-                    exp.fulfill()
-                },
-                receiveValue: { value in
-                    receivedValue = value
-                })
-            .disposeOnTearDown(of: self)
+            .subscribe(onNext: { labConfirmationKey in
+                receivedValue = labConfirmationKey
+            }, onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
 
@@ -59,9 +54,6 @@ final class NetworkControllerTests: TestCase {
         XCTAssertEqual(receivedValue.bucketIdentifier, "test".data(using: .utf8))
         XCTAssertEqual(receivedValue.confirmationKey, "test".data(using: .utf8))
         XCTAssertTrue(receivedValue.isValid)
-
-        XCTAssertNotNil(receivedCompletion)
-        XCTAssertEqual(receivedCompletion, Subscribers.Completion<NetworkError>.finished)
     }
 
     func test_requestLabConfirmationKey_callsNetworkManager_failsOnInvalidResponse() {
@@ -70,29 +62,26 @@ final class NetworkControllerTests: TestCase {
         }
 
         var receivedValue: LabConfirmationKey!
-        var receivedCompletion: Subscribers.Completion<NetworkError>!
+        var receivedError: Error?
 
         let exp = expectation(description: "wait")
 
         networkController
             .requestLabConfirmationKey(padding: padding)
-            .sink(
-                receiveCompletion: { completion in
-                    receivedCompletion = completion
-
-                    exp.fulfill()
-                },
-                receiveValue: { value in
-                    receivedValue = value
-                })
-            .disposeOnTearDown(of: self)
+            .subscribe(onNext: { labConfirmationKey in
+                receivedValue = labConfirmationKey
+            }, onError: { error in
+                receivedError = error
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
 
         XCTAssertNil(receivedValue)
 
-        XCTAssertNotNil(receivedCompletion)
-        XCTAssertEqual(receivedCompletion, Subscribers.Completion<NetworkError>.failure(.invalidResponse))
+        XCTAssertNotNil(receivedError)
+        XCTAssertEqual(receivedError as? NetworkError, NetworkError.invalidResponse)
     }
 
     func test_requestLabConfirmationKey_addsCorrectPadding() {
@@ -102,50 +91,38 @@ final class NetworkControllerTests: TestCase {
             completion(.failure(.invalidResponse))
         }
 
-        var receivedCompletion: Subscribers.Completion<NetworkError>!
-
         let exp = expectation(description: "wait")
 
         networkController
             .requestLabConfirmationKey(padding: Padding(minimumRequestSize: 1800, maximumRequestSize: 1800))
-            .sink(receiveCompletion: { completion in
-                receivedCompletion = completion
+            .subscribe(onError: { _ in
                 exp.fulfill()
-            },
-            receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
-
-        XCTAssertNotNil(receivedCompletion)
     }
 
     func test_requestPostKeys_addsCorrectPadding() {
         networkManager.postKeysHandler = { request, _, completion in
             let length = self.requestLength(object: request)
             XCTAssertEqual(length, 1813)
-            completion(.invalidRequest)
+            completion(nil)
         }
 
         cryptoUtility.signatureHandler = { _, _ in Data() }
-
-        var receivedCompletion: Subscribers.Completion<NetworkError>!
 
         let exp = expectation(description: "wait")
         let key = LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: Date())
 
         networkController
             .postKeys(keys: [], labConfirmationKey: key, padding: padding)
-            .sink(receiveCompletion: { completion in
-                receivedCompletion = completion
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            },
-            receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
-        wait(for: [exp], timeout: 1)
-
-        XCTAssertNotNil(receivedCompletion)
+        waitForExpectations(timeout: 2.0, handler: nil)
     }
 
     // MARK: - Private

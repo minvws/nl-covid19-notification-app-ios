@@ -8,7 +8,6 @@
 import Combine
 import ENFoundation
 import Foundation
-import Reachability
 import RxSwift
 
 final class NetworkController: NetworkControlling, Logging {
@@ -16,11 +15,9 @@ final class NetworkController: NetworkControlling, Logging {
     // MARK: - Init
 
     init(networkManager: NetworkManaging,
-         cryptoUtility: CryptoUtility,
-         mutableNetworkStatusStream: MutableNetworkStatusStreaming) {
+         cryptoUtility: CryptoUtility) {
         self.networkManager = networkManager
         self.cryptoUtility = cryptoUtility
-        self.mutableNetworkStatusStream = mutableNetworkStatusStream
     }
 
     // MARK: - NetworkControlling
@@ -47,42 +44,52 @@ final class NetworkController: NetworkControlling, Logging {
         return observable.observe(on: MainScheduler.instance)
     }
 
-    func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
-                    promise(result)
+    func treatmentPerspective(identifier: String) -> Observable<TreatmentPerspective> {
+        return .create { observer in
+            self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
+                switch result {
+                case let .failure(error):
+                    observer.onError(error)
+                case let .success(treatmentPerspective):
+                    observer.onNext(treatmentPerspective)
+                    observer.onCompleted()
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
-    func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getAppConfig(appConfig: identifier) { result in
-                    promise(result.map { $0.asApplicationConfiguration(identifier: identifier) })
+    func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration> {
+        return .create { (observer) -> Disposable in
+            self.networkManager.getAppConfig(appConfig: identifier) { result in
+                switch result {
+                case let .success(configuration):
+                    observer.onNext(configuration.asApplicationConfiguration(identifier: identifier))
+                    observer.onCompleted()
+                case let .failure(error):
+                    observer.onError(error)
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
-    func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError> {
-        return Deferred {
-            Future { promise in
-                self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
-                    promise(result
-                        .map { $0.asExposureRiskConfiguration(identifier: identifier) }
-                    )
+    func exposureRiskConfigurationParameters(identifier: String) -> Observable<ExposureRiskConfiguration> {
+        return .create { observer in
+            self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
+                switch result {
+                case let .failure(error):
+                    observer.onError(error)
+                case let .success(parameters):
+                    observer.onNext(parameters.asExposureRiskConfiguration(identifier: identifier))
+                    observer.onCompleted()
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError> {
@@ -105,70 +112,68 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError> {
-        return Deferred {
-            Future { promise in
-                let preRequest = PreRegisterRequest()
+    func requestLabConfirmationKey(padding: Padding) -> Observable<LabConfirmationKey> {
+        let observable = Observable<LabConfirmationKey>.create { observer in
 
-                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
-                let request = RegisterRequest(padding: generatedPadding)
+            let preRequest = PreRegisterRequest()
 
-                self.networkManager.postRegister(request: request) { result in
+            let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+            let request = RegisterRequest(padding: generatedPadding)
 
-                    let convertLabConfirmationKey: (LabInformation) -> Result<LabConfirmationKey, NetworkError> = { labInformation in
-                        guard let labConfirmationKey = labInformation.asLabConfirmationKey else {
-                            return .failure(.invalidResponse)
-                        }
+            self.networkManager.postRegister(request: request) { result in
 
-                        return .success(labConfirmationKey)
-                    }
-
-                    promise(result
-                        .flatMap(convertLabConfirmationKey)
-                    )
-                }
-            }
-        }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
-    }
-
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError> {
-        return Deferred {
-            Future { promise in
-
-                let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
-                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
-
-                let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
-                                              bucketId: labConfirmationKey.bucketIdentifier,
-                                              padding: generatedPadding)
-
-                guard let requestData = try? JSONEncoder().encode(request) else {
-                    promise(.failure(.encodingError))
+                guard case let .success(labInformation) = result,
+                    let labConfirmationKey = labInformation.asLabConfirmationKey else {
+                    observer.onError(NetworkError.invalidResponse)
                     return
                 }
 
-                let signature = self.cryptoUtility
-                    .signature(forData: requestData, key: labConfirmationKey.confirmationKey)
-                    .base64EncodedString()
+                observer.onNext(labConfirmationKey)
+                observer.onCompleted()
+            }
 
-                let completion: (NetworkError?) -> () = { error in
-                    if let error = error {
-                        promise(.failure(error))
-                        return
-                    }
+            return Disposables.create()
+        }
 
-                    promise(.success(()))
+        return observable.subscribe(on: MainScheduler.instance)
+    }
+
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()> {
+
+        return .create { observer in
+
+            let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
+            let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+
+            let request = PostKeysRequest(keys: keys.map { $0.asTemporaryKey },
+                                          bucketId: labConfirmationKey.bucketIdentifier,
+                                          padding: generatedPadding)
+
+            guard let requestData = try? JSONEncoder().encode(request) else {
+                observer.onError(NetworkError.encodingError)
+                return Disposables.create()
+            }
+
+            let signature = self.cryptoUtility
+                .signature(forData: requestData, key: labConfirmationKey.confirmationKey)
+                .base64EncodedString()
+
+            let completion: (NetworkError?) -> () = { error in
+                if let error = error {
+                    observer.onError(error)
+                    return
                 }
 
-                self.networkManager.postKeys(request: request,
-                                             signature: signature,
-                                             completion: completion)
+                observer.onNext(())
+                observer.onCompleted()
             }
+
+            self.networkManager.postKeys(request: request,
+                                         signature: signature,
+                                         completion: completion)
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError> {
@@ -209,41 +214,10 @@ final class NetworkController: NetworkControlling, Logging {
         .eraseToAnyPublisher()
     }
 
-    func startObservingNetworkReachability() {
-        if reachability == nil {
-            do {
-                self.reachability = try Reachability()
-            } catch {
-                logError("Unable to instantiate Reachability")
-            }
-        }
-        reachability?.whenReachable = { [weak self] status in
-            self?.mutableNetworkStatusStream.update(isReachable: status.connection != .unavailable)
-        }
-        reachability?.whenUnreachable = { [weak self] status in
-            self?.mutableNetworkStatusStream.update(isReachable: !(status.connection == .unavailable))
-        }
-
-        do {
-            try reachability?.startNotifier()
-        } catch {
-            logError("Unable to start Reachability")
-        }
-    }
-
-    func stopObservingNetworkReachability() {
-        guard let reachability = reachability else {
-            return
-        }
-        reachability.stopNotifier()
-    }
-
     // MARK: - Private
 
     private let networkManager: NetworkManaging
     private let cryptoUtility: CryptoUtility
-    private var reachability: Reachability?
-    private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
 
     private func generatePadding<T: Encodable>(forObject object: T, padding: Padding) -> String {
         func randomString(length: Int) -> String {

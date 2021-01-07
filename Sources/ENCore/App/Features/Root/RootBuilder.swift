@@ -160,7 +160,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var mutableExposureStateStream: MutableExposureStateStreaming = ExposureStateStream()
 
     /// Mutable stream for publishing PushNotifcaiton objects to
-    lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificaionStream()
+    lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificationStream()
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
@@ -214,6 +214,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,
+                          mutableNetworkStatusStream: dependencyProvider.mutableNetworkStatusStream,
                           developerMenuBuilder: dependencyProvider.developerMenuBuilder,
                           mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
                           networkController: dependencyProvider.networkController,
