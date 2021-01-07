@@ -291,10 +291,25 @@ final class ExposureController: ExposureControlling, Logging {
 
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
                            completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
-        let receiveCompletion: (Subscribers.Completion<ExposureManagerError>) -> () = { result in
-            if case let .failure(error) = result {
+
+        guard let labConfirmationKey = labConfirmationKey as? LabConfirmationKey else {
+            completion(.invalidConfirmationKey)
+            return
+        }
+
+        requestDiagnosisKeys()
+            .subscribe(onNext: { keys in
+                self.upload(diagnosisKeys: keys,
+                            labConfirmationKey: labConfirmationKey,
+                            completion: completion)
+
+            }, onError: { error in
+
+                let exposureManagerError = error.asExposureManagerError
+
                 let result: ExposureControllerUploadKeysResult
-                switch error {
+
+                switch exposureManagerError {
                 case .notAuthorized:
                     result = .notAuthorized
                 default:
@@ -302,24 +317,8 @@ final class ExposureController: ExposureControlling, Logging {
                 }
 
                 completion(result)
-            }
-        }
-
-        guard let labConfirmationKey = labConfirmationKey as? LabConfirmationKey else {
-            completion(.invalidConfirmationKey)
-            return
-        }
-
-        let receiveValue: ([DiagnosisKey]) -> () = { keys in
-            self.upload(diagnosisKeys: keys,
-                        labConfirmationKey: labConfirmationKey,
-                        completion: completion)
-        }
-
-        requestDiagnosisKeys()
-            .sink(receiveCompletion: receiveCompletion,
-                  receiveValue: receiveValue)
-            .store(in: &disposeBag)
+            })
+            .disposed(by: rxDisposeBag)
     }
 
     func updateLastLaunch() {
@@ -662,12 +661,20 @@ final class ExposureController: ExposureControlling, Logging {
         return .notified(exposureReport.date)
     }
 
-    private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {
-        return Future { promise in
-            self.exposureManager.getDiagnosisKeys(completion: promise)
+    private func requestDiagnosisKeys() -> Observable<[DiagnosisKey]> {
+        return .create { observer in
+            self.exposureManager.getDiagnosisKeys { result in
+                switch result {
+
+                case let .success(diagnosisKeys):
+                    observer.onNext(diagnosisKeys)
+                    observer.onCompleted()
+                case let .failure(error):
+                    observer.onError(error)
+                }
+            }
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
     private func upload(diagnosisKeys keys: [DiagnosisKey],
