@@ -241,7 +241,7 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    func rxFetchAndProcessExposureKeySets() -> Completable {
+    private func rxFetchAndProcessExposureKeySets() -> Completable {
         return .create { observer in
             self.fetchAndProcessExposureKeySets()
                 .sink { completion in
