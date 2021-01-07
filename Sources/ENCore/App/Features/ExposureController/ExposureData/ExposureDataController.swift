@@ -298,14 +298,15 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {
-        requestApplicationConfiguration()
+    func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
-                return ExposureDataAppVersionInformation(minimumVersion: applicationConfiguration.minimumVersion,
-                                                         minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
-                                                         appStoreURL: applicationConfiguration.appStoreURL)
+                return ExposureDataAppVersionInformation(
+                    minimumVersion: applicationConfiguration.minimumVersion,
+                    minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
+                    appStoreURL: applicationConfiguration.appStoreURL
+                )
             }
-            .eraseToAnyPublisher()
     }
 
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {

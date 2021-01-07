@@ -112,14 +112,12 @@ final class ExposureController: ExposureControlling, Logging {
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
         return dataController
             .getAppVersionInformation()
-            .sink(
-                receiveCompletion: { result in
-                    guard case .failure = result else { return }
-
-                    completion(nil)
-                },
-                receiveValue: completion)
-            .store(in: &disposeBag)
+            .subscribe(onNext: { exposureDataAppVersionInformation in
+                completion(exposureDataAppVersionInformation)
+            }, onError: { _ in
+                completion(nil)
+            })
+            .disposed(by: rxDisposeBag)
     }
 
     func isAppDeactivated() -> Observable<Bool> {

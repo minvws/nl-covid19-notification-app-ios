@@ -55,7 +55,7 @@ protocol ExposureDataControlling: AnyObject {
 
     // MARK: - Misc
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
+    func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation>
     func isAppDeactivated() -> Observable<Bool>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
