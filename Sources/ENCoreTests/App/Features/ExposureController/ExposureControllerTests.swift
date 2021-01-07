@@ -416,6 +416,44 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
+    func test_updateWhenRequired_doesNotCallDataControllerWhenAuthorizedDenied() {
+        mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .authorizationDenied)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in
+            return Just(())
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+
+        controller
+            .updateWhenRequired()
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+    }
+
+    func test_updateWhenRequired_doesNotCallDataControllerWhenNotAuthorized() {
+        mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in
+            return Just(())
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
+        }
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+
+        controller
+            .updateWhenRequired()
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+    }
+
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
         dataController.lastSuccessfulProcessingDate = Date().addingTimeInterval(-24 * 60 * 60 - 1)
         exposureManager.isExposureNotificationEnabledHandler = { true }

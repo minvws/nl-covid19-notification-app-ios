@@ -340,8 +340,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private func updateWhenRequired() {
         exposureController
             .updateWhenRequired()
-            .do(onError: { [weak self] _ in
-                self?.logDebug("Finished `updateWhenRequired`")
+            .do(onError: { [weak self] error in
+                self?.logDebug("Finished `updateWhenRequired` with error \(error)")
             }, onCompleted: { [weak self] in
                 self?.logDebug("Finished `updateWhenRequired`")
             })

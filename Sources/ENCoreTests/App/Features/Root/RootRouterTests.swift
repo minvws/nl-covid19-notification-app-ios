@@ -269,6 +269,32 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(mutableNetworkStatusStream.stopObservingNetworkReachabilityCallCount, 1)
     }
 
+    func test_didEnterForeground_callsRefreshStatus() {
+        exposureController.updateWhenRequiredHandler = { .empty() }
+
+        // Required to attach main router
+        router.start()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
+
+        router.didEnterForeground()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 1)
+    }
+
+    func test_didEnterForeground_callsUpdateWhenRequired() {
+        exposureController.updateWhenRequiredHandler = { .empty() }
+
+        // Required to attach main router
+        router.start()
+
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
+
+        router.didEnterForeground()
+
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
+    }
+
     // MARK: - Handling Notifications
 
     func test_receivingUploadFailedNotification_shouldRouteToCallGGD() {
