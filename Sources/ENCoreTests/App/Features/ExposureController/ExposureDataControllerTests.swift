@@ -163,6 +163,29 @@ final class ExposureDataControllerTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    func test_getAppointmentPhoneNumber() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        let subscriptionExpectation = expectation(description: "subscription")
+
+        mockManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
+
+        sut.getAppointmentPhoneNumber()
+            .subscribe(onNext: { phoneNumber in
+                XCTAssertEqual(phoneNumber, "appointmentPhoneNumber")
+                subscriptionExpectation.fulfill()
+            })
+            .dispose()
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
     // MARK: - Private Helper Functions
 
     private func mockManifestOperation(in mockOperationProvider: ExposureDataOperationProviderMock,

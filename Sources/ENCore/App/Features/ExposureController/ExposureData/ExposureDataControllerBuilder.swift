@@ -60,7 +60,7 @@ protocol ExposureDataControlling: AnyObject {
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
-    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError>
+    func getAppointmentPhoneNumber() -> Observable<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
     func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
     var isFirstRun: Bool { get }

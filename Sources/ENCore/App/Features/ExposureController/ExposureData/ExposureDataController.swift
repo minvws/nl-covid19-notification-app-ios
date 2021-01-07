@@ -360,12 +360,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
-    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError> {
-        requestApplicationConfiguration()
+    func getAppointmentPhoneNumber() -> Observable<String> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.appointmentPhoneNumber
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private
