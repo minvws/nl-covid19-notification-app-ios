@@ -291,12 +291,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - Misc
 
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError> {
-        requestApplicationConfiguration()
+    func isAppDeactivated() -> Observable<Bool> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decativated
             }
-            .eraseToAnyPublisher()
     }
 
     func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {

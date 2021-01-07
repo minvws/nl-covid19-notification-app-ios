@@ -122,8 +122,8 @@ final class ExposureController: ExposureControlling, Logging {
             .store(in: &disposeBag)
     }
 
-    func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError> {
-        return dataController.isAppDectivated()
+    func isAppDeactivated() -> Observable<Bool> {
+        return dataController.isAppDeactivated()
     }
 
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
@@ -409,17 +409,18 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError> {
-        return Deferred {
-            Future { promise in
+    func appShouldUpdateCheck() -> Observable<AppUpdateInformation> {
+        return .create { observer in
 
-                self.logDebug("appShouldUpdateCheck Started")
+            self.logDebug("appShouldUpdateCheck Started")
 
-                self.shouldAppUpdate { updateInformation in
-                    return promise(.success(updateInformation))
-                }
+            self.shouldAppUpdate { updateInformation in
+                observer.onNext(updateInformation)
+                observer.onCompleted()
             }
-        }.eraseToAnyPublisher()
+
+            return Disposables.create()
+        }
     }
 
     func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never> {
