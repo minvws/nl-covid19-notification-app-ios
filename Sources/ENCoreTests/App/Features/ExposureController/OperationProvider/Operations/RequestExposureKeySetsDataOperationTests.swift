@@ -128,6 +128,8 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             .disposed(by: disposeBag)
 
         XCTAssertEqual(mockStorageController.retrieveDataCallCount, 3)
+
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_execute_createKeySetHolder_withError_shouldMapExposureDataError() {
