@@ -89,6 +89,111 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 1)
     }
 
+    func test_execute_fetchExposureKeySet_withError_shouldMapExposureDataError() {
+
+        mockStorage(
+            storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
+            initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
+        )
+
+        mockNetworkController.fetchExposureKeySetHandler = { _ in
+            return .error(ExposureDataError.internalError)
+        }
+
+        let exp = expectation(description: "Completion")
+        _ = sut.execute()
+            .subscribe(onError: { error in
+                XCTAssertEqual(error as? ExposureDataError, ExposureDataError.internalError)
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 1)
+
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_execute_retrieveObject_withNil() {
+
+        mockStorageController.retrieveDataHandler = { _ in
+            return nil
+        }
+
+        let exp = expectation(description: "Completion")
+
+        _ = sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 3)
+    }
+
+    func test_execute_createKeySetHolder_withError_shouldMapExposureDataError() {
+
+        mockStorage(
+            storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
+            initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
+        )
+
+        mockLocalPathProvider.pathHandler = { _ in
+            return nil
+        }
+
+        mockFileManager.removeItemHandler = { _ in
+            throw ExposureDataError.internalError
+        }
+
+        mockFileManager.fileExistsHandler = { _, _ in
+            return true
+        }
+
+        let exp = expectation(description: "Completion")
+        _ = sut.execute()
+            .subscribe(onError: { error in
+                XCTAssertEqual(error as? ExposureDataError, ExposureDataError.internalError)
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
+
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_execute_removeItem_withError_shouldMapExposureDataError() {
+
+        mockStorage(
+            storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
+            initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
+        )
+
+        mockFileManager.fileExistsHandler = { _, _ in
+            return true
+        }
+
+        mockFileManager.removeItemHandler = { _ in
+            throw ExposureDataError.internalError
+        }
+
+        mockFileManager.moveItemHandler = { _, _ in
+            throw ExposureDataError.internalError
+        }
+
+        let exp = expectation(description: "Completion")
+        _ = sut.execute()
+            .subscribe(onError: { error in
+                XCTAssertEqual(error as? ExposureDataError, ExposureDataError.internalError)
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
+
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
     func test_shouldNotDownloadKeySetsIfFirstBatchIsNotYetIgnored() {
 
         let exp = expectation(description: "expectation")
