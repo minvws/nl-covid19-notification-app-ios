@@ -162,14 +162,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return !Calendar.current.isDateInToday(date)
     }
 
-    func removeLastExposure() -> AnyPublisher<(), Never> {
-        return Future { promise in
+    func removeLastExposure() -> Completable {
+        return .create { observer in
             self.storageController.removeData(for: ExposureDataStorageKey.lastExposureReport) { _ in
-                promise(.success(()))
+                observer(.completed)
             }
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
     private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {

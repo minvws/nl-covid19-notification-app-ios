@@ -148,8 +148,20 @@ final class ExposureControllerTests: TestCase {
         // Not implemented yet
     }
 
-    func test_confirmExposureNotification() {
-        // Not implemented yet
+    func test_confirmExposureNotification_shouldUpdateStateStreamOnSuccess() {
+        activate()
+
+        dataController.removeLastExposureHandler = {
+            return .empty()
+        }
+
+        XCTAssertEqual(dataController.removeLastExposureCallCount, 0)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 4)
+
+        controller.confirmExposureNotification()
+
+        XCTAssertEqual(dataController.removeLastExposureCallCount, 1)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 5)
     }
 
     func test_managerIsActive_updatesStreamWithActive() {
