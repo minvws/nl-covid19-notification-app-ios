@@ -141,7 +141,7 @@ final class NetworkController: NetworkControlling, Logging {
         return observable.subscribe(on: MainScheduler.instance)
     }
 
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()> {
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Single<()> {
 
         return .create { observer in
 
@@ -153,7 +153,7 @@ final class NetworkController: NetworkControlling, Logging {
                                           padding: generatedPadding)
 
             guard let requestData = try? JSONEncoder().encode(request) else {
-                observer.onError(NetworkError.encodingError)
+                observer(.failure(NetworkError.encodingError))
                 return Disposables.create()
             }
 
@@ -163,12 +163,11 @@ final class NetworkController: NetworkControlling, Logging {
 
             let completion: (NetworkError?) -> () = { error in
                 if let error = error {
-                    observer.onError(error)
+                    observer(.failure(error))
                     return
                 }
 
-                observer.onNext(())
-                observer.onCompleted()
+                observer(.success(()))
             }
 
             self.networkManager.postKeys(request: request,
@@ -179,7 +178,7 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func stopKeys(padding: Padding) -> Observable<()> {
+    func stopKeys(padding: Padding) -> Single<()> {
         return .create { observer in
 
             let preRequest = PrePostKeysRequest(keys: [], bucketId: Data())
@@ -190,7 +189,7 @@ final class NetworkController: NetworkControlling, Logging {
                                           padding: generatedPadding)
 
             guard let requestData = try? JSONEncoder().encode(request) else {
-                observer.onError(NetworkError.encodingError)
+                observer(.failure(NetworkError.encodingError))
                 return Disposables.create()
             }
 
@@ -200,12 +199,11 @@ final class NetworkController: NetworkControlling, Logging {
 
             let completion: (NetworkError?) -> () = { error in
                 if let error = error {
-                    observer.onError(error)
+                    observer(.failure(error))
                     return
                 }
 
-                observer.onNext(())
-                observer.onCompleted()
+                observer(.success(()))
             }
 
             self.networkManager.postStopKeys(request: request,

@@ -267,12 +267,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                         self.operationProvider
                             .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
                             .execute()
-                            .subscribe { _ in
+                            .subscribe(onSuccess: { _ in
                                 return promise(.success(()))
-                            } onError: { error in
+                            }, onFailure: { error in
                                 let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
                                 return promise(.failure(convertedError))
-                            }.disposed(by: self.rxDisposeBag)
+                            }).disposed(by: self.rxDisposeBag)
                     }
                 }.eraseToAnyPublisher()
             }

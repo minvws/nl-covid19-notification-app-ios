@@ -117,7 +117,7 @@ final class NetworkControllerTests: TestCase {
 
         networkController
             .postKeys(keys: [], labConfirmationKey: key, padding: padding)
-            .subscribe(onCompleted: {
+            .subscribe(onSuccess: { _ in
                 exp.fulfill()
             })
             .disposed(by: disposeBag)

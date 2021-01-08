@@ -73,16 +73,16 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPen
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
     }
 
-    private func uploadPendingRequest(_ request: PendingLabConfirmationUploadRequest) -> Observable<(PendingLabConfirmationUploadRequest, Bool)> {
+    private func uploadPendingRequest(_ request: PendingLabConfirmationUploadRequest) -> Single<(PendingLabConfirmationUploadRequest, Bool)> {
         logDebug("Uploading pending request with key: \(request.labConfirmationKey.key)")
 
         return networkController.postKeys(keys: request.diagnosisKeys,
                                           labConfirmationKey: request.labConfirmationKey,
                                           padding: padding)
-            .do(onError: { [weak self] _ in
-                self?.logDebug("Request with key: \(request.labConfirmationKey.key) failed")
-            }, onCompleted: { [weak self] in
+            .do(onSuccess: { [weak self] _ in
                 self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")
+            }, onError: { [weak self] _ in
+                self?.logDebug("Request with key: \(request.labConfirmationKey.key) failed")
             })
             // map results to include a boolean indicating success
             .map { _ in (request, true) }

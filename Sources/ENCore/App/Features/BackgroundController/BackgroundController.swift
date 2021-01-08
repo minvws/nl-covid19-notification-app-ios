@@ -140,7 +140,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.logDebug("Decoy `/stopkeys` started")
         let disposable = exposureController
             .getPadding()
-            .asObservable()
             .flatMap { padding in
                 self.networkController
                     .stopKeys(padding: padding)
@@ -149,15 +148,15 @@ final class BackgroundController: BackgroundControlling, Logging {
                         throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
                     }
             }
-            .subscribe(onError: { _ in
+            .subscribe { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
                 task.setTaskCompleted(success: true)
-            }, onCompleted: {
+            } onFailure: { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
                 task.setTaskCompleted(success: true)
-            })
+            }
 
         // Handle running out of time
         task.expirationHandler = {

@@ -30,10 +30,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
             receivedKeys = keys
-            return Observable<()>.create { observer in
-                observer.onCompleted()
-                return Disposables.create()
-            }
+            return .just(())
         }
 
         let keys = createDiagnosisKeys(withHighestRollingStartNumber: 65)
@@ -42,7 +39,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(networkController.postKeysCallCount, 0)
 
         operation.execute()
-            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .subscribe { _ in }
             .disposed(by: disposeBag)
 
         XCTAssertEqual(networkController.postKeysCallCount, 1)
@@ -59,10 +56,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         operation = createOperation(withKeys: createDiagnosisKeys(withHighestRollingStartNumber: 65), expiryDate: expiryDate)
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
-            return Observable<()>.create { observer in
-                observer.onError(NetworkError.invalidRequest)
-                return Disposables.create()
-            }
+            .error(NetworkError.invalidRequest)
         }
 
         storageController.requestExclusiveAccessHandler = { $0(self.storageController) }
@@ -91,7 +85,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(storageController.storeCallCount, 0)
 
         operation.execute()
-            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .subscribe { _ in }
             .disposed(by: disposeBag)
 
         XCTAssertEqual(storageController.storeCallCount, 1)
@@ -105,11 +99,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     func test_noKeys_doesReachOutToNetwork() {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
-            return Observable<()>.create { observer in
-                observer.onNext(())
-                observer.onCompleted()
-                return Disposables.create()
-            }
+            .just(())
         }
 
         operation = createOperation(withKeys: [])
@@ -117,7 +107,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(networkController.postKeysCallCount, 0)
 
         operation.execute()
-            .subscribe(onNext: nil, onError: nil, onCompleted: nil, onDisposed: nil)
+            .subscribe { _ in }
             .disposed(by: disposeBag)
 
         XCTAssertEqual(networkController.postKeysCallCount, 1)
