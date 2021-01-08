@@ -265,28 +265,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
 
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()> {
+        return rxRequestApplicationConfiguration()
             .map { (configuration: ApplicationConfiguration) in
                 Padding(minimumRequestSize: configuration.requestMinimumSize,
                         maximumRequestSize: configuration.requestMaximumSize)
             }
             .flatMap { padding in
-                return Deferred {
-                    Future { promise in
-                        self.operationProvider
-                            .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
-                            .execute()
-                            .subscribe { _ in
-                                return promise(.success(()))
-                            } onError: { error in
-                                let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
-                                return promise(.failure(convertedError))
-                            }.disposed(by: self.rxDisposeBag)
-                    }
-                }.eraseToAnyPublisher()
+                self.operationProvider
+                    .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
+                    .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Misc

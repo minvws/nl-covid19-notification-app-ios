@@ -51,7 +51,7 @@ protocol ExposureDataControlling: AnyObject {
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
     func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
     func requestLabConfirmationKey() -> Observable<LabConfirmationKey>
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()>
 
     // MARK: - Misc
 

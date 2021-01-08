@@ -298,9 +298,7 @@ final class ExposureControllerTests: TestCase {
         }
 
         dataController.uploadHandler = { _, _ in
-            Just(())
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            .just(())
         }
 
         XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 0)

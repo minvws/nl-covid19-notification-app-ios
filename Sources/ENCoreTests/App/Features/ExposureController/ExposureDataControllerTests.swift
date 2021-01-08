@@ -155,10 +155,10 @@ final class ExposureDataControllerTests: TestCase {
         let mockLabConfirmationKey = LabConfirmationKey(identifier: "", bucketIdentifier: "".data(using: .utf8)!, confirmationKey: "".data(using: .utf8)!, validUntil: Date().addingTimeInterval(20000))
 
         sut.upload(diagnosisKeys: [], labConfirmationKey: mockLabConfirmationKey)
-            .sink(receiveCompletion: { _ in
+            .subscribe(onCompleted: {
                 streamExpectation.fulfill()
-            }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            })
+            .dispose()
 
         waitForExpectations(timeout: 2, handler: nil)
     }

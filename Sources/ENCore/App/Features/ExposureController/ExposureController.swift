@@ -695,22 +695,17 @@ final class ExposureController: ExposureControlling, Logging {
             }
         }
 
-        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
-            switch result {
-            case let .failure(error):
-                completion(mapExposureDataError(error))
-            default:
-                break
-            }
-        }
-
         self.dataController
             .upload(diagnosisKeys: keys, labConfirmationKey: labConfirmationKey)
             .map { _ in return ExposureControllerUploadKeysResult.success }
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: receiveCompletion,
-                  receiveValue: completion)
-            .store(in: &disposeBag)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe { result in
+                completion(result)
+            } onError: { error in
+                let exposureDataError = error.asExposureDataError
+                completion(mapExposureDataError(exposureDataError))
+            }
+            .disposed(by: rxDisposeBag)
     }
 
     private func updatePushNotificationState(completition: @escaping () -> ()) {
