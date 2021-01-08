@@ -132,7 +132,7 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.getDecoyProbability()
     }
 
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
+    func getPadding() -> Observable<Padding> {
         return dataController.getPadding()
     }
 

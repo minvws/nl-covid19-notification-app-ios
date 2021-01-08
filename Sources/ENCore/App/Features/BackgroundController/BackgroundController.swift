@@ -138,25 +138,30 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         self.logDebug("Decoy `/stopkeys` started")
-        let cancellable = exposureController
+        let disposable = exposureController
             .getPadding()
             .flatMap { padding in
                 self.networkController
                     .stopKeys(padding: padding)
-                    .mapError {
-                        self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
-                        return $0.asExposureDataError
+                    .subscribe(on: MainScheduler.instance)
+                    .catch { error in
+                        throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
                     }
-            }.sink(receiveCompletion: { _ in
+            }
+            .subscribe(onError: { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
                 task.setTaskCompleted(success: true)
-            }, receiveValue: { _ in })
+            }, onCompleted: {
+                // Note: We ignore the response
+                self.logDebug("Decoy `/stopkeys` complete")
+                task.setTaskCompleted(success: true)
+            })
 
         // Handle running out of time
         task.expirationHandler = {
             self.logDebug("Decoy `/stopkeys` expired")
-            cancellable.cancel()
+            disposable.dispose()
         }
     }
 
@@ -364,21 +369,24 @@ final class BackgroundController: BackgroundControlling, Logging {
                 func processStopKeys() {
                     self.exposureController
                         .getPadding()
-                        .delay(for: .seconds(Int.random(in: 1 ... 250)),
-                               scheduler: RunLoop.current)
+                        .delay(.seconds(Int.random(in: 1 ... 250)), scheduler: MainScheduler.instance)
                         .flatMap { padding in
                             self.networkController
                                 .stopKeys(padding: padding)
-                                .mapError {
-                                    self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
-                                    return $0.asExposureDataError
+                                .catch { error in
+                                    throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
                                 }
-                        }.sink(receiveCompletion: { _ in
+                        }
+                        .subscribe(onError: { _ in
                             // Note: We ignore the response
                             self.logDebug("Decoy `/stopkeys` complete")
                             return promise(.success(()))
-                        }, receiveValue: { _ in })
-                        .store(in: &self.disposeBag)
+                        }, onCompleted: {
+                            // Note: We ignore the response
+                            self.logDebug("Decoy `/stopkeys` complete")
+                            return promise(.success(()))
+                        })
+                        .disposed(by: self.rxDisposeBag)
                 }
 
                 func processDecoyRegister(decoyProbability: Float) {

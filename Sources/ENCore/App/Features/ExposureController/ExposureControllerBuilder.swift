@@ -25,7 +25,7 @@ protocol ExposureControlling: AnyObject {
     func isAppDeactivated() -> Observable<Bool>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
+    func getPadding() -> Observable<Padding>
 
     // MARK: - Updates
 

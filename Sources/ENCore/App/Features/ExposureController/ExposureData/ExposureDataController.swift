@@ -315,13 +315,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .eraseToAnyPublisher()
     }
 
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
-        requestApplicationConfiguration()
+    func getPadding() -> Observable<Padding> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
                                maximumRequestSize: applicationConfiguration.requestMaximumSize)
             }
-            .eraseToAnyPublisher()
     }
 
     func updateLastLocalNotificationExposureDate(_ date: Date) {

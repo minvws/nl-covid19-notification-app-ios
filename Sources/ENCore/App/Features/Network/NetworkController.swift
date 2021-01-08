@@ -179,42 +179,41 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError> {
-        return Deferred {
-            Future { promise in
+    func stopKeys(padding: Padding) -> Observable<()> {
+        return .create { observer in
 
-                let preRequest = PrePostKeysRequest(keys: [], bucketId: Data())
-                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+            let preRequest = PrePostKeysRequest(keys: [], bucketId: Data())
+            let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
 
-                let request = PostKeysRequest(keys: [],
-                                              bucketId: Data(),
-                                              padding: generatedPadding)
+            let request = PostKeysRequest(keys: [],
+                                          bucketId: Data(),
+                                          padding: generatedPadding)
 
-                guard let requestData = try? JSONEncoder().encode(request) else {
-                    promise(.failure(.encodingError))
+            guard let requestData = try? JSONEncoder().encode(request) else {
+                observer.onError(NetworkError.encodingError)
+                return Disposables.create()
+            }
+
+            let signature = self.cryptoUtility
+                .signature(forData: requestData, key: Data())
+                .base64EncodedString()
+
+            let completion: (NetworkError?) -> () = { error in
+                if let error = error {
+                    observer.onError(error)
                     return
                 }
 
-                let signature = self.cryptoUtility
-                    .signature(forData: requestData, key: Data())
-                    .base64EncodedString()
-
-                let completion: (NetworkError?) -> () = { error in
-                    if let error = error {
-                        promise(.failure(error))
-                        return
-                    }
-
-                    promise(.success(()))
-                }
-
-                self.networkManager.postStopKeys(request: request,
-                                                 signature: signature,
-                                                 completion: completion)
+                observer.onNext(())
+                observer.onCompleted()
             }
+
+            self.networkManager.postStopKeys(request: request,
+                                             signature: signature,
+                                             completion: completion)
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     // MARK: - Private

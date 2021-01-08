@@ -22,7 +22,7 @@ protocol NetworkControlling {
 
     func requestLabConfirmationKey(padding: Padding) -> Observable<LabConfirmationKey>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()>
-    func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError>
+    func stopKeys(padding: Padding) -> Observable<()>
 }
 
 /// @mockable
