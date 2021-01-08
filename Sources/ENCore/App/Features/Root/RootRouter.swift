@@ -412,9 +412,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     exposureDataError == .responseCached {
 
                     self?.exposureController.activate(inBackgroundMode: false)
-
-                    completion?(false)
                 }
+
+                completion?(false)
             }
             .disposed(by: rxDisposeBag)
     }
