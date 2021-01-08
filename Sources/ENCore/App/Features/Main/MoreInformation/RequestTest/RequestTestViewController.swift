@@ -86,12 +86,10 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         dataController
             .getAppointmentPhoneNumber()
-            .sink(
-                receiveCompletion: { result in },
-                receiveValue: { (exposedPhoneNumber: String) in
-                    self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
-                })
-            .store(in: &disposeBag)
+            .subscribe(onNext: { exposedPhoneNumber in
+                self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
+            })
+            .disposed(by: rxDisposeBag)
     }
 
     override func viewWillDisappear(_ animated: Bool) {

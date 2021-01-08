@@ -64,13 +64,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         let scheduleTasks: () -> () = {
             self.exposureController
                 .isAppDeactivated()
-                .sink(receiveCompletion: { result in
-                    if result != .finished {
-                        self.logDebug("Background: ExposureController activated state result: \(result)")
-                        self.logDebug("Background: Scheduling refresh sequence")
-                        self.scheduleRefresh()
-                    }
-                }, receiveValue: { (isDeactivated: Bool) in
+                .subscribe { isDeactivated in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
                         self.removeAllTasks()
@@ -78,7 +72,12 @@ final class BackgroundController: BackgroundControlling, Logging {
                         self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
                         self.scheduleRefresh()
                     }
-                    }).store(in: &self.disposeBag)
+                } onError: { error in
+                    self.logDebug("Background: ExposureController activated state result: \(error)")
+                    self.logDebug("Background: Scheduling refresh sequence")
+                    self.scheduleRefresh()
+                }
+                .disposed(by: self.rxDisposeBag)
         }
 
         operationQueue.async(execute: scheduleTasks)

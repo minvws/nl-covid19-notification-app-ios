@@ -55,12 +55,12 @@ protocol ExposureDataControlling: AnyObject {
 
     // MARK: - Misc
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError>
+    func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation>
+    func isAppDeactivated() -> Observable<Bool>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
-    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError>
+    func getAppointmentPhoneNumber() -> Observable<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
     func requestTreatmentPerspective() -> Observable<TreatmentPerspective>
     var isFirstRun: Bool { get }
