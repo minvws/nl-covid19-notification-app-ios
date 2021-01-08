@@ -98,7 +98,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                 self.storeDownloadedKeySetsHolder(keySetHolder)
             }
             .toArray() // toArray is called only after the creation and storage of keysetholders. This means that if at any point during this process the app is killed due to high CPU usage, the previous progress will not be lost and the app will only have to download the remaining keysets
-            .do { [weak self] blah in
+            .do { [weak self] _ in
                 let diff = CFAbsoluteTimeGetCurrent() - start
                 self?.logDebug("KeySet: Requesting Keysets Took \(diff) seconds")
                 self?.logDebug("KeySet: Requesting KeySets Completed")
