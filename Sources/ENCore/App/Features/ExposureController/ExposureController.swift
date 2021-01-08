@@ -294,25 +294,19 @@ final class ExposureController: ExposureControlling, Logging {
         }
 
         requestDiagnosisKeys()
-            .subscribe(onNext: { keys in
+            .subscribe(onSuccess: { keys in
                 self.upload(diagnosisKeys: keys,
                             labConfirmationKey: labConfirmationKey,
                             completion: completion)
-
-            }, onError: { error in
+            }, onFailure: { error in
 
                 let exposureManagerError = error.asExposureManagerError
-
-                let result: ExposureControllerUploadKeysResult
-
                 switch exposureManagerError {
                 case .notAuthorized:
-                    result = .notAuthorized
+                    completion(.notAuthorized)
                 default:
-                    result = .inactive
+                    completion(.inactive)
                 }
-
-                completion(result)
             })
             .disposed(by: rxDisposeBag)
     }
@@ -656,16 +650,15 @@ final class ExposureController: ExposureControlling, Logging {
         return .notified(exposureReport.date)
     }
 
-    private func requestDiagnosisKeys() -> Observable<[DiagnosisKey]> {
+    private func requestDiagnosisKeys() -> Single<[DiagnosisKey]> {
         return .create { observer in
             self.exposureManager.getDiagnosisKeys { result in
                 switch result {
 
                 case let .success(diagnosisKeys):
-                    observer.onNext(diagnosisKeys)
-                    observer.onCompleted()
+                    observer(.success(diagnosisKeys))
                 case let .failure(error):
-                    observer.onError(error)
+                    observer(.failure(error))
                 }
             }
             return Disposables.create()

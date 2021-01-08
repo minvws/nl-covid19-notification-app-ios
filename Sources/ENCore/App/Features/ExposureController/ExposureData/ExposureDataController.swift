@@ -196,10 +196,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
         return Deferred {
             Future { promise in
-                self.rxRequestApplicationConfiguration()
-                    .map { (configuration: ApplicationConfiguration) in
-                        Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
-                    }.flatMap { (padding: Padding) in
+                self.rxGetPadding()
+                    .flatMap { (padding: Padding) in
                         return self.operationProvider
                             .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
                             .execute()
@@ -231,11 +229,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func requestLabConfirmationKey() -> Observable<LabConfirmationKey> {
-        rxRequestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                return Padding(minimumRequestSize: configuration.requestMinimumSize,
-                               maximumRequestSize: configuration.requestMaximumSize)
-            }
+        rxGetPadding()
             .flatMap { (padding: Padding) in
                 self.operationProvider
                     .requestLabConfirmationKeyOperation(padding: padding)
@@ -244,11 +238,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()> {
-        return rxRequestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize,
-                        maximumRequestSize: configuration.requestMaximumSize)
-            }
+        rxGetPadding()
             .flatMap { padding in
                 self.operationProvider
                     .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
@@ -291,6 +281,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                                maximumRequestSize: applicationConfiguration.requestMaximumSize)
             }
             .eraseToAnyPublisher()
+    }
+
+    func rxGetPadding() -> Observable<Padding> {
+        rxRequestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
+                               maximumRequestSize: applicationConfiguration.requestMaximumSize)
+            }
     }
 
     func updateLastLocalNotificationExposureDate(_ date: Date) {
