@@ -16,12 +16,13 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
     private var mockExposureManager: ExposureManagingMock!
-    private var mockExposureKeySetsStorageUrl: URL!
+//    private var mockExposureKeySetsStorageUrl: URL!
     private var mockExposureConfiguration: ExposureConfigurationMock!
     private var mockUserNotificationCenter: UserNotificationCenterMock!
     private var mockApplication: ApplicationControllingMock!
     private var mockFileManager: FileManagingMock!
     private var mockEnvironmentController: EnvironmentControllingMock!
+    private var mockLocalPathProvider: LocalPathProvidingMock!
     private var disposeBag = DisposeBag()
 
     override func setUpWithError() throws {
@@ -29,12 +30,12 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()
         mockExposureManager = ExposureManagingMock()
-        mockExposureKeySetsStorageUrl = URL(string: "http://someurl.com")!
         mockExposureConfiguration = ExposureConfigurationMock()
         mockUserNotificationCenter = UserNotificationCenterMock()
         mockApplication = ApplicationControllingMock()
         mockFileManager = FileManagingMock()
         mockEnvironmentController = EnvironmentControllingMock()
+        mockLocalPathProvider = LocalPathProvidingMock()
 
         // Default handlers
         mockEnvironmentController.gaenRateLimitingType = .dailyLimit
@@ -49,11 +50,19 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             completion(nil)
         }
 
+        mockLocalPathProvider.pathHandler = { folder in
+            if folder == .exposureKeySets {
+                return URL(string: "http://someurl.com")!
+            }
+
+            return nil
+        }
+
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
             storageController: mockStorageController,
             exposureManager: mockExposureManager,
-            exposureKeySetsStorageUrl: mockExposureKeySetsStorageUrl,
+            localPathProvider: mockLocalPathProvider,
             configuration: mockExposureConfiguration,
             userNotificationCenter: mockUserNotificationCenter,
             application: mockApplication,

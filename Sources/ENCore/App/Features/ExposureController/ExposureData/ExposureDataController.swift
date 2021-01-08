@@ -187,14 +187,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
             .flatMap { (configuration) -> Observable<()> in
-                guard let operation = self.operationProvider
-                    .processExposureKeySetsOperation(exposureManager: exposureManager,
-                                                     configuration: configuration) else {
-                    self.logDebug("ExposureDataController: Failed to create processExposureKeySetsOperation")
-                    return Observable<()>.error(ExposureDataError.internalError)
-                }
-
-                return operation.execute()
+                return self.operationProvider
+                    .processExposureKeySetsOperation(exposureManager: exposureManager, configuration: configuration)
+                    .execute()
             }
     }
 
