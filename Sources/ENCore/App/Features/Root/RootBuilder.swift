@@ -150,10 +150,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableNetworkStatusStream
     }
 
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return mutableBluetoothStateStream
-    }
-
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         return InterfaceOrientationStream()
     }
@@ -168,8 +164,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
-
-    lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
 
     var messageManager: MessageManaging {
         return MessageManager(storageController: storageController, theme: theme)

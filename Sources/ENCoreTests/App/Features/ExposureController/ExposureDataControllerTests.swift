@@ -13,6 +13,8 @@ import XCTest
 
 final class ExposureDataControllerTests: TestCase {
 
+    private var disposeBag = DisposeBag()
+
     func test_firstRun_erasesStorage() {
 
         let mockOperationProvider = ExposureDataOperationProviderMock()
@@ -161,6 +163,35 @@ final class ExposureDataControllerTests: TestCase {
             .dispose()
 
         waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    // MARK: - removeLastExposure
+
+    func test_removeLastExposure_shouldCallStorageController() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        let removeDataExpectation = expectation(description: "removeData")
+
+        mockStorageController.removeDataHandler = { key, completion in
+            XCTAssertTrue((key as? CodableStorageKey<ExposureReport>)?.asString == ExposureDataStorageKey.lastExposureReport.asString)
+            removeDataExpectation.fulfill()
+        }
+
+        // Initialisation of ExposureDataController apparently already removes some data, so the starting situation is not completely clean
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
+
+        sut.removeLastExposure()
+            .subscribe()
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 4)
     }
 
     // MARK: - Private Helper Functions
