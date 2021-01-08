@@ -22,6 +22,7 @@ final class BackgroundControllerTests: XCTestCase {
 
     private var exposureManager = ExposureManagingMock(authorizationStatus: .authorized)
     private let userNotificationCenter = UserNotificationCenterMock()
+    private let mockRandomizer = RandomizerProtocolMock()
 
     // MARK: - Setup
 
@@ -41,7 +42,8 @@ final class BackgroundControllerTests: XCTestCase {
                                           dataController: dataController,
                                           userNotificationCenter: userNotificationCenter,
                                           taskScheduler: taskScheduler,
-                                          bundleIdentifier: "nl.rijksoverheid.en")
+                                          bundleIdentifier: "nl.rijksoverheid.en",
+                                          randomizer: mockRandomizer)
 
         exposureManager.getExposureNotificationStatusHandler = {
             return .active
@@ -248,6 +250,40 @@ final class BackgroundControllerTests: XCTestCase {
 
         XCTAssertEqual(taskScheduler.cancelCallCount, 1)
         XCTAssertEqual(taskScheduler.submitCallCount, 1)
+    }
+
+    func test_performDecoySequenceIfNeeded() {
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.canProcessDecoySequence = true
+        mockRandomizer.randomIntHandler = { _ in 0 }
+        mockRandomizer.randomFloatHandler = { _ in 0 }
+        exposureController.getDecoyProbabilityHandler = { .just(1) }
+        exposureController.requestLabConfirmationKeyHandler = { completion in
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
+        }
+        taskScheduler.submitHandler = { _ in
+            completionExpectation.fulfill()
+        }
+
+        controller.performDecoySequenceIfNeeded()
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(dataController.setLastDecoyProcessDateCallCount, 1)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
+        XCTAssertEqual(taskScheduler.submitCallCount, 1)
+    }
+
+    func test_performDecoySequenceIfNeeded_shouldNotPerformDecoyOnSameDay() {
+
+        dataController.canProcessDecoySequence = false
+
+        controller.performDecoySequenceIfNeeded()
+
+        XCTAssertEqual(dataController.setLastDecoyProcessDateCallCount, 0)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
+        XCTAssertEqual(taskScheduler.submitCallCount, 0)
     }
 
     // MARK: - Private

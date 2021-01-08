@@ -6,6 +6,7 @@
  */
 
 import BackgroundTasks
+import ENFoundation
 import Foundation
 import UserNotifications
 
@@ -22,6 +23,7 @@ protocol BackgroundDependency {
     var exposureController: ExposureControlling { get }
     var networkController: NetworkControlling { get }
     var dataController: ExposureDataControlling { get }
+    var randomizer: RandomizerProtocol { get }
 }
 
 /// @mockable
@@ -64,6 +66,7 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
                                     dataController: dependencyProvider.dependency.dataController,
                                     userNotificationCenter: dependencyProvider.userNotificationCenter,
                                     taskScheduler: BGTaskScheduler.shared,
-                                    bundleIdentifier: dependencyProvider.bundleIdentifier)
+                                    bundleIdentifier: dependencyProvider.bundleIdentifier,
+                                    randomizer: dependencyProvider.dependency.randomizer)
     }
 }

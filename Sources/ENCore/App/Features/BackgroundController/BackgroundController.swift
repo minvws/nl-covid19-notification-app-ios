@@ -42,7 +42,8 @@ final class BackgroundController: BackgroundControlling, Logging {
          dataController: ExposureDataControlling,
          userNotificationCenter: UserNotificationCenter,
          taskScheduler: TaskScheduling,
-         bundleIdentifier: String) {
+         bundleIdentifier: String,
+         randomizer: RandomizerProtocol) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
@@ -51,6 +52,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.userNotificationCenter = userNotificationCenter
         self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
+        self.randomizer = randomizer
     }
 
     deinit {
@@ -128,6 +130,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private var rxDisposeBag = DisposeBag()
     private let bundleIdentifier: String
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
+    private let randomizer: RandomizerProtocol
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
 
@@ -181,7 +184,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         func execute(decoyProbability: Float) {
 
-            let r = Float.random(in: configuration.decoyProbabilityRange)
+            let r = self.randomizer.randomFloat(in: configuration.decoyProbabilityRange)
             guard r < decoyProbability else {
                 return logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
             }
@@ -193,7 +196,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.logDebug("Decoy `/register` complete")
 
                 let date = currentDate().addingTimeInterval(
-                    TimeInterval(Int.random(in: 0 ... 900)) // random number between 0 and 15 minutes
+                    TimeInterval(self.randomizer.randomInt(in: 0 ... 900)) // random number between 0 and 15 minutes
                 )
                 self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
             }
@@ -201,7 +204,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         exposureController
             .getDecoyProbability()
-            .delay(.seconds(Int.random(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
+            .delay(.seconds(randomizer.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
             .subscribe(onSuccess: { decoyProbability in
                 execute(decoyProbability: decoyProbability)
             })
@@ -368,7 +371,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     self.exposureController
                         .getPadding()
                         .asObservable()
-                        .delay(.seconds(Int.random(in: 1 ... 250)), scheduler: MainScheduler.instance)
+                        .delay(.seconds(self.randomizer.randomInt(in: 1 ... 250)), scheduler: MainScheduler.instance)
                         .flatMap { padding in
                             self.networkController
                                 .stopKeys(padding: padding)
@@ -390,7 +393,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 func processDecoyRegister(decoyProbability: Float) {
 
-                    let r = Float.random(in: self.configuration.decoyProbabilityRange)
+                    let r = self.randomizer.randomFloat(in: self.configuration.decoyProbabilityRange)
                     guard r < decoyProbability else {
                         self.logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
                         return promise(.success(()))
@@ -406,7 +409,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 self.exposureController
                     .getDecoyProbability()
-                    .delay(.seconds(Int.random(in: 1 ... 60)), scheduler: MainScheduler.instance)
+                    .delay(.seconds(self.randomizer.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance)
                     .subscribe(onSuccess: { decoyProbability in
                         processDecoyRegister(decoyProbability: decoyProbability)
                     })

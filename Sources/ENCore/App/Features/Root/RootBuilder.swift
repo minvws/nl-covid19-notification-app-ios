@@ -172,6 +172,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     fileprivate var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
     }
+
+    var randomizer: RandomizerProtocol {
+        Randomizer()
+    }
 }
 
 /// Interface describing the builder that builds

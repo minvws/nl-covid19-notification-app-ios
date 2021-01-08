@@ -109,6 +109,7 @@ protocol ExposureControlling: AnyObject {
 ///
 /// - Parameter key: Human readable lab confirmation key
 /// - Parameter expiration: Key's expiration date
+/// @mockable
 protocol ExposureConfirmationKey {
     var key: String { get }
     var expiration: Date { get }
