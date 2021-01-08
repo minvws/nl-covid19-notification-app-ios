@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import RxSwift
 import UserNotifications
 
 /// @mockable
@@ -87,7 +88,7 @@ protocol ExposureControlling: AnyObject {
     func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never>
 
     /// Updates the treatment perspective message
-    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+    func updateTreatmentPerspective() -> Observable<TreatmentPerspective>
 
     // MARK: - Onboarding
 

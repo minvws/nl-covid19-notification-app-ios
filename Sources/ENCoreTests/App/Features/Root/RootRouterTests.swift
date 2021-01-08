@@ -48,7 +48,7 @@ final class RootRouterTests: XCTestCase {
         }
 
         exposureController.updateTreatmentPerspectiveHandler = {
-            Just(TreatmentPerspective.emptyMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(TreatmentPerspective.emptyMessage)
         }
 
         router = RootRouter(viewController: viewController,

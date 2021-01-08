@@ -113,10 +113,10 @@ final class ExposureDataControllerTests: TestCase {
         mockOperationProvider.requestTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
 
         sut.requestTreatmentPerspective()
-            .sink(receiveCompletion: { _ in
+            .subscribe(onCompleted: {
                 streamExpectation.fulfill()
-            }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
     }

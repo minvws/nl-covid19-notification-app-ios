@@ -450,10 +450,8 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        return self.dataController
-            .requestTreatmentPerspective()
-            .eraseToAnyPublisher()
+    func updateTreatmentPerspective() -> Observable<TreatmentPerspective> {
+        dataController.requestTreatmentPerspective()
     }
 
     func lastOpenedNotificationCheck() -> AnyPublisher<(), Never> {

@@ -62,7 +62,7 @@ protocol ExposureDataControlling: AnyObject {
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
     func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError>
     func updateLastLocalNotificationExposureDate(_ date: Date)
-    func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+    func requestTreatmentPerspective() -> Observable<TreatmentPerspective>
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
     var seenAnnouncements: [Announcement] { get set }

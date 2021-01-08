@@ -10,8 +10,8 @@ import Combine
 import ENFoundation
 import ExposureNotification
 import Foundation
-import UserNotifications
 import RxSwift
+import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
     case refresh = "exposure-notification"
@@ -126,6 +126,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
     private var disposeBag = Set<AnyCancellable>()
+    private var rxDisposeBag = DisposeBag()
     private let bundleIdentifier: String
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
 
@@ -317,22 +318,46 @@ final class BackgroundController: BackgroundControlling, Logging {
     private func updateTreatmentPerspective() -> AnyPublisher<(), Never> {
         logDebug("Background: Update Treatment Perspective Message Function Called")
 
-        return exposureController
-            .updateTreatmentPerspective()
-            .map { _ in return () }
-            .replaceError(with: ())
-            .handleEvents(
-                receiveCompletion: { [weak self] completion in
-                    switch completion {
-                    case .finished:
-                        self?.logDebug("Background: Update Treatment Perspective Message Completed")
-                    case .failure:
-                        self?.logDebug("Background: Update Treatment Perspective Message Failed")
+        return Deferred {
+            Future { promise in
+                self.exposureController
+                    .updateTreatmentPerspective()
+                    .subscribe { [weak self] event in
+
+                        switch event {
+                        case .next:
+                            break
+                        case .error:
+                            self?.logDebug("Background: Update Treatment Perspective Message Failed")
+                        case .completed:
+                            self?.logDebug("Background: Update Treatment Perspective Message Completed")
+                        }
+
+                        // We don't care much about the result of this action so we always return .success here
+                        promise(.success(()))
                     }
-                },
-                receiveCancel: { [weak self] in self?.logDebug("Background: Update Treatment Perspective Message Cancelled") }
-            )
+                    .disposed(by: self.rxDisposeBag)
+            }
             .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
+
+//        return exposureController
+//            .updateTreatmentPerspective()
+//            .map { _ in return () }
+//            .replaceError(with: ())
+//            .handleEvents(
+//                receiveCompletion: { [weak self] completion in
+//                    switch completion {
+//                    case .finished:
+//                        self?.logDebug("Background: Update Treatment Perspective Message Completed")
+//                    case .failure:
+//                        self?.logDebug("Background: Update Treatment Perspective Message Failed")
+//                    }
+//                },
+//                receiveCancel: { [weak self] in self?.logDebug("Background: Update Treatment Perspective Message Cancelled") }
+//            )
+//            .eraseToAnyPublisher()
     }
 
     private func processLastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
