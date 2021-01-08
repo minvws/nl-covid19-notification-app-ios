@@ -601,6 +601,38 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(days, 2)
     }
 
+    func test_getAppVersionInformation_shouldCallDataController() {
+
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.getAppVersionInformationHandler = {
+            .just(.init(minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://www.example.com"))
+        }
+
+        controller.getAppVersionInformation { appVersionInformation in
+            XCTAssertEqual(appVersionInformation?.minimumVersion, "1.0.0")
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func test_getAppVersionInformation_shouldReturnNilOnError() {
+
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.getAppVersionInformationHandler = {
+            .error(ExposureDataError.networkUnreachable)
+        }
+
+        controller.getAppVersionInformation { appVersionInformation in
+            XCTAssertNil(appVersionInformation)
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
     // MARK: - Private
 
     private func setupActivation() {

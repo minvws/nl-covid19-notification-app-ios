@@ -281,22 +281,22 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - Misc
 
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError> {
-        requestApplicationConfiguration()
+    func isAppDeactivated() -> Observable<Bool> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decativated
             }
-            .eraseToAnyPublisher()
     }
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {
-        requestApplicationConfiguration()
+    func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
-                return ExposureDataAppVersionInformation(minimumVersion: applicationConfiguration.minimumVersion,
-                                                         minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
-                                                         appStoreURL: applicationConfiguration.appStoreURL)
+                return ExposureDataAppVersionInformation(
+                    minimumVersion: applicationConfiguration.minimumVersion,
+                    minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
+                    appStoreURL: applicationConfiguration.appStoreURL
+                )
             }
-            .eraseToAnyPublisher()
     }
 
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
@@ -350,12 +350,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
-    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError> {
-        requestApplicationConfiguration()
+    func getAppointmentPhoneNumber() -> Observable<String> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.appointmentPhoneNumber
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private

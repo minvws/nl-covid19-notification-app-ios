@@ -59,19 +59,17 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
             }
             strongSelf.dataController
                 .getAppointmentPhoneNumber()
-                .sink(
-                    receiveCompletion: { result in },
-                    receiveValue: { (exposedPhoneNumber: String) in
-                        // Because the current screen is only shown on exposed devices, we can use the phonenumber that is exclusively for exposed persons
-                        let phoneNumberLink: String = .phoneNumberLink(from: exposedPhoneNumber)
+                .subscribe(onNext: { exposedPhoneNumber in
+                    // Because the current screen is only shown on exposed devices, we can use the phonenumber that is exclusively for exposed persons
+                    let phoneNumberLink: String = .phoneNumberLink(from: exposedPhoneNumber)
 
-                        if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
-                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                        } else {
-                            strongSelf.logError("Unable to open \(phoneNumberLink)")
-                        }
-                    })
-                .store(in: &strongSelf.disposeBag)
+                    if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
+                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                    } else {
+                        strongSelf.logError("Unable to open \(phoneNumberLink)")
+                    }
+                })
+                .disposed(by: strongSelf.disposeBag)
         }
 
         internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
@@ -80,7 +78,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.infoView.showHeader = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -103,8 +101,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
     private let messageManager: MessageManaging
     private let treatmentPerspectiveMessage: LocalizedTreatmentPerspective
     private let dataController: ExposureDataControlling
-    private var disposeBag = Set<AnyCancellable>()
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     private let interfaceOrientationStream: InterfaceOrientationStreaming
 }
 

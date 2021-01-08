@@ -112,18 +112,16 @@ final class ExposureController: ExposureControlling, Logging {
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
         return dataController
             .getAppVersionInformation()
-            .sink(
-                receiveCompletion: { result in
-                    guard case .failure = result else { return }
-
-                    completion(nil)
-                },
-                receiveValue: completion)
-            .store(in: &disposeBag)
+            .subscribe(onNext: { exposureDataAppVersionInformation in
+                completion(exposureDataAppVersionInformation)
+            }, onError: { _ in
+                completion(nil)
+            })
+            .disposed(by: rxDisposeBag)
     }
 
-    func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError> {
-        return dataController.isAppDectivated()
+    func isAppDeactivated() -> Observable<Bool> {
+        return dataController.isAppDeactivated()
     }
 
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
@@ -411,17 +409,18 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError> {
-        return Deferred {
-            Future { promise in
+    func appShouldUpdateCheck() -> Observable<AppUpdateInformation> {
+        return .create { observer in
 
-                self.logDebug("appShouldUpdateCheck Started")
+            self.logDebug("appShouldUpdateCheck Started")
 
-                self.shouldAppUpdate { updateInformation in
-                    return promise(.success(updateInformation))
-                }
+            self.shouldAppUpdate { updateInformation in
+                observer.onNext(updateInformation)
+                observer.onCompleted()
             }
-        }.eraseToAnyPublisher()
+
+            return Disposables.create()
+        }
     }
 
     func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never> {
