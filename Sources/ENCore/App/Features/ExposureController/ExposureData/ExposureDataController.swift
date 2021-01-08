@@ -276,14 +276,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
 
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
-        requestApplicationConfiguration()
-            .map { applicationConfiguration in
-                return applicationConfiguration.manifestRefreshFrequency
-            }
-            .eraseToAnyPublisher()
-    }
-
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in

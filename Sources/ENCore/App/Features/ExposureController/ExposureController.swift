@@ -124,10 +124,6 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.isAppDeactivated()
     }
 
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
-        return dataController.getAppRefreshInterval()
-    }
-
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
         return dataController.getDecoyProbability()
     }
