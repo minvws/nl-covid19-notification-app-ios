@@ -128,11 +128,11 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.getAppRefreshInterval()
     }
 
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
+    func getDecoyProbability() -> Single<Float> {
         return dataController.getDecoyProbability()
     }
 
-    func getPadding() -> Observable<Padding> {
+    func getPadding() -> Single<Padding> {
         return dataController.getPadding()
     }
 

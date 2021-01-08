@@ -307,20 +307,21 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .eraseToAnyPublisher()
     }
 
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
-        requestApplicationConfiguration()
+    func getDecoyProbability() -> Single<Float> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decoyProbability
             }
-            .eraseToAnyPublisher()
+            .asSingle()
     }
 
-    func getPadding() -> Observable<Padding> {
+    func getPadding() -> Single<Padding> {
         rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
                                maximumRequestSize: applicationConfiguration.requestMaximumSize)
             }
+            .asSingle()
     }
 
     func updateLastLocalNotificationExposureDate(_ date: Date) {

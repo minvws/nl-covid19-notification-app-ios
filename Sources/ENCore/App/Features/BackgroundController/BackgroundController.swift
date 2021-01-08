@@ -140,6 +140,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.logDebug("Decoy `/stopkeys` started")
         let disposable = exposureController
             .getPadding()
+            .asObservable()
             .flatMap { padding in
                 self.networkController
                     .stopKeys(padding: padding)
@@ -201,13 +202,11 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         exposureController
             .getDecoyProbability()
-            .delay(for: .seconds(Int.random(in: 1 ... 60)), // random number between 1 and 60 seconds
-                   scheduler: RunLoop.current)
-            .sink(receiveCompletion: { _ in
-            }, receiveValue: { value in
-                execute(decoyProbability: value)
-                })
-            .store(in: &disposeBag)
+            .delay(.seconds(Int.random(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
+            .subscribe(onSuccess: { decoyProbability in
+                execute(decoyProbability: decoyProbability)
+            })
+            .disposed(by: rxDisposeBag)
     }
 
     func removeAllTasks() {
@@ -369,6 +368,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 func processStopKeys() {
                     self.exposureController
                         .getPadding()
+                        .asObservable()
                         .delay(.seconds(Int.random(in: 1 ... 250)), scheduler: MainScheduler.instance)
                         .flatMap { padding in
                             self.networkController
@@ -407,13 +407,11 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 self.exposureController
                     .getDecoyProbability()
-                    .delay(for: .seconds(Int.random(in: 1 ... 60)),
-                           scheduler: RunLoop.current)
-                    .sink(receiveCompletion: { _ in
-                    }, receiveValue: { value in
-                        processDecoyRegister(decoyProbability: value)
-                        })
-                    .store(in: &self.disposeBag)
+                    .delay(.seconds(Int.random(in: 1 ... 60)), scheduler: MainScheduler.instance)
+                    .subscribe(onSuccess: { decoyProbability in
+                        processDecoyRegister(decoyProbability: decoyProbability)
+                    })
+                    .disposed(by: self.rxDisposeBag)
             }
         }.eraseToAnyPublisher()
     }
