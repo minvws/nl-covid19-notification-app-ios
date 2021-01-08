@@ -782,6 +782,7 @@ class SpecLoadingTests: XCTestCase {
                             [
                                 "name": "ExternalProject/Target2",
                                 "parallelizable": true,
+                                "skipped": true,
                                 "randomExecutionOrder": true,
                                 "skippedTests": ["Test/testExample()"],
                             ],
@@ -826,6 +827,7 @@ class SpecLoadingTests: XCTestCase {
                             targetReference: "ExternalProject/Target2",
                             randomExecutionOrder: true,
                             parallelizable: true,
+                            skipped: true,
                             skippedTests: ["Test/testExample()"]
                         ),
                     ]
@@ -1011,6 +1013,13 @@ class SpecLoadingTests: XCTestCase {
                 try expect(scheme.test) == expectedTest
             }
 
+            $0.it("parses copy files on install") {
+                var targetSource = validTarget
+                targetSource["onlyCopyFilesOnInstall"] = true
+                let target = try Target(name: "Embed Frameworks", jsonDictionary: targetSource)
+                try expect(target.onlyCopyFilesOnInstall) == true
+            }
+
             $0.it("parses settings") {
                 let project = try Project(path: fixturePath + "settings_test.yml")
                 let buildSettings: BuildSettings = ["SETTING": "value"]
@@ -1103,6 +1112,12 @@ class SpecLoadingTests: XCTestCase {
                         watchOS: "3.0",
                         macOS: "10.12.1"
                     ),
+                    fileTypes: ["abc": FileType(
+                        file: false,
+                        buildPhase: .sources,
+                        attributes: ["a1", "a2"],
+                        resourceTags: ["r1", "r2"],
+                        compilerFlags: ["c1", "c2"])],
                     findCarthageFrameworks: true,
                     preGenCommand: "swiftgen",
                     postGenCommand: "pod install"
@@ -1118,6 +1133,13 @@ class SpecLoadingTests: XCTestCase {
                     "findCarthageFrameworks": true,
                     "preGenCommand": "swiftgen",
                     "postGenCommand": "pod install",
+                    "fileTypes": ["abc": [
+                        "file": false,
+                        "buildPhase": "sources",
+                        "attributes": ["a1", "a2"],
+                        "resourceTags": ["r1", "r2"],
+                        "compilerFlags": ["c1", "c2"],
+                        ]]
                 ]]
                 let parsedSpec = try getProjectSpec(dictionary)
                 try expect(parsedSpec) == expected
@@ -1191,7 +1213,7 @@ class SpecLoadingTests: XCTestCase {
 
             $0.it("is an invalid package version") {
                 for dictionary in invalidPackages {
-                    try expect { _ = try SwiftPackage(jsonDictionary: dictionary) }.toThrow()
+                    try expect(expression: { _ = try SwiftPackage(jsonDictionary: dictionary) }).toThrow()
                 }
             }
         }

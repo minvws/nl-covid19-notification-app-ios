@@ -269,10 +269,12 @@ final class ExposureController: ExposureControlling, Logging {
     func confirmExposureNotification() {
         dataController
             .removeLastExposure()
-            .sink { [weak self] _ in
+            .subscribe(onCompleted: { [weak self] in
                 self?.updateStatusStream()
-            }
-            .store(in: &disposeBag)
+            }, onError: { [weak self] _ in
+                self?.updateStatusStream()
+            })
+            .disposed(by: rxDisposeBag)
     }
 
     func requestLabConfirmationKey(completion: @escaping (Result<ExposureConfirmationKey, ExposureDataError>) -> ()) {
