@@ -125,6 +125,57 @@ final class NetworkControllerTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
+    func test_fetchExposureKeySet_shouldCallNetworkManagerWithIdentifier() {
+        let identifier = "SomeIdentifier"
+        let url = URL(string: "http://www.example.com")!
+
+        let completionExpectation = expectation(description: "completion")
+        let networkManagerExpectation = expectation(description: "networkmananger call")
+
+        networkManager.getExposureKeySetHandler = { identifierParameter, completion in
+            XCTAssertEqual(identifierParameter, identifier)
+            networkManagerExpectation.fulfill()
+            completion(.success(url))
+        }
+
+        networkController.fetchExposureKeySet(identifier: identifier)
+            .subscribe(onNext: { result in
+                XCTAssertEqual(result.0, identifier)
+                XCTAssertEqual(result.1, url)
+            }, onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+
+        XCTAssertEqual(networkManager.getExposureKeySetCallCount, 1)
+    }
+
+    func test_fetchExposureKeySet_callsNetworkManager_failsOnInvalidResponse() {
+        let identifier = "SomeIdentifier"
+        let expectedError = NetworkError.invalidResponse
+
+        let completionExpectation = expectation(description: "completion")
+        let networkManagerExpectation = expectation(description: "networkmananger call")
+
+        networkManager.getExposureKeySetHandler = { _, completion in
+            networkManagerExpectation.fulfill()
+            completion(.failure(expectedError))
+        }
+
+        networkController.fetchExposureKeySet(identifier: identifier)
+            .subscribe(onError: { error in
+                XCTAssertEqual(error as? NetworkError, expectedError)
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+
+        XCTAssertEqual(networkManager.getExposureKeySetCallCount, 1)
+    }
+
     // MARK: - Private
 
     private let padding = Padding(minimumRequestSize: 1800, maximumRequestSize: 1800)

@@ -151,8 +151,20 @@ final class ExposureControllerTests: TestCase {
         // Not implemented yet
     }
 
-    func test_confirmExposureNotification() {
-        // Not implemented yet
+    func test_confirmExposureNotification_shouldUpdateStateStreamOnSuccess() {
+        activate()
+
+        dataController.removeLastExposureHandler = {
+            return .empty()
+        }
+
+        XCTAssertEqual(dataController.removeLastExposureCallCount, 0)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 4)
+
+        controller.confirmExposureNotification()
+
+        XCTAssertEqual(dataController.removeLastExposureCallCount, 1)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 5)
     }
 
     func test_managerIsActive_updatesStreamWithActive() {
@@ -628,6 +640,38 @@ final class ExposureControllerTests: TestCase {
         let days = Date().days(sinceDate: dataController.lastExposure!.date)
 
         XCTAssertEqual(days, 2)
+    }
+
+    func test_getAppVersionInformation_shouldCallDataController() {
+
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.getAppVersionInformationHandler = {
+            .just(.init(minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://www.example.com"))
+        }
+
+        controller.getAppVersionInformation { appVersionInformation in
+            XCTAssertEqual(appVersionInformation?.minimumVersion, "1.0.0")
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func test_getAppVersionInformation_shouldReturnNilOnError() {
+
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.getAppVersionInformationHandler = {
+            .error(ExposureDataError.networkUnreachable)
+        }
+
+        controller.getAppVersionInformation { appVersionInformation in
+            XCTAssertNil(appVersionInformation)
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
     // MARK: - Private

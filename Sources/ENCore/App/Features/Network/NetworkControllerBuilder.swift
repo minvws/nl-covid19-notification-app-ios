@@ -18,7 +18,7 @@ protocol NetworkControlling {
     func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration>
 
     func exposureRiskConfigurationParameters(identifier: String) -> Observable<ExposureRiskConfiguration>
-    func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError>
+    func fetchExposureKeySet(identifier: String) -> Observable<(String, URL)>
 
     func requestLabConfirmationKey(padding: Padding) -> Observable<LabConfirmationKey>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()>

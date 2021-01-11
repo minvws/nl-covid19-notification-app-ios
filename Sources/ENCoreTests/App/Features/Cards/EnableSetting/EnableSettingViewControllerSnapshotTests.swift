@@ -12,7 +12,7 @@ import XCTest
 
 final class EnableSettingViewControllerSnapshotTests: TestCase {
     private var viewController: EnableSettingViewController!
-    private var bluetoothStateStream = BluetoothStateStreamingMock()
+    private var exposureStateStream = ExposureStateStreamingMock()
     private var environmentController = EnvironmentControllingMock()
 
     override func setUp() {
@@ -25,7 +25,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableBluetooth,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)
@@ -36,7 +36,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableExposureNotifications,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)
@@ -47,7 +47,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableExposureNotifications,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)
@@ -57,7 +57,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableLocalNotifications,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)

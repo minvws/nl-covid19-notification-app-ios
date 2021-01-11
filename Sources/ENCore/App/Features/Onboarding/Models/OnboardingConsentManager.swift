@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import CoreBluetooth
 import ENFoundation
 import RxSwift
 import UIKit

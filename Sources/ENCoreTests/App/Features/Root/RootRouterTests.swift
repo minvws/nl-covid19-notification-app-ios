@@ -36,11 +36,11 @@ final class RootRouterTests: XCTestCase {
         super.setUp()
 
         exposureController.isAppDeactivatedHandler = {
-            Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(false)
         }
 
         exposureController.appShouldUpdateCheckHandler = {
-            Just(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(AppUpdateInformation(shouldUpdate: false, versionInformation: nil))
         }
 
         exposureController.activateHandler = { _ in
@@ -225,8 +225,7 @@ final class RootRouterTests: XCTestCase {
         )
 
         exposureController.appShouldUpdateCheckHandler = {
-            Just(AppUpdateInformation(shouldUpdate: true, versionInformation: appVersionInformation))
-                .setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(AppUpdateInformation(shouldUpdate: true, versionInformation: appVersionInformation))
         }
 
         router.start()
@@ -239,7 +238,7 @@ final class RootRouterTests: XCTestCase {
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {
 
         exposureController.isAppDeactivatedHandler = {
-            Just(true).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(true)
         }
 
         router.didBecomeActive()

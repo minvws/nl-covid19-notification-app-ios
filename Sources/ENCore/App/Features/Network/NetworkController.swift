@@ -92,24 +92,27 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError> {
-        return Deferred {
-            Future { promise in
-                let start = CFAbsoluteTimeGetCurrent()
+    func fetchExposureKeySet(identifier: String) -> Observable<(String, URL)> {
+        return .create { (observer) -> Disposable in
 
-                self.networkManager.getExposureKeySet(identifier: identifier) { result in
+            let start = CFAbsoluteTimeGetCurrent()
 
-                    let diff = CFAbsoluteTimeGetCurrent() - start
-                    print("Fetching ExposureKeySet Took \(diff) seconds")
+            self.networkManager.getExposureKeySet(identifier: identifier) { result in
 
-                    promise(result
-                        .map { localUrl in (identifier, localUrl) }
-                    )
+                let diff = CFAbsoluteTimeGetCurrent() - start
+                print("Fetching ExposureKeySet Took \(diff) seconds")
+
+                switch result {
+                case let .success(keySetURL):
+                    observer.onNext((identifier, keySetURL))
+                    observer.onCompleted()
+                case let .failure(error):
+                    observer.onError(error)
                 }
             }
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     func requestLabConfirmationKey(padding: Padding) -> Observable<LabConfirmationKey> {

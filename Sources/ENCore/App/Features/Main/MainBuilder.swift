@@ -17,7 +17,6 @@ protocol MainDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
     var exposureController: ExposureControlling { get }
-    var bluetoothStateStream: BluetoothStateStreaming { get }
     var storageController: StorageControlling { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var dataController: ExposureDataControlling { get }
@@ -27,10 +26,6 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var theme: Theme {
         return dependency.theme
-    }
-
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return dependency.bluetoothStateStream
     }
 
     var exposureStateStream: ExposureStateStreaming {

@@ -368,22 +368,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: ((_ didRoute: Bool) -> ())? = nil) {
 
-        exposureController
-            .isAppDeactivated()
-            .combineLatest(exposureController.appShouldUpdateCheck())
-            .sink(receiveCompletion: { [weak self] exposureControllerCompletion in
-
-                if exposureControllerCompletion == .failure(.networkUnreachable) ||
-                    exposureControllerCompletion == .failure(.serverError) ||
-                    exposureControllerCompletion == .failure(.internalError) ||
-                    exposureControllerCompletion == .failure(.responseCached) {
-
-                    self?.exposureController.activate(inBackgroundMode: false)
-
-                    completion?(false)
-                }
-            }, receiveValue: { [weak self] isDeactivated, updateInformation in
-
+        Observable
+            .combineLatest(exposureController.isAppDeactivated(), exposureController.appShouldUpdateCheck())
+            .subscribe { [weak self] isDeactivated, updateInformation in
                 if isDeactivated {
 
                     self?.routeToEndOfLife()
@@ -414,8 +401,21 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 completion?(false)
 
-                })
-            .store(in: &disposeBag)
+            } onError: { [weak self] error in
+
+                let exposureDataError = error.asExposureDataError
+
+                if exposureDataError == .networkUnreachable ||
+                    exposureDataError == .serverError ||
+                    exposureDataError == .internalError ||
+                    exposureDataError == .responseCached {
+
+                    self?.exposureController.activate(inBackgroundMode: false)
+                }
+
+                completion?(false)
+            }
+            .disposed(by: rxDisposeBag)
     }
 
     private func updateTreatmentPerspective() {

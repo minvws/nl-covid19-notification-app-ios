@@ -16,7 +16,7 @@ protocol EnableSettingListener: AnyObject {
 
 protocol EnableSettingDependency {
     var theme: Theme { get }
-    var bluetoothStateStream: BluetoothStateStreaming { get }
+    var exposureStateStream: ExposureStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
 }
 
@@ -42,7 +42,7 @@ final class EnableSettingBuilder: Builder<EnableSettingDependency>, EnableSettin
         return EnableSettingViewController(listener: listener,
                                            theme: dependencyProvider.theme,
                                            setting: setting,
-                                           bluetoothStateStream: dependencyProvider.dependency.bluetoothStateStream,
+                                           exposureStateStream: dependencyProvider.dependency.exposureStateStream,
                                            environmentController: dependencyProvider.dependency.environmentController)
     }
 }

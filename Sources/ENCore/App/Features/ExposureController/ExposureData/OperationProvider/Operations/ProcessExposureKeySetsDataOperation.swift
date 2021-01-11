@@ -52,7 +52,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          exposureManager: ExposureManaging,
-         exposureKeySetsStorageUrl: URL,
+         localPathProvider: LocalPathProviding,
          configuration: ExposureConfiguration,
          userNotificationCenter: UserNotificationCenter,
          application: ApplicationControlling,
@@ -61,7 +61,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
-        self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
+        self.localPathProvider = localPathProvider
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
         self.application = application
@@ -71,6 +71,11 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
     func execute() -> Observable<()> {
         self.logDebug("--- START PROCESSING KEYSETS ---")
+
+        guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
+            self.logDebug("ExposureDataOperationProviderImpl: localPathProvider failed to find path for exposure keysets")
+            return .error(ExposureDataError.internalError)
+        }
 
         // get all keySetHolders that have not been processed before
         let exposureKeySetHolders = getStoredKeySetsHolders()
@@ -85,7 +90,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
 
         // Batch detect exposures
-        return detectExposures(for: exposureKeySetHolders)
+        return detectExposures(for: exposureKeySetHolders, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
             // persist keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
@@ -97,13 +102,12 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
-            .do(onNext: removeBlobs(forResult:))
-            // ignore result
-            .map { _ in () }
+            .flatMap {
+                self.removeBlobs(forResult: $0, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
+            }
             .do(onCompleted: {
                 self.logDebug("--- END PROCESSING KEYSETS ---")
             })
-            .share()
     }
 
     // MARK: - Private
@@ -114,17 +118,17 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Verifies whether the KeySetHolder URLs point to valid files
-    private func verifyLocalFileUrl(forKeySetsHolder keySetHolder: ExposureKeySetHolder) -> Bool {
+    private func verifyLocalFileUrl(forKeySetsHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> Bool {
         var isDirectory = ObjCBool(booleanLiteral: false)
 
         // verify whether sig and bin files are present
-        guard let sigPath = signatureFileUrl(forKeySetHolder: keySetHolder)?.path,
+        guard let sigPath = signatureFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)?.path,
             fileManager.fileExists(atPath: sigPath,
                                    isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
-        guard let binPath = binaryFileUrl(forKeySetHolder: keySetHolder)?.path,
+        guard let binPath = binaryFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)?.path,
             fileManager.fileExists(atPath: binPath,
                                    isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
@@ -136,10 +140,12 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     /// Returns ExposureKeySetDetectionResult in case of a success, or in case of an error that's
     /// not related to the framework's inactiveness. When an error is thrown from here exposure detection
     /// should be stopped until the user enables the framework
-    private func detectExposures(for keySetHolders: [ExposureKeySetHolder]) -> Observable<ExposureDetectionResult> {
+    private func detectExposures(for keySetHolders: [ExposureKeySetHolder], exposureKeySetsStorageUrl: URL) -> Observable<ExposureDetectionResult> {
 
         // filter out keysets with missing local files
-        let validKeySetHolders = keySetHolders.filter(self.verifyLocalFileUrl(forKeySetsHolder:))
+        let validKeySetHolders = keySetHolders.filter {
+            self.verifyLocalFileUrl(forKeySetsHolder: $0, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
+        }
         let invalidKeySetHolders = keySetHolders.filter { keySetHolder in
             !validKeySetHolders.contains { $0.identifier == keySetHolder.identifier }
         }
@@ -178,7 +184,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
 
         let diagnosisKeyUrls = keySetHoldersToProcess.flatMap { (keySetHolder) -> [URL] in
-            if let sigFile = signatureFileUrl(forKeySetHolder: keySetHolder), let binFile = binaryFileUrl(forKeySetHolder: keySetHolder) {
+            if let sigFile = signatureFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl), let binFile = binaryFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl) {
                 return [sigFile, binFile]
             }
             return []
@@ -300,20 +306,28 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Removes binary files for processed or invalid keySetHolders
-    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?)) {
-        let keySetHolders = exposureResult.0
-            .keySetDetectionResults
-            .filter { $0.processDate != nil || $0.isValid == false }
-            .map { $0.keySetHolder }
+    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?), exposureKeySetsStorageUrl: URL) -> Observable<()> {
 
-        keySetHolders.forEach { keySetHolder in
-            if let sigFileURL = signatureFileUrl(forKeySetHolder: keySetHolder) {
-                try? fileManager.removeItem(at: sigFileURL)
-            }
+        return .create { (observer) -> Disposable in
 
-            if let binFileURL = binaryFileUrl(forKeySetHolder: keySetHolder) {
-                try? fileManager.removeItem(at: binFileURL)
+            let keySetHolders = exposureResult.0
+                .keySetDetectionResults
+                .filter { $0.processDate != nil || $0.isValid == false }
+                .map { $0.keySetHolder }
+
+            keySetHolders.forEach { keySetHolder in
+                if let sigFileURL = self.signatureFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl) {
+                    try? self.fileManager.removeItem(at: sigFileURL)
+                }
+
+                if let binFileURL = self.binaryFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl) {
+                    try? self.fileManager.removeItem(at: binFileURL)
+                }
             }
+            observer.onNext(())
+            observer.onCompleted()
+
+            return Disposables.create()
         }
     }
 
@@ -582,7 +596,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
-    private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {
+    private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> URL? {
         guard let signatureFilename = keySetHolder.signatureFilename else {
             return nil
         }
@@ -590,7 +604,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         return exposureKeySetsStorageUrl.appendingPathComponent(signatureFilename)
     }
 
-    private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {
+    private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> URL? {
         guard let binaryFilename = keySetHolder.binaryFilename else {
             return nil
         }
@@ -618,7 +632,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureManager: ExposureManaging
-    private let exposureKeySetsStorageUrl: URL
+    private let localPathProvider: LocalPathProviding
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter
     private let application: ApplicationControlling

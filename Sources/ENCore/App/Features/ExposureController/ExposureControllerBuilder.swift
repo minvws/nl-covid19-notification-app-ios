@@ -22,7 +22,7 @@ protocol ExposureControlling: AnyObject {
     func deactivate()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
-    func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError>
+    func isAppDeactivated() -> Observable<Bool>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
@@ -82,7 +82,7 @@ protocol ExposureControlling: AnyObject {
     func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
 
     /// Checks if the app needs to be updated and returns true if it should
-    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError>
+    func appShouldUpdateCheck() -> Observable<AppUpdateInformation>
 
     /// Checks if the app needs to be updated and sends a local notification if it should
     func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never>
