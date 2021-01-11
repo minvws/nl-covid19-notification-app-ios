@@ -124,10 +124,6 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.isAppDeactivated()
     }
 
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
-        return dataController.getAppRefreshInterval()
-    }
-
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
         return dataController.getDecoyProbability()
     }
@@ -318,35 +314,28 @@ final class ExposureController: ExposureControlling, Logging {
 
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
                            completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
-        let receiveCompletion: (Subscribers.Completion<ExposureManagerError>) -> () = { result in
-            if case let .failure(error) = result {
-                let result: ExposureControllerUploadKeysResult
-                switch error {
-                case .notAuthorized:
-                    result = .notAuthorized
-                default:
-                    result = .inactive
-                }
-
-                completion(result)
-            }
-        }
 
         guard let labConfirmationKey = labConfirmationKey as? LabConfirmationKey else {
             completion(.invalidConfirmationKey)
             return
         }
 
-        let receiveValue: ([DiagnosisKey]) -> () = { keys in
-            self.upload(diagnosisKeys: keys,
-                        labConfirmationKey: labConfirmationKey,
-                        completion: completion)
-        }
-
         requestDiagnosisKeys()
-            .sink(receiveCompletion: receiveCompletion,
-                  receiveValue: receiveValue)
-            .store(in: &disposeBag)
+            .subscribe(onSuccess: { keys in
+                self.upload(diagnosisKeys: keys,
+                            labConfirmationKey: labConfirmationKey,
+                            completion: completion)
+            }, onFailure: { error in
+
+                let exposureManagerError = error.asExposureManagerError
+                switch exposureManagerError {
+                case .notAuthorized:
+                    completion(.notAuthorized)
+                default:
+                    completion(.inactive)
+                }
+            })
+            .disposed(by: rxDisposeBag)
     }
 
     func updateLastLaunch() {
@@ -477,10 +466,8 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        return self.dataController
-            .requestTreatmentPerspective()
-            .eraseToAnyPublisher()
+    func updateTreatmentPerspective() -> Observable<TreatmentPerspective> {
+        dataController.requestTreatmentPerspective()
     }
 
     func lastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
@@ -691,12 +678,19 @@ final class ExposureController: ExposureControlling, Logging {
         return .notified(exposureReport.date)
     }
 
-    private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {
-        return Future { promise in
-            self.exposureManager.getDiagnosisKeys(completion: promise)
+    private func requestDiagnosisKeys() -> Single<[DiagnosisKey]> {
+        return .create { observer in
+            self.exposureManager.getDiagnosisKeys { result in
+                switch result {
+
+                case let .success(diagnosisKeys):
+                    observer(.success(diagnosisKeys))
+                case let .failure(error):
+                    observer(.failure(error))
+                }
+            }
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
     private func upload(diagnosisKeys keys: [DiagnosisKey],
@@ -717,22 +711,17 @@ final class ExposureController: ExposureControlling, Logging {
             }
         }
 
-        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
-            switch result {
-            case let .failure(error):
-                completion(mapExposureDataError(error))
-            default:
-                break
-            }
-        }
-
         self.dataController
             .upload(diagnosisKeys: keys, labConfirmationKey: labConfirmationKey)
             .map { _ in return ExposureControllerUploadKeysResult.success }
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: receiveCompletion,
-                  receiveValue: completion)
-            .store(in: &disposeBag)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe { result in
+                completion(result)
+            } onError: { error in
+                let exposureDataError = error.asExposureDataError
+                completion(mapExposureDataError(exposureDataError))
+            }
+            .disposed(by: rxDisposeBag)
     }
 
     private func updatePushNotificationState(completition: @escaping () -> ()) {

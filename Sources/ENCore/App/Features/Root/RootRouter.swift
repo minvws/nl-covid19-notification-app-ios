@@ -424,12 +424,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     private func updateTreatmentPerspective() {
-
         exposureController
             .updateTreatmentPerspective()
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .subscribe { _ in }
+            .disposed(by: rxDisposeBag)
     }
 
     private func removeNotificationsFromNotificationsCenter() {
