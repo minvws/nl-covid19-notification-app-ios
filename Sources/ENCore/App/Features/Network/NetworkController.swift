@@ -141,7 +141,7 @@ final class NetworkController: NetworkControlling, Logging {
         return observable.subscribe(on: MainScheduler.instance)
     }
 
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Observable<()> {
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Single<()> {
 
         return .create { observer in
 
@@ -153,7 +153,7 @@ final class NetworkController: NetworkControlling, Logging {
                                           padding: generatedPadding)
 
             guard let requestData = try? JSONEncoder().encode(request) else {
-                observer.onError(NetworkError.encodingError)
+                observer(.failure(NetworkError.encodingError))
                 return Disposables.create()
             }
 
@@ -163,12 +163,11 @@ final class NetworkController: NetworkControlling, Logging {
 
             let completion: (NetworkError?) -> () = { error in
                 if let error = error {
-                    observer.onError(error)
+                    observer(.failure(error))
                     return
                 }
 
-                observer.onNext(())
-                observer.onCompleted()
+                observer(.success(()))
             }
 
             self.networkManager.postKeys(request: request,
@@ -179,42 +178,40 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError> {
-        return Deferred {
-            Future { promise in
+    func stopKeys(padding: Padding) -> Single<()> {
+        return .create { observer in
 
-                let preRequest = PrePostKeysRequest(keys: [], bucketId: Data())
-                let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
+            let preRequest = PrePostKeysRequest(keys: [], bucketId: Data())
+            let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
 
-                let request = PostKeysRequest(keys: [],
-                                              bucketId: Data(),
-                                              padding: generatedPadding)
+            let request = PostKeysRequest(keys: [],
+                                          bucketId: Data(),
+                                          padding: generatedPadding)
 
-                guard let requestData = try? JSONEncoder().encode(request) else {
-                    promise(.failure(.encodingError))
+            guard let requestData = try? JSONEncoder().encode(request) else {
+                observer(.failure(NetworkError.encodingError))
+                return Disposables.create()
+            }
+
+            let signature = self.cryptoUtility
+                .signature(forData: requestData, key: Data())
+                .base64EncodedString()
+
+            let completion: (NetworkError?) -> () = { error in
+                if let error = error {
+                    observer(.failure(error))
                     return
                 }
 
-                let signature = self.cryptoUtility
-                    .signature(forData: requestData, key: Data())
-                    .base64EncodedString()
-
-                let completion: (NetworkError?) -> () = { error in
-                    if let error = error {
-                        promise(.failure(error))
-                        return
-                    }
-
-                    promise(.success(()))
-                }
-
-                self.networkManager.postStopKeys(request: request,
-                                                 signature: signature,
-                                                 completion: completion)
+                observer(.success(()))
             }
+
+            self.networkManager.postStopKeys(request: request,
+                                             signature: signature,
+                                             completion: completion)
+
+            return Disposables.create()
         }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
     }
 
     // MARK: - Private

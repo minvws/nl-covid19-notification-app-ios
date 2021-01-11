@@ -23,8 +23,8 @@ protocol ExposureControlling: AnyObject {
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDeactivated() -> Observable<Bool>
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
+    func getDecoyProbability() -> Single<Float>
+    func getPadding() -> Single<Padding>
 
     // MARK: - Updates
 
@@ -108,6 +108,7 @@ protocol ExposureControlling: AnyObject {
 ///
 /// - Parameter key: Human readable lab confirmation key
 /// - Parameter expiration: Key's expiration date
+/// @mockable
 protocol ExposureConfirmationKey {
     var key: String { get }
     var expiration: Date { get }

@@ -142,12 +142,8 @@ final class ExposureDataControllerTests: TestCase {
         let uploadCalledExpectation = expectation(description: "uploadCalled")
         let uploadOperationMock = UploadDiagnosisKeysDataOperationProtocolMock()
         uploadOperationMock.executeHandler = {
-            return .create { (observer) -> Disposable in
-                uploadCalledExpectation.fulfill()
-                observer.onNext(())
-                observer.onCompleted()
-                return Disposables.create()
-            }
+            uploadCalledExpectation.fulfill()
+            return .just(())
         }
 
         mockOperationProvider.uploadDiagnosisKeysOperationHandler = { diagnosisKeys, labConfirmationKey, padding in

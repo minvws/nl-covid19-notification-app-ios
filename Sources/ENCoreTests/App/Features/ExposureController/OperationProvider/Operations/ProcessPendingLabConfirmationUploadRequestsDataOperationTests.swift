@@ -46,11 +46,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
             receivedKeys = keys
             receivedLabConfirmationKey = labConfirmationKey
 
-            return Observable<()>.create { observer in
-                observer.onNext(())
-                observer.onCompleted()
-                return Disposables.create()
-            }
+            return .just(())
         }
 
         var receivedNewPendingRequests: [PendingLabConfirmationUploadRequest]!
@@ -91,11 +87,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         }
 
         mockNetworkController.postKeysHandler = { keys, labConfirmationKey, padding in
-            return Observable<()>.create { observer in
-                observer.onNext(())
-                observer.onCompleted()
-                return Disposables.create()
-            }
+            .just(())
         }
 
         mockStorageController.storeHandler = { _, _, completion in completion(nil) }
@@ -145,10 +137,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         }
 
         mockNetworkController.postKeysHandler = { _, _, _ in
-            return Observable<()>.create { observer in
-                observer.onError(NetworkError.invalidRequest)
-                return Disposables.create()
-            }
+            .error(NetworkError.invalidRequest)
         }
 
         var receivedRequests: [PendingLabConfirmationUploadRequest]!

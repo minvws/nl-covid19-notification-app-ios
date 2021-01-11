@@ -172,6 +172,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     fileprivate var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
     }
+
+    var randomNumberGenerator: RandomNumberGenerating {
+        RandomNumberGenerator()
+    }
 }
 
 /// Interface describing the builder that builds

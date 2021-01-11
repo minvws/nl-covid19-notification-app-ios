@@ -288,6 +288,7 @@ final class RootRouterTests: XCTestCase {
 
     func test_didEnterForeground_callsRefreshStatus() {
         exposureController.updateWhenRequiredHandler = { .empty() }
+        viewController.dismissHandler = { _, _, completion in completion?() }
 
         // Required to attach main router
         router.start()
@@ -301,6 +302,7 @@ final class RootRouterTests: XCTestCase {
 
     func test_didEnterForeground_callsUpdateWhenRequired() {
         exposureController.updateWhenRequiredHandler = { .empty() }
+        viewController.dismissHandler = { _, _, completion in completion?() }
 
         // Required to attach main router
         router.start()

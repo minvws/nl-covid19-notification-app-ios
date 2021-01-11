@@ -124,11 +124,11 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.isAppDeactivated()
     }
 
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
+    func getDecoyProbability() -> Single<Float> {
         return dataController.getDecoyProbability()
     }
 
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
+    func getPadding() -> Single<Padding> {
         return dataController.getPadding()
     }
 

@@ -57,8 +57,8 @@ protocol ExposureDataControlling: AnyObject {
 
     func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation>
     func isAppDeactivated() -> Observable<Bool>
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
+    func getDecoyProbability() -> Single<Float>
+    func getPadding() -> Single<Padding>
     func getAppointmentPhoneNumber() -> Observable<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
     func requestTreatmentPerspective() -> Observable<TreatmentPerspective>

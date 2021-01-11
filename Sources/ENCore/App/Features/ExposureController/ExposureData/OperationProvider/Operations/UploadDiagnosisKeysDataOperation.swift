@@ -12,7 +12,7 @@ import RxSwift
 
 /// @mockable
 protocol UploadDiagnosisKeysDataOperationProtocol {
-    func execute() -> Observable<()>
+    func execute() -> Single<()>
 }
 
 final class UploadDiagnosisKeysDataOperation: UploadDiagnosisKeysDataOperationProtocol, Logging {
@@ -28,7 +28,7 @@ final class UploadDiagnosisKeysDataOperation: UploadDiagnosisKeysDataOperationPr
         self.padding = padding
     }
 
-    func execute() -> Observable<()> {
+    func execute() -> Single<()> {
         let keys = diagnosisKeys
 
         return networkController
@@ -41,18 +41,17 @@ final class UploadDiagnosisKeysDataOperation: UploadDiagnosisKeysDataOperationPr
                 }
 
                 return self.scheduleRetryWhenFailed(error: exposureDataError, diagnosisKeys: self.diagnosisKeys, labConfirmationKey: self.labConfirmationKey)
-                    .share()
             }
     }
 
     // MARK: - Private
 
-    private func scheduleRetryWhenFailed(error: ExposureDataError, diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()> {
+    private func scheduleRetryWhenFailed(error: ExposureDataError, diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Single<()> {
 
         return .create { [weak self] observer in
 
             guard let strongSelf = self else {
-                observer.onError(ExposureDataError.internalError)
+                observer(.failure(ExposureDataError.internalError))
                 return Disposables.create()
             }
 
@@ -68,8 +67,7 @@ final class UploadDiagnosisKeysDataOperation: UploadDiagnosisKeysDataOperationPr
                 requests.append(retryRequest)
 
                 storageController.store(object: requests, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
-                    observer.onNext(())
-                    observer.onCompleted()
+                    observer(.success(()))
                 }
             }
             return Disposables.create()
