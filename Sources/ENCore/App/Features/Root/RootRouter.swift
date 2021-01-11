@@ -6,7 +6,6 @@
  */
 
 import BackgroundTasks
-import Combine
 import ENFoundation
 import RxSwift
 import UIKit
@@ -75,10 +74,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         super.init(viewController: viewController)
 
         viewController.router = self
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - AppEntryPoint
@@ -468,7 +463,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let callGGDBuilder: CallGGDBuildable
     private var callGGDViewController: ViewControllable?
 
-    private var disposeBag = Set<AnyCancellable>()
     private var rxDisposeBag = DisposeBag()
 
     private let developerMenuBuilder: DeveloperMenuBuildable
