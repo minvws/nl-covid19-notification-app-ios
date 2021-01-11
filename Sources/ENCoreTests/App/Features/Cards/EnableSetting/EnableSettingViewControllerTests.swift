@@ -46,12 +46,12 @@ final class EnableSettingViewControllerTests: TestCase {
         let bluetoothOffState = ExposureState(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))
         let bluetoothOnState = ExposureState(notifiedState: .notNotified, activeState: .active)
 
-        exposureStateStream.exposureState = Just(bluetoothOffState).eraseToAnyPublisher()
+        exposureStateStream.exposureState = .just(bluetoothOffState)
         exposureStateStream.currentExposureState = bluetoothOffState
 
         viewController.viewDidLoad()
 
-        exposureStateStream.exposureState = Just(bluetoothOnState).eraseToAnyPublisher()
+        exposureStateStream.exposureState = .just(bluetoothOnState)
 
         NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 

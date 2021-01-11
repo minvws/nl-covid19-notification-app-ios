@@ -52,7 +52,7 @@ final class BackgroundControllerTests: XCTestCase {
             return Just(()).eraseToAnyPublisher()
         }
         exposureController.updateWhenRequiredHandler = {
-            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            return .empty()
         }
         exposureController.processPendingUploadRequestsHandler = {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
@@ -68,7 +68,7 @@ final class BackgroundControllerTests: XCTestCase {
             Just(()).eraseToAnyPublisher()
         }
         exposureController.updateTreatmentPerspectiveHandler = {
-            Just(TreatmentPerspective.emptyMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(TreatmentPerspective.emptyMessage)
         }
 
         exposureController.lastOpenedNotificationCheckHandler = {
@@ -206,6 +206,30 @@ final class BackgroundControllerTests: XCTestCase {
 
         XCTAssertNotNil(task.completed)
         XCTAssert(task.completed!)
+    }
+
+    func test_performDecoySequenceIfNeeded_shouldNotWorkIfENisInactive() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .inactive(.disabled)
+        }
+
+        controller.performDecoySequenceIfNeeded()
+
+        XCTAssertEqual(exposureController.getDecoyProbabilityCallCount, 0)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
+    }
+
+    func test_performDecoySequenceIfNeeded_shouldNotWorkIfDecoySequenceAlreadyDoneToday() {
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
+
+        dataController.canProcessDecoySequence = false
+
+        controller.performDecoySequenceIfNeeded()
+
+        XCTAssertEqual(exposureController.getDecoyProbabilityCallCount, 0)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
     }
 
     func test_scheduleTasks_shouldScheduleRefreshIfAppIsNotDeactivated() {

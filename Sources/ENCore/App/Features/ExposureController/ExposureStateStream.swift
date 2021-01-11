@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import RxSwift
 
 struct ExposureState: Equatable {
     let notifiedState: ExposureNotificationState
@@ -41,9 +42,9 @@ enum ExposureStateInactiveState: Equatable {
 
 /// @mockable
 protocol ExposureStateStreaming {
-    /// A publisher to subscribe to for getting new state updates
+    /// An observable to subscribe to for getting new state updates
     /// Does not emit the current state immediately
-    var exposureState: AnyPublisher<ExposureState, Never> { get }
+    var exposureState: Observable<ExposureState> { get }
 
     /// Returns the last state, if any was set
     var currentExposureState: ExposureState? { get }
@@ -58,12 +59,11 @@ final class ExposureStateStream: MutableExposureStateStreaming {
 
     // MARK: - ExposureStateStreaming
 
-    var exposureState: AnyPublisher<ExposureState, Never> {
-        return subject
-            .removeDuplicates(by: ==)
+    var exposureState: Observable<ExposureState> {
+        subject
+            .distinctUntilChanged()
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
+            .subscribe(on: MainScheduler.instance)
     }
 
     var currentExposureState: ExposureState?
@@ -73,10 +73,10 @@ final class ExposureStateStream: MutableExposureStateStreaming {
     func update(state: ExposureState) {
         currentExposureState = state
 
-        subject.send(state)
+        subject.onNext(state)
     }
 
     // MARK: - Private
 
-    private let subject = CurrentValueSubject<ExposureState?, Never>(nil)
+    private var subject = BehaviorSubject<ExposureState?>(value: nil)
 }

@@ -124,10 +124,6 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController.isAppDeactivated()
     }
 
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
-        return dataController.getAppRefreshInterval()
-    }
-
     func getDecoyProbability() -> Single<Float> {
         return dataController.getDecoyProbability()
     }
@@ -142,45 +138,53 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
+    /// Temporary combine-only function to perform an update. Added so we don't have to update `updateAndProcessPendingUploads` to RxSwift immediately
+    private func combineUpdateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
+        return Deferred {
+            Future { promise in
+                self.updateWhenRequired().subscribe {
+                    promise(.success(()))
+                } onError: { error in
+                    let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                    promise(.failure(convertedError))
+                }.disposed(by: self.rxDisposeBag)
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    func updateWhenRequired() -> Completable {
 
         logDebug("Update when required started")
 
         if let updateStream = updateStream {
             // already updating
             logDebug("Already updating")
-            return updateStream.share().eraseToAnyPublisher()
+            return updateStream
         }
 
         let updateStream = mutableStateStream
             .exposureState
-            .first()
-            .setFailureType(to: ExposureDataError.self)
-            .flatMap { (state: ExposureState) -> AnyPublisher<(), ExposureDataError> in
+            .take(1)
+            .flatMap { (state: ExposureState) -> Completable in
                 // update when active, or when inactive due to no recent updates
                 guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications), .inactive(.bluetoothOff)].contains(state.activeState) else {
                     self.logDebug("Not updating as inactive")
-                    return Just(())
-                        .setFailureType(to: ExposureDataError.self)
-                        .eraseToAnyPublisher()
+                    return .empty()
                 }
 
                 self.logDebug("Going to fetch and process exposure keysets")
-                return self.fetchAndProcessExposureKeySets()
+                return self.rxFetchAndProcessExposureKeySets()
             }
-            .handleEvents(
-                receiveCompletion: { _ in
-                    self.updateStream = nil
-
-                },
-                receiveCancel: {
-                    self.updateStream = nil
-                }
-            )
-            .eraseToAnyPublisher()
+            .do(onError: { [weak self] _ in
+                self?.updateStream = nil
+            }, onCompleted: { [weak self] in
+                self?.updateStream = nil
+            })
+            .asCompletable()
 
         self.updateStream = updateStream
-        return updateStream.share().eraseToAnyPublisher()
+        return updateStream
     }
 
     func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError> {
@@ -228,6 +232,25 @@ final class ExposureController: ExposureControlling, Logging {
             } else {
                 request()
             }
+        }
+    }
+
+    private func rxFetchAndProcessExposureKeySets() -> Completable {
+        return .create { observer in
+            self.fetchAndProcessExposureKeySets()
+                .sink { completion in
+                    switch completion {
+                    case .finished:
+                        return
+                    case let .failure(error):
+                        observer(.error(error))
+                    }
+                } receiveValue: { value in
+                    observer(.completed)
+                }
+                .store(in: &self.disposeBag)
+
+            return Disposables.create()
         }
     }
 
@@ -291,35 +314,28 @@ final class ExposureController: ExposureControlling, Logging {
 
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
                            completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
-        let receiveCompletion: (Subscribers.Completion<ExposureManagerError>) -> () = { result in
-            if case let .failure(error) = result {
-                let result: ExposureControllerUploadKeysResult
-                switch error {
-                case .notAuthorized:
-                    result = .notAuthorized
-                default:
-                    result = .inactive
-                }
-
-                completion(result)
-            }
-        }
 
         guard let labConfirmationKey = labConfirmationKey as? LabConfirmationKey else {
             completion(.invalidConfirmationKey)
             return
         }
 
-        let receiveValue: ([DiagnosisKey]) -> () = { keys in
-            self.upload(diagnosisKeys: keys,
-                        labConfirmationKey: labConfirmationKey,
-                        completion: completion)
-        }
-
         requestDiagnosisKeys()
-            .sink(receiveCompletion: receiveCompletion,
-                  receiveValue: receiveValue)
-            .store(in: &disposeBag)
+            .subscribe(onSuccess: { keys in
+                self.upload(diagnosisKeys: keys,
+                            labConfirmationKey: labConfirmationKey,
+                            completion: completion)
+            }, onFailure: { error in
+
+                let exposureManagerError = error.asExposureManagerError
+                switch exposureManagerError {
+                case .notAuthorized:
+                    completion(.notAuthorized)
+                default:
+                    completion(.inactive)
+                }
+            })
+            .disposed(by: rxDisposeBag)
     }
 
     func updateLastLaunch() {
@@ -342,7 +358,7 @@ final class ExposureController: ExposureControlling, Logging {
         let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
             self.processExpiredUploadRequests,
             self.processPendingUploadRequests,
-            self.updateWhenRequired
+            self.combineUpdateWhenRequired
         ]
 
         logDebug("Executing update sequence")
@@ -450,10 +466,8 @@ final class ExposureController: ExposureControlling, Logging {
         }.eraseToAnyPublisher()
     }
 
-    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        return self.dataController
-            .requestTreatmentPerspective()
-            .eraseToAnyPublisher()
+    func updateTreatmentPerspective() -> Observable<TreatmentPerspective> {
+        dataController.requestTreatmentPerspective()
     }
 
     func lastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
@@ -568,38 +582,39 @@ final class ExposureController: ExposureControlling, Logging {
 
         mutableStateStream
             .exposureState
-            .flatMap { [weak self] (exposureState) -> AnyPublisher<Bool, Never> in
+            .flatMap { [weak self] (exposureState) -> Single<Bool> in
                 let stateActive = [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
                     && (self?.networkStatusStream.networkReachable == true)
-                return Just(stateActive).eraseToAnyPublisher()
+                return .just(stateActive)
             }
             .filter { $0 }
-            .first()
-            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
-            .flatMap { [weak self] (_) -> AnyPublisher<(), Never> in
+            .take(1)
+            .do(onNext: { [weak self] _ in
+                self?.updateStatusStream()
+            }, onError: { [weak self] _ in
+                self?.updateStatusStream()
+            })
+            .flatMap { [weak self] (_) -> Completable in
                 return self?
-                    .updateWhenRequired()
-                    .replaceError(with: ())
-                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
+                    .updateWhenRequired() ?? .empty()
             }
-            .sink(receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .subscribe(onNext: { _ in })
+            .disposed(by: rxDisposeBag)
 
         networkStatusStream
             .networkReachableStream
-            .publisher
-            .handleEvents(receiveOutput: { [weak self] _ in
+            .do(onNext: { [weak self] _ in
+                self?.updateStatusStream()
+            }, onError: { [weak self] _ in
                 self?.updateStatusStream()
             })
             .filter { $0 } // only update when internet is active
-            .map { [weak self] (_) -> AnyPublisher<(), Never> in
+            .map { [weak self] (_) -> Completable in
                 return self?
-                    .updateWhenRequired()
-                    .replaceError(with: ())
-                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
+                    .updateWhenRequired() ?? .empty()
             }
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .subscribe(onNext: { _ in })
+            .disposed(by: rxDisposeBag)
     }
 
     private func updateStatusStream() {
@@ -663,12 +678,19 @@ final class ExposureController: ExposureControlling, Logging {
         return .notified(exposureReport.date)
     }
 
-    private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {
-        return Future { promise in
-            self.exposureManager.getDiagnosisKeys(completion: promise)
+    private func requestDiagnosisKeys() -> Single<[DiagnosisKey]> {
+        return .create { observer in
+            self.exposureManager.getDiagnosisKeys { result in
+                switch result {
+
+                case let .success(diagnosisKeys):
+                    observer(.success(diagnosisKeys))
+                case let .failure(error):
+                    observer(.failure(error))
+                }
+            }
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
     private func upload(diagnosisKeys keys: [DiagnosisKey],
@@ -689,22 +711,17 @@ final class ExposureController: ExposureControlling, Logging {
             }
         }
 
-        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
-            switch result {
-            case let .failure(error):
-                completion(mapExposureDataError(error))
-            default:
-                break
-            }
-        }
-
         self.dataController
             .upload(diagnosisKeys: keys, labConfirmationKey: labConfirmationKey)
             .map { _ in return ExposureControllerUploadKeysResult.success }
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: receiveCompletion,
-                  receiveValue: completion)
-            .store(in: &disposeBag)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe { result in
+                completion(result)
+            } onError: { error in
+                let exposureDataError = error.asExposureDataError
+                completion(mapExposureDataError(exposureDataError))
+            }
+            .disposed(by: rxDisposeBag)
     }
 
     private func updatePushNotificationState(completition: @escaping () -> ()) {
@@ -746,7 +763,7 @@ final class ExposureController: ExposureControlling, Logging {
     private var isActivated = false
     private var isPushNotificationsEnabled = false
     private let userNotificationCenter: UserNotificationCenter
-    private var updateStream: AnyPublisher<(), ExposureDataError>?
+    private var updateStream: Completable?
     private let currentAppVersion: String
 }
 

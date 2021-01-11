@@ -184,6 +184,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///     y = about 5 minutes (about less, e.g. 250 sec) this param value depends on how long a prioritized task is allowed to run
     func performDecoySequenceIfNeeded() {
 
+        guard self.isExposureManagerActive else {
+            self.logDebug("ExposureManager inactive - Not handling performDecoySequenceIfNeeded")
+            return
+        }
+
         guard self.dataController.canProcessDecoySequence else {
             return self.logDebug("Not running decoy `/register` Process already run today")
         }
@@ -329,22 +334,29 @@ final class BackgroundController: BackgroundControlling, Logging {
     private func updateTreatmentPerspective() -> AnyPublisher<(), Never> {
         logDebug("Background: Update Treatment Perspective Message Function Called")
 
-        return exposureController
-            .updateTreatmentPerspective()
-            .map { _ in return () }
-            .replaceError(with: ())
-            .handleEvents(
-                receiveCompletion: { [weak self] completion in
-                    switch completion {
-                    case .finished:
-                        self?.logDebug("Background: Update Treatment Perspective Message Completed")
-                    case .failure:
-                        self?.logDebug("Background: Update Treatment Perspective Message Failed")
+        return Deferred {
+            Future { promise in
+                self.exposureController
+                    .updateTreatmentPerspective()
+                    .subscribe { [weak self] event in
+
+                        switch event {
+                        case .next:
+                            break
+                        case .error:
+                            self?.logDebug("Background: Update Treatment Perspective Message Failed")
+                        case .completed:
+                            self?.logDebug("Background: Update Treatment Perspective Message Completed")
+                        }
+
+                        // We don't care much about the result of this action so we always return .success here
+                        promise(.success(()))
                     }
-                },
-                receiveCancel: { [weak self] in self?.logDebug("Background: Update Treatment Perspective Message Cancelled") }
-            )
+                    .disposed(by: self.rxDisposeBag)
+            }
             .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 
     private func processLastOpenedNotificationCheck() -> AnyPublisher<(), Never> {

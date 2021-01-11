@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import UIKit
 
 final class EnableSettingViewController: ViewController, UIAdaptivePresentationControllerDelegate {
@@ -27,7 +27,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     }
 
     deinit {
-        exposureStateCancellable = nil
+        exposureStateDisposable = nil
     }
 
     // MARK: - ViewController Lifecycle
@@ -68,26 +68,26 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     private let setting: EnableSetting
     private let exposureStateStream: ExposureStateStreaming
     private let environmentController: EnvironmentControlling
-    private var exposureStateCancellable: AnyCancellable?
+    private var exposureStateDisposable: Disposable?
 
     @objc private func didTapCloseButton() {
         listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
     }
 
     @objc private func checkBluetoothStatus() {
-        guard exposureStateCancellable == nil else {
+        guard exposureStateDisposable == nil else {
             return
         }
 
-        exposureStateCancellable = exposureStateStream
+        exposureStateDisposable = exposureStateStream
             .exposureState
             .filter { (state) -> Bool in
                 state.activeState != .inactive(.bluetoothOff)
             }
             .first()
-            .sink { state in
+            .subscribe(onSuccess: { _ in
                 self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
-            }
+            })
     }
 }
 

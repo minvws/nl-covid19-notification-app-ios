@@ -51,18 +51,17 @@ protocol ExposureDataControlling: AnyObject {
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
     func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
     func requestLabConfirmationKey() -> Observable<LabConfirmationKey>
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()>
 
     // MARK: - Misc
 
     func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation>
     func isAppDeactivated() -> Observable<Bool>
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> Single<Float>
     func getPadding() -> Single<Padding>
     func getAppointmentPhoneNumber() -> Observable<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
-    func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+    func requestTreatmentPerspective() -> Observable<TreatmentPerspective>
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
     var seenAnnouncements: [Announcement] { get set }

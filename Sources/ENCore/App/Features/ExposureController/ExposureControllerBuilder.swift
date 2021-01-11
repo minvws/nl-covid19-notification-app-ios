@@ -23,7 +23,6 @@ protocol ExposureControlling: AnyObject {
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDeactivated() -> Observable<Bool>
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> Single<Float>
     func getPadding() -> Single<Padding>
 
@@ -31,7 +30,7 @@ protocol ExposureControlling: AnyObject {
 
     func refreshStatus()
 
-    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
+    func updateWhenRequired() -> Completable
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Permissions
@@ -88,7 +87,7 @@ protocol ExposureControlling: AnyObject {
     func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never>
 
     /// Updates the treatment perspective message
-    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+    func updateTreatmentPerspective() -> Observable<TreatmentPerspective>
 
     // MARK: - Onboarding
 
