@@ -173,8 +173,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return UNUserNotificationCenter.current()
     }
 
-    var randomizer: RandomizerProtocol {
-        Randomizer()
+    var randomNumberGenerator: RandomNumberGenerating {
+        RandomNumberGenerator()
     }
 }
 

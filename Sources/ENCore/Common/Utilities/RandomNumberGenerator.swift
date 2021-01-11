@@ -8,12 +8,12 @@
 import Foundation
 
 /// @mockable
-protocol RandomizerProtocol {
+protocol RandomNumberGenerating {
     func randomInt(in range: ClosedRange<Int>) -> Int
     func randomFloat(in range: Range<Float>) -> Float
 }
 
-class Randomizer: RandomizerProtocol {
+class RandomNumberGenerator: RandomNumberGenerating {
     func randomInt(in range: ClosedRange<Int>) -> Int {
         Int.random(in: range)
     }

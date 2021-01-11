@@ -43,7 +43,7 @@ final class BackgroundController: BackgroundControlling, Logging {
          userNotificationCenter: UserNotificationCenter,
          taskScheduler: TaskScheduling,
          bundleIdentifier: String,
-         randomizer: RandomizerProtocol) {
+         randomNumberGenerator: RandomNumberGenerating) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
@@ -52,7 +52,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.userNotificationCenter = userNotificationCenter
         self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
-        self.randomizer = randomizer
+        self.randomNumberGenerator = randomNumberGenerator
     }
 
     deinit {
@@ -130,7 +130,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private var rxDisposeBag = DisposeBag()
     private let bundleIdentifier: String
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
-    private let randomizer: RandomizerProtocol
+    private let randomNumberGenerator: RandomNumberGenerating
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
 
@@ -148,7 +148,13 @@ final class BackgroundController: BackgroundControlling, Logging {
                     .stopKeys(padding: padding)
                     .subscribe(on: MainScheduler.instance)
                     .catch { error in
-                        throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
+                        if let exposureDataError = (error as? NetworkError)?.asExposureDataError {
+                            self.logDebug("Decoy `/stopkeys` error: \(exposureDataError)")
+                            throw exposureDataError
+                        } else {
+                            self.logDebug("Decoy `/stopkeys` error: ExposureDataError.internalError")
+                            throw ExposureDataError.internalError
+                        }
                     }
             }
             .subscribe { _ in
@@ -184,7 +190,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         func execute(decoyProbability: Float) {
 
-            let r = self.randomizer.randomFloat(in: configuration.decoyProbabilityRange)
+            let r = self.randomNumberGenerator.randomFloat(in: configuration.decoyProbabilityRange)
             guard r < decoyProbability else {
                 return logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
             }
@@ -196,7 +202,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.logDebug("Decoy `/register` complete")
 
                 let date = currentDate().addingTimeInterval(
-                    TimeInterval(self.randomizer.randomInt(in: 0 ... 900)) // random number between 0 and 15 minutes
+                    TimeInterval(self.randomNumberGenerator.randomInt(in: 0 ... 900)) // random number between 0 and 15 minutes
                 )
                 self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
             }
@@ -204,7 +210,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         exposureController
             .getDecoyProbability()
-            .delay(.seconds(randomizer.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
+            .delay(.seconds(randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
             .subscribe(onSuccess: { decoyProbability in
                 execute(decoyProbability: decoyProbability)
             })
@@ -370,30 +376,30 @@ final class BackgroundController: BackgroundControlling, Logging {
                 func processStopKeys() {
                     self.exposureController
                         .getPadding()
-                        .asObservable()
-                        .delay(.seconds(self.randomizer.randomInt(in: 1 ... 250)), scheduler: MainScheduler.instance)
+                        .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... 250)), scheduler: MainScheduler.instance)
                         .flatMap { padding in
                             self.networkController
                                 .stopKeys(padding: padding)
+                                .subscribe(on: MainScheduler.instance)
                                 .catch { error in
                                     throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
                                 }
                         }
-                        .subscribe(onError: { _ in
+                        .subscribe { _ in
                             // Note: We ignore the response
                             self.logDebug("Decoy `/stopkeys` complete")
                             return promise(.success(()))
-                        }, onCompleted: {
+                        } onFailure: { _ in
                             // Note: We ignore the response
                             self.logDebug("Decoy `/stopkeys` complete")
                             return promise(.success(()))
-                        })
+                        }
                         .disposed(by: self.rxDisposeBag)
                 }
 
                 func processDecoyRegister(decoyProbability: Float) {
 
-                    let r = self.randomizer.randomFloat(in: self.configuration.decoyProbabilityRange)
+                    let r = self.randomNumberGenerator.randomFloat(in: self.configuration.decoyProbabilityRange)
                     guard r < decoyProbability else {
                         self.logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
                         return promise(.success(()))
@@ -409,7 +415,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 self.exposureController
                     .getDecoyProbability()
-                    .delay(.seconds(self.randomizer.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance)
+                    .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance)
                     .subscribe(onSuccess: { decoyProbability in
                         processDecoyRegister(decoyProbability: decoyProbability)
                     })
