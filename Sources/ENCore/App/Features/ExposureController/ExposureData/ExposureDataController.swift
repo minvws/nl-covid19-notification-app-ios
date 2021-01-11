@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 
 enum Announcement: String, Codable {
     case interopAnnouncement
@@ -62,7 +63,6 @@ struct ExposureDataStorageKey {
 
 final class ExposureDataController: ExposureDataControlling, Logging {
 
-    private var disposeBag = Set<AnyCancellable>()
     private(set) var isFirstRun: Bool = false
 
     init(operationProvider: ExposureDataOperationProvider,
@@ -79,29 +79,51 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - ExposureDataControlling
 
     func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        return requestApplicationManifest()
-            .flatMap { _ in
-                self.operationProvider
-                    .requestTreatmentPerspectiveDataOperation
-                    .execute()
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationManifest()
+                    .flatMap { _ in
+                        self.operationProvider
+                            .requestTreatmentPerspectiveDataOperation
+                            .execute()
+                    }
+                    .subscribe(onNext: { treatmentPerspective in
+                        promise(.success(treatmentPerspective))
+                    }, onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    })
+                    .disposed(by: self.rxDisposeBag)
             }
-            .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .flatMap { _ in
-                self.fetchAndStoreExposureKeySets().catch { _ in
-                    self.processStoredExposureKeySets(exposureManager: exposureManager)
-                }
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationConfiguration()
+                    .flatMap { _ in
+                        self.fetchAndStoreExposureKeySets().catch { _ in
+                            self.processStoredExposureKeySets(exposureManager: exposureManager)
+                        }
+                    }
+                    .flatMap { _ in
+                        self.processStoredExposureKeySets(exposureManager: exposureManager)
+                    }
+                    .subscribe(onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        promise(.failure(convertedError))
+                    }, onCompleted: {
+                        promise(.success(()))
+                    })
+                    .disposed(by: self.rxDisposeBag)
             }
-            .flatMap { _ in
-                self.processStoredExposureKeySets(exposureManager: exposureManager)
-            }
-            .share()
-            .eraseToAnyPublisher()
+        }
+        .share()
+        .eraseToAnyPublisher()
     }
 
     var lastExposure: ExposureReport? {
@@ -151,75 +173,86 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return !Calendar.current.isDateInToday(date)
     }
 
-    func removeLastExposure() -> AnyPublisher<(), Never> {
-        return Future { promise in
+    func removeLastExposure() -> Completable {
+        return .create { observer in
             self.storageController.removeData(for: ExposureDataStorageKey.lastExposureReport) { _ in
-                promise(.success(()))
+                observer(.completed)
             }
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
-    func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
+    private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Observable<()> {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
-            .flatMap { (configuration) -> AnyPublisher<(), ExposureDataError> in
-                guard let operation = self.operationProvider
-                    .processExposureKeySetsOperation(exposureManager: exposureManager,
-                                                     configuration: configuration) else {
-                    self.logDebug("ExposureDataController: Failed to create processExposureKeySetsOperation")
-                    return Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
-                }
-
-                return operation.execute()
+            .flatMap { (configuration) -> Observable<()> in
+                return self.operationProvider
+                    .processExposureKeySetsOperation(exposureManager: exposureManager, configuration: configuration)
+                    .execute()
             }
-            .eraseToAnyPublisher()
     }
 
-    func fetchAndStoreExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
+    private func fetchAndStoreExposureKeySets() -> Observable<()> {
         self.logDebug("ExposureDataController: fetchAndStoreExposureKeySets")
-        return requestApplicationManifest()
+        return rxRequestApplicationManifest()
             .map { (manifest: ApplicationManifest) -> [String] in manifest.exposureKeySetsIdentifiers }
             .flatMap { exposureKeySetsIdentifiers in
                 self.operationProvider
                     .requestExposureKeySetsOperation(identifiers: exposureKeySetsIdentifiers)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - LabFlow
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
-            }.flatMap { (padding: Padding) in
-                return self.operationProvider
-                    .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
-                    .execute()
-            }.eraseToAnyPublisher()
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationConfiguration()
+                    .map { (configuration: ApplicationConfiguration) in
+                        Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
+                    }.flatMap { (padding: Padding) in
+                        return self.operationProvider
+                            .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
+                            .execute()
+                    }
+                    .subscribe { result in
+                        return promise(.success(result))
+                    } onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    }.disposed(by: self.rxDisposeBag)
+            }
+        }.eraseToAnyPublisher()
     }
 
     func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError> {
-        return operationProvider
-            .expiredLabConfirmationNotificationOperation()
-            .execute()
+        return Deferred {
+            Future { promise in
+                self.operationProvider
+                    .expiredLabConfirmationNotificationOperation()
+                    .execute()
+                    .subscribe { manifest in
+                        return promise(.success(manifest))
+                    } onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    }.disposed(by: self.rxDisposeBag)
+            }
+        }.eraseToAnyPublisher()
     }
 
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        return requestApplicationConfiguration()
+    func requestLabConfirmationKey() -> Observable<LabConfirmationKey> {
+        rxRequestApplicationConfiguration()
             .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize,
-                        maximumRequestSize: configuration.requestMaximumSize)
+                return Padding(minimumRequestSize: configuration.requestMinimumSize,
+                               maximumRequestSize: configuration.requestMaximumSize)
             }
             .flatMap { (padding: Padding) in
-                return self.operationProvider
+                self.operationProvider
                     .requestLabConfirmationKeyOperation(padding: padding)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
@@ -228,32 +261,42 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                 Padding(minimumRequestSize: configuration.requestMinimumSize,
                         maximumRequestSize: configuration.requestMaximumSize)
             }
-            .flatMap { (padding: Padding) in
-                return self.operationProvider
-                    .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
-                    .execute()
+            .flatMap { padding in
+                return Deferred {
+                    Future { promise in
+                        self.operationProvider
+                            .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
+                            .execute()
+                            .subscribe { _ in
+                                return promise(.success(()))
+                            } onError: { error in
+                                let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                                return promise(.failure(convertedError))
+                            }.disposed(by: self.rxDisposeBag)
+                    }
+                }.eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }
 
     // MARK: - Misc
 
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError> {
-        requestApplicationConfiguration()
+    func isAppDeactivated() -> Observable<Bool> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decativated
             }
-            .eraseToAnyPublisher()
     }
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {
-        requestApplicationConfiguration()
+    func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
-                return ExposureDataAppVersionInformation(minimumVersion: applicationConfiguration.minimumVersion,
-                                                         minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
-                                                         appStoreURL: applicationConfiguration.appStoreURL)
+                return ExposureDataAppVersionInformation(
+                    minimumVersion: applicationConfiguration.minimumVersion,
+                    minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
+                    appStoreURL: applicationConfiguration.appStoreURL
+                )
             }
-            .eraseToAnyPublisher()
     }
 
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
@@ -307,12 +350,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
-    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError> {
-        requestApplicationConfiguration()
+    func getAppointmentPhoneNumber() -> Observable<String> {
+        rxRequestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.appointmentPhoneNumber
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private
@@ -339,31 +381,63 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return requestApplicationManifest()
-            .flatMap { manifest in
-                return self
-                    .operationProvider
-                    .requestAppConfigurationOperation(identifier: manifest.appConfigurationIdentifier)
+        return Deferred {
+            Future { promise in
+                self.rxRequestApplicationManifest()
+                    .flatMap {
+                        self.operationProvider
+                            .requestAppConfigurationOperation(identifier: $0.appConfigurationIdentifier)
+                            .execute()
+                    }
+                    .subscribe(onNext: { appConfiguration in
+                        promise(.success(appConfiguration))
+                    }, onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    })
+                    .disposed(by: self.rxDisposeBag)
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private func rxRequestApplicationConfiguration() -> Observable<ApplicationConfiguration> {
+        return self.rxRequestApplicationManifest()
+            .flatMap {
+                self.operationProvider
+                    .requestAppConfigurationOperation(identifier: $0.appConfigurationIdentifier)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     private func requestApplicationManifest() -> AnyPublisher<ApplicationManifest, ExposureDataError> {
-        return operationProvider
-            .requestManifestOperation
-            .execute()
+        return Deferred {
+            Future { promise in
+                self.operationProvider
+                    .requestManifestOperation
+                    .execute()
+                    .subscribe { manifest in
+                        return promise(.success(manifest))
+                    } onError: { error in
+                        let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                        return promise(.failure(convertedError))
+                    }.disposed(by: self.rxDisposeBag)
+            }
+        }.eraseToAnyPublisher()
     }
 
-    private func requestExposureRiskConfiguration() -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
-        return requestApplicationManifest()
+    private func rxRequestApplicationManifest() -> Observable<ApplicationManifest> {
+        return operationProvider.requestManifestOperation.execute()
+    }
+
+    private func requestExposureRiskConfiguration() -> Observable<ExposureConfiguration> {
+        rxRequestApplicationManifest()
             .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
             .flatMap { identifier in
                 self.operationProvider
                     .requestExposureConfigurationOperation(identifier: identifier)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Version Management
@@ -406,4 +480,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
     private let environmentController: EnvironmentControlling
+    private let rxDisposeBag = DisposeBag()
+    private var disposeBag = Set<AnyCancellable>()
 }

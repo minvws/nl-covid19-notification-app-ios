@@ -199,6 +199,81 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
     }
 
+    func test_scheduleTasks_shouldScheduleRefreshIfAppIsNotDeactivated() {
+
+        let cancelTaskExpectation = expectation(description: "cancelTask")
+        let submitTaskExpectation = expectation(description: "submitTask")
+
+        exposureController.isAppDeactivatedHandler = {
+            .just(false)
+        }
+
+        taskScheduler.cancelHandler = { identifier in
+            XCTAssertEqual(identifier, "nl.rijksoverheid.en.exposure-notification")
+            cancelTaskExpectation.fulfill()
+        }
+
+        taskScheduler.submitHandler = { bgTaskRequest in
+            XCTAssertEqual(bgTaskRequest.identifier, "nl.rijksoverheid.en.exposure-notification")
+            submitTaskExpectation.fulfill()
+        }
+
+        controller.scheduleTasks()
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(taskScheduler.cancelCallCount, 1)
+        XCTAssertEqual(taskScheduler.submitCallCount, 1)
+    }
+
+    func test_scheduleTasks_shouldNotScheduleRefreshIfAppIsDeactivated() {
+
+        let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
+
+        exposureController.isAppDeactivatedHandler = {
+            .just(true)
+        }
+
+        taskScheduler.cancelAllTaskRequestsHandler = {
+            cancelAllTaskExpectation.fulfill()
+        }
+
+        controller.scheduleTasks()
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(taskScheduler.cancelAllTaskRequestsCallCount, 1)
+        XCTAssertEqual(taskScheduler.cancelCallCount, 0)
+        XCTAssertEqual(taskScheduler.submitCallCount, 0)
+    }
+
+    func test_scheduleTasks_shouldScheduleRefreshIfAppDeactivatedCannotBeDetermined() {
+
+        let cancelTaskExpectation = expectation(description: "cancelTask")
+        let submitTaskExpectation = expectation(description: "submitTask")
+
+        exposureController.isAppDeactivatedHandler = {
+            .error(ExposureDataError.networkUnreachable)
+        }
+
+        taskScheduler.cancelHandler = { identifier in
+            XCTAssertEqual(identifier, "nl.rijksoverheid.en.exposure-notification")
+            cancelTaskExpectation.fulfill()
+        }
+
+        taskScheduler.submitHandler = { bgTaskRequest in
+            XCTAssertEqual(bgTaskRequest.identifier, "nl.rijksoverheid.en.exposure-notification")
+            submitTaskExpectation.fulfill()
+        }
+
+        controller.scheduleTasks()
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(taskScheduler.cancelCallCount, 1)
+        XCTAssertEqual(taskScheduler.submitCallCount, 1)
+    }
+
     // MARK: - Private
 
     private var labConfirmationKey: LabConfirmationKey {

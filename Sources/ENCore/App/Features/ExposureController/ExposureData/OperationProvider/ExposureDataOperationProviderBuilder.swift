@@ -17,21 +17,21 @@ protocol ExposureDataOperation {
 /// @mockable
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation?
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol
 
-    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol
     func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
-    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
-    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
 
-    var requestManifestOperation: RequestAppManifestDataOperation { get }
-    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperation { get }
+    var requestManifestOperation: RequestAppManifestDataOperationProtocol { get }
+    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperationProtocol { get }
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
-                                      padding: Padding) -> UploadDiagnosisKeysDataOperation
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperationProtocol
 }
 
 protocol ExposureDataOperationProviderBuildable {

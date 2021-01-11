@@ -8,9 +8,12 @@
 import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class ExposureDataControllerTests: TestCase {
+
+    private var disposeBag = DisposeBag()
 
     func test_firstRun_erasesStorage() {
 
@@ -85,4 +88,185 @@ final class ExposureDataControllerTests: TestCase {
     }
 
     func test_subsequentRun_doesNotEraseStorage() {}
+
+    // MARK: - requestTreatmentPerspective
+
+    func test_requestTreatmentPerspective_shouldRequestApplicationManifest() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        let streamExpectation = expectation(description: "stream")
+
+        let manifestOperationCalledExpectation = expectation(description: "manifestOperationCalled")
+        mockManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
+
+        let treatmentPerspectiveOperationCalled = expectation(description: "treatmentPerspectiveOperationCalled")
+        let treatmentPerspectiveOperationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
+        treatmentPerspectiveOperationMock.executeHandler = {
+            treatmentPerspectiveOperationCalled.fulfill()
+            return .just(TreatmentPerspective.testData())
+        }
+        mockOperationProvider.requestTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
+
+        sut.requestTreatmentPerspective()
+            .sink(receiveCompletion: { _ in
+                streamExpectation.fulfill()
+            }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    // MARK: - upload
+
+    func test_upload_shouldRequestApplicationManifestAndAppConfiguration() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        let streamExpectation = expectation(description: "stream")
+
+        let manifestOperationCalledExpectation = expectation(description: "manifestOperationCalled")
+        mockManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
+
+        let configurationOperationCalledExpectation = expectation(description: "configurationOperationCalled")
+        mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: configurationOperationCalledExpectation)
+
+        let uploadCalledExpectation = expectation(description: "uploadCalled")
+        let uploadOperationMock = UploadDiagnosisKeysDataOperationProtocolMock()
+        uploadOperationMock.executeHandler = {
+            return .create { (observer) -> Disposable in
+                uploadCalledExpectation.fulfill()
+                observer.onNext(())
+                observer.onCompleted()
+                return Disposables.create()
+            }
+        }
+
+        mockOperationProvider.uploadDiagnosisKeysOperationHandler = { diagnosisKeys, labConfirmationKey, padding in
+            uploadOperationMock
+        }
+
+        let mockLabConfirmationKey = LabConfirmationKey(identifier: "", bucketIdentifier: "".data(using: .utf8)!, confirmationKey: "".data(using: .utf8)!, validUntil: Date().addingTimeInterval(20000))
+
+        sut.upload(diagnosisKeys: [], labConfirmationKey: mockLabConfirmationKey)
+            .sink(receiveCompletion: { _ in
+                streamExpectation.fulfill()
+            }, receiveValue: { _ in })
+            .disposeOnTearDown(of: self)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    // MARK: - removeLastExposure
+
+    func test_removeLastExposure_shouldCallStorageController() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        let removeDataExpectation = expectation(description: "removeData")
+
+        mockStorageController.removeDataHandler = { key, completion in
+            XCTAssertTrue((key as? CodableStorageKey<ExposureReport>)?.asString == ExposureDataStorageKey.lastExposureReport.asString)
+            removeDataExpectation.fulfill()
+        }
+
+        // Initialisation of ExposureDataController apparently already removes some data, so the starting situation is not completely clean
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
+
+        sut.removeLastExposure()
+            .subscribe()
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 4)
+    }
+
+    func test_getAppointmentPhoneNumber() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        let subscriptionExpectation = expectation(description: "subscription")
+
+        mockManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
+
+        sut.getAppointmentPhoneNumber()
+            .subscribe(onNext: { phoneNumber in
+                XCTAssertEqual(phoneNumber, "appointmentPhoneNumber")
+                subscriptionExpectation.fulfill()
+            })
+            .dispose()
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    // MARK: - Private Helper Functions
+
+    private func mockManifestOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                       withTestData testData: ApplicationManifest,
+                                       andExpectation expectation: XCTestExpectation? = nil) {
+        let operationMock = RequestAppManifestDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            expectation?.fulfill()
+            return .just(testData)
+        }
+        mockOperationProvider.requestManifestOperation = operationMock
+    }
+
+    private func mockApplicationConfigurationOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                                       withTestData testData: ApplicationConfiguration,
+                                                       andExpectation expectation: XCTestExpectation? = nil) {
+        let operationMock = RequestAppConfigurationDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            expectation?.fulfill()
+            return .just(testData)
+        }
+        mockOperationProvider.requestAppConfigurationOperationHandler = { identifier in operationMock }
+    }
+
+    private func mockTreatmentPerspectiveOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                                   withTestData testData: TreatmentPerspective,
+                                                   andExpectation expectation: XCTestExpectation? = nil) {
+        let operationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            expectation?.fulfill()
+            return .just(testData)
+        }
+        mockOperationProvider.requestTreatmentPerspectiveDataOperation = operationMock
+    }
+}
+
+private extension TreatmentPerspective {
+    static func testData(manifestRefreshFrequency: Int = 3600) -> TreatmentPerspective {
+        TreatmentPerspective(resources: ["nl": ["key": "value"]], guidance: .init(quarantineDays: 2, layout: []))
+    }
+}
+
+private extension ApplicationManifest {
+    static func testData(creationDate: Date = Date(), appConfigurationIdentifier: String = "appConfigurationIdentifier") -> ApplicationManifest {
+        ApplicationManifest(exposureKeySetsIdentifiers: [], riskCalculationParametersIdentifier: "riskCalculationParametersIdentifier", appConfigurationIdentifier: appConfigurationIdentifier, creationDate: creationDate, resourceBundle: "resourceBundle")
+    }
+}
+
+private extension ApplicationConfiguration {
+    static func testData(manifestRefreshFrequency: Int = 3600) -> ApplicationConfiguration {
+        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: Date(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber")
+    }
 }

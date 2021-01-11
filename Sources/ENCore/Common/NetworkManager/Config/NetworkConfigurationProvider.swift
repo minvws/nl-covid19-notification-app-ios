@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
 
+/// @mockable
 protocol NetworkConfigurationProvider {
     var configuration: NetworkConfiguration { get }
 }

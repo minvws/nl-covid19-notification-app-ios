@@ -5,10 +5,16 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 
-final class VerifySignatureResponseHandler: NetworkResponseHandler {
+/// @mockable
+protocol VerifySignatureResponseHandlerProtocol {
+    func isApplicable(for response: URLResponse, input: URL) -> Bool
+    func process(response: URLResponse, input: URL) -> Observable<URL>
+}
+
+final class VerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol {
     private let signatureFilename = "content.sig"
     private let contentFilename = "content.bin"
     private let tekFilename = "export.bin"
@@ -17,15 +23,15 @@ final class VerifySignatureResponseHandler: NetworkResponseHandler {
         self.cryptoUtility = cryptoUtility
     }
 
-    // MARK: - NetworkResponseHandler
+    // MARK: - RxVerifySignatureResponseHandlerProtocol
 
     func isApplicable(for response: URLResponse, input: URL) -> Bool {
         return true
     }
 
-    func process(response: URLResponse, input: URL) -> AnyPublisher<URL, NetworkResponseHandleError> {
+    func process(response: URLResponse, input: URL) -> Observable<URL> {
         guard let fileURLs = getFileURLs(from: input) else {
-            return Fail(error: .invalidSignature).eraseToAnyPublisher()
+            return .error(NetworkResponseHandleError.invalidSignature)
         }
 
         let (signatureFileUrl, binaryFileUrl) = fileURLs
@@ -33,17 +39,23 @@ final class VerifySignatureResponseHandler: NetworkResponseHandler {
         guard
             let signatureData = try? Data(contentsOf: signatureFileUrl),
             let binaryData = try? Data(contentsOf: binaryFileUrl) else {
-            return Fail(error: .invalidSignature).eraseToAnyPublisher()
+            return .error(NetworkResponseHandleError.invalidSignature)
         }
 
-        return Future { promise in
+        return .create { observer in
             self.cryptoUtility.validate(data: binaryData,
                                         signature: signatureData) { isValid in
-                promise(isValid ? Result.success(input) : Result.failure(.invalidSignature))
+
+                if isValid {
+                    observer.onNext(input)
+                    observer.onCompleted()
+                } else {
+                    observer.onError(NetworkResponseHandleError.invalidSignature)
+                }
             }
+
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
     // MARK: - Private

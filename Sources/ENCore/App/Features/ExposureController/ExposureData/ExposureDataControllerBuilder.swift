@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import RxSwift
 
 enum ExposureDataError: Error, Equatable {
     case networkUnreachable
@@ -39,7 +40,7 @@ protocol ExposureDataControlling: AnyObject {
     func setLastDecoyProcessDate(_ date: Date)
     var canProcessDecoySequence: Bool { get }
 
-    func removeLastExposure() -> AnyPublisher<(), Never>
+    func removeLastExposure() -> Completable
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
     func setLastENStatusCheckDate(_ date: Date)
     func setLastAppLaunchDate(_ date: Date)
@@ -49,17 +50,17 @@ protocol ExposureDataControlling: AnyObject {
 
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
     func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
+    func requestLabConfirmationKey() -> Observable<LabConfirmationKey>
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Misc
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError>
+    func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation>
+    func isAppDeactivated() -> Observable<Bool>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
     func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
     func getPadding() -> AnyPublisher<Padding, ExposureDataError>
-    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError>
+    func getAppointmentPhoneNumber() -> Observable<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
     func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
     var isFirstRun: Bool { get }

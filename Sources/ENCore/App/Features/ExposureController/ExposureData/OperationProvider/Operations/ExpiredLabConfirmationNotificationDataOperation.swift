@@ -8,9 +8,15 @@
 import Combine
 import ENFoundation
 import Foundation
+import RxCombine
+import RxSwift
 import UserNotifications
 
-final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperation, Logging {
+protocol ExpiredLabConfirmationNotificationDataOperationProtocol {
+    func execute() -> Observable<()>
+}
+
+final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmationNotificationDataOperationProtocol, Logging {
 
     init(storageController: StorageControlling,
          userNotificationCenter: UserNotificationCenter) {
@@ -20,7 +26,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<(), ExposureDataError> {
+    func execute() -> Observable<()> {
         let expiredRequests = getPendingRequests()
             .filter { $0.isExpired }
 
@@ -30,10 +36,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
         logDebug("Expired requests: \(expiredRequests)")
 
-        return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests)
-            .setFailureType(to: ExposureDataError.self)
-            .share()
-            .eraseToAnyPublisher()
+        return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests).share()
     }
 
     // MARK: - Private
@@ -42,29 +45,33 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
     }
 
-    private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { promise in
-                self.storageController.requestExclusiveAccess { storageController in
+    private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> Observable<()> {
+        return .create { [weak self] observer in
 
-                    // get stored pending requests
-                    let previousRequests = storageController
-                        .retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
+            guard let strongSelf = self else {
+                observer.onError(ExposureDataError.internalError)
+                return Disposables.create()
+            }
 
-                    let requestsToStore = previousRequests.filter { request in
-                        expiredRequests.contains(request) == false
-                    }
+            strongSelf.storageController.requestExclusiveAccess { storageController in
 
-                    self.logDebug("Storing new pending requests: \(requestsToStore)")
+                // get stored pending requests
+                let previousRequests = storageController
+                    .retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
 
-                    // store back
-                    storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
-                        promise(.success(()))
-                    }
+                let requestsToStore = previousRequests.filter { request in
+                    expiredRequests.contains(request) == false
+                }
+
+                strongSelf.logDebug("Storing new pending requests: \(requestsToStore)")
+
+                // store back
+                storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
+                    observer.onCompleted()
                 }
             }
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     private func notifyUser() {
@@ -115,6 +122,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
     private let storageController: StorageControlling
     private let userNotificationCenter: UserNotificationCenter
+    private let rxDisposeBag = DisposeBag()
 }
 
 extension PendingLabConfirmationUploadRequest {

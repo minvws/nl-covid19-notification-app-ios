@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import CryptoKit
 import Foundation
 import Security
 
@@ -30,8 +29,8 @@ struct Certificate {
     }
 
     var fingerprint: Fingerprint? {
-        let data = SecCertificateCopyData(secCertificate)
-        return Data(SHA256.hash(data: data as Data)).base64EncodedString()
+        let data = SecCertificateCopyData(secCertificate) as Data
+        return data.sha256.base64EncodedString()
     }
 }
 

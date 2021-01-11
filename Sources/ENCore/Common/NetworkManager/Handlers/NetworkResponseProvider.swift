@@ -32,15 +32,15 @@ final class NetworkResponseHandlerProviderImpl: NetworkResponseHandlerProvider {
 
     // MARK: - NetworkResponseHandlerProvider
 
-    var readFromDiskResponseHandler: ReadFromDiskResponseHandler {
-        return ReadFromDiskResponseHandler()
+    var readFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocol {
+        return ReadFromDiskResponseHandler(fileManager: FileManager.default)
     }
 
-    var unzipNetworkResponseHandler: UnzipNetworkResponseHandler {
-        return UnzipNetworkResponseHandler()
+    var unzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol {
+        return UnzipNetworkResponseHandler(fileManager: FileManager.default)
     }
 
-    var verifySignatureResponseHandler: VerifySignatureResponseHandler {
+    var verifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol {
         return VerifySignatureResponseHandler(cryptoUtility: cryptoUtility)
     }
 

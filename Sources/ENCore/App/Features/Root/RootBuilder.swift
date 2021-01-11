@@ -150,10 +150,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableNetworkStatusStream
     }
 
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return mutableBluetoothStateStream
-    }
-
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         return InterfaceOrientationStream()
     }
@@ -164,12 +160,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var mutableExposureStateStream: MutableExposureStateStreaming = ExposureStateStream()
 
     /// Mutable stream for publishing PushNotifcaiton objects to
-    lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificaionStream()
+    lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificationStream()
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
-
-    lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
 
     var messageManager: MessageManaging {
         return MessageManager(storageController: storageController, theme: theme)
@@ -220,6 +214,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,
+                          mutableNetworkStatusStream: dependencyProvider.mutableNetworkStatusStream,
                           developerMenuBuilder: dependencyProvider.developerMenuBuilder,
                           mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
                           networkController: dependencyProvider.networkController,

@@ -8,6 +8,7 @@
 import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import UIKit
 
 private struct ExposureKeySetDetectionResult {
@@ -33,8 +34,11 @@ struct ExposureReport: Codable {
     }
 
 #endif
+protocol ProcessExposureKeySetsDataOperationProtocol {
+    func execute() -> Observable<()>
+}
 
-final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging {
+final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOperationProtocol, Logging {
     // the detectExposures API is limited to 15 keysets or calls a day
     // https://developer.apple.com/documentation/exposurenotification/enmanager/3586331-detectexposures
     private let maximumDailyOfKeySetsToProcess = 15 // iOS 13.5
@@ -48,7 +52,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          exposureManager: ExposureManaging,
-         exposureKeySetsStorageUrl: URL,
+         localPathProvider: LocalPathProviding,
          configuration: ExposureConfiguration,
          userNotificationCenter: UserNotificationCenter,
          application: ApplicationControlling,
@@ -57,7 +61,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
-        self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
+        self.localPathProvider = localPathProvider
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
         self.application = application
@@ -65,8 +69,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         self.environmentController = environmentController
     }
 
-    func execute() -> AnyPublisher<(), ExposureDataError> {
+    func execute() -> Observable<()> {
         self.logDebug("--- START PROCESSING KEYSETS ---")
+
+        guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
+            self.logDebug("ExposureDataOperationProviderImpl: localPathProvider failed to find path for exposure keysets")
+            return .error(ExposureDataError.internalError)
+        }
 
         // get all keySetHolders that have not been processed before
         let exposureKeySetHolders = getStoredKeySetsHolders()
@@ -81,7 +90,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         }
 
         // Batch detect exposures
-        return detectExposures(for: exposureKeySetHolders)
+        return detectExposures(for: exposureKeySetHolders, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
             // persist keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
@@ -93,15 +102,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
-            .handleEvents(receiveOutput: removeBlobs(forResult:))
-            // ignore result
-            .map { _ in () }
-            .handleEvents(
-                receiveCompletion: { _ in self.logDebug("--- END PROCESSING KEYSETS ---") },
-                receiveCancel: { self.logDebug("--- PROCESSING KEYSETS CANCELLED ---") }
-            )
-            .share()
-            .eraseToAnyPublisher()
+            .flatMap {
+                self.removeBlobs(forResult: $0, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
+            }
+            .do(onCompleted: {
+                self.logDebug("--- END PROCESSING KEYSETS ---")
+            })
     }
 
     // MARK: - Private
@@ -112,17 +118,17 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     /// Verifies whether the KeySetHolder URLs point to valid files
-    private func verifyLocalFileUrl(forKeySetsHolder keySetHolder: ExposureKeySetHolder) -> Bool {
+    private func verifyLocalFileUrl(forKeySetsHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> Bool {
         var isDirectory = ObjCBool(booleanLiteral: false)
 
         // verify whether sig and bin files are present
-        guard let sigPath = signatureFileUrl(forKeySetHolder: keySetHolder)?.path,
+        guard let sigPath = signatureFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)?.path,
             fileManager.fileExists(atPath: sigPath,
                                    isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
         }
 
-        guard let binPath = binaryFileUrl(forKeySetHolder: keySetHolder)?.path,
+        guard let binPath = binaryFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)?.path,
             fileManager.fileExists(atPath: binPath,
                                    isDirectory: &isDirectory), isDirectory.boolValue == false else {
             return false
@@ -134,10 +140,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     /// Returns ExposureKeySetDetectionResult in case of a success, or in case of an error that's
     /// not related to the framework's inactiveness. When an error is thrown from here exposure detection
     /// should be stopped until the user enables the framework
-    private func detectExposures(for keySetHolders: [ExposureKeySetHolder]) -> AnyPublisher<ExposureDetectionResult, ExposureDataError> {
+    private func detectExposures(for keySetHolders: [ExposureKeySetHolder], exposureKeySetsStorageUrl: URL) -> Observable<ExposureDetectionResult> {
 
         // filter out keysets with missing local files
-        let validKeySetHolders = keySetHolders.filter(self.verifyLocalFileUrl(forKeySetsHolder:))
+        let validKeySetHolders = keySetHolders.filter {
+            self.verifyLocalFileUrl(forKeySetsHolder: $0, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
+        }
         let invalidKeySetHolders = keySetHolders.filter { keySetHolder in
             !validKeySetHolders.contains { $0.identifier == keySetHolder.identifier }
         }
@@ -170,15 +178,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                                      isValid: true)
             }
 
-            return Just(ExposureDetectionResult(keySetDetectionResults: validKeySetHolderResults + invalidKeySetHolderResults,
-                                                exposureSummary: nil,
-                                                exposureReport: nil))
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just(ExposureDetectionResult(keySetDetectionResults: validKeySetHolderResults + invalidKeySetHolderResults,
+                                                 exposureSummary: nil,
+                                                 exposureReport: nil))
         }
 
         let diagnosisKeyUrls = keySetHoldersToProcess.flatMap { (keySetHolder) -> [URL] in
-            if let sigFile = signatureFileUrl(forKeySetHolder: keySetHolder), let binFile = binaryFileUrl(forKeySetHolder: keySetHolder) {
+            if let sigFile = signatureFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl), let binFile = binaryFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl) {
                 return [sigFile, binFile]
             }
             return []
@@ -186,122 +192,142 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
         logDebug("Detect exposures for \(keySetHoldersToProcess.count) keySets: \(keySetHoldersToProcess.map { $0.identifier })")
 
-        let executeExposureDetection: AnyPublisher<ExposureDetectionResult, ExposureDataError> = Deferred {
-            Future { promise in
+        return updateNumberOfApiCallsMade(inBackground: applicationIsInBackground)
+            .flatMap { _ in self.detectExposures(diagnosisKeyUrls: diagnosisKeyUrls, invalidKeySetHolderResults: invalidKeySetHolderResults, keySetHoldersToProcess: keySetHoldersToProcess) }
+    }
 
-                self.logDebug("Detecting exposures for \(diagnosisKeyUrls.count) diagnosisKeyUrls")
+    private func detectExposures(diagnosisKeyUrls: [URL],
+                                 invalidKeySetHolderResults: [ExposureKeySetDetectionResult],
+                                 keySetHoldersToProcess: [ExposureKeySetHolder]) -> Observable<ExposureDetectionResult> {
 
-                self.exposureManager.detectExposures(configuration: self.configuration,
-                                                     diagnosisKeyURLs: diagnosisKeyUrls) { result in
-                    switch result {
-                    case let .success(summary):
-                        self.logDebug("Successfully detected exposures: \(String(describing: summary))")
+        return .create { observer in
 
+            self.logDebug("Detecting exposures for \(diagnosisKeyUrls.count) diagnosisKeyUrls")
+
+            self.exposureManager.detectExposures(configuration: self.configuration,
+                                                 diagnosisKeyURLs: diagnosisKeyUrls) { result in
+                switch result {
+                case let .success(summary):
+                    self.logDebug("Successfully detected exposures: \(String(describing: summary))")
+
+                    let validKeySetHolderResults = keySetHoldersToProcess.map { keySetHolder in
+                        return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
+                                                             processDate: Date(),
+                                                             isValid: true)
+                    }
+
+                    let keySetHolderResults = invalidKeySetHolderResults + validKeySetHolderResults
+                    let result = ExposureDetectionResult(keySetDetectionResults: keySetHolderResults,
+                                                         exposureSummary: summary,
+                                                         exposureReport: nil)
+
+                    observer.onNext(result)
+                    observer.onCompleted()
+
+                case let .failure(error):
+                    self.logDebug("Failure when detecting exposures: \(error)")
+
+                    switch error {
+                    case .bluetoothOff, .disabled, .notAuthorized, .restricted:
+                        observer.onError(error.asExposureDataError)
+                    case .internalTypeMismatch:
+                        observer.onError(ExposureDataError.internalError)
+                    case .rateLimited:
+                        observer.onError(ExposureDataError.internalError)
+                    default:
+                        // something else is going wrong with exposure detection
+                        // mark all keysets as invalid so they will be redownloaded again
                         let validKeySetHolderResults = keySetHoldersToProcess.map { keySetHolder in
                             return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
-                                                                 processDate: Date(),
-                                                                 isValid: true)
+                                                                 processDate: nil,
+                                                                 isValid: false)
                         }
 
                         let keySetHolderResults = invalidKeySetHolderResults + validKeySetHolderResults
                         let result = ExposureDetectionResult(keySetDetectionResults: keySetHolderResults,
-                                                             exposureSummary: summary,
+                                                             exposureSummary: nil,
                                                              exposureReport: nil)
 
-                        promise(.success(result))
-                    case let .failure(error):
-                        self.logDebug("Failure when detecting exposures: \(error)")
-
-                        switch error {
-                        case .bluetoothOff, .disabled, .notAuthorized, .restricted:
-                            promise(.failure(error.asExposureDataError))
-                        case .internalTypeMismatch:
-                            promise(.failure(.internalError))
-                        case .rateLimited:
-                            promise(.failure(.internalError))
-                        default:
-                            // something else is going wrong with exposure detection
-                            // mark all keysets as invalid so they will be redownloaded again
-                            let validKeySetHolderResults = keySetHoldersToProcess.map { keySetHolder in
-                                return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
-                                                                     processDate: nil,
-                                                                     isValid: false)
-                            }
-
-                            let keySetHolderResults = invalidKeySetHolderResults + validKeySetHolderResults
-                            let result = ExposureDetectionResult(keySetDetectionResults: keySetHolderResults,
-                                                                 exposureSummary: nil,
-                                                                 exposureReport: nil)
-
-                            promise(.success(result))
-                        }
+                        observer.onNext(result)
+                        observer.onCompleted()
                     }
                 }
             }
-        }
-        .eraseToAnyPublisher()
 
-        return updateNumberOfApiCallsMade(inBackground: applicationIsInBackground)
-            .flatMap { _ in executeExposureDetection }
-            .eraseToAnyPublisher()
+            return Disposables.create()
+        }
     }
 
     /// Updates the local keySetHolder storage with the latest results
-    private func persistResult(_ result: ExposureDetectionResult) -> AnyPublisher<ExposureDetectionResult, ExposureDataError> {
-        return Deferred {
-            Future { promise in
-                let selectKeySetDetectionResult: (ExposureKeySetHolder) -> ExposureKeySetDetectionResult? = { keySetHolder in
-                    // find result that belongs to the keySetHolder
-                    result.keySetDetectionResults.first { result in result.keySetHolder.identifier == keySetHolder.identifier }
-                }
+    private func persistResult(_ result: ExposureDetectionResult) -> Observable<ExposureDetectionResult> {
+        return .create { (observer) -> Disposable in
 
-                self.storageController.requestExclusiveAccess { storageController in
-                    let storedKeySetHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
-                    var keySetHolders: [ExposureKeySetHolder] = []
+            let selectKeySetDetectionResult: (ExposureKeySetHolder) -> ExposureKeySetDetectionResult? = { keySetHolder in
+                // find result that belongs to the keySetHolder
+                result.keySetDetectionResults.first { result in result.keySetHolder.identifier == keySetHolder.identifier }
+            }
 
-                    storedKeySetHolders.forEach { keySetHolder in
-                        guard let result = selectKeySetDetectionResult(keySetHolder) else {
-                            // no result for this one, just append and process it next time
-                            keySetHolders.append(keySetHolder)
-                            return
-                        }
+            self.storageController.requestExclusiveAccess { storageController in
+                let storedKeySetHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
+                var keySetHolders: [ExposureKeySetHolder] = []
 
-                        if result.processDate != nil || result.isValid {
-                            // only store correctly processed or valid results - forget about incorrectly processed ones
-                            // and try to download those again next time
-                            keySetHolders.append(ExposureKeySetHolder(identifier: keySetHolder.identifier,
-                                                                      signatureFilename: keySetHolder.signatureFilename,
-                                                                      binaryFilename: keySetHolder.binaryFilename,
-                                                                      processDate: result.processDate,
-                                                                      creationDate: keySetHolder.creationDate))
-                        }
+                storedKeySetHolders.forEach { keySetHolder in
+                    guard let result = selectKeySetDetectionResult(keySetHolder) else {
+                        // no result for this one, just append and process it next time
+                        keySetHolders.append(keySetHolder)
+                        return
                     }
 
-                    storageController.store(object: keySetHolders,
-                                            identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
-                        promise(.success(result))
+                    if result.processDate != nil || result.isValid {
+                        // only store correctly processed or valid results - forget about incorrectly processed ones
+                        // and try to download those again next time
+                        keySetHolders.append(ExposureKeySetHolder(identifier: keySetHolder.identifier,
+                                                                  signatureFilename: keySetHolder.signatureFilename,
+                                                                  binaryFilename: keySetHolder.binaryFilename,
+                                                                  processDate: result.processDate,
+                                                                  creationDate: keySetHolder.creationDate))
+                    }
+                }
+
+                storageController.store(object: keySetHolders,
+                                        identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { error in
+
+                    if error != nil {
+                        observer.onError(ExposureDataError.internalError)
+                    } else {
+                        observer.onNext(result)
+                        observer.onCompleted()
                     }
                 }
             }
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     /// Removes binary files for processed or invalid keySetHolders
-    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?)) {
-        let keySetHolders = exposureResult.0
-            .keySetDetectionResults
-            .filter { $0.processDate != nil || $0.isValid == false }
-            .map { $0.keySetHolder }
+    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?), exposureKeySetsStorageUrl: URL) -> Observable<()> {
 
-        keySetHolders.forEach { keySetHolder in
-            if let sigFileURL = signatureFileUrl(forKeySetHolder: keySetHolder) {
-                try? fileManager.removeItem(at: sigFileURL)
-            }
+        return .create { (observer) -> Disposable in
 
-            if let binFileURL = binaryFileUrl(forKeySetHolder: keySetHolder) {
-                try? fileManager.removeItem(at: binFileURL)
+            let keySetHolders = exposureResult.0
+                .keySetDetectionResults
+                .filter { $0.processDate != nil || $0.isValid == false }
+                .map { $0.keySetHolder }
+
+            keySetHolders.forEach { keySetHolder in
+                if let sigFileURL = self.signatureFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl) {
+                    try? self.fileManager.removeItem(at: sigFileURL)
+                }
+
+                if let binFileURL = self.binaryFileUrl(forKeySetHolder: keySetHolder, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl) {
+                    try? self.fileManager.removeItem(at: binFileURL)
+                }
             }
+            observer.onNext(())
+            observer.onCompleted()
+
+            return Disposables.create()
         }
     }
 
@@ -323,30 +349,33 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .count
     }
 
-    func updateNumberOfApiCallsMade(inBackground: Bool) -> AnyPublisher<(), ExposureDataError> {
-        return Deferred {
-            return Future { promise in
-                self.storageController.requestExclusiveAccess { storageController in
-                    let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
-                    var calls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
+    func updateNumberOfApiCallsMade(inBackground: Bool) -> Observable<()> {
+        return .create { (observer) -> Disposable in
+            self.storageController.requestExclusiveAccess { storageController in
+                let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
+                var calls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
 
-                    calls = [Date()] + calls
-                    self.logDebug("Most recent API calls \(calls)")
+                calls = [Date()] + calls
+                self.logDebug("Most recent API calls \(calls)")
 
-                    let maximumNumberOfAPICalls = inBackground ? self.maximumDailyBackgroundExposureDetectionAPICalls : self.maximumDailyForegroundExposureDetectionAPICalls
+                let maximumNumberOfAPICalls = inBackground ? self.maximumDailyBackgroundExposureDetectionAPICalls : self.maximumDailyForegroundExposureDetectionAPICalls
 
-                    if calls.count > maximumNumberOfAPICalls {
-                        calls = Array(calls.prefix(maximumNumberOfAPICalls))
-                    }
+                if calls.count > maximumNumberOfAPICalls {
+                    calls = Array(calls.prefix(maximumNumberOfAPICalls))
+                }
 
-                    storageController.store(object: calls,
-                                            identifiedBy: storageKey) { _ in
-                        promise(.success(()))
+                storageController.store(object: calls, identifiedBy: storageKey) { error in
+                    if error != nil {
+                        observer.onError(ExposureDataError.internalError)
+                    } else {
+                        observer.onNext(())
+                        observer.onCompleted()
                     }
                 }
             }
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     private func getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: Bool = false) -> Int {
@@ -369,27 +398,31 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private func getNumberOfDailyAPICallsLeft(inBackground: Bool) -> Int {
         var numberOfCallsLeft = Int.max
 
-        if environmentController.isiOS136orHigher {
-            let totalMaximumCalls = maximumDailyBackgroundExposureDetectionAPICalls + maximumDailyForegroundExposureDetectionAPICalls
-            let maximumNumberOfAPICalls = inBackground ? maximumDailyBackgroundExposureDetectionAPICalls : maximumDailyForegroundExposureDetectionAPICalls
-            let backgroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: true)
-            let foregroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: false)
-            let callsDoneInCurrentState = inBackground ? backgroundCallsDone : foregroundCallsDone
-            numberOfCallsLeft = maximumNumberOfAPICalls - callsDoneInCurrentState
-
-            // For legacy reasons, we also check if the combined total of calls doesn't exceed the combined daily maximum
-            if (backgroundCallsDone + foregroundCallsDone) >= totalMaximumCalls {
-                numberOfCallsLeft = 0
-            }
+        defer {
+            logDebug("Number of API Calls (\(inBackground ? "in background" : "in foreground")) left today: \(numberOfCallsLeft)")
         }
 
-        logDebug("Number of API Calls (\(inBackground ? "in background" : "in foreground")) left today: \(numberOfCallsLeft)")
+        guard environmentController.gaenRateLimitingType == .dailyLimit else {
+            return numberOfCallsLeft
+        }
+
+        let totalMaximumCalls = maximumDailyBackgroundExposureDetectionAPICalls + maximumDailyForegroundExposureDetectionAPICalls
+        let maximumNumberOfAPICalls = inBackground ? maximumDailyBackgroundExposureDetectionAPICalls : maximumDailyForegroundExposureDetectionAPICalls
+        let backgroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: true)
+        let foregroundCallsDone = getNumberOfExposureDetectionApiCallsInLast24Hours(inBackground: false)
+        let callsDoneInCurrentState = inBackground ? backgroundCallsDone : foregroundCallsDone
+        numberOfCallsLeft = maximumNumberOfAPICalls - callsDoneInCurrentState
+
+        // For legacy reasons, we also check if the combined total of calls doesn't exceed the combined daily maximum
+        if (backgroundCallsDone + foregroundCallsDone) >= totalMaximumCalls {
+            numberOfCallsLeft = 0
+        }
 
         return numberOfCallsLeft
     }
 
     private func getNumberOfDailyKeySetsLeft() -> Int {
-        if environmentController.isiOS136orHigher {
+        guard environmentController.gaenRateLimitingType == .fileLimit else {
             // iOS 13.6+ is not limited in the number of daily keysets but in the number of API calls
             logDebug("Number of keysets left to process today: infinite (no limit on iOS 13.6+)")
             return Int.max
@@ -421,21 +454,16 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
-    private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
+    private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> Observable<(ExposureDetectionResult, ExposureReport?)> {
 
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
-            return Just((result, nil))
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just((result, nil))
         }
 
         guard summary.maximumRiskScore >= configuration.minimumRiskScope else {
             logDebug("Risk Score not high enough to see this as an exposure")
-
-            return Just((result, nil))
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just((result, nil))
         }
 
         if let daysSinceLastExposure = daysSinceLastExposure() {
@@ -443,18 +471,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
             if summary.daysSinceLastExposure >= daysSinceLastExposure {
                 logDebug("Previous exposure was newer than new found exposure - skipping notification")
-
-                return Just((result, nil))
-                    .setFailureType(to: ExposureDataError.self)
-                    .eraseToAnyPublisher()
+                return .just((result, nil))
             }
         }
 
         guard let date = Calendar.current.date(byAdding: .day, value: -summary.daysSinceLastExposure, to: Date()) else {
             logError("Error triggering notification for \(summary), could not create date")
-            return Just((result, nil))
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just((result, nil))
         }
 
         logDebug("Triggering notification for \(summary)")
@@ -463,96 +486,117 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                     exposureReport: (result, ExposureReport(date: date)))
     }
 
-    private func notifyUserOfExposure(daysSinceLastExposure: Int, exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
-        return Deferred {
-            Future { promise in
+    private func notifyUserOfExposure(daysSinceLastExposure: Int,
+                                      exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Observable<(ExposureDetectionResult, ExposureReport?)> {
+        return .create { (observer) -> Disposable in
 
-                self.userNotificationCenter.getAuthorizationStatus { status in
-                    guard status == .authorized else {
-                        promise(.failure(ExposureDataError.internalError))
-                        return self.logError("Not authorized to post notifications")
+            self.userNotificationCenter.getAuthorizationStatus { status in
+                guard status == .authorized else {
+                    observer.onError(ExposureDataError.internalError)
+                    return self.logError("Not authorized to post notifications")
+                }
+
+                let content = UNMutableNotificationContent()
+                content.body = .exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure))
+                content.sound = .default
+                content.badge = 0
+
+                let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
+                                                    content: content,
+                                                    trigger: nil)
+
+                self.userNotificationCenter.add(request) { error in
+
+                    if let error = error {
+                        self.logError("Error posting notification: \(error.localizedDescription)")
+                        observer.onError(ExposureDataError.internalError)
+                        return
                     }
 
-                    let content = UNMutableNotificationContent()
-                    content.body = .exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure))
-                    content.sound = .default
-                    content.badge = 0
-
-                    let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
-                                                        content: content,
-                                                        trigger: nil)
-
-                    self.userNotificationCenter.add(request) { error in
-                        guard let error = error else {
-
-                            /// Store the unseen notification date, but only when the app is in the background
-                            if self.application.isInBackground {
-                                self.storageController.requestExclusiveAccess { storageController in
-                                    storageController.store(object: Date(),
-                                                            identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { _ in }
+                    /// Store the unseen notification date, but only when the app is in the background
+                    if self.application.isInBackground {
+                        self.storageController.requestExclusiveAccess { storageController in
+                            storageController.store(object: Date(),
+                                                    identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { error in
+                                if error != nil {
+                                    observer.onError(ExposureDataError.internalError)
+                                } else {
+                                    observer.onNext(value)
+                                    observer.onCompleted()
                                 }
                             }
-
-                            return promise(.success(value))
                         }
-                        self.logError("Error posting notification: \(error.localizedDescription)")
-                        promise(.failure(ExposureDataError.internalError))
+                    } else {
+                        observer.onNext(value)
+                        observer.onCompleted()
                     }
                 }
             }
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     /// Stores the exposureReport in local storage (which triggers the 'notified' state)
-    private func persist(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
-        return Deferred {
-            Future { promise in
-                guard let exposureReport = value.1 else {
-                    promise(.success(value))
-                    return
-                }
+    private func persist(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Observable<(ExposureDetectionResult, ExposureReport?)> {
+        return .create { (observer) -> Disposable in
+            guard let exposureReport = value.1 else {
+                observer.onNext(value)
+                observer.onCompleted()
+                return Disposables.create()
+            }
 
-                self.storageController.requestExclusiveAccess { storageController in
-                    let lastExposureReport = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport)
+            self.storageController.requestExclusiveAccess { storageController in
+                let lastExposureReport = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport)
 
-                    if let lastExposureReport = lastExposureReport, lastExposureReport.date > exposureReport.date {
-                        // already stored a newer report, ignore this one
-                        promise(.success(value))
-                    } else {
-                        // store the new report
-                        storageController.store(object: exposureReport,
-                                                identifiedBy: ExposureDataStorageKey.lastExposureReport) { _ in
-                            promise(.success(value))
+                if let lastExposureReport = lastExposureReport, lastExposureReport.date > exposureReport.date {
+                    // already stored a newer report, ignore this one
+                    observer.onNext(value)
+                    observer.onCompleted()
+                } else {
+                    // store the new report
+                    storageController.store(object: exposureReport,
+                                            identifiedBy: ExposureDataStorageKey.lastExposureReport) { error in
+                        if error != nil {
+                            observer.onError(ExposureDataError.internalError)
+                        } else {
+                            observer.onNext(value)
+                            observer.onCompleted()
                         }
                     }
                 }
             }
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     /// Updates the date when this operation has last run
-    private func updateLastProcessingDate(_ value: (ExposureDetectionResult, ExposureReport?)) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
-        return Deferred {
-            Future { promise in
-                self.storageController.requestExclusiveAccess { storageController in
-                    let date = Date()
+    private func updateLastProcessingDate(_ value: (ExposureDetectionResult, ExposureReport?)) -> Observable<(ExposureDetectionResult, ExposureReport?)> {
+        return .create { (observer) -> Disposable in
 
-                    self.logDebug("Updating last process date to \(date)")
+            self.storageController.requestExclusiveAccess { storageController in
+                let date = Date()
 
-                    storageController.store(object: date,
-                                            identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
-                                            completion: { _ in
-                                                promise(.success(value))
-                                            })
-                }
+                self.logDebug("Updating last process date to \(date)")
+
+                storageController.store(object: date,
+                                        identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
+                                        completion: { error in
+                                            if error != nil {
+                                                observer.onError(ExposureDataError.internalError)
+                                            } else {
+                                                observer.onNext(value)
+                                                observer.onCompleted()
+                                            }
+                                        })
             }
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
-    private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {
+    private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> URL? {
         guard let signatureFilename = keySetHolder.signatureFilename else {
             return nil
         }
@@ -560,7 +604,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         return exposureKeySetsStorageUrl.appendingPathComponent(signatureFilename)
     }
 
-    private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {
+    private func binaryFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> URL? {
         guard let binaryFilename = keySetHolder.binaryFilename else {
             return nil
         }
@@ -588,7 +632,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureManager: ExposureManaging
-    private let exposureKeySetsStorageUrl: URL
+    private let localPathProvider: LocalPathProviding
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter
     private let application: ApplicationControlling

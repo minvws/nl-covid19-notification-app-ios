@@ -204,7 +204,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Launches the message flow as would be done from a exposure push notification with today's date",
                               action: { [weak self] in self?.listener?.developerMenuRequestMessage(exposureDate: Date()); self?.hide() }),
                 DeveloperItem(title: "Schedule Message Flow",
-                              subtitle: "Schedules a push notifiction to be sent in 5 seconds",
+                              subtitle: "Schedules a push notification to be sent in 5 seconds",
                               action: { [weak self] in self?.wantsScheduleNotification(identifier: "com.apple.en.mock") }),
                 DeveloperItem(title: "Schedule Upload Failed Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",

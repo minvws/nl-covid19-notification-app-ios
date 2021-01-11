@@ -9,12 +9,14 @@ import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import XCTest
 
 final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
     private var operation: ExpiredLabConfirmationNotificationDataOperation!
     private var mockStorageController: StorageControllingMock!
     private var mockUserNotificationCenter: UserNotificationCenterMock!
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
@@ -100,10 +102,10 @@ final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
     private func wait(for operation: ExpiredLabConfirmationNotificationDataOperation) {
         let exp = expectation(description: "wait")
         operation.execute()
-            .sink(receiveCompletion: { _ in exp.fulfill() },
-                  receiveValue: { _ in }
-            )
-            .disposeOnTearDown(of: self)
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
     }
