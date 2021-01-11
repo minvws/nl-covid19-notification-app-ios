@@ -21,9 +21,14 @@ protocol UpdateAppBuildable {
 
 protocol UpdateAppDependency {
     var theme: Theme { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
-private final class UpdateAppDependencyProvider: DependencyProvider<UpdateAppDependency> {}
+private final class UpdateAppDependencyProvider: DependencyProvider<UpdateAppDependency> {
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        dependency.interfaceOrientationStream
+    }
+}
 
 final class UpdateAppBuilder: Builder<UpdateAppDependency>, UpdateAppBuildable {
     func build(withListener listener: UpdateAppListener, appStoreURL: String?, minimumVersionMessage: String?) -> ViewControllable {
@@ -31,6 +36,7 @@ final class UpdateAppBuilder: Builder<UpdateAppDependency>, UpdateAppBuildable {
         return UpdateAppViewController(listener: listener,
                                        theme: dependencyProvider.dependency.theme,
                                        appStoreURL: appStoreURL,
-                                       minimumVersionMessage: minimumVersionMessage)
+                                       minimumVersionMessage: minimumVersionMessage,
+                                       interfaceOrientationStream: dependencyProvider.interfaceOrientationStream)
     }
 }

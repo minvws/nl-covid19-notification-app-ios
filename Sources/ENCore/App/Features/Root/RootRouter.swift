@@ -106,8 +106,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
             guard let strongSelf = self else { return }
 
-            strongSelf.detachLaunchScreen(animated: false)
-
             if strongSelf.exposureController.didCompleteOnboarding {
                 strongSelf.backgroundController.scheduleTasks()
             }
@@ -116,10 +114,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 return
             }
 
-            if strongSelf.exposureController.didCompleteOnboarding {
-                strongSelf.routeToMain()
-            } else {
-                strongSelf.routeToOnboarding()
+            strongSelf.detachLaunchScreenIfNeeded(animated: false) { [weak self] in
+
+                guard let strongSelf = self else { return }
+
+                if strongSelf.exposureController.didCompleteOnboarding {
+                    strongSelf.routeToMain()
+                } else {
+                    strongSelf.routeToOnboarding()
+                }
             }
 
             #if USE_DEVELOPER_MENU || DEBUG
@@ -159,7 +162,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.refreshStatus()
 
-        routeToDeactivatedOrUpdateScreenIfNeeded()
+        if mainRouter != nil || onboardingRouter != nil {
+            // App was started already. Check if we need to route to update / deactivated screen
+            routeToDeactivatedOrUpdateScreenIfNeeded()
+        }
 
         updateTreatmentPerspective()
 
@@ -335,8 +341,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         viewController.presentInNavigationController(viewController: callGGDViewController, animated: true, presentFullScreen: false)
     }
 
-    private func detachLaunchScreen(animated: Bool) {
+    private func detachLaunchScreenIfNeeded(animated: Bool, completion: (() -> ())?) {
         guard let launchScreenRouter = launchScreenRouter else {
+            completion?()
             return
         }
 
@@ -344,7 +351,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         viewController.dismiss(viewController: launchScreenRouter.viewControllable,
                                animated: animated,
-                               completion: nil)
+                               completion: completion)
     }
 
     private func detachOnboarding(animated: Bool) {
@@ -373,13 +380,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .subscribe { [weak self] isDeactivated, updateInformation in
                 if isDeactivated {
 
-                    self?.routeToEndOfLife()
-
-                    self?.exposureController.deactivate()
-
-                    self?.backgroundController.removeAllTasks()
-
-                    completion?(true)
+                    self?.detachLaunchScreenIfNeeded(animated: false) {
+                        self?.routeToEndOfLife()
+                        self?.exposureController.deactivate()
+                        self?.backgroundController.removeAllTasks()
+                        completion?(true)
+                    }
 
                     return
                 }
@@ -388,11 +394,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                     let minimumVersionMessage = versionInformation.minimumVersionMessage.isEmpty ? nil : versionInformation.minimumVersionMessage
 
-                    self?.routeToUpdateApp(animated: true,
-                                           appStoreURL: versionInformation.appStoreURL,
-                                           minimumVersionMessage: minimumVersionMessage)
-
-                    completion?(true)
+                    self?.detachLaunchScreenIfNeeded(animated: false) {
+                        self?.routeToUpdateApp(animated: true, appStoreURL: versionInformation.appStoreURL, minimumVersionMessage: minimumVersionMessage)
+                        completion?(true)
+                    }
                     return
                 }
 

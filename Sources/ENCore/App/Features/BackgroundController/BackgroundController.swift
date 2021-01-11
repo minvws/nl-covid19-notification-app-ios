@@ -170,6 +170,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///     y = about 5 minutes (about less, e.g. 250 sec) this param value depends on how long a prioritized task is allowed to run
     func performDecoySequenceIfNeeded() {
 
+        guard self.isExposureManagerActive else {
+            self.logDebug("ExposureManager inactive - Not handling performDecoySequenceIfNeeded")
+            return
+        }
+
         guard self.dataController.canProcessDecoySequence else {
             return self.logDebug("Not running decoy `/register` Process already run today")
         }
