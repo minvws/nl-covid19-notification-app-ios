@@ -250,7 +250,7 @@ final class RootRouterTests: XCTestCase {
 
     func test_didEnterForeground_startsObservingNetworkReachability() {
         exposureController.updateWhenRequiredHandler = {
-            Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .empty()
         }
 
         XCTAssertEqual(mutableNetworkStatusStream.startObservingNetworkReachabilityCallCount, 0)
@@ -266,6 +266,32 @@ final class RootRouterTests: XCTestCase {
         router.didEnterBackground()
 
         XCTAssertEqual(mutableNetworkStatusStream.stopObservingNetworkReachabilityCallCount, 1)
+    }
+
+    func test_didEnterForeground_callsRefreshStatus() {
+        exposureController.updateWhenRequiredHandler = { .empty() }
+
+        // Required to attach main router
+        router.start()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
+
+        router.didEnterForeground()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 1)
+    }
+
+    func test_didEnterForeground_callsUpdateWhenRequired() {
+        exposureController.updateWhenRequiredHandler = { .empty() }
+
+        // Required to attach main router
+        router.start()
+
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
+
+        router.didEnterForeground()
+
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
     }
 
     // MARK: - Handling Notifications
@@ -311,7 +337,7 @@ final class RootRouterTests: XCTestCase {
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState) {
-        exposureStateStream.exposureState = Just(ExposureState(notifiedState: .notNotified,
-                                                               activeState: activeState)).eraseToAnyPublisher()
+        exposureStateStream.exposureState = .just(ExposureState(notifiedState: .notNotified,
+                                                                activeState: activeState))
     }
 }

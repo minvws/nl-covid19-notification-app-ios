@@ -31,7 +31,7 @@ protocol ExposureControlling: AnyObject {
 
     func refreshStatus()
 
-    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
+    func updateWhenRequired() -> Completable
     func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
 
     // MARK: - Permissions

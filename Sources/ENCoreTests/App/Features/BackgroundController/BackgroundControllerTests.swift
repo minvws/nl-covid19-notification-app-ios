@@ -50,7 +50,7 @@ final class BackgroundControllerTests: XCTestCase {
             return Just(()).eraseToAnyPublisher()
         }
         exposureController.updateWhenRequiredHandler = {
-            return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            return .empty()
         }
         exposureController.processPendingUploadRequestsHandler = {
             return Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()

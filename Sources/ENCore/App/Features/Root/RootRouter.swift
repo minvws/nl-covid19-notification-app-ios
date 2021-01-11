@@ -182,9 +182,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController.refreshStatus()
         exposureController
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .subscribe(onCompleted: {})
+            .disposed(by: rxDisposeBag)
     }
 
     func didEnterBackground() {
