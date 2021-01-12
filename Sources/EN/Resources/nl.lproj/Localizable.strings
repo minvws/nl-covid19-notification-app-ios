@@ -4,7 +4,7 @@
 *
 *  SPDX-License-Identifier: EUPL-1.2
 */
-
+ 
 "alertTitle" = "Waarschuwing";
 "alertMessage" = "Instellingen kunnen niet geopend worden.";
 "alertButton" = "Ok";
