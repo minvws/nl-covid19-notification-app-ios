@@ -1,3 +1,18 @@
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "Je moet de software op je telefoon updaten";
+"update.software.os.description" = "CoronaMelder heeft de nieuwste versie van iOS nodig om goed te blijven werken op je telefoon.";
+"update.software.os.detail.title" = "Update je telefoon";
+"update.software.os.detail.step1.detail" = "Instellingen";
+"update.software.os.detail.step2.detail" = "Algemeen";
+"update.software.os.detail.step3.detail" = "Software-update";
+"update.software.os.detail.step1" = "1. Open Instellingen op je telefoon via de knop hieronder";
+"update.software.os.detail.step2" = "2. Ga naar ‘Algemeen’";
+"update.software.os.detail.step3" = "3. Ga naar ‘Software-update’";
+"update.software.os.detail.step4" = "4. Kies ‘Download en installeer’";
+"update.button.update" = "Updaten";
+
+
 "moreInformation.cell.settings.title" = "Instellingen";
 "moreInformation.cell.settings.subtitle" = "Pas je instellingen aan voor het gebruik van mobiele data";
 

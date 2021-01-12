@@ -1,3 +1,18 @@
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
+"update.software.os.description" = "يحتاج CoronaMelder إلى الإصدار الأحدث لـ IOS كي يستمر في العمل بصورة صحيحة على هاتفك.";
+"update.software.os.detail.title" = "حدّث هاتفك";
+"update.software.os.detail.step1.detail" = "الإعدادات";
+"update.software.os.detail.step2.detail" = "العامة";
+"update.software.os.detail.step3.detail" = "تحديث البرنامج";
+"update.software.os.detail.step1" = "افتح الإعدادات في هاتفك باستخدام الزر أسفله.";
+"update.software.os.detail.step2" = "انتقل إلى \"العامة\"";
+"update.software.os.detail.step3" = "3. انتقل إلى \"تحديث البرامج\"";
+"update.software.os.detail.step4" = "4. انقرعلى \"تحميل البرنامج وتثبيته\"";
+"update.button.update" = "تحديث";
+
+
 "moreInformation.cell.settings.title" = "الإعدادات";
 "moreInformation.cell.settings.subtitle" = "اضبط إعداداتك لاستخدام البيانات المحمولة للهاتف";
 

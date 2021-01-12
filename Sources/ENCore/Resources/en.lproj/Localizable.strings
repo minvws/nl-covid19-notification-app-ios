@@ -1,3 +1,18 @@
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "You have to update your phone's software";
+"update.software.os.description" = "CoronaMelder needs the latest version of iOS to work correctly on your phone.";
+"update.software.os.detail.title" = "Update your phone";
+"update.software.os.detail.step1.detail" = "Settings";
+"update.software.os.detail.step2.detail" = "General";
+"update.software.os.detail.step3.detail" = "Software Update";
+"update.software.os.detail.step1" = "1. Open Settings on your phone using the button below";
+"update.software.os.detail.step2" = "2. Go to 'General'";
+"update.software.os.detail.step3" = "3. Go to 'Software update'";
+"update.software.os.detail.step4" = "4. Select 'Download and install'";
+"update.button.update" = "Update";
+
+
 "moreInformation.cell.settings.title" = "Settings";
 "moreInformation.cell.settings.subtitle" = "Adjust your settings for the use of mobile data";
 
