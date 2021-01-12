@@ -45,9 +45,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          networkController: NetworkControlling,
          backgroundController: BackgroundControlling,
          updateAppBuilder: UpdateAppBuildable,
+         updateOperatingSystemBuilder: UpdateOperatingSystemBuildable,
          webviewBuilder: WebviewBuildable,
          userNotificationCenter: UserNotificationCenter,
-         currentAppVersion: String) {
+         currentAppVersion: String,
+         environmentController: EnvironmentControlling) {
         self.launchScreenBuilder = launchScreenBuilder
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
@@ -71,6 +73,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.userNotificationCenter = userNotificationCenter
         self.mutableNetworkStatusStream = mutableNetworkStatusStream
 
+        self.updateOperatingSystemBuilder = updateOperatingSystemBuilder
+
+        self.environmentController = environmentController
+
         super.init(viewController: viewController)
 
         viewController.router = self
@@ -92,6 +98,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
 
         LogHandler.setup()
+
+        if !environmentController.supportsExposureNotification {
+            routeToUpdateOperatingSystem(animated: false)
+            return
+        }
 
         // Copy of launch screen is shown to give the app time to determine the proper
         // screen to route to. If the network is slow this can take a few seconds.
@@ -276,6 +287,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.updateAppViewController = updateAppViewController
 
         viewController.present(viewController: updateAppViewController, animated: animated, completion: nil)
+    }
+
+    func routeToUpdateOperatingSystem(animated: Bool) {
+        guard updateOperatingSystemViewController == nil else {
+            return
+        }
+        let updateOSViewController = updateOperatingSystemBuilder.build()
+
+        self.updateOperatingSystemViewController = updateOSViewController
+
+        viewController.present(viewController: updateOSViewController, animated: animated, completion: nil)
     }
 
     func routeToWebview(url: URL) {
@@ -471,12 +493,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let updateAppBuilder: UpdateAppBuildable
     private var updateAppViewController: ViewControllable?
 
+    private let updateOperatingSystemBuilder: UpdateOperatingSystemBuildable
+    private var updateOperatingSystemViewController: ViewControllable?
+
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
 
     private let userNotificationCenter: UserNotificationCenter
 
     private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
+
+    private let environmentController: EnvironmentControlling
 }
 
 private extension ExposureActiveState {

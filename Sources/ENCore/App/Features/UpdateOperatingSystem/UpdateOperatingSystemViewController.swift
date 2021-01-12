@@ -7,68 +7,120 @@
 
 import ENFoundation
 import Foundation
+import RxSwift
 import UIKit
 
 /// @mockable
-protocol UpdateOperatingSystemRouting: Routing {}
+protocol UpdateOperatingSystemViewControllable: ViewControllable {}
 
-final class UpdateOperatingSystemViewController: ViewController, UpdateOperatingSystemViewControllable {
+final class UpdateOperatingSystemViewController: ViewController, UpdateOperatingSystemViewControllable, EnableSettingListener {
 
-    var router: LaunchScreenRouting?
+    // MARK: - Init
 
-    // MARK: - Lifecycle
+    init(theme: Theme,
+         interfaceOrientationStream: InterfaceOrientationStreaming,
+         enableSettingBuilder: EnableSettingBuildable) {
+        self.interfaceOrientationStream = interfaceOrientationStream
+        self.enableSettingBuilder = enableSettingBuilder
 
-    override init(theme: Theme) {
         super.init(theme: theme)
 
         modalPresentationStyle = .fullScreen
-        modalTransitionStyle = .crossDissolve
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
+    // MARK: - ViewController Lifecycle
 
     override func loadView() {
+
         self.view = internalView
         self.view.frame = UIScreen.main.bounds
     }
 
-    // MARK: - Setups
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-    private func setupViews() {
-        self.view.backgroundColor = theme.colors.viewControllerBackground
-
+        internalView.imageView.image = .updateApp
+        internalView.titleLabel.attributedText = .makeFromHtml(
+            text: .updateSoftwareOSTitle,
+            font: theme.fonts.title2,
+            textColor: .black,
+            textAlignment: Localization.isRTL ? .right : .left)
+        internalView.contentLabel.attributedText = .makeFromHtml(
+            text: .updateSoftwareOSDescription,
+            font: theme.fonts.body,
+            textColor: theme.colors.gray,
+            textAlignment: Localization.isRTL ? .right : .left)
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
 
-        internalView.titleLabel.text = .updateSoftwareOSTitle
-        internalView.titleLabel.font = theme.fonts.title2
-
-        internalView.contentLabel.text = .updateSoftwareOSDescription
-        internalView.contentLabel.font = theme.fonts.body
+        interfaceOrientationStream.isLandscape.subscribe { isLandscape in
+            self.internalView.showImage = !isLandscape
+        }.disposed(by: disposeBag)
     }
 
     // MARK: - Functions
 
     @objc func buttonPressed() {
-        present(UpdateOperatingSystemInstructionsViewController(theme: theme), animated: true, completion: nil)
+        let viewController = enableSettingBuilder.build(withListener: self,
+                                                        setting: .updateOperatingSystem)
+
+        self.enableSettingViewController = viewController
+
+        present(viewController.uiviewController, animated: true, completion: nil)
     }
+
+    // MARK: - EnableSettingListener
+
+    func enableSettingRequestsDismiss(shouldDismissViewController: Bool) {
+        enableSettingViewController?.uiviewController.dismiss(animated: true, completion: nil)
+    }
+
+    func enableSettingDidTriggerAction() {}
 
     // MARK: - Private
 
-    private lazy var internalView: RequiresUpdateView = RequiresUpdateView(theme: theme)
+    private lazy var internalView: UpdateOperatingSystemView = {
+        UpdateOperatingSystemView(theme: self.theme, showImage: !(interfaceOrientationStream.currentOrientationIsLandscape ?? false))
+    }()
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var disposeBag = DisposeBag()
+    private let enableSettingBuilder: EnableSettingBuildable
+    private var enableSettingViewController: ViewControllable?
 }
 
-final class RequiresUpdateView: UIView {
+private final class UpdateOperatingSystemView: View {
 
-    private lazy var imageView: UIImageView = {
+    lazy var stackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 16
+
+        view.addArrangedSubview(imageViewContainer)
+        view.addArrangedSubview(titleLabel)
+        view.addArrangedSubview(contentLabel)
+
+        view.setCustomSpacing(50, after: imageViewContainer)
+        return view
+    }()
+
+    lazy var button: Button = {
+        let button = Button(theme: self.theme)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.title = .updateAppButton
+        return button
+    }()
+
+    lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = .clear
-        imageView.image = UIImage(named: "UpdateApp")
         return imageView
+    }()
+
+    lazy var imageViewContainer: UIView = {
+        let container = UIView()
+        container.addSubview(imageView)
+        return container
     }()
 
     lazy var titleLabel: UILabel = {
@@ -85,76 +137,52 @@ final class RequiresUpdateView: UIView {
         return label
     }()
 
-    lazy var button: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(.updateButtonUpdate, for: .normal)
-        button.titleLabel?.font = theme.fonts.bodyBold
-        button.layer.cornerRadius = 10
-        button.clipsToBounds = true
-        button.backgroundColor = theme.colors.primary
-        button.setTitleColor(.white, for: .normal)
-        return button
-    }()
-
-    private lazy var viewsInDisplayOrder = [imageView, titleLabel, contentLabel, button]
-
-    // MARK: - Live cycle
-
-    init(theme: Theme) {
-        self.theme = theme
-        super.init(frame: .zero)
-
-        setupViews()
-        setupConstraints()
+    var showImage: Bool {
+        didSet {
+            imageViewContainer.isHidden = !showImage
+        }
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    // MARK: - Init
+
+    init(theme: Theme, showImage: Bool) {
+        self.showImage = showImage
+
+        super.init(theme: theme)
     }
 
-    private func setupViews() {
-        backgroundColor = .white
-        viewsInDisplayOrder.forEach { addSubview($0) }
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        hasBottomMargin = true
+
+        addSubview(stackView)
+        addSubview(button)
     }
 
-    private func setupConstraints() {
+    override func setupConstraints() {
+        super.setupConstraints()
 
-        var constraints = [[NSLayoutConstraint]()]
+        stackView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(75)
+            make.leading.trailing.equalTo(self.safeAreaLayoutGuide).inset(20)
+            make.bottom.lessThanOrEqualTo(button.snp.top).offset(-50).priority(.high)
+        }
 
-        constraints.append([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 50),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.83, constant: 1)
-        ])
+        button.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(self.safeAreaLayoutGuide).inset(20)
+            make.height.equalTo(50)
 
-        constraints.append([
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 40),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-        ])
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
+        }
 
-        constraints.append([
-            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            contentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            contentLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            contentLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50)
-        ])
-
-        let bottomMargin: CGFloat = UIWindow().safeAreaInsets.bottom == 0 ? -20 : 0
-        constraints.append([
-            button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: bottomMargin),
-            button.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            button.heightAnchor.constraint(equalToConstant: 50)
-        ])
-
-        constraints.forEach { NSLayoutConstraint.activate($0) }
-
-        self.contentLabel.sizeToFit()
+        imageView.snp.makeConstraints { make in
+            make.centerX.equalTo(imageViewContainer)
+            make.width.equalToSuperview().inset(30)
+            make.height.equalTo(imageView.snp.width).multipliedBy(0.83)
+            make.top.bottom.equalToSuperview()
+        }
     }
-
-    private let theme: Theme
 }

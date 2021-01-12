@@ -100,13 +100,13 @@ final class UpdateInstructionsView: UIView {
         constraints.append([
             closeButton.heightAnchor.constraint(equalToConstant: 28),
             closeButton.widthAnchor.constraint(equalToConstant: 28),
-            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            closeButton.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
             closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 28)
         ])
 
         constraints.append([
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            stackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: 64)
         ])
 

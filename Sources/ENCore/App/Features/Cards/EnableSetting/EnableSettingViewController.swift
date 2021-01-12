@@ -150,8 +150,7 @@ private final class EnableSettingView: View {
         }
 
         scrollView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.width.equalToSuperview()
+            make.leading.trailing.equalTo(safeAreaLayoutGuide)
             make.top.equalTo(navigationBar.snp.bottom).offset(8)
         }
     }

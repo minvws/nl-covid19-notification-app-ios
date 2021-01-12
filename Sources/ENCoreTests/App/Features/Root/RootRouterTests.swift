@@ -29,6 +29,8 @@ final class RootRouterTests: XCTestCase {
     private let webviewBuilder = WebviewBuildableMock()
     private let userNotificationCenter = UserNotificationCenterMock()
     private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
+    private let mockEnvironmentController = EnvironmentControllingMock()
+    private let updateOperatingSystemBuilder = UpdateOperatingSystemBuildableMock()
 
     private var router: RootRouter!
 
@@ -66,9 +68,11 @@ final class RootRouterTests: XCTestCase {
                             networkController: networkController,
                             backgroundController: backgroundController,
                             updateAppBuilder: updateAppBuilder,
+                            updateOperatingSystemBuilder: updateOperatingSystemBuilder,
                             webviewBuilder: webviewBuilder,
                             userNotificationCenter: userNotificationCenter,
-                            currentAppVersion: "1.0")
+                            currentAppVersion: "1.0",
+                            environmentController: mockEnvironmentController)
         set(activeState: .notAuthorized)
     }
 
@@ -222,6 +226,17 @@ final class RootRouterTests: XCTestCase {
         router.detachWebview(shouldDismissViewController: true)
 
         XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_start_ENNotSupported_showsUpdateOperatingSystemViewController() {
+
+        mockEnvironmentController.supportsExposureNotification = false
+
+        router.start()
+
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 0)
+        XCTAssertEqual(updateOperatingSystemBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 1)
     }
 
     func test_start_getMinimumVersion_showsUpdateAppViewController() {

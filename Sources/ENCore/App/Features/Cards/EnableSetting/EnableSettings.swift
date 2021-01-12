@@ -34,6 +34,7 @@ enum EnableSetting {
     case enableExposureNotifications
     case enableBluetooth
     case enableLocalNotifications
+    case updateOperatingSystem
 
     func model(theme: Theme, environmentController: EnvironmentControlling) -> EnableSettingModel {
         switch self {
@@ -47,6 +48,8 @@ enum EnableSetting {
             return EnableSettingModel.enableBluetooth(theme)
         case .enableLocalNotifications:
             return EnableSettingModel.enableLocalNotifications(theme)
+        case .updateOperatingSystem:
+            return EnableSettingModel.updateOperatingSystem(theme)
         }
     }
 }
@@ -140,6 +143,30 @@ struct EnableSettingModel {
                          steps: [step1, step2, step3],
                          action: .openSettings,
                          actionTitle: .enableSettingsLocalNotificationsAction)
+        }
+    }
+
+    static var updateOperatingSystem: (Theme) -> EnableSettingModel {
+        return { theme in
+            let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
+                                                                           font: theme.fonts.body,
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
+
+            let step1 = EnableSettingStep(description: fromHtml(.updateSoftwareOSDetailStep1),
+                                          action: .custom(image: Image.named("SettingsIcon"), description: .updateSoftwareOSDetailStep1Detail, showChevron: false, showSwitch: false))
+            let step2 = EnableSettingStep(description: fromHtml(.updateSoftwareOSDetailStep2),
+                                          action: .custom(image: Image.named("SettingsPlain"), description: .updateSoftwareOSDetailStep2Detail, showChevron: true, showSwitch: false))
+            let step3 = EnableSettingStep(description: fromHtml(.updateSoftwareOSDetailStep3),
+                                          action: .custom(image: nil, description: .updateSoftwareOSDetailStep3Detail, showChevron: true, showSwitch: false))
+
+            let step4 = EnableSettingStep(description: fromHtml(.updateSoftwareOSDetailStep4),
+                                          action: nil)
+
+            return .init(title: .updateSoftwareOSDetailTitle,
+                         steps: [step1, step2, step3, step4],
+                         action: nil,
+                         actionTitle: "")
         }
     }
 

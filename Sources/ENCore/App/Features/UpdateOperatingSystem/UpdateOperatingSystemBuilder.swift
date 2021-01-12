@@ -10,11 +10,13 @@ import Foundation
 
 /// @mockable
 protocol UpdateOperatingSystemBuildable {
-    func build() -> Routing
+    func build() -> ViewControllable
 }
 
 protocol UpdateOperatingSystemDependency {
     var theme: Theme { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
+    var enableSettingBuilder: EnableSettingBuildable { get }
 }
 
 private final class UpdateOperatingSystemDependencyProvider: DependencyProvider<UpdateOperatingSystemDependency> {
@@ -28,10 +30,12 @@ private final class UpdateOperatingSystemDependencyProvider: DependencyProvider<
 
 final class UpdateOperatingSystemBuilder: Builder<UpdateOperatingSystemDependency>, UpdateOperatingSystemBuildable {
 
-    func build() -> Routing {
+    func build() -> ViewControllable {
         let dependencyProvider = UpdateOperatingSystemDependencyProvider(dependency: dependency)
-        let viewController = UpdateOperatingSystemViewController(theme: dependencyProvider.dependency.theme)
+        let viewController = UpdateOperatingSystemViewController(theme: dependencyProvider.dependency.theme,
+                                                                 interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream,
+                                                                 enableSettingBuilder: dependencyProvider.dependency.enableSettingBuilder)
 
-        return UpdateOperatingSystemRouter(viewController: viewController)
+        return viewController
     }
 }
