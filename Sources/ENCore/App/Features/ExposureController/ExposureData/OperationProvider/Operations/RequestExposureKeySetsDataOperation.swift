@@ -127,7 +127,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                 self.logDebug("KeySet: Creating ignored keysets failed ")
             }, onCompleted: {
                 self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
-            })
+                })
             .compactMap { _ in () }
     }
 
