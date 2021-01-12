@@ -5,14 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import NotificationCenter
-
-protocol ExposureDataOperation {
-    associatedtype Result
-
-    func execute() -> AnyPublisher<Result, ExposureDataError>
-}
 
 /// @mockable
 protocol ExposureDataOperationProvider {

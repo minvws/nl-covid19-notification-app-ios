@@ -21,8 +21,6 @@ packages:
     path: vendor/RxSwift
   RxRelay:
     path: vendor/RxSwift
-  RxCombine:
-    path: vendor/RxCombine
 targets:
   EN:
     dependencies:
@@ -110,7 +108,6 @@ targets:
       - package: SnapKit
       - package: Lottie
       - package: Reachability
-      - package: RxCombine
       - framework: ExposureNotification.framework
         optional: true
       - framework: vendor/OpenSSL-for-iPhone/openssl.framework

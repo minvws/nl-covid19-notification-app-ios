@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import RxSwift
 import SafariServices
@@ -118,7 +117,6 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let dataController: ExposureDataControlling
-    private var disposeBag = Set<AnyCancellable>()
     private var rxDisposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
