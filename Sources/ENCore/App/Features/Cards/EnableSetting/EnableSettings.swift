@@ -89,7 +89,7 @@ struct EnableSettingModel {
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
                                           action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotifications137Step2),
-                                          action: .custom(image: Image.named("ExposureNotifications"), description: .enableSettingsExposureNotifications137Step2ActionTitle, showChevron: true, showSwitch: false))
+                                          action: .custom(image: .exposureNotifications, description: .enableSettingsExposureNotifications137Step2ActionTitle, showChevron: true, showSwitch: false))
 
             let step3 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotifications137Step3),
                                           action: .toggle(description: .enableSettingsExposureNotifications137Step3ActionTitle))
@@ -112,9 +112,9 @@ struct EnableSettingModel {
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow1),
-                                          action: .custom(image: Image.named("SettingsIcon"), description: .enableBluetoothSettingTitleSettingRow1, showChevron: false, showSwitch: false))
+                                          action: .custom(image: .settingsIcon, description: .enableBluetoothSettingTitleSettingRow1, showChevron: false, showSwitch: false))
             let step2 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow2),
-                                          action: .custom(image: Image.named("BluetoothIcon"), description: .enableBluetoothSettingTitleSettingRow2, showChevron: true, showSwitch: false))
+                                          action: .custom(image: .bluetoothIcon, description: .enableBluetoothSettingTitleSettingRow2, showChevron: true, showSwitch: false))
             let step3 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow3),
                                           action: .toggle(description: .enableBluetoothSettingTitleSettingRow3))
 
@@ -135,7 +135,7 @@ struct EnableSettingModel {
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep1),
                                           action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep2),
-                                          action: .custom(image: Image.named("Notification"), description: .enableSettingsLocalNotificationsStep2ActionTitle, showChevron: true, showSwitch: false))
+                                          action: .custom(image: .notification, description: .enableSettingsLocalNotificationsStep2ActionTitle, showChevron: true, showSwitch: false))
             let step3 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep3),
                                           action: .toggle(description: .enableSettingsLocalNotificationsStep3ActionTitle))
 
@@ -154,9 +154,9 @@ struct EnableSettingModel {
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.updateSoftwareOSDetailStep1),
-                                          action: .custom(image: Image.named("SettingsIcon"), description: .updateSoftwareOSDetailStep1Detail, showChevron: false, showSwitch: false))
+                                          action: .custom(image: .settingsIcon, description: .updateSoftwareOSDetailStep1Detail, showChevron: false, showSwitch: false))
             let step2 = EnableSettingStep(description: fromHtml(.updateSoftwareOSDetailStep2),
-                                          action: .custom(image: Image.named("SettingsPlain"), description: .updateSoftwareOSDetailStep2Detail, showChevron: true, showSwitch: false))
+                                          action: .custom(image: .settingsPlain, description: .updateSoftwareOSDetailStep2Detail, showChevron: true, showSwitch: false))
             let step3 = EnableSettingStep(description: fromHtml(.updateSoftwareOSDetailStep3),
                                           action: .custom(image: nil, description: .updateSoftwareOSDetailStep3Detail, showChevron: true, showSwitch: false))
 
@@ -180,7 +180,7 @@ struct EnableSettingModel {
             let step1 = EnableSettingStep(description: fromHtml(.moreInformationSettingsStep1),
                                           action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.moreInformationSettingsStep2),
-                                          action: .custom(image: Image.named("MobileData"), description: .moreInformationSettingsStep2RowTitle, showChevron: false, showSwitch: true))
+                                          action: .custom(image: .mobileData, description: .moreInformationSettingsStep2RowTitle, showChevron: false, showSwitch: true))
             return .init(title: .moreInformationSettingsTitle,
                          steps: [step1, step2],
                          action: nil,
