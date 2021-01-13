@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import ENFoundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -25,12 +25,6 @@ class TestCase: XCTestCase {
     override func setUp() {
         super.setUp()
         SnapshotTesting.diffTool = "ksdiff"
-    }
-
-    override func tearDown() {
-        disposeBag.forEach { $0.cancel() }
-
-        super.tearDown()
     }
 
     func snapshots(
@@ -63,15 +57,5 @@ class TestCase: XCTestCase {
                         file: file,
                         testName: testName + localization,
                         line: line)
-    }
-
-    // MARK: - Private
-
-    fileprivate var disposeBag = Set<AnyCancellable>()
-}
-
-extension AnyCancellable {
-    func disposeOnTearDown(of testCase: TestCase) {
-        store(in: &testCase.disposeBag)
     }
 }
