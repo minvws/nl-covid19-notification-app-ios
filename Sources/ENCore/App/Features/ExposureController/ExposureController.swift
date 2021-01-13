@@ -403,6 +403,7 @@ final class ExposureController: ExposureControlling, Logging {
             self.shouldAppUpdate { updateInformation in
 
                 guard updateInformation.shouldUpdate, let appVersionInformation = updateInformation.versionInformation else {
+                    observer.onCompleted()
                     return
                 }
 
@@ -415,6 +416,7 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.sendNotification(content: content, identifier: .appUpdateRequired) { didSend in
                     self.logDebug("Did send local notification `\(content)`: \(didSend)")
+                    observer.onCompleted()
                 }
             }
 
