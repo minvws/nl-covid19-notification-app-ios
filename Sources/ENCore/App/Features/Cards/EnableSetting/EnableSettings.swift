@@ -58,7 +58,7 @@ struct EnableSettingModel {
     let title: String
     let steps: [EnableSettingStep]
     let action: EnableSettingAction?
-    let actionTitle: String
+    let actionTitle: String?
 
     static var enableExposureNotifications: (Theme) -> EnableSettingModel {
         return { theme in
@@ -166,7 +166,7 @@ struct EnableSettingModel {
             return .init(title: .updateSoftwareOSDetailTitle,
                          steps: [step1, step2, step3, step4],
                          action: nil,
-                         actionTitle: "")
+                         actionTitle: nil)
         }
     }
 

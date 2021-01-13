@@ -8,6 +8,7 @@
 import ENFoundation
 import Foundation
 import RxSwift
+import SnapKit
 import UIKit
 
 final class EnableSettingViewController: ViewController, UIAdaptivePresentationControllerDelegate {
@@ -126,6 +127,9 @@ private final class EnableSettingView: View {
         addSubview(button)
     }
 
+    private var buttonToBottomConstraint: Constraint?
+    private var contentToBottomConstraint: Constraint?
+
     override func setupConstraints() {
         super.setupConstraints()
 
@@ -146,12 +150,14 @@ private final class EnableSettingView: View {
             make.top.equalTo(scrollView.snp.bottom).offset(16)
             make.height.equalTo(48)
 
-            constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
+            buttonToBottomConstraint = constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
         }
 
         scrollView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(safeAreaLayoutGuide)
             make.top.equalTo(navigationBar.snp.bottom).offset(8)
+
+            contentToBottomConstraint = constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
         }
     }
 
@@ -159,6 +165,10 @@ private final class EnableSettingView: View {
 
     fileprivate func update(model: EnableSettingModel, actionCompletion: @escaping () -> ()) {
         titleLabel.text = model.title
+
+        buttonToBottomConstraint?.isActive = model.action != nil
+        contentToBottomConstraint?.isActive = model.action == nil
+
         if let action = model.action {
             button.isHidden = false
             button.setTitle(model.actionTitle, for: .normal)
