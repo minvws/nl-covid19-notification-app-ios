@@ -62,4 +62,14 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
 
         snapshots(matching: viewController)
     }
+
+    func test_updateOperatingSystem() {
+        viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
+                                                     theme: theme,
+                                                     setting: .updateOperatingSystem,
+                                                     exposureStateStream: exposureStateStream,
+                                                     environmentController: environmentController)
+
+        snapshots(matching: viewController)
+    }
 }

@@ -149,15 +149,11 @@ private final class EnableSettingView: View {
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(scrollView.snp.bottom).offset(16)
             make.height.equalTo(48)
-
-            buttonToBottomConstraint = constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
         }
 
         scrollView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(safeAreaLayoutGuide)
             make.top.equalTo(navigationBar.snp.bottom).offset(8)
-
-            contentToBottomConstraint = constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
         }
     }
 
@@ -174,6 +170,14 @@ private final class EnableSettingView: View {
             button.setTitle(model.actionTitle, for: .normal)
             button.action = {
                 action.action(actionCompletion)
+            }
+
+            button.snp.makeConstraints { make in
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
+            }
+        } else {
+            scrollView.snp.makeConstraints { make in
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
             }
         }
 

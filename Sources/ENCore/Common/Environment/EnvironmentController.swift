@@ -33,8 +33,7 @@ enum SupportedENAPIVersion {
 class EnvironmentController: EnvironmentControlling {
 
     var supportsExposureNotification: Bool {
-        return false
-//        return maximumSupportedExposureNotificationVersion != .unsupported
+        return maximumSupportedExposureNotificationVersion != .unsupported
     }
 
     var isiOS137orHigher: Bool {

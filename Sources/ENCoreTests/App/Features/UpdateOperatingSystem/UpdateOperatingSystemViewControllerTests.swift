@@ -15,6 +15,7 @@ final class UpdateOperatingSystemViewControllerTests: TestCase {
 
     private var viewController: UpdateOperatingSystemViewController!
     private var mockInterfaceOrientationStream: InterfaceOrientationStreamingMock!
+    private var mockEnableSettingsBuilder: EnableSettingBuildableMock!
 
     // MARK: - Setup
 
@@ -23,12 +24,14 @@ final class UpdateOperatingSystemViewControllerTests: TestCase {
 
         mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
         mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        mockEnableSettingsBuilder = EnableSettingBuildableMock()
 
         recordSnapshots = false
 
         viewController = UpdateOperatingSystemViewController(
             theme: theme,
-            interfaceOrientationStream: mockInterfaceOrientationStream)
+            interfaceOrientationStream: mockInterfaceOrientationStream,
+            enableSettingBuilder: mockEnableSettingsBuilder)
     }
 
     // MARK: - Tests
