@@ -349,12 +349,14 @@ final class ExposureController: ExposureControlling, Logging {
             guard status != .active else {
                 self.dataController.setLastENStatusCheckDate(now)
                 self.logDebug("`exposureNotificationStatusCheck` skipped as it is `active`")
+                observer.onCompleted()
                 return Disposables.create()
             }
 
             guard let lastENStatusCheckDate = self.dataController.lastENStatusCheckDate else {
                 self.dataController.setLastENStatusCheckDate(now)
                 self.logDebug("No `lastENStatusCheck`, skipping")
+                observer.onCompleted()
                 return Disposables.create()
             }
 
@@ -362,6 +364,7 @@ final class ExposureController: ExposureControlling, Logging {
 
             guard lastENStatusCheckDate.advanced(by: timeInterval) < Date() else {
                 self.logDebug("`exposureNotificationStatusCheck` skipped as it hasn't been 24h")
+                observer.onCompleted()
                 return Disposables.create()
             }
 
@@ -375,6 +378,7 @@ final class ExposureController: ExposureControlling, Logging {
 
             self.sendNotification(content: content, identifier: .enStatusDisabled) { didSend in
                 self.logDebug("Did send local notification `\(content)`: \(didSend)")
+                observer.onCompleted()
             }
 
             return Disposables.create()
