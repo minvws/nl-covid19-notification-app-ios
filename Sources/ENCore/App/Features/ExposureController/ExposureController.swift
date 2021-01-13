@@ -431,20 +431,24 @@ final class ExposureController: ExposureControlling, Logging {
 
             guard let lastAppLaunch = self.dataController.lastAppLaunchDate else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastAppLaunchDate`")
+                observer.onCompleted()
                 return Disposables.create()
             }
             guard let lastExposure = self.dataController.lastExposure else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastExposureDate`")
+                observer.onCompleted()
                 return Disposables.create()
             }
 
             guard let lastUnseenExposureNotificationDate = self.dataController.lastUnseenExposureNotificationDate else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastUnseenExposureNotificationDate`")
+                observer.onCompleted()
                 return Disposables.create()
             }
 
             guard lastAppLaunch < lastUnseenExposureNotificationDate else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as the app has been opened after the notification")
+                observer.onCompleted()
                 return Disposables.create()
             }
 
@@ -452,11 +456,13 @@ final class ExposureController: ExposureControlling, Logging {
 
             guard lastUnseenExposureNotificationDate.advanced(by: notificationThreshold) < Date() else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h after initial notification")
+                observer.onCompleted()
                 return Disposables.create()
             }
 
             guard lastAppLaunch.advanced(by: notificationThreshold) < Date() else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
+                observer.onCompleted()
                 return Disposables.create()
             }
 
@@ -471,6 +477,7 @@ final class ExposureController: ExposureControlling, Logging {
 
             self.sendNotification(content: content, identifier: .exposure) { didSend in
                 self.logDebug("Did send local notification `\(content)`: \(didSend)")
+                observer.onCompleted()
             }
 
             return Disposables.create()
