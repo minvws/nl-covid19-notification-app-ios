@@ -44,7 +44,7 @@ final class RootRouterTests: XCTestCase {
         }
 
         exposureController.activateHandler = { _ in
-            return Just(()).eraseToAnyPublisher()
+            .empty()
         }
 
         exposureController.updateTreatmentPerspectiveHandler = {

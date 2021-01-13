@@ -264,12 +264,8 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func activateExposureController(inBackgroundMode: Bool) -> Observable<()> {
-        return .create { (observer) -> Disposable in
-            self.exposureController.activate(inBackgroundMode: inBackgroundMode)
-                .subscribe()
-                .disposed(by: self.disposeBag)
-            return Disposables.create()
-        }
+        return self.exposureController.activate(inBackgroundMode: inBackgroundMode)
+            .andThen(Observable.just(()))
     }
 
     private func processUpdate() -> Observable<()> {
@@ -280,14 +276,12 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func processENStatusCheck() -> Observable<()> {
         logDebug("Background: Exposure Notification Status Check Function Called")
-
         return exposureController
             .exposureNotificationStatusCheck()
     }
 
     private func appUpdateRequiredCheck() -> Observable<()> {
         logDebug("Background: App Update Required Check Function Called")
-
         return exposureController
             .sendNotificationIfAppShouldUpdate()
     }
@@ -315,13 +309,13 @@ final class BackgroundController: BackgroundControlling, Logging {
 
             guard self.isExposureManagerActive else {
                 self.logDebug("ExposureManager inactive - Not handling processDecoyRegisterAndStopKeys")
-                observer.onError(ExposureDataError.internalError)
+                observer.onCompleted()
                 return Disposables.create()
             }
 
             guard self.dataController.canProcessDecoySequence else {
                 self.logDebug("Not running decoy `/register` Process already run today")
-                observer.onError(ExposureDataError.internalError)
+                observer.onCompleted()
                 return Disposables.create()
             }
 
