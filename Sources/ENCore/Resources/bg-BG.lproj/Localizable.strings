@@ -6,10 +6,10 @@
 "update.software.os.detail.step1.detail" = "Настройки";
 "update.software.os.detail.step2.detail" = "Общи";
 "update.software.os.detail.step3.detail" = "Актуализация на софтуера";
-"update.software.os.detail.step1" = "1. Отвори Настройки на телефона си чрез натискане на копчето по-долу";
-"update.software.os.detail.step2" = "2. Отиди на ‘Общи’";
-"update.software.os.detail.step3" = "3. Отиди на ‘Актуализация на софтуера’";
-"update.software.os.detail.step4" = "4. Избери ‘Свали и инсталирай’";
+"update.software.os.detail.step1" = "Отвори <b>Настройки</b> на телефона си";
+"update.software.os.detail.step2" = "Отиди на ‘Общи’";
+"update.software.os.detail.step3" = "Отиди на ‘Актуализация на софтуера’";
+"update.software.os.detail.step4" = "Избери ‘Свали и инсталирай’";
 "update.button.update" = "Актуализиране";
 
 

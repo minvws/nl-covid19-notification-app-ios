@@ -6,10 +6,10 @@
 "update.software.os.detail.step1.detail" = "Ajustes";
 "update.software.os.detail.step2.detail" = "General";
 "update.software.os.detail.step3.detail" = "Actualización de software";
-"update.software.os.detail.step1" = "1. Abre los Ajustes de tu teléfono pulsando el siguiente botón";
-"update.software.os.detail.step2" = "2. Ve a \"General\"";
-"update.software.os.detail.step3" = "3. Ve a \"Actualización de software\"";
-"update.software.os.detail.step4" = "4. Elige \"Descargar e instalar\"";
+"update.software.os.detail.step1" = "Abre los <b>Ajustes</b> de tu teléfono";
+"update.software.os.detail.step2" = "Ve a \"General\"";
+"update.software.os.detail.step3" = "Ve a \"Actualización de software\"";
+"update.software.os.detail.step4" = " Elige \"Descargar e instalar\"";
 "update.button.update" = "Actualizar";
 
 

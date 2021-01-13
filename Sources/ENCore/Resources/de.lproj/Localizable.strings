@@ -6,10 +6,10 @@
 "update.software.os.detail.step1.detail" = "Einstellungen";
 "update.software.os.detail.step2.detail" = "Allgemein";
 "update.software.os.detail.step3.detail" = "Softwareupdate";
-"update.software.os.detail.step1" = "1. Öffnen Sie die Einstellungen auf Ihrem Telefon über nachstehende Schaltfläche.";
-"update.software.os.detail.step2" = "2. Gehen Sie zu ‘Allgemein’.";
-"update.software.os.detail.step3" = "3. Gehen Sie zu ‘Softwareupdate’.";
-"update.software.os.detail.step4" = "4. Wählen Sie ‘Laden und installieren’.";
+"update.software.os.detail.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon.";
+"update.software.os.detail.step2" = "Gehen Sie zu ‘Allgemein’.";
+"update.software.os.detail.step3" = "Gehen Sie zu ‘Softwareupdate’.";
+"update.software.os.detail.step4" = "Wählen Sie ‘Laden und installieren’.";
 "update.button.update" = "Aktualisieren";
 
 

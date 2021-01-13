@@ -6,10 +6,10 @@
 "update.software.os.detail.step1.detail" = "Configurări";
 "update.software.os.detail.step2.detail" = "General";
 "update.software.os.detail.step3.detail" = "Actualizare software";
-"update.software.os.detail.step1" = "Accesați Configurări pe telefonul dvs. folosind butonul de mai jos";
+"update.software.os.detail.step1" = "Deschideți <b>Configurări</b> pe telefonul dvs.";
 "update.software.os.detail.step2" = "Mergeți la \"General\"";
-"update.software.os.detail.step3" = "3. Apăsați pe \"Actualizare software\"";
-"update.software.os.detail.step4" = "4. Apăsați pe \"Descărcare și instalare\"";
+"update.software.os.detail.step3" = "Apăsați pe \"Actualizare software\"";
+"update.software.os.detail.step4" = "Apăsați pe \"Descărcare și instalare\"";
 "update.button.update" = "Actualizare";
 
 

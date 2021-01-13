@@ -6,10 +6,11 @@
 "update.software.os.detail.step1.detail" = "Paramètres";
 "update.software.os.detail.step2.detail" = "Généralités";
 "update.software.os.detail.step3.detail" = "Mise à jour du logiciel";
-"update.software.os.detail.step1" = "1. Ouvrez Paramètres sur votre téléphone via le bouton ci-dessous";
-"update.software.os.detail.step2" = "2. Allez à \"Généralités\"";
-"update.software.os.detail.step3" = "3. Allez à \"Mise à jour du logiciel\"";
-"update.software.os.detail.step4" = "4. Sélectionnez \"Télécharger et installer\"";
+"update.software.os.detail.step1" = "Ouvrez <b>Paramètres</b> sur votre téléphone
+";
+"update.software.os.detail.step2" = "Allez à \"Généralités\"";
+"update.software.os.detail.step3" = "Allez à \"Mise à jour du logiciel\"";
+"update.software.os.detail.step4" = "Sélectionnez \"Télécharger et installer\"";
 "update.button.update" = "Mettre à jour";
 
 

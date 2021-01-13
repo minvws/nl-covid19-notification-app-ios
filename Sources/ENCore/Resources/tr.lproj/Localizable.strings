@@ -6,12 +6,11 @@
 "update.software.os.detail.step1.detail" = "Ayarlar";
 "update.software.os.detail.step2.detail" = "Genel";
 "update.software.os.detail.step3.detail" = "Yazılım güncellemesi";
-"update.software.os.detail.step1" = "1. Aşağıdaki düğmeyi kullanarak telefonunuzda ayarları açın";
-"update.software.os.detail.step2" = "2. \"Genel\" e gidin";
-"update.software.os.detail.step3" = "3. \"Yazılım güncellemesi\" ne gidin";
-"update.software.os.detail.step4" = "4. \"İndir ve yükle\" yi seçin";
+"update.software.os.detail.step1" = "Telefonunuzdaki <b>ayarlar</b>ı açın";
+"update.software.os.detail.step2" = "\"Genel\" e gidin";
+"update.software.os.detail.step3" = "\"Yazılım güncellemesi\" ne gidin";
+"update.software.os.detail.step4" = "\"İndir ve yükle\" yi seçin";
 "update.button.update" = "Güncellemek";
-
 
 "moreInformation.cell.settings.title" = "Ayarlar";
 "moreInformation.cell.settings.subtitle" = "Ayarlarınızı mobil veri kullanımı için uyarlayın";
