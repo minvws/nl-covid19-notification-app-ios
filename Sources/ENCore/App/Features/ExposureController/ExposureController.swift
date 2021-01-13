@@ -124,7 +124,9 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func getPadding() -> Single<Padding> {
-        return dataController.getPadding()
+        return dataController
+            .getPadding()
+            .asSingle()
     }
 
     func refreshStatus() {

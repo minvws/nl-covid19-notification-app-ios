@@ -198,7 +198,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                 return Disposables.create()
             }
 
-            strongSelf.rxGetPadding()
+            strongSelf.getPadding()
                 .flatMap { (padding: Padding) in
                     return strongSelf.operationProvider
                         .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
@@ -240,7 +240,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func requestLabConfirmationKey() -> Observable<LabConfirmationKey> {
-        rxGetPadding()
+        getPadding()
             .flatMap { (padding: Padding) in
                 self.operationProvider
                     .requestLabConfirmationKeyOperation(padding: padding)
@@ -249,7 +249,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()> {
-        rxGetPadding()
+        getPadding()
             .flatMap { padding in
                 self.operationProvider
                     .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
@@ -285,16 +285,16 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .asSingle()
     }
 
-    func getPadding() -> Single<Padding> {
-        requestApplicationConfiguration()
-            .map { applicationConfiguration in
-                return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
-                               maximumRequestSize: applicationConfiguration.requestMaximumSize)
-            }
-            .asSingle()
-    }
+//    func getPadding() -> Single<Padding> {
+//        requestApplicationConfiguration()
+//            .map { applicationConfiguration in
+//                return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
+//                               maximumRequestSize: applicationConfiguration.requestMaximumSize)
+//            }
+//            .asSingle()
+//    }
 
-    func rxGetPadding() -> Observable<Padding> {
+    func getPadding() -> Observable<Padding> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
