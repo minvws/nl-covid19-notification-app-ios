@@ -525,7 +525,7 @@ final class ExposureControllerTests: TestCase {
         controller
             .updateAndProcessPendingUploads()
             .subscribe(onError: { error in
-                XCTAssertEqual(error as? ExposureManagerError, .notAuthorized)
+                XCTAssertEqual(error as? ExposureDataError, .notAuthorized)
                 exp.fulfill()
             }, onCompleted: {
                 XCTFail()
