@@ -286,7 +286,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     private func appUpdateRequiredCheck() -> Observable<()> {
         logDebug("Background: App Update Required Check Function Called")
         return exposureController
-            .sendNotificationIfAppShouldUpdate()
+            .sendNotificationIfAppShouldUpdate().do { error in
+                self.logDebug("Background: App Update Required Check Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("Background: App Update Required Check Completed")
+            }
     }
 
     private func updateTreatmentPerspective() -> Observable<()> {
