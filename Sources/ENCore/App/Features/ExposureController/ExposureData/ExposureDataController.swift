@@ -240,15 +240,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .asSingle()
     }
 
-//    func getPadding() -> Single<Padding> {
-//        requestApplicationConfiguration()
-//            .map { applicationConfiguration in
-//                return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
-//                               maximumRequestSize: applicationConfiguration.requestMaximumSize)
-//            }
-//            .asSingle()
-//    }
-
     func getPadding() -> Observable<Padding> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
