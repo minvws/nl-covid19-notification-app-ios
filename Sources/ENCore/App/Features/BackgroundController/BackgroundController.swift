@@ -243,8 +243,8 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("Background: starting refresh task")
 
-        Observable.from(sequence)
-            .flatMap { $0 }
+        Observable.from(sequence.compactMap { $0 })
+            .merge(maxConcurrent: 1)
             .toArray()
             .subscribe { _ in
                 // Note: We ignore the response
