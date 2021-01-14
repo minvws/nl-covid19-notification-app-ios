@@ -308,7 +308,7 @@ final class ExposureController: ExposureControlling, Logging {
         logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
         guard exposureManager.authorizationStatus == .authorized else {
-            return .error(ExposureManagerError.notAuthorized)
+            return .error(ExposureDataError.notAuthorized)
         }
 
         logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState?.activeState)), activated before: \(isActivated)")
