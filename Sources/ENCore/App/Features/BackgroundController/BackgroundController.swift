@@ -272,6 +272,11 @@ final class BackgroundController: BackgroundControlling, Logging {
         logDebug("Background: Process Update Function Called")
         return exposureController
             .updateAndProcessPendingUploads()
+            .do { error in
+                self.logDebug("Background: Process Update Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("Background: Process Update Completed")
+            }
     }
 
     private func processENStatusCheck() -> Observable<()> {
