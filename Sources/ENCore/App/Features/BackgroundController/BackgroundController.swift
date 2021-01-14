@@ -351,6 +351,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 let r = self.randomNumberGenerator.randomFloat(in: self.configuration.decoyProbabilityRange)
                 guard r < decoyProbability else {
                     self.logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
+                    observer.onCompleted()
                     return
                 }
 
