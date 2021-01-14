@@ -89,26 +89,15 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Observable<()> {
-        return .create { (observer) -> Disposable in
-            self.requestApplicationConfiguration()
-                .flatMap { _ in
-                    self.fetchAndStoreExposureKeySets().catch { _ in
-                        self.processStoredExposureKeySets(exposureManager: exposureManager)
-                    }
-                }
-                .flatMap { _ in
+        self.requestApplicationConfiguration()
+            .flatMap { _ in
+                self.fetchAndStoreExposureKeySets().catch { _ in
                     self.processStoredExposureKeySets(exposureManager: exposureManager)
                 }
-                .subscribe(onError: { error in
-                    let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
-                    observer.onError(convertedError)
-                }, onCompleted: {
-                    observer.onCompleted()
-                    })
-                .disposed(by: self.disposeBag)
-
-            return Disposables.create()
-        }
+            }
+            .flatMap { _ in
+                self.processStoredExposureKeySets(exposureManager: exposureManager)
+            }
     }
 
     var lastExposure: ExposureReport? {
