@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
 import RxSwift
 
@@ -41,15 +40,15 @@ protocol ExposureDataControlling: AnyObject {
     var canProcessDecoySequence: Bool { get }
 
     func removeLastExposure() -> Completable
-    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Observable<()>
     func setLastENStatusCheckDate(_ date: Date)
     func setLastAppLaunchDate(_ date: Date)
     func clearLastUnseenExposureNotificationDate()
 
     // MARK: - Lab Flow
 
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
-    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
+    func processPendingUploadRequests() -> Observable<()>
+    func processExpiredUploadRequests() -> Observable<()>
     func requestLabConfirmationKey() -> Observable<LabConfirmationKey>
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()>
 
@@ -58,7 +57,7 @@ protocol ExposureDataControlling: AnyObject {
     func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation>
     func isAppDeactivated() -> Observable<Bool>
     func getDecoyProbability() -> Single<Float>
-    func getPadding() -> Single<Padding>
+    func getPadding() -> Observable<Padding>
     func getAppointmentPhoneNumber() -> Observable<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
     func requestTreatmentPerspective() -> Observable<TreatmentPerspective>

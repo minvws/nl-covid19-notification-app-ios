@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
 import RxSwift
 import UserNotifications
@@ -18,7 +17,7 @@ protocol ExposureControlling: AnyObject {
     // MARK: - Setup
 
     @discardableResult
-    func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never>
+    func activate(inBackgroundMode: Bool) -> Completable
     func deactivate()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
@@ -31,7 +30,7 @@ protocol ExposureControlling: AnyObject {
     func refreshStatus()
 
     func updateWhenRequired() -> Completable
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
+    func processPendingUploadRequests() -> Observable<()>
 
     // MARK: - Permissions
 
@@ -40,7 +39,7 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Exposure KeySets
 
-    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError>
+    func fetchAndProcessExposureKeySets() -> Observable<()>
 
     // MARK: - Exposure Notification
 
@@ -72,19 +71,19 @@ protocol ExposureControlling: AnyObject {
     func clearUnseenExposureNotificationDate()
 
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
-    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
+    func updateAndProcessPendingUploads() -> Observable<()>
 
     /// Shows a notification for expired lab key uploads and cleans up the requests
-    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
+    func processExpiredUploadRequests() -> Observable<()>
 
     /// Checks the status of the EN framework for the last 24h
-    func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
+    func exposureNotificationStatusCheck() -> Observable<()>
 
     /// Checks if the app needs to be updated and returns true if it should
     func appShouldUpdateCheck() -> Observable<AppUpdateInformation>
 
     /// Checks if the app needs to be updated and sends a local notification if it should
-    func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never>
+    func sendNotificationIfAppShouldUpdate() -> Observable<()>
 
     /// Updates the treatment perspective message
     func updateTreatmentPerspective() -> Observable<TreatmentPerspective>
@@ -101,7 +100,7 @@ protocol ExposureControlling: AnyObject {
     var seenAnnouncements: [Announcement] { get set }
 
     /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
-    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
+    func lastOpenedNotificationCheck() -> Observable<()>
 }
 
 /// Represents a ConfirmationKey for the Lab Flow
