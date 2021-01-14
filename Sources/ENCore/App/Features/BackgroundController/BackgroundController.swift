@@ -292,7 +292,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     private func updateTreatmentPerspective() -> Observable<()> {
         logDebug("Background: Update Treatment Perspective Message Function Called")
         return self.exposureController
-            .updateTreatmentPerspective().compactMap { _ in () }
+            .updateTreatmentPerspective().compactMap { _ in () }.do { error in
+                self.logDebug("Background: Update Treatment Perspective Message Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("Background: Update Treatment Perspective Message Completed")
+            }
     }
 
     private func processLastOpenedNotificationCheck() -> Observable<()> {
