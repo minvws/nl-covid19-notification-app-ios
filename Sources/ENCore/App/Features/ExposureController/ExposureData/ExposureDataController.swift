@@ -217,26 +217,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func processExpiredUploadRequests() -> Observable<()> {
-        return .create { [weak self] observer in
-
-            guard let strongSelf = self else {
-                observer.onError(ExposureDataError.internalError)
-                return Disposables.create()
-            }
-
-            strongSelf.operationProvider
-                .expiredLabConfirmationNotificationOperation()
-                .execute()
-                .subscribe { manifest in
-                    observer.onNext(manifest)
-                    observer.onCompleted()
-                } onError: { error in
-                    let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
-                    observer.onError(convertedError)
-                }.dispose()
-
-            return Disposables.create()
-        }
+        return operationProvider
+            .expiredLabConfirmationNotificationOperation()
+            .execute()
     }
 
     func requestLabConfirmationKey() -> Observable<LabConfirmationKey> {
