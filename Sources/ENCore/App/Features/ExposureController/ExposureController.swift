@@ -321,9 +321,9 @@ final class ExposureController: ExposureControlling, Logging {
         logDebug("Executing update sequence")
 
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
-        return Observable.from(sequence)
-            // execute them one by one
-            .flatMap { $0 }
+        return Observable.from(sequence.compactMap { $0 })
+            // execute one at the same time
+            .merge(maxConcurrent: 1)
             // collect them
             .toArray()
             // merge
