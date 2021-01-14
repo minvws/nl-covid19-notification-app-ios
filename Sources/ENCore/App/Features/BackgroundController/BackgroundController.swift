@@ -243,7 +243,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("Background: starting refresh task")
 
-        Observable.from(sequence.compactMap { $0 })
+        let disposible = Observable.from(sequence.compactMap { $0 })
             .merge(maxConcurrent: 1)
             .toArray()
             .subscribe { _ in
@@ -253,11 +253,12 @@ final class BackgroundController: BackgroundControlling, Logging {
             } onFailure: { error in
                 self.logError("Background: Error completing sequence \(error.localizedDescription)")
                 task.setTaskCompleted(success: false)
-            }.disposed(by: disposeBag)
+            }
 
         // Handle running out of time
         task.expirationHandler = {
             self.logDebug("Background: refresh task expired")
+            disposible.dispose()
         }
     }
 
