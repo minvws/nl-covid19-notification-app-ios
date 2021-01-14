@@ -280,7 +280,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     private func processENStatusCheck() -> Observable<()> {
         logDebug("Background: Exposure Notification Status Check Function Called")
         return exposureController
-            .exposureNotificationStatusCheck()
+            .exposureNotificationStatusCheck().do { error in
+                self.logDebug("Background: Exposure Notification Status Check Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("Background: Exposure Notification Status Check Completed")
+            }
     }
 
     private func appUpdateRequiredCheck() -> Observable<()> {
