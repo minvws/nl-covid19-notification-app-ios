@@ -251,7 +251,6 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.logDebug("--- Finished Background Refresh ---")
                 task.setTaskCompleted(success: true)
             } onFailure: { error in
-                // Note: We ignore the response
                 self.logError("Background: Error completing sequence \(error.localizedDescription)")
                 task.setTaskCompleted(success: false)
             }.disposed(by: disposeBag)
