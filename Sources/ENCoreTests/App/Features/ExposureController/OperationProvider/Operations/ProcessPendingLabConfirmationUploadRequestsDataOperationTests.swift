@@ -46,7 +46,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
             receivedKeys = keys
             receivedLabConfirmationKey = labConfirmationKey
 
-            return .just(())
+            return .empty()
         }
 
         var receivedNewPendingRequests: [PendingLabConfirmationUploadRequest]!
@@ -87,7 +87,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         }
 
         mockNetworkController.postKeysHandler = { keys, labConfirmationKey, padding in
-            .just(())
+            .empty()
         }
 
         mockStorageController.storeHandler = { _, _, completion in completion(nil) }

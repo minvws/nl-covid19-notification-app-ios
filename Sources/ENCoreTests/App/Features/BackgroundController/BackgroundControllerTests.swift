@@ -67,7 +67,7 @@ final class BackgroundControllerTests: XCTestCase {
             .empty()
         }
         exposureController.updateTreatmentPerspectiveHandler = {
-            .just(TreatmentPerspective.emptyMessage)
+            .empty()
         }
 
         exposureController.lastOpenedNotificationCheckHandler = {
@@ -108,7 +108,7 @@ final class BackgroundControllerTests: XCTestCase {
         }
 
         networkController.stopKeysHandler = { _ in
-            return .just(())
+            return .empty()
         }
 
         let task = MockBGProcessingTask(identifier: .decoyStopKeys)
@@ -190,7 +190,7 @@ final class BackgroundControllerTests: XCTestCase {
         }
 
         networkController.stopKeysHandler = { _ in
-            return .just(())
+            return .empty()
         }
 
         let task = MockBGProcessingTask(identifier: .decoyStopKeys)

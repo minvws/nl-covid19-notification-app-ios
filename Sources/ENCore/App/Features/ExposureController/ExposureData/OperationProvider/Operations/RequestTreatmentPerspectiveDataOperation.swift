@@ -11,7 +11,7 @@ import RxSwift
 
 /// @mockable
 protocol RequestTreatmentPerspectiveDataOperationProtocol {
-    func execute() -> Observable<TreatmentPerspective>
+    func execute() -> Completable
 }
 
 final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperationProtocol, Logging {
@@ -24,7 +24,7 @@ final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiv
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> Observable<TreatmentPerspective> {
+    func execute() -> Completable {
 
         if let manifest = retrieveStoredManifest(),
             let identifier = manifest.resourceBundle {
@@ -33,15 +33,12 @@ final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiv
                 .treatmentPerspective(identifier: identifier)
                 .subscribe(on: MainScheduler.instance)
                 .catch { throw $0.asExposureDataError }
-                .flatMap(store(treatmentPerspective:))
-                .share()
+                .map(store(treatmentPerspective:))
+                .asCompletable()
         }
 
-        if let storedTreatmentPerspective = retrieveStoredTreatmentPerspective() {
-            return .just(storedTreatmentPerspective)
-        }
-
-        return .just(TreatmentPerspective.fallbackMessage)
+        // can't update, just return a success message. We can get the stored treatment perspective from disk later on
+        return .empty()
     }
 
     // MARK: - Private
@@ -54,7 +51,7 @@ final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiv
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)
     }
 
-    private func store(treatmentPerspective: TreatmentPerspective) -> Observable<TreatmentPerspective> {
+    private func store(treatmentPerspective: TreatmentPerspective) -> Completable {
         return .create { (observer) -> Disposable in
 
             self.storageController.store(
@@ -62,10 +59,9 @@ final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiv
                 identifiedBy: ExposureDataStorageKey.treatmentPerspective,
                 completion: { error in
                     if error != nil {
-                        observer.onError(ExposureDataError.internalError)
+                        observer(.error(ExposureDataError.internalError))
                     } else {
-                        observer.onNext(treatmentPerspective)
-                        observer.onCompleted()
+                        observer(.completed)
                     }
                 })
 

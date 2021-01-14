@@ -29,7 +29,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
             receivedKeys = keys
-            return .just(())
+            return .empty()
         }
 
         let keys = createDiagnosisKeys(withHighestRollingStartNumber: 65)
@@ -98,7 +98,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     func test_noKeys_doesReachOutToNetwork() {
 
         networkController.postKeysHandler = { keys, confirmationKey, padding in
-            .just(())
+            .empty()
         }
 
         operation = createOperation(withKeys: [])

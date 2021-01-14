@@ -107,11 +107,11 @@ final class ExposureDataControllerTests: TestCase {
         let treatmentPerspectiveOperationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
         treatmentPerspectiveOperationMock.executeHandler = {
             treatmentPerspectiveOperationCalled.fulfill()
-            return .just(TreatmentPerspective.testData())
+            return .empty()
         }
         mockOperationProvider.requestTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
 
-        sut.requestTreatmentPerspective()
+        sut.updateTreatmentPerspective()
             .subscribe(onCompleted: {
                 streamExpectation.fulfill()
             })
@@ -142,7 +142,7 @@ final class ExposureDataControllerTests: TestCase {
         let uploadOperationMock = UploadDiagnosisKeysDataOperationProtocolMock()
         uploadOperationMock.executeHandler = {
             uploadCalledExpectation.fulfill()
-            return .just(())
+            return .empty()
         }
 
         mockOperationProvider.uploadDiagnosisKeysOperationHandler = { diagnosisKeys, labConfirmationKey, padding in
@@ -203,7 +203,7 @@ final class ExposureDataControllerTests: TestCase {
         mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
 
         sut.getAppointmentPhoneNumber()
-            .subscribe(onNext: { phoneNumber in
+            .subscribe(onSuccess: { phoneNumber in
                 XCTAssertEqual(phoneNumber, "appointmentPhoneNumber")
                 subscriptionExpectation.fulfill()
             })
@@ -242,7 +242,7 @@ final class ExposureDataControllerTests: TestCase {
         let operationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
         operationMock.executeHandler = {
             expectation?.fulfill()
-            return .just(testData)
+            return .empty()
         }
         mockOperationProvider.requestTreatmentPerspectiveDataOperation = operationMock
     }

@@ -81,14 +81,14 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
 
         dataController
             .getAppointmentPhoneNumber()
-            .subscribe(onNext: { exposedPhoneNumber in
+            .subscribe(onSuccess: { exposedPhoneNumber in
                 self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
             })
-            .disposed(by: rxDisposeBag)
+            .disposed(by: disposeBag)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -117,7 +117,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let dataController: ExposureDataControlling
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.requestTestWantsDismissal(shouldDismissViewController: true)

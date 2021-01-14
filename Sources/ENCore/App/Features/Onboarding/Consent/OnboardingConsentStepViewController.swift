@@ -27,7 +27,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     private let onboardingConsentManager: OnboardingConsentManaging
     private let consentStep: OnboardingConsentStep?
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     init(onboardingConsentManager: OnboardingConsentManaging,
          listener: OnboardingConsentListener,
@@ -76,7 +76,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
     }
 
     override func viewDidDisappear(_ animated: Bool) {

@@ -107,15 +107,15 @@ final class ExposureController: ExposureControlling, Logging {
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
         return dataController
             .getAppVersionInformation()
-            .subscribe(onNext: { exposureDataAppVersionInformation in
+            .subscribe(onSuccess: { exposureDataAppVersionInformation in
                 completion(exposureDataAppVersionInformation)
-            }, onError: { _ in
+            }, onFailure: { _ in
                 completion(nil)
-                })
+            })
             .disposed(by: disposeBag)
     }
 
-    func isAppDeactivated() -> Observable<Bool> {
+    func isAppDeactivated() -> Single<Bool> {
         return dataController.isAppDeactivated()
     }
 
@@ -126,7 +126,6 @@ final class ExposureController: ExposureControlling, Logging {
     func getPadding() -> Single<Padding> {
         return dataController
             .getPadding()
-            .asSingle()
     }
 
     func refreshStatus() {
@@ -166,19 +165,19 @@ final class ExposureController: ExposureControlling, Logging {
                 self?.updateStream = nil
             }, onCompleted: { [weak self] in
                 self?.updateStream = nil
-                })
+            })
             .asCompletable()
 
         self.updateStream = updateStream
         return updateStream
     }
 
-    func processExpiredUploadRequests() -> Observable<()> {
+    func processExpiredUploadRequests() -> Completable {
         return dataController
             .processExpiredUploadRequests()
     }
 
-    func processPendingUploadRequests() -> Observable<()> {
+    func processPendingUploadRequests() -> Completable {
         return dataController
             .processPendingUploadRequests()
     }
@@ -221,7 +220,7 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    func fetchAndProcessExposureKeySets() -> Observable<()> {
+    func fetchAndProcessExposureKeySets() -> Completable {
         logDebug("fetchAndProcessExposureKeySets started")
         if let exposureKeyUpdateStream = exposureKeyUpdateStream {
             logDebug("Already fetching")
@@ -232,15 +231,16 @@ final class ExposureController: ExposureControlling, Logging {
         let stream = dataController
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
 
-        stream.subscribe(onError: { error in
-            self.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
-            self.updateStatusStream()
-            self.exposureKeyUpdateStream = nil
-        }, onCompleted: {
+        stream.subscribe(onCompleted: {
             self.logDebug("fetchAndProcessExposureKeySets Completed successfuly")
             self.updateStatusStream()
             self.exposureKeyUpdateStream = nil
-            }).disposed(by: disposeBag)
+        }, onError: { error in
+            self.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
+            self.updateStatusStream()
+            self.exposureKeyUpdateStream = nil
+        })
+            .disposed(by: disposeBag)
 
         exposureKeyUpdateStream = stream
 
@@ -254,7 +254,7 @@ final class ExposureController: ExposureControlling, Logging {
                 self?.updateStatusStream()
             }, onError: { [weak self] _ in
                 self?.updateStatusStream()
-                })
+            })
             .disposed(by: disposeBag)
     }
 
@@ -262,12 +262,12 @@ final class ExposureController: ExposureControlling, Logging {
         dataController
             .requestLabConfirmationKey()
             .subscribe(on: MainScheduler.instance)
-            .subscribe { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 completion(.success(labConfirmationKey))
-            } onError: { error in
+            }, onFailure: { error in
                 let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
                 completion(.failure(convertedError))
-            }.disposed(by: self.disposeBag)
+            }).disposed(by: self.disposeBag)
     }
 
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
@@ -292,7 +292,7 @@ final class ExposureController: ExposureControlling, Logging {
                 default:
                     completion(.inactive)
                 }
-                })
+            })
             .disposed(by: disposeBag)
     }
 
@@ -304,7 +304,7 @@ final class ExposureController: ExposureControlling, Logging {
         dataController.clearLastUnseenExposureNotificationDate()
     }
 
-    func updateAndProcessPendingUploads() -> Observable<()> {
+    func updateAndProcessPendingUploads() -> Completable {
         logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
         guard exposureManager.authorizationStatus == .authorized else {
@@ -313,7 +313,7 @@ final class ExposureController: ExposureControlling, Logging {
 
         logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState?.activeState)), activated before: \(isActivated)")
 
-        let sequence: [Observable<()>] = [
+        let sequence: [Completable] = [
             self.processExpiredUploadRequests(),
             self.processPendingUploadRequests()
         ]
@@ -326,22 +326,17 @@ final class ExposureController: ExposureControlling, Logging {
             .merge(maxConcurrent: 1)
             // collect them
             .toArray()
-            // merge
-            .compactMap { _ in () }
-            // notify the user if required
-            .do { [weak self] _ in
+            .asCompletable()
+            .do(onError: { [weak self] error in
+                self?.logError("Error completing sequence \(error.localizedDescription)")
+            }, onCompleted: { [weak self] in
+                // notify the user if required
                 self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
                 self?.notifyUser24HoursNoCheckIfRequired()
-
-            } onError: { [weak self] error in
-                self?.logError("Error completing sequence \(error.localizedDescription)")
-            }
-            .compactMap { _ in () }
-            .asObservable()
-            .share()
+            })
     }
 
-    func exposureNotificationStatusCheck() -> Observable<()> {
+    func exposureNotificationStatusCheck() -> Completable {
         return .create { (observer) -> Disposable in
             self.logDebug("Exposure Notification Status Check Started")
 
@@ -351,14 +346,14 @@ final class ExposureController: ExposureControlling, Logging {
             guard status != .active else {
                 self.dataController.setLastENStatusCheckDate(now)
                 self.logDebug("`exposureNotificationStatusCheck` skipped as it is `active`")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
             guard let lastENStatusCheckDate = self.dataController.lastENStatusCheckDate else {
                 self.dataController.setLastENStatusCheckDate(now)
                 self.logDebug("No `lastENStatusCheck`, skipping")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
@@ -366,7 +361,7 @@ final class ExposureController: ExposureControlling, Logging {
 
             guard lastENStatusCheckDate.advanced(by: timeInterval) < Date() else {
                 self.logDebug("`exposureNotificationStatusCheck` skipped as it hasn't been 24h")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
@@ -380,28 +375,27 @@ final class ExposureController: ExposureControlling, Logging {
 
             self.sendNotification(content: content, identifier: .enStatusDisabled) { didSend in
                 self.logDebug("Did send local notification `\(content)`: \(didSend)")
-                observer.onCompleted()
+                observer(.completed)
             }
 
             return Disposables.create()
         }
     }
 
-    func appShouldUpdateCheck() -> Observable<AppUpdateInformation> {
+    func appShouldUpdateCheck() -> Single<AppUpdateInformation> {
         return .create { observer in
 
             self.logDebug("appShouldUpdateCheck Started")
 
             self.shouldAppUpdate { updateInformation in
-                observer.onNext(updateInformation)
-                observer.onCompleted()
+                observer(.success(updateInformation))
             }
 
             return Disposables.create()
         }
     }
 
-    func sendNotificationIfAppShouldUpdate() -> Observable<()> {
+    func sendNotificationIfAppShouldUpdate() -> Completable {
         return .create { (observer) -> Disposable in
 
             self.logDebug("sendNotificationIfAppShouldUpdate Started")
@@ -409,7 +403,7 @@ final class ExposureController: ExposureControlling, Logging {
             self.shouldAppUpdate { updateInformation in
 
                 guard updateInformation.shouldUpdate, let appVersionInformation = updateInformation.versionInformation else {
-                    observer.onCompleted()
+                    observer(.completed)
                     return
                 }
 
@@ -422,7 +416,7 @@ final class ExposureController: ExposureControlling, Logging {
 
                 self.sendNotification(content: content, identifier: .appUpdateRequired) { didSend in
                     self.logDebug("Did send local notification `\(content)`: \(didSend)")
-                    observer.onCompleted()
+                    observer(.completed)
                 }
             }
 
@@ -430,33 +424,33 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    func updateTreatmentPerspective() -> Observable<TreatmentPerspective> {
-        dataController.requestTreatmentPerspective()
+    func updateTreatmentPerspective() -> Completable {
+        dataController.updateTreatmentPerspective()
     }
 
-    func lastOpenedNotificationCheck() -> Observable<()> {
+    func lastOpenedNotificationCheck() -> Completable {
         return .create { (observer) -> Disposable in
 
             guard let lastAppLaunch = self.dataController.lastAppLaunchDate else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastAppLaunchDate`")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
             guard let lastExposure = self.dataController.lastExposure else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastExposureDate`")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
             guard let lastUnseenExposureNotificationDate = self.dataController.lastUnseenExposureNotificationDate else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastUnseenExposureNotificationDate`")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
             guard lastAppLaunch < lastUnseenExposureNotificationDate else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as the app has been opened after the notification")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
@@ -464,13 +458,13 @@ final class ExposureController: ExposureControlling, Logging {
 
             guard lastUnseenExposureNotificationDate.advanced(by: notificationThreshold) < Date() else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h after initial notification")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
             guard lastAppLaunch.advanced(by: notificationThreshold) < Date() else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
@@ -485,7 +479,7 @@ final class ExposureController: ExposureControlling, Logging {
 
             self.sendNotification(content: content, identifier: .exposure) { didSend in
                 self.logDebug("Did send local notification `\(content)`: \(didSend)")
-                observer.onCompleted()
+                observer(.completed)
             }
 
             return Disposables.create()
@@ -564,7 +558,7 @@ final class ExposureController: ExposureControlling, Logging {
                 self?.updateStatusStream()
             }, onError: { [weak self] _ in
                 self?.updateStatusStream()
-                })
+            })
             .flatMap { [weak self] (_) -> Completable in
                 return self?
                     .updateWhenRequired() ?? .empty()
@@ -578,7 +572,7 @@ final class ExposureController: ExposureControlling, Logging {
                 self?.updateStatusStream()
             }, onError: { [weak self] _ in
                 self?.updateStatusStream()
-                })
+            })
             .filter { $0 } // only update when internet is active
             .map { [weak self] (_) -> Completable in
                 return self?
@@ -684,10 +678,9 @@ final class ExposureController: ExposureControlling, Logging {
 
         self.dataController
             .upload(diagnosisKeys: keys, labConfirmationKey: labConfirmationKey)
-            .map { _ in return ExposureControllerUploadKeysResult.success }
             .subscribe(on: MainScheduler.instance)
-            .subscribe { result in
-                completion(result)
+            .subscribe {
+                completion(.success)
             } onError: { error in
                 let exposureDataError = error.asExposureDataError
                 completion(mapExposureDataError(exposureDataError))
@@ -728,7 +721,7 @@ final class ExposureController: ExposureControlling, Logging {
     private let exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling
     private var disposeBag = DisposeBag()
-    private var exposureKeyUpdateStream: Observable<()>?
+    private var exposureKeyUpdateStream: Completable?
     private let networkStatusStream: NetworkStatusStreaming
     private var isActivated = false
     private var isPushNotificationsEnabled = false

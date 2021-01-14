@@ -46,7 +46,7 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .subscribe(onNext: { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration as? ExposureRiskConfiguration, storedConfiguration)
                 exp.fulfill()
             })
@@ -79,7 +79,7 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
         }
 
         operation.execute()
-            .subscribe(onNext: { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration as? ExposureRiskConfiguration, networkConfiguration)
                 completionExpectation.fulfill()
             })
@@ -101,7 +101,7 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .subscribe(onError: { error in
+            .subscribe(onFailure: { error in
                 guard case ExposureDataError.internalError = error else {
                     XCTFail("Call expected to return an error but succeeded instead")
                     return

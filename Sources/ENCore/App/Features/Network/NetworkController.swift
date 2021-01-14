@@ -21,20 +21,19 @@ final class NetworkController: NetworkControlling, Logging {
 
     // MARK: - NetworkControlling
 
-    var applicationManifest: Observable<ApplicationManifest> {
-        let observable: Observable<ApplicationManifest> = .create { [weak self] observer in
+    var applicationManifest: Single<ApplicationManifest> {
+        let observable: Single<ApplicationManifest> = .create { [weak self] observer in
             guard let strongSelf = self else {
-                observer.onCompleted()
+                observer(.failure(ExposureDataError.internalError))
                 return Disposables.create()
             }
 
             strongSelf.networkManager.getManifest { result in
                 switch result {
                 case let .failure(error):
-                    observer.onError(error)
+                    observer(.failure(error))
                 case let .success(manifest):
-                    observer.onNext(manifest.asApplicationManifest)
-                    observer.onCompleted()
+                    observer(.success(manifest.asApplicationManifest))
                 }
             }
             return Disposables.create()
@@ -43,15 +42,14 @@ final class NetworkController: NetworkControlling, Logging {
         return observable.observe(on: MainScheduler.instance)
     }
 
-    func treatmentPerspective(identifier: String) -> Observable<TreatmentPerspective> {
+    func treatmentPerspective(identifier: String) -> Single<TreatmentPerspective> {
         return .create { observer in
             self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
                 switch result {
                 case let .failure(error):
-                    observer.onError(error)
+                    observer(.failure(error))
                 case let .success(treatmentPerspective):
-                    observer.onNext(treatmentPerspective)
-                    observer.onCompleted()
+                    observer(.success(treatmentPerspective))
                 }
             }
 
@@ -59,15 +57,14 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration> {
+    func applicationConfiguration(identifier: String) -> Single<ApplicationConfiguration> {
         return .create { (observer) -> Disposable in
             self.networkManager.getAppConfig(appConfig: identifier) { result in
                 switch result {
                 case let .success(configuration):
-                    observer.onNext(configuration.asApplicationConfiguration(identifier: identifier))
-                    observer.onCompleted()
+                    observer(.success(configuration.asApplicationConfiguration(identifier: identifier)))
                 case let .failure(error):
-                    observer.onError(error)
+                    observer(.failure(error))
                 }
             }
 
@@ -75,15 +72,14 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func exposureRiskConfigurationParameters(identifier: String) -> Observable<ExposureRiskConfiguration> {
+    func exposureRiskConfigurationParameters(identifier: String) -> Single<ExposureRiskConfiguration> {
         return .create { observer in
             self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
                 switch result {
                 case let .failure(error):
-                    observer.onError(error)
+                    observer(.failure(error))
                 case let .success(parameters):
-                    observer.onNext(parameters.asExposureRiskConfiguration(identifier: identifier))
-                    observer.onCompleted()
+                    observer(.success(parameters.asExposureRiskConfiguration(identifier: identifier)))
                 }
             }
 
@@ -91,7 +87,7 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func fetchExposureKeySet(identifier: String) -> Observable<(String, URL)> {
+    func fetchExposureKeySet(identifier: String) -> Single<(String, URL)> {
         return .create { (observer) -> Disposable in
 
             let start = CFAbsoluteTimeGetCurrent()
@@ -103,10 +99,9 @@ final class NetworkController: NetworkControlling, Logging {
 
                 switch result {
                 case let .success(keySetURL):
-                    observer.onNext((identifier, keySetURL))
-                    observer.onCompleted()
+                    observer(.success((identifier, keySetURL)))
                 case let .failure(error):
-                    observer.onError(error)
+                    observer(.failure(error))
                 }
             }
 
@@ -114,8 +109,8 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func requestLabConfirmationKey(padding: Padding) -> Observable<LabConfirmationKey> {
-        let observable = Observable<LabConfirmationKey>.create { observer in
+    func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey> {
+        let observable = Single<LabConfirmationKey>.create { observer in
 
             let preRequest = PreRegisterRequest()
 
@@ -126,12 +121,11 @@ final class NetworkController: NetworkControlling, Logging {
 
                 guard case let .success(labInformation) = result,
                     let labConfirmationKey = labInformation.asLabConfirmationKey else {
-                    observer.onError(NetworkError.invalidResponse)
+                    observer(.failure(NetworkError.invalidResponse))
                     return
                 }
 
-                observer.onNext(labConfirmationKey)
-                observer.onCompleted()
+                observer(.success(labConfirmationKey))
             }
 
             return Disposables.create()
@@ -140,7 +134,7 @@ final class NetworkController: NetworkControlling, Logging {
         return observable.subscribe(on: MainScheduler.instance)
     }
 
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Single<()> {
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Completable {
 
         return .create { observer in
 
@@ -152,7 +146,7 @@ final class NetworkController: NetworkControlling, Logging {
                                           padding: generatedPadding)
 
             guard let requestData = try? JSONEncoder().encode(request) else {
-                observer(.failure(NetworkError.encodingError))
+                observer(.error(NetworkError.encodingError))
                 return Disposables.create()
             }
 
@@ -162,11 +156,11 @@ final class NetworkController: NetworkControlling, Logging {
 
             let completion: (NetworkError?) -> () = { error in
                 if let error = error {
-                    observer(.failure(error))
+                    observer(.error(error))
                     return
                 }
 
-                observer(.success(()))
+                observer(.completed)
             }
 
             self.networkManager.postKeys(request: request,
@@ -177,7 +171,7 @@ final class NetworkController: NetworkControlling, Logging {
         }
     }
 
-    func stopKeys(padding: Padding) -> Single<()> {
+    func stopKeys(padding: Padding) -> Completable {
         return .create { observer in
 
             let preRequest = PrePostKeysRequest(keys: [], bucketId: Data())
@@ -188,7 +182,7 @@ final class NetworkController: NetworkControlling, Logging {
                                           padding: generatedPadding)
 
             guard let requestData = try? JSONEncoder().encode(request) else {
-                observer(.failure(NetworkError.encodingError))
+                observer(.error(NetworkError.encodingError))
                 return Disposables.create()
             }
 
@@ -198,11 +192,11 @@ final class NetworkController: NetworkControlling, Logging {
 
             let completion: (NetworkError?) -> () = { error in
                 if let error = error {
-                    observer(.failure(error))
+                    observer(.error(error))
                     return
                 }
 
-                observer(.success(()))
+                observer(.completed)
             }
 
             self.networkManager.postStopKeys(request: request,

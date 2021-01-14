@@ -35,6 +35,8 @@ final class RequestAppManifestDataOperationTests: TestCase {
             if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
                 storageExpectation.fulfill()
                 return try! JSONEncoder().encode(ApplicationConfiguration.testData())
+            } else if (key as? CodableStorageKey<ApplicationManifest>)?.asString == ExposureDataStorageKey.appManifest.asString {
+                return try! JSONEncoder().encode(ApplicationManifest.testData())
             }
 
             return nil
@@ -79,7 +81,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         }
 
         _ = sut.execute()
-            .subscribe(onNext: { manifest in
+            .subscribe(onSuccess: { manifest in
                 XCTAssertEqual(manifest.appConfigurationIdentifier, "SomeIdentifier")
                 streamExpectation.fulfill()
             })
@@ -115,7 +117,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         mockStorageController.storeHandler = { _, _, completion in completion(nil) }
 
         _ = sut.execute()
-            .subscribe(onNext: { manifest in
+            .subscribe(onSuccess: { manifest in
                 XCTAssertEqual(manifest.appConfigurationIdentifier, "ApiManifestConfigurationIdentifier")
                 streamExpectation.fulfill()
             })
@@ -141,7 +143,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         mockNetworkController.applicationManifest = .error(NetworkError.serverNotReachable)
 
         _ = sut.execute()
-            .subscribe(onError: { error in
+            .subscribe(onFailure: { error in
                 XCTAssertEqual(error as? ExposureDataError, ExposureDataError.networkUnreachable)
                 streamExpectation.fulfill()
             })
@@ -166,7 +168,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         mockNetworkController.applicationManifest = .just(apiManifest)
 
         _ = sut.execute()
-            .subscribe(onError: { error in
+            .subscribe(onFailure: { error in
                 XCTAssertEqual(error as? ExposureDataError, ExposureDataError.serverError)
                 streamExpectation.fulfill()
             })

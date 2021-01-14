@@ -20,7 +20,7 @@ extension LabConfirmationKey {
 }
 
 protocol RequestLabConfirmationKeyDataOperationProtocol {
-    func execute() -> Observable<LabConfirmationKey>
+    func execute() -> Single<LabConfirmationKey>
 }
 
 final class RequestLabConfirmationKeyDataOperation: RequestLabConfirmationKeyDataOperationProtocol {
@@ -35,7 +35,7 @@ final class RequestLabConfirmationKeyDataOperation: RequestLabConfirmationKeyDat
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> Observable<LabConfirmationKey> {
+    func execute() -> Single<LabConfirmationKey> {
 
         if let storedConfirmationKey = retrieveStoredKey(), storedConfirmationKey.isValid {
             return .just(storedConfirmationKey)
@@ -50,27 +50,24 @@ final class RequestLabConfirmationKeyDataOperation: RequestLabConfirmationKeyDat
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)
     }
 
-    private func storeReceivedKey(key: LabConfirmationKey) -> Observable<LabConfirmationKey> {
-        let observable = Observable<LabConfirmationKey>.create { observer in
+    private func storeReceivedKey(key: LabConfirmationKey) -> Single<LabConfirmationKey> {
+        return .create { observer in
 
             self.storageController.store(object: key,
                                          identifiedBy: ExposureDataStorageKey.labConfirmationKey,
                                          completion: { error in
                                              if error != nil {
-                                                 observer.onError(ExposureDataError.internalError)
+                                                 observer(.failure(ExposureDataError.internalError))
                                              } else {
-                                                 observer.onNext(key)
-                                                 observer.onCompleted()
+                                                 observer(.success(key))
                                              }
                                          })
 
             return Disposables.create()
         }
-
-        return observable.share()
     }
 
-    private func requestNewKey() -> Observable<LabConfirmationKey> {
+    private func requestNewKey() -> Single<LabConfirmationKey> {
         return networkController
             .requestLabConfirmationKey(padding: padding)
             .catch { error in

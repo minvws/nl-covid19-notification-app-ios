@@ -11,8 +11,8 @@ import RxSwift
 /// @mockable
 protocol ApplicationSignatureControlling {
     func retrieveStoredConfiguration() -> ApplicationConfiguration?
-    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration>
-    func storeSignature(for appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration>
+    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration>
+    func storeSignature(for appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration>
     func retrieveStoredSignature() -> Data?
     func signature(for appConfiguration: ApplicationConfiguration) -> Data?
 }
@@ -31,10 +31,10 @@ final class ApplicationSignatureController: ApplicationSignatureControlling {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration)
     }
 
-    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration> {
+    func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
         return .create { (observer) -> Disposable in
             guard appConfiguration.version > 0, appConfiguration.manifestRefreshFrequency > 0 else {
-                observer.onError(ExposureDataError.serverError)
+                observer(.failure(ExposureDataError.serverError))
                 return Disposables.create()
             }
 
@@ -42,8 +42,7 @@ final class ApplicationSignatureController: ApplicationSignatureControlling {
                 object: appConfiguration,
                 identifiedBy: ExposureDataStorageKey.appConfiguration,
                 completion: { _ in
-                    observer.onNext(appConfiguration)
-                    observer.onCompleted()
+                    observer(.success(appConfiguration))
                 })
 
             return Disposables.create()
@@ -54,17 +53,16 @@ final class ApplicationSignatureController: ApplicationSignatureControlling {
         return storageController.retrieveData(identifiedBy: ExposureDataStorageKey.appConfigurationSignature)
     }
 
-    func storeSignature(for appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration> {
+    func storeSignature(for appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
         return .create { (observer) -> Disposable in
 
             guard let sha = self.signature(for: appConfiguration) else {
-                observer.onError(ExposureDataError.internalError)
+                observer(.failure(ExposureDataError.internalError))
                 return Disposables.create()
             }
 
             self.storageController.store(data: sha, identifiedBy: ExposureDataStorageKey.appConfigurationSignature) { _ in
-                observer.onNext(appConfiguration)
-                observer.onCompleted()
+                observer(.success(appConfiguration))
             }
 
             return Disposables.create()

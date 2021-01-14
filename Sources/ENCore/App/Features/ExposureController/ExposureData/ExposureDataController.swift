@@ -77,27 +77,29 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - ExposureDataControlling
 
-    func requestTreatmentPerspective() -> Observable<TreatmentPerspective> {
+    func updateTreatmentPerspective() -> Completable {
         requestApplicationManifest()
-            .flatMap { _ in
+            .map { _ in
                 self.operationProvider
                     .requestTreatmentPerspectiveDataOperation
                     .execute()
             }
+            .asCompletable()
     }
 
     // MARK: - Exposure Detection
 
-    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Observable<()> {
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable {
         self.requestApplicationConfiguration()
-            .flatMap { _ in
+            .map { _ in
                 self.fetchAndStoreExposureKeySets().catch { _ in
                     self.processStoredExposureKeySets(exposureManager: exposureManager)
                 }
             }
-            .flatMap { _ in
+            .map { _ in
                 self.processStoredExposureKeySets(exposureManager: exposureManager)
             }
+            .asCompletable()
     }
 
     var lastExposure: ExposureReport? {
@@ -156,45 +158,48 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
-    private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Observable<()> {
+    private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Completable {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
-            .flatMap { (configuration) -> Observable<()> in
+            .map { configuration in
                 return self.operationProvider
                     .processExposureKeySetsOperation(exposureManager: exposureManager, configuration: configuration)
                     .execute()
             }
+            .asCompletable()
     }
 
-    private func fetchAndStoreExposureKeySets() -> Observable<()> {
+    private func fetchAndStoreExposureKeySets() -> Completable {
         self.logDebug("ExposureDataController: fetchAndStoreExposureKeySets")
         return requestApplicationManifest()
             .map { (manifest: ApplicationManifest) -> [String] in manifest.exposureKeySetsIdentifiers }
-            .flatMap { exposureKeySetsIdentifiers in
+            .map { exposureKeySetsIdentifiers in
                 self.operationProvider
                     .requestExposureKeySetsOperation(identifiers: exposureKeySetsIdentifiers)
                     .execute()
             }
+            .asCompletable()
     }
 
     // MARK: - LabFlow
 
-    func processPendingUploadRequests() -> Observable<()> {
+    func processPendingUploadRequests() -> Completable {
         return getPadding()
-            .flatMap { (padding: Padding) in
+            .map { (padding: Padding) in
                 return self.operationProvider
                     .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
                     .execute()
             }
+            .asCompletable()
     }
 
-    func processExpiredUploadRequests() -> Observable<()> {
+    func processExpiredUploadRequests() -> Completable {
         return operationProvider
             .expiredLabConfirmationNotificationOperation()
             .execute()
     }
 
-    func requestLabConfirmationKey() -> Observable<LabConfirmationKey> {
+    func requestLabConfirmationKey() -> Single<LabConfirmationKey> {
         getPadding()
             .flatMap { (padding: Padding) in
                 self.operationProvider
@@ -203,25 +208,26 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
 
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()> {
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Completable {
         getPadding()
-            .flatMap { padding in
+            .map { padding in
                 self.operationProvider
                     .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
                     .execute()
             }
+            .asCompletable()
     }
 
     // MARK: - Misc
 
-    func isAppDeactivated() -> Observable<Bool> {
+    func isAppDeactivated() -> Single<Bool> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decativated
             }
     }
 
-    func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation> {
+    func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return ExposureDataAppVersionInformation(
@@ -237,10 +243,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .map { applicationConfiguration in
                 return applicationConfiguration.decoyProbability
             }
-            .asSingle()
     }
 
-    func getPadding() -> Observable<Padding> {
+    func getPadding() -> Single<Padding> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
@@ -274,7 +279,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
-    func getAppointmentPhoneNumber() -> Observable<String> {
+    func getAppointmentPhoneNumber() -> Single<String> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.appointmentPhoneNumber
@@ -304,7 +309,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: true, identifiedBy: ExposureDataStorageKey.firstRunIdentifier, completion: { _ in })
     }
 
-    private func requestApplicationConfiguration() -> Observable<ApplicationConfiguration> {
+    private func requestApplicationConfiguration() -> Single<ApplicationConfiguration> {
         return self.requestApplicationManifest()
             .flatMap {
                 self.operationProvider
@@ -313,11 +318,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
 
-    private func requestApplicationManifest() -> Observable<ApplicationManifest> {
+    private func requestApplicationManifest() -> Single<ApplicationManifest> {
         return operationProvider.requestManifestOperation.execute()
     }
 
-    private func requestExposureRiskConfiguration() -> Observable<ExposureConfiguration> {
+    private func requestExposureRiskConfiguration() -> Single<ExposureConfiguration> {
         requestApplicationManifest()
             .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
             .flatMap { identifier in

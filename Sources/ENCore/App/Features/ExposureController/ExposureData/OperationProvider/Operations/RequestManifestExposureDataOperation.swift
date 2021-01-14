@@ -19,7 +19,7 @@ struct ApplicationManifest: Codable {
 
 /// @mockable
 protocol RequestAppManifestDataOperationProtocol {
-    func execute() -> Observable<ApplicationManifest>
+    func execute() -> Single<ApplicationManifest>
 }
 
 final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProtocol, Logging {
@@ -30,7 +30,7 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
         self.storageController = storageController
     }
 
-    func execute() -> Observable<ApplicationManifest> {
+    func execute() -> Single<ApplicationManifest> {
         let updateFrequency = retrieveManifestUpdateFrequency()
 
         if let manifest = retrieveStoredManifest(), manifest.isValid(forUpdateFrequency: updateFrequency) {
@@ -45,7 +45,6 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
             .subscribe(on: MainScheduler.instance)
             .catch { throw $0.asExposureDataError }
             .flatMap(store(manifest:))
-            .share()
     }
 
     // MARK: - Private
@@ -62,11 +61,11 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)
     }
 
-    private func store(manifest: ApplicationManifest) -> Observable<ApplicationManifest> {
-        let observable: Observable<ApplicationManifest> = .create { observer in
+    private func store(manifest: ApplicationManifest) -> Single<ApplicationManifest> {
+        let observable: Single<ApplicationManifest> = .create { observer in
 
             guard !manifest.appConfigurationIdentifier.isEmpty else {
-                observer.onError(ExposureDataError.serverError)
+                observer(.failure(ExposureDataError.serverError))
                 return Disposables.create()
             }
 
@@ -74,14 +73,13 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
                 object: manifest,
                 identifiedBy: ExposureDataStorageKey.appManifest,
                 completion: { _ in
-                    observer.onNext(manifest)
-                    observer.onCompleted()
+                    observer(.success(manifest))
                 })
 
             return Disposables.create()
         }
 
-        return observable.share()
+        return observable
     }
 
     private let defaultRefreshFrequency = 60 * 4 // 4 hours

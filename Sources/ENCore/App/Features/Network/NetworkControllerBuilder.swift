@@ -10,18 +10,18 @@ import RxSwift
 
 /// @mockable
 protocol NetworkControlling {
-    var applicationManifest: Observable<ApplicationManifest> { get }
+    var applicationManifest: Single<ApplicationManifest> { get }
 
-    func treatmentPerspective(identifier: String) -> Observable<TreatmentPerspective>
+    func treatmentPerspective(identifier: String) -> Single<TreatmentPerspective>
 
-    func applicationConfiguration(identifier: String) -> Observable<ApplicationConfiguration>
+    func applicationConfiguration(identifier: String) -> Single<ApplicationConfiguration>
 
-    func exposureRiskConfigurationParameters(identifier: String) -> Observable<ExposureRiskConfiguration>
-    func fetchExposureKeySet(identifier: String) -> Observable<(String, URL)>
+    func exposureRiskConfigurationParameters(identifier: String) -> Single<ExposureRiskConfiguration>
+    func fetchExposureKeySet(identifier: String) -> Single<(String, URL)>
 
-    func requestLabConfirmationKey(padding: Padding) -> Observable<LabConfirmationKey>
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Single<()>
-    func stopKeys(padding: Padding) -> Single<()>
+    func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey>
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Completable
+    func stopKeys(padding: Padding) -> Completable
 }
 
 /// @mockable

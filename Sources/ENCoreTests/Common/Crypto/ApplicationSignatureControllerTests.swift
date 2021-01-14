@@ -50,9 +50,9 @@ class ApplicationSignatureControllerTests: TestCase {
 
         let exp = expectation(description: "Completion")
         sut.storeAppConfiguration(appConfig)
-            .subscribe(onNext: { _ in
+            .subscribe(onSuccess: { _ in
                 XCTFail("Call expected to return an error but succeeded instead")
-            }, onError: { error in
+            }, onFailure: { error in
                 guard case ExposureDataError.serverError = error else {
                     XCTFail("Call expected to return serverError but returned \(error) instead")
                     return
@@ -71,9 +71,9 @@ class ApplicationSignatureControllerTests: TestCase {
 
         let exp = expectation(description: "Completion")
         sut.storeAppConfiguration(appConfig)
-            .subscribe(onNext: { _ in
+            .subscribe(onSuccess: { _ in
                 XCTFail("Call expected to return an error but succeeded instead")
-            }, onError: { error in
+            }, onFailure: { error in
                 guard case ExposureDataError.serverError = error else {
                     XCTFail("Call expected to return serverError but returned \(error) instead")
                     return
@@ -101,7 +101,7 @@ class ApplicationSignatureControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.storeCallCount, 0)
 
         sut.storeAppConfiguration(appConfig)
-            .subscribe(onNext: { receivedConfiguration in
+            .subscribe(onSuccess: { receivedConfiguration in
                 XCTAssertEqual(receivedConfiguration, appConfig)
                 completionExpectation.fulfill()
             })
@@ -146,7 +146,7 @@ class ApplicationSignatureControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.storeCallCount, 0)
 
         sut.storeSignature(for: appConfig)
-            .subscribe(onNext: { receivedConfiguration in
+            .subscribe(onSuccess: { receivedConfiguration in
                 XCTAssertEqual(receivedConfiguration, appConfig)
                 completionExpectation.fulfill()
             })

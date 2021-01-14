@@ -40,27 +40,27 @@ protocol ExposureDataControlling: AnyObject {
     var canProcessDecoySequence: Bool { get }
 
     func removeLastExposure() -> Completable
-    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Observable<()>
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable
     func setLastENStatusCheckDate(_ date: Date)
     func setLastAppLaunchDate(_ date: Date)
     func clearLastUnseenExposureNotificationDate()
 
     // MARK: - Lab Flow
 
-    func processPendingUploadRequests() -> Observable<()>
-    func processExpiredUploadRequests() -> Observable<()>
-    func requestLabConfirmationKey() -> Observable<LabConfirmationKey>
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Observable<()>
+    func processPendingUploadRequests() -> Completable
+    func processExpiredUploadRequests() -> Completable
+    func requestLabConfirmationKey() -> Single<LabConfirmationKey>
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Completable
 
     // MARK: - Misc
 
-    func getAppVersionInformation() -> Observable<ExposureDataAppVersionInformation>
-    func isAppDeactivated() -> Observable<Bool>
+    func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation>
+    func isAppDeactivated() -> Single<Bool>
     func getDecoyProbability() -> Single<Float>
-    func getPadding() -> Observable<Padding>
-    func getAppointmentPhoneNumber() -> Observable<String>
+    func getPadding() -> Single<Padding>
+    func getAppointmentPhoneNumber() -> Single<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
-    func requestTreatmentPerspective() -> Observable<TreatmentPerspective>
+    func updateTreatmentPerspective() -> Completable
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
     var seenAnnouncements: [Announcement] { get set }
