@@ -191,29 +191,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - LabFlow
 
     func processPendingUploadRequests() -> Observable<()> {
-        return .create { [weak self] observer in
-
-            guard let strongSelf = self else {
-                observer.onError(ExposureDataError.internalError)
-                return Disposables.create()
+        return getPadding()
+            .flatMap { (padding: Padding) in
+                return self.operationProvider
+                    .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
+                    .execute()
             }
-
-            strongSelf.getPadding()
-                .flatMap { (padding: Padding) in
-                    return strongSelf.operationProvider
-                        .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
-                        .execute()
-                }
-                .subscribe { result in
-                    observer.onNext(result)
-                    observer.onCompleted()
-                } onError: { error in
-                    let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
-                    observer.onError(convertedError)
-                }.dispose()
-
-            return Disposables.create()
-        }
     }
 
     func processExpiredUploadRequests() -> Observable<()> {
