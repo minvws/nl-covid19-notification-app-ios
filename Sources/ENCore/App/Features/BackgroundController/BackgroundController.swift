@@ -255,6 +255,8 @@ final class BackgroundController: BackgroundControlling, Logging {
                 task.setTaskCompleted(success: false)
             }
 
+        disposible.disposed(by: disposeBag)
+
         // Handle running out of time
         task.expirationHandler = {
             self.logDebug("Background: refresh task expired")
