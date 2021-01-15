@@ -10,10 +10,7 @@ import Foundation
 import RxSwift
 import UIKit
 
-/// @mockable
-protocol UpdateOperatingSystemViewControllable: ViewControllable {}
-
-final class UpdateOperatingSystemViewController: ViewController, UpdateOperatingSystemViewControllable, EnableSettingListener {
+final class UpdateOperatingSystemViewController: ViewController, EnableSettingListener {
 
     // MARK: - Init
 
