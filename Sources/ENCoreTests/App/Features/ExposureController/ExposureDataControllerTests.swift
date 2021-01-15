@@ -247,7 +247,49 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockProcessExposureKeySetsDataOperation.executeCallCount, 1)
     }
 
+    // MARK: - processPendingUploadRequests
+
+    func test_processPendingUploadRequests() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
+        let mockProcessPendingLabConfirmationUploadRequestsOperation = mockProcessPendingLabConfirmationUploadRequestsDataOperation(in: mockOperationProvider)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.processPendingUploadRequests()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertEqual(mockOperationProvider.processPendingLabConfirmationUploadRequestsOperationCallCount, 1)
+        XCTAssertEqual(mockProcessPendingLabConfirmationUploadRequestsOperation.executeCallCount, 1)
+    }
+
     // MARK: - Private Helper Functions
+
+    @discardableResult
+    private func mockProcessPendingLabConfirmationUploadRequestsDataOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                                                              andExpectation expectation: XCTestExpectation? = nil) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocolMock {
+        let operationMock = ProcessPendingLabConfirmationUploadRequestsDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            expectation?.fulfill()
+            return .empty()
+        }
+        mockOperationProvider.processPendingLabConfirmationUploadRequestsOperationHandler = { _ in
+            operationMock
+        }
+        return operationMock
+    }
 
     @discardableResult
     private func mockProcessExposureKeySetsDataOperationProtocol(in mockOperationProvider: ExposureDataOperationProviderMock,

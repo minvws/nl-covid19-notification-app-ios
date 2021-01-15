@@ -16,6 +16,7 @@ struct PendingLabConfirmationUploadRequest: Codable, Equatable {
     var expiryDate: Date
 }
 
+/// @mockable
 protocol ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {
     func execute() -> Completable
 }

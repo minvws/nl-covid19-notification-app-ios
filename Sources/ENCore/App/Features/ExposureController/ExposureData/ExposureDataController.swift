@@ -157,12 +157,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Completable {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
-            .map { configuration in
+            .flatMapCompletable { configuration in
                 return self.operationProvider
                     .processExposureKeySetsOperation(exposureManager: exposureManager, configuration: configuration)
                     .execute()
             }
-            .asCompletable()
     }
 
     private func fetchAndStoreExposureKeySets() -> Completable {
@@ -182,12 +181,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     func processPendingUploadRequests() -> Completable {
         return getPadding()
-            .map { (padding: Padding) in
+            .flatMapCompletable { (padding: Padding) in
                 return self.operationProvider
                     .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
                     .execute()
             }
-            .asCompletable()
     }
 
     func processExpiredUploadRequests() -> Completable {
@@ -207,12 +205,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Completable {
         getPadding()
-            .map { padding in
+            .flatMapCompletable { padding in
                 self.operationProvider
                     .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
                     .execute()
             }
-            .asCompletable()
     }
 
     // MARK: - Misc
