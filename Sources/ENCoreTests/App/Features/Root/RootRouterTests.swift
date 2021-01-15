@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
 import RxSwift
@@ -48,7 +47,7 @@ final class RootRouterTests: XCTestCase {
         }
 
         exposureController.activateHandler = { _ in
-            return Just(()).eraseToAnyPublisher()
+            .empty()
         }
 
         exposureController.updateTreatmentPerspectiveHandler = {

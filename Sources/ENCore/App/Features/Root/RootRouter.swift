@@ -161,7 +161,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     () // Do nothing
                 }
             })
-            .disposed(by: rxDisposeBag)
+            .disposed(by: disposeBag)
     }
 
     func didBecomeActive() {
@@ -195,7 +195,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController
             .updateWhenRequired()
             .subscribe(onCompleted: {})
-            .disposed(by: rxDisposeBag)
+            .disposed(by: disposeBag)
     }
 
     func didEnterBackground() {
@@ -418,7 +418,16 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
+                guard let strongSelf = self else {
+                    self?.logError("Root Router released before routing")
+                    completion?(false)
+                    return
+                }
+
                 self?.exposureController.activate(inBackgroundMode: false)
+                    .subscribe()
+                    .disposed(by: strongSelf.disposeBag)
+
                 self?.backgroundController.performDecoySequenceIfNeeded()
 
                 completion?(false)
@@ -432,19 +441,27 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     exposureDataError == .internalError ||
                     exposureDataError == .responseCached {
 
+                    guard let strongSelf = self else {
+                        self?.logError("Root Router released before routing")
+                        completion?(false)
+                        return
+                    }
+
                     self?.exposureController.activate(inBackgroundMode: false)
+                        .subscribe()
+                        .disposed(by: strongSelf.disposeBag)
                 }
 
                 completion?(false)
             }
-            .disposed(by: rxDisposeBag)
+            .disposed(by: disposeBag)
     }
 
     private func updateTreatmentPerspective() {
         exposureController
             .updateTreatmentPerspective()
             .subscribe { _ in }
-            .disposed(by: rxDisposeBag)
+            .disposed(by: disposeBag)
     }
 
     private func removeNotificationsFromNotificationsCenter() {
@@ -485,7 +502,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let callGGDBuilder: CallGGDBuildable
     private var callGGDViewController: ViewControllable?
 
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     private let developerMenuBuilder: DeveloperMenuBuildable
     private var developerMenuViewController: ViewControllable?
