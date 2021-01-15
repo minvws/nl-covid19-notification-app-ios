@@ -10,7 +10,6 @@ import RxSwift
 
 struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     let identifier: String
-
     let minimumRiskScope: UInt8
     let attenuationLevelValues: [UInt8]
     let daysSinceLastExposureLevelValues: [UInt8]
