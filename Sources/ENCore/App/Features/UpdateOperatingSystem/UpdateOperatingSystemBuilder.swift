@@ -26,15 +26,23 @@ private final class UpdateOperatingSystemDependencyProvider: DependencyProvider<
     var theme: Theme {
         return dependency.theme
     }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
+    }
+
+    var enableSettingBuilder: EnableSettingBuildable {
+        return dependency.enableSettingBuilder
+    }
 }
 
 final class UpdateOperatingSystemBuilder: Builder<UpdateOperatingSystemDependency>, UpdateOperatingSystemBuildable {
 
     func build() -> ViewControllable {
         let dependencyProvider = UpdateOperatingSystemDependencyProvider(dependency: dependency)
-        let viewController = UpdateOperatingSystemViewController(theme: dependencyProvider.dependency.theme,
-                                                                 interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream,
-                                                                 enableSettingBuilder: dependencyProvider.dependency.enableSettingBuilder)
+        let viewController = UpdateOperatingSystemViewController(theme: dependencyProvider.theme,
+                                                                 interfaceOrientationStream: dependencyProvider.interfaceOrientationStream,
+                                                                 enableSettingBuilder: dependencyProvider.enableSettingBuilder)
 
         return viewController
     }
