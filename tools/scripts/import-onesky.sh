@@ -16,11 +16,11 @@ SOURCE_ROOT="$CURRENT_DIR/../../Sources"
 LANGUAGES=("ar" "en" "bg-BG" "de" "es" "fr" "nl" "pl" "ro" "tr")
 
 for language in ${LANGUAGES[@]}; do
-	ONESKY_LOCALIZABLE="$ONESKY_ROOT/Localizable.strings"
+	ONESKY_LOCALIZABLE="$ONESKY_ROOT/"
 	ORIGIN_LOCALIZABLE="$ONESKY_LOCALIZABLE/$language/Localizable.strings"
 	ENCORE_LOCALIZABLE="$SOURCE_ROOT/ENCore/Resources/${language}.lproj/Localizable.strings"
 	
-	echo "Copying Localizable.strings to \"ENCore/../$language.lproj/Localizable.strings\""
+	echo "Copying Localizable.strings from \"$ORIGIN_LOCALIZABLE\"  to \"ENCore/../$language.lproj/Localizable.strings\""
 	cp "$ORIGIN_LOCALIZABLE" "$ENCORE_LOCALIZABLE"
 	
 	if [ "$language" = "en" ]; then
