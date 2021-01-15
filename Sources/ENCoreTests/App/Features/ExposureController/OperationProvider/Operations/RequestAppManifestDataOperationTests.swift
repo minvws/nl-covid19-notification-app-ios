@@ -102,6 +102,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         let storedManifest = ApplicationManifest.testData(creationDate: date.addingTimeInterval(-twoHours), appConfigurationIdentifier: "SomeIdentifier")
         let apiManifest = ApplicationManifest.testData(creationDate: date.addingTimeInterval(-10), appConfigurationIdentifier: "ApiManifestConfigurationIdentifier")
         let streamExpectation = expectation(description: "stream")
+        let storeExpectation = expectation(description: "storeExpectation")
 
         mockNetworkController.applicationManifest = .just(apiManifest)
 
@@ -114,7 +115,10 @@ final class RequestAppManifestDataOperationTests: TestCase {
             return nil
         }
 
-        mockStorageController.storeHandler = { _, _, completion in completion(nil) }
+        mockStorageController.storeHandler = { _, _, completion in
+            storeExpectation.fulfill()
+            completion(nil)
+        }
 
         _ = sut.execute()
             .subscribe(onSuccess: { manifest in
