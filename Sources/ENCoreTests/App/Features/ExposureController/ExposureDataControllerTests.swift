@@ -101,7 +101,7 @@ final class ExposureDataControllerTests: TestCase {
         let streamExpectation = expectation(description: "stream")
 
         let manifestOperationCalledExpectation = expectation(description: "manifestOperationCalled")
-        mockManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
+        mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
 
         let treatmentPerspectiveOperationCalled = expectation(description: "treatmentPerspectiveOperationCalled")
         let treatmentPerspectiveOperationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
@@ -133,7 +133,7 @@ final class ExposureDataControllerTests: TestCase {
         let streamExpectation = expectation(description: "stream")
 
         let manifestOperationCalledExpectation = expectation(description: "manifestOperationCalled")
-        mockManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
+        mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
 
         let configurationOperationCalledExpectation = expectation(description: "configurationOperationCalled")
         mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: configurationOperationCalledExpectation)
@@ -199,7 +199,7 @@ final class ExposureDataControllerTests: TestCase {
 
         let subscriptionExpectation = expectation(description: "subscription")
 
-        mockManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
         mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
 
         sut.getAppointmentPhoneNumber()
@@ -212,28 +212,110 @@ final class ExposureDataControllerTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    func test_fetchAndProcessExposureKeySets_shouldRequestApplicationConfiguration() {
+
+        let mockExposureManager = ExposureManagingMock()
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+
+        let completionExpectation = expectation(description: "completion")
+
+        let mockManifestOperation = mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        let mockConfigurationOperation = mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
+        let mockRequestExposureKeySetsOperation = mockRequestExposureKeySetsDataOperation(in: mockOperationProvider)
+        let mockRequestExposureConfigurationOperation = mockRequestExposureConfigurationDataOperation(in: mockOperationProvider, withTestData: .testData())
+        let mockProcessExposureKeySetsDataOperation = mockProcessExposureKeySetsDataOperationProtocol(in: mockOperationProvider)
+
+        sut.fetchAndProcessExposureKeySets(exposureManager: mockExposureManager)
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 1, handler: nil)
+
+        // Manifest operation is called multiple times during this action. This is intentional and should not lead to multiple network requests
+        XCTAssertEqual(mockManifestOperation.executeCallCount, 3)
+
+        XCTAssertEqual(mockConfigurationOperation.executeCallCount, 1)
+        XCTAssertEqual(mockRequestExposureKeySetsOperation.executeCallCount, 1)
+        XCTAssertEqual(mockRequestExposureConfigurationOperation.executeCallCount, 1)
+        XCTAssertEqual(mockProcessExposureKeySetsDataOperation.executeCallCount, 1)
+    }
+
     // MARK: - Private Helper Functions
 
-    private func mockManifestOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
-                                       withTestData testData: ApplicationManifest,
-                                       andExpectation expectation: XCTestExpectation? = nil) {
+    @discardableResult
+    private func mockProcessExposureKeySetsDataOperationProtocol(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                                                 andExpectation expectation: XCTestExpectation? = nil) -> ProcessExposureKeySetsDataOperationProtocolMock {
+        let operationMock = ProcessExposureKeySetsDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            expectation?.fulfill()
+            return .empty()
+        }
+        mockOperationProvider.processExposureKeySetsOperationHandler = { _, _ in
+            operationMock
+        }
+        return operationMock
+    }
+
+    @discardableResult
+    private func mockRequestExposureConfigurationDataOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                                               withTestData testData: ExposureConfigurationMock,
+                                                               andExpectation expectation: XCTestExpectation? = nil) -> RequestExposureConfigurationDataOperationProtocolMock {
+        let operationMock = RequestExposureConfigurationDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            expectation?.fulfill()
+            return .just(testData)
+        }
+        mockOperationProvider.requestExposureConfigurationOperationHandler = { _ in
+            operationMock
+        }
+        return operationMock
+    }
+
+    @discardableResult
+    private func mockRequestExposureKeySetsDataOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                                         andExpectation expectation: XCTestExpectation? = nil) -> RequestExposureKeySetsDataOperationProtocolMock {
+        let operationMock = RequestExposureKeySetsDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            expectation?.fulfill()
+            return .empty()
+        }
+        mockOperationProvider.requestExposureKeySetsOperationHandler = { _ in
+            operationMock
+        }
+        return operationMock
+    }
+
+    @discardableResult
+    private func mockApplicationManifestOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                                  withTestData testData: ApplicationManifest,
+                                                  andExpectation expectation: XCTestExpectation? = nil) -> RequestAppManifestDataOperationProtocolMock {
         let operationMock = RequestAppManifestDataOperationProtocolMock()
         operationMock.executeHandler = {
             expectation?.fulfill()
             return .just(testData)
         }
         mockOperationProvider.requestManifestOperation = operationMock
+        return operationMock
     }
 
+    @discardableResult
     private func mockApplicationConfigurationOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
                                                        withTestData testData: ApplicationConfiguration,
-                                                       andExpectation expectation: XCTestExpectation? = nil) {
+                                                       andExpectation expectation: XCTestExpectation? = nil) -> RequestAppConfigurationDataOperationProtocolMock {
         let operationMock = RequestAppConfigurationDataOperationProtocolMock()
         operationMock.executeHandler = {
             expectation?.fulfill()
             return .just(testData)
         }
         mockOperationProvider.requestAppConfigurationOperationHandler = { identifier in operationMock }
+        return operationMock
     }
 
     private func mockTreatmentPerspectiveOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
@@ -263,5 +345,11 @@ private extension ApplicationManifest {
 private extension ApplicationConfiguration {
     static func testData(manifestRefreshFrequency: Int = 3600) -> ApplicationConfiguration {
         ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: Date(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber")
+    }
+}
+
+private extension ExposureConfigurationMock {
+    static func testData() -> ExposureConfigurationMock {
+        ExposureConfigurationMock(minimumRiskScope: 1, attenuationLevelValues: [2], daysSinceLastExposureLevelValues: [3], durationLevelValues: [4], transmissionRiskLevelValues: [5], attenuationDurationThresholds: [6])
     }
 }

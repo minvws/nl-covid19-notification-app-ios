@@ -19,6 +19,7 @@ struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     let attenuationDurationThresholds: [Int]
 }
 
+/// @mockable
 protocol RequestExposureConfigurationDataOperationProtocol {
     func execute() -> Single<ExposureConfiguration>
 }

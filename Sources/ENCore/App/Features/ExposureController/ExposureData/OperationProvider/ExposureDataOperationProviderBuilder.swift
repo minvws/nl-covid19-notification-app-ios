@@ -16,7 +16,7 @@ protocol ExposureDataOperationProvider {
     func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol
     func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol
-    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
+    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol
 
     var requestManifestOperation: RequestAppManifestDataOperationProtocol { get }
     var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperationProtocol { get }

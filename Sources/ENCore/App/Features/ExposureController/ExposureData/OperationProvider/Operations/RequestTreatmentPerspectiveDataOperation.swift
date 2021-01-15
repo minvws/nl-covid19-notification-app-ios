@@ -33,8 +33,7 @@ final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiv
                 .treatmentPerspective(identifier: identifier)
                 .subscribe(on: MainScheduler.instance)
                 .catch { throw $0.asExposureDataError }
-                .map(store(treatmentPerspective:))
-                .asCompletable()
+                .flatMapCompletable(store(treatmentPerspective:))
         }
 
         // can't update, just return a success message. We can get the stored treatment perspective from disk later on

@@ -68,7 +68,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                          exposureConfigurationIdentifier: identifier)
     }
 
-    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation {
+    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol {
         return RequestExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    localPathProvider: localPathProvider,

@@ -33,6 +33,8 @@ struct ExposureReport: Codable {
     }
 
 #endif
+
+/// @mockable
 protocol ProcessExposureKeySetsDataOperationProtocol {
     func execute() -> Completable
 }
@@ -101,10 +103,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
-            .map {
+            .flatMapCompletable {
                 self.removeBlobs(forResult: $0, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
             }
-            .asCompletable()
             .do(onCompleted: {
                 self.logDebug("--- END PROCESSING KEYSETS ---")
             })

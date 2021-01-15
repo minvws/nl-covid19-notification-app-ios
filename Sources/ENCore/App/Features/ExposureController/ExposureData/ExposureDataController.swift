@@ -79,27 +79,23 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     func updateTreatmentPerspective() -> Completable {
         requestApplicationManifest()
-            .map { _ in
+            .flatMapCompletable { _ in
                 self.operationProvider
                     .requestTreatmentPerspectiveDataOperation
                     .execute()
             }
-            .asCompletable()
     }
 
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable {
         self.requestApplicationConfiguration()
-            .map { _ in
+            .flatMapCompletable { _ in
                 self.fetchAndStoreExposureKeySets().catch { _ in
                     self.processStoredExposureKeySets(exposureManager: exposureManager)
                 }
             }
-            .map { _ in
-                self.processStoredExposureKeySets(exposureManager: exposureManager)
-            }
-            .asCompletable()
+            .andThen(processStoredExposureKeySets(exposureManager: exposureManager))
     }
 
     var lastExposure: ExposureReport? {
@@ -172,13 +168,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private func fetchAndStoreExposureKeySets() -> Completable {
         self.logDebug("ExposureDataController: fetchAndStoreExposureKeySets")
         return requestApplicationManifest()
-            .map { (manifest: ApplicationManifest) -> [String] in manifest.exposureKeySetsIdentifiers }
-            .map { exposureKeySetsIdentifiers in
+            .map { (manifest: ApplicationManifest) -> [String] in
+                manifest.exposureKeySetsIdentifiers
+            }
+            .flatMapCompletable { exposureKeySetsIdentifiers in
                 self.operationProvider
                     .requestExposureKeySetsOperation(identifiers: exposureKeySetsIdentifiers)
                     .execute()
             }
-            .asCompletable()
     }
 
     // MARK: - LabFlow
@@ -324,7 +321,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     private func requestExposureRiskConfiguration() -> Single<ExposureConfiguration> {
         requestApplicationManifest()
-            .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
+            .map { (manifest: ApplicationManifest) in
+                manifest.riskCalculationParametersIdentifier
+            }
             .flatMap { identifier in
                 self.operationProvider
                     .requestExposureConfigurationOperation(identifier: identifier)

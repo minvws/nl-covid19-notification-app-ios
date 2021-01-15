@@ -19,6 +19,7 @@ struct ExposureKeySetHolder: Codable {
     var processed: Bool { processDate != nil }
 }
 
+/// @mockable
 protocol RequestExposureKeySetsDataOperationProtocol {
     func execute() -> Completable
 }

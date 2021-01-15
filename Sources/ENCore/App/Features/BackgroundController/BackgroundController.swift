@@ -137,7 +137,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.logDebug("Decoy `/stopkeys` started")
         let disposable = exposureController
             .getPadding()
-            .map { padding in
+            .flatMapCompletable { padding in
                 self.networkController
                     .stopKeys(padding: padding)
                     .subscribe(on: MainScheduler.instance)
@@ -151,15 +151,15 @@ final class BackgroundController: BackgroundControlling, Logging {
                         }
                     }
             }
-            .subscribe { _ in
+            .subscribe(onCompleted: {
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
                 task.setTaskCompleted(success: true)
-            } onFailure: { _ in
+            }, onError: { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
                 task.setTaskCompleted(success: true)
-            }
+            })
 
         // Handle running out of time
         task.expirationHandler = {
@@ -343,7 +343,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.exposureController
                     .getPadding()
                     .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... 250)), scheduler: MainScheduler.instance)
-                    .map { padding in
+                    .flatMapCompletable { padding in
                         self.networkController
                             .stopKeys(padding: padding)
                             .subscribe(on: MainScheduler.instance)
@@ -351,15 +351,15 @@ final class BackgroundController: BackgroundControlling, Logging {
                                 throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
                             }
                     }
-                    .subscribe { _ in
+                    .subscribe(onCompleted: {
                         // Note: We ignore the response
                         self.logDebug("Decoy `/stopkeys` complete")
                         observer(.completed)
-                    } onFailure: { _ in
+                    }, onError: { _ in
                         // Note: We ignore the response
                         self.logDebug("Decoy `/stopkeys` complete")
                         observer(.completed)
-                    }
+                    })
                     .disposed(by: self.disposeBag)
             }
 
