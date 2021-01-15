@@ -104,12 +104,12 @@ final class ExposureDataControllerTests: TestCase {
         mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
 
         let treatmentPerspectiveOperationCalled = expectation(description: "treatmentPerspectiveOperationCalled")
-        let treatmentPerspectiveOperationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
+        let treatmentPerspectiveOperationMock = UpdateTreatmentPerspectiveDataOperationProtocolMock()
         treatmentPerspectiveOperationMock.executeHandler = {
             treatmentPerspectiveOperationCalled.fulfill()
             return .empty()
         }
-        mockOperationProvider.requestTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
+        mockOperationProvider.updateTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
 
         sut.updateTreatmentPerspective()
             .subscribe(onCompleted: {
@@ -321,12 +321,12 @@ final class ExposureDataControllerTests: TestCase {
     private func mockTreatmentPerspectiveOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
                                                    withTestData testData: TreatmentPerspective,
                                                    andExpectation expectation: XCTestExpectation? = nil) {
-        let operationMock = RequestTreatmentPerspectiveDataOperationProtocolMock()
+        let operationMock = UpdateTreatmentPerspectiveDataOperationProtocolMock()
         operationMock.executeHandler = {
             expectation?.fulfill()
             return .empty()
         }
-        mockOperationProvider.requestTreatmentPerspectiveDataOperation = operationMock
+        mockOperationProvider.updateTreatmentPerspectiveDataOperation = operationMock
     }
 }
 

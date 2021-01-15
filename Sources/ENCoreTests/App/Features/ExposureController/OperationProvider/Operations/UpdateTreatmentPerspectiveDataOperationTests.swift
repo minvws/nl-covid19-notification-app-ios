@@ -11,8 +11,8 @@ import Foundation
 import RxSwift
 import XCTest
 
-final class RequestTreatmentPerspectiveDataOperationTests: TestCase {
-    private var sut: RequestTreatmentPerspectiveDataOperation!
+final class UpdateTreatmentPerspectiveDataOperationTests: TestCase {
+    private var sut: UpdateTreatmentPerspectiveDataOperation!
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
     private let disposeBag = DisposeBag()
@@ -26,8 +26,8 @@ final class RequestTreatmentPerspectiveDataOperationTests: TestCase {
         mockNetworkController.treatmentPerspectiveHandler = { identifier in .just(.fallbackMessage) }
         mockStorageController.storeHandler = { data, key, completion in completion(nil) }
 
-        sut = RequestTreatmentPerspectiveDataOperation(networkController: mockNetworkController,
-                                                       storageController: mockStorageController)
+        sut = UpdateTreatmentPerspectiveDataOperation(networkController: mockNetworkController,
+                                                      storageController: mockStorageController)
     }
 
     func test_execute_shouldRetrieveManifestFromStorage() {

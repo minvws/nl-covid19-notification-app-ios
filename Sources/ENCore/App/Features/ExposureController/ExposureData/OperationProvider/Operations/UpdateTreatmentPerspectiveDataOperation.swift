@@ -10,11 +10,11 @@ import Foundation
 import RxSwift
 
 /// @mockable
-protocol RequestTreatmentPerspectiveDataOperationProtocol {
+protocol UpdateTreatmentPerspectiveDataOperationProtocol {
     func execute() -> Completable
 }
 
-final class RequestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperationProtocol, Logging {
+final class UpdateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveDataOperationProtocol, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {

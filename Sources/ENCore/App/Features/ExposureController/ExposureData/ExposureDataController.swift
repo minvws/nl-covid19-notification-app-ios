@@ -81,7 +81,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         requestApplicationManifest()
             .flatMapCompletable { _ in
                 self.operationProvider
-                    .requestTreatmentPerspectiveDataOperation
+                    .updateTreatmentPerspectiveDataOperation
                     .execute()
             }
     }
