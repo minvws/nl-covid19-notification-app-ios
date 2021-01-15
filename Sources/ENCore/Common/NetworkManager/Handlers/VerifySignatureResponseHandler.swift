@@ -11,7 +11,7 @@ import RxSwift
 /// @mockable
 protocol VerifySignatureResponseHandlerProtocol {
     func isApplicable(for response: URLResponse, input: URL) -> Bool
-    func process(response: URLResponse, input: URL) -> Observable<URL>
+    func process(response: URLResponse, input: URL) -> Single<URL>
 }
 
 final class VerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol {
@@ -29,7 +29,7 @@ final class VerifySignatureResponseHandler: VerifySignatureResponseHandlerProtoc
         return true
     }
 
-    func process(response: URLResponse, input: URL) -> Observable<URL> {
+    func process(response: URLResponse, input: URL) -> Single<URL> {
         guard let fileURLs = getFileURLs(from: input) else {
             return .error(NetworkResponseHandleError.invalidSignature)
         }
@@ -47,10 +47,9 @@ final class VerifySignatureResponseHandler: VerifySignatureResponseHandlerProtoc
                                         signature: signatureData) { isValid in
 
                 if isValid {
-                    observer.onNext(input)
-                    observer.onCompleted()
+                    observer(.success(input))
                 } else {
-                    observer.onError(NetworkResponseHandleError.invalidSignature)
+                    observer(.failure(NetworkResponseHandleError.invalidSignature))
                 }
             }
 

@@ -679,12 +679,12 @@ final class ExposureController: ExposureControlling, Logging {
         self.dataController
             .upload(diagnosisKeys: keys, labConfirmationKey: labConfirmationKey)
             .subscribe(on: MainScheduler.instance)
-            .subscribe {
+            .subscribe(onCompleted: {
                 completion(.success)
-            } onError: { error in
+            }, onError: { error in
                 let exposureDataError = error.asExposureDataError
                 completion(mapExposureDataError(exposureDataError))
-            }
+            })
             .disposed(by: disposeBag)
     }
 
