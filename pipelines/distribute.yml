@@ -73,7 +73,7 @@ steps:
     networkConfiguration: ACC
     logLevel: debug
     bundleDisplayName: "β CoronaMelder"
-    bundleIdentifier: nl.rijksoverheid.en.acc
+    bundleIdentifier: "nl.rijksoverheid.en.acc"
     bundleShortVersion: acc-13-5
     packageApp: true
     shareLogsEnabled: true
