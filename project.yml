@@ -132,7 +132,7 @@ targets:
     dependencies:
       - target: ENCore
       - package: SnapshotTesting      
-    deploymentTarget: '12.5'
+    deploymentTarget: '13.5'
     platform: iOS
     preBuildScripts:
       - name: Generate Mocks
