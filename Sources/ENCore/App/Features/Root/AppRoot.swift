@@ -10,7 +10,7 @@ import ENFoundation
 import Foundation
 import UIKit
 
-@available(iOS 13.5,*)
+@available(iOS 12.5,*)
 @objc public final class ENAppRoot: NSObject, Logging {
     private static var version: String {
         let dictionary = Bundle.main.infoDictionary
@@ -73,6 +73,7 @@ import UIKit
     }
 
     @objc
+    @available(iOS 13.5,*)
     public func handle(backgroundTask: BGTask) {
         logDebug("`handle` \(ENAppRoot.version)")
         appEntryPoint?.handle(backgroundTask: backgroundTask)

@@ -97,8 +97,9 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
                                image: .switchIcon,
                                showDisclosure: false)
     ]
+
     @objc private func checkBluetoothStatus() {
-        self.listener?.isBluetoothEnabled { enabled in
+        listener?.isBluetoothEnabled { enabled in
             if enabled {
                 self.listener?.bluetoothSettingsDidComplete()
             }
@@ -159,7 +160,7 @@ private final class BluetoothSettingsView: View {
     }
 
     @objc private func didTapClose(sender: UIBarButtonItem) {
-        self.listener?.bluetoothSettingsDidComplete()
+        listener?.bluetoothSettingsDidComplete()
     }
 
     override func setupConstraints() {

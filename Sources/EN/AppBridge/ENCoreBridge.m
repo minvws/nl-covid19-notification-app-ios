@@ -18,7 +18,7 @@
 
 @implementation ENCoreBridge
 + (BOOL)isAppRootAvailable {
-    if (@available(iOS 13.5, *)) {
+    if (@available(iOS 12.5, *)) {
         return YES;
     } else {
         return NO;
