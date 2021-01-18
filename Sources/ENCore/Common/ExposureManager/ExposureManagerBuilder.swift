@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import ExposureNotification
 import Foundation
 import UIKit
@@ -76,13 +77,24 @@ protocol ExposureManagerBuildable {
     func build() -> ExposureManaging
 }
 
-final class ExposureManagerBuilder: Builder<EmptyDependency>, ExposureManagerBuildable {
+protocol ExposureManagerDependency {
+    var backgroundController: BackgroundControlling { get }
+}
+
+private final class ExposureManagerDependencyProvider: DependencyProvider<ExposureManagerDependency> {}
+
+final class ExposureManagerBuilder: Builder<ExposureManagerDependency>, ExposureManagerBuildable {
 
     func build() -> ExposureManaging {
+
         #if targetEnvironment(simulator)
             return StubExposureManager()
         #else
-            return ExposureManager(manager: ENManager())
+
+            let dependencyProvider = ExposureManagerDependencyProvider(dependency: dependency)
+
+            return ExposureManager(manager: ENManager(),
+                                   backgroundController: dependencyProvider.dependency.backgroundController)
         #endif
     }
 }

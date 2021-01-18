@@ -41,7 +41,7 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency, ExposureManagerDependency {
 
     // MARK: - Child Builders
 
@@ -98,7 +98,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }()
 
     lazy var exposureManager: ExposureManaging = {
-        let builder = ExposureManagerBuilder()
+        let builder = ExposureManagerBuilder(dependency: self)
 
         return builder.build()
     }()
@@ -134,7 +134,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }()
 
     lazy var backgroundController: BackgroundControlling = {
-        return BackgroundControllerBuilder(dependency: self).build()
+        let builder = BackgroundControllerBuilder(dependency: self)
+        return builder.build()
     }()
 
     fileprivate var dataController: ExposureDataControlling {

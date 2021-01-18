@@ -13,6 +13,7 @@ import ENFoundation
 import ExposureNotification
 import Foundation
 import RxSwift
+import UIKit
 import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
@@ -76,7 +77,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     self.logDebug("Background: ExposureController activated state result: \(error)")
                     self.logDebug("Background: Scheduling refresh sequence")
                     self.scheduleRefresh()
-                })
+                    })
                 .disposed(by: self.disposeBag)
         }
 
@@ -106,6 +107,35 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         operationQueue.async(execute: handleTask)
+    }
+
+    func handleRefresh() {
+
+        let version = UIDevice.current.systemVersion
+
+        let sequence: [Completable] = [
+            activateExposureController(inBackgroundMode: true),
+            processUpdate(),
+            processENStatusCheck(),
+            appUpdateRequiredCheck(),
+            updateTreatmentPerspective(),
+            processLastOpenedNotificationCheck(),
+            processDecoyRegisterAndStopKeys()
+        ]
+
+        logDebug("Background: starting refresh task on iOS \(version)")
+
+        let disposible = Observable.from(sequence.compactMap { $0 })
+            .merge(maxConcurrent: 1)
+            .toArray()
+            .subscribe { _ in
+                // Note: We ignore the response
+                self.logDebug("--- Finished Background Refresh on iOS \(version) ---")
+            } onFailure: { error in
+                self.logError("Background: Error completing sequence \(error.localizedDescription)")
+            }
+
+        disposible.disposed(by: disposeBag)
     }
 
     // MARK: - Private
@@ -164,13 +194,47 @@ final class BackgroundController: BackgroundControlling, Logging {
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
                 task.setTaskCompleted(success: true)
-            })
+                })
 
         // Handle running out of time
         task.expirationHandler = {
             self.logDebug("Decoy `/stopkeys` expired")
             disposable.dispose()
         }
+    }
+
+    private func handleDecoyStopkeys() {
+
+        guard isExposureManagerActive else {
+            logDebug("ExposureManager inactive - Not handling `handleDecoyStopkeys`")
+            return
+        }
+
+        self.logDebug("Decoy `/stopkeys` started")
+
+        exposureController
+            .getPadding()
+            .flatMapCompletable { padding in
+                self.networkController
+                    .stopKeys(padding: padding)
+                    .subscribe(on: MainScheduler.instance)
+                    .catch { error in
+                        if let exposureDataError = (error as? NetworkError)?.asExposureDataError {
+                            self.logDebug("Decoy `/stopkeys` error: \(exposureDataError)")
+                            throw exposureDataError
+                        } else {
+                            self.logDebug("Decoy `/stopkeys` error: ExposureDataError.internalError")
+                            throw ExposureDataError.internalError
+                        }
+                    }
+            }
+            .subscribe(onCompleted: {
+                // Note: We ignore the response
+                self.logDebug("Decoy `/stopkeys` complete")
+            }, onError: { _ in
+                // Note: We ignore the response
+                self.logDebug("Decoy `/stopkeys` complete")
+            }).disposed(by: disposeBag)
     }
 
     ///    When the user opens the app
@@ -211,6 +275,8 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 if #available(iOS 13, *) {
                     self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
+                } else {
+                    self.handleDecoyStopkeys()
                 }
             }
         }
@@ -370,7 +436,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                         // Note: We ignore the response
                         self.logDebug("Decoy `/stopkeys` complete")
                         observer(.completed)
-                    })
+                        })
                     .disposed(by: self.disposeBag)
             }
 
