@@ -48,7 +48,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
-            .subscribe(onNext: { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
             })
             .disposed(by: disposeBag)
@@ -76,7 +76,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
-            .subscribe(onNext: { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
             })
             .disposed(by: disposeBag)
@@ -115,7 +115,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
-            .subscribe(onNext: { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
             })
             .disposed(by: disposeBag)

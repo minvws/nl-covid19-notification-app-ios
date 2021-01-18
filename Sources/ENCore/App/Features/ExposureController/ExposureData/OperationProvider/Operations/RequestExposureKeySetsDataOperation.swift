@@ -19,8 +19,9 @@ struct ExposureKeySetHolder: Codable {
     var processed: Bool { processDate != nil }
 }
 
+/// @mockable
 protocol RequestExposureKeySetsDataOperationProtocol {
-    func execute() -> Observable<()>
+    func execute() -> Completable
 }
 
 final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOperationProtocol, Logging {
@@ -41,7 +42,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> Observable<()> {
+    func execute() -> Completable {
         logDebug("--- START REQUESTING KEYSETS ---")
 
         let storedKeySetsHolders = getStoredKeySetsHolders()
@@ -57,7 +58,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             logDebug("No additional key sets to download")
             logDebug("--- END REQUESTING KEYSETS ---")
 
-            return .just(())
+            return .empty()
         }
 
         // The first time we retrieve keysets, we ignore the entire batch because:
@@ -78,7 +79,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
 
         // download remaining keysets
-        let exposureKeySetStreams: [Observable<(String, URL)>] = identifiers.map { identifier in
+        let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
             self.networkController
                 .fetchExposureKeySet(identifier: identifier)
         }
@@ -105,14 +106,12 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             } onError: { [weak self] _ in
                 self?.logDebug("KeySet: Requesting KeySets Failed")
             }
-            .compactMap { _ in () }
-            .asObservable()
-            .share()
+            .asCompletable()
     }
 
     // MARK: - Private
 
-    private func ignoreFirstKeySetBatch(keySetIdentifiers: [String]) -> Observable<()> {
+    private func ignoreFirstKeySetBatch(keySetIdentifiers: [String]) -> Completable {
         logDebug("KeySet: Ignoring KeySets because it is the first batch after first install: \(keySetIdentifiers.joined(separator: "\n"))")
 
         return Observable.from(keySetIdentifiers)
@@ -126,8 +125,8 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                 self.logDebug("KeySet: Creating ignored keysets failed ")
             }, onCompleted: {
                 self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
-                })
-            .compactMap { _ in () }
+            })
+            .asCompletable()
     }
 
     private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
@@ -140,11 +139,11 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         return identifiers.filter(isNotDownloadedOrProcessed)
     }
 
-    private func createKeySetHolder(forDownloadedKeySet keySet: (String, URL)) -> Observable<ExposureKeySetHolder> {
+    private func createKeySetHolder(forDownloadedKeySet keySet: (String, URL)) -> Single<ExposureKeySetHolder> {
         return .create { (observer) -> Disposable in
 
             guard let keySetStorageUrl = self.localPathProvider.path(for: .exposureKeySets) else {
-                observer.onError(ExposureDataError.internalError)
+                observer(.failure(ExposureDataError.internalError))
                 return Disposables.create()
             }
 
@@ -173,7 +172,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             } catch {
                 self.logDebug("Error while moving KeySet \(identifier) to final destination: \(error)")
                 // do nothing, just ignore this keySetHolder
-                observer.onError(ExposureDataError.internalError)
+                observer(.failure(ExposureDataError.internalError))
                 return Disposables.create()
             }
 
@@ -186,8 +185,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             let diff = CFAbsoluteTimeGetCurrent() - start
             self.logDebug("Creating KeySetHolder Took \(diff) seconds")
 
-            observer.onNext(keySetHolder)
-            observer.onCompleted()
+            observer(.success(keySetHolder))
 
             return Disposables.create()
         }

@@ -21,7 +21,7 @@ protocol ExposureControlling: AnyObject {
     func deactivate()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
-    func isAppDeactivated() -> Observable<Bool>
+    func isAppDeactivated() -> Single<Bool>
     func getDecoyProbability() -> Single<Float>
     func getPadding() -> Single<Padding>
 
@@ -30,7 +30,7 @@ protocol ExposureControlling: AnyObject {
     func refreshStatus()
 
     func updateWhenRequired() -> Completable
-    func processPendingUploadRequests() -> Observable<()>
+    func processPendingUploadRequests() -> Completable
 
     // MARK: - Permissions
 
@@ -39,7 +39,7 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Exposure KeySets
 
-    func fetchAndProcessExposureKeySets() -> Observable<()>
+    func fetchAndProcessExposureKeySets() -> Completable
 
     // MARK: - Exposure Notification
 
@@ -71,22 +71,22 @@ protocol ExposureControlling: AnyObject {
     func clearUnseenExposureNotificationDate()
 
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
-    func updateAndProcessPendingUploads() -> Observable<()>
+    func updateAndProcessPendingUploads() -> Completable
 
     /// Shows a notification for expired lab key uploads and cleans up the requests
-    func processExpiredUploadRequests() -> Observable<()>
+    func processExpiredUploadRequests() -> Completable
 
     /// Checks the status of the EN framework for the last 24h
-    func exposureNotificationStatusCheck() -> Observable<()>
+    func exposureNotificationStatusCheck() -> Completable
 
     /// Checks if the app needs to be updated and returns true if it should
-    func appShouldUpdateCheck() -> Observable<AppUpdateInformation>
+    func appShouldUpdateCheck() -> Single<AppUpdateInformation>
 
     /// Checks if the app needs to be updated and sends a local notification if it should
-    func sendNotificationIfAppShouldUpdate() -> Observable<()>
+    func sendNotificationIfAppShouldUpdate() -> Completable
 
     /// Updates the treatment perspective message
-    func updateTreatmentPerspective() -> Observable<TreatmentPerspective>
+    func updateTreatmentPerspective() -> Completable
 
     // MARK: - Onboarding
 
@@ -100,7 +100,7 @@ protocol ExposureControlling: AnyObject {
     var seenAnnouncements: [Announcement] { get set }
 
     /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
-    func lastOpenedNotificationCheck() -> Observable<()>
+    func lastOpenedNotificationCheck() -> Completable
 }
 
 /// Represents a ConfirmationKey for the Lab Flow

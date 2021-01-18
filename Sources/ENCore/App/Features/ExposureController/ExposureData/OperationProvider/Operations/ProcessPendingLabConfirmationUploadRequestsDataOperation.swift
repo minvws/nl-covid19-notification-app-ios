@@ -16,8 +16,9 @@ struct PendingLabConfirmationUploadRequest: Codable, Equatable {
     var expiryDate: Date
 }
 
+/// @mockable
 protocol ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {
-    func execute() -> Observable<()>
+    func execute() -> Completable
 }
 
 final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol, Logging {
@@ -32,7 +33,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPen
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> Observable<()> {
+    func execute() -> Completable {
         let allRequests = getPendingRequests()
 
         logDebug("--- START PROCESSING PENDING UPLOAD REQUESTS ---")
@@ -54,17 +55,15 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPen
             // convert them into an array
             .toArray()
             // remove the successful ones from storage
-            .flatMap { requestArray in
+            .flatMapCompletable { (requestArray) -> Completable in
                 self.removeSuccessRequestsFromStorage(requestArray)
             }
-            .do { [weak self] _ in
-                self?.logDebug("--- ENDED PROCESSING PENDING UPLOAD REQUESTS ---")
-            } onError: { [weak self] _ in
-                self?.logDebug("--- PROCESSING PENDING UPLOAD REQUESTS FAILED ---")
-            }
             .catch { _ in throw ExposureDataError.internalError }
-            .asObservable()
-            .share()
+            .do(onError: { [weak self] _ in
+                self?.logDebug("--- PROCESSING PENDING UPLOAD REQUESTS FAILED ---")
+            }, onCompleted: { [weak self] in
+                self?.logDebug("--- ENDED PROCESSING PENDING UPLOAD REQUESTS ---")
+            })
     }
 
     // MARK: - Private
@@ -76,21 +75,25 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPen
     private func uploadPendingRequest(_ request: PendingLabConfirmationUploadRequest) -> Single<(PendingLabConfirmationUploadRequest, Bool)> {
         logDebug("Uploading pending request with key: \(request.labConfirmationKey.key)")
 
-        return networkController.postKeys(keys: request.diagnosisKeys,
-                                          labConfirmationKey: request.labConfirmationKey,
-                                          padding: padding)
-            .do(onSuccess: { [weak self] _ in
-                self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")
-            }, onError: { [weak self] _ in
-                self?.logDebug("Request with key: \(request.labConfirmationKey.key) failed")
-            })
-            // map results to include a boolean indicating success
-            .map { _ in (request, true) }
-            // convert errors into the sample tuple - with success = false
-            .catchAndReturn((request, false))
+        return .create { (observer) -> Disposable in
+
+            self.networkController.postKeys(keys: request.diagnosisKeys,
+                                            labConfirmationKey: request.labConfirmationKey,
+                                            padding: self.padding)
+                .subscribe(onCompleted: { [weak self] in
+                    self?.logDebug("Request with key: \(request.labConfirmationKey.key) completed")
+                    observer(.success((request, true)))
+                }, onError: { [weak self] _ in
+                    self?.logDebug("Request with key: \(request.labConfirmationKey.key) failed")
+                    observer(.success((request, false)))
+                })
+                .disposed(by: self.disposeBag)
+
+            return Disposables.create()
+        }
     }
 
-    private func removeSuccessRequestsFromStorage(_ requests: [PendingLabConfirmationUploadRequest]) -> Single<()> {
+    private func removeSuccessRequestsFromStorage(_ requests: [PendingLabConfirmationUploadRequest]) -> Completable {
         return .create { observer in
 
             self.storageController.requestExclusiveAccess { storageController in
@@ -109,9 +112,9 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPen
                 // store back
                 storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { error in
                     if let error = error {
-                        observer(.failure(error))
+                        observer(.error(error))
                     } else {
-                        observer(.success(()))
+                        observer(.completed)
                     }
                 }
             }
@@ -123,4 +126,5 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperation: ProcessPen
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let padding: Padding
+    private var disposeBag = DisposeBag()
 }

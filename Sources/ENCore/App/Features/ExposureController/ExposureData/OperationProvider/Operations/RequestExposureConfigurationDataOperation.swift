@@ -10,7 +10,6 @@ import RxSwift
 
 struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     let identifier: String
-
     let minimumRiskScope: UInt8
     let attenuationLevelValues: [UInt8]
     let daysSinceLastExposureLevelValues: [UInt8]
@@ -19,8 +18,9 @@ struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     let attenuationDurationThresholds: [Int]
 }
 
+/// @mockable
 protocol RequestExposureConfigurationDataOperationProtocol {
-    func execute() -> Observable<ExposureConfiguration>
+    func execute() -> Single<ExposureConfiguration>
 }
 
 final class RequestExposureConfigurationDataOperation: RequestExposureConfigurationDataOperationProtocol {
@@ -34,7 +34,7 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> Observable<ExposureConfiguration> {
+    func execute() -> Single<ExposureConfiguration> {
         if let exposureConfiguration = retrieveStoredConfiguration(), exposureConfiguration.identifier == exposureConfigurationIdentifier {
             return .just(exposureConfiguration)
         }
@@ -44,7 +44,6 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
             .subscribe(on: MainScheduler.instance)
             .catch { throw $0.asExposureDataError }
             .flatMap(store(exposureConfiguration:))
-            .share()
     }
 
     // MARK: - Private
@@ -53,17 +52,16 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureConfiguration)
     }
 
-    private func store(exposureConfiguration: ExposureRiskConfiguration) -> Observable<ExposureConfiguration> {
+    private func store(exposureConfiguration: ExposureRiskConfiguration) -> Single<ExposureConfiguration> {
         return .create { observer in
             self.storageController.store(
                 object: exposureConfiguration,
                 identifiedBy: ExposureDataStorageKey.exposureConfiguration,
                 completion: { error in
                     if error != nil {
-                        observer.onError(ExposureDataError.internalError)
+                        observer(.failure(ExposureDataError.internalError))
                     } else {
-                        observer.onNext(exposureConfiguration)
-                        observer.onCompleted()
+                        observer(.success(exposureConfiguration))
                     }
                 }
             )

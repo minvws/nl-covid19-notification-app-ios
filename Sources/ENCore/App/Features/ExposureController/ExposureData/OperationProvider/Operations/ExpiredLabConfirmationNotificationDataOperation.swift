@@ -11,7 +11,7 @@ import RxSwift
 import UserNotifications
 
 protocol ExpiredLabConfirmationNotificationDataOperationProtocol {
-    func execute() -> Observable<()>
+    func execute() -> Completable
 }
 
 final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmationNotificationDataOperationProtocol, Logging {
@@ -24,7 +24,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> Observable<()> {
+    func execute() -> Completable {
         let expiredRequests = getPendingRequests()
             .filter { $0.isExpired }
 
@@ -34,7 +34,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
 
         logDebug("Expired requests: \(expiredRequests)")
 
-        return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests).share()
+        return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests)
     }
 
     // MARK: - Private
@@ -43,11 +43,11 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
     }
 
-    private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> Observable<()> {
+    private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> Completable {
         return .create { [weak self] observer in
 
             guard let strongSelf = self else {
-                observer.onError(ExposureDataError.internalError)
+                observer(.error(ExposureDataError.internalError))
                 return Disposables.create()
             }
 
@@ -65,7 +65,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
 
                 // store back
                 storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
-                    observer.onCompleted()
+                    observer(.completed)
                 }
             }
             return Disposables.create()
@@ -120,7 +120,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
 
     private let storageController: StorageControlling
     private let userNotificationCenter: UserNotificationCenter
-    private let rxDisposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
 }
 
 extension PendingLabConfirmationUploadRequest {

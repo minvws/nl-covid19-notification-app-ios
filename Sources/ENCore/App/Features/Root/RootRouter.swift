@@ -371,7 +371,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: ((_ didRoute: Bool) -> ())? = nil) {
 
         Observable
-            .combineLatest(exposureController.isAppDeactivated(), exposureController.appShouldUpdateCheck())
+            .combineLatest(exposureController.isAppDeactivated().asObservable(), exposureController.appShouldUpdateCheck().asObservable())
             .subscribe { [weak self] isDeactivated, updateInformation in
                 if isDeactivated {
 

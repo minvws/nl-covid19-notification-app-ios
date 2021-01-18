@@ -27,7 +27,7 @@ struct ApplicationConfiguration: Codable, Equatable {
 
 /// @mockable
 protocol RequestAppConfigurationDataOperationProtocol {
-    func execute() -> Observable<ApplicationConfiguration>
+    func execute() -> Single<ApplicationConfiguration>
 }
 
 final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOperationProtocol, Logging {
@@ -44,7 +44,7 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> Observable<ApplicationConfiguration> {
+    func execute() -> Single<ApplicationConfiguration> {
         self.logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
 
         if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
@@ -65,15 +65,14 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
             .catch { throw $0.asExposureDataError }
             .flatMap(storeAppConfiguration)
             .flatMap(storeSignature(for:))
-            .share()
     }
 
-    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration> {
-        return applicationSignatureController.storeAppConfiguration(appConfiguration).share()
+    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
+        return applicationSignatureController.storeAppConfiguration(appConfiguration)
     }
 
-    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> Observable<ApplicationConfiguration> {
-        return applicationSignatureController.storeSignature(for: appConfiguration).share()
+    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
+        return applicationSignatureController.storeSignature(for: appConfiguration)
     }
 
     private let networkController: NetworkControlling

@@ -16,7 +16,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
     private var mockExposureManager: ExposureManagingMock!
-//    private var mockExposureKeySetsStorageUrl: URL!
     private var mockExposureConfiguration: ExposureConfigurationMock!
     private var mockUserNotificationCenter: UserNotificationCenterMock!
     private var mockApplication: ApplicationControllingMock!
@@ -245,6 +244,129 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
+    }
+
+    func test_shouldPersistKeySetHolders() {
+
+        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+        let storedKeySetsExpectation = expectation(description: "storedKeySetsExpectation")
+
+        mockStorageController.storeHandler = { object, key, completion in
+
+            if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
+                storedKeySetsExpectation.fulfill()
+            }
+
+            completion(nil)
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                subscriptionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func test_shouldShowExposureNotificationToUser() throws {
+
+        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+
+        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
+
+        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            let exposureSummary = ExposureDetectionSummaryMock()
+            exposureSummary.daysSinceLastExposure = 3
+
+            completion(.success(exposureSummary))
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                subscriptionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+        XCTAssertEqual(notificationRequest.content.sound, .default)
+        XCTAssertEqual(notificationRequest.content.badge, 0)
+        XCTAssertEqual(notificationRequest.content.body, "You were near someone who has coronavirus 3 days ago. Read more in the app.")
+    }
+
+    func test_shouldPersistExposureReport() throws {
+
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+
+        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+        let storedExposureReportExpectation = expectation(description: "storedExposureReportExpectation")
+
+        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
+        mockStorageController.storeHandler = { object, key, completion in
+            if (key as? CodableStorageKey<ExposureReport>)?.asString == ExposureDataStorageKey.lastExposureReport.asString {
+                storedExposureReportExpectation.fulfill()
+            }
+            completion(nil)
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                subscriptionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func test_shouldUpdateLastProcessingDate() throws {
+
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+
+        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+        let storedLastProcessingDateExpectation = expectation(description: "storedExposureReportExpectation")
+
+        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
+        mockStorageController.storeHandler = { object, key, completion in
+            if (key as? CodableStorageKey<Date>)?.asString == ExposureDataStorageKey.lastExposureProcessingDate.asString {
+                storedLastProcessingDateExpectation.fulfill()
+            }
+            completion(nil)
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                subscriptionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func test_shouldRemoveBlobsForProcessedKeySets() throws {
+
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 1)
+
+        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+
+        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                subscriptionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+        XCTAssertEqual(mockFileManager.removeItemCallCount, 2)
+        XCTAssertEqual(mockFileManager.removeItemArgValues.first?.absoluteString, "http://someurl.com/signatureFilename")
+        XCTAssertEqual(mockFileManager.removeItemArgValues.last?.absoluteString, "http://someurl.com/binaryFilename")
     }
 
     // MARK: - Private Helper Functions

@@ -322,7 +322,7 @@ final class ExposureControllerTests: TestCase {
         }
 
         dataController.uploadHandler = { _, _ in
-            .just(())
+            .empty()
         }
 
         XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 0)
@@ -382,7 +382,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .just(())
+            return .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -399,7 +399,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .just(())
+            return .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -416,7 +416,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.pushNotifications))
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .just(())
+            return .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -433,7 +433,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .authorizationDenied)
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .just(())
+            return .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -450,7 +450,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .just(())
+            return .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -493,11 +493,11 @@ final class ExposureControllerTests: TestCase {
 
     func test_updateAndProcessPendingUploads() {
         dataController.processPendingUploadRequestsHandler = {
-            .just(())
+            .empty()
         }
 
         dataController.processExpiredUploadRequestsHandler = {
-            .just(())
+            .empty()
         }
 
         mutableStateStream.exposureState = .just(.init(notifiedState: .notNotified, activeState: .active))
@@ -507,10 +507,10 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .updateAndProcessPendingUploads()
-            .subscribe(onError: { _ in
-                XCTFail()
-            }, onCompleted: {
+            .subscribe(onCompleted: {
                 exp.fulfill()
+            }, onError: { _ in
+                XCTFail()
             })
             .disposed(by: disposeBag)
 
@@ -524,11 +524,11 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .updateAndProcessPendingUploads()
-            .subscribe(onError: { error in
+            .subscribe(onCompleted: {
+                XCTFail()
+            }, onError: { error in
                 XCTAssertEqual(error as? ExposureDataError, .notAuthorized)
                 exp.fulfill()
-            }, onCompleted: {
-                XCTFail()
             })
             .disposed(by: disposeBag)
 

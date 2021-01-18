@@ -35,6 +35,8 @@ final class RequestAppManifestDataOperationTests: TestCase {
             if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
                 storageExpectation.fulfill()
                 return try! JSONEncoder().encode(ApplicationConfiguration.testData())
+            } else if (key as? CodableStorageKey<ApplicationManifest>)?.asString == ExposureDataStorageKey.appManifest.asString {
+                return try! JSONEncoder().encode(ApplicationManifest.testData())
             }
 
             return nil
@@ -79,7 +81,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         }
 
         _ = sut.execute()
-            .subscribe(onNext: { manifest in
+            .subscribe(onSuccess: { manifest in
                 XCTAssertEqual(manifest.appConfigurationIdentifier, "SomeIdentifier")
                 streamExpectation.fulfill()
             })
@@ -100,6 +102,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         let storedManifest = ApplicationManifest.testData(creationDate: date.addingTimeInterval(-twoHours), appConfigurationIdentifier: "SomeIdentifier")
         let apiManifest = ApplicationManifest.testData(creationDate: date.addingTimeInterval(-10), appConfigurationIdentifier: "ApiManifestConfigurationIdentifier")
         let streamExpectation = expectation(description: "stream")
+        let storeExpectation = expectation(description: "storeExpectation")
 
         mockNetworkController.applicationManifest = .just(apiManifest)
 
@@ -112,10 +115,13 @@ final class RequestAppManifestDataOperationTests: TestCase {
             return nil
         }
 
-        mockStorageController.storeHandler = { _, _, completion in completion(nil) }
+        mockStorageController.storeHandler = { _, _, completion in
+            storeExpectation.fulfill()
+            completion(nil)
+        }
 
         _ = sut.execute()
-            .subscribe(onNext: { manifest in
+            .subscribe(onSuccess: { manifest in
                 XCTAssertEqual(manifest.appConfigurationIdentifier, "ApiManifestConfigurationIdentifier")
                 streamExpectation.fulfill()
             })
@@ -141,7 +147,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         mockNetworkController.applicationManifest = .error(NetworkError.serverNotReachable)
 
         _ = sut.execute()
-            .subscribe(onError: { error in
+            .subscribe(onFailure: { error in
                 XCTAssertEqual(error as? ExposureDataError, ExposureDataError.networkUnreachable)
                 streamExpectation.fulfill()
             })
@@ -166,7 +172,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
         mockNetworkController.applicationManifest = .just(apiManifest)
 
         _ = sut.execute()
-            .subscribe(onError: { error in
+            .subscribe(onFailure: { error in
                 XCTAssertEqual(error as? ExposureDataError, ExposureDataError.serverError)
                 streamExpectation.fulfill()
             })

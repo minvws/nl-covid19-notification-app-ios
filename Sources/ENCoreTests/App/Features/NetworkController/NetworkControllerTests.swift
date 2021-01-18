@@ -39,9 +39,8 @@ final class NetworkControllerTests: TestCase {
 
         networkController
             .requestLabConfirmationKey(padding: padding)
-            .subscribe(onNext: { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 receivedValue = labConfirmationKey
-            }, onCompleted: {
                 exp.fulfill()
             })
             .disposed(by: disposeBag)
@@ -67,9 +66,9 @@ final class NetworkControllerTests: TestCase {
 
         networkController
             .requestLabConfirmationKey(padding: padding)
-            .subscribe(onNext: { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 receivedValue = labConfirmationKey
-            }, onError: { error in
+            }, onFailure: { error in
                 receivedError = error
                 exp.fulfill()
             })
@@ -94,7 +93,7 @@ final class NetworkControllerTests: TestCase {
 
         networkController
             .requestLabConfirmationKey(padding: Padding(minimumRequestSize: 1800, maximumRequestSize: 1800))
-            .subscribe(onError: { _ in
+            .subscribe(onFailure: { _ in
                 exp.fulfill()
             })
             .disposed(by: disposeBag)
@@ -116,7 +115,7 @@ final class NetworkControllerTests: TestCase {
 
         networkController
             .postKeys(keys: [], labConfirmationKey: key, padding: padding)
-            .subscribe(onSuccess: { _ in
+            .subscribe(onCompleted: {
                 exp.fulfill()
             })
             .disposed(by: disposeBag)
@@ -138,10 +137,9 @@ final class NetworkControllerTests: TestCase {
         }
 
         networkController.fetchExposureKeySet(identifier: identifier)
-            .subscribe(onNext: { result in
+            .subscribe(onSuccess: { result in
                 XCTAssertEqual(result.0, identifier)
                 XCTAssertEqual(result.1, url)
-            }, onCompleted: {
                 completionExpectation.fulfill()
             })
             .disposed(by: disposeBag)
@@ -164,7 +162,7 @@ final class NetworkControllerTests: TestCase {
         }
 
         networkController.fetchExposureKeySet(identifier: identifier)
-            .subscribe(onError: { error in
+            .subscribe(onFailure: { error in
                 XCTAssertEqual(error as? NetworkError, expectedError)
                 completionExpectation.fulfill()
             })

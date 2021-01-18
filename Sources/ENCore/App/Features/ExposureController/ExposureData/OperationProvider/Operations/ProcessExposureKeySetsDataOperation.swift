@@ -33,8 +33,10 @@ struct ExposureReport: Codable {
     }
 
 #endif
+
+/// @mockable
 protocol ProcessExposureKeySetsDataOperationProtocol {
-    func execute() -> Observable<()>
+    func execute() -> Completable
 }
 
 final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOperationProtocol, Logging {
@@ -68,7 +70,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.environmentController = environmentController
     }
 
-    func execute() -> Observable<()> {
+    func execute() -> Completable {
         self.logDebug("--- START PROCESSING KEYSETS ---")
 
         guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
@@ -101,7 +103,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
-            .flatMap {
+            .flatMapCompletable {
                 self.removeBlobs(forResult: $0, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
             }
             .do(onCompleted: {
@@ -139,7 +141,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     /// Returns ExposureKeySetDetectionResult in case of a success, or in case of an error that's
     /// not related to the framework's inactiveness. When an error is thrown from here exposure detection
     /// should be stopped until the user enables the framework
-    private func detectExposures(for keySetHolders: [ExposureKeySetHolder], exposureKeySetsStorageUrl: URL) -> Observable<ExposureDetectionResult> {
+    private func detectExposures(for keySetHolders: [ExposureKeySetHolder], exposureKeySetsStorageUrl: URL) -> Single<ExposureDetectionResult> {
 
         // filter out keysets with missing local files
         let validKeySetHolders = keySetHolders.filter {
@@ -192,12 +194,12 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         logDebug("Detect exposures for \(keySetHoldersToProcess.count) keySets: \(keySetHoldersToProcess.map { $0.identifier })")
 
         return updateNumberOfApiCallsMade(inBackground: applicationIsInBackground)
-            .flatMap { _ in self.detectExposures(diagnosisKeyUrls: diagnosisKeyUrls, invalidKeySetHolderResults: invalidKeySetHolderResults, keySetHoldersToProcess: keySetHoldersToProcess) }
+            .andThen(detectExposures(diagnosisKeyUrls: diagnosisKeyUrls, invalidKeySetHolderResults: invalidKeySetHolderResults, keySetHoldersToProcess: keySetHoldersToProcess))
     }
 
     private func detectExposures(diagnosisKeyUrls: [URL],
                                  invalidKeySetHolderResults: [ExposureKeySetDetectionResult],
-                                 keySetHoldersToProcess: [ExposureKeySetHolder]) -> Observable<ExposureDetectionResult> {
+                                 keySetHoldersToProcess: [ExposureKeySetHolder]) -> Single<ExposureDetectionResult> {
 
         return .create { observer in
 
@@ -220,19 +222,18 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                                          exposureSummary: summary,
                                                          exposureReport: nil)
 
-                    observer.onNext(result)
-                    observer.onCompleted()
+                    observer(.success(result))
 
                 case let .failure(error):
                     self.logDebug("Failure when detecting exposures: \(error)")
 
                     switch error {
                     case .bluetoothOff, .disabled, .notAuthorized, .restricted:
-                        observer.onError(error.asExposureDataError)
+                        observer(.failure(error.asExposureDataError))
                     case .internalTypeMismatch:
-                        observer.onError(ExposureDataError.internalError)
+                        observer(.failure(ExposureDataError.internalError))
                     case .rateLimited:
-                        observer.onError(ExposureDataError.internalError)
+                        observer(.failure(ExposureDataError.internalError))
                     default:
                         // something else is going wrong with exposure detection
                         // mark all keysets as invalid so they will be redownloaded again
@@ -247,8 +248,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                                              exposureSummary: nil,
                                                              exposureReport: nil)
 
-                        observer.onNext(result)
-                        observer.onCompleted()
+                        observer(.success(result))
                     }
                 }
             }
@@ -258,7 +258,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Updates the local keySetHolder storage with the latest results
-    private func persistResult(_ result: ExposureDetectionResult) -> Observable<ExposureDetectionResult> {
+    private func persistResult(_ result: ExposureDetectionResult) -> Single<ExposureDetectionResult> {
         return .create { (observer) -> Disposable in
 
             let selectKeySetDetectionResult: (ExposureKeySetHolder) -> ExposureKeySetDetectionResult? = { keySetHolder in
@@ -292,10 +292,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                         identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { error in
 
                     if error != nil {
-                        observer.onError(ExposureDataError.internalError)
+                        observer(.failure(ExposureDataError.internalError))
                     } else {
-                        observer.onNext(result)
-                        observer.onCompleted()
+                        observer(.success(result))
                     }
                 }
             }
@@ -305,7 +304,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Removes binary files for processed or invalid keySetHolders
-    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?), exposureKeySetsStorageUrl: URL) -> Observable<()> {
+    private func removeBlobs(forResult exposureResult: (ExposureDetectionResult, ExposureReport?), exposureKeySetsStorageUrl: URL) -> Completable {
 
         return .create { (observer) -> Disposable in
 
@@ -323,8 +322,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     try? self.fileManager.removeItem(at: binFileURL)
                 }
             }
-            observer.onNext(())
-            observer.onCompleted()
+            observer(.completed)
 
             return Disposables.create()
         }
@@ -348,7 +346,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             .count
     }
 
-    func updateNumberOfApiCallsMade(inBackground: Bool) -> Observable<()> {
+    func updateNumberOfApiCallsMade(inBackground: Bool) -> Completable {
         return .create { (observer) -> Disposable in
             self.storageController.requestExclusiveAccess { storageController in
                 let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
@@ -365,10 +363,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
                 storageController.store(object: calls, identifiedBy: storageKey) { error in
                     if error != nil {
-                        observer.onError(ExposureDataError.internalError)
+                        observer(.error(ExposureDataError.internalError))
                     } else {
-                        observer.onNext(())
-                        observer.onCompleted()
+                        observer(.completed)
                     }
                 }
             }
@@ -453,7 +450,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
-    private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> Observable<(ExposureDetectionResult, ExposureReport?)> {
+    private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> Single<(ExposureDetectionResult, ExposureReport?)> {
 
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
@@ -486,12 +483,12 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     private func notifyUserOfExposure(daysSinceLastExposure: Int,
-                                      exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Observable<(ExposureDetectionResult, ExposureReport?)> {
+                                      exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
         return .create { (observer) -> Disposable in
 
             self.userNotificationCenter.getAuthorizationStatus { status in
                 guard status == .authorized else {
-                    observer.onError(ExposureDataError.internalError)
+                    observer(.failure(ExposureDataError.internalError))
                     return self.logError("Not authorized to post notifications")
                 }
 
@@ -508,7 +505,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
                     if let error = error {
                         self.logError("Error posting notification: \(error.localizedDescription)")
-                        observer.onError(ExposureDataError.internalError)
+                        observer(.failure(ExposureDataError.internalError))
                         return
                     }
 
@@ -518,16 +515,14 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                             storageController.store(object: Date(),
                                                     identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { error in
                                 if error != nil {
-                                    observer.onError(ExposureDataError.internalError)
+                                    observer(.failure(ExposureDataError.internalError))
                                 } else {
-                                    observer.onNext(value)
-                                    observer.onCompleted()
+                                    observer(.success(value))
                                 }
                             }
                         }
                     } else {
-                        observer.onNext(value)
-                        observer.onCompleted()
+                        observer(.success(value))
                     }
                 }
             }
@@ -537,11 +532,10 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Stores the exposureReport in local storage (which triggers the 'notified' state)
-    private func persist(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Observable<(ExposureDetectionResult, ExposureReport?)> {
+    private func persist(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
         return .create { (observer) -> Disposable in
             guard let exposureReport = value.1 else {
-                observer.onNext(value)
-                observer.onCompleted()
+                observer(.success(value))
                 return Disposables.create()
             }
 
@@ -550,17 +544,15 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
                 if let lastExposureReport = lastExposureReport, lastExposureReport.date > exposureReport.date {
                     // already stored a newer report, ignore this one
-                    observer.onNext(value)
-                    observer.onCompleted()
+                    observer(.success(value))
                 } else {
                     // store the new report
                     storageController.store(object: exposureReport,
                                             identifiedBy: ExposureDataStorageKey.lastExposureReport) { error in
                         if error != nil {
-                            observer.onError(ExposureDataError.internalError)
+                            observer(.failure(ExposureDataError.internalError))
                         } else {
-                            observer.onNext(value)
-                            observer.onCompleted()
+                            observer(.success(value))
                         }
                     }
                 }
@@ -571,7 +563,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Updates the date when this operation has last run
-    private func updateLastProcessingDate(_ value: (ExposureDetectionResult, ExposureReport?)) -> Observable<(ExposureDetectionResult, ExposureReport?)> {
+    private func updateLastProcessingDate(_ value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
         return .create { (observer) -> Disposable in
 
             self.storageController.requestExclusiveAccess { storageController in
@@ -583,10 +575,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                         identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
                                         completion: { error in
                                             if error != nil {
-                                                observer.onError(ExposureDataError.internalError)
+                                                observer(.failure(ExposureDataError.internalError))
                                             } else {
-                                                observer.onNext(value)
-                                                observer.onCompleted()
+                                                observer(.success(value))
                                             }
                                         })
             }

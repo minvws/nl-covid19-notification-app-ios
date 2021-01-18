@@ -47,7 +47,7 @@ final class RootRouterTests: XCTestCase {
         }
 
         exposureController.updateTreatmentPerspectiveHandler = {
-            .just(TreatmentPerspective.emptyMessage)
+            .empty()
         }
 
         router = RootRouter(viewController: viewController,

@@ -44,7 +44,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .subscribe(onNext: { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, appConfig)
                 exp.fulfill()
             })
@@ -65,7 +65,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .subscribe(onNext: { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
             })
@@ -86,7 +86,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .subscribe(onNext: { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
             })
@@ -110,7 +110,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .subscribe(onNext: { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
             })
@@ -132,7 +132,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .subscribe(onNext: { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
             })
@@ -159,7 +159,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .subscribe(onError: { error in
+            .subscribe(onFailure: { error in
                 guard case ExposureDataError.internalError = error else {
                     XCTFail("Call expected to return an error but succeeded instead")
                     return
