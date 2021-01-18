@@ -17,12 +17,12 @@ class WebViewErrorViewSnapshotTests: TestCase {
         sut = WebViewErrorView(theme: theme)
     }
 
-    func test_webviewErrorView() throws {
-        sut.snp.makeConstraints { maker in
-            maker.width.equalTo(320)
-            maker.height.equalTo(720)
-        }
-
-        assertSnapshot(matching: sut, as: .image())
-    }
+//    func test_webviewErrorView() throws {
+//        sut.snp.makeConstraints { maker in
+//            maker.width.equalTo(320)
+//            maker.height.equalTo(720)
+//        }
+//
+//        assertSnapshot(matching: sut, as: .image())
+//    }
 }
