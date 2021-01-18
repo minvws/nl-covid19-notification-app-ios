@@ -15,23 +15,20 @@ private struct StorageWrapper<T>: Codable where T: Codable {
 extension StorageControlling {
     func store<Key: CodableStoreKey>(object: Key.Object, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
 
-        if #available(iOS 13, *) {
-            guard let data = try? JSONEncoder().encode(object) else {
-                completion(StoreError.cannotEncode)
-                return
-            }
+        var encodedData = try? JSONEncoder().encode(object)
 
-            store(data: data, identifiedBy: key, completion: completion)
-        } else {
-
+        // fallback in case encoding didn't work, wrap the object
+        if encodedData == nil {
             let wrapper = StorageWrapper(wrapped: object)
-            guard let data = try? JSONEncoder().encode(wrapper) else {
-                completion(StoreError.cannotEncode)
-                return
-            }
-
-            store(data: data, identifiedBy: key, completion: completion)
+            encodedData = try? JSONEncoder().encode(wrapper)
         }
+
+        guard let dataToStore = encodedData else {
+            completion(StoreError.cannotEncode)
+            return
+        }
+
+        store(data: dataToStore, identifiedBy: key, completion: completion)
     }
 
     func retrieveObject<Key: CodableStoreKey>(identifiedBy key: Key) -> Key.Object? {
@@ -39,18 +36,20 @@ extension StorageControlling {
             return nil
         }
 
-        do {
-            if #available(iOS 13, *) {
-                return try JSONDecoder().decode(key.objectType, from: data)
-            } else {
-                let value = try JSONDecoder().decode(StorageWrapper<Key.Object>.self, from: data)
-                return value.wrapped
-            }
-        } catch {
+        var objectToReturn = try? JSONDecoder().decode(key.objectType, from: data)
+
+        // fallback, maybe the object was stored in a wrapper
+        if objectToReturn == nil {
+            let wrappedValue = try? JSONDecoder().decode(StorageWrapper<Key.Object>.self, from: data)
+            objectToReturn = wrappedValue?.wrapped
+        }
+
+        if objectToReturn == nil {
             // data is corrupt / backwards incompatible - delete it
             removeData(for: key, completion: { _ in })
-            return nil
         }
+
+        return objectToReturn
     }
 }
 
