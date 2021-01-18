@@ -5,7 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import BackgroundTasks
+#if canImport(BackgroundTasks)
+    import BackgroundTasks
+#endif
+
 import ENFoundation
 import UIKit
 
