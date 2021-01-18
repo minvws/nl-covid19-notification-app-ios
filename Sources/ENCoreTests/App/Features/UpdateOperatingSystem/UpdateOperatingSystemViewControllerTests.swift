@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import SnapshotTesting
@@ -38,5 +39,17 @@ final class UpdateOperatingSystemViewControllerTests: TestCase {
 
     func testSnapshotUpdateOperatingSystemViewController() {
         snapshots(matching: viewController)
+    }
+
+    func testSnapshotUpdateOperatingSystemViewControllerArabic() {
+        LocalizationOverrides.overriddenLocalization = "ar"
+        LocalizationOverrides.overriddenIsRTL = true
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "ar"
+
+        snapshots(matching: viewController)
+
+        LocalizationOverrides.overriddenLocalization = nil
+        LocalizationOverrides.overriddenIsRTL = nil
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = nil
     }
 }
