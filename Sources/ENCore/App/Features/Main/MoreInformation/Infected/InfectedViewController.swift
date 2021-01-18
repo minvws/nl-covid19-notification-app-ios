@@ -61,9 +61,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         setThemeNavigationBar(withTitle: .moreInformationInfectedTitle)
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 

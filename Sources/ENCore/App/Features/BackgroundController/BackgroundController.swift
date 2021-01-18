@@ -5,7 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import BackgroundTasks
+#if canImport(BackgroundTasks)
+    import BackgroundTasks
+#endif
+
 import ENFoundation
 import ExposureNotification
 import Foundation
@@ -80,6 +83,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         operationQueue.async(execute: scheduleTasks)
     }
 
+    @available(iOS 13, *)
     func handle(task: BGTask) {
         LogHandler.setup()
 
@@ -126,6 +130,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
     private let randomNumberGenerator: RandomNumberGenerating
 
+    @available(iOS 13, *)
     private func handleDecoyStopkeys(task: BGProcessingTask) {
 
         guard isExposureManagerActive else {
@@ -203,7 +208,10 @@ final class BackgroundController: BackgroundControlling, Logging {
                 let date = currentDate().addingTimeInterval(
                     TimeInterval(self.randomNumberGenerator.randomInt(in: 0 ... 900)) // random number between 0 and 15 minutes
                 )
-                self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
+
+                if #available(iOS 13, *) {
+                    self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
+                }
             }
         }
 
@@ -227,9 +235,12 @@ final class BackgroundController: BackgroundControlling, Logging {
         let timeInterval = refreshInterval * 60
         let date = currentDate().addingTimeInterval(timeInterval)
 
-        schedule(identifier: .refresh, date: date)
+        if #available(iOS 13, *) {
+            schedule(identifier: .refresh, date: date)
+        }
     }
 
+    @available(iOS 13, *)
     private func refresh(task: BGProcessingTask) {
         let sequence: [Completable] = [
             activateExposureController(inBackgroundMode: true),
@@ -407,6 +418,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         return Calendar.current.date(from: components)
     }
 
+    @available(iOS 13, *)
     private func schedule(identifier: BackgroundTaskIdentifiers, date: Date? = nil, completion: ((Bool) -> ())? = nil) {
         let backgroundTaskIdentifier = bundleIdentifier + "." + identifier.rawValue
 

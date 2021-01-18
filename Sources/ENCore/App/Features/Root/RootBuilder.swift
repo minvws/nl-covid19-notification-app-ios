@@ -5,7 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import BackgroundTasks
+#if canImport(BackgroundTasks)
+    import BackgroundTasks
+#endif
+
 import ENFoundation
 import UIKit
 
@@ -33,6 +36,7 @@ protocol AppEntryPoint {
     func didEnterBackground()
 
     // Should handle the background task
+    @available(iOS 13, *)
     func handle(backgroundTask: BGTask)
 }
 

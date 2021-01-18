@@ -38,7 +38,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+        if #available(iOS 13, *) {
+
+        } else {
+            let window = UIWindow(frame: UIScreen.main.bounds)
+            self.window = window
+            bridge = ENCoreBridge()
+            bridge?.attach(to: window)
+            window.makeKeyAndVisible()
+        }
+
         return true
+    }
+
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        // Start first flow
+        bridge?.start()
+        bridge?.didBecomeActive()
+    }
+
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        // notify bridge app entered foreground
+        bridge?.didEnterForeground()
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        // notify bridge app entered background
+        bridge?.didEnterBackground()
     }
 
     // MARK: UISceneSession Lifecycle

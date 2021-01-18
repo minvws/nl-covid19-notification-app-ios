@@ -47,9 +47,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         hasBottomMargin = true
         title = .moreInformationRequestTestTitle
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 

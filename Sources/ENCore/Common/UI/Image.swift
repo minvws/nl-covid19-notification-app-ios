@@ -74,6 +74,7 @@ extension UIImage {
     static var onlyTogetherCanWeControlCorona: UIImage? { return Image.named("OnlyTogetherCanWeControlCorona") }
     static var rijkslint: UIImage? { return Image.named("Rijkslint") }
     static var minVWS: UIImage? { return Image.named("MinVWS") }
+    static var closeButton: UIImage? { return Image.named("CloseButton") }
     static var settingsIcon: UIImage? { return Image.named("SettingsIcon") }
     static var bluetoothIcon: UIImage? { return Image.named("BluetoothIcon") }
     static var switchIcon: UIImage? { return Image.named("SwitchIcon") }

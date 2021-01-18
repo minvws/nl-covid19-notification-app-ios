@@ -5,7 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import BackgroundTasks
+#if canImport(BackgroundTasks)
+    import BackgroundTasks
+#endif
+
 import ENFoundation
 import RxSwift
 import UIKit
@@ -202,6 +205,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         mutableNetworkStatusStream.stopObservingNetworkReachability()
     }
 
+    @available(iOS 13, *)
     func handle(backgroundTask: BGTask) {
         backgroundController.handle(task: backgroundTask)
     }

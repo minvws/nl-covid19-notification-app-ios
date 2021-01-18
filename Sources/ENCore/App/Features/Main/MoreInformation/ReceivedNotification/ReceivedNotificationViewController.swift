@@ -42,9 +42,7 @@ final class ReceivedNotificationViewController: ViewController, ReceivedNotifica
 
         hasBottomMargin = true
         title = .moreInformationReceivedNotificationTitle
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 

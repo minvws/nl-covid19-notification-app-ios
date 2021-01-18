@@ -16,4 +16,24 @@ public extension String {
     func removingCharacters(from: String) -> String {
         return removingCharacters(from: CharacterSet(charactersIn: from))
     }
+
+    /// Returns string suitable for accessibility (voice over). A space will be added between each character to force voice over to spell each character individually.
+    var stringForSpelling: String {
+        var s = ""
+
+        // Separate all characters
+        let chars = self.map { String($0) }
+
+        // Append all characters one by one
+        for char in chars {
+            // If there is already a character, append separator before appending next character
+            if s.count > 0 {
+                s += " "
+            }
+            // Append next character
+            s += char
+        }
+
+        return s
+    }
 }

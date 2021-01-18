@@ -77,9 +77,7 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
     private var disposeBag = DisposeBag()
     private weak var listener: ShareSheetListener?
     private lazy var internalView: ShareSheetView = ShareSheetView(theme: self.theme)
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                          target: self,
-                                                          action: #selector(didTapClose))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }
 
 final class ShareSheetView: View {
