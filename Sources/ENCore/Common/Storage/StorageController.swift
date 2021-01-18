@@ -7,14 +7,31 @@
 
 import Foundation
 
+/// On iOS version lower than 13, encoding values such as Booleans is not supported. To work around this we wrap the value in a struct
+private struct StorageWrapper<T>: Codable where T: Codable {
+    let wrapped: T
+}
+
 extension StorageControlling {
     func store<Key: CodableStoreKey>(object: Key.Object, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
-        guard let data = try? JSONEncoder().encode(object) else {
-            completion(StoreError.cannotEncode)
-            return
-        }
 
-        store(data: data, identifiedBy: key, completion: completion)
+        if #available(iOS 13, *) {
+            guard let data = try? JSONEncoder().encode(object) else {
+                completion(StoreError.cannotEncode)
+                return
+            }
+
+            store(data: data, identifiedBy: key, completion: completion)
+        } else {
+
+            let wrapper = StorageWrapper(wrapped: object)
+            guard let data = try? JSONEncoder().encode(wrapper) else {
+                completion(StoreError.cannotEncode)
+                return
+            }
+
+            store(data: data, identifiedBy: key, completion: completion)
+        }
     }
 
     func retrieveObject<Key: CodableStoreKey>(identifiedBy key: Key) -> Key.Object? {
@@ -23,7 +40,12 @@ extension StorageControlling {
         }
 
         do {
-            return try JSONDecoder().decode(key.objectType, from: data)
+            if #available(iOS 13, *) {
+                return try JSONDecoder().decode(key.objectType, from: data)
+            } else {
+                let value = try JSONDecoder().decode(StorageWrapper<Key.Object>.self, from: data)
+                return value.wrapped
+            }
         } catch {
             // data is corrupt / backwards incompatible - delete it
             removeData(for: key, completion: { _ in })
