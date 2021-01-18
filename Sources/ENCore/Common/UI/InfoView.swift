@@ -11,14 +11,14 @@ import SnapKit
 import UIKit
 
 struct InfoViewConfig {
-    let actionButtonTitle: String
+    let actionButtonTitle: String?
     let secondaryButtonTitle: String?
     let headerImage: UIImage?
     let showButtons: Bool
     let stickyButtons: Bool
     let headerBackgroundViewColor: UIColor?
 
-    init(actionButtonTitle: String = "",
+    init(actionButtonTitle: String? = nil,
          secondaryButtonTitle: String? = nil,
          headerImage: UIImage? = nil,
          headerBackgroundViewColor: UIColor? = nil,
@@ -74,7 +74,7 @@ final class InfoView: View {
         self.buttonStackView = UIStackView(frame: .zero)
         self.scrollView = UIScrollView(frame: .zero)
         self.headerBackgroundView = UIView(frame: .zero)
-        self.actionButton = Button(title: config.actionButtonTitle, theme: theme)
+        self.actionButton = Button(title: config.actionButtonTitle ?? "", theme: theme)
         self.buttonSeparator = GradientView(startColor: UIColor.white.withAlphaComponent(0), endColor: UIColor.black.withAlphaComponent(0.1))
         if let title = config.secondaryButtonTitle {
             self.secondaryButton = Button(title: title, theme: theme)

@@ -12,6 +12,7 @@ protocol EnvironmentControlling {
     var isiOS137orHigher: Bool { get }
     var gaenRateLimitingType: GAENRateLimitingType { get }
     var appVersion: String? { get }
+    var supportsExposureNotification: Bool { get }
 }
 
 enum GAENRateLimitingType {
@@ -30,6 +31,10 @@ enum SupportedENAPIVersion {
 }
 
 class EnvironmentController: EnvironmentControlling {
+
+    var supportsExposureNotification: Bool {
+        return maximumSupportedExposureNotificationVersion != .unsupported
+    }
 
     var isiOS137orHigher: Bool {
         if #available(iOS 13.7, *) {

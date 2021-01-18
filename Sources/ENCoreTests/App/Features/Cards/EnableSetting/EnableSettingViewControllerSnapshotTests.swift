@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
@@ -61,5 +62,34 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)
+    }
+
+    func test_updateOperatingSystem() {
+        viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
+                                                     theme: theme,
+                                                     setting: .updateOperatingSystem,
+                                                     exposureStateStream: exposureStateStream,
+                                                     environmentController: environmentController)
+
+        snapshots(matching: viewController)
+    }
+
+    func test_updateOperatingSystem_arabic() {
+
+        LocalizationOverrides.overriddenLocalization = "ar"
+        LocalizationOverrides.overriddenIsRTL = true
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "ar"
+
+        viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
+                                                     theme: theme,
+                                                     setting: .updateOperatingSystem,
+                                                     exposureStateStream: exposureStateStream,
+                                                     environmentController: environmentController)
+
+        snapshots(matching: viewController)
+
+        LocalizationOverrides.overriddenLocalization = nil
+        LocalizationOverrides.overriddenIsRTL = nil
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = nil
     }
 }

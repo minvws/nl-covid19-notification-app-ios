@@ -319,13 +319,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
     }
 
-    private func openAppSettings() {
-        guard let url = URL(string: UIApplication.openSettingsURLString) else {
-            return logError("Settings URL string problem")
-        }
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-    }
-
     private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {
         switch authorizationStatus {
         case .notDetermined:

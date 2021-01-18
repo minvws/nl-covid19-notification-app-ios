@@ -8,6 +8,7 @@
 import ENFoundation
 import Foundation
 import RxSwift
+import SnapKit
 import UIKit
 
 final class EnableSettingViewController: ViewController, UIAdaptivePresentationControllerDelegate {
@@ -126,6 +127,9 @@ private final class EnableSettingView: View {
         addSubview(button)
     }
 
+    private var buttonToBottomConstraint: Constraint?
+    private var contentToBottomConstraint: Constraint?
+
     override func setupConstraints() {
         super.setupConstraints()
 
@@ -145,13 +149,10 @@ private final class EnableSettingView: View {
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(scrollView.snp.bottom).offset(16)
             make.height.equalTo(48)
-
-            constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
         }
 
         scrollView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.width.equalToSuperview()
+            make.leading.trailing.equalTo(safeAreaLayoutGuide)
             make.top.equalTo(navigationBar.snp.bottom).offset(8)
         }
     }
@@ -160,11 +161,23 @@ private final class EnableSettingView: View {
 
     fileprivate func update(model: EnableSettingModel, actionCompletion: @escaping () -> ()) {
         titleLabel.text = model.title
+
+        buttonToBottomConstraint?.isActive = model.action != nil
+        contentToBottomConstraint?.isActive = model.action == nil
+
         if let action = model.action {
             button.isHidden = false
             button.setTitle(model.actionTitle, for: .normal)
             button.action = {
                 action.action(actionCompletion)
+            }
+
+            button.snp.makeConstraints { make in
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
+            }
+        } else {
+            scrollView.snp.makeConstraints { make in
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
             }
         }
 

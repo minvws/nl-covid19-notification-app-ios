@@ -74,6 +74,13 @@ extension UIImage {
     static var onlyTogetherCanWeControlCorona: UIImage? { return Image.named("OnlyTogetherCanWeControlCorona") }
     static var rijkslint: UIImage? { return Image.named("Rijkslint") }
     static var minVWS: UIImage? { return Image.named("MinVWS") }
+    static var settingsIcon: UIImage? { return Image.named("SettingsIcon") }
+    static var bluetoothIcon: UIImage? { return Image.named("BluetoothIcon") }
+    static var switchIcon: UIImage? { return Image.named("SwitchIcon") }
+    static var exposureNotifications: UIImage? { return Image.named("ExposureNotifications") }
+    static var notification: UIImage? { return Image.named("Notification") }
+    static var settingsPlain: UIImage? { return Image.named("SettingsPlain") }
+    static var mobileData: UIImage? { return Image.named("MobileData") }
 }
 
 extension UIImage {

@@ -28,11 +28,15 @@ final class RootRouterTests: XCTestCase {
     private let webviewBuilder = WebviewBuildableMock()
     private let userNotificationCenter = UserNotificationCenterMock()
     private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
+    private let mockEnvironmentController = EnvironmentControllingMock()
+    private let updateOperatingSystemBuilder = UpdateOperatingSystemBuildableMock()
 
     private var router: RootRouter!
 
     override func setUp() {
         super.setUp()
+
+        mockEnvironmentController.supportsExposureNotification = true
 
         exposureController.isAppDeactivatedHandler = {
             .just(false)
@@ -50,6 +54,14 @@ final class RootRouterTests: XCTestCase {
             .empty()
         }
 
+        onboardingBuilder.buildHandler = { _ in
+            OnboardingRoutingMock()
+        }
+
+        viewController.dismissHandler = { _, _, completion in
+            completion?()
+        }
+
         router = RootRouter(viewController: viewController,
                             launchScreenBuilder: launchScreenBuilder,
                             onboardingBuilder: onboardingBuilder,
@@ -65,9 +77,11 @@ final class RootRouterTests: XCTestCase {
                             networkController: networkController,
                             backgroundController: backgroundController,
                             updateAppBuilder: updateAppBuilder,
+                            updateOperatingSystemBuilder: updateOperatingSystemBuilder,
                             webviewBuilder: webviewBuilder,
                             userNotificationCenter: userNotificationCenter,
-                            currentAppVersion: "1.0")
+                            currentAppVersion: "1.0",
+                            environmentController: mockEnvironmentController)
         set(activeState: .notAuthorized)
     }
 
@@ -80,9 +94,7 @@ final class RootRouterTests: XCTestCase {
         let viewControllableMock = LaunchScreenViewControllableMock()
         routingMock.viewControllable = viewControllableMock
 
-        onboardingBuilder.buildHandler = { _ in return OnboardingRoutingMock() }
         launchScreenBuilder.buildHandler = { return routingMock }
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         XCTAssertEqual(launchScreenBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.presentCallCount, 0)
@@ -99,8 +111,6 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_start_buildsAndPresentsOnboarding() {
-        onboardingBuilder.buildHandler = { _ in return OnboardingRoutingMock() }
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
@@ -117,8 +127,6 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_callStartTwice_doesNotPresentTwice() {
-        onboardingBuilder.buildHandler = { _ in OnboardingRoutingMock() }
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
@@ -137,7 +145,6 @@ final class RootRouterTests: XCTestCase {
 
     func test_callStartWhenOnboardingCompleted_routesToMain() {
         exposureController.didCompleteOnboarding = true
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
@@ -154,8 +161,6 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_detachOnboardingAndRouteToMain_callsEmbedAndDismiss() {
-
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         router.start()
 
@@ -223,8 +228,18 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.dismissCallCount, 1)
     }
 
+    func test_start_ENNotSupported_showsUpdateOperatingSystemViewController() {
+
+        mockEnvironmentController.supportsExposureNotification = false
+
+        router.start()
+
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 0)
+        XCTAssertEqual(updateOperatingSystemBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 1)
+    }
+
     func test_start_getMinimumVersion_showsUpdateAppViewController() {
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         let appVersionInformation = ExposureDataAppVersionInformation(
             minimumVersion: "1.1",
@@ -244,7 +259,6 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         // Initial call to setup normal routing. didBecomeActive only checks End Of Life if
         // there is already a router installed (the app startup routine was already executed)
@@ -287,7 +301,6 @@ final class RootRouterTests: XCTestCase {
 
     func test_didEnterForeground_callsRefreshStatus() {
         exposureController.updateWhenRequiredHandler = { .empty() }
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         // Required to attach main router
         router.start()
@@ -301,7 +314,6 @@ final class RootRouterTests: XCTestCase {
 
     func test_didEnterForeground_callsUpdateWhenRequired() {
         exposureController.updateWhenRequiredHandler = { .empty() }
-        viewController.dismissHandler = { _, _, completion in completion?() }
 
         // Required to attach main router
         router.start()

@@ -34,7 +34,11 @@ final class EnableSettingActionView: View {
             showChevron = false
             showSwitch = false
         case .custom(image: let image, description: _, showChevron: let showChevron, showSwitch: let showSwitch):
-            actionView = UIImageView(image: image)
+            if let image = image {
+                actionView = UIImageView(image: image)
+            } else {
+                actionView = nil
+            }
             actionViewRect = CGRect(x: 0, y: 15, width: 24, height: 24)
             self.showChevron = showChevron
             self.showSwitch = showSwitch

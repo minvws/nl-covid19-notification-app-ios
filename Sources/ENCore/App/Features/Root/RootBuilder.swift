@@ -37,7 +37,7 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency {
 
     // MARK: - Child Builders
 
@@ -71,6 +71,14 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     fileprivate var updateAppBuilder: UpdateAppBuildable {
         return UpdateAppBuilder(dependency: self)
+    }
+
+    fileprivate var updateOperatingSystemBuilder: UpdateOperatingSystemBuildable {
+        return UpdateOperatingSystemBuilder(dependency: self)
+    }
+
+    fileprivate var enableSettingBuilder: EnableSettingBuildable {
+        return EnableSettingBuilder(dependency: self)
     }
 
     fileprivate var webviewBuilder: WebviewBuildable {
@@ -154,6 +162,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return InterfaceOrientationStream()
     }
 
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
+
     let theme: Theme = ENTheme()
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
@@ -224,8 +236,10 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           networkController: dependencyProvider.networkController,
                           backgroundController: dependencyProvider.backgroundController,
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
+                          updateOperatingSystemBuilder: dependencyProvider.updateOperatingSystemBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
                           userNotificationCenter: dependencyProvider.userNotificationCenter,
-                          currentAppVersion: unwrappedCurrentAppVersion)
+                          currentAppVersion: unwrappedCurrentAppVersion,
+                          environmentController: dependencyProvider.environmentController)
     }
 }
