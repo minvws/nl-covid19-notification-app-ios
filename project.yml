@@ -27,7 +27,7 @@ targets:
       - link: false
         target: ENCore
       - target: ENFoundation
-    deploymentTarget: '13.5'
+    deploymentTarget: '12.5'
     info:
       path: Sources/EN/Resources/Info.plist
       properties:
@@ -111,7 +111,7 @@ targets:
       - framework: ExposureNotification.framework
         optional: true
       - framework: vendor/OpenSSL-for-iPhone/openssl.framework
-    deploymentTarget: '13.5'
+    deploymentTarget: '12.5'
     platform: iOS
     scheme:
       gatherCoverageData: true
@@ -132,7 +132,7 @@ targets:
     dependencies:
       - target: ENCore
       - package: SnapshotTesting      
-    deploymentTarget: '13.5'
+    deploymentTarget: '12.5'
     platform: iOS
     preBuildScripts:
       - name: Generate Mocks
