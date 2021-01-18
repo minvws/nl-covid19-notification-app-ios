@@ -28,10 +28,9 @@ final class UploadDiagnosisKeysDataOperation: UploadDiagnosisKeysDataOperationPr
     }
 
     func execute() -> Completable {
-        let keys = diagnosisKeys
 
         return networkController
-            .postKeys(keys: keys, labConfirmationKey: labConfirmationKey, padding: padding)
+            .postKeys(keys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
             .subscribe(on: MainScheduler.instance)
             .catch { error in
 
