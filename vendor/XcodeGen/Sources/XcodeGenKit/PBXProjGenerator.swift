@@ -13,6 +13,8 @@ public class PBXProjGenerator {
     let projectDirectory: Path?
     let carthageResolver: CarthageDependencyResolver
 
+    public static let copyFilesActionMask: UInt = 8
+
     var sourceGenerator: SourceGenerator!
 
     var targetObjects: [String: PBXTarget] = [:]
@@ -93,13 +95,14 @@ public class PBXProjGenerator {
             )
         )
 
+        let developmentRegion = project.options.developmentLanguage ?? "en"
         let pbxProject = addObject(
             PBXProject(
                 name: project.name,
                 buildConfigurationList: buildConfigList,
                 compatibilityVersion: project.compatibilityVersion,
                 mainGroup: mainGroup,
-                developmentRegion: project.options.developmentLanguage ?? "en"
+                developmentRegion: developmentRegion
             )
         )
 
@@ -289,8 +292,7 @@ public class PBXProjGenerator {
             projectAttributes["knownAssetTags"] = assetTags
         }
 
-        let knownRegions = sourceGenerator.knownRegions.sorted()
-        pbxProject.knownRegions = knownRegions.isEmpty ? ["en"] : knownRegions
+        pbxProject.knownRegions = sourceGenerator.knownRegions.union(["Base", developmentRegion]).sorted()
 
         pbxProject.packages = packageReferences.sorted { $0.key < $1.key }.map { $1 }
 
@@ -476,7 +478,7 @@ public class PBXProjGenerator {
         return addObject(shellScriptPhase)
     }
 
-    func generateCopyFiles(targetName: String, copyFiles: TargetSource.BuildPhase.CopyFilesSettings, buildPhaseFiles: [PBXBuildFile]) -> PBXCopyFilesBuildPhase {
+    func generateCopyFiles(targetName: String, copyFiles: BuildPhaseSpec.CopyFilesSettings, buildPhaseFiles: [PBXBuildFile]) -> PBXCopyFilesBuildPhase {
         let copyFilesBuildPhase = PBXCopyFilesBuildPhase(
             dstPath: copyFiles.subpath,
             dstSubfolderSpec: copyFiles.destination.destination,
@@ -644,13 +646,14 @@ public class PBXProjGenerator {
         var dependencies: [PBXTargetDependency] = []
         var targetFrameworkBuildFiles: [PBXBuildFile] = []
         var frameworkBuildPaths = Set<String>()
-        var copyFilesBuildPhasesFiles: [TargetSource.BuildPhase.CopyFilesSettings: [PBXBuildFile]] = [:]
+        var copyFilesBuildPhasesFiles: [BuildPhaseSpec.CopyFilesSettings: [PBXBuildFile]] = [:]
         var copyFrameworksReferences: [PBXBuildFile] = []
         var copyResourcesReferences: [PBXBuildFile] = []
         var copyBundlesReferences: [PBXBuildFile] = []
         var copyWatchReferences: [PBXBuildFile] = []
         var packageDependencies: [XCSwiftPackageProductDependency] = []
         var extensions: [PBXBuildFile] = []
+        var appClips: [PBXBuildFile] = []
         var carthageFrameworksToEmbed: [String] = []
         let localPackageReferences: [String] = project.packages.compactMap { $0.value.isLocal ? $0.key : nil }
 
@@ -710,6 +713,9 @@ public class PBXProjGenerator {
                 if dependencyTarget.type.isExtension {
                     // embed app extension
                     extensions.append(embedFile)
+                } else if dependencyTarget.type == .onDemandInstallCapableApplication {
+                    // embed app clip
+                    appClips.append(embedFile)
                 } else if dependencyTarget.type.isFramework {
                     copyFrameworksReferences.append(embedFile)
                 } else if dependencyTarget.type.isApp && dependencyTarget.platform == .watchOS {
@@ -827,6 +833,13 @@ public class PBXProjGenerator {
                 )
                 targetFrameworkBuildFiles.append(buildFile)
 
+                if dependency.embed == true {
+                    let embedFile = addObject(
+                        PBXBuildFile(file: fileReference, settings: getEmbedSettings(dependency: dependency, codeSign: dependency.codeSign ?? true))
+                    )
+                    copyFrameworksReferences.append(embedFile)
+                }
+
             case .carthage(let findFrameworks, let linkType):
                 let findFrameworks = findFrameworks ?? project.options.findCarthageFrameworks
                 let allDependencies = findFrameworks
@@ -865,7 +878,11 @@ public class PBXProjGenerator {
                 let packageDependency = addObject(
                     XCSwiftPackageProductDependency(productName: productName, package: packageReference)
                 )
-                packageDependencies.append(packageDependency)
+
+                // Add package dependency if linking is true.
+                if dependency.link ?? true {
+                    packageDependencies.append(packageDependency)
+                }
 
                 let link = dependency.link ?? (target.type != .staticLibrary)
                 if link {
@@ -955,8 +972,8 @@ public class PBXProjGenerator {
             return getBuildFilesForSourceFiles(filteredSourceFiles)
         }
 
-        func getBuildFilesForCopyFilesPhases() -> [TargetSource.BuildPhase.CopyFilesSettings: [PBXBuildFile]] {
-            var sourceFilesByCopyFiles: [TargetSource.BuildPhase.CopyFilesSettings: [SourceFile]] = [:]
+        func getBuildFilesForCopyFilesPhases() -> [BuildPhaseSpec.CopyFilesSettings: [PBXBuildFile]] {
+            var sourceFilesByCopyFiles: [BuildPhaseSpec.CopyFilesSettings: [SourceFile]] = [:]
             for sourceFile in sourceFiles {
                 guard case let .copyFiles(copyFilesSettings)? = sourceFile.buildPhase else { continue }
                 sourceFilesByCopyFiles[copyFilesSettings, default: []].append(sourceFile)
@@ -964,6 +981,17 @@ public class PBXProjGenerator {
             return sourceFilesByCopyFiles.mapValues { getBuildFilesForSourceFiles($0) }
         }
 
+        func getPBXCopyFilesBuildPhase(dstSubfolderSpec: PBXCopyFilesBuildPhase.SubFolder, name: String, files: [PBXBuildFile]) -> PBXCopyFilesBuildPhase {
+            return PBXCopyFilesBuildPhase(
+                dstPath: "",
+                dstSubfolderSpec: dstSubfolderSpec,
+                name: name,
+                buildActionMask: target.onlyCopyFilesOnInstall ? PBXProjGenerator.copyFilesActionMask : PBXBuildPhase.defaultBuildActionMask,
+                files: files,
+                runOnlyForDeploymentPostprocessing: target.onlyCopyFilesOnInstall ? true : false
+            )
+        }
+        
         copyFilesBuildPhasesFiles.merge(getBuildFilesForCopyFilesPhases()) { $0 + $1 }
 
         buildPhases += try target.preBuildScripts.map { try generateBuildScript(targetName: target.name, buildScript: $0) }
@@ -1061,12 +1089,21 @@ public class PBXProjGenerator {
 
         if !extensions.isEmpty {
 
+            let copyFilesPhase = addObject(                
+                getPBXCopyFilesBuildPhase(dstSubfolderSpec: .plugins, name: "Embed App Extensions", files: extensions)
+            )
+
+            buildPhases.append(copyFilesPhase)
+        }
+
+        if !appClips.isEmpty {
+
             let copyFilesPhase = addObject(
                 PBXCopyFilesBuildPhase(
-                    dstPath: "",
-                    dstSubfolderSpec: .plugins,
-                    name: "Embed App Extensions",
-                    files: extensions
+                    dstPath: "$(CONTENTS_FOLDER_PATH)/AppClips",
+                    dstSubfolderSpec: .productsDirectory,
+                    name: "Embed App Clips",
+                    files: appClips
                 )
             )
 
@@ -1077,12 +1114,7 @@ public class PBXProjGenerator {
         if !copyFrameworksReferences.isEmpty {
 
             let copyFilesPhase = addObject(
-                PBXCopyFilesBuildPhase(
-                    dstPath: "",
-                    dstSubfolderSpec: .frameworks,
-                    name: "Embed Frameworks",
-                    files: copyFrameworksReferences
-                )
+                getPBXCopyFilesBuildPhase(dstSubfolderSpec: .frameworks, name: "Embed Frameworks", files: copyFrameworksReferences)
             )
 
             buildPhases.append(copyFilesPhase)

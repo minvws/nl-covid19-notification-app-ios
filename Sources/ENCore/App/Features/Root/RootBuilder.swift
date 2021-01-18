@@ -37,7 +37,7 @@ protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency {
 
     // MARK: - Child Builders
 
@@ -71,6 +71,14 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     fileprivate var updateAppBuilder: UpdateAppBuildable {
         return UpdateAppBuilder(dependency: self)
+    }
+
+    fileprivate var updateOperatingSystemBuilder: UpdateOperatingSystemBuildable {
+        return UpdateOperatingSystemBuilder(dependency: self)
+    }
+
+    fileprivate var enableSettingBuilder: EnableSettingBuildable {
+        return EnableSettingBuilder(dependency: self)
     }
 
     fileprivate var webviewBuilder: WebviewBuildable {
@@ -150,12 +158,12 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableNetworkStatusStream
     }
 
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return mutableBluetoothStateStream
-    }
-
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         return InterfaceOrientationStream()
+    }
+
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
     }
 
     let theme: Theme = ENTheme()
@@ -164,12 +172,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var mutableExposureStateStream: MutableExposureStateStreaming = ExposureStateStream()
 
     /// Mutable stream for publishing PushNotifcaiton objects to
-    lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificaionStream()
+    lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificationStream()
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
-
-    lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
 
     var messageManager: MessageManaging {
         return MessageManager(storageController: storageController, theme: theme)
@@ -177,6 +183,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     fileprivate var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
+    }
+
+    var randomNumberGenerator: RandomNumberGenerating {
+        RandomNumberGenerator()
     }
 }
 
@@ -220,13 +230,16 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,
+                          mutableNetworkStatusStream: dependencyProvider.mutableNetworkStatusStream,
                           developerMenuBuilder: dependencyProvider.developerMenuBuilder,
                           mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
                           networkController: dependencyProvider.networkController,
                           backgroundController: dependencyProvider.backgroundController,
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
+                          updateOperatingSystemBuilder: dependencyProvider.updateOperatingSystemBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
                           userNotificationCenter: dependencyProvider.userNotificationCenter,
-                          currentAppVersion: unwrappedCurrentAppVersion)
+                          currentAppVersion: unwrappedCurrentAppVersion,
+                          environmentController: dependencyProvider.environmentController)
     }
 }

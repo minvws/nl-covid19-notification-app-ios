@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
+import RxSwift
 import UIKit
 import UserNotifications
 
@@ -265,7 +265,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
 
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
 
     @objc private func didQuadrupleTap(sender: UITapGestureRecognizer) {
         let activityViewController = UIActivityViewController(activityItems: LogHandler.logFiles(),
@@ -319,13 +319,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
     }
 
-    private func openAppSettings() {
-        guard let url = URL(string: UIApplication.openSettingsURLString) else {
-            return logError("Settings URL string problem")
-        }
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-    }
-
     private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {
         switch authorizationStatus {
         case .notDetermined:
@@ -340,11 +333,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private func updateWhenRequired() {
         exposureController
             .updateWhenRequired()
-            .sink(receiveCompletion: { [weak self] _ in
+            .do(onError: { [weak self] error in
+                self?.logDebug("Finished `updateWhenRequired` with error \(error)")
+            }, onCompleted: { [weak self] in
                 self?.logDebug("Finished `updateWhenRequired`")
-            }, receiveValue: { _ in
-                // Do nothing
-                }).store(in: &disposeBag)
+            })
+            .subscribe(onCompleted: {})
+            .disposed(by: disposeBag)
     }
 
     private func requestExposureNotificationPermission(completion: ((Bool) -> ())? = nil) {

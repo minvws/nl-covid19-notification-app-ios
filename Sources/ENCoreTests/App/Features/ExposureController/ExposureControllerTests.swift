@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class ExposureControllerTests: TestCase {
@@ -17,13 +17,17 @@ final class ExposureControllerTests: TestCase {
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
     private let userNotificationCenter = UserNotificationCenterMock()
-    private let networkStatusStream = NetworkStatusStreamingMock(networkStatusStream: CurrentValueSubject<Bool, Never>(true).eraseToAnyPublisher())
+    private let networkStatusStream = NetworkStatusStreamingMock()
     private let currentAppVersion = "1.0"
+
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
 
-        networkStatusStream.currentStatus = true
+        networkStatusStream.networkReachable = true
+        networkStatusStream.networkReachableStream = .just(true)
+
         controller = ExposureController(mutableStateStream: mutableStateStream,
                                         exposureManager: exposureManager,
                                         dataController: dataController,
@@ -32,14 +36,14 @@ final class ExposureControllerTests: TestCase {
                                         currentAppVersion: currentAppVersion)
 
         dataController.lastSuccessfulProcessingDate = Date()
-        dataController.fetchAndProcessExposureKeySetsHandler = { _ in Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher() }
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in .empty() }
 
-        let stream = PassthroughSubject<ExposureState, Never>()
+        let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
         mutableStateStream.updateHandler = { [weak self] state in
             self?.mutableStateStream.currentExposureState = state
-            stream.send(state)
+            stream.onNext(state)
         }
-        mutableStateStream.exposureState = stream.eraseToAnyPublisher()
+        mutableStateStream.exposureState = stream
 
         exposureManager.authorizationStatus = .authorized
         exposureManager.getExposureNotificationStatusHandler = { .active }
@@ -60,6 +64,8 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(mutableStateStream.updateCallCount, 0)
 
         controller.activate(inBackgroundMode: false)
+            .subscribe()
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(exposureManager.activateCallCount, 1)
         XCTAssert(mutableStateStream.updateCallCount > 1)
@@ -74,8 +80,11 @@ final class ExposureControllerTests: TestCase {
         let exp = XCTestExpectation(description: "")
 
         controller
-            .activate(inBackgroundMode: true).sink(receiveCompletion: { _ in exp.fulfill() }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .activate(inBackgroundMode: true)
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
 
@@ -98,8 +107,11 @@ final class ExposureControllerTests: TestCase {
         let exp = XCTestExpectation(description: "")
 
         controller
-            .activate(inBackgroundMode: false).sink(receiveCompletion: { _ in exp.fulfill() }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .activate(inBackgroundMode: false)
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
 
@@ -115,9 +127,11 @@ final class ExposureControllerTests: TestCase {
         let exp = XCTestExpectation(description: "")
 
         controller
-            .activate(inBackgroundMode: false).sink(receiveCompletion: { _ in exp.fulfill() }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
-
+            .activate(inBackgroundMode: false)
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
         wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
@@ -146,8 +160,20 @@ final class ExposureControllerTests: TestCase {
         // Not implemented yet
     }
 
-    func test_confirmExposureNotification() {
-        // Not implemented yet
+    func test_confirmExposureNotification_shouldUpdateStateStreamOnSuccess() {
+        activate()
+
+        dataController.removeLastExposureHandler = {
+            return .empty()
+        }
+
+        XCTAssertEqual(dataController.removeLastExposureCallCount, 0)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 4)
+
+        controller.confirmExposureNotification()
+
+        XCTAssertEqual(dataController.removeLastExposureCallCount, 1)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 5)
     }
 
     func test_managerIsActive_updatesStreamWithActive() {
@@ -233,9 +259,7 @@ final class ExposureControllerTests: TestCase {
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
                                                         validUntil: expirationDate)
-            return Just(labConfirmationKey)
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just(labConfirmationKey)
         }
 
         XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 0)
@@ -260,8 +284,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_requestLabConfirmationKey_isFailure_callsCompletionWithFailure() {
         dataController.requestLabConfirmationKeyHandler = {
-            return Fail(error: ExposureDataError.serverError)
-                .eraseToAnyPublisher()
+            return .error(ExposureDataError.serverError)
         }
 
         XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 0)
@@ -299,9 +322,7 @@ final class ExposureControllerTests: TestCase {
         }
 
         dataController.uploadHandler = { _, _ in
-            Just(())
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            .empty()
         }
 
         XCTAssertEqual(exposureManager.getDiagnosisKeysCallCount, 0)
@@ -359,59 +380,87 @@ final class ExposureControllerTests: TestCase {
 
     func test_updateWhenRequired_callsDataControllerWhenActive() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
-        mutableStateStream.exposureState = Just(mutableStateStream.currentExposureState!).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return Just(())
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
 
         controller
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
     func test_updateWhenRequired_callsDataControllerWhenBluetoothInactive() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))
-        mutableStateStream.exposureState = Just(mutableStateStream.currentExposureState!).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return Just(())
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
 
         controller
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
     func test_updateWhenRequired_callsDataControllerWhenNotificationsDisabled() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.pushNotifications))
-        mutableStateStream.exposureState = Just(mutableStateStream.currentExposureState!).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return Just(())
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
 
         controller
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
+    }
+
+    func test_updateWhenRequired_doesNotCallDataControllerWhenAuthorizedDenied() {
+        mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .authorizationDenied)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in
+            return .empty()
+        }
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+
+        controller
+            .updateWhenRequired()
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+    }
+
+    func test_updateWhenRequired_doesNotCallDataControllerWhenNotAuthorized() {
+        mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in
+            return .empty()
+        }
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
+
+        controller
+            .updateWhenRequired()
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
     }
 
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
@@ -420,6 +469,9 @@ final class ExposureControllerTests: TestCase {
         exposureManager.activateHandler = { $0(.active) }
 
         controller.activate(inBackgroundMode: false)
+            .subscribe()
+            .disposed(by: disposeBag)
+
         controller.refreshStatus()
 
         XCTAssertEqual(mutableStateStream.currentExposureState?.activeState, .inactive(.noRecentNotificationUpdates))
@@ -430,38 +482,37 @@ final class ExposureControllerTests: TestCase {
         exposureManager.activateHandler = { $0(.active) }
 
         controller.activate(inBackgroundMode: false)
+            .subscribe()
+            .disposed(by: disposeBag)
 
         mutableStateStream.update(state: .init(notifiedState: .notNotified, activeState: .active))
-        mutableStateStream.exposureState = Just(.init(notifiedState: .notNotified, activeState: .active)).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(.init(notifiedState: .notNotified, activeState: .active))
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
     func test_updateAndProcessPendingUploads() {
         dataController.processPendingUploadRequestsHandler = {
-            Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .empty()
         }
 
         dataController.processExpiredUploadRequestsHandler = {
-            Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .empty()
         }
 
-        mutableStateStream.exposureState = Just(.init(notifiedState: .notNotified, activeState: .active)).eraseToAnyPublisher()
+        mutableStateStream.exposureState = .just(.init(notifiedState: .notNotified, activeState: .active))
         exposureManager.authorizationStatus = .authorized
 
         let exp = expectation(description: "Wait for async")
 
         controller
             .updateAndProcessPendingUploads()
-            .sink(receiveCompletion: { result in
-                switch result {
-                case .failure:
-                    XCTFail()
-                case .finished:
-                    exp.fulfill()
-                }
-            }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            }, onError: { _ in
+                XCTFail()
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
     }
@@ -473,16 +524,13 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .updateAndProcessPendingUploads()
-            .sink(receiveCompletion: { result in
-                switch result {
-                case let .failure(error):
-                    XCTAssert(error == .notAuthorized)
-                case .finished:
-                    XCTFail()
-                }
+            .subscribe(onCompleted: {
+                XCTFail()
+            }, onError: { error in
+                XCTAssertEqual(error as? ExposureDataError, .notAuthorized)
                 exp.fulfill()
-            }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         wait(for: [exp], timeout: 1)
     }
@@ -494,8 +542,8 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .exposureNotificationStatusCheck()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
         XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
@@ -509,8 +557,8 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .exposureNotificationStatusCheck()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
         XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
@@ -526,8 +574,8 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .exposureNotificationStatusCheck()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 0)
         XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
@@ -543,8 +591,8 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .exposureNotificationStatusCheck()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
         XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
@@ -559,8 +607,8 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .lastOpenedNotificationCheck()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
         XCTAssertEqual(userNotificationCenter.addCallCount, 1)
@@ -574,8 +622,8 @@ final class ExposureControllerTests: TestCase {
 
         controller
             .lastOpenedNotificationCheck()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
         XCTAssertEqual(userNotificationCenter.addCallCount, 0)
@@ -588,6 +636,38 @@ final class ExposureControllerTests: TestCase {
         let days = Date().days(sinceDate: dataController.lastExposure!.date)
 
         XCTAssertEqual(days, 2)
+    }
+
+    func test_getAppVersionInformation_shouldCallDataController() {
+
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.getAppVersionInformationHandler = {
+            .just(.init(minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://www.example.com"))
+        }
+
+        controller.getAppVersionInformation { appVersionInformation in
+            XCTAssertEqual(appVersionInformation?.minimumVersion, "1.0.0")
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func test_getAppVersionInformation_shouldReturnNilOnError() {
+
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.getAppVersionInformationHandler = {
+            .error(ExposureDataError.networkUnreachable)
+        }
+
+        controller.getAppVersionInformation { appVersionInformation in
+            XCTAssertNil(appVersionInformation)
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
     // MARK: - Private
@@ -607,6 +687,8 @@ final class ExposureControllerTests: TestCase {
     private func activate() {
         setupActivation()
         controller.activate(inBackgroundMode: false)
+            .subscribe()
+            .disposed(by: disposeBag)
     }
 
     private func triggerUpdateStream() {

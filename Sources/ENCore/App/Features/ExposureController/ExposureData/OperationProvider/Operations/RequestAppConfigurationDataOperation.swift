@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 
 struct ApplicationConfiguration: Codable, Equatable {
     let version: Int
@@ -25,7 +25,12 @@ struct ApplicationConfiguration: Codable, Equatable {
     let appointmentPhoneNumber: String
 }
 
-final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {
+/// @mockable
+protocol RequestAppConfigurationDataOperationProtocol {
+    func execute() -> Single<ApplicationConfiguration>
+}
+
+final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOperationProtocol, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
@@ -39,7 +44,7 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
+    func execute() -> Single<ApplicationConfiguration> {
         self.logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
 
         if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
@@ -49,32 +54,25 @@ final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging
 
             self.logDebug("RequestAppConfigurationDataOperation: Using cached version")
 
-            return Just(appConfiguration)
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+            return .just(appConfiguration)
         }
 
         self.logDebug("RequestAppConfigurationDataOperation: Using network version")
 
         return networkController
             .applicationConfiguration(identifier: appConfigurationIdentifier)
-            .mapError { $0.asExposureDataError }
+            .subscribe(on: MainScheduler.instance)
+            .catch { throw $0.asExposureDataError }
             .flatMap(storeAppConfiguration)
             .flatMap(storeSignature(for:))
-            .share()
-            .eraseToAnyPublisher()
     }
 
-    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return self.applicationSignatureController.storeAppConfiguration(appConfiguration)
-            .share()
-            .eraseToAnyPublisher()
+    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
+        return applicationSignatureController.storeAppConfiguration(appConfiguration)
     }
 
-    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return self.applicationSignatureController.storeSignature(for: appConfiguration)
-            .share()
-            .eraseToAnyPublisher()
+    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
+        return applicationSignatureController.storeSignature(for: appConfiguration)
     }
 
     private let networkController: NetworkControlling

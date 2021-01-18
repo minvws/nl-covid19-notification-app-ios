@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import RxSwift
 import XCTest
 
 class ApplicationSignatureControllerTests: TestCase {
@@ -13,6 +14,7 @@ class ApplicationSignatureControllerTests: TestCase {
     private var sut: ApplicationSignatureController!
     private var mockStorageController: StorageControllingMock!
     private var mockCryptoUtility: CryptoUtilityMock!
+    private var disposeBag = DisposeBag()
 
     override func setUpWithError() throws {
 
@@ -47,19 +49,18 @@ class ApplicationSignatureControllerTests: TestCase {
         }
 
         let exp = expectation(description: "Completion")
-        sut.storeAppConfiguration(appConfig).sink { completion in
-            guard case let .failure(error) = completion,
-                case .serverError = error else {
+        sut.storeAppConfiguration(appConfig)
+            .subscribe(onSuccess: { _ in
                 XCTFail("Call expected to return an error but succeeded instead")
-                return
-            }
+            }, onFailure: { error in
+                guard case ExposureDataError.serverError = error else {
+                    XCTFail("Call expected to return serverError but returned \(error) instead")
+                    return
+                }
 
-            exp.fulfill()
-
-        } receiveValue: { _ in
-            XCTFail("Unexpected result returned from call that should return an error")
-        }
-        .disposeOnTearDown(of: self)
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
     }
@@ -69,19 +70,18 @@ class ApplicationSignatureControllerTests: TestCase {
         let appConfig = createApplicationConfiguration(withVersion: 1, manifestRefreshFrequency: 0)
 
         let exp = expectation(description: "Completion")
-        sut.storeAppConfiguration(appConfig).sink { completion in
-            guard case let .failure(error) = completion,
-                case .serverError = error else {
+        sut.storeAppConfiguration(appConfig)
+            .subscribe(onSuccess: { _ in
                 XCTFail("Call expected to return an error but succeeded instead")
-                return
-            }
+            }, onFailure: { error in
+                guard case ExposureDataError.serverError = error else {
+                    XCTFail("Call expected to return serverError but returned \(error) instead")
+                    return
+                }
 
-            exp.fulfill()
-
-        } receiveValue: { _ in
-            XCTFail("Unexpected result returned from call that should return an error")
-        }
-        .disposeOnTearDown(of: self)
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
     }
@@ -101,12 +101,11 @@ class ApplicationSignatureControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.storeCallCount, 0)
 
         sut.storeAppConfiguration(appConfig)
-            .assertNoFailure()
-            .sink(receiveValue: { receivedConfiguration in
+            .subscribe(onSuccess: { receivedConfiguration in
                 XCTAssertEqual(receivedConfiguration, appConfig)
                 completionExpectation.fulfill()
             })
-            .disposeOnTearDown(of: self)
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
 
@@ -147,12 +146,11 @@ class ApplicationSignatureControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.storeCallCount, 0)
 
         sut.storeSignature(for: appConfig)
-            .assertNoFailure()
-            .sink(receiveValue: { receivedConfiguration in
+            .subscribe(onSuccess: { receivedConfiguration in
                 XCTAssertEqual(receivedConfiguration, appConfig)
                 completionExpectation.fulfill()
             })
-            .disposeOnTearDown(of: self)
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
 

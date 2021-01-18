@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import RxSwift
 import SnapKit
@@ -48,10 +47,6 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         super.init(theme: theme)
     }
 
-    deinit {
-        disposeBag.forEach { $0.cancel() }
-    }
-
     // MARK: - Overrides
 
     override func loadView() {
@@ -82,16 +77,16 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         exposureStateStream
             .exposureState
-            .sink { state in
+            .subscribe(onNext: { state in
                 self.update(exposureState: state)
-            }
-            .store(in: &disposeBag)
+            })
+            .disposed(by: disposeBag)
 
         interfaceOrientationStream
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.infoView.showHeader = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -189,8 +184,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     private lazy var internalView: InfectedView = InfectedView(theme: self.theme)
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
-    private var disposeBag = Set<AnyCancellable>()
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     private let interfaceOrientationStream: InterfaceOrientationStreaming
 
     private var cardViewController: ViewControllable?

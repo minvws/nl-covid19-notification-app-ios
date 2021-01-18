@@ -6,8 +6,8 @@
  */
 
 import BackgroundTasks
-import Combine
 import ENFoundation
+import RxSwift
 import UIKit
 
 /// Describes internal `RootViewController` functionality. Contains functions
@@ -15,7 +15,7 @@ import UIKit
 /// from `RootBuilder`. `RootBuilder` returns an `AppEntryPoint` instance instead
 /// which is implemented by `RootRouter`.
 ///
-/// @mockable(history: present = true; dismiss = true)
+/// @mockable(history: present = true; dismiss = true; presentInNavigationController = true)
 protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener, WebviewListener {
     var router: RootRouting? { get set }
 
@@ -39,14 +39,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          callGGDBuilder: CallGGDBuildable,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
+         mutableNetworkStatusStream: MutableNetworkStatusStreaming,
          developerMenuBuilder: DeveloperMenuBuildable,
          mutablePushNotificationStream: MutablePushNotificationStreaming,
          networkController: NetworkControlling,
          backgroundController: BackgroundControlling,
          updateAppBuilder: UpdateAppBuildable,
+         updateOperatingSystemBuilder: UpdateOperatingSystemBuildable,
          webviewBuilder: WebviewBuildable,
          userNotificationCenter: UserNotificationCenter,
-         currentAppVersion: String) {
+         currentAppVersion: String,
+         environmentController: EnvironmentControlling) {
         self.launchScreenBuilder = launchScreenBuilder
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
@@ -68,14 +71,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.currentAppVersion = currentAppVersion
 
         self.userNotificationCenter = userNotificationCenter
+        self.mutableNetworkStatusStream = mutableNetworkStatusStream
+
+        self.updateOperatingSystemBuilder = updateOperatingSystemBuilder
+
+        self.environmentController = environmentController
 
         super.init(viewController: viewController)
 
         viewController.router = self
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - AppEntryPoint
@@ -95,6 +99,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         LogHandler.setup()
 
+        if !environmentController.supportsExposureNotification {
+            routeToUpdateOperatingSystem(animated: false)
+            return
+        }
+
         // Copy of launch screen is shown to give the app time to determine the proper
         // screen to route to. If the network is slow this can take a few seconds.
         routeToLaunchScreen()
@@ -102,8 +111,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
 
             guard let strongSelf = self else { return }
-
-            strongSelf.detachLaunchScreen(animated: false)
 
             if strongSelf.exposureController.didCompleteOnboarding {
                 strongSelf.backgroundController.scheduleTasks()
@@ -113,10 +120,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 return
             }
 
-            if strongSelf.exposureController.didCompleteOnboarding {
-                strongSelf.routeToMain()
-            } else {
-                strongSelf.routeToOnboarding()
+            strongSelf.detachLaunchScreenIfNeeded(animated: false) { [weak self] in
+
+                guard let strongSelf = self else { return }
+
+                if strongSelf.exposureController.didCompleteOnboarding {
+                    strongSelf.routeToMain()
+                } else {
+                    strongSelf.routeToOnboarding()
+                }
             }
 
             #if USE_DEVELOPER_MENU || DEBUG
@@ -126,18 +138,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         mutablePushNotificationStream
             .pushNotificationStream
-            .sink { [weak self] (notificationRespone: UNNotificationResponse) in
+            .subscribe(onNext: { [weak self] pushNotificationIdentifier in
                 guard let strongSelf = self else {
                     return
                 }
 
-                self?.logDebug("Push Notification Identifier: \(notificationRespone.notification.request.identifier)")
+                self?.logDebug("Push Notification Identifier: \(pushNotificationIdentifier.rawValue)")
 
-                guard let identifier = PushNotificationIdentifier(rawValue: notificationRespone.notification.request.identifier) else {
-                    return strongSelf.logError("Push notification for \(notificationRespone.notification.request.identifier) not handled")
-                }
-
-                switch identifier {
+                switch pushNotificationIdentifier {
                 case .exposure:
                     guard let lastExposureDate = strongSelf.exposureController.lastExposureDate else {
                         return strongSelf.logError("No Last Exposure Date to present")
@@ -152,14 +160,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 case .appUpdateRequired:
                     () // Do nothing
                 }
-            }.store(in: &disposeBag)
+            })
+            .disposed(by: disposeBag)
     }
 
     func didBecomeActive() {
 
         exposureController.refreshStatus()
 
-        routeToDeactivatedOrUpdateScreenIfNeeded()
+        if mainRouter != nil || onboardingRouter != nil {
+            // App was started already. Check if we need to route to update / deactivated screen
+            routeToDeactivatedOrUpdateScreenIfNeeded()
+        }
 
         updateTreatmentPerspective()
 
@@ -172,7 +184,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func didEnterForeground() {
 
-        networkController.startObservingNetworkReachability()
+        mutableNetworkStatusStream.startObservingNetworkReachability()
 
         guard mainRouter != nil || onboardingRouter != nil else {
             // not started yet
@@ -182,13 +194,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController.refreshStatus()
         exposureController
             .updateWhenRequired()
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .subscribe(onCompleted: {})
+            .disposed(by: disposeBag)
     }
 
     func didEnterBackground() {
-        networkController.stopObservingNetworkReachability()
+        mutableNetworkStatusStream.stopObservingNetworkReachability()
     }
 
     func handle(backgroundTask: BGTask) {
@@ -278,6 +289,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         viewController.present(viewController: updateAppViewController, animated: animated, completion: nil)
     }
 
+    func routeToUpdateOperatingSystem(animated: Bool) {
+        guard updateOperatingSystemViewController == nil else {
+            return
+        }
+        let updateOSViewController = updateOperatingSystemBuilder.build()
+
+        self.updateOperatingSystemViewController = updateOSViewController
+
+        viewController.present(viewController: updateOSViewController, animated: animated, completion: nil)
+    }
+
     func routeToWebview(url: URL) {
         guard webviewViewController == nil else { return }
 
@@ -336,8 +358,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         viewController.presentInNavigationController(viewController: callGGDViewController, animated: true, presentFullScreen: false)
     }
 
-    private func detachLaunchScreen(animated: Bool) {
+    private func detachLaunchScreenIfNeeded(animated: Bool, completion: (() -> ())?) {
         guard let launchScreenRouter = launchScreenRouter else {
+            completion?()
             return
         }
 
@@ -345,7 +368,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         viewController.dismiss(viewController: launchScreenRouter.viewControllable,
                                animated: animated,
-                               completion: nil)
+                               completion: completion)
     }
 
     private func detachOnboarding(animated: Bool) {
@@ -369,31 +392,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: ((_ didRoute: Bool) -> ())? = nil) {
 
-        exposureController
-            .isAppDeactivated()
-            .combineLatest(exposureController.appShouldUpdateCheck())
-            .sink(receiveCompletion: { [weak self] exposureControllerCompletion in
-
-                if exposureControllerCompletion == .failure(.networkUnreachable) ||
-                    exposureControllerCompletion == .failure(.serverError) ||
-                    exposureControllerCompletion == .failure(.internalError) ||
-                    exposureControllerCompletion == .failure(.responseCached) {
-
-                    self?.exposureController.activate(inBackgroundMode: false)
-
-                    completion?(false)
-                }
-            }, receiveValue: { [weak self] isDeactivated, updateInformation in
-
+        Observable
+            .combineLatest(exposureController.isAppDeactivated().asObservable(), exposureController.appShouldUpdateCheck().asObservable())
+            .subscribe { [weak self] isDeactivated, updateInformation in
                 if isDeactivated {
 
-                    self?.routeToEndOfLife()
-
-                    self?.exposureController.deactivate()
-
-                    self?.backgroundController.removeAllTasks()
-
-                    completion?(true)
+                    self?.detachLaunchScreenIfNeeded(animated: false) {
+                        self?.routeToEndOfLife()
+                        self?.exposureController.deactivate()
+                        self?.backgroundController.removeAllTasks()
+                        completion?(true)
+                    }
 
                     return
                 }
@@ -402,30 +411,57 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                     let minimumVersionMessage = versionInformation.minimumVersionMessage.isEmpty ? nil : versionInformation.minimumVersionMessage
 
-                    self?.routeToUpdateApp(animated: true,
-                                           appStoreURL: versionInformation.appStoreURL,
-                                           minimumVersionMessage: minimumVersionMessage)
+                    self?.detachLaunchScreenIfNeeded(animated: false) {
+                        self?.routeToUpdateApp(animated: true, appStoreURL: versionInformation.appStoreURL, minimumVersionMessage: minimumVersionMessage)
+                        completion?(true)
+                    }
+                    return
+                }
 
-                    completion?(true)
+                guard let strongSelf = self else {
+                    self?.logError("Root Router released before routing")
+                    completion?(false)
                     return
                 }
 
                 self?.exposureController.activate(inBackgroundMode: false)
+                    .subscribe()
+                    .disposed(by: strongSelf.disposeBag)
+
                 self?.backgroundController.performDecoySequenceIfNeeded()
 
                 completion?(false)
 
-                })
-            .store(in: &disposeBag)
+            } onError: { [weak self] error in
+
+                let exposureDataError = error.asExposureDataError
+
+                if exposureDataError == .networkUnreachable ||
+                    exposureDataError == .serverError ||
+                    exposureDataError == .internalError ||
+                    exposureDataError == .responseCached {
+
+                    guard let strongSelf = self else {
+                        self?.logError("Root Router released before routing")
+                        completion?(false)
+                        return
+                    }
+
+                    self?.exposureController.activate(inBackgroundMode: false)
+                        .subscribe()
+                        .disposed(by: strongSelf.disposeBag)
+                }
+
+                completion?(false)
+            }
+            .disposed(by: disposeBag)
     }
 
     private func updateTreatmentPerspective() {
-
         exposureController
             .updateTreatmentPerspective()
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .subscribe { _ in }
+            .disposed(by: disposeBag)
     }
 
     private func removeNotificationsFromNotificationsCenter() {
@@ -466,7 +502,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let callGGDBuilder: CallGGDBuildable
     private var callGGDViewController: ViewControllable?
 
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
 
     private let developerMenuBuilder: DeveloperMenuBuildable
     private var developerMenuViewController: ViewControllable?
@@ -474,10 +510,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let updateAppBuilder: UpdateAppBuildable
     private var updateAppViewController: ViewControllable?
 
+    private let updateOperatingSystemBuilder: UpdateOperatingSystemBuildable
+    private var updateOperatingSystemViewController: ViewControllable?
+
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
 
     private let userNotificationCenter: UserNotificationCenter
+
+    private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
+
+    private let environmentController: EnvironmentControlling
 }
 
 private extension ExposureActiveState {

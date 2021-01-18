@@ -95,13 +95,13 @@ final class NetworkManager: NetworkManaging, Logging {
                     .responseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
                     .subscribe { event in
                         switch event {
-                        case let .next(data):
+
+                        case let .success(data):
                             completion(.success(data))
-                        case let .error(error):
+                            self.logDebug("NetworkManager.getManifest completed")
+                        case let .failure(error):
                             self.logError("Error downloading from url: \(result.1): \(error)")
                             completion(.failure(error.asNetworkError))
-                        case .completed:
-                            self.logDebug("NetworkManager.getManifest completed")
                         }
                     }
                     .disposed(by: self.disposeBag)
@@ -177,13 +177,12 @@ final class NetworkManager: NetworkManaging, Logging {
                 self.decodeJson(type: LabInformation.self, data: result.1)
                     .subscribe { event in
                         switch event {
-                        case let .next(labInformation):
+                        case let .success(labInformation):
+                            self.logDebug("Posting to url \(String(describing: url)) completed")
                             completion(.success(labInformation))
-                        case let .error(error):
+                        case let .failure(error):
                             self.logError("Error posting to url: \(String(describing: url)): \(error)")
                             completion(.failure(error.asNetworkError))
-                        case .completed:
-                            self.logDebug("Posting to url \(String(describing: url)) completed")
                         }
                     }
                     .disposed(by: self.disposeBag)
@@ -250,13 +249,12 @@ final class NetworkManager: NetworkManaging, Logging {
                     }
                     .subscribe { event in
                         switch event {
-                        case let .next(data):
+                        case let .success(data):
+                            self.logDebug("Downloading from url \(result.1) completed")
                             completion(.success(data))
-                        case let .error(error):
+                        case let .failure(error):
                             self.logError("Error downloading from url: \(result.1): \(error)")
                             completion(.failure(error.asNetworkError))
-                        case .completed:
-                            self.logDebug("Downloading from url \(result.1) completed")
                         }
                     }
                     .disposed(by: self.disposeBag)
@@ -384,7 +382,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     /// Unzips, verifies signature and reads response in memory
-    private func responseToData(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<Data> {
+    private func responseToData(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Single<Data> {
         let localUrl = responseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
 
         let readFromDiskResponseHandler = responseHandlerProvider.readFromDiskResponseHandler
@@ -396,8 +394,8 @@ final class NetworkManager: NetworkManaging, Logging {
         }
     }
 
-    private func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Observable<URL> {
-        var localUrl = Observable<URL>.just(url)
+    private func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Single<URL> {
+        var localUrl = Single<URL>.just(url)
 
         if backgroundThreadIfPossible, UIApplication.shared.applicationState != .background {
             localUrl = localUrl
@@ -427,21 +425,20 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     /// Utility function to decode JSON
-    private func decodeJson<Object: Decodable>(type: Object.Type, data: Data) -> Observable<Object> {
+    private func decodeJson<Object: Decodable>(type: Object.Type, data: Data) -> Single<Object> {
 
         return .create { observer in
 
             do {
                 let object = try self.jsonDecoder.decode(Object.self, from: data)
                 self.logDebug("Response Object: \(object)")
-                observer.onNext(object)
-                observer.onCompleted()
+                observer(.success(object))
             } catch {
                 if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     self.logDebug("Raw JSON: \(json)")
                 }
                 self.logError("Error Deserializing \(Object.self): \(error.localizedDescription)")
-                observer.onError(NetworkResponseHandleError.cannotDeserialize)
+                observer(.failure(NetworkResponseHandleError.cannotDeserialize))
             }
 
             return Disposables.create()
@@ -499,5 +496,14 @@ extension Error {
         case .invalidSignature:
             return .invalidResponse
         }
+    }
+}
+
+extension Error {
+    var asExposureDataError: ExposureDataError {
+        guard let networkError = self as? NetworkError else {
+            return ExposureDataError.internalError
+        }
+        return networkError.asExposureDataError
     }
 }

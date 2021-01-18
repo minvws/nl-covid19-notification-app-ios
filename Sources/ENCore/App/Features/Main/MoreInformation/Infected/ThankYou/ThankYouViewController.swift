@@ -54,7 +54,7 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -69,7 +69,7 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
     private lazy var internalView: ThankYouView = ThankYouView(theme: self.theme, exposureConfirmationKey: exposureConfirmationKey)
     private let exposureConfirmationKey: ExposureConfirmationKey
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.thankYouWantsDismissal()

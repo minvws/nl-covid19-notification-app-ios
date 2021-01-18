@@ -5,9 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
+import SnapKit
 import UIKit
 
 final class EnableSettingViewController: ViewController, UIAdaptivePresentationControllerDelegate {
@@ -15,11 +16,11 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     init(listener: EnableSettingListener,
          theme: Theme,
          setting: EnableSetting,
-         bluetoothStateStream: BluetoothStateStreaming,
+         exposureStateStream: ExposureStateStreaming,
          environmentController: EnvironmentControlling) {
         self.listener = listener
         self.setting = setting
-        self.bluetoothStateStream = bluetoothStateStream
+        self.exposureStateStream = exposureStateStream
         self.environmentController = environmentController
 
         super.init(theme: theme)
@@ -27,7 +28,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     }
 
     deinit {
-        disposeBag.forEach { $0.cancel() }
+        exposureStateDisposable = nil
     }
 
     // MARK: - ViewController Lifecycle
@@ -44,7 +45,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
             self?.listener?.enableSettingDidTriggerAction()
         })
 
-        if self.setting == .enableBluetooth {
+        if self.setting == .enableBluetooth && exposureStateStream.currentExposureState?.activeState == .inactive(.bluetoothOff) {
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(checkBluetoothStatus),
                                                    name: UIApplication.didBecomeActiveNotification,
@@ -64,22 +65,28 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
     private lazy var internalView: EnableSettingView = EnableSettingView(theme: theme, listener: listener)
 
     private let setting: EnableSetting
-    private let bluetoothStateStream: BluetoothStateStreaming
+    private let exposureStateStream: ExposureStateStreaming
     private let environmentController: EnvironmentControlling
-    private var disposeBag = Set<AnyCancellable>()
+    private var exposureStateDisposable: Disposable?
 
     @objc private func didTapCloseButton() {
         listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
     }
 
     @objc private func checkBluetoothStatus() {
-        bluetoothStateStream
-            .enabled
-            .sink(receiveValue: { isEnabled in
-                if isEnabled {
-                    self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
-                }
-            }).store(in: &disposeBag)
+        guard exposureStateDisposable == nil else {
+            return
+        }
+
+        exposureStateDisposable = exposureStateStream
+            .exposureState
+            .filter { (state) -> Bool in
+                state.activeState != .inactive(.bluetoothOff)
+            }
+            .first()
+            .subscribe(onSuccess: { _ in
+                self.listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
+            })
     }
 }
 
@@ -123,6 +130,9 @@ private final class EnableSettingView: View {
         listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
     }
 
+    private var buttonToBottomConstraint: Constraint?
+    private var contentToBottomConstraint: Constraint?
+
     override func setupConstraints() {
         super.setupConstraints()
 
@@ -142,13 +152,10 @@ private final class EnableSettingView: View {
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(scrollView.snp.bottom).offset(16)
             make.height.equalTo(48)
-
-            constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
         }
 
         scrollView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.width.equalToSuperview()
+            make.leading.trailing.equalTo(safeAreaLayoutGuide)
             make.top.equalTo(navigationBar.snp.bottom).offset(8)
         }
     }
@@ -157,11 +164,23 @@ private final class EnableSettingView: View {
 
     fileprivate func update(model: EnableSettingModel, actionCompletion: @escaping () -> ()) {
         titleLabel.text = model.title
+
+        buttonToBottomConstraint?.isActive = model.action != nil
+        contentToBottomConstraint?.isActive = model.action == nil
+
         if let action = model.action {
             button.isHidden = false
             button.setTitle(model.actionTitle, for: .normal)
             button.action = {
                 action.action(actionCompletion)
+            }
+
+            button.snp.makeConstraints { make in
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
+            }
+        } else {
+            scrollView.snp.makeConstraints { make in
+                constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
             }
         }
 

@@ -1,3 +1,18 @@
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "Tienes que actualizar el software de tu teléfono";
+"update.software.os.description" = "CoronaMelder necesita la versión más reciente de iOS para poder seguir funcionando bien en tu teléfono.";
+"update.software.os.detail.title" = "Actualiza tu teléfono";
+"update.software.os.detail.step1.detail" = "Ajustes";
+"update.software.os.detail.step2.detail" = "General";
+"update.software.os.detail.step3.detail" = "Actualización de software";
+"update.software.os.detail.step1" = "Abre los <b>Ajustes</b> de tu teléfono";
+"update.software.os.detail.step2" = "Ve a \"General\"";
+"update.software.os.detail.step3" = "Ve a \"Actualización de software\"";
+"update.software.os.detail.step4" = "Elige \"Descargar e instalar\"";
+"update.button.update" = "Actualizar";
+
+
 "moreInformation.cell.settings.title" = "Ajustes";
 "moreInformation.cell.settings.subtitle" = "Ajusta el uso de datos móviles";
 

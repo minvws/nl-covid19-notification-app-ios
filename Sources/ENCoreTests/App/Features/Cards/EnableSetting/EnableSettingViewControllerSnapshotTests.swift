@@ -6,13 +6,14 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
 
 final class EnableSettingViewControllerSnapshotTests: TestCase {
     private var viewController: EnableSettingViewController!
-    private var bluetoothStateStream = BluetoothStateStreamingMock()
+    private var exposureStateStream = ExposureStateStreamingMock()
     private var environmentController = EnvironmentControllingMock()
 
     override func setUp() {
@@ -25,7 +26,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableBluetooth,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)
@@ -36,7 +37,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableExposureNotifications,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)
@@ -47,7 +48,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableExposureNotifications,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)
@@ -57,9 +58,38 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableLocalNotifications,
-                                                     bluetoothStateStream: bluetoothStateStream,
+                                                     exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 
         snapshots(matching: viewController)
+    }
+
+    func test_updateOperatingSystem() {
+        viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
+                                                     theme: theme,
+                                                     setting: .updateOperatingSystem,
+                                                     exposureStateStream: exposureStateStream,
+                                                     environmentController: environmentController)
+
+        snapshots(matching: viewController)
+    }
+
+    func test_updateOperatingSystem_arabic() {
+
+        LocalizationOverrides.overriddenLocalization = "ar"
+        LocalizationOverrides.overriddenIsRTL = true
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "ar"
+
+        viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
+                                                     theme: theme,
+                                                     setting: .updateOperatingSystem,
+                                                     exposureStateStream: exposureStateStream,
+                                                     environmentController: environmentController)
+
+        snapshots(matching: viewController)
+
+        LocalizationOverrides.overriddenLocalization = nil
+        LocalizationOverrides.overriddenIsRTL = nil
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = nil
     }
 }

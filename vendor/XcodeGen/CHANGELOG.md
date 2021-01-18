@@ -2,6 +2,48 @@
 
 ## Next Version
 
+## 2.18.0
+
+#### Added
+- Add `Scheme.Test.TestTarget.skipped` to allow skipping of an entire test target. [#916](https://github.com/yonaskolb/XcodeGen/pull/916) @codeman9
+- Added ability to set custom LLDBInit scripts for launch and test schemes [#929](https://github.com/yonaskolb/XcodeGen/pull/929) @polac24
+- Adds App Clip support. [#909](https://github.com/yonaskolb/XcodeGen/pull/909) @brentleyjones @dflems
+- Application extension schemes now default to `launchAutomaticallySubstyle = 2` and the correct debugger and launcher identifiers [#932](https://github.com/yonaskolb/XcodeGen/pull/932) @brentleyjones
+- Updated SettingsPresets to use new defaults from Xcode 12. [#953](https://github.com/yonaskolb/XcodeGen/pull/953) @liamnichols
+- Enable Base Internationalization by default as per Xcode 12 behavior. [#954](https://github.com/yonaskolb/XcodeGen/issues/954) @liamnichols
+
+#### Changed
+- Change default project version to Xcode 12 [#960](https://github.com/yonaskolb/XcodeGen/pull/960) @yonaskolb
+
+#### Internal
+- Updates CI to run on Xcode 12. [#936](https://github.com/yonaskolb/XcodeGen/pull/936) [#960](https://github.com/yonaskolb/XcodeGen/pull/960) @dflems @yonaskolb
+
+#### Fixed
+- Select the first runnable build target, if present. [#957](https://github.com/yonaskolb/XcodeGen/pull/957) @codeman9
+- Allow SDK dependencies to be embedded. [#922](https://github.com/yonaskolb/XcodeGen/pull/922) @k-thorat
+- Allow creating intermediary groups outside of the project directory. [#892](https://github.com/yonaskolb/XcodeGen/pull/892) @segiddins
+- Fix appex's Runpath Search Paths under macOS target. [#952](https://github.com/yonaskolb/XcodeGen/pull/952) @rinsuki
+- `onlyCopyFilesOnInstall` is extended for the Embed App Extensions build phase. [#948](https://github.com/yonaskolb/XcodeGen/pull/948) @RomanPodymov
+
+[Commits](https://github.com/yonaskolb/XcodeGen/compare/2.17.0...2.18.0)
+
+## 2.17.0
+
+#### Added
+- Added `options.fileTypes` which lets you set cross project defaults for certain file extensions [#914](https://github.com/yonaskolb/XcodeGen/pull/914) @yonaskolb
+- Added `onlyCopyFilesOnInstall` option to targets for the Embed Files build phase. [#912](https://github.com/yonaskolb/XcodeGen/pull/912) @jsorge
+
+#### Fixed
+- Treat all directories with known UTI as file wrapper. [#896](https://github.com/yonaskolb/XcodeGen/pull/896) @KhaosT
+- Generated schemes for application extensions now contain `wasCreatedForAppExtension = YES`. [#898](https://github.com/yonaskolb/XcodeGen/issues/898) @muizidn
+- Allow package dependencies to use `link: false` [#920](https://github.com/yonaskolb/XcodeGen/pull/920) @k-thorat
+- Fixed issue computing relative paths.  [#915](https://github.com/yonaskolb/XcodeGen/pull/915) @andrewreach
+
+#### Internal
+- Updated to XcodeProj 7.13.0 [#908](https://github.com/yonaskolb/XcodeGen/pull/908) @brentleyjones
+
+[Commits](https://github.com/yonaskolb/XcodeGen/compare/2.16.0...2.17.0)
+
 ## 2.16.0
 
 #### Added

@@ -198,6 +198,10 @@ final class ExposureManager: ExposureManaging, Logging {
 
 extension Error {
     var asExposureManagerError: ExposureManagerError {
+        if let error = self as? ExposureManagerError {
+            return error
+        }
+
         if let error = self as? ENError {
             let status: ExposureManagerError
 

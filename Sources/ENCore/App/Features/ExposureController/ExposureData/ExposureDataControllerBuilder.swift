@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 
 enum ExposureDataError: Error, Equatable {
     case networkUnreachable
@@ -39,29 +39,28 @@ protocol ExposureDataControlling: AnyObject {
     func setLastDecoyProcessDate(_ date: Date)
     var canProcessDecoySequence: Bool { get }
 
-    func removeLastExposure() -> AnyPublisher<(), Never>
-    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
+    func removeLastExposure() -> Completable
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable
     func setLastENStatusCheckDate(_ date: Date)
     func setLastAppLaunchDate(_ date: Date)
     func clearLastUnseenExposureNotificationDate()
 
     // MARK: - Lab Flow
 
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
-    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
+    func processPendingUploadRequests() -> Completable
+    func processExpiredUploadRequests() -> Completable
+    func requestLabConfirmationKey() -> Single<LabConfirmationKey>
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Completable
 
     // MARK: - Misc
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError>
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
-    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError>
+    func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation>
+    func isAppDeactivated() -> Single<Bool>
+    func getDecoyProbability() -> Single<Float>
+    func getPadding() -> Single<Padding>
+    func getAppointmentPhoneNumber() -> Single<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
-    func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+    func updateTreatmentPerspective() -> Completable
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
     var seenAnnouncements: [Announcement] { get set }

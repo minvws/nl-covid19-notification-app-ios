@@ -46,7 +46,12 @@ import UIKit
     @objc
     public func receiveRemoteNotification(response: UNNotificationResponse) {
         logDebug("`receiveRemoteNotification` \(ENAppRoot.version)")
-        appEntryPoint?.mutablePushNotificationStream.update(response: response)
+
+        guard let identifier = PushNotificationIdentifier(rawValue: response.notification.request.identifier) else {
+            return logError("Push notification for \(response.notification.request.identifier) not handled")
+        }
+
+        appEntryPoint?.mutablePushNotificationStream.update(identifier: identifier)
     }
 
     @objc

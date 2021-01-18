@@ -5,9 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
-import CoreBluetooth
 import ENFoundation
+import RxSwift
 import UIKit
 
 /// @mockable
@@ -28,7 +27,7 @@ protocol OnboardingConsentManaging {
 final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
     var onboardingConsentSteps: [OnboardingConsentStep] = []
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
 
     init(exposureStateStream: ExposureStateStreaming,
          exposureController: ExposureControlling,
@@ -94,10 +93,6 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         )
     }
 
-    deinit {
-        disposeBag.forEach { $0.cancel() }
-    }
-
     // MARK: - Functions
 
     func getStep(_ index: Int) -> OnboardingConsentStep? {
@@ -111,16 +106,16 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
             exposureStateStream
                 .exposureState
                 .filter { $0.activeState != .notAuthorized || skippedCurrentStep }
-                .first()
-                .sink { value in
+                .take(1)
+                .subscribe(onNext: { value in
                     switch value.activeState {
                     case .inactive(.bluetoothOff):
                         completion(.bluetooth)
                     default:
                         completion(.share)
                     }
-                }
-                .store(in: &disposeBag)
+                })
+                .disposed(by: disposeBag)
         case .bluetooth:
             completion(.share)
         case .share:
@@ -131,15 +126,15 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ()) {
         exposureStateStream
             .exposureState
-            .first()
-            .sink { value in
+            .take(1)
+            .subscribe(onNext: { value in
                 if value.activeState == .notAuthorized || value.activeState == .inactive(.disabled) {
                     completion(false)
                 } else {
                     completion(true)
                 }
-            }
-            .store(in: &disposeBag)
+            })
+            .disposed(by: disposeBag)
     }
 
     func isBluetoothEnabled(_ completion: @escaping (Bool) -> ()) {
@@ -159,18 +154,18 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         }
 
         if let subscription = exposureStateSubscription {
-            subscription.cancel()
+            subscription.dispose()
         }
 
         exposureStateSubscription = exposureStateStream
             .exposureState
             .filter { $0.activeState != .notAuthorized && $0.activeState != .inactive(.disabled) }
-            .sink { [weak self] state in
+            .subscribe(onNext: { [weak self] state in
                 self?.exposureStateSubscription = nil
-
                 self?.logDebug("`askEnableExposureNotifications` active state changed to \(state.activeState)")
+
                 completion(state.activeState)
-            }
+            })
 
         logDebug("`askEnableExposureNotifications` calling `requestExposureNotificationPermission`")
         exposureController.requestExposureNotificationPermission(nil)
@@ -209,5 +204,5 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     private let exposureStateStream: ExposureStateStreaming
     private let exposureController: ExposureControlling
 
-    private var exposureStateSubscription: Cancellable?
+    private var exposureStateSubscription: Disposable?
 }

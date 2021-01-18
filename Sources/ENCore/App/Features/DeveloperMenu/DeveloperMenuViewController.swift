@@ -5,10 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
 import MessageUI
+import RxSwift
 import UIKit
 
 /// @mockable
@@ -47,10 +47,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         attach()
     }
 
-    deinit {
-        disposeBag.forEach { $0.cancel() }
-    }
-
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
@@ -80,7 +76,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                                        style: .destructive,
                                        handler: { [weak actionViewController] _ in
                                            actionViewController?.dismiss(animated: true, completion: nil)
-                                       })
+            })
         actionViewController.addAction(cancelItem)
 
         present(actionViewController, animated: true, completion: nil)
@@ -204,7 +200,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Launches the message flow as would be done from a exposure push notification with today's date",
                               action: { [weak self] in self?.listener?.developerMenuRequestMessage(exposureDate: Date()); self?.hide() }),
                 DeveloperItem(title: "Schedule Message Flow",
-                              subtitle: "Schedules a push notifiction to be sent in 5 seconds",
+                              subtitle: "Schedules a push notification to be sent in 5 seconds",
                               action: { [weak self] in self?.wantsScheduleNotification(identifier: "com.apple.en.mock") }),
                 DeveloperItem(title: "Schedule Upload Failed Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
@@ -369,44 +365,40 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         present(activityViewController, animated: true, completion: nil)
     }
 
-    private var fetchAndProcessCancellable: AnyCancellable?
+    private var fetchAndProcessDisposable: Disposable?
 
     private func fetchAndProcessKeySets() {
-        guard fetchAndProcessCancellable == nil else {
-            fetchAndProcessCancellable?.cancel()
-            fetchAndProcessCancellable = nil
-
+        guard fetchAndProcessDisposable == nil else {
+            fetchAndProcessDisposable?.dispose()
+            fetchAndProcessDisposable = nil
             return
         }
 
         internalView.tableView.reloadData()
 
-        fetchAndProcessCancellable = exposureController
-            .fetchAndProcessExposureKeySets()
-            .sink(
-                receiveCompletion: { [weak self] _ in
-                    self?.fetchAndProcessCancellable = nil
+        fetchAndProcessDisposable = exposureController
+            .fetchAndProcessExposureKeySets().subscribe { _ in
 
-                    assert(Thread.isMainThread)
-                    self?.internalView.tableView.reloadData()
-                },
-                receiveValue: { _ in })
+                self.fetchAndProcessDisposable?.dispose()
+                self.fetchAndProcessDisposable = nil
+
+                assert(Thread.isMainThread)
+                self.internalView.tableView.reloadData()
+            }
     }
 
     private func processPendingUploadRequests() {
         exposureController
-            .processPendingUploadRequests()
-            .sink(receiveCompletion: { [weak self] _ in self?.internalView.tableView.reloadData() },
-                  receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .processPendingUploadRequests().subscribe { _ in
+                self.internalView.tableView.reloadData()
+            }.disposed(by: disposeBag)
     }
 
     private func processExpiredUploadRequests() {
         exposureController
-            .processExpiredUploadRequests()
-            .sink(receiveCompletion: { [weak self] _ in self?.internalView.tableView.reloadData() },
-                  receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .processExpiredUploadRequests().subscribe { _ in
+                self.internalView.tableView.reloadData()
+            }.disposed(by: disposeBag)
     }
 
     private func expirePendingUploadRequests() {
@@ -561,7 +553,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                                        style: .destructive,
                                        handler: { [weak alertController] _ in
                                            alertController?.dismiss(animated: true, completion: nil)
-                                       })
+            })
         alertController.addAction(cancelItem)
         present(alertController, animated: true, completion: nil)
     }
@@ -656,10 +648,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private let mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
 
     private var isFetchingKeys: Bool {
-        return fetchAndProcessCancellable != nil
+        return fetchAndProcessDisposable != nil
     }
 
     private var window: UIWindow? {

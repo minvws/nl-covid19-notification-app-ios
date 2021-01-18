@@ -559,6 +559,9 @@ class ProjectGeneratorTests: XCTestCase {
                         Dependency(type: .package(product: "RxCocoa"), reference: "RxSwift"),
                         Dependency(type: .package(product: "RxRelay"), reference: "RxSwift"),
 
+                        // Validate - Do not link package
+                        Dependency(type: .package(product: "KeychainAccess"), reference: "KeychainAccess", link: false),
+
                         // Statically linked, so don't embed into test
                         Dependency(type: .target, reference: staticLibrary.name),
 
@@ -679,25 +682,37 @@ class ProjectGeneratorTests: XCTestCase {
                     iosFrameworkB.filename,
                 ])
 
+                let XCTestPath = "Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework"
+                let GXToolsPath = "Platforms/iPhoneOS.platform/Developer/Library/PrivateFrameworks/GXTools.framework"
+                let XCTAutomationPath = "Platforms/iPhoneOS.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework"
                 let stickerPack = Target(
                     name: "MyStickerApp",
                     type: .stickerPack,
                     platform: .iOS,
                     dependencies: [
                         Dependency(type: .sdk(root: nil), reference: "NotificationCenter.framework"),
-                        Dependency(type: .sdk(root: "DEVELOPER_DIR"), reference: "Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework"),
+                        Dependency(type: .sdk(root: "DEVELOPER_DIR"), reference: XCTestPath),
+                        Dependency(type: .sdk(root: "DEVELOPER_DIR"), reference: GXToolsPath, embed: true),
+                        Dependency(type: .sdk(root: "DEVELOPER_DIR"), reference: XCTAutomationPath, embed: true, codeSign: true),
                     ]
                 )
                 expectedResourceFiles[stickerPack.name] = nil
                 expectedLinkedFiles[stickerPack.name] = Set([
                     "XCTest.framework",
                     "NotificationCenter.framework",
+                    "GXTools.framework",
+                    "XCTAutomationSupport.framework"
+                ])
+                expectedEmbeddedFrameworks[stickerPack.name] = Set([
+                    "GXTools.framework",
+                    "XCTAutomationSupport.framework"
                 ])
 
                 let targets = [app, iosFrameworkZ, iosFrameworkX, staticLibrary, resourceBundle, iosFrameworkA, iosFrameworkB, appTest, appTestWithoutTransitive, stickerPack]
 
                 let packages: [String: SwiftPackage] = [
                     "RxSwift": .remote(url: "https://github.com/ReactiveX/RxSwift", versionRequirement: .upToNextMajorVersion("5.1.1")),
+                    "KeychainAccess": .remote(url: "https://github.com/kishikawakatsumi/KeychainAccess", versionRequirement: .upToNextMajorVersion("4.2.0"))
                 ]
 
                 let project = Project(
@@ -772,6 +787,109 @@ class ProjectGeneratorTests: XCTestCase {
                 }
             }
 
+            $0.it("copies files only on install in the Embed Frameworks step") {
+                let app = Target(
+                    name: "App",
+                    type: .application,
+                    platform: .iOS,
+                    // Embeds it's frameworks, so they shouldn't embed in AppTest
+                    dependencies: [
+                        Dependency(type: .framework, reference: "FrameworkA.framework"),
+                        Dependency(type: .framework, reference: "FrameworkB.framework", embed: false),
+                    ],
+                    onlyCopyFilesOnInstall: true
+                )
+                
+                let project = Project(name: "test",targets: [app])
+                let pbxProject = try project.generatePbxProj()
+                let nativeTarget = try unwrap(pbxProject.nativeTargets.first(where: { $0.name == app.name }))
+                let buildPhases = nativeTarget.buildPhases
+
+                let embedFrameworksPhase = pbxProject
+                    .copyFilesBuildPhases
+                    .filter { buildPhases.contains($0) }
+                    .first { $0.dstSubfolderSpec == .frameworks }
+
+                let phase = try unwrap(embedFrameworksPhase)
+                try expect(phase.buildActionMask) == PBXProjGenerator.copyFilesActionMask
+                try expect(phase.runOnlyForDeploymentPostprocessing) == true
+            }
+
+            $0.it("copies files only on install in the Embed App Extensions step") {
+                let appExtension = Target(
+                    name: "AppExtension",
+                    type: .appExtension,
+                    platform: .tvOS
+                )
+
+                let app = Target(
+                    name: "App",
+                    type: .application,
+                    platform: .tvOS,
+                    dependencies: [
+                        Dependency(type: .target, reference: "AppExtension")
+                    ],
+                    onlyCopyFilesOnInstall: true
+                )
+
+                let project = Project(name: "test", targets: [app, appExtension])
+                let pbxProject = try project.generatePbxProj()
+                let nativeTarget = try unwrap(pbxProject.nativeTargets.first(where: { $0.name == app.name }))
+                let buildPhases = nativeTarget.buildPhases
+
+                let embedAppExtensionsPhase = pbxProject
+                    .copyFilesBuildPhases
+                    .filter { buildPhases.contains($0) }
+                    .first { $0.dstSubfolderSpec == .plugins }
+
+                let phase = try unwrap(embedAppExtensionsPhase)
+                try expect(phase.buildActionMask) == PBXProjGenerator.copyFilesActionMask
+                try expect(phase.runOnlyForDeploymentPostprocessing) == true
+            }
+
+            $0.it("copies files only on install in the Embed Frameworks and Embed App Extensions steps") {
+                let appExtension = Target(
+                    name: "AppExtension",
+                    type: .appExtension,
+                    platform: .tvOS
+                )
+
+                let app = Target(
+                    name: "App",
+                    type: .application,
+                    platform: .tvOS,
+                    dependencies: [
+                        Dependency(type: .target, reference: "AppExtension"),
+                        Dependency(type: .framework, reference: "FrameworkA.framework"),
+                        Dependency(type: .framework, reference: "FrameworkB.framework", embed: false),
+                    ],
+                    onlyCopyFilesOnInstall: true
+                )
+
+                let project = Project(name: "test", targets: [app, appExtension])
+                let pbxProject = try project.generatePbxProj()
+                let nativeTarget = try unwrap(pbxProject.nativeTargets.first(where: { $0.name == app.name }))
+                let buildPhases = nativeTarget.buildPhases
+
+                let embedFrameworksPhase = pbxProject
+                    .copyFilesBuildPhases
+                    .filter { buildPhases.contains($0) }
+                    .first { $0.dstSubfolderSpec == .frameworks }
+
+                let embedFrameworksPhaseValue = try unwrap(embedFrameworksPhase)
+                try expect(embedFrameworksPhaseValue.buildActionMask) == PBXProjGenerator.copyFilesActionMask
+                try expect(embedFrameworksPhaseValue.runOnlyForDeploymentPostprocessing) == true
+                
+                let embedAppExtensionsPhase = pbxProject
+                    .copyFilesBuildPhases
+                    .filter { buildPhases.contains($0) }
+                    .first { $0.dstSubfolderSpec == .plugins }
+
+                let embedAppExtensionsPhaseValue = try unwrap(embedAppExtensionsPhase)
+                try expect(embedAppExtensionsPhaseValue.buildActionMask) == PBXProjGenerator.copyFilesActionMask
+                try expect(embedAppExtensionsPhaseValue.runOnlyForDeploymentPostprocessing) == true
+            }
+            
             $0.it("sets -ObjC for targets that depend on requiresObjCLinking targets") {
                 let requiresObjCLinking = Target(
                     name: "requiresObjCLinking",

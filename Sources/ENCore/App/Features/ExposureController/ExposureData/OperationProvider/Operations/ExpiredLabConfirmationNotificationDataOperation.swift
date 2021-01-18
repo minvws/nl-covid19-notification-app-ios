@@ -5,14 +5,16 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
-import RxCombine
 import RxSwift
 import UserNotifications
 
-final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperation, Logging {
+protocol ExpiredLabConfirmationNotificationDataOperationProtocol {
+    func execute() -> Completable
+}
+
+final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmationNotificationDataOperationProtocol, Logging {
 
     init(storageController: StorageControlling,
          userNotificationCenter: UserNotificationCenter) {
@@ -22,7 +24,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<(), ExposureDataError> {
+    func execute() -> Completable {
         let expiredRequests = getPendingRequests()
             .filter { $0.isExpired }
 
@@ -33,11 +35,6 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
         logDebug("Expired requests: \(expiredRequests)")
 
         return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests)
-            .publisher
-            .assertNoFailure()
-            .setFailureType(to: ExposureDataError.self)
-            .share()
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Private
@@ -46,11 +43,11 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
     }
 
-    private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> Observable<()> {
+    private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> Completable {
         return .create { [weak self] observer in
 
             guard let strongSelf = self else {
-                observer.onError(ExposureDataError.internalError)
+                observer(.error(ExposureDataError.internalError))
                 return Disposables.create()
             }
 
@@ -68,7 +65,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
                 // store back
                 storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
-                    observer.onCompleted()
+                    observer(.completed)
                 }
             }
             return Disposables.create()
@@ -123,7 +120,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
     private let storageController: StorageControlling
     private let userNotificationCenter: UserNotificationCenter
-    private let rxDisposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
 }
 
 extension PendingLabConfirmationUploadRequest {

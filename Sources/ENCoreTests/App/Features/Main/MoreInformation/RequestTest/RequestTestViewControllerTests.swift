@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
@@ -28,7 +27,7 @@ final class RequestTestViewControllerTests: TestCase {
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         datacontroller.getAppointmentPhoneNumberHandler = {
-            return Just("0800-1234 (exposed)").setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            return .just("0800-1234 (exposed)")
         }
 
         viewController = RequestTestViewController(listener: listener,

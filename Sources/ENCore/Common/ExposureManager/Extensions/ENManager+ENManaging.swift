@@ -28,10 +28,6 @@ protocol ENManaging {
     var invalidationHandler: (() -> ())? { get set }
 
     static var authorizationStatus: ENAuthorizationStatus { get }
-
-    func getExposureInfo(summary: ENExposureDetectionSummary,
-                         userExplanation: String,
-                         completionHandler: @escaping ENGetExposureInfoHandler) -> Progress
 }
 
 extension ENManager: ENManaging {}

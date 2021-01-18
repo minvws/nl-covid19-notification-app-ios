@@ -6,12 +6,11 @@
  */
 
 import BackgroundTasks
-import Combine
 import ENFoundation
 import ExposureNotification
 import Foundation
-import UserNotifications
 import RxSwift
+import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
     case refresh = "exposure-notification"
@@ -42,7 +41,8 @@ final class BackgroundController: BackgroundControlling, Logging {
          dataController: ExposureDataControlling,
          userNotificationCenter: UserNotificationCenter,
          taskScheduler: TaskScheduling,
-         bundleIdentifier: String) {
+         bundleIdentifier: String,
+         randomNumberGenerator: RandomNumberGenerating) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
@@ -51,10 +51,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.userNotificationCenter = userNotificationCenter
         self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
+        self.randomNumberGenerator = randomNumberGenerator
     }
 
     // MARK: - BackgroundControlling
@@ -64,13 +61,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         let scheduleTasks: () -> () = {
             self.exposureController
                 .isAppDeactivated()
-                .sink(receiveCompletion: { result in
-                    if result != .finished {
-                        self.logDebug("Background: ExposureController activated state result: \(result)")
-                        self.logDebug("Background: Scheduling refresh sequence")
-                        self.scheduleRefresh()
-                    }
-                }, receiveValue: { (isDeactivated: Bool) in
+                .subscribe(onSuccess: { isDeactivated in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
                         self.removeAllTasks()
@@ -78,7 +69,12 @@ final class BackgroundController: BackgroundControlling, Logging {
                         self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
                         self.scheduleRefresh()
                     }
-                    }).store(in: &self.disposeBag)
+                }, onFailure: { error in
+                    self.logDebug("Background: ExposureController activated state result: \(error)")
+                    self.logDebug("Background: Scheduling refresh sequence")
+                    self.scheduleRefresh()
+                })
+                .disposed(by: self.disposeBag)
         }
 
         operationQueue.async(execute: scheduleTasks)
@@ -125,9 +121,10 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let dataController: ExposureDataControlling
     private let networkController: NetworkControlling
     private let configuration: BackgroundTaskConfiguration
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
     private let bundleIdentifier: String
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
+    private let randomNumberGenerator: RandomNumberGenerating
 
     private func handleDecoyStopkeys(task: BGProcessingTask) {
 
@@ -138,25 +135,36 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         self.logDebug("Decoy `/stopkeys` started")
-        let cancellable = exposureController
+        let disposable = exposureController
             .getPadding()
-            .flatMap { padding in
+            .flatMapCompletable { padding in
                 self.networkController
                     .stopKeys(padding: padding)
-                    .mapError {
-                        self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
-                        return $0.asExposureDataError
+                    .subscribe(on: MainScheduler.instance)
+                    .catch { error in
+                        if let exposureDataError = (error as? NetworkError)?.asExposureDataError {
+                            self.logDebug("Decoy `/stopkeys` error: \(exposureDataError)")
+                            throw exposureDataError
+                        } else {
+                            self.logDebug("Decoy `/stopkeys` error: ExposureDataError.internalError")
+                            throw ExposureDataError.internalError
+                        }
                     }
-            }.sink(receiveCompletion: { _ in
+            }
+            .subscribe(onCompleted: {
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
                 task.setTaskCompleted(success: true)
-            }, receiveValue: { _ in })
+            }, onError: { _ in
+                // Note: We ignore the response
+                self.logDebug("Decoy `/stopkeys` complete")
+                task.setTaskCompleted(success: true)
+            })
 
         // Handle running out of time
         task.expirationHandler = {
             self.logDebug("Decoy `/stopkeys` expired")
-            cancellable.cancel()
+            disposable.dispose()
         }
     }
 
@@ -170,13 +178,18 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///     y = about 5 minutes (about less, e.g. 250 sec) this param value depends on how long a prioritized task is allowed to run
     func performDecoySequenceIfNeeded() {
 
+        guard self.isExposureManagerActive else {
+            self.logDebug("ExposureManager inactive - Not handling performDecoySequenceIfNeeded")
+            return
+        }
+
         guard self.dataController.canProcessDecoySequence else {
             return self.logDebug("Not running decoy `/register` Process already run today")
         }
 
         func execute(decoyProbability: Float) {
 
-            let r = Float.random(in: configuration.decoyProbabilityRange)
+            let r = self.randomNumberGenerator.randomFloat(in: configuration.decoyProbabilityRange)
             guard r < decoyProbability else {
                 return logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
             }
@@ -188,7 +201,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.logDebug("Decoy `/register` complete")
 
                 let date = currentDate().addingTimeInterval(
-                    TimeInterval(Int.random(in: 0 ... 900)) // random number between 0 and 15 minutes
+                    TimeInterval(self.randomNumberGenerator.randomInt(in: 0 ... 900)) // random number between 0 and 15 minutes
                 )
                 self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
             }
@@ -196,13 +209,11 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         exposureController
             .getDecoyProbability()
-            .delay(for: .seconds(Int.random(in: 1 ... 60)), // random number between 1 and 60 seconds
-                   scheduler: RunLoop.current)
-            .sink(receiveCompletion: { _ in
-            }, receiveValue: { value in
-                execute(decoyProbability: value)
-                })
-            .store(in: &disposeBag)
+            .delay(.seconds(randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
+            .subscribe(onSuccess: { decoyProbability in
+                execute(decoyProbability: decoyProbability)
+        })
+            .disposed(by: disposeBag)
     }
 
     func removeAllTasks() {
@@ -220,122 +231,88 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func refresh(task: BGProcessingTask) {
-        let sequence: [() -> AnyPublisher<(), Never>] = [
-            { self.exposureController.activate(inBackgroundMode: true) },
-            processUpdate,
-            processENStatusCheck,
-            appUpdateRequiredCheck,
-            updateTreatmentPerspective,
-            processLastOpenedNotificationCheck,
-            processDecoyRegisterAndStopKeys
+        let sequence: [Completable] = [
+            activateExposureController(inBackgroundMode: true),
+            processUpdate(),
+            processENStatusCheck(),
+            appUpdateRequiredCheck(),
+            updateTreatmentPerspective(),
+            processLastOpenedNotificationCheck(),
+            processDecoyRegisterAndStopKeys()
         ]
 
         logDebug("Background: starting refresh task")
 
-        let cancellable = Publishers.Sequence<[AnyPublisher<(), Never>], Never>(sequence: sequence.map { $0() })
-            .flatMap(maxPublishers: .max(1)) { $0 }
-            .collect()
-            .sink(receiveCompletion: { [weak self] result in
-                switch result {
-                case .finished:
-                    self?.logDebug("--- Finished Background Refresh ---")
-                    task.setTaskCompleted(success: true)
-                case let .failure(error):
-                    self?.logError("Background: Error completing sequence \(error.localizedDescription)")
-                    task.setTaskCompleted(success: false)
-                }
-            }, receiveValue: { [weak self] _ in
-                self?.logDebug("Background: Completed refresh task")
-                })
+        let disposible = Observable.from(sequence.compactMap { $0 })
+            .merge(maxConcurrent: 1)
+            .toArray()
+            .subscribe { _ in
+                // Note: We ignore the response
+                self.logDebug("--- Finished Background Refresh ---")
+                task.setTaskCompleted(success: true)
+            } onFailure: { error in
+                self.logError("Background: Error completing sequence \(error.localizedDescription)")
+                task.setTaskCompleted(success: false)
+            }
 
-        cancellable.store(in: &disposeBag)
+        disposible.disposed(by: disposeBag)
 
         // Handle running out of time
         task.expirationHandler = {
-            cancellable.cancel()
+            self.logDebug("Background: refresh task expired")
+            disposible.dispose()
         }
     }
 
-    private func processUpdate() -> AnyPublisher<(), Never> {
-        logDebug("Background: Process Update Function Called")
+    private func activateExposureController(inBackgroundMode: Bool) -> Completable {
+        return self.exposureController.activate(inBackgroundMode: inBackgroundMode)
+    }
 
+    private func processUpdate() -> Completable {
+        logDebug("Background: Process Update Function Called")
         return exposureController
             .updateAndProcessPendingUploads()
-            .replaceError(with: ())
-            .handleEvents(
-                receiveCompletion: { [weak self] completion in
-                    switch completion {
-                    case .finished:
-                        self?.logDebug("Background: Process Update Completed")
-                    case .failure:
-                        self?.logDebug("Background: Process Update Failed")
-                    }
-                },
-                receiveCancel: { [weak self] in self?.logDebug("Background: Process Update Cancelled") }
-            )
-            .eraseToAnyPublisher()
+            .do { error in
+                self.logDebug("Background: Process Update Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("Background: Process Update Completed")
+            }
     }
 
-    private func processENStatusCheck() -> AnyPublisher<(), Never> {
+    private func processENStatusCheck() -> Completable {
         logDebug("Background: Exposure Notification Status Check Function Called")
-
         return exposureController
             .exposureNotificationStatusCheck()
-            .handleEvents(
-                receiveCompletion: { [weak self] completion in
-                    switch completion {
-                    case .finished:
-                        self?.logDebug("Background: Exposure Notification Status Check Completed")
-                    case .failure:
-                        self?.logDebug("Background: Exposure Notification Status Check Failed")
-                    }
-                },
-                receiveCancel: { [weak self] in self?.logDebug("Background: Exposure Notification Status Check Cancelled") }
-            )
-            .eraseToAnyPublisher()
+            .do { error in
+                self.logDebug("Background: Exposure Notification Status Check Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("Background: Exposure Notification Status Check Completed")
+            }
     }
 
-    private func appUpdateRequiredCheck() -> AnyPublisher<(), Never> {
+    private func appUpdateRequiredCheck() -> Completable {
         logDebug("Background: App Update Required Check Function Called")
-
         return exposureController
             .sendNotificationIfAppShouldUpdate()
-            .handleEvents(
-                receiveCompletion: { [weak self] completion in
-                    switch completion {
-                    case .finished:
-                        self?.logDebug("Background: App Update Required Check Completed")
-                    case .failure:
-                        self?.logDebug("Background: App Update Required Check Failed")
-                    }
-                },
-                receiveCancel: { [weak self] in self?.logDebug("Background: App Update Required Check Cancelled") }
-            )
-            .eraseToAnyPublisher()
+            .do { error in
+                self.logDebug("Background: App Update Required Check Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("Background: App Update Required Check Completed")
+            }
     }
 
-    private func updateTreatmentPerspective() -> AnyPublisher<(), Never> {
+    private func updateTreatmentPerspective() -> Completable {
         logDebug("Background: Update Treatment Perspective Message Function Called")
-
-        return exposureController
+        return self.exposureController
             .updateTreatmentPerspective()
-            .map { _ in return () }
-            .replaceError(with: ())
-            .handleEvents(
-                receiveCompletion: { [weak self] completion in
-                    switch completion {
-                    case .finished:
-                        self?.logDebug("Background: Update Treatment Perspective Message Completed")
-                    case .failure:
-                        self?.logDebug("Background: Update Treatment Perspective Message Failed")
-                    }
-                },
-                receiveCancel: { [weak self] in self?.logDebug("Background: Update Treatment Perspective Message Cancelled") }
-            )
-            .eraseToAnyPublisher()
+            .do { error in
+                self.logDebug("Background: Update Treatment Perspective Message Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("Background: Update Treatment Perspective Message Completed")
+            }
     }
 
-    private func processLastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
+    private func processLastOpenedNotificationCheck() -> Completable {
         return exposureController.lastOpenedNotificationCheck()
     }
 
@@ -347,67 +324,72 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///    x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
     ///    Ensure only 1 decoy per day
     ///    y = about 5 minutes (about less, e.g. 250 sec) and/or new param: iOS decoyDelayBetweenRegisterAndUpload (this param value depends on how long a prioritized task is allowed to run)
-    private func processDecoyRegisterAndStopKeys() -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { promise in
+    private func processDecoyRegisterAndStopKeys() -> Completable {
+        return .create { (observer) -> Disposable in
 
-                guard self.isExposureManagerActive else {
-                    self.logDebug("ExposureManager inactive - Not handling processDecoyRegisterAndStopKeys")
-                    return promise(.success(()))
-                }
-
-                guard self.dataController.canProcessDecoySequence else {
-                    self.logDebug("Not running decoy `/register` Process already run today")
-                    return promise(.success(()))
-                }
-
-                func processStopKeys() {
-                    self.exposureController
-                        .getPadding()
-                        .delay(for: .seconds(Int.random(in: 1 ... 250)),
-                               scheduler: RunLoop.current)
-                        .flatMap { padding in
-                            self.networkController
-                                .stopKeys(padding: padding)
-                                .mapError {
-                                    self.logDebug("Decoy `/stopkeys` error: \($0.asExposureDataError)")
-                                    return $0.asExposureDataError
-                                }
-                        }.sink(receiveCompletion: { _ in
-                            // Note: We ignore the response
-                            self.logDebug("Decoy `/stopkeys` complete")
-                            return promise(.success(()))
-                        }, receiveValue: { _ in })
-                        .store(in: &self.disposeBag)
-                }
-
-                func processDecoyRegister(decoyProbability: Float) {
-
-                    let r = Float.random(in: self.configuration.decoyProbabilityRange)
-                    guard r < decoyProbability else {
-                        self.logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
-                        return promise(.success(()))
-                    }
-
-                    self.dataController.setLastDecoyProcessDate(currentDate())
-
-                    self.exposureController.requestLabConfirmationKey { _ in
-                        self.logDebug("Decoy `/register` complete")
-                        processStopKeys()
-                    }
-                }
-
-                self.exposureController
-                    .getDecoyProbability()
-                    .delay(for: .seconds(Int.random(in: 1 ... 60)),
-                           scheduler: RunLoop.current)
-                    .sink(receiveCompletion: { _ in
-                    }, receiveValue: { value in
-                        processDecoyRegister(decoyProbability: value)
-                        })
-                    .store(in: &self.disposeBag)
+            guard self.isExposureManagerActive else {
+                self.logDebug("ExposureManager inactive - Not handling processDecoyRegisterAndStopKeys")
+                observer(.completed)
+                return Disposables.create()
             }
-        }.eraseToAnyPublisher()
+
+            guard self.dataController.canProcessDecoySequence else {
+                self.logDebug("Not running decoy `/register` Process already run today")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            func processStopKeys() {
+                self.exposureController
+                    .getPadding()
+                    .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... 250)), scheduler: MainScheduler.instance)
+                    .flatMapCompletable { padding in
+                        self.networkController
+                            .stopKeys(padding: padding)
+                            .subscribe(on: MainScheduler.instance)
+                            .catch { error in
+                                throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
+                            }
+                    }
+                    .subscribe(onCompleted: {
+                        // Note: We ignore the response
+                        self.logDebug("Decoy `/stopkeys` complete")
+                        observer(.completed)
+                    }, onError: { _ in
+                        // Note: We ignore the response
+                        self.logDebug("Decoy `/stopkeys` complete")
+                        observer(.completed)
+                    })
+                    .disposed(by: self.disposeBag)
+            }
+
+            func processDecoyRegister(decoyProbability: Float) {
+
+                let r = self.randomNumberGenerator.randomFloat(in: self.configuration.decoyProbabilityRange)
+                guard r < decoyProbability else {
+                    self.logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
+                    observer(.completed)
+                    return
+                }
+
+                self.dataController.setLastDecoyProcessDate(currentDate())
+
+                self.exposureController.requestLabConfirmationKey { _ in
+                    self.logDebug("Decoy `/register` complete")
+                    processStopKeys()
+                }
+            }
+
+            self.exposureController
+                .getDecoyProbability()
+                .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance)
+                .subscribe(onSuccess: { decoyProbability in
+                    processDecoyRegister(decoyProbability: decoyProbability)
+                })
+                .disposed(by: self.disposeBag)
+
+            return Disposables.create()
+        }
     }
 
     // Returns a Date with the specified hour and minute, for the next day

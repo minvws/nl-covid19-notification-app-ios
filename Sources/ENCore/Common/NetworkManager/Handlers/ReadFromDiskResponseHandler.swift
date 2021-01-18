@@ -11,7 +11,7 @@ import RxSwift
 /// @mockable
 protocol ReadFromDiskResponseHandlerProtocol {
     func isApplicable(for response: URLResponse, input: URL) -> Bool
-    func process(response: URLResponse, input: URL) -> Observable<Data>
+    func process(response: URLResponse, input: URL) -> Single<Data>
 }
 
 final class ReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocol {
@@ -26,7 +26,7 @@ final class ReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocol {
         return contentFileUrl(from: input) != nil
     }
 
-    func process(response: URLResponse, input: URL) -> Observable<Data> {
+    func process(response: URLResponse, input: URL) -> Single<Data> {
         guard
             let url = contentFileUrl(from: input),
             let data = try? Data(contentsOf: url) else {

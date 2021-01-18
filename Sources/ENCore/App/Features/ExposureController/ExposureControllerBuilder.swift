@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 import UserNotifications
 
 /// @mockable
@@ -17,21 +17,20 @@ protocol ExposureControlling: AnyObject {
     // MARK: - Setup
 
     @discardableResult
-    func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never>
+    func activate(inBackgroundMode: Bool) -> Completable
     func deactivate()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
-    func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError>
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
+    func isAppDeactivated() -> Single<Bool>
+    func getDecoyProbability() -> Single<Float>
+    func getPadding() -> Single<Padding>
 
     // MARK: - Updates
 
     func refreshStatus()
 
-    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
+    func updateWhenRequired() -> Completable
+    func processPendingUploadRequests() -> Completable
 
     // MARK: - Permissions
 
@@ -40,7 +39,7 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Exposure KeySets
 
-    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError>
+    func fetchAndProcessExposureKeySets() -> Completable
 
     // MARK: - Exposure Notification
 
@@ -72,22 +71,22 @@ protocol ExposureControlling: AnyObject {
     func clearUnseenExposureNotificationDate()
 
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
-    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
+    func updateAndProcessPendingUploads() -> Completable
 
     /// Shows a notification for expired lab key uploads and cleans up the requests
-    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError>
+    func processExpiredUploadRequests() -> Completable
 
     /// Checks the status of the EN framework for the last 24h
-    func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
+    func exposureNotificationStatusCheck() -> Completable
 
     /// Checks if the app needs to be updated and returns true if it should
-    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError>
+    func appShouldUpdateCheck() -> Single<AppUpdateInformation>
 
     /// Checks if the app needs to be updated and sends a local notification if it should
-    func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never>
+    func sendNotificationIfAppShouldUpdate() -> Completable
 
     /// Updates the treatment perspective message
-    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError>
+    func updateTreatmentPerspective() -> Completable
 
     // MARK: - Onboarding
 
@@ -101,13 +100,14 @@ protocol ExposureControlling: AnyObject {
     var seenAnnouncements: [Announcement] { get set }
 
     /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
-    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
+    func lastOpenedNotificationCheck() -> Completable
 }
 
 /// Represents a ConfirmationKey for the Lab Flow
 ///
 /// - Parameter key: Human readable lab confirmation key
 /// - Parameter expiration: Key's expiration date
+/// @mockable
 protocol ExposureConfirmationKey {
     var key: String { get }
     var expiration: Date { get }

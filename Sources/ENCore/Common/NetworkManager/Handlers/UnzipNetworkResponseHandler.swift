@@ -12,7 +12,7 @@ import ZIPFoundation
 /// @mockable
 protocol UnzipNetworkResponseHandlerProtocol {
     func isApplicable(for response: URLResponse, input: URL) -> Bool
-    func process(response: URLResponse, input: URL) -> Observable<URL>
+    func process(response: URLResponse, input: URL) -> Single<URL>
 }
 
 final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol {
@@ -32,7 +32,7 @@ final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol {
         return contentTypeHeader.lowercased() == HTTPContentType.zip.rawValue.lowercased()
     }
 
-    func process(response: URLResponse, input: URL) -> Observable<URL> {
+    func process(response: URLResponse, input: URL) -> Single<URL> {
         guard let destinationURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString) else {
             return .error(NetworkResponseHandleError.cannotUnzip)
         }
