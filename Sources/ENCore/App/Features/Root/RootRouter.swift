@@ -202,6 +202,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         mutableNetworkStatusStream.stopObservingNetworkReachability()
     }
 
+    @available(iOS 13, *)
     func handle(backgroundTask: BGTask) {
         backgroundController.handle(task: backgroundTask)
     }

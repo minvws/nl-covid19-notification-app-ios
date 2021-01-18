@@ -359,7 +359,7 @@ final class ExposureController: ExposureControlling, Logging {
 
             let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
 
-            guard lastENStatusCheckDate.advanced(by: timeInterval) < Date() else {
+            guard lastENStatusCheckDate.addingTimeInterval(timeInterval) < Date() else {
                 self.logDebug("`exposureNotificationStatusCheck` skipped as it hasn't been 24h")
                 observer(.completed)
                 return Disposables.create()
@@ -456,13 +456,13 @@ final class ExposureController: ExposureControlling, Logging {
 
             let notificationThreshold = TimeInterval(60 * 60 * 3) // 3 hours
 
-            guard lastUnseenExposureNotificationDate.advanced(by: notificationThreshold) < Date() else {
+            guard lastUnseenExposureNotificationDate.addingTimeInterval(notificationThreshold) < Date() else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h after initial notification")
                 observer(.completed)
                 return Disposables.create()
             }
 
-            guard lastAppLaunch.advanced(by: notificationThreshold) < Date() else {
+            guard lastAppLaunch.addingTimeInterval(notificationThreshold) < Date() else {
                 self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
                 observer(.completed)
                 return Disposables.create()
