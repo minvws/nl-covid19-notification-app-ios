@@ -21,51 +21,51 @@ steps:
     echo "##vso[task.setvariable variable=GOOGLE_APPLICATION_CREDENTIALS]$(firebaseCredentials.secureFilePath)"
   displayName: Set Firebase credentials
 - template: build.yml
- parameters:
-   provisioningProfileSecureFile: CoronaMelder_Test.mobileprovision
-   provisioningProfileName: "CoronaMelder_TST"
-   networkConfiguration: Test
-   logLevel: debug
-   configuration: Debug
-   bundleDisplayName: "🐞 CoronaMelder"
-   bundleShortVersion: tst
-   debugMenu: true
-   packageApp: true
-   shareLogsEnabled: true
-   exportPath: "ipa/test"
-   exportMethod: "ad-hoc"
-   enDeveloperRegion: "TEST_NL_TEST"
+  parameters:
+    provisioningProfileSecureFile: CoronaMelder_Test.mobileprovision
+    provisioningProfileName: "CoronaMelder_TST"
+    networkConfiguration: Test
+    logLevel: debug
+    configuration: Debug
+    bundleDisplayName: "🐞 CoronaMelder"
+    bundleShortVersion: tst
+    debugMenu: true
+    packageApp: true
+    shareLogsEnabled: true
+    exportPath: "ipa/test"
+    exportMethod: "ad-hoc"
+    enDeveloperRegion: "TEST_NL_TEST"
 - publish: "ipa/test"
- displayName: Publish test IPA
- artifact: ipa-test
+  displayName: Publish test IPA
+  artifact: ipa-test
 - script: |
-   firebase appdistribution:distribute ipa/test/CoronaMelder.ipa \
-   --app 1:937920499570:ios:3fa1c661e8189087f957eb \
-   --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
-   --groups ios-latest
- displayName: Distribute test build
+    firebase appdistribution:distribute ipa/test/CoronaMelder.ipa \
+    --app 1:937920499570:ios:3fa1c661e8189087f957eb \
+    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+    --groups ios-latest
+  displayName: Distribute test build
 - template: build.yml
- parameters:
-   provisioningProfileSecureFile: CoronaMelder_Acceptance.mobileprovision
-   provisioningProfileName: "CoronaMelder_ACC"
-   networkConfiguration: ACC
-   logLevel: debug
-   bundleDisplayName: "β CoronaMelder"
-   bundleShortVersion: acc
-   packageApp: true
-   shareLogsEnabled: true
-   exportPath: "ipa/acc"
-   exportMethod: "ad-hoc"
-   enDeveloperRegion: "TEST_NL_ACC"
+  parameters:
+    provisioningProfileSecureFile: CoronaMelder_Acceptance.mobileprovision
+    provisioningProfileName: "CoronaMelder_ACC"
+    networkConfiguration: ACC
+    logLevel: debug
+    bundleDisplayName: "β CoronaMelder"
+    bundleShortVersion: acc
+    packageApp: true
+    shareLogsEnabled: true
+    exportPath: "ipa/acc"
+    exportMethod: "ad-hoc"
+    enDeveloperRegion: "TEST_NL_ACC"
 - publish: "ipa/acc"
- displayName: Publish acceptance IPA
- artifact: ipa-acc
+  displayName: Publish acceptance IPA
+  artifact: ipa-acc
 - script: |
-   firebase appdistribution:distribute ipa/acc/CoronaMelder.ipa \
-   --app 1:937920499570:ios:3fa1c661e8189087f957eb \
-   --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
-   --groups ios-acceptance
- displayName: Distribute acceptance build  
+    firebase appdistribution:distribute ipa/acc/CoronaMelder.ipa \
+    --app 1:937920499570:ios:3fa1c661e8189087f957eb \
+    --release-notes "$BUILD_SOURCEVERSIONMESSAGE" \
+    --groups ios-acceptance
+  displayName: Distribute acceptance build  
 - template: build.yml
   parameters:
     provisioningProfileSecureFile: CoronaMelder_ACC_13_5.mobileprovision
@@ -73,7 +73,7 @@ steps:
     networkConfiguration: ACC
     logLevel: debug
     bundleDisplayName: "β CoronaMelder"
-    bundleIdentifier: "nl.rijksoverheid.en.acc"
+    bundleIdentifier: nl.rijksoverheid.en.acc
     bundleShortVersion: acc-13-5
     packageApp: true
     shareLogsEnabled: true
