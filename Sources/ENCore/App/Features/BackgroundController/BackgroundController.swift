@@ -46,7 +46,8 @@ final class BackgroundController: BackgroundControlling, Logging {
          userNotificationCenter: UserNotificationCenter,
          taskScheduler: TaskScheduling,
          bundleIdentifier: String,
-         randomNumberGenerator: RandomNumberGenerating) {
+         randomNumberGenerator: RandomNumberGenerating,
+         environmentController: EnvironmentControlling) {
         self.exposureController = exposureController
         self.configuration = configuration
         self.networkController = networkController
@@ -56,6 +57,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
         self.randomNumberGenerator = randomNumberGenerator
+        self.environmentController = environmentController
     }
 
     // MARK: - BackgroundControlling
@@ -122,29 +124,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
-    // MARK: - Private
-
-    /// Returns the refresh interval in minutes
-    private var refreshInterval: TimeInterval {
-        return receivedRefreshInterval ?? defaultRefreshInterval
-    }
-
-    private let defaultRefreshInterval: TimeInterval = 60 // minutes
-    private var receivedRefreshInterval: TimeInterval?
-
-    private let taskScheduler: TaskScheduling
-    private let exposureManager: ExposureManaging
-    private let userNotificationCenter: UserNotificationCenter
-    private let exposureController: ExposureControlling
-    private let dataController: ExposureDataControlling
-    private let networkController: NetworkControlling
-    private let configuration: BackgroundTaskConfiguration
-    private var disposeBag = DisposeBag()
-    private let bundleIdentifier: String
-    private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
-    private let randomNumberGenerator: RandomNumberGenerating
-
-    private func handleDecoyStopkeys(task: BackgroundTask?) {
+    func handleDecoyStopkeys(task: BackgroundTask?) {
 
         guard isExposureManagerActive else {
             task?.setTaskCompleted(success: true)
@@ -188,6 +168,29 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
+    // MARK: - Private
+
+    /// Returns the refresh interval in minutes
+    private var refreshInterval: TimeInterval {
+        return receivedRefreshInterval ?? defaultRefreshInterval
+    }
+
+    private let defaultRefreshInterval: TimeInterval = 60 // minutes
+    private var receivedRefreshInterval: TimeInterval?
+
+    private let taskScheduler: TaskScheduling
+    private let exposureManager: ExposureManaging
+    private let userNotificationCenter: UserNotificationCenter
+    private let exposureController: ExposureControlling
+    private let dataController: ExposureDataControlling
+    private let networkController: NetworkControlling
+    private let configuration: BackgroundTaskConfiguration
+    private var disposeBag = DisposeBag()
+    private let bundleIdentifier: String
+    private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
+    private let randomNumberGenerator: RandomNumberGenerating
+    private let environmentController: EnvironmentControlling
+
     ///    When the user opens the app
     ///        if (config.decoyProbability),
     ///        rand(1-x) seconds after the manifest run ‘register decoy’ in the foreground,
@@ -224,8 +227,10 @@ final class BackgroundController: BackgroundControlling, Logging {
                     TimeInterval(self.randomNumberGenerator.randomInt(in: 0 ... 900)) // random number between 0 and 15 minutes
                 )
 
-                if #available(iOS 13, *) {
-                    self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
+                if self.environmentController.isiOS13orHigher {
+                    if #available(iOS 13, *) {
+                        self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
+                    }
                 } else {
                     DispatchQueue.global(qos: .utility)
                         .asyncAfter(deadline: DispatchTime.now() + .seconds(self.randomNumberGenerator.randomInt(in: 0 ... 30))) {
@@ -251,16 +256,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     // MARK: - Refresh
 
-    private func scheduleRefresh() {
-        let timeInterval = refreshInterval * 60
-        let date = currentDate().addingTimeInterval(timeInterval)
-
-        if #available(iOS 13, *) {
-            schedule(identifier: .refresh, date: date)
-        }
-    }
-
-    private func refresh(task: BackgroundTask?) {
+    func refresh(task: BackgroundTask?) {
         let sequence: [Completable] = [
             activateExposureController(inBackgroundMode: true),
             processUpdate(),
@@ -293,6 +289,15 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.logDebug("Background: refresh task expired")
                 disposible.dispose()
             }
+        }
+    }
+
+    private func scheduleRefresh() {
+        let timeInterval = refreshInterval * 60
+        let date = currentDate().addingTimeInterval(timeInterval)
+
+        if #available(iOS 13, *) {
+            schedule(identifier: .refresh, date: date)
         }
     }
 

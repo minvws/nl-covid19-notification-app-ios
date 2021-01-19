@@ -16,6 +16,8 @@ import UserNotifications
 protocol BackgroundControlling {
     func scheduleTasks()
     func registerActivityHandle()
+    func refresh(task: BackgroundTask?)
+    func handleDecoyStopkeys(task: BackgroundTask?)
     @available(iOS 13, *)
     func handle(task: BGTask)
     func removeAllTasks()
@@ -28,6 +30,7 @@ protocol BackgroundDependency {
     var networkController: NetworkControlling { get }
     var dataController: ExposureDataControlling { get }
     var randomNumberGenerator: RandomNumberGenerating { get }
+    var environmentController: EnvironmentControlling { get }
 }
 
 /// @mockable
@@ -102,6 +105,7 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
                                     userNotificationCenter: dependencyProvider.userNotificationCenter,
                                     taskScheduler: taskScheduling,
                                     bundleIdentifier: dependencyProvider.bundleIdentifier,
-                                    randomNumberGenerator: dependencyProvider.dependency.randomNumberGenerator)
+                                    randomNumberGenerator: dependencyProvider.dependency.randomNumberGenerator,
+                                    environmentController: dependencyProvider.dependency.environmentController)
     }
 }

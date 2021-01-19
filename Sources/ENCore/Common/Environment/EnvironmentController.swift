@@ -9,6 +9,8 @@ import Foundation
 
 /// @mockable
 protocol EnvironmentControlling {
+    var isiOS12: Bool { get }
+    var isiOS13orHigher: Bool { get }
     var isiOS137orHigher: Bool { get }
     var gaenRateLimitingType: GAENRateLimitingType { get }
     var appVersion: String? { get }
@@ -34,6 +36,18 @@ class EnvironmentController: EnvironmentControlling {
 
     var supportsExposureNotification: Bool {
         return maximumSupportedExposureNotificationVersion != .unsupported
+    }
+
+    var isiOS12: Bool {
+        return !isiOS13orHigher
+    }
+
+    var isiOS13orHigher: Bool {
+        if #available(iOS 13, *) {
+            return true
+        } else {
+            return false
+        }
     }
 
     var isiOS137orHigher: Bool {
