@@ -16,7 +16,6 @@ import UserNotifications
 protocol BackgroundControlling {
     func scheduleTasks()
     func registerActivityHandle()
-    func handleRefresh()
 
     @available(iOS 13, *)
     func handle(task: BGTask)

@@ -122,35 +122,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
-    func handleRefresh() {
-
-        let version = UIDevice.current.systemVersion
-
-        let sequence: [Completable] = [
-            activateExposureController(inBackgroundMode: true),
-            processUpdate(),
-            processENStatusCheck(),
-            appUpdateRequiredCheck(),
-            updateTreatmentPerspective(),
-            processLastOpenedNotificationCheck(),
-            processDecoyRegisterAndStopKeys()
-        ]
-
-        logDebug("Background: starting refresh task on iOS \(version)")
-
-        let disposible = Observable.from(sequence.compactMap { $0 })
-            .merge(maxConcurrent: 1)
-            .toArray()
-            .subscribe { _ in
-                // Note: We ignore the response
-                self.logDebug("--- Finished Background Refresh on iOS \(version) ---")
-            } onFailure: { error in
-                self.logError("Background: Error completing sequence \(error.localizedDescription)")
-            }
-
-        disposible.disposed(by: disposeBag)
-    }
-
     // MARK: - Private
 
     /// Returns the refresh interval in minutes
@@ -312,6 +283,35 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     // MARK: - Refresh
+
+    private func handleRefresh() {
+
+        let version = UIDevice.current.systemVersion
+
+        let sequence: [Completable] = [
+            activateExposureController(inBackgroundMode: true),
+            processUpdate(),
+            processENStatusCheck(),
+            appUpdateRequiredCheck(),
+            updateTreatmentPerspective(),
+            processLastOpenedNotificationCheck(),
+            processDecoyRegisterAndStopKeys()
+        ]
+
+        logDebug("Background: starting refresh task on iOS \(version)")
+
+        let disposible = Observable.from(sequence.compactMap { $0 })
+            .merge(maxConcurrent: 1)
+            .toArray()
+            .subscribe { _ in
+                // Note: We ignore the response
+                self.logDebug("--- Finished Background Refresh on iOS \(version) ---")
+            } onFailure: { error in
+                self.logError("Background: Error completing sequence \(error.localizedDescription)")
+            }
+
+        disposible.disposed(by: disposeBag)
+    }
 
     private func scheduleRefresh() {
         let timeInterval = refreshInterval * 60
