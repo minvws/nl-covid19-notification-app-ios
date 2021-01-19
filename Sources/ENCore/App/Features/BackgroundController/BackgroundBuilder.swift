@@ -16,7 +16,6 @@ import UserNotifications
 protocol BackgroundControlling {
     func scheduleTasks()
     func registerActivityHandle()
-
     @available(iOS 13, *)
     func handle(task: BGTask)
     func removeAllTasks()
@@ -48,6 +47,19 @@ class DummyTaskScheduling: TaskScheduling {
 
     func cancelAllTaskRequests() {}
 }
+
+protocol BackgroundTask {
+    var identifier: String { get }
+    var expirationHandler: (() -> ())? { get set }
+    func setTaskCompleted(success: Bool)
+}
+
+@available(iOS 13, *)
+extension BGTask: BackgroundTask {}
+
+protocol BackgroundProcessingTask {}
+@available(iOS 13, *)
+extension BGProcessingTask: BackgroundProcessingTask {}
 
 @available(iOS 13, *)
 extension BGTaskScheduler: TaskScheduling {}

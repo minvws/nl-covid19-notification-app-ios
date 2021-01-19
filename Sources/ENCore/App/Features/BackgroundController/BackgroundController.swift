@@ -117,7 +117,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.exposureManager.setLaunchActivityHandler { activityFlags in
             if activityFlags.contains(.periodicRun) {
                 self.logInfo("Periodic activity callback called (iOS 12.5)")
-                self.handleRefresh()
+                self.refresh(task: nil)
             }
         }
     }
@@ -144,12 +144,11 @@ final class BackgroundController: BackgroundControlling, Logging {
     private let operationQueue = DispatchQueue(label: "nl.rijksoverheid.en.background-processing")
     private let randomNumberGenerator: RandomNumberGenerating
 
-    @available(iOS 13, *)
-    private func handleDecoyStopkeys(task: BGProcessingTask) {
+    private func handleDecoyStopkeys(task: BackgroundTask?) {
 
         guard isExposureManagerActive else {
-            task.setTaskCompleted(success: true)
-            logDebug("ExposureManager inactive - Not handling \(task.identifier)")
+            task?.setTaskCompleted(success: true)
+            logDebug("ExposureManager inactive - Not handling \(String(describing: task?.identifier))")
             return
         }
 
@@ -173,52 +172,20 @@ final class BackgroundController: BackgroundControlling, Logging {
             .subscribe(onCompleted: {
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
-                task.setTaskCompleted(success: true)
+                task?.setTaskCompleted(success: true)
             }, onError: { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
-                task.setTaskCompleted(success: true)
+                task?.setTaskCompleted(success: true)
                 })
 
         // Handle running out of time
-        task.expirationHandler = {
-            self.logDebug("Decoy `/stopkeys` expired")
-            disposable.dispose()
-        }
-    }
-
-    private func handleDecoyStopkeys() {
-
-        guard isExposureManagerActive else {
-            logDebug("ExposureManager inactive - Not handling `handleDecoyStopkeys`")
-            return
-        }
-
-        self.logDebug("Decoy `/stopkeys` started")
-
-        exposureController
-            .getPadding()
-            .flatMapCompletable { padding in
-                self.networkController
-                    .stopKeys(padding: padding)
-                    .subscribe(on: MainScheduler.instance)
-                    .catch { error in
-                        if let exposureDataError = (error as? NetworkError)?.asExposureDataError {
-                            self.logDebug("Decoy `/stopkeys` error: \(exposureDataError)")
-                            throw exposureDataError
-                        } else {
-                            self.logDebug("Decoy `/stopkeys` error: ExposureDataError.internalError")
-                            throw ExposureDataError.internalError
-                        }
-                    }
+        if var task = task {
+            task.expirationHandler = {
+                self.logDebug("Decoy `/stopkeys` expired")
+                disposable.dispose()
             }
-            .subscribe(onCompleted: {
-                // Note: We ignore the response
-                self.logDebug("Decoy `/stopkeys` complete")
-            }, onError: { _ in
-                // Note: We ignore the response
-                self.logDebug("Decoy `/stopkeys` complete")
-                }).disposed(by: disposeBag)
+        }
     }
 
     ///    When the user opens the app
@@ -262,7 +229,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 } else {
                     DispatchQueue.global(qos: .utility)
                         .asyncAfter(deadline: DispatchTime.now() + .seconds(self.randomNumberGenerator.randomInt(in: 0 ... 30))) {
-                            self.handleDecoyStopkeys()
+                            self.handleDecoyStopkeys(task: nil)
                         }
                 }
             }
@@ -284,35 +251,6 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     // MARK: - Refresh
 
-    private func handleRefresh() {
-
-        let version = UIDevice.current.systemVersion
-
-        let sequence: [Completable] = [
-            activateExposureController(inBackgroundMode: true),
-            processUpdate(),
-            processENStatusCheck(),
-            appUpdateRequiredCheck(),
-            updateTreatmentPerspective(),
-            processLastOpenedNotificationCheck(),
-            processDecoyRegisterAndStopKeys()
-        ]
-
-        logDebug("Background: starting refresh task on iOS \(version)")
-
-        let disposible = Observable.from(sequence.compactMap { $0 })
-            .merge(maxConcurrent: 1)
-            .toArray()
-            .subscribe { _ in
-                // Note: We ignore the response
-                self.logDebug("--- Finished Background Refresh on iOS \(version) ---")
-            } onFailure: { error in
-                self.logError("Background: Error completing sequence \(error.localizedDescription)")
-            }
-
-        disposible.disposed(by: disposeBag)
-    }
-
     private func scheduleRefresh() {
         let timeInterval = refreshInterval * 60
         let date = currentDate().addingTimeInterval(timeInterval)
@@ -322,8 +260,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
-    @available(iOS 13, *)
-    private func refresh(task: BGProcessingTask) {
+    private func refresh(task: BackgroundTask?) {
         let sequence: [Completable] = [
             activateExposureController(inBackgroundMode: true),
             processUpdate(),
@@ -342,18 +279,20 @@ final class BackgroundController: BackgroundControlling, Logging {
             .subscribe { _ in
                 // Note: We ignore the response
                 self.logDebug("--- Finished Background Refresh ---")
-                task.setTaskCompleted(success: true)
+                task?.setTaskCompleted(success: true)
             } onFailure: { error in
                 self.logError("Background: Error completing sequence \(error.localizedDescription)")
-                task.setTaskCompleted(success: false)
+                task?.setTaskCompleted(success: false)
             }
 
         disposible.disposed(by: disposeBag)
 
         // Handle running out of time
-        task.expirationHandler = {
-            self.logDebug("Background: refresh task expired")
-            disposible.dispose()
+        if var task = task {
+            task.expirationHandler = {
+                self.logDebug("Background: refresh task expired")
+                disposible.dispose()
+            }
         }
     }
 
