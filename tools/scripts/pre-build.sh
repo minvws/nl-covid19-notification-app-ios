@@ -2,7 +2,7 @@
 
 env
 
-brew install yq
+brew install yq@3
 
 BUNDLE_VERSION=$(yq r project.yml targets.EN.info.properties.CFBundleShortVersionString)
 BUNDLE_VERSION=${BUNDLE_VERSION%%-tst}
