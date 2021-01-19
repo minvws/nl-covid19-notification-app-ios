@@ -40,21 +40,21 @@ stages:
             sonar.cpp.file.suffixes=-
             sonar.objc.file.suffixes=-
             sonar.exclusions=vendor/**/*
-     # - template: build.yml
-#        parameters:
-#          networkConfiguration: Test
-#          logLevel: debug
-#          bundleShortVersion: tst
-#          bundleDisplayName: "🐞 CoronaMelder"
-#          debugMenu: true
-#          runTests: true
-#          signingOption: 'nosign'
-#      - script: sh tools/scripts/buildcache.sh copy
-#        displayName: Copy binaries to cache
-#      - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
-#        displayName: 'Run Code Analysis'
-#      - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
-#        displayName: 'Publish Quality Gate Result'
+     - template: build.yml
+       parameters:
+         networkConfiguration: Test
+         logLevel: debug
+         bundleShortVersion: tst
+         bundleDisplayName: "🐞 CoronaMelder"
+         debugMenu: true
+         runTests: true
+         signingOption: 'nosign'
+     - script: sh tools/scripts/buildcache.sh copy
+       displayName: Copy binaries to cache
+     - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+       displayName: 'Run Code Analysis'
+     - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
+       displayName: 'Publish Quality Gate Result'
 #       Run distribution on the master and release/ branches only          
       - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')) }}:
         - template: distribute.yml
