@@ -372,10 +372,13 @@ final class BackgroundController: BackgroundControlling, Logging {
                 return Disposables.create()
             }
 
+            let paddingUpperBoundDelay = Float(UIDevice.current.systemVersion) ?? 250 < 13 ? 30 : 250
+            let decoyProbabilityUpperBoundDelay = Float(UIDevice.current.systemVersion) ?? 60 < 13 ? 30 : 60
+
             func processStopKeys() {
                 self.exposureController
                     .getPadding()
-                    .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... 250)), scheduler: MainScheduler.instance)
+                    .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... paddingUpperBoundDelay)), scheduler: MainScheduler.instance)
                     .flatMapCompletable { padding in
                         self.networkController
                             .stopKeys(padding: padding)
@@ -415,7 +418,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
             self.exposureController
                 .getDecoyProbability()
-                .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance)
+                .delay(.seconds(self.randomNumberGenerator.randomInt(in: 1 ... decoyProbabilityUpperBoundDelay)), scheduler: MainScheduler.instance)
                 .subscribe(onSuccess: { decoyProbability in
                     processDecoyRegister(decoyProbability: decoyProbability)
                 })
