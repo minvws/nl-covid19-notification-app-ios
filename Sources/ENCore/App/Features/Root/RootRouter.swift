@@ -428,6 +428,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
+                self?.backgroundController.registerActivityHandle()
+
                 self?.exposureController.activate(inBackgroundMode: false)
                     .subscribe()
                     .disposed(by: strongSelf.disposeBag)
@@ -450,6 +452,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                         completion?(false)
                         return
                     }
+
+                    self?.backgroundController.registerActivityHandle()
 
                     self?.exposureController.activate(inBackgroundMode: false)
                         .subscribe()

@@ -65,6 +65,8 @@ final class StubExposureManager: ExposureManaging {
 
     // return whether exposureNotifications should be enabled or not
     private var exposureNotificationEnabled = true
+
+    var manager: ENManaging = ENManager()
 }
 
 private struct ExposureDetectionSummaryImpl: ExposureDetectionSummary {

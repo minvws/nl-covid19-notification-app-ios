@@ -109,6 +109,19 @@ final class BackgroundController: BackgroundControlling, Logging {
         operationQueue.async(execute: handleTask)
     }
 
+    // ENManager gives apps that register an activity handler
+    // in iOS 12.5 up to 3.5 minutes of background time at
+    // least once per day. In iOS 13 and later, registering an
+    // activity handler does nothing.
+    func registerActivityHandle() {
+        self.exposureController.exposureManager.manager.setLaunchActivityHandler { activityFlags in
+            if activityFlags.contains(.periodicRun) {
+                self.logInfo("Periodic activity callback called (iOS 12.5)")
+                self.handleRefresh()
+            }
+        }
+    }
+
     func handleRefresh() {
 
         let version = UIDevice.current.systemVersion
@@ -234,7 +247,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             }, onError: { _ in
                 // Note: We ignore the response
                 self.logDebug("Decoy `/stopkeys` complete")
-            }).disposed(by: disposeBag)
+                }).disposed(by: disposeBag)
     }
 
     ///    When the user opens the app
@@ -276,7 +289,10 @@ final class BackgroundController: BackgroundControlling, Logging {
                 if #available(iOS 13, *) {
                     self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
                 } else {
-                    self.handleDecoyStopkeys()
+                    DispatchQueue.global(qos: .utility)
+                        .asyncAfter(deadline: DispatchTime.now() + .seconds(self.randomNumberGenerator.randomInt(in: 0 ... 30))) {
+                            self.handleDecoyStopkeys()
+                        }
                 }
             }
         }
@@ -342,6 +358,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func activateExposureController(inBackgroundMode: Bool) -> Completable {
+        self.registerActivityHandle()
         return self.exposureController.activate(inBackgroundMode: inBackgroundMode)
     }
 

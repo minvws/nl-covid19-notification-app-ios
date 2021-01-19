@@ -20,11 +20,9 @@ import Foundation
 
 final class ExposureManager: ExposureManaging, Logging {
 
-    init(manager: ENManaging, backgroundController: BackgroundControlling) {
+    init(manager: ENManaging) {
 
         self.manager = manager
-        self.backgroundController = backgroundController
-        self.registerActivityHandle()
     }
 
     deinit {
@@ -196,21 +194,7 @@ final class ExposureManager: ExposureManaging, Logging {
         return result
     }
 
-    // ENManager gives apps that register an activity handler
-    // in iOS 12.5 up to 3.5 minutes of background time at
-    // least once per day. In iOS 13 and later, registering an
-    // activity handler does nothing.
-    private func registerActivityHandle() {
-        self.manager.setLaunchActivityHandler { activityFlags in
-            if activityFlags.contains(.periodicRun) {
-                self.logInfo("Periodic activity callback called (iOS 12.5)")
-                self.backgroundController.handleRefresh()
-            }
-        }
-    }
-
-    private let manager: ENManaging
-    private let backgroundController: BackgroundControlling
+    var manager: ENManaging
 }
 
 extension Error {

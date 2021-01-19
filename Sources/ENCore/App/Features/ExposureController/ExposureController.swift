@@ -718,7 +718,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private let mutableStateStream: MutableExposureStateStreaming
-    private let exposureManager: ExposureManaging
+    var exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling
     private var disposeBag = DisposeBag()
     private var exposureKeyUpdateStream: Completable?

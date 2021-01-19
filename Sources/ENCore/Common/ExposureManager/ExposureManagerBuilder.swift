@@ -68,6 +68,8 @@ protocol ExposureManaging {
 
     /// Returns the current framework status
     func getExposureNotificationStatus() -> ExposureManagerStatus
+
+    var manager: ENManaging { get }
 }
 
 /// @mockable
@@ -77,24 +79,14 @@ protocol ExposureManagerBuildable {
     func build() -> ExposureManaging
 }
 
-protocol ExposureManagerDependency {
-    var backgroundController: BackgroundControlling { get }
-}
-
-private final class ExposureManagerDependencyProvider: DependencyProvider<ExposureManagerDependency> {}
-
-final class ExposureManagerBuilder: Builder<ExposureManagerDependency>, ExposureManagerBuildable {
+final class ExposureManagerBuilder: Builder<EmptyDependency>, ExposureManagerBuildable {
 
     func build() -> ExposureManaging {
 
         #if targetEnvironment(simulator)
             return StubExposureManager()
         #else
-
-            let dependencyProvider = ExposureManagerDependencyProvider(dependency: dependency)
-
-            return ExposureManager(manager: ENManager(),
-                                   backgroundController: dependencyProvider.dependency.backgroundController)
+            return ExposureManager(manager: ENManager())
         #endif
     }
 }

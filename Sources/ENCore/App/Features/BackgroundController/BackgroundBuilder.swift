@@ -15,6 +15,7 @@ import UserNotifications
 /// @mockable
 protocol BackgroundControlling {
     func scheduleTasks()
+    func registerActivityHandle()
     func handleRefresh()
 
     @available(iOS 13, *)
