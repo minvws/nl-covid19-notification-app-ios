@@ -7,14 +7,28 @@
 
 import Foundation
 
+/// On iOS version lower than 13, encoding values such as Booleans is not supported. To work around this we wrap the value in a struct
+private struct StorageWrapper<T>: Codable where T: Codable {
+    let wrapped: T
+}
+
 extension StorageControlling {
     func store<Key: CodableStoreKey>(object: Key.Object, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
-        guard let data = try? JSONEncoder().encode(object) else {
+
+        var encodedData = try? JSONEncoder().encode(object)
+
+        // fallback in case encoding didn't work, wrap the object
+        if encodedData == nil {
+            let wrapper = StorageWrapper(wrapped: object)
+            encodedData = try? JSONEncoder().encode(wrapper)
+        }
+
+        guard let dataToStore = encodedData else {
             completion(StoreError.cannotEncode)
             return
         }
 
-        store(data: data, identifiedBy: key, completion: completion)
+        store(data: dataToStore, identifiedBy: key, completion: completion)
     }
 
     func retrieveObject<Key: CodableStoreKey>(identifiedBy key: Key) -> Key.Object? {
@@ -22,13 +36,20 @@ extension StorageControlling {
             return nil
         }
 
-        do {
-            return try JSONDecoder().decode(key.objectType, from: data)
-        } catch {
+        var objectToReturn = try? JSONDecoder().decode(key.objectType, from: data)
+
+        // fallback, maybe the object was stored in a wrapper
+        if objectToReturn == nil {
+            let wrappedValue = try? JSONDecoder().decode(StorageWrapper<Key.Object>.self, from: data)
+            objectToReturn = wrappedValue?.wrapped
+        }
+
+        if objectToReturn == nil {
             // data is corrupt / backwards incompatible - delete it
             removeData(for: key, completion: { _ in })
-            return nil
         }
+
+        return objectToReturn
     }
 }
 
