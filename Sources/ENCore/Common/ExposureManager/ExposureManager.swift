@@ -194,7 +194,13 @@ final class ExposureManager: ExposureManaging, Logging {
         return result
     }
 
-    var manager: ENManaging
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler) {
+        manager.setLaunchActivityHandler { activityFlags in
+            activityHandler(activityFlags)
+        }
+    }
+
+    private let manager: ENManaging
 }
 
 extension Error {

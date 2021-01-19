@@ -69,7 +69,10 @@ protocol ExposureManaging {
     /// Returns the current framework status
     func getExposureNotificationStatus() -> ExposureManagerStatus
 
-    var manager: ENManaging { get }
+    /// On iOS 12.5 only, this will ensure the app receives 3.5 minutes of background processing
+    /// every 4 hours. This function is needed on iOS 12.5 because the BackgroundTask framework, used
+    /// for Exposure Notifications background processing in iOS 13.5+ does not exist in iOS 12.
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler)
 }
 
 /// @mockable
