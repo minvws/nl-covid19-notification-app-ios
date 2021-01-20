@@ -38,7 +38,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
 
         return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests)
             .do(onCompleted: {
-                self.logDebug("--- REMOVING EXPIRED LAB CONFIRMATION REQUESTS ---")
+                self.logDebug("--- END REMOVING EXPIRED LAB CONFIRMATION REQUESTS ---")
             })
     }
 
