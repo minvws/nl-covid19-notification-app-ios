@@ -76,8 +76,8 @@ final class BackgroundController: BackgroundControlling, Logging {
                         self.scheduleRefresh()
                     }
                 }, onFailure: { error in
-                    self.logDebug("Background: ExposureController activated state result: \(error)")
-                    self.logDebug("Background: Scheduling refresh sequence")
+                    self.logError("Background: ExposureController activated state result: \(error)")
+                    self.logError("Background: Scheduling refresh sequence")
                     self.scheduleRefresh()
                     })
                 .disposed(by: self.disposeBag)
@@ -142,7 +142,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     .subscribe(on: MainScheduler.instance)
                     .catch { error in
                         if let exposureDataError = (error as? NetworkError)?.asExposureDataError {
-                            self.logDebug("Decoy `/stopkeys` error: \(exposureDataError)")
+                            self.logError("Decoy `/stopkeys` error: \(exposureDataError)")
                             throw exposureDataError
                         } else {
                             self.logDebug("Decoy `/stopkeys` error: ExposureDataError.internalError")
@@ -155,8 +155,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 self.logDebug("Decoy `/stopkeys` complete")
                 task?.setTaskCompleted(success: true)
             }, onError: { _ in
-                // Note: We ignore the response
-                self.logDebug("Decoy `/stopkeys` complete")
+                self.logError("Decoy `/stopkeys` complete")
                 task?.setTaskCompleted(success: true)
                 })
 
@@ -287,7 +286,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         // Handle running out of time
         if var task = task {
             task.expirationHandler = {
-                self.logDebug("Background: refresh task expired")
+                self.logError("Background: refresh task expired")
                 disposible.dispose()
             }
         }
@@ -312,7 +311,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         return exposureController
             .updateAndProcessPendingUploads()
             .do { error in
-                self.logDebug("Background: Process Update Failed. Reason: \(error)")
+                self.logError("Background: Process Update Failed. Reason: \(error)")
             } onCompleted: {
                 self.logDebug("Background: Process Update Completed")
             }
@@ -323,7 +322,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         return exposureController
             .exposureNotificationStatusCheck()
             .do { error in
-                self.logDebug("Background: Exposure Notification Status Check Failed. Reason: \(error)")
+                self.logError("Background: Exposure Notification Status Check Failed. Reason: \(error)")
             } onCompleted: {
                 self.logDebug("Background: Exposure Notification Status Check Completed")
             }
@@ -334,7 +333,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         return exposureController
             .sendNotificationIfAppShouldUpdate()
             .do { error in
-                self.logDebug("Background: App Update Required Check Failed. Reason: \(error)")
+                self.logError("Background: App Update Required Check Failed. Reason: \(error)")
             } onCompleted: {
                 self.logDebug("Background: App Update Required Check Completed")
             }
@@ -345,7 +344,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         return self.exposureController
             .updateTreatmentPerspective()
             .do { error in
-                self.logDebug("Background: Update Treatment Perspective Message Failed. Reason: \(error)")
+                self.logError("Background: Update Treatment Perspective Message Failed. Reason: \(error)")
             } onCompleted: {
                 self.logDebug("Background: Update Treatment Perspective Message Completed")
             }
@@ -399,7 +398,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                         observer(.completed)
                     }, onError: { _ in
                         // Note: We ignore the response
-                        self.logDebug("Decoy `/stopkeys` complete")
+                        self.logError("Decoy `/stopkeys` complete")
                         observer(.completed)
                         })
                     .disposed(by: self.disposeBag)
