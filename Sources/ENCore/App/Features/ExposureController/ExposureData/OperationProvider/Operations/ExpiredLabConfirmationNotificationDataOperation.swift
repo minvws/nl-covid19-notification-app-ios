@@ -60,12 +60,12 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
             }
 
             if expiredRequests.isEmpty {
-                self?.logDebug("There are no expired requests")
+                self?.logDebug("There are no expired lab confirmation requests")
                 observer(.completed)
                 return Disposables.create()
             }
 
-            self?.logDebug("Removing \(expiredRequests.count) Expiration dates: \(expiredRequests.map { String(describing: $0.expiryDate) }.joined(separator: "\n"))")
+            self?.logDebug("Removing lab confirmations: \(expiredRequests.count) Expiration dates: \(expiredRequests.map { String(describing: $0.expiryDate) }.joined(separator: "\n"))")
 
             strongSelf.storageController.requestExclusiveAccess { storageController in
 
@@ -77,11 +77,11 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
                     expiredRequests.contains(request) == false
                 }
 
-                strongSelf.logDebug("Storing new pending requests: \(requestsToStore)")
+                strongSelf.logDebug("Storing new pending lab confirmation requests: \(requestsToStore)")
 
                 // store back
                 storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
-                    strongSelf.logDebug("Successfully stored new pending requests: \(requestsToStore)")
+                    strongSelf.logDebug("Successfully stored new pending lab confirmation requests: \(requestsToStore)")
                     observer(.completed)
                 }
             }
