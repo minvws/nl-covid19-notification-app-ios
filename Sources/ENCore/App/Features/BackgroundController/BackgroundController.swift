@@ -120,6 +120,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             if activityFlags.contains(.periodicRun) {
                 self.logInfo("Periodic activity callback called (iOS 12.5)")
                 self.refresh(task: nil)
+                self.sendBackgroundUpdateNotification()
             }
         }
     }
@@ -471,5 +472,60 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private var isExposureManagerActive: Bool {
         exposureManager.getExposureNotificationStatus() == .active
+    }
+
+    private func sendBackgroundUpdateNotification() {
+
+        if environmentController.isiOS13orHigher {
+            logDebug("Not sending background update notification on iOS 13 and >")
+            return
+        }
+
+        logDebug("Sending background update notification")
+
+        #if DEBUG || USE_DEVELOPER_MENU
+
+            let formatter = DateFormatter()
+            formatter.timeStyle = .long
+            let date = formatter.string(from: Date())
+
+            let content = UNMutableNotificationContent()
+            content.title = "Background update"
+            content.body = "Performed at \(date)"
+            content.sound = UNNotificationSound.default
+            content.badge = 0
+
+            let identifier = "background-update"
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+            userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
+                if let error = error {
+                    self?.logError("Error sending notification: \(error.localizedDescription)")
+                }
+            })
+
+        #endif
+    }
+
+    private func sendNotification(content: UNNotificationContent, identifier: PushNotificationIdentifier, completion: @escaping (Bool) -> ()) {
+        userNotificationCenter.getAuthorizationStatus { status in
+            guard status == .authorized else {
+                completion(false)
+                return self.logError("Not authorized to post notifications")
+            }
+
+            let request = UNNotificationRequest(identifier: identifier.rawValue,
+                                                content: content,
+                                                trigger: nil)
+
+            self.userNotificationCenter.add(request) { error in
+                guard let error = error else {
+                    completion(true)
+                    return
+                }
+                self.logError("Error posting notification: \(identifier.rawValue) \(error.localizedDescription)")
+                completion(false)
+            }
+        }
     }
 }
