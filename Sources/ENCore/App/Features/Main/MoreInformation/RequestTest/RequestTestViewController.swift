@@ -85,6 +85,8 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
             .getAppointmentPhoneNumber()
             .subscribe(onSuccess: { exposedPhoneNumber in
                 self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
+            }, onFailure: { _ in
+                self.testPhoneNumber = self.isExposed ? .coronaTestExposedPhoneNumber : .coronaTestPhoneNumber
             })
             .disposed(by: disposeBag)
     }
