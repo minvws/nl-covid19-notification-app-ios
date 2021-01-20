@@ -227,8 +227,6 @@ final class OnboardingStepView: View {
             playAnimation()
         }
 
-        imageView.sizeToFit()
-
         if let width = imageView.image?.size.width,
             let height = imageView.image?.size.height,
             width > 0, height > 0 {
@@ -242,8 +240,6 @@ final class OnboardingStepView: View {
                 maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
             }
         }
-
-        animationView.sizeToFit()
 
         if let width = animationView.animation?.size.width,
             let height = animationView.animation?.size.height,
