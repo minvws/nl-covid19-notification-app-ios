@@ -116,7 +116,8 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
                                                 exposureController: dependencyProvider.exposureController,
-                                                exposureStateStream: dependencyProvider.exposureStateStream)
+                                                exposureStateStream: dependencyProvider.exposureStateStream,
+                                                pauseController: dependencyProvider.pauseController)
 
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,

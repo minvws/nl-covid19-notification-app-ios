@@ -37,7 +37,7 @@ enum ExposureStateInactiveState: Equatable {
     case bluetoothOff
     case pushNotifications
     case noRecentNotificationUpdates
-    case paused
+    case paused(_ endDate: Date)
 }
 
 /// @mockable

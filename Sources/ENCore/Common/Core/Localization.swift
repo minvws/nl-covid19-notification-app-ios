@@ -392,12 +392,21 @@ extension String {
     // MARK: - MoreInformation | Settings | Pause App
 
     static var moreInformationSettingsPauseTitle: String { return Localization.string(for: "moreInformation.settings.pause.title") }
+    static var moreInformationSettingsPauseSubtitle: String { return Localization.string(for: "moreInformation.settings.pause.subtitle") }
+    static var moreInformationSettingsPauseDescription: String { return Localization.string(for: "moreInformation.settings.pause.description") }
     static var moreInformationSettingsPauseDescriptionShort: String { return Localization.string(for: "moreInformation.settings.pause.description.short") }
     static var moreInformationSettingsPauseButtonTitle: String { return Localization.string(for: "moreInformation.settings.pause.pausebutton") }
+    static var moreInformationSettingsPauseDontShowScreen: String { return Localization.string(for: "moreInformation.settings.pause.dontshowscreen") }
+
+    static var moreInformationSettingsPauseYesPause: String { return Localization.string(for: "moreInformation.settings.pause.yesbutton")
+    }
+    static var moreInformationSettingsPauseNoCancelPause: String { return Localization.string(for: "moreInformation.settings.pause.cancelbutton")
+    }
 
     static var moreInformationSettingsUnpauseTitle: String { return Localization.string(for: "moreInformation.settings.pause.enableappbutton") }
     static var statusPausedCountdown: String { return Localization.string(for: "status.paused.countdown") }
     static var statusPausedManualUnpause: String { return Localization.string(for: "status.paused.manualunpause") }
+    static var statusPausedTitle: String { return Localization.string(for: "status.paused.title") }
 
     // MARK: - MoreInformation | Settings | Mobile Data
 

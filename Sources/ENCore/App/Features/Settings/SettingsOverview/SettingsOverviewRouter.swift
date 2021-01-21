@@ -18,6 +18,8 @@ protocol SettingsOverviewViewControllable: ViewControllable, PauseConfirmationLi
     /// - Parameter animated: Animates the transition
     /// - Parameter completion: Executed upon presentation completion
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
+    func dismiss(viewController: ViewControllable, completion: (() -> ())?)
+    func presentInNavigationController(viewController: ViewControllable)
 }
 
 final class SettingsOverviewRouter: Router<SettingsOverviewViewControllable>, SettingsOverviewRouting {
@@ -37,7 +39,7 @@ final class SettingsOverviewRouter: Router<SettingsOverviewViewControllable>, Se
         viewController.router = self
     }
 
-    func routeToPauseConfirmation(completion: @escaping () -> ()) {
+    func routeToPauseConfirmation() {
         guard !exposureDataController.hidePauseInformation else {
             return
         }
@@ -45,7 +47,21 @@ final class SettingsOverviewRouter: Router<SettingsOverviewViewControllable>, Se
         let router = pauseConfirmationBuilder.build(withListener: viewController)
         pauseConfirmationRouter = router
 
-        viewController.present(viewController: router.viewControllable, animated: true, completion: nil)
+        viewController.presentInNavigationController(viewController: router.viewControllable)
+    }
+
+    private func detachPauseConfirmation(completion: (() -> ())?) {
+        guard let pauseConfirmationRouter = pauseConfirmationRouter else {
+            return
+        }
+
+        self.pauseConfirmationRouter = nil
+
+        viewController.dismiss(viewController: pauseConfirmationRouter.viewControllable, completion: completion)
+    }
+
+    func pauseConfirmationWantsDismissal(completion: (() -> ())?) {
+        detachPauseConfirmation(completion: completion)
     }
 
     // MARK: - Private

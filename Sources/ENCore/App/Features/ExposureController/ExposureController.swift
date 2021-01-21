@@ -119,10 +119,15 @@ final class ExposureController: ExposureControlling, Logging {
             self?.updateStatusStream()
         }
     }
+
     func unpause() {
         exposureManager.setExposureNotificationEnabled(true) { [weak self] result in
             self?.dataController.pauseEndDate = nil
-            self?.updateStatusStream()
+            if self?.isActivated == false {
+                self?.activate(inBackgroundMode: false)
+            } else {
+                self?.updateStatusStream()
+            }
         }
     }
 
@@ -621,15 +626,17 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private func updateStatusStream() {
+
+        if let pauseEndDate = dataController.pauseEndDate {
+            mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused(pauseEndDate))))
+            return
+        }
+
         guard isActivated else {
             return logDebug("Not Updating Status Stream as not `isActivated`")
         }
-        logDebug("Updating Status Stream")
 
-        guard dataController.pauseEndDate == nil else {
-            mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused)))
-            return
-        }
+        logDebug("Updating Status Stream")
 
         let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
         let hasBeenTooLongSinceLastUpdate: Bool

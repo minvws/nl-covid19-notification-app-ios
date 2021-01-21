@@ -289,7 +289,16 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         pauseEndDate != nil
     }
 
-    lazy var pauseEndDateStream = CurrentValueSubject<Date?, Never>(nil)
+    private lazy var pauseEndDateSubject = CurrentValueSubject<Date?, Never>(pauseEndDate)
+
+    var pauseEndDatePublisher: AnyPublisher<Date?, Never> {
+        return pauseEndDateSubject
+            .removeDuplicates(by: ==)
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .share()
+            .eraseToAnyPublisher()
+    }
 
     var pauseEndDate: Date? {
         get {
@@ -299,11 +308,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                 storageController.store(object: newDate,
                                         identifiedBy: ExposureDataStorageKey.pauseEndDate,
                                         completion: { _ in
-                                            self.pauseEndDateStream.send(newDate)
+                                            self.pauseEndDateSubject.send(newDate)
                                         })
             } else {
                 storageController.removeData(for: ExposureDataStorageKey.pauseEndDate, completion: { _ in
-                    self.pauseEndDateStream.send(newValue)
+                    self.pauseEndDateSubject.send(newValue)
                 })
             }
         }

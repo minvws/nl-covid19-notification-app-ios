@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import UIKit
 
 /// @mockable
@@ -18,21 +19,159 @@ final class PauseConfirmationViewController: ViewController, PauseConfirmationVi
     // MARK: - PauseConfirmationViewControllable
 
     weak var router: PauseConfirmationRouting?
+    weak var listener: PauseConfirmationListener?
 
-    // TODO: Validate whether you need the below functions and remove or replace
-    //       them as desired.
+    init(theme: Theme,
+         listener: PauseConfirmationListener,
+         pauseController: PauseControlling) {
 
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        present(viewController.uiviewController,
-                animated: animated,
-                completion: completion)
+        self.listener = listener
+        self.pauseController = pauseController
+
+        super.init(theme: theme)
+
+        modalPresentationStyle = .popover
+        navigationItem.rightBarButtonItem = closeBarButtonItem
     }
 
-    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        viewController.uiviewController.dismiss(animated: animated, completion: completion)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        title = .moreInformationSettingsPauseTitle
+
+        internalView.checkmarkButton.addTarget(self, action: #selector(didPressHideScreenButton), for: .touchUpInside)
+        internalView.confirmButton.addTarget(self, action: #selector(didPressConfirmButton), for: .touchUpInside)
+        internalView.cancelButton.addTarget(self, action: #selector(didPressCancelButton), for: .touchUpInside)
+    }
+
+    override func loadView() {
+        self.view = internalView
+        self.view.frame = UIScreen.main.bounds
+    }
+
+    @objc func didPressHideScreenButton() {
+        let newAcceptValue = !internalView.checkmarkButton.isSelected
+
+        internalView.checkmarkButton.isSelected = newAcceptValue
+    }
+
+    @objc func didPressConfirmButton() {
+        if internalView.checkmarkButton.isSelected {
+            pauseController.hidePauseInformationScreen()
+        }
+        listener?.pauseConfirmationWantsPauseOptions()
+    }
+
+    @objc func didPressCancelButton() {
+        listener?.pauseConfirmationWantsDismissal(shouldDismissViewController: true)
     }
 
     // MARK: - Private
 
-    // TODO: Anything private goes here
+    private lazy var internalView: PauseConfirmationView = PauseConfirmationView(theme: self.theme)
+    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapCloseButton))
+    private let pauseController: PauseControlling
+
+    @objc private func didTapCloseButton(sender: UIBarButtonItem) {
+        listener?.pauseConfirmationWantsDismissal(shouldDismissViewController: true)
+    }
+}
+
+private final class PauseConfirmationView: View {
+
+    private lazy var scrollableStackView = ScrollableStackView(theme: theme)
+
+    override init(theme: Theme) {
+        super.init(theme: theme)
+
+        hasBottomMargin = true
+    }
+
+    lazy var titleLabel: Label = {
+        let label = Label(frame: .zero)
+        label.font = theme.fonts.title3
+        label.text = .moreInformationSettingsPauseSubtitle
+        label.numberOfLines = 0
+        label.accessibilityTraits = .header
+        return label
+    }()
+
+    lazy var descriptionLabel: Label = {
+        let label = Label()
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = .moreInformationSettingsPauseDescription
+        return label
+    }()
+
+    lazy var checkmarkButton: CheckmarkButton = {
+        let button = CheckmarkButton(theme: theme)
+        button.accessibilityLabel = .moreInformationSettingsPauseDontShowScreen
+        button.label.text = .moreInformationSettingsPauseDontShowScreen
+        return button
+    }()
+
+    lazy var confirmButton: Button = {
+        let button = Button(theme: self.theme)
+        button.titleEdgeInsets = UIEdgeInsets(top: 40, left: 41, bottom: 40, right: 41)
+        button.layer.cornerRadius = 8
+        button.setTitle(.moreInformationSettingsPauseYesPause, for: .normal)
+        button.style = .primary
+        return button
+    }()
+
+    lazy var cancelButton: Button = {
+        let button = Button(theme: self.theme)
+        button.titleEdgeInsets = UIEdgeInsets(top: 40, left: 41, bottom: 40, right: 41)
+        button.layer.cornerRadius = 8
+        button.setTitle(.moreInformationSettingsPauseNoCancelPause, for: .normal)
+        button.style = .secondary
+        return button
+    }()
+
+    // MARK: - Init
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        addSubview(scrollableStackView)
+        scrollableStackView.spacing = 21
+        scrollableStackView.addSections([
+            titleLabel,
+            descriptionLabel
+        ])
+
+        addSubview(checkmarkButton)
+        addSubview(confirmButton)
+        addSubview(cancelButton)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        scrollableStackView.snp.makeConstraints { maker in
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+            maker.top.equalToSuperview()
+            maker.bottom.equalTo(checkmarkButton.snp.top).offset(16)
+        }
+
+        checkmarkButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+        }
+
+        confirmButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+            maker.top.equalTo(checkmarkButton.snp.bottom).offset(16)
+            maker.bottom.equalTo(cancelButton.snp.top).inset(-16)
+            maker.height.equalTo(48)
+        }
+
+        cancelButton.snp.makeConstraints { maker in
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+            constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
+            maker.height.equalTo(48)
+        }
+    }
 }

@@ -100,14 +100,13 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     @objc private func updateExposureStateView() {
 
-        exposureStateStream.exposureState.sink { [weak self] status in
-            guard let strongSelf = self else {
-                return
-            }
-            strongSelf.interfaceOrientationStream.isLandscape.subscribe { isLandscape in
-                strongSelf.update(exposureState: status, isLandscape: isLandscape)
-            }.disposed(by: strongSelf.rxDisposeBag)
+        exposureStateStream.exposureState.sink { [weak self] _ in
+            self?.refreshCurrentState()
         }.store(in: &disposeBag)
+
+        interfaceOrientationStream.isLandscape.subscribe { [weak self] _ in
+            self?.refreshCurrentState()
+        }.disposed(by: rxDisposeBag)
     }
 
     private func refreshCurrentState() {
@@ -117,7 +116,25 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         }
     }
 
+    private var pauseTimer: Timer?
+
+    private func updatePauseTimer() {
+        if dataController.exposureNotificationIsPaused {
+            // we're in a paused state
+            if pauseTimer == nil {
+                pauseTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true, block: { [weak self] _ in
+                    self?.refreshCurrentState()
+                })
+            }
+        } else {
+            pauseTimer?.invalidate()
+            pauseTimer = nil
+        }
+    }
+
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
+
+        updatePauseTimer()
 
         let statusViewModel: StatusViewModel
         let announcementCardTypes = getAnnouncementCardTypes()
@@ -126,6 +143,9 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
             statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
+
+        case let (.inactive(.paused(pauseEndDate)), .notNotified):
+            statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
 
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
@@ -198,11 +218,14 @@ private final class StatusView: View {
     private let textContainer = UIStackView()
     private let buttonContainer = UIStackView()
     private let cardView: UIView
+
+    private var iconViewSizeConstraints: Constraint?
     private lazy var iconView: EmitterStatusIconView = {
         EmitterStatusIconView(theme: self.theme)
     }()
 
     private let titleLabel = Label()
+    private let descriptionContainer = UIView()
     private let descriptionLabel = Label()
 
     private let gradientLayer = CAGradientLayer()
@@ -253,9 +276,10 @@ private final class StatusView: View {
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
 
+        descriptionContainer.addSubview(descriptionLabel)
         layer.addSublayer(gradientLayer)
         textContainer.addArrangedSubview(titleLabel)
-        textContainer.addArrangedSubview(descriptionLabel)
+        textContainer.addArrangedSubview(descriptionContainer)
         contentContainer.addArrangedSubview(iconView)
         contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
@@ -280,6 +304,10 @@ private final class StatusView: View {
         sceneImageHeightConstraint = sceneImageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * sceneImageAspectRatio)
         sceneImageHeightConstraint?.isActive = true
 
+        descriptionLabel.snp.makeConstraints { maker in
+            maker.top.bottom.equalToSuperview()
+            maker.leading.trailing.equalToSuperview().inset(32)
+        }
         cloudsView.snp.makeConstraints { maker in
             maker.centerY.equalTo(iconView.snp.centerY)
             maker.leading.trailing.equalTo(stretchGuide)
@@ -302,7 +330,7 @@ private final class StatusView: View {
             maker.bottom.equalTo(stretchGuide.snp.bottom).priority(.high)
         }
         iconView.snp.makeConstraints { maker in
-            maker.width.height.equalTo(48)
+            iconViewSizeConstraints = maker.width.height.equalTo(48).constraint
         }
     }
 
@@ -322,7 +350,11 @@ private final class StatusView: View {
 
     func update(with viewModel: StatusViewModel) {
 
-        iconView.update(with: viewModel.icon)
+        iconViewSizeConstraints?.layoutConstraints.forEach { constraint in
+            constraint.constant = viewModel.showEmitter ? 48 : 56
+        }
+        iconView.update(with: viewModel.icon, showEmitter: viewModel.showEmitter)
+        iconView.setNeedsLayout()
 
         titleLabel.attributedText = viewModel.title
         descriptionLabel.attributedText = viewModel.description

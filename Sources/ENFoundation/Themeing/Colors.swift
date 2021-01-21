@@ -19,9 +19,11 @@ public protocol Colors: AnyObject {
     var ok: UIColor { get }
     var notified: UIColor { get }
     var inactive: UIColor { get }
+    var inactiveGray: UIColor { get }
 
     var statusGradientActive: UIColor { get }
     var statusGradientNotified: UIColor { get }
+    var statusGradientPaused: UIColor { get }
 
     var navigationControllerBackground: UIColor { get }
     var viewControllerBackground: UIColor { get }
@@ -68,8 +70,16 @@ final class ENColors: Colors, Logging {
         return color(for: "InactiveOrange")
     }
 
+    var inactiveGray: UIColor {
+        return color(for: "InactiveGray")
+    }
+
     var statusGradientActive: UIColor {
         return color(for: "StatusGradientBlue")
+    }
+
+    var statusGradientPaused: UIColor {
+        return color(for: "StatusGradientGray")
     }
 
     var statusGradientNotified: UIColor {

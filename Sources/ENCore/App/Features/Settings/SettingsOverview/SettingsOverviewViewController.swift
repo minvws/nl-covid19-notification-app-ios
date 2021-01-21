@@ -12,7 +12,8 @@ import UIKit
 
 /// @mockable
 protocol SettingsOverviewRouting: Routing {
-    func routeToPauseConfirmation(completion: @escaping () -> ())
+    func routeToPauseConfirmation()
+    func pauseConfirmationWantsDismissal(completion: (() -> ())?)
 }
 
 final class SettingsOverviewViewController: ViewController, SettingsOverviewViewControllable, Logging, PauseConfirmationListener {
@@ -59,7 +60,7 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
             if strongSelf.exposureDataController.hidePauseInformation {
                 strongSelf.pauseController.showPauseTimeOptions(onViewController: strongSelf)
             } else {
-                strongSelf.router?.routeToPauseConfirmation {}
+                strongSelf.router?.routeToPauseConfirmation()
             }
         }
 
@@ -67,7 +68,7 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
             self?.pauseController.unpauseExposureManager()
         }
 
-        pauseStateCancellable = exposureDataController.pauseEndDateStream.sink(receiveValue: { [weak self] pauseEndDate in
+        pauseStateCancellable = exposureDataController.pauseEndDatePublisher.sink(receiveValue: { [weak self] pauseEndDate in
             self?.updatePausedState(pauseEndDate: pauseEndDate)
         })
 
@@ -85,6 +86,30 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
         present(viewController.uiviewController,
                 animated: animated,
                 completion: completion)
+    }
+
+    func presentInNavigationController(viewController: ViewControllable) {
+        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
+
+        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
+            navigationController.presentationController?.delegate = presentationDelegate
+        }
+
+        present(navigationController, animated: true, completion: nil)
+    }
+
+    func dismiss(viewController: ViewControllable, completion: (() -> ())?) {
+        viewController.uiviewController.dismiss(animated: true, completion: completion)
+    }
+
+    func pauseConfirmationWantsDismissal(shouldDismissViewController: Bool) {
+        router?.pauseConfirmationWantsDismissal(completion: nil)
+    }
+
+    func pauseConfirmationWantsPauseOptions() {
+        router?.pauseConfirmationWantsDismissal(completion: {
+            self.pauseController.showPauseTimeOptions(onViewController: self)
+        })
     }
 
     // MARK: - Private

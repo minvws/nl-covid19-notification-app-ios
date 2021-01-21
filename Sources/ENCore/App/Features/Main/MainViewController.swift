@@ -51,9 +51,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     init(theme: Theme,
          exposureController: ExposureControlling,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         pauseController: PauseControlling) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
+        self.pauseController = pauseController
         super.init(theme: theme)
     }
 
@@ -246,6 +248,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             handleUpdateAppSettings()
         case .tryAgain:
             updateWhenRequired()
+        case .unpause:
+            pauseController.unpauseExposureManager()
         }
     }
 
@@ -264,6 +268,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private lazy var mainView: MainView = MainView(theme: self.theme)
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
+    private let pauseController: PauseControlling
 
     private var disposeBag = Set<AnyCancellable>()
 

@@ -13,6 +13,7 @@ protocol PauseControlling {
     func showPauseTimeOptions(onViewController viewController: ViewControllable)
     func unpauseExposureManager()
     func getPauseCountdownString(theme: Theme) -> NSAttributedString
+    func hidePauseInformationScreen()
 }
 
 final class PauseController: PauseControlling {
@@ -43,9 +44,13 @@ final class PauseController: PauseControlling {
 
             let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
                 let calendar = Calendar.current
-                if let endDate = calendar.date(byAdding: .hour, value: hours, to: currentDate()) {
+                // TODO: minutes are for testing only
+                if let endDate = calendar.date(byAdding: .minute, value: hours, to: currentDate()) {
                     self?.pauseExposureManager(until: endDate)
                 }
+//                if let endDate = calendar.date(byAdding: .hour, value: hours, to: currentDate()) {
+//                    self?.pauseExposureManager(until: endDate)
+//                }
             }
 
             optionMenu.addAction(action)
@@ -56,38 +61,61 @@ final class PauseController: PauseControlling {
         viewController.uiviewController.present(optionMenu, animated: true, completion: nil)
     }
 
+    func hidePauseInformationScreen() {
+        exposureDataController.hidePauseInformation = true
+    }
+
     func unpauseExposureManager() {
         exposureController.unpause()
+
+        // TODO:
+        // - Re-schedule background tasks
+        // - Run background processes (download keys, etc.)
+        // - Clear local notification?
     }
 
     private func pauseExposureManager(until date: Date) {
         exposureController.pause(untilDate: date)
+
+        // TODO:
+        // - Clear all background tasks
+        // - schedule local notification
+        //
     }
 
     func getPauseCountdownString(theme: Theme) -> NSAttributedString {
-
         guard let countDownDate = exposureDataController.pauseEndDate else {
             return NSAttributedString()
         }
+
+        return PauseController.getPauseCountdownString(theme: theme, endDate: countDownDate)
+    }
+
+    static func getPauseCountdownString(theme: Theme, endDate: Date, center: Bool = false) -> NSAttributedString {
 
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute]
         formatter.unitsStyle = .full
 
-        let timeLeft = countDownDate.timeIntervalSince(currentDate())
+        let timeLeft = endDate.timeIntervalSince(currentDate())
 
-        guard timeLeft > 0,
-            let time = formatter.string(from: timeLeft) else {
-
-            return NSAttributedString.makeFromHtml(
+        guard timeLeft > 0 else {
+            let attributedString = NSMutableAttributedString(attributedString: NSAttributedString.makeFromHtml(
                 text: .statusPausedManualUnpause,
                 font: theme.fonts.body,
                 textColor: theme.colors.gray,
                 textAlignment: Localization.isRTL ? .right : .left
-            )
+            ))
+            return center ? attributedString.centered() : attributedString
         }
 
-        let completeString = NSMutableAttributedString(attributedString: NSAttributedString.makeFromHtml(
+        // We max out the timeinterval that is left to make sure we never show "0 minutes left" but we always show "1 minute" left in that case
+        let oneMinute: TimeInterval = 60
+        guard let time = formatter.string(from: max(timeLeft, oneMinute)) else {
+            return NSAttributedString()
+        }
+
+        var completeString = NSMutableAttributedString(attributedString: NSAttributedString.makeFromHtml(
             text: String(format: .statusPausedCountdown, arguments: [time]),
             font: theme.fonts.body,
             textColor: theme.colors.gray,
@@ -97,6 +125,10 @@ final class PauseController: PauseControlling {
         if let timeRange = completeString.string.range(of: time) {
             let nsRange = NSRange(timeRange, in: completeString.string)
             completeString.addAttributes([.font: theme.fonts.bodyBold], range: nsRange)
+        }
+
+        if center {
+            completeString = completeString.centered()
         }
 
         return completeString
