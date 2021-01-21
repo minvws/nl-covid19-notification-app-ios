@@ -301,6 +301,9 @@ extension String {
     static var notificationUploadFailedTitle: String { Localization.string(for: "notification.upload.failed.title") }
     static var notificationUploadFailedContent: String { Localization.string(for: "notification.upload.failed.content") }
 
+    static var notificationAppUnpausedTitle: String { Localization.string(for: "notification.app.unpaused.title") }
+    static var notificationManualUnpauseDescription: String { Localization.string(for: "notification.app.unpaused.manualunpause.description") }
+
     // MARK: - Main
 
     static var mainConfirmNotificationRemovalTitle: String { Localization.string(for: "main.confirmNotificationRemoval.title") }
@@ -329,6 +332,7 @@ extension String {
     static var statusAppStateCardButton: String { return Localization.string(for: "status.appState.card.button") }
     static var statusAppStateCardTryAgain: String { return Localization.string(for: "status.appState.card.try_again") }
     static var statusActiveDescription: String { return Localization.string(for: "status.active.description") }
+    static var statedPausedCardTitle: String { return Localization.string(for: "status.active.description") }
 
     static func statusNotifiedDaysAgo(days: Int) -> String {
         switch days {

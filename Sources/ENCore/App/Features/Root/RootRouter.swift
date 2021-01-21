@@ -154,6 +154,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     () // Do nothing
                 case .appUpdateRequired:
                     () // Do nothing
+                case .pauseEnded:
+                    () // Do nothing
                 }
             }.store(in: &disposeBag)
     }

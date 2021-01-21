@@ -14,16 +14,19 @@ enum CardAction {
     case openWebsite(url: URL)
     case dismissAnnouncement(_ announcement: Announcement)
     case custom(action: () -> ())
+    case unpause
 }
 
 enum CardIcon {
     case info
     case warning
+    case paused
 
     var image: UIImage? {
         switch self {
         case .info: return Image.named("InfoBordered")
         case .warning: return Image.named("StatusInactive")
+        case .paused: return Image.named("StatusPaused")
         }
     }
 }
@@ -52,6 +55,16 @@ struct Card {
         self.actionTitle = actionTitle
         self.secondaryAction = secondaryAction
         self.secondaryActionTitle = secondaryActionTitle
+    }
+
+    static func paused(theme: Theme, content: NSAttributedString) -> Card {
+        let title: String = .statedPausedCardTitle
+        let action: String = .statusAppStateCardButton
+
+        return Card(icon: .paused, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: content,
+                    action: .unpause,
+                    actionTitle: action)
     }
 
     static func bluetoothOff(theme: Theme) -> Card {

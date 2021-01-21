@@ -225,7 +225,6 @@ private final class StatusView: View {
     }()
 
     private let titleLabel = Label()
-    private let descriptionContainer = UIView()
     private let descriptionLabel = Label()
 
     private let gradientLayer = CAGradientLayer()
@@ -276,10 +275,9 @@ private final class StatusView: View {
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
 
-        descriptionContainer.addSubview(descriptionLabel)
         layer.addSublayer(gradientLayer)
         textContainer.addArrangedSubview(titleLabel)
-        textContainer.addArrangedSubview(descriptionContainer)
+        textContainer.addArrangedSubview(descriptionLabel)
         contentContainer.addArrangedSubview(iconView)
         contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
@@ -304,10 +302,6 @@ private final class StatusView: View {
         sceneImageHeightConstraint = sceneImageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * sceneImageAspectRatio)
         sceneImageHeightConstraint?.isActive = true
 
-        descriptionLabel.snp.makeConstraints { maker in
-            maker.top.bottom.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(32)
-        }
         cloudsView.snp.makeConstraints { maker in
             maker.centerY.equalTo(iconView.snp.centerY)
             maker.leading.trailing.equalTo(stretchGuide)

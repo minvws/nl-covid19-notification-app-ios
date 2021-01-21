@@ -29,3 +29,24 @@ extension UNUserNotificationCenter: UserNotificationCenter {
         }
     }
 }
+
+extension UserNotificationCenter {
+
+    func schedulePauseExpirationNotification(pauseEndDate: Date) {
+
+        let content = UNMutableNotificationContent()
+        content.sound = UNNotificationSound.default
+        content.body = .notificationManualUnpauseDescription
+        content.badge = 0
+
+        let dateComponents = Calendar.current.dateComponents([.hour, .minute, .second], from: pauseEndDate)
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+
+        let request = UNNotificationRequest(identifier: PushNotificationIdentifier.pauseEnded.rawValue,
+                                            content: content,
+                                            trigger: trigger)
+
+        self.add(request, withCompletionHandler: nil)
+    }
+}

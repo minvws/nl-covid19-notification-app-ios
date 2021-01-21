@@ -20,11 +20,14 @@ final class PauseController: PauseControlling {
 
     private let exposureDataController: ExposureDataControlling
     private let exposureController: ExposureControlling
+    private let userNotificationCenter: UserNotificationCenter
 
     init(exposureDataController: ExposureDataControlling,
-         exposureController: ExposureControlling) {
+         exposureController: ExposureControlling,
+         userNotificationCenter: UserNotificationCenter) {
         self.exposureDataController = exposureDataController
         self.exposureController = exposureController
+        self.userNotificationCenter = userNotificationCenter
     }
 
     func showPauseTimeOptions(onViewController viewController: ViewControllable) {
@@ -76,6 +79,8 @@ final class PauseController: PauseControlling {
 
     private func pauseExposureManager(until date: Date) {
         exposureController.pause(untilDate: date)
+
+        userNotificationCenter.schedulePauseExpirationNotification(pauseEndDate: date)
 
         // TODO:
         // - Clear all background tasks

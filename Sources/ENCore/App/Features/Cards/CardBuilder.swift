@@ -42,6 +42,7 @@ protocol CardDependency {
     var bluetoothStateStream: BluetoothStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
     var dataController: ExposureDataControlling { get }
+    var pauseController: PauseControlling { get }
 }
 
 /// @mockable
@@ -83,7 +84,8 @@ final class CardBuilder: Builder<CardDependency>, CardBuildable {
         let viewController = CardViewController(listener: listener,
                                                 theme: dependencyProvider.dependency.theme,
                                                 types: types,
-                                                dataController: dependencyProvider.dataController)
+                                                dataController: dependencyProvider.dataController,
+                                                pauseController: dependencyProvider.dependency.pauseController)
 
         return CardRouter(viewController: viewController,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,

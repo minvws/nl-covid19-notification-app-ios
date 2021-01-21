@@ -7,6 +7,7 @@
 
 import ENFoundation
 import Foundation
+import UserNotifications
 
 /// @mockable
 protocol MainBuildable {
@@ -106,8 +107,14 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
         dependency.dataController
     }
 
+    var userNotificationCenter: UserNotificationCenter {
+        UNUserNotificationCenter.current()
+    }
+
     var pauseController: PauseControlling {
-        PauseController(exposureDataController: dataController, exposureController: dependency.exposureController)
+        PauseController(exposureDataController: dataController,
+                        exposureController: dependency.exposureController,
+                        userNotificationCenter: userNotificationCenter)
     }
 }
 

@@ -22,10 +22,12 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     init(listener: CardListening?,
          theme: Theme,
          types: [CardType],
-         dataController: ExposureDataControlling) {
+         dataController: ExposureDataControlling,
+         pauseController: PauseControlling) {
         self.types = types
         self.listener = listener
         self.dataController = dataController
+        self.pauseController = pauseController
 
         super.init(theme: theme)
     }
@@ -111,6 +113,8 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
 
         return {
             switch action {
+            case .unpause:
+                self.pauseController.unpauseExposureManager()
             case let .openEnableSetting(enableSetting):
                 self.router?.route(to: enableSetting)
             case let .openWebsite(url: url):
@@ -133,7 +137,8 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
 
     private var types: [CardType] {
         didSet {
-            if isViewLoaded, oldValue != types {
+            // always recreate cards if the list contains a "paused" card (it updated dynamically)
+            if isViewLoaded, oldValue != types || types.contains(.paused) {
                 recreateCards()
             }
         }
@@ -144,7 +149,7 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
         types.forEach { cardType in
-            let card = cardType.card(theme: theme)
+            let card = cardType.card(theme: theme, pauseController: pauseController)
             let cardView = CardView(theme: theme)
             cardView.update(with: card,
                             action: buttonAction(forAction: card.action),
@@ -156,6 +161,7 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     weak var router: CardRouting?
     weak var listener: CardListening?
     private let dataController: ExposureDataControlling
+    private let pauseController: PauseControlling
 
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
@@ -269,10 +275,10 @@ final class CardView: View {
 }
 
 private extension CardType {
-    func card(theme: Theme) -> Card {
+    func card(theme: Theme, pauseController: PauseControlling) -> Card {
         switch self {
         case .paused:
-            return .bluetoothOff(theme: theme)
+            return .paused(theme: theme, content: pauseController.getPauseCountdownString(theme: theme))
         case .bluetoothOff:
             return .bluetoothOff(theme: theme)
         case .exposureOff:
