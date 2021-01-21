@@ -116,10 +116,17 @@ final class BackgroundController: BackgroundControlling, Logging {
     // least once per day. In iOS 13 and later, registering an
     // activity handler does nothing.
     func registerActivityHandle() {
+
         logDebug("BackgroundController.registerActivityHandle()")
+
         self.exposureManager.setLaunchActivityHandler { activityFlags in
+
+            self.logDebug("BackgroundController.registerActivityHandle() setLaunchActivityHandler: \(activityFlags)")
+
             if activityFlags.contains(.periodicRun) {
+
                 self.logInfo("Periodic activity callback called (iOS 12.5)")
+
                 self.refresh(task: nil)
                 self.sendBackgroundUpdateNotification()
             }
