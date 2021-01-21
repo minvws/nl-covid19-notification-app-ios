@@ -333,13 +333,15 @@ final class InfoSectionTextView: View {
     private let titleLabel: Label
     private let contentStack: UIStackView
     private let content: [NSAttributedString]
+    private let contentAccessibilityTraits: UIAccessibilityTraits?
 
     // MARK: - Init
 
-    init(theme: Theme, title: String, content: [NSAttributedString]) {
+    init(theme: Theme, title: String, content: [NSAttributedString], contentAccessibilityTraits: UIAccessibilityTraits? = nil) {
         self.titleLabel = Label(frame: .zero)
         self.contentStack = UIStackView()
         self.content = content
+        self.contentAccessibilityTraits = contentAccessibilityTraits
 
         super.init(theme: theme)
 
@@ -371,6 +373,9 @@ final class InfoSectionTextView: View {
             label.font = theme.fonts.body
             label.textColor = theme.colors.gray
             label.attributedText = text
+            if let traits = contentAccessibilityTraits {
+                label.accessibilityTraits = traits
+            }
             contentStack.addArrangedSubview(label)
         }
     }

@@ -68,6 +68,12 @@ final class ExposureController: ExposureControlling, Logging {
             return Just(()).eraseToAnyPublisher()
         }
 
+        // Don't enable EN if we're in a paused state
+        guard dataController.pauseEndDate == nil else {
+            updateStatusStream()
+            return Just(()).eraseToAnyPublisher()
+        }
+
         return Future { resolve in
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
@@ -105,6 +111,19 @@ final class ExposureController: ExposureControlling, Logging {
 
     func deactivate() {
         exposureManager.deactivate()
+    }
+
+    func pause(untilDate date: Date) {
+        exposureManager.setExposureNotificationEnabled(false) { [weak self] result in
+            self?.dataController.pauseEndDate = date
+            self?.updateStatusStream()
+        }
+    }
+    func unpause() {
+        exposureManager.setExposureNotificationEnabled(true) { [weak self] result in
+            self?.dataController.pauseEndDate = nil
+            self?.updateStatusStream()
+        }
     }
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
@@ -190,6 +209,11 @@ final class ExposureController: ExposureControlling, Logging {
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
         logDebug("`requestExposureNotificationPermission` started")
+
+        guard !dataController.exposureNotificationIsPaused else {
+            return
+        }
+
         exposureManager.setExposureNotificationEnabled(true) { result in
             self.logDebug("`requestExposureNotificationPermission` returned result \(result)")
 
@@ -601,6 +625,11 @@ final class ExposureController: ExposureControlling, Logging {
             return logDebug("Not Updating Status Stream as not `isActivated`")
         }
         logDebug("Updating Status Stream")
+
+        guard dataController.pauseEndDate == nil else {
+            mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused)))
+            return
+        }
 
         let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
         let hasBeenTooLongSinceLastUpdate: Bool

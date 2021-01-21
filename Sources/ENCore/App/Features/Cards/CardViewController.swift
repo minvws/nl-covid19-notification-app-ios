@@ -271,6 +271,8 @@ final class CardView: View {
 private extension CardType {
     func card(theme: Theme) -> Card {
         switch self {
+        case .paused:
+            return .bluetoothOff(theme: theme)
         case .bluetoothOff:
             return .bluetoothOff(theme: theme)
         case .exposureOff:

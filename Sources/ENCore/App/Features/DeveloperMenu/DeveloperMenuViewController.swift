@@ -777,6 +777,8 @@ private extension ExposureActiveState {
             return "Not Authorised"
         case let .inactive(inactiveState):
             switch inactiveState {
+            case .paused:
+                return "Inactive - Paused"
             case .bluetoothOff:
                 return "Inactive - Bluetooth off"
             case .disabled:

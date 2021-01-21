@@ -11,13 +11,13 @@ import SnapKit
 import UIKit
 
 /// @mockable
-protocol SettingsViewControllable: ViewControllable {}
+protocol MobileDataViewControllable: ViewControllable {}
 
-final class SettingsViewController: ViewController, SettingsViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
+final class MobileDataViewController: ViewController, MobileDataViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
     // MARK: - Init
 
-    init(listener: SettingsListener,
+    init(listener: MobileDataListener,
          theme: Theme) {
         self.listener = listener
         super.init(theme: theme)
@@ -34,10 +34,7 @@ final class SettingsViewController: ViewController, SettingsViewControllable, UI
         super.viewDidLoad()
 
         hasBottomMargin = true
-        title = .moreInformationSettingsTitle
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.buttonActionHandler = { [weak self] in
             guard let url = URL(string: UIApplication.openSettingsURLString) else {
@@ -54,20 +51,20 @@ final class SettingsViewController: ViewController, SettingsViewControllable, UI
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        listener?.settingsWantsDismissal(shouldDismissViewController: false)
+        listener?.mobileDataWantsDismissal(shouldDismissViewController: false)
     }
 
     // MARK: - Private
 
-    private weak var listener: SettingsListener?
-    private lazy var internalView: SettingsView = SettingsView(theme: self.theme)
+    private weak var listener: MobileDataListener?
+    private lazy var internalView: MobileDataView = MobileDataView(theme: self.theme)
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
-        listener?.settingsWantsDismissal(shouldDismissViewController: true)
+        listener?.mobileDataWantsDismissal(shouldDismissViewController: true)
     }
 }
 
-private final class SettingsView: View {
+private final class MobileDataView: View {
 
     private let infoView: InfoView
     var buttonActionHandler: (() -> ())? {
@@ -81,14 +78,14 @@ private final class SettingsView: View {
 
     override init(theme: Theme) {
 
-        self.model = .enableMobileDataUsage(theme)
+        model = .enableMobileDataUsage(theme)
 
         let config = InfoViewConfig(actionButtonTitle: self.model.actionTitle,
                                     secondaryButtonTitle: nil,
                                     headerImage: nil,
                                     stickyButtons: true)
-        self.infoView = InfoView(theme: theme, config: config, itemSpacing: 15)
-        self.infoView.showHeader = false
+        infoView = InfoView(theme: theme, config: config, itemSpacing: 15)
+        infoView.showHeader = false
         super.init(theme: theme)
     }
 
@@ -98,7 +95,8 @@ private final class SettingsView: View {
         super.build()
 
         infoView.addSections([
-            settingsDescription()
+            titleLabel,
+            settingsDescription
         ])
 
         var stepIndex = 0
@@ -124,9 +122,21 @@ private final class SettingsView: View {
 
     // MARK: - Private
 
-    private func settingsDescription() -> View {
+    lazy var titleLabel: View = {
+        InfoSectionTextView(theme: theme,
+                            title: "",
+                            content: [
+                                .makeFromHtml(text: .moreInformationSettingsMobileDataTitle,
+                                              font: theme.fonts.largeTitle,
+                                              textColor: theme.colors.gray,
+                                              textAlignment: Localization.isRTL ? .right : .left)
+                            ],
+                            contentAccessibilityTraits: .header)
+    }()
+
+    private lazy var settingsDescription: View = {
         InfoSectionTextView(theme: theme,
                             title: "",
                             content: [NSAttributedString.makeFromHtml(text: .moreInformationSettingsDescription, font: theme.fonts.body, textColor: theme.colors.gray)])
-    }
+    }()
 }

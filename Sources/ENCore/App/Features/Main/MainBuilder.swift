@@ -21,6 +21,7 @@ protocol MainDependency {
     var storageController: StorageControlling { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var dataController: ExposureDataControlling { get }
+    var exposureManager: ExposureManaging { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency {
@@ -103,6 +104,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var dataController: ExposureDataControlling {
         dependency.dataController
+    }
+
+    var pauseController: PauseControlling {
+        PauseController(exposureDataController: dataController, exposureController: dependency.exposureController)
     }
 }
 

@@ -92,24 +92,24 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     }
 
     func routeToSettings() {
-        guard settingsViewController == nil else {
+        guard settingsRouter == nil else {
             return
         }
 
-        let settingsViewController = settingsBuilder.build(withListener: viewController)
-        self.settingsViewController = settingsViewController
+        let settingsRouter = settingsBuilder.build(withListener: viewController)
+        self.settingsRouter = settingsRouter
 
-        viewController.present(viewController: settingsViewController, animated: true)
+        viewController.present(viewController: settingsRouter.viewControllable, animated: true)
     }
 
     func detachSettings(shouldDismissViewController: Bool) {
-        guard let settingsViewController = settingsViewController else {
+        guard let settingsRouter = settingsRouter else {
             return
         }
-        self.settingsViewController = nil
+        self.settingsRouter = nil
 
         if shouldDismissViewController {
-            viewController.dismiss(viewController: settingsViewController, animated: true)
+            viewController.dismiss(viewController: settingsRouter.viewControllable, animated: true)
         }
     }
 
@@ -279,7 +279,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private var aboutRouter: Routing?
 
     private let settingsBuilder: SettingsBuildable
-    private var settingsViewController: ViewControllable?
+    private var settingsRouter: Routing?
 
     private let shareBuilder: ShareSheetBuildable
     private var shareViewController: ViewControllable?

@@ -18,6 +18,14 @@ final class ScrollableStackView: View {
         }
     }
 
+    var spacing: CGFloat {
+        get {
+            stackView.spacing
+        } set {
+            stackView.spacing = newValue
+        }
+    }
+
     override func build() {
         super.build()
 

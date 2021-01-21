@@ -20,6 +20,9 @@ protocol ExposureControlling: AnyObject {
     func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never>
     func deactivate()
 
+    func pause(untilDate date: Date)
+    func unpause()
+
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError>
     func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
@@ -157,6 +160,7 @@ protocol ExposureControllerDependency {
     var storageController: StorageControlling { get }
     var applicationSignatureController: ApplicationSignatureControlling { get }
     var networkStatusStream: NetworkStatusStreaming { get }
+    var dataController: ExposureDataControlling { get }
 }
 
 private final class ExposureControllerDependencyProvider: DependencyProvider<ExposureControllerDependency>, ExposureDataControllerDependency {
@@ -181,7 +185,7 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     // MARK: - Private Dependencies
 
     fileprivate var dataController: ExposureDataControlling {
-        return ExposureDataControllerBuilder(dependency: self).build()
+        return dependency.dataController
     }
 
     fileprivate var userNotificationCenter: UserNotificationCenter {

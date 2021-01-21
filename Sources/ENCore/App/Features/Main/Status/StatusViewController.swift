@@ -380,6 +380,8 @@ private final class StatusView: View {
 private extension ExposureStateInactiveState {
     func cardType(listener: StatusListener?) -> CardType {
         switch self {
+        case .paused:
+            return .paused
         case .bluetoothOff:
             return .bluetoothOff
         case .disabled:

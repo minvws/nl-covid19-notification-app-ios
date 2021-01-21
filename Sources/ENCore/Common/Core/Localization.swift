@@ -389,8 +389,25 @@ extension String {
 
     // MARK: - MoreInformation | Settings
 
+    // MARK: - MoreInformation | Settings | Pause App
+
+    static var moreInformationSettingsPauseTitle: String { return Localization.string(for: "moreInformation.settings.pause.title") }
+    static var moreInformationSettingsPauseDescriptionShort: String { return Localization.string(for: "moreInformation.settings.pause.description.short") }
+    static var moreInformationSettingsPauseButtonTitle: String { return Localization.string(for: "moreInformation.settings.pause.pausebutton") }
+
+    static var moreInformationSettingsUnpauseTitle: String { return Localization.string(for: "moreInformation.settings.pause.enableappbutton") }
+    static var statusPausedCountdown: String { return Localization.string(for: "status.paused.countdown") }
+    static var statusPausedManualUnpause: String { return Localization.string(for: "status.paused.manualunpause") }
+
+    // MARK: - MoreInformation | Settings | Mobile Data
+
+    static var moreInformationSettingsMobileDataTitle: String { return Localization.string(for: "moreInformation.settings.mobiledata.title") }
+
     static var moreInformationSettingsTitle: String { return Localization.string(for: "moreInformation.settings.title") }
     static var moreInformationSettingsDescription: String { return Localization.string(for: "moreInformation.settings.description") }
+    static var moreInformationSettingsMobileDataParagraphTitle: String { return Localization.string(for: "moreInformation.settings.mobiledata.paragraphtitle") }
+    static var moreInformationSettingsMobileDataButton: String { return Localization.string(for: "moreInformation.settings.mobiledata.button") }
+
     static var moreInformationSettingsStep1: String { return Localization.string(for: "moreInformation.settings.step1") }
     static var moreInformationSettingsStep2: String { return Localization.string(for: "moreInformation.settings.step2") }
     static var moreInformationSettingsStep2RowTitle: String { return Localization.string(for: "moreInformation.settings.step2.row.title") }

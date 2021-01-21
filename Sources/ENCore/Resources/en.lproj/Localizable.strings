@@ -1,10 +1,44 @@
-"moreInformation.cell.settings.title" = "Settings";
-"moreInformation.cell.settings.subtitle" = "Adjust your settings for the use of mobile data";
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "You have to update your phone's software";
+"update.software.os.description" = "CoronaMelder needs the latest version of iOS to work correctly on your phone.";
+"update.software.os.detail.title" = "Update your phone";
+"update.software.os.detail.step1.detail" = "Settings";
+"update.software.os.detail.step2.detail" = "General";
+"update.software.os.detail.step3.detail" = "Software Update";
+"update.software.os.detail.step1" = "Open <b>Settings</b> on your phone";
+"update.software.os.detail.step2" = "Go to 'General'";
+"update.software.os.detail.step3" = "Go to 'Software update'";
+"update.button.update" = "Update";
+
+"update.software.os.detail.step4" = "Select 'Download and install'";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = "CoronaMelder continuously tracks encounters. It also checks every few hours if you've met someone who, at the time of the encounter, was contagious. In that case, you get a notification. Last checked on %@";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "CoronaMelder continuously tracks encounters. It also checks every few hours if you've met someone who, at the time of the encounter, was contagious. In that case, you get a notification.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "Settings";
+"moreInformation.cell.settings.subtitle" = "Pause app and turn off mobile data";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Settings";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Only check codes with WiFi";
 "moreInformation.settings.description" = "CoronaMelder checks a few times a day if you've been near someone who has corona. If you turn off your mobile data, the app will only do so if you're using WiFi. Your encounters are also tracked if you don't have an internet connection.";
+"moreInformation.settings.mobiledata.button" = "Turn on mobile data";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "Pause the app";
+"moreInformation.settings.pause.subtitle" = "Are you sure you want to pause the app?";
+"moreInformation.settings.pause.description" = "While paused, the app will temporarily not track any encounters with other app users. You also won't get a notification if you've been near someone who later turns out to have corona. \n\nOnly pause the app when your phone is near other people's phones, but there is no chance of contagion: when you're wearing the appropriate medical equipment, for example.";
+"moreInformation.settings.pause.description.short" = "If you pause the app, your encounters are temporarily not tracked. You also won't get a notification if you've been near someone who later turns out to have corona.";
+"moreInformation.settings.pause.dontshowscreen" = "Don't show this screen again";
+"moreInformation.settings.pause.yesbutton" = "Yes, pause";
+"moreInformation.settings.pause.cancelbutton" = "No, don't pause";
+"moreInformation.settings.pause.pausebutton" = "Pause the app";
+"moreInformation.settings.pause.enableappbutton" = "Turn on the app";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "Turn on mobile data";
 "moreInformation.settings.step1" = "Open <b>Settings</b> on your phone using the button below";
 "moreInformation.settings.step2" = "Turn your mobile data for CoronaMelder on or off";
 "moreInformation.settings.step2.row.title" = "Mobile data";
@@ -294,6 +328,15 @@
 "status.notified.moreInfo" = "What can I do now?";
 "status.notified.removeNotification" = "Delete notification";
 
+/* MARK: - Paused Status */
+"status.paused.title" = "The app is paused";
+"status.pause.ended.title" = "Pause over";
+"status.appState.card.paused.title" = "App is paused";
+"status.paused.countdown" = "The app will be turned on again in %@";
+"status.paused.manualunpause" = "The app is not active yet. You need to turn it on again yourself.";
+"status.card.manualunpause.title" = "Pause over";
+"status.card.manualunpause.description" = "The app is not active yet. You need to turn it on again yourself.";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "More information";
 
@@ -403,6 +446,7 @@
 
 "moreInformation.status.alarm.alt-text" = "Red screen with alarm bell that shows you need to take action immediately";
 
+"moreInformation.latestTekUpdate" = "CoronaMelder continuously tracks encounters. It also checks every few hours if you've met someone who, at the time of the encounter, was contagious. In that case, you get a notification. Last check on %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "The app is <u>not</u> active";
 "cards.exposureOff.content" = "Turn on the settings the app needs to work.";
@@ -472,3 +516,7 @@
 
 "notification.update_required.title" = "Necessary update";
 "notification.update_required.description" = "A new version of CoronaMelder is available. The current version isn't working correctly anymore. Check the app for instructions on how to update.";
+
+"notification.app.unpaused.title" = "Pause over";
+"notification.app.unpaused.description" = "The app is active again. From now on, your encounters are tracked again.";
+"notification.app.unpaused.manualunpause.description" = "The app is not active yet. You need to turn it on again in the app itself.";

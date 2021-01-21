@@ -1,10 +1,44 @@
-"moreInformation.cell.settings.title" = "Paramètres";
-"moreInformation.cell.settings.subtitle" = "Adaptez vos paramètres pour l'utilisation des données mobiles";
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "Vous devez mettre à jour le logiciel sur votre téléphone";
+"update.software.os.description" = "CoronaMelder a besoin de la version la plus récente d'iOS pour continuer à fonctionner sur votre téléphone.";
+"update.software.os.detail.title" = "Mettez à jour votre téléphone";
+"update.software.os.detail.step1.detail" = "Paramètres";
+"update.software.os.detail.step2.detail" = "Généralités";
+"update.software.os.detail.step3.detail" = "Mise à jour du logiciel";
+"update.software.os.detail.step1" = "Ouvrez <b>Paramètres</b> sur votre téléphone";
+"update.software.os.detail.step2" = "Allez à \"Généralités\"";
+"update.software.os.detail.step3" = "Allez à \"Mise à jour du logiciel\"";
+"update.button.update" = "Mettre à jour";
+
+"update.software.os.detail.step4" = "Sélectionnez \"Télécharger et installer\"";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = "CoronaMelder enregistre en permanence les rencontres. L'application vérifie aussi toutes les deux heures si quelqu'un que vous avez rencontré était contagieux à ce moment-là. Vous recevez une notification si c'était le cas. La dernière vérification a été effectuée le %@";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "CoronaMelder enregistre en permanence les rencontres. L'application vérifie aussi toutes les deux heures si quelqu'un que vous avez rencontré était contagieux à ce moment-là. Vous recevez une notification si c'était le cas.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "Paramètres";
+"moreInformation.cell.settings.subtitle" = "Mettre l'application en pause et désactiver les données mobiles";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Paramètres";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Ne contrôler les codes que par le biais du WiFi";
 "moreInformation.settings.description" = "CoronaMelder contrôle plusieurs fois par jour si vous avez été proche de quelqu'un qui a le coronavirus. Si vous désactivez vos données mobiles, l'application ne le fait plus que si vous utilisez le WiFi. Vos rencontres sont également enregistrées si vous n'avez pas de connexion à Internet.";
+"moreInformation.settings.mobiledata.button" = "Aller à activer les données mobiles";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "Mettre l'application en pause";
+"moreInformation.settings.pause.subtitle" = "Êtes-vous sûr(e) de vouloir mettre l'application en pause?";
+"moreInformation.settings.pause.description" = "Pendant la pause, l'application n'enregistre provisoirement pas les rencontres avec les autres utilisateurs de l'application. Vous ne recevez pas non plus de notification si vous avez été à proximité de quelqu'un qui s'avère avoir le Covid-19 par la suite.\n\nNe mettez l'application en pause que dans les situations où votre téléphone se trouve près d'autres téléphones mais qu'il n'y a pas de risque de contamination. Par exemple en raison de l'utilisation des dispositifs de protection médicaux.";
+"moreInformation.settings.pause.description.short" = "Si vous mettez l'application en pause, vos rencontres ne sont provisoirement pas enregistrées. Vous ne recevez pas non plus de notification si vous avez été à proximité de quelqu'un qui s'avère avoir le Covid-19 par la suite.";
+"moreInformation.settings.pause.dontshowscreen" = "Ne plus afficher cet écran";
+"moreInformation.settings.pause.yesbutton" = "Oui, mettre en pause";
+"moreInformation.settings.pause.cancelbutton" = "Non, ne pas mettre en pause";
+"moreInformation.settings.pause.pausebutton" = "Mettre l'application en pause";
+"moreInformation.settings.pause.enableappbutton" = "Ouvrir l'application";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "Activer les données mobiles";
 "moreInformation.settings.step1" = "Ouvrez <b>Paramètres</b> sur votre téléphone via le bouton ci-dessous";
 "moreInformation.settings.step2" = "Activez ou désactivez les données mobiles pour CoronaMelder";
 "moreInformation.settings.step2.row.title" = "Données mobiles";
@@ -295,6 +329,15 @@
 "status.notified.moreInfo" = "Que puis-je faire maintenant ?";
 "status.notified.removeNotification" = "Supprimer la notification";
 
+/* MARK: - Paused Status */
+"status.paused.title" = "L'application est mise en pause";
+"status.pause.ended.title" = "Pause terminée";
+"status.appState.card.paused.title" = "Application mise en pause";
+"status.paused.countdown" = "L'application sera réactivée dans %@";
+"status.paused.manualunpause" = "L'application n'est pas encore activée. Vous devez la réactiver vous-même.";
+"status.card.manualunpause.title" = "Pause terminée";
+"status.card.manualunpause.description" = "L'application n'est pas encore activée. Vous devez la réactiver vous-même.";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Plus d'informations";
 
@@ -404,6 +447,7 @@
 
 "moreInformation.status.alarm.alt-text" = "Écran rouge avec sonnette d'alarme qui indique qu'une action est maintenant nécessaire";
 
+"moreInformation.latestTekUpdate" = "CoronaMelder enregistre en permanence les rencontres. L'application vérifie aussi toutes les deux heures si quelqu'un que vous avez rencontré était contagieux à ce moment-là. Vous recevez une notification si c'était le cas. La dernière vérification a été effectuée le %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "L'application n'est <u>pas</u> activée";
 "cards.exposureOff.content" = "Activez les paramètres dont l'application a besoin pour fonctionner.";
@@ -473,3 +517,7 @@
 
 "notification.update_required.title" = "Mise à jour nécessaire";
 "notification.update_required.description" = "Il existe une nouvelle version de CoronaMelder. La version actuelle ne fonctionne plus correctement. Consultez l'application pour obtenir des instructions.";
+
+"notification.app.unpaused.title" = "Pause terminée";
+"notification.app.unpaused.description" = "L'application est réactivée. À partir de maintenant, vos rencontres sont à nouveau enregistrées.";
+"notification.app.unpaused.manualunpause.description" = "Attention : l'application n'est pas encore activée. Vous devez la réactivez vous-même dans l'application.";

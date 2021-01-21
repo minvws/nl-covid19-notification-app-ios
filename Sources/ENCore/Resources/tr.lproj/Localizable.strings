@@ -1,10 +1,44 @@
-"moreInformation.cell.settings.title" = "Ayarlar";
-"moreInformation.cell.settings.subtitle" = "Ayarlarınızı mobil veri kullanımı için uyarlayın";
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "Telefonunuzdaki yazılımı güncellemeniz gerekiyor";
+"update.software.os.description" = "CoronaMelder'in telefonunuzda düzgün çalışmaya devam etmesi için iOS'un en son sürümü gereklidir.";
+"update.software.os.detail.title" = "Telefonunuzu güncelleyin";
+"update.software.os.detail.step1.detail" = "Ayarlar";
+"update.software.os.detail.step2.detail" = "Genel";
+"update.software.os.detail.step3.detail" = "Yazılım güncellemesi";
+"update.software.os.detail.step1" = "Telefonunuzdaki <b>ayarlar</b>ı açın";
+"update.software.os.detail.step2" = "\"Genel\" e gidin";
+"update.software.os.detail.step3" = "\"Yazılım güncellemesi\" ne gidin";
+"update.button.update" = "Güncellemek";
+
+"update.software.os.detail.step4" = "\"İndir ve yükle\" yi seçin";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = "CoronaMelder, buluşmaları sürekli olarak takip eder. Uygulama ayrıca tanıştığınız birinin o sırada bulaşıcı olup olmadığını birkaç saatte bir kontrol eder. Öyle ise bilgilendirilirsiniz. Son kontrol %@ tarihinde idi";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "CoronaMelder, buluşmaları sürekli olarak takip eder. Uygulama ayrıca tanıştığınız birinin o sırada bulaşıcı olup olmadığını birkaç saatte bir kontrol eder. Öyle ise bilgilendirilirsiniz.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "Ayarlar";
+"moreInformation.cell.settings.subtitle" = "Uygulamayı duraklatın ve mobil verileri kapatın";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Ayarlar";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Kodları yalnızca WiFi üzerinden kontrol edin";
 "moreInformation.settings.description" = "CoronaMelder, günde birkaç kez Korona olan birinin yakınında bulunmuş olup olmadığınızı kontrol eder. Mobil verileri kapatırsanız, uygulama bunu yalnızca WiFi kullandığınızda yapacaktır. Buluşmalarınız internet bağlantınız olmasa bile takip edilir.";
+"moreInformation.settings.mobiledata.button" = "Mobil verileri açın";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "Uygulamayı duraklatın";
+"moreInformation.settings.pause.subtitle" = "Uygulamayı duraklatmak istediğinizden emin misiniz?";
+"moreInformation.settings.pause.description" = "Uygulama, duraklatma sırasında diğer uygulama kullanıcılarıyla olan karşılaşmaları geçici olarak izlemez. Ayrıca, daha sonra Korona olduğu ortaya çıkan birinin yakınında bulunmuş olursanız bildirim almazsınız.\n\nTelefonunuzu sadece diğer kişilerin telefonlarına yakın olduğunuzda, ama enfeksiyon ihtimali olmadığı durumlarda duraklatın. Örneğin, tıbbi koruyucu ekipman kullanarak.";
+"moreInformation.settings.pause.description.short" = "Uygulamayı duraklatırsanız, buluşmalarınız geçici olarak izlenmez. Ayrıca, daha sonra korona olduğu ortaya çıkan birinin yakınında bulunursanız bildirim almazsınız.";
+"moreInformation.settings.pause.dontshowscreen" = "Bu ekranı artık gösterme";
+"moreInformation.settings.pause.yesbutton" = "Evet, duraklat";
+"moreInformation.settings.pause.cancelbutton" = "Hayır, duraklama";
+"moreInformation.settings.pause.pausebutton" = "Uygulamayı duraklatın";
+"moreInformation.settings.pause.enableappbutton" = "Uygulamayı açın";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "Mobil verileri açın";
 "moreInformation.settings.step1" = "Aşağıdaki düğmeyi kullanarak telefonunuzda <b>ayarlar</b> ’ı açın";
 "moreInformation.settings.step2" = "CoronaMelder için mobil verileri açın veya kapatın";
 "moreInformation.settings.step2.row.title" = "Mobil veriler";
@@ -293,6 +327,15 @@
 "status.notified.moreInfo" = "Şimdi ne yapabilirim?";
 "status.notified.removeNotification" = "Bildirimi silin";
 
+/* MARK: - Paused Status */
+"status.paused.title" = "Uygulama duraklatıldı";
+"status.pause.ended.title" = "Duraklatma sona erdi";
+"status.appState.card.paused.title" = "Uygulama duraklatıldı";
+"status.paused.countdown" = "Uygulama %@ içinde tekrar açılacak";
+"status.paused.manualunpause" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
+"status.card.manualunpause.title" = "Duraklatma bitti";
+"status.card.manualunpause.description" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Daha fazla bilgi";
 
@@ -402,6 +445,7 @@
 
 "moreInformation.status.alarm.alt-text" = "Hemen harekete geçmeniz gerektiğini gösteren alarm zili ile kırmızı ekran";
 
+"moreInformation.latestTekUpdate" = "CoronaMelder, buluşmaları sürekli olarak takip eder. Uygulama ayrıca tanıştığınız birinin o sırada bulaşıcı olup olmadığını birkaç saatte bir kontrol eder. Öyle ise bilgilendirilirsiniz. Son kontrol %@ tarihinde idi.";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "Uygulama etkin <u>değil</u>";
 "cards.exposureOff.content" = "Uygulamanın çalışması için gereken ayarları açın.";
@@ -471,3 +515,7 @@
 
 "notification.update_required.title" = "Güncelleme gerekiyor";
 "notification.update_required.description" = "CoronaMelder'ın yeni bir sürümü var. Bu sürüm artık iyi çalışmıyor. Talimatlar için uygulamayı kontrol edin.";
+
+"notification.app.unpaused.title" = "Duraklatma bitti";
+"notification.app.unpaused.description" = "Uygulama tekrar aktif durumda. Buluşmalarınız şu andan itibaren tekrar takip edilecek.";
+"notification.app.unpaused.manualunpause.description" = "Dikkat: uygulama henüz aktif değil. Uygulamayı kendiniz tekrar açmanız gerekiyor.";
