@@ -139,7 +139,7 @@ private final class EnableSettingView: View {
         hasBottomMargin = true
 
         navigationBar.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
+            make.top.leading.trailing.equalTo(safeAreaLayoutGuide)
         }
 
         titleLabel.snp.makeConstraints { make in
