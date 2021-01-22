@@ -126,7 +126,11 @@ final class BackgroundController: BackgroundControlling, Logging {
             task.setTaskCompleted(success: true)
         }
 
-        if identifier == .refresh, dataController.pauseEndDate?.isBefore(currentDate()) == true {
+        let oneHour: TimeInterval = 3600
+
+        if identifier == .refresh,
+            let pauseEndDate = dataController.pauseEndDate,
+            currentDate().timeIntervalSince(pauseEndDate) > oneHour {
             userNotificationCenter.displayPauseExpirationReminder {
                 completeTask()
             }
