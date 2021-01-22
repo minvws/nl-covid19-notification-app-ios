@@ -281,7 +281,7 @@ private final class PauseCountdownView: View {
                     return
                 }
 
-                self?.label.attributedText = strongSelf.pauseController.getPauseCountdownString(theme: strongSelf.theme)
+                self?.label.attributedText = strongSelf.pauseController.getPauseCountdownString(theme: strongSelf.theme, emphasizeTime: true)
             }
 
             self.timer?.fire()

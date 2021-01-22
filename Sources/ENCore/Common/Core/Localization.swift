@@ -332,7 +332,7 @@ extension String {
     static var statusAppStateCardButton: String { return Localization.string(for: "status.appState.card.button") }
     static var statusAppStateCardTryAgain: String { return Localization.string(for: "status.appState.card.try_again") }
     static var statusActiveDescription: String { return Localization.string(for: "status.active.description") }
-    static var statedPausedCardTitle: String { return Localization.string(for: "status.active.description") }
+    static var statusPausedCardTitle: String { return Localization.string(for: "status.appState.card.paused.title") }
 
     static func statusNotifiedDaysAgo(days: Int) -> String {
         switch days {

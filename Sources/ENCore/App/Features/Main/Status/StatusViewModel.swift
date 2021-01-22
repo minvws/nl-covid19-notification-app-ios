@@ -155,7 +155,7 @@ struct StatusViewModel {
 
     static func pausedWithNotNotified(theme: Theme, pauseEndDate: Date) -> StatusViewModel {
 
-        let description = PauseController.getPauseCountdownString(theme: theme, endDate: pauseEndDate, center: true)
+        let description = PauseController.getPauseCountdownString(theme: theme, endDate: pauseEndDate, center: true, emphasizeTime: true)
 
         return StatusViewModel(
             icon: .paused,

@@ -36,6 +36,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         cardBuilder.build(listener: self, types: [.bluetoothOff])
     }()
 
+    private var pauseTimer: Timer?
+
     init(exposureStateStream: ExposureStateStreaming,
          interfaceOrientationStream: InterfaceOrientationStreaming,
          cardBuilder: CardBuildable,
@@ -115,8 +117,6 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             update(exposureState: currentState, isLandscape: isLandscape)
         }
     }
-
-    private var pauseTimer: Timer?
 
     private func updatePauseTimer() {
         if dataController.exposureNotificationIsPaused {

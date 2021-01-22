@@ -12,8 +12,9 @@ import UIKit
 protocol PauseControlling {
     func showPauseTimeOptions(onViewController viewController: ViewControllable)
     func unpauseExposureManager()
-    func getPauseCountdownString(theme: Theme) -> NSAttributedString
+    func getPauseCountdownString(theme: Theme, emphasizeTime: Bool) -> NSAttributedString
     func hidePauseInformationScreen()
+    var pauseTimeElapsed: Bool { get }
 }
 
 final class PauseController: PauseControlling {
@@ -28,6 +29,14 @@ final class PauseController: PauseControlling {
         self.exposureDataController = exposureDataController
         self.exposureController = exposureController
         self.userNotificationCenter = userNotificationCenter
+    }
+
+    var pauseTimeElapsed: Bool {
+        if let pauseEndDate = exposureDataController.pauseEndDate {
+            return pauseEndDate.timeIntervalSince(currentDate()) <= 0
+        } else {
+            return true
+        }
     }
 
     func showPauseTimeOptions(onViewController viewController: ViewControllable) {
@@ -88,15 +97,15 @@ final class PauseController: PauseControlling {
         //
     }
 
-    func getPauseCountdownString(theme: Theme) -> NSAttributedString {
+    func getPauseCountdownString(theme: Theme, emphasizeTime: Bool) -> NSAttributedString {
         guard let countDownDate = exposureDataController.pauseEndDate else {
             return NSAttributedString()
         }
 
-        return PauseController.getPauseCountdownString(theme: theme, endDate: countDownDate)
+        return PauseController.getPauseCountdownString(theme: theme, endDate: countDownDate, emphasizeTime: emphasizeTime)
     }
 
-    static func getPauseCountdownString(theme: Theme, endDate: Date, center: Bool = false) -> NSAttributedString {
+    static func getPauseCountdownString(theme: Theme, endDate: Date, center: Bool = false, emphasizeTime: Bool) -> NSAttributedString {
 
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute]
@@ -127,7 +136,7 @@ final class PauseController: PauseControlling {
             textAlignment: Localization.isRTL ? .right : .left
         ))
 
-        if let timeRange = completeString.string.range(of: time) {
+        if emphasizeTime, let timeRange = completeString.string.range(of: time) {
             let nsRange = NSRange(timeRange, in: completeString.string)
             completeString.addAttributes([.font: theme.fonts.bodyBold], range: nsRange)
         }

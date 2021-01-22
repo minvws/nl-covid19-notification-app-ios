@@ -57,11 +57,12 @@ struct Card {
         self.secondaryActionTitle = secondaryActionTitle
     }
 
-    static func paused(theme: Theme, content: NSAttributedString) -> Card {
-        let title: String = .statedPausedCardTitle
+    static func paused(theme: Theme, pauseTimeElapsed: Bool, content: NSAttributedString) -> Card {
+        let title: String = pauseTimeElapsed ? "Zet app weer aan" : .statusPausedCardTitle
         let action: String = .statusAppStateCardButton
+        let icon: CardIcon = pauseTimeElapsed ? .warning : .paused
 
-        return Card(icon: .paused, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+        return Card(icon: icon, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
                     message: content,
                     action: .unpause,
                     actionTitle: action)
