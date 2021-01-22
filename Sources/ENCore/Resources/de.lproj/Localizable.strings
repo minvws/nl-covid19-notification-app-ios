@@ -334,7 +334,6 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.appState.card.paused.title" = "App angehalten";
 "status.paused.countdown" = "Die App wird in %@ wieder aktiviert.";
 "status.paused.manualunpause" = "Die App ist noch nicht aktiv. Sie müssen sie selbst wieder aktivieren.";
-"status.card.manualunpause.title" = "Pause vorbei";
 "status.card.manualunpause.description" = "Die App ist noch nicht aktiv. Sie müssen sie selbst wieder aktivieren.";
 
 /* The title for the table of items in more information */

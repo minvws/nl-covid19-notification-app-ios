@@ -333,7 +333,6 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.appState.card.paused.title" = "La app está en pausa";
 "status.paused.countdown" = "La app se volverá a activar en %@";
 "status.paused.manualunpause" = "La app todavía no está activada. Debes volver a activarla tú mismo.";
-"status.card.manualunpause.title" = "Se dejó de pausar la app";
 "status.card.manualunpause.description" = "La app todavía no está activada. Debes volver a activarla tú mismo.";
 
 /* The title for the table of items in more information */

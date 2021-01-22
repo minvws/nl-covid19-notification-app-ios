@@ -411,6 +411,7 @@ extension String {
     static var statusPausedCountdown: String { return Localization.string(for: "status.paused.countdown") }
     static var statusPausedManualUnpause: String { return Localization.string(for: "status.paused.manualunpause") }
     static var statusPausedTitle: String { return Localization.string(for: "status.paused.title") }
+    static var statusCardManualUnpauseTitle: String { return Localization.string(for: "status.card.manualunpause.title") }
 
     // MARK: - MoreInformation | Settings | Mobile Data
 

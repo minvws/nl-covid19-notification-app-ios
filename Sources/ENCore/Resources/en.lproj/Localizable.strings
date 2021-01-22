@@ -334,7 +334,7 @@
 "status.appState.card.paused.title" = "App is paused";
 "status.paused.countdown" = "The app will be turned on again in %@";
 "status.paused.manualunpause" = "The app is not active yet. You need to turn it on again yourself.";
-"status.card.manualunpause.title" = "Pause over";
+"status.card.manualunpause.title" = "Turn the app on again";
 "status.card.manualunpause.description" = "The app is not active yet. You need to turn it on again yourself.";
 
 /* The title for the table of items in more information */

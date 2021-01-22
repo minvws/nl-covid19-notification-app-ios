@@ -333,7 +333,6 @@
 "status.appState.card.paused.title" = "Uygulama duraklatıldı";
 "status.paused.countdown" = "Uygulama %@ içinde tekrar açılacak";
 "status.paused.manualunpause" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
-"status.card.manualunpause.title" = "Duraklatma bitti";
 "status.card.manualunpause.description" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
 
 /* The title for the table of items in more information */

@@ -337,7 +337,6 @@
 "status.appState.card.paused.title" = "تم إيقاف التطبيق مؤقتًا";
 "status.paused.countdown" = "سيتم تشغيل التطبيق مرة أخرى بعد %@";
 "status.paused.manualunpause" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
-"status.card.manualunpause.title" = "انتهى الإيقاف المؤقت";
 "status.card.manualunpause.description" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
 
 /* The title for the table of items in more information */

@@ -333,7 +333,7 @@
 "status.appState.card.paused.title" = "App gepauzeerd";
 "status.paused.countdown" = "De app wordt over %@ weer aangezet";
 "status.paused.manualunpause" = "De app is nog niet actief. Je moet deze zelf weer aanzetten.";
-"status.card.manualunpause.title" = "Pauzeren afgelopen";
+"status.card.manualunpause.title" = "Zet app weer aan";
 "status.card.manualunpause.description" = "De app is nog niet actief. Je moet deze zelf weer aanzetten.";
 
 /* The title for the table of items in more information */

@@ -333,7 +333,6 @@
 "status.appState.card.paused.title" = "Aplicație întreruptă";
 "status.paused.countdown" = "Aplicația va fi reactivată peste %@";
 "status.paused.manualunpause" = "Aplicația încă nu este activă. Trebuie să o reactivați.";
-"status.card.manualunpause.title" = "Întrerupere terminată";
 "status.card.manualunpause.description" = "Aplicația încă nu este activă. Trebuie să o reactivați.";
 
 /* The title for the table of items in more information */
