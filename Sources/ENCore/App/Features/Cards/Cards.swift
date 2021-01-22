@@ -58,7 +58,7 @@ struct Card {
     }
 
     static func paused(theme: Theme, pauseTimeElapsed: Bool, content: NSAttributedString) -> Card {
-        let title: String = pauseTimeElapsed ? "Zet app weer aan" : .statusPausedCardTitle
+        let title: String = pauseTimeElapsed ? .notificationAppUnpausedTitle : .statusPausedCardTitle
         let action: String = .statusAppStateCardButton
         let icon: CardIcon = pauseTimeElapsed ? .warning : .paused
 
