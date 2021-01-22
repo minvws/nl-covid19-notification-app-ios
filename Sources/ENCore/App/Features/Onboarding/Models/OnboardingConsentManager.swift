@@ -29,13 +29,16 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
     var onboardingConsentSteps: [OnboardingConsentStep] = []
     private var disposeBag = Set<AnyCancellable>()
+    private let userNotificationCenter: UserNotificationCenter
 
     init(exposureStateStream: ExposureStateStreaming,
          exposureController: ExposureControlling,
+         userNotificationCenter: UserNotificationCenter,
          theme: Theme) {
 
         self.exposureStateStream = exposureStateStream
         self.exposureController = exposureController
+        self.userNotificationCenter = userNotificationCenter
 
         onboardingConsentSteps.append(
             OnboardingConsentStep(
@@ -188,7 +191,8 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     }
 
     func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
-        exposureController.requestPushNotificationPermission {
+
+        userNotificationCenter.requestNotificationPermission {
             completion()
         }
     }

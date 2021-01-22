@@ -69,7 +69,7 @@ final class ExposureController: ExposureControlling, Logging {
         }
 
         // Don't enable EN if we're in a paused state
-        guard dataController.pauseEndDate == nil else {
+        guard !dataController.isAppPaused else {
             updateStatusStream()
             return Just(()).eraseToAnyPublisher()
         }
@@ -121,12 +121,24 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func unpause() {
+
         exposureManager.setExposureNotificationEnabled(true) { [weak self] result in
-            self?.dataController.pauseEndDate = nil
-            if self?.isActivated == false {
-                self?.activate(inBackgroundMode: false)
+
+            guard let strongSelf = self else {
+                return
+            }
+
+            strongSelf.dataController.pauseEndDate = nil
+
+            if strongSelf.isActivated == false {
+                strongSelf.activate(inBackgroundMode: false)
             } else {
-                self?.updateStatusStream()
+                // Update the status (will remove the paused state from the UI)
+                strongSelf.updateStatusStream()
+
+                strongSelf.updateWhenRequired()
+                    .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+                    .store(in: &strongSelf.disposeBag)
             }
         }
     }
@@ -215,7 +227,7 @@ final class ExposureController: ExposureControlling, Logging {
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
         logDebug("`requestExposureNotificationPermission` started")
 
-        guard !dataController.exposureNotificationIsPaused else {
+        guard !dataController.isAppPaused else {
             return
         }
 
@@ -233,24 +245,6 @@ final class ExposureController: ExposureControlling, Logging {
                 }
 
                 self.updateStatusStream()
-            }
-        }
-    }
-
-    func requestPushNotificationPermission(_ completion: @escaping (() -> ())) {
-        func request() {
-            userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
-                DispatchQueue.main.async {
-                    completion()
-                }
-            }
-        }
-
-        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
-            if authorizationStatus == .authorized {
-                completion()
-            } else {
-                request()
             }
         }
     }

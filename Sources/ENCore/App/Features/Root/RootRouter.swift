@@ -46,7 +46,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          updateAppBuilder: UpdateAppBuildable,
          webviewBuilder: WebviewBuildable,
          userNotificationCenter: UserNotificationCenter,
-         currentAppVersion: String) {
+         currentAppVersion: String,
+         pauseController: PauseControlling) {
         self.launchScreenBuilder = launchScreenBuilder
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
@@ -68,6 +69,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.currentAppVersion = currentAppVersion
 
         self.userNotificationCenter = userNotificationCenter
+        self.pauseController = pauseController
 
         super.init(viewController: viewController)
 
@@ -169,13 +171,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             routeToDeactivatedOrUpdateScreenIfNeeded()
         }
 
-        updateTreatmentPerspective()
+        if !pauseController.isAppPaused {
+            updateTreatmentPerspective()
+        }
 
         exposureController.updateLastLaunch()
 
         exposureController.clearUnseenExposureNotificationDate()
 
-        removeNotificationsFromNotificationsCenter()
+        userNotificationCenter.removeNotificationsFromNotificationsCenter()
     }
 
     func didEnterForeground() {
@@ -188,11 +192,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
 
         exposureController.refreshStatus()
-        exposureController
-            .updateWhenRequired()
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { _ in })
-            .store(in: &disposeBag)
+
+        if !pauseController.isAppPaused {
+
+            exposureController
+                .updateWhenRequired()
+                .sink(receiveCompletion: { _ in },
+                      receiveValue: { _ in })
+                .store(in: &disposeBag)
+        }
     }
 
     func didEnterBackground() {
@@ -200,6 +208,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func handle(backgroundTask: BGTask) {
+        guard !pauseController.isAppPaused else { return }
         backgroundController.handle(task: backgroundTask)
     }
 
@@ -378,6 +387,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: ((_ didRoute: Bool) -> ())? = nil) {
 
+        logInfo("Going to determine if the app needs to be deactivated or updated by downloading the manifest")
+
         exposureController
             .isAppDeactivated()
             .combineLatest(exposureController.appShouldUpdateCheck())
@@ -435,18 +446,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .store(in: &disposeBag)
     }
 
-    private func removeNotificationsFromNotificationsCenter() {
-
-        let identifiers = [
-            PushNotificationIdentifier.exposure.rawValue,
-            PushNotificationIdentifier.inactive.rawValue,
-            PushNotificationIdentifier.enStatusDisabled.rawValue,
-            PushNotificationIdentifier.appUpdateRequired.rawValue
-        ]
-
-        userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
-    }
-
     private let currentAppVersion: String
 
     private let networkController: NetworkControlling
@@ -485,6 +484,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private var webviewViewController: ViewControllable?
 
     private let userNotificationCenter: UserNotificationCenter
+    private let pauseController: PauseControlling
 }
 
 private extension ExposureActiveState {

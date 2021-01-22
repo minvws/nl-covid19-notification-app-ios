@@ -285,7 +285,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .eraseToAnyPublisher()
     }
 
-    var exposureNotificationIsPaused: Bool {
+    var isAppPaused: Bool {
         pauseEndDate != nil
     }
 

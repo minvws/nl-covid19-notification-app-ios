@@ -52,10 +52,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     init(theme: Theme,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
+         userNotificationCenter: UserNotificationCenter,
          pauseController: PauseControlling) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
         self.pauseController = pauseController
+        self.userNotificationCenter = userNotificationCenter
         super.init(theme: theme)
     }
 
@@ -269,6 +271,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
     private let pauseController: PauseControlling
+    private let userNotificationCenter: UserNotificationCenter
 
     private var disposeBag = Set<AnyCancellable>()
 
@@ -334,7 +337,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {
         switch authorizationStatus {
         case .notDetermined:
-            self.exposureController.requestPushNotificationPermission {}
+            userNotificationCenter.requestNotificationPermission {}
         case .denied:
             router?.routeToEnableSetting(.enableLocalNotifications)
         default:

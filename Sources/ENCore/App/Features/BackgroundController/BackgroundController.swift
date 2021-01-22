@@ -59,6 +59,10 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     // MARK: - BackgroundControlling
 
+    private var isAppPaused: Bool {
+        return dataController.pauseEndDate != nil
+    }
+
     func scheduleTasks() {
 
         let scheduleTasks: () -> () = {
@@ -95,7 +99,15 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
         logDebug("Background: Handling task \(identifier)")
 
+        // in a paused state, we only handle refresh background tasks.
+        // We use this process to send a reminder to users that the app is still in a paused state
+        guard !self.isAppPaused else {
+            handleTaskDuringPause(task: task, withIdentifier: identifier)
+            return
+        }
+
         let handleTask: () -> () = {
+
             switch identifier {
             case .decoyStopKeys:
                 self.handleDecoyStopkeys(task: task)
@@ -106,6 +118,21 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         operationQueue.async(execute: handleTask)
+    }
+
+    private func handleTaskDuringPause(task: BGTask, withIdentifier identifier: BackgroundTaskIdentifiers) {
+        func completeTask() {
+            self.scheduleRefresh()
+            task.setTaskCompleted(success: true)
+        }
+
+        if identifier == .refresh, dataController.pauseEndDate?.isBefore(currentDate()) == true {
+            userNotificationCenter.displayPauseExpirationReminder {
+                completeTask()
+            }
+        } else {
+            completeTask()
+        }
     }
 
     // MARK: - Private

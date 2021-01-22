@@ -158,6 +158,13 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return InterfaceOrientationStream()
     }
 
+    var pauseController: PauseControlling {
+        PauseController(exposureDataController: dataController,
+                        exposureController: exposureController,
+                        userNotificationCenter: userNotificationCenter,
+                        backgroundController: backgroundController)
+    }
+
     let theme: Theme = ENTheme()
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
@@ -227,6 +234,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
                           userNotificationCenter: dependencyProvider.userNotificationCenter,
-                          currentAppVersion: unwrappedCurrentAppVersion)
+                          currentAppVersion: unwrappedCurrentAppVersion,
+                          pauseController: dependencyProvider.pauseController)
     }
 }

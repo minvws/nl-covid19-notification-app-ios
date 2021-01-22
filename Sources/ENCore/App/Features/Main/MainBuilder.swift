@@ -23,6 +23,8 @@ protocol MainDependency {
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var dataController: ExposureDataControlling { get }
     var exposureManager: ExposureManaging { get }
+    var backgroundController: BackgroundControlling { get }
+    var pauseController: PauseControlling { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency {
@@ -112,9 +114,7 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     }
 
     var pauseController: PauseControlling {
-        PauseController(exposureDataController: dataController,
-                        exposureController: dependency.exposureController,
-                        userNotificationCenter: userNotificationCenter)
+        dependency.pauseController
     }
 }
 
@@ -124,6 +124,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
                                                 exposureController: dependencyProvider.exposureController,
                                                 exposureStateStream: dependencyProvider.exposureStateStream,
+                                                userNotificationCenter: dependencyProvider.userNotificationCenter,
                                                 pauseController: dependencyProvider.pauseController)
 
         return MainRouter(viewController: viewController,

@@ -68,8 +68,8 @@ protocol ExposureDataControlling: AnyObject {
 
     // MARK: - Pausing
 
-    var exposureNotificationIsPaused: Bool { get }
     var pauseEndDatePublisher: AnyPublisher<Date?, Never> { get }
+    var isAppPaused: Bool { get }
     var pauseEndDate: Date? { get set }
     var hidePauseInformation: Bool { get set }
 }

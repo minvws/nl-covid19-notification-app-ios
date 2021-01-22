@@ -119,7 +119,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func updatePauseTimer() {
-        if dataController.exposureNotificationIsPaused {
+        if dataController.isAppPaused {
             // we're in a paused state
             if pauseTimer == nil {
                 pauseTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true, block: { [weak self] _ in

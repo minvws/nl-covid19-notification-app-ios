@@ -15,6 +15,7 @@ protocol PauseControlling {
     func getPauseCountdownString(theme: Theme, emphasizeTime: Bool) -> NSAttributedString
     func hidePauseInformationScreen()
     var pauseTimeElapsed: Bool { get }
+    var isAppPaused: Bool { get }
 }
 
 final class PauseController: PauseControlling {
@@ -22,13 +23,20 @@ final class PauseController: PauseControlling {
     private let exposureDataController: ExposureDataControlling
     private let exposureController: ExposureControlling
     private let userNotificationCenter: UserNotificationCenter
+    private let backgroundController: BackgroundControlling
 
     init(exposureDataController: ExposureDataControlling,
          exposureController: ExposureControlling,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         backgroundController: BackgroundControlling) {
         self.exposureDataController = exposureDataController
         self.exposureController = exposureController
         self.userNotificationCenter = userNotificationCenter
+        self.backgroundController = backgroundController
+    }
+
+    var isAppPaused: Bool {
+        return exposureDataController.isAppPaused
     }
 
     var pauseTimeElapsed: Bool {
@@ -78,23 +86,26 @@ final class PauseController: PauseControlling {
     }
 
     func unpauseExposureManager() {
+
+        // Mark app as unpaused (also starts downloading and processing keys if neccesary)
         exposureController.unpause()
 
-        // TODO:
-        // - Re-schedule background tasks
-        // - Run background processes (download keys, etc.)
-        // - Clear local notification?
+        // Make sure we re-schedule the background tasks
+        backgroundController.scheduleTasks()
     }
 
     private func pauseExposureManager(until date: Date) {
+
         exposureController.pause(untilDate: date)
 
-        userNotificationCenter.schedulePauseExpirationNotification(pauseEndDate: date)
+        // Cancel all background tasks
+        backgroundController.removeAllTasks()
 
-        // TODO:
-        // - Clear all background tasks
-        // - schedule local notification
-        //
+        // Remove any currently pending notifications
+        userNotificationCenter.removeAllPendingNotificationRequests()
+
+        // Schedule the notification to inform the user of elapsed pause state
+        userNotificationCenter.schedulePauseExpirationNotification(pauseEndDate: date)
     }
 
     func getPauseCountdownString(theme: Theme, emphasizeTime: Bool) -> NSAttributedString {
