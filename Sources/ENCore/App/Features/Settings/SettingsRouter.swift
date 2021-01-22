@@ -23,14 +23,10 @@ final class SettingsRouter: Router<SettingsViewControllable>, SettingsRouting, L
 
     init(viewController: SettingsViewControllable,
          settingsOverviewBuilder: SettingsOverviewBuildable,
-         mobileDataBuilder: MobileDataBuildable,
-         pauseConfirmationBuilder: PauseConfirmationBuildable,
-         exposureDataController: ExposureDataControlling) {
+         mobileDataBuilder: MobileDataBuildable) {
 
         self.settingsOverviewBuilder = settingsOverviewBuilder
         self.mobileDataBuilder = mobileDataBuilder
-        self.pauseConfirmationBuilder = pauseConfirmationBuilder
-        self.exposureDataController = exposureDataController
 
         super.init(viewController: viewController)
         viewController.router = self
@@ -60,9 +56,4 @@ final class SettingsRouter: Router<SettingsViewControllable>, SettingsRouting, L
 
     private let mobileDataBuilder: MobileDataBuildable
     private var mobileDataViewController: ViewControllable?
-
-    private let pauseConfirmationBuilder: PauseConfirmationBuildable
-    private var pauseConfirmationViewController: ViewControllable?
-
-    private let exposureDataController: ExposureDataControlling
 }

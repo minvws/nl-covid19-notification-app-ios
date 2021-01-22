@@ -208,7 +208,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func handle(backgroundTask: BGTask) {
-        guard !pauseController.isAppPaused else { return }
         backgroundController.handle(task: backgroundTask)
     }
 

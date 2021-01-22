@@ -44,20 +44,20 @@ final class SettingsOverviewRouter: Router<SettingsOverviewViewControllable>, Se
             return
         }
 
-        let router = pauseConfirmationBuilder.build(withListener: viewController)
-        pauseConfirmationRouter = router
+        let pauseConfirmationViewController = pauseConfirmationBuilder.build(withListener: viewController)
+        self.pauseConfirmationViewController = pauseConfirmationViewController
 
-        viewController.presentInNavigationController(viewController: router.viewControllable)
+        viewController.presentInNavigationController(viewController: pauseConfirmationViewController)
     }
 
     private func detachPauseConfirmation(completion: (() -> ())?) {
-        guard let pauseConfirmationRouter = pauseConfirmationRouter else {
+        guard let pauseConfirmationViewController = pauseConfirmationViewController else {
             return
         }
 
-        self.pauseConfirmationRouter = nil
+        self.pauseConfirmationViewController = nil
 
-        viewController.dismiss(viewController: pauseConfirmationRouter.viewControllable, completion: completion)
+        viewController.dismiss(viewController: pauseConfirmationViewController, completion: completion)
     }
 
     func pauseConfirmationWantsDismissal(completion: (() -> ())?) {
@@ -69,5 +69,5 @@ final class SettingsOverviewRouter: Router<SettingsOverviewViewControllable>, Se
     private weak var listener: SettingsOverviewListener?
     private let exposureDataController: ExposureDataControlling
     private let pauseConfirmationBuilder: PauseConfirmationBuildable
-    private var pauseConfirmationRouter: Routing?
+    private var pauseConfirmationViewController: ViewControllable?
 }

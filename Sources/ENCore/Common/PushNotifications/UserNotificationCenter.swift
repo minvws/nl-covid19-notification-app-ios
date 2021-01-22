@@ -45,7 +45,8 @@ extension UserNotificationCenter {
             PushNotificationIdentifier.exposure.rawValue,
             PushNotificationIdentifier.inactive.rawValue,
             PushNotificationIdentifier.enStatusDisabled.rawValue,
-            PushNotificationIdentifier.appUpdateRequired.rawValue
+            PushNotificationIdentifier.appUpdateRequired.rawValue,
+            PushNotificationIdentifier.pauseEnded.rawValue
         ]
 
         removeDeliveredNotifications(withIdentifiers: identifiers)

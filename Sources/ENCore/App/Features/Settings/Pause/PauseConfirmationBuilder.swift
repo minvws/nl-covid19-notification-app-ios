@@ -20,7 +20,7 @@ protocol PauseConfirmationBuildable {
     ///
     /// - Parameter listener: Listener of created PauseConfirmation component
     /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: PauseConfirmationListener) -> Routing
+    func build(withListener listener: PauseConfirmationListener) -> ViewControllable
 }
 
 protocol PauseConfirmationDependency {
@@ -31,13 +31,11 @@ protocol PauseConfirmationDependency {
 private final class PauseConfirmationDependencyProvider: DependencyProvider<PauseConfirmationDependency> {}
 
 final class PauseConfirmationBuilder: Builder<PauseConfirmationDependency>, PauseConfirmationBuildable {
-    func build(withListener listener: PauseConfirmationListener) -> Routing {
+    func build(withListener listener: PauseConfirmationListener) -> ViewControllable {
 
         let dependencyProvider = PauseConfirmationDependencyProvider(dependency: dependency)
-        let viewController = PauseConfirmationViewController(theme: dependencyProvider.dependency.theme,
-                                                             listener: listener,
-                                                             pauseController: dependencyProvider.dependency.pauseController)
-        return PauseConfirmationRouter(listener: listener,
-                                       viewController: viewController)
+        return PauseConfirmationViewController(theme: dependencyProvider.dependency.theme,
+                                               listener: listener,
+                                               pauseController: dependencyProvider.dependency.pauseController)
     }
 }

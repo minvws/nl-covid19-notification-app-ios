@@ -68,7 +68,7 @@ final class ExposureController: ExposureControlling, Logging {
             return Just(()).eraseToAnyPublisher()
         }
 
-        // Don't enable EN if we're in a paused state
+        // Don't activate EN if we're in a paused state, just update the status
         guard !dataController.isAppPaused else {
             updateStatusStream()
             return Just(()).eraseToAnyPublisher()
@@ -226,10 +226,6 @@ final class ExposureController: ExposureControlling, Logging {
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
         logDebug("`requestExposureNotificationPermission` started")
-
-        guard !dataController.isAppPaused else {
-            return
-        }
 
         exposureManager.setExposureNotificationEnabled(true) { result in
             self.logDebug("`requestExposureNotificationPermission` returned result \(result)")

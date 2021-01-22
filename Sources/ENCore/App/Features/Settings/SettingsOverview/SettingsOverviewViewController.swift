@@ -65,7 +65,7 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
         }
 
         internalView.unpauseAppButton.action = { [weak self] in
-            self?.pauseController.unpauseExposureManager()
+            self?.pauseController.unpauseApp()
         }
 
         pauseStateCancellable = exposureDataController.pauseEndDatePublisher.sink(receiveValue: { [weak self] pauseEndDate in
@@ -118,7 +118,6 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
     private lazy var internalView: SettingsView = SettingsView(theme: self.theme, pauseController: pauseController)
     private let exposureDataController: ExposureDataControlling
     private let pauseController: PauseControlling
-
     private var pauseStateCancellable: AnyCancellable?
 }
 
@@ -133,7 +132,7 @@ private final class SettingsView: View {
         return view
     }()
 
-    lazy var pauseAppTitleLabel: Label = {
+    private lazy var pauseAppTitleLabel: Label = {
         let label = Label(frame: .zero)
         label.isUserInteractionEnabled = true
         label.font = theme.fonts.title3
@@ -143,7 +142,7 @@ private final class SettingsView: View {
         return label
     }()
 
-    lazy var pauseAppDescriptionLabel: Label = {
+    private lazy var pauseAppDescriptionLabel: Label = {
         let label = Label()
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -180,7 +179,7 @@ private final class SettingsView: View {
         return stackView
     }()
 
-    lazy var mobileDataTitleLabel: Label = {
+    private lazy var mobileDataTitleLabel: Label = {
         let label = Label(frame: .zero)
         label.isUserInteractionEnabled = true
         label.font = theme.fonts.title3
@@ -190,7 +189,7 @@ private final class SettingsView: View {
         return label
     }()
 
-    lazy var mobileDataDescriptionLabel: Label = {
+    private lazy var mobileDataDescriptionLabel: Label = {
         let label = Label()
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false

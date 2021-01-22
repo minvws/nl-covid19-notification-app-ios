@@ -7,8 +7,12 @@
 
 import Foundation
 
-extension Date {
-    func isBefore(_ otherDate: Date) -> Bool {
-        otherDate.timeIntervalSince(self) > 0
+extension TimeInterval {
+    static func minutes(_ minutes: Int) -> TimeInterval {
+        return TimeInterval(minutes * 60)
+    }
+
+    static func hours(_ hours: Int) -> TimeInterval {
+        return TimeInterval(hours * 3600)
     }
 }

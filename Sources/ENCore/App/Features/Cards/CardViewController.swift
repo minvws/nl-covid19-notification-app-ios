@@ -114,7 +114,7 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
         return {
             switch action {
             case .unpause:
-                self.pauseController.unpauseExposureManager()
+                self.pauseController.unpauseApp()
             case let .openEnableSetting(enableSetting):
                 self.router?.route(to: enableSetting)
             case let .openWebsite(url: url):
@@ -137,8 +137,10 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
 
     private var types: [CardType] {
         didSet {
-            // always recreate cards if the list contains a "paused" card (it updated dynamically)
-            if isViewLoaded, oldValue != types || types.contains(.paused) {
+            // always recreate cards if the list contains a "dynamic" card. For instance the card with pause countdown that always needs updating
+            let containsDynamicCard = types.contains(where: { self.dynamicCardTypes.contains($0) })
+
+            if isViewLoaded, oldValue != types || containsDynamicCard {
                 recreateCards()
             }
         }
@@ -293,25 +295,7 @@ final class CardView: View {
         } else {
             secondaryButton.isHidden = true
         }
-
-//        updatePauseTimer()
     }
-
-    // MARK: - Pause card updating
-
-//    private func updatePauseTimer() {
-//        if types.contains(.paused) {
-//            // we're in a paused state
-//            if pauseTimer == nil {
-//                pauseTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true, block: { [weak self] _ in
-//
-//                })
-//            }
-//        } else {
-//            pauseTimer?.invalidate()
-//            pauseTimer = nil
-//        }
-//    }
 }
 
 private extension CardType {

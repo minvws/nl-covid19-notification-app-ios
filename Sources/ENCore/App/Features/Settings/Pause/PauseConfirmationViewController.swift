@@ -9,16 +9,12 @@ import ENFoundation
 import UIKit
 
 /// @mockable
-protocol PauseConfirmationRouting: Routing {
-    // TODO: Add any routing functions that are called from the ViewController
-    // func routeToChild()
-}
+protocol PauseConfirmationViewControllable: ViewControllable {}
 
 final class PauseConfirmationViewController: ViewController, PauseConfirmationViewControllable {
 
     // MARK: - PauseConfirmationViewControllable
 
-    weak var router: PauseConfirmationRouting?
     weak var listener: PauseConfirmationListener?
 
     init(theme: Theme,
@@ -128,8 +124,6 @@ private final class PauseConfirmationView: View {
         button.style = .secondary
         return button
     }()
-
-    // MARK: - Init
 
     // MARK: - Overrides
 

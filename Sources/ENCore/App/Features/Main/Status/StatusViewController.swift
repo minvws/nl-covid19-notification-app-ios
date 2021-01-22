@@ -120,9 +120,10 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     private func updatePauseTimer() {
         if dataController.isAppPaused {
-            // we're in a paused state
             if pauseTimer == nil {
-                pauseTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true, block: { [weak self] _ in
+                // This timer fires every minute to update the status on the screen. This is needed because in a paused state
+                // the status will show a minute-by-minute countdown until the time when the pause state should end
+                pauseTimer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true, block: { [weak self] _ in
                     self?.refreshCurrentState()
                 })
             }
@@ -345,6 +346,7 @@ private final class StatusView: View {
     func update(with viewModel: StatusViewModel) {
 
         iconViewSizeConstraints?.layoutConstraints.forEach { constraint in
+            // if the emitter animation is not shown, we use a slightly larger main icon
             constraint.constant = viewModel.showEmitter ? 48 : 56
         }
         iconView.update(with: viewModel.icon, showEmitter: viewModel.showEmitter)

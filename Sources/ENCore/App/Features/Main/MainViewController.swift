@@ -251,7 +251,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case .tryAgain:
             updateWhenRequired()
         case .unpause:
-            pauseController.unpauseExposureManager()
+            pauseController.unpauseApp()
         }
     }
 

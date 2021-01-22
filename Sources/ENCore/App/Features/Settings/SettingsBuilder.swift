@@ -61,8 +61,6 @@ final class SettingsBuilder: Builder<SettingsDependency>, SettingsBuildable {
 
         return SettingsRouter(viewController: viewController,
                               settingsOverviewBuilder: dependencyProvider.settingsOverviewBuilder,
-                              mobileDataBuilder: dependencyProvider.mobileDataBuilder,
-                              pauseConfirmationBuilder: dependencyProvider.pauseConfirmationBuilder,
-                              exposureDataController: dependencyProvider.exposureDataController)
+                              mobileDataBuilder: dependencyProvider.mobileDataBuilder)
     }
 }

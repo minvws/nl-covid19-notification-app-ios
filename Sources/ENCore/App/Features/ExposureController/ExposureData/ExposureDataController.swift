@@ -68,6 +68,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     private var disposeBag = Set<AnyCancellable>()
     private(set) var isFirstRun: Bool = false
+    private lazy var pauseEndDateSubject = CurrentValueSubject<Date?, Never>(pauseEndDate)
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling,
@@ -288,8 +289,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     var isAppPaused: Bool {
         pauseEndDate != nil
     }
-
-    private lazy var pauseEndDateSubject = CurrentValueSubject<Date?, Never>(pauseEndDate)
 
     var pauseEndDatePublisher: AnyPublisher<Date?, Never> {
         return pauseEndDateSubject
