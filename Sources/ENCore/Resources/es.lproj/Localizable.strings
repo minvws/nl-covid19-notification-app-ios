@@ -517,6 +517,5 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "notification.update_required.title" = "Necesita actualizarse";
 "notification.update_required.description" = "Hay una nueva versión de CoronaMelder. Esta versión ya no funciona bien. Consulta la app para más información.";
 
-"notification.app.unpaused.title" = "Se dejó de pausar la app";
 "notification.app.unpaused.description" = "La app vuelve a estar activada. A partir de ahora, se registrarán tus encuentros.";
 "notification.app.unpaused.manualunpause.description" = "Atención: la app aún no está activada. Tienes que activarla tú mismo en la app.";

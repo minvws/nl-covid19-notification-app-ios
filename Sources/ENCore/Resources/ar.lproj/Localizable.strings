@@ -522,6 +522,5 @@
 "notification.update_required.title" = "التحديث ضروري";
 "notification.update_required.description" = "هناك إصدار جديد من CoronaMelder. لم يعد هذا الإصدار يعمل بشكل صحيح. تحقق من التطبيق للحصول على التعليمات.";
 
-"notification.app.unpaused.title" = "انتهى الإيقاف المؤقت";
 "notification.app.unpaused.description" = "التطبيق نشط مرة أخرى. سيتم تعقب مصادفاتك من الآن فصاعدًا.";
 "notification.app.unpaused.manualunpause.description" = "انتبه: التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";

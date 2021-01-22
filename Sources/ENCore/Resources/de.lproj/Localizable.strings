@@ -517,6 +517,5 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "notification.update_required.title" = "Update erforderlich";
 "notification.update_required.description" = "Es gibt eine neue Version von CoronaMelder. Die veraltete Version funktioniert nicht mehr gut. Weitere Anweisungen finden Sie in der App.";
 
-"notification.app.unpaused.title" = "Pause vorbei";
 "notification.app.unpaused.description" = "Die App ist wieder aktiv. Ihre Begegnungen werden ab jetzt wieder registriert.";
 "notification.app.unpaused.manualunpause.description" = "Achtung: Die App ist noch nicht aktiv. Sie müssen sie selbst wieder in der App aktivieren.";

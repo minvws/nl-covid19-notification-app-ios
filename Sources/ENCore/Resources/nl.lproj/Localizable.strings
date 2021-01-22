@@ -516,6 +516,6 @@
 "notification.update_required.title" = "Update noodzakelijk";
 "notification.update_required.description" = "Er is een nieuwe versie van CoronaMelder. Deze versie werkt niet meer goed. Controleer de app voor instructies.";
 
-"notification.app.unpaused.title" = "Pauzeren afgelopen";
+"notification.app.unpaused.title" = "Zet CoronaMelder weer aan";
 "notification.app.unpaused.description" = "De app is weer actief. Je ontmoetingen worden vanaf nu weer bijgehouden.";
 "notification.app.unpaused.manualunpause.description" = "Let op: de app is nog niet actief. Je moet deze zelf weer aanzetten in de app.";

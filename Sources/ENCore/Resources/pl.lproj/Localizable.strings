@@ -516,6 +516,5 @@ zadzwoń do swojego lekarza rodzinnego.";
 "notification.update_required.title" = "Konieczna jest aktualizacja";
 "notification.update_required.description" = "Dostępna jest nowa wersja CoronaMelder. Ta wersja nie działa już poprawnie. Sprawdź aplikację, aby znaleźć instrukcje.";
 
-"notification.app.unpaused.title" = "Wstrzymanie dobiegło końca";
 "notification.app.unpaused.description" = "Aplikacja jest ponownie aktywna. Od tego momentu Twoje spotkania będą znowu monitorowane.";
 "notification.app.unpaused.manualunpause.description" = "Uwaga: aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";

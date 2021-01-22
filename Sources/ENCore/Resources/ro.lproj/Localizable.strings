@@ -516,6 +516,5 @@
 "notification.update_required.title" = "Este necesară actualizarea";
 "notification.update_required.description" = "Este disponibilă o noua versiune a aplicației CoronaMelder. Această versiune nu mai funcționează corect. Controlați aplicația pentru instrucții";
 
-"notification.app.unpaused.title" = "Întrerupere terminată";
 "notification.app.unpaused.description" = "Aplicația este reactivată. Începând de acum întâlnirile dumneavoastră vor fi înregistrate.";
 "notification.app.unpaused.manualunpause.description" = "Atenție: aplicația încă nu este activă. Trebuie să o reactivați în aplicație.";

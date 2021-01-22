@@ -515,6 +515,5 @@
 "notification.update_required.title" = "Необходима е актуализация";
 "notification.update_required.description" = "Има нова версия на CoronaMelder. Тази версия вече не работи добре. Провери приложението за инструкции.";
 
-"notification.app.unpaused.title" = "Паузата изтече";
 "notification.app.unpaused.description" = "Приложението отново е активно. От този момент продължават да се събират данни за контактите ти.";
 "notification.app.unpaused.manualunpause.description" = "Внимание: приложението все още не е активно. Трябва да го включиш отново сам в приложението.";

@@ -518,6 +518,5 @@
 "notification.update_required.title" = "Mise à jour nécessaire";
 "notification.update_required.description" = "Il existe une nouvelle version de CoronaMelder. La version actuelle ne fonctionne plus correctement. Consultez l'application pour obtenir des instructions.";
 
-"notification.app.unpaused.title" = "Pause terminée";
 "notification.app.unpaused.description" = "L'application est réactivée. À partir de maintenant, vos rencontres sont à nouveau enregistrées.";
 "notification.app.unpaused.manualunpause.description" = "Attention : l'application n'est pas encore activée. Vous devez la réactivez vous-même dans l'application.";

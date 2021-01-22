@@ -36,6 +36,7 @@ extension UserNotificationCenter {
 
         let content = UNMutableNotificationContent()
         content.sound = UNNotificationSound.default
+        content.title = .notificationAppUnpausedTitle
         content.body = .notificationManualUnpauseDescription
         content.badge = 0
 
