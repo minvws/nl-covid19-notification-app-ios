@@ -38,6 +38,7 @@ final class StatusViewControllerTests: TestCase {
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        interfaceOrientationStream.currentOrientationIsLandscape = false
 
         cardBuilder.buildHandler = { listener, cardTypes in
             return CardRouter(viewController: CardViewController(listener: self.mockCardListener,
@@ -118,6 +119,7 @@ final class StatusViewControllerTests: TestCase {
         let notifiedState: ExposureNotificationState = notified ? .notified(Date(timeIntervalSince1970: 1593260000)) : .notNotified
         let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
+        exposureStateStream.currentExposureState = state
         exposureStateStream.exposureState = Just(state).eraseToAnyPublisher()
     }
 }
