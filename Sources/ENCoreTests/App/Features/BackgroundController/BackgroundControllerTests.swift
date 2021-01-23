@@ -95,6 +95,61 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertEqual(exposureController.lastOpenedNotificationCheckCallCount, 1)
     }
 
+    func test_handleRefresh_duringPauseState_shouldSendPauseExpirationReminder() {
+        let exp = expectation(description: "asyncTask")
+        let notificationExpectation = expectation(description: "notification")
+
+        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
+        task.completion = {
+            exp.fulfill()
+        }
+
+        userNotificationCenter.displayPauseExpirationReminderHandler = { completion in
+            notificationExpectation.fulfill()
+            completion()
+        }
+
+        dataController.isAppPaused = true
+        dataController.pauseEndDate = Date().addingTimeInterval(-.hours(2))
+
+        controller.handle(task: task)
+
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertNotNil(task.completed)
+
+        XCTAssertEqual(userNotificationCenter.displayPauseExpirationReminderCallCount, 1)
+
+        XCTAssertEqual(exposureController.updateAndProcessPendingUploadsCallCount, 0)
+        XCTAssertEqual(exposureController.exposureNotificationStatusCheckCallCount, 0)
+        XCTAssertEqual(exposureController.sendNotificationIfAppShouldUpdateCallCount, 0)
+        XCTAssertEqual(exposureController.lastOpenedNotificationCheckCallCount, 0)
+    }
+
+    func test_handleRefresh_duringPauseState_withinHourOfExpirationTime_shouldNOTSendPauseExpirationReminder() {
+        let exp = expectation(description: "asyncTask")
+
+        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
+        task.completion = {
+            exp.fulfill()
+        }
+
+        userNotificationCenter.displayPauseExpirationReminderHandler = { completion in
+            completion()
+        }
+
+        dataController.isAppPaused = true
+        dataController.pauseEndDate = Date().addingTimeInterval(-.minutes(10))
+
+        controller.handle(task: task)
+
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertNotNil(task.completed)
+
+        XCTAssertEqual(userNotificationCenter.displayPauseExpirationReminderCallCount, 0)
+    }
+
     func test_handleBackgroundDecoyStopKeys() {
         let exp = expectation(description: "HandleBackgroundDecoyStopKeys")
 

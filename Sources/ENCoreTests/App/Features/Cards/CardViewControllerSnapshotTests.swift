@@ -74,4 +74,38 @@ final class CardViewControllerSnapshotTests: TestCase {
 
         snapshots(matching: viewController)
     }
+
+    func test_cardViewController_paused() {
+
+        mockPauseController.pauseTimeElapsed = false
+        mockPauseController.getPauseCountdownStringHandler = { _, emphasizeTime in
+            XCTAssertFalse(emphasizeTime)
+            return NSAttributedString(string: "Some countdown string")
+        }
+
+        viewController = CardViewController(listener: mockCardListener,
+                                            theme: theme,
+                                            types: [.paused],
+                                            dataController: mockExposureDataController,
+                                            pauseController: mockPauseController)
+
+        snapshots(matching: viewController)
+    }
+
+    func test_cardViewController_paused_pauseTimeElapsed() {
+
+        mockPauseController.pauseTimeElapsed = true
+        mockPauseController.getPauseCountdownStringHandler = { _, emphasizeTime in
+            XCTAssertFalse(emphasizeTime)
+            return NSAttributedString(string: "Some countdown string")
+        }
+
+        viewController = CardViewController(listener: mockCardListener,
+                                            theme: theme,
+                                            types: [.paused],
+                                            dataController: mockExposureDataController,
+                                            pauseController: mockPauseController)
+
+        snapshots(matching: viewController)
+    }
 }
