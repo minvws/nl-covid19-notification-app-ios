@@ -22,6 +22,7 @@ final class StatusViewControllerTests: TestCase {
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockCardListener: CardListeningMock!
     private var mockWebViewBuildable: WebviewBuildableMock!
+    private var mockPauseController: PauseControllingMock!
 
     override func setUp() {
         super.setUp()
@@ -32,6 +33,7 @@ final class StatusViewControllerTests: TestCase {
         mockExposureDataController = ExposureDataControllingMock()
         mockExposureDataController.seenAnnouncements = [.interopAnnouncement]
         mockWebViewBuildable = WebviewBuildableMock()
+        mockPauseController = PauseControllingMock()
 
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
@@ -41,7 +43,8 @@ final class StatusViewControllerTests: TestCase {
             return CardRouter(viewController: CardViewController(listener: self.mockCardListener,
                                                                  theme: self.theme,
                                                                  types: cardTypes,
-                                                                 dataController: self.mockExposureDataController),
+                                                                 dataController: self.mockExposureDataController,
+                                                                 pauseController: self.mockPauseController),
                               enableSettingBuilder: EnableSettingBuildableMock(),
                               webviewBuilder: self.mockWebViewBuildable)
         }

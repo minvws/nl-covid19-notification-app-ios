@@ -9,6 +9,7 @@ import ENFoundation
 import Foundation
 import UIKit
 
+/// @mockable
 protocol PauseControlling {
     var pauseTimeElapsed: Bool { get }
     var isAppPaused: Bool { get }

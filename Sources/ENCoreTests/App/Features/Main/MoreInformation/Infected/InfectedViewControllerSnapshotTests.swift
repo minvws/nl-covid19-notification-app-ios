@@ -20,6 +20,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
     private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
     private var mockCardListener: CardListeningMock!
     private var mockExposureDataController: ExposureDataControllingMock!
+    private var mockPauseController: PauseControllingMock!
 
     override func setUp() {
         super.setUp()
@@ -29,6 +30,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        mockPauseController = PauseControllingMock()
 
         exposureStateStream.exposureState = Just(ExposureState(
             notifiedState: .notNotified,
@@ -72,7 +74,8 @@ final class InfectedViewControllerSnapshotTests: TestCase {
         let cardViewController = CardViewController(listener: mockCardListener,
                                                     theme: theme,
                                                     types: [.exposureOff],
-                                                    dataController: mockExposureDataController)
+                                                    dataController: mockExposureDataController,
+                                                    pauseController: mockPauseController)
 
         viewController.set(cardViewController: cardViewController)
 
