@@ -117,6 +117,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleTaskDuringPause(task: BGTask, withIdentifier identifier: BackgroundTaskIdentifiers) {
+        logInfo("Handling background task in paused state")
         func completeTask() {
             self.scheduleRefresh()
             task.setTaskCompleted(success: true)
@@ -125,6 +126,9 @@ final class BackgroundController: BackgroundControlling, Logging {
         if identifier == .refresh,
             let pauseEndDate = dataController.pauseEndDate,
             currentDate().timeIntervalSince(pauseEndDate) > .hours(1) {
+
+            logInfo("Displaying unpause reminder notification")
+
             userNotificationCenter.displayPauseExpirationReminder {
                 completeTask()
             }

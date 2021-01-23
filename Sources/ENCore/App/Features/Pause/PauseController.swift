@@ -27,7 +27,7 @@ protocol PauseControlling {
 
 #endif
 
-final class PauseController: PauseControlling {
+final class PauseController: PauseControlling, Logging {
 
     private let exposureDataController: ExposureDataControlling
     private let exposureController: ExposureControlling
@@ -112,10 +112,9 @@ final class PauseController: PauseControlling {
 
     private func pauseApp(until date: Date) {
 
-        exposureController.pause(untilDate: date)
+        logInfo("Pausing app until \(date)")
 
-        // Cancel all background tasks
-        backgroundController.removeAllTasks()
+        exposureController.pause(untilDate: date)
 
         // Remove any currently pending notifications
         userNotificationCenter.removeAllPendingNotificationRequests()
@@ -126,11 +125,10 @@ final class PauseController: PauseControlling {
 
     func unpauseApp() {
 
+        logInfo("Unpausing app")
+
         // Mark app as unpaused (also starts downloading and processing keys if necessary)
         exposureController.unpause()
-
-        // Make sure we re-schedule the background tasks
-        backgroundController.scheduleTasks()
 
         // Cancel unpause reminder notification
         userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [PushNotificationIdentifier.pauseEnded.rawValue])
