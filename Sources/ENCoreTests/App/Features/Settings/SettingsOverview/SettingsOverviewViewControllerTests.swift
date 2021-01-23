@@ -7,6 +7,7 @@
 
 import Combine
 @testable import ENCore
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
@@ -29,8 +30,9 @@ final class SettingsOverviewViewControllerTests: TestCase {
         mockExposureDataController.pauseEndDatePublisher = Just(nil).eraseToAnyPublisher()
 
         mockPauseController.getPauseCountdownStringHandler = { _, _ in
-            return NSAttributedString(string: "")
+            return NSAttributedString(string: "Some mock countdown string")
         }
+
         sut = SettingsOverviewViewController(listener: mockListener,
                                              theme: theme,
                                              exposureDataController: mockExposureDataController,
@@ -44,6 +46,7 @@ final class SettingsOverviewViewControllerTests: TestCase {
     }
 
     func testSnapshotSettingsOverviewViewController_paused() {
+        mockExposureDataController.pauseEndDate = Date(timeIntervalSince1970: 1611408705)
         snapshots(matching: sut)
     }
 }
