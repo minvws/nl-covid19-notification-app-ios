@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-/// @mockable
+/// @mockable(history: present = true)
 protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener {
 
     var router: MainRouting? { get set }
