@@ -109,8 +109,10 @@ final class BackgroundControllerTests: XCTestCase {
             completion()
         }
 
+        let now = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = now
         dataController.isAppPaused = true
-        dataController.pauseEndDate = Date().addingTimeInterval(-.hours(2))
+        dataController.pauseEndDate = now.addingTimeInterval(-.hours(2))
 
         controller.handle(task: task)
 

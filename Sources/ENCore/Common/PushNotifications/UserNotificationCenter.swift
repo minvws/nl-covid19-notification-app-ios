@@ -8,7 +8,7 @@
 import Foundation
 import NotificationCenter
 
-/// @mockable
+/// @mockable(history: schedulePauseExpirationNotification = true;removeDeliveredNotifications = true)
 protocol UserNotificationCenter {
     /// Gets the authroization status and returns the result on the main thread.
     func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ())

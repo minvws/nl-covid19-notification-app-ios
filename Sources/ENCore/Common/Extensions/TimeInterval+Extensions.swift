@@ -8,11 +8,11 @@
 import Foundation
 
 extension TimeInterval {
-    static func minutes(_ minutes: Int) -> TimeInterval {
+    static func minutes(_ minutes: Double) -> TimeInterval {
         return TimeInterval(minutes * 60)
     }
 
-    static func hours(_ hours: Int) -> TimeInterval {
+    static func hours(_ hours: Double) -> TimeInterval {
         return TimeInterval(hours * 3600)
     }
 }

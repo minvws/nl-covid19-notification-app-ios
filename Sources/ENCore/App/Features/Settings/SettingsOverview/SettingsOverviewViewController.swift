@@ -58,7 +58,9 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
             guard let strongSelf = self else { return }
 
             if strongSelf.exposureDataController.hidePauseInformation {
-                strongSelf.pauseController.showPauseTimeOptions(onViewController: strongSelf)
+                let alertController = strongSelf.pauseController.getPauseTimeOptionsController()
+                strongSelf.uiviewController.present(alertController, animated: true, completion: nil)
+
             } else {
                 strongSelf.router?.routeToPauseConfirmation()
             }
@@ -107,8 +109,11 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
     }
 
     func pauseConfirmationWantsPauseOptions() {
-        router?.pauseConfirmationWantsDismissal(completion: {
-            self.pauseController.showPauseTimeOptions(onViewController: self)
+        router?.pauseConfirmationWantsDismissal(completion: { [weak self] in
+            guard let strongSelf = self else { return }
+
+            let alertController = strongSelf.pauseController.getPauseTimeOptionsController()
+            strongSelf.uiviewController.present(alertController, animated: true, completion: nil)
         })
     }
 

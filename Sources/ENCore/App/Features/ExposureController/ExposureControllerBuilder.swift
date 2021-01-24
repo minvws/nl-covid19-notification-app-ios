@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import UserNotifications
 
-/// @mockable
+/// @mockable(history: pause = true)
 protocol ExposureControlling: AnyObject {
 
     var lastExposureDate: Date? { get }

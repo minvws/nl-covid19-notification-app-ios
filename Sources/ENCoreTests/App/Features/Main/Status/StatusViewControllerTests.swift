@@ -27,7 +27,7 @@ final class StatusViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = true
+        recordSnapshots = false
 
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()

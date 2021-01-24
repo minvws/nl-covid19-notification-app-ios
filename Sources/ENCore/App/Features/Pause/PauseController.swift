@@ -14,7 +14,7 @@ protocol PauseControlling {
     var pauseTimeElapsed: Bool { get }
     var isAppPaused: Bool { get }
 
-    func showPauseTimeOptions(onViewController viewController: ViewControllable)
+    func getPauseTimeOptionsController() -> UIAlertController
     func unpauseApp()
     func getPauseCountdownString(theme: Theme, emphasizeTime: Bool) -> NSAttributedString
     func hidePauseInformationScreen()
@@ -59,10 +59,7 @@ final class PauseController: PauseControlling, Logging {
 
     // MARK: - Pausing and unpausing
 
-    /// Main function to start pausing the app. The function will show an alertcontroller on the given ViewControllable with pause time options.
-    /// When the user chooses any of the options, the pausing starts immediately
-    /// - Parameter viewController: The ViewControllable to show the time options on
-    func showPauseTimeOptions(onViewController viewController: ViewControllable) {
+    func getPauseTimeOptionsController() -> UIAlertController {
 
         let timeOptions = [1, 2, 4, 8, 12]
 
@@ -75,12 +72,12 @@ final class PauseController: PauseControlling, Logging {
             formatter.allowedUnits = [.hour]
         #endif
 
-        let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         timeOptions.forEach { timeOption in
 
             #if USE_DEVELOPER_MENU || DEBUG
-                let pauseInterval: TimeInterval = PauseOverrides.useMinutesInsteadOfHours ? .minutes(timeOption) : .hours(timeOption)
+                let pauseInterval: TimeInterval = PauseOverrides.useMinutesInsteadOfHours ? .minutes(Double(timeOption)) : .hours(Double(timeOption))
             #else
                 let pauseInterval: TimeInterval = .hours(timeOption)
             #endif
@@ -103,12 +100,12 @@ final class PauseController: PauseControlling, Logging {
                 }
             }
 
-            optionMenu.addAction(action)
+            alertController.addAction(action)
         }
 
-        optionMenu.addAction(UIAlertAction(title: .cancel, style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: .cancel, style: .cancel, handler: nil))
 
-        viewController.uiviewController.present(optionMenu, animated: true, completion: nil)
+        return alertController
     }
 
     private func pauseApp(until date: Date) {
