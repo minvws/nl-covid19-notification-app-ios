@@ -50,7 +50,7 @@ protocol ExposureStateStreaming {
     var currentExposureState: ExposureState? { get }
 }
 
-/// @mockable
+/// @mockable(history: update = true)
 protocol MutableExposureStateStreaming: ExposureStateStreaming {
     func update(state: ExposureState)
 }
