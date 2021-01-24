@@ -27,7 +27,7 @@ final class StatusViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = true
 
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
@@ -109,6 +109,53 @@ final class StatusViewControllerTests: TestCase {
 
     func test_snapshot_no_recent_updates_not_notified() {
         set(activeState: .inactive(.noRecentNotificationUpdates), notified: false)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_paused_not_notified() {
+
+        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        mockPauseController.getPauseCountdownStringHandler = { _, _ in
+            return NSAttributedString(string: "Some mock countdown string")
+        }
+
+        let date = Date(timeIntervalSinceNow: 7200)
+        set(activeState: .inactive(.paused(date)), notified: false)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_paused_pauseTimeElapsed_not_notified() {
+        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        mockPauseController.pauseTimeElapsed = true
+        mockPauseController.getPauseCountdownStringHandler = { _, _ in
+            return NSAttributedString(string: "Some mock countdown string")
+        }
+
+        let date = Date(timeIntervalSinceNow: -7200)
+        set(activeState: .inactive(.paused(date)), notified: false)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_paused_notified() {
+        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        mockPauseController.getPauseCountdownStringHandler = { _, _ in
+            return NSAttributedString(string: "Some mock countdown string")
+        }
+
+        let date = Date(timeIntervalSinceNow: 7200)
+        set(activeState: .inactive(.paused(date)), notified: true)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_paused_pauseTimeElapsed_notified() {
+        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        mockPauseController.pauseTimeElapsed = true
+        mockPauseController.getPauseCountdownStringHandler = { _, _ in
+            return NSAttributedString(string: "Some mock countdown string")
+        }
+
+        let date = Date(timeIntervalSinceNow: -7200)
+        set(activeState: .inactive(.paused(date)), notified: true)
         snapshots(matching: viewController)
     }
 

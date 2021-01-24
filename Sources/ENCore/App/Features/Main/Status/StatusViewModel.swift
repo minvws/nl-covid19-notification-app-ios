@@ -157,9 +157,11 @@ struct StatusViewModel {
 
         let description = PauseController.getPauseCountdownString(theme: theme, endDate: pauseEndDate, center: true, emphasizeTime: true)
 
+        let title: String = pauseEndDate.isBefore(currentDate()) ? .statusPauseEndedTitle : .statusPausedTitle
+
         return StatusViewModel(
             icon: .paused,
-            title: .init(string: .statusPausedTitle),
+            title: .init(string: title),
             description: description,
             buttons: [.unpause],
             footer: nil,

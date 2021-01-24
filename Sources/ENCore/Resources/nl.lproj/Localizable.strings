@@ -329,7 +329,7 @@
 
 /* MARK: - Paused Status */
 "status.paused.title" = "De app is gepauzeerd";
-"status.pause.ended.title" = "Pauzeren is afgelopen";
+"status.pause.ended.title" = "Zet de app weer aan";
 "status.appState.card.paused.title" = "App gepauzeerd";
 "status.paused.countdown" = "De app wordt over %@ weer aangezet";
 "status.paused.manualunpause" = "De app is nog niet actief. Je moet deze zelf weer aanzetten.";
