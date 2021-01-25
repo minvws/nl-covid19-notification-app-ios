@@ -142,6 +142,9 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     func helpRequestsEnableApp() {
         onboardingConsentManager.askNotificationsAuthorization {
             self.onboardingConsentManager.askEnableExposureNotifications { activeState in
+
+                self.onboardingConsentManager.didCompleteConsent()
+
                 switch activeState {
                 case .notAuthorized:
                     self.listener?.didCompleteOnboarding()
