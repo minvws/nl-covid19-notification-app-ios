@@ -43,7 +43,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
         internalView.update(model: setting.model(theme: theme, environmentController: environmentController), actionCompletion: { [weak self] in
             self?.listener?.enableSettingDidTriggerAction()
-        })
+            })
 
         if self.setting == .enableBluetooth && exposureStateStream.currentExposureState?.activeState == .inactive(.bluetoothOff) {
             NotificationCenter.default.addObserver(self,
@@ -139,7 +139,12 @@ private final class EnableSettingView: View {
         hasBottomMargin = true
 
         navigationBar.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+
+            if #available(iOS 13, *) {
+                make.top.leading.trailing.equalToSuperview()
+            } else {
+                make.top.leading.trailing.equalTo(safeAreaLayoutGuide)
+            }
         }
 
         titleLabel.snp.makeConstraints { make in
