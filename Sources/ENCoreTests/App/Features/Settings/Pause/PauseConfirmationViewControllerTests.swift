@@ -32,7 +32,7 @@ final class PauseConfirmationViewControllerTests: TestCase {
 
     // MARK: - Tests
 
-    func testSnapshotDefaultState() {
+    func testSnapshotDefaultState_PauseConfirmationViewController() {
         snapshots(matching: sut)
     }
 }
