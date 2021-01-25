@@ -17,7 +17,7 @@ struct StatusViewIcon {
     static let ok = StatusViewIcon(color: \.ok, icon: .statusIconOk, accessibilityLabel: .statusIconAccessibilityOk)
     static let notified = StatusViewIcon(color: \.notified, icon: .statusIconNotified, accessibilityLabel: .statusIconAccessibilityNotified)
     static let inactive = StatusViewIcon(color: \.inactive, icon: .statusIconInactive, accessibilityLabel: .statusIconAccessibilityInactive)
-    static let paused = StatusViewIcon(color: \.inactiveGray, icon: .statusIconPaused, accessibilityLabel: .statusIconAccessibilityInactive)
+    static let paused = StatusViewIcon(color: \.inactiveGray, icon: .statusIconPaused, accessibilityLabel: .statusIconAccessibilityPaused)
 }
 
 struct StatusViewButtonModel {

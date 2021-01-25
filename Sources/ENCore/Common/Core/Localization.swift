@@ -320,6 +320,7 @@ extension String {
 
     static var statusIconAccessibilityOk: String { return Localization.string(for: "status.icon.accessibility.ok") }
     static var statusIconAccessibilityInactive: String { return Localization.string(for: "status.icon.accessibility.inactive") }
+    static var statusIconAccessibilityPaused: String { return Localization.string(for: "status.icon.accessibility.inactive") }
     static var statusIconAccessibilityNotified: String { return Localization.string(for: "status.icon.accessibility.notified") }
     static var statusAppState: String { return Localization.string(for: "status.appState") }
     static var statusAppStateInactiveTitle: String { return Localization.string(for: "status.appState.inactive.title") }
