@@ -120,6 +120,15 @@ final class PauseControllerTests: TestCase {
         XCTAssertEqual(countdownString.string, "The app will be turned on again in 1 minute")
     }
 
+    func test_getPauseCountdownString_shouldRoundUp() {
+        let now = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = now
+
+        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(91), center: false, emphasizeTime: false)
+
+        XCTAssertEqual(countdownString.string, "The app will be turned on again in 2 minutes")
+    }
+
     func test_getPauseCountdownString_pauseEndTimeWithin2hours() {
         let now = Date()
         DateTimeTestingOverrides.overriddenCurrentDate = now

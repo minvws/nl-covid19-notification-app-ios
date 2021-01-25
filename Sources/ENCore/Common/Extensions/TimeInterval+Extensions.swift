@@ -15,4 +15,14 @@ extension TimeInterval {
     static func hours(_ hours: Double) -> TimeInterval {
         return TimeInterval(hours * 3600)
     }
+
+    func roundedToUpperMinute() -> TimeInterval {
+        let fullMinutes = Int(self / .minutes(1))
+        let secondsWithinMinute = self.truncatingRemainder(dividingBy: .minutes(1))
+        if secondsWithinMinute != 0, self >= 0 {
+            return (Double(fullMinutes) * 60) + .minutes(1)
+        } else {
+            return self
+        }
+    }
 }

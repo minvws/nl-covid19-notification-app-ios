@@ -158,7 +158,7 @@ final class PauseController: PauseControlling, Logging {
         formatter.allowedUnits = [.hour, .minute]
         formatter.unitsStyle = .full
 
-        let timeLeft = endDate.timeIntervalSince(currentDate())
+        let timeLeft = endDate.timeIntervalSince(currentDate()).roundedToUpperMinute()
 
         guard timeLeft > 0 else {
             let attributedString = NSMutableAttributedString(attributedString: NSAttributedString.makeFromHtml(
@@ -170,8 +170,7 @@ final class PauseController: PauseControlling, Logging {
             return center ? attributedString.centered() : attributedString
         }
 
-        // We max out the timeinterval that is left to make sure we never show "0 minutes left" but we always show "1 minute" left in that case
-        guard let time = formatter.string(from: max(timeLeft, .minutes(1))) else {
+        guard let time = formatter.string(from: timeLeft) else {
             return NSAttributedString()
         }
 
