@@ -332,6 +332,7 @@
 "status.appState.card.paused.title" = "Приложението е поставено на пауза";
 "status.paused.countdown" = "Приложението ще бъде включено отново след %@";
 "status.paused.manualunpause" = "Приложението все още не е активно. Трябва да го включиш отново сам.";
+"status.card.manualunpause.title" = "Паузата изтече";
 "status.card.manualunpause.description" = "Приложението все още не е активно. Трябва да го включиш отново сам.";
 
 /* The title for the table of items in more information */
@@ -514,5 +515,6 @@
 "notification.update_required.title" = "Необходима е актуализация";
 "notification.update_required.description" = "Има нова версия на CoronaMelder. Тази версия вече не работи добре. Провери приложението за инструкции.";
 
+"notification.app.unpaused.title" = "Паузата изтече";
 "notification.app.unpaused.description" = "Приложението отново е активно. От този момент продължават да се събират данни за контактите ти.";
 "notification.app.unpaused.manualunpause.description" = "Внимание: приложението все още не е активно. Трябва да го включиш отново сам в приложението.";

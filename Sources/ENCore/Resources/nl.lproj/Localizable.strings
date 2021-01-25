@@ -333,9 +333,9 @@
 "status.pause.ended.title" = "Zet de app weer aan";
 "status.appState.card.paused.title" = "App gepauzeerd";
 "status.paused.countdown" = "De app wordt over %@ weer aangezet";
-"status.paused.manualunpause" = "De app is nog niet actief. Je moet deze zelf weer aanzetten.";
+"status.paused.manualunpause" = "CoronaMelder is nog niet actief. Je moet deze zelf aanzetten.";
 "status.card.manualunpause.title" = "Zet app weer aan";
-"status.card.manualunpause.description" = "De app is nog niet actief. Je moet deze zelf weer aanzetten.";
+"status.card.manualunpause.description" = "De app is nog niet actief. Je moet deze zelf aanzetten.";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Meer informatie";
@@ -519,4 +519,4 @@
 
 "notification.app.unpaused.title" = "Zet CoronaMelder weer aan";
 "notification.app.unpaused.description" = "De app is weer actief. Je ontmoetingen worden vanaf nu weer bijgehouden.";
-"notification.app.unpaused.manualunpause.description" = "Let op: de app is nog niet actief. Je moet deze zelf weer aanzetten in de app.";
+"notification.app.unpaused.manualunpause.description" = "Let op: de app is nog niet actief. Je moet deze zelf aanzetten in de app.";

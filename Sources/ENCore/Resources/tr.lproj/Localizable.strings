@@ -333,6 +333,7 @@
 "status.appState.card.paused.title" = "Uygulama duraklatıldı";
 "status.paused.countdown" = "Uygulama %@ içinde tekrar açılacak";
 "status.paused.manualunpause" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
+"status.card.manualunpause.title" = "Duraklatma bitti";
 "status.card.manualunpause.description" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
 
 /* The title for the table of items in more information */
@@ -515,5 +516,6 @@
 "notification.update_required.title" = "Güncelleme gerekiyor";
 "notification.update_required.description" = "CoronaMelder'ın yeni bir sürümü var. Bu sürüm artık iyi çalışmıyor. Talimatlar için uygulamayı kontrol edin.";
 
+"notification.app.unpaused.title" = "Duraklatma bitti";
 "notification.app.unpaused.description" = "Uygulama tekrar aktif durumda. Buluşmalarınız şu andan itibaren tekrar takip edilecek.";
 "notification.app.unpaused.manualunpause.description" = "Dikkat: uygulama henüz aktif değil. Uygulamayı kendiniz tekrar açmanız gerekiyor.";

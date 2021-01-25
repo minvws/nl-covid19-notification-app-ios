@@ -332,6 +332,7 @@
 "status.appState.card.paused.title" = "Wstrzymano aplikację";
 "status.paused.countdown" = "Za %@ aplikacja zostanie ponownie włączona";
 "status.paused.manualunpause" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
+"status.card.manualunpause.title" = "Wstrzymanie dobiegło końca";
 "status.card.manualunpause.description" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
 
 /* The title for the table of items in more information */
@@ -515,5 +516,6 @@ zadzwoń do swojego lekarza rodzinnego.";
 "notification.update_required.title" = "Konieczna jest aktualizacja";
 "notification.update_required.description" = "Dostępna jest nowa wersja CoronaMelder. Ta wersja nie działa już poprawnie. Sprawdź aplikację, aby znaleźć instrukcje.";
 
+"notification.app.unpaused.title" = "Wstrzymanie dobiegło końca";
 "notification.app.unpaused.description" = "Aplikacja jest ponownie aktywna. Od tego momentu Twoje spotkania będą znowu monitorowane.";
 "notification.app.unpaused.manualunpause.description" = "Uwaga: aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";

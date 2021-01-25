@@ -335,6 +335,7 @@
 "status.appState.card.paused.title" = "Application mise en pause";
 "status.paused.countdown" = "L'application sera réactivée dans %@";
 "status.paused.manualunpause" = "L'application n'est pas encore activée. Vous devez la réactiver vous-même.";
+"status.card.manualunpause.title" = "Pause terminée";
 "status.card.manualunpause.description" = "L'application n'est pas encore activée. Vous devez la réactiver vous-même.";
 
 /* The title for the table of items in more information */
@@ -517,5 +518,6 @@
 "notification.update_required.title" = "Mise à jour nécessaire";
 "notification.update_required.description" = "Il existe une nouvelle version de CoronaMelder. La version actuelle ne fonctionne plus correctement. Consultez l'application pour obtenir des instructions.";
 
+"notification.app.unpaused.title" = "Pause terminée";
 "notification.app.unpaused.description" = "L'application est réactivée. À partir de maintenant, vos rencontres sont à nouveau enregistrées.";
 "notification.app.unpaused.manualunpause.description" = "Attention : l'application n'est pas encore activée. Vous devez la réactivez vous-même dans l'application.";

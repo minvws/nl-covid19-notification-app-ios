@@ -333,9 +333,9 @@
 "status.pause.ended.title" = "Turn the app on again";
 "status.appState.card.paused.title" = "App is paused";
 "status.paused.countdown" = "The app will be turned on again in %@";
-"status.paused.manualunpause" = "The app is not active yet. You need to turn it on again yourself.";
+"status.paused.manualunpause" = "CoronaMelder is not active yet. You need to turn it on yourself.";
 "status.card.manualunpause.title" = "Turn the app on again";
-"status.card.manualunpause.description" = "The app is not active yet. You need to turn it on again yourself.";
+"status.card.manualunpause.description" = "The app is not active yet. You need to turn it on yourself.";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "More information";
@@ -519,4 +519,4 @@
 
 "notification.app.unpaused.title" = "Turn CoronaMelder on again";
 "notification.app.unpaused.description" = "The app is active again. From now on, your encounters are tracked again.";
-"notification.app.unpaused.manualunpause.description" = "The app is not active yet. You need to turn it on again in the app itself.";
+"notification.app.unpaused.manualunpause.description" = "The app is not active yet. You need to turn it on in the app itself.";
