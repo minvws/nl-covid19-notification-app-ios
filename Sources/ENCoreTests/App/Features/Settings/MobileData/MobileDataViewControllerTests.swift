@@ -29,7 +29,7 @@ final class MobileDataViewControllerTests: TestCase {
 
     // MARK: - Tests
 
-    func testSnapshotDefaultState() {
+    func testSnapshotDefaultState_mobileDataViewController() {
         snapshots(matching: sut)
     }
 }
