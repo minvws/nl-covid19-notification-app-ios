@@ -17,8 +17,12 @@ protocol UserNotificationCenter {
 
     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> ())?)
 
+    func removeNotificationsFromNotificationsCenter()
     func removeDeliveredNotifications(withIdentifiers identifiers: [String])
     func removeAllPendingNotificationRequests()
+
+    func schedulePauseExpirationNotification(pauseEndDate: Date)
+    func displayPauseExpirationReminder(completion: @escaping () -> ())
 }
 
 extension UNUserNotificationCenter: UserNotificationCenter {
@@ -30,9 +34,6 @@ extension UNUserNotificationCenter: UserNotificationCenter {
             }
         }
     }
-}
-
-extension UserNotificationCenter {
 
     func removeNotificationsFromNotificationsCenter() {
 

@@ -108,7 +108,7 @@ final class PauseControllerTests: TestCase {
 
         let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(-1), center: false, emphasizeTime: false)
 
-        XCTAssertEqual(countdownString.string, "The app is not active yet. You need to turn it on again yourself.")
+        XCTAssertEqual(countdownString.string, "CoronaMelder is not active yet. You need to turn it on yourself.")
     }
 
     func test_getPauseCountdownString_pauseEndTimeWithinAMinute() {
