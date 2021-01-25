@@ -85,7 +85,6 @@ final class PauseControllerTests: TestCase {
         XCTAssertEqual(mockExposureController.pauseCallCount, 1)
         XCTAssertEqual(mockExposureController.pauseArgValues.first, expectedPauseEndDate)
         XCTAssertEqual(mockUserNotificationCenter.removeAllPendingNotificationRequestsCallCount, 1)
-        XCTAssertEqual(mockUserNotificationCenter.schedulePauseExpirationNotificationArgValues.first, expectedPauseEndDate)
     }
 
     func test_unpause() {
