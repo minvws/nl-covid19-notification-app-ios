@@ -55,16 +55,6 @@ final class SettingsViewController: NavigationController, SettingsViewControllab
 
     // MARK: - SettingsViewControllable
 
-    func presentInNavigationController(viewController: ViewControllable, animated: Bool) {
-        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
-
-        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
-            navigationController.presentationController?.delegate = presentationDelegate
-        }
-
-        present(navigationController, animated: animated, completion: nil)
-    }
-
     func push(viewController: ViewControllable, animated: Bool) {
         pushViewController(viewController.uiviewController, animated: animated)
     }

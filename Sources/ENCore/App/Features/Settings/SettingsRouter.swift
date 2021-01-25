@@ -15,7 +15,6 @@ protocol SettingsViewControllable: ViewControllable, SettingsOverviewListener, M
     var router: SettingsRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
-    func presentInNavigationController(viewController: ViewControllable, animated: Bool)
     func cleanNavigationStackIfNeeded()
 }
 

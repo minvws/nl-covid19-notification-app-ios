@@ -47,7 +47,6 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = .moreInformationSettingsTitle
         navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
 
         internalView.mobileDataButton.action = { [weak self] in
@@ -75,6 +74,11 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
         })
 
         updatePausedState(pauseEndDate: exposureDataController.pauseEndDate)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationItem.title = .moreInformationSettingsTitle
     }
 
     private func updatePausedState(pauseEndDate: Date?) {
