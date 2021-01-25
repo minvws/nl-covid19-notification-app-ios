@@ -6,8 +6,6 @@
  */
 
 import ENFoundation
-import SafariServices
-import SnapKit
 import UIKit
 
 /// @mockable
@@ -16,7 +14,7 @@ protocol SettingsRouting: Routing {
     func routeToMobileData()
 }
 
-final class SettingsViewController: NavigationController, SettingsViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
+final class SettingsViewController: NavigationController, SettingsViewControllable, UIAdaptivePresentationControllerDelegate {
 
     weak var router: SettingsRouting?
 

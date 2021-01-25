@@ -7,7 +7,6 @@
 
 import Combine
 import ENFoundation
-import SnapKit
 import UIKit
 
 /// @mockable
@@ -252,24 +251,24 @@ private final class SettingsView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        scrollableStackView.snp.makeConstraints { (maker: ConstraintMaker) in
+        scrollableStackView.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.top.bottom.equalToSuperview()
         }
 
-        pauseAppButton.snp.makeConstraints { (maker: ConstraintMaker) in
+        pauseAppButton.snp.makeConstraints { maker in
             maker.height.equalTo(48)
         }
 
-        unpauseAppButton.snp.makeConstraints { (maker: ConstraintMaker) in
+        unpauseAppButton.snp.makeConstraints { maker in
             maker.height.equalTo(48)
         }
 
-        separatorView.snp.makeConstraints { (maker: ConstraintMaker) in
+        separatorView.snp.makeConstraints { maker in
             maker.height.equalTo(1)
         }
 
-        mobileDataButton.snp.makeConstraints { (maker: ConstraintMaker) in
+        mobileDataButton.snp.makeConstraints { maker in
             maker.height.equalTo(48)
         }
     }
@@ -334,13 +333,13 @@ private final class PauseCountdownView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        icon.snp.makeConstraints { (maker: ConstraintMaker) in
+        icon.snp.makeConstraints { maker in
             maker.leading.equalToSuperview().offset(20)
             maker.size.equalTo(20)
             maker.centerY.equalToSuperview()
         }
 
-        label.snp.makeConstraints { (maker: ConstraintMaker) in
+        label.snp.makeConstraints { maker in
             maker.leading.equalTo(icon.snp.trailing).offset(10)
             maker.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.top.bottom.equalToSuperview().inset(16)

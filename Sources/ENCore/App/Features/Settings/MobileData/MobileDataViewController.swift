@@ -6,8 +6,6 @@
  */
 
 import ENFoundation
-import SafariServices
-import SnapKit
 import UIKit
 
 /// @mockable
@@ -114,7 +112,7 @@ private final class MobileDataView: View {
     override func setupConstraints() {
         super.setupConstraints()
 
-        infoView.snp.makeConstraints { (maker: ConstraintMaker) in
+        infoView.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.top.bottom.equalToSuperview()
         }
