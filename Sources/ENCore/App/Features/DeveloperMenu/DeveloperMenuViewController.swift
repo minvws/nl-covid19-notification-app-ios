@@ -189,7 +189,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Only works with test entitlements, currently set: \(getUseTestDiagnosisKeys())",
                               action: { [weak self] in self?.toggleGetTestDiagnosisKeys() }),
                 DeveloperItem(title: "Schedule pause time in minutes instead of hours",
-                              subtitle: "Currently set to: \(PauseOverrides.useMinutesInsteadOfHours ? "minutes" : "hours")",
+                              subtitle: "Currently set to: \(getPauseUnit())",
                               action: { [weak self] in self?.togglePauseTimeUnit() })
             ]),
             ("Storage", [
@@ -466,6 +466,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
         #else
             return "None"
+        #endif
+    }
+
+    private func getPauseUnit() -> String {
+
+        #if DEBUG || USE_DEVELOPER_MENU
+            return PauseOverrides.useMinutesInsteadOfHours ? "minutes" : "hours"
+        #else
+            return "hours"
         #endif
     }
 

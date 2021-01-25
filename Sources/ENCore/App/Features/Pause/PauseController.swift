@@ -79,7 +79,7 @@ final class PauseController: PauseControlling, Logging {
             #if USE_DEVELOPER_MENU || DEBUG
                 let pauseInterval: TimeInterval = PauseOverrides.useMinutesInsteadOfHours ? .minutes(Double(timeOption)) : .hours(Double(timeOption))
             #else
-                let pauseInterval: TimeInterval = .hours(timeOption)
+                let pauseInterval: TimeInterval = .hours(Double(timeOption))
             #endif
 
             guard let title = formatter.string(from: pauseInterval) else {
