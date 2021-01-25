@@ -58,12 +58,17 @@ struct ExposureDataStorageKey {
                                                                      storeType: .insecure(volatile: false))
     static let lastDecoyProcessDate = CodableStorageKey<Date>(name: "lastDecoyProcessDate",
                                                               storeType: .insecure(volatile: false))
+    static let pauseEndDate = CodableStorageKey<Date>(name: "pauseEndDate",
+                                                      storeType: .insecure(volatile: false))
+    static let hidePauseInformation = CodableStorageKey<Bool>(name: "hidePauseInformation",
+                                                              storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
 
     private var disposeBag = Set<AnyCancellable>()
     private(set) var isFirstRun: Bool = false
+    private lazy var pauseEndDateSubject = CurrentValueSubject<Date?, Never>(pauseEndDate)
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling,
@@ -279,6 +284,47 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                                maximumRequestSize: applicationConfiguration.requestMaximumSize)
             }
             .eraseToAnyPublisher()
+    }
+
+    var isAppPaused: Bool {
+        pauseEndDate != nil
+    }
+
+    var pauseEndDatePublisher: AnyPublisher<Date?, Never> {
+        return pauseEndDateSubject
+            .removeDuplicates(by: ==)
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .share()
+            .eraseToAnyPublisher()
+    }
+
+    var pauseEndDate: Date? {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pauseEndDate)
+        } set {
+            if let newDate = newValue {
+                storageController.store(object: newDate,
+                                        identifiedBy: ExposureDataStorageKey.pauseEndDate,
+                                        completion: { _ in
+                                            self.pauseEndDateSubject.send(newDate)
+                                        })
+            } else {
+                storageController.removeData(for: ExposureDataStorageKey.pauseEndDate, completion: { _ in
+                    self.pauseEndDateSubject.send(newValue)
+                })
+            }
+        }
+    }
+
+    var hidePauseInformation: Bool {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.hidePauseInformation) ?? false
+        } set {
+            storageController.store(object: newValue,
+                                    identifiedBy: ExposureDataStorageKey.hidePauseInformation,
+                                    completion: { _ in })
+        }
     }
 
     func updateLastLocalNotificationExposureDate(_ date: Date) {

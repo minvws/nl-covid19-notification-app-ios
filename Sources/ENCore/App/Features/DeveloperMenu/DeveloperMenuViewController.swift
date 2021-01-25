@@ -187,7 +187,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.toggleDailyLimit() }),
                 DeveloperItem(title: "Fetch TEKs using Test function",
                               subtitle: "Only works with test entitlements, currently set: \(getUseTestDiagnosisKeys())",
-                              action: { [weak self] in self?.toggleGetTestDiagnosisKeys() })
+                              action: { [weak self] in self?.toggleGetTestDiagnosisKeys() }),
+                DeveloperItem(title: "Schedule pause time in minutes instead of hours",
+                              subtitle: "Currently set to: \(PauseOverrides.useMinutesInsteadOfHours ? "minutes" : "hours")",
+                              action: { [weak self] in self?.togglePauseTimeUnit() })
             ]),
             ("Storage", [
                 DeveloperItem(title: "Erase Local Storage",
@@ -305,6 +308,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.seenAnnouncements, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.treatmentPerspective, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.hidePauseInformation, completion: { _ in })
     }
 
     private func uploadKeys() {
@@ -434,6 +438,12 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             }
 
             ExposureManagerOverrides.useTestDiagnosisKeys = false
+        #endif
+    }
+
+    private func togglePauseTimeUnit() {
+        #if DEBUG || USE_DEVELOPER_MENU
+            PauseOverrides.useMinutesInsteadOfHours.toggle()
         #endif
     }
 
@@ -777,6 +787,8 @@ private extension ExposureActiveState {
             return "Not Authorised"
         case let .inactive(inactiveState):
             switch inactiveState {
+            case .paused:
+                return "Inactive - Paused"
             case .bluetoothOff:
                 return "Inactive - Bluetooth off"
             case .disabled:

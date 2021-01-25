@@ -30,6 +30,7 @@ protocol StatusDependency {
     var bluetoothStateStream: BluetoothStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
     var dataController: ExposureDataControlling { get }
+    var pauseController: PauseControlling { get }
 }
 
 private final class StatusDependencyProvider: DependencyProvider<StatusDependency>, CardDependency {
@@ -59,6 +60,10 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 
     var dataController: ExposureDataControlling {
         return dependency.dataController
+    }
+
+    var pauseController: PauseControlling {
+        dependency.pauseController
     }
 }
 

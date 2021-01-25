@@ -1,10 +1,44 @@
-"moreInformation.cell.settings.title" = "Ustawienia";
-"moreInformation.cell.settings.subtitle" = "Dostosuj swoje ustawienia dla korzystania z danych komórkowych";
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "Musisz zaktualizować oprogramowanie w swoim telefonie";
+"update.software.os.description" = "CoronaMelder wymaga najnowszej wersji systemu iOS, aby móc w dalszym ciągu pracować poprawnie na Twoim telefonie.";
+"update.software.os.detail.title" = "Zaktualizuj telefon";
+"update.software.os.detail.step1.detail" = "Ustawienia";
+"update.software.os.detail.step2.detail" = "Ogólne";
+"update.software.os.detail.step3.detail" = "Aktualizacja oprogramowania";
+"update.software.os.detail.step1" = "Otwórz <b>Ustawienia</b> w swoim telefonie";
+"update.software.os.detail.step2" = "Przejdź do „Ogólne”";
+"update.software.os.detail.step3" = "Przejdź do „Aktualizacja oprogramowania”";
+"update.button.update" = "Zaktualizuj";
+
+"update.software.os.detail.step4" = "Wybierz „Pobierz i zainstaluj”";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = "CoronaMelder nieustannie monitoruje spotkania. Aplikacja sprawdza także co parę godzin, czy osoby, z którymi miałeś kontakt, były w tym czasie zarażone koronawirusem. Jeśli tak, otrzymasz powiadomienie. Ostatnią kontrolę przeprowadzono %@.";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "CoronaMelder nieustannie monitoruje spotkania. Aplikacja sprawdza także co parę godzin, czy osoby, z którymi miałeś kontakt, były w tym czasie zarażone koronawirusem. Jeśli tak, otrzymasz powiadomienie.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "Ustawienia";
+"moreInformation.cell.settings.subtitle" = "Wstrzymaj aplikację i wyłącz dane komórkowe";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Ustawienia";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Sprawdzanie kodów tylko przy połączeniu wi-fi";
 "moreInformation.settings.description" = "CoronaMelder sprawdza kilka razy dziennie, czy znajdowałeś się w pobliżu zarażonej osoby. Jeśli wyłączysz dane komórkowe, aplikacja będzie to robić przy połączeniu z wi-fi. Spotkania są kontrolowane również, gdy nie masz połączenia internetowego.";
+"moreInformation.settings.mobiledata.button" = "Przełączenie na dane komórkowe";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "Wstrzymaj aplikację";
+"moreInformation.settings.pause.subtitle" = "Jesteś pewien, że chcesz wstrzymać aplikację?";
+"moreInformation.settings.pause.description" = "Podczas, gdy aplikacja jest wstrzymana, spotkania z innymi użytkownikami aplikacji nie są tymczasowo monitorowane. Nie będziesz także otrzymywał powiadomień, jeśli u osoby, w pobliżu której się znajdowałeś, wykryto koronawirusa. \n\n\nWstrzymuj aplikacje wyłącznie w sytuacjach, kiedy Twój telefon znajduje się w pobliżu telefonów innych osób, jednak nie ma możliwości zarażenia się. Na przykład dzięki użyciu środków ochronnych do celów medycznych.";
+"moreInformation.settings.pause.description.short" = "Jeśli wstrzymasz aplikację, Twoje spotkania tymczasowo nie będą monitorowane. Ponadto nie będziesz mógł otrzymać powiadomienia, jeśli znajdowałeś się w pobliżu osoby, u której wykryto koronawirusa.";
+"moreInformation.settings.pause.dontshowscreen" = "Nie pokazuj tego ekranu ponownie";
+"moreInformation.settings.pause.yesbutton" = "Tak, wstrzymuję";
+"moreInformation.settings.pause.cancelbutton" = "Nie, nie wstrzymuję";
+"moreInformation.settings.pause.pausebutton" = "Wstrzymaj aplikację";
+"moreInformation.settings.pause.enableappbutton" = "Włącz aplikację";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "Włącz dane komórkowe";
 "moreInformation.settings.step1" = "Otwórz <b>Ustawienia</b> w swoim telefonie poprzez poniższy przycisk";
 "moreInformation.settings.step2" = "Włącz lub wyłącz dane komórkowe dla CoronaMelder";
 "moreInformation.settings.step2.row.title" = "Dane komórkowe";
@@ -292,6 +326,15 @@
 "status.notified.moreInfo" = "Co mogę teraz zrobić?";
 "status.notified.removeNotification" = "Usuń powiadomienie";
 
+/* MARK: - Paused Status */
+"status.paused.title" = "Aplikacja jest wstrzymana";
+"status.pause.ended.title" = "Wstrzymanie dobiegło końca";
+"status.appState.card.paused.title" = "Wstrzymano aplikację";
+"status.paused.countdown" = "Za %@ aplikacja zostanie ponownie włączona";
+"status.paused.manualunpause" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
+"status.card.manualunpause.title" = "Wstrzymanie dobiegło końca";
+"status.card.manualunpause.description" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Więcej informacji";
 
@@ -402,6 +445,7 @@ zadzwoń do swojego lekarza rodzinnego.";
 
 "moreInformation.status.alarm.alt-text" = "Czerwony ekran z dzwonkiem alarmowym oznacza, że konieczne jest podjęcie działań";
 
+"moreInformation.latestTekUpdate" = "CoronaMelder nieustannie monitoruje spotkania. Aplikacja sprawdza także co parę godzin, czy osoby, z którymi miałeś kontakt, były w tym czasie zarażone koronawirusem. Jeśli tak, otrzymasz powiadomienie. Ostatnią kontrolę przeprowadzono %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "Aplikacja <u>nie</u> jest aktywna";
 "cards.exposureOff.content" = "Włącz ustawienia, które są niezbędne do działania aplikacji.";
@@ -471,3 +515,7 @@ zadzwoń do swojego lekarza rodzinnego.";
 
 "notification.update_required.title" = "Konieczna jest aktualizacja";
 "notification.update_required.description" = "Dostępna jest nowa wersja CoronaMelder. Ta wersja nie działa już poprawnie. Sprawdź aplikację, aby znaleźć instrukcje.";
+
+"notification.app.unpaused.title" = "Wstrzymanie dobiegło końca";
+"notification.app.unpaused.description" = "Aplikacja jest ponownie aktywna. Od tego momentu Twoje spotkania będą znowu monitorowane.";
+"notification.app.unpaused.manualunpause.description" = "Uwaga: aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";

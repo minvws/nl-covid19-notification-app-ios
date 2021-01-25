@@ -16,6 +16,7 @@ final class CardViewControllerTests: TestCase {
     private let mockRouter = CardRoutingMock()
     private var mockCardListener: CardListeningMock!
     private var mockExposureDataController: ExposureDataControllingMock!
+    private var mockPauseController: PauseControllingMock!
 
     override func setUp() {
         super.setUp()
@@ -23,11 +24,13 @@ final class CardViewControllerTests: TestCase {
         recordSnapshots = false
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
+        mockPauseController = PauseControllingMock()
 
         viewController = CardViewController(listener: mockCardListener,
                                             theme: theme,
                                             types: [.bluetoothOff],
-                                            dataController: mockExposureDataController)
+                                            dataController: mockExposureDataController,
+                                            pauseController: mockPauseController)
         viewController.router = mockRouter
     }
 

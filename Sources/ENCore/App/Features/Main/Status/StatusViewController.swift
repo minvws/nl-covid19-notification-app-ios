@@ -36,6 +36,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         cardBuilder.build(listener: self, types: [.bluetoothOff])
     }()
 
+    private var pauseTimer: Timer?
+
     init(exposureStateStream: ExposureStateStreaming,
          interfaceOrientationStream: InterfaceOrientationStreaming,
          cardBuilder: CardBuildable,
@@ -100,14 +102,13 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     @objc private func updateExposureStateView() {
 
-        exposureStateStream.exposureState.sink { [weak self] status in
-            guard let strongSelf = self else {
-                return
-            }
-            strongSelf.interfaceOrientationStream.isLandscape.subscribe { isLandscape in
-                strongSelf.update(exposureState: status, isLandscape: isLandscape)
-            }.disposed(by: strongSelf.rxDisposeBag)
+        exposureStateStream.exposureState.sink { [weak self] _ in
+            self?.refreshCurrentState()
         }.store(in: &disposeBag)
+
+        interfaceOrientationStream.isLandscape.subscribe { [weak self] _ in
+            self?.refreshCurrentState()
+        }.disposed(by: rxDisposeBag)
     }
 
     private func refreshCurrentState() {
@@ -117,7 +118,24 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         }
     }
 
+    private func updatePauseTimer() {
+        if dataController.isAppPaused {
+            if pauseTimer == nil {
+                // This timer fires every minute to update the status on the screen. This is needed because in a paused state
+                // the status will show a minute-by-minute countdown until the time when the pause state should end
+                pauseTimer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true, block: { [weak self] _ in
+                    self?.refreshCurrentState()
+                })
+            }
+        } else {
+            pauseTimer?.invalidate()
+            pauseTimer = nil
+        }
+    }
+
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
+
+        updatePauseTimer()
 
         let statusViewModel: StatusViewModel
         let announcementCardTypes = getAnnouncementCardTypes()
@@ -126,6 +144,9 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
             statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
+
+        case let (.inactive(.paused(pauseEndDate)), .notNotified):
+            statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
 
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
@@ -198,6 +219,8 @@ private final class StatusView: View {
     private let textContainer = UIStackView()
     private let buttonContainer = UIStackView()
     private let cardView: UIView
+
+    private var iconViewSizeConstraints: Constraint?
     private lazy var iconView: EmitterStatusIconView = {
         EmitterStatusIconView(theme: self.theme)
     }()
@@ -302,7 +325,7 @@ private final class StatusView: View {
             maker.bottom.equalTo(stretchGuide.snp.bottom).priority(.high)
         }
         iconView.snp.makeConstraints { maker in
-            maker.width.height.equalTo(48)
+            iconViewSizeConstraints = maker.width.height.equalTo(48).constraint
         }
     }
 
@@ -322,7 +345,12 @@ private final class StatusView: View {
 
     func update(with viewModel: StatusViewModel) {
 
-        iconView.update(with: viewModel.icon)
+        iconViewSizeConstraints?.layoutConstraints.forEach { constraint in
+            // if the emitter animation is not shown, we use a slightly larger main icon
+            constraint.constant = viewModel.showEmitter ? 48 : 56
+        }
+        iconView.update(with: viewModel.icon, showEmitter: viewModel.showEmitter)
+        iconView.setNeedsLayout()
 
         titleLabel.attributedText = viewModel.title
         descriptionLabel.attributedText = viewModel.description
@@ -380,6 +408,8 @@ private final class StatusView: View {
 private extension ExposureStateInactiveState {
     func cardType(listener: StatusListener?) -> CardType {
         switch self {
+        case .paused:
+            return .paused
         case .bluetoothOff:
             return .bluetoothOff
         case .disabled:

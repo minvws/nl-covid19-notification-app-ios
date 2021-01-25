@@ -17,6 +17,7 @@ struct StatusViewIcon {
     static let ok = StatusViewIcon(color: \.ok, icon: .statusIconOk, accessibilityLabel: .statusIconAccessibilityOk)
     static let notified = StatusViewIcon(color: \.notified, icon: .statusIconNotified, accessibilityLabel: .statusIconAccessibilityNotified)
     static let inactive = StatusViewIcon(color: \.inactive, icon: .statusIconInactive, accessibilityLabel: .statusIconAccessibilityInactive)
+    static let paused = StatusViewIcon(color: \.inactiveGray, icon: .statusIconPaused, accessibilityLabel: .statusIconAccessibilityPaused)
 }
 
 struct StatusViewButtonModel {
@@ -29,6 +30,7 @@ struct StatusViewButtonModel {
         case removeNotification(String)
         case updateAppSettings
         case tryAgain
+        case unpause
     }
 
     static func moreInfo(date: Date) -> StatusViewButtonModel {
@@ -51,6 +53,12 @@ struct StatusViewButtonModel {
         title: .statusAppStateCardButton,
         style: .primary,
         action: .updateAppSettings
+    )
+
+    static let unpause = StatusViewButtonModel(
+        title: .statusAppStateCardButton,
+        style: .primary,
+        action: .unpause
     )
 
     static let tryAgain = StatusViewButtonModel(
@@ -91,6 +99,7 @@ struct StatusViewModel {
     var gradientColor: ThemeColor
     var showScene: Bool
     var showClouds: Bool
+    var showEmitter: Bool
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
         let description = timeAgo(from: date)
@@ -105,7 +114,8 @@ struct StatusViewModel {
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
             showScene: false,
-            showClouds: false
+            showClouds: false,
+            showEmitter: true
         )
     }
 
@@ -120,7 +130,8 @@ struct StatusViewModel {
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientActive,
             showScene: showScene,
-            showClouds: true
+            showClouds: true,
+            showEmitter: true
         )
     }
 
@@ -137,7 +148,28 @@ struct StatusViewModel {
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
             showScene: false,
-            showClouds: false
+            showClouds: false,
+            showEmitter: true
+        )
+    }
+
+    static func pausedWithNotNotified(theme: Theme, pauseEndDate: Date) -> StatusViewModel {
+
+        let description = PauseController.getPauseCountdownString(theme: theme, endDate: pauseEndDate, center: true, emphasizeTime: true)
+
+        let title: String = pauseEndDate.isBefore(currentDate()) ? .statusPauseEndedTitle : .statusPausedTitle
+
+        return StatusViewModel(
+            icon: .paused,
+            title: .init(string: title),
+            description: description,
+            buttons: [.unpause],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.statusGradientPaused,
+            showScene: false,
+            showClouds: false,
+            showEmitter: false
         )
     }
 
@@ -150,7 +182,8 @@ struct StatusViewModel {
         shouldShowHideMessage: false,
         gradientColor: \.lightOrange,
         showScene: false,
-        showClouds: false
+        showClouds: false,
+        showEmitter: true
     )
 
     static let inactiveTryAgainWithNotNotified = StatusViewModel(
@@ -162,7 +195,8 @@ struct StatusViewModel {
         shouldShowHideMessage: false,
         gradientColor: \.lightOrange,
         showScene: false,
-        showClouds: false
+        showClouds: false,
+        showEmitter: true
     )
 
     static func timeAgo(from: Date) -> String {

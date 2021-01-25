@@ -1,10 +1,44 @@
-"moreInformation.cell.settings.title" = "الإعدادات";
-"moreInformation.cell.settings.subtitle" = "اضبط إعداداتك لاستخدام البيانات المحمولة للهاتف";
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
+"update.software.os.description" = "يحتاج CoronaMelder إلى الإصدار الأحدث لـ IOS كي يستمر في العمل بصورة صحيحة على هاتفك.";
+"update.software.os.detail.title" = "حدّث هاتفك";
+"update.software.os.detail.step1.detail" = "الإعدادات";
+"update.software.os.detail.step2.detail" = "العامة";
+"update.software.os.detail.step3.detail" = "تحديث البرنامج";
+"update.software.os.detail.step1" = "افتح <b>الإعدادات</b> في هاتفك";
+"update.software.os.detail.step2" = "انتقل إلى \"العامة\"";
+"update.software.os.detail.step3" = "انتقل إلى \"تحديث البرامج\"";
+"update.button.update" = "تحديث";
+
+"update.software.os.detail.step4" = "انقرعلى \"تحميل البرنامج وتثبيته\"";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = " يتتبع CoronaMelder المصادفات باستمرار. يتحقق التطبيق أيضًا كل بضع ساعات مما إذا كان الشخص الذي قابلته ناقلاً للعدوى في ذلك الوقت. سيتم إبلاغك إذا كان كذلك. آخر فحص كان قيد التشغيل في%@";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "يتتبع CoronaMelder المصادفات باستمرار. يتحقق التطبيق أيضًا كل بضع ساعات مما إذا كان الشخص الذي قابلته ناقلاً للعدوى في ذلك الوقت. سيتم إبلاغك إذا كان الامر كذلك.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "الإعدادات";
+"moreInformation.cell.settings.subtitle" = "اضبط إعداداتك واستخدم خدمة تجوال البيانات";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "الإعدادات";
+"moreInformation.settings.mobiledata.paragraphtitle" = "تحقق فقط من الرموز عبرالـ WiFi";
 "moreInformation.settings.description" = "يتحقق CoronaMelder عدة مرات في اليوم ما إذا كنت على مقربة من شخص مصاب بكورونا. إذا قمت بإيقاف تشغيل خدمة تجوال البيانات، فسيقوم التطبيق بذلك فقط عند استخدام الـ WiFi. يتم تعقب الاحتكاك كذلك إذا لم يكن لديك اتصال بالإنترنت.";
+"moreInformation.settings.mobiledata.button" = "انتقل إلى خدمة تجوال البيانات";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "إيقاف التطبيق مؤقتًا";
+"moreInformation.settings.pause.subtitle" = "هل أنت متأكد من أنك تريد إيقاف التطبيق مؤقتًا؟";
+"moreInformation.settings.pause.description" = "لا يتتبع التطبيق المصادفات مع مستخدمي التطبيق الآخرين أثناء الإيقاف المؤقت. لا يمكنك أيضًا تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا.\n\nقم بالإيقاف المؤقت فقط في الحالات التي يكون فيها هاتفك على مقربة من هواتف الآخرين لكن لم تكن عرضة للإصابة. بسبب استخدام معدات الوقاية الطبية على سبيل المثال.";
+"moreInformation.settings.pause.description.short" = "إذا قمت بإيقاف التطبيق مؤقتًا، فلن يتم تعقب مصادفاتك مؤقتًا. أيضًا لا يمكنك تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا.";
+"moreInformation.settings.pause.dontshowscreen" = "لا تقم بإظهار هذه الشاشة مرة أخرى";
+"moreInformation.settings.pause.yesbutton" = "نعم، قم بإيقاف التطبيق مؤقتًا";
+"moreInformation.settings.pause.cancelbutton" = "كلا، لا تقم بإيقاف التشغيل مؤقتًا";
+"moreInformation.settings.pause.pausebutton" = "إيقاف التطبيق مؤقتًا";
+"moreInformation.settings.pause.enableappbutton" = "تشغيل التطبيق";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "تشغيل خدمة تجوال البيانات";
 "moreInformation.settings.step1" = "افتح <b>الإعدادات</b> في هاتفك عن طريق الزر أدناه";
 "moreInformation.settings.step2" = "قم بتشغيل أو إيقاف تشغيل خدمة تجوال البيانات من أجل CoronaMelder ";
 "moreInformation.settings.step2.row.title" = "خدمة تجوال البيانات";
@@ -297,6 +331,15 @@
 "status.notified.moreInfo" = "ما الذي يمكنني القيام به الآن؟";
 "status.notified.removeNotification" = "حذف الإشعار";
 
+/* MARK: - Paused Status */
+"status.paused.title" = "تم إيقاف التطبيق مؤقتًا";
+"status.pause.ended.title" = "انتهى الإيقاف المؤقت";
+"status.appState.card.paused.title" = "تم إيقاف التطبيق مؤقتًا";
+"status.paused.countdown" = "سيتم تشغيل التطبيق مرة أخرى بعد %@";
+"status.paused.manualunpause" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
+"status.card.manualunpause.title" = "انتهى الإيقاف المؤقت";
+"status.card.manualunpause.description" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "المزيد من المعلومات";
 
@@ -408,6 +451,7 @@
 
 "moreInformation.status.alarm.alt-text" = "شاشة حمراء مع جرس إنذار يشير إلى أنه ينبغي عليك التصرف الآن.";
 
+"moreInformation.latestTekUpdate" = "يتتبع CoronaMelder المصادفات باستمرار. يتحقق التطبيق أيضًا كل بضع ساعات مما إذا كان الشخص الذي قابلته معديًا في ذلك الوقت. سيتم إبلاغك إذا كان الأمر كذلك. آخر فحص كان قيد التشغيل في %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "التطبيق <u>غير</u> نشط";
 "cards.exposureOff.content" = "شغّل الأعدادات التي يحتاج إليها التطبيق كي يعمل.";
@@ -477,3 +521,7 @@
 
 "notification.update_required.title" = "التحديث ضروري";
 "notification.update_required.description" = "هناك إصدار جديد من CoronaMelder. لم يعد هذا الإصدار يعمل بشكل صحيح. تحقق من التطبيق للحصول على التعليمات.";
+
+"notification.app.unpaused.title" = "انتهى الإيقاف المؤقت";
+"notification.app.unpaused.description" = "التطبيق نشط مرة أخرى. سيتم تعقب مصادفاتك من الآن فصاعدًا.";
+"notification.app.unpaused.manualunpause.description" = "انتبه: التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";

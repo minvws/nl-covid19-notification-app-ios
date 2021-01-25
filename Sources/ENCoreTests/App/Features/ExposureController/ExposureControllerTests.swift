@@ -590,6 +590,78 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(days, 2)
     }
 
+    // MARK: - Pausing
+
+    func test_pause() {
+        let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        let exposureManagerExpectation = expectation(description: "setExposureNotificationEnabled")
+        exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in
+            XCTAssertFalse(enabled)
+            exposureManagerExpectation.fulfill()
+            completion(.success(()))
+        }
+
+        controller.pause(untilDate: date)
+
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
+        XCTAssertEqual(dataController.pauseEndDateSetCallCount, 1)
+        XCTAssertEqual(dataController.pauseEndDate, date)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 1)
+        XCTAssertEqual(mutableStateStream.updateArgValues.first?.notifiedState, .notNotified)
+        XCTAssertEqual(mutableStateStream.updateArgValues.first?.activeState, .inactive(.paused(date)))
+    }
+
+    func test_unpause() {
+
+        activate()
+
+        let exposureManagerExpectation = expectation(description: "setExposureNotificationEnabled")
+        exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in
+            XCTAssertTrue(enabled)
+            exposureManagerExpectation.fulfill()
+            completion(.success(()))
+        }
+
+        controller.unpause()
+
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
+        XCTAssertEqual(dataController.pauseEndDateSetCallCount, 1)
+        XCTAssertEqual(dataController.pauseEndDate, nil)
+        XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
+        XCTAssertEqual(mutableStateStream.updateArgValues.last?.activeState, .active)
+    }
+
+    func test_unpause_inInactiveState() {
+
+        let exposureManagerExpectation = expectation(description: "setExposureNotificationEnabled")
+        exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in
+            XCTAssertTrue(enabled)
+            exposureManagerExpectation.fulfill()
+            completion(.success(()))
+        }
+
+        exposureManager.activateHandler = { completion in
+            completion(.active)
+        }
+        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.authorized)
+        }
+
+        controller.unpause()
+
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
+        XCTAssertEqual(dataController.pauseEndDateSetCallCount, 1)
+        XCTAssertEqual(dataController.pauseEndDate, nil)
+        XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
+        XCTAssertEqual(mutableStateStream.updateArgValues.last?.activeState, .active)
+    }
+
     // MARK: - Private
 
     private func setupActivation() {

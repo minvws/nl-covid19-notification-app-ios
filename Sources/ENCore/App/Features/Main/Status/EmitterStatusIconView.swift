@@ -65,10 +65,11 @@ final class EmitterStatusIconView: View {
         layer.cornerRadius = min(bounds.width, bounds.height) / 2
     }
 
-    func update(with icon: StatusViewIcon) {
+    func update(with icon: StatusViewIcon, showEmitter: Bool) {
         backgroundColor = theme.colors[keyPath: icon.color]
         iconImageView.image = icon.icon
         iconImageView.accessibilityLabel = icon.accessibilityLabel
+        emitterLayer.isHidden = !showEmitter
 
         updateEmitterCell()
     }

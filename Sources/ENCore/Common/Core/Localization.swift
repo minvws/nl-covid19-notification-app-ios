@@ -301,6 +301,9 @@ extension String {
     static var notificationUploadFailedTitle: String { Localization.string(for: "notification.upload.failed.title") }
     static var notificationUploadFailedContent: String { Localization.string(for: "notification.upload.failed.content") }
 
+    static var notificationAppUnpausedTitle: String { Localization.string(for: "notification.app.unpaused.title") }
+    static var notificationManualUnpauseDescription: String { Localization.string(for: "notification.app.unpaused.manualunpause.description") }
+
     // MARK: - Main
 
     static var mainConfirmNotificationRemovalTitle: String { Localization.string(for: "main.confirmNotificationRemoval.title") }
@@ -317,6 +320,7 @@ extension String {
 
     static var statusIconAccessibilityOk: String { return Localization.string(for: "status.icon.accessibility.ok") }
     static var statusIconAccessibilityInactive: String { return Localization.string(for: "status.icon.accessibility.inactive") }
+    static var statusIconAccessibilityPaused: String { return Localization.string(for: "status.icon.accessibility.inactive") }
     static var statusIconAccessibilityNotified: String { return Localization.string(for: "status.icon.accessibility.notified") }
     static var statusAppState: String { return Localization.string(for: "status.appState") }
     static var statusAppStateInactiveTitle: String { return Localization.string(for: "status.appState.inactive.title") }
@@ -329,6 +333,7 @@ extension String {
     static var statusAppStateCardButton: String { return Localization.string(for: "status.appState.card.button") }
     static var statusAppStateCardTryAgain: String { return Localization.string(for: "status.appState.card.try_again") }
     static var statusActiveDescription: String { return Localization.string(for: "status.active.description") }
+    static var statusPausedCardTitle: String { return Localization.string(for: "status.appState.card.paused.title") }
 
     static func statusNotifiedDaysAgo(days: Int) -> String {
         switch days {
@@ -389,8 +394,37 @@ extension String {
 
     // MARK: - MoreInformation | Settings
 
+    // MARK: - MoreInformation | Settings | Pause App
+
+    static var moreInformationSettingsPauseTitle: String { return Localization.string(for: "moreInformation.settings.pause.title") }
+    static var moreInformationSettingsPauseSubtitle: String { return Localization.string(for: "moreInformation.settings.pause.subtitle") }
+    static var moreInformationSettingsPauseDescription: String { return Localization.string(for: "moreInformation.settings.pause.description") }
+    static var moreInformationSettingsPauseDescriptionShort: String { return Localization.string(for: "moreInformation.settings.pause.description.short") }
+    static var moreInformationSettingsPauseButtonTitle: String { return Localization.string(for: "moreInformation.settings.pause.pausebutton") }
+    static var moreInformationSettingsPauseDontShowScreen: String { return Localization.string(for: "moreInformation.settings.pause.dontshowscreen") }
+
+    static var moreInformationSettingsPauseYesPause: String { return Localization.string(for: "moreInformation.settings.pause.yesbutton")
+    }
+    static var moreInformationSettingsPauseNoCancelPause: String { return Localization.string(for: "moreInformation.settings.pause.cancelbutton")
+    }
+
+    static var moreInformationSettingsUnpauseTitle: String { return Localization.string(for: "moreInformation.settings.pause.enableappbutton") }
+    static var statusPausedCountdown: String { return Localization.string(for: "status.paused.countdown") }
+    static var statusPausedManualUnpause: String { return Localization.string(for: "status.paused.manualunpause") }
+    static var statusPausedTitle: String { return Localization.string(for: "status.paused.title") }
+    static var statusPauseEndedTitle: String { return Localization.string(for: "status.pause.ended.title") }
+
+    static var statusCardManualUnpauseTitle: String { return Localization.string(for: "status.card.manualunpause.title") }
+
+    // MARK: - MoreInformation | Settings | Mobile Data
+
+    static var moreInformationSettingsMobileDataTitle: String { return Localization.string(for: "moreInformation.settings.mobiledata.title") }
+
     static var moreInformationSettingsTitle: String { return Localization.string(for: "moreInformation.settings.title") }
     static var moreInformationSettingsDescription: String { return Localization.string(for: "moreInformation.settings.description") }
+    static var moreInformationSettingsMobileDataParagraphTitle: String { return Localization.string(for: "moreInformation.settings.mobiledata.paragraphtitle") }
+    static var moreInformationSettingsMobileDataButton: String { return Localization.string(for: "moreInformation.settings.mobiledata.button") }
+
     static var moreInformationSettingsStep1: String { return Localization.string(for: "moreInformation.settings.step1") }
     static var moreInformationSettingsStep2: String { return Localization.string(for: "moreInformation.settings.step2") }
     static var moreInformationSettingsStep2RowTitle: String { return Localization.string(for: "moreInformation.settings.step2.row.title") }

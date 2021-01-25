@@ -1,10 +1,44 @@
-"moreInformation.cell.settings.title" = "Configurări";
-"moreInformation.cell.settings.subtitle" = "Schimbați configurările pentru folosirea datelor celulare";
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "Trebuie să actualizați software-ul pe telefonul dvs.";
+"update.software.os.description" = "CoronaMelder are nevoie de cea mai recentă versiune iOS pentru a continua să funcționeze corect pe telefonul dvs.";
+"update.software.os.detail.title" = "Actualizați-vă telefonul";
+"update.software.os.detail.step1.detail" = "Configurări";
+"update.software.os.detail.step2.detail" = "General";
+"update.software.os.detail.step3.detail" = "Actualizare software";
+"update.software.os.detail.step1" = "Deschideți <b>Configurări</b> pe telefonul dvs.";
+"update.software.os.detail.step2" = "Mergeți la \"General\"";
+"update.software.os.detail.step3" = "Apăsați pe \"Actualizare software\"";
+"update.button.update" = "Actualizare";
+
+"update.software.os.detail.step4" = "Apăsați pe \"Descărcare și instalare\"";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = "CoronaMelder ține continuu evidența întâlnirilor. De asemenea, aplicația verifică o dată la două ore dacă persoana întâlnită era infectată în acel moment. Dacă este cazul, veți primi o notificare. Ultima verificare a fost pe %@";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "CoronaMelder ține continuu evidența întâlnirilor. De asemenea, aplicația verifică o dată la două ore dacă persoana întâlnită era infectată în acel moment. Dacă este cazul, veți primi o notificare.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "Configurări";
+"moreInformation.cell.settings.subtitle" = "Întrerupeți aplicația și dezactivați datele celulare";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Configurări";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Controlare de coduri doar prin wifi";
 "moreInformation.settings.description" = "CoronaMelder controlează de câteva ori pe zi dacă v-ați aflat în apropierea unei persoane infectată cu coronavirus. Dacă dezactivați datele celulare, aplicația va face acest lucru doar dacă folosiți wifi. Întâlnirile sunt urmărite chiar dacă nu aveți legătură la internet.";
+"moreInformation.settings.mobiledata.button" = "Activare prin date celulare";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "Întreruperea aplicației";
+"moreInformation.settings.pause.subtitle" = "Sunteți sigur că doriți să întrerupeți aplicația?";
+"moreInformation.settings.pause.description" = "În timpul întreruperii, aplicația nu ține evidența întâlnirilor cu alți utilizatori ai aplicației. De asemenea, nu puteți primi nicio notificare  daca v-ați aflat în apropierea unei persoane care mai târziu se dovedește a fi infectată cu coronavirus.  \n\n\n\nÎntrerupeți aplicația doar în situațiile în care telefonul dvs. se află în apropierea altora, dar nu există riscul infectării, de exemplu, când folosiți materiale medicale de protecție.";
+"moreInformation.settings.pause.description.short" = "Dacă întrerupeți aplicația, temporar întâlnirile dumneavoastră nu vor mai fi înregistrate. De asemenea, nu veți primi nicio notificare dacă v-ați aflat în apropierea unei persoane care ulterior s-a dovedit a fi infectată cu coronavirus.";
+"moreInformation.settings.pause.dontshowscreen" = "Nu mai afișați acest ecran";
+"moreInformation.settings.pause.yesbutton" = "Da, întrerupe";
+"moreInformation.settings.pause.cancelbutton" = "Nu, nu întrerupeți";
+"moreInformation.settings.pause.pausebutton" = "Întrerupeți aplicația";
+"moreInformation.settings.pause.enableappbutton" = "Activați aplicația";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "Activare de date celulare";
 "moreInformation.settings.step1" = "Accesați <b>Configurări</b> pe telefonul dvs. folosind butonul de mai jos";
 "moreInformation.settings.step2" = "Activați sau dezactivați datele celulare pentru CoronaMelder";
 "moreInformation.settings.step2.row.title" = "Date celulare";
@@ -293,6 +327,15 @@
 "status.notified.moreInfo" = "Ce pot face acum?";
 "status.notified.removeNotification" = "Ștergere notificare";
 
+/* MARK: - Paused Status */
+"status.paused.title" = "Aplicația este întreruptă";
+"status.pause.ended.title" = "Întreruperea e terminată";
+"status.appState.card.paused.title" = "Aplicație întreruptă";
+"status.paused.countdown" = "Aplicația va fi reactivată peste %@";
+"status.paused.manualunpause" = "Aplicația încă nu este activă. Trebuie să o reactivați.";
+"status.card.manualunpause.title" = "Întrerupere terminată";
+"status.card.manualunpause.description" = "Aplicația încă nu este activă. Trebuie să o reactivați.";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mai multe informații";
 
@@ -402,6 +445,7 @@
 
 "moreInformation.status.alarm.alt-text" = "Cerc roșu cu clopoțel de alarmă care indică faptul că o acțiune este  necesară acum";
 
+"moreInformation.latestTekUpdate" = "CoronaMelder ține continuu evidența întâlnirilor. De asemenea, aplicația verifică o dată la două ore dacă persoana întâlnită era infectată în acel moment. Dacă este cazul, veți primi o notificare. Ultima verificare a fost pe %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "Aplicația <u>nu</u> este activă";
 "cards.exposureOff.content" = "Activați configurările necesare pentru ca aplicația să funcționeze.";
@@ -471,3 +515,7 @@
 
 "notification.update_required.title" = "Este necesară actualizarea";
 "notification.update_required.description" = "Este disponibilă o noua versiune a aplicației CoronaMelder. Această versiune nu mai funcționează corect. Controlați aplicația pentru instrucții";
+
+"notification.app.unpaused.title" = "Întrerupere terminată";
+"notification.app.unpaused.description" = "Aplicația este reactivată. Începând de acum întâlnirile dumneavoastră vor fi înregistrate.";
+"notification.app.unpaused.manualunpause.description" = "Atenție: aplicația încă nu este activă. Trebuie să o reactivați în aplicație.";

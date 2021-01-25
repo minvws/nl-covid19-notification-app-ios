@@ -28,11 +28,14 @@ final class RootRouterTests: XCTestCase {
     private let webviewBuilder = WebviewBuildableMock()
     private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
     private let userNotificationCenter = UserNotificationCenterMock()
+    private var mockPauseController: PauseControllingMock!
 
     private var router: RootRouter!
 
     override func setUp() {
         super.setUp()
+
+        mockPauseController = PauseControllingMock()
 
         exposureController.isAppDeactivatedHandler = {
             Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
@@ -72,7 +75,8 @@ final class RootRouterTests: XCTestCase {
                             updateAppBuilder: updateAppBuilder,
                             webviewBuilder: webviewBuilder,
                             userNotificationCenter: userNotificationCenter,
-                            currentAppVersion: "1.0")
+                            currentAppVersion: "1.0",
+                            pauseController: mockPauseController)
         set(activeState: .notAuthorized)
     }
 

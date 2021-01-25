@@ -125,9 +125,9 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return BackgroundControllerBuilder(dependency: self).build()
     }()
 
-    fileprivate var dataController: ExposureDataControlling {
+    lazy var dataController: ExposureDataControlling = {
         return ExposureDataControllerBuilder(dependency: self).build()
-    }
+    }()
 
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()
@@ -156,6 +156,13 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         return InterfaceOrientationStream()
+    }
+
+    var pauseController: PauseControlling {
+        PauseController(exposureDataController: dataController,
+                        exposureController: exposureController,
+                        userNotificationCenter: userNotificationCenter,
+                        backgroundController: backgroundController)
     }
 
     let theme: Theme = ENTheme()
@@ -227,6 +234,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
                           userNotificationCenter: dependencyProvider.userNotificationCenter,
-                          currentAppVersion: unwrappedCurrentAppVersion)
+                          currentAppVersion: unwrappedCurrentAppVersion,
+                          pauseController: dependencyProvider.pauseController)
     }
 }

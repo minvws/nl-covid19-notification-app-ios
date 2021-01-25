@@ -65,6 +65,13 @@ protocol ExposureDataControlling: AnyObject {
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
     var seenAnnouncements: [Announcement] { get set }
+
+    // MARK: - Pausing
+
+    var pauseEndDatePublisher: AnyPublisher<Date?, Never> { get }
+    var isAppPaused: Bool { get }
+    var pauseEndDate: Date? { get set }
+    var hidePauseInformation: Bool { get set }
 }
 
 protocol ExposureDataControllerBuildable {

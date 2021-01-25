@@ -68,6 +68,12 @@ final class ExposureController: ExposureControlling, Logging {
             return Just(()).eraseToAnyPublisher()
         }
 
+        // Don't activate EN if we're in a paused state, just update the status
+        guard !dataController.isAppPaused else {
+            updateStatusStream()
+            return Just(()).eraseToAnyPublisher()
+        }
+
         return Future { resolve in
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
@@ -105,6 +111,36 @@ final class ExposureController: ExposureControlling, Logging {
 
     func deactivate() {
         exposureManager.deactivate()
+    }
+
+    func pause(untilDate date: Date) {
+        exposureManager.setExposureNotificationEnabled(false) { [weak self] result in
+            self?.dataController.pauseEndDate = date
+            self?.updateStatusStream()
+        }
+    }
+
+    func unpause() {
+
+        exposureManager.setExposureNotificationEnabled(true) { [weak self] result in
+
+            guard let strongSelf = self else {
+                return
+            }
+
+            strongSelf.dataController.pauseEndDate = nil
+
+            if strongSelf.isActivated == false {
+                strongSelf.activate(inBackgroundMode: false)
+            } else {
+                // Update the status (will remove the paused state from the UI)
+                strongSelf.updateStatusStream()
+
+                strongSelf.updateWhenRequired()
+                    .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+                    .store(in: &strongSelf.disposeBag)
+            }
+        }
     }
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
@@ -190,6 +226,7 @@ final class ExposureController: ExposureControlling, Logging {
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?) {
         logDebug("`requestExposureNotificationPermission` started")
+
         exposureManager.setExposureNotificationEnabled(true) { result in
             self.logDebug("`requestExposureNotificationPermission` returned result \(result)")
 
@@ -204,24 +241,6 @@ final class ExposureController: ExposureControlling, Logging {
                 }
 
                 self.updateStatusStream()
-            }
-        }
-    }
-
-    func requestPushNotificationPermission(_ completion: @escaping (() -> ())) {
-        func request() {
-            userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
-                DispatchQueue.main.async {
-                    completion()
-                }
-            }
-        }
-
-        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
-            if authorizationStatus == .authorized {
-                completion()
-            } else {
-                request()
             }
         }
     }
@@ -597,9 +616,16 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private func updateStatusStream() {
+
+        if let pauseEndDate = dataController.pauseEndDate {
+            mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused(pauseEndDate))))
+            return
+        }
+
         guard isActivated else {
             return logDebug("Not Updating Status Stream as not `isActivated`")
         }
+
         logDebug("Updating Status Stream")
 
         let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours

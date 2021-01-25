@@ -1,10 +1,44 @@
-"moreInformation.cell.settings.title" = "Einstellungen";
-"moreInformation.cell.settings.subtitle" = "Passen Sie Ihre Einstellungen für die Verwendung von mobilen Daten an";
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "Sie müssen die Software auf Ihrem Telefon aktualisieren.";
+"update.software.os.description" = "CoronaMelder benötigt die neueste Version von iOS, damit die App auch weiterhin gut auf Ihrem Telefon funktioniert.";
+"update.software.os.detail.title" = "Aktualisieren Sie Ihr Telefon.";
+"update.software.os.detail.step1.detail" = "Einstellungen";
+"update.software.os.detail.step2.detail" = "Allgemein";
+"update.software.os.detail.step3.detail" = "Softwareupdate";
+"update.software.os.detail.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon.";
+"update.software.os.detail.step2" = "Gehen Sie zu ‘Allgemein’.";
+"update.software.os.detail.step3" = "Gehen Sie zu ‘Softwareupdate’.";
+"update.button.update" = "Aktualisieren";
+
+"update.software.os.detail.step4" = "Wählen Sie ‘Laden und installieren’.";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = "CoronaMelder registriert ständig Begegnungen. Die App kontrolliert auch alle paar Stunden, ob Personen, denen Sie begegnet sind, zu diesem Zeitpunkt ansteckend waren. Wenn ja, erhalten Sie eine Nachricht. Die letzte Kontrolle war am %@";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "CoronaMelder registriert ständig Begegnungen. Die App kontrolliert auch alle paar Stunden, ob Personen, denen Sie begegnet sind, zu diesem Zeitpunkt ansteckend waren. Wenn ja, erhalten Sie eine Nachricht.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "Einstellungen";
+"moreInformation.cell.settings.subtitle" = "App anhalten und mobile Daten deaktivieren";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Einstellungen";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Nur Codes über WLAN kontrollieren";
 "moreInformation.settings.description" = "CoronaMelder kontrolliert mehrmals pro Tag, ob Sie in der Nähe einer Person mit Corona waren. Wenn Sie mobile Daten deaktivieren, kontrolliert die App nur noch, wenn Sie WLAN nutzen. Ihre Begegnungen werden auch registriert, wenn Sie keine Internetverbindung haben.";
+"moreInformation.settings.mobiledata.button" = "Zu mobile Daten aktivieren";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "App anhalten";
+"moreInformation.settings.pause.subtitle" = "Sind Sie sicher, dass die App angehalten werden soll?";
+"moreInformation.settings.pause.description" = "Die App registriert während der Pause vorübergehend keine Begegnungen mit anderen App-Benutzern. Sie erhalten auch keine Nachricht, wenn Sie in der Nähe einer Person waren, bei der später Corona festgestellt wurde.\n\nHalten Sie nur dann die App an, wenn Ihr Telefon in die Nähe von Telefonen anderer Personen kommt, aber keine Ansteckungsgefahr besteht. Zum Beispiel, weil medizinische Schutzausrüstung verwendet wird.";
+"moreInformation.settings.pause.description.short" = "Wenn Sie die App anhalten, werden Ihre Begegnungen vorübergehend nicht registriert. Sie erhalten auch keine Nachricht, wenn Sie in der Nähe einer Person waren, bei der später Corona festgestellt wurde.";
+"moreInformation.settings.pause.dontshowscreen" = "Dieses Fenster nicht mehr anzeigen";
+"moreInformation.settings.pause.yesbutton" = "Ja, anhalten";
+"moreInformation.settings.pause.cancelbutton" = "Nein, nicht anhalten";
+"moreInformation.settings.pause.pausebutton" = "App anhalten";
+"moreInformation.settings.pause.enableappbutton" = "App aktivieren";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "Mobile Daten aktivieren";
 "moreInformation.settings.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Schaltfläche.";
 "moreInformation.settings.step2" = "Aktivieren oder deaktivieren Sie mobile Daten für CoronaMelder";
 "moreInformation.settings.step2.row.title" = "Mobile Daten";
@@ -294,6 +328,15 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.notified.moreInfo" = "Was kann ich jetzt machen?";
 "status.notified.removeNotification" = "Nachricht löschen";
 
+/* MARK: - Paused Status */
+"status.paused.title" = "Die App wurde angehalten.";
+"status.pause.ended.title" = "Pause vorbei";
+"status.appState.card.paused.title" = "App angehalten";
+"status.paused.countdown" = "Die App wird in %@ wieder aktiviert.";
+"status.paused.manualunpause" = "Die App ist noch nicht aktiv. Sie müssen sie selbst wieder aktivieren.";
+"status.card.manualunpause.title" = "Pause vorbei";
+"status.card.manualunpause.description" = "Die App ist noch nicht aktiv. Sie müssen sie selbst wieder aktivieren.";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mehr Informationen";
 
@@ -403,6 +446,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 
 "moreInformation.status.alarm.alt-text" = "Ein roter Bildschirm mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist.";
 
+"moreInformation.latestTekUpdate" = "CoronaMelder registriert ständig Begegnungen. Die App kontrolliert auch alle paar Stunden, ob Personen, denen Sie begegnet sind, zu diesem Zeitpunkt ansteckend waren. Wenn ja, erhalten Sie eine Nachricht. Die letzte Kontrolle war am %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "App ist <u>nicht</u> aktiv.";
 "cards.exposureOff.content" = "Aktivieren Sie die Einstellungen, die die App benötigt.";
@@ -472,3 +516,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 
 "notification.update_required.title" = "Update erforderlich";
 "notification.update_required.description" = "Es gibt eine neue Version von CoronaMelder. Die veraltete Version funktioniert nicht mehr gut. Weitere Anweisungen finden Sie in der App.";
+
+"notification.app.unpaused.title" = "Pause vorbei";
+"notification.app.unpaused.description" = "Die App ist wieder aktiv. Ihre Begegnungen werden ab jetzt wieder registriert.";
+"notification.app.unpaused.manualunpause.description" = "Achtung: Die App ist noch nicht aktiv. Sie müssen sie selbst wieder in der App aktivieren.";
