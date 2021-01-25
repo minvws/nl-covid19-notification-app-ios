@@ -72,7 +72,7 @@ final class PauseController: PauseControlling, Logging {
             formatter.allowedUnits = [.hour]
         #endif
 
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: .moreInformationSettingsPauseTitle, message: nil, preferredStyle: .actionSheet)
 
         timeOptions.forEach { timeOption in
 
