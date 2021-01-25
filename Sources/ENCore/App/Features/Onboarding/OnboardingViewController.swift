@@ -9,7 +9,7 @@ import ENFoundation
 import Foundation
 import UIKit
 
-/// @mockable
+/// @mockable(history:routeToConsent=true)
 protocol OnboardingRouting: Routing {
     func routeToSteps()
     func routeToStep(withIndex index: Int, animated: Bool)
