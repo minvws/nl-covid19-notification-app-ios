@@ -43,7 +43,7 @@ final class NetworkController: NetworkControlling, Logging {
     }
 
     func treatmentPerspective(identifier: String) -> Single<TreatmentPerspective> {
-        return .create { observer in
+        return Single.create(subscribe: { (observer) -> Disposable in
             self.networkManager.getTreatmentPerspective(identifier: identifier) { result in
                 switch result {
                 case let .failure(error):
@@ -54,11 +54,11 @@ final class NetworkController: NetworkControlling, Logging {
             }
 
             return Disposables.create()
-        }
+        }).observe(on: MainScheduler.instance)
     }
 
     func applicationConfiguration(identifier: String) -> Single<ApplicationConfiguration> {
-        return .create { (observer) -> Disposable in
+        return Single.create(subscribe: { (observer) -> Disposable in
             self.networkManager.getAppConfig(appConfig: identifier) { result in
                 switch result {
                 case let .success(configuration):
@@ -69,11 +69,12 @@ final class NetworkController: NetworkControlling, Logging {
             }
 
             return Disposables.create()
-        }
+        }).observe(on: MainScheduler.instance)
     }
 
     func exposureRiskConfigurationParameters(identifier: String) -> Single<ExposureRiskConfiguration> {
-        return .create { observer in
+        return Single.create(subscribe: { (observer) -> Disposable in
+
             self.networkManager.getRiskCalculationParameters(identifier: identifier) { result in
                 switch result {
                 case let .failure(error):
@@ -84,11 +85,11 @@ final class NetworkController: NetworkControlling, Logging {
             }
 
             return Disposables.create()
-        }
+        }).observe(on: MainScheduler.instance)
     }
 
     func fetchExposureKeySet(identifier: String) -> Single<(String, URL)> {
-        return .create { (observer) -> Disposable in
+        return Single.create(subscribe: { (observer) -> Disposable in
 
             let start = CFAbsoluteTimeGetCurrent()
 
@@ -106,7 +107,7 @@ final class NetworkController: NetworkControlling, Logging {
             }
 
             return Disposables.create()
-        }
+        }).observe(on: MainScheduler.instance)
     }
 
     func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey> {
@@ -136,7 +137,7 @@ final class NetworkController: NetworkControlling, Logging {
 
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Completable {
 
-        return .create { observer in
+        return Completable.create(subscribe: { (observer) -> Disposable in
 
             let preRequest = PrePostKeysRequest(keys: keys.map { $0.asTemporaryKey }, bucketId: labConfirmationKey.bucketIdentifier)
             let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
@@ -168,11 +169,11 @@ final class NetworkController: NetworkControlling, Logging {
                                          completion: completion)
 
             return Disposables.create()
-        }
+        }).subscribe(on: MainScheduler.instance)
     }
 
     func stopKeys(padding: Padding) -> Completable {
-        return .create { observer in
+        return Completable.create(subscribe: { (observer) -> Disposable in
 
             let preRequest = PrePostKeysRequest(keys: [], bucketId: Data())
             let generatedPadding = self.generatePadding(forObject: preRequest, padding: padding)
@@ -204,7 +205,7 @@ final class NetworkController: NetworkControlling, Logging {
                                              completion: completion)
 
             return Disposables.create()
-        }
+        }).subscribe(on: MainScheduler.instance)
     }
 
     // MARK: - Private
