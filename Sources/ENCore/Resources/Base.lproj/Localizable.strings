@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "Pause the app";
 "moreInformation.settings.pause.subtitle" = "Are you sure you want to pause the app?";
 "moreInformation.settings.pause.description" = "While paused, the app will temporarily not track any encounters with other app users. You also won't get a notification if you've been near someone who later turns out to have corona. \n\nOnly pause the app when your phone is near other people's phones, but there is no chance of contagion: when you're wearing the appropriate medical equipment, for example.";
-"moreInformation.settings.pause.description.short" = "If you pause the app, your encounters are temporarily not tracked. You also won't get a notification if you've been near someone who later turns out to have corona.";
+"moreInformation.settings.pause.description.short" = "If you pause the app, your encounters are temporarily not tracked. You also won't get a notification if you've been near someone who later turns out to have corona. When the pause is over, you immediately get a notification to turn the app on again.";
 "moreInformation.settings.pause.dontshowscreen" = "Don't show this screen again";
 "moreInformation.settings.pause.yesbutton" = "Yes, pause";
 "moreInformation.settings.pause.cancelbutton" = "No, don't pause";
@@ -95,6 +95,7 @@
 "status.icon.accessibility.ok" = "Green circle with checkmark that shows the app has been set up properly";
 "status.icon.accessibility.inactive" = "Yellow circle with exclamation mark as warning ";
 "status.icon.accessibility.notified" = "Red circle with alarm bell that shows you need to take action immediately";
+"status.icon.accessibility.paused" = "Grey circle with question mark indicating that the app is paused";
 "status.notified.today" = "today";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -282,7 +283,7 @@
 "help.other_what_does_report_say.content2" = "The notification looks like what you see when you receive a text message. Just like messages from other apps. The notification has the CoronaMelder icon.<br><br>Did you receive a notification? Open CoronaMelder. You'll find instructions on what to do in the app.";
 
 "help.pause_app.title" = "Can I pause the app?";
-"help.pause_app.description" = "Yes, you can do so by turning off Bluetooth. To turn off Bluetooth, go to <b>Settings > Bluetooth</b>. Please note: you can't pause the app by turning off Bluetooth through the control panel. If you turn off Bluetooth, the app won't exchange codes anymore. After this, every 24 hours you get a reminder to turn on the app back on.<br><br>So even though you can, we don't recommend turning the app off. Because you might forget to turn it on again. In certain situations though, you can pause the app. For example, when you're near (potential) coronavirus patients and you're sure you're wearing the appropriate medical protection.";
+"help.pause_app.description" = "Yes, you can temporarily pause the app. Do this through <b>Settings > Pause the app</b>. If you pause the app, your encounters are temporarily not tracked. You also won't get a notification if you've been near someone who later turns out to have corona.<br><br>When the pause is over, you immediately get a notification to turn the app on again. After you've turned on the app again, it's possible that you receive notifications of encounters that happened before you paused the app.<br><br>It's mostly not recommended to pause the app. Because you might forget to turn it on again. You can pause the app in certain moments. For example, when you're near (potential) corona patients and you're wearing the appropriate medical protection.";
 
 "help.apps_other_countries.title" = "Does CoronaMelder work with apps from other countries?";
 "help.apps_other_countries.description" = "CoronaMelder works with various apps from other Europeans countries. Like the German, Irish, and Italian apps.
@@ -332,7 +333,7 @@
 "status.paused.title" = "The app is paused";
 "status.pause.ended.title" = "Turn the app on again";
 "status.appState.card.paused.title" = "App is paused";
-"status.paused.countdown" = "The app will be turned on again in %@";
+"status.paused.countdown" = "You'll get a notification in %@ to turn on the app again.";
 "status.paused.manualunpause" = "CoronaMelder is not active yet. You need to turn it on yourself.";
 "status.card.manualunpause.title" = "Turn the app on again";
 "status.card.manualunpause.description" = "The app is not active yet. You need to turn it on yourself.";

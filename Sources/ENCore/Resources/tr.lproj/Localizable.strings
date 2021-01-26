@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "Uygulamayı duraklatın";
 "moreInformation.settings.pause.subtitle" = "Uygulamayı duraklatmak istediğinizden emin misiniz?";
 "moreInformation.settings.pause.description" = "Uygulama, duraklatma sırasında diğer uygulama kullanıcılarıyla olan karşılaşmaları geçici olarak izlemez. Ayrıca, daha sonra Korona olduğu ortaya çıkan birinin yakınında bulunmuş olursanız bildirim almazsınız.\n\nTelefonunuzu sadece diğer kişilerin telefonlarına yakın olduğunuzda, ama enfeksiyon ihtimali olmadığı durumlarda duraklatın. Örneğin, tıbbi koruyucu ekipman kullanarak.";
-"moreInformation.settings.pause.description.short" = "Uygulamayı duraklatırsanız, buluşmalarınız geçici olarak izlenmez. Ayrıca, daha sonra korona olduğu ortaya çıkan birinin yakınında bulunursanız bildirim almazsınız.";
+"moreInformation.settings.pause.description.short" = "Uygulamayı duraklatırsanız, buluşmalarınız geçici olarak izlenmez. Ayrıca, daha sonra korona olduğu ortaya çıkan birinin yakınında bulunursanız bildirim almazsınız. Duraklama sona erdikten sonra, uygulamayı tekrar açmanız için hemen bir bildirim alacaksınız.";
 "moreInformation.settings.pause.dontshowscreen" = "Bu ekranı artık gösterme";
 "moreInformation.settings.pause.yesbutton" = "Evet, duraklat";
 "moreInformation.settings.pause.cancelbutton" = "Hayır, duraklama";
@@ -331,7 +331,7 @@
 "status.paused.title" = "Uygulama duraklatıldı";
 "status.pause.ended.title" = "Duraklatma sona erdi";
 "status.appState.card.paused.title" = "Uygulama duraklatıldı";
-"status.paused.countdown" = "Uygulama %@ içinde tekrar açılacak";
+"status.paused.countdown" = "Uygulamayı yeniden etkinleştirmeniz için %@ içinde bir bildirim alacaksınız.";
 "status.paused.manualunpause" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
 "status.card.manualunpause.title" = "Duraklatma bitti";
 "status.card.manualunpause.description" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";

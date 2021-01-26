@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "App anhalten";
 "moreInformation.settings.pause.subtitle" = "Sind Sie sicher, dass die App angehalten werden soll?";
 "moreInformation.settings.pause.description" = "Die App registriert während der Pause vorübergehend keine Begegnungen mit anderen App-Benutzern. Sie erhalten auch keine Nachricht, wenn Sie in der Nähe einer Person waren, bei der später Corona festgestellt wurde.\n\nHalten Sie nur dann die App an, wenn Ihr Telefon in die Nähe von Telefonen anderer Personen kommt, aber keine Ansteckungsgefahr besteht. Zum Beispiel, weil medizinische Schutzausrüstung verwendet wird.";
-"moreInformation.settings.pause.description.short" = "Wenn Sie die App anhalten, werden Ihre Begegnungen vorübergehend nicht registriert. Sie erhalten auch keine Nachricht, wenn Sie in der Nähe einer Person waren, bei der später Corona festgestellt wurde.";
+"moreInformation.settings.pause.description.short" = "Wenn Sie die App anhalten, werden Ihre Begegnungen vorübergehend nicht registriert. Sie erhalten auch keine Nachricht, wenn Sie in der Nähe einer Person waren, bei der später Corona festgestellt wurde. Nach der Pause erhalten Sie sofort eine Nachricht, um die App wieder zu aktivieren.";
 "moreInformation.settings.pause.dontshowscreen" = "Dieses Fenster nicht mehr anzeigen";
 "moreInformation.settings.pause.yesbutton" = "Ja, anhalten";
 "moreInformation.settings.pause.cancelbutton" = "Nein, nicht anhalten";
@@ -332,7 +332,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.paused.title" = "Die App wurde angehalten.";
 "status.pause.ended.title" = "Pause vorbei";
 "status.appState.card.paused.title" = "App angehalten";
-"status.paused.countdown" = "Die App wird in %@ wieder aktiviert.";
+"status.paused.countdown" = "Sie erhalten in %@ eine Meldung, um die App wieder zu aktivieren.";
 "status.paused.manualunpause" = "Die App ist noch nicht aktiv. Sie müssen sie selbst wieder aktivieren.";
 "status.card.manualunpause.title" = "Pause vorbei";
 "status.card.manualunpause.description" = "Die App ist noch nicht aktiv. Sie müssen sie selbst wieder aktivieren.";

@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "Pausar la app";
 "moreInformation.settings.pause.subtitle" = "¿Estás seguro/a de que quieres pausar la app?";
 "moreInformation.settings.pause.description" = "Mientras está en pausa, la app dejará de registrar temporalmente los encuentros con otros usuarios de la app. Tampoco recibirás una notificación si una persona con la que tuviste contacto resultó tener coronavirus. \n\nPausa la app solo en situaciones en las que los teléfonos están cerca pero no hay riesgo de contacto como, por ejemplo, al usar equipos de protección médicos.";
-"moreInformation.settings.pause.description.short" = "Si pausas la app, dejarán de registrarse temporalmente tus encuentros. Tampoco recibirás una notificación si una persona con la que tuviste contacto resultó tener coronavirus.";
+"moreInformation.settings.pause.description.short" = "Si pausas la app, dejarán de registrarse temporalmente tus encuentros. Tampoco recibirás una notificación si una persona con la que tuviste contacto resultó tener coronavirus. Una vez se acaba la pausa, recibirás inmediatamente una notificación para volver a activar la app.";
 "moreInformation.settings.pause.dontshowscreen" = "No volver a mostrar esta pantalla";
 "moreInformation.settings.pause.yesbutton" = "Sí, pausarla";
 "moreInformation.settings.pause.cancelbutton" = "No, no pausarla";
@@ -331,7 +331,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.paused.title" = "La app está en pausa";
 "status.pause.ended.title" = "Se dejó de pausar la app";
 "status.appState.card.paused.title" = "La app está en pausa";
-"status.paused.countdown" = "La app se volverá a activar en %@";
+"status.paused.countdown" = "Recibirás en %@ una notificación para volver a activar la app.";
 "status.paused.manualunpause" = "La app todavía no está activada. Debes volver a activarla tú mismo.";
 "status.card.manualunpause.title" = "Se dejó de pausar la app";
 "status.card.manualunpause.description" = "La app todavía no está activada. Debes volver a activarla tú mismo.";

@@ -125,36 +125,37 @@ final class StatusViewControllerTests: TestCase {
     }
 
     func test_snapshot_paused_pauseTimeElapsed_not_notified() {
-        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        let now = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28)
+        DateTimeTestingOverrides.overriddenCurrentDate = now
         mockPauseController.pauseTimeElapsed = true
         mockPauseController.getPauseCountdownStringHandler = { _, _ in
             return NSAttributedString(string: "Some mock countdown string")
         }
 
-        let date = Date(timeIntervalSinceNow: -7200)
+        let date = now.addingTimeInterval(-7200)
         set(activeState: .inactive(.paused(date)), notified: false)
         snapshots(matching: viewController)
     }
 
     func test_snapshot_paused_notified() {
-        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        let now = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28)
         mockPauseController.getPauseCountdownStringHandler = { _, _ in
             return NSAttributedString(string: "Some mock countdown string")
         }
 
-        let date = Date(timeIntervalSinceNow: 7200)
+        let date = now.addingTimeInterval(7200)
         set(activeState: .inactive(.paused(date)), notified: true)
         snapshots(matching: viewController)
     }
 
     func test_snapshot_paused_pauseTimeElapsed_notified() {
-        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        let now = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28)
         mockPauseController.pauseTimeElapsed = true
         mockPauseController.getPauseCountdownStringHandler = { _, _ in
             return NSAttributedString(string: "Some mock countdown string")
         }
 
-        let date = Date(timeIntervalSinceNow: -7200)
+        let date = now.addingTimeInterval(-7200)
         set(activeState: .inactive(.paused(date)), notified: true)
         snapshots(matching: viewController)
     }

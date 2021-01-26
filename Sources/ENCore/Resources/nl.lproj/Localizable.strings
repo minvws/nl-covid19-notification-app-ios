@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "App pauzeren";
 "moreInformation.settings.pause.subtitle" = "Weet je zeker dat je de app wilt pauzeren?";
 "moreInformation.settings.pause.description" = "De app houdt tijdens het pauzeren tijdelijk geen ontmoetingen bij met andere app-gebruikers. Ook kun je geen melding krijgen als je bij iemand in de buurt bent geweest die later corona blijkt te hebben.\n\nPauzeer alleen in situaties waarin je telefoon dicht bij telefoons van anderen komt, maar er geen kans op besmetting is. Bijvoorbeeld door het gebruik van medische beschermingsmiddelen.";
-"moreInformation.settings.pause.description.short" = "Als je de app pauzeert, worden je ontmoetingen tijdelijk niet bijgehouden. Ook kun je geen melding krijgen als je bij iemand in de buurt bent geweest die later corona blijkt te hebben.";
+"moreInformation.settings.pause.description.short" = "Als je de app pauzeert, worden je ontmoetingen tijdelijk niet bijgehouden. Ook kun je geen melding krijgen als je bij iemand in de buurt bent geweest die later corona blijkt te hebben. Nadat de pauze is afgelopen, krijg je meteen een melding om de app weer aan te zetten.";
 "moreInformation.settings.pause.dontshowscreen" = "Dit scherm niet meer tonen";
 "moreInformation.settings.pause.yesbutton" = "Ja, pauzeer";
 "moreInformation.settings.pause.cancelbutton" = "Nee, pauzeer niet";
@@ -94,7 +94,7 @@
 "status.icon.accessibility.ok" = "Groen rondje met vinkje dat aangeeft dat de app goed staat ingesteld";
 "status.icon.accessibility.inactive" = "Geel rondje met uitroepteken als waarschuwing";
 "status.icon.accessibility.notified" = "Rood rondje met alarmbel dat aangeeft dat er nu actie nodig is";
-"status.icon.accessibility.paused" = "Geel rondje met uitroepteken als waarschuwing";
+"status.icon.accessibility.paused" = "Grijs rondje met pauzeteken dat aangeeft dat de app gepauzeerd is";
 "status.notified.today" = "vandaag";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -283,7 +283,7 @@
 "help.other_what_does_report_say.content2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
 
 "help.pause_app.title" = "Kan ik de app pauzeren?";
-"help.pause_app.description" = "Ja, dat kan door je bluetooth uit te zetten. Dit doe je via <b>Instellingen > Bluetooth</b>. Let op: je kunt de app niet pauzeren door bluetooth uit te zetten via het bedieningspaneel. Als je bluetooth uitzet, wisselt de app geen codes meer uit. Je krijgt hierna elke 24 uur automatisch een herinnering om de app weer aan te zetten.<br><br>Toch is het meestal niet aan te raden om de app te pauzeren, omdat je misschien vergeet hem weer aan te zetten. Je kunt de app wel pauzeren in bijzondere situaties. Bijvoorbeeld als je in de buurt komt van (mogelijke) coronapatiënten, maar zeker weet dat je medische beschermingsmiddelen draagt.";
+"help.pause_app.description" = "Ja, je kunt de app tijdelijk pauzeren. Dit doe je op het startscherm via <b>Instellingen > App pauzeren </b>. Als je de app pauzeert, worden je ontmoetingen tijdelijk niet bijgehouden. Ook kun je geen melding krijgen als je bij iemand in de buurt bent geweest die later corona blijkt te hebben.<br><br>Als de pauze is afgelopen, krijg je meteen een melding om de app weer aan te zetten. Nadat je de app hebt aangezet, kun je nog meldingen krijgen van ontmoetingen voordat je de app pauzeerde.<br><br>Het is meestal niet aan te raden om de app te pauzeren, omdat je misschien vergeet deze weer aan te zetten. Je kunt de app wel pauzeren in bijzondere situaties. Bijvoorbeeld als je in de buurt komt van (mogelijke) coronapatiënten, maar zeker weet dat je medische beschermingsmiddelen draagt.";
 
 "help.apps_other_countries.title" = "Werkt CoronaMelder ook samen met apps uit andere landen?";
 "help.apps_other_countries.description" = "CoronaMelder werkt samen met een aantal apps uit andere Europese landen. Onder andere Duitsland, Ierland en Italië.<br><br>Stel, je bent langere tijd in de buurt geweest bij een gebruiker van de Duitse Corona-Warn-App. Deze persoon wordt in Duitsland getest en blijkt corona te hebben. Als die persoon zijn codes deelt met de Duitse GGD, dan krijg jij via CoronaMelder een melding. Andersom geldt hetzelfde. Omdat de corona-apps onderling samenwerken, hoef je dus maar één app aan te hebben staan.<br><br>CoronaMelder controleert vanaf 30 november 2020 dagelijks de codes van gebruikers uit verschillende landen. Hierdoor verbruikt de app meer mobiele data dan vroeger.   Je kunt via <b>Instellingen</b> op het hoofdscherm instellen dat de app alleen via wifi controleert of je in de buurt bent geweest van iemand met corona.";
@@ -332,7 +332,7 @@
 "status.paused.title" = "De app is gepauzeerd";
 "status.pause.ended.title" = "Zet de app weer aan";
 "status.appState.card.paused.title" = "App gepauzeerd";
-"status.paused.countdown" = "De app wordt over %@ weer aangezet";
+"status.paused.countdown" = "Je krijgt over %@ een melding om de app weer aan te zetten.";
 "status.paused.manualunpause" = "CoronaMelder is nog niet actief. Je moet deze zelf aanzetten.";
 "status.card.manualunpause.title" = "Zet app weer aan";
 "status.card.manualunpause.description" = "De app is nog niet actief. Je moet deze zelf aanzetten.";

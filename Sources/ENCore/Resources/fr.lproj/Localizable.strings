@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "Mettre l'application en pause";
 "moreInformation.settings.pause.subtitle" = "Êtes-vous sûr(e) de vouloir mettre l'application en pause?";
 "moreInformation.settings.pause.description" = "Pendant la pause, l'application n'enregistre provisoirement pas les rencontres avec les autres utilisateurs de l'application. Vous ne recevez pas non plus de notification si vous avez été à proximité de quelqu'un qui s'avère avoir le Covid-19 par la suite.\n\nNe mettez l'application en pause que dans les situations où votre téléphone se trouve près d'autres téléphones mais qu'il n'y a pas de risque de contamination. Par exemple en raison de l'utilisation des dispositifs de protection médicaux.";
-"moreInformation.settings.pause.description.short" = "Si vous mettez l'application en pause, vos rencontres ne sont provisoirement pas enregistrées. Vous ne recevez pas non plus de notification si vous avez été à proximité de quelqu'un qui s'avère avoir le Covid-19 par la suite.";
+"moreInformation.settings.pause.description.short" = "Si vous mettez l'application en pause, vos rencontres ne sont provisoirement pas enregistrées. Vous ne pouvez pas non plus recevoir de notification si vous avez été à proximité de quelqu'un qui s'avère avoir le Covid-19 par la suite. Dès la fin de la pause, vous recevez une notification pour réactiver l'application.";
 "moreInformation.settings.pause.dontshowscreen" = "Ne plus afficher cet écran";
 "moreInformation.settings.pause.yesbutton" = "Oui, mettre en pause";
 "moreInformation.settings.pause.cancelbutton" = "Non, ne pas mettre en pause";
@@ -333,7 +333,7 @@
 "status.paused.title" = "L'application est mise en pause";
 "status.pause.ended.title" = "Pause terminée";
 "status.appState.card.paused.title" = "Application mise en pause";
-"status.paused.countdown" = "L'application sera réactivée dans %@";
+"status.paused.countdown" = "Dans %@, vous recevrez une notification pour réactiver l'application.";
 "status.paused.manualunpause" = "L'application n'est pas encore activée. Vous devez la réactiver vous-même.";
 "status.card.manualunpause.title" = "Pause terminée";
 "status.card.manualunpause.description" = "L'application n'est pas encore activée. Vous devez la réactiver vous-même.";

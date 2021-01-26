@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "Wstrzymaj aplikację";
 "moreInformation.settings.pause.subtitle" = "Jesteś pewien, że chcesz wstrzymać aplikację?";
 "moreInformation.settings.pause.description" = "Podczas, gdy aplikacja jest wstrzymana, spotkania z innymi użytkownikami aplikacji nie są tymczasowo monitorowane. Nie będziesz także otrzymywał powiadomień, jeśli u osoby, w pobliżu której się znajdowałeś, wykryto koronawirusa. \n\n\nWstrzymuj aplikacje wyłącznie w sytuacjach, kiedy Twój telefon znajduje się w pobliżu telefonów innych osób, jednak nie ma możliwości zarażenia się. Na przykład dzięki użyciu środków ochronnych do celów medycznych.";
-"moreInformation.settings.pause.description.short" = "Jeśli wstrzymasz aplikację, Twoje spotkania tymczasowo nie będą monitorowane. Ponadto nie będziesz mógł otrzymać powiadomienia, jeśli znajdowałeś się w pobliżu osoby, u której wykryto koronawirusa.";
+"moreInformation.settings.pause.description.short" = "Jeśli wstrzymasz aplikację, spotkania tymczasowo nie będą monitorowane. Nie otrzymasz także powiadomienia, jeśli znajdowałeś się w pobliżu osoby, u której wykryto koronawirusa. Natychmiast po wstrzymaniu aplikacji otrzymasz powiadomienie przypominające o ponownym włączeniu aplikacji.";
 "moreInformation.settings.pause.dontshowscreen" = "Nie pokazuj tego ekranu ponownie";
 "moreInformation.settings.pause.yesbutton" = "Tak, wstrzymuję";
 "moreInformation.settings.pause.cancelbutton" = "Nie, nie wstrzymuję";
@@ -330,7 +330,7 @@
 "status.paused.title" = "Aplikacja jest wstrzymana";
 "status.pause.ended.title" = "Wstrzymanie dobiegło końca";
 "status.appState.card.paused.title" = "Wstrzymano aplikację";
-"status.paused.countdown" = "Za %@ aplikacja zostanie ponownie włączona";
+"status.paused.countdown" = "Za %@ otrzymasz powiadomienie przypominające o ponownym włączeniu aplikacji.";
 "status.paused.manualunpause" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
 "status.card.manualunpause.title" = "Wstrzymanie dobiegło końca";
 "status.card.manualunpause.description" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
