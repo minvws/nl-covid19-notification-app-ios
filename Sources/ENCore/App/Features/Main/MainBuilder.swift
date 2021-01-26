@@ -25,6 +25,7 @@ protocol MainDependency {
     var exposureManager: ExposureManaging { get }
     var backgroundController: BackgroundControlling { get }
     var pauseController: PauseControlling { get }
+    var pushNotificationStream: PushNotificationStreaming { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency {
@@ -115,6 +116,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var pauseController: PauseControlling {
         dependency.pauseController
+    }
+
+    var pushNotificationStream: PushNotificationStreaming {
+        dependency.pushNotificationStream
     }
 }
 

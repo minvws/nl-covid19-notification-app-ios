@@ -70,6 +70,17 @@
     completionHandler();
 }
 
+- (void)receiveForegroundNotification:(UNNotification *)notification {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
+    SEL selector = @selector(receiveForegroundNotification:);
+    
+    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    [_appRoot performSelector:selector withObject:notification];
+    
+    #pragma clang diagnostic pop
+}
+
 - (void)didBecomeActive {
     [_appRoot didBecomeActive];
 }

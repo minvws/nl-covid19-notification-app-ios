@@ -15,7 +15,7 @@ import UIKit
 /// @mockable
 protocol StatusRouting: Routing {}
 
-final class StatusViewController: ViewController, StatusViewControllable, CardListening {
+final class StatusViewController: ViewController, StatusViewControllable, CardListening, Logging {
 
     // MARK: - StatusViewControllable
 
@@ -24,6 +24,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
     private let dataController: ExposureDataControlling
+
+    private let pushNotificationStream: PushNotificationStreaming
 
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
@@ -44,10 +46,12 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
          listener: StatusListener,
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?,
-         dataController: ExposureDataControlling) {
+         dataController: ExposureDataControlling,
+         pushNotificationStream: PushNotificationStreaming) {
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
         self.dataController = dataController
+        self.pushNotificationStream = pushNotificationStream
         self.listener = listener
         self.topAnchor = topAnchor
 
@@ -109,6 +113,14 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         interfaceOrientationStream.isLandscape.subscribe { [weak self] _ in
             self?.refreshCurrentState()
         }.disposed(by: rxDisposeBag)
+
+        pushNotificationStream.foregroundNotificationStream.sink { [weak self] notification in
+            if notification.request.identifier == PushNotificationIdentifier.pauseEnded.rawValue {
+                self?.logDebug("Refreshing state due to pauseEnded notification")
+                self?.refreshCurrentState()
+            }
+        }
+        .store(in: &disposeBag)
     }
 
     private func refreshCurrentState() {
@@ -119,18 +131,18 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func updatePauseTimer() {
-        if dataController.isAppPaused {
-            if pauseTimer == nil {
-                // This timer fires every minute to update the status on the screen. This is needed because in a paused state
-                // the status will show a minute-by-minute countdown until the time when the pause state should end
-                pauseTimer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true, block: { [weak self] _ in
-                    self?.refreshCurrentState()
-                })
-            }
-        } else {
-            pauseTimer?.invalidate()
-            pauseTimer = nil
-        }
+//        if dataController.isAppPaused {
+//            if pauseTimer == nil {
+//                // This timer fires every minute to update the status on the screen. This is needed because in a paused state
+//                // the status will show a minute-by-minute countdown until the time when the pause state should end
+//                pauseTimer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true, block: { [weak self] _ in
+//                    self?.refreshCurrentState()
+//                })
+//            }
+//        } else {
+//            pauseTimer?.invalidate()
+//            pauseTimer = nil
+//        }
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {

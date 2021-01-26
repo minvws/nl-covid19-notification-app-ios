@@ -23,6 +23,7 @@ protocol SettingsOverviewDependency {
     var exposureDataController: ExposureDataControlling { get }
     var pauseController: PauseControlling { get }
     var pauseConfirmationBuilder: PauseConfirmationBuildable { get }
+    var pushNotificationStream: PushNotificationStreaming { get }
 }
 
 final class SettingsOverviewDependencyDependencyProvider: DependencyProvider<SettingsOverviewDependency> {}
@@ -33,7 +34,8 @@ final class SettingsOverviewBuilder: Builder<SettingsOverviewDependency>, Settin
         let viewController = SettingsOverviewViewController(listener: listener,
                                                             theme: dependencyProvider.dependency.theme,
                                                             exposureDataController: dependencyProvider.dependency.exposureDataController,
-                                                            pauseController: dependencyProvider.dependency.pauseController)
+                                                            pauseController: dependencyProvider.dependency.pauseController,
+                                                            pushNotificationStream: dependencyProvider.dependency.pushNotificationStream)
         return SettingsOverviewRouter(listener: listener,
                                       viewController: viewController,
                                       exposureDataController: dependencyProvider.dependency.exposureDataController,
