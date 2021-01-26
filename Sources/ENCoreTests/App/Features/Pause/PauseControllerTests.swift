@@ -117,7 +117,7 @@ final class PauseControllerTests: TestCase {
 
         let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(1), center: false, emphasizeTime: false)
 
-        XCTAssertEqual(countdownString.string, "The app will be turned on again in 1 minute")
+        XCTAssertEqual(countdownString.string, "You'll get a notification in 1 minute to turn on the app again.")
     }
 
     func test_getPauseCountdownString_shouldRoundUp() {
@@ -126,7 +126,7 @@ final class PauseControllerTests: TestCase {
 
         let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(91), center: false, emphasizeTime: false)
 
-        XCTAssertEqual(countdownString.string, "The app will be turned on again in 2 minutes")
+        XCTAssertEqual(countdownString.string, "You'll get a notification in 2 minutes to turn on the app again.")
     }
 
     func test_getPauseCountdownString_pauseEndTimeWithin2hours() {
@@ -135,7 +135,7 @@ final class PauseControllerTests: TestCase {
 
         let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(.hours(1.5)), center: false, emphasizeTime: false)
 
-        XCTAssertEqual(countdownString.string, "The app will be turned on again in 1 hour, 30 minutes")
+        XCTAssertEqual(countdownString.string, "You'll get a notification in 1 hour, 30 minutes to turn on the app again.")
     }
 }
 

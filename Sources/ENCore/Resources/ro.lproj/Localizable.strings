@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "Întreruperea aplicației";
 "moreInformation.settings.pause.subtitle" = "Sunteți sigur că doriți să întrerupeți aplicația?";
 "moreInformation.settings.pause.description" = "În timpul întreruperii, aplicația nu ține evidența întâlnirilor cu alți utilizatori ai aplicației. De asemenea, nu puteți primi nicio notificare  daca v-ați aflat în apropierea unei persoane care mai târziu se dovedește a fi infectată cu coronavirus.  \n\n\n\nÎntrerupeți aplicația doar în situațiile în care telefonul dvs. se află în apropierea altora, dar nu există riscul infectării, de exemplu, când folosiți materiale medicale de protecție.";
-"moreInformation.settings.pause.description.short" = "Dacă întrerupeți aplicația, temporar întâlnirile dumneavoastră nu vor mai fi înregistrate. De asemenea, nu veți primi nicio notificare dacă v-ați aflat în apropierea unei persoane care ulterior s-a dovedit a fi infectată cu coronavirus.";
+"moreInformation.settings.pause.description.short" = "Dacă întrerupeți aplicația, temporar întâlnirile dumneavoastră nu vor mai fi înregistrate. De asemenea, nu veți primi nicio notificare dacă v-ați aflat în apropierea unei persoane care ulterior s-a dovedit a fi infectată cu coronavirus. După ce întreruperea s-a încheiat, veți primi imediat o notificare pentru a reactiva aplicația.";
 "moreInformation.settings.pause.dontshowscreen" = "Nu mai afișați acest ecran";
 "moreInformation.settings.pause.yesbutton" = "Da, întrerupe";
 "moreInformation.settings.pause.cancelbutton" = "Nu, nu întrerupeți";
@@ -331,7 +331,7 @@
 "status.paused.title" = "Aplicația este întreruptă";
 "status.pause.ended.title" = "Întreruperea e terminată";
 "status.appState.card.paused.title" = "Aplicație întreruptă";
-"status.paused.countdown" = "Aplicația va fi reactivată peste %@";
+"status.paused.countdown" = "Primiți o notificare peste %@ pentru a reactiva aplicația.";
 "status.paused.manualunpause" = "Aplicația încă nu este activă. Trebuie să o reactivați.";
 "status.card.manualunpause.title" = "Întrerupere terminată";
 "status.card.manualunpause.description" = "Aplicația încă nu este activă. Trebuie să o reactivați.";

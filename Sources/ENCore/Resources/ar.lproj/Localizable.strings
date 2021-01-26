@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "إيقاف التطبيق مؤقتًا";
 "moreInformation.settings.pause.subtitle" = "هل أنت متأكد من أنك تريد إيقاف التطبيق مؤقتًا؟";
 "moreInformation.settings.pause.description" = "لا يتتبع التطبيق المصادفات مع مستخدمي التطبيق الآخرين أثناء الإيقاف المؤقت. لا يمكنك أيضًا تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا.\n\nقم بالإيقاف المؤقت فقط في الحالات التي يكون فيها هاتفك على مقربة من هواتف الآخرين لكن لم تكن عرضة للإصابة. بسبب استخدام معدات الوقاية الطبية على سبيل المثال.";
-"moreInformation.settings.pause.description.short" = "إذا قمت بإيقاف التطبيق مؤقتًا، فلن يتم تعقب مصادفاتك مؤقتًا. أيضًا لا يمكنك تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا.";
+"moreInformation.settings.pause.description.short" = "إذا قمت بإيقاف التطبيق مؤقتًا، فلن يتم تعقب مصادفاتك مؤقتًا. أيضًا لا يمكنك تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا. بعد انتهاء فترة التشغيل المؤقت، سيتم إشعارك على الفور لإعادة تشغيل التطبيق.";
 "moreInformation.settings.pause.dontshowscreen" = "لا تقم بإظهار هذه الشاشة مرة أخرى";
 "moreInformation.settings.pause.yesbutton" = "نعم، قم بإيقاف التطبيق مؤقتًا";
 "moreInformation.settings.pause.cancelbutton" = "كلا، لا تقم بإيقاف التشغيل مؤقتًا";
@@ -335,7 +335,7 @@
 "status.paused.title" = "تم إيقاف التطبيق مؤقتًا";
 "status.pause.ended.title" = "انتهى الإيقاف المؤقت";
 "status.appState.card.paused.title" = "تم إيقاف التطبيق مؤقتًا";
-"status.paused.countdown" = "سيتم تشغيل التطبيق مرة أخرى بعد %@";
+"status.paused.countdown" = "سوف تتلقى إشعارًا بعد %@ لتشغيل التطبيق من جديد";
 "status.paused.manualunpause" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
 "status.card.manualunpause.title" = "انتهى الإيقاف المؤقت";
 "status.card.manualunpause.description" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
