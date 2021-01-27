@@ -26,6 +26,9 @@ final class MoreInformationViewControllerTests: TestCase {
 
         recordSnapshots = false
 
+        let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        DateTimeTestingOverrides.overriddenCurrentDate = date
+
         viewController = MoreInformationViewController(
             listener: listener,
             theme: theme,
