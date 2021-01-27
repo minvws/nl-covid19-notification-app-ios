@@ -18,6 +18,7 @@ final class MoreInformationViewControllerTests: TestCase {
     private let listener = MoreInformationListenerMock()
     private let tableViewDelegate = UITableViewDelegateMock()
     private let tableViewDataSource = UITableViewDataSourceMock()
+    private let exposureControllerMock = ExposureControllingMock()
 
     // MARK: - Setup
 
@@ -29,6 +30,10 @@ final class MoreInformationViewControllerTests: TestCase {
         let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         DateTimeTestingOverrides.overriddenCurrentDate = date
 
+        exposureControllerMock.lastTEKProcessingDateHandler = {
+            return Just(date).eraseToAnyPublisher()
+        }
+
         viewController = MoreInformationViewController(
             listener: listener,
             theme: theme,
@@ -37,7 +42,7 @@ final class MoreInformationViewControllerTests: TestCase {
                 "CFBundleVersion": "12345",
                 "GitHash": "5ec9b"
             ],
-            lastTEKProcessingDate: currentDate()
+            exposureController: exposureControllerMock
         )
     }
 

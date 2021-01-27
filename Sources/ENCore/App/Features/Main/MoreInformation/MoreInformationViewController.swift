@@ -41,16 +41,11 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     init(listener: MoreInformationListener,
          theme: Theme,
          bundleInfoDictionary: [String: Any]?,
-         lastTEKProcessingDate: Date?) {
+         exposureController: ExposureControlling) {
         self.listener = listener
         self.bundleInfoDictionary = bundleInfoDictionary
-        self.lastTEKProcessingDate = lastTEKProcessingDate
-
+        self.exposureController = exposureController
         super.init(theme: theme)
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - View Lifecycle
@@ -65,8 +60,10 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         moreInformationView.set(data: objects, listener: self)
 
-        let date = formatTEKProcessingDateToString(lastTEKProcessingDate)
-        moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
+        exposureController.lastTEKProcessingDate().sink { lastTEKProcessingDate in
+            let date = self.formatTEKProcessingDateToString(lastTEKProcessingDate)
+            self.moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
+        }.store(in: &disposeBag)
 
         if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
@@ -143,7 +140,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
     private weak var listener: MoreInformationListener?
     private var disposeBag = Set<AnyCancellable>()
     private let bundleInfoDictionary: [String: Any]?
-    private let lastTEKProcessingDate: Date?
+    private let exposureController: ExposureControlling
 
     private func formatTEKProcessingDateToString(_ date: Date?) -> String? {
         guard let date = date else {

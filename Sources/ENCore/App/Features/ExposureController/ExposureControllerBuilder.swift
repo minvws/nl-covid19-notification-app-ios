@@ -106,7 +106,7 @@ protocol ExposureControlling: AnyObject {
     func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
 
     /// Get the latest  TEK processing date
-    func getLastTEKProcessingDate() -> Date?
+    func lastTEKProcessingDate() -> AnyPublisher<Date?, Never>
 }
 
 /// Represents a ConfirmationKey for the Lab Flow

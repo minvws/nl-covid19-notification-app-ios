@@ -31,7 +31,8 @@ final class ExposureControllerTests: TestCase {
                                         userNotificationCenter: userNotificationCenter,
                                         currentAppVersion: currentAppVersion)
 
-        dataController.lastSuccessfulProcessingDate = Date()
+        dataController.lastSuccessfulExposureProcessingDate(Date(), done: {})
+
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher() }
 
         let stream = PassthroughSubject<ExposureState, Never>()
@@ -415,7 +416,8 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
-        dataController.lastSuccessfulProcessingDate = Date().addingTimeInterval(-24 * 60 * 60 - 1)
+
+        dataController.lastSuccessfulExposureProcessingDate(Date().addingTimeInterval(-24 * 60 * 60 - 1)) {}
         exposureManager.isExposureNotificationEnabledHandler = { true }
         exposureManager.activateHandler = { $0(.active) }
 
