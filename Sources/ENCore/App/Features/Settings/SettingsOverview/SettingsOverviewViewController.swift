@@ -292,15 +292,10 @@ private final class PauseCountdownView: View {
 
     var countdownToDate: Date? {
         didSet {
-            if countdownToDate?.isBefore(Date()) == true {
-                print("A")
-            } else {
-                print("B")
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true) { [weak self] _ in
+                self?.updateTimerText()
             }
-//            timer?.invalidate()
-//            timer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true) { [weak self] _ in
-//                self?.updateTimerText()
-//            }
 
             updateTimerText()
         }

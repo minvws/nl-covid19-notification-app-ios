@@ -17,6 +17,9 @@ final class SettingsOverviewViewControllerTests: TestCase {
     private var mockListener: SettingsOverviewListenerMock!
     private var mockPauseController: PauseControllingMock!
     private var mockExposureDataController: ExposureDataControllingMock!
+    private var mockPushNotificationStream: PushNotificationStreamingMock!
+
+    private let pushNotificationSubject = PassthroughSubject<UNNotification, Never>()
 
     override func setUp() {
         super.setUp()
@@ -26,6 +29,9 @@ final class SettingsOverviewViewControllerTests: TestCase {
         mockListener = SettingsOverviewListenerMock()
         mockExposureDataController = ExposureDataControllingMock()
         mockPauseController = PauseControllingMock()
+        mockPushNotificationStream = PushNotificationStreamingMock()
+
+        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
         mockExposureDataController.pauseEndDatePublisher = Just(nil).eraseToAnyPublisher()
 
@@ -36,7 +42,8 @@ final class SettingsOverviewViewControllerTests: TestCase {
         sut = SettingsOverviewViewController(listener: mockListener,
                                              theme: theme,
                                              exposureDataController: mockExposureDataController,
-                                             pauseController: mockPauseController)
+                                             pauseController: mockPauseController,
+                                             pushNotificationStream: mockPushNotificationStream)
     }
 
     // MARK: - Tests

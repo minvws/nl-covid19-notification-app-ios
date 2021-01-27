@@ -131,18 +131,18 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func updatePauseTimer() {
-//        if dataController.isAppPaused {
-//            if pauseTimer == nil {
-//                // This timer fires every minute to update the status on the screen. This is needed because in a paused state
-//                // the status will show a minute-by-minute countdown until the time when the pause state should end
-//                pauseTimer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true, block: { [weak self] _ in
-//                    self?.refreshCurrentState()
-//                })
-//            }
-//        } else {
-//            pauseTimer?.invalidate()
-//            pauseTimer = nil
-//        }
+        if dataController.isAppPaused {
+            if pauseTimer == nil {
+                // This timer fires every minute to update the status on the screen. This is needed because in a paused state
+                // the status will show a minute-by-minute countdown until the time when the pause state should end
+                pauseTimer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true, block: { [weak self] _ in
+                    self?.refreshCurrentState()
+                })
+            }
+        } else {
+            pauseTimer?.invalidate()
+            pauseTimer = nil
+        }
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
