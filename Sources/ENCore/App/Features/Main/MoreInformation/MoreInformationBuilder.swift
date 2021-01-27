@@ -48,6 +48,7 @@ final class MoreInformationBuilder: Builder<MoreInformationDependency>, MoreInfo
 
         return MoreInformationViewController(listener: listener,
                                              theme: dependencyProvider.dependency.theme,
-                                             bundleInfoDictionary: dependencyProvider.bundleInfoDictionary)
+                                             bundleInfoDictionary: dependencyProvider.bundleInfoDictionary,
+                                             lastTEKProcessingDate: dependencyProvider.dependency.exposureController.getLastTEKProcessingDate())
     }
 }

@@ -5,7 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
@@ -31,7 +33,8 @@ final class MoreInformationViewControllerTests: TestCase {
                 "CFBundleShortVersionString": "1.0",
                 "CFBundleVersion": "12345",
                 "GitHash": "5ec9b"
-            ]
+            ],
+            lastTEKProcessingDate: currentDate()
         )
     }
 

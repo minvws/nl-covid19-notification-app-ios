@@ -104,6 +104,9 @@ protocol ExposureControlling: AnyObject {
 
     /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
     func lastOpenedNotificationCheck() -> AnyPublisher<(), Never>
+
+    /// Get the latest  TEK processing date
+    func getLastTEKProcessingDate() -> Date?
 }
 
 /// Represents a ConfirmationKey for the Lab Flow

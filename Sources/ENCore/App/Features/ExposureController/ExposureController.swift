@@ -564,6 +564,10 @@ final class ExposureController: ExposureControlling, Logging {
         notifyUser()
     }
 
+    func getLastTEKProcessingDate() -> Date? {
+        return dataController.lastSuccessfulProcessingDate
+    }
+
     // MARK: - Private
 
     private func shouldAppUpdate(completion: @escaping (AppUpdateInformation) -> ()) {
