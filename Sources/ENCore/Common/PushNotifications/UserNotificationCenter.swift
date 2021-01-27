@@ -56,7 +56,9 @@ extension UNUserNotificationCenter: UserNotificationCenter {
         content.body = .notificationManualUnpauseDescription
         content.badge = 0
 
-        let dateComponents = Calendar.current.dateComponents([.hour, .minute, .second], from: pauseEndDate)
+        // Notification is scheduled 30 seconds after the actual pause end date to make it more likely that
+        // the app updates correctly if the notification comes in while the app is in the foreground
+        let dateComponents = Calendar.current.dateComponents([.hour, .minute, .second], from: pauseEndDate.addingTimeInterval(.seconds(30)))
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
 

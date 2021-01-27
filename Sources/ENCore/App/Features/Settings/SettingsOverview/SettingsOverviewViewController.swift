@@ -24,16 +24,14 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
     init(listener: SettingsOverviewListener,
          theme: Theme,
          exposureDataController: ExposureDataControlling,
-         pauseController: PauseControlling) {
+         pauseController: PauseControlling,
+         pushNotificationStream: PushNotificationStreaming) {
         self.listener = listener
         self.exposureDataController = exposureDataController
         self.pauseController = pauseController
+        self.pushNotificationStream = pushNotificationStream
 
         super.init(theme: theme)
-    }
-
-    deinit {
-        pauseStateCancellable?.cancel()
     }
 
     // MARK: - ViewController Lifecycle
@@ -68,19 +66,31 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
             self?.pauseController.unpauseApp()
         }
 
-        pauseStateCancellable = exposureDataController.pauseEndDatePublisher.sink(receiveValue: { [weak self] pauseEndDate in
-            self?.updatePausedState(pauseEndDate: pauseEndDate)
-        })
+        exposureDataController.pauseEndDatePublisher.sink(receiveValue: { [weak self] _ in
+            self?.updatePausedState()
+        }).store(in: &disposeBag)
 
-        updatePausedState(pauseEndDate: exposureDataController.pauseEndDate)
+        pushNotificationStream.foregroundNotificationStream.sink { [weak self] notification in
+            guard let strongSelf = self else { return }
+            if notification.request.identifier == PushNotificationIdentifier.pauseEnded.rawValue {
+                self?.logDebug("Refreshing settings pause state due to pauseEnded notification")
+                strongSelf.updatePausedState()
+            }
+        }
+        .store(in: &disposeBag)
+
+        updatePausedState()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationItem.title = .moreInformationSettingsTitle
+
+        updatePausedState()
     }
 
-    private func updatePausedState(pauseEndDate: Date?) {
+    private func updatePausedState() {
+        let pauseEndDate = exposureDataController.pauseEndDate
         let isPaused = pauseEndDate != nil
         internalView.pauseCountdownView.countdownToDate = pauseEndDate
         internalView.pauseAppButton.isHidden = isPaused
@@ -126,7 +136,8 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
     private lazy var internalView: SettingsView = SettingsView(theme: self.theme, pauseController: pauseController)
     private let exposureDataController: ExposureDataControlling
     private let pauseController: PauseControlling
-    private var pauseStateCancellable: AnyCancellable?
+    private let pushNotificationStream: PushNotificationStreaming
+    private var disposeBag = Set<AnyCancellable>()
 }
 
 private final class SettingsView: View {
@@ -281,18 +292,17 @@ private final class PauseCountdownView: View {
 
     var countdownToDate: Date? {
         didSet {
-            self.timer?.invalidate()
-            self.timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
-
-                guard let strongSelf = self else {
-                    return
-                }
-
-                self?.label.attributedText = strongSelf.pauseController.getPauseCountdownString(theme: strongSelf.theme, emphasizeTime: true)
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true) { [weak self] _ in
+                self?.updateTimerText()
             }
 
-            self.timer?.fire()
+            updateTimerText()
         }
+    }
+
+    private func updateTimerText() {
+        label.attributedText = pauseController.getPauseCountdownString(theme: theme, emphasizeTime: true)
     }
 
     lazy var label: Label = {

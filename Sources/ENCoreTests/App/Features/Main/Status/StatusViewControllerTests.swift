@@ -23,6 +23,9 @@ final class StatusViewControllerTests: TestCase {
     private var mockCardListener: CardListeningMock!
     private var mockWebViewBuildable: WebviewBuildableMock!
     private var mockPauseController: PauseControllingMock!
+    private var mockPushNotificationStream: PushNotificationStreamingMock!
+
+    private let pushNotificationSubject = PassthroughSubject<UNNotification, Never>()
 
     override func setUp() {
         super.setUp()
@@ -34,11 +37,14 @@ final class StatusViewControllerTests: TestCase {
         mockExposureDataController.seenAnnouncements = [.interopAnnouncement]
         mockWebViewBuildable = WebviewBuildableMock()
         mockPauseController = PauseControllingMock()
+        mockPushNotificationStream = PushNotificationStreamingMock()
 
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         interfaceOrientationStream.currentOrientationIsLandscape = false
+
+        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
 
         cardBuilder.buildHandler = { listener, cardTypes in
             return CardRouter(viewController: CardViewController(listener: self.mockCardListener,
@@ -56,7 +62,8 @@ final class StatusViewControllerTests: TestCase {
                                               listener: StatusListenerMock(),
                                               theme: theme,
                                               topAnchor: nil,
-                                              dataController: mockExposureDataController)
+                                              dataController: mockExposureDataController,
+                                              pushNotificationStream: mockPushNotificationStream)
         viewController.router = router
     }
 

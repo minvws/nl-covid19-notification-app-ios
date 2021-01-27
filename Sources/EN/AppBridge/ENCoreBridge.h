@@ -22,6 +22,7 @@
 - (void)attachToWindow:(UIWindow *)window;
 - (void)start;
 - (void)didReceiveRemoteNotification:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler;
+- (void)receiveForegroundNotification:(UNNotification *)notification;
 - (void)didBecomeActive;
 - (void)didEnterForeground;
 - (void)didEnterBackground;
