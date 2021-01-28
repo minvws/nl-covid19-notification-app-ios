@@ -24,7 +24,7 @@
 "moreInformation.settings.title" = "Instellingen";
 "moreInformation.settings.mobiledata.paragraphtitle" = "Alleen codes controleren via wifi";
 "moreInformation.settings.description" = "CoronaMelder controleert een paar keer per dag of je in de buurt bent geweest van iemand met corona. Als je mobiele data uitzet, doet de app dit alleen nog als je wifi gebruikt. Je ontmoetingen worden ook bijgehouden als je geen internetverbinding hebt.";
-"moreInformation.settings.mobiledata.button" = "Naar mobiele data aanzetten";
+"moreInformation.settings.mobiledata.button" = "Open mobiele data instellingen";
 
 /* MARK: - MoreInformation | Settings | Pause */
 "moreInformation.settings.pause.title" = "App pauzeren";
@@ -38,7 +38,7 @@
 "moreInformation.settings.pause.enableappbutton" = "App aanzetten";
 
 /* MARK: - MoreInformation | Settings | Mobile Data */
-"moreInformation.settings.mobiledata.title" = "Mobiele data aanzetten";
+"moreInformation.settings.mobiledata.title" = "Mobiele data instellingen";
 "moreInformation.settings.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
 "moreInformation.settings.step2" = "Zet mobiele data voor CoronaMelder aan of uit";
 "moreInformation.settings.step2.row.title" = "Mobiele data";
