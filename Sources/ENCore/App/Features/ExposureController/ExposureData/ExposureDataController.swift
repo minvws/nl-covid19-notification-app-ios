@@ -375,7 +375,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
     }
 
-    func lastSuccessfulExposureProcessingDate(_ date: Date?, done: @escaping () -> ()) {
+    func updateLastSuccessfulExposureProcessingDate(_ date: Date?, done: @escaping () -> ()) {
         self.storageController.requestExclusiveAccess { storageController in
             if let newDate = date {
                 storageController.store(object: newDate,

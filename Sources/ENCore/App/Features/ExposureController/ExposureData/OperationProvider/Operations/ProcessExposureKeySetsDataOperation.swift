@@ -542,7 +542,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
 
                 self.logDebug("Updating last process date to \(date)")
 
-                self.exposureDataController.lastSuccessfulExposureProcessingDate(date) {
+                self.exposureDataController.updateLastSuccessfulExposureProcessingDate(date) {
                     promise(.success(value))
                 }
             }

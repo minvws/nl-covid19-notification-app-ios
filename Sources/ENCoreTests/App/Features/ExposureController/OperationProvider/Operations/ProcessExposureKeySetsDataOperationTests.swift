@@ -50,6 +50,11 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             completion(nil)
         }
 
+        mockExposureDataController.updateLastSuccessfulExposureProcessingDate(Date(), done: {})
+        mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _, done in
+            done()
+        }
+
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
             storageController: mockStorageController,
