@@ -8,7 +8,7 @@
 import Foundation
 import NotificationCenter
 
-/// @mockable(history:removeDeliveredNotifications = true;add=true)
+/// @mockable(history:removeDeliveredNotifications = true;add=true;removePendingNotificationRequests=true)
 protocol UserNotificationCenter {
     /// Gets the authroization status and returns the result on the main thread.
     func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ())
@@ -20,6 +20,7 @@ protocol UserNotificationCenter {
     func removeNotificationsFromNotificationsCenter()
     func removeDeliveredNotifications(withIdentifiers identifiers: [String])
     func removeAllPendingNotificationRequests()
+    func removePendingNotificationRequests(withIdentifiers identifiers: [String])
 
     func schedulePauseExpirationNotification(pauseEndDate: Date)
     func displayPauseExpirationReminder(completion: @escaping () -> ())
