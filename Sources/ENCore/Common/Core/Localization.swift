@@ -477,6 +477,13 @@ extension String {
     static var moreInformationReceivedNotificationDoCoronaTestTitle: String { return Localization.string(for: "moreInformation.receivedNotification.doCoronaTest.title") }
     static var moreInformationReceivedNotificationDoCoronaTestContent: String { return Localization.string(for: "moreInformation.receivedNotification.doCoronaTest.content") }
 
+    static func moreInformationLastTEKProcessingDateInformation(_ date: String?) -> String {
+        guard let date = date else {
+            return Localization.string(for: "moreInformation.lastTEKProcessingDateInformation.withoutDate")
+        }
+        return Localization.string(for: "moreInformation.lastTEKProcessingDateInformation.withDate", [date])
+    }
+
     // MARK: - MoreInformation | Request Test
 
     static var moreInformationRequestTestTitle: String { return Localization.string(for: "moreInformation.requestTest.title") }
