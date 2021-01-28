@@ -19,7 +19,7 @@
 
 /* MARK: - MoreInformation | Settings */
 "moreInformation.cell.settings.title" = "Settings";
-"moreInformation.cell.settings.subtitle" = "Pause app and turn off mobile data";
+"moreInformation.cell.settings.subtitle" = "Pause app and manage mobile data";
 /* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Settings";
 "moreInformation.settings.mobiledata.paragraphtitle" = "Only check codes with WiFi";
