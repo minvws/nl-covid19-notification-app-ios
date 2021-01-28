@@ -38,7 +38,7 @@
 "moreInformation.settings.pause.enableappbutton" = "App aanzetten";
 
 /* MARK: - MoreInformation | Settings | Mobile Data */
-"moreInformation.settings.mobiledata.title" = "Mobiele data instellingen";
+"moreInformation.settings.mobiledata.title" = "Mobiele data-instellingen";
 "moreInformation.settings.step1" = "Open <b>Instellingen</b> op je telefoon via de knop hieronder";
 "moreInformation.settings.step2" = "Zet mobiele data voor CoronaMelder aan of uit";
 "moreInformation.settings.step2.row.title" = "Mobiele data";
