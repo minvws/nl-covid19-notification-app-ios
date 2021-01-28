@@ -5,7 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 @testable import ENCore
+import ENFoundation
 import Foundation
 import SnapshotTesting
 import XCTest
@@ -16,6 +18,7 @@ final class MoreInformationViewControllerTests: TestCase {
     private let listener = MoreInformationListenerMock()
     private let tableViewDelegate = UITableViewDelegateMock()
     private let tableViewDataSource = UITableViewDataSourceMock()
+    private let exposureControllerMock = ExposureControllingMock()
 
     // MARK: - Setup
 
@@ -24,6 +27,13 @@ final class MoreInformationViewControllerTests: TestCase {
 
         recordSnapshots = false
 
+        let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        DateTimeTestingOverrides.overriddenCurrentDate = date
+
+        exposureControllerMock.lastTEKProcessingDateHandler = {
+            return Just(date).eraseToAnyPublisher()
+        }
+
         viewController = MoreInformationViewController(
             listener: listener,
             theme: theme,
@@ -31,7 +41,8 @@ final class MoreInformationViewControllerTests: TestCase {
                 "CFBundleShortVersionString": "1.0",
                 "CFBundleVersion": "12345",
                 "GitHash": "5ec9b"
-            ]
+            ],
+            exposureController: exposureControllerMock
         )
     }
 

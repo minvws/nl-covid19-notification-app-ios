@@ -548,7 +548,7 @@ final class ExposureController: ExposureControlling, Logging {
 
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
         guard
-            let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate,
+            let lastSuccessfulProcessingDate = dataController.lastSuccessfulExposureProcessingDate,
             lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
         else {
             return
@@ -562,6 +562,10 @@ final class ExposureController: ExposureControlling, Logging {
         }
 
         notifyUser()
+    }
+
+    func lastTEKProcessingDate() -> AnyPublisher<Date?, Never> {
+        return dataController.lastSuccessfulExposureProcessingDatePublisher
     }
 
     // MARK: - Private
@@ -631,8 +635,8 @@ final class ExposureController: ExposureControlling, Logging {
         let noInternetIntervalForShowingWarning = TimeInterval(60 * 60 * 24) // 24 hours
         let hasBeenTooLongSinceLastUpdate: Bool
 
-        if let lastSuccessfulProcessingDate = dataController.lastSuccessfulProcessingDate {
-            hasBeenTooLongSinceLastUpdate = lastSuccessfulProcessingDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
+        if let lastSuccessfulExposureProcessingDate = dataController.lastSuccessfulExposureProcessingDate {
+            hasBeenTooLongSinceLastUpdate = lastSuccessfulExposureProcessingDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
         } else {
             hasBeenTooLongSinceLastUpdate = false
         }

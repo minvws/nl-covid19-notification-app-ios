@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import Combine
 import ENFoundation
 import SafariServices
 import SnapKit
@@ -39,10 +40,11 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     init(listener: MoreInformationListener,
          theme: Theme,
-         bundleInfoDictionary: [String: Any]?) {
+         bundleInfoDictionary: [String: Any]?,
+         exposureController: ExposureControlling) {
         self.listener = listener
         self.bundleInfoDictionary = bundleInfoDictionary
-
+        self.exposureController = exposureController
         super.init(theme: theme)
     }
 
@@ -57,6 +59,11 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         super.viewDidLoad()
 
         moreInformationView.set(data: objects, listener: self)
+
+        exposureController.lastTEKProcessingDate().sink { lastTEKProcessingDate in
+            let date = self.formatTEKProcessingDateToString(lastTEKProcessingDate)
+            self.moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
+        }.store(in: &disposeBag)
 
         if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
@@ -131,7 +138,19 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
     private weak var listener: MoreInformationListener?
+    private var disposeBag = Set<AnyCancellable>()
     private let bundleInfoDictionary: [String: Any]?
+    private let exposureController: ExposureControlling
+
+    private func formatTEKProcessingDateToString(_ date: Date?) -> String? {
+        guard let date = date else {
+            return nil
+        }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeStyle = .short
+        return dateFormatter.string(from: date)
+    }
 }
 
 private final class MoreInformationView: View {
@@ -140,16 +159,22 @@ private final class MoreInformationView: View {
         get { versionLabel.text }
         set { versionLabel.text = newValue }
     }
+    fileprivate var latestTekUpdate: String? {
+        get { lastTEKProcessingDateLabel.text }
+        set { lastTEKProcessingDateLabel.text = newValue }
+    }
     var didSelectItem: ((MoreInformationIdentifier) -> ())?
 
     private let stackView: UIStackView
     private let versionLabel: Label
+    private let lastTEKProcessingDateLabel: Label
 
     // MARK: - Init
 
     override init(theme: Theme) {
         self.stackView = UIStackView(frame: .zero)
         self.versionLabel = Label()
+        self.lastTEKProcessingDateLabel = Label()
         super.init(theme: theme)
     }
 
@@ -161,11 +186,18 @@ private final class MoreInformationView: View {
         stackView.axis = .vertical
         stackView.distribution = .fill
 
+        lastTEKProcessingDateLabel.numberOfLines = 0
+        lastTEKProcessingDateLabel.lineBreakMode = .byWordWrapping
+        lastTEKProcessingDateLabel.font = theme.fonts.footnote
+        lastTEKProcessingDateLabel.textColor = theme.colors.gray
+        lastTEKProcessingDateLabel.textAlignment = .center
+
         versionLabel.font = theme.fonts.footnote
         versionLabel.textColor = theme.colors.gray
         versionLabel.textAlignment = .center
 
         addSubview(stackView)
+        addSubview(lastTEKProcessingDateLabel)
         addSubview(versionLabel)
     }
 
@@ -177,10 +209,15 @@ private final class MoreInformationView: View {
         stackView.snp.makeConstraints { maker in
             maker.top.equalToSuperview().offset(16)
             maker.leading.trailing.equalTo(safeAreaLayoutGuide)
-            maker.bottom.equalTo(versionLabel.snp.top).offset(-16)
+        }
+        lastTEKProcessingDateLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(stackView.snp.bottom).offset(16)
+            maker.leading.equalTo(stackView).offset(16)
+            maker.trailing.equalTo(stackView).offset(-16)
         }
         versionLabel.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview()
+            maker.top.equalTo(lastTEKProcessingDateLabel.snp.bottom).offset(16)
+            maker.leading.trailing.equalTo(stackView)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }
