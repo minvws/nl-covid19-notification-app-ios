@@ -49,6 +49,8 @@ final class MoreInformationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_moreInformationViewController() {
+        viewController.view.setNeedsLayout()
+        viewController.view.layoutIfNeeded()
         snapshots(matching: viewController)
     }
 
