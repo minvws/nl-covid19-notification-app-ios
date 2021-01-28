@@ -128,8 +128,11 @@ final class PauseController: PauseControlling, Logging {
         // Mark app as unpaused (also starts downloading and processing keys if necessary)
         exposureController.unpause()
 
-        // Cancel unpause reminder notification
+        // remove already-delivered unpause reminder notification
         userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [PushNotificationIdentifier.pauseEnded.rawValue])
+
+        // remove pending unpause reminder notification
+        userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [PushNotificationIdentifier.pauseEnded.rawValue])
     }
 
     func hidePauseInformationScreen() {
