@@ -22,6 +22,7 @@ final class BackgroundControllerTests: XCTestCase {
     private var exposureManager = ExposureManagingMock(authorizationStatus: .authorized)
     private let userNotificationCenter = UserNotificationCenterMock()
     private let mockRandomNumberGenerator = RandomNumberGeneratingMock()
+    private let environmentController = EnvironmentControllingMock()
 
     // MARK: - Setup
 
@@ -42,7 +43,8 @@ final class BackgroundControllerTests: XCTestCase {
                                           userNotificationCenter: userNotificationCenter,
                                           taskScheduler: taskScheduler,
                                           bundleIdentifier: "nl.rijksoverheid.en",
-                                          randomNumberGenerator: mockRandomNumberGenerator)
+                                          randomNumberGenerator: mockRandomNumberGenerator,
+                                          environmentController: environmentController)
 
         exposureManager.getExposureNotificationStatusHandler = {
             return .active
@@ -94,6 +96,37 @@ final class BackgroundControllerTests: XCTestCase {
 
         XCTAssertEqual(exposureController.sendNotificationIfAppShouldUpdateCallCount, 1)
         XCTAssertEqual(exposureController.lastOpenedNotificationCheckCallCount, 1)
+    }
+
+    func test_handleRefreshWithoutTask() {
+
+        controller.refresh(task: nil)
+
+        XCTAssertEqual(exposureController.updateAndProcessPendingUploadsCallCount, 1)
+        XCTAssertEqual(exposureController.exposureNotificationStatusCheckCallCount, 1)
+
+        XCTAssertEqual(exposureController.sendNotificationIfAppShouldUpdateCallCount, 1)
+        XCTAssertEqual(exposureController.lastOpenedNotificationCheckCallCount, 1)
+    }
+
+    func test_handleDecoyStopkeysWithoutTask() {
+
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
+
+        exposureController.getPaddingHandler = {
+            return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
+        }
+
+        networkController.stopKeysHandler = { _ in
+            return .empty()
+        }
+
+        controller.handleDecoyStopkeys(task: nil)
+
+        XCTAssertEqual(networkController.stopKeysCallCount, 1)
+        XCTAssertEqual(exposureController.getPaddingCallCount, 1)
     }
 
     func test_handleBackgroundDecoyStopKeys() {
@@ -309,6 +342,7 @@ final class BackgroundControllerTests: XCTestCase {
     func test_performDecoySequenceIfNeeded() {
         let completionExpectation = expectation(description: "completion")
 
+        environmentController.isiOS13orHigher = true
         dataController.canProcessDecoySequence = true
         mockRandomNumberGenerator.randomIntHandler = { _ in 0 }
         mockRandomNumberGenerator.randomFloatHandler = { _ in 0 }
@@ -327,6 +361,48 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertEqual(dataController.setLastDecoyProcessDateCallCount, 1)
         XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
         XCTAssertEqual(taskScheduler.submitCallCount, 1)
+    }
+
+    func test_performDecoySequenceIfNeededIos12() {
+        let completionExpectation = expectation(description: "completion")
+
+        environmentController.isiOS13orHigher = false
+
+        dataController.canProcessDecoySequence = true
+        mockRandomNumberGenerator.randomIntHandler = { _ in 0 }
+        mockRandomNumberGenerator.randomFloatHandler = { _ in 0 }
+        exposureController.getDecoyProbabilityHandler = { .just(1) }
+
+        exposureController.requestLabConfirmationKeyHandler = { completion in
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
+        }
+
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
+
+        exposureController.getPaddingHandler = {
+            return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
+        }
+
+        networkController.stopKeysHandler = { _ in
+            completionExpectation.fulfill()
+            return .empty()
+        }
+
+        exposureController.requestLabConfirmationKeyHandler = { completion in
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
+        }
+
+        controller.performDecoySequenceIfNeeded()
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(dataController.setLastDecoyProcessDateCallCount, 1)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
+        XCTAssertEqual(networkController.stopKeysCallCount, 1)
+        XCTAssertEqual(exposureController.getPaddingCallCount, 1)
+        XCTAssertEqual(taskScheduler.submitCallCount, 0)
     }
 
     func test_performDecoySequenceIfNeeded_shouldNotPerformDecoyOnSameDay() {

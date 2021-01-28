@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import ExposureNotification
 import Foundation
 import UIKit
@@ -67,6 +68,11 @@ protocol ExposureManaging {
 
     /// Returns the current framework status
     func getExposureNotificationStatus() -> ExposureManagerStatus
+
+    /// On iOS 12.5 only, this will ensure the app receives 3.5 minutes of background processing
+    /// every 4 hours. This function is needed on iOS 12.5 because the BackgroundTask framework, used
+    /// for Exposure Notifications background processing in iOS 13.5+ does not exist in iOS 12.
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler)
 }
 
 /// @mockable
@@ -79,6 +85,7 @@ protocol ExposureManagerBuildable {
 final class ExposureManagerBuilder: Builder<EmptyDependency>, ExposureManagerBuildable {
 
     func build() -> ExposureManaging {
+
         #if targetEnvironment(simulator)
             return StubExposureManager()
         #else

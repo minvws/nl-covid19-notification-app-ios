@@ -99,7 +99,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     lazy var exposureManager: ExposureManaging = {
         let builder = ExposureManagerBuilder()
-
         return builder.build()
     }()
 
@@ -134,7 +133,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }()
 
     lazy var backgroundController: BackgroundControlling = {
-        return BackgroundControllerBuilder(dependency: self).build()
+        let builder = BackgroundControllerBuilder(dependency: self)
+        return builder.build()
     }()
 
     fileprivate var dataController: ExposureDataControlling {

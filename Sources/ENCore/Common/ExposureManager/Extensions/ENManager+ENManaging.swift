@@ -22,6 +22,9 @@ protocol ENManaging {
 
     func setExposureNotificationEnabled(_ enabled: Bool,
                                         completionHandler: @escaping ENErrorHandler)
+
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler)
+
     var exposureNotificationEnabled: Bool { get }
 
     var exposureNotificationStatus: ENStatus { get }
