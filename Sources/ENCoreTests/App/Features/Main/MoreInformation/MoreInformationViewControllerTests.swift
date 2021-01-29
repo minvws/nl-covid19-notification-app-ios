@@ -50,7 +50,7 @@ final class MoreInformationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_moreInformationViewController() {
-        assertSnapshot(matching: wrapped(viewController.view), as: .image())
+        assertSnapshot(matching: wrapped(viewController.view), as: .recursiveDescription)
     }
 
     func test_didSelectItem_settings() {
