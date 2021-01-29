@@ -22,6 +22,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockApplication: ApplicationControllingMock!
     private var mockFileManager: FileManagingMock!
     private var mockEnvironmentController: EnvironmentControllingMock!
+    private var mockExposureDataController: ExposureDataControllingMock!
 
     override func setUpWithError() throws {
 
@@ -34,6 +35,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockApplication = ApplicationControllingMock()
         mockFileManager = FileManagingMock()
         mockEnvironmentController = EnvironmentControllingMock()
+        mockExposureDataController = ExposureDataControllingMock()
 
         // Default handlers
         mockEnvironmentController.isiOS136orHigher = true
@@ -48,10 +50,16 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             completion(nil)
         }
 
+        mockExposureDataController.updateLastSuccessfulExposureProcessingDate(Date(), done: {})
+        mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _, done in
+            done()
+        }
+
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
             storageController: mockStorageController,
             exposureManager: mockExposureManager,
+            exposureDataController: mockExposureDataController,
             exposureKeySetsStorageUrl: mockExposureKeySetsStorageUrl,
             configuration: mockExposureConfiguration,
             userNotificationCenter: mockUserNotificationCenter,

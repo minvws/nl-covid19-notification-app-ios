@@ -48,6 +48,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          exposureManager: ExposureManaging,
+         exposureDataController: ExposureDataControlling,
          exposureKeySetsStorageUrl: URL,
          configuration: ExposureConfiguration,
          userNotificationCenter: UserNotificationCenter,
@@ -57,6 +58,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
+        self.exposureDataController = exposureDataController
         self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
@@ -536,16 +538,12 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private func updateLastProcessingDate(_ value: (ExposureDetectionResult, ExposureReport?)) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
         return Deferred {
             Future { promise in
-                self.storageController.requestExclusiveAccess { storageController in
-                    let date = Date()
+                let date = Date()
 
-                    self.logDebug("Updating last process date to \(date)")
+                self.logDebug("Updating last process date to \(date)")
 
-                    storageController.store(object: date,
-                                            identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
-                                            completion: { _ in
-                                                promise(.success(value))
-                                            })
+                self.exposureDataController.updateLastSuccessfulExposureProcessingDate(date) {
+                    promise(.success(value))
                 }
             }
         }
@@ -588,6 +586,7 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureManager: ExposureManaging
+    private let exposureDataController: ExposureDataControlling
     private let exposureKeySetsStorageUrl: URL
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter
