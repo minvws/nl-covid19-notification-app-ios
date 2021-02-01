@@ -302,18 +302,21 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         get {
             return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pauseEndDate)
         } set {
-            self.storageController.requestExclusiveAccess { storageController in
-                if let newDate = newValue {
-                    storageController.store(object: newDate,
-                                            identifiedBy: ExposureDataStorageKey.pauseEndDate,
-                                            completion: { _ in
-                                                self.pauseEndDateSubject.send(newDate)
-                        })
-                } else {
-                    storageController.removeData(for: ExposureDataStorageKey.pauseEndDate, completion: { _ in
-                        self.pauseEndDateSubject.send(newValue)
-                    })
+
+            if let newDate = newValue {
+                self.storageController.requestExclusiveAccess { storageController in
+                    storageController.store(
+                        object: newDate,
+                        identifiedBy: ExposureDataStorageKey.pauseEndDate,
+                        completion: { _ in
+                            self.pauseEndDateSubject.send(newDate)
+                        }
+                    )
                 }
+            } else {
+                storageController.removeData(for: ExposureDataStorageKey.pauseEndDate, completion: { _ in
+                    self.pauseEndDateSubject.send(newValue)
+                })
             }
         }
     }
@@ -375,21 +378,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
     }
 
-    func updateLastSuccessfulExposureProcessingDate(_ date: Date?, done: @escaping () -> ()) {
-        self.storageController.requestExclusiveAccess { storageController in
-            if let newDate = date {
-                storageController.store(object: newDate,
-                                        identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
-                                        completion: { _ in
-                                            self.lastExposureProcessingDateSubject.send(newDate)
-                                            done()
-                    })
-            } else {
-                storageController.removeData(for: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in
-                    self.lastExposureProcessingDateSubject.send(nil)
+    func updateLastSuccessfulExposureProcessingDate(_ date: Date, done: @escaping () -> ()) {
+
+        storageController.requestExclusiveAccess { storageController in
+            storageController.store(
+                object: date,
+                identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
+                completion: { _ in
+                    self.lastExposureProcessingDateSubject.send(date)
                     done()
-                })
-            }
+                }
+            )
         }
     }
 
