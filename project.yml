@@ -1,4 +1,7 @@
 name: EN
+settings:
+  base:
+    CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: 'YES'
 options:
   developmentLanguage: en
 packages:
@@ -143,7 +146,7 @@ targets:
         product: CocoaLumberjack
       - package: CocoaLumberjack
         product: CocoaLumberjackSwift
-    deploymentTarget: '11.0'
+    deploymentTarget: '12.0'
     platform: iOS
     settings:
       base:
