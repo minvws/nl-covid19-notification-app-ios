@@ -247,6 +247,7 @@ private final class SettingsView: View {
 
         addSubview(scrollableStackView)
         scrollableStackView.spacing = 21
+        scrollableStackView.stackViewBottomMargin = 32
         scrollableStackView.addSections([
             pauseAppTitleLabel,
             pauseAppDescriptionLabel,
