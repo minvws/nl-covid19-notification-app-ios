@@ -57,36 +57,40 @@ private class DefaultExposureConfiguration: ENExposureConfiguration {
         // Needed since EN API v2 version
         self.reportTypeNoneMap = .confirmedTest
         self.infectiousnessForDaysSinceOnsetOfSymptoms = [
-            -14: NSNumber(value: ENInfectiousness.high.rawValue),
-            -13: NSNumber(value: ENInfectiousness.high.rawValue),
-            -12: NSNumber(value: ENInfectiousness.high.rawValue),
-            -11: NSNumber(value: ENInfectiousness.high.rawValue),
-            -10: NSNumber(value: ENInfectiousness.high.rawValue),
-            -9: NSNumber(value: ENInfectiousness.high.rawValue),
-            -8: NSNumber(value: ENInfectiousness.high.rawValue),
-            -7: NSNumber(value: ENInfectiousness.high.rawValue),
-            -6: NSNumber(value: ENInfectiousness.high.rawValue),
-            -5: NSNumber(value: ENInfectiousness.high.rawValue),
-            -4: NSNumber(value: ENInfectiousness.high.rawValue),
-            -3: NSNumber(value: ENInfectiousness.high.rawValue),
-            -2: NSNumber(value: ENInfectiousness.high.rawValue),
-            -1: NSNumber(value: ENInfectiousness.high.rawValue),
-            0: NSNumber(value: ENInfectiousness.high.rawValue),
-            1: NSNumber(value: ENInfectiousness.high.rawValue),
-            2: NSNumber(value: ENInfectiousness.high.rawValue),
-            3: NSNumber(value: ENInfectiousness.high.rawValue),
-            4: NSNumber(value: ENInfectiousness.high.rawValue),
-            5: NSNumber(value: ENInfectiousness.high.rawValue),
-            6: NSNumber(value: ENInfectiousness.high.rawValue),
-            7: NSNumber(value: ENInfectiousness.high.rawValue),
-            8: NSNumber(value: ENInfectiousness.high.rawValue),
-            9: NSNumber(value: ENInfectiousness.high.rawValue),
-            10: NSNumber(value: ENInfectiousness.high.rawValue),
-            11: NSNumber(value: ENInfectiousness.high.rawValue),
-            12: NSNumber(value: ENInfectiousness.high.rawValue),
-            13: NSNumber(value: ENInfectiousness.high.rawValue),
-            14: NSNumber(value: ENInfectiousness.high.rawValue)
+            -14: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -13: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -12: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -11: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -10: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -9: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -8: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -7: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -6: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -5: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -4: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -3: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -2: NSNumber(value: ENInfectiousness.standard.rawValue),
+            -1: NSNumber(value: ENInfectiousness.standard.rawValue),
+            0: NSNumber(value: ENInfectiousness.standard.rawValue),
+            1: NSNumber(value: ENInfectiousness.standard.rawValue),
+            2: NSNumber(value: ENInfectiousness.standard.rawValue),
+            3: NSNumber(value: ENInfectiousness.standard.rawValue),
+            4: NSNumber(value: ENInfectiousness.standard.rawValue),
+            5: NSNumber(value: ENInfectiousness.standard.rawValue),
+            6: NSNumber(value: ENInfectiousness.standard.rawValue),
+            7: NSNumber(value: ENInfectiousness.standard.rawValue),
+            8: NSNumber(value: ENInfectiousness.standard.rawValue),
+            9: NSNumber(value: ENInfectiousness.standard.rawValue),
+            10: NSNumber(value: ENInfectiousness.standard.rawValue),
+            11: NSNumber(value: ENInfectiousness.standard.rawValue),
+            12: NSNumber(value: ENInfectiousness.standard.rawValue),
+            13: NSNumber(value: ENInfectiousness.standard.rawValue),
+            14: NSNumber(value: ENInfectiousness.standard.rawValue)
         ]
+
+        if #available(iOS 14.0, *) {
+            self.infectiousnessForDaysSinceOnsetOfSymptoms?[NSNumber(value: ENDaysSinceOnsetOfSymptomsUnknown)] = NSNumber(value: ENInfectiousness.standard.rawValue)
+        }
     }
 
     // MARK: - Private
