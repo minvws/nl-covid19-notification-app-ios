@@ -90,6 +90,10 @@ private class DefaultExposureConfiguration: ENExposureConfiguration {
 
         if #available(iOS 14.0, *) {
             self.infectiousnessForDaysSinceOnsetOfSymptoms?[NSNumber(value: ENDaysSinceOnsetOfSymptomsUnknown)] = NSNumber(value: ENInfectiousness.standard.rawValue)
+        } else {
+            // ENDaysSinceOnsetOfSymptomsUnknown is not available
+            // in earlier versions of iOS; use an equivalent value
+            self.infectiousnessForDaysSinceOnsetOfSymptoms?[NSNumber(value: NSIntegerMax)] = NSNumber(value: ENInfectiousness.standard.rawValue)
         }
     }
 
