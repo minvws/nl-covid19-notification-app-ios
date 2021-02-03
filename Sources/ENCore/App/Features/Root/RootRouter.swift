@@ -111,6 +111,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         // screen to route to. If the network is slow this can take a few seconds.
         routeToLaunchScreen()
 
+        backgroundController.registerActivityHandle()
+
         routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
 
             guard let strongSelf = self else { return }
@@ -428,8 +430,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
-                self?.backgroundController.registerActivityHandle()
-
                 self?.exposureController.activate(inBackgroundMode: false)
                     .subscribe()
                     .disposed(by: strongSelf.disposeBag)
@@ -452,8 +452,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                         completion?(false)
                         return
                     }
-
-                    self?.backgroundController.registerActivityHandle()
 
                     self?.exposureController.activate(inBackgroundMode: false)
                         .subscribe()

@@ -119,6 +119,10 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("BackgroundController.registerActivityHandle()")
 
+        if #available(iOS 13, *) {
+            return
+        }
+
         self.exposureManager.setLaunchActivityHandler { activityFlags in
 
             self.logDebug("BackgroundController.registerActivityHandle() setLaunchActivityHandler: \(activityFlags)")
@@ -310,7 +314,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func activateExposureController(inBackgroundMode: Bool) -> Completable {
-        self.registerActivityHandle()
         return self.exposureController.activate(inBackgroundMode: inBackgroundMode)
     }
 

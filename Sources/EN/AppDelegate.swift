@@ -9,6 +9,7 @@
     import BackgroundTasks
 #endif
 
+import ENCore
 import ENFoundation
 import UIKit
 
@@ -16,6 +17,8 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+
+    private var appRoot: ENAppRoot?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Note: The following needs to be set before application:didFinishLaunchingWithOptions: returns
@@ -43,8 +46,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             let window = UIWindow(frame: UIScreen.main.bounds)
             self.window = window
-            bridge = ENCoreBridge()
-            bridge?.attach(to: window)
+
+            appRoot = ENAppRoot()
+            appRoot?.attach(toWindow: window)
             window.makeKeyAndVisible()
         }
 
@@ -53,18 +57,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Start first flow
-        bridge?.start()
-        bridge?.didBecomeActive()
+        appRoot?.start()
+        appRoot?.didBecomeActive()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // notify bridge app entered foreground
-        bridge?.didEnterForeground()
+        appRoot?.didEnterForeground()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         // notify bridge app entered background
-        bridge?.didEnterBackground()
+        appRoot?.didEnterBackground()
     }
 
     // MARK: UISceneSession Lifecycle
@@ -83,20 +87,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-    func setBridge(bridge: ENCoreBridge?) {
-        self.bridge = bridge
+    func setAppRoot(appRoot: ENAppRoot?) {
+        self.appRoot = appRoot
     }
 
     // MARK: - Private
 
-    private var bridge: ENCoreBridge?
-
-    @available(iOS 13, *)
+    @available(iOS 13.5, *)
     private func handle(backgroundTask: BGTask) {
-        guard let bridge = bridge else {
+        guard let appRoot = appRoot else {
             return print("🔥 ENCoreBridge is `nil`")
         }
-        bridge.handleBackgroundTask(backgroundTask)
+
+        appRoot.handle(backgroundTask: backgroundTask)
     }
 }
 
@@ -107,6 +110,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> ()) {
-        bridge?.didReceiveRemoteNotification(center, didReceive: response, withCompletionHandler: completionHandler)
+        appRoot?.receiveRemoteNotification(response: response)
+        completionHandler()
     }
 }

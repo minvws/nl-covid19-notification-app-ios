@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENCore
 import ENFoundation
 import UIKit
 
@@ -13,17 +14,16 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    private var bridge: ENCoreBridge?
+    private let appRoot = ENAppRoot()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: windowScene)
 
-        bridge = ENCoreBridge()
-        bridge?.attach(to: window)
+        appRoot.attach(toWindow: window)
 
-        (UIApplication.shared.delegate as? AppDelegate)?.setBridge(bridge: bridge)
+        (UIApplication.shared.delegate as? AppDelegate)?.setAppRoot(appRoot: appRoot)
 
         window.makeKeyAndVisible()
 
@@ -39,8 +39,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Start first flow
-        bridge?.start()
-        bridge?.didBecomeActive()
+        appRoot.start()
+        appRoot.didBecomeActive()
 
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
@@ -53,7 +53,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         // notify bridge app entered foreground
-        bridge?.didEnterForeground()
+        appRoot.didEnterForeground()
 
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
@@ -61,7 +61,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidEnterBackground(_ scene: UIScene) {
         // notify bridge app entered background
-        bridge?.didEnterBackground()
+        appRoot.didEnterBackground()
 
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
