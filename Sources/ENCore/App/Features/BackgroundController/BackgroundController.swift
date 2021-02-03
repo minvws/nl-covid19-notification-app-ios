@@ -117,7 +117,12 @@ final class BackgroundController: BackgroundControlling, Logging {
     // activity handler does nothing.
     func registerActivityHandle() {
 
-        logDebug("BackgroundController.registerActivityHandle()")
+        logDebug("BackgroundController - registerActivityHandle() called")
+
+        guard environmentController.isiOS12 else {
+            logDebug("BackgroundController - Not registering activityHandler because we are not on iOS 12.5")
+            return
+        }
 
         self.exposureManager.setLaunchActivityHandler { activityFlags in
 
@@ -310,7 +315,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func activateExposureController(inBackgroundMode: Bool) -> Completable {
-        self.registerActivityHandle()
         return self.exposureController.activate(inBackgroundMode: inBackgroundMode)
     }
 
