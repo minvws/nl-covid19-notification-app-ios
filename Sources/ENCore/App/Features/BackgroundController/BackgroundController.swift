@@ -120,6 +120,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         logDebug("BackgroundController - registerActivityHandle() called")
 
         guard environmentController.isiOS12 else {
+            logDebug("BackgroundController - Not registering activityHandler because we are not on iOS 12.5")
             return
         }
 
