@@ -66,18 +66,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Start first flow
-        appRoot?.start()
-        appRoot?.didBecomeActive()
+        guard let appRoot = appRoot else {
+            logError("AppDelegate - applicationDidBecomeActive - appRoot not initialized")
+            return
+        }
+        appRoot.start()
+        appRoot.didBecomeActive()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // notify bridge app entered foreground
-        appRoot?.didEnterForeground()
+        guard let appRoot = appRoot else {
+            logError("AppDelegate - applicationWillEnterForeground - appRoot not initialized")
+            return
+        }
+        appRoot.didEnterForeground()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         // notify bridge app entered background
-        appRoot?.didEnterBackground()
+        guard let appRoot = appRoot else {
+            logError("AppDelegate - applicationDidEnterBackground - appRoot not initialized")
+            return
+        }
+        appRoot.didEnterBackground()
     }
 
     // MARK: UISceneSession Lifecycle
