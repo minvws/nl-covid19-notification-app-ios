@@ -416,6 +416,28 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertEqual(taskScheduler.submitCallCount, 0)
     }
 
+    func test_registerActivityHandle_shouldSetLaunchActivityHandler() {
+
+        environmentController.isiOS12 = true
+
+        XCTAssertEqual(exposureManager.setLaunchActivityHandlerCallCount, 0)
+
+        controller.registerActivityHandle()
+
+        XCTAssertEqual(exposureManager.setLaunchActivityHandlerCallCount, 1)
+    }
+
+    func test_registerActivityHandle_shouldNotSetLaunchActivityHandlerOniOS13AndHigher() {
+
+        environmentController.isiOS12 = false
+
+        XCTAssertEqual(exposureManager.setLaunchActivityHandlerCallCount, 0)
+
+        controller.registerActivityHandle()
+
+        XCTAssertEqual(exposureManager.setLaunchActivityHandlerCallCount, 0)
+    }
+
     // MARK: - Private
 
     private var labConfirmationKey: LabConfirmationKey {

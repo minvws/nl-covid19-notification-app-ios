@@ -119,7 +119,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("BackgroundController.registerActivityHandle()")
 
-        if #available(iOS 13, *) {
+        guard environmentController.isiOS12 else {
             return
         }
 
