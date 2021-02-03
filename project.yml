@@ -84,7 +84,6 @@ targets:
         DEVELOPMENT_TEAM: C2H38GV99H
         ENABLE_BITCODE: 'YES'
         PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en
-        SWIFT_OBJC_BRIDGING_HEADER: Sources/EN/AppBridge/EN-Bridging-Header.h
         SWIFT_VERSION: 5.2
         TARGETED_DEVICE_FAMILY: 1
       configs:
