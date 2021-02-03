@@ -14,7 +14,7 @@ import ENFoundation
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     var window: UIWindow?
 
@@ -24,6 +24,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Note: The following needs to be set before application:didFinishLaunchingWithOptions: returns
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
+
+        logDebug("AppDelegate - application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) Called")
+
+        sendAppLaunchNotification()
 
         if #available(iOS 13.5, *) {
             let bundleIdentifier = Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en"
@@ -44,6 +48,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13, *) {
 
         } else {
+
+            logDebug("AppDelegate - Following iOS 12 path")
+
             let window = UIWindow(frame: UIScreen.main.bounds)
             self.window = window
 
@@ -100,6 +107,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         appRoot.handle(backgroundTask: backgroundTask)
+    }
+
+    private func sendAppLaunchNotification() {
+
+        let unc = UNUserNotificationCenter.current()
+
+        unc.getNotificationSettings { status in
+            guard status.authorizationStatus == .authorized else {
+                return self.logError("Not authorized to post notifications")
+            }
+
+            let formatter = DateFormatter()
+            formatter.timeStyle = .long
+            let date = formatter.string(from: Date())
+
+            let content = UNMutableNotificationContent()
+            content.title = "App Launch notification"
+            content.body = "Launched at \(date)"
+            content.sound = UNNotificationSound.default
+            content.badge = 0
+
+            let identifier = "app-lauch-notification"
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+            unc.add(request) { error in
+                guard let error = error else {
+                    return
+                }
+                self.logError("Error posting notification: app-lauch-notification \(error.localizedDescription)")
+            }
+        }
     }
 }
 

@@ -117,7 +117,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     // activity handler does nothing.
     func registerActivityHandle() {
 
-        logDebug("BackgroundController.registerActivityHandle()")
+        logDebug("BackgroundController - registerActivityHandle() called")
 
         guard environmentController.isiOS12 else {
             return

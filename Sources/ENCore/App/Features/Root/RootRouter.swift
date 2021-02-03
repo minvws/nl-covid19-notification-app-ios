@@ -95,8 +95,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func start() {
 
+        logDebug("RootRouter - start() called")
+
         guard mainRouter == nil, onboardingRouter == nil else {
-            // already started
+            logDebug("RootRouter - already started")
             return
         }
 
@@ -104,6 +106,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         if !environmentController.supportsExposureNotification {
             routeToUpdateOperatingSystem(animated: false)
+            logDebug("RootRouter - doesn't support EN")
             return
         }
 
