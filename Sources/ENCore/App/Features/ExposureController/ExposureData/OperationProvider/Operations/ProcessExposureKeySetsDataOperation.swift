@@ -78,8 +78,10 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
         if exposureKeySetHolders.count > 0 {
             logDebug("Processing \(exposureKeySetHolders.count) KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
         } else {
-            // keep processing to make sure lastProcessDate is updated
             logDebug("No additional keysets to process")
+            return Just(())
+                .setFailureType(to: ExposureDataError.self)
+                .eraseToAnyPublisher()
         }
 
         // Batch detect exposures
@@ -90,8 +92,6 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
             .flatMap(self.createReportAndTriggerNotification(forResult:))
             // persist the ExposureReport
             .flatMap(self.persist(exposureReport:))
-            // update last processing date
-            .flatMap(self.updateLastProcessingDate)
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
@@ -204,6 +204,8 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
                                                                  processDate: Date(),
                                                                  isValid: true)
                         }
+
+                        self.updateLastProcessingDate()
 
                         let keySetHolderResults = invalidKeySetHolderResults + validKeySetHolderResults
                         let result = ExposureDetectionResult(keySetDetectionResults: keySetHolderResults,
@@ -535,19 +537,13 @@ final class ProcessExposureKeySetsDataOperation: ExposureDataOperation, Logging 
     }
 
     /// Updates the date when this operation has last run
-    private func updateLastProcessingDate(_ value: (ExposureDetectionResult, ExposureReport?)) -> AnyPublisher<(ExposureDetectionResult, ExposureReport?), ExposureDataError> {
-        return Deferred {
-            Future { promise in
-                let date = Date()
+    private func updateLastProcessingDate() {
 
-                self.logDebug("Updating last process date to \(date)")
+        let date = currentDate()
 
-                self.exposureDataController.updateLastSuccessfulExposureProcessingDate(date) {
-                    promise(.success(value))
-                }
-            }
-        }
-        .eraseToAnyPublisher()
+        self.logDebug("Updating last process date to \(date)")
+
+        self.exposureDataController.updateLastSuccessfulExposureProcessingDate(date)
     }
 
     private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder) -> URL? {

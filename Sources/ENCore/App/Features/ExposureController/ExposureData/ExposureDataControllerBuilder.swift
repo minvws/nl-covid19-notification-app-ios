@@ -24,7 +24,7 @@ struct ExposureDataAppVersionInformation {
     let appStoreURL: String
 }
 
-/// @mockable
+/// @mockable(history:updateLastSuccessfulExposureProcessingDate=true)
 protocol ExposureDataControlling: AnyObject {
 
     // MARK: - Exposure Detection
@@ -32,7 +32,7 @@ protocol ExposureDataControlling: AnyObject {
     var lastExposure: ExposureReport? { get }
     var lastSuccessfulExposureProcessingDatePublisher: AnyPublisher<Date?, Never> { get }
     var lastSuccessfulExposureProcessingDate: Date? { get }
-    func updateLastSuccessfulExposureProcessingDate(_ date: Date, done: @escaping () -> ())
+    func updateLastSuccessfulExposureProcessingDate(_ date: Date)
     var lastLocalNotificationExposureDate: Date? { get }
     var lastENStatusCheckDate: Date? { get }
     var lastAppLaunchDate: Date? { get }
