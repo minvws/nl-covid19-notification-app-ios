@@ -31,7 +31,7 @@ final class ExposureControllerTests: TestCase {
                                         userNotificationCenter: userNotificationCenter,
                                         currentAppVersion: currentAppVersion)
 
-        dataController.updateLastSuccessfulExposureProcessingDate(Date(), done: {})
+        dataController.updateLastSuccessfulExposureProcessingDate(Date())
 
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher() }
 

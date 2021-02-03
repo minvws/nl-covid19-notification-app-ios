@@ -7,6 +7,7 @@
 
 import Combine
 @testable import ENCore
+import ENFoundation
 import Foundation
 import XCTest
 
@@ -50,10 +51,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             completion(nil)
         }
 
-        mockExposureDataController.updateLastSuccessfulExposureProcessingDate(Date(), done: {})
-        mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _, done in
-            done()
-        }
+        mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _ in }
 
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
@@ -86,6 +84,26 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertTrue(mockStorageController.retrieveDataArgValues.first is CodableStorageKey<[ExposureKeySetHolder]>)
         waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_shouldNotDetectExposuresIfNoStoredKeySets() {
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+        mockApplication.isInBackground = true
+        mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+
+        sut.execute()
+            .assertNoFailure()
+            .sink { val in
+                exp.fulfill()
+            }
+            .disposeOnTearDown(of: self)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
     }
 
     // If the number of background calls has not reached the limit, a detection call should be made
@@ -202,6 +220,37 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
     }
+
+    func test_shouldUpdateLastProcessingDate() {
+
+        mockApplication.isInBackground = true
+        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        let currentDate = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
+
+        mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            completion(.success(ExposureDetectionSummaryMock()))
+        }
+
+        sut.execute()
+            .assertNoFailure()
+            .sink { _ in
+                exp.fulfill()
+            }
+            .disposeOnTearDown(of: self)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate)
+    }
+
+    // MARK: - Private Helper Functions
 
     private var dummyKeySetHolder: ExposureKeySetHolder {
         ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date())
