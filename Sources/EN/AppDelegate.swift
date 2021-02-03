@@ -25,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
 
+        LogHandler.setup()
+
         logDebug("AppDelegate - application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) Called")
 
         sendAppLaunchNotification()

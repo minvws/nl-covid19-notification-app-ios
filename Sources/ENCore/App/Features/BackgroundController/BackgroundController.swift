@@ -88,7 +88,6 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     @available(iOS 13, *)
     func handle(task: BGTask) {
-        LogHandler.setup()
 
         guard let task = task as? BGProcessingTask else {
             return logError("Background: Task is not of type `BGProcessingTask`")
