@@ -19,7 +19,7 @@
 
 /* MARK: - MoreInformation | Settings */
 "moreInformation.cell.settings.title" = "الإعدادات";
-"moreInformation.cell.settings.subtitle" = "اضبط إعداداتك واستخدم خدمة تجوال البيانات";
+"moreInformation.cell.settings.subtitle" = "إيقاف التطبيق مؤقتًا وضبط خدمة تجوال البيانات";
 /* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "الإعدادات";
 "moreInformation.settings.mobiledata.paragraphtitle" = "تحقق فقط من الرموز عبرالـ WiFi";
@@ -30,7 +30,7 @@
 "moreInformation.settings.pause.title" = "إيقاف التطبيق مؤقتًا";
 "moreInformation.settings.pause.subtitle" = "هل أنت متأكد من أنك تريد إيقاف التطبيق مؤقتًا؟";
 "moreInformation.settings.pause.description" = "لا يتتبع التطبيق المصادفات مع مستخدمي التطبيق الآخرين أثناء الإيقاف المؤقت. لا يمكنك أيضًا تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا.\n\nقم بالإيقاف المؤقت فقط في الحالات التي يكون فيها هاتفك على مقربة من هواتف الآخرين لكن لم تكن عرضة للإصابة. بسبب استخدام معدات الوقاية الطبية على سبيل المثال.";
-"moreInformation.settings.pause.description.short" = "إذا قمت بإيقاف التطبيق مؤقتًا، فلن يتم تعقب مصادفاتك مؤقتًا. أيضًا لا يمكنك تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا. بعد انتهاء فترة التشغيل المؤقت، سيتم إشعارك على الفور لإعادة تشغيل التطبيق.";
+"moreInformation.settings.pause.description.short" = "إذا قمت بإيقاف التطبيق مؤقتًا، فلن يتم تعقب مصادفاتك مؤقتًا. أيضًا لا يمكنك تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا. بعد انتهاء فترة الإيقاف المؤقت، سيتم إشعارك على الفور لإعادة تشغيل التطبيق.";
 "moreInformation.settings.pause.dontshowscreen" = "لا تقم بإظهار هذه الشاشة مرة أخرى";
 "moreInformation.settings.pause.yesbutton" = "نعم، قم بإيقاف التطبيق مؤقتًا";
 "moreInformation.settings.pause.cancelbutton" = "كلا، لا تقم بإيقاف التشغيل مؤقتًا";
@@ -38,7 +38,7 @@
 "moreInformation.settings.pause.enableappbutton" = "تشغيل التطبيق";
 
 /* MARK: - MoreInformation | Settings | Mobile Data */
-"moreInformation.settings.mobiledata.title" = "تشغيل خدمة تجوال البيانات";
+"moreInformation.settings.mobiledata.title" = "بيانات خدمة تجوال";
 "moreInformation.settings.step1" = "افتح <b>الإعدادات</b> في هاتفك عن طريق الزر أدناه";
 "moreInformation.settings.step2" = "قم بتشغيل أو إيقاف تشغيل خدمة تجوال البيانات من أجل CoronaMelder ";
 "moreInformation.settings.step2.row.title" = "خدمة تجوال البيانات";
@@ -94,6 +94,7 @@
 "status.icon.accessibility.ok" = "دائرة خظراء مع علامة صح تشير إلى أن التطبيق قد تم إعداده بشكل صحيح";
 "status.icon.accessibility.inactive" = "دائرة صفراء مع علامة تعجب كتحذير";
 "status.icon.accessibility.notified" = "دائرة حمراء مع جرس إنذار تشير إلى أنه عليك التصرف الآن";
+"status.icon.accessibility.paused" = "دائرة رمادية اللون عليها رمز الإيقاف  يشير إلى أنه تم إيقاف التطبيق مؤقتًا";
 "status.notified.today" = "اليوم";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -286,7 +287,7 @@
 "help.other_what_does_report_say.content2" = "سيظهر الإشعار على الشاشة الرئيسية لهاتفك. تمامًا مثل الرسائل الواردة من التطبيقات الأخرى. الإشعار لديه رمز CoronaMelder <br> <br> هل تلقيت إشعارًا؟ ثم افتح CoronaMelder. هناك يمكنك قراءة ما يمكنك القيام به بعد ذلك";
 
 "help.pause_app.title" = "Can I pause the app?";
-"help.pause_app.description" = "نعم، يمكنك القيام بذلك عن طريق إيقاف تشغيل البلوتوث. يمكنك القيام بذلك من خلال الانتقال إلى<b> الإعدادات> البلوتوث</b>. انتباه: لا يمكن توقيف النتطبيق مؤقتًا باستخدام لوحة الاستخدام. إذا قمت بإيقاف تشغيل البلوتوث، فلن يتبادل التطبيق الرموز بعد الآن. ستتلقى بعد ذلك تذكيرًا تلقائيًا لإعادة تشغيل التطبيق كل 24 ساعة. <br><br>إلا أنه لا يُنصح عادةً بإيقاف تشغيل التطبيق مؤقتًا لأنك قد تنسى إعادة تشغيله. يمكنك إيقاف التطبيق مؤقتًا في حالات خاصة. على سبيل المثال، إذا اقتربت من مرضى مصابين بكورونا (محتملين)، لكنك متأكد من أنك ترتدي معدات الوقاية الطبية.";
+"help.pause_app.description" = "نعم ، يمكنك إيقاف التطبيق مؤقتًا. يمكنك القيام بذلك في الشاشة الرئيسية من خلال <b> الإعدادات> إيقاف التطبيق المؤقت</ b>. إذا أوقفت التطبيق مؤقتًا، فلن يتم تعقب مخالطاتك مؤقتًا. أيضًا، لا يمكنك تلقي إشعار إذا كنت بالقرب من شخص تبين لاحقًا أنه مصاب بكورونا. <br><br>عند انتهاء الإيقاف المؤقت، ستتلقى إشعارًا على الفور لإعادة تشغيل التطبيق. بعد تشغيل التطبيق، لا يزال بإمكانك تلقي إشعارات المخالطات قبل إيقاف التطبيق مؤقتًا. <br><br>لا ينصح عادةً بإيقاف التطبيق مؤقتًا حيث قد تنسى إعادة تشغيله. يمكنك إيقاف التطبيق مؤقتًا في حالات خاصة. إذا اقتربت من مرضى كورونا (محتملين) على سبيل المثال، لكنك متأكد من أنك ترتدي معدات الوقاية الطبية.";
 
 "help.apps_other_countries.title" = "هل يعمل CoronaMelder أيضًا مع تطبيقات من دول أخرى؟";
 "help.apps_other_countries.description" = "يعمل CoronaMelder مع عدد من التطبيقات من دول أوروبية أخرى. من بينها ألمانيا وأيرلندا وإيطاليا. <br> <br> لنفرض أنك كنت بالقرب من أحد مستخدمي تطبيق Corona-Warn-App الألماني لفترة طويلة. تم اختبار هذا الشخص في ألمانيا وتبين أنه مصاب بكورونا. إذا شارك هذا الشخص رموزه مع الـGGD الألماني، فستتلقى إشعارًا عبر CoronaMelder. العكس أيضًا ينطبق. نظرًا لأن تطبيقات corona تعمل معًا، فأنت بحاجة فقط إلى تشغيل تطبيق واحد. <br> <br> اعتبارًا من 30 نوفمبر /تشرين الثاني 2020، سيتحقق CoronaMelder من رموز المستخدمين من مختلف البلدان يوميًا. نتيجة لذلك ، يستخدم التطبيق تجوال البيانات أكثر من ذي قبل. يمكنك من خلال <b> الإعدادات </b> على الشاشة الرئيسية ضبط اعداداتك بحيث يتحقق التطبيق فقط عبر شبكة WiFi ما إذا كنت على مقربة من شخص مصاب بفيروس كورونا.";
@@ -333,11 +334,11 @@
 
 /* MARK: - Paused Status */
 "status.paused.title" = "تم إيقاف التطبيق مؤقتًا";
-"status.pause.ended.title" = "انتهى الإيقاف المؤقت";
+"status.pause.ended.title" = "قم بتشغيل التطبيق من جديد";
 "status.appState.card.paused.title" = "تم إيقاف التطبيق مؤقتًا";
 "status.paused.countdown" = "سوف تتلقى إشعارًا بعد %@ لتشغيل التطبيق من جديد";
-"status.paused.manualunpause" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
-"status.card.manualunpause.title" = "انتهى الإيقاف المؤقت";
+"status.paused.manualunpause" = "CoronaMelder غير نشط. يجب عليك تشغيله مرة أخرى بنفسك.";
+"status.card.manualunpause.title" = "قم بتشغيل التطبيق من جديد";
 "status.card.manualunpause.description" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
 
 /* The title for the table of items in more information */
@@ -522,6 +523,6 @@
 "notification.update_required.title" = "التحديث ضروري";
 "notification.update_required.description" = "هناك إصدار جديد من CoronaMelder. لم يعد هذا الإصدار يعمل بشكل صحيح. تحقق من التطبيق للحصول على التعليمات.";
 
-"notification.app.unpaused.title" = "انتهى الإيقاف المؤقت";
+"notification.app.unpaused.title" = "قم بتشغيل CoronaMelder من جديد";
 "notification.app.unpaused.description" = "التطبيق نشط مرة أخرى. سيتم تعقب مصادفاتك من الآن فصاعدًا.";
 "notification.app.unpaused.manualunpause.description" = "انتبه: التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";

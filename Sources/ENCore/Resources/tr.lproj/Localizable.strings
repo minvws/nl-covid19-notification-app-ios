@@ -19,12 +19,12 @@
 
 /* MARK: - MoreInformation | Settings */
 "moreInformation.cell.settings.title" = "Ayarlar";
-"moreInformation.cell.settings.subtitle" = "Uygulamayı duraklatın ve mobil verileri kapatın";
+"moreInformation.cell.settings.subtitle" = "Uygulamayı duraklatın ve mobil veriyi ayarlayın";
 /* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Ayarlar";
 "moreInformation.settings.mobiledata.paragraphtitle" = "Kodları yalnızca WiFi üzerinden kontrol edin";
 "moreInformation.settings.description" = "CoronaMelder, günde birkaç kez Korona olan birinin yakınında bulunmuş olup olmadığınızı kontrol eder. Mobil verileri kapatırsanız, uygulama bunu yalnızca WiFi kullandığınızda yapacaktır. Buluşmalarınız internet bağlantınız olmasa bile takip edilir.";
-"moreInformation.settings.mobiledata.button" = "Mobil verileri açın";
+"moreInformation.settings.mobiledata.button" = "Mobil veri ayarlarını açın";
 
 /* MARK: - MoreInformation | Settings | Pause */
 "moreInformation.settings.pause.title" = "Uygulamayı duraklatın";
@@ -38,7 +38,7 @@
 "moreInformation.settings.pause.enableappbutton" = "Uygulamayı açın";
 
 /* MARK: - MoreInformation | Settings | Mobile Data */
-"moreInformation.settings.mobiledata.title" = "Mobil verileri açın";
+"moreInformation.settings.mobiledata.title" = "Mobil veri ayarları";
 "moreInformation.settings.step1" = "Aşağıdaki düğmeyi kullanarak telefonunuzda <b>ayarlar</b> ’ı açın";
 "moreInformation.settings.step2" = "CoronaMelder için mobil verileri açın veya kapatın";
 "moreInformation.settings.step2.row.title" = "Mobil veriler";
@@ -94,6 +94,7 @@
 "status.icon.accessibility.ok" = "Uygulamanın doğru kurulduğunu gösteren yeşil daire içinde onay işareti";
 "status.icon.accessibility.inactive" = "Uyarı olarak sarı daire içinde ünlem işareti";
 "status.icon.accessibility.notified" = "Eyleme geçmenin gerekli olduğunu gösteren alarm zilli kırmızı daire";
+"status.icon.accessibility.paused" = "Uygulamanın duraklatıldığını belirten duraklama işaretli gri daire";
 "status.notified.today" = "bugün";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -282,7 +283,7 @@
 "help.other_what_does_report_say.content2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 
 "help.pause_app.title" = "Uygulamayı duraklatabilir miyim?";
-"help.pause_app.description" = "Evet, bunu Bluetooth'unuzu kapatarak yapabilirsiniz. Bunu<b>Ayarlar> Bluetooth</b>ile yapabilirsiniz. Dikkat: Bluetooth'u kontrol panelinden kapatarak uygulamayı duraklatamazsınız. Bluetooth'u kapatırsanız, uygulama artık kod alışverişi yapmayacaktır. Bundan sonra, her 24 saatte bir uygulamayı tekrar açmanız için otomatik olarak bir hatırlatıcı mesaj alacaksınız.<br><br>Buna rağmen, tekrar açmayı unutabileceğiniz için genellikle uygulamayı duraklatmanız önerilmez. Özel durumlarda uygulamayı duraklatabilirsiniz. Örneğin, (olası) Korona hastalarına yaklaşırsanız, fakat tıbbi koruyucu ekipman giydiğinizden eminseniz.";
+"help.pause_app.description" = "Evet, uygulamayı geçici olarak duraklatabilirsiniz. Bunu ana ​​ekranda<b>Ayarlar> Uygulamayı duraklat </b> ile yaparsınız. Uygulamayı duraklatırsanız, karşılaşmalarınız geçici olarak izlenmeyecektir. Daha sonra Korona olduğu ortaya çıkan birinin yakınında bulunduysanız da bildirim almazsınız.<br><br> Duraklatma bittiğinde, uygulamayı tekrar açmanız için derhal bilgilendirileceksiniz. Uygulamayı açtıktan sonra, uygulamayı duraklatmadan önceki karşılaşmalar ile ilgili bildirimler almaya devam edebilirsiniz.<br><br> Tekrar açmayı unutabileceğiniz için uygulamayı duraklatmanız genelde önerilmez. Özel durumlarda uygulamayı duraklatabilirsiniz. Örneğin, tıbbi koruyucu ekipman giydiğinizden emin olup da (muhtemel) Korona hastalarına yaklaştığınızda.";
 
 "help.apps_other_countries.title" = "CoronaMelder diğer ülkelerdeki uygulamalarla da çalışıyor mu?";
 "help.apps_other_countries.description" = "CoronaMelder, aralarında Almanya, İrlanda ve İtalya’nın bulunduğu Avrupa ülkelerinden bir dizi uygulamayla birlikte çalışır. <br> <br> Uzun bir süredir Alman Corona-Warn-App kullanıcısının yakınında bulunduğunuzu varsayalım. Bu kişi Almanya'da test edildi ve Korona olduğu anlaşıldı. Bu kişi kodlarını Alman GGD ile paylaşırsa, CoronaMelder aracılığıyla bir bildirim alacaksınız. Aynı şey tam tersi için de geçerli. Korona uygulamaları birlikte çalıştığından, yalnızca bir uygulamanızın açık olması yeterlidir.<br><br>CoronaMelder, 30 Kasım 2020'den itibaren farklı ülkelerden kullanıcıların kodlarını günlük olarak kontrol edecektir. Sonuç olarak, uygulama öncekinden daha fazla mobil veri kullanır. Ana ekrandaki<b>Ayarlar </b> aracılığıyla, uygulamayı yalnızca Korona olan birinin yakınında bulunmuş olup olmadığınızı WiFi üzerinden kontrol edecek şekilde ayarlayabilirsiniz.";
@@ -329,12 +330,12 @@
 
 /* MARK: - Paused Status */
 "status.paused.title" = "Uygulama duraklatıldı";
-"status.pause.ended.title" = "Duraklatma sona erdi";
+"status.pause.ended.title" = "Uygulamayı tekrar açın";
 "status.appState.card.paused.title" = "Uygulama duraklatıldı";
 "status.paused.countdown" = "Uygulamayı yeniden etkinleştirmeniz için %@ içinde bir bildirim alacaksınız.";
-"status.paused.manualunpause" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
-"status.card.manualunpause.title" = "Duraklatma bitti";
-"status.card.manualunpause.description" = "Uygulama henüz aktif değil. Bunu kendiniz tekrar açmanız gerekiyor.";
+"status.paused.manualunpause" = "CoronaMelder henüz aktif değil. Bunu kendiniz açmanız gerekiyor.";
+"status.card.manualunpause.title" = "Uygulamayı tekrar açın";
+"status.card.manualunpause.description" = "Uygulama henüz aktif değil. Bunu kendiniz açmanız gerekiyor.";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Daha fazla bilgi";
@@ -516,6 +517,6 @@
 "notification.update_required.title" = "Güncelleme gerekiyor";
 "notification.update_required.description" = "CoronaMelder'ın yeni bir sürümü var. Bu sürüm artık iyi çalışmıyor. Talimatlar için uygulamayı kontrol edin.";
 
-"notification.app.unpaused.title" = "Duraklatma bitti";
+"notification.app.unpaused.title" = "CoronaMelder'ı tekrar açın";
 "notification.app.unpaused.description" = "Uygulama tekrar aktif durumda. Buluşmalarınız şu andan itibaren tekrar takip edilecek.";
-"notification.app.unpaused.manualunpause.description" = "Dikkat: uygulama henüz aktif değil. Uygulamayı kendiniz tekrar açmanız gerekiyor.";
+"notification.app.unpaused.manualunpause.description" = "Dikkat: uygulama henüz aktif değil. Bunu uygulamada kendiniz açmanız gerekiyor.";
