@@ -281,7 +281,8 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("Background: starting refresh task")
 
-        let disposible = Observable.from(sequence.compactMap { $0 })
+        let disposible = Observable.from(sequence)
+            .compactMap { $0 }
             .merge(maxConcurrent: 1)
             .toArray()
             .subscribe { _ in
