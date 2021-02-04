@@ -9,16 +9,36 @@
 "update.software.os.detail.step1" = "Ouvrez <b>Paramètres</b> sur votre téléphone";
 "update.software.os.detail.step2" = "Allez à \"Généralités\"";
 "update.software.os.detail.step3" = "Allez à \"Mise à jour du logiciel\"";
-"update.software.os.detail.step4" = "Sélectionnez \"Télécharger et installer\"";
 "update.button.update" = "Mettre à jour";
 
-"moreInformation.cell.settings.title" = "Paramètres";
-"moreInformation.cell.settings.subtitle" = "Adaptez vos paramètres pour l'utilisation des données mobiles";
+"update.software.os.detail.step4" = "Sélectionnez \"Télécharger et installer\"";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = "CoronaMelder enregistre en permanence les rencontres. L'application vérifie aussi toutes les deux heures si quelqu'un que vous avez rencontré était contagieux à ce moment-là. Vous recevez une notification si c'était le cas. La dernière vérification a été effectuée le %@";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "CoronaMelder enregistre en permanence les rencontres. L'application vérifie aussi toutes les deux heures si quelqu'un que vous avez rencontré était contagieux à ce moment-là. Vous recevez une notification si c'était le cas.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "Paramètres";
+"moreInformation.cell.settings.subtitle" = "Mettre l'application en pause et activer les données mobiles";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Paramètres";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Ne contrôler les codes que par le biais du WiFi";
 "moreInformation.settings.description" = "CoronaMelder contrôle plusieurs fois par jour si vous avez été proche de quelqu'un qui a le coronavirus. Si vous désactivez vos données mobiles, l'application ne le fait plus que si vous utilisez le WiFi. Vos rencontres sont également enregistrées si vous n'avez pas de connexion à Internet.";
+"moreInformation.settings.mobiledata.button" = "Ouvrez les paramètres des données mobiles";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "Mettre l'application en pause";
+"moreInformation.settings.pause.subtitle" = "Êtes-vous sûr(e) de vouloir mettre l'application en pause?";
+"moreInformation.settings.pause.description" = "Pendant la pause, l'application n'enregistre provisoirement pas les rencontres avec les autres utilisateurs de l'application. Vous ne recevez pas non plus de notification si vous avez été à proximité de quelqu'un qui s'avère avoir le Covid-19 par la suite.\n\nNe mettez l'application en pause que dans les situations où votre téléphone se trouve près d'autres téléphones mais qu'il n'y a pas de risque de contamination. Par exemple en raison de l'utilisation des dispositifs de protection médicaux.";
+"moreInformation.settings.pause.description.short" = "Si vous mettez l'application en pause, vos rencontres ne sont provisoirement pas enregistrées. Vous ne pouvez pas non plus recevoir de notification si vous avez été à proximité de quelqu'un qui s'avère avoir le Covid-19 par la suite. Dès la fin de la pause, vous recevez une notification pour réactiver l'application.";
+"moreInformation.settings.pause.dontshowscreen" = "Ne plus afficher cet écran";
+"moreInformation.settings.pause.yesbutton" = "Oui, mettre en pause";
+"moreInformation.settings.pause.cancelbutton" = "Non, ne pas mettre en pause";
+"moreInformation.settings.pause.pausebutton" = "Mettre l'application en pause";
+"moreInformation.settings.pause.enableappbutton" = "Ouvrir l'application";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "Paramètres des données mobiles";
 "moreInformation.settings.step1" = "Ouvrez <b>Paramètres</b> sur votre téléphone via le bouton ci-dessous";
 "moreInformation.settings.step2" = "Activez ou désactivez les données mobiles pour CoronaMelder";
 "moreInformation.settings.step2.row.title" = "Données mobiles";
@@ -76,6 +96,7 @@
 "status.icon.accessibility.ok" = "Cercle vert coché qui indique que l'application est paramétrée correctement";
 "status.icon.accessibility.inactive" = "Cercle jaune avec point d'exclamation comme avertissement";
 "status.icon.accessibility.notified" = "Cercle rouge avec sonnette d'alarme qui indique qu'une action est nécessaire";
+"status.icon.accessibility.paused" = "Rond gris avec signe de pause qui indique que l'application est mise en pause";
 "status.notified.today" = "aujourd'hui";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -264,7 +285,7 @@
 "help.other_what_does_report_say.content2" = "La notification s'affiche sur l'écran d'accueil de votre téléphone. Tout comme les messages des autres applications. La notification a le symbole de CoronaMelder.<br><br>Avez-vous reçu une notification ? Ouvrez alors CoronaMelder. Vous y lirez ce que vous pouvez faire.";
 
 "help.pause_app.title" = "Puis-je mettre l'application en pause ?";
-"help.pause_app.description" = "Oui, vous pouvez le faire en désactivant votre Bluetooth. Vous pouvez le faire en allant dans <b>Paramètres > Bluetooth</b>. Attention : vous ne pouvez pas mettre l'application en pause en désactivant le bluetooth via le panneau de contrôle. Si vous désactivez le bluetooth, l'application n'échange plus de codes. Vous recevez alors toutes les 24 heures un rappel automatique de réactivation de l'application.<br><br>Il n'est toutefois généralement pas conseillé de mettre l'application en pause parce que vous risquez d'oublier de la réactiver. Vous pouvez toutefois le faire dans certaines situations. Par exemple si vous vous trouvez à proximité de patients (potentiellement) atteints du Covid-19 mais que vous êtes certain(e) de ne pas être contaminé(e) parce que vous portez vos équipements de protection médicaux.";
+"help.pause_app.description" = "Oui, vous pouvez mettre provisoirement l'application en pause. Vous pouvez le faire sur l'écran de démarrage, via <b>Paramètres > Mettre l'application en pause</b>. Si vous mettez l'application en pause, vos rencontres ne sont provisoirement pas enregistrées et vous ne recevez pas de notification si vous avez été à proximité de quelqu'un qui s'avère avoir le Covid-19 par la suite. <br><br>Dès que l'interruption est terminée, vous recevez une notification pour réactiver l'application. Après avoir activé l'application, vous pouvez encore recevoir des notifications des rencontres qui ont précédé sa mise en pause. <br><br>Il n'est généralement pas recommandé de mettre l'application en pause car vous risquez d'oublier de la réactiver. Vous pouvez par contre mettre l'application en pause dans des situations particulières. Par exemple si vous êtes à proximité de patients qui ont (probablement) le Covid-19, mais que vous vous assurez de porter toutes vos protections médicales.";
 
 "help.apps_other_countries.title" = "Est-ce que CoronaMelder fonctionne aussi avec des applications d’autres pays?";
 "help.apps_other_countries.description" = "CoronaMelder fonctionne avec une série d'applications d'autres pays européens. Y compris l'Allemagne, l'Irlande et l'Italie.<br><br>Supposez que vous avez été proche pendant un certain temps d'un utilisateur de l'application allemande Corona-Warn. Cette personne est testée en Allemagne et s'avère avoir le coronavirus. Si cette personne partage ses codes avec le GGD allemand, CoronaMelder vous enverra une notification. C'est la même chose dans le sens inverse. Comme les applications coronavirus collaborent les unes avec les autres, vous ne devez donc activer qu'une seule application.<br><br>CoronaMelder contrôlera, tous les jours à partir du 30 novembre 2020, les codes des utilisateurs des différents pays. De ce fait, l'application utilise plus de données mobiles qu'auparavant. Dans les  <b>Paramètres</b> de l'écran principal, vous pouvez définir que l'application ne contrôle votre proximité avec quelqu'un qui a le Coronavirus que par le biais du WiFi.";
@@ -308,6 +329,15 @@
 "status.notified.description" = "Le %@ (%@), vous avez peut-être été contaminé(e)";
 "status.notified.moreInfo" = "Que puis-je faire maintenant ?";
 "status.notified.removeNotification" = "Supprimer la notification";
+
+/* MARK: - Paused Status */
+"status.paused.title" = "L'application est mise en pause";
+"status.pause.ended.title" = "Réactivez l'application";
+"status.appState.card.paused.title" = "Application mise en pause";
+"status.paused.countdown" = "Dans %@, vous recevrez une notification pour réactiver l'application.";
+"status.paused.manualunpause" = "CoronaMelder n'est pas encore activée. Vous devez l'activer vous-même.";
+"status.card.manualunpause.title" = "Réactivez l'application";
+"status.card.manualunpause.description" = "L'application n'est pas encore activée. Vous devez l'activer vous-même.";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Plus d'informations";
@@ -418,6 +448,7 @@
 
 "moreInformation.status.alarm.alt-text" = "Écran rouge avec sonnette d'alarme qui indique qu'une action est maintenant nécessaire";
 
+"moreInformation.latestTekUpdate" = "CoronaMelder enregistre en permanence les rencontres. L'application vérifie aussi toutes les deux heures si quelqu'un que vous avez rencontré était contagieux à ce moment-là. Vous recevez une notification si c'était le cas. La dernière vérification a été effectuée le %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "L'application n'est <u>pas</u> activée";
 "cards.exposureOff.content" = "Activez les paramètres dont l'application a besoin pour fonctionner.";
@@ -487,3 +518,7 @@
 
 "notification.update_required.title" = "Mise à jour nécessaire";
 "notification.update_required.description" = "Il existe une nouvelle version de CoronaMelder. La version actuelle ne fonctionne plus correctement. Consultez l'application pour obtenir des instructions.";
+
+"notification.app.unpaused.title" = "Réactivez CoronaMelder";
+"notification.app.unpaused.description" = "L'application est réactivée. À partir de maintenant, vos rencontres sont à nouveau enregistrées.";
+"notification.app.unpaused.manualunpause.description" = "Attention : l'application n'est pas encore activée. Vous devez l'activer vous-même dans l'application.";

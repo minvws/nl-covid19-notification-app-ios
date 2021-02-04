@@ -98,7 +98,15 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
         logDebug("Background: Handling task \(identifier)")
 
+        // in a paused state, we only handle refresh background tasks.
+        // We use this process to send a reminder to users that the app is still in a paused state
+        guard !dataController.isAppPaused else {
+            handleTaskDuringPause(task: task, withIdentifier: identifier)
+            return
+        }
+
         let handleTask: () -> () = {
+
             switch identifier {
             case .decoyStopKeys:
                 self.handleDecoyStopkeys(task: task)
@@ -109,6 +117,28 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         operationQueue.async(execute: handleTask)
+    }
+
+    @available(iOS 13, *)
+    private func handleTaskDuringPause(task: BGTask, withIdentifier identifier: BackgroundTaskIdentifiers) {
+        logInfo("Handling background task in paused state")
+        func completeTask() {
+            self.scheduleRefresh()
+            task.setTaskCompleted(success: true)
+        }
+
+        if identifier == .refresh,
+            let pauseEndDate = dataController.pauseEndDate,
+            currentDate().timeIntervalSince(pauseEndDate) > .hours(1) {
+
+            logInfo("Displaying unpause reminder notification")
+
+            userNotificationCenter.displayPauseExpirationReminder {
+                completeTask()
+            }
+        } else {
+            completeTask()
+        }
     }
 
     // ENManager gives apps that register an activity handler

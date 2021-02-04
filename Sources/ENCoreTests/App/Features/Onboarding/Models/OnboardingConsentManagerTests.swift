@@ -184,4 +184,21 @@ class OnboardingConsentManagerTests: TestCase {
 
         XCTAssertEqual(mockExposureController.requestExposureNotificationPermissionCallCount, 1)
     }
+
+    func test_askNotificationsAuthorization_shouldCallUserNotificationCenter() {
+        let completionExpectation = expectation(description: "completion")
+        let userNotificationExpectation = expectation(description: "userNotificationExpectation")
+        mockUserNotificationCenter.requestNotificationPermissionHandler = { completion in
+            userNotificationExpectation.fulfill()
+            completion()
+        }
+
+        sut.askNotificationsAuthorization {
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertEqual(mockUserNotificationCenter.requestNotificationPermissionCallCount, 1)
+    }
 }

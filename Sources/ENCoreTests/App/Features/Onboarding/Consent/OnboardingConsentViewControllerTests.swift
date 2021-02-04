@@ -19,6 +19,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
     private let exposureController = ExposureControllingMock()
     private var manager: OnboardingConsentManager!
     private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
+    private var mockUserNotificationCenter = UserNotificationCenterMock()
 
     override func setUp() {
         super.setUp()
@@ -29,6 +30,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
 
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,
+                                           userNotificationCenter: mockUserNotificationCenter,
                                            theme: theme)
 
         AnimationTestingOverrides.animationsEnabled = false

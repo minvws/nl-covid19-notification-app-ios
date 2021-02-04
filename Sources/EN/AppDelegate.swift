@@ -144,6 +144,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 extension AppDelegate: UNUserNotificationCenterDelegate {
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> ()) {
+
+        appRoot?.receiveForegroundNotification(notification)
         completionHandler(.alert)
     }
 

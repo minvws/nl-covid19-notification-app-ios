@@ -58,6 +58,12 @@ import UIKit
     }
 
     @objc
+    public func receiveForegroundNotification(_ notification: UNNotification) {
+        logDebug("`receiveRemoteNotificationInForeground` \(ENAppRoot.version)")
+        appEntryPoint?.mutablePushNotificationStream.update(notification: notification)
+    }
+
+    @objc
     public func didBecomeActive() {
         logDebug("`didBecomeActive` \(ENAppRoot.version)")
         appEntryPoint?.didBecomeActive()

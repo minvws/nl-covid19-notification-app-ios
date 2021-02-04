@@ -247,4 +247,17 @@ extension NSMutableAttributedString {
 
         self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: NSMakeRange(0, self.length))
     }
+
+    public func centered() -> NSMutableAttributedString {
+
+        let copiedString = NSMutableAttributedString(attributedString: self)
+
+        let fullRange = NSRange(location: 0, length: copiedString.length)
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        copiedString.addAttributes([.paragraphStyle: paragraphStyle], range: fullRange)
+
+        return copiedString
+    }
 }

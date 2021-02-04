@@ -32,9 +32,9 @@ then
 fi
 
 if [ -z "$BUNDLE_SHORT_VERSION" ]
-then 
+then
       BUNDLE_SHORT_VERSION="${BUNDLE_VERSION}"
-else 
+else
       BUNDLE_SHORT_VERSION="${BUNDLE_VERSION}-${BUNDLE_SHORT_VERSION}"
 fi
 
@@ -71,9 +71,9 @@ yq e ".targets.EN.info.properties.GitHash = \"$(git rev-parse --short=7 HEAD)\""
 
 if [ ! -z "$USE_DEVELOPER_MENU" ]
 then
-	yq e ".targets.ENCore.settings.base.OTHER_SWIFT_FLAGS = \"-DUSE_DEVELOPER_MENU\"" -i project.yml
-else 
-	yq e "del(.targets.ENCore.settings.base.OTHER_SWIFT_FLAGS)" -i project.yml
+    yq e ".targets.ENCore.settings.base.OTHER_SWIFT_FLAGS = \"-DUSE_DEVELOPER_MENU\"" -i project.yml
+else
+    yq e "del(.targets.ENCore.settings.base.OTHER_SWIFT_FLAGS)" -i project.yml
 fi
 
 cat project.yml

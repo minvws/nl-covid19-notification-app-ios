@@ -7,6 +7,7 @@
 
 import ENFoundation
 import Foundation
+import UserNotifications
 
 /// @mockable
 protocol MainBuildable {
@@ -20,6 +21,10 @@ protocol MainDependency {
     var storageController: StorageControlling { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var dataController: ExposureDataControlling { get }
+    var exposureManager: ExposureManaging { get }
+    var backgroundController: BackgroundControlling { get }
+    var pauseController: PauseControlling { get }
+    var pushNotificationStream: PushNotificationStreaming { get }
 }
 
 final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency {
@@ -99,6 +104,18 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var dataController: ExposureDataControlling {
         dependency.dataController
     }
+
+    var userNotificationCenter: UserNotificationCenter {
+        UNUserNotificationCenter.current()
+    }
+
+    var pauseController: PauseControlling {
+        dependency.pauseController
+    }
+
+    var pushNotificationStream: PushNotificationStreaming {
+        dependency.pushNotificationStream
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -106,7 +123,9 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
                                                 exposureController: dependencyProvider.exposureController,
-                                                exposureStateStream: dependencyProvider.exposureStateStream)
+                                                exposureStateStream: dependencyProvider.exposureStateStream,
+                                                userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                                pauseController: dependencyProvider.pauseController)
 
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,

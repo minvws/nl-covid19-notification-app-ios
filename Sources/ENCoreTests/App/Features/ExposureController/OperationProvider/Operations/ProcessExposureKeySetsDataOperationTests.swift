@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -23,6 +24,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockEnvironmentController: EnvironmentControllingMock!
     private var mockLocalPathProvider: LocalPathProvidingMock!
     private var disposeBag = DisposeBag()
+    private var mockExposureDataController: ExposureDataControllingMock!
 
     override func setUpWithError() throws {
 
@@ -35,6 +37,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockFileManager = FileManagingMock()
         mockEnvironmentController = EnvironmentControllingMock()
         mockLocalPathProvider = LocalPathProvidingMock()
+        mockExposureDataController = ExposureDataControllingMock()
 
         // Default handlers
         mockEnvironmentController.gaenRateLimitingType = .dailyLimit
@@ -57,11 +60,15 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             return nil
         }
 
+        mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _ in }
+
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
             storageController: mockStorageController,
             exposureManager: mockExposureManager,
             localPathProvider: mockLocalPathProvider,
+            exposureDataController: mockExposureDataController,
+            exposureKeySetsStorageUrl: mockExposureKeySetsStorageUrl,
             configuration: mockExposureConfiguration,
             userNotificationCenter: mockUserNotificationCenter,
             application: mockApplication,
@@ -87,6 +94,26 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertTrue(mockStorageController.retrieveDataArgValues.first is CodableStorageKey<[ExposureKeySetHolder]>)
         waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_shouldNotDetectExposuresIfNoStoredKeySets() {
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+        mockApplication.isInBackground = true
+        mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+
+        sut.execute()
+            .assertNoFailure()
+            .sink { val in
+                exp.fulfill()
+            }
+            .disposeOnTearDown(of: self)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
     }
 
     // If the number of background calls has not reached the limit, a detection call should be made
@@ -367,6 +394,37 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockFileManager.removeItemCallCount, 2)
         XCTAssertEqual(mockFileManager.removeItemArgValues.first?.absoluteString, "http://someurl.com/signatureFilename")
         XCTAssertEqual(mockFileManager.removeItemArgValues.last?.absoluteString, "http://someurl.com/binaryFilename")
+    }
+
+    // MARK: - Private Helper Functions
+
+    func test_shouldUpdateLastProcessingDate() {
+
+        mockApplication.isInBackground = true
+        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        let currentDate = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
+
+        mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            completion(.success(ExposureDetectionSummaryMock()))
+        }
+
+        sut.execute()
+            .assertNoFailure()
+            .sink { _ in
+                exp.fulfill()
+            }
+            .disposeOnTearDown(of: self)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate)
     }
 
     // MARK: - Private Helper Functions

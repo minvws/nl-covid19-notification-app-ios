@@ -54,6 +54,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
          storageController: StorageControlling,
          exposureManager: ExposureManaging,
          localPathProvider: LocalPathProviding,
+         exposureDataController: ExposureDataControlling,
+         exposureKeySetsStorageUrl: URL,
          configuration: ExposureConfiguration,
          userNotificationCenter: UserNotificationCenter,
          application: ApplicationControlling,
@@ -63,6 +65,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.storageController = storageController
         self.exposureManager = exposureManager
         self.localPathProvider = localPathProvider
+        self.exposureDataController = exposureDataController
+        self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
         self.application = application
@@ -86,8 +90,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         if exposureKeySetHolders.count > 0 {
             logDebug("Processing \(exposureKeySetHolders.count) KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
         } else {
-            // keep processing to make sure lastProcessDate is updated
             logDebug("No additional keysets to process")
+            return .empty()
         }
 
         // Batch detect exposures
@@ -98,8 +102,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             .flatMap(self.createReportAndTriggerNotification(forResult:))
             // persist the ExposureReport
             .flatMap(self.persist(exposureReport:))
-            // update last processing date
-            .flatMap(self.updateLastProcessingDate)
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
@@ -242,6 +244,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                                                  processDate: nil,
                                                                  isValid: false)
                         }
+
+                        self.updateLastProcessingDate()
 
                         let keySetHolderResults = invalidKeySetHolderResults + validKeySetHolderResults
                         let result = ExposureDetectionResult(keySetDetectionResults: keySetHolderResults,
@@ -563,27 +567,13 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Updates the date when this operation has last run
-    private func updateLastProcessingDate(_ value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
-        return .create { (observer) -> Disposable in
+    private func updateLastProcessingDate() {
 
-            self.storageController.requestExclusiveAccess { storageController in
-                let date = Date()
+        let date = currentDate()
 
-                self.logDebug("Updating last process date to \(date)")
+        self.logDebug("Updating last process date to \(date)")
 
-                storageController.store(object: date,
-                                        identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
-                                        completion: { error in
-                                            if error != nil {
-                                                observer(.failure(ExposureDataError.internalError))
-                                            } else {
-                                                observer(.success(value))
-                                            }
-                                        })
-            }
-
-            return Disposables.create()
-        }
+        self.exposureDataController.updateLastSuccessfulExposureProcessingDate(date)
     }
 
     private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> URL? {
@@ -622,6 +612,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureManager: ExposureManaging
+    private let exposureDataController: ExposureDataControlling
+    private let exposureKeySetsStorageUrl: URL
     private let localPathProvider: LocalPathProviding
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter
