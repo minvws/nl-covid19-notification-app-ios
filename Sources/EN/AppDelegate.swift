@@ -28,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
         LogHandler.setup()
 
         logDebug("AppDelegate - application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) Called")
+        logDebug("LaunchOptions: \(String(describing: launchOptions))")
 
         sendAppLaunchNotification()
 
@@ -65,6 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
+        logDebug("AppDelegate - applicationDidBecomeActive")
+
         // Start first flow
         guard let appRoot = appRoot else {
             logError("AppDelegate - applicationDidBecomeActive - appRoot not initialized")
@@ -75,6 +78,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
+
+        logDebug("AppDelegate - applicationWillEnterForeground")
+
         // notify bridge app entered foreground
         guard let appRoot = appRoot else {
             logError("AppDelegate - applicationWillEnterForeground - appRoot not initialized")
@@ -84,6 +90,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
+
+        logDebug("AppDelegate - applicationDidEnterBackground")
+
         // notify bridge app entered background
         guard let appRoot = appRoot else {
             logError("AppDelegate - applicationDidEnterBackground - appRoot not initialized")
@@ -96,6 +105,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     @available(iOS 13, *)
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+
+        logDebug("AppDelegate - configurationForConnecting")
+
         // Called when a new scene session is being created.
         // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
@@ -103,12 +115,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     @available(iOS 13, *)
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+
+        logDebug("AppDelegate - didDiscardSceneSessions")
+
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
     func setAppRoot(appRoot: ENAppRoot?) {
+        logDebug("AppDelegate - setAppRoot")
+
         self.appRoot = appRoot
     }
 
@@ -116,6 +133,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     @available(iOS 13.5, *)
     private func handle(backgroundTask: BGTask) {
+
+        logDebug("AppDelegate - handle(backgroundTask:)")
+
         guard let appRoot = appRoot else {
             return print("🔥 ENCoreBridge is `nil`")
         }
@@ -124,6 +144,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
     }
 
     private func sendAppLaunchNotification() {
+
+        logDebug("AppDelegate - sendAppLaunchNotification")
 
         let unc = UNUserNotificationCenter.current()
 
@@ -158,10 +180,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 extension AppDelegate: UNUserNotificationCenterDelegate {
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> ()) {
+
+        logDebug("AppDelegate - userNotificationCenter(willPresent")
+
         completionHandler(.alert)
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> ()) {
+        logDebug("AppDelegate - userNotificationCenter(didReceive")
         appRoot?.receiveRemoteNotification(response: response)
         completionHandler()
     }
