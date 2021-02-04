@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
         }
 
         if #available(iOS 13, *) {
-
+            // iOS 13 + uses SceneDelegate to initialize approot and create the window
         } else {
 
             logDebug("AppDelegate - Following iOS 12 path")
