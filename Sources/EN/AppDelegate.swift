@@ -59,7 +59,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
             appRoot = ENAppRoot()
             appRoot?.attach(toWindow: window)
+
             window.makeKeyAndVisible()
+
+            appRoot?.start()
         }
 
         return true
@@ -73,7 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
             logError("AppDelegate - applicationDidBecomeActive - appRoot not initialized")
             return
         }
-        appRoot.start()
+
         appRoot.didBecomeActive()
     }
 
