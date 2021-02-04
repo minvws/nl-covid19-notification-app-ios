@@ -67,7 +67,10 @@ final class ExposureController: ExposureControlling, Logging {
         return .create { (observer) -> Disposable in
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
-                self.exposureManager.activate { _ in
+                self.exposureManager.activate { error in
+
+                    self.logDebug("result from EN Activation: \(error)")
+
                     self.isActivated = true
                     self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
 
