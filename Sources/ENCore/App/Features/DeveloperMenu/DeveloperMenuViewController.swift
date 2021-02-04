@@ -190,7 +190,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.toggleGetTestDiagnosisKeys() }),
                 DeveloperItem(title: "Schedule pause time in minutes instead of hours",
                               subtitle: "Currently set to: \(getPauseUnit())",
-                              action: { [weak self] in self?.togglePauseTimeUnit() })
+                              action: { [weak self] in self?.togglePauseTimeUnit() }),
+                DeveloperItem(title: "Download latest Treatment Perspective",
+                              subtitle: "",
+                              action: { [weak self] in self?.downloadLatestTreatmentPerspective() })
             ]),
             ("Storage", [
                 DeveloperItem(title: "Erase Local Storage",
@@ -292,6 +295,14 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         }
 
         present(actionItems: actionItems, title: "Update Network Configuration")
+    }
+
+    private func downloadLatestTreatmentPerspective() {
+        exposureController
+            .updateTreatmentPerspective()
+            .sink(receiveCompletion: { [weak self] _ in self?.internalView.tableView.reloadData() },
+                  receiveValue: { _ in })
+            .store(in: &disposeBag)
     }
 
     private func eraseCompleteStorage() {
