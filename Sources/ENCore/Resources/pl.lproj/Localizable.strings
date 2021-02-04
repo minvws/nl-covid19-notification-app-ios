@@ -19,18 +19,18 @@
 
 /* MARK: - MoreInformation | Settings */
 "moreInformation.cell.settings.title" = "Ustawienia";
-"moreInformation.cell.settings.subtitle" = "Wstrzymaj aplikację i wyłącz dane komórkowe";
+"moreInformation.cell.settings.subtitle" = "Wstrzymaj aplikację i zarządzaj danymi komórkowymi";
 /* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Ustawienia";
 "moreInformation.settings.mobiledata.paragraphtitle" = "Sprawdzanie kodów tylko przy połączeniu wi-fi";
 "moreInformation.settings.description" = "CoronaMelder sprawdza kilka razy dziennie, czy znajdowałeś się w pobliżu zarażonej osoby. Jeśli wyłączysz dane komórkowe, aplikacja będzie to robić przy połączeniu z wi-fi. Spotkania są kontrolowane również, gdy nie masz połączenia internetowego.";
-"moreInformation.settings.mobiledata.button" = "Przełączenie na dane komórkowe";
+"moreInformation.settings.mobiledata.button" = "Otwórz ustawienia danych komórkowych";
 
 /* MARK: - MoreInformation | Settings | Pause */
 "moreInformation.settings.pause.title" = "Wstrzymaj aplikację";
 "moreInformation.settings.pause.subtitle" = "Jesteś pewien, że chcesz wstrzymać aplikację?";
 "moreInformation.settings.pause.description" = "Podczas, gdy aplikacja jest wstrzymana, spotkania z innymi użytkownikami aplikacji nie są tymczasowo monitorowane. Nie będziesz także otrzymywał powiadomień, jeśli u osoby, w pobliżu której się znajdowałeś, wykryto koronawirusa. \n\n\nWstrzymuj aplikacje wyłącznie w sytuacjach, kiedy Twój telefon znajduje się w pobliżu telefonów innych osób, jednak nie ma możliwości zarażenia się. Na przykład dzięki użyciu środków ochronnych do celów medycznych.";
-"moreInformation.settings.pause.description.short" = "Jeśli wstrzymasz aplikację, spotkania tymczasowo nie będą monitorowane. Nie otrzymasz także powiadomienia, jeśli znajdowałeś się w pobliżu osoby, u której wykryto koronawirusa. Natychmiast po wstrzymaniu aplikacji otrzymasz powiadomienie przypominające o ponownym włączeniu aplikacji.";
+"moreInformation.settings.pause.description.short" = "Jeśli wstrzymasz aplikację, spotkania tymczasowo nie będą monitorowane. Nie otrzymasz także powiadomienia, jeśli znajdowałeś się w pobliżu osoby, u której wykryto koronawirusa. Gdy okres wstrzymania dobiegnie końca, natychmiast otrzymasz powiadomienie przypominające o ponownym włączeniu aplikacji.";
 "moreInformation.settings.pause.dontshowscreen" = "Nie pokazuj tego ekranu ponownie";
 "moreInformation.settings.pause.yesbutton" = "Tak, wstrzymuję";
 "moreInformation.settings.pause.cancelbutton" = "Nie, nie wstrzymuję";
@@ -38,7 +38,7 @@
 "moreInformation.settings.pause.enableappbutton" = "Włącz aplikację";
 
 /* MARK: - MoreInformation | Settings | Mobile Data */
-"moreInformation.settings.mobiledata.title" = "Włącz dane komórkowe";
+"moreInformation.settings.mobiledata.title" = "Ustawienia danych komórkowych";
 "moreInformation.settings.step1" = "Otwórz <b>Ustawienia</b> w swoim telefonie poprzez poniższy przycisk";
 "moreInformation.settings.step2" = "Włącz lub wyłącz dane komórkowe dla CoronaMelder";
 "moreInformation.settings.step2.row.title" = "Dane komórkowe";
@@ -94,6 +94,7 @@
 "status.icon.accessibility.ok" = "Zielone kółko z ptaszkiem oznacza, że ustawienia aplikacji są prawidłowe";
 "status.icon.accessibility.inactive" = "Żółte kółko z wykrzyknikiem to ostrzeżenie";
 "status.icon.accessibility.notified" = "Czerwone kółko z dzwonkiem alarmowym oznacza, że konieczne jest podjęcie działań";
+"status.icon.accessibility.paused" = "Szare kółko z symbolem pauzy wskazuje, że aplikacja jest wstrzymana";
 "status.notified.today" = "dzisiaj";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -281,7 +282,7 @@
 "help.other_what_does_report_say.content2" = "Powiadomienie pojawia się na ekranie głównym Twojego telefonu. Podobnie jak wiadomości od innych aplikacji. Powiadomienie posiada symbol CoronaMelder.<br><br>Otrzymałeś powiadomienie? Otwórz CoronaMelder. Tam przeczytasz co możesz zrobić.";
 
 "help.pause_app.title" = "Czy mogę wstrzymać aplikację?";
-"help.pause_app.description" = "Tak, możesz to zrobić poprzez wyłączenie swojego Bluetooth. Należy przejść do <b>Ustawienia > Bluetooth</b>. Uwaga: nie możesz wstrzymać aplikacji wyłączając Bluetooth w panelu sterowania. Po wyłączeniu Bluetooth, aplikacja nie wymienia już żadnych kodów. Co 24 godziny będziesz automatycznie otrzymywał powiadomienia, przypominające o ponownym włączeniu aplikacji.<br><br>Nie zaleca się jednak wstrzymywania aplikacji, ponieważ możesz zapomnieć o jej ponownym uruchomieniu. Aplikację można wstrzymać w szczególnych przypadkach. Na przykład jeśli znajdujesz się w pobliżu (potencjalnych) pacjentów z koronawirusem, jednak jesteś pewien, że masz na sobie środki ochronne do celów medycznych.";
+"help.pause_app.description" = "Tak, możesz tymczasowo wstrzymać aplikację. Możesz to zrobić na ekranie startowym, wchodząc w <b>Ustawienia > Wstrzymanie aplikacji</b>. Jeśli wstrzymasz aplikację, spotkania tymczasowo nie będą monitorowane. Nie otrzymasz także powiadomienia, jeśli znajdowałeś się w pobliżu osoby, u której wykryto koronawirusa.<br><br>Gdy okres wstrzymania dobiegnie końca, natychmiast otrzymasz powiadomienie przypominające o ponownym włączeniu aplikacji. Po włączeniu aplikacji możesz otrzymać powiadomienia dotyczące spotkań sprzed jej wstrzymania.<br><br>Nie zaleca się wstrzymywania aplikacji, ponieważ możesz zapomnieć o jej ponownym uruchomieniu. Aplikację można wstrzymać w szczególnych przypadkach. Na przykład jeśli znajdujesz się w pobliżu (potencjalnych) pacjentów z koronawirusem, jednak jesteś pewien, że masz na sobie środki ochronne do celów medycznych.";
 
 "help.apps_other_countries.title" = "Czy CoronaMelder współpracuje również z aplikacjami z innych krajów?";
 "help.apps_other_countries.description" = "CoronaMelder współpracuje z kilkoma aplikacjami z innych krajów europejskich m.in. z Niemiec, Irlandii i Włoch.<br><br>Przypuśćmy, że przez dłuższy czas znajdowałeś się w pobliżu użytkownika niemieckiej Corona-Warn-App. Osoba ta wykonała w Niemczech test na obecność koronawirusa i uzyskała pozytywny wynik. Jeśli przekaże swoje kody niemieckiemu GGD, otrzymasz powiadomienie z CoronaMelder. Działa to tak samo w drugą stronę. Ponieważ aplikacje dotyczące koronawirusa współpracują ze sobą, wystarczy, abyś aktywował jedną aplikację.<br><br>Od 30 listopada 2020 r. aplikacja CoronaMelder będzie codziennie kontrolowała kody użytkowników z różnych krajów. W rezultacie, aplikacja zużywa więcej danych komórkowych niż wcześniej.   Należy przejść do <b>Ustawienia</b> na głównym ekranie, aby zezwolić aplikacji na sprawdzanie, czy znajdowałeś się w pobliżu zarażonej osoby, wyłącznie przy połączeniu wi-fi.";
@@ -328,12 +329,12 @@
 
 /* MARK: - Paused Status */
 "status.paused.title" = "Aplikacja jest wstrzymana";
-"status.pause.ended.title" = "Wstrzymanie dobiegło końca";
+"status.pause.ended.title" = "Ponownie włącz aplikację";
 "status.appState.card.paused.title" = "Wstrzymano aplikację";
 "status.paused.countdown" = "Za %@ otrzymasz powiadomienie przypominające o ponownym włączeniu aplikacji.";
-"status.paused.manualunpause" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
-"status.card.manualunpause.title" = "Wstrzymanie dobiegło końca";
-"status.card.manualunpause.description" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
+"status.paused.manualunpause" = "Aplikacja CoronaMelder nie jest jeszcze aktywna. Musisz samodzielnie ją włączyć.";
+"status.card.manualunpause.title" = "Ponownie włącz aplikację";
+"status.card.manualunpause.description" = "Aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją włączyć.";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Więcej informacji";
@@ -433,8 +434,7 @@
 "moreInformation.requestTest.button.title" = "Poproś o test na koronawirusa";
 "moreInformation.requestTest.receivedNotification.title" = "Masz dolegliwości typowe dla koronawirusa? Poproś o test";
 "moreInformation.requestTest.receivedNotification.content" = "Masz (łagodne) dolegliwości, które są typowe dla koronawirusa? Zrób darmowy test. To nie zajmuje dużo czasu i zazwyczaj można się szybko umówić.<br><br>Wyniki są znane w ciągu 48 godzin. Pozostań w domu do momentu otrzymania wyników.";
-"moreInformation.requestTest.complaints" = "Masz poważne dolegliwości takie jak wysoka gorączka lub trudności z oddychaniem? Albo znajdujesz się w grupie wysokiego ryzyka i masz gorączkę? W pierwszej kolejności Z
-zadzwoń do swojego lekarza rodzinnego.";
+"moreInformation.requestTest.complaints" = "Masz poważne dolegliwości takie jak wysoka gorączka lub trudności z oddychaniem? Albo znajdujesz się w grupie wysokiego ryzyka i masz gorączkę? W pierwszej kolejności zadzwoń do swojego lekarza rodzinnego.";
 "moreInformation.requestTest.link" = "Przejdź na stronę coronatest.nl";
 "moreInformation.requestTest.phone" = "Zadzwoń pod numer %@";
 
@@ -516,6 +516,6 @@ zadzwoń do swojego lekarza rodzinnego.";
 "notification.update_required.title" = "Konieczna jest aktualizacja";
 "notification.update_required.description" = "Dostępna jest nowa wersja CoronaMelder. Ta wersja nie działa już poprawnie. Sprawdź aplikację, aby znaleźć instrukcje.";
 
-"notification.app.unpaused.title" = "Wstrzymanie dobiegło końca";
+"notification.app.unpaused.title" = "Ponownie włącz CoronaMelder";
 "notification.app.unpaused.description" = "Aplikacja jest ponownie aktywna. Od tego momentu Twoje spotkania będą znowu monitorowane.";
-"notification.app.unpaused.manualunpause.description" = "Uwaga: aplikacja nie jest jeszcze aktwna. Musisz samodzielnie ją ponownie włączyć w aplikacji.";
+"notification.app.unpaused.manualunpause.description" = "Uwaga: aplikacja nie jest jeszcze aktywna. Musisz samodzielnie ją włączyć w aplikacji.";
