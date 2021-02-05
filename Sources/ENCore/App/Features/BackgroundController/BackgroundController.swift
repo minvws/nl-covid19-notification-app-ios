@@ -281,15 +281,12 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("Background: starting refresh task")
 
-        let disposible = Observable.from(sequence)
-            .compactMap { $0 }
-            .merge(maxConcurrent: 1)
-            .toArray()
-            .subscribe { _ in
+        let disposible = Completable.concat(sequence)
+            .subscribe {
                 // Note: We ignore the response
                 self.logDebug("--- Finished Background Refresh ---")
                 task?.setTaskCompleted(success: true)
-            } onFailure: { error in
+            } onError: { error in
                 self.logError("Background: Error completing sequence \(error.localizedDescription)")
                 task?.setTaskCompleted(success: false)
             }
@@ -315,55 +312,79 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func activateExposureController(inBackgroundMode: Bool) -> Completable {
+        logDebug("BackgroundTask: Activate Exposure Controller Called")
         return self.exposureController.activate(inBackgroundMode: inBackgroundMode)
+            .do { error in
+                self.logError("BackgroundTask: Activate Exposure Controller Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("BackgroundTask: Activate Exposure Controller Completed")
+            } onSubscribe: {
+                self.logDebug("BackgroundTask: Activate Exposure Controller Subscribe")
+            }
     }
 
     private func processUpdate() -> Completable {
-        logDebug("Background: Process Update Function Called")
+        logDebug("BackgroundTask: Process Update Function Called")
         return exposureController
             .updateAndProcessPendingUploads()
             .do { error in
-                self.logError("Background: Process Update Failed. Reason: \(error)")
+                self.logError("BackgroundTask: Process Update Failed. Reason: \(error)")
             } onCompleted: {
-                self.logDebug("Background: Process Update Completed")
+                self.logDebug("BackgroundTask: Process Update Completed")
+            } onSubscribe: {
+                self.logDebug("BackgroundTask: Process Update Subscribe")
             }
     }
 
     private func processENStatusCheck() -> Completable {
-        logDebug("Background: Exposure Notification Status Check Function Called")
+        logDebug("BackgroundTask: Exposure Notification Status Check Function Called")
         return exposureController
             .exposureNotificationStatusCheck()
             .do { error in
-                self.logError("Background: Exposure Notification Status Check Failed. Reason: \(error)")
+                self.logError("BackgroundTask: Exposure Notification Status Check Failed. Reason: \(error)")
             } onCompleted: {
-                self.logDebug("Background: Exposure Notification Status Check Completed")
+                self.logDebug("BackgroundTask: Exposure Notification Status Check Completed")
+            } onSubscribe: {
+                self.logDebug("BackgroundTask: Exposure Notification Status Check Subscribe")
             }
     }
 
     private func appUpdateRequiredCheck() -> Completable {
-        logDebug("Background: App Update Required Check Function Called")
+        logDebug("BackgroundTask: App Update Required Check Function Called")
         return exposureController
             .sendNotificationIfAppShouldUpdate()
             .do { error in
-                self.logError("Background: App Update Required Check Failed. Reason: \(error)")
+                self.logError("BackgroundTask: App Update Required Check Failed. Reason: \(error)")
             } onCompleted: {
-                self.logDebug("Background: App Update Required Check Completed")
+                self.logDebug("BackgroundTask: App Update Required Check Completed")
+            } onSubscribe: {
+                self.logDebug("BackgroundTask: App Update Required Check Subscribe")
             }
     }
 
     private func updateTreatmentPerspective() -> Completable {
-        logDebug("Background: Update Treatment Perspective Message Function Called")
+        logDebug("BackgroundTask: Update Treatment Perspective Message Function Called")
         return self.exposureController
             .updateTreatmentPerspective()
             .do { error in
-                self.logError("Background: Update Treatment Perspective Message Failed. Reason: \(error)")
+                self.logError("BackgroundTask: Update Treatment Perspective Message Failed. Reason: \(error)")
             } onCompleted: {
-                self.logDebug("Background: Update Treatment Perspective Message Completed")
+                self.logDebug("BackgroundTask: Update Treatment Perspective Message Completed")
+            } onSubscribe: {
+                self.logDebug("BackgroundTask: Update Treatment Perspective Message Subscribe")
             }
     }
 
     private func processLastOpenedNotificationCheck() -> Completable {
+        logDebug("BackgroundTask: Process Last Opened Notification Check Called")
         return exposureController.lastOpenedNotificationCheck()
+            .do { error in
+                self.logError("BackgroundTask: Process Last Opened Notification Check Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("BackgroundTask: Process Last Opened Notification Check Completed")
+            } onSubscribe: {
+                self.logDebug("BackgroundTask:  Process Last Opened Notification Check Subscribe")
+            }
     }
 
     ///    Every prioritized background run,
@@ -375,6 +396,9 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///    Ensure only 1 decoy per day
     ///    y = about 5 minutes (about less, e.g. 250 sec) and/or new param: iOS decoyDelayBetweenRegisterAndUpload (this param value depends on how long a prioritized task is allowed to run)
     private func processDecoyRegisterAndStopKeys() -> Completable {
+
+        logDebug("Background: processDecoyRegisterAndStopKeys()")
+
         return .create { (observer) -> Disposable in
 
             guard self.isExposureManagerActive else {
