@@ -95,8 +95,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func start() {
 
+        logDebug("RootRouter - start() called")
+
         guard mainRouter == nil, onboardingRouter == nil else {
-            // already started
+            logDebug("RootRouter - already started")
             return
         }
 
@@ -104,12 +106,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         if !environmentController.supportsExposureNotification {
             routeToUpdateOperatingSystem(animated: false)
+            logDebug("RootRouter - doesn't support EN")
             return
         }
 
         // Copy of launch screen is shown to give the app time to determine the proper
         // screen to route to. If the network is slow this can take a few seconds.
         routeToLaunchScreen()
+
+        backgroundController.registerActivityHandle()
 
         routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
 
@@ -428,8 +433,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
-                self?.backgroundController.registerActivityHandle()
-
                 self?.exposureController.activate(inBackgroundMode: false)
                     .subscribe()
                     .disposed(by: strongSelf.disposeBag)
@@ -452,8 +455,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                         completion?(false)
                         return
                     }
-
-                    self?.backgroundController.registerActivityHandle()
 
                     self?.exposureController.activate(inBackgroundMode: false)
                         .subscribe()

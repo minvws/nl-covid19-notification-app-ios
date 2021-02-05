@@ -101,6 +101,8 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                         switch activeState {
                         case .notAuthorized:
                             self.closeConsent()
+                        case .inactive(.pushNotifications):
+                            return
                         default:
                             self.goToNextStepOrCloseConsent()
                         }
@@ -330,8 +332,6 @@ final class OnboardingConsentView: View {
 
         guard let step = self.consentStep else { return }
 
-        imageView.sizeToFit()
-
         if let width = imageView.image?.size.width,
             let height = imageView.image?.size.height,
             width > 0, height > 0 {
@@ -344,8 +344,6 @@ final class OnboardingConsentView: View {
                 maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
             }
         }
-
-        animationView.sizeToFit()
 
         if let width = animationView.animation?.size.width,
             let height = animationView.animation?.size.height,

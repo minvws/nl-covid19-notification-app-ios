@@ -4,9 +4,8 @@ env
 
 brew update
 brew install yq
-brew upgrade yq
 
-BUNDLE_VERSION=$(yq r project.yml targets.EN.info.properties.CFBundleShortVersionString)
+BUNDLE_VERSION=$(yq e ".targets.EN.info.properties.CFBundleShortVersionString" project.yml)
 BUNDLE_VERSION=${BUNDLE_VERSION%%-tst}
 BUNDLE_VERSION=${BUNDLE_VERSION%%-tst-13-5}
 BUNDLE_VERSION=${BUNDLE_VERSION%%-acc}
@@ -72,7 +71,7 @@ yq e ".targets.EN.info.properties.GitHash = \"$(git rev-parse --short=7 HEAD)\""
 
 if [ ! -z "$USE_DEVELOPER_MENU" ]
 then
-	yq e ".targets.ENCore.settings.base.OTHER_SWIFT_FLAGS = -DUSE_DEVELOPER_MENU" -i project.yml
+	yq e ".targets.ENCore.settings.base.OTHER_SWIFT_FLAGS = \"-DUSE_DEVELOPER_MENU\"" -i project.yml
 else 
 	yq e "del(.targets.ENCore.settings.base.OTHER_SWIFT_FLAGS)" -i project.yml
 fi
