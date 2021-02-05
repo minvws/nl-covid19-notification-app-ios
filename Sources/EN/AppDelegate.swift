@@ -9,18 +9,25 @@
     import BackgroundTasks
 #endif
 
+import ENCore
 import ENFoundation
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     var window: UIWindow?
+
+    private var appRoot: ENAppRoot?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Note: The following needs to be set before application:didFinishLaunchingWithOptions: returns
         let unc = UNUserNotificationCenter.current()
         unc.delegate = self
+
+        logDebug("AppDelegate - application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) Called")
+
+        sendAppLaunchNotification()
 
         if #available(iOS 13.5, *) {
             let bundleIdentifier = Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en"
@@ -41,10 +48,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13, *) {
 
         } else {
+
+            logDebug("AppDelegate - Following iOS 12 path")
+
             let window = UIWindow(frame: UIScreen.main.bounds)
             self.window = window
-            bridge = ENCoreBridge()
-            bridge?.attach(to: window)
+
+            appRoot = ENAppRoot()
+            appRoot?.attach(toWindow: window)
             window.makeKeyAndVisible()
         }
 
@@ -53,18 +64,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Start first flow
-        bridge?.start()
-        bridge?.didBecomeActive()
+        appRoot?.start()
+        appRoot?.didBecomeActive()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // notify bridge app entered foreground
-        bridge?.didEnterForeground()
+        appRoot?.didEnterForeground()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         // notify bridge app entered background
-        bridge?.didEnterBackground()
+        appRoot?.didEnterBackground()
     }
 
     // MARK: UISceneSession Lifecycle
@@ -83,20 +94,50 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-    func setBridge(bridge: ENCoreBridge?) {
-        self.bridge = bridge
+    func setAppRoot(appRoot: ENAppRoot?) {
+        self.appRoot = appRoot
     }
 
     // MARK: - Private
 
-    private var bridge: ENCoreBridge?
-
-    @available(iOS 13, *)
+    @available(iOS 13.5, *)
     private func handle(backgroundTask: BGTask) {
-        guard let bridge = bridge else {
+        guard let appRoot = appRoot else {
             return print("🔥 ENCoreBridge is `nil`")
         }
-        bridge.handleBackgroundTask(backgroundTask)
+
+        appRoot.handle(backgroundTask: backgroundTask)
+    }
+
+    private func sendAppLaunchNotification() {
+
+        let unc = UNUserNotificationCenter.current()
+
+        unc.getNotificationSettings { status in
+            guard status.authorizationStatus == .authorized else {
+                return self.logError("Not authorized to post notifications")
+            }
+
+            let formatter = DateFormatter()
+            formatter.timeStyle = .long
+            let date = formatter.string(from: Date())
+
+            let content = UNMutableNotificationContent()
+            content.title = "App Launch notification"
+            content.body = "Launched at \(date)"
+            content.sound = UNNotificationSound.default
+            content.badge = 0
+
+            let identifier = "app-lauch-notification"
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+
+            unc.add(request) { error in
+                guard let error = error else {
+                    return
+                }
+                self.logError("Error posting notification: app-lauch-notification \(error.localizedDescription)")
+            }
+        }
     }
 }
 
@@ -107,6 +148,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> ()) {
-        bridge?.didReceiveRemoteNotification(center, didReceive: response, withCompletionHandler: completionHandler)
+        appRoot?.receiveRemoteNotification(response: response)
+        completionHandler()
     }
 }

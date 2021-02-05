@@ -117,7 +117,12 @@ final class BackgroundController: BackgroundControlling, Logging {
     // activity handler does nothing.
     func registerActivityHandle() {
 
-        logDebug("BackgroundController.registerActivityHandle()")
+        logDebug("BackgroundController - registerActivityHandle() called")
+
+        guard environmentController.isiOS12 else {
+            logDebug("BackgroundController - Not registering activityHandler because we are not on iOS 12.5")
+            return
+        }
 
         self.exposureManager.setLaunchActivityHandler { activityFlags in
 
@@ -310,7 +315,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func activateExposureController(inBackgroundMode: Bool) -> Completable {
-        self.registerActivityHandle()
         return self.exposureController.activate(inBackgroundMode: inBackgroundMode)
     }
 
@@ -490,28 +494,24 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("Sending background update notification")
 
-        #if DEBUG || USE_DEVELOPER_MENU
+        let formatter = DateFormatter()
+        formatter.timeStyle = .long
+        let date = formatter.string(from: Date())
 
-            let formatter = DateFormatter()
-            formatter.timeStyle = .long
-            let date = formatter.string(from: Date())
+        let content = UNMutableNotificationContent()
+        content.title = "Background update"
+        content.body = "Performed at \(date)"
+        content.sound = UNNotificationSound.default
+        content.badge = 0
 
-            let content = UNMutableNotificationContent()
-            content.title = "Background update"
-            content.body = "Performed at \(date)"
-            content.sound = UNNotificationSound.default
-            content.badge = 0
+        let identifier = "background-update"
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
 
-            let identifier = "background-update"
-            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-
-            userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
-                if let error = error {
-                    self?.logError("Error sending notification: \(error.localizedDescription)")
-                }
-            })
-
-        #endif
+        userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
+            if let error = error {
+                self?.logError("Error sending notification: \(error.localizedDescription)")
+            }
+        })
     }
 
     private func sendNotification(content: UNNotificationContent, identifier: PushNotificationIdentifier, completion: @escaping (Bool) -> ()) {

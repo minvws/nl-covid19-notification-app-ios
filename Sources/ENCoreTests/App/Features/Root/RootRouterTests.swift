@@ -126,6 +126,15 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.embedCallCount, 0)
     }
 
+    func test_start_registersBackgroundActivityHandler() {
+
+        XCTAssertEqual(backgroundController.registerActivityHandleCallCount, 0)
+
+        router.start()
+
+        XCTAssertEqual(backgroundController.registerActivityHandleCallCount, 1)
+    }
+
     func test_callStartTwice_doesNotPresentTwice() {
 
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
