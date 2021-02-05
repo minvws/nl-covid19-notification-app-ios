@@ -30,8 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
         logDebug("AppDelegate - application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) Called")
         logDebug("LaunchOptions: \(String(describing: launchOptions))")
 
-        sendAppLaunchNotification()
-
         if #available(iOS 13.5, *) {
             let bundleIdentifier = Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en"
 
@@ -144,39 +142,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
         }
 
         appRoot.handle(backgroundTask: backgroundTask)
-    }
-
-    private func sendAppLaunchNotification() {
-
-        logDebug("AppDelegate - sendAppLaunchNotification")
-
-        let unc = UNUserNotificationCenter.current()
-
-        unc.getNotificationSettings { status in
-            guard status.authorizationStatus == .authorized else {
-                return self.logError("Not authorized to post notifications")
-            }
-
-            let formatter = DateFormatter()
-            formatter.timeStyle = .long
-            let date = formatter.string(from: Date())
-
-            let content = UNMutableNotificationContent()
-            content.title = "App Launch notification"
-            content.body = "Launched at \(date)"
-            content.sound = UNNotificationSound.default
-            content.badge = 0
-
-            let identifier = "app-lauch-notification"
-            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-
-            unc.add(request) { error in
-                guard let error = error else {
-                    return
-                }
-                self.logError("Error posting notification: app-lauch-notification \(error.localizedDescription)")
-            }
-        }
     }
 }
 
