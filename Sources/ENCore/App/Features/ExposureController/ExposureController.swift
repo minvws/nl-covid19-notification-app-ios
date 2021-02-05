@@ -129,6 +129,8 @@ final class ExposureController: ExposureControlling, Logging {
 
             if strongSelf.isActivated == false {
                 strongSelf.activate(inBackgroundMode: false)
+                    .subscribe()
+                    .disposed(by: strongSelf.disposeBag)
             } else {
                 // Update the status (will remove the paused state from the UI)
                 strongSelf.updateStatusStream()

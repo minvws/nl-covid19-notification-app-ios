@@ -24,7 +24,7 @@ final class StatusViewControllerTests: TestCase {
     private var mockPauseController: PauseControllingMock!
     private var mockPushNotificationStream: PushNotificationStreamingMock!
 
-    private let pushNotificationSubject = PassthroughSubject<UNNotification, Never>()
+    private let pushNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
 
     override func setUp() {
         super.setUp()
@@ -43,7 +43,9 @@ final class StatusViewControllerTests: TestCase {
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         interfaceOrientationStream.currentOrientationIsLandscape = false
 
-        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
+        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject.subscribe(on: MainScheduler.instance)
+            .distinctUntilChanged()
+            .compactMap { $0 }
 
         cardBuilder.buildHandler = { listener, cardTypes in
             return CardRouter(viewController: CardViewController(listener: self.mockCardListener,
@@ -174,5 +176,6 @@ final class StatusViewControllerTests: TestCase {
         let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
         exposureStateStream.exposureState = .just(state)
+        exposureStateStream.currentExposureState = state
     }
 }

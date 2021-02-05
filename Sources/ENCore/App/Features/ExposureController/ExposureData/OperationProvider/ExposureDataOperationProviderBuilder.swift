@@ -11,7 +11,7 @@ import NotificationCenter
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
                                          exposureDataController: ExposureDataController,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol?
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol
     func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation

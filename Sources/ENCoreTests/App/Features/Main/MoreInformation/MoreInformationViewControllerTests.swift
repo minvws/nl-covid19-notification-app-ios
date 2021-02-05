@@ -32,7 +32,7 @@ final class MoreInformationViewControllerTests: TestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = date
 
         exposureControllerMock.lastTEKProcessingDateHandler = {
-            return Just(date).eraseToAnyPublisher()
+            return .just(date)
         }
 
         viewController = MoreInformationViewController(

@@ -161,13 +161,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
             .flatMapCompletable { configuration in
-                let operation = self.operationProvider.processExposureKeySetsOperation(exposureManager: exposureManager, exposureDataController: self, configuration: configuration)
-
-                if let operation = operation {
-                    return operation.execute()
-                } else {
-                    return .error(ExposureDataError.internalError)
-                }
+                self.operationProvider
+                    .processExposureKeySetsOperation(exposureManager: exposureManager, exposureDataController: self, configuration: configuration)
+                    .execute()
             }
     }
 

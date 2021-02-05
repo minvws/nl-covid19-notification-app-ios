@@ -5,10 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -19,7 +19,7 @@ final class SettingsOverviewViewControllerTests: TestCase {
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockPushNotificationStream: PushNotificationStreamingMock!
 
-    private let pushNotificationSubject = PassthroughSubject<UNNotification, Never>()
+    private let pushNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
 
     override func setUp() {
         super.setUp()
@@ -31,9 +31,12 @@ final class SettingsOverviewViewControllerTests: TestCase {
         mockPauseController = PauseControllingMock()
         mockPushNotificationStream = PushNotificationStreamingMock()
 
-        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
+        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject
+            .subscribe(on: MainScheduler.instance)
+            .distinctUntilChanged()
+            .compactMap { $0 }
 
-        mockExposureDataController.pauseEndDatePublisher = Just(nil).eraseToAnyPublisher()
+        mockExposureDataController.pauseEndDateObservable = .just(nil)
 
         mockPauseController.getPauseCountdownStringHandler = { _, _ in
             return NSAttributedString(string: "Some mock countdown string")

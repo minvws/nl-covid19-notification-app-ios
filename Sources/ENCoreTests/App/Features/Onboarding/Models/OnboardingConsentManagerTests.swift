@@ -15,15 +15,18 @@ class OnboardingConsentManagerTests: TestCase {
     private var mockExposureStateStream: ExposureStateStreamingMock!
     private var mockExposureController: ExposureControllingMock!
     private var mockExposureState = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
+    private var mockUserNotificationCenter: UserNotificationCenterMock!
 
     override func setUpWithError() throws {
         mockExposureStateStream = ExposureStateStreamingMock()
         mockExposureController = ExposureControllingMock()
+        mockUserNotificationCenter = UserNotificationCenterMock()
 
         mockExposureStateStream.exposureState = mockExposureState
 
         sut = OnboardingConsentManager(exposureStateStream: mockExposureStateStream,
                                        exposureController: mockExposureController,
+                                       userNotificationCenter: mockUserNotificationCenter,
                                        theme: theme)
     }
 

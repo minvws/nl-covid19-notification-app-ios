@@ -55,7 +55,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
          exposureManager: ExposureManaging,
          localPathProvider: LocalPathProviding,
          exposureDataController: ExposureDataControlling,
-         exposureKeySetsStorageUrl: URL,
          configuration: ExposureConfiguration,
          userNotificationCenter: UserNotificationCenter,
          application: ApplicationControlling,
@@ -66,7 +65,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.exposureManager = exposureManager
         self.localPathProvider = localPathProvider
         self.exposureDataController = exposureDataController
-        self.exposureKeySetsStorageUrl = exposureKeySetsStorageUrl
         self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
         self.application = application
@@ -224,6 +222,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                                          exposureSummary: summary,
                                                          exposureReport: nil)
 
+                    self.updateLastProcessingDate()
+
                     observer(.success(result))
 
                 case let .failure(error):
@@ -244,8 +244,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                                                  processDate: nil,
                                                                  isValid: false)
                         }
-
-                        self.updateLastProcessingDate()
 
                         let keySetHolderResults = invalidKeySetHolderResults + validKeySetHolderResults
                         let result = ExposureDetectionResult(keySetDetectionResults: keySetHolderResults,
@@ -613,7 +611,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let storageController: StorageControlling
     private let exposureManager: ExposureManaging
     private let exposureDataController: ExposureDataControlling
-    private let exposureKeySetsStorageUrl: URL
     private let localPathProvider: LocalPathProviding
     private let configuration: ExposureConfiguration
     private let userNotificationCenter: UserNotificationCenter

@@ -68,7 +68,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             exposureManager: mockExposureManager,
             localPathProvider: mockLocalPathProvider,
             exposureDataController: mockExposureDataController,
-            exposureKeySetsStorageUrl: mockExposureKeySetsStorageUrl,
             configuration: mockExposureConfiguration,
             userNotificationCenter: mockUserNotificationCenter,
             application: mockApplication,
@@ -105,11 +104,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
-            .assertNoFailure()
-            .sink { val in
+            .subscribe(onCompleted: {
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
 
@@ -278,6 +276,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         let subscriptionExpectation = expectation(description: "subscriptionExpectation")
         let storedKeySetsExpectation = expectation(description: "storedKeySetsExpectation")
 
+        mockStorage(storedKeySetHolders: [dummyKeySetHolder])
         mockStorageController.storeHandler = { object, key, completion in
 
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
@@ -352,28 +351,32 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
-    func test_shouldUpdateLastProcessingDate() throws {
+    func test_shouldUpdateLastProcessingDate() {
 
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+        mockApplication.isInBackground = true
+        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
 
-        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
-        let storedLastProcessingDateExpectation = expectation(description: "storedExposureReportExpectation")
+        let exp = expectation(description: "detectExposuresExpectation")
 
-        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
-        mockStorageController.storeHandler = { object, key, completion in
-            if (key as? CodableStorageKey<Date>)?.asString == ExposureDataStorageKey.lastExposureProcessingDate.asString {
-                storedLastProcessingDateExpectation.fulfill()
-            }
-            completion(nil)
+        let currentDate = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
+
+        mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            completion(.success(ExposureDetectionSummaryMock()))
         }
 
         sut.execute()
             .subscribe(onCompleted: {
-                subscriptionExpectation.fulfill()
+                exp.fulfill()
             })
             .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate)
     }
 
     func test_shouldRemoveBlobsForProcessedKeySets() throws {
@@ -394,37 +397,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockFileManager.removeItemCallCount, 2)
         XCTAssertEqual(mockFileManager.removeItemArgValues.first?.absoluteString, "http://someurl.com/signatureFilename")
         XCTAssertEqual(mockFileManager.removeItemArgValues.last?.absoluteString, "http://someurl.com/binaryFilename")
-    }
-
-    // MARK: - Private Helper Functions
-
-    func test_shouldUpdateLastProcessingDate() {
-
-        mockApplication.isInBackground = true
-        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
-
-        let exp = expectation(description: "detectExposuresExpectation")
-
-        let currentDate = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
-
-        mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            completion(.success(ExposureDetectionSummaryMock()))
-        }
-
-        sut.execute()
-            .assertNoFailure()
-            .sink { _ in
-                exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
-
-        waitForExpectations(timeout: 2, handler: nil)
-
-        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
-        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
-        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate)
     }
 
     // MARK: - Private Helper Functions

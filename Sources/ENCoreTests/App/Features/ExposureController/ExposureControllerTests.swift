@@ -35,7 +35,7 @@ final class ExposureControllerTests: TestCase {
                                         userNotificationCenter: userNotificationCenter,
                                         currentAppVersion: currentAppVersion)
 
-        dataController.lastSuccessfulProcessingDate = Date()
+        dataController.lastSuccessfulExposureProcessingDate = Date()
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in .empty() }
 
         let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
