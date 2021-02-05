@@ -127,12 +127,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             task.setTaskCompleted(success: true)
         }
 
-        if identifier == .refresh,
-            let pauseEndDate = dataController.pauseEndDate,
-            currentDate().timeIntervalSince(pauseEndDate) > .hours(1) {
-
+        if identifier == .refresh, shouldShowPauseExpirationReminder {
             logInfo("Displaying unpause reminder notification")
-
             userNotificationCenter.displayPauseExpirationReminder {
                 completeTask()
             }
@@ -154,16 +150,26 @@ final class BackgroundController: BackgroundControlling, Logging {
             return
         }
 
-        self.exposureManager.setLaunchActivityHandler { activityFlags in
+        self.exposureManager.setLaunchActivityHandler { [weak self] activityFlags in
 
-            self.logDebug("BackgroundController.registerActivityHandle() setLaunchActivityHandler: \(activityFlags)")
+            guard let strongSelf = self else { return }
+
+            strongSelf.logDebug("BackgroundController.registerActivityHandle() setLaunchActivityHandler: \(activityFlags)")
 
             if activityFlags.contains(.periodicRun) {
 
-                self.logInfo("Periodic activity callback called (iOS 12.5)")
+                strongSelf.logInfo("Periodic activity callback called (iOS 12.5)")
 
-                self.refresh(task: nil)
-                self.sendBackgroundUpdateNotification()
+                // in a paused state we don't to a refresh
+
+                if strongSelf.shouldShowPauseExpirationReminder {
+                    strongSelf.logInfo("Displaying unpause reminder notification")
+                    strongSelf.userNotificationCenter.displayPauseExpirationReminder(completion: {})
+                } else {
+                    strongSelf.refresh(task: nil)
+                }
+
+                strongSelf.sendBackgroundUpdateNotification()
             }
         }
     }
@@ -513,6 +519,15 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private var isExposureManagerActive: Bool {
         exposureManager.getExposureNotificationStatus() == .active
+    }
+
+    private var shouldShowPauseExpirationReminder: Bool {
+        if let pauseEndDate = dataController.pauseEndDate,
+            currentDate().timeIntervalSince(pauseEndDate) > .hours(1) {
+            return true
+        } else {
+            return false
+        }
     }
 
     private func sendBackgroundUpdateNotification() {
