@@ -69,7 +69,6 @@ final class ExposureController: ExposureControlling, Logging {
             return .empty()
         }
 
-        return .create { (observer) -> Disposable in
         if let existingCompletable = activationCompletable {
             logDebug("Already activating")
             return existingCompletable
@@ -138,9 +137,12 @@ final class ExposureController: ExposureControlling, Logging {
             strongSelf.dataController.pauseEndDate = nil
 
             if strongSelf.isActivated == false {
-                strongSelf.activate(inBackgroundMode: false)
-                    .subscribe()
+                strongSelf.activate()
+                    .subscribe(onCompleted: {
+                        strongSelf.updateStatusStream()
+                    })
                     .disposed(by: strongSelf.disposeBag)
+
             } else {
                 // Update the status (will remove the paused state from the UI)
                 strongSelf.updateStatusStream()
@@ -618,7 +620,7 @@ final class ExposureController: ExposureControlling, Logging {
             .disposed(by: disposeBag)
     }
 
-    private func updateStatusStream() {
+    func updateStatusStream() {
 
         if let pauseEndDate = dataController.pauseEndDate {
             mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused(pauseEndDate))))
