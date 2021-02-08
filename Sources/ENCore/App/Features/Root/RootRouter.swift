@@ -106,7 +106,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         LogHandler.setup()
 
-        if !environmentController.supportsExposureNotification {
+        if !environmentController.supportsExposureNotification || !environmentController.appSupportsiOSversion {
             routeToUpdateOperatingSystem(animated: false)
             logDebug("RootRouter - doesn't support EN")
             return
