@@ -64,7 +64,12 @@ final class ExposureController: ExposureControlling, Logging {
             return .empty()
         }
 
-        return .create { (observer) -> Disposable in
+        if let existingCompletable = activationCompletable {
+            logDebug("Already activating")
+            return existingCompletable
+        }
+
+        let observable = Observable<Never>.create { (observer) -> Disposable in
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
                 self.exposureManager.activate { error in
@@ -72,6 +77,7 @@ final class ExposureController: ExposureControlling, Logging {
                     self.logDebug("result from EN Activation: \(error)")
 
                     self.isActivated = true
+
                     self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
 
                     func postActivation() {
@@ -79,8 +85,10 @@ final class ExposureController: ExposureControlling, Logging {
                         if inBackgroundMode == false {
                             self.postExposureManagerActivation()
                         }
+
                         self.updateStatusStream()
-                        observer(.completed)
+
+                        observer.onCompleted()
                     }
 
                     if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled(), self.didCompleteOnboarding {
@@ -101,6 +109,64 @@ final class ExposureController: ExposureControlling, Logging {
 
             return Disposables.create()
         }
+
+        let completable = observable
+            .share()
+            .do(afterCompleted: { self.activationCompletable = nil })
+            .asCompletable()
+
+        activationCompletable = completable
+
+        return completable
+
+//        let completable = Completable.create { (observer) -> Disposable in
+//
+//            self.updatePushNotificationState {
+//                self.logDebug("EN framework activating")
+//                self.exposureManager.activate { error in
+//
+//                    self.logDebug("result from EN Activation: \(error)")
+//
+//                    self.isActivated = true
+//
+//                    objc_sync_exit(self)
+//
+//                    self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
+//
+//                    func postActivation() {
+//                        self.logDebug("started `postActivation`")
+//                        if inBackgroundMode == false {
+//                            self.postExposureManagerActivation()
+//                        }
+//
+//                        self.updateStatusStream()
+//
+//                        observer(.completed)
+//                    }
+//
+//                    if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled(), self.didCompleteOnboarding {
+//                        self.logDebug("Calling `setExposureNotificationEnabled`")
+//                        self.exposureManager.setExposureNotificationEnabled(true) { result in
+//                            if case let .failure(error) = result {
+//                                self.logDebug("`setExposureNotificationEnabled` error: \(error.localizedDescription)")
+//                            } else {
+//                                self.logDebug("Returned from `setExposureNotificationEnabled` (success)")
+//                            }
+//                            postActivation()
+//                        }
+//                    } else {
+//                        postActivation()
+//                    }
+//                }
+//            }
+//
+//            return Disposables.create()
+//        }
+//        .do(onCompleted: { self.activationCompletable = nil })
+//
+//        activationCompletable = completable
+//
+//        return completable
     }
 
     func deactivate() {
@@ -730,6 +796,7 @@ final class ExposureController: ExposureControlling, Logging {
     private var isPushNotificationsEnabled = false
     private let userNotificationCenter: UserNotificationCenter
     private var updateStream: Completable?
+    private var activationCompletable: Completable?
     private let currentAppVersion: String
 }
 
