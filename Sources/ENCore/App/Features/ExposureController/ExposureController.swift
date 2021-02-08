@@ -166,6 +166,7 @@ final class ExposureController: ExposureControlling, Logging {
             }, onCompleted: { [weak self] in
                 self?.updateStream = nil
             })
+            .share()
             .asCompletable()
 
         self.updateStream = updateStream
