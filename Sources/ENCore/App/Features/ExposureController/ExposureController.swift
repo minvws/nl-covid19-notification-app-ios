@@ -107,7 +107,11 @@ final class ExposureController: ExposureControlling, Logging {
 
         let completable = observable
             .share()
-            .do(afterCompleted: { self.activationCompletable = nil })
+            .do(onError: { [weak self] _ in
+                self?.activationCompletable = nil
+            }, onCompleted: { [weak self] in
+                self?.activationCompletable = nil
+            })
             .asCompletable()
 
         activationCompletable = completable
