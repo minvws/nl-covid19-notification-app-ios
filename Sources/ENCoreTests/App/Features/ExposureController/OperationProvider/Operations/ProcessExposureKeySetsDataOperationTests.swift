@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -23,6 +24,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockEnvironmentController: EnvironmentControllingMock!
     private var mockLocalPathProvider: LocalPathProvidingMock!
     private var disposeBag = DisposeBag()
+    private var mockExposureDataController: ExposureDataControllingMock!
 
     override func setUpWithError() throws {
 
@@ -35,6 +37,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockFileManager = FileManagingMock()
         mockEnvironmentController = EnvironmentControllingMock()
         mockLocalPathProvider = LocalPathProvidingMock()
+        mockExposureDataController = ExposureDataControllingMock()
 
         // Default handlers
         mockEnvironmentController.gaenRateLimitingType = .dailyLimit
@@ -57,11 +60,14 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             return nil
         }
 
+        mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _ in }
+
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
             storageController: mockStorageController,
             exposureManager: mockExposureManager,
             localPathProvider: mockLocalPathProvider,
+            exposureDataController: mockExposureDataController,
             configuration: mockExposureConfiguration,
             userNotificationCenter: mockUserNotificationCenter,
             application: mockApplication,
@@ -87,6 +93,25 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertTrue(mockStorageController.retrieveDataArgValues.first is CodableStorageKey<[ExposureKeySetHolder]>)
         waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_shouldNotDetectExposuresIfNoStoredKeySets() {
+
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+        mockApplication.isInBackground = true
+        mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
     }
 
     // If the number of background calls has not reached the limit, a detection call should be made
@@ -251,6 +276,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         let subscriptionExpectation = expectation(description: "subscriptionExpectation")
         let storedKeySetsExpectation = expectation(description: "storedKeySetsExpectation")
 
+        mockStorage(storedKeySetHolders: [dummyKeySetHolder])
         mockStorageController.storeHandler = { object, key, completion in
 
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
@@ -325,28 +351,32 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
-    func test_shouldUpdateLastProcessingDate() throws {
+    func test_shouldUpdateLastProcessingDate() {
 
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+        mockApplication.isInBackground = true
+        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
 
-        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
-        let storedLastProcessingDateExpectation = expectation(description: "storedExposureReportExpectation")
+        let exp = expectation(description: "detectExposuresExpectation")
 
-        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
-        mockStorageController.storeHandler = { object, key, completion in
-            if (key as? CodableStorageKey<Date>)?.asString == ExposureDataStorageKey.lastExposureProcessingDate.asString {
-                storedLastProcessingDateExpectation.fulfill()
-            }
-            completion(nil)
+        let currentDate = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
+
+        mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            completion(.success(ExposureDetectionSummaryMock()))
         }
 
         sut.execute()
             .subscribe(onCompleted: {
-                subscriptionExpectation.fulfill()
+                exp.fulfill()
             })
             .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate)
     }
 
     func test_shouldRemoveBlobsForProcessedKeySets() throws {

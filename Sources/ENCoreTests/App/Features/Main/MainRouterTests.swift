@@ -216,4 +216,18 @@ final class MainRouterTests: XCTestCase {
 
         XCTAssertEqual(viewController.dismissCallCount, 1)
     }
+
+    func test_routeToSettings() {
+
+        let mockRouter = RoutingMock(viewControllable: ViewControllableMock())
+        settingsBuilder.buildHandler = { listener in
+            return mockRouter
+        }
+
+        router.routeToSettings()
+
+        XCTAssertEqual(settingsBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 1)
+        XCTAssertTrue(viewController.presentArgValues.last?.0 === mockRouter.viewControllable)
+    }
 }

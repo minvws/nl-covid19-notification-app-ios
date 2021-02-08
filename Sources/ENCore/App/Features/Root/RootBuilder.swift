@@ -137,9 +137,9 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return builder.build()
     }()
 
-    fileprivate var dataController: ExposureDataControlling {
+    lazy var dataController: ExposureDataControlling = {
         return ExposureDataControllerBuilder(dependency: self).build()
-    }
+    }()
 
     /// Local Storage
     lazy var storageController: StorageControlling = StorageControllerBuilder().build()
@@ -170,6 +170,13 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return EnvironmentController()
     }
 
+    var pauseController: PauseControlling {
+        PauseController(exposureDataController: dataController,
+                        exposureController: exposureController,
+                        userNotificationCenter: userNotificationCenter,
+                        backgroundController: backgroundController)
+    }
+
     let theme: Theme = ENTheme()
 
     /// Mutable counterpart of exposureStateStream - Used as dependency for exposureController
@@ -191,6 +198,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     var randomNumberGenerator: RandomNumberGenerating {
         RandomNumberGenerator()
+    }
+
+    var pushNotificationStream: PushNotificationStreaming {
+        mutablePushNotificationStream
     }
 }
 
@@ -244,6 +255,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           webviewBuilder: dependencyProvider.webviewBuilder,
                           userNotificationCenter: dependencyProvider.userNotificationCenter,
                           currentAppVersion: unwrappedCurrentAppVersion,
-                          environmentController: dependencyProvider.environmentController)
+                          environmentController: dependencyProvider.environmentController,
+                          pauseController: dependencyProvider.pauseController)
     }
 }

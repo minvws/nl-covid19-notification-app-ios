@@ -29,6 +29,8 @@ protocol StatusDependency {
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var environmentController: EnvironmentControlling { get }
     var dataController: ExposureDataControlling { get }
+    var pauseController: PauseControlling { get }
+    var pushNotificationStream: PushNotificationStreaming { get }
 }
 
 private final class StatusDependencyProvider: DependencyProvider<StatusDependency>, CardDependency {
@@ -55,6 +57,10 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
     var dataController: ExposureDataControlling {
         return dependency.dataController
     }
+
+    var pauseController: PauseControlling {
+        dependency.pauseController
+    }
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
@@ -68,7 +74,8 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
             listener: listener,
             theme: dependencyProvider.dependency.theme,
             topAnchor: topAnchor,
-            dataController: dependencyProvider.dataController
+            dataController: dependencyProvider.dataController,
+            pushNotificationStream: dependencyProvider.dependency.pushNotificationStream
         )
 
         return StatusRouter(listener: listener,

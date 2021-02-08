@@ -152,6 +152,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
         logDebug("AppDelegate - userNotificationCenter(willPresent")
 
+        appRoot?.receiveForegroundNotification(notification)
         completionHandler(.alert)
     }
 

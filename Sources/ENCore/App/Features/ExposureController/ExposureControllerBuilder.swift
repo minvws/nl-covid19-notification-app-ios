@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import UserNotifications
 
-/// @mockable
+/// @mockable(history: pause = true)
 protocol ExposureControlling: AnyObject {
 
     var lastExposureDate: Date? { get }
@@ -21,6 +21,9 @@ protocol ExposureControlling: AnyObject {
     func deactivate()
     func postExposureManagerActivation()
     func updateStatusStream()
+
+    func pause(untilDate date: Date)
+    func unpause()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDeactivated() -> Single<Bool>
@@ -37,7 +40,6 @@ protocol ExposureControlling: AnyObject {
     // MARK: - Permissions
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?)
-    func requestPushNotificationPermission(_ completion: @escaping () -> ())
 
     // MARK: - Exposure KeySets
 
@@ -105,6 +107,9 @@ protocol ExposureControlling: AnyObject {
     func lastOpenedNotificationCheck() -> Completable
 
     var exposureManager: ExposureManaging { get }
+
+    /// Get the latest  TEK processing date
+    func lastTEKProcessingDate() -> Observable<Date?>
 }
 
 /// Represents a ConfirmationKey for the Lab Flow
@@ -161,6 +166,7 @@ protocol ExposureControllerDependency {
     var storageController: StorageControlling { get }
     var applicationSignatureController: ApplicationSignatureControlling { get }
     var networkStatusStream: NetworkStatusStreaming { get }
+    var dataController: ExposureDataControlling { get }
 }
 
 private final class ExposureControllerDependencyProvider: DependencyProvider<ExposureControllerDependency>, ExposureDataControllerDependency {
@@ -185,7 +191,7 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     // MARK: - Private Dependencies
 
     fileprivate var dataController: ExposureDataControlling {
-        return ExposureDataControllerBuilder(dependency: self).build()
+        return dependency.dataController
     }
 
     fileprivate var userNotificationCenter: UserNotificationCenter {

@@ -30,6 +30,7 @@ protocol InfectedDependency {
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var storageController: StorageControlling { get }
     var dataController: ExposureDataControlling { get }
+    var pauseController: PauseControlling { get }
 }
 
 private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency, HelpDetailDependency {
@@ -72,6 +73,10 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
 
     var dataController: ExposureDataControlling {
         dependency.dataController
+    }
+
+    var pauseController: PauseControlling {
+        dependency.pauseController
     }
 }
 

@@ -21,6 +21,10 @@ final class StatusViewControllerTests: TestCase {
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockCardListener: CardListeningMock!
     private var mockWebViewBuildable: WebviewBuildableMock!
+    private var mockPauseController: PauseControllingMock!
+    private var mockPushNotificationStream: PushNotificationStreamingMock!
+
+    private let pushNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
 
     override func setUp() {
         super.setUp()
@@ -31,16 +35,24 @@ final class StatusViewControllerTests: TestCase {
         mockExposureDataController = ExposureDataControllingMock()
         mockExposureDataController.seenAnnouncements = [.interopAnnouncement]
         mockWebViewBuildable = WebviewBuildableMock()
+        mockPauseController = PauseControllingMock()
+        mockPushNotificationStream = PushNotificationStreamingMock()
 
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        interfaceOrientationStream.currentOrientationIsLandscape = false
+
+        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject.subscribe(on: MainScheduler.instance)
+            .distinctUntilChanged()
+            .compactMap { $0 }
 
         cardBuilder.buildHandler = { listener, cardTypes in
             return CardRouter(viewController: CardViewController(listener: self.mockCardListener,
                                                                  theme: self.theme,
                                                                  types: cardTypes,
-                                                                 dataController: self.mockExposureDataController),
+                                                                 dataController: self.mockExposureDataController,
+                                                                 pauseController: self.mockPauseController),
                               enableSettingBuilder: EnableSettingBuildableMock(),
                               webviewBuilder: self.mockWebViewBuildable)
         }
@@ -51,7 +63,8 @@ final class StatusViewControllerTests: TestCase {
                                               listener: StatusListenerMock(),
                                               theme: theme,
                                               topAnchor: nil,
-                                              dataController: mockExposureDataController)
+                                              dataController: mockExposureDataController,
+                                              pushNotificationStream: mockPushNotificationStream)
         viewController.router = router
     }
 
@@ -107,6 +120,54 @@ final class StatusViewControllerTests: TestCase {
         snapshots(matching: viewController)
     }
 
+    func test_snapshot_paused_not_notified() {
+
+        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        mockPauseController.getPauseCountdownStringHandler = { _, _ in
+            return NSAttributedString(string: "Some mock countdown string")
+        }
+
+        let date = Date(timeIntervalSinceNow: 7200)
+        set(activeState: .inactive(.paused(date)), notified: false)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_paused_pauseTimeElapsed_not_notified() {
+        let now = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28)
+        DateTimeTestingOverrides.overriddenCurrentDate = now
+        mockPauseController.pauseTimeElapsed = true
+        mockPauseController.getPauseCountdownStringHandler = { _, _ in
+            return NSAttributedString(string: "Some mock countdown string")
+        }
+
+        let date = now.addingTimeInterval(-7200)
+        set(activeState: .inactive(.paused(date)), notified: false)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_paused_notified() {
+        let now = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28)
+        mockPauseController.getPauseCountdownStringHandler = { _, _ in
+            return NSAttributedString(string: "Some mock countdown string")
+        }
+
+        let date = now.addingTimeInterval(7200)
+        set(activeState: .inactive(.paused(date)), notified: true)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_paused_pauseTimeElapsed_notified() {
+        let now = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28)
+        mockPauseController.pauseTimeElapsed = true
+        mockPauseController.getPauseCountdownStringHandler = { _, _ in
+            return NSAttributedString(string: "Some mock countdown string")
+        }
+
+        let date = now.addingTimeInterval(-7200)
+        set(activeState: .inactive(.paused(date)), notified: true)
+        snapshots(matching: viewController)
+    }
+
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState, notified: Bool) {
@@ -115,5 +176,6 @@ final class StatusViewControllerTests: TestCase {
         let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
         exposureStateStream.exposureState = .just(state)
+        exposureStateStream.currentExposureState = state
     }
 }

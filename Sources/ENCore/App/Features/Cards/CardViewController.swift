@@ -22,10 +22,12 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     init(listener: CardListening?,
          theme: Theme,
          types: [CardType],
-         dataController: ExposureDataControlling) {
+         dataController: ExposureDataControlling,
+         pauseController: PauseControlling) {
         self.types = types
         self.listener = listener
         self.dataController = dataController
+        self.pauseController = pauseController
 
         super.init(theme: theme)
     }
@@ -111,6 +113,8 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
 
         return {
             switch action {
+            case .unpause:
+                self.pauseController.unpauseApp()
             case let .openEnableSetting(enableSetting):
                 self.router?.route(to: enableSetting)
             case let .openWebsite(url: url):
@@ -133,7 +137,10 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
 
     private var types: [CardType] {
         didSet {
-            if isViewLoaded, oldValue != types {
+            // always recreate cards if the list contains a "dynamic" card. For instance the card with pause countdown that always needs updating
+            let containsDynamicCard = types.contains(where: { self.dynamicCardTypes.contains($0) })
+
+            if isViewLoaded, oldValue != types || containsDynamicCard {
                 recreateCards()
             }
         }
@@ -141,11 +148,24 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
 
     private func recreateCards() {
 
-        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        let existingCardViews: [CardView] = stackView.arrangedSubviews.compactMap { $0 as? CardView }
+        let existingCardTypes = existingCardViews.compactMap { $0.cardType }
+        let cardsToUpdate = existingCardViews.filter { self.dynamicCardTypes.contains($0.cardType) && types.contains($0.cardType) }
+        let cardsToRemove = existingCardViews.filter { !types.contains($0.cardType) }
+        let cardTypesToAdd = types.filter { !existingCardTypes.contains($0) }
 
-        types.forEach { cardType in
-            let card = cardType.card(theme: theme)
-            let cardView = CardView(theme: theme)
+        cardsToRemove.forEach { $0.removeFromSuperview() }
+
+        cardsToUpdate.forEach { cardView in
+            let card = cardView.cardType.card(theme: theme, pauseController: pauseController)
+            cardView.update(with: card,
+                            action: buttonAction(forAction: card.action),
+                            secondaryAction: buttonAction(forAction: card.secondaryAction))
+        }
+
+        cardTypesToAdd.forEach { cardType in
+            let card = cardType.card(theme: theme, pauseController: pauseController)
+            let cardView = CardView(theme: theme, cardType: cardType)
             cardView.update(with: card,
                             action: buttonAction(forAction: card.action),
                             secondaryAction: buttonAction(forAction: card.secondaryAction))
@@ -156,6 +176,9 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     weak var router: CardRouting?
     weak var listener: CardListening?
     private let dataController: ExposureDataControlling
+    private let pauseController: PauseControlling
+    private var pauseTimer: Timer?
+    private let dynamicCardTypes: [CardType] = [.paused]
 
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
@@ -182,6 +205,13 @@ final class CardView: View {
     lazy var secondaryButton: Button = {
         Button(theme: self.theme)
     }()
+
+    let cardType: CardType
+
+    init(theme: Theme, cardType: CardType) {
+        self.cardType = cardType
+        super.init(theme: theme)
+    }
 
     override func build() {
         super.build()
@@ -269,8 +299,13 @@ final class CardView: View {
 }
 
 private extension CardType {
-    func card(theme: Theme) -> Card {
+    func card(theme: Theme, pauseController: PauseControlling) -> Card {
         switch self {
+        case .paused:
+            return .paused(theme: theme,
+                           pauseTimeElapsed: pauseController.pauseTimeElapsed,
+                           content: pauseController.getPauseCountdownString(theme: theme, emphasizeTime: false))
+
         case .bluetoothOff:
             return .bluetoothOff(theme: theme)
         case .exposureOff:

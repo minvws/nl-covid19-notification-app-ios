@@ -10,6 +10,7 @@ import NotificationCenter
 /// @mockable(history: processPendingLabConfirmationUploadRequestsOperation = true)
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
+                                         exposureDataController: ExposureDataController,
                                          configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol
