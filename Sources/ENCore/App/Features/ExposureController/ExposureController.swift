@@ -260,29 +260,26 @@ final class ExposureController: ExposureControlling, Logging {
 
     func fetchAndProcessExposureKeySets() -> Completable {
         logDebug("fetchAndProcessExposureKeySets started")
-        if let exposureKeyUpdateStream = exposureKeyUpdateStream {
+        if let existingCompletable = keysetFetchProcessCompletable {
             logDebug("Already fetching")
-            // already fetching
-            return exposureKeyUpdateStream
+            return existingCompletable
         }
 
-        let stream = dataController
+        let completable = dataController
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
+            .do(onError: { [weak self] error in
+                self?.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
+                self?.updateStatusStream()
+                self?.keysetFetchProcessCompletable = nil
+            }, onCompleted: { [weak self] in
+                self?.logDebug("fetchAndProcessExposureKeySets Completed successfuly")
+                self?.updateStatusStream()
+                self?.keysetFetchProcessCompletable = nil
+            })
 
-        stream.subscribe(onCompleted: {
-            self.logDebug("fetchAndProcessExposureKeySets Completed successfuly")
-            self.updateStatusStream()
-            self.exposureKeyUpdateStream = nil
-        }, onError: { error in
-            self.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
-            self.updateStatusStream()
-            self.exposureKeyUpdateStream = nil
-        })
-            .disposed(by: disposeBag)
+        keysetFetchProcessCompletable = completable
 
-        exposureKeyUpdateStream = stream
-
-        return stream
+        return completable
     }
 
     func confirmExposureNotification() {
@@ -770,7 +767,7 @@ final class ExposureController: ExposureControlling, Logging {
     var exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling
     private var disposeBag = DisposeBag()
-    private var exposureKeyUpdateStream: Completable?
+    private var keysetFetchProcessCompletable: Completable?
     private let networkStatusStream: NetworkStatusStreaming
     private var isActivated = false
     private var isPushNotificationsEnabled = false
