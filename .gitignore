@@ -76,3 +76,5 @@ fastlane/test_output
 Sources/EN/Resources/Info.plist
 /Sources/ENTests/Mocks.swift
 /Sources/ENCoreTests/Mocks.swift
+EN.xcodeproj/xcshareddata/xcschemes/EN.xcscheme
+EN.xcodeproj/xcshareddata/xcschemes/ENCore.xcscheme
