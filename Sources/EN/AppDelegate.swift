@@ -78,6 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
         appRoot.didBecomeActive()
     }
 
+    /// Tells the delegate that the app is about to enter the foreground. On iOS 12 this is not called when the app is initially started, on other iOS versions it is.
     func applicationWillEnterForeground(_ application: UIApplication) {
 
         logDebug("AppDelegate - applicationWillEnterForeground")

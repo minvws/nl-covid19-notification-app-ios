@@ -327,8 +327,14 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func updateStatusStream() -> Completable {
         logDebug("BackgroundTask: Update Status Stream Called")
-        exposureController.updateStatusStream()
-        return .empty()
+
+        // even though exposureController.updateStatusStream() is a synchronous call,
+        // we still wrap it in a completable to make it possible to schedule the work in the refresh sequence
+        return .create { (observer) -> Disposable in
+            self.exposureController.updateStatusStream()
+            observer(.completed)
+            return Disposables.create()
+        }
     }
 
     private func fetchAndProcessKeysets() -> Completable {

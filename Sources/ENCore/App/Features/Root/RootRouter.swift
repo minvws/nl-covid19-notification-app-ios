@@ -186,6 +186,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController.clearUnseenExposureNotificationDate()
 
         removeNotificationsFromNotificationsCenter()
+
+        // On iOS 12 the app is not informed of entering the foreground on startup, call didEnterForeground manually
+        if environmentController.isiOS12 {
+            didEnterForeground()
+        }
     }
 
     func didEnterForeground() {
@@ -435,10 +440,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     .subscribe(onCompleted: {
                         strongSelf.exposureController.postExposureManagerActivation()
                         strongSelf.exposureController.updateStatusStream()
+                        strongSelf.backgroundController.performDecoySequenceIfNeeded()
                     })
                     .disposed(by: strongSelf.disposeBag)
-
-                self?.backgroundController.performDecoySequenceIfNeeded()
 
                 completion?(false)
 
