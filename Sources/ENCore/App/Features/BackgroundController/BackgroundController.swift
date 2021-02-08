@@ -270,7 +270,9 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     func refresh(task: BackgroundTask?) {
         let sequence: [Completable] = [
-            activateExposureController(inBackgroundMode: true),
+            activateExposureController(),
+            updateStatusStream(),
+            fetchAndProcessKeysets(),
             processUpdate(),
             processENStatusCheck(),
             appUpdateRequiredCheck(),
@@ -311,15 +313,33 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
-    private func activateExposureController(inBackgroundMode: Bool) -> Completable {
+    private func activateExposureController() -> Completable {
         logDebug("BackgroundTask: Activate Exposure Controller Called")
-        return self.exposureController.activate(inBackgroundMode: inBackgroundMode)
+        return self.exposureController.activate()
             .do { error in
                 self.logError("BackgroundTask: Activate Exposure Controller Failed. Reason: \(error)")
             } onCompleted: {
                 self.logDebug("BackgroundTask: Activate Exposure Controller Completed")
             } onSubscribe: {
                 self.logDebug("BackgroundTask: Activate Exposure Controller Subscribe")
+            }
+    }
+
+    private func updateStatusStream() -> Completable {
+        logDebug("BackgroundTask: Update Status Stream Called")
+        exposureController.updateStatusStream()
+        return .empty()
+    }
+
+    private func fetchAndProcessKeysets() -> Completable {
+        logDebug("BackgroundTask: Fetch And Process Keysets Called")
+        return self.exposureController.updateWhenRequired()
+            .do { error in
+                self.logError("BackgroundTask: Fetch And Process Keysets Failed. Reason: \(error)")
+            } onCompleted: {
+                self.logDebug("BackgroundTask: Fetch And Process Keysets Completed")
+            } onSubscribe: {
+                self.logDebug("BackgroundTask: Fetch And Process Keysets Subscribe")
             }
     }
 

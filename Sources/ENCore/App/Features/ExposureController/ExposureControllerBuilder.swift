@@ -17,8 +17,10 @@ protocol ExposureControlling: AnyObject {
     // MARK: - Setup
 
     @discardableResult
-    func activate(inBackgroundMode: Bool) -> Completable
+    func activate() -> Completable
     func deactivate()
+    func postExposureManagerActivation()
+    func updateStatusStream()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDeactivated() -> Single<Bool>
