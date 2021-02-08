@@ -31,6 +31,7 @@ final class EnableSettingStepView: View {
         indexLabel.text = "\(stepIndex)."
         indexLabel.font = theme.fonts.body
         indexLabel.textColor = theme.colors.gray
+        indexLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         addSubview(indexLabel)
 
         titleLabel.numberOfLines = 0

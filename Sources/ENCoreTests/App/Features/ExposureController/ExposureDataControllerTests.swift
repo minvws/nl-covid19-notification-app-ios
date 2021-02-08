@@ -299,9 +299,11 @@ final class ExposureDataControllerTests: TestCase {
             expectation?.fulfill()
             return .empty()
         }
-        mockOperationProvider.processExposureKeySetsOperationHandler = { _, _ in
+
+        mockOperationProvider.processExposureKeySetsOperationHandler = { _, _, _ in
             operationMock
         }
+
         return operationMock
     }
 

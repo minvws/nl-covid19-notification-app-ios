@@ -31,12 +31,14 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     // MARK: - ExposureDataOperationProvider
 
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
+                                         exposureDataController: ExposureDataController,
                                          configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol {
 
         return ProcessExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    exposureManager: exposureManager,
                                                    localPathProvider: localPathProvider,
+                                                   exposureDataController: exposureDataController,
                                                    configuration: configuration,
                                                    userNotificationCenter: userNotificationCenter,
                                                    application: application,

@@ -58,11 +58,18 @@ struct ExposureDataStorageKey {
                                                                      storeType: .insecure(volatile: false))
     static let lastDecoyProcessDate = CodableStorageKey<Date>(name: "lastDecoyProcessDate",
                                                               storeType: .insecure(volatile: false))
+    static let pauseEndDate = CodableStorageKey<Date>(name: "pauseEndDate",
+                                                      storeType: .insecure(volatile: false))
+    static let hidePauseInformation = CodableStorageKey<Bool>(name: "hidePauseInformation",
+                                                              storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
 
     private(set) var isFirstRun: Bool = false
+    private lazy var pauseEndDateSubject = BehaviorSubject<Date?>(value: pauseEndDate)
+
+    private lazy var lastExposureProcessingDateSubject = BehaviorSubject<Date?>(value: lastSuccessfulExposureProcessingDate)
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling,
@@ -104,10 +111,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     var lastLocalNotificationExposureDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate)
-    }
-
-    var lastSuccessfulProcessingDate: Date? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
     }
 
     var lastENStatusCheckDate: Date? {
@@ -158,8 +161,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
             .flatMapCompletable { configuration in
-                return self.operationProvider
-                    .processExposureKeySetsOperation(exposureManager: exposureManager, configuration: configuration)
+                self.operationProvider
+                    .processExposureKeySetsOperation(exposureManager: exposureManager, exposureDataController: self, configuration: configuration)
                     .execute()
             }
     }
@@ -247,6 +250,50 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
 
+    var isAppPaused: Bool {
+        pauseEndDate != nil
+    }
+
+    var pauseEndDateObservable: Observable<Date?> {
+        return pauseEndDateSubject
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .subscribe(on: MainScheduler.instance)
+    }
+
+    var pauseEndDate: Date? {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pauseEndDate)
+        } set {
+
+            if let newDate = newValue {
+                self.storageController.requestExclusiveAccess { storageController in
+                    storageController.store(
+                        object: newDate,
+                        identifiedBy: ExposureDataStorageKey.pauseEndDate,
+                        completion: { _ in
+                            self.pauseEndDateSubject.onNext(newDate)
+                        }
+                    )
+                }
+            } else {
+                storageController.removeData(for: ExposureDataStorageKey.pauseEndDate, completion: { _ in
+                    self.pauseEndDateSubject.onNext(newValue)
+                })
+            }
+        }
+    }
+
+    var hidePauseInformation: Bool {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.hidePauseInformation) ?? false
+        } set {
+            storageController.store(object: newValue,
+                                    identifiedBy: ExposureDataStorageKey.hidePauseInformation,
+                                    completion: { _ in })
+        }
+    }
+
     func updateLastLocalNotificationExposureDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
     }
@@ -278,6 +325,30 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .map { applicationConfiguration in
                 return applicationConfiguration.appointmentPhoneNumber
             }
+    }
+
+    var lastSuccessfulExposureProcessingDateObservable: Observable<Date?> {
+        return lastExposureProcessingDateSubject
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .subscribe(on: MainScheduler.instance)
+    }
+
+    var lastSuccessfulExposureProcessingDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
+    }
+
+    func updateLastSuccessfulExposureProcessingDate(_ date: Date) {
+
+        storageController.requestExclusiveAccess { storageController in
+            storageController.store(
+                object: date,
+                identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
+                completion: { _ in
+                    self.lastExposureProcessingDateSubject.onNext(date)
+                }
+            )
+        }
     }
 
     // MARK: - Private

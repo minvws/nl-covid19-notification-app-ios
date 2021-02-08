@@ -30,6 +30,7 @@ final class RootRouterTests: XCTestCase {
     private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
     private let mockEnvironmentController = EnvironmentControllingMock()
     private let updateOperatingSystemBuilder = UpdateOperatingSystemBuildableMock()
+    private var mockPauseController: PauseControllingMock!
 
     private var router: RootRouter!
 
@@ -37,6 +38,8 @@ final class RootRouterTests: XCTestCase {
         super.setUp()
 
         mockEnvironmentController.supportsExposureNotification = true
+
+        mockPauseController = PauseControllingMock()
 
         exposureController.isAppDeactivatedHandler = {
             .just(false)
@@ -81,7 +84,8 @@ final class RootRouterTests: XCTestCase {
                             webviewBuilder: webviewBuilder,
                             userNotificationCenter: userNotificationCenter,
                             currentAppVersion: "1.0",
-                            environmentController: mockEnvironmentController)
+                            environmentController: mockEnvironmentController,
+                            pauseController: mockPauseController)
         set(activeState: .notAuthorized)
     }
 

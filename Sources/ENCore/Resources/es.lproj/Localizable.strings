@@ -9,17 +9,36 @@
 "update.software.os.detail.step1" = "Abre los <b>Ajustes</b> de tu teléfono";
 "update.software.os.detail.step2" = "Ve a \"General\"";
 "update.software.os.detail.step3" = "Ve a \"Actualización de software\"";
-"update.software.os.detail.step4" = "Elige \"Descargar e instalar\"";
 "update.button.update" = "Actualizar";
 
+"update.software.os.detail.step4" = "Elige \"Descargar e instalar\"";
+/* MARK: - MoreInformation | Last TEK Processing Date */
 
-"moreInformation.cell.settings.title" = "Ajustes";
-"moreInformation.cell.settings.subtitle" = "Ajusta el uso de datos móviles";
+"moreInformation.lastTEKProcessingDateInformation.withDate" = "CoronaMelder mantiene un registro continuo de encuentros. La app también comprueba cada par de horas si alguien con quien te has encontrado estaba contagiado en ese momento. Recibirás una notificación si ese es el caso. La última comprobación se realizó el %@";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "CoronaMelder mantiene un registro continuo de encuentros. La app también comprueba cada par de horas si alguien con quien te has encontrado estaba contagiado en ese momento. Recibirás una notificación si ese es el caso.";
 
 /* MARK: - MoreInformation | Settings */
-
+"moreInformation.cell.settings.title" = "Ajustes";
+"moreInformation.cell.settings.subtitle" = "Pausar la app y ajustar los datos móviles";
+/* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Ajustes";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Solo controlar los códigos mediante wifi";
 "moreInformation.settings.description" = "CoronaMelder comprueba un par de veces al día si has estado cerca de alguien con coronavirus. Si desactivas tus datos, la app solo funcionará si utilizas wifi. Se seguirán registrando tus encuentros incluso si no tienes conexión a internet.";
+"moreInformation.settings.mobiledata.button" = "Abrir ajustes de datos móviles";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "Pausar la app";
+"moreInformation.settings.pause.subtitle" = "¿Estás seguro/a de que quieres pausar la app?";
+"moreInformation.settings.pause.description" = "Mientras está en pausa, la app dejará de registrar temporalmente los encuentros con otros usuarios de la app. Tampoco recibirás una notificación si una persona con la que tuviste contacto resultó tener coronavirus. \n\nPausa la app solo en situaciones en las que los teléfonos están cerca pero no hay riesgo de contacto como, por ejemplo, al usar equipos de protección médicos.";
+"moreInformation.settings.pause.description.short" = "Si pausas la app, dejarán de registrarse temporalmente tus encuentros. Tampoco recibirás una notificación si una persona con la que tuviste contacto resultó tener coronavirus. Una vez se acaba la pausa, recibirás inmediatamente una notificación para volver a activar la app.";
+"moreInformation.settings.pause.dontshowscreen" = "No volver a mostrar esta pantalla";
+"moreInformation.settings.pause.yesbutton" = "Sí, pausarla";
+"moreInformation.settings.pause.cancelbutton" = "No, no pausarla";
+"moreInformation.settings.pause.pausebutton" = "Pausar la app";
+"moreInformation.settings.pause.enableappbutton" = "Activar la app";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "Ajustes de datos móviles";
 "moreInformation.settings.step1" = "Abre los <b>Ajustes</b> de tu teléfono pulsando el siguiente botón";
 "moreInformation.settings.step2" = "Activar o desactivar datos móviles para CoronaMelder";
 "moreInformation.settings.step2.row.title" = "Datos móviles";
@@ -75,6 +94,7 @@
 "status.icon.accessibility.ok" = "Círculo verde con una marca que indica que la app está ajustada correctamente";
 "status.icon.accessibility.inactive" = "Círculo amarillo con signo de exclamación como aviso";
 "status.icon.accessibility.notified" = "Círculo rojo con campana de alerta que indica que hay que reaccionar urgentemente";
+"status.icon.accessibility.paused" = "Círculo gris con símbolo de pausa que indica que la app está pausada";
 "status.notified.today" = "hoy";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -263,7 +283,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.other_what_does_report_say.content2" = "La notificación aparece en el centro de notificaciones, como hacen los mensajes de otras apps. La notificación tiene el símbolo de CoronaMelder.<br><br>¿Has recibido una notificación? Abre CoronaMelder y lee lo que tienes que hacer.";
 
 "help.pause_app.title" = "¿Puedo pausar la app?";
-"help.pause_app.description" = "Sí, puedes hacer esto desactivando Bluetooth. Ve a <b>Ajustes > Bluetooth</b>. Atención: la app no se pausará si desactivas Bluetooth en el centro de control. Si desactivas Bluetooth, la app dejará de compartir códigos. Después, recibirás un recordatorio para volver a activar la app cada 24 horas.<br><br>Aun así, no se recomienda pausar la app, ya que quizá se te olvide volver a activarla. Puedes pausar la app en situaciones determinadas, como, por ejemplo, si vas a estar cerca de posibles pacientes con coronavirus pero estás seguro de que llevas un equipo de protección individual.";
+"help.pause_app.description" = "Sí, puedes pausar temporalmente la app. En la página de inicio, selecciona <b>Ajustes > Pausar la app </b>. Si pones en pausa la app, dejará de registrar temporalmente los encuentros. Tampoco recibirás notificaciones si has estado cerca de alguien que más tarde resultó tener coronavirus.<br><br>Una vez pasado el periodo de pausa, recibirás directamente una notificación para volver a activar la app. Cuando hayas activado la app, puede que recibas notificaciones de encuentros que ocurrieron antes de que pausaras la app.<br><br>No se recomienda pausar la app, ya que quizá se te olvide volver a activarla. Puedes pausar la app en situaciones determinadas, como, por ejemplo, si vas a estar cerca de posibles pacientes con coronavirus pero estás seguro de que llevas puesto un equipo de protección individual.";
 
 "help.apps_other_countries.title" = "¿Funciona CoronaMelder también con las apps de otros países?";
 "help.apps_other_countries.description" = "CoronaMelder está cooperando con algunas apps de otros países europeos, como Italia, Irlanda y Alemania.<br><br>Por ejemplo, imagínate que has estado cerca de un usuario de la app alemana Corona-Warn-App durante mucho tiempo. Esta persona se hace un test en Alemania y resulta que tiene el coronavirus. Si esta persona comparte sus códigos con el servicio de salud alemán, entonces recibirás una notificación mediante CoronaMelder, y viceversa. Las apps colaboran entre sí, así que solo necesitas descargarte una.<br><br>CoronaMelder controlará diariamente a partir del 30 de noviembre de 2020 los códigos de usuarios de distintos países. Para ello, la app utiliza más datos móviles que antes. Puedes configurar la app con los <b>Ajustes</b> en la pantalla principal para que la app solo compruebe mediante wifi si has estado cerca de alguien con coronavirus.";
@@ -307,6 +327,15 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.notified.description" = "El %@ (%@) corriste riesgo de contagio";
 "status.notified.moreInfo" = "¿Qué puedo hacer ahora?";
 "status.notified.removeNotification" = "Eliminar notificación";
+
+/* MARK: - Paused Status */
+"status.paused.title" = "La app está en pausa";
+"status.pause.ended.title" = "Volver a activar la app";
+"status.appState.card.paused.title" = "La app está en pausa";
+"status.paused.countdown" = "Recibirás en %@ una notificación para volver a activar la app.";
+"status.paused.manualunpause" = "La app todavía no está activada. Debes activarla tú mismo.";
+"status.card.manualunpause.title" = "Volver a activar la app";
+"status.card.manualunpause.description" = "La app todavía no está activada. Debes activarla tú mismo.";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Más información";
@@ -417,6 +446,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 
 "moreInformation.status.alarm.alt-text" = "Pantalla roja con campana de alerta que indica que hay que reaccionar urgentemente";
 
+"moreInformation.latestTekUpdate" = "CoronaMelder mantiene un registro continuo de encuentros. La app también comprueba cada par de horas si alguien con quien te has encontrado estaba contagiado en ese momento. Recibirás una notificación si ese es el caso. La última comprobación se realizó el %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "La app <u>no</u> está activada";
 "cards.exposureOff.content" = "Activa los ajustes que la app necesita para funcionar.";
@@ -487,3 +517,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 
 "notification.update_required.title" = "Necesita actualizarse";
 "notification.update_required.description" = "Hay una nueva versión de CoronaMelder. Esta versión ya no funciona bien. Consulta la app para más información.";
+
+"notification.app.unpaused.title" = "Volver a activar CoronaMelder";
+"notification.app.unpaused.description" = "La app vuelve a estar activada. A partir de ahora, se registrarán tus encuentros.";
+"notification.app.unpaused.manualunpause.description" = "Atención: la app aún no está activada. Tienes que activarla tú mismo en la app.";

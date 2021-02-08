@@ -183,7 +183,13 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.toggleDailyLimit() }),
                 DeveloperItem(title: "Fetch TEKs using Test function",
                               subtitle: "Only works with test entitlements, currently set: \(getUseTestDiagnosisKeys())",
-                              action: { [weak self] in self?.toggleGetTestDiagnosisKeys() })
+                              action: { [weak self] in self?.toggleGetTestDiagnosisKeys() }),
+                DeveloperItem(title: "Schedule pause time in minutes instead of hours",
+                              subtitle: "Currently set to: \(getPauseUnit())",
+                              action: { [weak self] in self?.togglePauseTimeUnit() }),
+                DeveloperItem(title: "Download latest Treatment Perspective",
+                              subtitle: "",
+                              action: { [weak self] in self?.downloadLatestTreatmentPerspective() })
             ]),
             ("Storage", [
                 DeveloperItem(title: "Erase Local Storage",
@@ -287,6 +293,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         present(actionItems: actionItems, title: "Update Network Configuration")
     }
 
+    private func downloadLatestTreatmentPerspective() {
+        exposureController
+            .updateTreatmentPerspective()
+            .subscribe(onCompleted: { [weak self] in
+                self?.internalView.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
+
     private func eraseCompleteStorage() {
         removeLastExposure()
         removeAllExposureKeySets()
@@ -301,6 +316,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.seenAnnouncements, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.treatmentPerspective, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.hidePauseInformation, completion: { _ in })
     }
 
     private func uploadKeys() {
@@ -429,6 +445,12 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         #endif
     }
 
+    private func togglePauseTimeUnit() {
+        #if DEBUG || USE_DEVELOPER_MENU
+            PauseOverrides.useMinutesInsteadOfHours.toggle()
+        #endif
+    }
+
     // MARK: - Private
 
     private func getUseTestDiagnosisKeys() -> String {
@@ -448,6 +470,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
         #else
             return "None"
+        #endif
+    }
+
+    private func getPauseUnit() -> String {
+
+        #if DEBUG || USE_DEVELOPER_MENU
+            return PauseOverrides.useMinutesInsteadOfHours ? "minutes" : "hours"
+        #else
+            return "hours"
         #endif
     }
 
@@ -769,6 +800,8 @@ private extension ExposureActiveState {
             return "Not Authorised"
         case let .inactive(inactiveState):
             switch inactiveState {
+            case .paused:
+                return "Inactive - Paused"
             case .bluetoothOff:
                 return "Inactive - Bluetooth off"
             case .disabled:
