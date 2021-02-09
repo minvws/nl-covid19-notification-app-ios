@@ -49,7 +49,7 @@ final class RootRouterTests: XCTestCase {
             .just(AppUpdateInformation(shouldUpdate: false, versionInformation: nil))
         }
 
-        exposureController.activateHandler = { _ in
+        exposureController.activateHandler = {
             .empty()
         }
 

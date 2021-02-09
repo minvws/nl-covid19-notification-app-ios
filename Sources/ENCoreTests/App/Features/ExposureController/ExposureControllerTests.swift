@@ -57,30 +57,27 @@ final class ExposureControllerTests: TestCase {
         }
     }
 
-    func test_activate_activesAndDoesntUpdatesStream() {
+    func test_activate_shouldCallActivate() {
         exposureManager.activateHandler = { completion in completion(.active) }
 
         XCTAssertEqual(exposureManager.activateCallCount, 0)
-        XCTAssertEqual(mutableStateStream.updateCallCount, 0)
 
-        controller.activate(inBackgroundMode: false)
+        controller.activate()
             .subscribe()
             .disposed(by: disposeBag)
 
         XCTAssertEqual(exposureManager.activateCallCount, 1)
-        XCTAssert(mutableStateStream.updateCallCount > 1)
     }
 
     func test_activate_activesAndUpdatesStream_inBackground() {
         exposureManager.activateHandler = { completion in completion(.active) }
 
         XCTAssertEqual(exposureManager.activateCallCount, 0)
-        XCTAssertEqual(mutableStateStream.updateCallCount, 0)
 
         let exp = XCTestExpectation(description: "")
 
         controller
-            .activate(inBackgroundMode: true)
+            .activate()
             .subscribe(onCompleted: {
                 exp.fulfill()
             })
@@ -89,7 +86,6 @@ final class ExposureControllerTests: TestCase {
         wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(exposureManager.activateCallCount, 1)
-        XCTAssertEqual(mutableStateStream.updateCallCount, 1)
     }
 
     func test_deactive_callsDeactivate() {
@@ -107,7 +103,7 @@ final class ExposureControllerTests: TestCase {
         let exp = XCTestExpectation(description: "")
 
         controller
-            .activate(inBackgroundMode: false)
+            .activate()
             .subscribe(onCompleted: {
                 exp.fulfill()
             })
@@ -116,7 +112,6 @@ final class ExposureControllerTests: TestCase {
         wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 0)
-        XCTAssert(mutableStateStream.updateCallCount > 1)
     }
 
     func test_activate_isExposureNotificationDisabled() {
@@ -127,7 +122,7 @@ final class ExposureControllerTests: TestCase {
         let exp = XCTestExpectation(description: "")
 
         controller
-            .activate(inBackgroundMode: false)
+            .activate()
             .subscribe(onCompleted: {
                 exp.fulfill()
             })
@@ -135,7 +130,6 @@ final class ExposureControllerTests: TestCase {
         wait(for: [exp], timeout: 1)
 
         XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
-        XCTAssert(mutableStateStream.updateCallCount > 1)
     }
 
     func test_requestExposureNotificationPermission_callsManager_updatesStream() {
@@ -168,12 +162,10 @@ final class ExposureControllerTests: TestCase {
         }
 
         XCTAssertEqual(dataController.removeLastExposureCallCount, 0)
-        XCTAssertEqual(mutableStateStream.updateCallCount, 4)
 
         controller.confirmExposureNotification()
 
         XCTAssertEqual(dataController.removeLastExposureCallCount, 1)
-        XCTAssertEqual(mutableStateStream.updateCallCount, 5)
     }
 
     func test_managerIsActive_updatesStreamWithActive() {
@@ -470,27 +462,13 @@ final class ExposureControllerTests: TestCase {
         exposureManager.isExposureNotificationEnabledHandler = { true }
         exposureManager.activateHandler = { $0(.active) }
 
-        controller.activate(inBackgroundMode: false)
+        controller.activate()
             .subscribe()
             .disposed(by: disposeBag)
 
         controller.refreshStatus()
 
         XCTAssertEqual(mutableStateStream.currentExposureState?.activeState, .inactive(.noRecentNotificationUpdates))
-    }
-
-    func test_updatesAndFetches_afterInitialActiveState() {
-        exposureManager.getExposureNotificationStatusHandler = { .active }
-        exposureManager.activateHandler = { $0(.active) }
-
-        controller.activate(inBackgroundMode: false)
-            .subscribe()
-            .disposed(by: disposeBag)
-
-        mutableStateStream.update(state: .init(notifiedState: .notNotified, activeState: .active))
-        mutableStateStream.exposureState = .just(.init(notifiedState: .notNotified, activeState: .active))
-
-        XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 1)
     }
 
     func test_updateAndProcessPendingUploads() {
@@ -760,7 +738,7 @@ final class ExposureControllerTests: TestCase {
 
     private func activate() {
         setupActivation()
-        controller.activate(inBackgroundMode: false)
+        controller.activate()
             .subscribe()
             .disposed(by: disposeBag)
     }

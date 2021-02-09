@@ -49,7 +49,7 @@ final class BackgroundControllerTests: XCTestCase {
         exposureManager.getExposureNotificationStatusHandler = {
             return .active
         }
-        exposureController.activateHandler = { _ in
+        exposureController.activateHandler = {
             return .empty()
         }
         exposureController.updateWhenRequiredHandler = {
