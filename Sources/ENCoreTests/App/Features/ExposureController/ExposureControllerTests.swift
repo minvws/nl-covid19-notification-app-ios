@@ -69,6 +69,22 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(exposureManager.activateCallCount, 1)
     }
 
+    func test_activate_shouldNotBePerformedTwice() {
+        exposureManager.activateHandler = { completion in completion(.active) }
+
+        XCTAssertEqual(exposureManager.activateCallCount, 0)
+
+        controller.activate()
+            .subscribe()
+            .disposed(by: disposeBag)
+
+        controller.activate()
+            .subscribe()
+            .disposed(by: disposeBag)
+
+        XCTAssertEqual(exposureManager.activateCallCount, 1)
+    }
+
     func test_activate_activesAndUpdatesStream_inBackground() {
         exposureManager.activateHandler = { completion in completion(.active) }
 
@@ -648,6 +664,36 @@ final class ExposureControllerTests: TestCase {
         }
 
         waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    // MARK: - postExposureManagerActivation
+
+    func test_postExposureManagerActivation_shouldUpdateStatusStream() {
+
+        networkStatusStream.networkReachable = true
+        let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
+        mutableStateStream.exposureState = stream
+
+        exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in
+            completion(.success(()))
+        }
+        exposureManager.activateHandler = { completion in
+            completion(.active)
+        }
+        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.authorized)
+        }
+
+        controller.activate()
+            .subscribe(onCompleted: {
+                self.controller.postExposureManagerActivation()
+            })
+            .disposed(by: disposeBag)
+
+        stream.onNext(.init(notifiedState: .notNotified, activeState: .active))
+
+        XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
+        XCTAssertEqual(mutableStateStream.updateArgValues.last?.activeState, .active)
     }
 
     // MARK: - Pausing

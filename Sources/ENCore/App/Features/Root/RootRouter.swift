@@ -449,7 +449,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 strongSelf.exposureController.activate()
                     .subscribe(onCompleted: {
                         strongSelf.exposureController.postExposureManagerActivation()
-                        strongSelf.exposureController.updateStatusStream()
                         strongSelf.backgroundController.performDecoySequenceIfNeeded()
                     })
                     .disposed(by: strongSelf.disposeBag)
@@ -474,7 +473,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     self?.exposureController.activate()
                         .subscribe(onCompleted: {
                             strongSelf.exposureController.postExposureManagerActivation()
-                            strongSelf.exposureController.updateStatusStream()
                         })
                         .disposed(by: strongSelf.disposeBag)
                 }
