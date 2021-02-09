@@ -17,8 +17,10 @@ protocol ExposureControlling: AnyObject {
     // MARK: - Setup
 
     @discardableResult
-    func activate(inBackgroundMode: Bool) -> Completable
+    func activate() -> Completable
     func deactivate()
+    func postExposureManagerActivation()
+    func updateStatusStream()
 
     func pause(untilDate date: Date)
     func unpause()

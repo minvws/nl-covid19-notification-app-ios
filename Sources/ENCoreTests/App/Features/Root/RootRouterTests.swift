@@ -49,7 +49,7 @@ final class RootRouterTests: XCTestCase {
             .just(AppUpdateInformation(shouldUpdate: false, versionInformation: nil))
         }
 
-        exposureController.activateHandler = { _ in
+        exposureController.activateHandler = {
             .empty()
         }
 
@@ -210,10 +210,14 @@ final class RootRouterTests: XCTestCase {
 
     func test_start_activatesExposureController() {
         XCTAssertEqual(exposureController.activateCallCount, 0)
+        XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 0)
+        XCTAssertEqual(backgroundController.performDecoySequenceIfNeededCallCount, 0)
 
         router.start()
 
         XCTAssertEqual(exposureController.activateCallCount, 1)
+        XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 1)
+        XCTAssertEqual(backgroundController.performDecoySequenceIfNeededCallCount, 1)
     }
 
     func test_callWebviewTwice_doesNotPresentTwice() {
@@ -290,6 +294,27 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(exposureController.deactivateCallCount, 1)
         XCTAssertEqual(endOfLifeBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.presentInNavigationControllerCallCount, 1)
+    }
+
+    func test_didBecomeActive_shouldAlsoPerformForegroundActionsOniOS12() {
+
+        mockEnvironmentController.isiOS12 = true
+        exposureController.updateWhenRequiredHandler = {
+            .empty()
+        }
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
+
+        router.start()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
+
+        router.didBecomeActive()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 2)
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
     }
 
     func test_didEnterForeground_startsObservingNetworkReachability() {

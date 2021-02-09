@@ -31,6 +31,7 @@ import UIKit
     public func attach(toWindow window: UIWindow) {
         logDebug("`attach` \(ENAppRoot.version)")
         guard appEntryPoint == nil else {
+            logDebug("ENAppRoot - appEntryPoint already attached")
             return
         }
 
@@ -43,7 +44,11 @@ import UIKit
     @objc
     public func start() {
         logDebug("`start` \(ENAppRoot.version)")
-        appEntryPoint?.start()
+        guard let appEntryPoint = appEntryPoint else {
+            logError("ENAppRoot - start - appEntryPoint not initialized")
+            return
+        }
+        appEntryPoint.start()
     }
 
     @objc
@@ -66,19 +71,31 @@ import UIKit
     @objc
     public func didBecomeActive() {
         logDebug("`didBecomeActive` \(ENAppRoot.version)")
-        appEntryPoint?.didBecomeActive()
+        guard let appEntryPoint = appEntryPoint else {
+            logError("ENAppRoot - didBecomeActive - appEntryPoint not initialized")
+            return
+        }
+        appEntryPoint.didBecomeActive()
     }
 
     @objc
     public func didEnterForeground() {
         logDebug("`didEnterForeground` \(ENAppRoot.version)")
-        appEntryPoint?.didEnterForeground()
+        guard let appEntryPoint = appEntryPoint else {
+            logError("ENAppRoot - didEnterForeground - appEntryPoint not initialized")
+            return
+        }
+        appEntryPoint.didEnterForeground()
     }
 
     @objc
     public func didEnterBackground() {
         logDebug("`didEnterBackground` \(ENAppRoot.version)")
-        appEntryPoint?.didEnterBackground()
+        guard let appEntryPoint = appEntryPoint else {
+            logError("ENAppRoot - didEnterBackground - appEntryPoint not initialized")
+            return
+        }
+        appEntryPoint.didEnterBackground()
     }
 
     @objc

@@ -104,8 +104,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             return
         }
 
-        LogHandler.setup()
-
         if !environmentController.supportsExposureNotification {
             routeToUpdateOperatingSystem(animated: false)
             logDebug("RootRouter - doesn't support EN")
@@ -194,6 +192,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController.clearUnseenExposureNotificationDate()
 
         userNotificationCenter.removeNotificationsFromNotificationsCenter()
+
+        // On iOS 12 the app is not informed of entering the foreground on startup, call didEnterForeground manually
+        if environmentController.isiOS12 {
+            didEnterForeground()
+        }
     }
 
     func didEnterForeground() {
@@ -443,11 +446,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
-                self?.exposureController.activate(inBackgroundMode: false)
-                    .subscribe()
+                strongSelf.exposureController.activate()
+                    .subscribe(onCompleted: {
+                        strongSelf.exposureController.postExposureManagerActivation()
+                        strongSelf.backgroundController.performDecoySequenceIfNeeded()
+                    })
                     .disposed(by: strongSelf.disposeBag)
-
-                self?.backgroundController.performDecoySequenceIfNeeded()
 
                 completion?(false)
 
@@ -466,8 +470,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                         return
                     }
 
-                    self?.exposureController.activate(inBackgroundMode: false)
-                        .subscribe()
+                    self?.exposureController.activate()
+                        .subscribe(onCompleted: {
+                            strongSelf.exposureController.postExposureManagerActivation()
+                        })
                         .disposed(by: strongSelf.disposeBag)
                 }
 

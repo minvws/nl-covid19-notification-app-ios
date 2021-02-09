@@ -55,7 +55,7 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     @discardableResult
-    func activate(inBackgroundMode: Bool) -> Completable {
+    func activate() -> Completable {
         logDebug("Request EN framework activation")
 
         guard isActivated == false else {
@@ -64,27 +64,26 @@ final class ExposureController: ExposureControlling, Logging {
             return .empty()
         }
 
-        // Don't activate EN if we're in a paused state, just update the status
+        // Don't activate EN if we're in a paused state
         guard !dataController.isAppPaused else {
-            updateStatusStream()
             return .empty()
         }
 
-        return .create { (observer) -> Disposable in
+        if let existingCompletable = activationCompletable {
+            logDebug("Already activating")
+            return existingCompletable
+        }
+
+        let observable = Observable<Never>.create { (observer) -> Disposable in
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
-                self.exposureManager.activate { _ in
-                    self.isActivated = true
-                    self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
+                self.exposureManager.activate { error in
 
-                    func postActivation() {
-                        self.logDebug("started `postActivation`")
-                        if inBackgroundMode == false {
-                            self.postExposureManagerActivation()
-                        }
-                        self.updateStatusStream()
-                        observer(.completed)
-                    }
+                    self.logDebug("result from EN Activation: \(error)")
+
+                    self.isActivated = true
+
+                    self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
 
                     if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled(), self.didCompleteOnboarding {
                         self.logDebug("Calling `setExposureNotificationEnabled`")
@@ -94,16 +93,30 @@ final class ExposureController: ExposureControlling, Logging {
                             } else {
                                 self.logDebug("Returned from `setExposureNotificationEnabled` (success)")
                             }
-                            postActivation()
+
+                            observer.onCompleted()
                         }
                     } else {
-                        postActivation()
+                        observer.onCompleted()
                     }
                 }
             }
 
             return Disposables.create()
         }
+
+        let completable = observable
+//            .share()
+            .do(onError: { [weak self] _ in
+                self?.activationCompletable = nil
+            }, onCompleted: { [weak self] in
+                self?.activationCompletable = nil
+            })
+            .asCompletable()
+
+        activationCompletable = completable
+
+        return completable
     }
 
     func deactivate() {
@@ -128,9 +141,12 @@ final class ExposureController: ExposureControlling, Logging {
             strongSelf.dataController.pauseEndDate = nil
 
             if strongSelf.isActivated == false {
-                strongSelf.activate(inBackgroundMode: false)
-                    .subscribe()
+                strongSelf.activate()
+                    .subscribe(onCompleted: {
+                        strongSelf.updateStatusStream()
+                    })
                     .disposed(by: strongSelf.disposeBag)
+
             } else {
                 // Update the status (will remove the paused state from the UI)
                 strongSelf.updateStatusStream()
@@ -244,29 +260,26 @@ final class ExposureController: ExposureControlling, Logging {
 
     func fetchAndProcessExposureKeySets() -> Completable {
         logDebug("fetchAndProcessExposureKeySets started")
-        if let exposureKeyUpdateStream = exposureKeyUpdateStream {
+        if let existingCompletable = keysetFetchProcessCompletable {
             logDebug("Already fetching")
-            // already fetching
-            return exposureKeyUpdateStream
+            return existingCompletable
         }
 
-        let stream = dataController
+        let completable = dataController
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
+            .do(onError: { [weak self] error in
+                self?.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
+                self?.updateStatusStream()
+                self?.keysetFetchProcessCompletable = nil
+            }, onCompleted: { [weak self] in
+                self?.logDebug("fetchAndProcessExposureKeySets Completed successfuly")
+                self?.updateStatusStream()
+                self?.keysetFetchProcessCompletable = nil
+            })
 
-        stream.subscribe(onCompleted: {
-            self.logDebug("fetchAndProcessExposureKeySets Completed successfuly")
-            self.updateStatusStream()
-            self.exposureKeyUpdateStream = nil
-        }, onError: { error in
-            self.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
-            self.updateStatusStream()
-            self.exposureKeyUpdateStream = nil
-        })
-            .disposed(by: disposeBag)
+        keysetFetchProcessCompletable = completable
 
-        exposureKeyUpdateStream = stream
-
-        return stream
+        return completable
     }
 
     func confirmExposureNotification() {
@@ -568,7 +581,7 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    private func postExposureManagerActivation() {
+    func postExposureManagerActivation() {
         logDebug("`postExposureManagerActivation`")
 
         mutableStateStream
@@ -608,7 +621,7 @@ final class ExposureController: ExposureControlling, Logging {
             .disposed(by: disposeBag)
     }
 
-    private func updateStatusStream() {
+    func updateStatusStream() {
 
         if let pauseEndDate = dataController.pauseEndDate {
             mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused(pauseEndDate))))
@@ -754,12 +767,13 @@ final class ExposureController: ExposureControlling, Logging {
     var exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling
     private var disposeBag = DisposeBag()
-    private var exposureKeyUpdateStream: Completable?
+    private var keysetFetchProcessCompletable: Completable?
     private let networkStatusStream: NetworkStatusStreaming
     private var isActivated = false
     private var isPushNotificationsEnabled = false
     private let userNotificationCenter: UserNotificationCenter
     private var updateStream: Completable?
+    private var activationCompletable: Completable?
     private let currentAppVersion: String
 }
 
