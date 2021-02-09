@@ -17,6 +17,8 @@ protocol ENManaging {
                          diagnosisKeyURLs: [URL],
                          completionHandler: @escaping ENDetectExposuresHandler) -> Progress
 
+    func getExposureWindows(summary: ENExposureDetectionSummary, completionHandler: @escaping ENGetExposureWindowsHandler) -> Progress
+
     func getDiagnosisKeys(completionHandler: @escaping ENGetDiagnosisKeysHandler)
     func getTestDiagnosisKeys(completionHandler: @escaping ENGetDiagnosisKeysHandler)
 
@@ -37,10 +39,17 @@ extension ENManager: ENManaging {}
 
 extension ENExposureDetectionSummary: ExposureDetectionSummary {}
 extension ENExposureInfo: ExposureInformation {}
+extension ENExposureWindow: ExposureWindow {}
 
 extension ExposureConfiguration {
     var asExposureConfiguration: ENExposureConfiguration {
         return DefaultExposureConfiguration(exposureConfiguration: self)
+    }
+}
+
+extension ExposureDetectionSummary {
+    var asENExposureDetectionSummary: ENExposureDetectionSummary {
+        return ENExposureDetectionSummary()
     }
 }
 

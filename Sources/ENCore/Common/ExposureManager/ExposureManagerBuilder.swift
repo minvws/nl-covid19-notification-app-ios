@@ -35,7 +35,7 @@ enum ExposureManagerError: Error {
     case internalTypeMismatch // programmers error
 }
 
-/// @mockable(history: detectExposures = true)
+/// @mockable(history: detectExposures = true; getExposureWindows = true)
 protocol ExposureManaging {
 
     var authorizationStatus: ENAuthorizationStatus { get }
@@ -55,6 +55,9 @@ protocol ExposureManaging {
     func detectExposures(configuration: ExposureConfiguration,
                          diagnosisKeyURLs: [URL],
                          completion: @escaping (Result<ExposureDetectionSummary?, ExposureManagerError>) -> ())
+
+    /// Gets info about each exposure window from the summary provided when exposure detection completes.
+    func getExposureWindows(summary: ExposureDetectionSummary, completion: @escaping (Result<[ExposureWindow]?, ExposureManagerError>) -> ())
 
     /// Returns this device's diagnosis keys
     func getDiagnosisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ())

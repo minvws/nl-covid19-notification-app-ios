@@ -94,6 +94,28 @@ final class ExposureManager: ExposureManaging, Logging {
         .resume()
     }
 
+    func getExposureWindows(summary: ExposureDetectionSummary, completion: @escaping (Result<[ExposureWindow]?, ExposureManagerError>) -> ()) {
+
+        #if DEBUG
+            assert(Thread.isMainThread)
+        #endif
+
+        manager.getExposureWindows(summary: summary.asENExposureDetectionSummary) { windows, error in
+            if let error = error.map({ $0.asExposureManagerError }) {
+                completion(.failure(error))
+                return
+            }
+
+            guard let windows = windows else {
+                // call to api success - no exposure windows
+                completion(.success(nil))
+                return
+            }
+
+            completion(.success(windows))
+        }.resume()
+    }
+
     func getDiagnosisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
         #if DEBUG
             assert(Thread.isMainThread)
