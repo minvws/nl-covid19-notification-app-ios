@@ -309,11 +309,11 @@ final class BackgroundController: BackgroundControlling, Logging {
             activateExposureController(),
             updateStatusStream(),
             fetchAndProcessKeysets(),
-            processUpdate(),
-            processENStatusCheck(),
-            appUpdateRequiredCheck(),
+            processPendingUploads(),
+            sendInactiveFrameworkNotificationIfNeeded(),
+            sendNotificationIfAppShouldUpdate(),
             updateTreatmentPerspective(),
-            processLastOpenedNotificationCheck(),
+            sendExposureReminderNotificationIfNeeded(),
             processDecoyRegisterAndStopKeys()
         ]
 
@@ -385,7 +385,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             }
     }
 
-    private func processUpdate() -> Completable {
+    private func processPendingUploads() -> Completable {
         logDebug("BackgroundTask: Process Update Function Called")
         return exposureController
             .updateAndProcessPendingUploads()
@@ -398,7 +398,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             }
     }
 
-    private func processENStatusCheck() -> Completable {
+    private func sendInactiveFrameworkNotificationIfNeeded() -> Completable {
         logDebug("BackgroundTask: Exposure Notification Status Check Function Called")
         return exposureController
             .exposureNotificationStatusCheck()
@@ -411,7 +411,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             }
     }
 
-    private func appUpdateRequiredCheck() -> Completable {
+    private func sendNotificationIfAppShouldUpdate() -> Completable {
         logDebug("BackgroundTask: App Update Required Check Function Called")
         return exposureController
             .sendNotificationIfAppShouldUpdate()
@@ -437,7 +437,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             }
     }
 
-    private func processLastOpenedNotificationCheck() -> Completable {
+    private func sendExposureReminderNotificationIfNeeded() -> Completable {
         logDebug("BackgroundTask: Process Last Opened Notification Check Called")
         return exposureController.lastOpenedNotificationCheck()
             .do { error in
