@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import RxSwift
 import SafariServices
@@ -48,9 +47,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         hasBottomMargin = true
         title = .moreInformationRequestTestTitle
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 
@@ -82,16 +79,16 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
 
         dataController
             .getAppointmentPhoneNumber()
-            .sink(
-                receiveCompletion: { result in },
-                receiveValue: { (exposedPhoneNumber: String) in
-                    self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
-                })
-            .store(in: &disposeBag)
+            .subscribe(onSuccess: { exposedPhoneNumber in
+                self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
+            }, onFailure: { _ in
+                self.testPhoneNumber = self.isExposed ? .coronaTestExposedPhoneNumber : .coronaTestPhoneNumber
+            })
+            .disposed(by: disposeBag)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -120,8 +117,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let dataController: ExposureDataControlling
-    private var disposeBag = Set<AnyCancellable>()
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.requestTestWantsDismissal(shouldDismissViewController: true)

@@ -37,16 +37,14 @@ final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAd
 
         hasBottomMargin = true
         title = .notificationUploadFailedHeader
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
         interfaceOrientationStream
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -60,7 +58,7 @@ final class CallGGDViewController: ViewController, CallGGDViewControllable, UIAd
     private weak var listener: CallGGDListener?
     private lazy var internalView: CallGGDView = CallGGDView(theme: self.theme)
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         listener?.callGGDWantsDismissal(shouldDismissViewController: true)

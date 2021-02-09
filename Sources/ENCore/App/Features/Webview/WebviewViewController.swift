@@ -62,9 +62,7 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
     private lazy var internalView: WebviewView = WebviewView(theme: theme)
     private weak var listener: WebviewListener?
     private let initialURL: URL
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                          target: self,
-                                                          action: #selector(didTapClose))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }
 
 private protocol WebviewViewDelegate: AnyObject {
@@ -96,9 +94,15 @@ private final class WebviewView: View, WKNavigationDelegate {
     }()
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.hidesWhenStopped = true
-        return indicator
+        if #available(iOS 13.0, *) {
+            let indicator = UIActivityIndicatorView(style: .large)
+            indicator.hidesWhenStopped = true
+            return indicator
+        } else {
+            let indicator = UIActivityIndicatorView(style: .gray)
+            indicator.hidesWhenStopped = true
+            return indicator
+        }
     }()
 
     private lazy var gradientImageView: UIImageView = {

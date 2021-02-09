@@ -5,34 +5,27 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import NotificationCenter
 
-protocol ExposureDataOperation {
-    associatedtype Result
-
-    func execute() -> AnyPublisher<Result, ExposureDataError>
-}
-
-/// @mockable
+/// @mockable(history: processPendingLabConfirmationUploadRequestsOperation = true)
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
                                          exposureDataController: ExposureDataController,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation?
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol
 
-    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol
     func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
-    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
-    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
-    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol
+    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol
 
-    var requestManifestOperation: RequestAppManifestDataOperation { get }
-    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperation { get }
+    var requestManifestOperation: RequestAppManifestDataOperationProtocol { get }
+    var updateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveDataOperationProtocol { get }
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
-                                      padding: Padding) -> UploadDiagnosisKeysDataOperation
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperationProtocol
 }
 
 protocol ExposureDataOperationProviderBuildable {

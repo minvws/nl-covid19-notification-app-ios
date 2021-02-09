@@ -5,29 +5,5 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"alertTitle" = "تحذير";
-"alertMessage" = "لا يمكن فتح الإعدادات.";
-"alertButton" = "حسنًا";
-
-"update.button.update" = "تحديث";
-"update.button.openSettings" = "فتح الإعدادات";
-
-"update.software.app.title" = "لديك إصدار قديم لـ CoronaMelder ";
-"update.software.app.description" = "حدّث التطبيق في هاتفك ليستمر CoronaMelder في العمل بشكل صحيح.";
-"update.software.app.detail.title" = "حدّث التطبيق";
-"update.software.app.detail.step1" = "افتح الإعدادات في هاتفك باستخدام الزر أسفله.";
-"update.software.app.detail.step2" = "2. انقر على 'تحديث\" من أجل تحديث التطبيق.";
-
-"update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
-"update.software.os.description" = "يحتاج CoronaMelder إلى الإصدار الأحدث لـ IOS كي يستمر في العمل بصورة صحيحة على هاتفك.";
-"update.software.os.detail.title" = "حدّث هاتفك";
-"update.software.os.detail.step1.detail" = "الإعدادات";
-"update.software.os.detail.step2.detail" = "العامة";
-"update.software.os.detail.step3.detail" = "تحديث البرنامج";
-"update.software.os.detail.step1" = "افتح الإعدادات في هاتفك باستخدام الزر أسفله.";
-"update.software.os.detail.step2" = "انتقل إلى \"العامة\"";
-"update.software.os.detail.step3" = "3. انتقل إلى \"تحديث البرامج\"";
-"update.software.os.detail.step4" = "4. انقرعلى \"تحميل البرنامج وتثبيته\"";
-
-"update.hardware.title" = "للأسف لا يعمل التطبيق على هاتفك";
-"update.hardware.description" = "لا يعمل CoronaMelder إلا على هواتف مزودة بإصدار IOS 13.5 أو ما فوق. هاتفك ليس مناسبًا لهذا البرنامج.";
+// This file is intentionally left empty. Add any translations to the resource files in the ENCore framework
+// Do not remove this file, the app uses it to determine which languages are supported

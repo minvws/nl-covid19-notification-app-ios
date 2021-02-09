@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import UIKit
 
 final class ExposureController: ExposureControlling, Logging {
@@ -24,10 +24,6 @@ final class ExposureController: ExposureControlling, Logging {
         self.networkStatusStream = networkStatusStream
         self.userNotificationCenter = userNotificationCenter
         self.currentAppVersion = currentAppVersion
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - ExposureControlling
@@ -59,36 +55,35 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     @discardableResult
-    func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never> {
+    func activate() -> Completable {
         logDebug("Request EN framework activation")
 
         guard isActivated == false else {
             logDebug("Already activated")
             // already activated, return success
-            return Just(()).eraseToAnyPublisher()
+            return .empty()
         }
 
-        // Don't activate EN if we're in a paused state, just update the status
+        // Don't activate EN if we're in a paused state
         guard !dataController.isAppPaused else {
-            updateStatusStream()
-            return Just(()).eraseToAnyPublisher()
+            return .empty()
         }
 
-        return Future { resolve in
+        if let existingCompletable = activationCompletable {
+            logDebug("Already activating")
+            return existingCompletable
+        }
+
+        let observable = Observable<Never>.create { (observer) -> Disposable in
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
-                self.exposureManager.activate { _ in
-                    self.isActivated = true
-                    self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
+                self.exposureManager.activate { error in
 
-                    func postActivation() {
-                        self.logDebug("started `postActivation`")
-                        if inBackgroundMode == false {
-                            self.postExposureManagerActivation()
-                        }
-                        self.updateStatusStream()
-                        resolve(.success(()))
-                    }
+                    self.logDebug("result from EN Activation: \(error)")
+
+                    self.isActivated = true
+
+                    self.logDebug("EN framework activated `authorizationStatus`: \(self.exposureManager.authorizationStatus.rawValue) `isExposureNotificationEnabled`: \(self.exposureManager.isExposureNotificationEnabled())")
 
                     if self.exposureManager.authorizationStatus == .authorized, !self.exposureManager.isExposureNotificationEnabled(), self.didCompleteOnboarding {
                         self.logDebug("Calling `setExposureNotificationEnabled`")
@@ -98,15 +93,30 @@ final class ExposureController: ExposureControlling, Logging {
                             } else {
                                 self.logDebug("Returned from `setExposureNotificationEnabled` (success)")
                             }
-                            postActivation()
+
+                            observer.onCompleted()
                         }
                     } else {
-                        postActivation()
+                        observer.onCompleted()
                     }
                 }
             }
+
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
+
+        let completable = observable
+//            .share()
+            .do(onError: { [weak self] _ in
+                self?.activationCompletable = nil
+            }, onCompleted: { [weak self] in
+                self?.activationCompletable = nil
+            })
+            .asCompletable()
+
+        activationCompletable = completable
+
+        return completable
     }
 
     func deactivate() {
@@ -131,14 +141,19 @@ final class ExposureController: ExposureControlling, Logging {
             strongSelf.dataController.pauseEndDate = nil
 
             if strongSelf.isActivated == false {
-                strongSelf.activate(inBackgroundMode: false)
+                strongSelf.activate()
+                    .subscribe(onCompleted: {
+                        strongSelf.updateStatusStream()
+                    })
+                    .disposed(by: strongSelf.disposeBag)
+
             } else {
                 // Update the status (will remove the paused state from the UI)
                 strongSelf.updateStatusStream()
 
                 strongSelf.updateWhenRequired()
-                    .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-                    .store(in: &strongSelf.disposeBag)
+                    .subscribe()
+                    .disposed(by: strongSelf.disposeBag)
             }
         }
     }
@@ -146,30 +161,25 @@ final class ExposureController: ExposureControlling, Logging {
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
         return dataController
             .getAppVersionInformation()
-            .sink(
-                receiveCompletion: { result in
-                    guard case .failure = result else { return }
-
-                    completion(nil)
-                },
-                receiveValue: completion)
-            .store(in: &disposeBag)
+            .subscribe(onSuccess: { exposureDataAppVersionInformation in
+                completion(exposureDataAppVersionInformation)
+            }, onFailure: { _ in
+                completion(nil)
+            })
+            .disposed(by: disposeBag)
     }
 
-    func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError> {
-        return dataController.isAppDectivated()
+    func isAppDeactivated() -> Single<Bool> {
+        return dataController.isAppDeactivated()
     }
 
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
-        return dataController.getAppRefreshInterval()
-    }
-
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
+    func getDecoyProbability() -> Single<Float> {
         return dataController.getDecoyProbability()
     }
 
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
-        return dataController.getPadding()
+    func getPadding() -> Single<Padding> {
+        return dataController
+            .getPadding()
     }
 
     func refreshStatus() {
@@ -178,48 +188,51 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError> {
+    func updateWhenRequired() -> Completable {
 
         logDebug("Update when required started")
 
         if let updateStream = updateStream {
             // already updating
             logDebug("Already updating")
-            return updateStream.share().eraseToAnyPublisher()
+            return updateStream
         }
 
         let updateStream = mutableStateStream
             .exposureState
-            .first()
-            .setFailureType(to: ExposureDataError.self)
-            .flatMap { (state: ExposureState) -> AnyPublisher<(), ExposureDataError> in
+            .take(1)
+            .flatMap { (state: ExposureState) -> Completable in
                 // update when active, or when inactive due to no recent updates
                 guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications), .inactive(.bluetoothOff)].contains(state.activeState) else {
                     self.logDebug("Not updating as inactive")
-                    return Just(())
-                        .setFailureType(to: ExposureDataError.self)
-                        .eraseToAnyPublisher()
+                    return .empty()
                 }
 
                 self.logDebug("Going to fetch and process exposure keysets")
-                return self.fetchAndProcessExposureKeySets()
+                return .create { observer -> Disposable in
+                    self.fetchAndProcessExposureKeySets().subscribe { _ in
+                        return observer(.completed)
+                    }
+                }
             }
-            .handleEvents(
-                receiveCompletion: { _ in self.updateStream = nil },
-                receiveCancel: { self.updateStream = nil }
-            )
-            .eraseToAnyPublisher()
+            .do(onError: { [weak self] _ in
+                self?.updateStream = nil
+            }, onCompleted: { [weak self] in
+                self?.updateStream = nil
+            })
+            .share()
+            .asCompletable()
 
         self.updateStream = updateStream
-        return updateStream.share().eraseToAnyPublisher()
+        return updateStream
     }
 
-    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError> {
+    func processExpiredUploadRequests() -> Completable {
         return dataController
             .processExpiredUploadRequests()
     }
 
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
+    func processPendingUploadRequests() -> Completable {
         return dataController
             .processPendingUploadRequests()
     }
@@ -245,99 +258,77 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
+    func fetchAndProcessExposureKeySets() -> Completable {
         logDebug("fetchAndProcessExposureKeySets started")
-        if let exposureKeyUpdateStream = exposureKeyUpdateStream {
+        if let existingCompletable = keysetFetchProcessCompletable {
             logDebug("Already fetching")
-            // already fetching
-            return exposureKeyUpdateStream.eraseToAnyPublisher()
+            return existingCompletable
         }
 
-        let stream = dataController
+        let completable = dataController
             .fetchAndProcessExposureKeySets(exposureManager: exposureManager)
-            .handleEvents(
-                receiveCompletion: { completion in
+            .do(onError: { [weak self] error in
+                self?.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
+                self?.updateStatusStream()
+                self?.keysetFetchProcessCompletable = nil
+            }, onCompleted: { [weak self] in
+                self?.logDebug("fetchAndProcessExposureKeySets Completed successfuly")
+                self?.updateStatusStream()
+                self?.keysetFetchProcessCompletable = nil
+            })
 
-                    switch completion {
-                    case .finished:
-                        self.logDebug("fetchAndProcessExposureKeySets Completed successfuly")
-                    case let .failure(error):
-                        self.logDebug("fetchAndProcessExposureKeySets Completed with failure: \(error.localizedDescription)")
-                    }
+        keysetFetchProcessCompletable = completable
 
-                    self.updateStatusStream()
-                    self.exposureKeyUpdateStream = nil
-                },
-                receiveCancel: {
-                    self.logDebug("fetchAndProcessExposureKeySets Cancelled")
-                    self.updateStatusStream()
-                    self.exposureKeyUpdateStream = nil
-                })
-            .eraseToAnyPublisher()
-
-        exposureKeyUpdateStream = stream
-
-        return stream
+        return completable
     }
 
     func confirmExposureNotification() {
         dataController
             .removeLastExposure()
-            .sink { [weak self] _ in
+            .subscribe(onCompleted: { [weak self] in
                 self?.updateStatusStream()
-            }
-            .store(in: &disposeBag)
+            }, onError: { [weak self] _ in
+                self?.updateStatusStream()
+            })
+            .disposed(by: disposeBag)
     }
 
     func requestLabConfirmationKey(completion: @escaping (Result<ExposureConfirmationKey, ExposureDataError>) -> ()) {
-        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
-            if case let .failure(error) = result {
-                completion(.failure(error))
-            }
-        }
-
-        let receiveValue: (ExposureConfirmationKey) -> () = { key in
-            completion(.success(key))
-        }
-
         dataController
             .requestLabConfirmationKey()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
-            .store(in: &disposeBag)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onSuccess: { labConfirmationKey in
+                completion(.success(labConfirmationKey))
+            }, onFailure: { error in
+                let convertedError = (error as? ExposureDataError) ?? ExposureDataError.internalError
+                completion(.failure(convertedError))
+            }).disposed(by: self.disposeBag)
     }
 
     func requestUploadKeys(forLabConfirmationKey labConfirmationKey: ExposureConfirmationKey,
                            completion: @escaping (ExposureControllerUploadKeysResult) -> ()) {
-        let receiveCompletion: (Subscribers.Completion<ExposureManagerError>) -> () = { result in
-            if case let .failure(error) = result {
-                let result: ExposureControllerUploadKeysResult
-                switch error {
-                case .notAuthorized:
-                    result = .notAuthorized
-                default:
-                    result = .inactive
-                }
-
-                completion(result)
-            }
-        }
 
         guard let labConfirmationKey = labConfirmationKey as? LabConfirmationKey else {
             completion(.invalidConfirmationKey)
             return
         }
 
-        let receiveValue: ([DiagnosisKey]) -> () = { keys in
-            self.upload(diagnosisKeys: keys,
-                        labConfirmationKey: labConfirmationKey,
-                        completion: completion)
-        }
-
         requestDiagnosisKeys()
-            .sink(receiveCompletion: receiveCompletion,
-                  receiveValue: receiveValue)
-            .store(in: &disposeBag)
+            .subscribe(onSuccess: { keys in
+                self.upload(diagnosisKeys: keys,
+                            labConfirmationKey: labConfirmationKey,
+                            completion: completion)
+            }, onFailure: { error in
+
+                let exposureManagerError = error.asExposureManagerError
+                switch exposureManagerError {
+                case .notAuthorized:
+                    completion(.notAuthorized)
+                default:
+                    completion(.inactive)
+                }
+            })
+            .disposed(by: disposeBag)
     }
 
     func updateLastLaunch() {
@@ -348,180 +339,186 @@ final class ExposureController: ExposureControlling, Logging {
         dataController.clearLastUnseenExposureNotificationDate()
     }
 
-    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError> {
+    func updateAndProcessPendingUploads() -> Completable {
         logDebug("Update and Process, authorisationStatus: \(exposureManager.authorizationStatus.rawValue)")
 
         guard exposureManager.authorizationStatus == .authorized else {
-            return Fail(error: .notAuthorized).eraseToAnyPublisher()
+            return .error(ExposureDataError.notAuthorized)
         }
 
         logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState?.activeState)), activated before: \(isActivated)")
 
-        let sequence: [() -> AnyPublisher<(), ExposureDataError>] = [
-            self.processExpiredUploadRequests,
-            self.processPendingUploadRequests,
-            self.updateWhenRequired
+        let sequence: [Completable] = [
+            self.processExpiredUploadRequests(),
+            self.processPendingUploadRequests()
         ]
 
         logDebug("Executing update sequence")
 
         // Combine all processes together, the sequence will be exectued in the order they are in the `sequence` array
-        return Publishers.Sequence<[AnyPublisher<(), ExposureDataError>], ExposureDataError>(sequence: sequence.map { $0() })
-            // execute them one by one
-            .flatMap(maxPublishers: .max(1)) { $0 }
+        return Observable.from(sequence.compactMap { $0 })
+            // execute one at the same time
+            .merge(maxConcurrent: 1)
             // collect them
-            .collect()
-            // merge
-            .compactMap { _ in () }
-            // notify the user if required
-            .handleEvents(receiveCompletion: { [weak self] result in
-                switch result {
-                case .finished:
-                    self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
-                    self?.notifyUser24HoursNoCheckIfRequired()
-                case let .failure(error):
-                    self?.logError("Error completing sequence \(error.localizedDescription)")
-                }
-        }).eraseToAnyPublisher()
+            .toArray()
+            .asCompletable()
+            .do(onError: { [weak self] error in
+                self?.logError("Error completing sequence \(error.localizedDescription)")
+            }, onCompleted: { [weak self] in
+                // notify the user if required
+                self?.logDebug("--- Finished `updateAndProcessPendingUploads` ---")
+                self?.notifyUser24HoursNoCheckIfRequired()
+            })
     }
 
-    func exposureNotificationStatusCheck() -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { promise in
-                self.logDebug("Exposure Notification Status Check Started")
+    func exposureNotificationStatusCheck() -> Completable {
+        return .create { (observer) -> Disposable in
+            self.logDebug("Exposure Notification Status Check Started")
 
-                let now = Date()
-                let status = self.exposureManager.getExposureNotificationStatus()
+            let now = Date()
+            let status = self.exposureManager.getExposureNotificationStatus()
 
-                guard status != .active else {
-                    self.dataController.setLastENStatusCheckDate(now)
-                    self.logDebug("`exposureNotificationStatusCheck` skipped as it is `active`")
-                    return promise(.success(()))
-                }
-
-                guard let lastENStatusCheckDate = self.dataController.lastENStatusCheckDate else {
-                    self.dataController.setLastENStatusCheckDate(now)
-                    self.logDebug("No `lastENStatusCheck`, skipping")
-                    return promise(.success(()))
-                }
-
-                let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
-
-                guard lastENStatusCheckDate.advanced(by: timeInterval) < Date() else {
-                    promise(.success(()))
-                    return self.logDebug("`exposureNotificationStatusCheck` skipped as it hasn't been 24h")
-                }
-
-                self.logDebug("EN Status Check not active within 24h: \(status)")
+            guard status != .active else {
                 self.dataController.setLastENStatusCheckDate(now)
+                self.logDebug("`exposureNotificationStatusCheck` skipped as it is `active`")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            guard let lastENStatusCheckDate = self.dataController.lastENStatusCheckDate else {
+                self.dataController.setLastENStatusCheckDate(now)
+                self.logDebug("No `lastENStatusCheck`, skipping")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
+
+            guard lastENStatusCheckDate.addingTimeInterval(timeInterval) < Date() else {
+                self.logDebug("`exposureNotificationStatusCheck` skipped as it hasn't been 24h")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            self.logDebug("EN Status Check not active within 24h: \(status)")
+            self.dataController.setLastENStatusCheckDate(now)
+
+            let content = UNMutableNotificationContent()
+            content.body = .notificationEnStatusNotActive
+            content.sound = .default
+            content.badge = 0
+
+            self.sendNotification(content: content, identifier: .enStatusDisabled) { didSend in
+                self.logDebug("Did send local notification `\(content)`: \(didSend)")
+                observer(.completed)
+            }
+
+            return Disposables.create()
+        }
+    }
+
+    func appShouldUpdateCheck() -> Single<AppUpdateInformation> {
+        return .create { observer in
+
+            self.logDebug("appShouldUpdateCheck Started")
+
+            self.shouldAppUpdate { updateInformation in
+                observer(.success(updateInformation))
+            }
+
+            return Disposables.create()
+        }
+    }
+
+    func sendNotificationIfAppShouldUpdate() -> Completable {
+        return .create { (observer) -> Disposable in
+
+            self.logDebug("sendNotificationIfAppShouldUpdate Started")
+
+            self.shouldAppUpdate { updateInformation in
+
+                guard updateInformation.shouldUpdate, let appVersionInformation = updateInformation.versionInformation else {
+                    observer(.completed)
+                    return
+                }
+
+                let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
 
                 let content = UNMutableNotificationContent()
-                content.body = .notificationEnStatusNotActive
+                content.body = message
                 content.sound = .default
                 content.badge = 0
 
-                self.sendNotification(content: content, identifier: .enStatusDisabled) { _ in
-                    promise(.success(()))
+                self.sendNotification(content: content, identifier: .appUpdateRequired) { didSend in
+                    self.logDebug("Did send local notification `\(content)`: \(didSend)")
+                    observer(.completed)
                 }
             }
-        }.eraseToAnyPublisher()
+
+            return Disposables.create()
+        }
     }
 
-    func appShouldUpdateCheck() -> AnyPublisher<AppUpdateInformation, ExposureDataError> {
-        return Deferred {
-            Future { promise in
+    func updateTreatmentPerspective() -> Completable {
+        dataController.updateTreatmentPerspective()
+    }
 
-                self.logDebug("appShouldUpdateCheck Started")
+    func lastOpenedNotificationCheck() -> Completable {
+        return .create { (observer) -> Disposable in
 
-                self.shouldAppUpdate { updateInformation in
-                    return promise(.success(updateInformation))
-                }
+            guard let lastAppLaunch = self.dataController.lastAppLaunchDate else {
+                self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastAppLaunchDate`")
+                observer(.completed)
+                return Disposables.create()
             }
-        }.eraseToAnyPublisher()
-    }
-
-    func sendNotificationIfAppShouldUpdate() -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { promise in
-
-                self.logDebug("sendNotificationIfAppShouldUpdate Started")
-
-                self.shouldAppUpdate { updateInformation in
-
-                    guard updateInformation.shouldUpdate, let appVersionInformation = updateInformation.versionInformation else {
-                        return promise(.success(()))
-                    }
-
-                    let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
-
-                    let content = UNMutableNotificationContent()
-                    content.body = message
-                    content.sound = .default
-                    content.badge = 0
-
-                    self.sendNotification(content: content, identifier: .appUpdateRequired) { _ in
-                        promise(.success(()))
-                    }
-                }
+            guard let lastExposure = self.dataController.lastExposure else {
+                self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastExposureDate`")
+                observer(.completed)
+                return Disposables.create()
             }
-        }.eraseToAnyPublisher()
-    }
 
-    func updateTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        return self.dataController
-            .requestTreatmentPerspective()
-            .eraseToAnyPublisher()
-    }
-
-    func lastOpenedNotificationCheck() -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { promise in
-
-                guard let lastAppLaunch = self.dataController.lastAppLaunchDate else {
-                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastAppLaunchDate`")
-                    return promise(.success(()))
-                }
-                guard let lastExposure = self.dataController.lastExposure else {
-                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastExposureDate`")
-                    return promise(.success(()))
-                }
-
-                guard let lastUnseenExposureNotificationDate = self.dataController.lastUnseenExposureNotificationDate else {
-                    self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastUnseenExposureNotificationDate`")
-                    return promise(.success(()))
-                }
-
-                guard lastAppLaunch < lastUnseenExposureNotificationDate else {
-                    self.logDebug("`lastOpenedNotificationCheck` skipped as the app has been opened after the notification")
-                    return promise(.success(()))
-                }
-
-                let notificationThreshold = TimeInterval(60 * 60 * 3) // 3 hours
-
-                guard lastUnseenExposureNotificationDate.advanced(by: notificationThreshold) < Date() else {
-                    self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h after initial notification")
-                    return promise(.success(()))
-                }
-
-                guard lastAppLaunch.advanced(by: notificationThreshold) < Date() else {
-                    self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
-                    return promise(.success(()))
-                }
-
-                self.logDebug("User has not opened the app in 3 hours.")
-
-                let days = Date().days(sinceDate: lastExposure.date) ?? 0
-
-                let content = UNMutableNotificationContent()
-                content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: days)))
-                content.sound = .default
-                content.badge = 0
-
-                self.sendNotification(content: content, identifier: .exposure) { _ in
-                    promise(.success(()))
-                }
+            guard let lastUnseenExposureNotificationDate = self.dataController.lastUnseenExposureNotificationDate else {
+                self.logDebug("`lastOpenedNotificationCheck` skipped as there is no `lastUnseenExposureNotificationDate`")
+                observer(.completed)
+                return Disposables.create()
             }
-        }.eraseToAnyPublisher()
+
+            guard lastAppLaunch < lastUnseenExposureNotificationDate else {
+                self.logDebug("`lastOpenedNotificationCheck` skipped as the app has been opened after the notification")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            let notificationThreshold = TimeInterval(60 * 60 * 3) // 3 hours
+
+            guard lastUnseenExposureNotificationDate.addingTimeInterval(notificationThreshold) < Date() else {
+                self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h after initial notification")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            guard lastAppLaunch.addingTimeInterval(notificationThreshold) < Date() else {
+                self.logDebug("`lastOpenedNotificationCheck` skipped as it hasn't been 3h")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            self.logDebug("User has not opened the app in 3 hours.")
+
+            let days = Date().days(sinceDate: lastExposure.date) ?? 0
+
+            let content = UNMutableNotificationContent()
+            content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: days)))
+            content.sound = .default
+            content.badge = 0
+
+            self.sendNotification(content: content, identifier: .exposure) { didSend in
+                self.logDebug("Did send local notification `\(content)`: \(didSend)")
+                observer(.completed)
+            }
+
+            return Disposables.create()
+        }
     }
 
     func notifyUser24HoursNoCheckIfRequired() {
@@ -549,7 +546,7 @@ final class ExposureController: ExposureControlling, Logging {
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
         guard
             let lastSuccessfulProcessingDate = dataController.lastSuccessfulExposureProcessingDate,
-            lastSuccessfulProcessingDate.advanced(by: timeInterval) < Date()
+            lastSuccessfulProcessingDate.addingTimeInterval(timeInterval) < Date()
         else {
             return
         }
@@ -557,15 +554,15 @@ final class ExposureController: ExposureControlling, Logging {
             // We haven't shown a notification to the user before so we should show one now
             return notifyUser()
         }
-        guard lastLocalNotificationExposureDate.advanced(by: timeInterval) < Date() else {
+        guard lastLocalNotificationExposureDate.addingTimeInterval(timeInterval) < Date() else {
             return
         }
 
         notifyUser()
     }
 
-    func lastTEKProcessingDate() -> AnyPublisher<Date?, Never> {
-        return dataController.lastSuccessfulExposureProcessingDatePublisher
+    func lastTEKProcessingDate() -> Observable<Date?> {
+        return dataController.lastSuccessfulExposureProcessingDateObservable
     }
 
     // MARK: - Private
@@ -584,42 +581,47 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
-    private func postExposureManagerActivation() {
+    func postExposureManagerActivation() {
         logDebug("`postExposureManagerActivation`")
 
         mutableStateStream
             .exposureState
-            .combineLatest(networkStatusStream.networkStatusStream) { (exposureState, networkState) -> Bool in
-                return [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
-                    && networkState
+            .flatMap { [weak self] (exposureState) -> Single<Bool> in
+                let stateActive = [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
+                    && (self?.networkStatusStream.networkReachable == true)
+                return .just(stateActive)
             }
             .filter { $0 }
-            .first()
-            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
-            .flatMap { [weak self] (_) -> AnyPublisher<(), Never> in
+            .take(1)
+            .do(onNext: { [weak self] _ in
+                self?.updateStatusStream()
+            }, onError: { [weak self] _ in
+                self?.updateStatusStream()
+            })
+            .flatMap { [weak self] (_) -> Completable in
                 return self?
-                    .updateWhenRequired()
-                    .replaceError(with: ())
-                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
+                    .updateWhenRequired() ?? .empty()
             }
-            .sink(receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .subscribe(onNext: { _ in })
+            .disposed(by: disposeBag)
 
         networkStatusStream
-            .networkStatusStream
-            .handleEvents(receiveOutput: { [weak self] _ in self?.updateStatusStream() })
-            .filter { networkStatus in return true } // only update when internet is active
-            .flatMap { [weak self] (_) -> AnyPublisher<(), Never> in
+            .networkReachableStream
+            .do(onNext: { [weak self] _ in
+                self?.updateStatusStream()
+            }, onError: { [weak self] _ in
+                self?.updateStatusStream()
+            })
+            .filter { $0 } // only update when internet is active
+            .map { [weak self] (_) -> Completable in
                 return self?
-                    .updateWhenRequired()
-                    .replaceError(with: ())
-                    .eraseToAnyPublisher() ?? Just(()).eraseToAnyPublisher()
+                    .updateWhenRequired() ?? .empty()
             }
-            .sink(receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .subscribe(onNext: { _ in })
+            .disposed(by: disposeBag)
     }
 
-    private func updateStatusStream() {
+    func updateStatusStream() {
 
         if let pauseEndDate = dataController.pauseEndDate {
             mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused(pauseEndDate))))
@@ -636,7 +638,7 @@ final class ExposureController: ExposureControlling, Logging {
         let hasBeenTooLongSinceLastUpdate: Bool
 
         if let lastSuccessfulExposureProcessingDate = dataController.lastSuccessfulExposureProcessingDate {
-            hasBeenTooLongSinceLastUpdate = lastSuccessfulExposureProcessingDate.advanced(by: noInternetIntervalForShowingWarning) < Date()
+            hasBeenTooLongSinceLastUpdate = lastSuccessfulExposureProcessingDate.addingTimeInterval(noInternetIntervalForShowingWarning) < Date()
         } else {
             hasBeenTooLongSinceLastUpdate = false
         }
@@ -687,12 +689,19 @@ final class ExposureController: ExposureControlling, Logging {
         return .notified(exposureReport.date)
     }
 
-    private func requestDiagnosisKeys() -> AnyPublisher<[DiagnosisKey], ExposureManagerError> {
-        return Future { promise in
-            self.exposureManager.getDiagnosisKeys(completion: promise)
+    private func requestDiagnosisKeys() -> Single<[DiagnosisKey]> {
+        return .create { observer in
+            self.exposureManager.getDiagnosisKeys { result in
+                switch result {
+
+                case let .success(diagnosisKeys):
+                    observer(.success(diagnosisKeys))
+                case let .failure(error):
+                    observer(.failure(error))
+                }
+            }
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
     private func upload(diagnosisKeys keys: [DiagnosisKey],
@@ -713,22 +722,16 @@ final class ExposureController: ExposureControlling, Logging {
             }
         }
 
-        let receiveCompletion: (Subscribers.Completion<ExposureDataError>) -> () = { result in
-            switch result {
-            case let .failure(error):
-                completion(mapExposureDataError(error))
-            default:
-                break
-            }
-        }
-
         self.dataController
             .upload(diagnosisKeys: keys, labConfirmationKey: labConfirmationKey)
-            .map { _ in return ExposureControllerUploadKeysResult.success }
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: receiveCompletion,
-                  receiveValue: completion)
-            .store(in: &disposeBag)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onCompleted: {
+                completion(.success)
+            }, onError: { error in
+                let exposureDataError = error.asExposureDataError
+                completion(mapExposureDataError(exposureDataError))
+            })
+            .disposed(by: disposeBag)
     }
 
     private func updatePushNotificationState(completition: @escaping () -> ()) {
@@ -761,15 +764,16 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private let mutableStateStream: MutableExposureStateStreaming
-    private let exposureManager: ExposureManaging
+    var exposureManager: ExposureManaging
     private let dataController: ExposureDataControlling
-    private var disposeBag = Set<AnyCancellable>()
-    private var exposureKeyUpdateStream: AnyPublisher<(), ExposureDataError>?
+    private var disposeBag = DisposeBag()
+    private var keysetFetchProcessCompletable: Completable?
     private let networkStatusStream: NetworkStatusStreaming
     private var isActivated = false
     private var isPushNotificationsEnabled = false
     private let userNotificationCenter: UserNotificationCenter
-    private var updateStream: AnyPublisher<(), ExposureDataError>?
+    private var updateStream: Completable?
+    private var activationCompletable: Completable?
     private let currentAppVersion: String
 }
 

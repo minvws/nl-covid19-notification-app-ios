@@ -53,7 +53,13 @@ class Label: UILabel {
             let recognizerView = recognizer.view,
             let recognizerSuperview = recognizerView.superview {
             recognizerView.becomeFirstResponder()
-            UIMenuController.shared.showMenu(from: recognizerSuperview, rect: recognizerView.frame)
+
+            if #available(iOS 13.0, *) {
+                UIMenuController.shared.showMenu(from: recognizerSuperview, rect: recognizerView.frame)
+            } else {
+                UIMenuController.shared.setTargetRect(recognizerView.frame, in: recognizerSuperview)
+                UIMenuController.shared.setMenuVisible(true, animated: true)
+            }
         }
     }
 

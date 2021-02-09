@@ -95,7 +95,7 @@
 "status.icon.accessibility.ok" = "Green circle with checkmark that shows the app has been set up properly";
 "status.icon.accessibility.inactive" = "Yellow circle with exclamation mark as warning ";
 "status.icon.accessibility.notified" = "Red circle with alarm bell that shows you need to take action immediately";
-"status.icon.accessibility.paused" = "Grey circle with question mark indicating that the app is paused";
+"status.icon.accessibility.paused" = "Grey circle with pause icon indicating that the app is paused";
 "status.notified.today" = "today";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.

@@ -5,9 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
+import ENFoundation
 import Foundation
-import NotificationCenter
+import RxSwift
+import UserNotifications
 
 enum PushNotificationIdentifier: String {
     case exposure = "nl.rijksoverheid.en.exposure"
@@ -31,45 +32,43 @@ enum PushNotificationIdentifier: String {
 
 /// @mockable
 protocol PushNotificationStreaming {
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> { get }
-    var foregroundNotificationStream: AnyPublisher<UNNotification, Never> { get }
+    var pushNotificationStream: Observable<PushNotificationIdentifier> { get }
+    var foregroundNotificationStream: Observable<UNNotification> { get }
 }
 
 /// @mockable
 protocol MutablePushNotificationStreaming: PushNotificationStreaming {
-    func update(response: UNNotificationResponse)
+    func update(identifier: PushNotificationIdentifier)
     func update(notification: UNNotification)
 }
 
-final class PushNotificationStream: MutablePushNotificationStreaming {
+final class PushNotificationStream: MutablePushNotificationStreaming, Logging {
 
     // MARK: - PushNotificationStreaming
 
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
+    var pushNotificationStream: Observable<PushNotificationIdentifier> {
         return pushNotificationSubject
-            .removeDuplicates(by: ==)
+            .subscribe(on: MainScheduler.instance)
+            .distinctUntilChanged()
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
     }
 
-    var foregroundNotificationStream: AnyPublisher<UNNotification, Never> {
+    var foregroundNotificationStream: Observable<UNNotification> {
         return foregroundNotificationSubject
+            .subscribe(on: MainScheduler.instance)
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
     }
 
     // MARK: - MutablePushNotificationStreaming
 
-    func update(response: UNNotificationResponse) {
-        pushNotificationSubject.send(response)
+    func update(identifier: PushNotificationIdentifier) {
+        pushNotificationSubject.onNext(identifier)
     }
 
     func update(notification: UNNotification) {
-        foregroundNotificationSubject.send(notification)
+        foregroundNotificationSubject.onNext(notification)
     }
 
-    private let pushNotificationSubject = CurrentValueSubject<UNNotificationResponse?, Never>(nil)
-    private let foregroundNotificationSubject = PassthroughSubject<UNNotification?, Never>()
+    private let pushNotificationSubject = BehaviorSubject<PushNotificationIdentifier?>(value: nil)
+    private let foregroundNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
 }

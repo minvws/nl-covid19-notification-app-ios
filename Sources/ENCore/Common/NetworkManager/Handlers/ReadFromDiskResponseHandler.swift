@@ -5,33 +5,35 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 
-final class ReadFromDiskResponseHandler: NetworkResponseHandler {
-    typealias Input = URL
-    typealias Output = Data
+/// @mockable
+protocol ReadFromDiskResponseHandlerProtocol {
+    func isApplicable(for response: URLResponse, input: URL) -> Bool
+    func process(response: URLResponse, input: URL) -> Single<Data>
+}
 
-    init(fileManager: FileManager = .default) {
+final class ReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocol {
+
+    init(fileManager: FileManaging) {
         self.fileManager = fileManager
     }
 
-    // MARK: - NetworkResponseHandler
+    // MARK: - RxReadFromDiskResponseHandlerProtocol
 
     func isApplicable(for response: URLResponse, input: URL) -> Bool {
         return contentFileUrl(from: input) != nil
     }
 
-    func process(response: URLResponse, input: Input) -> AnyPublisher<Output, NetworkResponseHandleError> {
+    func process(response: URLResponse, input: URL) -> Single<Data> {
         guard
             let url = contentFileUrl(from: input),
             let data = try? Data(contentsOf: url) else {
-            return Fail(error: .cannotDeserialize).eraseToAnyPublisher()
+            return .error(NetworkResponseHandleError.cannotDeserialize)
         }
 
-        return Just(data)
-            .setFailureType(to: NetworkResponseHandleError.self)
-            .eraseToAnyPublisher()
+        return .just(data)
     }
 
     // MARK: - Private
@@ -56,6 +58,6 @@ final class ReadFromDiskResponseHandler: NetworkResponseHandler {
         return contentFileUrl
     }
 
-    private let fileManager: FileManager
+    private let fileManager: FileManaging
     private let contentFilename = "content.bin"
 }

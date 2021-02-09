@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 
 struct LabConfirmationKey: Codable, Equatable {
     let identifier: String
@@ -19,8 +19,11 @@ extension LabConfirmationKey {
     var isValid: Bool { validUntil >= Date() }
 }
 
-final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
-    typealias Result = LabConfirmationKey
+protocol RequestLabConfirmationKeyDataOperationProtocol {
+    func execute() -> Single<LabConfirmationKey>
+}
+
+final class RequestLabConfirmationKeyDataOperation: RequestLabConfirmationKeyDataOperationProtocol {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
@@ -32,47 +35,44 @@ final class RequestLabConfirmationKeyDataOperation: ExposureDataOperation {
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        return retrieveStoredKey()
-            .flatMap { confirmationKey -> AnyPublisher<LabConfirmationKey, ExposureDataError> in
-                if let confirmationKey = confirmationKey, confirmationKey.isValid {
-                    return Just(confirmationKey)
-                        .setFailureType(to: ExposureDataError.self)
-                        .eraseToAnyPublisher()
-                }
+    func execute() -> Single<LabConfirmationKey> {
 
-                return self.requestNewKey()
-                    .flatMap(self.storeReceivedKey(key:))
-                    .eraseToAnyPublisher()
-            }
-            .eraseToAnyPublisher()
+        if let storedConfirmationKey = retrieveStoredKey(), storedConfirmationKey.isValid {
+            return .just(storedConfirmationKey)
+        }
+
+        return self.requestNewKey()
+            .flatMap(self.storeReceivedKey(key:))
+            .subscribe(on: MainScheduler.instance)
     }
 
-    private func retrieveStoredKey() -> AnyPublisher<LabConfirmationKey?, ExposureDataError> {
-        let key = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)
-
-        return Just(key)
-            .setFailureType(to: ExposureDataError.self)
-            .eraseToAnyPublisher()
+    private func retrieveStoredKey() -> LabConfirmationKey? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)
     }
 
-    private func storeReceivedKey(key: LabConfirmationKey) -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        return Future { promise in
+    private func storeReceivedKey(key: LabConfirmationKey) -> Single<LabConfirmationKey> {
+        return .create { observer in
+
             self.storageController.store(object: key,
                                          identifiedBy: ExposureDataStorageKey.labConfirmationKey,
-                                         completion: { _ in
-                                             promise(.success(key))
+                                         completion: { error in
+                                             if error != nil {
+                                                 observer(.failure(ExposureDataError.internalError))
+                                             } else {
+                                                 observer(.success(key))
+                                             }
                                          })
+
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
-    private func requestNewKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
+    private func requestNewKey() -> Single<LabConfirmationKey> {
         return networkController
             .requestLabConfirmationKey(padding: padding)
-            .mapError { (error: NetworkError) -> ExposureDataError in error.asExposureDataError }
-            .eraseToAnyPublisher()
+            .catch { error in
+                throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
+            }
     }
 
     // MARK: - Private

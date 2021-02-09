@@ -5,10 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
-import CryptoKit
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class RequestAppConfigurationDataOperationTests: TestCase {
@@ -17,6 +16,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
     private var mockApplicationSignatureController: ApplicationSignatureControllingMock!
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
@@ -44,12 +44,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .assertNoFailure()
-            .sink { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, appConfig)
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 0)
 
@@ -66,12 +65,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .assertNoFailure()
-            .sink { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
 
@@ -88,12 +86,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .assertNoFailure()
-            .sink { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
 
@@ -113,12 +110,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .assertNoFailure()
-            .sink { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeAppConfigurationCallCount, 1)
@@ -136,12 +132,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .assertNoFailure()
-            .sink { configuration in
+            .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, networkAppConfig)
                 exp.fulfill()
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeAppConfigurationCallCount, 1)
@@ -158,23 +153,20 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
 
         // override networkcontroller call to return an error
         mockNetworkController.applicationConfigurationHandler = { _ in
-            Fail(error: NetworkError.invalidRequest).eraseToAnyPublisher()
+            return .error(NetworkError.invalidRequest)
         }
 
         let exp = expectation(description: "Completion")
 
         operation.execute()
-            .sink(receiveCompletion: { result in
-                guard case let .failure(error) = result,
-                    case ExposureDataError.internalError = error else {
+            .subscribe(onFailure: { error in
+                guard case ExposureDataError.internalError = error else {
                     XCTFail("Call expected to return an error but succeeded instead")
                     return
                 }
 
                 exp.fulfill()
-
-            }, receiveValue: { _ in })
-            .disposeOnTearDown(of: self)
+            }).disposed(by: disposeBag)
 
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
 
@@ -219,21 +211,15 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
 
         if let networkConfiguration = networkConfiguration {
             mockApplicationSignatureController.storeAppConfigurationHandler = { _ in
-                Just(networkConfiguration)
-                    .setFailureType(to: ExposureDataError.self)
-                    .eraseToAnyPublisher()
+                .just(networkConfiguration)
             }
 
             mockApplicationSignatureController.storeSignatureHandler = { _ in
-                Just(networkConfiguration)
-                    .setFailureType(to: ExposureDataError.self)
-                    .eraseToAnyPublisher()
+                .just(networkConfiguration)
             }
 
             mockNetworkController.applicationConfigurationHandler = { _ in
-                Just(networkConfiguration)
-                    .setFailureType(to: NetworkError.self)
-                    .eraseToAnyPublisher()
+                .just(networkConfiguration)
             }
         }
     }
@@ -242,6 +228,6 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
 private extension ApplicationConfiguration {
     var signature: Data {
         let encoded = try! JSONEncoder().encode(self)
-        return SHA256.hash(data: encoded).description.data(using: .utf8)!
+        return encoded.sha256.description.data(using: .utf8)!
     }
 }

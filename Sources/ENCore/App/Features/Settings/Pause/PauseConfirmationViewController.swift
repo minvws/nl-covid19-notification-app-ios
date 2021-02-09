@@ -65,7 +65,7 @@ final class PauseConfirmationViewController: ViewController, PauseConfirmationVi
     // MARK: - Private
 
     private lazy var internalView: PauseConfirmationView = PauseConfirmationView(theme: self.theme)
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapCloseButton))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton))
     private let pauseController: PauseControlling
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {

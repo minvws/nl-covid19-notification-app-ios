@@ -57,7 +57,7 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -74,12 +74,10 @@ final class ShareSheetViewController: ViewController, ShareSheetViewControllable
     }
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     private weak var listener: ShareSheetListener?
     private lazy var internalView: ShareSheetView = ShareSheetView(theme: self.theme)
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                          target: self,
-                                                          action: #selector(didTapClose))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }
 
 final class ShareSheetView: View {

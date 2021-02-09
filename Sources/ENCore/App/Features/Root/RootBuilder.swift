@@ -5,7 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import BackgroundTasks
+#if canImport(BackgroundTasks)
+    import BackgroundTasks
+#endif
+
 import ENFoundation
 import UIKit
 
@@ -33,11 +36,12 @@ protocol AppEntryPoint {
     func didEnterBackground()
 
     // Should handle the background task
+    @available(iOS 13, *)
     func handle(backgroundTask: BGTask)
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency {
 
     // MARK: - Child Builders
 
@@ -73,6 +77,14 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return UpdateAppBuilder(dependency: self)
     }
 
+    fileprivate var updateOperatingSystemBuilder: UpdateOperatingSystemBuildable {
+        return UpdateOperatingSystemBuilder(dependency: self)
+    }
+
+    fileprivate var enableSettingBuilder: EnableSettingBuildable {
+        return EnableSettingBuilder(dependency: self)
+    }
+
     fileprivate var webviewBuilder: WebviewBuildable {
         return WebviewBuilder(dependency: self)
     }
@@ -87,7 +99,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     lazy var exposureManager: ExposureManaging = {
         let builder = ExposureManagerBuilder()
-
         return builder.build()
     }()
 
@@ -122,7 +133,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }()
 
     lazy var backgroundController: BackgroundControlling = {
-        return BackgroundControllerBuilder(dependency: self).build()
+        let builder = BackgroundControllerBuilder(dependency: self)
+        return builder.build()
     }()
 
     lazy var dataController: ExposureDataControlling = {
@@ -150,12 +162,12 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return mutableNetworkStatusStream
     }
 
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return mutableBluetoothStateStream
-    }
-
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         return InterfaceOrientationStream()
+    }
+
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
     }
 
     var pauseController: PauseControlling {
@@ -176,14 +188,16 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
 
-    lazy var mutableBluetoothStateStream: MutableBluetoothStateStreaming = BluetoothStateStream()
-
     var messageManager: MessageManaging {
         return MessageManager(storageController: storageController, theme: theme)
     }
 
     fileprivate var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
+    }
+
+    var randomNumberGenerator: RandomNumberGenerating {
+        RandomNumberGenerator()
     }
 
     var pushNotificationStream: PushNotificationStreaming {
@@ -231,14 +245,17 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,
                           exposureStateStream: dependencyProvider.exposureStateStream,
+                          mutableNetworkStatusStream: dependencyProvider.mutableNetworkStatusStream,
                           developerMenuBuilder: dependencyProvider.developerMenuBuilder,
                           mutablePushNotificationStream: dependencyProvider.mutablePushNotificationStream,
                           networkController: dependencyProvider.networkController,
                           backgroundController: dependencyProvider.backgroundController,
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
+                          updateOperatingSystemBuilder: dependencyProvider.updateOperatingSystemBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
                           userNotificationCenter: dependencyProvider.userNotificationCenter,
                           currentAppVersion: unwrappedCurrentAppVersion,
+                          environmentController: dependencyProvider.environmentController,
                           pauseController: dependencyProvider.pauseController)
     }
 }

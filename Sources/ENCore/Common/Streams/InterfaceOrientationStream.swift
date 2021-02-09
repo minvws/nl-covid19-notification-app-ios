@@ -29,10 +29,17 @@ final class InterfaceOrientationStream: InterfaceOrientationStreaming {
     }
 
     private func updateSubject() {
-        guard let windowScene = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene else {
-            return
+        if #available(iOS 13, *) {
+            guard let windowScene = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene else {
+                return
+            }
+
+            isLandscape.onNext(windowScene.interfaceOrientation.isLandscape)
+
+        } else {
+
+            isLandscape.onNext(UIApplication.shared.statusBarOrientation.isLandscape)
         }
-        isLandscape.onNext(windowScene.interfaceOrientation.isLandscape)
     }
 
     // MARK: - InterfaceOrientationStreaming

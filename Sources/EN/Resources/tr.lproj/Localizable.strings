@@ -5,29 +5,5 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"alertTitle" = "Uyarı";
-"alertMessage" = "Ayarlar açılamıyor.";
-"alertButton" = "Tamam";
-
-"update.button.update" = "Güncellemek";
-"update.button.openSettings" = "Ayarları aç";
-
-"update.software.app.title" = "CoronaMelder'ın eski bir sürümüne sahipsiniz";
-"update.software.app.description" = "CoronaMelder'in düzgün çalışmasını sağlamak için telefonunuzdaki uygulamayı güncelleyin.";
-"update.software.app.detail.title" = "Uygulamayı güncelleyin";
-"update.software.app.detail.step1" = "Aşağıdaki düğmeyi kullanarak telefonunuzda ayarları açın";
-"update.software.app.detail.step2" = "2. Uygulamayı güncellemek için \"Güncelle\" yi tıklayın.";
-
-"update.software.os.title" = "Telefonunuzdaki yazılımı güncellemeniz gerekiyor";
-"update.software.os.description" = "CoronaMelder'in telefonunuzda düzgün çalışmaya devam etmesi için iOS'un en son sürümü gereklidir.";
-"update.software.os.detail.title" = "Telefonunuzu güncelleyin";
-"update.software.os.detail.step1.detail" = "Ayarlar";
-"update.software.os.detail.step2.detail" = "Genel";
-"update.software.os.detail.step3.detail" = "Yazılım güncellemesi";
-"update.software.os.detail.step1" = "1. Aşağıdaki düğmeyi kullanarak telefonunuzda ayarları açın";
-"update.software.os.detail.step2" = "2. \"Genel\" e gidin";
-"update.software.os.detail.step3" = "3. \"Yazılım güncellemesi\" ne gidin";
-"update.software.os.detail.step4" = "4. \"İndir ve yükle\" yi seçin";
-
-"update.hardware.title" = "Maalesef uygulama telefonunuzda çalışmıyor";
-"update.hardware.description" = "CoronaMelder yalnızca iOS 13.5 veya sonraki sürümlere sahip olan telefonlarda çalışır. Telefonunuz bu yazılım için uygun değil.";
+// This file is intentionally left empty. Add any translations to the resource files in the ENCore framework
+// Do not remove this file, the app uses it to determine which languages are supported

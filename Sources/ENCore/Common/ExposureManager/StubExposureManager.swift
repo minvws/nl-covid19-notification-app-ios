@@ -65,6 +65,10 @@ final class StubExposureManager: ExposureManaging {
 
     // return whether exposureNotifications should be enabled or not
     private var exposureNotificationEnabled = true
+
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler) {
+        activityHandler(ENActivityFlags(rawValue: 1 << 2))
+    }
 }
 
 private struct ExposureDetectionSummaryImpl: ExposureDetectionSummary {

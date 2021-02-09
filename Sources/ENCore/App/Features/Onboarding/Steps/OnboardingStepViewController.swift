@@ -57,7 +57,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
             .isLandscape
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
-            }.disposed(by: rxDisposeBag)
+            }.disposed(by: disposeBag)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -82,7 +82,7 @@ final class OnboardingStepViewController: ViewController, OnboardingStepViewCont
     private let onboardingManager: OnboardingManaging
     private let onboardingStepBuilder: OnboardingStepBuildable
     private let interfaceOrientationStream: InterfaceOrientationStreaming
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     // MARK: - Setups
 
@@ -227,8 +227,6 @@ final class OnboardingStepView: View {
             playAnimation()
         }
 
-        imageView.sizeToFit()
-
         if let width = imageView.image?.size.width,
             let height = imageView.image?.size.height,
             width > 0, height > 0 {
@@ -242,8 +240,6 @@ final class OnboardingStepView: View {
                 maker.height.equalTo(scrollView.snp.width).multipliedBy(aspectRatio)
             }
         }
-
-        animationView.sizeToFit()
 
         if let width = animationView.animation?.size.width,
             let height = animationView.animation?.size.height,

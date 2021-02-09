@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
+import RxSwift
 import UIKit
 
 /// @mockable
@@ -66,18 +66,19 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
             self?.pauseController.unpauseApp()
         }
 
-        exposureDataController.pauseEndDatePublisher.sink(receiveValue: { [weak self] _ in
+        exposureDataController.pauseEndDateObservable.subscribe(onNext: { [weak self] _ in
             self?.updatePausedState()
-        }).store(in: &disposeBag)
+        })
+            .disposed(by: disposeBag)
 
-        pushNotificationStream.foregroundNotificationStream.sink { [weak self] notification in
+        pushNotificationStream.foregroundNotificationStream.subscribe(onNext: { [weak self] notification in
             guard let strongSelf = self else { return }
             if notification.request.identifier == PushNotificationIdentifier.pauseEnded.rawValue {
                 self?.logDebug("Refreshing settings pause state due to pauseEnded notification")
                 strongSelf.updatePausedState()
             }
-        }
-        .store(in: &disposeBag)
+        })
+            .disposed(by: disposeBag)
 
         updatePausedState()
     }
@@ -137,7 +138,7 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
     private let exposureDataController: ExposureDataControlling
     private let pauseController: PauseControlling
     private let pushNotificationStream: PushNotificationStreaming
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
 }
 
 private final class SettingsView: View {
@@ -247,6 +248,7 @@ private final class SettingsView: View {
 
         addSubview(scrollableStackView)
         scrollableStackView.spacing = 21
+        scrollableStackView.stackViewBottomMargin = 32
         scrollableStackView.addSections([
             pauseAppTitleLabel,
             pauseAppDescriptionLabel,

@@ -129,7 +129,5 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
     private weak var listener: HelpListener?
     private let shouldShowEnableAppButton: Bool
     private let exposureController: ExposureControlling
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                          target: self,
-                                                          action: #selector(didTapClose))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }

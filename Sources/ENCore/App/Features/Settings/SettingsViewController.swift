@@ -79,5 +79,5 @@ final class SettingsViewController: NavigationController, SettingsViewControllab
         listener?.settingsWantsDismissal(shouldDismissViewController: true)
     }
 
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapCloseButton))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton))
 }

@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
+import RxSwift
 import SafariServices
 import SnapKit
 import UIKit
@@ -60,10 +60,12 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         moreInformationView.set(data: objects, listener: self)
 
-        exposureController.lastTEKProcessingDate().sink { lastTEKProcessingDate in
-            let date = self.formatTEKProcessingDateToString(lastTEKProcessingDate)
-            self.moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
-        }.store(in: &disposeBag)
+        exposureController.lastTEKProcessingDate()
+            .subscribe(onNext: { lastTEKProcessingDate in
+                let date = self.formatTEKProcessingDateToString(lastTEKProcessingDate)
+                self.moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
+            })
+            .disposed(by: disposeBag)
 
         if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
@@ -138,7 +140,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
     private weak var listener: MoreInformationListener?
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
     private let bundleInfoDictionary: [String: Any]?
     private let exposureController: ExposureControlling
 

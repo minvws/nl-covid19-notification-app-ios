@@ -5,12 +5,16 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 import UserNotifications
 
-final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperation, Logging {
+protocol ExpiredLabConfirmationNotificationDataOperationProtocol {
+    func execute() -> Completable
+}
+
+final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmationNotificationDataOperationProtocol, Logging {
 
     init(storageController: StorageControlling,
          userNotificationCenter: UserNotificationCenter) {
@@ -20,20 +24,22 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<(), ExposureDataError> {
+    func execute() -> Completable {
+
+        logDebug("--- START REMOVING EXPIRED LAB CONFIRMATION REQUESTS ---")
+
         let expiredRequests = getPendingRequests()
             .filter { $0.isExpired }
 
         if !expiredRequests.isEmpty {
+            logDebug("Expired requests: \(expiredRequests.count) Expiration dates: \(expiredRequests.map { String(describing: $0.expiryDate) }.joined(separator: "\n"))")
             notifyUser()
         }
 
-        logDebug("Expired requests: \(expiredRequests)")
-
         return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests)
-            .setFailureType(to: ExposureDataError.self)
-            .share()
-            .eraseToAnyPublisher()
+            .do(onCompleted: {
+                self.logDebug("--- END REMOVING EXPIRED LAB CONFIRMATION REQUESTS ---")
+            })
     }
 
     // MARK: - Private
@@ -42,29 +48,45 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
     }
 
-    private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> AnyPublisher<(), Never> {
-        return Deferred {
-            Future { promise in
-                self.storageController.requestExclusiveAccess { storageController in
+    private func removeExpiredRequestsFromStorage(expiredRequests: [PendingLabConfirmationUploadRequest]) -> Completable {
 
-                    // get stored pending requests
-                    let previousRequests = storageController
-                        .retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
+        logDebug("Start storage removal for expired lab confirmation requests")
 
-                    let requestsToStore = previousRequests.filter { request in
-                        expiredRequests.contains(request) == false
-                    }
+        return .create { [weak self] observer in
 
-                    self.logDebug("Storing new pending requests: \(requestsToStore)")
+            guard let strongSelf = self else {
+                observer(.error(ExposureDataError.internalError))
+                return Disposables.create()
+            }
 
-                    // store back
-                    storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
-                        promise(.success(()))
-                    }
+            if expiredRequests.isEmpty {
+                self?.logDebug("There are no expired lab confirmation requests")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            self?.logDebug("Removing lab confirmations: \(expiredRequests.count) Expiration dates: \(expiredRequests.map { String(describing: $0.expiryDate) }.joined(separator: "\n"))")
+
+            strongSelf.storageController.requestExclusiveAccess { storageController in
+
+                // get stored pending requests
+                let previousRequests = storageController
+                    .retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) ?? []
+
+                let requestsToStore = previousRequests.filter { request in
+                    expiredRequests.contains(request) == false
+                }
+
+                strongSelf.logDebug("Storing new pending lab confirmation requests: \(requestsToStore)")
+
+                // store back
+                storageController.store(object: requestsToStore, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in
+                    strongSelf.logDebug("Successfully stored new pending lab confirmation requests: \(requestsToStore)")
+                    observer(.completed)
                 }
             }
+            return Disposables.create()
         }
-        .eraseToAnyPublisher()
     }
 
     private func notifyUser() {
@@ -115,6 +137,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExposureDataOperati
 
     private let storageController: StorageControlling
     private let userNotificationCenter: UserNotificationCenter
+    private let disposeBag = DisposeBag()
 }
 
 extension PendingLabConfirmationUploadRequest {

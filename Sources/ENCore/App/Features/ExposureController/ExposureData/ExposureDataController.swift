@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 
 enum Announcement: String, Codable {
     case interopAnnouncement
@@ -66,11 +66,10 @@ struct ExposureDataStorageKey {
 
 final class ExposureDataController: ExposureDataControlling, Logging {
 
-    private var disposeBag = Set<AnyCancellable>()
     private(set) var isFirstRun: Bool = false
-    private lazy var pauseEndDateSubject = CurrentValueSubject<Date?, Never>(pauseEndDate)
+    private lazy var pauseEndDateSubject = BehaviorSubject<Date?>(value: pauseEndDate)
 
-    private lazy var lastExposureProcessingDateSubject = CurrentValueSubject<Date?, Never>(lastSuccessfulExposureProcessingDate)
+    private lazy var lastExposureProcessingDateSubject = BehaviorSubject<Date?>(value: lastSuccessfulExposureProcessingDate)
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling,
@@ -85,30 +84,25 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - ExposureDataControlling
 
-    func requestTreatmentPerspective() -> AnyPublisher<TreatmentPerspective, ExposureDataError> {
-        return requestApplicationManifest()
-            .flatMap { _ in
+    func updateTreatmentPerspective() -> Completable {
+        requestApplicationManifest()
+            .flatMapCompletable { _ in
                 self.operationProvider
-                    .requestTreatmentPerspectiveDataOperation
+                    .updateTreatmentPerspectiveDataOperation
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Exposure Detection
 
-    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .flatMap { _ in
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable {
+        self.requestApplicationConfiguration()
+            .flatMapCompletable { _ in
                 self.fetchAndStoreExposureKeySets().catch { _ in
                     self.processStoredExposureKeySets(exposureManager: exposureManager)
                 }
             }
-            .flatMap { _ in
-                self.processStoredExposureKeySets(exposureManager: exposureManager)
-            }
-            .share()
-            .eraseToAnyPublisher()
+            .andThen(processStoredExposureKeySets(exposureManager: exposureManager))
     }
 
     var lastExposure: ExposureReport? {
@@ -154,148 +148,117 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return !Calendar.current.isDateInToday(date)
     }
 
-    func removeLastExposure() -> AnyPublisher<(), Never> {
-        return Future { promise in
+    func removeLastExposure() -> Completable {
+        return .create { observer in
             self.storageController.removeData(for: ExposureDataStorageKey.lastExposureReport) { _ in
-                promise(.success(()))
+                observer(.completed)
             }
+            return Disposables.create()
         }
-        .share()
-        .eraseToAnyPublisher()
     }
 
-    func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
+    private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Completable {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
-            .flatMap { (configuration) -> AnyPublisher<(), ExposureDataError> in
-                guard let operation = self.operationProvider
-                    .processExposureKeySetsOperation(exposureManager: exposureManager,
-                                                     exposureDataController: self,
-                                                     configuration: configuration) else {
-                    self.logDebug("ExposureDataController: Failed to create processExposureKeySetsOperation")
-                    return Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
-                }
-
-                return operation.execute()
+            .flatMapCompletable { configuration in
+                self.operationProvider
+                    .processExposureKeySetsOperation(exposureManager: exposureManager, exposureDataController: self, configuration: configuration)
+                    .execute()
             }
-            .eraseToAnyPublisher()
     }
 
-    func fetchAndStoreExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
+    private func fetchAndStoreExposureKeySets() -> Completable {
         self.logDebug("ExposureDataController: fetchAndStoreExposureKeySets")
         return requestApplicationManifest()
-            .map { (manifest: ApplicationManifest) -> [String] in manifest.exposureKeySetsIdentifiers }
-            .flatMap { exposureKeySetsIdentifiers in
+            .map { (manifest: ApplicationManifest) -> [String] in
+                manifest.exposureKeySetsIdentifiers
+            }
+            .flatMapCompletable { exposureKeySetsIdentifiers in
                 self.operationProvider
                     .requestExposureKeySetsOperation(identifiers: exposureKeySetsIdentifiers)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - LabFlow
 
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
-            }.flatMap { (padding: Padding) in
+    func processPendingUploadRequests() -> Completable {
+        return getPadding()
+            .flatMapCompletable { (padding: Padding) in
                 return self.operationProvider
                     .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
                     .execute()
-            }.eraseToAnyPublisher()
+            }
     }
 
-    func processExpiredUploadRequests() -> AnyPublisher<(), ExposureDataError> {
+    func processExpiredUploadRequests() -> Completable {
         return operationProvider
             .expiredLabConfirmationNotificationOperation()
             .execute()
     }
 
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize,
-                        maximumRequestSize: configuration.requestMaximumSize)
-            }
+    func requestLabConfirmationKey() -> Single<LabConfirmationKey> {
+        getPadding()
             .flatMap { (padding: Padding) in
-                return self.operationProvider
+                self.operationProvider
                     .requestLabConfirmationKeyOperation(padding: padding)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize,
-                        maximumRequestSize: configuration.requestMaximumSize)
-            }
-            .flatMap { (padding: Padding) in
-                return self.operationProvider
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Completable {
+        getPadding()
+            .flatMapCompletable { padding in
+                self.operationProvider
                     .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Misc
 
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError> {
+    func isAppDeactivated() -> Single<Bool> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decativated
             }
-            .eraseToAnyPublisher()
     }
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {
+    func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
-                return ExposureDataAppVersionInformation(minimumVersion: applicationConfiguration.minimumVersion,
-                                                         minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
-                                                         appStoreURL: applicationConfiguration.appStoreURL)
+                return ExposureDataAppVersionInformation(
+                    minimumVersion: applicationConfiguration.minimumVersion,
+                    minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
+                    appStoreURL: applicationConfiguration.appStoreURL
+                )
             }
-            .eraseToAnyPublisher()
     }
 
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
-        requestApplicationConfiguration()
-            .map { applicationConfiguration in
-                return applicationConfiguration.manifestRefreshFrequency
-            }
-            .eraseToAnyPublisher()
-    }
-
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
+    func getDecoyProbability() -> Single<Float> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decoyProbability
             }
-            .eraseToAnyPublisher()
     }
 
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
+    func getPadding() -> Single<Padding> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
                                maximumRequestSize: applicationConfiguration.requestMaximumSize)
             }
-            .eraseToAnyPublisher()
     }
 
     var isAppPaused: Bool {
         pauseEndDate != nil
     }
 
-    var pauseEndDatePublisher: AnyPublisher<Date?, Never> {
+    var pauseEndDateObservable: Observable<Date?> {
         return pauseEndDateSubject
-            .removeDuplicates(by: ==)
+            .distinctUntilChanged()
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .share()
-            .eraseToAnyPublisher()
+            .subscribe(on: MainScheduler.instance)
     }
 
     var pauseEndDate: Date? {
@@ -309,13 +272,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                         object: newDate,
                         identifiedBy: ExposureDataStorageKey.pauseEndDate,
                         completion: { _ in
-                            self.pauseEndDateSubject.send(newDate)
+                            self.pauseEndDateSubject.onNext(newDate)
                         }
                     )
                 }
             } else {
                 storageController.removeData(for: ExposureDataStorageKey.pauseEndDate, completion: { _ in
-                    self.pauseEndDateSubject.send(newValue)
+                    self.pauseEndDateSubject.onNext(newValue)
                 })
             }
         }
@@ -357,36 +320,32 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
-    func getAppointmentPhoneNumber() -> AnyPublisher<String, ExposureDataError> {
+    func getAppointmentPhoneNumber() -> Single<String> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.appointmentPhoneNumber
             }
-            .eraseToAnyPublisher()
     }
 
-    var lastSuccessfulExposureProcessingDatePublisher: AnyPublisher<Date?, Never> {
+    var lastSuccessfulExposureProcessingDateObservable: Observable<Date?> {
         return lastExposureProcessingDateSubject
-            .removeDuplicates(by: ==)
+            .distinctUntilChanged()
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .share()
-            .eraseToAnyPublisher()
+            .subscribe(on: MainScheduler.instance)
     }
 
     var lastSuccessfulExposureProcessingDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
     }
 
-    func updateLastSuccessfulExposureProcessingDate(_ date: Date, done: @escaping () -> ()) {
+    func updateLastSuccessfulExposureProcessingDate(_ date: Date) {
 
         storageController.requestExclusiveAccess { storageController in
             storageController.store(
                 object: date,
                 identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
                 completion: { _ in
-                    self.lastExposureProcessingDateSubject.send(date)
-                    done()
+                    self.lastExposureProcessingDateSubject.onNext(date)
                 }
             )
         }
@@ -415,32 +374,29 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: true, identifiedBy: ExposureDataStorageKey.firstRunIdentifier, completion: { _ in })
     }
 
-    private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return requestApplicationManifest()
-            .flatMap { manifest in
-                return self
-                    .operationProvider
-                    .requestAppConfigurationOperation(identifier: manifest.appConfigurationIdentifier)
+    private func requestApplicationConfiguration() -> Single<ApplicationConfiguration> {
+        return self.requestApplicationManifest()
+            .flatMap {
+                self.operationProvider
+                    .requestAppConfigurationOperation(identifier: $0.appConfigurationIdentifier)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
-    private func requestApplicationManifest() -> AnyPublisher<ApplicationManifest, ExposureDataError> {
-        return operationProvider
-            .requestManifestOperation
-            .execute()
+    private func requestApplicationManifest() -> Single<ApplicationManifest> {
+        return operationProvider.requestManifestOperation.execute()
     }
 
-    private func requestExposureRiskConfiguration() -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
-        return requestApplicationManifest()
-            .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
+    private func requestExposureRiskConfiguration() -> Single<ExposureConfiguration> {
+        requestApplicationManifest()
+            .map { (manifest: ApplicationManifest) in
+                manifest.riskCalculationParametersIdentifier
+            }
             .flatMap { identifier in
                 self.operationProvider
                     .requestExposureConfigurationOperation(identifier: identifier)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Version Management
@@ -483,4 +439,5 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
     private let environmentController: EnvironmentControlling
+    private let disposeBag = DisposeBag()
 }

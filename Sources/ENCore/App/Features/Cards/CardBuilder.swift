@@ -39,7 +39,7 @@ protocol CardBuildable {
 /// @mockable
 protocol CardDependency {
     var theme: Theme { get }
-    var bluetoothStateStream: BluetoothStateStreaming { get }
+    var exposureStateStream: ExposureStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
     var dataController: ExposureDataControlling { get }
     var pauseController: PauseControlling { get }
@@ -52,8 +52,8 @@ protocol CardListening: AnyObject {
 
 private final class CardDependencyProvider: DependencyProvider<CardDependency>, EnableSettingDependency, WebviewDependency {
 
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return dependency.bluetoothStateStream
+    var exposureStateStream: ExposureStateStreaming {
+        return dependency.exposureStateStream
     }
 
     var enableSettingBuilder: EnableSettingBuildable {

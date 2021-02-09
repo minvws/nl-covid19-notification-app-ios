@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import ENFoundation
 import Foundation
@@ -25,7 +24,7 @@ final class StatusViewControllerTests: TestCase {
     private var mockPauseController: PauseControllingMock!
     private var mockPushNotificationStream: PushNotificationStreamingMock!
 
-    private let pushNotificationSubject = PassthroughSubject<UNNotification, Never>()
+    private let pushNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
 
     override func setUp() {
         super.setUp()
@@ -44,7 +43,9 @@ final class StatusViewControllerTests: TestCase {
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         interfaceOrientationStream.currentOrientationIsLandscape = false
 
-        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
+        mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject.subscribe(on: MainScheduler.instance)
+            .distinctUntilChanged()
+            .compactMap { $0 }
 
         cardBuilder.buildHandler = { listener, cardTypes in
             return CardRouter(viewController: CardViewController(listener: self.mockCardListener,
@@ -174,7 +175,7 @@ final class StatusViewControllerTests: TestCase {
         let notifiedState: ExposureNotificationState = notified ? .notified(Date(timeIntervalSince1970: 1593260000)) : .notNotified
         let state = ExposureState(notifiedState: notifiedState, activeState: activeState)
 
+        exposureStateStream.exposureState = .just(state)
         exposureStateStream.currentExposureState = state
-        exposureStateStream.exposureState = Just(state).eraseToAnyPublisher()
     }
 }

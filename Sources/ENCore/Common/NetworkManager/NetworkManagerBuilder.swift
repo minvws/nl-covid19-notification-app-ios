@@ -17,6 +17,7 @@ enum NetworkError: Error {
     case resourceNotFound
     case encodingError
     case redirection
+    case errorConversionError
 }
 
 /// @mockable
@@ -45,6 +46,28 @@ protocol NetworkManagerBuildable {
 protocol NetworkManagerDependency {
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
     var storageController: StorageControlling { get }
+}
+
+/// @mockable
+protocol URLSessionDataTaskProtocol {
+    func resume()
+}
+
+extension URLSessionDataTask: URLSessionDataTaskProtocol {}
+
+/// @mockable
+protocol URLSessionProtocol {
+    func resumableDataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol
+}
+
+/// @mockable
+protocol URLSessionDelegateProtocol {}
+
+extension URLSession: URLSessionProtocol {
+    func resumableDataTask(with request: URLRequest,
+                           completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol {
+        return dataTask(with: request, completionHandler: completionHandler)
+    }
 }
 
 private final class NetworkManagerDependencyProvider: DependencyProvider<NetworkManagerDependency> {
@@ -87,6 +110,6 @@ final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkMan
                               responseHandlerProvider: dependencyProvider.responseHandlerProvider,
                               storageController: dependencyProvider.dependency.storageController,
                               session: dependencyProvider.session,
-                              sessionDelegate: dependencyProvider.sessionDelegate)
+                              sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol)
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AppConfig: Decodable {
+struct AppConfig: Codable {
     let version, manifestFrequency: Int?
     let decoyProbability: Float?
     let appStoreURL: String?

@@ -32,17 +32,13 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
 
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
                                          exposureDataController: ExposureDataController,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation? {
-        guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
-            self.logDebug("ExposureDataOperationProviderImpl: localPathProvider lailed to find path for exposure keysets")
-            return nil
-        }
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol {
 
         return ProcessExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    exposureManager: exposureManager,
+                                                   localPathProvider: localPathProvider,
                                                    exposureDataController: exposureDataController,
-                                                   exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
                                                    configuration: configuration,
                                                    userNotificationCenter: userNotificationCenter,
                                                    application: application,
@@ -50,7 +46,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                    environmentController: environmentController)
     }
 
-    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {
         return ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
                                                                         storageController: storageController,
                                                                         padding: padding)
@@ -61,20 +57,20 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                                userNotificationCenter: userNotificationCenter)
     }
 
-    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,
                                                     applicationSignatureController: applicationSignatureController,
                                                     appConfigurationIdentifier: identifier)
     }
 
-    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation {
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol {
         return RequestExposureConfigurationDataOperation(networkController: networkController,
                                                          storageController: storageController,
                                                          exposureConfigurationIdentifier: identifier)
     }
 
-    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation {
+    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol {
         return RequestExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    localPathProvider: localPathProvider,
@@ -82,14 +78,14 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                    fileManager: fileManager)
     }
 
-    var requestManifestOperation: RequestAppManifestDataOperation {
+    var requestManifestOperation: RequestAppManifestDataOperationProtocol {
         return RequestAppManifestDataOperation(networkController: networkController,
                                                storageController: storageController)
     }
 
-    var requestTreatmentPerspectiveDataOperation: RequestTreatmentPerspectiveDataOperation {
-        return RequestTreatmentPerspectiveDataOperation(networkController: networkController,
-                                                        storageController: storageController)
+    var updateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveDataOperationProtocol {
+        return UpdateTreatmentPerspectiveDataOperation(networkController: networkController,
+                                                       storageController: storageController)
     }
 
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation {
@@ -100,7 +96,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
-                                      padding: Padding) -> UploadDiagnosisKeysDataOperation {
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperationProtocol {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: diagnosisKeys,
@@ -139,6 +135,8 @@ extension NetworkError {
             return .internalError
         case .redirection:
             return .serverError
+        case .errorConversionError:
+            return .internalError
         }
     }
 }

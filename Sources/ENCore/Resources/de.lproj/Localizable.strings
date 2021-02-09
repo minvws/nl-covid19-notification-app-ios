@@ -19,12 +19,12 @@
 
 /* MARK: - MoreInformation | Settings */
 "moreInformation.cell.settings.title" = "Einstellungen";
-"moreInformation.cell.settings.subtitle" = "App anhalten und mobile Daten deaktivieren";
+"moreInformation.cell.settings.subtitle" = "App anhalten und mobile Daten einrichten";
 /* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Einstellungen";
 "moreInformation.settings.mobiledata.paragraphtitle" = "Nur Codes über WLAN kontrollieren";
 "moreInformation.settings.description" = "CoronaMelder kontrolliert mehrmals pro Tag, ob Sie in der Nähe einer Person mit Corona waren. Wenn Sie mobile Daten deaktivieren, kontrolliert die App nur noch, wenn Sie WLAN nutzen. Ihre Begegnungen werden auch registriert, wenn Sie keine Internetverbindung haben.";
-"moreInformation.settings.mobiledata.button" = "Zu mobile Daten aktivieren";
+"moreInformation.settings.mobiledata.button" = "Mobile Dateneinstellungen öffnen";
 
 /* MARK: - MoreInformation | Settings | Pause */
 "moreInformation.settings.pause.title" = "App anhalten";
@@ -38,7 +38,7 @@
 "moreInformation.settings.pause.enableappbutton" = "App aktivieren";
 
 /* MARK: - MoreInformation | Settings | Mobile Data */
-"moreInformation.settings.mobiledata.title" = "Mobile Daten aktivieren";
+"moreInformation.settings.mobiledata.title" = "Mobile Dateneinstellungen";
 "moreInformation.settings.step1" = "Öffnen Sie <b>Einstellungen</b> auf Ihrem Telefon über nachstehende Schaltfläche.";
 "moreInformation.settings.step2" = "Aktivieren oder deaktivieren Sie mobile Daten für CoronaMelder";
 "moreInformation.settings.step2.row.title" = "Mobile Daten";
@@ -94,6 +94,7 @@
 "status.icon.accessibility.ok" = "Ein grüner Kreis mit Häkchen gibt an, dass die App gut eingestellt ist.";
 "status.icon.accessibility.inactive" = "Ein gelber Kreis mit Ausrufezeichen ist eine Warnung.";
 "status.icon.accessibility.notified" = "Ein roter Kreis mit Alarmglocke gibt an, dass jetzt eine Aktion erforderlich ist.";
+"status.icon.accessibility.paused" = "Grauer Kreis mit Pausezeichen gibt an, dass die App angehalten wurde";
 "status.notified.today" = "heute";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -283,7 +284,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "help.other_what_does_report_say.content2" = "Die Nachricht erscheint auf dem Startbildschirm Ihres Telefons, genau wie die Nachrichten von anderen Apps. Die Nachricht hat das Symbol des CoronaMelders.<br><br> Haben Sie eine Nachricht erhalten? Dann öffnen Sie den CoronaMelder. Dort können Sie lesen, was in diesem Fall zu tun ist.";
 
 "help.pause_app.title" = "Kann ich die App anhalten?";
-"help.pause_app.description" = "Ja, das geht, wenn Sie Bluetooth deaktivieren. Dies geht über <b>Einstellungen > Bluetooth</b>. Beachten Sie: Sie können die App durch Deaktivierung von Bluetooth nicht vorübergehend anhalten. Wenn Sie Bluetooth deaktivieren, tauscht die App keine Codes mehr aus. Sie erhalten dann automatisch alle 24 Stunden eine Erinnerung, um die App wieder zu aktivieren.<br><br>Es ist jedoch in der Regel nicht ratsam, die App anzuhalten, da Sie vergessen könnten, sie wieder zu aktivieren. Sie können die App jedoch in besonderen Situationen anhalten. Zum Beispiel, wenn Sie in die Nähe von (möglichen) Corona-Patienten kommen, aber sicher sind, dass Sie medizinische Schutzausrüstung tragen.";
+"help.pause_app.description" = "Ja, Sie können die App vorübergehend anhalten. Wählen Sie dazu im Startbildschirm <b>Einstellungen > App anhalten </b>. Wenn Sie die App anhalten, werden Ihre Begegnungen vorübergehend nicht registriert. Sie erhalten auch keine Nachricht, wenn Sie in der Nähe einer Person waren, bei der später Corona festgestellt wurde.<br><br> Ist die Pause vorbei, erhalten Sie sofort die Nachricht, die App wieder zu aktivieren. Nach der Aktivierung der App können Sie noch Nachrichten über Begegnungen von vor der Pause erhalten.<br><br> Es ist meistens nicht ratsam, die App anzuhalten, da Sie vielleicht vergessen, sie wieder zu aktivieren. Sie können die App jedoch in besonderen Situationen anhalten. Zum Beispiel, wenn Sie in die Nähe von (möglichen) Corona-Patienten kommen, aber sicher sind, dass Sie medizinische Schutzausrüstung tragen.";
 
 "help.apps_other_countries.title" = "Funktioniert CoronaMelder auch mit Apps aus anderen Ländern?";
 "help.apps_other_countries.description" = "CoronaMelder arbeitet mit einigen Apps aus anderen europäischen Ländern zusammen. Zum Beispiel mit Deutschland, Irland und Italien.<br><br>Angenommen, Sie waren längere Zeit in der Nähe eines Nutzers der deutschen Corona-Warn-App. Diese Person wird in Deutschland getestet. Es stellt sich heraus, dass sie Corona hat. Wenn diese Person ihre Codes mit der deutschen Gesundheitsbehörde teilt, bekommen Sie über CoronaMelder eine Nachricht. Umgekehrt gilt dasselbe. Da die Corona-Apps miteinander zusammenarbeiten, müssen Sie nur 1 App aktiviert haben.<br><br>CoronaMelder kontrolliert ab 30. November 2020 täglich die Codes von Nutzern aus verschiedenen Ländern. Deshalb verbraucht die App mehr mobile Daten als früher. Über <strong>Einstellungen</strong> im Hauptmenü können Sie einstellen, dass die App nur über WLAN kontrolliert, ob Sie in der Nähe einer Person mit Corona waren.";
@@ -330,12 +331,12 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 
 /* MARK: - Paused Status */
 "status.paused.title" = "Die App wurde angehalten.";
-"status.pause.ended.title" = "Pause vorbei";
+"status.pause.ended.title" = "App wieder aktivieren";
 "status.appState.card.paused.title" = "App angehalten";
 "status.paused.countdown" = "Sie erhalten in %@ eine Meldung, um die App wieder zu aktivieren.";
-"status.paused.manualunpause" = "Die App ist noch nicht aktiv. Sie müssen sie selbst wieder aktivieren.";
-"status.card.manualunpause.title" = "Pause vorbei";
-"status.card.manualunpause.description" = "Die App ist noch nicht aktiv. Sie müssen sie selbst wieder aktivieren.";
+"status.paused.manualunpause" = "CoronaMelder ist noch nicht aktiv. Sie müssen die App selbst aktivieren.";
+"status.card.manualunpause.title" = "App wieder aktivieren";
+"status.card.manualunpause.description" = "Die App ist noch nicht aktiv. Sie müssen sie selbst aktivieren.";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mehr Informationen";
@@ -517,6 +518,6 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "notification.update_required.title" = "Update erforderlich";
 "notification.update_required.description" = "Es gibt eine neue Version von CoronaMelder. Die veraltete Version funktioniert nicht mehr gut. Weitere Anweisungen finden Sie in der App.";
 
-"notification.app.unpaused.title" = "Pause vorbei";
+"notification.app.unpaused.title" = "CoronaMelder wieder aktivieren";
 "notification.app.unpaused.description" = "Die App ist wieder aktiv. Ihre Begegnungen werden ab jetzt wieder registriert.";
-"notification.app.unpaused.manualunpause.description" = "Achtung: Die App ist noch nicht aktiv. Sie müssen sie selbst wieder in der App aktivieren.";
+"notification.app.unpaused.manualunpause.description" = "Achtung: Die App ist noch nicht aktiv. Sie müssen sie selbst in der App aktivieren.";

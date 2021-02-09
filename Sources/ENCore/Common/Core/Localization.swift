@@ -86,6 +86,20 @@ public final class Localization {
 
 extension String {
 
+    // MARK: - Update Operating System
+
+    static var updateSoftwareOSTitle: String { return Localization.string(for: "update.software.os.title") }
+    static var updateSoftwareOSDescription: String { return Localization.string(for: "update.software.os.description") }
+    static var updateSoftwareOSDetailTitle: String { return Localization.string(for: "update.software.os.detail.title") }
+    static var updateSoftwareOSDetailStep1Detail: String { return Localization.string(for: "update.software.os.detail.step1.detail") }
+    static var updateSoftwareOSDetailStep2Detail: String { return Localization.string(for: "update.software.os.detail.step2.detail") }
+    static var updateSoftwareOSDetailStep3Detail: String { return Localization.string(for: "update.software.os.detail.step3.detail") }
+    static var updateSoftwareOSDetailStep1: String { return Localization.string(for: "update.software.os.detail.step1") }
+    static var updateSoftwareOSDetailStep2: String { return Localization.string(for: "update.software.os.detail.step2") }
+    static var updateSoftwareOSDetailStep3: String { return Localization.string(for: "update.software.os.detail.step3") }
+    static var updateSoftwareOSDetailStep4: String { return Localization.string(for: "update.software.os.detail.step4") }
+    static var updateButtonUpdate: String { return Localization.string(for: "update.button.update") }
+
     // MARK: - Helpdesk Phone Number
 
     static var helpDeskPhoneNumber = "0800-1280"

@@ -26,6 +26,12 @@ final class ScrollableStackView: View {
         }
     }
 
+    var stackViewBottomMargin: CGFloat = 0 {
+        didSet {
+            updateStackViewConstraints()
+        }
+    }
+
     override func build() {
         super.build()
 
@@ -57,13 +63,18 @@ final class ScrollableStackView: View {
             maker.top.leading.trailing.bottom.equalToSuperview()
         }
 
-        stackView.snp.makeConstraints { maker in
-            maker.top.bottom.leading.trailing.width.equalTo(scrollView)
-        }
-
         titleLabel.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalToSuperview().inset(16)
             maker.bottom.equalToSuperview()
+        }
+
+        updateStackViewConstraints()
+    }
+
+    private func updateStackViewConstraints() {
+        stackView.snp.updateConstraints { maker in
+            maker.top.leading.trailing.width.equalTo(scrollView)
+            maker.bottom.equalTo(scrollView).inset(stackViewBottomMargin)
         }
     }
 
@@ -75,6 +86,7 @@ final class ScrollableStackView: View {
 
     // MARK: - Private
 
+    private var stackViewBottomConstraint: Constraint?
     private let scrollView = UIScrollView(frame: .zero)
     private let stackView = UIStackView(frame: .zero)
     private let titleLabel = Label(frame: .zero)

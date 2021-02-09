@@ -5,25 +5,23 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 
 /// @mockable
 protocol NetworkControlling {
-    var applicationManifest: AnyPublisher<ApplicationManifest, NetworkError> { get }
+    var applicationManifest: Single<ApplicationManifest> { get }
 
-    func treatmentPerspective(identifier: String) -> AnyPublisher<TreatmentPerspective, NetworkError>
+    func treatmentPerspective(identifier: String) -> Single<TreatmentPerspective>
 
-    func applicationConfiguration(identifier: String) -> AnyPublisher<ApplicationConfiguration, NetworkError>
-    func exposureRiskConfigurationParameters(identifier: String) -> AnyPublisher<ExposureRiskConfiguration, NetworkError>
-    func fetchExposureKeySet(identifier: String) -> AnyPublisher<(String, URL), NetworkError>
+    func applicationConfiguration(identifier: String) -> Single<ApplicationConfiguration>
 
-    func requestLabConfirmationKey(padding: Padding) -> AnyPublisher<LabConfirmationKey, NetworkError>
-    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> AnyPublisher<(), NetworkError>
-    func stopKeys(padding: Padding) -> AnyPublisher<(), NetworkError>
+    func exposureRiskConfigurationParameters(identifier: String) -> Single<ExposureRiskConfiguration>
+    func fetchExposureKeySet(identifier: String) -> Single<(String, URL)>
 
-    func startObservingNetworkReachability()
-    func stopObservingNetworkReachability()
+    func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey>
+    func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Completable
+    func stopKeys(padding: Padding) -> Completable
 }
 
 /// @mockable
@@ -38,7 +36,6 @@ protocol NetworkControllerDependency {
     var cryptoUtility: CryptoUtility { get }
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
     var storageController: StorageControlling { get }
-    var mutableNetworkStatusStream: MutableNetworkStatusStreaming { get }
 }
 
 private final class NetworkControllerDependencyProvider: DependencyProvider<NetworkControllerDependency>, NetworkManagerDependency {
@@ -61,7 +58,6 @@ final class NetworkControllerBuilder: Builder<NetworkControllerDependency>, Netw
         let dependencyProvider = NetworkControllerDependencyProvider(dependency: dependency)
 
         return NetworkController(networkManager: dependencyProvider.networkManager,
-                                 cryptoUtility: dependencyProvider.dependency.cryptoUtility,
-                                 mutableNetworkStatusStream: dependencyProvider.dependency.mutableNetworkStatusStream)
+                                 cryptoUtility: dependencyProvider.dependency.cryptoUtility)
     }
 }

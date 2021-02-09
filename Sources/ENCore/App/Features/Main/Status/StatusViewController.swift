@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Lottie
 import RxSwift
@@ -30,8 +29,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
-    private var disposeBag = Set<AnyCancellable>()
-    private var rxDisposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     private let cardBuilder: CardBuildable
     private lazy var cardRouter: Routing & CardTypeSettable = {
@@ -106,21 +104,21 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     @objc private func updateExposureStateView() {
 
-        exposureStateStream.exposureState.sink { [weak self] _ in
-            self?.refreshCurrentState()
-        }.store(in: &disposeBag)
+        exposureStateStream.exposureState
+            .subscribe(onNext: { [weak self] _ in
+                self?.refreshCurrentState()
+            }).disposed(by: disposeBag)
 
         interfaceOrientationStream.isLandscape.subscribe { [weak self] _ in
             self?.refreshCurrentState()
-        }.disposed(by: rxDisposeBag)
+        }.disposed(by: disposeBag)
 
-        pushNotificationStream.foregroundNotificationStream.sink { [weak self] notification in
+        pushNotificationStream.foregroundNotificationStream.subscribe(onNext: { [weak self] notification in
             if notification.request.identifier == PushNotificationIdentifier.pauseEnded.rawValue {
                 self?.logDebug("Refreshing state due to pauseEnded notification")
                 self?.refreshCurrentState()
             }
-        }
-        .store(in: &disposeBag)
+        }).disposed(by: disposeBag)
     }
 
     private func refreshCurrentState() {

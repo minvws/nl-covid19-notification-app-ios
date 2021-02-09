@@ -7,13 +7,15 @@
 
 import Foundation
 
-/// @mockable
+/// @mockable(history: removeItem = true)
 protocol FileManaging {
     func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool
     func fileExists(atPath path: String) -> Bool
     func removeItem(at URL: URL) throws
     func removeItem(atPath path: String) throws
     func moveItem(at srcURL: URL, to dstURL: URL) throws
+    func createDirectory(at url: URL, withIntermediateDirectories createIntermediates: Bool, attributes: [FileAttributeKey: Any]?) throws
+    func unzipItem(at sourceURL: URL, to destinationURL: URL, skipCRC32: Bool, progress: Progress?, preferredEncoding: String.Encoding?) throws
 }
 
 extension FileManager: FileManaging {}

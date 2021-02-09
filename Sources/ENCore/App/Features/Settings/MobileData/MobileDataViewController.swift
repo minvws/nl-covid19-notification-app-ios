@@ -32,7 +32,7 @@ final class MobileDataViewController: ViewController, MobileDataViewControllable
         super.viewDidLoad()
 
         hasBottomMargin = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.buttonActionHandler = { [weak self] in
             guard let url = URL(string: UIApplication.openSettingsURLString) else {

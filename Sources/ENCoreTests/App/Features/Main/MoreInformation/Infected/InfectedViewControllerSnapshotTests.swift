@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
 import RxSwift
@@ -32,11 +31,10 @@ final class InfectedViewControllerSnapshotTests: TestCase {
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         mockPauseController = PauseControllingMock()
 
-        exposureStateStream.exposureState = Just(ExposureState(
+        exposureStateStream.exposureState = .just(ExposureState(
             notifiedState: .notNotified,
             activeState: .active
         ))
-            .eraseToAnyPublisher()
 
         viewController = InfectedViewController(theme: theme,
                                                 exposureController: exposureController,

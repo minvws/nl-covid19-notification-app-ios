@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class RootRouterTests: XCTestCase {
@@ -26,8 +26,10 @@ final class RootRouterTests: XCTestCase {
     private let backgroundController = BackgroundControllingMock()
     private let updateAppBuilder = UpdateAppBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
-    private let pushNotificationSubject = PassthroughSubject<UNNotificationResponse, Never>()
     private let userNotificationCenter = UserNotificationCenterMock()
+    private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
+    private let mockEnvironmentController = EnvironmentControllingMock()
+    private let updateOperatingSystemBuilder = UpdateOperatingSystemBuildableMock()
     private var mockPauseController: PauseControllingMock!
 
     private var router: RootRouter!
@@ -35,25 +37,29 @@ final class RootRouterTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        mockEnvironmentController.supportsExposureNotification = true
+
         mockPauseController = PauseControllingMock()
 
         exposureController.isAppDeactivatedHandler = {
-            Just(false).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(false)
         }
 
         exposureController.appShouldUpdateCheckHandler = {
-            Just(AppUpdateInformation(shouldUpdate: false, versionInformation: nil)).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(AppUpdateInformation(shouldUpdate: false, versionInformation: nil))
         }
 
-        exposureController.activateHandler = { _ in
-            return Just(()).eraseToAnyPublisher()
+        exposureController.activateHandler = {
+            .empty()
         }
 
         exposureController.updateTreatmentPerspectiveHandler = {
-            Just(TreatmentPerspective.emptyMessage).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .empty()
         }
 
-        mutablePushNotificationStream.pushNotificationStream = pushNotificationSubject.eraseToAnyPublisher()
+        onboardingBuilder.buildHandler = { _ in
+            OnboardingRoutingMock()
+        }
 
         viewController.dismissHandler = { _, _, completion in
             completion?()
@@ -68,14 +74,17 @@ final class RootRouterTests: XCTestCase {
                             callGGDBuilder: callGGDBuilder,
                             exposureController: exposureController,
                             exposureStateStream: exposureStateStream,
+                            mutableNetworkStatusStream: mutableNetworkStatusStream,
                             developerMenuBuilder: developerMenuBuilder,
                             mutablePushNotificationStream: mutablePushNotificationStream,
                             networkController: networkController,
                             backgroundController: backgroundController,
                             updateAppBuilder: updateAppBuilder,
+                            updateOperatingSystemBuilder: updateOperatingSystemBuilder,
                             webviewBuilder: webviewBuilder,
                             userNotificationCenter: userNotificationCenter,
                             currentAppVersion: "1.0",
+                            environmentController: mockEnvironmentController,
                             pauseController: mockPauseController)
         set(activeState: .notAuthorized)
     }
@@ -89,7 +98,6 @@ final class RootRouterTests: XCTestCase {
         let viewControllableMock = LaunchScreenViewControllableMock()
         routingMock.viewControllable = viewControllableMock
 
-        onboardingBuilder.buildHandler = { _ in return OnboardingRoutingMock() }
         launchScreenBuilder.buildHandler = { return routingMock }
 
         XCTAssertEqual(launchScreenBuilder.buildCallCount, 0)
@@ -99,7 +107,7 @@ final class RootRouterTests: XCTestCase {
 
         XCTAssertEqual(launchScreenBuilder.buildCallCount, 1)
         XCTAssertTrue(viewController.presentArgValues.first?.0 === viewControllableMock)
-        XCTAssertEqual(viewController.presentCallCount, 2)
+        XCTAssertEqual(viewController.presentCallCount, 2) // launch screen and onboarding screen
 
         // Test that the launchscreen is dismissed too
         XCTAssertEqual(viewController.dismissCallCount, 1)
@@ -107,7 +115,6 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_start_buildsAndPresentsOnboarding() {
-        onboardingBuilder.buildHandler = { _ in return OnboardingRoutingMock() }
 
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
@@ -119,12 +126,20 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(launchScreenBuilder.buildCallCount, 1)
         XCTAssertEqual(onboardingBuilder.buildCallCount, 1)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
-        XCTAssertEqual(viewController.presentCallCount, 2)
+        XCTAssertEqual(viewController.presentCallCount, 2) // launch screen and onboarding screen
         XCTAssertEqual(viewController.embedCallCount, 0)
     }
 
+    func test_start_registersBackgroundActivityHandler() {
+
+        XCTAssertEqual(backgroundController.registerActivityHandleCallCount, 0)
+
+        router.start()
+
+        XCTAssertEqual(backgroundController.registerActivityHandleCallCount, 1)
+    }
+
     func test_callStartTwice_doesNotPresentTwice() {
-        onboardingBuilder.buildHandler = { _ in OnboardingRoutingMock() }
 
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
@@ -159,6 +174,7 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_detachOnboardingAndRouteToMain_callsEmbedAndDismiss() {
+
         router.start()
 
         XCTAssertEqual(viewController.embedCallCount, 0)
@@ -194,10 +210,14 @@ final class RootRouterTests: XCTestCase {
 
     func test_start_activatesExposureController() {
         XCTAssertEqual(exposureController.activateCallCount, 0)
+        XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 0)
+        XCTAssertEqual(backgroundController.performDecoySequenceIfNeededCallCount, 0)
 
         router.start()
 
         XCTAssertEqual(exposureController.activateCallCount, 1)
+        XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 1)
+        XCTAssertEqual(backgroundController.performDecoySequenceIfNeededCallCount, 1)
     }
 
     func test_callWebviewTwice_doesNotPresentTwice() {
@@ -225,7 +245,19 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.dismissCallCount, 1)
     }
 
+    func test_start_ENNotSupported_showsUpdateOperatingSystemViewController() {
+
+        mockEnvironmentController.supportsExposureNotification = false
+
+        router.start()
+
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 0)
+        XCTAssertEqual(updateOperatingSystemBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 1)
+    }
+
     func test_start_getMinimumVersion_showsUpdateAppViewController() {
+
         let appVersionInformation = ExposureDataAppVersionInformation(
             minimumVersion: "1.1",
             minimumVersionMessage: "Version too low",
@@ -233,8 +265,7 @@ final class RootRouterTests: XCTestCase {
         )
 
         exposureController.appShouldUpdateCheckHandler = {
-            Just(AppUpdateInformation(shouldUpdate: true, versionInformation: appVersionInformation))
-                .setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(AppUpdateInformation(shouldUpdate: true, versionInformation: appVersionInformation))
         }
 
         router.start()
@@ -251,7 +282,7 @@ final class RootRouterTests: XCTestCase {
         router.start()
 
         exposureController.isAppDeactivatedHandler = {
-            Just(true).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .just(true)
         }
 
         XCTAssertEqual(exposureController.deactivateCallCount, 0)
@@ -265,30 +296,117 @@ final class RootRouterTests: XCTestCase {
         XCTAssertEqual(viewController.presentInNavigationControllerCallCount, 1)
     }
 
-    func test_didEnterForeground_startsObservingNetworkReachability() {
+    func test_didBecomeActive_shouldAlsoPerformForegroundActionsOniOS12() {
+
+        mockEnvironmentController.isiOS12 = true
         exposureController.updateWhenRequiredHandler = {
-            Just(()).setFailureType(to: ExposureDataError.self).eraseToAnyPublisher()
+            .empty()
         }
 
-        XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 0)
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
+
+        router.start()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
+
+        router.didBecomeActive()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 2)
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
+    }
+
+    func test_didEnterForeground_startsObservingNetworkReachability() {
+        exposureController.updateWhenRequiredHandler = {
+            .empty()
+        }
+
+        XCTAssertEqual(mutableNetworkStatusStream.startObservingNetworkReachabilityCallCount, 0)
 
         router.didEnterForeground()
 
-        XCTAssertEqual(networkController.startObservingNetworkReachabilityCallCount, 1)
+        XCTAssertEqual(mutableNetworkStatusStream.startObservingNetworkReachabilityCallCount, 1)
     }
 
     func test_didEnterBackground_startsObservingNetworkReachability() {
-        XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 0)
+        XCTAssertEqual(mutableNetworkStatusStream.stopObservingNetworkReachabilityCallCount, 0)
 
         router.didEnterBackground()
 
-        XCTAssertEqual(networkController.stopObservingNetworkReachabilityCallCount, 1)
+        XCTAssertEqual(mutableNetworkStatusStream.stopObservingNetworkReachabilityCallCount, 1)
+    }
+
+    func test_didEnterForeground_callsRefreshStatus() {
+        exposureController.updateWhenRequiredHandler = { .empty() }
+
+        // Required to attach main router
+        router.start()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
+
+        router.didEnterForeground()
+
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 1)
+    }
+
+    func test_didEnterForeground_callsUpdateWhenRequired() {
+        exposureController.updateWhenRequiredHandler = { .empty() }
+
+        // Required to attach main router
+        router.start()
+
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
+
+        router.didEnterForeground()
+
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
+    }
+
+    // MARK: - Handling Notifications
+
+    func test_receivingUploadFailedNotification_shouldRouteToCallGGD() {
+        exposureController.didCompleteOnboarding = true
+
+        let mockCallGGDViewController = ViewControllableMock()
+        callGGDBuilder.buildHandler = { _ in
+            mockCallGGDViewController
+        }
+        mutablePushNotificationStream.pushNotificationStream = .just(.uploadFailed)
+
+        router.start()
+
+        let lastPresenterViewController = viewController.presentInNavigationControllerArgValues.last?.0
+
+        XCTAssertTrue(lastPresenterViewController === mockCallGGDViewController)
+    }
+
+    func test_receivingExposureNotification_shouldRouteToMessage() {
+        exposureController.didCompleteOnboarding = true
+        exposureController.lastExposureDate = Date()
+
+        let messageBuilderExpectation = expectation(description: "messageBuilder")
+
+        let mockMessageViewController = ViewControllableMock()
+        messageBuilder.buildHandler = { _, date in
+            XCTAssertEqual(date, self.exposureController.lastExposureDate)
+            messageBuilderExpectation.fulfill()
+            return mockMessageViewController
+        }
+        mutablePushNotificationStream.pushNotificationStream = .just(.exposure)
+
+        router.start()
+
+        let lastPresenterViewController = viewController.presentInNavigationControllerArgValues.last?.0
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertTrue(lastPresenterViewController === mockMessageViewController)
     }
 
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState) {
-        exposureStateStream.exposureState = Just(ExposureState(notifiedState: .notNotified,
-                                                               activeState: activeState)).eraseToAnyPublisher()
+        exposureStateStream.exposureState = .just(ExposureState(notifiedState: .notNotified,
+                                                                activeState: activeState))
     }
 }

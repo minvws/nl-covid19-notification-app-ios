@@ -5,12 +5,15 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import BackgroundTasks
+#if canImport(BackgroundTasks)
+    import BackgroundTasks
+#endif
+
 import ENFoundation
 import Foundation
 import UIKit
 
-@available(iOS 13.5,*)
+@available(iOS 12.5,*)
 @objc public final class ENAppRoot: NSObject, Logging {
     private static var version: String {
         let dictionary = Bundle.main.infoDictionary
@@ -28,6 +31,7 @@ import UIKit
     public func attach(toWindow window: UIWindow) {
         logDebug("`attach` \(ENAppRoot.version)")
         guard appEntryPoint == nil else {
+            logDebug("ENAppRoot - appEntryPoint already attached")
             return
         }
 
@@ -40,13 +44,22 @@ import UIKit
     @objc
     public func start() {
         logDebug("`start` \(ENAppRoot.version)")
-        appEntryPoint?.start()
+        guard let appEntryPoint = appEntryPoint else {
+            logError("ENAppRoot - start - appEntryPoint not initialized")
+            return
+        }
+        appEntryPoint.start()
     }
 
     @objc
     public func receiveRemoteNotification(response: UNNotificationResponse) {
         logDebug("`receiveRemoteNotification` \(ENAppRoot.version)")
-        appEntryPoint?.mutablePushNotificationStream.update(response: response)
+
+        guard let identifier = PushNotificationIdentifier(rawValue: response.notification.request.identifier) else {
+            return logError("Push notification for \(response.notification.request.identifier) not handled")
+        }
+
+        appEntryPoint?.mutablePushNotificationStream.update(identifier: identifier)
     }
 
     @objc
@@ -58,22 +71,35 @@ import UIKit
     @objc
     public func didBecomeActive() {
         logDebug("`didBecomeActive` \(ENAppRoot.version)")
-        appEntryPoint?.didBecomeActive()
+        guard let appEntryPoint = appEntryPoint else {
+            logError("ENAppRoot - didBecomeActive - appEntryPoint not initialized")
+            return
+        }
+        appEntryPoint.didBecomeActive()
     }
 
     @objc
     public func didEnterForeground() {
         logDebug("`didEnterForeground` \(ENAppRoot.version)")
-        appEntryPoint?.didEnterForeground()
+        guard let appEntryPoint = appEntryPoint else {
+            logError("ENAppRoot - didEnterForeground - appEntryPoint not initialized")
+            return
+        }
+        appEntryPoint.didEnterForeground()
     }
 
     @objc
     public func didEnterBackground() {
         logDebug("`didEnterBackground` \(ENAppRoot.version)")
-        appEntryPoint?.didEnterBackground()
+        guard let appEntryPoint = appEntryPoint else {
+            logError("ENAppRoot - didEnterBackground - appEntryPoint not initialized")
+            return
+        }
+        appEntryPoint.didEnterBackground()
     }
 
     @objc
+    @available(iOS 13.5,*)
     public func handle(backgroundTask: BGTask) {
         logDebug("`handle` \(ENAppRoot.version)")
         appEntryPoint?.handle(backgroundTask: backgroundTask)
