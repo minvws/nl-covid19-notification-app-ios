@@ -17,7 +17,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
          userNotificationCenter: UserNotificationCenter,
          application: ApplicationControlling,
          fileManager: FileManaging,
-         environmentController: EnvironmentControlling) {
+         environmentController: EnvironmentControlling,
+         riskCalculationController: RiskCalculationControlling) {
         self.networkController = networkController
         self.storageController = storageController
         self.applicationSignatureController = applicationSignatureController
@@ -26,6 +27,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
         self.application = application
         self.fileManager = fileManager
         self.environmentController = environmentController
+        self.riskCalculationController = riskCalculationController
     }
 
     // MARK: - ExposureDataOperationProvider
@@ -43,7 +45,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                    userNotificationCenter: userNotificationCenter,
                                                    application: application,
                                                    fileManager: fileManager,
-                                                   environmentController: environmentController)
+                                                   environmentController: environmentController,
+                                                   riskCalculationController: riskCalculationController)
     }
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {
@@ -114,6 +117,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     private let application: ApplicationControlling
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling
+    private let riskCalculationController: RiskCalculationControlling
 }
 
 extension NetworkError {

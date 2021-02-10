@@ -39,7 +39,10 @@ extension ENManager: ENManaging {}
 
 extension ENExposureDetectionSummary: ExposureDetectionSummary {}
 extension ENExposureInfo: ExposureInformation {}
-extension ENExposureWindow: ExposureWindow {}
+extension ENScanInstance: ScanInstance {}
+extension ENExposureWindow: ExposureWindow {
+    var scans: [ScanInstance] { scanInstances }
+}
 
 extension ExposureConfiguration {
     var asExposureConfiguration: ENExposureConfiguration {

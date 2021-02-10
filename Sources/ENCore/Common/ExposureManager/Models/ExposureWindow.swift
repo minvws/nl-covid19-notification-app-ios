@@ -24,5 +24,5 @@ protocol ExposureWindow {
     var infectiousness: ENInfectiousness { get }
 
     /// Each scan instance corresponds to a scan (of a few seconds) when a beacon with a TEK causing this exposure was observed.
-    var scanInstances: [ENScanInstance] { get }
+    var scans: [ScanInstance] { get }
 }

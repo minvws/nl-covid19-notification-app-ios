@@ -25,6 +25,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockLocalPathProvider: LocalPathProvidingMock!
     private var disposeBag = DisposeBag()
     private var mockExposureDataController: ExposureDataControllingMock!
+    private var mockRiskCalculationController: RiskCalculationControllingMock!
 
     override func setUpWithError() throws {
 
@@ -38,6 +39,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockEnvironmentController = EnvironmentControllingMock()
         mockLocalPathProvider = LocalPathProvidingMock()
         mockExposureDataController = ExposureDataControllingMock()
+        mockRiskCalculationController = RiskCalculationControllingMock()
 
         // Default handlers
         mockEnvironmentController.gaenRateLimitingType = .dailyLimit
@@ -73,7 +75,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             userNotificationCenter: mockUserNotificationCenter,
             application: mockApplication,
             fileManager: mockFileManager,
-            environmentController: mockEnvironmentController
+            environmentController: mockEnvironmentController,
+            riskCalculationController: mockRiskCalculationController
         )
     }
 
