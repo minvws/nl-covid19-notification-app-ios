@@ -6,17 +6,18 @@
  */
 
 import ENFoundation
+import ExposureNotification
 import Foundation
 import RxSwift
 import UIKit
 
-private struct ExposureKeySetDetectionResult {
+struct ExposureKeySetDetectionResult {
     let keySetHolder: ExposureKeySetHolder
     let processDate: Date?
     let isValid: Bool
 }
 
-private struct ExposureDetectionResult {
+struct ExposureDetectionResult {
     let keySetDetectionResults: [ExposureKeySetDetectionResult]
     let exposureSummary: ExposureDetectionSummary?
     let exposureReport: ExposureReport?
@@ -24,6 +25,11 @@ private struct ExposureDetectionResult {
 
 struct ExposureReport: Codable {
     let date: Date
+}
+
+enum WindowScoreType {
+    case sum
+    case max
 }
 
 #if USE_DEVELOPER_MENU || DEBUG
@@ -97,7 +103,17 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             // persist keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
-            .flatMap(self.createReportAndTriggerNotification(forResult:))
+            .flatMap { detectionResult in
+                if self.environmentController.maximumSupportedExposureNotificationVersion == .version1 {
+                    return self.createV1Report(forResult: detectionResult)
+                } else if self.environmentController.maximumSupportedExposureNotificationVersion == .version2 {
+                    return self.createV2Report(forResult: detectionResult)
+                } else {
+                    return .error(ExposureDataError.internalError)
+                }
+            }
+            // Send a local notification to inform the user of an exposure if neccesary
+            .flatMap(self.notifyUserOfExposure)
             // persist the ExposureReport
             .flatMap(self.persist(exposureReport:))
             // remove all blobs for all keySetHolders - successful ones are processed and
@@ -452,40 +468,89 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
-    private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> Single<(ExposureDetectionResult, ExposureReport?)> {
+    private func createV1Report(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
 
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
-            return .just((result, nil))
+            return .just((result, nil, nil))
         }
 
-        guard summary.maximumRiskScore >= configuration.minimumRiskScope else {
+        guard summary.maximumRiskScore >= configuration.minimumRiskScore else {
             logDebug("Risk Score not high enough to see this as an exposure")
-            return .just((result, nil))
+            return .just((result, nil, nil))
         }
 
-        if let daysSinceLastExposure = daysSinceLastExposure() {
-            logDebug("Had previous exposure \(daysSinceLastExposure) days ago")
-
-            if summary.daysSinceLastExposure >= daysSinceLastExposure {
-                logDebug("Previous exposure was newer than new found exposure - skipping notification")
-                return .just((result, nil))
-            }
-        }
-
-        guard let date = Calendar.current.date(byAdding: .day, value: -summary.daysSinceLastExposure, to: Date()) else {
+        guard let exposureDate = Calendar.current.date(byAdding: .day, value: -summary.daysSinceLastExposure, to: currentDate()) else {
             logError("Error triggering notification for \(summary), could not create date")
-            return .just((result, nil))
+            return .just((result, nil, nil))
         }
 
         logDebug("Triggering notification for \(summary)")
 
-        return notifyUserOfExposure(daysSinceLastExposure: summary.daysSinceLastExposure,
-                                    exposureReport: (result, ExposureReport(date: date)))
+        return .just((exposureDetectionResult: result, exposureReport: ExposureReport(date: exposureDate), daysSinceLastExposure: summary.daysSinceLastExposure))
     }
 
-    private func notifyUserOfExposure(daysSinceLastExposure: Int,
-                                      exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
+    /// Creates the final ExposureReport and triggers a local notification using the EN framework
+    private func createV2Report(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
+
+        guard let summary = result.exposureSummary else {
+            logDebug("No summary to trigger notification for")
+            return .just((result, nil, nil))
+        }
+
+        return .create { (observer) -> Disposable in
+
+            self.exposureManager.getExposureWindows(summary: summary) { windowResult in
+                if case let .failure(error) = windowResult {
+                    observer(.failure(error))
+                    return
+                }
+
+                guard case let .success(exposureWindows) = windowResult, let windows = exposureWindows else {
+                    observer(.success((result, nil, nil)))
+                    return
+                }
+
+                let dailyScores = self.getDailyRiskScores(windows: windows, scoreType: .max)
+
+                let lastDayOverMinimumRiskScore = dailyScores
+                    .filter { $0.value >= Double(self.configuration.minimumRiskScore) }
+                    .map { $0.key }
+                    .sorted()
+                    .last
+
+                guard let exposureDate = lastDayOverMinimumRiskScore,
+                    let daysSinceLastExposure = currentDate().days(sinceDate: exposureDate) else {
+                    observer(.failure(ExposureDataError.internalError))
+                    return
+                }
+
+                observer(.success((result, ExposureReport(date: exposureDate), daysSinceLastExposure)))
+            }
+
+            return Disposables.create()
+        }
+    }
+
+    private func notifyUserOfExposure(value: (exposureDetectionResult: ExposureDetectionResult,
+                                              exposureReport: ExposureReport?,
+                                              daysSinceLastExposure: Int?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
+
+        // Check if we actually found an exposure
+        guard let _ = value.exposureReport, let daysSinceLastExposure = value.daysSinceLastExposure else {
+            return .just((value.exposureDetectionResult, nil))
+        }
+
+        // We only show a notification if the found exposure was newer than the previously known exposure
+        if let previousDaysSinceLastExposure = self.getStoredDaysSinceLastExposure() {
+            logDebug("Had previous exposure \(previousDaysSinceLastExposure) days ago")
+
+            if previousDaysSinceLastExposure >= daysSinceLastExposure {
+                logDebug("Previous exposure was newer than new found exposure - skipping notification")
+                return .just((value.exposureDetectionResult, nil))
+            }
+        }
+
         return .create { (observer) -> Disposable in
 
             self.userNotificationCenter.getAuthorizationStatus { status in
@@ -519,12 +584,12 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                 if error != nil {
                                     observer(.failure(ExposureDataError.internalError))
                                 } else {
-                                    observer(.success(value))
+                                    observer(.success((value.exposureDetectionResult, value.exposureReport)))
                                 }
                             }
                         }
                     } else {
-                        observer(.success(value))
+                        observer(.success((value.exposureDetectionResult, value.exposureReport)))
                     }
                 }
             }
@@ -594,7 +659,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport)
     }
 
-    private func daysSinceLastExposure() -> Int? {
+    private func getStoredDaysSinceLastExposure() -> Int? {
         let today = Date()
 
         guard
@@ -605,6 +670,61 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
 
         return dayCount
+    }
+
+    // MARK: - API Version 2 calculation
+
+    // Gets the daily list of risk scores from the given exposure windows.
+    private func getDailyRiskScores(windows: [ExposureWindow],
+                                    scoreType: WindowScoreType) -> [Date: Double] {
+        var perDayScore = [Date: Double]()
+        windows.forEach { window in
+
+            let windowScore = self.getWindowScore(window: window)
+
+            if windowScore >= configuration.minimumWindowScore {
+                switch scoreType {
+                case WindowScoreType.max:
+                    perDayScore[window.date] = max(perDayScore[window.date] ?? 0.0, windowScore)
+                case WindowScoreType.sum:
+                    perDayScore[window.date] = perDayScore[window.date] ?? 0.0 + windowScore
+                }
+            }
+        }
+
+        return perDayScore
+    }
+
+    // Computes the risk score associated with a single window based on the exposure seconds, attenuation, and report type.
+    private func getWindowScore(window: ExposureWindow) -> Double {
+        let scansScore = window.scanInstances.reduce(Double(0)) { result, scan in
+            result + (Double(scan.secondsSinceLastScan) * self.getAttenuationMultiplier(forAttenuation: scan.typicalAttenuation))
+        }
+
+        return (scansScore * getReportTypeMultiplier(reportType: window.diagnosisReportType) * getInfectiousnessMultiplier(infectiousness: window.infectiousness))
+    }
+
+    private func getAttenuationMultiplier(forAttenuation attenuationDb: UInt8) -> Double {
+
+        var bucket = 3 // Default to "Other" bucket
+
+        if attenuationDb <= configuration.attenuationBucketThresholdDb[0] {
+            bucket = 0
+        } else if attenuationDb <= configuration.attenuationBucketThresholdDb[1] {
+            bucket = 1
+        } else if attenuationDb <= configuration.attenuationBucketThresholdDb[2] {
+            bucket = 2
+        }
+
+        return configuration.attenuationBucketWeights[bucket]
+    }
+
+    private func getReportTypeMultiplier(reportType: ENDiagnosisReportType) -> Double {
+        return configuration.reportTypeWeights[safe: Int(reportType.rawValue)] ?? 0.0
+    }
+
+    private func getInfectiousnessMultiplier(infectiousness: ENInfectiousness) -> Double {
+        return configuration.infectiousnessWeights[safe: Int(infectiousness.rawValue)] ?? 0.0
     }
 
     private let networkController: NetworkControlling

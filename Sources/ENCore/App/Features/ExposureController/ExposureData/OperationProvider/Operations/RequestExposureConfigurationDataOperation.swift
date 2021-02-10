@@ -9,13 +9,25 @@ import Foundation
 import RxSwift
 
 struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
+
     let identifier: String
-    let minimumRiskScope: UInt8
+    let minimumRiskScore: UInt8
+
+    // v1
     let attenuationLevelValues: [UInt8]
     let daysSinceLastExposureLevelValues: [UInt8]
     let durationLevelValues: [UInt8]
     let transmissionRiskLevelValues: [UInt8]
     let attenuationDurationThresholds: [Int]
+
+    // v2
+    var reportTypeWeights: [Double]
+    var infectiousnessWeights: [Double]
+    var attenuationBucketThresholdDb: [UInt8]
+    var attenuationBucketWeights: [Double]
+    var daysSinceExposureThreshold: UInt
+    var minimumWindowScore: Double
+    var daysSinceOnsetToInfectiousness: [UInt8]
 }
 
 /// @mockable

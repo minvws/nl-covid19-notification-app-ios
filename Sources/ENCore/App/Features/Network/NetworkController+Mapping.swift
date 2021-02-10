@@ -61,11 +61,19 @@ extension AppConfig {
 extension RiskCalculationParameters {
     func asExposureRiskConfiguration(identifier: String) -> ExposureRiskConfiguration {
         return ExposureRiskConfiguration(identifier: identifier,
-                                         minimumRiskScope: minimumRiskScore,
+                                         minimumRiskScore: minimumRiskScore,
                                          attenuationLevelValues: attenuationScores,
                                          daysSinceLastExposureLevelValues: daysSinceLastExposureScores,
                                          durationLevelValues: durationScores,
                                          transmissionRiskLevelValues: transmissionRiskScores,
-                                         attenuationDurationThresholds: durationAtAttenuationThresholds)
+                                         attenuationDurationThresholds: durationAtAttenuationThresholds,
+                                         reportTypeWeights: reportTypeWeights ?? [],
+                                         infectiousnessWeights: infectiousnessWeights ?? [],
+                                         attenuationBucketThresholdDb: attenuationBucketThresholdDb ?? [],
+                                         attenuationBucketWeights: attenuationBucketWeights ?? [],
+                                         daysSinceExposureThreshold: daysSinceExposureThreshold ?? 0,
+                                         minimumWindowScore: minimumWindowScore ?? 0,
+                                         daysSinceOnsetToInfectiousness: daysSinceOnsetToInfectiousness ?? []
+        )
     }
 }
