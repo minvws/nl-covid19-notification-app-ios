@@ -12,6 +12,7 @@ public final class LottieAnimation {
 
     /// Get the Lottie Animation for the current bundle.
     public static func named(_ name: String) -> Animation? {
-        return Animation.named(name, bundle: Bundle(for: LottieAnimation.self))
+        let animation = Animation.named(name, bundle: Bundle(for: LottieAnimation.self))
+        return animation
     }
 }

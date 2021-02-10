@@ -22,6 +22,7 @@ final class OnboardingManager: OnboardingManaging {
     // MARK: -
 
     init(theme: Theme) {
+
         self.onboardingSteps = [
             OnboardingStep(
                 theme: theme,
@@ -35,7 +36,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step2Title,
                 content: .step2Content,
-                illustration: .animation(named: "popup", repeatFromFrame: 94, defaultFrame: 121),
+                illustration: theme.lottieSupported ? .animation(named: "popup", repeatFromFrame: 94, defaultFrame: 121) : .image(named: "Step1"),
                 buttonTitle: .nextButtonTitle,
                 isExample: false
             ),
@@ -43,7 +44,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step3Title,
                 content: .step3Content,
-                illustration: .animation(named: "bluetooth", defaultFrame: 28),
+                illustration: theme.lottieSupported ? .animation(named: "bluetooth", defaultFrame: 28) : .image(named: "Step1"),
                 buttonTitle: .nextButtonTitle,
                 isExample: false
             ),
@@ -51,7 +52,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step4Title,
                 content: .step4Content,
-                illustration: .animation(named: "ontheway", defaultFrame: 36),
+                illustration: theme.lottieSupported ? .animation(named: "ontheway", defaultFrame: 36) : .image(named: "Step1"),
                 buttonTitle: .nextButtonTitle,
                 isExample: true
             ),
@@ -59,7 +60,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step5Title,
                 content: .step5Content,
-                illustration: .animation(named: "train", repeatFromFrame: 51, defaultFrame: 93),
+                illustration: theme.lottieSupported ? .animation(named: "train", repeatFromFrame: 51, defaultFrame: 93) : .image(named: "Step1"),
                 buttonTitle: .nextButtonTitle,
                 isExample: true
             )

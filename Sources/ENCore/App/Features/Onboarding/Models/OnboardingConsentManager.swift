@@ -46,7 +46,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                 title: .onboardingPermissionsTitle,
                 content: .onboardingPermissionsDescription,
                 bulletItems: [.onboardingPermissionsDescriptionList1, .onboardingPermissionsDescriptionList2],
-                illustration: .animation(named: "permission", repeatFromFrame: 100, defaultFrame: 56),
+                illustration: theme.lottieSupported ? .animation(named: "permission", repeatFromFrame: 100, defaultFrame: 56) : .image(image: .pleaseTurnOnBluetooth),
                 primaryButtonTitle: .onboardingPermissionsPrimaryButton,
                 secondaryButtonTitle: .onboardingPermissionsSecondaryButton,
                 hasNavigationBarSkipButton: true
@@ -88,7 +88,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                 theme: theme,
                 title: .consentStep4Title,
                 content: .consentStep4Content,
-                illustration: .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35),
+                illustration: theme.lottieSupported ? .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35) : .image(image: .pleaseTurnOnBluetooth),
                 primaryButtonTitle: .consentStep4PrimaryButton,
                 secondaryButtonTitle: .consentStep4SecondaryButton,
                 hasNavigationBarSkipButton: true
