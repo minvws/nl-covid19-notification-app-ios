@@ -71,11 +71,58 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.exposureManager = exposureManager
         self.localPathProvider = localPathProvider
         self.exposureDataController = exposureDataController
-        self.configuration = configuration
         self.userNotificationCenter = userNotificationCenter
         self.application = application
         self.fileManager = fileManager
         self.environmentController = environmentController
+
+        //        self.configuration = configuration
+        self.configuration = ExposureRiskConfiguration(
+            identifier: "identifier",
+            minimumRiskScore: 0,
+            attenuationLevelValues: [56, 62, 70],
+            daysSinceLastExposureLevelValues: [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            durationLevelValues: [
+                0,
+                0,
+                0,
+                1,
+                2,
+                2,
+                2,
+                2
+            ],
+            transmissionRiskLevelValues: [
+                0,
+                2,
+                2,
+                2,
+                0,
+                0,
+                0,
+                0
+            ],
+            attenuationDurationThresholds: [
+                63,
+                73
+            ],
+            reportTypeWeights: [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
+            infectiousnessWeights: [0.0, 1.0, 2.0],
+            attenuationBucketThresholdDb: [56, 62, 70],
+            attenuationBucketWeights: [1.0, 1.0, 0.3, 0.0],
+            daysSinceExposureThreshold: 10,
+            minimumWindowScore: 0,
+            daysSinceOnsetToInfectiousness: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        )
     }
 
     func execute() -> Completable {

@@ -56,11 +56,7 @@ final class StubExposureManager: ExposureManaging {
     }
 
     func getExposureWindows(summary: ExposureDetectionSummary, completion: @escaping (Result<[ExposureWindow]?, ExposureManagerError>) -> ()) {
-        let exposureWindows: [ENExposureWindow] = [
-            ENExposureWindow()
-        ]
-
-        completion(.success(exposureWindows))
+        completion(.success([]))
     }
 
     func getDiagnosisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
