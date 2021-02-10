@@ -481,11 +481,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
 
         guard let exposureDate = Calendar.current.date(byAdding: .day, value: -summary.daysSinceLastExposure, to: currentDate()) else {
-            logError("Error triggering notification for \(summary), could not create date")
+            logError("Error determining exposure date for summary: \(summary)")
             return .just((result, nil, nil))
         }
-
-        logDebug("Triggering notification for \(summary)")
 
         return .just((exposureDetectionResult: result, exposureReport: ExposureReport(date: exposureDate), daysSinceLastExposure: summary.daysSinceLastExposure))
     }
@@ -502,16 +500,20 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
             self.exposureManager.getExposureWindows(summary: summary) { windowResult in
                 if case let .failure(error) = windowResult {
+                    self.logError("V2 Risk Calculation - Error getting Exposure Windows: \(error)")
                     observer(.failure(error))
                     return
                 }
 
                 guard case let .success(exposureWindows) = windowResult, let windows = exposureWindows else {
+                    self.logDebug("V2 Risk Calculation - No Exposure Windows found")
                     observer(.success((result, nil, nil)))
                     return
                 }
 
                 let dailyScores = self.getDailyRiskScores(windows: windows, scoreType: .max)
+
+                self.logDebug("V2 Risk Calculation - Daily risk scores: \(windows)")
 
                 let lastDayOverMinimumRiskScore = dailyScores
                     .filter { $0.value >= Double(self.configuration.minimumRiskScore) }
@@ -519,8 +521,15 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     .sorted()
                     .last
 
-                guard let exposureDate = lastDayOverMinimumRiskScore,
-                    let daysSinceLastExposure = currentDate().days(sinceDate: exposureDate) else {
+                guard let exposureDate = lastDayOverMinimumRiskScore else {
+                    self.logDebug("V2 Risk Calculation - No date found with riskscore over minimumRiskScore(\(self.configuration.minimumRiskScore)")
+                    observer(.success((result, nil, nil)))
+                    return
+                }
+
+                self.logDebug("V2 Risk Calculation - Last day over minimum risk score: \(exposureDate)")
+
+                guard let daysSinceLastExposure = currentDate().days(sinceDate: exposureDate) else {
                     observer(.failure(ExposureDataError.internalError))
                     return
                 }
@@ -537,7 +546,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                               daysSinceLastExposure: Int?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
 
         // Check if we actually found an exposure
-        guard let _ = value.exposureReport, let daysSinceLastExposure = value.daysSinceLastExposure else {
+        guard let exposureReport = value.exposureReport, let daysSinceLastExposure = value.daysSinceLastExposure else {
             return .just((value.exposureDetectionResult, nil))
         }
 
@@ -550,6 +559,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                 return .just((value.exposureDetectionResult, nil))
             }
         }
+
+        logDebug("Triggering notification for \(exposureReport)")
 
         return .create { (observer) -> Disposable in
 

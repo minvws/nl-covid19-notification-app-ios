@@ -11,8 +11,4 @@ extension Date {
     func isBefore(_ otherDate: Date) -> Bool {
         otherDate.timeIntervalSince(self) > 0
     }
-
-    func days(sinceDate: Date) -> Int? {
-        return Calendar.current.dateComponents([.day], from: sinceDate, to: self).day
-    }
 }

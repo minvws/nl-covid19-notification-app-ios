@@ -429,7 +429,20 @@ final class NetworkManagerTests: XCTestCase {
 
     func test_getRiskCalculationParameters_requestSuccessShouldReturnModel() throws {
 
-        let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
+        let mockModel = RiskCalculationParameters(minimumRiskScore: 1,
+                                                  attenuationScores: [2],
+                                                  daysSinceLastExposureScores: [3],
+                                                  durationScores: [4],
+                                                  transmissionRiskScores: [5],
+                                                  durationAtAttenuationThresholds: [6],
+                                                  reportTypeWeights: [7],
+                                                  infectiousnessWeights: [8],
+                                                  attenuationBucketThresholdDb: [9],
+                                                  attenuationBucketWeights: [10],
+                                                  daysSinceExposureThreshold: 11,
+                                                  minimumWindowScore: 12,
+                                                  daysSinceOnsetToInfectiousness: [13])
+
         let mockData = try JSONEncoder().encode(mockModel)
 
         mockUrlSession(mockData: mockData)
@@ -453,8 +466,7 @@ final class NetworkManagerTests: XCTestCase {
 
     func test_getRiskCalculationParameters_unzipErrorShouldReturnError() throws {
 
-        let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
-        let mockData = try JSONEncoder().encode(mockModel)
+        let mockData = try JSONEncoder().encode(mockRiskCalculationParameters)
 
         mockUrlSession(mockData: mockData)
         mockResponseHandlers(readFromDiskData: mockData, simulateUnzipError: true)
@@ -475,10 +487,24 @@ final class NetworkManagerTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
+    private var mockRiskCalculationParameters: RiskCalculationParameters {
+        return RiskCalculationParameters(minimumRiskScore: 1,
+                                         attenuationScores: [2],
+                                         daysSinceLastExposureScores: [3],
+                                         durationScores: [4],
+                                         transmissionRiskScores: [5],
+                                         durationAtAttenuationThresholds: [6],
+                                         reportTypeWeights: [7],
+                                         infectiousnessWeights: [8],
+                                         attenuationBucketThresholdDb: [9],
+                                         attenuationBucketWeights: [10],
+                                         daysSinceExposureThreshold: 11,
+                                         minimumWindowScore: 12,
+                                         daysSinceOnsetToInfectiousness: [13])
+    }
     func test_getRiskCalculationParameters_validateSignatureErrorShouldReturnError() throws {
 
-        let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
-        let mockData = try JSONEncoder().encode(mockModel)
+        let mockData = try JSONEncoder().encode(mockRiskCalculationParameters)
 
         mockUrlSession(mockData: mockData)
         mockResponseHandlers(readFromDiskData: mockData, simulateValidateSignatureError: true)
@@ -501,8 +527,7 @@ final class NetworkManagerTests: XCTestCase {
 
     func test_getRiskCalculationParameters_ReadFromDiskErrorShouldReturnError() throws {
 
-        let mockModel = RiskCalculationParameters(minimumRiskScore: 1, attenuationScores: [2], daysSinceLastExposureScores: [3], durationScores: [4], transmissionRiskScores: [5], durationAtAttenuationThresholds: [6])
-        let mockData = try JSONEncoder().encode(mockModel)
+        let mockData = try JSONEncoder().encode(mockRiskCalculationParameters)
 
         mockUrlSession(mockData: mockData)
         mockResponseHandlers(readFromDiskData: mockData, simulateReadFromDiskError: true)

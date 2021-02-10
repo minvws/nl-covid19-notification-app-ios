@@ -41,6 +41,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         // Default handlers
         mockEnvironmentController.gaenRateLimitingType = .dailyLimit
+        mockEnvironmentController.maximumSupportedExposureNotificationVersion = .version1
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
