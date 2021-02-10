@@ -58,6 +58,10 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
     var environmentController: EnvironmentControlling {
         return EnvironmentController()
     }
+
+    var riskCalculationController: RiskCalculationControlling {
+        RiskCalculationController()
+    }
 }
 
 final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationProviderDependency>, ExposureDataOperationProviderBuildable {
@@ -71,6 +75,7 @@ final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationP
                                                  userNotificationCenter: dependencyProvider.userNotificationCenter,
                                                  application: dependencyProvider.application,
                                                  fileManager: dependencyProvider.fileManager,
-                                                 environmentController: dependencyProvider.environmentController)
+                                                 environmentController: dependencyProvider.environmentController,
+                                                 riskCalculationController: dependencyProvider.riskCalculationController)
     }
 }

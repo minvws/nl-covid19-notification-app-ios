@@ -65,7 +65,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
          userNotificationCenter: UserNotificationCenter,
          application: ApplicationControlling,
          fileManager: FileManaging,
-         environmentController: EnvironmentControlling) {
+         environmentController: EnvironmentControlling,
+         riskCalculationController: RiskCalculationControlling) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureManager = exposureManager
@@ -75,6 +76,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.application = application
         self.fileManager = fileManager
         self.environmentController = environmentController
+        self.riskCalculationController = riskCalculationController
 
         //        self.configuration = configuration
         self.configuration = ExposureRiskConfiguration(
@@ -558,23 +560,12 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     return
                 }
 
-                let dailyScores = self.getDailyRiskScores(windows: windows, scoreType: .max)
-
-                self.logDebug("V2 Risk Calculation - Daily risk scores: \(windows)")
-
-                let lastDayOverMinimumRiskScore = dailyScores
-                    .filter { $0.value >= Double(self.configuration.minimumRiskScore) }
-                    .map { $0.key }
-                    .sorted()
-                    .last
+                let lastDayOverMinimumRiskScore = self.riskCalculationController.getLastExposureDate(fromWindows: windows, withConfiguration: self.configuration)
 
                 guard let exposureDate = lastDayOverMinimumRiskScore else {
-                    self.logDebug("V2 Risk Calculation - No date found with riskscore over minimumRiskScore(\(self.configuration.minimumRiskScore)")
                     observer(.success((result, nil, nil)))
                     return
                 }
-
-                self.logDebug("V2 Risk Calculation - Last day over minimum risk score: \(exposureDate)")
 
                 guard let daysSinceLastExposure = currentDate().days(sinceDate: exposureDate) else {
                     observer(.failure(ExposureDataError.internalError))
@@ -730,61 +721,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         return dayCount
     }
 
-    // MARK: - API Version 2 calculation
-
-    // Gets the daily list of risk scores from the given exposure windows.
-    private func getDailyRiskScores(windows: [ExposureWindow],
-                                    scoreType: WindowScoreType) -> [Date: Double] {
-        var perDayScore = [Date: Double]()
-        windows.forEach { window in
-
-            let windowScore = self.getWindowScore(window: window)
-
-            if windowScore >= configuration.minimumWindowScore {
-                switch scoreType {
-                case WindowScoreType.max:
-                    perDayScore[window.date] = max(perDayScore[window.date] ?? 0.0, windowScore)
-                case WindowScoreType.sum:
-                    perDayScore[window.date] = perDayScore[window.date] ?? 0.0 + windowScore
-                }
-            }
-        }
-
-        return perDayScore
-    }
-
-    // Computes the risk score associated with a single window based on the exposure seconds, attenuation, and report type.
-    private func getWindowScore(window: ExposureWindow) -> Double {
-        let scansScore = window.scanInstances.reduce(Double(0)) { result, scan in
-            result + (Double(scan.secondsSinceLastScan) * self.getAttenuationMultiplier(forAttenuation: scan.typicalAttenuation))
-        }
-
-        return (scansScore * getReportTypeMultiplier(reportType: window.diagnosisReportType) * getInfectiousnessMultiplier(infectiousness: window.infectiousness))
-    }
-
-    private func getAttenuationMultiplier(forAttenuation attenuationDb: UInt8) -> Double {
-
-        var bucket = 3 // Default to "Other" bucket
-
-        if attenuationDb <= configuration.attenuationBucketThresholdDb[0] {
-            bucket = 0
-        } else if attenuationDb <= configuration.attenuationBucketThresholdDb[1] {
-            bucket = 1
-        } else if attenuationDb <= configuration.attenuationBucketThresholdDb[2] {
-            bucket = 2
-        }
-
-        return configuration.attenuationBucketWeights[bucket]
-    }
-
-    private func getReportTypeMultiplier(reportType: ENDiagnosisReportType) -> Double {
-        return configuration.reportTypeWeights[safe: Int(reportType.rawValue)] ?? 0.0
-    }
-
-    private func getInfectiousnessMultiplier(infectiousness: ENInfectiousness) -> Double {
-        return configuration.infectiousnessWeights[safe: Int(infectiousness.rawValue)] ?? 0.0
-    }
-
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureManager: ExposureManaging
@@ -795,4 +731,5 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let application: ApplicationControlling
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling
+    private let riskCalculationController: RiskCalculationControlling
 }
