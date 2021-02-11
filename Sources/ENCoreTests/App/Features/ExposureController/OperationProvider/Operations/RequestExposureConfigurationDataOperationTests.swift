@@ -127,6 +127,7 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
             durationLevelValues: [4],
             transmissionRiskLevelValues: [5],
             attenuationDurationThresholds: [6],
+            scoreType: WindowScoreType.sum.rawValue,
             reportTypeWeights: [7],
             infectiousnessWeights: [8],
             attenuationBucketThresholdDb: [9],

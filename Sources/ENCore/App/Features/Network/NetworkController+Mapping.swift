@@ -67,6 +67,7 @@ extension RiskCalculationParameters {
                                          durationLevelValues: durationScores,
                                          transmissionRiskLevelValues: transmissionRiskScores,
                                          attenuationDurationThresholds: durationAtAttenuationThresholds,
+                                         scoreType: scoreType ?? 0,
                                          reportTypeWeights: reportTypeWeights ?? [],
                                          infectiousnessWeights: infectiousnessWeights ?? [],
                                          attenuationBucketThresholdDb: attenuationBucketThresholdDb ?? [],

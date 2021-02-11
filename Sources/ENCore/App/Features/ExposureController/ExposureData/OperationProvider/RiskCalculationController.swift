@@ -16,13 +16,14 @@ protocol RiskCalculationControlling {
 
 class RiskCalculationController: RiskCalculationControlling, Logging {
 
-    func getLastExposureDate(fromWindows windows: [ExposureWindow], withConfiguration configuration: ExposureConfiguration) -> Date? {
+    func getLastExposureDate(fromWindows windows: [ExposureWindow],
+                             withConfiguration configuration: ExposureConfiguration) -> Date? {
 
         guard !windows.isEmpty else {
             return nil
         }
 
-        let dailyScores = getDailyRiskScores(windows: windows, scoreType: .max, configuration: configuration)
+        let dailyScores = getDailyRiskScores(windows: windows, configuration: configuration)
 
         self.logDebug("V2 Risk Calculation - Daily risk scores: \(windows)")
 
@@ -43,8 +44,12 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
 
     // Gets the daily list of risk scores from the given exposure windows.
     private func getDailyRiskScores(windows: [ExposureWindow],
-                                    scoreType: WindowScoreType,
                                     configuration: ExposureConfiguration) -> [Date: Double] {
+
+        guard let scoreType = WindowScoreType(rawValue: configuration.scoreType) else {
+            return [:]
+        }
+
         var perDayScore = [Date: Double]()
         windows.forEach { window in
 

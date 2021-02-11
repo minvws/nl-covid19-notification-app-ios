@@ -62,7 +62,7 @@ private class DefaultExposureConfiguration: ENExposureConfiguration {
 
         super.init()
 
-        self.minimumRiskScore = exposureConfiguration.minimumRiskScore
+        self.minimumRiskScore = 0 // 0 because we want to include all
         self.attenuationLevelValues = exposureConfiguration.attenuationLevelValues as [NSNumber]
         self.daysSinceLastExposureLevelValues = exposureConfiguration.daysSinceLastExposureLevelValues as [NSNumber]
         self.durationLevelValues = exposureConfiguration.durationLevelValues as [NSNumber]

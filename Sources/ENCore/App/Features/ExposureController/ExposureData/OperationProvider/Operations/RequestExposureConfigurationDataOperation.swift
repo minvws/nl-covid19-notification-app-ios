@@ -11,7 +11,7 @@ import RxSwift
 struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
 
     let identifier: String
-    let minimumRiskScore: UInt8
+    let minimumRiskScore: Double
 
     // v1
     let attenuationLevelValues: [UInt8]
@@ -21,6 +21,7 @@ struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     let attenuationDurationThresholds: [Int]
 
     // v2
+    var scoreType: Int
     var reportTypeWeights: [Double]
     var infectiousnessWeights: [Double]
     var attenuationBucketThresholdDb: [UInt8]

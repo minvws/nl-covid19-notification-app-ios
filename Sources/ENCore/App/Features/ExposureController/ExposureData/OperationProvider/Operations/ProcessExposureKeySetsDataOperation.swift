@@ -27,9 +27,9 @@ struct ExposureReport: Codable {
     let date: Date
 }
 
-enum WindowScoreType {
-    case sum
-    case max
+enum WindowScoreType: Int {
+    case sum = 0
+    case max = 1
 }
 
 #if USE_DEVELOPER_MENU || DEBUG
@@ -117,6 +117,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                 63,
                 73
             ],
+            scoreType: WindowScoreType.max.rawValue,
             reportTypeWeights: [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
             infectiousnessWeights: [0.0, 1.0, 2.0],
             attenuationBucketThresholdDb: [56, 62, 70],
@@ -153,9 +154,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
             .flatMap { detectionResult in
-                if self.environmentController.maximumSupportedExposureNotificationVersion == .version1 {
-                    return self.createV1Report(forResult: detectionResult)
-                } else if self.environmentController.maximumSupportedExposureNotificationVersion == .version2 {
+                if self.environmentController.maximumSupportedExposureNotificationVersion == .version2 {
                     return self.createV2Report(forResult: detectionResult)
                 } else {
                     return .error(ExposureDataError.internalError)
@@ -514,27 +513,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
 
         return Array(keySetHoldersToProcess.prefix(maximum))
-    }
-
-    /// Creates the final ExposureReport and triggers a local notification using the EN framework
-    private func createV1Report(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
-
-        guard let summary = result.exposureSummary else {
-            logDebug("No summary to trigger notification for")
-            return .just((result, nil, nil))
-        }
-
-        guard summary.maximumRiskScore >= configuration.minimumRiskScore else {
-            logDebug("Risk Score not high enough to see this as an exposure")
-            return .just((result, nil, nil))
-        }
-
-        guard let exposureDate = Calendar.current.date(byAdding: .day, value: -summary.daysSinceLastExposure, to: currentDate()) else {
-            logError("Error determining exposure date for summary: \(summary)")
-            return .just((result, nil, nil))
-        }
-
-        return .just((exposureDetectionResult: result, exposureReport: ExposureReport(date: exposureDate), daysSinceLastExposure: summary.daysSinceLastExposure))
     }
 
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
