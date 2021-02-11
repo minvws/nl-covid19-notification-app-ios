@@ -100,8 +100,12 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             return .empty()
         }
 
+        // Background state is determined up front because application.isInBackground should be called from the main thread
+        // determining state up front also allows us to easily pass it to all the functions that need it
+        let applicationIsInBackground = application.isInBackground
+
         // Batch detect exposures
-        return detectExposures(for: exposureKeySetHolders, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
+        return detectExposures(inBackground: applicationIsInBackground, for: exposureKeySetHolders, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
             // persist keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
@@ -113,7 +117,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                 }
             }
             // Send a local notification to inform the user of an exposure if neccesary
-            .flatMap(self.notifyUserOfExposure)
+            .flatMap {
+                self.notifyUserOfExposure(inBackground: applicationIsInBackground, value: $0)
+            }
             // persist the ExposureReport
             .flatMap(self.persist(exposureReport:))
             // remove all blobs for all keySetHolders - successful ones are processed and
@@ -157,7 +163,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     /// Returns ExposureKeySetDetectionResult in case of a success, or in case of an error that's
     /// not related to the framework's inactiveness. When an error is thrown from here exposure detection
     /// should be stopped until the user enables the framework
-    private func detectExposures(for keySetHolders: [ExposureKeySetHolder], exposureKeySetsStorageUrl: URL) -> Single<ExposureDetectionResult> {
+    private func detectExposures(inBackground applicationIsInBackground: Bool, for keySetHolders: [ExposureKeySetHolder], exposureKeySetsStorageUrl: URL) -> Single<ExposureDetectionResult> {
 
         // filter out keysets with missing local files
         let validKeySetHolders = keySetHolders.filter {
@@ -178,7 +184,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
 
         // Determine if we are limited by the number of daily API calls or KeySets
-        let applicationIsInBackground = application.isInBackground
         let numberOfDailyAPICallsLeft = getNumberOfDailyAPICallsLeft(inBackground: applicationIsInBackground)
         let numberOfDailyKeySetsLeft = getNumberOfDailyKeySetsLeft()
 
@@ -509,7 +514,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
-    private func notifyUserOfExposure(value: (exposureDetectionResult: ExposureDetectionResult,
+    private func notifyUserOfExposure(inBackground applicationIsInBackground: Bool,
+                                      value: (exposureDetectionResult: ExposureDetectionResult,
                                               exposureReport: ExposureReport?,
                                               daysSinceLastExposure: Int?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
 
@@ -556,7 +562,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     }
 
                     /// Store the unseen notification date, but only when the app is in the background
-                    if self.application.isInBackground {
+                    if applicationIsInBackground {
                         self.storageController.requestExclusiveAccess { storageController in
                             storageController.store(object: Date(),
                                                     identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { error in
