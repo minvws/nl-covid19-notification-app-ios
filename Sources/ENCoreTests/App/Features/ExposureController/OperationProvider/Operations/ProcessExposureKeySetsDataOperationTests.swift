@@ -43,11 +43,14 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         // Default handlers
         mockEnvironmentController.gaenRateLimitingType = .dailyLimit
-        mockEnvironmentController.maximumSupportedExposureNotificationVersion = .version1
+        mockEnvironmentController.maximumSupportedExposureNotificationVersion = .version2
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
             completion(.success(ExposureDetectionSummaryMock()))
+        }
+        mockExposureManager.getExposureWindowsHandler = { _, completion in
+            completion(.success([ExposureWindowMock()]))
         }
         mockFileManager.fileExistsHandler = { _, _ in true }
         mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
@@ -64,6 +67,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         }
 
         mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _ in }
+
+        mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
+            return Date()
+        }
 
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
@@ -309,11 +316,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let subscriptionExpectation = expectation(description: "subscriptionExpectation")
 
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            let exposureSummary = ExposureDetectionSummaryMock()
-            exposureSummary.daysSinceLastExposure = 3
-
-            completion(.success(exposureSummary))
+        mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
+            return Calendar.current.date(byAdding: .day, value: -3, to: Date())
         }
 
         sut.execute()
@@ -329,6 +333,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(notificationRequest.content.sound, .default)
         XCTAssertEqual(notificationRequest.content.badge, 0)
         XCTAssertEqual(notificationRequest.content.body, "You were near someone who has coronavirus 3 days ago. Read more in the app.")
+        XCTAssertEqual(mockRiskCalculationController.getLastExposureDateCallCount, 1)
     }
 
     func test_shouldPersistExposureReport() throws {

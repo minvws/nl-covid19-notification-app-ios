@@ -430,11 +430,6 @@ final class NetworkManagerTests: XCTestCase {
     func test_getRiskCalculationParameters_requestSuccessShouldReturnModel() throws {
 
         let mockModel = RiskCalculationParameters(minimumRiskScore: 1,
-                                                  attenuationScores: [2],
-                                                  daysSinceLastExposureScores: [3],
-                                                  durationScores: [4],
-                                                  transmissionRiskScores: [5],
-                                                  durationAtAttenuationThresholds: [6],
                                                   scoreType: WindowScoreType.sum.rawValue,
                                                   reportTypeWeights: [7],
                                                   infectiousnessWeights: [8],
@@ -442,7 +437,7 @@ final class NetworkManagerTests: XCTestCase {
                                                   attenuationBucketWeights: [10],
                                                   daysSinceExposureThreshold: 11,
                                                   minimumWindowScore: 12,
-                                                  daysSinceOnsetToInfectiousness: [13])
+                                                  daysSinceOnsetToInfectiousness: [])
 
         let mockData = try JSONEncoder().encode(mockModel)
 
@@ -490,11 +485,6 @@ final class NetworkManagerTests: XCTestCase {
 
     private var mockRiskCalculationParameters: RiskCalculationParameters {
         return RiskCalculationParameters(minimumRiskScore: 1,
-                                         attenuationScores: [2],
-                                         daysSinceLastExposureScores: [3],
-                                         durationScores: [4],
-                                         transmissionRiskScores: [5],
-                                         durationAtAttenuationThresholds: [6],
                                          scoreType: WindowScoreType.sum.rawValue,
                                          reportTypeWeights: [7],
                                          infectiousnessWeights: [8],
@@ -502,7 +492,7 @@ final class NetworkManagerTests: XCTestCase {
                                          attenuationBucketWeights: [10],
                                          daysSinceExposureThreshold: 11,
                                          minimumWindowScore: 12,
-                                         daysSinceOnsetToInfectiousness: [13])
+                                         daysSinceOnsetToInfectiousness: [])
     }
     func test_getRiskCalculationParameters_validateSignatureErrorShouldReturnError() throws {
 

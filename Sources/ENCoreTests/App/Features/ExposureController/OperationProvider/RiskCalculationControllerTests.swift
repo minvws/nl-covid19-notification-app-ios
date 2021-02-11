@@ -56,12 +56,11 @@ class RiskCalculationControllerTests: XCTestCase {
         XCTAssertEqual(exposureDate, newWindowDate)
     }
 
-    func test_getLastExposureDate_lowAttenuationShouldNotReturnDate() {
+    func test_getLastExposureDate_highestAttenuationShouldNotReturnDate() {
         let configuration = getMockExposureRiskConfiguration(minimumRiskScore: 200)
-        let scanInstanceDate = Date()
         let exposureWindows: [ExposureWindow] = [
-            ExposureWindowMock(calibrationConfidence: .high, date: scanInstanceDate, diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
-                ScanInstanceMock(minimumAttenuation: 10, typicalAttenuation: 10, secondsSinceLastScan: 300)
+            ExposureWindowMock(calibrationConfidence: .high, date: Date(), diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
+                ScanInstanceMock(minimumAttenuation: 100, typicalAttenuation: 100, secondsSinceLastScan: 300)
             ])
         ]
 
@@ -87,9 +86,8 @@ class RiskCalculationControllerTests: XCTestCase {
 
     func test_getLastExposureDate_summedScoreBelowMinimumScoreShouldNotReturnDate() {
         let configuration = getMockExposureRiskConfiguration(minimumRiskScore: 800, scoreType: .sum)
-        let scanInstanceDate = Date()
         let exposureWindows: [ExposureWindow] = [
-            ExposureWindowMock(calibrationConfidence: .high, date: scanInstanceDate, diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
+            ExposureWindowMock(calibrationConfidence: .high, date: Date(), diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
                 ScanInstanceMock(minimumAttenuation: 50, typicalAttenuation: 50, secondsSinceLastScan: 300),
                 ScanInstanceMock(minimumAttenuation: 50, typicalAttenuation: 50, secondsSinceLastScan: 300)
             ])
@@ -177,19 +175,12 @@ class RiskCalculationControllerTests: XCTestCase {
         scoreType: WindowScoreType = .max,
         reportTypeWeights: [Double] = [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
         infectiousnessWeights: [Double] = [0.0, 1.0, 1.0],
-        attenuationBucketWeights: [Double] = [1.0, 1.0, 1.0, 1.0]
+        attenuationBucketWeights: [Double] = [1.0, 1.0, 1.0, 0.0]
     ) -> ExposureRiskConfiguration {
 
         ExposureRiskConfiguration(
             identifier: "identifier",
             minimumRiskScore: minimumRiskScore,
-            attenuationLevelValues: [50, 60, 70],
-            daysSinceLastExposureLevelValues: [1, 1, 1, 1, 1, 1, 1, 1],
-            durationLevelValues: [0, 0, 0, 1, 2, 2, 2, 2],
-            transmissionRiskLevelValues: [0, 2, 2, 2, 0, 0, 0, 0],
-            attenuationDurationThresholds: [63, 73],
-
-            // v2
             scoreType: scoreType.rawValue,
             reportTypeWeights: reportTypeWeights,
             infectiousnessWeights: infectiousnessWeights,
@@ -197,7 +188,37 @@ class RiskCalculationControllerTests: XCTestCase {
             attenuationBucketWeights: attenuationBucketWeights,
             daysSinceExposureThreshold: 10,
             minimumWindowScore: 0,
-            daysSinceOnsetToInfectiousness: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+            daysSinceOnsetToInfectiousness: [
+                .init(daysSinceOnsetOfSymptoms: -14, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -13, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -12, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -11, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -10, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -9, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -8, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -7, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -6, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -5, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -4, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -3, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -2, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -1, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 0, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 1, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 2, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 3, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 4, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 5, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 6, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 7, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 8, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 9, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 10, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 11, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 12, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 13, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 14, infectiousness: 1)
+            ]
         )
     }
 }

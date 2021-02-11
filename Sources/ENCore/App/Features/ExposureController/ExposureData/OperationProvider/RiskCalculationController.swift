@@ -34,7 +34,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
             .last
 
         if let exposureDate = lastDayOverMinimumRiskScore {
-            self.logDebug("V2 Risk Calculation - Last day over minimum risk score: \(exposureDate)")
+            self.logDebug("V2 Risk Calculation - Latest day over minimum risk score: \(exposureDate)")
         } else {
             self.logDebug("V2 Risk Calculation - No date found with riskscore over minimumRiskScore(\(configuration.minimumRiskScore)")
         }
