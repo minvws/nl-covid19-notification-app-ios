@@ -14,9 +14,9 @@ struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     var scoreType: Int
     var reportTypeWeights: [Double]
     var infectiousnessWeights: [Double]
-    var attenuationBucketThresholdDb: [UInt8]
+    var attenuationBucketThresholdDb: [Int]
     var attenuationBucketWeights: [Double]
-    var daysSinceExposureThreshold: UInt
+    var daysSinceExposureThreshold: Int
     var minimumWindowScore: Double
     var daysSinceOnsetToInfectiousness: [DayInfectiousness]
 }

@@ -20,13 +20,13 @@ protocol ExposureConfiguration {
     var infectiousnessWeights: [Double] { get }
 
     /// This list must have 3 elements: the immediate, near, and medium thresholds
-    var attenuationBucketThresholdDb: [UInt8] { get }
+    var attenuationBucketThresholdDb: [Int] { get }
 
     /// This list must have 4 elements, corresponding to the weights for the 4 buckets.
     var attenuationBucketWeights: [Double] { get }
 
     /// Include exposures for only the last X days
-    var daysSinceExposureThreshold: UInt { get }
+    var daysSinceExposureThreshold: Int { get }
 
     /// Minimum risk score sum to trigger an exposure notification
     var minimumWindowScore: Double { get }
