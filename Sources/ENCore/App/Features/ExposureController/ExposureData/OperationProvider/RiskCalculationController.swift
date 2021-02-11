@@ -16,8 +16,7 @@ protocol RiskCalculationControlling {
 
 class RiskCalculationController: RiskCalculationControlling, Logging {
 
-    func getLastExposureDate(fromWindows windows: [ExposureWindow],
-                             withConfiguration configuration: ExposureConfiguration) -> Date? {
+    func getLastExposureDate(fromWindows windows: [ExposureWindow], withConfiguration configuration: ExposureConfiguration) -> Date? {
 
         guard !windows.isEmpty else {
             return nil
@@ -25,7 +24,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
 
         let dailyScores = getDailyRiskScores(windows: windows, configuration: configuration)
 
-        self.logDebug("V2 Risk Calculation - Daily risk scores: \(windows)")
+        self.logDebug("Risk Calculation - Daily risk scores: \(windows)")
 
         let lastDayOverMinimumRiskScore = dailyScores
             .filter { $0.value >= Double(configuration.minimumRiskScore) }
@@ -34,17 +33,16 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
             .last
 
         if let exposureDate = lastDayOverMinimumRiskScore {
-            self.logDebug("V2 Risk Calculation - Latest day over minimum risk score: \(exposureDate)")
+            self.logDebug("Risk Calculation - Latest day over minimum risk score: \(exposureDate)")
         } else {
-            self.logDebug("V2 Risk Calculation - No date found with riskscore over minimumRiskScore(\(configuration.minimumRiskScore)")
+            self.logDebug("Risk Calculation - No date found with riskscore over minimumRiskScore (\(configuration.minimumRiskScore)")
         }
 
         return lastDayOverMinimumRiskScore
     }
 
     // Gets the daily list of risk scores from the given exposure windows.
-    private func getDailyRiskScores(windows: [ExposureWindow],
-                                    configuration: ExposureConfiguration) -> [Date: Double] {
+    private func getDailyRiskScores(windows: [ExposureWindow], configuration: ExposureConfiguration) -> [Date: Double] {
 
         guard let scoreType = WindowScoreType(rawValue: configuration.scoreType) else {
             return [:]
@@ -69,19 +67,23 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
     }
 
     // Computes the risk score associated with a single window based on the exposure seconds, attenuation, and report type.
-    private func getWindowScore(window: ExposureWindow,
-                                configuration: ExposureConfiguration) -> Double {
+    private func getWindowScore(window: ExposureWindow, configuration: ExposureConfiguration) -> Double {
+
         let scansScore = window.scans.reduce(Double(0)) { result, scan in
-            result + (Double(scan.secondsSinceLastScan) * self.getAttenuationMultiplier(forAttenuation: scan.typicalAttenuation, configuration: configuration))
+            let secondsSinceLastScan = Double(scan.secondsSinceLastScan)
+            let attenuationMultiplier = self.getAttenuationMultiplier(forAttenuation: scan.typicalAttenuation, configuration: configuration)
+            return result + (secondsSinceLastScan * attenuationMultiplier)
         }
 
-        return (scansScore * getReportTypeMultiplier(reportType: window.diagnosisReportType, configuration: configuration) * getInfectiousnessMultiplier(infectiousness: window.infectiousness, configuration: configuration))
+        let reportTypeMultiplier = getReportTypeMultiplier(reportType: window.diagnosisReportType, configuration: configuration)
+        let infectiousnessMultiplier = getInfectiousnessMultiplier(infectiousness: window.infectiousness, configuration: configuration)
+
+        return scansScore * reportTypeMultiplier * infectiousnessMultiplier
     }
 
-    private func getAttenuationMultiplier(forAttenuation attenuationDb: UInt8,
-                                          configuration: ExposureConfiguration) -> Double {
+    private func getAttenuationMultiplier(forAttenuation attenuationDb: UInt8, configuration: ExposureConfiguration) -> Double {
 
-        var bucket = 3 // Default to "Other" bucket
+        let bucket: Int
 
         if attenuationDb <= configuration.attenuationBucketThresholdDb[0] {
             bucket = 0
@@ -89,18 +91,18 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
             bucket = 1
         } else if attenuationDb <= configuration.attenuationBucketThresholdDb[2] {
             bucket = 2
+        } else {
+            bucket = 3
         }
 
-        return configuration.attenuationBucketWeights[bucket]
+        return configuration.attenuationBucketWeights[safe: bucket] ?? 0.0
     }
 
-    private func getReportTypeMultiplier(reportType: ENDiagnosisReportType,
-                                         configuration: ExposureConfiguration) -> Double {
+    private func getReportTypeMultiplier(reportType: ENDiagnosisReportType, configuration: ExposureConfiguration) -> Double {
         return configuration.reportTypeWeights[safe: Int(reportType.rawValue)] ?? 0.0
     }
 
-    private func getInfectiousnessMultiplier(infectiousness: ENInfectiousness,
-                                             configuration: ExposureConfiguration) -> Double {
+    private func getInfectiousnessMultiplier(infectiousness: ENInfectiousness, configuration: ExposureConfiguration) -> Double {
         return configuration.infectiousnessWeights[safe: Int(infectiousness.rawValue)] ?? 0.0
     }
 }

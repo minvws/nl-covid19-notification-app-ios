@@ -39,6 +39,7 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
 
     func execute() -> Single<ExposureConfiguration> {
 
+        // Hardcoded ExposureRiskConfiguration until the API serves us this via a new endpoint
         return .just(ExposureRiskConfiguration(
             identifier: "identifier",
             minimumRiskScore: 0,

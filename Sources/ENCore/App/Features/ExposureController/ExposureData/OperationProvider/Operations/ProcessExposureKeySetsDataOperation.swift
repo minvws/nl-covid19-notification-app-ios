@@ -484,13 +484,13 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
             self.exposureManager.getExposureWindows(summary: summary) { windowResult in
                 if case let .failure(error) = windowResult {
-                    self.logError("V2 Risk Calculation - Error getting Exposure Windows: \(error)")
+                    self.logError("Risk Calculation - Error getting Exposure Windows: \(error)")
                     observer(.failure(error))
                     return
                 }
 
                 guard case let .success(exposureWindows) = windowResult, let windows = exposureWindows else {
-                    self.logDebug("V2 Risk Calculation - No Exposure Windows found")
+                    self.logDebug("Risk Calculation - No Exposure Windows found")
                     observer(.success((result, nil, nil)))
                     return
                 }
