@@ -35,9 +35,7 @@ public final class Localization {
                 return (arguments.count > 0) ? String(format: value, arguments: arguments) : value
             }
             let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
-            if override != "Base" {
-                print(override)
-            }
+
             return (arguments.count > 0) ? String(format: localizedString, arguments: arguments) : localizedString
         }
 

@@ -139,7 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
         logDebug("AppDelegate - handle(backgroundTask:)")
 
         guard let appRoot = appRoot else {
-            return print("🔥 ENCoreBridge is `nil`")
+            return logError("ENCoreBridge is `nil`")
         }
 
         appRoot.handle(backgroundTask: backgroundTask)

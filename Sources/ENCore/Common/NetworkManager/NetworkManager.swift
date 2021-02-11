@@ -98,7 +98,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
                         case let .success(data):
                             completion(.success(data))
-                            self.logDebug("NetworkManager.getManifest completed")
+                            self.logDebug("NetworkManager.getExposureKeySet completed")
                         case let .failure(error):
                             self.logError("Error downloading from url: \(result.1): \(error)")
                             completion(.failure(error.asNetworkError))
@@ -412,7 +412,7 @@ final class NetworkManager: NetworkManaging, Logging {
         }
 
         let diff = CFAbsoluteTimeGetCurrent() - start
-        print("Unzip Took \(diff) seconds")
+        self.logDebug("Unzip Took \(diff) seconds")
 
         // verify signature
         let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler
