@@ -77,55 +77,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.fileManager = fileManager
         self.environmentController = environmentController
         self.riskCalculationController = riskCalculationController
-
-        //        self.configuration = configuration
-        self.configuration = ExposureRiskConfiguration(
-            identifier: "identifier",
-            minimumRiskScore: 0,
-            attenuationLevelValues: [56, 62, 70],
-            daysSinceLastExposureLevelValues: [
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1
-            ],
-            durationLevelValues: [
-                0,
-                0,
-                0,
-                1,
-                2,
-                2,
-                2,
-                2
-            ],
-            transmissionRiskLevelValues: [
-                0,
-                2,
-                2,
-                2,
-                0,
-                0,
-                0,
-                0
-            ],
-            attenuationDurationThresholds: [
-                63,
-                73
-            ],
-            scoreType: WindowScoreType.max.rawValue,
-            reportTypeWeights: [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
-            infectiousnessWeights: [0.0, 1.0, 2.0],
-            attenuationBucketThresholdDb: [56, 62, 70],
-            attenuationBucketWeights: [1.0, 1.0, 0.3, 0.0],
-            daysSinceExposureThreshold: 10,
-            minimumWindowScore: 0,
-            daysSinceOnsetToInfectiousness: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        )
+        self.configuration = configuration
     }
 
     func execute() -> Completable {
@@ -155,7 +107,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             // create an exposureReport and trigger a local notification
             .flatMap { detectionResult in
                 if self.environmentController.maximumSupportedExposureNotificationVersion == .version2 {
-                    return self.createV2Report(forResult: detectionResult)
+                    return self.createReport(forResult: detectionResult)
                 } else {
                     return .error(ExposureDataError.internalError)
                 }
@@ -516,7 +468,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
-    private func createV2Report(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
+    private func createReport(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
 
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")

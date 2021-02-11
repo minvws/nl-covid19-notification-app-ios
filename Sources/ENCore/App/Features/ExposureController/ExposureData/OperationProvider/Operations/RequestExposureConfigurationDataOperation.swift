@@ -9,18 +9,8 @@ import Foundation
 import RxSwift
 
 struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
-
     let identifier: String
     let minimumRiskScore: Double
-
-    // v1
-    let attenuationLevelValues: [UInt8]
-    let daysSinceLastExposureLevelValues: [UInt8]
-    let durationLevelValues: [UInt8]
-    let transmissionRiskLevelValues: [UInt8]
-    let attenuationDurationThresholds: [Int]
-
-    // v2
     var scoreType: Int
     var reportTypeWeights: [Double]
     var infectiousnessWeights: [Double]
@@ -28,7 +18,7 @@ struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     var attenuationBucketWeights: [Double]
     var daysSinceExposureThreshold: UInt
     var minimumWindowScore: Double
-    var daysSinceOnsetToInfectiousness: [UInt8]
+    var daysSinceOnsetToInfectiousness: [DayInfectiousness]
 }
 
 /// @mockable
@@ -48,15 +38,59 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
     // MARK: - ExposureDataOperation
 
     func execute() -> Single<ExposureConfiguration> {
-        if let exposureConfiguration = retrieveStoredConfiguration(), exposureConfiguration.identifier == exposureConfigurationIdentifier {
-            return .just(exposureConfiguration)
-        }
 
-        return networkController
-            .exposureRiskConfigurationParameters(identifier: exposureConfigurationIdentifier)
-            .subscribe(on: MainScheduler.instance)
-            .catch { throw $0.asExposureDataError }
-            .flatMap(store(exposureConfiguration:))
+        return .just(ExposureRiskConfiguration(
+            identifier: "identifier",
+            minimumRiskScore: 0,
+            scoreType: WindowScoreType.max.rawValue,
+            reportTypeWeights: [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
+            infectiousnessWeights: [0.0, 1.0, 2.0],
+            attenuationBucketThresholdDb: [56, 62, 70],
+            attenuationBucketWeights: [1.0, 1.0, 0.3, 0.0],
+            daysSinceExposureThreshold: 10,
+            minimumWindowScore: 0,
+            daysSinceOnsetToInfectiousness: [
+                .init(daysSinceOnsetOfSymptoms: -14, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -13, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -12, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -11, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -10, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -9, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -8, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -7, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -6, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -5, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -4, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -3, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -2, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: -1, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 0, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 1, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 2, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 3, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 4, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 5, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 6, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 7, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 8, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 9, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 10, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 11, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 12, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 13, infectiousness: 1),
+                .init(daysSinceOnsetOfSymptoms: 14, infectiousness: 1)
+            ]
+        ))
+
+//        if let exposureConfiguration = retrieveStoredConfiguration(), exposureConfiguration.identifier == exposureConfigurationIdentifier {
+//            return .just(exposureConfiguration)
+//        }
+//
+//        return networkController
+//            .exposureRiskConfigurationParameters(identifier: exposureConfigurationIdentifier)
+//            .subscribe(on: MainScheduler.instance)
+//            .catch { throw $0.asExposureDataError }
+//            .flatMap(store(exposureConfiguration:))
     }
 
     // MARK: - Private

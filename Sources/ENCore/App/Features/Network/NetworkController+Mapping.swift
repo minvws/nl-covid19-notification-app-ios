@@ -60,21 +60,17 @@ extension AppConfig {
 
 extension RiskCalculationParameters {
     func asExposureRiskConfiguration(identifier: String) -> ExposureRiskConfiguration {
-        return ExposureRiskConfiguration(identifier: identifier,
-                                         minimumRiskScore: minimumRiskScore,
-                                         attenuationLevelValues: attenuationScores,
-                                         daysSinceLastExposureLevelValues: daysSinceLastExposureScores,
-                                         durationLevelValues: durationScores,
-                                         transmissionRiskLevelValues: transmissionRiskScores,
-                                         attenuationDurationThresholds: durationAtAttenuationThresholds,
-                                         scoreType: scoreType ?? 0,
-                                         reportTypeWeights: reportTypeWeights ?? [],
-                                         infectiousnessWeights: infectiousnessWeights ?? [],
-                                         attenuationBucketThresholdDb: attenuationBucketThresholdDb ?? [],
-                                         attenuationBucketWeights: attenuationBucketWeights ?? [],
-                                         daysSinceExposureThreshold: daysSinceExposureThreshold ?? 0,
-                                         minimumWindowScore: minimumWindowScore ?? 0,
-                                         daysSinceOnsetToInfectiousness: daysSinceOnsetToInfectiousness ?? []
+        return ExposureRiskConfiguration(
+            identifier: identifier,
+            minimumRiskScore: minimumRiskScore,
+            scoreType: scoreType,
+            reportTypeWeights: reportTypeWeights,
+            infectiousnessWeights: infectiousnessWeights,
+            attenuationBucketThresholdDb: attenuationBucketThresholdDb,
+            attenuationBucketWeights: attenuationBucketWeights,
+            daysSinceExposureThreshold: daysSinceExposureThreshold,
+            minimumWindowScore: minimumWindowScore,
+            daysSinceOnsetToInfectiousness: daysSinceOnsetToInfectiousness
         )
     }
 }

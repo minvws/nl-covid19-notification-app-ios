@@ -62,54 +62,44 @@ private class DefaultExposureConfiguration: ENExposureConfiguration {
 
         super.init()
 
-        self.minimumRiskScore = 0 // 0 because we want to include all
-        self.attenuationLevelValues = exposureConfiguration.attenuationLevelValues as [NSNumber]
-        self.daysSinceLastExposureLevelValues = exposureConfiguration.daysSinceLastExposureLevelValues as [NSNumber]
-        self.durationLevelValues = exposureConfiguration.durationLevelValues as [NSNumber]
-        self.transmissionRiskLevelValues = exposureConfiguration.transmissionRiskLevelValues as [NSNumber]
-        self.metadata = ["attenuationDurationThresholds": exposureConfiguration.attenuationDurationThresholds]
+        minimumRiskScoreFullRange = exposureConfiguration.minimumRiskScore
 
-        // Needed since EN API v2 version
-        self.reportTypeNoneMap = .confirmedTest
-        self.infectiousnessForDaysSinceOnsetOfSymptoms = [
-            -14: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -13: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -12: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -11: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -10: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -9: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -8: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -7: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -6: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -5: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -4: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -3: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -2: NSNumber(value: ENInfectiousness.standard.rawValue),
-            -1: NSNumber(value: ENInfectiousness.standard.rawValue),
-            0: NSNumber(value: ENInfectiousness.standard.rawValue),
-            1: NSNumber(value: ENInfectiousness.standard.rawValue),
-            2: NSNumber(value: ENInfectiousness.standard.rawValue),
-            3: NSNumber(value: ENInfectiousness.standard.rawValue),
-            4: NSNumber(value: ENInfectiousness.standard.rawValue),
-            5: NSNumber(value: ENInfectiousness.standard.rawValue),
-            6: NSNumber(value: ENInfectiousness.standard.rawValue),
-            7: NSNumber(value: ENInfectiousness.standard.rawValue),
-            8: NSNumber(value: ENInfectiousness.standard.rawValue),
-            9: NSNumber(value: ENInfectiousness.standard.rawValue),
-            10: NSNumber(value: ENInfectiousness.standard.rawValue),
-            11: NSNumber(value: ENInfectiousness.standard.rawValue),
-            12: NSNumber(value: ENInfectiousness.standard.rawValue),
-            13: NSNumber(value: ENInfectiousness.standard.rawValue),
-            14: NSNumber(value: ENInfectiousness.standard.rawValue)
-        ]
+        immediateDurationWeight = exposureConfiguration.attenuationBucketWeights[0]
+        nearDurationWeight = exposureConfiguration.attenuationBucketWeights[1]
+        mediumDurationWeight = exposureConfiguration.attenuationBucketWeights[2]
+        otherDurationWeight = exposureConfiguration.attenuationBucketWeights[3]
+
+        var infectiousnessMap = [NSNumber: NSNumber]()
+
+        exposureConfiguration.daysSinceOnsetToInfectiousness.forEach { item in
+            infectiousnessMap[NSNumber(integerLiteral: item.daysSinceOnsetOfSymptoms)] = NSNumber(integerLiteral: item.infectiousness)
+        }
 
         if #available(iOS 14.0, *) {
-            self.infectiousnessForDaysSinceOnsetOfSymptoms?[NSNumber(value: ENDaysSinceOnsetOfSymptomsUnknown)] = NSNumber(value: ENInfectiousness.standard.rawValue)
+            infectiousnessMap[NSNumber(value: ENDaysSinceOnsetOfSymptomsUnknown)] = NSNumber(value: ENInfectiousness.standard.rawValue)
         } else {
             // ENDaysSinceOnsetOfSymptomsUnknown is not available
             // in earlier versions of iOS; use an equivalent value
-            self.infectiousnessForDaysSinceOnsetOfSymptoms?[NSNumber(value: NSIntegerMax)] = NSNumber(value: ENInfectiousness.standard.rawValue)
+            infectiousnessMap[NSNumber(value: NSIntegerMax)] = NSNumber(value: ENInfectiousness.standard.rawValue)
         }
+
+        infectiousnessForDaysSinceOnsetOfSymptoms = infectiousnessMap
+
+        infectiousnessStandardWeight = exposureConfiguration.infectiousnessWeights[1]
+        infectiousnessHighWeight = exposureConfiguration.infectiousnessWeights[2]
+
+        reportTypeConfirmedTestWeight = exposureConfiguration.reportTypeWeights[1]
+        reportTypeConfirmedClinicalDiagnosisWeight = exposureConfiguration.reportTypeWeights[2]
+        reportTypeSelfReportedWeight = exposureConfiguration.reportTypeWeights[3]
+        reportTypeRecursiveWeight = exposureConfiguration.reportTypeWeights[4]
+        reportTypeNoneMap = .confirmedTest
+
+        attenuationDurationThresholds = exposureConfiguration.attenuationBucketThresholdDb.compactMap {
+            let dbInt = Int($0)
+            return NSNumber(integerLiteral: dbInt)
+        }
+
+        daysSinceLastExposureThreshold = Int(exposureConfiguration.daysSinceExposureThreshold)
     }
 
     // MARK: - Private
