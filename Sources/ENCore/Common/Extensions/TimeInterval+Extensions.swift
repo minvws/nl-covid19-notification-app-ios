@@ -21,6 +21,10 @@ extension TimeInterval {
         return TimeInterval(hours * 3600)
     }
 
+    static func days(_ days: Double) -> TimeInterval {
+        return TimeInterval(hours(24) * days)
+    }
+
     func roundedToUpperMinute() -> TimeInterval {
         let fullMinutes = Int(self / .minutes(1))
         let secondsWithinMinute = self.truncatingRemainder(dividingBy: .minutes(1))

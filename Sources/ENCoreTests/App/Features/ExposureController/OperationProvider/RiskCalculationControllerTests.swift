@@ -38,18 +38,22 @@ class RiskCalculationControllerTests: XCTestCase {
         XCTAssertNil(exposureDate)
     }
 
-    func test_getLastExposureDate_riskyScanInstanceShouldReturnDate() {
+    func test_getLastExposureDate_riskyScanInstanceShouldReturnLastDate() {
         let configuration = getMockExposureRiskConfiguration(minimumRiskScore: 200)
-        let scanInstanceDate = Date()
+        let newWindowDate = Date()
+        let oldWindowDate = newWindowDate.addingTimeInterval(.days(-3)) // some date in the past
         let exposureWindows: [ExposureWindow] = [
-            ExposureWindowMock(calibrationConfidence: .high, date: scanInstanceDate, diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
+            ExposureWindowMock(calibrationConfidence: .high, date: newWindowDate, diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
+                ScanInstanceMock(minimumAttenuation: 50, typicalAttenuation: 50, secondsSinceLastScan: 300)
+            ]),
+            ExposureWindowMock(calibrationConfidence: .high, date: oldWindowDate, diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
                 ScanInstanceMock(minimumAttenuation: 50, typicalAttenuation: 50, secondsSinceLastScan: 300)
             ])
         ]
 
         let exposureDate = sut.getLastExposureDate(fromWindows: exposureWindows, withConfiguration: configuration)
 
-        XCTAssertEqual(exposureDate, scanInstanceDate)
+        XCTAssertEqual(exposureDate, newWindowDate)
     }
 
     func test_getLastExposureDate_lowAttenuationShouldNotReturnDate() {
