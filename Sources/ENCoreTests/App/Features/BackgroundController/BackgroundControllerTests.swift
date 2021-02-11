@@ -9,6 +9,7 @@ import BackgroundTasks
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import XCTest
 
 final class BackgroundControllerTests: XCTestCase {
@@ -49,7 +50,7 @@ final class BackgroundControllerTests: XCTestCase {
         exposureManager.getExposureNotificationStatusHandler = {
             return .active
         }
-        exposureController.activateHandler = { _ in
+        exposureController.activateHandler = {
             return .empty()
         }
         exposureController.updateWhenRequiredHandler = {
@@ -107,6 +108,148 @@ final class BackgroundControllerTests: XCTestCase {
 
         XCTAssertEqual(exposureController.sendNotificationIfAppShouldUpdateCallCount, 1)
         XCTAssertEqual(exposureController.lastOpenedNotificationCheckCallCount, 1)
+    }
+
+    func test_refresh_shouldActivateExposureController() {
+
+        let completableCreationExpectation = expectation(description: "completable created")
+        let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
+
+        exposureController.activateHandler = {
+            completableCreationExpectation.fulfill()
+            return Completable.empty().do(onSubscribe: {
+                completableSubscriptionExpectation.fulfill()
+            })
+        }
+
+        controller.refresh(task: nil)
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_refresh_shouldUpdateStatusStream() {
+
+        controller.refresh(task: nil)
+
+        XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
+    }
+
+    func test_refresh_shouldFetchAndProcessKeySets() {
+        let completableCreationExpectation = expectation(description: "completable created")
+        let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
+
+        exposureController.updateWhenRequiredHandler = {
+            completableCreationExpectation.fulfill()
+            return Completable.empty().do(onSubscribe: {
+                completableSubscriptionExpectation.fulfill()
+            })
+        }
+
+        controller.refresh(task: nil)
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_refresh_shouldProcessPendingUploads() {
+        let completableCreationExpectation = expectation(description: "completable created")
+        let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
+
+        exposureController.updateAndProcessPendingUploadsHandler = {
+            completableCreationExpectation.fulfill()
+            return Completable.empty().do(onSubscribe: {
+                completableSubscriptionExpectation.fulfill()
+            })
+        }
+
+        controller.refresh(task: nil)
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_refresh_shouldSendInactiveFrameworkNotificationIfNeeded() {
+        let completableCreationExpectation = expectation(description: "completable created")
+        let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
+
+        exposureController.exposureNotificationStatusCheckHandler = {
+            completableCreationExpectation.fulfill()
+            return Completable.empty().do(onSubscribe: {
+                completableSubscriptionExpectation.fulfill()
+            })
+        }
+
+        controller.refresh(task: nil)
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_refresh_shouldSendNotificationIfAppShouldUpdate() {
+        let completableCreationExpectation = expectation(description: "completable created")
+        let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
+
+        exposureController.sendNotificationIfAppShouldUpdateHandler = {
+            completableCreationExpectation.fulfill()
+            return Completable.empty().do(onSubscribe: {
+                completableSubscriptionExpectation.fulfill()
+            })
+        }
+
+        controller.refresh(task: nil)
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_refresh_shouldUpdateTreatmentPerspective() {
+        let completableCreationExpectation = expectation(description: "completable created")
+        let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
+
+        exposureController.updateTreatmentPerspectiveHandler = {
+            completableCreationExpectation.fulfill()
+            return Completable.empty().do(onSubscribe: {
+                completableSubscriptionExpectation.fulfill()
+            })
+        }
+
+        controller.refresh(task: nil)
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_refresh_shouldSendExposureReminderNotificationIfNeeded() {
+        let completableCreationExpectation = expectation(description: "completable created")
+        let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
+
+        exposureController.lastOpenedNotificationCheckHandler = {
+            completableCreationExpectation.fulfill()
+            return Completable.empty().do(onSubscribe: {
+                completableSubscriptionExpectation.fulfill()
+            })
+        }
+
+        controller.refresh(task: nil)
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_refresh_shouldProcessDecoyRegisterAndStopKeys() {
+        let exp = expectation(description: "stopkeys")
+
+        exposureManager.getExposureNotificationStatusHandler = {
+            return .active
+        }
+
+        dataController.canProcessDecoySequence = true
+        exposureController.getDecoyProbabilityHandler = { .just(1) }
+        exposureController.requestLabConfirmationKeyHandler = { completion in
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
+        }
+        exposureController.getPaddingHandler = {
+            return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
+        }
+
+        networkController.stopKeysHandler = { _ in
+            exp.fulfill()
+            return .empty()
+        }
+
+        controller.refresh(task: nil)
+
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertEqual(networkController.stopKeysCallCount, 1)
+        XCTAssertEqual(exposureController.getPaddingCallCount, 1)
     }
 
     func test_handleDecoyStopkeysWithoutTask() {
