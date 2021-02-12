@@ -39,7 +39,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
 
         let dailyScores = getDailyRiskScores(windows: windows, configuration: configuration)
 
-        self.logDebug("Risk Calculation - Daily risk scores: \(windows)")
+        self.logDebug("Risk Calculation - Exposure Windows: \(windows.count). Daily risk scores: \(dailyScores)")
 
         let lastDayOverMinimumRiskScore = dailyScores
             .filter { $0.value >= Double(configuration.minimumRiskScore) }
@@ -96,13 +96,20 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
         let scansScore = window.scans.reduce(Double(0)) { result, scan in
             let secondsSinceLastScan = Double(scan.secondsSinceLastScan)
             let attenuationMultiplier = self.getAttenuationMultiplier(forAttenuation: scan.typicalAttenuation, configuration: configuration)
+            self.logDebug("ExposureWindow Scan: typicalAttenuation: \(scan.typicalAttenuation), attenuationMultiplier: \(attenuationMultiplier)")
             return result + (secondsSinceLastScan * attenuationMultiplier)
         }
 
         let reportTypeMultiplier = getReportTypeMultiplier(reportType: window.diagnosisReportType, configuration: configuration)
-        let infectiousnessMultiplier = getInfectiousnessMultiplier(infectiousness: window.infectiousness, configuration: configuration)
+        self.logDebug("ReportTypeMultiplier: \(reportTypeMultiplier)")
 
-        return scansScore * reportTypeMultiplier * infectiousnessMultiplier
+        let infectiousnessMultiplier = getInfectiousnessMultiplier(infectiousness: window.infectiousness, configuration: configuration)
+        self.logDebug("infectiousnessMultiplier: \(infectiousnessMultiplier)")
+
+        let windowScore = scansScore * reportTypeMultiplier * infectiousnessMultiplier
+        self.logDebug("windowScore: \(windowScore)")
+
+        return windowScore
     }
 
     /// Gets a multiplier value for the given attentuation level. The window's duration of the exposure will be multiplied by this value
@@ -133,6 +140,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
     ///   - configuration: Configuration that includes calculation parameters
     /// - Returns: A multiplier for the windows scan score
     private func getReportTypeMultiplier(reportType: ENDiagnosisReportType, configuration: ExposureConfiguration) -> Double {
+        logDebug("reportType: \(reportType.rawValue)")
         return configuration.reportTypeWeights[safe: Int(reportType.rawValue)] ?? 0.0
     }
 

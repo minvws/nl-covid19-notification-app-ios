@@ -44,7 +44,7 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
         // Hardcoded ExposureRiskConfiguration until the API serves us this via a new endpoint
         return .just(ExposureRiskConfiguration(
             identifier: "identifier",
-            minimumRiskScore: 0,
+            minimumRiskScore: 900,
             windowCalculationType: WindowScoreType.max.rawValue,
             reportTypeWeights: [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
             reportTypeWhenMissing: 1,
@@ -52,7 +52,7 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
             attenuationBucketThresholdDb: [56, 62, 70],
             attenuationBucketWeights: [1.0, 1.0, 0.3, 0.0],
             daysSinceExposureThreshold: 10,
-            minimumWindowScore: 0,
+            minimumWindowScore: 900, // 900 seconds is 15 minutes
             daysSinceOnsetToInfectiousness: [
                 .init(daysSinceOnsetOfSymptoms: -14, infectiousness: 1),
                 .init(daysSinceOnsetOfSymptoms: -13, infectiousness: 1),
