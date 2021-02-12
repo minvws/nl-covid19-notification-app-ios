@@ -11,13 +11,13 @@ import Foundation
 import RxSwift
 import UIKit
 
-struct ExposureKeySetDetectionResult {
+private struct ExposureKeySetDetectionResult {
     let keySetHolder: ExposureKeySetHolder
     let processDate: Date?
     let isValid: Bool
 }
 
-struct ExposureDetectionResult {
+private struct ExposureDetectionResult {
     let keySetDetectionResults: [ExposureKeySetDetectionResult]
     let exposureSummary: ExposureDetectionSummary?
     let exposureReport: ExposureReport?
@@ -25,11 +25,6 @@ struct ExposureDetectionResult {
 
 struct ExposureReport: Codable {
     let date: Date
-}
-
-enum WindowScoreType: Int {
-    case sum = 0
-    case max = 1
 }
 
 #if USE_DEVELOPER_MENU || DEBUG
@@ -106,16 +101,10 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
         // Batch detect exposures
         return detectExposures(inBackground: applicationIsInBackground, for: exposureKeySetHolders, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
-            // persist keySetHolders in local storage to remember which ones have been processed correctly
+            // persist created keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
-            .flatMap { detectionResult in
-                if self.environmentController.maximumSupportedExposureNotificationVersion == .version2 {
-                    return self.createReport(forResult: detectionResult)
-                } else {
-                    return .error(ExposureDataError.internalError)
-                }
-            }
+            .flatMap(self.createExposureReport)
             // Send a local notification to inform the user of an exposure if neccesary
             .flatMap {
                 self.notifyUserOfExposure(inBackground: applicationIsInBackground, value: $0)
@@ -234,7 +223,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
                     let validKeySetHolderResults = keySetHoldersToProcess.map { keySetHolder in
                         return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
-                                                             processDate: Date(),
+                                                             processDate: currentDate(),
                                                              isValid: true)
                     }
 
@@ -352,7 +341,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     private func getNumberOfProcessedKeySetsInLast24Hours() -> Int {
-        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) else {
+        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: currentDate()) else {
             return 0
         }
 
@@ -375,7 +364,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                 let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
                 var calls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
 
-                calls = [Date()] + calls
+                calls = [currentDate()] + calls
                 self.logDebug("Most recent API calls \(calls)")
 
                 let maximumNumberOfAPICalls = inBackground ? self.maximumDailyBackgroundExposureDetectionAPICalls : self.maximumDailyForegroundExposureDetectionAPICalls
@@ -401,7 +390,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
         let apiCalls = storageController.retrieveObject(identifiedBy: storageKey) ?? []
 
-        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) else {
+        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: currentDate()) else {
             return 0
         }
 
@@ -473,7 +462,11 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
-    private func createReport(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
+    private func createExposureReport(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
+
+        guard environmentController.maximumSupportedExposureNotificationVersion == .version2 else {
+            return .error(ExposureDataError.internalError)
+        }
 
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
@@ -525,56 +518,37 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
 
         // We only show a notification if the found exposure was newer than the previously known exposure
-        if let previousDaysSinceLastExposure = self.getStoredDaysSinceLastExposure() {
-            logDebug("Had previous exposure \(previousDaysSinceLastExposure) days ago")
-
-            if previousDaysSinceLastExposure >= daysSinceLastExposure {
-                logDebug("Previous exposure was newer than new found exposure - skipping notification")
-                return .just((value.exposureDetectionResult, nil))
-            }
+        if let previousDaysSinceLastExposure = getStoredDaysSinceLastExposure(), previousDaysSinceLastExposure >= daysSinceLastExposure {
+            logDebug("Previous exposure \(previousDaysSinceLastExposure) days ago was newer than new found exposure - skipping notification")
+            return .just((value.exposureDetectionResult, nil))
         }
 
         logDebug("Triggering notification for \(exposureReport)")
 
         return .create { (observer) -> Disposable in
 
-            self.userNotificationCenter.getAuthorizationStatus { status in
-                guard status == .authorized else {
+            self.userNotificationCenter.displayExposureNotification(daysSinceLastExposure: daysSinceLastExposure) { result in
+
+                if case let .failure(error) = result {
+                    self.logError("Error posting notification: \(error.localizedDescription)")
                     observer(.failure(ExposureDataError.internalError))
-                    return self.logError("Not authorized to post notifications")
+                    return
                 }
 
-                let content = UNMutableNotificationContent()
-                content.body = .exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure))
-                content.sound = .default
-                content.badge = 0
+                /// Store the unseen notification date, but only when the app is in the background
+                if !applicationIsInBackground {
+                    observer(.success((value.exposureDetectionResult, value.exposureReport)))
+                    return
+                }
 
-                let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
-                                                    content: content,
-                                                    trigger: nil)
-
-                self.userNotificationCenter.add(request) { error in
-
-                    if let error = error {
-                        self.logError("Error posting notification: \(error.localizedDescription)")
-                        observer(.failure(ExposureDataError.internalError))
-                        return
-                    }
-
-                    /// Store the unseen notification date, but only when the app is in the background
-                    if applicationIsInBackground {
-                        self.storageController.requestExclusiveAccess { storageController in
-                            storageController.store(object: Date(),
-                                                    identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { error in
-                                if error != nil {
-                                    observer(.failure(ExposureDataError.internalError))
-                                } else {
-                                    observer(.success((value.exposureDetectionResult, value.exposureReport)))
-                                }
-                            }
+                self.storageController.requestExclusiveAccess { storageController in
+                    storageController.store(object: currentDate(),
+                                            identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { error in
+                        if error != nil {
+                            observer(.failure(ExposureDataError.internalError))
+                        } else {
+                            observer(.success((value.exposureDetectionResult, value.exposureReport)))
                         }
-                    } else {
-                        observer(.success((value.exposureDetectionResult, value.exposureReport)))
                     }
                 }
             }
@@ -645,7 +619,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     }
 
     private func getStoredDaysSinceLastExposure() -> Int? {
-        let today = Date()
+        let today = currentDate()
 
         guard
             let lastExposureDate = lastStoredExposureReport()?.date,

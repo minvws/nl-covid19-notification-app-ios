@@ -9,6 +9,11 @@ import ENFoundation
 import ExposureNotification
 import Foundation
 
+enum WindowScoreType: Int {
+    case sum = 0
+    case max = 1
+}
+
 /// @mockable
 protocol RiskCalculationControlling {
     /// Gets the most recent day (if any) on which the user was considered "at risk" according to the given ExposureWindows and ExposureConfiguration.

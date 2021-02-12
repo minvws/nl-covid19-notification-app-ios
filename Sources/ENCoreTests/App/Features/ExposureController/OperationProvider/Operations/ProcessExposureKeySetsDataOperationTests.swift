@@ -46,6 +46,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockEnvironmentController.maximumSupportedExposureNotificationVersion = .version2
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
+        mockUserNotificationCenter.displayExposureNotificationHandler = { _, completion in completion(.success(())) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
             completion(.success(ExposureDetectionSummaryMock()))
         }
@@ -328,12 +329,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
 
-        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
-        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
-        XCTAssertEqual(notificationRequest.content.sound, .default)
-        XCTAssertEqual(notificationRequest.content.badge, 0)
-        XCTAssertEqual(notificationRequest.content.body, "You were near someone who has coronavirus 3 days ago. Read more in the app.")
-        XCTAssertEqual(mockRiskCalculationController.getLastExposureDateCallCount, 1)
+        XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationCallCount, 1)
+        XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationArgValues.first, 3)
     }
 
     func test_shouldPersistExposureReport() throws {
