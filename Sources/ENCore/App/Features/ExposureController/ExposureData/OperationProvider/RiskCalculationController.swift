@@ -63,7 +63,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
     /// - Returns: A dictionary where keys are a date and the value is the risk score on that specific date
     private func getDailyRiskScores(windows: [ExposureWindow], configuration: ExposureConfiguration) -> [Date: Double] {
 
-        guard let scoreType = WindowScoreType(rawValue: configuration.scoreType) else {
+        guard let scoreType = WindowScoreType(rawValue: configuration.windowCalculationType) else {
             return [:]
         }
 

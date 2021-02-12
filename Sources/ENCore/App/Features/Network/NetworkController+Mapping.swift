@@ -63,14 +63,16 @@ extension RiskCalculationParameters {
         return ExposureRiskConfiguration(
             identifier: identifier,
             minimumRiskScore: minimumRiskScore,
-            scoreType: scoreType,
+            windowCalculationType: windowCalculationType,
             reportTypeWeights: reportTypeWeights,
+            reportTypeWhenMissing: reportTypeWhenMissing,
             infectiousnessWeights: infectiousnessWeights,
             attenuationBucketThresholdDb: attenuationBucketThresholdDb,
             attenuationBucketWeights: attenuationBucketWeights,
             daysSinceExposureThreshold: daysSinceExposureThreshold,
             minimumWindowScore: minimumWindowScore,
-            daysSinceOnsetToInfectiousness: daysSinceOnsetToInfectiousness
+            daysSinceOnsetToInfectiousness: daysSinceOnsetToInfectiousness,
+            infectiousnessWhenDaysSinceOnsetMissing: infectiousnessWhenDaysSinceOnsetMissing
         )
     }
 }

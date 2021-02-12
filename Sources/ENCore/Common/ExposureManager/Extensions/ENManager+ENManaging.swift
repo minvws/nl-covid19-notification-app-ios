@@ -50,12 +50,6 @@ extension ExposureConfiguration {
     }
 }
 
-extension ExposureDetectionSummary {
-    var asENExposureDetectionSummary: ENExposureDetectionSummary {
-        return ENExposureDetectionSummary()
-    }
-}
-
 private class DefaultExposureConfiguration: ENExposureConfiguration {
     init(exposureConfiguration: ExposureConfiguration) {
         self.exposureConfiguration = exposureConfiguration
@@ -76,11 +70,11 @@ private class DefaultExposureConfiguration: ENExposureConfiguration {
         }
 
         if #available(iOS 14.0, *) {
-            infectiousnessMap[NSNumber(value: ENDaysSinceOnsetOfSymptomsUnknown)] = NSNumber(value: ENInfectiousness.standard.rawValue)
+            infectiousnessMap[NSNumber(value: ENDaysSinceOnsetOfSymptomsUnknown)] = NSNumber(value: exposureConfiguration.infectiousnessWhenDaysSinceOnsetMissing)
         } else {
             // ENDaysSinceOnsetOfSymptomsUnknown is not available
             // in earlier versions of iOS; use an equivalent value
-            infectiousnessMap[NSNumber(value: NSIntegerMax)] = NSNumber(value: ENInfectiousness.standard.rawValue)
+            infectiousnessMap[NSNumber(value: NSIntegerMax)] = NSNumber(value: exposureConfiguration.infectiousnessWhenDaysSinceOnsetMissing)
         }
 
         infectiousnessForDaysSinceOnsetOfSymptoms = infectiousnessMap
@@ -92,7 +86,7 @@ private class DefaultExposureConfiguration: ENExposureConfiguration {
         reportTypeConfirmedClinicalDiagnosisWeight = exposureConfiguration.reportTypeWeights[2]
         reportTypeSelfReportedWeight = exposureConfiguration.reportTypeWeights[3]
         reportTypeRecursiveWeight = exposureConfiguration.reportTypeWeights[4]
-        reportTypeNoneMap = .confirmedTest
+        reportTypeNoneMap = ENDiagnosisReportType(rawValue: exposureConfiguration.reportTypeWhenMissing) ?? .unknown
 
         attenuationDurationThresholds = exposureConfiguration.attenuationBucketThresholdDb.compactMap {
             let dbInt = Int($0)

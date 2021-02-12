@@ -100,7 +100,12 @@ final class ExposureManager: ExposureManaging, Logging {
             assert(Thread.isMainThread)
         #endif
 
-        manager.getExposureWindows(summary: summary.asENExposureDetectionSummary) { windows, error in
+        guard let enSummary = summary as? ENExposureDetectionSummary else {
+            completion(.failure(.internalTypeMismatch))
+            return
+        }
+
+        manager.getExposureWindows(summary: enSummary) { windows, error in
             if let error = error.map({ $0.asExposureManagerError }) {
                 completion(.failure(error))
                 return

@@ -11,14 +11,16 @@ import RxSwift
 struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     let identifier: String
     let minimumRiskScore: Double
-    var scoreType: Int
+    var windowCalculationType: Int
     var reportTypeWeights: [Double]
+    var reportTypeWhenMissing: UInt32
     var infectiousnessWeights: [Double]
     var attenuationBucketThresholdDb: [Int]
     var attenuationBucketWeights: [Double]
     var daysSinceExposureThreshold: Int
     var minimumWindowScore: Double
     var daysSinceOnsetToInfectiousness: [DayInfectiousness]
+    var infectiousnessWhenDaysSinceOnsetMissing: Int
 }
 
 /// @mockable
@@ -43,8 +45,9 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
         return .just(ExposureRiskConfiguration(
             identifier: "identifier",
             minimumRiskScore: 0,
-            scoreType: WindowScoreType.max.rawValue,
+            windowCalculationType: WindowScoreType.max.rawValue,
             reportTypeWeights: [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
+            reportTypeWhenMissing: 1,
             infectiousnessWeights: [0.0, 1.0, 2.0],
             attenuationBucketThresholdDb: [56, 62, 70],
             attenuationBucketWeights: [1.0, 1.0, 0.3, 0.0],
@@ -80,7 +83,8 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
                 .init(daysSinceOnsetOfSymptoms: 12, infectiousness: 1),
                 .init(daysSinceOnsetOfSymptoms: 13, infectiousness: 1),
                 .init(daysSinceOnsetOfSymptoms: 14, infectiousness: 1)
-            ]
+            ],
+            infectiousnessWhenDaysSinceOnsetMissing: 1
         ))
 
 //        if let exposureConfiguration = retrieveStoredConfiguration(), exposureConfiguration.identifier == exposureConfigurationIdentifier {
