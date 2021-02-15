@@ -28,7 +28,7 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
     init(listener: AboutListener, theme: Theme) {
         self.listener = listener
         super.init(theme: theme)
-        modalPresentationStyle = .popover
+
         navigationItem.rightBarButtonItem = closeBarButtonItem
         presentationController?.delegate = self
     }
