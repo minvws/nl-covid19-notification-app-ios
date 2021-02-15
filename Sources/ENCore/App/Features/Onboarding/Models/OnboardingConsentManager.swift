@@ -46,7 +46,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                 title: .onboardingPermissionsTitle,
                 content: .onboardingPermissionsDescription,
                 bulletItems: [.onboardingPermissionsDescriptionList1, .onboardingPermissionsDescriptionList2],
-                illustration: .animation(named: "permission", repeatFromFrame: 100, defaultFrame: 56),
+                illustration: theme.animationsSupported ? .animation(named: "permission", repeatFromFrame: 100, defaultFrame: 56) : .image(image: Image.named("Step6")),
                 primaryButtonTitle: .onboardingPermissionsPrimaryButton,
                 secondaryButtonTitle: .onboardingPermissionsSecondaryButton,
                 hasNavigationBarSkipButton: true
@@ -88,7 +88,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                 theme: theme,
                 title: .consentStep4Title,
                 content: .consentStep4Content,
-                illustration: .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35),
+                illustration: theme.animationsSupported ? .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35) : .image(image: Image.named("Step7")),
                 primaryButtonTitle: .consentStep4PrimaryButton,
                 secondaryButtonTitle: .consentStep4SecondaryButton,
                 hasNavigationBarSkipButton: true
