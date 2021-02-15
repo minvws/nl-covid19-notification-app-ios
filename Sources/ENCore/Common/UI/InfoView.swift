@@ -673,7 +673,7 @@ private final class InfoSectionDynamicSuccessView: View {
         if #available(iOS 13.0, *) {
             titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText, attributes: [.accessibilitySpeechSpellOut: true])
         } else {
-            titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText.stringForSpelling)
+            titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText.stringForSpelling, attributes: [.accessibilitySpeechPunctuation: false])
         }
     }
 
