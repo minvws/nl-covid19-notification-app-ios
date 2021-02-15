@@ -167,8 +167,6 @@ final class BackgroundController: BackgroundControlling, Logging {
                 } else {
                     strongSelf.refresh(task: nil)
                 }
-
-                strongSelf.sendBackgroundUpdateNotification()
             }
         }
     }
@@ -578,35 +576,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         } else {
             return false
         }
-    }
-
-    private func sendBackgroundUpdateNotification() {
-
-        if environmentController.isiOS13orHigher {
-            logDebug("Not sending background update notification on iOS 13 and >")
-            return
-        }
-
-        logDebug("Sending background update notification")
-
-        let formatter = DateFormatter()
-        formatter.timeStyle = .long
-        let date = formatter.string(from: Date())
-
-        let content = UNMutableNotificationContent()
-        content.title = "Background update"
-        content.body = "Performed at \(date)"
-        content.sound = UNNotificationSound.default
-        content.badge = 0
-
-        let identifier = "background-update"
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-
-        userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
-            if let error = error {
-                self?.logError("Error sending notification: \(error.localizedDescription)")
-            }
-        })
     }
 
     private func sendNotification(content: UNNotificationContent, identifier: PushNotificationIdentifier, completion: @escaping (Bool) -> ()) {
