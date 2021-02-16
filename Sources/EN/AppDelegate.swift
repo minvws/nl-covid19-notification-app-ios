@@ -34,10 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
             let bundleIdentifier = Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en"
 
             [
-                ".exposure-notification",
-                ".background-decoy-stop-keys",
-                ".background-decoy-sequence",
-                ".background-decoy-register"
+                ".exposure-notification"
             ]
             .forEach { identifier in
                 BGTaskScheduler.shared.register(forTaskWithIdentifier: bundleIdentifier + identifier, using: .main) { task in

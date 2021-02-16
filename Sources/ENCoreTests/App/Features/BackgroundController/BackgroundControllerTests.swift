@@ -252,26 +252,6 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertEqual(exposureController.getPaddingCallCount, 1)
     }
 
-    func test_handleDecoyStopkeysWithoutTask() {
-
-        exposureManager.getExposureNotificationStatusHandler = {
-            return .active
-        }
-
-        exposureController.getPaddingHandler = {
-            return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
-        }
-
-        networkController.stopKeysHandler = { _ in
-            return .empty()
-        }
-
-        controller.handleDecoyStopkeys(task: nil)
-
-        XCTAssertEqual(networkController.stopKeysCallCount, 1)
-        XCTAssertEqual(exposureController.getPaddingCallCount, 1)
-    }
-
     func test_handleRefresh_duringPauseState_shouldSendPauseExpirationReminder() {
         let exp = expectation(description: "asyncTask")
         let notificationExpectation = expectation(description: "notification")
@@ -329,66 +309,6 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertEqual(userNotificationCenter.displayPauseExpirationReminderCallCount, 0)
     }
 
-    func test_handleBackgroundDecoyStopKeys() {
-        let exp = expectation(description: "HandleBackgroundDecoyStopKeys")
-
-        exposureManager.getExposureNotificationStatusHandler = {
-            return .active
-        }
-
-        exposureController.getPaddingHandler = {
-            return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
-        }
-
-        networkController.stopKeysHandler = { _ in
-            return .empty()
-        }
-
-        let task = MockBGProcessingTask(identifier: .decoyStopKeys)
-        task.completion = {
-            exp.fulfill()
-        }
-
-        controller.handle(task: task)
-        wait(for: [exp], timeout: 1)
-
-        XCTAssertEqual(networkController.stopKeysCallCount, 1)
-        XCTAssertEqual(exposureController.getPaddingCallCount, 1)
-
-        XCTAssertNotNil(task.completed)
-        XCTAssert(task.completed!)
-    }
-
-    func test_handleBackgroundDecoyStopKeys_withStopKeysError_shouldStillCompleteTask() {
-        let exp = expectation(description: "HandleBackgroundDecoyStopKeys")
-
-        exposureManager.getExposureNotificationStatusHandler = {
-            return .active
-        }
-
-        exposureController.getPaddingHandler = {
-            return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
-        }
-
-        networkController.stopKeysHandler = { _ in
-            return .error(ExposureDataError.networkUnreachable)
-        }
-
-        let task = MockBGProcessingTask(identifier: .decoyStopKeys)
-        task.completion = {
-            exp.fulfill()
-        }
-
-        controller.handle(task: task)
-        wait(for: [exp], timeout: 1)
-
-        XCTAssertEqual(networkController.stopKeysCallCount, 1)
-        XCTAssertEqual(exposureController.getPaddingCallCount, 1)
-
-        XCTAssertNotNil(task.completed)
-        XCTAssert(task.completed!)
-    }
-
     func test_notHandleBackgroundDecoyRegisterENinactive() {
         let exp = expectation(description: "HandleBackgroundDecoyRegister")
 
@@ -412,7 +332,6 @@ final class BackgroundControllerTests: XCTestCase {
     }
 
     func test_notHandleBackgroundDecoyStopKeysENinactive() {
-        let exp = expectation(description: "HandleBackgroundDecoyStopKeys")
 
         exposureManager.getExposureNotificationStatusHandler = {
             return .inactive(.disabled)
@@ -426,18 +345,10 @@ final class BackgroundControllerTests: XCTestCase {
             return .empty()
         }
 
-        let task = MockBGProcessingTask(identifier: .decoyStopKeys)
-        task.completion = {
-            exp.fulfill()
-        }
-
-        controller.handle(task: task)
-        wait(for: [exp], timeout: 1)
+        controller.performDecoySequenceIfNeeded()
 
         XCTAssertEqual(networkController.stopKeysCallCount, 0)
-
-        XCTAssertNotNil(task.completed)
-        XCTAssert(task.completed!)
+        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
     }
 
     func test_performDecoySequenceIfNeeded_shouldNotWorkIfENisInactive() {
@@ -550,8 +461,13 @@ final class BackgroundControllerTests: XCTestCase {
         exposureController.requestLabConfirmationKeyHandler = { completion in
             completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
         }
-        taskScheduler.submitHandler = { _ in
+
+        exposureController.getPaddingHandler = {
+            return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
+        }
+        networkController.stopKeysHandler = { _ in
             completionExpectation.fulfill()
+            return .empty()
         }
 
         controller.performDecoySequenceIfNeeded()
@@ -560,7 +476,8 @@ final class BackgroundControllerTests: XCTestCase {
 
         XCTAssertEqual(dataController.setLastDecoyProcessDateCallCount, 1)
         XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
-        XCTAssertEqual(taskScheduler.submitCallCount, 1)
+        XCTAssertEqual(networkController.stopKeysCallCount, 1)
+        XCTAssertEqual(exposureController.getPaddingCallCount, 1)
     }
 
     func test_performDecoySequenceIfNeededIos12() {
