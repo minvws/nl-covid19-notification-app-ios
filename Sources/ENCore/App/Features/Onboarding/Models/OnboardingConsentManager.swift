@@ -163,6 +163,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         exposureStateSubscription = exposureStateStream
             .exposureState
             .filter { $0.activeState != .notAuthorized && $0.activeState != .inactive(.disabled) }
+            .take(1)
             .subscribe(onNext: { [weak self] state in
                 self?.exposureStateSubscription = nil
                 self?.logDebug("`askEnableExposureNotifications` active state changed to \(state.activeState)")

@@ -188,6 +188,21 @@ class OnboardingConsentManagerTests: TestCase {
         XCTAssertEqual(mockExposureController.requestExposureNotificationPermissionCallCount, 1)
     }
 
+    func test_askEnableExposureNotifications_shouldOnlyCompleteOnce() {
+        let completionExpectation = expectation(description: "completion")
+
+        let completion: (ExposureActiveState) -> () = { state in
+            completionExpectation.fulfill()
+        }
+
+        sut.askEnableExposureNotifications(completion)
+
+        mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .inactive(.pushNotifications)))
+        mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .active))
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
     func test_askNotificationsAuthorization_shouldCallUserNotificationCenter() {
         let completionExpectation = expectation(description: "completion")
         let userNotificationExpectation = expectation(description: "userNotificationExpectation")
