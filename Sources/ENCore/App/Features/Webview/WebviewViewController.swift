@@ -85,9 +85,9 @@ private final class WebviewView: View, WKNavigationDelegate {
     private lazy var errorView: UIView = {
         let errorView = WebViewErrorView(theme: theme)
         errorView.translatesAutoresizingMaskIntoConstraints = false
-        errorView.actionButton.action = {
-            if let url = self.url {
-                self.load(url: url)
+        errorView.actionButton.action = { [weak self] in
+            if let url = self?.url {
+                self?.load(url: url)
             }
         }
         return errorView
@@ -186,7 +186,6 @@ private final class WebviewView: View, WKNavigationDelegate {
         if navigationAction.navigationType == .linkActivated,
             let url = navigationAction.request.url,
             let delegate = delegate {
-
             delegate.webView(self, didClickLink: url)
             decisionHandler(.cancel)
             return

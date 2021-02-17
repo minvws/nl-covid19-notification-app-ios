@@ -231,15 +231,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     // MARK: - RootRouting
 
     func routeToLaunchScreen() {
-        guard launchScreenRouter == nil else {
+        guard launchScreenController == nil else {
             // already presented
             return
         }
 
-        let router = launchScreenBuilder.build()
-        self.launchScreenRouter = router
+        let launchScreenViewController = launchScreenBuilder.build()
+        self.launchScreenController = launchScreenViewController
 
-        viewController.present(viewController: router.viewControllable,
+        viewController.present(viewController: launchScreenViewController,
                                animated: false,
                                completion: nil)
     }
@@ -381,14 +381,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     private func detachLaunchScreenIfNeeded(animated: Bool, completion: (() -> ())?) {
-        guard let launchScreenRouter = launchScreenRouter else {
+        guard let launchScreenController = launchScreenController else {
             completion?()
             return
         }
 
-        self.launchScreenRouter = nil
+        self.launchScreenController = nil
 
-        viewController.dismiss(viewController: launchScreenRouter.viewControllable,
+        viewController.dismiss(viewController: launchScreenController,
                                animated: animated,
                                completion: completion)
     }
@@ -498,7 +498,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let exposureStateStream: ExposureStateStreaming
 
     private var launchScreenBuilder: LaunchScreenBuildable
-    private var launchScreenRouter: Routing?
+    private var launchScreenController: ViewControllable?
 
     private let onboardingBuilder: OnboardingBuildable
     private var onboardingRouter: Routing?

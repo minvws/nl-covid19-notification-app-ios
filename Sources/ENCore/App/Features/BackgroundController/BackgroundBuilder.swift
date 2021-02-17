@@ -17,7 +17,6 @@ protocol BackgroundControlling {
     func scheduleTasks()
     func registerActivityHandle()
     func refresh(task: BackgroundTask?)
-    func handleDecoyStopkeys(task: BackgroundTask?)
     @available(iOS 13, *)
     func handle(task: BGTask)
     func removeAllTasks()
