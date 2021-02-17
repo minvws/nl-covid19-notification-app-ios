@@ -9,8 +9,12 @@ import ENFoundation
 import ExposureNotification
 import Foundation
 
-enum WindowScoreType: Int {
+enum RiskCalculationType: Int {
+
+    /// Calculate risk by summing risk scores of all exposure windows in a day
     case sum = 0
+
+    /// Calculate by comparing the maximum window risk score to the minimum required score for a notification
     case max = 1
 }
 
@@ -48,7 +52,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
             .last
 
         if let exposureDate = lastDayOverMinimumRiskScore {
-            self.logDebug("Risk Calculation - Latest day over minimum risk score: \(exposureDate)")
+            self.logDebug("Risk Calculation - Latest day over minimum risk score: \(exposureDate) (minimum score is \(configuration.minimumRiskScore))")
         } else {
             self.logDebug("Risk Calculation - No date found with riskscore over minimumRiskScore (\(configuration.minimumRiskScore)")
         }
@@ -63,7 +67,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
     /// - Returns: A dictionary where keys are a date and the value is the risk score on that specific date
     private func getDailyRiskScores(windows: [ExposureWindow], configuration: ExposureConfiguration) -> [Date: Double] {
 
-        guard let scoreType = WindowScoreType(rawValue: configuration.windowCalculationType) else {
+        guard let calculationType = RiskCalculationType(rawValue: configuration.windowCalculationType) else {
             return [:]
         }
 
@@ -74,10 +78,10 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
 
             // Windows are only included in the calculation if their score reaches the minimum window score
             if windowScore >= configuration.minimumWindowScore {
-                switch scoreType {
-                case WindowScoreType.max:
+                switch calculationType {
+                case RiskCalculationType.max:
                     perDayScore[window.date] = max(perDayScore[window.date] ?? 0.0, windowScore)
-                case WindowScoreType.sum:
+                case RiskCalculationType.sum:
                     perDayScore[window.date] = perDayScore[window.date] ?? 0.0 + windowScore
                 }
             }
@@ -101,7 +105,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
         }
 
         let reportTypeMultiplier = getReportTypeMultiplier(reportType: window.diagnosisReportType, configuration: configuration)
-        self.logDebug("ReportTypeMultiplier: \(reportTypeMultiplier)")
+        self.logDebug("ReportTypeMultiplier for reportType \(window.diagnosisReportType): \(reportTypeMultiplier)")
 
         let infectiousnessMultiplier = getInfectiousnessMultiplier(infectiousness: window.infectiousness, configuration: configuration)
         self.logDebug("infectiousnessMultiplier: \(infectiousnessMultiplier)")
@@ -140,7 +144,6 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
     ///   - configuration: Configuration that includes calculation parameters
     /// - Returns: A multiplier for the windows scan score
     private func getReportTypeMultiplier(reportType: ENDiagnosisReportType, configuration: ExposureConfiguration) -> Double {
-        logDebug("reportType: \(reportType.rawValue)")
         return configuration.reportTypeWeights[safe: Int(reportType.rawValue)] ?? 0.0
     }
 

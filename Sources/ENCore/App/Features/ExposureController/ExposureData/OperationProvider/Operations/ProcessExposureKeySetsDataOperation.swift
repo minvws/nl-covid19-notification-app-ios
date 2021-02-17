@@ -6,7 +6,6 @@
  */
 
 import ENFoundation
-import ExposureNotification
 import Foundation
 import RxSwift
 import UIKit
@@ -465,6 +464,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private func createExposureReport(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
 
         guard environmentController.maximumSupportedExposureNotificationVersion == .version2 else {
+            self.logError("GAEN API V2 not supported on device / platform")
             return .error(ExposureDataError.internalError)
         }
 

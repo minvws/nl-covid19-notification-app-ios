@@ -8,21 +8,6 @@
 import Foundation
 import RxSwift
 
-struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
-    let identifier: String
-    let minimumRiskScore: Double
-    var windowCalculationType: Int
-    var reportTypeWeights: [Double]
-    var reportTypeWhenMissing: UInt32
-    var infectiousnessWeights: [Double]
-    var attenuationBucketThresholdDb: [Int]
-    var attenuationBucketWeights: [Double]
-    var daysSinceExposureThreshold: Int
-    var minimumWindowScore: Double
-    var daysSinceOnsetToInfectiousness: [DayInfectiousness]
-    var infectiousnessWhenDaysSinceOnsetMissing: Int
-}
-
 /// @mockable
 protocol RequestExposureConfigurationDataOperationProtocol {
     func execute() -> Single<ExposureConfiguration>

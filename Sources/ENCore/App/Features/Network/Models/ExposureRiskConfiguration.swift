@@ -5,11 +5,14 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-struct RiskCalculationParameters: Codable {
+import Foundation
+
+struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
+    let identifier: String
     let minimumRiskScore: Double
+    let windowCalculationType: Int
     let reportTypeWeights: [Double]
     let reportTypeWhenMissing: UInt32
-    let windowCalculationType: Int
     let infectiousnessWeights: [Double]
     let attenuationBucketThresholdDb: [Int]
     let attenuationBucketWeights: [Double]
