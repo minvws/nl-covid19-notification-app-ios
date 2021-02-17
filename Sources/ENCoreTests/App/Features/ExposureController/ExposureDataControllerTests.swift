@@ -394,6 +394,6 @@ private extension ApplicationConfiguration {
 
 private extension ExposureConfigurationMock {
     static func testData() -> ExposureConfigurationMock {
-        ExposureConfigurationMock(minimumRiskScore: 1, scoreType: 2, reportTypeWeights: [3], infectiousnessWeights: [4], attenuationBucketThresholdDb: [5], attenuationBucketWeights: [6], daysSinceExposureThreshold: 7, minimumWindowScore: 8, daysSinceOnsetToInfectiousness: [])
+        ExposureConfigurationMock(minimumRiskScore: 1, windowCalculationType: 2, reportTypeWeights: [3], infectiousnessWeights: [4], attenuationBucketThresholdDb: [5], attenuationBucketWeights: [6], daysSinceExposureThreshold: 7, minimumWindowScore: 8, daysSinceOnsetToInfectiousness: [])
     }
 }

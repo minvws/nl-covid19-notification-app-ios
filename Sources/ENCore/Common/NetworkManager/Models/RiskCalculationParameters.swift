@@ -12,8 +12,8 @@ struct DayInfectiousness: Codable, Equatable {
 
 struct RiskCalculationParameters: Codable {
     let minimumRiskScore: Double
-    let reportTypeWhenMissing: UInt32
     let reportTypeWeights: [Double]
+    let reportTypeWhenMissing: UInt32
     let windowCalculationType: Int
     let infectiousnessWeights: [Double]
     let attenuationBucketThresholdDb: [Int]

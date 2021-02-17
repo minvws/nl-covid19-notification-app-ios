@@ -430,14 +430,16 @@ final class NetworkManagerTests: XCTestCase {
     func test_getRiskCalculationParameters_requestSuccessShouldReturnModel() throws {
 
         let mockModel = RiskCalculationParameters(minimumRiskScore: 1,
-                                                  scoreType: WindowScoreType.sum.rawValue,
                                                   reportTypeWeights: [7],
+                                                  reportTypeWhenMissing: 1,
+                                                  windowCalculationType: WindowScoreType.sum.rawValue,
                                                   infectiousnessWeights: [8],
                                                   attenuationBucketThresholdDb: [9],
                                                   attenuationBucketWeights: [10],
                                                   daysSinceExposureThreshold: 11,
                                                   minimumWindowScore: 12,
-                                                  daysSinceOnsetToInfectiousness: [])
+                                                  daysSinceOnsetToInfectiousness: [],
+                                                  infectiousnessWhenDaysSinceOnsetMissing: 1)
 
         let mockData = try JSONEncoder().encode(mockModel)
 
@@ -485,14 +487,16 @@ final class NetworkManagerTests: XCTestCase {
 
     private var mockRiskCalculationParameters: RiskCalculationParameters {
         return RiskCalculationParameters(minimumRiskScore: 1,
-                                         scoreType: WindowScoreType.sum.rawValue,
                                          reportTypeWeights: [7],
+                                         reportTypeWhenMissing: 1,
+                                         windowCalculationType: WindowScoreType.sum.rawValue,
                                          infectiousnessWeights: [8],
                                          attenuationBucketThresholdDb: [9],
                                          attenuationBucketWeights: [10],
                                          daysSinceExposureThreshold: 11,
                                          minimumWindowScore: 12,
-                                         daysSinceOnsetToInfectiousness: [])
+                                         daysSinceOnsetToInfectiousness: [],
+                                         infectiousnessWhenDaysSinceOnsetMissing: 1)
     }
     func test_getRiskCalculationParameters_validateSignatureErrorShouldReturnError() throws {
 

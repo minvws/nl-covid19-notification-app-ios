@@ -122,14 +122,16 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
         ExposureRiskConfiguration(
             identifier: identifier,
             minimumRiskScore: 1,
-            scoreType: WindowScoreType.sum.rawValue,
+            windowCalculationType: WindowScoreType.sum.rawValue,
             reportTypeWeights: [7],
+            reportTypeWhenMissing: 1,
             infectiousnessWeights: [8],
             attenuationBucketThresholdDb: [9],
             attenuationBucketWeights: [10],
             daysSinceExposureThreshold: 11,
             minimumWindowScore: 12,
-            daysSinceOnsetToInfectiousness: []
+            daysSinceOnsetToInfectiousness: [],
+            infectiousnessWhenDaysSinceOnsetMissing: 1
         )
     }
 }
