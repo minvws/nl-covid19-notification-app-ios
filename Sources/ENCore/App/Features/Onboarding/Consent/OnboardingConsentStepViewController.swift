@@ -101,8 +101,6 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
                         switch activeState {
                         case .notAuthorized:
                             self.closeConsent()
-                        case .inactive(.pushNotifications):
-                            return
                         default:
                             self.goToNextStepOrCloseConsent()
                         }

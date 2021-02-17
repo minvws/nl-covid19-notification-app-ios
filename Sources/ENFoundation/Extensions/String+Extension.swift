@@ -28,7 +28,7 @@ public extension String {
         for char in chars {
             // If there is already a character, append separator before appending next character
             if s.count > 0 {
-                s += " "
+                s += ","
             }
             // Append next character
             s += char

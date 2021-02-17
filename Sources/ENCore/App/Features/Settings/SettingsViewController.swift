@@ -25,7 +25,6 @@ final class SettingsViewController: NavigationController, SettingsViewControllab
         self.listener = listener
         super.init(theme: theme)
 
-        modalPresentationStyle = .popover
         navigationItem.rightBarButtonItem = closeBarButtonItem
         presentationController?.delegate = self
     }
