@@ -34,26 +34,22 @@
     ASN1_INTEGER *expectedSerial = ASN1_INTEGER_new();
     
     if (expectedSerial == NULL) {
-        X509_free(certificate); certificate = NULL;
         return NO;
     }
     
     if (ASN1_INTEGER_set_uint64(expectedSerial, serialNumber) != 1) {
         ASN1_INTEGER_free(expectedSerial); expectedSerial = NULL;
-        X509_free(certificate); certificate = NULL;
         
         return NO;
     }
     
     ASN1_INTEGER *certificateSerial = X509_get_serialNumber(certificate);
     if (certificateSerial == NULL) {
-        X509_free(certificate); certificate = NULL;
         return NO;
     }
     
     BOOL isMatch = ASN1_INTEGER_cmp(certificateSerial, expectedSerial) == 0;
     
-    X509_free(certificate); certificate = NULL;
     ASN1_INTEGER_free(expectedSerial); expectedSerial = NULL;
     
     return isMatch;
@@ -162,8 +158,6 @@
     
     X509 *signingCert = sk_X509_value(signers, 0);
     
-    sk_X509_free(signers); signers = NULL;
-    
     BOOL isAuthorityKeyIdentifierValid = [self validateAuthorityKeyIdentifierData:expectedAuthorityKeyIdentifierData signingCertificate:signingCert];
     BOOL isCommonNameValid = [self validateCommonNameForCertificate:signingCert
                                                     requiredContent:requiredCommonNameContent
@@ -173,7 +167,6 @@
         BIO_free(signatureBlob); signatureBlob = NULL;
         BIO_free(contentBlob); contentBlob = NULL;
         BIO_free(certificateBlob); certificateBlob = NULL;
-        
         return NO;
     }
     
@@ -192,19 +185,15 @@
     X509_STORE *store = X509_STORE_new();
     if (store == NULL) {
         BIO_free(contentBlob); contentBlob = NULL;
-        X509_free(cert); cert = NULL;
         
         return NO;
     }
     
     if (X509_STORE_add_cert(store, cert) != 1) {
         X509_STORE_free(store); store = NULL;
-        X509_free(cert); cert = NULL;
         
         return NO;
     }
-    
-    X509_free(cert); cert = NULL;
     
     X509_VERIFY_PARAM *verifyParameters = X509_VERIFY_PARAM_new();
     if (verifyParameters == NULL) {
@@ -215,7 +204,6 @@
     
     if (X509_VERIFY_PARAM_set_flags(verifyParameters, X509_V_FLAG_CRL_CHECK_ALL | X509_V_FLAG_POLICY_CHECK) != 1
         || X509_VERIFY_PARAM_set_purpose(verifyParameters, X509_PURPOSE_ANY) != 1) {
-        
         X509_STORE_free(store); store = NULL;
         X509_VERIFY_PARAM_free(verifyParameters); verifyParameters = NULL;
         
@@ -235,8 +223,9 @@
     
     BIO_free(contentBlob); contentBlob = NULL;
     X509_STORE_free(store); store = NULL;
+    OPENSSL_free(cert); cert = NULL;
     OPENSSL_free(p7); p7 = NULL;
-        
+    
     return result == 1;
 }
 
@@ -266,7 +255,7 @@
     BOOL isMatch = ASN1_OCTET_STRING_cmp(authorityKeyIdentifier, expectedAuthorityKeyIdentifier) == 0;
     authorityKeyIdentifier = NULL;
     ASN1_OCTET_STRING_free(expectedAuthorityKeyIdentifier); expectedAuthorityKeyIdentifier = NULL;
-        
+            
     return isMatch;
 }
 @end
