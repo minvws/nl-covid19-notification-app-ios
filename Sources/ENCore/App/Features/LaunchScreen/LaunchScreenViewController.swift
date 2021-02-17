@@ -12,9 +12,7 @@ import UIKit
 /// @mockable
 protocol LaunchScreenRouting: Routing {}
 
-final class LaunchScreenViewController: ViewController, LaunchScreenViewControllable {
-
-    var router: LaunchScreenRouting?
+final class LaunchScreenViewController: ViewController {
 
     override init(theme: Theme) {
         super.init(theme: theme)
