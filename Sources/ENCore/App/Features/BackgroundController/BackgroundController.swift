@@ -18,7 +18,6 @@ import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
     case refresh = "exposure-notification"
-    case decoyStopKeys = "background-decoy-stop-keys"
 }
 
 struct BackgroundTaskConfiguration {
@@ -105,14 +104,8 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         let handleTask: () -> () = {
-
-            switch identifier {
-            case .decoyStopKeys:
-                self.handleDecoyStopkeys(task: task)
-            case .refresh:
-                self.refresh(task: task)
-                self.scheduleRefresh()
-            }
+            self.refresh(task: task)
+            self.scheduleRefresh()
         }
 
         operationQueue.async(execute: handleTask)
@@ -171,49 +164,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
-    func handleDecoyStopkeys(task: BackgroundTask?) {
-
-        guard isExposureManagerActive else {
-            task?.setTaskCompleted(success: true)
-            logDebug("ExposureManager inactive - Not handling \(String(describing: task?.identifier))")
-            return
-        }
-
-        self.logDebug("Decoy `/stopkeys` started")
-        let disposable = exposureController
-            .getPadding()
-            .flatMapCompletable { padding in
-                self.networkController
-                    .stopKeys(padding: padding)
-                    .subscribe(on: MainScheduler.instance)
-                    .catch { error in
-                        if let exposureDataError = (error as? NetworkError)?.asExposureDataError {
-                            self.logError("Decoy `/stopkeys` error: \(exposureDataError)")
-                            throw exposureDataError
-                        } else {
-                            self.logDebug("Decoy `/stopkeys` error: ExposureDataError.internalError")
-                            throw ExposureDataError.internalError
-                        }
-                    }
-            }
-            .subscribe(onCompleted: {
-                // Note: We ignore the response
-                self.logDebug("Decoy `/stopkeys` complete")
-                task?.setTaskCompleted(success: true)
-            }, onError: { _ in
-                self.logError("Decoy `/stopkeys` complete")
-                task?.setTaskCompleted(success: true)
-                })
-
-        // Handle running out of time
-        if var task = task {
-            task.expirationHandler = {
-                self.logDebug("Decoy `/stopkeys` expired")
-                disposable.dispose()
-            }
-        }
-    }
-
     // MARK: - Private
 
     /// Returns the refresh interval in minutes
@@ -240,11 +190,10 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///    When the user opens the app
     ///        if (config.decoyProbability),
     ///        rand(1-x) seconds after the manifest run ‘register decoy’ in the foreground,
-    ///        Schedule the ‘stopkeys’ decoy’ as a normal/regular background task rand(0-15) minutes later (the chance that this bg task works is high, because the user used the app less than x ago)
+    ///        Schedule the ‘stopkeys’ decoy’ sequence rand(5-30) seconds later
     ///
     ///     Ensure only 1 decoy per day
     ///     x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
-    ///     y = about 5 minutes (about less, e.g. 250 sec) this param value depends on how long a prioritized task is allowed to run
     func performDecoySequenceIfNeeded() {
 
         guard self.isExposureManagerActive else {
@@ -269,20 +218,10 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 self.logDebug("Decoy `/register` complete")
 
-                let date = currentDate().addingTimeInterval(
-                    TimeInterval(self.randomNumberGenerator.randomInt(in: 0 ... 900)) // random number between 0 and 15 minutes
-                )
-
-                if self.environmentController.isiOS13orHigher {
-                    if #available(iOS 13, *) {
-                        self.schedule(identifier: BackgroundTaskIdentifiers.decoyStopKeys, date: date)
+                DispatchQueue.global(qos: .utility)
+                    .asyncAfter(deadline: DispatchTime.now() + .seconds(self.randomNumberGenerator.randomInt(in: 5 ... 30))) {
+                        self.handleDecoyStopkeys()
                     }
-                } else {
-                    DispatchQueue.global(qos: .utility)
-                        .asyncAfter(deadline: DispatchTime.now() + .seconds(self.randomNumberGenerator.randomInt(in: 0 ... 30))) {
-                            self.handleDecoyStopkeys(task: nil)
-                        }
-                }
             }
         }
 
@@ -336,6 +275,38 @@ final class BackgroundController: BackgroundControlling, Logging {
                 disposible.dispose()
             }
         }
+    }
+
+    private func handleDecoyStopkeys() {
+
+        guard isExposureManagerActive else {
+            logDebug("ExposureManager inactive - Not handling handleDecoyStopkeys()")
+            return
+        }
+
+        self.logDebug("Decoy `/stopkeys` started")
+        exposureController
+            .getPadding()
+            .flatMapCompletable { padding in
+                self.networkController
+                    .stopKeys(padding: padding)
+                    .subscribe(on: MainScheduler.instance)
+                    .catch { error in
+                        if let exposureDataError = (error as? NetworkError)?.asExposureDataError {
+                            self.logError("Decoy `/stopkeys` error: \(exposureDataError)")
+                            throw exposureDataError
+                        } else {
+                            self.logDebug("Decoy `/stopkeys` error: ExposureDataError.internalError")
+                            throw ExposureDataError.internalError
+                        }
+                    }
+            }
+            .subscribe(onCompleted: {
+                // Note: We ignore the response
+                self.logDebug("Decoy `/stopkeys` complete")
+            }, onError: { _ in
+                self.logError("Decoy `/stopkeys` complete")
+            }).disposed(by: disposeBag)
     }
 
     private func scheduleRefresh() {
