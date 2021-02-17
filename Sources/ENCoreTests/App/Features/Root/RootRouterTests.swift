@@ -94,11 +94,9 @@ final class RootRouterTests: XCTestCase {
     }
 
     func test_start_buildsAndPresentsLaunchScreen() {
-        let routingMock = LaunchScreenRoutingMock()
-        let viewControllableMock = LaunchScreenViewControllableMock()
-        routingMock.viewControllable = viewControllableMock
+        let viewControllableMock = ViewControllableMock()
 
-        launchScreenBuilder.buildHandler = { return routingMock }
+        launchScreenBuilder.buildHandler = { return viewControllableMock }
 
         XCTAssertEqual(launchScreenBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.presentCallCount, 0)

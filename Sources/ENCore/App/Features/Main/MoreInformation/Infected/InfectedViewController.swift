@@ -77,8 +77,8 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         exposureStateStream
             .exposureState
-            .subscribe(onNext: { state in
-                self.update(exposureState: state)
+            .subscribe(onNext: { [weak self] state in
+                self?.update(exposureState: state)
             })
             .disposed(by: disposeBag)
 

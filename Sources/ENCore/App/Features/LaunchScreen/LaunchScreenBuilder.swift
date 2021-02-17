@@ -10,7 +10,7 @@ import Foundation
 
 /// @mockable
 protocol LaunchScreenBuildable {
-    func build() -> Routing
+    func build() -> ViewControllable
 }
 
 protocol LaunchScreenDependency {
@@ -28,10 +28,8 @@ private final class LaunchScreenDependencyProvider: DependencyProvider<LaunchScr
 
 final class LaunchScreenBuilder: Builder<LaunchScreenDependency>, LaunchScreenBuildable {
 
-    func build() -> Routing {
+    func build() -> ViewControllable {
         let dependencyProvider = LaunchScreenDependencyProvider(dependency: dependency)
-        let viewController = LaunchScreenViewController(theme: dependencyProvider.dependency.theme)
-
-        return LaunchScreenRouter(viewController: viewController)
+        return LaunchScreenViewController(theme: dependencyProvider.dependency.theme)
     }
 }
