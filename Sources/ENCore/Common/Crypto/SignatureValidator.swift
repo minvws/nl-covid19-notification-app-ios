@@ -10,46 +10,41 @@ import Foundation
 
 /// @mockable
 protocol SignatureValidating {
-    func validate(signature: Data, content: Data) -> Bool
+    func validate(signature: Data, content: Data, validateRootCertificate: Bool) -> SignatureValidationResult
 }
 
 final class SignatureValidator: SignatureValidating, Logging {
     private let openssl = OpenSSL()
+    private let signatureConfiguration: SignatureConfiguration
 
-    func validate(signature: Data, content: Data) -> Bool {
-        guard let rootCertificateData = validatedRootCertificateData() else {
-            return false
+    init(signatureConfiguration: SignatureConfiguration = DefaultSignatureConfiguration()) {
+        self.signatureConfiguration = signatureConfiguration
+    }
+
+    func validate(signature: Data, content: Data, validateRootCertificate: Bool) -> SignatureValidationResult {
+
+        guard let rootCertificateData = signatureConfiguration.rootCertificateData else {
+            return SignatureValidationResult.SIGNATUREVALIDATIONRESULT_GENERICERROR
         }
 
-        guard openssl.validatePKCS7Signature(
+        if validateRootCertificate {
+            guard openssl.validateSerialNumber(signatureConfiguration.rootSerial,
+                                               forCertificateData: rootCertificateData) else {
+                return SignatureValidationResult.SIGNATUREVALIDATIONRESULT_GENERICERROR
+            }
+
+            guard openssl.validateSubjectKeyIdentifier(signatureConfiguration.rootSubjectKeyIdentifier,
+                                                       forCertificateData: rootCertificateData) else {
+                return SignatureValidationResult.SIGNATUREVALIDATIONRESULT_GENERICERROR
+            }
+        }
+
+        return openssl.validatePKCS7Signature(
             signature,
             contentData: content,
             certificateData: rootCertificateData,
-            authorityKeyIdentifier: SignatureConfiguration.authorityKeyIdentifier,
-            requiredCommonNameContent: SignatureConfiguration.commonNameContent,
-            requiredCommonNameSuffix: SignatureConfiguration.commonNameSuffix) else {
-            logError("PKCS7Signature is invalid")
-            return false
-        }
-
-        return true
-    }
-
-    private func validatedRootCertificateData() -> Data? {
-        guard let certificateData = SignatureConfiguration.rootCertificateData else {
-            return nil
-        }
-
-        guard openssl.validateSerialNumber(SignatureConfiguration.rootSerial,
-                                           forCertificateData: certificateData) else {
-            return nil
-        }
-
-        guard openssl.validateSubjectKeyIdentifier(SignatureConfiguration.rootSubjectKeyIdentifier,
-                                                   forCertificateData: certificateData) else {
-            return nil
-        }
-
-        return certificateData
+            authorityKeyIdentifier: signatureConfiguration.authorityKeyIdentifier,
+            requiredCommonNameContent: signatureConfiguration.commonNameContent,
+            requiredCommonNameSuffix: signatureConfiguration.commonNameSuffix)
     }
 }

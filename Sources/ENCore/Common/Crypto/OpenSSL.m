@@ -47,7 +47,7 @@
     if (certificateSerial == NULL) {
         return NO;
     }
-    
+
     BOOL isMatch = ASN1_INTEGER_cmp(certificateSerial, expectedSerial) == 0;
     
     ASN1_INTEGER_free(expectedSerial); expectedSerial = NULL;
@@ -103,7 +103,7 @@
     
     // Compare Common Name to required content and required suffix
     BOOL containsRequiredContent = [cnString rangeOfString:requiredContent options:NSCaseInsensitiveSearch].location != NSNotFound;
-    BOOL hasCorrectSuffix = [cnString hasSuffix:requiredSuffix];    
+    BOOL hasCorrectSuffix = [requiredSuffix isEqualToString:@""] || [cnString hasSuffix:requiredSuffix];
     
     X509_NAME_free(certificateSubjectName);
     certificateSubjectName = NULL;
@@ -111,7 +111,7 @@
     return hasCorrectSuffix && containsRequiredContent;
 }
     
-- (BOOL)validatePKCS7Signature:(NSData *)signatureData
+- (SignatureValidationResult)validatePKCS7Signature:(NSData *)signatureData
                    contentData:(NSData *)contentData
                certificateData:(NSData *)certificateData
         authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData
@@ -120,14 +120,14 @@
     
     BIO *signatureBlob = BIO_new_mem_buf(signatureData.bytes, (int)signatureData.length);
     if (signatureBlob == NULL) {
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     BIO *contentBlob = BIO_new_mem_buf(contentData.bytes, (int)contentData.length);
     if (contentBlob == NULL) {
         BIO_free(signatureBlob); signatureBlob = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     BIO *certificateBlob = BIO_new_mem_buf(certificateData.bytes, (int)certificateData.length);
@@ -135,7 +135,7 @@
         BIO_free(signatureBlob); signatureBlob = NULL;
         BIO_free(contentBlob); contentBlob = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     PKCS7 *p7 = d2i_PKCS7_bio(signatureBlob, NULL);
@@ -144,16 +144,16 @@
         BIO_free(contentBlob); contentBlob = NULL;
         BIO_free(certificateBlob); certificateBlob = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     STACK_OF(X509) *signers = PKCS7_get0_signers(p7, NULL, 0);
-    
+        
     if (signers == NULL || sk_X509_num(signers) == 0) {
         BIO_free(signatureBlob); signatureBlob = NULL;
         BIO_free(contentBlob); contentBlob = NULL;
         BIO_free(certificateBlob); certificateBlob = NULL;
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     X509 *signingCert = sk_X509_value(signers, 0);
@@ -163,11 +163,15 @@
                                                     requiredContent:requiredCommonNameContent
                                                      requiredSuffix:requiredCommonNameSuffix];
     
-    if (!isAuthorityKeyIdentifierValid || !isCommonNameValid) {
+    if (!isCommonNameValid || !isAuthorityKeyIdentifierValid) {
         BIO_free(signatureBlob); signatureBlob = NULL;
         BIO_free(contentBlob); contentBlob = NULL;
         BIO_free(certificateBlob); certificateBlob = NULL;
-        return NO;
+        if (!isCommonNameValid) {
+            return SIGNATUREVALIDATIONRESULT_INCORRECTCOMMONNAME;
+        } else {
+            return SIGNATUREVALIDATIONRESULT_INCORRECTAUTHORITYKEYIDENTIFIER;
+        }
     }
     
     X509 *cert = PEM_read_bio_X509(certificateBlob, NULL, 0, NULL);
@@ -176,7 +180,7 @@
         BIO_free(contentBlob); contentBlob = NULL;
         BIO_free(certificateBlob); certificateBlob = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     BIO_free(signatureBlob); signatureBlob = NULL;
@@ -186,20 +190,20 @@
     if (store == NULL) {
         BIO_free(contentBlob); contentBlob = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     if (X509_STORE_add_cert(store, cert) != 1) {
         X509_STORE_free(store); store = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     X509_VERIFY_PARAM *verifyParameters = X509_VERIFY_PARAM_new();
     if (verifyParameters == NULL) {
         X509_STORE_free(store); store = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     if (X509_VERIFY_PARAM_set_flags(verifyParameters, X509_V_FLAG_CRL_CHECK_ALL | X509_V_FLAG_POLICY_CHECK) != 1
@@ -207,14 +211,14 @@
         X509_STORE_free(store); store = NULL;
         X509_VERIFY_PARAM_free(verifyParameters); verifyParameters = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
 
     if (X509_STORE_set1_param(store, verifyParameters) != 1) {
         X509_STORE_free(store); store = NULL;
         X509_VERIFY_PARAM_free(verifyParameters); verifyParameters = NULL;
         
-        return NO;
+        return SIGNATUREVALIDATIONRESULT_GENERICERROR;
     }
     
     X509_VERIFY_PARAM_free(verifyParameters); verifyParameters = NULL;
@@ -226,7 +230,11 @@
     OPENSSL_free(cert); cert = NULL;
     OPENSSL_free(p7); p7 = NULL;
     
-    return result == 1;
+    if (result == 1) {
+        return SIGNATUREVALIDATIONRESULT_SUCCESS;
+    } else {
+        return SIGNATUREVALIDATIONRESULT_VERIFICATIONFAILED;
+    }
 }
 
 - (BOOL)validateAuthorityKeyIdentifierData:(NSData *)expectedAuthorityKeyIdentifierData
