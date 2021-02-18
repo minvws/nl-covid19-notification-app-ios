@@ -5,9 +5,9 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -16,21 +16,30 @@ final class InfectedViewControllerSnapshotTests: TestCase {
     private let router = InfectedRoutingMock()
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
+    private var mockCardListener: CardListeningMock!
+    private var mockExposureDataController: ExposureDataControllingMock!
+    private var mockPauseController: PauseControllingMock!
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
-        exposureStateStream.exposureState = Just(ExposureState(
+        mockCardListener = CardListeningMock()
+        mockExposureDataController = ExposureDataControllingMock()
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        mockPauseController = PauseControllingMock()
+
+        exposureStateStream.exposureState = .just(ExposureState(
             notifiedState: .notNotified,
             activeState: .active
         ))
-            .eraseToAnyPublisher()
 
         viewController = InfectedViewController(theme: theme,
                                                 exposureController: exposureController,
-                                                exposureStateStream: exposureStateStream)
+                                                exposureStateStream: exposureStateStream,
+                                                interfaceOrientationStream: interfaceOrientationStream)
         viewController.router = router
     }
 
@@ -59,8 +68,13 @@ final class InfectedViewControllerSnapshotTests: TestCase {
                                                                             bucketIdentifier: Data(),
                                                                             confirmationKey: Data(),
                                                                             validUntil: Date()))
-        let cardViewController = CardViewController(theme: theme,
-                                                    type: .exposureOff)
+
+        let cardViewController = CardViewController(listener: mockCardListener,
+                                                    theme: theme,
+                                                    types: [.exposureOff],
+                                                    dataController: mockExposureDataController,
+                                                    pauseController: mockPauseController)
+
         viewController.set(cardViewController: cardViewController)
 
         snapshots(matching: viewController)

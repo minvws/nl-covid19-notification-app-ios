@@ -1,6 +1,7 @@
 name: '$(Date:yyyyMMdd)$(Rev:.r)-$(BuildID)'
 trigger:
   - master
+  - release/*
 
 #variables:
 
@@ -32,9 +33,9 @@ stages:
           cliProjectKey: 'MSS_iOS'
           cliSources: /Users/runner/work/1/s/
           extraProperties: |
-            # Additional properties that will be passed to the scanner, 
+            # Additional properties that will be passed to the scanner,
             # Put one key=value per line, example:
-            # sonar.exclusions=**/*.bin     
+            # sonar.exclusions=**/*.bin
             sonar.c.file.suffixes=-
             sonar.cpp.file.suffixes=-
             sonar.objc.file.suffixes=-
@@ -54,6 +55,6 @@ stages:
         displayName: 'Run Code Analysis'
       - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
         displayName: 'Publish Quality Gate Result'
-      # Run distribution on the master and release/ branches only          
+#       Run distribution on the master and release/ branches only          
       - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')) }}:
         - template: distribute.yml

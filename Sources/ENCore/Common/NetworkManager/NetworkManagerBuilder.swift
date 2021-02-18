@@ -17,6 +17,7 @@ enum NetworkError: Error {
     case resourceNotFound
     case encodingError
     case redirection
+    case errorConversionError
 }
 
 /// @mockable
@@ -25,6 +26,7 @@ protocol NetworkManaging {
     // MARK: CDN
 
     func getManifest(completion: @escaping (Result<Manifest, NetworkError>) -> ())
+    func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ())
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ())
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ())
     func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ())
@@ -44,6 +46,28 @@ protocol NetworkManagerBuildable {
 protocol NetworkManagerDependency {
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
     var storageController: StorageControlling { get }
+}
+
+/// @mockable
+protocol URLSessionDataTaskProtocol {
+    func resume()
+}
+
+extension URLSessionDataTask: URLSessionDataTaskProtocol {}
+
+/// @mockable
+protocol URLSessionProtocol {
+    func resumableDataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol
+}
+
+/// @mockable
+protocol URLSessionDelegateProtocol {}
+
+extension URLSession: URLSessionProtocol {
+    func resumableDataTask(with request: URLRequest,
+                           completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol {
+        return dataTask(with: request, completionHandler: completionHandler)
+    }
 }
 
 private final class NetworkManagerDependencyProvider: DependencyProvider<NetworkManagerDependency> {
@@ -86,6 +110,6 @@ final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkMan
                               responseHandlerProvider: dependencyProvider.responseHandlerProvider,
                               storageController: dependencyProvider.dependency.storageController,
                               session: dependencyProvider.session,
-                              sessionDelegate: dependencyProvider.sessionDelegate)
+                              sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol)
     }
 }

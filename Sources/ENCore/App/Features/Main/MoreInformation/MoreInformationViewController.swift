@@ -5,14 +5,15 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
+import RxSwift
 import SafariServices
 import SnapKit
 import UIKit
 
 enum MoreInformationIdentifier: CaseIterable {
     case about
+    case settings
     case share
     case infected
     case receivedNotification
@@ -39,16 +40,12 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
     init(listener: MoreInformationListener,
          theme: Theme,
-         testPhaseStream: AnyPublisher<Bool, Never>, bundleInfoDictionary: [String: Any]?) {
+         bundleInfoDictionary: [String: Any]?,
+         exposureController: ExposureControlling) {
         self.listener = listener
-        self.testPhaseStream = testPhaseStream
         self.bundleInfoDictionary = bundleInfoDictionary
-
+        self.exposureController = exposureController
         super.init(theme: theme)
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - View Lifecycle
@@ -63,23 +60,20 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         moreInformationView.set(data: objects, listener: self)
 
+        exposureController.lastTEKProcessingDate()
+            .subscribe(onNext: { lastTEKProcessingDate in
+                let date = self.formatTEKProcessingDateToString(lastTEKProcessingDate)
+                self.moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
+            })
+            .disposed(by: disposeBag)
+
         if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
             let build = dictionary["CFBundleVersion"] as? String,
             let hash = dictionary["GitHash"] as? String {
             let buildAndHash = "\(build)-\(hash)"
             moreInformationView.version = "\(version) (\(buildAndHash))"
-
-            testPhaseStream
-                .sink(receiveValue: { isTestPhase in
-                    if isTestPhase {
-                        self.moreInformationView.version = .testVersionTitle(version, buildAndHash)
-                        self.moreInformationView.learnMoreButton.isHidden = false
-                    }
-                }).store(in: &disposeBag)
         }
-
-        moreInformationView.learnMoreButton.addTarget(self, action: #selector(didTapLearnMore(sender:)), for: .touchUpInside)
     }
 
     // MARK: - MoreInformationCellListner
@@ -88,6 +82,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
         switch identifier {
         case .about:
             listener?.moreInformationRequestsAbout()
+        case .settings:
+            listener?.moreInformationRequestsSettings()
         case .share:
             listener?.moreInformationRequestsSharing()
         case .infected:
@@ -106,6 +102,11 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
                                                          icon: .about,
                                                          title: .moreInformationCellAboutTitle,
                                                          subtitle: .moreInformationCellAboutSubtitle)
+
+        let settingsModel = MoreInformationCellViewModel(identifier: .settings,
+                                                         icon: .settings,
+                                                         title: .moreInformationCellSettingsTitle,
+                                                         subtitle: .moreInformationCellSettingsSubtitle)
 
         let shareAppModel = MoreInformationCellViewModel(identifier: .share,
                                                          icon: .share,
@@ -129,24 +130,28 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         return [
             aboutAppModel,
-            shareAppModel,
+            settingsModel,
             receivedNotificationModel,
             requestTestModel,
+            shareAppModel,
             infectedModel
         ]
     }
 
     private lazy var moreInformationView: MoreInformationView = MoreInformationView(theme: self.theme)
     private weak var listener: MoreInformationListener?
-    private let testPhaseStream: AnyPublisher<Bool, Never>
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
     private let bundleInfoDictionary: [String: Any]?
+    private let exposureController: ExposureControlling
 
-    @objc private func didTapLearnMore(sender: Button) {
-        guard let url = URL(string: .helpTestVersionLink) else {
-            return logError("Cannot create URL from: \(String.helpTestVersionLink)")
+    private func formatTEKProcessingDateToString(_ date: Date?) -> String? {
+        guard let date = date else {
+            return nil
         }
-        listener?.moreInformationRequestsRedirect(to: url)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeStyle = .short
+        return dateFormatter.string(from: date)
     }
 }
 
@@ -156,18 +161,22 @@ private final class MoreInformationView: View {
         get { versionLabel.text }
         set { versionLabel.text = newValue }
     }
+    fileprivate var latestTekUpdate: String? {
+        get { lastTEKProcessingDateLabel.text }
+        set { lastTEKProcessingDateLabel.text = newValue }
+    }
     var didSelectItem: ((MoreInformationIdentifier) -> ())?
 
     private let stackView: UIStackView
     private let versionLabel: Label
-    fileprivate let learnMoreButton: Button
+    private let lastTEKProcessingDateLabel: Label
 
     // MARK: - Init
 
     override init(theme: Theme) {
         self.stackView = UIStackView(frame: .zero)
         self.versionLabel = Label()
-        self.learnMoreButton = Button(title: .learnMore, theme: theme)
+        self.lastTEKProcessingDateLabel = Label()
         super.init(theme: theme)
     }
 
@@ -179,16 +188,19 @@ private final class MoreInformationView: View {
         stackView.axis = .vertical
         stackView.distribution = .fill
 
+        lastTEKProcessingDateLabel.numberOfLines = 0
+        lastTEKProcessingDateLabel.lineBreakMode = .byWordWrapping
+        lastTEKProcessingDateLabel.font = theme.fonts.footnote
+        lastTEKProcessingDateLabel.textColor = theme.colors.gray
+        lastTEKProcessingDateLabel.textAlignment = .center
+
         versionLabel.font = theme.fonts.footnote
         versionLabel.textColor = theme.colors.gray
         versionLabel.textAlignment = .center
-        learnMoreButton.style = .info
-        learnMoreButton.titleLabel?.font = theme.fonts.footnote
-        learnMoreButton.isHidden = true
 
         addSubview(stackView)
+        addSubview(lastTEKProcessingDateLabel)
         addSubview(versionLabel)
-        addSubview(learnMoreButton)
     }
 
     override func setupConstraints() {
@@ -198,15 +210,16 @@ private final class MoreInformationView: View {
 
         stackView.snp.makeConstraints { maker in
             maker.top.equalToSuperview().offset(16)
-            maker.leading.trailing.equalToSuperview()
-            maker.bottom.equalTo(versionLabel.snp.top).offset(-16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+        }
+        lastTEKProcessingDateLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(stackView.snp.bottom).offset(16)
+            maker.leading.equalTo(stackView).offset(16)
+            maker.trailing.equalTo(stackView).offset(-16)
         }
         versionLabel.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview()
-        }
-        learnMoreButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview()
-            maker.top.equalTo(versionLabel.snp.bottom)
+            maker.top.equalTo(lastTEKProcessingDateLabel.snp.bottom).offset(16)
+            maker.leading.trailing.equalTo(stackView)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }

@@ -1,3 +1,61 @@
+/* MARK: - Update Operating System */
+
+"update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
+"update.software.os.description" = "يحتاج CoronaMelder إلى الإصدار الأحدث لـ IOS كي يستمر في العمل بصورة صحيحة على هاتفك.";
+"update.software.os.detail.title" = "حدّث هاتفك";
+"update.software.os.detail.step1.detail" = "الإعدادات";
+"update.software.os.detail.step2.detail" = "العامة";
+"update.software.os.detail.step3.detail" = "تحديث البرنامج";
+"update.software.os.detail.step1" = "افتح <b>الإعدادات</b> في هاتفك";
+"update.software.os.detail.step2" = "انتقل إلى \"العامة\"";
+"update.software.os.detail.step3" = "انتقل إلى \"تحديث البرامج\"";
+"update.button.update" = "تحديث";
+
+"update.software.os.detail.step4" = "انقرعلى \"تحميل البرنامج وتثبيته\"";
+/* MARK: - MoreInformation | Last TEK Processing Date */
+
+"moreInformation.lastTEKProcessingDateInformation.withDate" = " يتتبع CoronaMelder المصادفات باستمرار. يتحقق التطبيق أيضًا كل بضع ساعات مما إذا كان الشخص الذي قابلته ناقلاً للعدوى في ذلك الوقت. سيتم إبلاغك إذا كان كذلك. آخر فحص كان قيد التشغيل في%@";
+"moreInformation.lastTEKProcessingDateInformation.withoutDate" = "يتتبع CoronaMelder المصادفات باستمرار. يتحقق التطبيق أيضًا كل بضع ساعات مما إذا كان الشخص الذي قابلته ناقلاً للعدوى في ذلك الوقت. سيتم إبلاغك إذا كان الامر كذلك.";
+
+/* MARK: - MoreInformation | Settings */
+"moreInformation.cell.settings.title" = "الإعدادات";
+"moreInformation.cell.settings.subtitle" = "إيقاف التطبيق مؤقتًا وضبط خدمة تجوال البيانات";
+/* MARK: - MoreInformation | Settings */
+"moreInformation.settings.title" = "الإعدادات";
+"moreInformation.settings.mobiledata.paragraphtitle" = "تحقق فقط من الرموز عبرالـ WiFi";
+"moreInformation.settings.description" = "يتحقق CoronaMelder عدة مرات في اليوم ما إذا كنت على مقربة من شخص مصاب بكورونا. إذا قمت بإيقاف تشغيل خدمة تجوال البيانات، فسيقوم التطبيق بذلك فقط عند استخدام الـ WiFi. يتم تعقب الاحتكاك كذلك إذا لم يكن لديك اتصال بالإنترنت.";
+"moreInformation.settings.mobiledata.button" = "انتقل إلى خدمة تجوال البيانات";
+
+/* MARK: - MoreInformation | Settings | Pause */
+"moreInformation.settings.pause.title" = "إيقاف التطبيق مؤقتًا";
+"moreInformation.settings.pause.subtitle" = "هل أنت متأكد من أنك تريد إيقاف التطبيق مؤقتًا؟";
+"moreInformation.settings.pause.description" = "لا يتتبع التطبيق المصادفات مع مستخدمي التطبيق الآخرين أثناء الإيقاف المؤقت. لا يمكنك أيضًا تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا.\n\nقم بالإيقاف المؤقت فقط في الحالات التي يكون فيها هاتفك على مقربة من هواتف الآخرين لكن لم تكن عرضة للإصابة. بسبب استخدام معدات الوقاية الطبية على سبيل المثال.";
+"moreInformation.settings.pause.description.short" = "إذا قمت بإيقاف التطبيق مؤقتًا، فلن يتم تعقب مصادفاتك مؤقتًا. أيضًا لا يمكنك تلقي إشعار إذا كنت مع شخص تبين لاحقًا أنه مصاب بكورونا. بعد انتهاء فترة الإيقاف المؤقت، سيتم إشعارك على الفور لإعادة تشغيل التطبيق.";
+"moreInformation.settings.pause.dontshowscreen" = "لا تقم بإظهار هذه الشاشة مرة أخرى";
+"moreInformation.settings.pause.yesbutton" = "نعم، قم بإيقاف التطبيق مؤقتًا";
+"moreInformation.settings.pause.cancelbutton" = "كلا، لا تقم بإيقاف التشغيل مؤقتًا";
+"moreInformation.settings.pause.pausebutton" = "إيقاف التطبيق مؤقتًا";
+"moreInformation.settings.pause.enableappbutton" = "تشغيل التطبيق";
+
+/* MARK: - MoreInformation | Settings | Mobile Data */
+"moreInformation.settings.mobiledata.title" = "بيانات خدمة تجوال";
+"moreInformation.settings.step1" = "افتح <b>الإعدادات</b> في هاتفك عن طريق الزر أدناه";
+"moreInformation.settings.step2" = "قم بتشغيل أو إيقاف تشغيل خدمة تجوال البيانات من أجل CoronaMelder ";
+"moreInformation.settings.step2.row.title" = "خدمة تجوال البيانات";
+"moreInformation.settings.button" = "إفتح الإعدادات";
+
+// supports HTML
+"enableSettings.exposureNotifications.137.step2" = "انتقل إلى<b>إشعارات التعرض لخطر الإصابة</b>";
+"enableSettings.exposureNotifications.137.step2.action.title" = "إشعارات التعرض لخطر الإصابة";
+// supports HTML
+"enableSettings.exposureNotifications.137.step3" = "شغل <b> مشاركة البياتات حول تعرضك لخطر الإصابة</b> ";
+"enableSettings.exposureNotifications.137.step3.action.title" = "شارك البيانات حول تعرضك لخطر الإصابة";
+// supports HTML
+"enableSettings.exposureNotifications.137.step4" = "تحقق من الخطوة الأخيرة: هل<b>عيّن كمنطقة نشطة</b> ملونة باللون الأزرق؟ إذا كان الأمر كذلك، فاضغط عليه";
+// Should match setting name in iOS
+"enableSettings.exposureNotifications.137.step4.action.title" = "تحديد المنطقة النشطة";
+
+"privacyAgreement.steps.title"= "هذه هي النقاط الرئيسية:";
 /* MARK: - Chance of contamination */
 "contamination.title" = "احتمالية الإصابة بالعدوى";
 
@@ -13,7 +71,7 @@
 "contamination.stay_home.title" = "ابق في المنزل لغاية %@ ";
 "contamination.stay_home.step1" = "دع الآخرين يقومون بمهمة شراء البقالة لك. هل هذا غير ممكن وهل ليست لديك أعراض؟ يمكنك إذًا الخروج للقيام بشراء البقالة. حافظ على مسافة 1.5 متر ولا تلمس أي شخص.";
 "contamination.stay_home.step2" = "يمكنك الجلوس في الحديقة أو على الشرفة.";
-"contamination.stay_home.step3" = "يُسمح للأطفال الذين تتراوح أعمارهم بين 4 و 12 عامًا بالذهاب إلى المدرسة و/أو ممارسة الرياضة.";
+"contamination.stay_home.step3" = "يُسمح للأطفال في سن التمدرس الذين تقل أعمارهم عن 18 عامًا بالذهاب إلى المدرسة و / أو ممارسة الرياضة.";
 
 "contamination.visitors.title" = "لا تستقبل الزوار";
 "contamination.visitors.step1" = "فقط الأشخاص الذين يعيشون معك يستطيعون التواجد معك في المنزل. ابتعدوا عن بعضكم وحافظوا على مسافة 1.5 متر. لا تقوموا إذًا بالمعانقة ولا التقبيل ولا ممارسة العلاقة الحميمة.";
@@ -36,6 +94,7 @@
 "status.icon.accessibility.ok" = "دائرة خظراء مع علامة صح تشير إلى أن التطبيق قد تم إعداده بشكل صحيح";
 "status.icon.accessibility.inactive" = "دائرة صفراء مع علامة تعجب كتحذير";
 "status.icon.accessibility.notified" = "دائرة حمراء مع جرس إنذار تشير إلى أنه عليك التصرف الآن";
+"status.icon.accessibility.paused" = "دائرة رمادية اللون عليها رمز الإيقاف  يشير إلى أنه تم إيقاف التطبيق مؤقتًا";
 "status.notified.today" = "اليوم";
 /*
 * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
@@ -43,11 +102,6 @@
 *
 *  SPDX-License-Identifier: EUPL-1.2
 */
-
-"testVersionTitle" = "إصدار الفحص والبحث %@ (%@)";
-
-"help.faq.testVersion.title" = "ماذا يعني إصدار الفحص والبحث؟";
-"help.faq.testVersion.link" = "https://coronamelder.nl/%@/test-en-onderzoeksversie-in-app";
 
 "moreInformation.situation.title" = "ما الذي يمكنك فعله في هذه الحالة؟";
 "moreInformation.situation.step1" = "أليست لديك أي أعراض؟ قم بإجراء فحص كورونا والزم المنزل حتى تستلم النتيجة";
@@ -204,7 +258,7 @@
 "help.technical_explanation.title" = "الشرح التقني";
 "help.technical_explanation.step1.title" = "1. يقوم التطبيق بإنشاء رمز خاص لكل هاتف";
 "help.technical_explanation.step1.description" = "لا يحتوي هذا الرمزعلى معلومات عنك أو عن هاتفك. الرمز عشوائي تمامًا ويتغير كل ربع ساعة.";
-"help.technical_explanation.step2.title" = "2. تتبادل الهواتف رموزها عند تواجدها بالقرب من بعضها";
+"help.technical_explanation.step2.title" = "2. تتبادل الهواتف رموزها عند تواجدها بالقرب من بعضها. ";
 "help.technical_explanation.step2.description" = "هل لدى الشخص الذي تقابله التطبيق أيضًا؟ سوف تتبادل هواتفكم في تلك الحالة رموزها عن طريق البلوتوث منخفض الطاقة. بهذه الطريقة يعرف التطبيق ما هي الهواتف التي تواجدت بالقرب منه. لا يعرف التطبيق من هم أصحاب هذه الهواتف ولا مكان تواجدكم.";
 "help.technical_explanation.step3.title" = "3. إذا كان شخصًا ما مصابًا بكورونا، فيستطيع وضع رموزه أو رموزها على قائمة";
 "help.technical_explanation.step3.description" = "تحتوي هذه القائمة على رموز الأشخاص المصابين فقط. من أجل إضافة الرموز، يجب على الشخص المصاب إرسال مفتاح الـ GGD إلى الـ GGD أولاً. بهذه الطريقة يمكن التأكد من أن الرموز المضافة تنتمي بالفعل إلى شخص مصاب بكورونا. يتم حذف كل الرموز التي يتجاوز عمرها 14 يومًا أوتوماتيكيًا.";
@@ -228,15 +282,15 @@
 "help.what_to_do_with_notification.description" = "اتبع النصيحة في التطبيق. تعتمد النصيحة على حالتك. ما إذا كانت لديك أعراض تتناسب مع أعراض كورونا. وفي أي يوم كنت بالقرب من الشخص المصاب. <br><br> إبق في المنزل على أي حال حتى تتأكد من عدم إصابتك بكورونا. يمنعك هذا من إصابة الآخرين دون قصد. <br> <br> هل تعطيك الـGGD عبر الهاتف نصائح تختلف عن النصائح الموجودة في التطبيق؟ اتبع إذًا نصيحة الـ GGD";
 "help.other_reports.title" = "إشعارات أخرى";
 "help.other_reports.description" = "يمكن لـ CoronaMelder أيضًا أن يرسل لك إشعارًا في حالة وجود مشكلة تقنية. إذا تم إيقاف تشغيل البلوتوث على سبيل المثال. أو إذا لم يكن هناك اتصال بالإنترنت لأكثر من يوم. سيساعدك التطبيق في حل هذه المشكلة.<br><br>هل تلقيت مثل هذا الإشعار، وهل لا يزال التطبيق نشطًا؟ تم في هذه الأثناء انحلت المشكلة بالفعل.<br> <br> تتلقى أحيانًا أيضًا إشعارات تفيد بأن هاتفك يجري فحوصات COVID-19. إفتح CoronaMelder عندئذ. من المهم أن تعرف: لا يوجد هناك في العادة شيء يدعو إلى القلق.";
-"help.other_what_does_report_say.title" = "ما الذي يورد في الإشعار؟";
+"help.other_what_does_report_say.title" = "كيف أتعرف على الإشعار؟";
 "help.other_what_does_report_say.content1" = "يرسل هذا التطبيق إشعاراً في حال تواجدك لمدة 15 دقيقة على الأقل بالقرب من شخص تبين لاحقاً إصابته بفيروس كورونا.";
 "help.other_what_does_report_say.content2" = "سيظهر الإشعار على الشاشة الرئيسية لهاتفك. تمامًا مثل الرسائل الواردة من التطبيقات الأخرى. الإشعار لديه رمز CoronaMelder <br> <br> هل تلقيت إشعارًا؟ ثم افتح CoronaMelder. هناك يمكنك قراءة ما يمكنك القيام به بعد ذلك";
 
 "help.pause_app.title" = "Can I pause the app?";
-"help.pause_app.description" = "نعم، يمكنك القيام بذلك عن طريق إيقاف تشغيل البلوتوث. يمكنك القيام بذلك من خلال الانتقال إلى<b> الإعدادات> البلوتوث</b>. إذا قمت بإيقاف تشغيل البلوتوث، فلن يتبادل التطبيق الرموز بعد الآن. ستتلقى بعد ذلك تذكيرًا تلقائيًا لإعادة تشغيل التطبيق كل 24 ساعة. <br><br>إلا أنه لا يُنصح عادةً بإيقاف تشغيل التطبيق مؤقتًا لأنك قد تنسى إعادة تشغيله. يمكنك إيقاف التطبيق مؤقتًا في حالات خاصة. على سبيل المثال، إذا اقتربت من مرضى مصابين بكورونا (محتملين)، لكنك متأكد من أنك ترتدي معدات الوقاية الطبية.";
+"help.pause_app.description" = "نعم ، يمكنك إيقاف التطبيق مؤقتًا. يمكنك القيام بذلك في الشاشة الرئيسية من خلال <b> الإعدادات> إيقاف التطبيق المؤقت</ b>. إذا أوقفت التطبيق مؤقتًا، فلن يتم تعقب مخالطاتك مؤقتًا. أيضًا، لا يمكنك تلقي إشعار إذا كنت بالقرب من شخص تبين لاحقًا أنه مصاب بكورونا. <br><br>عند انتهاء الإيقاف المؤقت، ستتلقى إشعارًا على الفور لإعادة تشغيل التطبيق. بعد تشغيل التطبيق، لا يزال بإمكانك تلقي إشعارات المخالطات قبل إيقاف التطبيق مؤقتًا. <br><br>لا ينصح عادةً بإيقاف التطبيق مؤقتًا حيث قد تنسى إعادة تشغيله. يمكنك إيقاف التطبيق مؤقتًا في حالات خاصة. إذا اقتربت من مرضى كورونا (محتملين) على سبيل المثال، لكنك متأكد من أنك ترتدي معدات الوقاية الطبية.";
 
 "help.apps_other_countries.title" = "هل يعمل CoronaMelder أيضًا مع تطبيقات من دول أخرى؟";
-"help.apps_other_countries.description" = "للأسف ليس بعد، لكن من المتوقع أن يكون ذلك ممكنًا في نهاية سبتمبر. بعد ذلك سيتمكن CoronaMelder أيضًا من تبادل الرموز مع بعض التطبيقات من بلدان أخرى. التطبيق الألماني على سبيل المثال.<br><br> إذا قمت بتثبيت تطبيق Corona-Warn الألماني بالإضافة إلى CoronaMelder، فسيشير هاتفك إلى إن تطبيقًا واحدًا فقط يمكن أن يكون نشطًا في كل مرة. هذا هو التطبيق المستخدم حاليًا للتحقق من المصادفة.  إذا كنت تريد القيام بذلك في بلدان متعددة، فعليك تبديل التطبيق بنفسك، يمكنك بعد ذلك تلقي إشعارات من هذا التطبيق. إذا قمت بتبديل التطبيقات مرة واحدة في اليوم، يتحقق كلا التطبيقين من  المصادفات. لن تفوّت شيئًا بهذه الطريقة.<br> <br>اعتبارًا من نهاية سبتمبر، من المحتمل أن تتمكن من الاستمرار في استخدام تطبيق بلدك ولن تعد بحاجة إلى التبديل يوميًا.";
+"help.apps_other_countries.description" = "يعمل CoronaMelder مع عدد من التطبيقات من دول أوروبية أخرى. من بينها ألمانيا وأيرلندا وإيطاليا. <br> <br> لنفرض أنك كنت بالقرب من أحد مستخدمي تطبيق Corona-Warn-App الألماني لفترة طويلة. تم اختبار هذا الشخص في ألمانيا وتبين أنه مصاب بكورونا. إذا شارك هذا الشخص رموزه مع الـGGD الألماني، فستتلقى إشعارًا عبر CoronaMelder. العكس أيضًا ينطبق. نظرًا لأن تطبيقات corona تعمل معًا، فأنت بحاجة فقط إلى تشغيل تطبيق واحد. <br> <br> اعتبارًا من 30 نوفمبر /تشرين الثاني 2020، سيتحقق CoronaMelder من رموز المستخدمين من مختلف البلدان يوميًا. نتيجة لذلك ، يستخدم التطبيق تجوال البيانات أكثر من ذي قبل. يمكنك من خلال <b> الإعدادات </b> على الشاشة الرئيسية ضبط اعداداتك بحيث يتحقق التطبيق فقط عبر شبكة WiFi ما إذا كنت على مقربة من شخص مصاب بفيروس كورونا.";
 
 /* MARK: - Message */
 "message.default.title" = "لقد تواجدت بالقرب من شخص مصاب بكورونا";
@@ -255,14 +309,20 @@
 "main.confirmNotificationRemoval.message" = "لن تستطيع إيجاد التاريخ في التطبيق فيما بعد. إحفظه جيدًا إذن.";
 "main.confirmNotificationRemoval.confirm" = "إحذف";
 
+/* MARK: - WebView */
+"webview.loadingfailed.title" = "لا يمكن تحميل هذه الصفحة";
+"webview.loadingfailed.subtitle" = "حدث خطأ ما. تحقق مرة أخرى لاحقًا أو حاول إعادة تحميل الصفحة";
+"webview.loadingfailed.try_again" = "حاول مجددًا";
+
 /* MARK: - Status */
 "status.appState" = "التطبيق نشط";
 "status.appState.inactive.title" = "التطبيق غير نشط";
 "status.appState.inactive.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة.";
-"status.appState.inactive.no_recent_updates.description" = "لم يتمكن التطبيق من الاتصال بالإنترنت خلال الأربع والعشرين ساعة الماضية. تأكد فيما إذا كان الواي فاي أو بيانات الهاتف مشغّلة وأعد المحاولة.";
+"status.appState.inactive.notification" = "لم يتمكن التطبيق من التحقق لمدة 24 ساعة فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا.";
+"status.appState.inactive.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
 "status.appState.card.title" = "التطبيق غير نشط";
 "status.appState.card.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة..";
-"status.appState.card.no_recent_updates.description" = "لم يتمكن التطبيق من الاتصال بالإنترنت خلال الأربع والعشرين ساعة الماضية. قم بالتأكد من أن الواي فاي وبيانات الهاتف المحمول مشغلة ثم حاول مجددًا.";
+"status.appState.card.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
 "status.appState.card.button" = "تشغيل التطبيق";
 "status.appState.card.try_again" = "حاول مجددًا";
 "status.active.description" = "يقوم التطبيق بتسجيل المصادفات، حتى إذا قمت بإغلاق التطبيق.";
@@ -272,17 +332,26 @@
 "status.notified.moreInfo" = "ما الذي يمكنني القيام به الآن؟";
 "status.notified.removeNotification" = "حذف الإشعار";
 
-/* The title for the table of items in more infromation */
+/* MARK: - Paused Status */
+"status.paused.title" = "تم إيقاف التطبيق مؤقتًا";
+"status.pause.ended.title" = "قم بتشغيل التطبيق من جديد";
+"status.appState.card.paused.title" = "تم إيقاف التطبيق مؤقتًا";
+"status.paused.countdown" = "سوف تتلقى إشعارًا بعد %@ لتشغيل التطبيق من جديد";
+"status.paused.manualunpause" = "CoronaMelder غير نشط. يجب عليك تشغيله مرة أخرى بنفسك.";
+"status.card.manualunpause.title" = "قم بتشغيل التطبيق من جديد";
+"status.card.manualunpause.description" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
+
+/* The title for the table of items in more information */
 "moreInformation.headerTitle" = "المزيد من المعلومات";
 
-"moreInformation.cell.about.title" = "هل لديك أسئلة حول التطبيق؟";
+"moreInformation.cell.about.title" = "أسئلة حول التطبيق";
 "moreInformation.cell.about.subtitle" = "شاهد كيف يعمل التطبيق وماذا يعني ذلك بالنسبة لخصوصيتك.";
 
 "moreInformation.cell.share.title" = "دعوة الناس إلى استخدام التطبيق";
 "moreInformation.cell.share.subtitle" = "شارك التطبيق مع الآخرين للسيطرة معًا على كورونا.";
 
-"moreInformation.cell.receivedNotification.title" = "ماذا يحتوي الإشعار؟";
-"moreInformation.cell.receivedNotification.subtitle" = "إقرأ ما يمكنك القيام به بعد أن تواجدت بالقرب من شخص مصاب بكورونا.";
+"moreInformation.cell.receivedNotification.title" = "كيف أتعرف على الإشعار؟";
+"moreInformation.cell.receivedNotification.subtitle" = "تعرف على شكل الإشعار وما الذي تستطيع القيام به بعد أن تلقيت إشعارًا.";
 
 "moreInformation.cell.requestTest.title" = "طلب إجراء فحص كورونا";
 "moreInformation.cell.requestTest.subtitle" = "اكتشف ما إذا كنت قد أصبت بالفيروس بأسرع وقت ممكن";
@@ -322,6 +391,8 @@
 "moreInformation.about.faq.power_usage" = "ما كمية الطاقة التي يستهلكها التطبيق؟";
 "moreInformation.about.faq.deletion" = "كيف أقوم بحذف بيانات البلوتوث من هاتفي المحمول؟";
 "moreInformation.about.faq.deletion.description" = "يمكنك حذف بيانات البلوتوث التي خزنها CoronaMelder بنفسك. وإليك الطريقة. <br> <br>انتقل في هاتفك إلى الإعدادات > إشعارات التعرض> حالة \"تتبع التعرض\". انقر على حذف سجل التعرض. <br><br>هل تريد أن يتوقف التطبيق من تخزين بيانات البلوتوث الجديدة؟ احذف التطبيق إذًا.";
+
+"moreInformation.about.interoperability.title" = "ما هي التطبيقات الأجنبية التي يعمل معها CoronaMelder؟";
 
 /* MARK: - MoreInformation | Share */
 "moreInformation.share.title" = "عرَف الآخرين بإنك تساهم في وقف الفيروس.";
@@ -370,9 +441,9 @@
 "moreInformation.requestTest.button.title" = "طلب إجراء فحص كورونا";
 "moreInformation.requestTest.receivedNotification.title" = "هل لديك أعراض تتناسب مع أعراض كورونا؟ قم بطلب إجراء فحص";
 "moreInformation.requestTest.receivedNotification.content" = "هل لديك أعراض(خفيفة) تتناسب مع أعراض فيروس كورونا؟ قم بطلب إجراء الفحص مجانًا. لا يستغرق الأمر وقتًا طويلاً وتستطيع في معظم الحالات تحديد موعد بسرعة.<br><br>ستعرف النتيجة خلال 48 ساعة. إبق في المنزل حتى تعرف النتيجة.";
-"moreInformation.requestTest.complaints" = "هل لديك أعراض خطيرة كالحمى أو صعوبة في التنفس؟ أو هل أنت من ضمن مجموعة معرضة للخطر وتعاني من الحمى؟ اتصل أولاً بطبيب العائلة الخاص بك.";
+"moreInformation.requestTest.complaints" = "هل لديك أعراض خطيرة كالحمى أو صعوبة في التنفس؟ أو هل أنت من ضمن مجموعة معرضة للخطر ولديك حمى؟ اتصل أولاً بطبيب العائلة الخاص بك.";
 "moreInformation.requestTest.link" = "راجع الموقع Coronatest.nl";
-"moreInformation.requestTest.phone" = "اتصل بالرقم 0800-1202";
+"moreInformation.requestTest.phone" = "اتصل بالرقم %@";
 
 "moreInformation.notification.measures.title" = "إحرص على الالتزم بالإجراءات جيدًا:";
 "moreInformation.notification.measures.step1" = "قم بغسل يديك بانتظام";
@@ -381,6 +452,7 @@
 
 "moreInformation.status.alarm.alt-text" = "شاشة حمراء مع جرس إنذار يشير إلى أنه ينبغي عليك التصرف الآن.";
 
+"moreInformation.latestTekUpdate" = "يتتبع CoronaMelder المصادفات باستمرار. يتحقق التطبيق أيضًا كل بضع ساعات مما إذا كان الشخص الذي قابلته معديًا في ذلك الوقت. سيتم إبلاغك إذا كان الأمر كذلك. آخر فحص كان قيد التشغيل في %@";
 /* MARK: - Cards */
 "cards.exposureOff.title" = "التطبيق <u>غير</u> نشط";
 "cards.exposureOff.content" = "شغّل الأعدادات التي يحتاج إليها التطبيق كي يعمل.";
@@ -397,6 +469,11 @@
 "cards.notificationsOff.title" = "تم <u>  إيقاف تشغيل</u> الإشعارات";
 "cards.notificationsOff.content" = "قم بتشغيل الإشعارات العامة حتى يقوم التطبيق بمشاركة المعلومات إذا لزم الأمر.";
 "cards.notificationsOff.action" = "تشغيل الإشعارات";
+
+"cards.interopannouncement.title" = "من الجيد معرفته";
+"cards.interopannouncement.content" = "اعتبارًا من 30 نوفمبر/تشرين الثاني سيعمل CoronaMelder مع تطبيقات كورونا من دول أوروبية أخرى.";
+"cards.interopannouncement.action" = "المزيد من المعلومات";
+"cards.interopannouncement.secondaryaction" = "إغلاق";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "تشغيل إشعارات التعرض للإصابة";
@@ -433,15 +510,19 @@
 /* MARK: - Exposure Reminder Notification */
 "exposure.notification.reminder" = "تذكير: %@";
 
-"privacyAgreement.title" = "إعطاء الموافقة";
-"privacyAgreement.message" = "لاستخدام تطبيق التحذير من كورونا، يجب أن توافق على %@. من المهم أن تعرف:";
+"privacyAgreement.title" = "هكذا يتعامل CoronaMelder مع بياناتك ";
+"privacyAgreement.message" = "في %@ يتم توضيح كيفية معاملة CoronaMelder مع بياناتك.";
 "privacyAgreement.message.link" = "بيان حماية الخصوصية";
 "privacyAgreement.list.step0" = "استخدام CoronaMelder طوعي دائمًا";
 "privacyAgreement.list.step1" = "يرسل تطبيقك بيانات بلوتوث مشفرة.";
 "privacyAgreement.list.step2" = "يحتفظ المستخدمون الآخرون الذين كانوا بالقرب منك بهذه البيانات لمدة أقصاها 14 يومًا.";
 "privacyAgreement.list.step3" = "إذا أظهر اختبار كورونا أنك مصاب بكورونا، يمكنك الإبلاغ عن ذلك في التطبيق من أجل تحذير المستخدمين الآخرين.";
 "privacyAgreement.list.step4" = "يمكنك حذف البيانات من هاتفك في أي وقت.";
-"privacyAgreement.consent.button" = "لقد قرأت بيان حماية الخصوصية وأوافق عليه";
+"privacyAgreement.consent.button" = "لقد قرأت بيان حماية الخصوصية وأفهم كيف يتعامل CoronaMelder مع بياناتي.";
 
 "notification.update_required.title" = "التحديث ضروري";
 "notification.update_required.description" = "هناك إصدار جديد من CoronaMelder. لم يعد هذا الإصدار يعمل بشكل صحيح. تحقق من التطبيق للحصول على التعليمات.";
+
+"notification.app.unpaused.title" = "قم بتشغيل CoronaMelder من جديد";
+"notification.app.unpaused.description" = "التطبيق نشط مرة أخرى. سيتم تعقب مصادفاتك من الآن فصاعدًا.";
+"notification.app.unpaused.manualunpause.description" = "انتبه: التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";

@@ -26,8 +26,11 @@ protocol InfectedDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
-    var bluetoothStateStream: BluetoothStateStreaming { get }
     var environmentController: EnvironmentControlling { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
+    var storageController: StorageControlling { get }
+    var dataController: ExposureDataControlling { get }
+    var pauseController: PauseControlling { get }
 }
 
 private final class InfectedDependencyProvider: DependencyProvider<InfectedDependency>, ThankYouDependency, CardDependency, HelpDetailDependency {
@@ -52,12 +55,28 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
         return HelpDetailBuilder(dependency: self)
     }
 
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return dependency.bluetoothStateStream
+    var exposureStateStream: ExposureStateStreaming {
+        return dependency.exposureStateStream
     }
 
     var environmentController: EnvironmentControlling {
         return dependency.environmentController
+    }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
+    }
+
+    var storageController: StorageControlling {
+        return dependency.storageController
+    }
+
+    var dataController: ExposureDataControlling {
+        dependency.dataController
+    }
+
+    var pauseController: PauseControlling {
+        dependency.pauseController
     }
 }
 
@@ -66,7 +85,8 @@ final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
         let dependencyProvider = InfectedDependencyProvider(dependency: dependency)
         let viewController = InfectedViewController(theme: dependencyProvider.dependency.theme,
                                                     exposureController: dependencyProvider.dependency.exposureController,
-                                                    exposureStateStream: dependencyProvider.dependency.exposureStateStream)
+                                                    exposureStateStream: dependencyProvider.dependency.exposureStateStream,
+                                                    interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
 
         return InfectedRouter(listener: listener,
                               viewController: viewController,

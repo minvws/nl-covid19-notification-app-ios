@@ -2,11 +2,14 @@
 
 env
 
+brew update
 brew install yq
 
-BUNDLE_VERSION=$(yq r project.yml targets.EN.info.properties.CFBundleShortVersionString)
+BUNDLE_VERSION=$(yq e ".targets.EN.info.properties.CFBundleShortVersionString" project.yml)
 BUNDLE_VERSION=${BUNDLE_VERSION%%-tst}
+BUNDLE_VERSION=${BUNDLE_VERSION%%-tst-13-5}
 BUNDLE_VERSION=${BUNDLE_VERSION%%-acc}
+BUNDLE_VERSION=${BUNDLE_VERSION%%-acc-13-5}
 
 if [ -z "$NETWORK_CONFIGURATION" ]
 then
@@ -23,10 +26,15 @@ then
       BUILD_ID="1"
 fi
 
+if [ -z "$BUNDLE_IDENTIFIER" ]
+then
+      BUNDLE_IDENTIFIER="nl.rijksoverheid.en"
+fi
+
 if [ -z "$BUNDLE_SHORT_VERSION" ]
-then 
+then
       BUNDLE_SHORT_VERSION="${BUNDLE_VERSION}"
-else 
+else
       BUNDLE_SHORT_VERSION="${BUNDLE_VERSION}-${BUNDLE_SHORT_VERSION}"
 fi
 
@@ -50,22 +58,22 @@ then
       EN_DEVELOPER_REGION="TEST_NL_TEST"
 fi
 
-yq w -i project.yml "targets.EN.info.properties.SHARE_LOGS_ENABLED" ${SHARE_LOGS_ENABLED}
-yq w -i project.yml "targets.EN.info.properties.NETWORK_CONFIGURATION" ${NETWORK_CONFIGURATION}
-yq w -i project.yml "targets.EN.info.properties.LOG_LEVEL" ${LOG_LEVEL}
-yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleShortVersionString" ${BUNDLE_SHORT_VERSION}
-yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleDisplayName" "${BUNDLE_DISPLAY_NAME}"
-yq w -i project.yml --tag '!!str' "targets.EN.info.properties.CFBundleVersion" ${BUILD_ID}
-yq w -i project.yml "targets.EN.info.properties.ENDeveloperRegion" ${EN_DEVELOPER_REGION}
-yq w -i project.yml "targets.EN.settings.base.PRODUCT_BUNDLE_IDENTIFIER" ${BUNDLE_IDENTIFIER}
-yq w -i project.yml "targets.EN.settings.configs.Release.PROVISIONING_PROFILE_SPECIFIER" "${RELEASE_PROVISIONING_PROFILE}"
-yq w -i project.yml --tag '!!str' "targets.EN.info.properties.GitHash" $(git rev-parse --short=7 HEAD)
+yq e ".targets.EN.info.properties.SHARE_LOGS_ENABLED = ${SHARE_LOGS_ENABLED}" -i project.yml
+yq e ".targets.EN.info.properties.NETWORK_CONFIGURATION = \"${NETWORK_CONFIGURATION}\"" -i project.yml
+yq e ".targets.EN.info.properties.LOG_LEVEL = \"${LOG_LEVEL}\"" -i project.yml
+yq e ".targets.EN.info.properties.CFBundleShortVersionString = \"${BUNDLE_SHORT_VERSION}\"" -i project.yml
+yq e ".targets.EN.info.properties.CFBundleDisplayName = \"${BUNDLE_DISPLAY_NAME}\"" -i project.yml
+yq e ".targets.EN.info.properties.CFBundleVersion = \"${BUILD_ID}\"" -i project.yml
+yq e ".targets.EN.info.properties.ENDeveloperRegion = \"${EN_DEVELOPER_REGION}\"" -i project.yml
+yq e ".targets.EN.settings.base.PRODUCT_BUNDLE_IDENTIFIER = \"${BUNDLE_IDENTIFIER}\"" -i project.yml
+yq e ".targets.EN.settings.configs.Release.PROVISIONING_PROFILE_SPECIFIER = \"${RELEASE_PROVISIONING_PROFILE}\"" -i project.yml
+yq e ".targets.EN.info.properties.GitHash = \"$(git rev-parse --short=7 HEAD)\"" -i project.yml
 
 if [ ! -z "$USE_DEVELOPER_MENU" ]
 then
-	yq w -i project.yml -- "targets.ENCore.settings.base.OTHER_SWIFT_FLAGS" -DUSE_DEVELOPER_MENU
-else 
-      yq d -i project.yml -- "targets.ENCore.settings.base.OTHER_SWIFT_FLAGS"
+    yq e ".targets.ENCore.settings.base.OTHER_SWIFT_FLAGS = \"-DUSE_DEVELOPER_MENU\"" -i project.yml
+else
+    yq e "del(.targets.ENCore.settings.base.OTHER_SWIFT_FLAGS)" -i project.yml
 fi
 
 cat project.yml

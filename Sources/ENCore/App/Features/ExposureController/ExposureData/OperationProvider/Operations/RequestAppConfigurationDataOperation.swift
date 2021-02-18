@@ -5,11 +5,11 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
 
-struct ApplicationConfiguration: Codable {
+struct ApplicationConfiguration: Codable, Equatable {
     let version: Int
     let manifestRefreshFrequency: Int
     let decoyProbability: Float
@@ -22,58 +22,61 @@ struct ApplicationConfiguration: Codable {
     let requestMaximumSize: Int
     let repeatedUploadDelay: Int
     let decativated: Bool
-    let testPhase: Bool
+    let appointmentPhoneNumber: String
 }
 
-final class RequestAppConfigurationDataOperation: ExposureDataOperation, Logging {
-    typealias Result = ApplicationConfiguration
+/// @mockable
+protocol RequestAppConfigurationDataOperationProtocol {
+    func execute() -> Single<ApplicationConfiguration>
+}
+
+final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOperationProtocol, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
+         applicationSignatureController: ApplicationSignatureControlling,
          appConfigurationIdentifier: String) {
         self.networkController = networkController
         self.storageController = storageController
+        self.applicationSignatureController = applicationSignatureController
         self.appConfigurationIdentifier = appConfigurationIdentifier
     }
 
     // MARK: - ExposureDataOperation
 
-    func execute() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        if let appConfiguration = retrieveStoredConfiguration(), appConfiguration.identifier == appConfigurationIdentifier {
-            return Just(appConfiguration)
-                .setFailureType(to: ExposureDataError.self)
-                .eraseToAnyPublisher()
+    func execute() -> Single<ApplicationConfiguration> {
+        self.logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
+
+        if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
+            let storedSignature = applicationSignatureController.retrieveStoredSignature(),
+            appConfiguration.identifier == appConfigurationIdentifier,
+            storedSignature == applicationSignatureController.signature(for: appConfiguration) {
+
+            self.logDebug("RequestAppConfigurationDataOperation: Using cached version")
+
+            return .just(appConfiguration)
         }
+
+        self.logDebug("RequestAppConfigurationDataOperation: Using network version")
 
         return networkController
             .applicationConfiguration(identifier: appConfigurationIdentifier)
-            .mapError { $0.asExposureDataError }
-            .flatMap(store(appConfiguration:))
-            .share()
-            .eraseToAnyPublisher()
+            .subscribe(on: MainScheduler.instance)
+            .catch { throw $0.asExposureDataError }
+            .flatMap(storeAppConfiguration)
+            .flatMap(storeSignature(for:))
     }
 
-    // MARK: - Private
-
-    private func retrieveStoredConfiguration() -> ApplicationConfiguration? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration)
+    private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
+        return applicationSignatureController.storeAppConfiguration(appConfiguration)
     }
 
-    private func store(appConfiguration: ApplicationConfiguration) -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return Future { promise in
-            guard appConfiguration.version > 0, appConfiguration.manifestRefreshFrequency > 0 else {
-                return promise(.failure(.serverError))
-            }
-            self.storageController.store(object: appConfiguration,
-                                         identifiedBy: ExposureDataStorageKey.appConfiguration,
-                                         completion: { _ in
-                                             promise(.success(appConfiguration))
-                                         })
-        }
-        .eraseToAnyPublisher()
+    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
+        return applicationSignatureController.storeSignature(for: appConfiguration)
     }
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let applicationSignatureController: ApplicationSignatureControlling
     private let appConfigurationIdentifier: String
 }

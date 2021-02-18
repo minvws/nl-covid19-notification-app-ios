@@ -9,7 +9,7 @@ import ENFoundation
 import Foundation
 import UIKit
 
-/// @mockable
+/// @mockable(history:routeToConsent=true)
 protocol OnboardingRouting: Routing {
     func routeToSteps()
     func routeToStep(withIndex index: Int, animated: Bool)
@@ -85,6 +85,9 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     func consentRequest(step: OnboardingConsentStep.Index) {
+        if step == .share {
+            didCompleteConsent()
+        }
         router?.routeToConsent(withIndex: step.rawValue, animated: true)
     }
 
@@ -139,6 +142,9 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     func helpRequestsEnableApp() {
         onboardingConsentManager.askNotificationsAuthorization {
             self.onboardingConsentManager.askEnableExposureNotifications { activeState in
+
+                self.onboardingConsentManager.didCompleteConsent()
+
                 switch activeState {
                 case .notAuthorized:
                     self.listener?.didCompleteOnboarding()
@@ -178,6 +184,11 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     // MARK: - Private
+
+    private func didCompleteConsent() {
+        self.onboardingConsentManager.didCompleteConsent()
+        listener?.didCompleteConsent()
+    }
 
     private weak var listener: OnboardingListener?
     private let onboardingConsentManager: OnboardingConsentManaging

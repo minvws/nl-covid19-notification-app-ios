@@ -21,6 +21,7 @@ import Foundation
 final class ExposureManager: ExposureManaging, Logging {
 
     init(manager: ENManaging) {
+
         self.manager = manager
     }
 
@@ -93,7 +94,7 @@ final class ExposureManager: ExposureManaging, Logging {
         .resume()
     }
 
-    func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
+    func getDiagnosisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
         #if DEBUG
             assert(Thread.isMainThread)
         #endif
@@ -193,11 +194,21 @@ final class ExposureManager: ExposureManaging, Logging {
         return result
     }
 
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler) {
+        manager.setLaunchActivityHandler { activityFlags in
+            activityHandler(activityFlags)
+        }
+    }
+
     private let manager: ENManaging
 }
 
 extension Error {
     var asExposureManagerError: ExposureManagerError {
+        if let error = self as? ExposureManagerError {
+            return error
+        }
+
         if let error = self as? ENError {
             let status: ExposureManagerError
 
@@ -224,5 +235,37 @@ extension Error {
         }
 
         return .unknown
+    }
+}
+
+// Alternative callback approach used for Exposure Notifications on iOS 12.5
+
+/// Activities that occurred while the app wasn't running.
+struct ENActivityFlags: OptionSet {
+    let rawValue: UInt32
+
+    /// App launched to perform periodic operations.
+    static let periodicRun = ENActivityFlags(rawValue: 1 << 2)
+}
+
+/// Invoked after the app is launched to report activities that occurred while the app wasn't running.
+typealias ENActivityHandler = (ENActivityFlags) -> ()
+
+extension ENManager: Logging {
+
+    /// On iOS 12.5 only, this will ensure the app receives 3.5 minutes of background processing
+    /// every 4 hours. This function is needed on iOS 12.5 because the BackgroundTask framework, used
+    /// for Exposure Notifications background processing in iOS 13.5+ does not exist in iOS 12.
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler) {
+
+        logDebug("ENManager.setLaunchActivityHandler() called")
+
+        let proxyActivityHandler: @convention(block) (UInt32) -> () = { integerFlag in
+            activityHandler(ENActivityFlags(rawValue: integerFlag))
+        }
+
+        logDebug("ENManager.setLaunchActivityHandler() proxyActivityHandler: \(String(describing: proxyActivityHandler))")
+
+        setValue(proxyActivityHandler, forKey: "activityHandler")
     }
 }

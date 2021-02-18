@@ -13,12 +13,13 @@ jobs:
         run: ./tools/scripts/ci/010_ciprep
       - name: CIbuild
         run: ./tools/scripts/ci/030_cibuild
-      - name: CItest-iphone11
+      - name: CItest-iphone12
         run: |
-          xcodebuild clean test \
+          sudo xcode-select -s /Applications/Xcode_12.2.app
+          xcodebuild clean test -version \
           -project EN.xcodeproj \
           -scheme ENCore \
-          -destination "platform=iOS Simulator,OS=latest,name=iPhone 11" \
+          -destination "platform=iOS Simulator,OS=latest,name=iPhone 12" \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           ONLY_ACTIVE_ARCH=NO

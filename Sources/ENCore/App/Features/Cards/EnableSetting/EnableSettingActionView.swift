@@ -13,11 +13,13 @@ final class EnableSettingActionView: View {
     private lazy var contentView = View(theme: theme)
     private lazy var contentLabel = Label()
     private lazy var chevronView = UIImageView(image: Image.named("Chevron"))
+    private lazy var switchView = UIImageView(image: Image.named("Switch"))
 
     private let actionView: UIView?
     private let actionViewRect: CGRect
     private let action: EnableSettingStep.Action
     private let showChevron: Bool
+    private let showSwitch: Bool
 
     init(theme: Theme, action: EnableSettingStep.Action) {
         switch action {
@@ -25,14 +27,21 @@ final class EnableSettingActionView: View {
             actionView = nil
             actionViewRect = CGRect(x: 0, y: 15, width: 24, height: 24)
             showChevron = false
+            showSwitch = false
         case .toggle:
             actionView = UIImageView(image: Image.named("Switch"))
             actionViewRect = CGRect(x: 0, y: 20, width: 24, height: 16)
             showChevron = false
-        case .custom(image: let image, description: _, showChevron: let showChevron):
-            actionView = UIImageView(image: image)
+            showSwitch = false
+        case .custom(image: let image, description: _, showChevron: let showChevron, showSwitch: let showSwitch):
+            if let image = image {
+                actionView = UIImageView(image: image)
+            } else {
+                actionView = nil
+            }
             actionViewRect = CGRect(x: 0, y: 15, width: 24, height: 24)
             self.showChevron = showChevron
+            self.showSwitch = showSwitch
         }
 
         self.action = action
@@ -60,6 +69,10 @@ final class EnableSettingActionView: View {
 
         if showChevron {
             contentView.addSubview(chevronView)
+        }
+
+        if showSwitch {
+            contentView.addSubview(switchView)
         }
 
         contentView.backgroundColor = .init(red: 242.0 / 255.0,
@@ -105,6 +118,15 @@ final class EnableSettingActionView: View {
                 make.bottom.greaterThanOrEqualToSuperview().inset(21)
             }
         }
+
+        if showSwitch {
+            switchView.snp.makeConstraints { make in
+                make.trailing.equalToSuperview().inset(16)
+                make.top.equalToSuperview().inset(15)
+                make.bottom.greaterThanOrEqualToSuperview().inset(15)
+                make.width.equalTo(35)
+            }
+        }
     }
 }
 
@@ -115,7 +137,7 @@ private extension EnableSettingStep.Action {
             return description
         case let .toggle(description: description):
             return description
-        case .custom(image: _, description: let description, showChevron: _):
+        case .custom(image: _, description: let description, showChevron: _, showSwitch: _):
             return description
         }
     }

@@ -5,9 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
-import CoreBluetooth
 import ENFoundation
+import RxSwift
 import UIKit
 
 /// @mockable
@@ -22,19 +21,23 @@ protocol OnboardingConsentManaging {
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
     func getAppStoreUrl(_ completion: @escaping ((String?) -> ()))
     func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ())
+    func didCompleteConsent()
 }
 
 final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
     var onboardingConsentSteps: [OnboardingConsentStep] = []
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
+    private let userNotificationCenter: UserNotificationCenter
 
     init(exposureStateStream: ExposureStateStreaming,
          exposureController: ExposureControlling,
+         userNotificationCenter: UserNotificationCenter,
          theme: Theme) {
 
         self.exposureStateStream = exposureStateStream
         self.exposureController = exposureController
+        self.userNotificationCenter = userNotificationCenter
 
         onboardingConsentSteps.append(
             OnboardingConsentStep(
@@ -43,7 +46,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                 title: .onboardingPermissionsTitle,
                 content: .onboardingPermissionsDescription,
                 bulletItems: [.onboardingPermissionsDescriptionList1, .onboardingPermissionsDescriptionList2],
-                illustration: .animation(named: "permission", repeatFromFrame: 100, defaultFrame: 56),
+                illustration: theme.animationsSupported ? .animation(named: "permission", repeatFromFrame: 100, defaultFrame: 56) : .image(image: Image.named("Step6")),
                 primaryButtonTitle: .onboardingPermissionsPrimaryButton,
                 secondaryButtonTitle: .onboardingPermissionsSecondaryButton,
                 hasNavigationBarSkipButton: true
@@ -85,16 +88,12 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                 theme: theme,
                 title: .consentStep4Title,
                 content: .consentStep4Content,
-                illustration: .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35),
+                illustration: theme.animationsSupported ? .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35) : .image(image: Image.named("Step7")),
                 primaryButtonTitle: .consentStep4PrimaryButton,
                 secondaryButtonTitle: .consentStep4SecondaryButton,
                 hasNavigationBarSkipButton: true
             )
         )
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - Functions
@@ -110,16 +109,16 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
             exposureStateStream
                 .exposureState
                 .filter { $0.activeState != .notAuthorized || skippedCurrentStep }
-                .first()
-                .sink { value in
+                .take(1)
+                .subscribe(onNext: { value in
                     switch value.activeState {
                     case .inactive(.bluetoothOff):
                         completion(.bluetooth)
                     default:
                         completion(.share)
                     }
-                }
-                .store(in: &disposeBag)
+                })
+                .disposed(by: disposeBag)
         case .bluetooth:
             completion(.share)
         case .share:
@@ -130,15 +129,15 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ()) {
         exposureStateStream
             .exposureState
-            .first()
-            .sink { value in
+            .take(1)
+            .subscribe(onNext: { value in
                 if value.activeState == .notAuthorized || value.activeState == .inactive(.disabled) {
                     completion(false)
                 } else {
                     completion(true)
                 }
-            }
-            .store(in: &disposeBag)
+            })
+            .disposed(by: disposeBag)
     }
 
     func isBluetoothEnabled(_ completion: @escaping (Bool) -> ()) {
@@ -158,18 +157,19 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         }
 
         if let subscription = exposureStateSubscription {
-            subscription.cancel()
+            subscription.dispose()
         }
 
         exposureStateSubscription = exposureStateStream
             .exposureState
             .filter { $0.activeState != .notAuthorized && $0.activeState != .inactive(.disabled) }
-            .sink { [weak self] state in
+            .take(1)
+            .subscribe(onNext: { [weak self] state in
                 self?.exposureStateSubscription = nil
-
                 self?.logDebug("`askEnableExposureNotifications` active state changed to \(state.activeState)")
+
                 completion(state.activeState)
-            }
+            })
 
         logDebug("`askEnableExposureNotifications` calling `requestExposureNotificationPermission`")
         exposureController.requestExposureNotificationPermission(nil)
@@ -187,7 +187,8 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     }
 
     func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
-        exposureController.requestPushNotificationPermission {
+
+        userNotificationCenter.requestNotificationPermission {
             completion()
         }
     }
@@ -198,8 +199,15 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         }
     }
 
+    func didCompleteConsent() {
+        exposureController.didCompleteOnboarding = true
+
+        // Mark all announcements that were made during the onboarding process as "seen"
+        exposureController.seenAnnouncements = [.interopAnnouncement]
+    }
+
     private let exposureStateStream: ExposureStateStreaming
     private let exposureController: ExposureControlling
 
-    private var exposureStateSubscription: Cancellable?
+    private var exposureStateSubscription: Disposable?
 }

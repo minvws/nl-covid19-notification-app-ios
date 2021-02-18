@@ -5,10 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
 import MessageUI
+import RxSwift
 import UIKit
 
 /// @mockable
@@ -47,10 +47,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         attach()
     }
 
-    deinit {
-        disposeBag.forEach { $0.cancel() }
-    }
-
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
@@ -80,7 +76,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                                        style: .destructive,
                                        handler: { [weak actionViewController] _ in
                                            actionViewController?.dismiss(animated: true, completion: nil)
-                                       })
+            })
         actionViewController.addAction(cancelItem)
 
         present(actionViewController, animated: true, completion: nil)
@@ -173,15 +169,27 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Last time: \(getLastExposureFetchString()), total processed last 24h: \(getNumberOfProcessedKeySetsInLast24Hours()), total unprocessed left: \(getNumberOfUnprocessedKeySets())",
                               action: { [weak self] in self?.fetchAndProcessKeySets() },
                               enabled: !isFetchingKeys),
-                DeveloperItem(title: "Process Pending Upload Requests",
-                              subtitle: "Pending Requests: \(getPendingUploadRequests())",
+                DeveloperItem(title: "Retry Pending Upload Requests",
+                              subtitle: "Pending Unexpired Requests: \(getPendingUploadRequests())",
                               action: { [weak self] in self?.processPendingUploadRequests() }),
+                DeveloperItem(title: "Expire all pending upload requests",
+                              subtitle: "Pending Unexpired Requests: \(getPendingUploadRequests())",
+                              action: { [weak self] in self?.expirePendingUploadRequests() }),
+                DeveloperItem(title: "Process Expired Upload Requests",
+                              subtitle: "Expired Requests: \(getExpiredUploadRequests())",
+                              action: { [weak self] in self?.processExpiredUploadRequests() }),
                 DeveloperItem(title: "Ignore 24h limit of 15 keysets/API calls",
                               subtitle: "Only works with test entitlements, currently set: \(getDailyLimit()), API calls made in last 24h: \(getNumberOfAPICallsInLast24Hours())",
                               action: { [weak self] in self?.toggleDailyLimit() }),
                 DeveloperItem(title: "Fetch TEKs using Test function",
                               subtitle: "Only works with test entitlements, currently set: \(getUseTestDiagnosisKeys())",
-                              action: { [weak self] in self?.toggleGetTestDiagnosisKeys() })
+                              action: { [weak self] in self?.toggleGetTestDiagnosisKeys() }),
+                DeveloperItem(title: "Schedule pause time in minutes instead of hours",
+                              subtitle: "Currently set to: \(getPauseUnit())",
+                              action: { [weak self] in self?.togglePauseTimeUnit() }),
+                DeveloperItem(title: "Download latest Treatment Perspective",
+                              subtitle: "",
+                              action: { [weak self] in self?.downloadLatestTreatmentPerspective() })
             ]),
             ("Storage", [
                 DeveloperItem(title: "Erase Local Storage",
@@ -198,7 +206,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               subtitle: "Launches the message flow as would be done from a exposure push notification with today's date",
                               action: { [weak self] in self?.listener?.developerMenuRequestMessage(exposureDate: Date()); self?.hide() }),
                 DeveloperItem(title: "Schedule Message Flow",
-                              subtitle: "Schedules a push notifiction to be sent in 5 seconds",
+                              subtitle: "Schedules a push notification to be sent in 5 seconds",
                               action: { [weak self] in self?.wantsScheduleNotification(identifier: "com.apple.en.mock") }),
                 DeveloperItem(title: "Schedule Upload Failed Flow",
                               subtitle: "Schedules a push notifiction to be sent in 5 seconds",
@@ -285,6 +293,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         present(actionItems: actionItems, title: "Update Network Configuration")
     }
 
+    private func downloadLatestTreatmentPerspective() {
+        exposureController
+            .updateTreatmentPerspective()
+            .subscribe(onCompleted: { [weak self] in
+                self?.internalView.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
+
     private func eraseCompleteStorage() {
         removeLastExposure()
         removeAllExposureKeySets()
@@ -297,6 +314,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         storageController.removeData(for: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.seenAnnouncements, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.treatmentPerspective, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.hidePauseInformation, completion: { _ in })
     }
 
     private func uploadKeys() {
@@ -361,36 +381,52 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         present(activityViewController, animated: true, completion: nil)
     }
 
-    private var fetchAndProcessCancellable: AnyCancellable?
+    private var fetchAndProcessDisposable: Disposable?
 
     private func fetchAndProcessKeySets() {
-        guard fetchAndProcessCancellable == nil else {
-            fetchAndProcessCancellable?.cancel()
-            fetchAndProcessCancellable = nil
-
+        guard fetchAndProcessDisposable == nil else {
+            fetchAndProcessDisposable?.dispose()
+            fetchAndProcessDisposable = nil
             return
         }
 
         internalView.tableView.reloadData()
 
-        fetchAndProcessCancellable = exposureController
-            .fetchAndProcessExposureKeySets()
-            .sink(
-                receiveCompletion: { [weak self] _ in
-                    self?.fetchAndProcessCancellable = nil
+        fetchAndProcessDisposable = exposureController
+            .fetchAndProcessExposureKeySets().subscribe { _ in
 
-                    assert(Thread.isMainThread)
-                    self?.internalView.tableView.reloadData()
-                },
-                receiveValue: { _ in })
+                self.fetchAndProcessDisposable?.dispose()
+                self.fetchAndProcessDisposable = nil
+
+                assert(Thread.isMainThread)
+                self.internalView.tableView.reloadData()
+            }
     }
 
     private func processPendingUploadRequests() {
         exposureController
-            .processPendingUploadRequests()
-            .sink(receiveCompletion: { [weak self] _ in self?.internalView.tableView.reloadData() },
-                  receiveValue: { _ in })
-            .store(in: &disposeBag)
+            .processPendingUploadRequests().subscribe { _ in
+                self.internalView.tableView.reloadData()
+            }.disposed(by: disposeBag)
+    }
+
+    private func processExpiredUploadRequests() {
+        exposureController
+            .processExpiredUploadRequests().subscribe { _ in
+                self.internalView.tableView.reloadData()
+            }.disposed(by: disposeBag)
+    }
+
+    private func expirePendingUploadRequests() {
+        guard var pendingRequests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) else {
+            return
+        }
+
+        for (index, _) in pendingRequests.enumerated() { pendingRequests[index].expiryDate = Date() }
+
+        self.storageController.requestExclusiveAccess { storageController in
+            storageController.store(object: pendingRequests, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in }
+        }
     }
 
     private func toggleDailyLimit() {
@@ -406,6 +442,12 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             }
 
             ExposureManagerOverrides.useTestDiagnosisKeys = false
+        #endif
+    }
+
+    private func togglePauseTimeUnit() {
+        #if DEBUG || USE_DEVELOPER_MENU
+            PauseOverrides.useMinutesInsteadOfHours.toggle()
         #endif
     }
 
@@ -428,6 +470,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             return ProcessExposureKeySetsDataOperationOverrides.respectMaximumDailyKeySets ? "15" : "unlimited"
         #else
             return "None"
+        #endif
+    }
+
+    private func getPauseUnit() -> String {
+
+        #if DEBUG || USE_DEVELOPER_MENU
+            return PauseOverrides.useMinutesInsteadOfHours ? "minutes" : "hours"
+        #else
+            return "hours"
         #endif
     }
 
@@ -476,7 +527,15 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
             return "None"
         }
 
-        return "\(pendingRequests.count)"
+        return "\(pendingRequests.filter { !$0.isExpired }.count)"
+    }
+
+    private func getExpiredUploadRequests() -> String {
+        guard let pendingRequests = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) else {
+            return "None"
+        }
+
+        return "\(pendingRequests.filter { $0.isExpired }.count)"
     }
 
     private func getLastStoredConfirmationKey() -> String {
@@ -525,7 +584,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                                        style: .destructive,
                                        handler: { [weak alertController] _ in
                                            alertController?.dismiss(animated: true, completion: nil)
-                                       })
+            })
         alertController.addAction(cancelItem)
         present(alertController, animated: true, completion: nil)
     }
@@ -620,10 +679,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private let mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
 
     private var isFetchingKeys: Bool {
-        return fetchAndProcessCancellable != nil
+        return fetchAndProcessDisposable != nil
     }
 
     private var window: UIWindow? {
@@ -741,6 +800,8 @@ private extension ExposureActiveState {
             return "Not Authorised"
         case let .inactive(inactiveState):
             switch inactiveState {
+            case .paused:
+                return "Inactive - Paused"
             case .bluetoothOff:
                 return "Inactive - Bluetooth off"
             case .disabled:

@@ -11,6 +11,7 @@ import UIKit
 public protocol Theme: AnyObject {
     var fonts: Fonts { get }
     var colors: Colors { get }
+    var animationsSupported: Bool { get }
 
     init()
 }
@@ -28,9 +29,19 @@ public protocol ReusableThemable: Themeable {
 public final class ENTheme: Theme {
     public let fonts: Fonts
     public let colors: Colors
+    public let animationsSupported: Bool
 
     public init() {
+
+        func animationsSupported() -> Bool {
+            if #available(iOS 13, *) {
+                return true
+            }
+            return false
+        }
+
         self.fonts = ENFonts()
         self.colors = ENColors()
+        self.animationsSupported = animationsSupported()
     }
 }

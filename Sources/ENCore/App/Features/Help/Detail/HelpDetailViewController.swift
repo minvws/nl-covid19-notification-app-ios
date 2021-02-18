@@ -86,7 +86,7 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     private lazy var internalView: HelpView = HelpView(theme: theme,
                                                        linkedContentTableViewManager: linkedContentTableViewManager,
                                                        shouldDisplayButton: shouldShowEnableAppButton)
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapClose))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
     private weak var listener: HelpDetailListener?
 
     private let shouldShowEnableAppButton: Bool
@@ -149,7 +149,8 @@ private final class HelpView: View {
         super.setupConstraints()
 
         scrollView.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.equalToSuperview()
 
             let bottomAnchor = shouldDisplayButton ? acceptButton.snp.top : snp.bottom
             maker.bottom.equalTo(bottomAnchor)

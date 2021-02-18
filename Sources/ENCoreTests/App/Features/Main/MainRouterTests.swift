@@ -21,6 +21,7 @@ final class MainRouterTests: XCTestCase {
     private let messageBuilder = MessageBuildableMock()
     private let enableSettingBuilder = EnableSettingBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
+    private let settingsBuilder = SettingsBuildableMock()
 
     private var router: MainRouter!
 
@@ -37,7 +38,8 @@ final class MainRouterTests: XCTestCase {
                             infectedBuilder: infectedBuilder,
                             messageBuilder: messageBuilder,
                             enableSettingBuilder: enableSettingBuilder,
-                            webviewBuilder: webviewBuilder)
+                            webviewBuilder: webviewBuilder,
+                            settingsBuilder: settingsBuilder)
     }
 
     func test_init_setsRouterOnViewController() {
@@ -213,5 +215,19 @@ final class MainRouterTests: XCTestCase {
         router.detachWebview(shouldDismissViewController: true)
 
         XCTAssertEqual(viewController.dismissCallCount, 1)
+    }
+
+    func test_routeToSettings() {
+
+        let mockRouter = RoutingMock(viewControllable: ViewControllableMock())
+        settingsBuilder.buildHandler = { listener in
+            return mockRouter
+        }
+
+        router.routeToSettings()
+
+        XCTAssertEqual(settingsBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 1)
+        XCTAssertTrue(viewController.presentArgValues.last?.0 === mockRouter.viewControllable)
     }
 }

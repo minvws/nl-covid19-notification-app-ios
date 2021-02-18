@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
+import RxSwift
 import UIKit
 import UserNotifications
 
@@ -17,6 +17,9 @@ protocol MainRouting: Routing {
 
     func routeToAboutApp()
     func detachAboutApp(shouldHideViewController: Bool)
+
+    func routeToSettings()
+    func detachSettings(shouldDismissViewController: Bool)
 
     func routeToSharing()
     func detachSharing(shouldHideViewController: Bool)
@@ -48,9 +51,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     init(theme: Theme,
          exposureController: ExposureControlling,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         userNotificationCenter: UserNotificationCenter,
+         pauseController: PauseControlling) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
+        self.pauseController = pauseController
+        self.userNotificationCenter = userNotificationCenter
         super.init(theme: theme)
     }
 
@@ -141,6 +148,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToAboutApp()
     }
 
+    func moreInformationRequestsSettings() {
+        router?.routeToSettings()
+    }
+
     func moreInformationRequestsSharing() {
         router?.routeToSharing()
     }
@@ -161,10 +172,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToRequestTest()
     }
 
-    func moreInformationRequestsRedirect(to url: URL) {
-        router?.routeToWebview(url: url)
-    }
-
     // MARK: - WebviewListener
 
     func webviewRequestsDismissal(shouldHideViewController: Bool) {
@@ -175,6 +182,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func aboutRequestsDismissal(shouldHideViewController: Bool) {
         router?.detachAboutApp(shouldHideViewController: shouldHideViewController)
+    }
+
+    // MARK: - SettingsListner
+
+    func settingsWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachSettings(shouldDismissViewController: shouldDismissViewController)
     }
 
     // MARK: - HelpListener
@@ -237,6 +250,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             handleUpdateAppSettings()
         case .tryAgain:
             updateWhenRequired()
+        case .unpause:
+            pauseController.unpauseApp()
         }
     }
 
@@ -255,8 +270,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private lazy var mainView: MainView = MainView(theme: self.theme)
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
+    private let pauseController: PauseControlling
+    private let userNotificationCenter: UserNotificationCenter
 
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
 
     @objc private func didQuadrupleTap(sender: UITapGestureRecognizer) {
         let activityViewController = UIActivityViewController(activityItems: LogHandler.logFiles(),
@@ -310,17 +327,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
     }
 
-    private func openAppSettings() {
-        guard let url = URL(string: UIApplication.openSettingsURLString) else {
-            return logError("Settings URL string problem")
-        }
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-    }
-
     private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {
         switch authorizationStatus {
         case .notDetermined:
-            self.exposureController.requestPushNotificationPermission {}
+            userNotificationCenter.requestNotificationPermission {}
         case .denied:
             router?.routeToEnableSetting(.enableLocalNotifications)
         default:
@@ -331,11 +341,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private func updateWhenRequired() {
         exposureController
             .updateWhenRequired()
-            .sink(receiveCompletion: { [weak self] _ in
+            .do(onError: { [weak self] error in
+                self?.logDebug("Finished `updateWhenRequired` with error \(error)")
+            }, onCompleted: { [weak self] in
                 self?.logDebug("Finished `updateWhenRequired`")
-            }, receiveValue: { _ in
-                // Do nothing
-                }).store(in: &disposeBag)
+            })
+            .subscribe(onCompleted: {})
+            .disposed(by: disposeBag)
     }
 
     private func requestExposureNotificationPermission(completion: ((Bool) -> ())? = nil) {

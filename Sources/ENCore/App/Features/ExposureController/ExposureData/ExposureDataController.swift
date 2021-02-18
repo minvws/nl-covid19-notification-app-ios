@@ -5,9 +5,13 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
+import RxSwift
+
+enum Announcement: String, Codable {
+    case interopAnnouncement
+}
 
 struct ExposureDataStorageKey {
     static let labConfirmationKey = CodableStorageKey<LabConfirmationKey>(name: "labConfirmationKey",
@@ -16,6 +20,8 @@ struct ExposureDataStorageKey {
                                                                     storeType: .insecure(volatile: true))
     static let appConfiguration = CodableStorageKey<ApplicationConfiguration>(name: "appConfiguration",
                                                                               storeType: .insecure(volatile: true))
+    static let appConfigurationSignature = CodableStorageKey<ApplicationConfiguration>(name: "appConfigurationSignature",
+                                                                                       storeType: .secure)
     static let exposureKeySetsHolders = CodableStorageKey<[ExposureKeySetHolder]>(name: "exposureKeySetsHolders",
                                                                                   storeType: .insecure(volatile: false))
     static let lastExposureReport = CodableStorageKey<ExposureReport>(name: "exposureReport",
@@ -26,29 +32,51 @@ struct ExposureDataStorageKey {
                                                                            storeType: .insecure(volatile: false))
     static let lastENStatusCheck = CodableStorageKey<Date>(name: "lastENStatusCheck",
                                                            storeType: .insecure(volatile: false))
+    static let lastAppLaunchDate = CodableStorageKey<Date>(name: "lastAppLaunchDate",
+                                                           storeType: .insecure(volatile: false))
     static let exposureConfiguration = CodableStorageKey<ExposureRiskConfiguration>(name: "exposureConfiguration",
                                                                                     storeType: .insecure(volatile: false))
     static let pendingLabUploadRequests = CodableStorageKey<[PendingLabConfirmationUploadRequest]>(name: "pendingLabUploadRequests",
                                                                                                    storeType: .secure)
     static let firstRunIdentifier = CodableStorageKey<Bool>(name: "firstRunIdentifier",
                                                             storeType: .insecure(volatile: false))
+    static let initialKeySetsIgnored = CodableStorageKey<Bool>(name: "initialKeySetsIgnored",
+                                                               storeType: .insecure(volatile: false))
     static let exposureApiCallDates = CodableStorageKey<[Date]>(name: "exposureApiCalls",
                                                                 storeType: .insecure(volatile: false))
+    static let exposureApiBackgroundCallDates = CodableStorageKey<[Date]>(name: "exposureApiBackgroundCallDates",
+                                                                          storeType: .insecure(volatile: false))
     static let onboardingCompleted = CodableStorageKey<Bool>(name: "onboardingCompleted",
                                                              storeType: .insecure(volatile: false))
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
                                                              storeType: .insecure(volatile: false))
+    static let treatmentPerspective = CodableStorageKey<TreatmentPerspective>(name: "treatmentPerspective",
+                                                                              storeType: .insecure(volatile: false))
+    static let lastUnseenExposureNotificationDate = CodableStorageKey<Date>(name: "lastUnseenExposureNotificationDate",
+                                                                            storeType: .insecure(volatile: false))
+    static let seenAnnouncements = CodableStorageKey<[Announcement]>(name: "seenAnnouncements",
+                                                                     storeType: .insecure(volatile: false))
+    static let lastDecoyProcessDate = CodableStorageKey<Date>(name: "lastDecoyProcessDate",
+                                                              storeType: .insecure(volatile: false))
+    static let pauseEndDate = CodableStorageKey<Date>(name: "pauseEndDate",
+                                                      storeType: .insecure(volatile: false))
+    static let hidePauseInformation = CodableStorageKey<Bool>(name: "hidePauseInformation",
+                                                              storeType: .insecure(volatile: false))
 }
 
 final class ExposureDataController: ExposureDataControlling, Logging {
 
-    private var disposeBag = Set<AnyCancellable>()
     private(set) var isFirstRun: Bool = false
+    private lazy var pauseEndDateSubject = BehaviorSubject<Date?>(value: pauseEndDate)
+
+    private lazy var lastExposureProcessingDateSubject = BehaviorSubject<Date?>(value: lastSuccessfulExposureProcessingDate)
 
     init(operationProvider: ExposureDataOperationProvider,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         environmentController: EnvironmentControlling) {
         self.operationProvider = operationProvider
         self.storageController = storageController
+        self.environmentController = environmentController
 
         detectFirstRunAndEraseKeychainIfRequired()
         compareAndUpdateLastRanAppVersion(isFirstRun: isFirstRun)
@@ -56,14 +84,25 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - ExposureDataControlling
 
+    func updateTreatmentPerspective() -> Completable {
+        requestApplicationManifest()
+            .flatMapCompletable { _ in
+                self.operationProvider
+                    .updateTreatmentPerspectiveDataOperation
+                    .execute()
+            }
+    }
+
     // MARK: - Exposure Detection
 
-    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .flatMap { _ in self.fetchAndStoreExposureKeySets() }
-            .flatMap { self.processStoredExposureKeySets(exposureManager: exposureManager) }
-            .share()
-            .eraseToAnyPublisher()
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable {
+        self.requestApplicationConfiguration()
+            .flatMapCompletable { _ in
+                self.fetchAndStoreExposureKeySets().catch { _ in
+                    self.processStoredExposureKeySets(exposureManager: exposureManager)
+                }
+            }
+            .andThen(processStoredExposureKeySets(exposureManager: exposureManager))
     }
 
     var lastExposure: ExposureReport? {
@@ -74,145 +113,185 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate)
     }
 
-    var lastSuccessfulProcessingDate: Date? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
-    }
-
     var lastENStatusCheckDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastENStatusCheck)
+    }
+
+    var lastAppLaunchDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastAppLaunchDate)
     }
 
     func setLastENStatusCheckDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastENStatusCheck, completion: { _ in })
     }
 
-    func removeLastExposure() -> AnyPublisher<(), Never> {
-        return Future { promise in
-            self.storageController.removeData(for: ExposureDataStorageKey.lastExposureReport) { _ in
-                promise(.success(()))
-            }
+    func setLastAppLaunchDate(_ date: Date) {
+        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastAppLaunchDate, completion: { _ in })
+    }
+
+    func clearLastUnseenExposureNotificationDate() {
+        storageController.removeData(for: ExposureDataStorageKey.lastUnseenExposureNotificationDate, completion: { _ in })
+    }
+
+    var lastUnseenExposureNotificationDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate)
+    }
+
+    func setLastDecoyProcessDate(_ date: Date) {
+        storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate, completion: { _ in })
+    }
+
+    var canProcessDecoySequence: Bool {
+        guard let date = lastDecoyProcessDate else {
+            return true
         }
-        .share()
-        .eraseToAnyPublisher()
+        return !Calendar.current.isDateInToday(date)
     }
 
-    func processStoredExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError> {
-        return requestExposureRiskConfiguration()
-            .flatMap { (configuration) -> AnyPublisher<(), ExposureDataError> in
-                guard let operation = self.operationProvider
-                    .processExposureKeySetsOperation(exposureManager: exposureManager,
-                                                     configuration: configuration) else {
-                    return Fail(error: ExposureDataError.internalError).eraseToAnyPublisher()
-                }
-
-                return operation.execute()
+    func removeLastExposure() -> Completable {
+        return .create { observer in
+            self.storageController.removeData(for: ExposureDataStorageKey.lastExposureReport) { _ in
+                observer(.completed)
             }
-            .eraseToAnyPublisher()
+            return Disposables.create()
+        }
     }
 
-    func fetchAndStoreExposureKeySets() -> AnyPublisher<(), ExposureDataError> {
+    private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Completable {
+        self.logDebug("ExposureDataController: processStoredExposureKeySets")
+        return requestExposureRiskConfiguration()
+            .flatMapCompletable { configuration in
+                self.operationProvider
+                    .processExposureKeySetsOperation(exposureManager: exposureManager, exposureDataController: self, configuration: configuration)
+                    .execute()
+            }
+    }
+
+    private func fetchAndStoreExposureKeySets() -> Completable {
+        self.logDebug("ExposureDataController: fetchAndStoreExposureKeySets")
         return requestApplicationManifest()
-            .map { (manifest: ApplicationManifest) -> [String] in manifest.exposureKeySetsIdentifiers }
-            .flatMap { exposureKeySetsIdentifiers in
+            .map { (manifest: ApplicationManifest) -> [String] in
+                manifest.exposureKeySetsIdentifiers
+            }
+            .flatMapCompletable { exposureKeySetsIdentifiers in
                 self.operationProvider
                     .requestExposureKeySetsOperation(identifiers: exposureKeySetsIdentifiers)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - LabFlow
 
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize, maximumRequestSize: configuration.requestMaximumSize)
-            }.flatMap { (padding: Padding) in
+    func processPendingUploadRequests() -> Completable {
+        return getPadding()
+            .flatMapCompletable { (padding: Padding) in
                 return self.operationProvider
                     .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
                     .execute()
-            }.eraseToAnyPublisher()
+            }
     }
 
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize,
-                        maximumRequestSize: configuration.requestMaximumSize)
-            }
+    func processExpiredUploadRequests() -> Completable {
+        return operationProvider
+            .expiredLabConfirmationNotificationOperation()
+            .execute()
+    }
+
+    func requestLabConfirmationKey() -> Single<LabConfirmationKey> {
+        getPadding()
             .flatMap { (padding: Padding) in
-                return self.operationProvider
+                self.operationProvider
                     .requestLabConfirmationKeyOperation(padding: padding)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError> {
-        return requestApplicationConfiguration()
-            .map { (configuration: ApplicationConfiguration) in
-                Padding(minimumRequestSize: configuration.requestMinimumSize,
-                        maximumRequestSize: configuration.requestMaximumSize)
-            }
-            .flatMap { (padding: Padding) in
-                return self.operationProvider
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Completable {
+        getPadding()
+            .flatMapCompletable { padding in
+                self.operationProvider
                     .uploadDiagnosisKeysOperation(diagnosisKeys: diagnosisKeys, labConfirmationKey: labConfirmationKey, padding: padding)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Misc
 
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError> {
+    func isAppDeactivated() -> Single<Bool> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decativated
             }
-            .eraseToAnyPublisher()
     }
 
-    func isTestPhase() -> AnyPublisher<Bool, ExposureDataError> {
+    func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
-                return applicationConfiguration.testPhase
+                return ExposureDataAppVersionInformation(
+                    minimumVersion: applicationConfiguration.minimumVersion,
+                    minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
+                    appStoreURL: applicationConfiguration.appStoreURL
+                )
             }
-            .eraseToAnyPublisher()
     }
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError> {
-        requestApplicationConfiguration()
-            .map { applicationConfiguration in
-                return ExposureDataAppVersionInformation(minimumVersion: applicationConfiguration.minimumVersion,
-                                                         minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
-                                                         appStoreURL: applicationConfiguration.appStoreURL)
-            }
-            .eraseToAnyPublisher()
-    }
-
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError> {
-        requestApplicationConfiguration()
-            .map { applicationConfiguration in
-                return applicationConfiguration.manifestRefreshFrequency
-            }
-            .eraseToAnyPublisher()
-    }
-
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError> {
+    func getDecoyProbability() -> Single<Float> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return applicationConfiguration.decoyProbability
             }
-            .eraseToAnyPublisher()
     }
 
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError> {
+    func getPadding() -> Single<Padding> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
                 return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
                                maximumRequestSize: applicationConfiguration.requestMaximumSize)
             }
-            .eraseToAnyPublisher()
+    }
+
+    var isAppPaused: Bool {
+        pauseEndDate != nil
+    }
+
+    var pauseEndDateObservable: Observable<Date?> {
+        return pauseEndDateSubject
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .subscribe(on: MainScheduler.instance)
+    }
+
+    var pauseEndDate: Date? {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pauseEndDate)
+        } set {
+
+            if let newDate = newValue {
+                self.storageController.requestExclusiveAccess { storageController in
+                    storageController.store(
+                        object: newDate,
+                        identifiedBy: ExposureDataStorageKey.pauseEndDate,
+                        completion: { _ in
+                            self.pauseEndDateSubject.onNext(newDate)
+                        }
+                    )
+                }
+            } else {
+                storageController.removeData(for: ExposureDataStorageKey.pauseEndDate, completion: { _ in
+                    self.pauseEndDateSubject.onNext(newValue)
+                })
+            }
+        }
+    }
+
+    var hidePauseInformation: Bool {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.hidePauseInformation) ?? false
+        } set {
+            storageController.store(object: newValue,
+                                    identifiedBy: ExposureDataStorageKey.hidePauseInformation,
+                                    completion: { _ in })
+        }
     }
 
     func updateLastLocalNotificationExposureDate(_ date: Date) {
@@ -230,7 +309,53 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
 
+    var seenAnnouncements: [Announcement] {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.seenAnnouncements) ?? []
+        }
+        set {
+            storageController.store(object: newValue,
+                                    identifiedBy: ExposureDataStorageKey.seenAnnouncements,
+                                    completion: { _ in })
+        }
+    }
+
+    func getAppointmentPhoneNumber() -> Single<String> {
+        requestApplicationConfiguration()
+            .map { applicationConfiguration in
+                return applicationConfiguration.appointmentPhoneNumber
+            }
+    }
+
+    var lastSuccessfulExposureProcessingDateObservable: Observable<Date?> {
+        return lastExposureProcessingDateSubject
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .subscribe(on: MainScheduler.instance)
+    }
+
+    var lastSuccessfulExposureProcessingDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate)
+    }
+
+    func updateLastSuccessfulExposureProcessingDate(_ date: Date) {
+
+        storageController.requestExclusiveAccess { storageController in
+            storageController.store(
+                object: date,
+                identifiedBy: ExposureDataStorageKey.lastExposureProcessingDate,
+                completion: { _ in
+                    self.lastExposureProcessingDateSubject.onNext(date)
+                }
+            )
+        }
+    }
+
     // MARK: - Private
+
+    private var lastDecoyProcessDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
+    }
 
     private func detectFirstRunAndEraseKeychainIfRequired() {
         guard storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.firstRunIdentifier) == nil else {
@@ -249,38 +374,35 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         storageController.store(object: true, identifiedBy: ExposureDataStorageKey.firstRunIdentifier, completion: { _ in })
     }
 
-    private func requestApplicationConfiguration() -> AnyPublisher<ApplicationConfiguration, ExposureDataError> {
-        return requestApplicationManifest()
-            .flatMap { manifest in
-                return self
-                    .operationProvider
-                    .requestAppConfigurationOperation(identifier: manifest.appConfigurationIdentifier)
+    private func requestApplicationConfiguration() -> Single<ApplicationConfiguration> {
+        return self.requestApplicationManifest()
+            .flatMap {
+                self.operationProvider
+                    .requestAppConfigurationOperation(identifier: $0.appConfigurationIdentifier)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
-    private func requestApplicationManifest() -> AnyPublisher<ApplicationManifest, ExposureDataError> {
-        return operationProvider
-            .requestManifestOperation
-            .execute()
+    private func requestApplicationManifest() -> Single<ApplicationManifest> {
+        return operationProvider.requestManifestOperation.execute()
     }
 
-    private func requestExposureRiskConfiguration() -> AnyPublisher<ExposureConfiguration, ExposureDataError> {
-        return requestApplicationManifest()
-            .map { (manifest: ApplicationManifest) in manifest.riskCalculationParametersIdentifier }
+    private func requestExposureRiskConfiguration() -> Single<ExposureConfiguration> {
+        requestApplicationManifest()
+            .map { (manifest: ApplicationManifest) in
+                manifest.riskCalculationParametersIdentifier
+            }
             .flatMap { identifier in
                 self.operationProvider
                     .requestExposureConfigurationOperation(identifier: identifier)
                     .execute()
             }
-            .eraseToAnyPublisher()
     }
 
     // MARK: - Version Management
 
     private func compareAndUpdateLastRanAppVersion(isFirstRun: Bool) {
-        guard let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else {
+        guard let appVersion = environmentController.appVersion else {
             return
         }
 
@@ -296,6 +418,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func executeUpdate(from fromVersion: String, to toVersion: String) {
+
+        // Always clear the app manifest on update to prevent stale settings from being used
+        // Especially when switching to a new API version, manifest info like the resource bundle ID
+        // from the old manifest might not be appropriate for the new API version
+        storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
+
         if toVersion == "1.0.6" {
             // for people updating, mark onboarding as completed. OnboardingCompleted is a new
             // variable to keep track whether people have completed onboarding. For people who update
@@ -310,4 +438,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
+    private let environmentController: EnvironmentControlling
+    private let disposeBag = DisposeBag()
 }

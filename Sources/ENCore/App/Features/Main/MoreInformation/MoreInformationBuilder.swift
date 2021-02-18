@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Foundation
 
@@ -15,11 +14,11 @@ protocol MoreInformationViewControllable: ViewControllable {}
 /// @mockable
 protocol MoreInformationListener: AnyObject {
     func moreInformationRequestsAbout()
+    func moreInformationRequestsSettings()
     func moreInformationRequestsSharing()
     func moreInformationRequestsReceivedNotification()
     func moreInformationRequestsInfected()
     func moreInformationRequestsRequestTest()
-    func moreInformationRequestsRedirect(to url: URL)
 }
 
 /// @mockable
@@ -38,10 +37,6 @@ protocol MoreInformationDependency {
 
 private final class MoreInformationDependencyProvider: DependencyProvider<MoreInformationDependency> {
 
-    fileprivate var testPhaseStream: AnyPublisher<Bool, Never> {
-        return dependency.exposureController.isTestPhase()
-    }
-
     fileprivate var bundleInfoDictionary: [String: Any]? {
         return Bundle.main.infoDictionary
     }
@@ -53,7 +48,7 @@ final class MoreInformationBuilder: Builder<MoreInformationDependency>, MoreInfo
 
         return MoreInformationViewController(listener: listener,
                                              theme: dependencyProvider.dependency.theme,
-                                             testPhaseStream: dependencyProvider.testPhaseStream,
-                                             bundleInfoDictionary: dependencyProvider.bundleInfoDictionary)
+                                             bundleInfoDictionary: dependencyProvider.bundleInfoDictionary,
+                                             exposureController: dependencyProvider.dependency.exposureController)
     }
 }

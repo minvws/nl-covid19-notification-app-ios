@@ -69,7 +69,12 @@ final class PrivacyAgreementViewController: ViewController, Logging {
 
 private final class PrivacyAgreementView: View {
 
-    lazy var privacyAgreementButton = PrivacyAgreementButton(theme: theme)
+    lazy var privacyAgreementButton: CheckmarkButton = {
+        let button = CheckmarkButton(theme: theme)
+        button.accessibilityLabel = .privacyAgreementConsentButton
+        button.label.text = .privacyAgreementConsentButton
+        return button
+    }()
 
     lazy var nextButton: Button = {
         let button = Button(theme: theme)
@@ -86,6 +91,17 @@ private final class PrivacyAgreementView: View {
         return label
     }()
 
+    lazy var stepsTitleLabel: Label = {
+        let label = Label(frame: .zero)
+        label.isUserInteractionEnabled = true
+        label.font = theme.fonts.body
+        label.textColor = theme.colors.gray
+        label.text = .privacyAgreementStepsTitle
+        label.numberOfLines = 0
+        label.accessibilityTraits = .header
+        return label
+    }()
+
     init(theme: Theme, informationSteps: [OnboardingConsentSummaryStep]) {
         self.stepViews = informationSteps.map { OnboardingConsentSummaryStepView(with: $0, theme: theme) }
         super.init(theme: theme)
@@ -97,6 +113,7 @@ private final class PrivacyAgreementView: View {
         scrollView.addSubview(stackView)
         scrollView.addSubview(titleLabel)
         scrollView.addSubview(readPrivacyAgreementLabel)
+        scrollView.addSubview(stepsTitleLabel)
 
         stepViews.forEach { stackView.addArrangedSubview($0) }
 
@@ -113,7 +130,8 @@ private final class PrivacyAgreementView: View {
         hasBottomMargin = true
 
         scrollView.snp.makeConstraints { maker in
-            maker.leading.trailing.top.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.equalToSuperview()
             maker.bottom.equalTo(bottomStackView.snp.top)
         }
 
@@ -126,13 +144,18 @@ private final class PrivacyAgreementView: View {
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
         }
 
+        stepsTitleLabel.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.top.equalTo(readPrivacyAgreementLabel.snp.bottom).offset(5)
+        }
+
         stackView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.width.equalToSuperview().inset(16)
             maker.top.equalTo(readPrivacyAgreementLabel.snp.bottom).offset(40)
         }
 
         bottomStackView.snp.makeConstraints { maker in
-            maker.leading.trailing.width.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
 
@@ -188,58 +211,4 @@ private final class PrivacyAgreementView: View {
 
     private let scrollView = UIScrollView(frame: .zero)
     private let stepViews: [OnboardingConsentSummaryStepView]
-}
-
-private final class PrivacyAgreementButton: Button {
-    required init(theme: Theme) {
-        super.init(theme: theme)
-        accessibilityValue = .privacyAgreementConsentButton
-        isSelected = false
-        style = .tertiary
-        build()
-        setupContraints()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    required init(title: String = "", theme: Theme) {
-        fatalError("init(title:theme:) has not been implemented")
-    }
-
-    override var isSelected: Bool {
-        didSet {
-            checkmark.image = isSelected ? .checkmarkChecked : .checkmarkUnchecked
-        }
-    }
-
-    private func build() {
-        addSubview(label)
-        addSubview(checkmark)
-    }
-
-    private func setupContraints() {
-        checkmark.snp.makeConstraints { maker in
-            maker.width.height.equalTo(28)
-            maker.leading.equalToSuperview().inset(16)
-            maker.centerY.equalToSuperview()
-        }
-
-        label.snp.makeConstraints { maker in
-            maker.leading.equalTo(checkmark.snp.trailing).offset(16)
-            maker.trailing.top.bottom.equalToSuperview().inset(16)
-        }
-    }
-
-    private lazy var checkmark = UIImageView(image: .checkmarkUnchecked)
-
-    private lazy var label: Label = {
-        let label = Label(frame: .zero)
-        label.numberOfLines = 0
-        label.textColor = theme.colors.gray
-        label.font = theme.fonts.subhead
-        label.text = .privacyAgreementConsentButton
-        return label
-    }()
 }

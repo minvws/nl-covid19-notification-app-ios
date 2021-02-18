@@ -5,32 +5,27 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import NotificationCenter
 
-protocol ExposureDataOperation {
-    associatedtype Result
-
-    func execute() -> AnyPublisher<Result, ExposureDataError>
-}
-
-/// @mockable
+/// @mockable(history: processPendingLabConfirmationUploadRequestsOperation = true)
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation?
+                                         exposureDataController: ExposureDataController,
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol
 
-    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol
+    func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol
+    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol
 
-    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation
-    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation
-    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation
-
-    var requestManifestOperation: RequestAppManifestDataOperation { get }
+    var requestManifestOperation: RequestAppManifestDataOperationProtocol { get }
+    var updateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveDataOperationProtocol { get }
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
-                                      padding: Padding) -> UploadDiagnosisKeysDataOperation
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperationProtocol
 }
 
 protocol ExposureDataOperationProviderBuildable {
@@ -40,6 +35,7 @@ protocol ExposureDataOperationProviderBuildable {
 protocol ExposureDataOperationProviderDependency {
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
 }
 
 private final class ExposureDataOperationProviderDependencyProvider: DependencyProvider<ExposureDataOperationProviderDependency> {
@@ -50,6 +46,18 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
     var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
     }
+
+    var application: ApplicationControlling {
+        return ApplicationController()
+    }
+
+    var fileManager: FileManaging {
+        return FileManager.default
+    }
+
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
 }
 
 final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationProviderDependency>, ExposureDataOperationProviderBuildable {
@@ -58,7 +66,11 @@ final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationP
 
         return ExposureDataOperationProviderImpl(networkController: dependencyProvider.dependency.networkController,
                                                  storageController: dependencyProvider.dependency.storageController,
+                                                 applicationSignatureController: dependencyProvider.dependency.applicationSignatureController,
                                                  localPathProvider: dependencyProvider.localPathProvider,
-                                                 userNotificationCenter: dependencyProvider.userNotificationCenter)
+                                                 userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                                 application: dependencyProvider.application,
+                                                 fileManager: dependencyProvider.fileManager,
+                                                 environmentController: dependencyProvider.environmentController)
     }
 }

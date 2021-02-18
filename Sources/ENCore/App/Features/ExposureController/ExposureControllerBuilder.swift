@@ -5,11 +5,11 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 import UserNotifications
 
-/// @mockable
+/// @mockable(history: pause = true)
 protocol ExposureControlling: AnyObject {
 
     var lastExposureDate: Date? { get }
@@ -17,33 +17,33 @@ protocol ExposureControlling: AnyObject {
     // MARK: - Setup
 
     @discardableResult
-    func activate(inBackgroundMode: Bool) -> AnyPublisher<(), Never>
+    func activate() -> Completable
     func deactivate()
+    func postExposureManagerActivation()
+    func updateStatusStream()
+
+    func pause(untilDate date: Date)
+    func unpause()
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
-    func isAppDeactivated() -> AnyPublisher<Bool, ExposureDataError>
-    func isTestPhase() -> AnyPublisher<Bool, Never>
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
+    func isAppDeactivated() -> Single<Bool>
+    func getDecoyProbability() -> Single<Float>
+    func getPadding() -> Single<Padding>
 
     // MARK: - Updates
 
     func refreshStatus()
 
-    func updateWhenRequired() -> AnyPublisher<(), ExposureDataError>
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
-
-    func notifyUserIfRequired()
+    func updateWhenRequired() -> Completable
+    func processPendingUploadRequests() -> Completable
 
     // MARK: - Permissions
 
     func requestExposureNotificationPermission(_ completion: ((ExposureManagerError?) -> ())?)
-    func requestPushNotificationPermission(_ completion: @escaping () -> ())
 
     // MARK: - Exposure KeySets
 
-    func fetchAndProcessExposureKeySets() -> AnyPublisher<(), ExposureDataError>
+    func fetchAndProcessExposureKeySets() -> Completable
 
     // MARK: - Exposure Notification
 
@@ -68,14 +68,29 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Misc
 
+    /// Updates the last app launch date
+    func updateLastLaunch()
+
+    /// Removes the unseen exposure notification date
+    func clearUnseenExposureNotificationDate()
+
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
-    func updateAndProcessPendingUploads() -> AnyPublisher<(), ExposureDataError>
+    func updateAndProcessPendingUploads() -> Completable
+
+    /// Shows a notification for expired lab key uploads and cleans up the requests
+    func processExpiredUploadRequests() -> Completable
 
     /// Checks the status of the EN framework for the last 24h
-    func exposureNotificationStatusCheck() -> AnyPublisher<(), Never>
+    func exposureNotificationStatusCheck() -> Completable
 
-    /// Checks if the app needs to be updated
-    func appUpdateRequiredCheck() -> AnyPublisher<(), Never>
+    /// Checks if the app needs to be updated and returns true if it should
+    func appShouldUpdateCheck() -> Single<AppUpdateInformation>
+
+    /// Checks if the app needs to be updated and sends a local notification if it should
+    func sendNotificationIfAppShouldUpdate() -> Completable
+
+    /// Updates the treatment perspective message
+    func updateTreatmentPerspective() -> Completable
 
     // MARK: - Onboarding
 
@@ -84,15 +99,32 @@ protocol ExposureControlling: AnyObject {
 
     /// Whether the user has completed onboarding
     var didCompleteOnboarding: Bool { get set }
+
+    /// All announcements that the user has seen within the app or during the onboarding proces
+    var seenAnnouncements: [Announcement] { get set }
+
+    /// Checks the last date the user opened the app and trigers a notificaiton if its been longer than 3 hours from the last exposure.
+    func lastOpenedNotificationCheck() -> Completable
+
+    var exposureManager: ExposureManaging { get }
+
+    /// Get the latest  TEK processing date
+    func lastTEKProcessingDate() -> Observable<Date?>
 }
 
 /// Represents a ConfirmationKey for the Lab Flow
 ///
 /// - Parameter key: Human readable lab confirmation key
 /// - Parameter expiration: Key's expiration date
+/// @mockable
 protocol ExposureConfirmationKey {
     var key: String { get }
     var expiration: Date { get }
+}
+
+struct AppUpdateInformation {
+    let shouldUpdate: Bool
+    let versionInformation: ExposureDataAppVersionInformation?
 }
 
 /// Result of the requestUploadKeys
@@ -132,8 +164,9 @@ protocol ExposureControllerDependency {
     var mutableExposureStateStream: MutableExposureStateStreaming { get }
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
     var networkStatusStream: NetworkStatusStreaming { get }
-    var mutableBluetoothStateStream: MutableBluetoothStateStreaming { get }
+    var dataController: ExposureDataControlling { get }
 }
 
 private final class ExposureControllerDependencyProvider: DependencyProvider<ExposureControllerDependency>, ExposureDataControllerDependency {
@@ -147,6 +180,10 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
         return dependency.storageController
     }
 
+    var applicationSignatureController: ApplicationSignatureControlling {
+        return dependency.applicationSignatureController
+    }
+
     var exposureManager: ExposureManaging {
         return dependency.exposureManager
     }
@@ -154,15 +191,15 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     // MARK: - Private Dependencies
 
     fileprivate var dataController: ExposureDataControlling {
-        return ExposureDataControllerBuilder(dependency: self).build()
+        return dependency.dataController
     }
 
     fileprivate var userNotificationCenter: UserNotificationCenter {
         return UNUserNotificationCenter.current()
     }
 
-    fileprivate var currentAppVersion: String? {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    fileprivate var currentAppVersion: String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
 }
 
@@ -175,7 +212,6 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
                                   dataController: dependencyProvider.dataController,
                                   networkStatusStream: dependencyProvider.dependency.networkStatusStream,
                                   userNotificationCenter: dependencyProvider.userNotificationCenter,
-                                  mutableBluetoothStateStream: dependencyProvider.dependency.mutableBluetoothStateStream,
                                   currentAppVersion: dependencyProvider.currentAppVersion)
     }
 }

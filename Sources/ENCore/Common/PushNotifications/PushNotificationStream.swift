@@ -5,9 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
+import ENFoundation
 import Foundation
-import NotificationCenter
+import RxSwift
+import UserNotifications
 
 enum PushNotificationIdentifier: String {
     case exposure = "nl.rijksoverheid.en.exposure"
@@ -15,6 +16,7 @@ enum PushNotificationIdentifier: String {
     case uploadFailed = "nl.rijksoverheid.en.uploadFailed"
     case enStatusDisabled = "nl.rijksoverheid.en.statusDisabled"
     case appUpdateRequired = "nl.rijksoverheid.en.appUpdateRequired"
+    case pauseEnded = "nl.rijksoverheid.en.pauseended"
 
     static func allIdentifiers() -> [PushNotificationIdentifier] {
         return [
@@ -22,38 +24,51 @@ enum PushNotificationIdentifier: String {
             .inactive,
             .uploadFailed,
             .enStatusDisabled,
-            .appUpdateRequired
+            .appUpdateRequired,
+            .pauseEnded
         ]
     }
 }
 
 /// @mockable
 protocol PushNotificationStreaming {
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> { get }
+    var pushNotificationStream: Observable<PushNotificationIdentifier> { get }
+    var foregroundNotificationStream: Observable<UNNotification> { get }
 }
 
 /// @mockable
 protocol MutablePushNotificationStreaming: PushNotificationStreaming {
-    func update(response: UNNotificationResponse)
+    func update(identifier: PushNotificationIdentifier)
+    func update(notification: UNNotification)
 }
 
-final class PushNotificaionStream: MutablePushNotificationStreaming {
+final class PushNotificationStream: MutablePushNotificationStreaming, Logging {
 
     // MARK: - PushNotificationStreaming
 
-    var pushNotificationStream: AnyPublisher<UNNotificationResponse, Never> {
-        return subject
-            .removeDuplicates(by: ==)
+    var pushNotificationStream: Observable<PushNotificationIdentifier> {
+        return pushNotificationSubject
+            .subscribe(on: MainScheduler.instance)
+            .distinctUntilChanged()
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
+    }
+
+    var foregroundNotificationStream: Observable<UNNotification> {
+        return foregroundNotificationSubject
+            .subscribe(on: MainScheduler.instance)
+            .compactMap { $0 }
     }
 
     // MARK: - MutablePushNotificationStreaming
 
-    func update(response: UNNotificationResponse) {
-        subject.send(response)
+    func update(identifier: PushNotificationIdentifier) {
+        pushNotificationSubject.onNext(identifier)
     }
 
-    private let subject = CurrentValueSubject<UNNotificationResponse?, Never>(nil)
+    func update(notification: UNNotification) {
+        foregroundNotificationSubject.onNext(notification)
+    }
+
+    private let pushNotificationSubject = BehaviorSubject<PushNotificationIdentifier?>(value: nil)
+    private let foregroundNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
 }

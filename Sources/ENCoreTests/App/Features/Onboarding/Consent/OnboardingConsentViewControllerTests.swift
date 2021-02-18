@@ -8,6 +8,7 @@
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -17,14 +18,19 @@ final class OnboardingConsentViewControllerTests: TestCase {
     private let exposureStateStream = ExposureStateStreamingMock()
     private let exposureController = ExposureControllingMock()
     private var manager: OnboardingConsentManager!
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
+    private var mockUserNotificationCenter = UserNotificationCenterMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,
+                                           userNotificationCenter: mockUserNotificationCenter,
                                            theme: theme)
 
         AnimationTestingOverrides.animationsEnabled = false
@@ -37,9 +43,18 @@ final class OnboardingConsentViewControllerTests: TestCase {
             let viewController = OnboardingConsentStepViewController(onboardingConsentManager: manager,
                                                                      listener: listener,
                                                                      theme: theme,
-                                                                     index: index)
+                                                                     index: index,
+                                                                     interfaceOrientationStream: interfaceOrientationStream)
 
             snapshots(matching: viewController, named: "\(#function)\(index)")
         }
+    }
+
+    func test_didCompleteConsent() {
+
+        manager.didCompleteConsent()
+
+        XCTAssertEqual(exposureController.seenAnnouncements, [.interopAnnouncement])
+        XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 1)
     }
 }

@@ -26,8 +26,11 @@ protocol StatusBuildable {
 protocol StatusDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
-    var bluetoothStateStream: BluetoothStateStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var environmentController: EnvironmentControlling { get }
+    var dataController: ExposureDataControlling { get }
+    var pauseController: PauseControlling { get }
+    var pushNotificationStream: PushNotificationStreaming { get }
 }
 
 private final class StatusDependencyProvider: DependencyProvider<StatusDependency>, CardDependency {
@@ -43,12 +46,20 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
         return dependency.theme
     }
 
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return dependency.bluetoothStateStream
-    }
-
     var environmentController: EnvironmentControlling {
         return dependency.environmentController
+    }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
+    }
+
+    var dataController: ExposureDataControlling {
+        return dependency.dataController
+    }
+
+    var pauseController: PauseControlling {
+        dependency.pauseController
     }
 }
 
@@ -58,10 +69,13 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
 
         let viewController = StatusViewController(
             exposureStateStream: dependencyProvider.exposureStateStream,
+            interfaceOrientationStream: dependencyProvider.interfaceOrientationStream,
             cardBuilder: dependencyProvider.cardBuilder,
             listener: listener,
             theme: dependencyProvider.dependency.theme,
-            topAnchor: topAnchor
+            topAnchor: topAnchor,
+            dataController: dependencyProvider.dataController,
+            pushNotificationStream: dependencyProvider.dependency.pushNotificationStream
         )
 
         return StatusRouter(listener: listener,

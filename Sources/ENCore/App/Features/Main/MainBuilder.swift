@@ -7,6 +7,7 @@
 
 import ENFoundation
 import Foundation
+import UserNotifications
 
 /// @mockable
 protocol MainBuildable {
@@ -17,21 +18,31 @@ protocol MainDependency {
     var theme: Theme { get }
     var exposureStateStream: ExposureStateStreaming { get }
     var exposureController: ExposureControlling { get }
-    var bluetoothStateStream: BluetoothStateStreaming { get }
+    var storageController: StorageControlling { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
+    var dataController: ExposureDataControlling { get }
+    var exposureManager: ExposureManaging { get }
+    var backgroundController: BackgroundControlling { get }
+    var pauseController: PauseControlling { get }
+    var pushNotificationStream: PushNotificationStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency {
 
     var theme: Theme {
         return dependency.theme
     }
 
-    var bluetoothStateStream: BluetoothStateStreaming {
-        return dependency.bluetoothStateStream
-    }
-
     var exposureStateStream: ExposureStateStreaming {
         return dependency.exposureStateStream
+    }
+
+    var storageController: StorageControlling {
+        return dependency.storageController
+    }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
     }
 
     var statusBuilder: StatusBuildable {
@@ -44,6 +55,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var aboutBuilder: AboutBuildable {
         return AboutBuilder(dependency: self)
+    }
+
+    var settingsBuilder: SettingsBuildable {
+        return SettingsBuilder(dependency: self)
     }
 
     var shareBuilder: ShareSheetBuildable {
@@ -81,6 +96,26 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var environmentController: EnvironmentControlling {
         return EnvironmentController()
     }
+
+    var messageManager: MessageManaging {
+        return MessageManager(storageController: storageController, theme: dependency.theme)
+    }
+
+    var dataController: ExposureDataControlling {
+        dependency.dataController
+    }
+
+    var userNotificationCenter: UserNotificationCenter {
+        UNUserNotificationCenter.current()
+    }
+
+    var pauseController: PauseControlling {
+        dependency.pauseController
+    }
+
+    var pushNotificationStream: PushNotificationStreaming {
+        dependency.pushNotificationStream
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -88,7 +123,9 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
                                                 exposureController: dependencyProvider.exposureController,
-                                                exposureStateStream: dependencyProvider.exposureStateStream)
+                                                exposureStateStream: dependencyProvider.exposureStateStream,
+                                                userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                                pauseController: dependencyProvider.pauseController)
 
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,
@@ -100,6 +137,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           infectedBuilder: dependencyProvider.infectedBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
-                          webviewBuilder: dependencyProvider.webviewBuilder)
+                          webviewBuilder: dependencyProvider.webviewBuilder,
+                          settingsBuilder: dependencyProvider.settingsBuilder)
     }
 }

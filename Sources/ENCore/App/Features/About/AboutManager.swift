@@ -5,7 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import UIKit
 
@@ -36,7 +35,7 @@ final class AboutManager: AboutManaging {
 
     // MARK: - Init
 
-    init(testPhaseStream: AnyPublisher<Bool, Never>) {
+    init() {
         let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
         let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "<br><br>" + .helpFaqAnonymousDescription2)
         let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
@@ -119,6 +118,7 @@ final class AboutManager: AboutManaging {
             ])),
 
             .question(otherCountries.appending(linkedContent: [
+                AboutEntry.link(title: .aboutInteroperabilityTitle, link: .aboutInteroperabilityFAQLink, openInExternalBrowser: true),
                 technicalInformationEntry,
                 AboutEntry.question(notification),
                 AboutEntry.question(location)
@@ -132,22 +132,5 @@ final class AboutManager: AboutManaging {
             .link(title: .helpAccessibilityTitle, link: .helpAccessibilityLink),
             .link(title: .helpColofonTitle, link: .helpColofonLink)
         ])
-
-        testPhaseStream
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { isTestPhase in
-                if isTestPhase {
-                    self.aboutSection.entries.append(.link(title: .helpTestVersionTitle, link: .helpTestVersionLink))
-                    self.didUpdate?()
-                }
-            }).store(in: &disposeBag)
     }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
-    }
-
-    // MARK: - Private
-
-    private var disposeBag = Set<AnyCancellable>()
 }

@@ -15,6 +15,9 @@ parameters:
 - name: bundleShortVersion
   type: string
   default: ''
+- name: bundleIdentifier
+  type: string
+  default: 'nl.rijksoverheid.en'
 - name: debugMenu
   type: string
   default: ''
@@ -57,6 +60,7 @@ steps:
     BUILD_ID: $(Build.BuildId)
     BUNDLE_SHORT_VERSION: ${{ parameters.bundleShortVersion }}
     BUNDLE_DISPLAY_NAME: ${{ parameters.bundleDisplayName }}
+    BUNDLE_IDENTIFIER: ${{ parameters.bundleIdentifier }}
     RELEASE_PROVISIONING_PROFILE: ${{ parameters.provisioningProfileName }}
     USE_DEVELOPER_MENU: ${{ parameters.debugMenu }}
     SHARE_LOGS_ENABLED: ${{ parameters.shareLogsEnabled }}
@@ -70,7 +74,7 @@ steps:
     xcWorkspacePath: 'EN.xcodeproj'
     scheme: 'EN'
     xcodeVersion: 'specifyPath'
-    xcodeDeveloperDir: '/Applications/Xcode_12.app'
+    xcodeDeveloperDir: '/Applications/Xcode_12.3.app'
     provisioningProfileName: ${{ parameters.provisioningProfileName }}
     signingOption: ${{ parameters.signingOption }}
     packageApp: ${{ parameters.packageApp }}
@@ -85,7 +89,7 @@ steps:
     xcWorkspacePath: EN.xcodeproj
     scheme: ENCore
     xcodeVersion: 'specifyPath'
-    xcodeDeveloperDir: '/Applications/Xcode_12.app'
+    xcodeDeveloperDir: '/Applications/Xcode_12.3.app'
     destinationPlatformOption: iOS
-    destinationSimulators: 'iPhone 11,OS=14.0'
+    destinationSimulators: 'iPhone 12,OS=14.3'
     publishJUnitResults: true

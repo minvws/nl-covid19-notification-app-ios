@@ -10,6 +10,7 @@ import UIKit
 
 public protocol Colors: AnyObject {
     var primary: UIColor { get }
+    var secondaryLight: UIColor { get }
     var tertiary: UIColor { get }
     var warning: UIColor { get }
 
@@ -18,9 +19,11 @@ public protocol Colors: AnyObject {
     var ok: UIColor { get }
     var notified: UIColor { get }
     var inactive: UIColor { get }
+    var inactiveGray: UIColor { get }
 
     var statusGradientActive: UIColor { get }
     var statusGradientNotified: UIColor { get }
+    var statusGradientPaused: UIColor { get }
 
     var navigationControllerBackground: UIColor { get }
     var viewControllerBackground: UIColor { get }
@@ -31,11 +34,16 @@ public protocol Colors: AnyObject {
     var lightOrange: UIColor { get }
 
     var captionGray: UIColor { get }
+    var cardBackground: UIColor { get }
 }
 
 final class ENColors: Colors, Logging {
     var primary: UIColor {
         return color(for: "PrimaryColor")
+    }
+
+    var secondaryLight: UIColor {
+        return color(for: "SecondaryLight")
     }
 
     var tertiary: UIColor {
@@ -62,8 +70,16 @@ final class ENColors: Colors, Logging {
         return color(for: "InactiveOrange")
     }
 
+    var inactiveGray: UIColor {
+        return color(for: "InactiveGray")
+    }
+
     var statusGradientActive: UIColor {
         return color(for: "StatusGradientBlue")
+    }
+
+    var statusGradientPaused: UIColor {
+        return color(for: "StatusGradientGray")
     }
 
     var statusGradientNotified: UIColor {
@@ -92,6 +108,10 @@ final class ENColors: Colors, Logging {
 
     var captionGray: UIColor {
         return color(for: "CaptionGray")
+    }
+
+    var cardBackground: UIColor {
+        return color(for: "CardBackground")
     }
 
     // MARK: - Private

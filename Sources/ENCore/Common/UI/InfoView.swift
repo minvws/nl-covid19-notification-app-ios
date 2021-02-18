@@ -11,14 +11,14 @@ import SnapKit
 import UIKit
 
 struct InfoViewConfig {
-    let actionButtonTitle: String
+    let actionButtonTitle: String?
     let secondaryButtonTitle: String?
     let headerImage: UIImage?
     let showButtons: Bool
     let stickyButtons: Bool
     let headerBackgroundViewColor: UIColor?
 
-    init(actionButtonTitle: String = "",
+    init(actionButtonTitle: String? = nil,
          secondaryButtonTitle: String? = nil,
          headerImage: UIImage? = nil,
          headerBackgroundViewColor: UIColor? = nil,
@@ -41,6 +41,16 @@ final class InfoView: View {
     }
     var secondaryActionHandler: (() -> ())?
 
+    var showHeader: Bool = true {
+        didSet {
+            headerImageView.isHidden = !showHeader
+            headerBackgroundView.isHidden = !showHeader
+            setupConstraints()
+        }
+    }
+
+    let secondaryButton: Button?
+
     private let scrollView: UIScrollView
     private let contentView: UIView
     private let headerBackgroundView: UIView
@@ -50,21 +60,21 @@ final class InfoView: View {
     private let buttonStackView: UIStackView
     private let buttonSeparator: GradientView
     private let actionButton: Button
-    private let secondaryButton: Button?
 
     private let showButtons: Bool
     private let stickyButtons: Bool
+    private var itemSpacing: CGFloat
 
     // MARK: - Init
 
-    init(theme: Theme, config: InfoViewConfig) {
+    init(theme: Theme, config: InfoViewConfig, itemSpacing: CGFloat = 40) {
         self.contentView = UIView(frame: .zero)
         self.headerImageView = UIImageView(image: config.headerImage)
         self.stackView = UIStackView(frame: .zero)
         self.buttonStackView = UIStackView(frame: .zero)
         self.scrollView = UIScrollView(frame: .zero)
         self.headerBackgroundView = UIView(frame: .zero)
-        self.actionButton = Button(title: config.actionButtonTitle, theme: theme)
+        self.actionButton = Button(title: config.actionButtonTitle ?? "", theme: theme)
         self.buttonSeparator = GradientView(startColor: UIColor.white.withAlphaComponent(0), endColor: UIColor.black.withAlphaComponent(0.1))
         if let title = config.secondaryButtonTitle {
             self.secondaryButton = Button(title: title, theme: theme)
@@ -74,6 +84,7 @@ final class InfoView: View {
         self.showButtons = config.showButtons
         self.stickyButtons = config.stickyButtons
         self.headerBackgroundView.backgroundColor = config.headerBackgroundViewColor ?? theme.colors.headerBackgroundBlue
+        self.itemSpacing = itemSpacing
         super.init(theme: theme)
     }
 
@@ -84,7 +95,7 @@ final class InfoView: View {
 
         headerImageView.contentMode = .scaleAspectFill
         stackView.axis = .vertical
-        stackView.spacing = 40
+        stackView.spacing = itemSpacing
         stackView.distribution = .equalSpacing
         contentView.backgroundColor = .clear
 
@@ -122,7 +133,7 @@ final class InfoView: View {
 
         hasBottomMargin = true
 
-        scrollView.snp.makeConstraints { (maker: ConstraintMaker) in
+        scrollView.snp.remakeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.equalToSuperview()
 
             if !stickyButtons {
@@ -130,26 +141,30 @@ final class InfoView: View {
             }
         }
 
-        headerBackgroundView.snp.makeConstraints { (maker: ConstraintMaker) in
+        headerBackgroundView.snp.remakeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(self.snp.top)
             maker.bottom.greaterThanOrEqualTo(scrollView.snp.top)
             maker.leading.trailing.equalTo(self)
         }
 
-        contentView.snp.makeConstraints { (maker: ConstraintMaker) in
+        contentView.snp.remakeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(scrollView)
             maker.bottom.equalTo(scrollView)
             maker.leading.trailing.equalTo(self)
         }
 
         let imageAspectRatio = headerImageView.image?.aspectRatio ?? 1.0
-        headerImageView.snp.makeConstraints { (maker: ConstraintMaker) in
+        headerImageView.snp.remakeConstraints { (maker: ConstraintMaker) in
             maker.top.leading.trailing.equalToSuperview()
             maker.height.equalTo(headerImageView.snp.width).dividedBy(imageAspectRatio)
         }
 
-        stackView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.equalTo(headerImageView.snp.bottom).offset(24)
+        stackView.snp.remakeConstraints { (maker: ConstraintMaker) in
+            if showHeader {
+                maker.top.equalTo(headerImageView.snp.bottom).offset(24)
+            } else {
+                maker.top.equalToSuperview()
+            }
             maker.leading.trailing.equalToSuperview()
 
             if !showButtons {
@@ -161,7 +176,7 @@ final class InfoView: View {
             }
         }
         if showButtons {
-            buttonStackView.snp.makeConstraints { (maker: ConstraintMaker) in
+            buttonStackView.snp.remakeConstraints { (maker: ConstraintMaker) in
                 let count = buttonStackView.arrangedSubviews.count
                 if count > 0 {
                     let height = Float((count * 48) + ((count - 1) * 20))
@@ -180,7 +195,7 @@ final class InfoView: View {
         }
 
         if showButtons, stickyButtons {
-            buttonSeparator.snp.makeConstraints { maker in
+            buttonSeparator.snp.remakeConstraints { maker in
                 maker.bottom.equalTo(buttonStackView.snp.top).offset(-16)
                 maker.leading.trailing.equalToSuperview()
                 maker.height.equalTo(16)
@@ -318,13 +333,15 @@ final class InfoSectionTextView: View {
     private let titleLabel: Label
     private let contentStack: UIStackView
     private let content: [NSAttributedString]
+    private let contentAccessibilityTraits: UIAccessibilityTraits?
 
     // MARK: - Init
 
-    init(theme: Theme, title: String, content: [NSAttributedString]) {
+    init(theme: Theme, title: String, content: [NSAttributedString], contentAccessibilityTraits: UIAccessibilityTraits? = nil) {
         self.titleLabel = Label(frame: .zero)
         self.contentStack = UIStackView()
         self.content = content
+        self.contentAccessibilityTraits = contentAccessibilityTraits
 
         super.init(theme: theme)
 
@@ -339,6 +356,7 @@ final class InfoSectionTextView: View {
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
         titleLabel.accessibilityTraits = .header
+        titleLabel.textAlignment = Localization.isRTL ? .right : .left
 
         contentStack.axis = .vertical
         contentStack.alignment = .top
@@ -355,6 +373,9 @@ final class InfoSectionTextView: View {
             label.font = theme.fonts.body
             label.textColor = theme.colors.gray
             label.attributedText = text
+            if let traits = contentAccessibilityTraits {
+                label.accessibilityTraits = traits
+            }
             contentStack.addArrangedSubview(label)
         }
     }
@@ -587,7 +608,11 @@ private final class InfoSectionDynamicLoadingView: View {
     // MARK: - Init
 
     init(theme: Theme, title: String) {
-        self.activityIndicator = UIActivityIndicatorView(style: .large)
+        if #available(iOS 13.0, *) {
+            self.activityIndicator = UIActivityIndicatorView(style: .large)
+        } else {
+            self.activityIndicator = UIActivityIndicatorView(style: .gray)
+        }
         self.loadingLabel = Label()
         super.init(theme: theme)
 
@@ -641,9 +666,15 @@ private final class InfoSectionDynamicSuccessView: View {
         super.init(theme: theme)
 
         titleLabel.text = title
+        titleLabel.textCanBeCopied(charactersToRemove: "-")
 
         let accessibilityText = title.replacingOccurrences(of: "-", with: "").lowercased()
-        titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText, attributes: [.accessibilitySpeechSpellOut: true])
+
+        if #available(iOS 13.0, *) {
+            titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText, attributes: [.accessibilitySpeechSpellOut: true])
+        } else {
+            titleLabel.accessibilityAttributedLabel = NSAttributedString(string: accessibilityText.stringForSpelling, attributes: [.accessibilitySpeechPunctuation: false])
+        }
     }
 
     // MARK: - Overrides

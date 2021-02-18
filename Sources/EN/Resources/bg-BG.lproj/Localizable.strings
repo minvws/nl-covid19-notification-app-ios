@@ -5,29 +5,5 @@
 *  SPDX-License-Identifier: EUPL-1.2
 */
 
-"alertTitle" = "Предупреждение";
-"alertMessage" = "Настройките не се отварят.";
-"alertButton" = "Ok";
-
-"update.button.update" = "Актуализиране";
-"update.button.openSettings" = "Отвори Настройки";
-
-"update.software.app.title" = "Тази версия на CoronaMelder вече не работи";
-"update.software.app.description" = "Актуализирай приложението в телефона си, за да подновиш работата на CoronaMelder.";
-"update.software.app.detail.title" = "Актуализирай приложението";
-"update.software.app.detail.step1" = "1. Отвори Настройки на телефона си чрез натискане на копчето по-долу";
-"update.software.app.detail.step2" = "2. Натисни ‘Настрой’, за да актуализираш приложението.";
-
-"update.software.os.title" = "Трябва да актуализираш софтуера на телефона си";
-"update.software.os.description" = "CoronaMelder се нуждае от най-новата версия на iOS, за да продължи да работи добре на телефона ти.";
-"update.software.os.detail.title" = "Актуализирай телефона си";
-"update.software.os.detail.step1.detail" = "Настройки";
-"update.software.os.detail.step2.detail" = "Общи";
-"update.software.os.detail.step3.detail" = "Актуализация на софтуера";
-"update.software.os.detail.step1" = "1. Отвори Настройки на телефона си чрез натискане на копчето по-долу";
-"update.software.os.detail.step2" = "2. Отиди на ‘Общи’";
-"update.software.os.detail.step3" = "3. Отиди на ‘Актуализация на софтуера’";
-"update.software.os.detail.step4" = "4. Избери ‘Свали и инсталирай’";
-
-"update.hardware.title" = "За съжаление, приложението не работи на твоя телефон";
-"update.hardware.description" = "CoronaMelder работи само на телефони с iOS 13.5 или по-висока версия. Телефонът ти не поддържа този софтуер.";
+// This file is intentionally left empty. Add any translations to the resource files in the ENCore framework
+// Do not remove this file, the app uses it to determine which languages are supported

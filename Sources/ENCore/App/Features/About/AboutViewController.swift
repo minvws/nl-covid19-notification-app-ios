@@ -28,7 +28,7 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
     init(listener: AboutListener, theme: Theme) {
         self.listener = listener
         super.init(theme: theme)
-        modalPresentationStyle = .popover
+
         navigationItem.rightBarButtonItem = closeBarButtonItem
         presentationController?.delegate = self
     }
@@ -139,7 +139,5 @@ final class AboutViewController: NavigationController, AboutViewControllable, UI
     // MARK: - Private
 
     private weak var listener: AboutListener?
-    private lazy var closeBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                          target: self,
-                                                          action: #selector(didTapClose))
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }

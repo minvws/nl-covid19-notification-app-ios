@@ -5,15 +5,16 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 @testable import ENCore
 import Foundation
+import RxSwift
 import XCTest
 
 final class RequestLabConfirmationKeyDataOperationTests: TestCase {
     private var operation: RequestLabConfirmationKeyDataOperation!
     private let networkController = NetworkControllingMock()
     private let storageController = StorageControllingMock()
+    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
@@ -37,9 +38,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
                                                         validUntil: Date())
-            return Just(labConfirmationKey)
-                .setFailureType(to: NetworkError.self)
-                .eraseToAnyPublisher()
+            return .just(labConfirmationKey)
         }
 
         XCTAssertEqual(storageController.retrieveDataCallCount, 0)
@@ -49,11 +48,10 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
-            .assertNoFailure()
-            .sink { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
         XCTAssertEqual(storageController.storeCallCount, 1)
@@ -78,11 +76,10 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
-            .assertNoFailure()
-            .sink { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
         XCTAssertEqual(storageController.storeCallCount, 0)
@@ -108,9 +105,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
                                                         validUntil: Date())
-            return Just(labConfirmationKey)
-                .setFailureType(to: NetworkError.self)
-                .eraseToAnyPublisher()
+            return .just(labConfirmationKey)
         }
 
         XCTAssertEqual(storageController.retrieveDataCallCount, 0)
@@ -120,11 +115,10 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
         var receivedLabConfirmationKey: LabConfirmationKey!
         operation
             .execute()
-            .assertNoFailure()
-            .sink { labConfirmationKey in
+            .subscribe(onSuccess: { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
-            }
-            .disposeOnTearDown(of: self)
+            })
+            .disposed(by: disposeBag)
 
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
         XCTAssertEqual(storageController.storeCallCount, 1)

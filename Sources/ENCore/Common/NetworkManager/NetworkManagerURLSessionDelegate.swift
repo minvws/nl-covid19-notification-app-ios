@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate {
+final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLSessionDelegateProtocol {
     /// Initialise session delegate with certificate used for SSL pinning
     init(configurationProvider: NetworkConfigurationProvider) {
         self.configurationProvider = configurationProvider
@@ -16,7 +16,7 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate {
 
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> ()) {
 
-        guard let localSignatures = configurationProvider.configuration.sslSignatures(forHost: challenge.protectionSpace.host),
+        guard let localFingerprints = configurationProvider.configuration.sslFingerprints(forHost: challenge.protectionSpace.host),
             challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
             let serverTrust = challenge.protectionSpace.serverTrust else {
             // no pinning
@@ -33,13 +33,13 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate {
             SecTrustEvaluateWithError(serverTrust, nil),
             certificateCount > 0,
             let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, certificateCount - 1), // get topmost certificate in chain
-            let signature = Certificate(certificate: serverCertificate).signature else {
+            let fingerprint = Certificate(certificate: serverCertificate).fingerprint else {
             // invalid server trust
             completionHandler(.cancelAuthenticationChallenge, nil)
             return
         }
 
-        guard localSignatures.contains(signature) else {
+        guard localFingerprints.contains(fingerprint) else {
             // signatures don't match
             completionHandler(.cancelAuthenticationChallenge, nil)
             return

@@ -11,6 +11,7 @@ import Foundation
 /// @mockable
 protocol OnboardingListener: AnyObject {
     func didCompleteOnboarding()
+    func didCompleteConsent()
 }
 
 /// @mockable
@@ -22,6 +23,8 @@ protocol OnboardingDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
+    var userNotificationCenter: UserNotificationCenter { get }
 }
 
 ///
@@ -40,6 +43,7 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
     lazy var onboardingConsentManager: OnboardingConsentManaging = {
         return OnboardingConsentManager(exposureStateStream: dependency.exposureStateStream,
                                         exposureController: dependency.exposureController,
+                                        userNotificationCenter: dependency.userNotificationCenter,
                                         theme: self.theme)
     }()
 
@@ -79,6 +83,10 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
 
     var webviewBuilder: WebviewBuildable {
         return WebviewBuilder(dependency: self)
+    }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
     }
 }
 

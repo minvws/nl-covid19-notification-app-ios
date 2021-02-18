@@ -15,6 +15,9 @@ protocol RootRouting: Routing {
     /// Presents the onboarding flow
     func routeToOnboarding()
 
+    /// Schedule the EN background tasks
+    func scheduleTasks()
+
     /// Detaches the onboarding feature and calls completion when done.
     /// When the onboarding flow is not attached, completion is called immediately
     ///
@@ -85,7 +88,11 @@ final class RootViewController: ViewController, RootViewControllable {
     func embed(viewController: ViewControllable) {
         addChild(viewController.uiviewController)
         view.addSubview(viewController.uiviewController.view)
-        viewController.uiviewController.view.frame = view.bounds
+
+        viewController.uiviewController.view.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+        }
+
         viewController.uiviewController.didMove(toParent: self)
     }
 
@@ -93,6 +100,10 @@ final class RootViewController: ViewController, RootViewControllable {
 
     func didCompleteOnboarding() {
         router?.detachOnboardingAndRouteToMain(animated: true)
+    }
+
+    func didCompleteConsent() {
+        router?.scheduleTasks()
     }
 
     // MARK: - MessageListner

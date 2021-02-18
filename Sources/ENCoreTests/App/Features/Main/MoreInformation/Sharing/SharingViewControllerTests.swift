@@ -7,20 +7,25 @@
 
 @testable import ENCore
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
 final class SharingViewControllerTests: TestCase {
     private var viewController: ShareSheetViewController!
     private let listener = ShareSheetListenerMock()
+    private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     override func setUp() {
         super.setUp()
 
         recordSnapshots = false
 
+        interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+
         viewController = ShareSheetViewController(listener: listener,
-                                                  theme: theme)
+                                                  theme: theme,
+                                                  interfaceOrientationStream: interfaceOrientationStream)
     }
 
     // MARK: - Tests

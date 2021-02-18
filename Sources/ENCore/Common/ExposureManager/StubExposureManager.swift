@@ -55,7 +55,7 @@ final class StubExposureManager: ExposureManaging {
         completion(.success(summary))
     }
 
-    func getDiagnonisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
+    func getDiagnosisKeys(completion: @escaping (Result<[DiagnosisKey], ExposureManagerError>) -> ()) {
         completion(.success([]))
     }
 
@@ -65,6 +65,10 @@ final class StubExposureManager: ExposureManaging {
 
     // return whether exposureNotifications should be enabled or not
     private var exposureNotificationEnabled = true
+
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler) {
+        activityHandler(ENActivityFlags(rawValue: 1 << 2))
+    }
 }
 
 private struct ExposureDetectionSummaryImpl: ExposureDetectionSummary {

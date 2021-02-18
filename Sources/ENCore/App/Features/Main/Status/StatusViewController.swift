@@ -5,41 +5,55 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
 import Lottie
+import RxSwift
 import SnapKit
 import UIKit
 
 /// @mockable
 protocol StatusRouting: Routing {}
 
-final class StatusViewController: ViewController, StatusViewControllable {
+final class StatusViewController: ViewController, StatusViewControllable, CardListening, Logging {
 
     // MARK: - StatusViewControllable
 
     weak var router: StatusRouting?
 
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
+    private let dataController: ExposureDataControlling
+
+    private let pushNotificationStream: PushNotificationStreaming
+
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
 
-    private var exposureStateStreamCancellable: AnyCancellable?
+    private var disposeBag = DisposeBag()
 
     private let cardBuilder: CardBuildable
-    private var cardRouter: Routing & CardTypeSettable
+    private lazy var cardRouter: Routing & CardTypeSettable = {
+        cardBuilder.build(listener: self, types: [.bluetoothOff])
+    }()
+
+    private var pauseTimer: Timer?
 
     init(exposureStateStream: ExposureStateStreaming,
+         interfaceOrientationStream: InterfaceOrientationStreaming,
          cardBuilder: CardBuildable,
          listener: StatusListener,
          theme: Theme,
-         topAnchor: NSLayoutYAxisAnchor?) {
+         topAnchor: NSLayoutYAxisAnchor?,
+         dataController: ExposureDataControlling,
+         pushNotificationStream: PushNotificationStreaming) {
         self.exposureStateStream = exposureStateStream
+        self.interfaceOrientationStream = interfaceOrientationStream
+        self.dataController = dataController
+        self.pushNotificationStream = pushNotificationStream
         self.listener = listener
         self.topAnchor = topAnchor
 
         self.cardBuilder = cardBuilder
-        self.cardRouter = cardBuilder.build(type: .bluetoothOff)
 
         super.init(theme: theme)
     }
@@ -56,12 +70,16 @@ final class StatusViewController: ViewController, StatusViewControllable {
 
         statusView.listener = listener
 
+        showCard(false)
         addChild(cardRouter.viewControllable.uiviewController)
         cardRouter.viewControllable.uiviewController.didMove(toParent: self)
 
-        if let currentState = exposureStateStream.currentExposureState {
-            update(exposureState: currentState)
-        }
+        refreshCurrentState()
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateExposureStateView),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
     }
 
     override func didMove(toParent parent: UIViewController?) {
@@ -79,61 +97,121 @@ final class StatusViewController: ViewController, StatusViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        exposureStateStreamCancellable = exposureStateStream.exposureState.sink { [weak self] status in
-            guard let strongSelf = self else {
-                return
-            }
-
-            strongSelf.update(exposureState: status)
-        }
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewWillDisappear(false)
-
-        exposureStateStreamCancellable = nil
+        updateExposureStateView()
     }
 
     // MARK: - Private
 
-    private func update(exposureState status: ExposureState) {
+    @objc private func updateExposureStateView() {
+
+        exposureStateStream.exposureState
+            .subscribe(onNext: { [weak self] _ in
+                self?.refreshCurrentState()
+            }).disposed(by: disposeBag)
+
+        interfaceOrientationStream.isLandscape.subscribe { [weak self] _ in
+            self?.refreshCurrentState()
+        }.disposed(by: disposeBag)
+
+        pushNotificationStream.foregroundNotificationStream.subscribe(onNext: { [weak self] notification in
+            if notification.request.identifier == PushNotificationIdentifier.pauseEnded.rawValue {
+                self?.logDebug("Refreshing state due to pauseEnded notification")
+                self?.refreshCurrentState()
+            }
+        }).disposed(by: disposeBag)
+    }
+
+    private func refreshCurrentState() {
+        if let currentState = exposureStateStream.currentExposureState,
+            let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
+            update(exposureState: currentState, isLandscape: isLandscape)
+        }
+    }
+
+    private func updatePauseTimer() {
+        if dataController.isAppPaused {
+            if pauseTimer == nil {
+                // This timer fires every minute to update the status on the screen. This is needed because in a paused state
+                // the status will show a minute-by-minute countdown until the time when the pause state should end
+                pauseTimer = Timer.scheduledTimer(withTimeInterval: .minutes(1), repeats: true, block: { [weak self] _ in
+                    self?.refreshCurrentState()
+                })
+            }
+        } else {
+            pauseTimer?.invalidate()
+            pauseTimer = nil
+        }
+    }
+
+    private func update(exposureState status: ExposureState, isLandscape: Bool) {
+
+        updatePauseTimer()
+
         let statusViewModel: StatusViewModel
+        let announcementCardTypes = getAnnouncementCardTypes()
+        var cardTypes = [CardType]()
 
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
-            statusViewModel = .activeWithNotNotified
+            statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
+
+        case let (.inactive(.paused(pauseEndDate)), .notNotified):
+            statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
+
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
-        case let (.inactive(reason), .notified(date)):
-            let cardType = reason.cardType(listener: listener)
 
-            statusViewModel = StatusViewModel.activeWithNotified(date: date).with(cardType: cardType)
+        case let (.inactive(reason), .notified(date)):
+            statusViewModel = StatusViewModel.activeWithNotified(date: date)
+            cardTypes.append(reason.cardType(listener: listener))
+
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
+
         case (.inactive, .notNotified):
             statusViewModel = .inactiveWithNotNotified
+
         case let (.authorizationDenied, .notified(date)):
-            statusViewModel = StatusViewModel
-                .inactiveWithNotified(date: date)
-                .with(cardType: .exposureOff)
+            statusViewModel = .inactiveWithNotified(date: date)
+            cardTypes.append(.exposureOff)
+
         case (.authorizationDenied, .notNotified):
             statusViewModel = .inactiveWithNotNotified
+
         case let (.notAuthorized, .notified(date)):
-            statusViewModel = StatusViewModel
-                .inactiveWithNotified(date: date)
-                .with(cardType: .exposureOff)
+            statusViewModel = .inactiveWithNotified(date: date)
+            cardTypes.append(.exposureOff)
+
         case (.notAuthorized, .notNotified):
             statusViewModel = .inactiveWithNotNotified
         }
 
         statusView.update(with: statusViewModel)
 
-        if let cardType = statusViewModel.cardType {
-            cardRouter.type = cardType
-            cardRouter.viewControllable.uiviewController.view.isHidden = false
-        } else {
-            cardRouter.viewControllable.uiviewController.view.isHidden = true
+        // Add any non-status related card types and update the CardViewController via the router
+        cardTypes.append(contentsOf: announcementCardTypes)
+        cardRouter.types = cardTypes
+
+        showCard(!cardTypes.isEmpty)
+    }
+
+    private func getAnnouncementCardTypes() -> [CardType] {
+        var cardTypes = [CardType]()
+
+        // Interop announcement
+        if !dataController.seenAnnouncements.contains(.interopAnnouncement) {
+            cardTypes.append(.interopAnnouncement)
         }
+
+        return cardTypes
+    }
+
+    private func showCard(_ display: Bool) {
+        cardRouter.viewControllable.uiviewController.view.isHidden = !display
+    }
+
+    func dismissedAnnouncement() {
+        refreshCurrentState()
     }
 
     private lazy var statusView: StatusView = StatusView(theme: self.theme,
@@ -151,6 +229,8 @@ private final class StatusView: View {
     private let textContainer = UIStackView()
     private let buttonContainer = UIStackView()
     private let cardView: UIView
+
+    private var iconViewSizeConstraints: Constraint?
     private lazy var iconView: EmitterStatusIconView = {
         EmitterStatusIconView(theme: self.theme)
     }()
@@ -164,6 +244,11 @@ private final class StatusView: View {
 
     private var containerToSceneVerticalConstraint: NSLayoutConstraint?
     private var heightConstraint: NSLayoutConstraint?
+    private var sceneImageHeightConstraint: NSLayoutConstraint?
+
+    private var sceneImageAspectRatio: CGFloat {
+        sceneImageView.animation.map { $0.size.height / $0.size.width } ?? 1
+    }
 
     init(theme: Theme, cardView: UIView) {
         self.cardView = cardView
@@ -175,6 +260,9 @@ private final class StatusView: View {
 
     override func build() {
         super.build()
+
+        /// Initially hide the status. It will become visible after the first update
+        showStatus(false)
 
         contentContainer.axis = .vertical
         contentContainer.spacing = 32
@@ -222,7 +310,8 @@ private final class StatusView: View {
         containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(equalTo: contentStretchGuide.bottomAnchor, constant: -48)
         heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
-        let sceneImageAspectRatio = sceneImageView.animation.map { $0.size.width / $0.size.height } ?? 1
+        sceneImageHeightConstraint = sceneImageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * sceneImageAspectRatio)
+        sceneImageHeightConstraint?.isActive = true
 
         cloudsView.snp.makeConstraints { maker in
             maker.centerY.equalTo(iconView.snp.centerY)
@@ -230,8 +319,7 @@ private final class StatusView: View {
         }
         sceneImageView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.equalTo(stretchGuide)
-            maker.width.equalTo(sceneImageView.snp.height).multipliedBy(sceneImageAspectRatio)
-            maker.height.equalTo(300)
+            maker.centerX.equalTo(stretchGuide)
         }
         stretchGuide.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(contentStretchGuide).inset(-16)
@@ -247,7 +335,7 @@ private final class StatusView: View {
             maker.bottom.equalTo(stretchGuide.snp.bottom).priority(.high)
         }
         iconView.snp.makeConstraints { maker in
-            maker.width.height.equalTo(48)
+            iconViewSizeConstraints = maker.width.height.equalTo(48).constraint
         }
     }
 
@@ -259,13 +347,20 @@ private final class StatusView: View {
         gradientLayer.frame = stretchGuide.layoutFrame
         CATransaction.commit()
 
+        evaluateImageSize()
         evaluateHeight()
     }
 
     // MARK: - Internal
 
     func update(with viewModel: StatusViewModel) {
-        iconView.update(with: viewModel.icon)
+
+        iconViewSizeConstraints?.layoutConstraints.forEach { constraint in
+            // if the emitter animation is not shown, we use a slightly larger main icon
+            constraint.constant = viewModel.showEmitter ? 48 : 56
+        }
+        iconView.update(with: viewModel.icon, showEmitter: viewModel.showEmitter)
+        iconView.setNeedsLayout()
 
         titleLabel.attributedText = viewModel.title
         descriptionLabel.attributedText = viewModel.description
@@ -290,6 +385,9 @@ private final class StatusView: View {
         cloudsView.isHidden = !viewModel.showClouds
 
         evaluateHeight()
+        evaluateImageSize()
+
+        showStatus(true)
     }
 
     // MARK: - Private
@@ -304,11 +402,24 @@ private final class StatusView: View {
         heightConstraint?.constant = size.height
         heightConstraint?.isActive = true
     }
+
+    /// Manually adjusts sceneImage height constraint after layout pass
+    private func evaluateImageSize() {
+        sceneImageHeightConstraint?.constant = UIScreen.main.bounds.width * sceneImageAspectRatio
+    }
+
+    private func showStatus(_ show: Bool) {
+        titleLabel.alpha = show ? 1 : 0
+        descriptionLabel.alpha = show ? 1 : 0
+        iconView.alpha = show ? 1 : 0
+    }
 }
 
 private extension ExposureStateInactiveState {
     func cardType(listener: StatusListener?) -> CardType {
         switch self {
+        case .paused:
+            return .paused
         case .bluetoothOff:
             return .bluetoothOff
         case .disabled:

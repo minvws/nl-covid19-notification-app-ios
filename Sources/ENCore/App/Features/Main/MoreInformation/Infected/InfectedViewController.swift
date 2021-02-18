@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import ENFoundation
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -39,15 +39,12 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
     init(theme: Theme,
          exposureController: ExposureControlling,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
-
+        self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
-    }
-
-    deinit {
-        disposeBag.forEach { $0.cancel() }
     }
 
     // MARK: - Overrides
@@ -64,9 +61,9 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         setThemeNavigationBar(withTitle: .moreInformationInfectedTitle)
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(didTapCloseButton(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
+
+        internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 
         internalView.infoView.actionHandler = { [weak self] in
             self?.uploadCodes()
@@ -80,10 +77,16 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         exposureStateStream
             .exposureState
-            .sink { state in
-                self.update(exposureState: state)
-            }
-            .store(in: &disposeBag)
+            .subscribe(onNext: { [weak self] state in
+                self?.update(exposureState: state)
+            })
+            .disposed(by: disposeBag)
+
+        interfaceOrientationStream
+            .isLandscape
+            .subscribe { [weak self] isLandscape in
+                self?.internalView.infoView.showHeader = !isLandscape
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -181,7 +184,8 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     private lazy var internalView: InfectedView = InfectedView(theme: self.theme)
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
-    private var disposeBag = Set<AnyCancellable>()
+    private var disposeBag = DisposeBag()
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
 
     private var cardViewController: ViewControllable?
 
@@ -306,7 +310,8 @@ private final class InfectedView: View {
         super.setupConstraints()
 
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
-            maker.top.bottom.leading.trailing.equalToSuperview()
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide)
+            maker.top.bottom.equalToSuperview()
         }
     }
 

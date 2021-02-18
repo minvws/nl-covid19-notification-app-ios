@@ -5,65 +5,87 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 
-final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
+final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Logging {
 
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
+         applicationSignatureController: ApplicationSignatureControlling,
          localPathProvider: LocalPathProviding,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationCenter: UserNotificationCenter,
+         application: ApplicationControlling,
+         fileManager: FileManaging,
+         environmentController: EnvironmentControlling) {
         self.networkController = networkController
         self.storageController = storageController
+        self.applicationSignatureController = applicationSignatureController
         self.localPathProvider = localPathProvider
         self.userNotificationCenter = userNotificationCenter
+        self.application = application
+        self.fileManager = fileManager
+        self.environmentController = environmentController
     }
 
     // MARK: - ExposureDataOperationProvider
 
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,
-                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperation? {
-        guard let exposureKeySetsStorageUrl = localPathProvider.path(for: .exposureKeySets) else {
-            return nil
-        }
+                                         exposureDataController: ExposureDataController,
+                                         configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol {
 
         return ProcessExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    exposureManager: exposureManager,
-                                                   exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
+                                                   localPathProvider: localPathProvider,
+                                                   exposureDataController: exposureDataController,
                                                    configuration: configuration,
-                                                   userNotificationCenter: userNotificationCenter)
+                                                   userNotificationCenter: userNotificationCenter,
+                                                   application: application,
+                                                   fileManager: fileManager,
+                                                   environmentController: environmentController)
     }
 
-    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperation {
+    func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol {
         return ProcessPendingLabConfirmationUploadRequestsDataOperation(networkController: networkController,
                                                                         storageController: storageController,
-                                                                        userNotificationCenter: userNotificationCenter,
                                                                         padding: padding)
     }
 
-    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperation {
+    func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation {
+        return ExpiredLabConfirmationNotificationDataOperation(storageController: storageController,
+                                                               userNotificationCenter: userNotificationCenter)
+    }
+
+    func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol {
         return RequestAppConfigurationDataOperation(networkController: networkController,
                                                     storageController: storageController,
+                                                    applicationSignatureController: applicationSignatureController,
                                                     appConfigurationIdentifier: identifier)
     }
 
-    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperation {
+    func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol {
         return RequestExposureConfigurationDataOperation(networkController: networkController,
                                                          storageController: storageController,
                                                          exposureConfigurationIdentifier: identifier)
     }
 
-    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperation {
+    func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol {
         return RequestExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    localPathProvider: localPathProvider,
-                                                   exposureKeySetIdentifiers: identifiers)
+                                                   exposureKeySetIdentifiers: identifiers,
+                                                   fileManager: fileManager)
     }
 
-    var requestManifestOperation: RequestAppManifestDataOperation {
+    var requestManifestOperation: RequestAppManifestDataOperationProtocol {
         return RequestAppManifestDataOperation(networkController: networkController,
                                                storageController: storageController)
+    }
+
+    var updateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveDataOperationProtocol {
+        return UpdateTreatmentPerspectiveDataOperation(networkController: networkController,
+                                                       storageController: storageController)
     }
 
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation {
@@ -74,7 +96,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,
-                                      padding: Padding) -> UploadDiagnosisKeysDataOperation {
+                                      padding: Padding) -> UploadDiagnosisKeysDataOperationProtocol {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: diagnosisKeys,
@@ -86,8 +108,12 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider {
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
+    private let applicationSignatureController: ApplicationSignatureControlling
     private let localPathProvider: LocalPathProviding
     private let userNotificationCenter: UserNotificationCenter
+    private let application: ApplicationControlling
+    private let fileManager: FileManaging
+    private let environmentController: EnvironmentControlling
 }
 
 extension NetworkError {
@@ -109,6 +135,8 @@ extension NetworkError {
             return .internalError
         case .redirection:
             return .serverError
+        case .errorConversionError:
+            return .internalError
         }
     }
 }

@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Combine
 import Foundation
+import RxSwift
 
 enum ExposureDataError: Error, Equatable {
     case networkUnreachable
@@ -24,37 +24,55 @@ struct ExposureDataAppVersionInformation {
     let appStoreURL: String
 }
 
-/// @mockable
+/// @mockable(history:updateLastSuccessfulExposureProcessingDate=true)
 protocol ExposureDataControlling: AnyObject {
 
     // MARK: - Exposure Detection
 
     var lastExposure: ExposureReport? { get }
-    var lastSuccessfulProcessingDate: Date? { get }
+    var lastSuccessfulExposureProcessingDateObservable: Observable<Date?> { get }
+    var lastSuccessfulExposureProcessingDate: Date? { get }
+    func updateLastSuccessfulExposureProcessingDate(_ date: Date)
     var lastLocalNotificationExposureDate: Date? { get }
     var lastENStatusCheckDate: Date? { get }
+    var lastAppLaunchDate: Date? { get }
+    var lastUnseenExposureNotificationDate: Date? { get }
 
-    func removeLastExposure() -> AnyPublisher<(), Never>
-    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> AnyPublisher<(), ExposureDataError>
+    func setLastDecoyProcessDate(_ date: Date)
+    var canProcessDecoySequence: Bool { get }
+
+    func removeLastExposure() -> Completable
+    func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable
     func setLastENStatusCheckDate(_ date: Date)
+    func setLastAppLaunchDate(_ date: Date)
+    func clearLastUnseenExposureNotificationDate()
 
     // MARK: - Lab Flow
 
-    func processPendingUploadRequests() -> AnyPublisher<(), ExposureDataError>
-    func requestLabConfirmationKey() -> AnyPublisher<LabConfirmationKey, ExposureDataError>
-    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> AnyPublisher<(), ExposureDataError>
+    func processPendingUploadRequests() -> Completable
+    func processExpiredUploadRequests() -> Completable
+    func requestLabConfirmationKey() -> Single<LabConfirmationKey>
+    func upload(diagnosisKeys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey) -> Completable
 
     // MARK: - Misc
 
-    func getAppVersionInformation() -> AnyPublisher<ExposureDataAppVersionInformation?, ExposureDataError>
-    func isAppDectivated() -> AnyPublisher<Bool, ExposureDataError>
-    func isTestPhase() -> AnyPublisher<Bool, ExposureDataError>
-    func getAppRefreshInterval() -> AnyPublisher<Int, ExposureDataError>
-    func getDecoyProbability() -> AnyPublisher<Float, ExposureDataError>
-    func getPadding() -> AnyPublisher<Padding, ExposureDataError>
+    func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation>
+    func isAppDeactivated() -> Single<Bool>
+    func getDecoyProbability() -> Single<Float>
+    func getPadding() -> Single<Padding>
+    func getAppointmentPhoneNumber() -> Single<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
+    func updateTreatmentPerspective() -> Completable
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
+    var seenAnnouncements: [Announcement] { get set }
+
+    // MARK: - Pausing
+
+    var pauseEndDateObservable: Observable<Date?> { get }
+    var isAppPaused: Bool { get }
+    var pauseEndDate: Date? { get set }
+    var hidePauseInformation: Bool { get set }
 }
 
 protocol ExposureDataControllerBuildable {
@@ -64,6 +82,7 @@ protocol ExposureDataControllerBuildable {
 protocol ExposureDataControllerDependency {
     var networkController: NetworkControlling { get }
     var storageController: StorageControlling { get }
+    var applicationSignatureController: ApplicationSignatureControlling { get }
 }
 
 private final class ExposureDataControllerDependencyProvider: DependencyProvider<ExposureDataControllerDependency>, ExposureDataOperationProviderDependency {
@@ -78,6 +97,14 @@ private final class ExposureDataControllerDependencyProvider: DependencyProvider
         return dependency.storageController
     }
 
+    var applicationSignatureController: ApplicationSignatureControlling {
+        return dependency.applicationSignatureController
+    }
+
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
+
     // MARK: - Private Dependencies
 
     var operationProvider: ExposureDataOperationProvider {
@@ -90,6 +117,7 @@ final class ExposureDataControllerBuilder: Builder<ExposureDataControllerDepende
         let dependencyProvider = ExposureDataControllerDependencyProvider(dependency: dependency)
 
         return ExposureDataController(operationProvider: dependencyProvider.operationProvider,
-                                      storageController: dependencyProvider.storageController)
+                                      storageController: dependencyProvider.storageController,
+                                      environmentController: dependencyProvider.environmentController)
     }
 }

@@ -19,6 +19,7 @@ extension UIImage {
     static var gradient: UIImage? { return Image.named("Gradient") }
     static var chevron: UIImage? { return Image.named("Chevron") }
     static var about: UIImage? { return Image.named("About") }
+    static var settings: UIImage? { return Image.named("Settings") }
     static var share: UIImage? { return Image.named("Share") }
     static var warning: UIImage? { return Image.named("Warning") }
     static var coronatest: UIImage? { return Image.named("Coronatest") }
@@ -38,6 +39,7 @@ extension UIImage {
     static var statusIconOk: UIImage? { return Image.named("StatusIconOk") }
     static var statusIconNotified: UIImage? { return Image.named("StatusIconNotified") }
     static var statusIconInactive: UIImage? { return Image.named("StatusIconInactive") }
+    static var statusIconPaused: UIImage? { return Image.named("StatusIconPaused") }
     static var statusInactive: UIImage? { return Image.named("StatusInactive") }
     static var messageHeader: UIImage? { return Image.named("MessageHeader") }
     static var callGGD: UIImage? { return Image.named("CallGGD") }
@@ -69,6 +71,18 @@ extension UIImage {
     static var helpNotificationExample: UIImage? { return Image.named("notification-example") }
     static var helpPushNotificationExample: UIImage? { return Image.named("PushNotification-Example") }
     static var onboardingPermissionsHeader: UIImage? { return Image.named("OnboardingPermissionsHeader") }
+    static var loadingError: UIImage? { return Image.named("LoadingError") }
+    static var onlyTogetherCanWeControlCorona: UIImage? { return Image.named("OnlyTogetherCanWeControlCorona") }
+    static var rijkslint: UIImage? { return Image.named("Rijkslint") }
+    static var minVWS: UIImage? { return Image.named("MinVWS") }
+    static var closeButton: UIImage? { return Image.named("CloseButton") }
+    static var settingsIcon: UIImage? { return Image.named("SettingsIcon") }
+    static var bluetoothIcon: UIImage? { return Image.named("BluetoothIcon") }
+    static var switchIcon: UIImage? { return Image.named("SwitchIcon") }
+    static var exposureNotifications: UIImage? { return Image.named("ExposureNotifications") }
+    static var notification: UIImage? { return Image.named("Notification") }
+    static var settingsPlain: UIImage? { return Image.named("SettingsPlain") }
+    static var mobileData: UIImage? { return Image.named("MobileData") }
 }
 
 extension UIImage {

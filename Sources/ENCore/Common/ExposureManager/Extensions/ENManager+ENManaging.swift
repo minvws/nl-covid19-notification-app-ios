@@ -22,16 +22,15 @@ protocol ENManaging {
 
     func setExposureNotificationEnabled(_ enabled: Bool,
                                         completionHandler: @escaping ENErrorHandler)
+
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler)
+
     var exposureNotificationEnabled: Bool { get }
 
     var exposureNotificationStatus: ENStatus { get }
     var invalidationHandler: (() -> ())? { get set }
 
     static var authorizationStatus: ENAuthorizationStatus { get }
-
-    func getExposureInfo(summary: ENExposureDetectionSummary,
-                         userExplanation: String,
-                         completionHandler: @escaping ENGetExposureInfoHandler) -> Progress
 }
 
 extension ENManager: ENManaging {}

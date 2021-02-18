@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AppConfig: Decodable {
+struct AppConfig: Codable {
     let version, manifestFrequency: Int?
     let decoyProbability: Float?
     let appStoreURL: String?
@@ -18,5 +18,5 @@ struct AppConfig: Decodable {
     let requestMaximumSize: Int?
     let repeatedUploadDelay: Int?
     let coronaMelderDeactivated: String?
-    let coronaMelderTestPhase: Bool?
+    let appointmentPhoneNumber: String?
 }
