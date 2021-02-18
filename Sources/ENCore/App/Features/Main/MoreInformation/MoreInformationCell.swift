@@ -47,6 +47,7 @@ final class MoreInformationCell: UIControl, Themeable {
         build()
         setupConstraints()
 
+        isExclusiveTouch = true
         iconImageView.image = data.icon
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
