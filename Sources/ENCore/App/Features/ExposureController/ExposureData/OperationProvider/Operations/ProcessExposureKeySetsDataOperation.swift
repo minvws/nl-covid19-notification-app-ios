@@ -151,8 +151,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             !validKeySetHolders.contains { $0.identifier == keySetHolder.identifier }
         }
 
-        logDebug("Invalid KeySetHolders: \(invalidKeySetHolders.map { $0.identifier })")
-        logDebug("Valid KeySetHolders: \(validKeySetHolders.map { $0.identifier })")
+        logDebug("Invalid KeySetHolders: \(invalidKeySetHolders.count)")
+        logDebug("Valid KeySetHolders: \(validKeySetHolders.count)")
 
         // create results for the keySetHolders with missing local files
         let invalidKeySetHolderResults = invalidKeySetHolders.map { keySetHolder in

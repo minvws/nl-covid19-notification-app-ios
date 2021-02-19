@@ -25,19 +25,19 @@ public extension Logging {
     }
 
     func logDebug(_ message: String, function: StaticString = #function, file: StaticString = #file, line: UInt = #line) {
-        DDLogDebug("🐞 \(message)", file: file, function: function, line: line, tag: loggingCategory)
+        DDLogDebug(message, file: file, function: function, line: line, tag: loggingCategory)
     }
 
     func logInfo(_ message: String, function: StaticString = #function, file: StaticString = #file, line: UInt = #line) {
-        DDLogInfo("📋 \(message)", file: file, function: function, line: line, tag: loggingCategory)
+        DDLogInfo(message, file: file, function: function, line: line, tag: loggingCategory)
     }
 
     func logWarning(_ message: String, function: StaticString = #function, file: StaticString = #file, line: UInt = #line) {
-        DDLogWarn("❗️ \(message)", file: file, function: function, line: line, tag: loggingCategory)
+        DDLogWarn(message, file: file, function: function, line: line, tag: loggingCategory)
     }
 
     func logError(_ message: String, function: StaticString = #function, file: StaticString = #file, line: UInt = #line) {
-        DDLogError("🔥 \(message)", file: file, function: function, line: line, tag: loggingCategory)
+        DDLogError(message, file: file, function: function, line: line, tag: loggingCategory)
     }
 }
 
@@ -72,11 +72,14 @@ public final class LogHandler: Logging {
             dynamicLogLevel = .off
         }
 
-        DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
+        let osLogger = DDOSLogger.sharedInstance
+        osLogger.logFormatter = LogFormatter(showPrefix: false)
+        DDLog.add(osLogger) // Uses os_log
 
         let fileLogger: DDFileLogger = DDFileLogger() // File Logger
         fileLogger.rollingFrequency = 60 * 60 * 24 // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        fileLogger.logFormatter = LogFormatter(showPrefix: true)
         DDLog.add(fileLogger)
 
         DDLogDebug("🐞 Logging has been setup", file: #file, function: #function, line: #line, tag: "default")
