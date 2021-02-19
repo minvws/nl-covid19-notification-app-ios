@@ -54,7 +54,6 @@ final class OnboardingConsentViewControllerTests: TestCase {
 
         manager.didCompleteConsent()
 
-        XCTAssertEqual(exposureController.seenAnnouncements, [.interopAnnouncement])
         XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 1)
     }
 }

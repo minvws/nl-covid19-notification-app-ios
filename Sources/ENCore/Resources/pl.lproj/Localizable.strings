@@ -120,6 +120,7 @@
 "close" = "Zamknij";
 "error.title" = "Coś poszło nie tak";
 "learnMore" = "Czytaj więcej";
+"retry" = "Spróbuj ponownie";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Nie można otworzyć App Store.";
@@ -462,11 +463,6 @@
 "cards.notificationsOff.title" = "Powiadomienia są <u>wyłączone</u>";
 "cards.notificationsOff.content" = "Włącz powiadomienia ogólne, aby w razie potrzeby aplikacja mogła natychmiastowo udostępnić informacje.";
 "cards.notificationsOff.action" = "Włącz powiadomienia";
-
-"cards.interopannouncement.title" = "Warto wiedzieć";
-"cards.interopannouncement.content" = "Od 30 listopada CoronaMelder współpracuje z aplikacjami dotyczącymi koronawirusa z innych krajów europejskich.";
-"cards.interopannouncement.action" = "Więcej informacji";
-"cards.interopannouncement.secondaryaction" = "Zamknij";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Włącz powiadomienia o kontaktach";

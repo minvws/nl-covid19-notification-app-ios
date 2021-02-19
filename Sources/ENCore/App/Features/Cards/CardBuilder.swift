@@ -13,12 +13,11 @@ enum CardType: Equatable {
     case bluetoothOff
     case noInternet(retryHandler: () -> ())
     case noLocalNotifications
-    case interopAnnouncement
     case paused
 
     static func == (lhs: CardType, rhs: CardType) -> Bool {
         switch (lhs, rhs) {
-        case (.exposureOff, .exposureOff), (.bluetoothOff, .bluetoothOff), (.noInternet, .noInternet), (.noLocalNotifications, .noLocalNotifications), (.interopAnnouncement, .interopAnnouncement), (.paused, .paused):
+        case (.exposureOff, .exposureOff), (.bluetoothOff, .bluetoothOff), (.noInternet, .noInternet), (.noLocalNotifications, .noLocalNotifications), (.paused, .paused):
             return true
         default:
             return false

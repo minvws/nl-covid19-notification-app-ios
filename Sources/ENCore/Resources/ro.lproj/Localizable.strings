@@ -120,6 +120,7 @@
 "close" = "Închideți";
 "error.title" = "Ceva nu a funcționat corect";
 "learnMore" = "Citiți mai mult";
+"retry" = "Încercați încă o dată";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store nu poate fi deschis";
@@ -463,11 +464,6 @@
 "cards.notificationsOff.title" = "Notificările <u>nu</u> sunt activate";
 "cards.notificationsOff.content" = "Activați notificările generale, astfel încât aplicația să poată distribui instantaneu informații atunci când este nevoie.";
 "cards.notificationsOff.action" = "Activare de notificări";
-
-"cards.interopannouncement.title" = "Bine de știut";
-"cards.interopannouncement.content" = "Începând cu 30 noiembrie CoronaMelder colaborează cu aplicații din alte țări europene.";
-"cards.interopannouncement.action" = "Mai multe informații";
-"cards.interopannouncement.secondaryaction" = "Închideți";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Activare de notificări de contacte";

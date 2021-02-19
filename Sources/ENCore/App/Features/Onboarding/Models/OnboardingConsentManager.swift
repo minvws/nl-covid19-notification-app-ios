@@ -203,7 +203,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         exposureController.didCompleteOnboarding = true
 
         // Mark all announcements that were made during the onboarding process as "seen"
-        exposureController.seenAnnouncements = [.interopAnnouncement]
+        exposureController.seenAnnouncements = []
     }
 
     private let exposureStateStream: ExposureStateStreaming
