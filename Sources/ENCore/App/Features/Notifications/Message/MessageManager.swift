@@ -8,6 +8,12 @@
 import ENFoundation
 import UIKit
 
+#if USE_DEVELOPER_MENU || DEBUG
+    struct MessageManagerOverrides {
+        static var forceBundledTreatmentPerspective = false
+    }
+#endif
+
 /// @mockable
 protocol MessageManaging: AnyObject {
     func getLocalizedTreatmentPerspective(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective
@@ -32,7 +38,13 @@ final class MessageManager: MessageManaging, Logging {
 
     func getLocalizedTreatmentPerspective(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective {
 
-        let treatmentPerspective: TreatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) ?? .fallbackMessage
+        var treatmentPerspective: TreatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) ?? .fallbackMessage
+
+        #if USE_DEVELOPER_MENU || DEBUG
+            if MessageManagerOverrides.forceBundledTreatmentPerspective {
+                treatmentPerspective = .fallbackMessage
+            }
+        #endif
 
         let resource = treatmentPerspective.resources[.currentLanguageIdentifier]
         let fallbackResource = treatmentPerspective.resources["en"]

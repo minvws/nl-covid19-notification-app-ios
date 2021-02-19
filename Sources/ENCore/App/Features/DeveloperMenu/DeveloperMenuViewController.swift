@@ -187,6 +187,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Schedule pause time in minutes instead of hours",
                               subtitle: "Currently set to: \(getPauseUnit())",
                               action: { [weak self] in self?.togglePauseTimeUnit() }),
+                DeveloperItem(title: "Force use of bundled treatment perspective",
+                              subtitle: "Current preference: \(getForceBundledTreatmentPerspective() ? "Bundled" : "Downloaded")",
+                              action: { [weak self] in self?.toggleForceBundledTreatmentPerspective() }),
                 DeveloperItem(title: "Download latest Treatment Perspective",
                               subtitle: "",
                               action: { [weak self] in self?.downloadLatestTreatmentPerspective() })
@@ -300,6 +303,20 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 self?.internalView.tableView.reloadData()
             })
             .disposed(by: disposeBag)
+    }
+
+    private func getForceBundledTreatmentPerspective() -> Bool {
+        #if DEBUG || USE_DEVELOPER_MENU
+            return MessageManagerOverrides.forceBundledTreatmentPerspective
+        #else
+            return false
+        #endif
+    }
+
+    private func toggleForceBundledTreatmentPerspective() {
+        #if DEBUG || USE_DEVELOPER_MENU
+            MessageManagerOverrides.forceBundledTreatmentPerspective.toggle()
+        #endif
     }
 
     private func eraseCompleteStorage() {
