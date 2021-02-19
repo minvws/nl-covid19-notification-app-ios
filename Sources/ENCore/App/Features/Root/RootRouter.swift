@@ -105,7 +105,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
 
         if !environmentController.supportsExposureNotification {
-            routeToUpdateOperatingSystem(animated: false)
+            routeToUpdateOperatingSystem()
             logDebug("RootRouter - doesn't support EN")
             return
         }
@@ -311,7 +311,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         viewController.present(viewController: updateAppViewController, animated: animated, completion: nil)
     }
 
-    func routeToUpdateOperatingSystem(animated: Bool) {
+    func routeToUpdateOperatingSystem() {
         guard updateOperatingSystemViewController == nil else {
             return
         }
@@ -319,7 +319,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         self.updateOperatingSystemViewController = updateOSViewController
 
-        viewController.present(viewController: updateOSViewController, animated: animated, completion: nil)
+        viewController.present(viewController: updateOSViewController, animated: true, completion: nil)
     }
 
     func routeToWebview(url: URL) {

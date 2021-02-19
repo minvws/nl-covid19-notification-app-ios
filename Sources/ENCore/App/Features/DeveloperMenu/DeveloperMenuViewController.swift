@@ -35,12 +35,14 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
          mutableExposureStateStream: MutableExposureStateStreaming,
          mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming,
          exposureController: ExposureControlling,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         updateOperatingSystemBuilder: UpdateOperatingSystemBuildable) {
         self.listener = listener
         self.mutableExposureStateStream = mutableExposureStateStream
         self.mutableNetworkConfigurationStream = mutableNetworkConfigurationStream
         self.exposureController = exposureController
         self.storageController = storageController
+        self.updateOperatingSystemBuilder = updateOperatingSystemBuilder
 
         super.init(theme: theme)
 
@@ -141,10 +143,13 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
     private var sections: [(title: String, items: [DeveloperItem])] {
         return [
-            ("Onboarding", [
+            ("Show Screens", [
                 DeveloperItem(title: "Show Onboarding",
                               subtitle: "Launches Onboarding",
-                              action: { [weak self] in self?.launchOnboarding() })
+                              action: { [weak self] in self?.launchOnboarding() }),
+                DeveloperItem(title: "Show OS Update Screen",
+                              subtitle: "Show screen informing user the operating system needs to be updated to support Exposure Notification",
+                              action: { [weak self] in self?.routeToUpdateOperatingSystem() })
             ]),
             ("Exposure", [
                 DeveloperItem(title: "Change Exposure State",
@@ -224,6 +229,11 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     // MARK: - Actions
+
+    private func routeToUpdateOperatingSystem() {
+        let updateOSViewController = updateOperatingSystemBuilder.build()
+        present(updateOSViewController.uiviewController, animated: true, completion: nil)
+    }
 
     private func launchOnboarding() {
         hide()
@@ -697,6 +707,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
     private var disposeBag = DisposeBag()
+    private let updateOperatingSystemBuilder: UpdateOperatingSystemBuildable
 
     private var isFetchingKeys: Bool {
         return fetchAndProcessDisposable != nil
