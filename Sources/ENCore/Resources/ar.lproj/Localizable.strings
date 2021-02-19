@@ -120,6 +120,7 @@
 "close" = "إغلاق";
 "error.title" = "حدث خطأ ما";
 "learnMore" = "إقرأ المزيد";
+"retry" = "حاول مجددًا";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "لا يمكن فتح متجر التطبيقات [App Store]";

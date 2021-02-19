@@ -120,6 +120,7 @@
 "close" = "Sluiten";
 "error.title" = "Er ging iets mis";
 "learnMore" = "Lees meer";
+"retry" = "Probeer opnieuw";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "De App Store kan niet geopend worden.";

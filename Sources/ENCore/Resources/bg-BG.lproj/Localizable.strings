@@ -120,6 +120,7 @@
 "close" = "Затваряне";
 "error.title" = "Нещо се обърка";
 "learnMore" = "Повече информация";
+"retry" = "Опитай отново";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store не се отваря.";
