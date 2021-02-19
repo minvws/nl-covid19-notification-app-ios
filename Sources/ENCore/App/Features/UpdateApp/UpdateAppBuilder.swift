@@ -9,14 +9,11 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol UpdateAppListener: AnyObject {}
-
-/// @mockable
 protocol UpdateAppBuildable {
     /// Builds UpdateApp
     ///
     /// - Parameter listener: Listener of created UpdateAppViewController
-    func build(withListener listener: UpdateAppListener, appStoreURL: String?, minimumVersionMessage: String?) -> ViewControllable
+    func build(appStoreURL: String?, minimumVersionMessage: String?) -> ViewControllable
 }
 
 protocol UpdateAppDependency {
@@ -31,10 +28,9 @@ private final class UpdateAppDependencyProvider: DependencyProvider<UpdateAppDep
 }
 
 final class UpdateAppBuilder: Builder<UpdateAppDependency>, UpdateAppBuildable {
-    func build(withListener listener: UpdateAppListener, appStoreURL: String?, minimumVersionMessage: String?) -> ViewControllable {
+    func build(appStoreURL: String?, minimumVersionMessage: String?) -> ViewControllable {
         let dependencyProvider = UpdateAppDependencyProvider(dependency: dependency)
-        return UpdateAppViewController(listener: listener,
-                                       theme: dependencyProvider.dependency.theme,
+        return UpdateAppViewController(theme: dependencyProvider.dependency.theme,
                                        appStoreURL: appStoreURL,
                                        minimumVersionMessage: minimumVersionMessage,
                                        interfaceOrientationStream: dependencyProvider.interfaceOrientationStream)

@@ -35,14 +35,12 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
          mutableExposureStateStream: MutableExposureStateStreaming,
          mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming,
          exposureController: ExposureControlling,
-         storageController: StorageControlling,
-         updateOperatingSystemBuilder: UpdateOperatingSystemBuildable) {
+         storageController: StorageControlling) {
         self.listener = listener
         self.mutableExposureStateStream = mutableExposureStateStream
         self.mutableNetworkConfigurationStream = mutableNetworkConfigurationStream
         self.exposureController = exposureController
         self.storageController = storageController
-        self.updateOperatingSystemBuilder = updateOperatingSystemBuilder
 
         super.init(theme: theme)
 
@@ -149,7 +147,10 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                               action: { [weak self] in self?.launchOnboarding() }),
                 DeveloperItem(title: "Show OS Update Screen",
                               subtitle: "Show screen informing user the operating system needs to be updated to support Exposure Notification",
-                              action: { [weak self] in self?.routeToUpdateOperatingSystem() })
+                              action: { [weak self] in self?.listener?.developerMenuRequestUpdateOperatingSystem() }),
+                DeveloperItem(title: "Show App Update Screen",
+                              subtitle: "Show screen informing user he needs to update the app to keep it working correctly",
+                              action: { [weak self] in self?.listener?.developerMenuRequestUpdateApp(appStoreURL: "https://apps.apple.com/nl/app/id1517652429", minimumVersionMessage: nil) })
             ]),
             ("Exposure", [
                 DeveloperItem(title: "Change Exposure State",
@@ -229,11 +230,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     }
 
     // MARK: - Actions
-
-    private func routeToUpdateOperatingSystem() {
-        let updateOSViewController = updateOperatingSystemBuilder.build()
-        present(updateOSViewController.uiviewController, animated: true, completion: nil)
-    }
 
     private func launchOnboarding() {
         hide()
@@ -707,7 +703,6 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
     private var disposeBag = DisposeBag()
-    private let updateOperatingSystemBuilder: UpdateOperatingSystemBuildable
 
     private var isFetchingKeys: Bool {
         return fetchAndProcessDisposable != nil
