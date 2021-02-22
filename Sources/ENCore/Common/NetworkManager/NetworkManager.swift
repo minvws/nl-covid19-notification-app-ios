@@ -84,8 +84,6 @@ final class NetworkManager: NetworkManaging, Logging {
         let url = configuration.exposureKeySetUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
-        logDebug("KeySet: Downloading \(identifier)")
-
         download(request: urlRequest) { result in
             switch result {
             case let .failure(error):
@@ -98,7 +96,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
                         case let .success(data):
                             completion(.success(data))
-                            self.logDebug("NetworkManager.getManifest completed")
+                            self.logDebug("NetworkManager.getExposureKeySet completed")
                         case let .failure(error):
                             self.logError("Error downloading from url: \(result.1): \(error)")
                             completion(.failure(error.asNetworkError))
@@ -250,7 +248,6 @@ final class NetworkManager: NetworkManaging, Logging {
                     .subscribe { event in
                         switch event {
                         case let .success(data):
-                            self.logDebug("Downloading from url \(result.1) completed")
                             completion(.success(data))
                         case let .failure(error):
                             self.logError("Error downloading from url: \(result.1): \(error)")
@@ -412,7 +409,7 @@ final class NetworkManager: NetworkManaging, Logging {
         }
 
         let diff = CFAbsoluteTimeGetCurrent() - start
-        print("Unzip Took \(diff) seconds")
+        logDebug("Unzip Took \(diff) seconds")
 
         // verify signature
         let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler

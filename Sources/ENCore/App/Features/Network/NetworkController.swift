@@ -96,7 +96,7 @@ final class NetworkController: NetworkControlling, Logging {
             self.networkManager.getExposureKeySet(identifier: identifier) { result in
 
                 let diff = CFAbsoluteTimeGetCurrent() - start
-                print("Fetching ExposureKeySet Took \(diff) seconds")
+                self.logDebug("Fetching ExposureKeySet Took \(diff) seconds")
 
                 switch result {
                 case let .success(keySetURL):
