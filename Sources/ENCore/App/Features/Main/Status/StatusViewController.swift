@@ -196,14 +196,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func getAnnouncementCardTypes() -> [CardType] {
-        var cardTypes = [CardType]()
-
-        // Interop announcement
-        if !dataController.seenAnnouncements.contains(.interopAnnouncement) {
-            cardTypes.append(.interopAnnouncement)
-        }
-
-        return cardTypes
+        // Add any upcoming announcement cards here
+        return []
     }
 
     private func showCard(_ display: Bool) {

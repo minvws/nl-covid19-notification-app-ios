@@ -314,8 +314,6 @@ private extension CardType {
             return .noInternet(theme: theme, retryHandler: retryHandler)
         case .noLocalNotifications:
             return .noLocalNotifications(theme: theme)
-        case .interopAnnouncement:
-            return .interopAnnouncement(theme: theme)
         }
     }
 }

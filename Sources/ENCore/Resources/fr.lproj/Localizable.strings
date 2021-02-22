@@ -467,11 +467,6 @@
 "cards.notificationsOff.content" = "Activez les notifications de manière à ce que l'application puisse partager directement les informations lorsque c'est nécessaire.";
 "cards.notificationsOff.action" = "Activer les notifications";
 
-"cards.interopannouncement.title" = "Bon à savoir";
-"cards.interopannouncement.content" = "À partir du 30 novembre, CoronaMelder fonctionnera avec des applications coronavirus d'autres pays européens.";
-"cards.interopannouncement.action" = "Plus d'informations";
-"cards.interopannouncement.secondaryaction" = "Fermer";
-
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Activer les notifications des contacts";
 "enableSettings.exposureNotifications.action" = "Ouvrir les paramètres";

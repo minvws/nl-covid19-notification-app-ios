@@ -471,11 +471,6 @@
 "cards.notificationsOff.content" = "قم بتشغيل الإشعارات العامة حتى يقوم التطبيق بمشاركة المعلومات إذا لزم الأمر.";
 "cards.notificationsOff.action" = "تشغيل الإشعارات";
 
-"cards.interopannouncement.title" = "من الجيد معرفته";
-"cards.interopannouncement.content" = "اعتبارًا من 30 نوفمبر/تشرين الثاني سيعمل CoronaMelder مع تطبيقات كورونا من دول أوروبية أخرى.";
-"cards.interopannouncement.action" = "المزيد من المعلومات";
-"cards.interopannouncement.secondaryaction" = "إغلاق";
-
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "تشغيل إشعارات التعرض للإصابة";
 "enableSettings.exposureNotifications.action" = "إفتح الإعدادات";

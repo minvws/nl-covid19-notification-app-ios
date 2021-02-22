@@ -465,11 +465,6 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "cards.notificationsOff.content" = "Activa las notificaciones generales para que la app pueda compartir información cuando sea necesario.";
 "cards.notificationsOff.action" = "Activar notificaciones";
 
-"cards.interopannouncement.title" = "Conviene saber";
-"cards.interopannouncement.content" = "A partir del 30 de noviembre, CoronaMelder funciona junto con apps similares de otros países europeos.";
-"cards.interopannouncement.action" = "Más información";
-"cards.interopannouncement.secondaryaction" = "Cerrar";
-
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Activar notificaciones de contacto";
 "enableSettings.exposureNotifications.action" = "Abrir Ajustes";

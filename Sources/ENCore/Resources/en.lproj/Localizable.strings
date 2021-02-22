@@ -466,11 +466,6 @@
 "cards.notificationsOff.content" = "Turn on general notifications so the app can instantly share information when necessary.";
 "cards.notificationsOff.action" = "Turn on notification";
 
-"cards.interopannouncement.title" = "Good to know";
-"cards.interopannouncement.content" = "CoronaMelder will work with corona apps from other European countries from November 30th onwards. ";
-"cards.interopannouncement.action" = "More information";
-"cards.interopannouncement.secondaryaction" = "Close";
-
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Enable contact notifications";
 "enableSettings.exposureNotifications.action" = "Open Settings";
