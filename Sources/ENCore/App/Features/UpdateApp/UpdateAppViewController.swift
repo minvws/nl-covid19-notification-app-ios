@@ -18,13 +18,11 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
     // MARK: - Init
 
-    init(listener: UpdateAppListener,
-         theme: Theme,
+    init(theme: Theme,
          appStoreURL: String?,
          minimumVersionMessage: String?,
          interfaceOrientationStream: InterfaceOrientationStreaming) {
 
-        self.listener = listener
         self.appStoreURL = appStoreURL
         self.minimumVersionMessage = minimumVersionMessage
         self.interfaceOrientationStream = interfaceOrientationStream
@@ -85,7 +83,6 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
     // MARK: - Private
 
-    private weak var listener: UpdateAppListener?
     private lazy var internalView: UpdateAppView = {
         UpdateAppView(theme: self.theme, showImage: !(interfaceOrientationStream.currentOrientationIsLandscape ?? false))
     }()

@@ -14,7 +14,6 @@ import XCTest
 final class UpdateAppViewControllerTests: TestCase {
 
     private var viewController: UpdateAppViewController!
-    private var mockListener: UpdateAppListenerMock!
     private var mockInterfaceOrientationStream: InterfaceOrientationStreamingMock!
 
     // MARK: - Setup
@@ -22,14 +21,12 @@ final class UpdateAppViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        mockListener = UpdateAppListenerMock()
         mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
         mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         recordSnapshots = false
 
         viewController = UpdateAppViewController(
-            listener: mockListener,
             theme: theme,
             appStoreURL: "",
             minimumVersionMessage: nil,

@@ -38,7 +38,10 @@ protocol RootRouting: Routing {
     func detachCallGGD(shouldDismissViewController: Bool)
 
     /// Presents the update app screen
-    func routeToUpdateApp(animated: Bool, appStoreURL: String?, minimumVersionMessage: String?)
+    func routeToUpdateApp(appStoreURL: String?, minimumVersionMessage: String?)
+
+    /// Presents the update operating system screen
+    func routeToUpdateOperatingSystem()
 
     /// Presents an webview
     func routeToWebview(url: URL)
@@ -138,5 +141,13 @@ final class RootViewController: ViewController, RootViewControllable {
 
     func developerMenuRequestMessage(exposureDate: Date) {
         router?.routeToMessage(exposureDate: exposureDate)
+    }
+
+    func developerMenuRequestUpdateOperatingSystem() {
+        router?.routeToUpdateOperatingSystem()
+    }
+
+    func developerMenuRequestUpdateApp(appStoreURL: String, minimumVersionMessage: String?) {
+        router?.routeToUpdateApp(appStoreURL: appStoreURL, minimumVersionMessage: minimumVersionMessage)
     }
 }
