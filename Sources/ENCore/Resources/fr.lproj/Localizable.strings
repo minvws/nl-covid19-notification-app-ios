@@ -122,6 +122,7 @@
 "close" = "Fermer";
 "error.title" = "Un problème est survenu";
 "learnMore" = "En savoir plus";
+"retry" = "Veuillez réessayer.";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Impossible d'ouvrir l'App Store.";

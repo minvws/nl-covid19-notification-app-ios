@@ -120,6 +120,7 @@
 "close" = "Kapat";
 "error.title" = "Bir hata oluştu";
 "learnMore" = "Daha fazlasını oku";
+"retry" = "Tekrar deneyin";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store açılamıyor.";

@@ -120,6 +120,7 @@
 "close" = "Închideți";
 "error.title" = "Ceva nu a funcționat corect";
 "learnMore" = "Citiți mai mult";
+"retry" = "Încercați încă o dată";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store nu poate fi deschis";

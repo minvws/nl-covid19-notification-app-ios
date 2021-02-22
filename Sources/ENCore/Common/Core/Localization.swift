@@ -131,6 +131,7 @@ extension String {
     static var close: String { return Localization.string(for: "close") }
     static var errorTitle: String { return Localization.string(for: "error.title") }
     static var learnMore: String { return Localization.string(for: "learnMore") }
+    static var retry: String { return Localization.string(for: "retry") }
 
     // MARK: - Update App
 

@@ -726,7 +726,7 @@ private final class InfoSectionDynamicErrorView: View {
         titleLabel.font = theme.fonts.subhead
 
         actionButton.style = .secondary
-        actionButton.setTitle("Probeer opnieuw", for: .normal)
+        actionButton.setTitle(.retry, for: .normal)
         actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
 
         addSubview(titleLabel)

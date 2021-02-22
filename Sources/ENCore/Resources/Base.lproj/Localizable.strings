@@ -121,6 +121,7 @@
 "close" = "Close";
 "error.title" = "Something went wrong";
 "learnMore" = "Read more";
+"retry" = "Try again";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Can't open the App Store";

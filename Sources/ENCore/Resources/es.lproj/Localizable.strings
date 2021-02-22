@@ -120,6 +120,7 @@
 "close" = "Cerrar";
 "error.title" = "Ha habido un error";
 "learnMore" = "Más información";
+"retry" = "Prueba otra vez";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "No se puede abrir la App Store.";
