@@ -196,6 +196,8 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///     x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
     func performDecoySequenceIfNeeded() {
 
+        logDebug("performDecoySequenceIfNeeded()")
+
         guard self.isExposureManagerActive else {
             self.logDebug("ExposureManager inactive - Not handling performDecoySequenceIfNeeded")
             return
@@ -206,6 +208,13 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
 
         func execute(decoyProbability: Float) {
+
+            // Extra check to see if the decoy sequence has already been performed today.
+            // Because this call is called with a delay, once we reach this point the register
+            // call might already have been performed somewhere else
+            guard self.dataController.canProcessDecoySequence else {
+                return self.logDebug("Not running decoy `/register` Process already run today")
+            }
 
             let r = self.randomNumberGenerator.randomFloat(in: configuration.decoyProbabilityRange)
             guard r < decoyProbability else {
@@ -218,8 +227,12 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 self.logDebug("Decoy `/register` complete")
 
+                let decoyDelay = self.randomNumberGenerator.randomInt(in: 5 ... 30)
+
+                self.logDebug("Scheduling asynchronous stopKeys call \(decoyDelay) seconds from now")
+
                 DispatchQueue.global(qos: .utility)
-                    .asyncAfter(deadline: DispatchTime.now() + .seconds(self.randomNumberGenerator.randomInt(in: 5 ... 30))) {
+                    .asyncAfter(deadline: DispatchTime.now() + .seconds(decoyDelay)) {
                         self.handleDecoyStopkeys()
                     }
             }
@@ -230,7 +243,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             .delay(.seconds(randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
             .subscribe(onSuccess: { decoyProbability in
                 execute(decoyProbability: decoyProbability)
-        })
+            })
             .disposed(by: disposeBag)
     }
 
@@ -472,6 +485,15 @@ final class BackgroundController: BackgroundControlling, Logging {
             }
 
             func processDecoyRegister(decoyProbability: Float) {
+
+                // Extra check to see if the decoy sequence has already been performed today.
+                // Because this call is called with a delay, once we reach this point the register
+                // call might already have been performed somewhere else
+                guard self.dataController.canProcessDecoySequence else {
+                    self.logDebug("Not running decoy `/register` Process already run today")
+                    observer(.completed)
+                    return
+                }
 
                 let r = self.randomNumberGenerator.randomFloat(in: self.configuration.decoyProbabilityRange)
                 guard r < decoyProbability else {
