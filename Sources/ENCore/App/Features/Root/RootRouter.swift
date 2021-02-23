@@ -19,7 +19,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable(history: present = true; dismiss = true; presentInNavigationController = true)
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, UpdateAppListener, EndOfLifeListener, WebviewListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, EndOfLifeListener, WebviewListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool, presentFullScreen: Bool)
@@ -105,7 +105,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
 
         if !environmentController.supportsExposureNotification {
-            routeToUpdateOperatingSystem(animated: false)
+            routeToUpdateOperatingSystem()
             logDebug("RootRouter - doesn't support EN")
             return
         }
@@ -299,19 +299,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
 
-    func routeToUpdateApp(animated: Bool, appStoreURL: String?, minimumVersionMessage: String?) {
+    func routeToUpdateApp(appStoreURL: String?, minimumVersionMessage: String?) {
         guard updateAppViewController == nil else {
             return
         }
-        let updateAppViewController = updateAppBuilder.build(withListener: viewController,
-                                                             appStoreURL: appStoreURL,
+        let updateAppViewController = updateAppBuilder.build(appStoreURL: appStoreURL,
                                                              minimumVersionMessage: minimumVersionMessage)
         self.updateAppViewController = updateAppViewController
 
-        viewController.present(viewController: updateAppViewController, animated: animated, completion: nil)
+        viewController.present(viewController: updateAppViewController, animated: true, completion: nil)
     }
 
-    func routeToUpdateOperatingSystem(animated: Bool) {
+    func routeToUpdateOperatingSystem() {
         guard updateOperatingSystemViewController == nil else {
             return
         }
@@ -319,7 +318,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         self.updateOperatingSystemViewController = updateOSViewController
 
-        viewController.present(viewController: updateOSViewController, animated: animated, completion: nil)
+        viewController.present(viewController: updateOSViewController, animated: true, completion: nil)
     }
 
     func routeToWebview(url: URL) {
@@ -434,7 +433,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     let minimumVersionMessage = versionInformation.minimumVersionMessage.isEmpty ? nil : versionInformation.minimumVersionMessage
 
                     self?.detachLaunchScreenIfNeeded(animated: false) {
-                        self?.routeToUpdateApp(animated: true, appStoreURL: versionInformation.appStoreURL, minimumVersionMessage: minimumVersionMessage)
+                        self?.routeToUpdateApp(appStoreURL: versionInformation.appStoreURL, minimumVersionMessage: minimumVersionMessage)
                         completion?(true)
                     }
                     return
