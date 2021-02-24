@@ -373,6 +373,7 @@ final class InfoSectionTextView: View {
             label.font = theme.fonts.body
             label.textColor = theme.colors.gray
             label.attributedText = text
+            label.isLinkInteractionEnabled = true
             if let traits = contentAccessibilityTraits {
                 label.accessibilityTraits = traits
             }
