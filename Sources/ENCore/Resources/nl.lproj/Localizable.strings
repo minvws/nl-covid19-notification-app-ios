@@ -120,6 +120,7 @@
 "close" = "Sluiten";
 "error.title" = "Er ging iets mis";
 "learnMore" = "Lees meer";
+"retry" = "Probeer opnieuw";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "De App Store kan niet geopend worden.";
@@ -463,11 +464,6 @@
 "cards.notificationsOff.title" = "Meldingen staan <u>uit</u>";
 "cards.notificationsOff.content" = "Zet algemene meldingen aan zodat de app direct informatie kan delen wanneer dat nodig is.";
 "cards.notificationsOff.action" = "Meldingen aanzetten";
-
-"cards.interopannouncement.title" = "Goed om te weten";
-"cards.interopannouncement.content" = "CoronaMelder werkt vanaf 30 november samen met corona-apps uit andere Europese landen.";
-"cards.interopannouncement.action" = "Meer informatie";
-"cards.interopannouncement.secondaryaction" = "Sluiten";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Contactmeldingen aanzetten";

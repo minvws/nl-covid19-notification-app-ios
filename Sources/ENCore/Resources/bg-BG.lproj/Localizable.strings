@@ -120,6 +120,7 @@
 "close" = "Затваряне";
 "error.title" = "Нещо се обърка";
 "learnMore" = "Повече информация";
+"retry" = "Опитай отново";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store не се отваря.";
@@ -462,11 +463,6 @@
 "cards.notificationsOff.title" = "Известията са <u>изключени</u>";
 "cards.notificationsOff.content" = "Включи общи известия, така че приложението директно да споделя информация, когато е необходимо.";
 "cards.notificationsOff.action" = "Включване на известия";
-
-"cards.interopannouncement.title" = "Добре е да се знае";
-"cards.interopannouncement.content" = "От 30.11 CoronaMelder работи заедно с приложения за коронавируса от други европейски държави.";
-"cards.interopannouncement.action" = "Повече информация";
-"cards.interopannouncement.secondaryaction" = "Затваряне";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Включване на известия за контакт";

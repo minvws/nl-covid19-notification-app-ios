@@ -120,6 +120,7 @@
 "close" = "Kapat";
 "error.title" = "Bir hata oluştu";
 "learnMore" = "Daha fazlasını oku";
+"retry" = "Tekrar deneyin";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store açılamıyor.";
@@ -463,11 +464,6 @@
 "cards.notificationsOff.title" = "Bildirimler <u>kapalı</u>";
 "cards.notificationsOff.content" = "Uygulamanın gerektiğinde bilgileri anında paylaşabilmesi için genel bildirimleri açın.";
 "cards.notificationsOff.action" = "Bildirimleri açmak";
-
-"cards.interopannouncement.title" = "Bilmekte fayda var";
-"cards.interopannouncement.content" = "CoronaMelder 30 Kasım'dan itibaren, diğer Avrupa ülkelerindeki Korona uygulamalarıyla çalışacak.";
-"cards.interopannouncement.action" = "Daha fazla bilgi";
-"cards.interopannouncement.secondaryaction" = "Kapat";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Temas bildirimlerini açmak";

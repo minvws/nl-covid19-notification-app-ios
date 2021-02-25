@@ -120,6 +120,7 @@
 "close" = "Schließen";
 "error.title" = "Es ist ein Fehler aufgetreten.";
 "learnMore" = "Lesen Sie weiter";
+"retry" = "Versuchen Sie es erneut.";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Der App Store kann nicht geöffnet werden.";
@@ -464,11 +465,6 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "cards.notificationsOff.title" = "Nachrichten sind <u>deaktiviert</u>.";
 "cards.notificationsOff.content" = "Aktivieren Sie allgemeine Nachrichten, damit die App sofort Informationen teilen kann, wenn das notwendig ist.";
 "cards.notificationsOff.action" = "Nachrichten aktivieren";
-
-"cards.interopannouncement.title" = "Gut zu wissen";
-"cards.interopannouncement.content" = "CoronaMelder arbeitet ab 30. November mit Corona-Apps aus anderen europäischen Ländern zusammen.";
-"cards.interopannouncement.action" = "Mehr Informationen";
-"cards.interopannouncement.secondaryaction" = "Schließen";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Kontaktnachrichten aktivieren";

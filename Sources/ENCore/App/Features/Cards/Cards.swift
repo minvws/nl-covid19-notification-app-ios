@@ -111,18 +111,4 @@ struct Card {
                     action: .openEnableSetting(.enableLocalNotifications),
                     actionTitle: action)
     }
-
-    static func interopAnnouncement(theme: Theme) -> Card {
-        let title: String = .cardsInteropAnnouncementTitle
-        let content: String = .cardsInteropAnnouncementContent
-        let action: String = .cardsInteropAnnouncementAction
-        let secondaryAction: String = .cardsInteropAnnouncementSecondaryAction
-
-        return Card(icon: .info, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
-                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
-                    action: .openWebsite(url: URL(string: .cardsInteropabilityURL)!),
-                    actionTitle: action,
-                    secondaryAction: .dismissAnnouncement(.interopAnnouncement),
-                    secondaryActionTitle: secondaryAction)
-    }
 }
