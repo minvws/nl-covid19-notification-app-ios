@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 
 /// On iOS version lower than 13, encoding values such as Booleans is not supported. To work around this we wrap the value in a struct
@@ -53,7 +54,7 @@ extension StorageControlling {
     }
 }
 
-final class StorageController: StorageControlling {
+final class StorageController: StorageControlling, Logging {
 
     init(localPathProvider: LocalPathProviding) {
         self.localPathProvider = localPathProvider
@@ -216,6 +217,14 @@ final class StorageController: StorageControlling {
             return
         }
 
+        volatileFileUrls.forEach {
+            do {
+                try FileManager.default.removeItem(at: $0)
+            } catch {
+                logError("Error deleting file at url \($0) with error: \(error)")
+            }
+        }
+
         storeAvailable = true
     }
 
@@ -262,6 +271,23 @@ final class StorageController: StorageControlling {
         } catch {
             return false
         }
+    }
+
+    private func retrieveContentsAt(_ directory: FileManager.SearchPathDirectory) -> [URL] {
+
+        var files: [URL] = []
+        let urls = FileManager.default.urls(for: directory, in: .userDomainMask)
+
+        urls.forEach { url in
+            do {
+                let result = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
+                files.append(contentsOf: result)
+            } catch {
+                logError("Error retreiving file at url \(url) with error: \(error) and SearchPathDirectory: \(directory)")
+            }
+        }
+
+        return files
     }
 
     // MARK: - Secure
@@ -334,6 +360,16 @@ final class StorageController: StorageControlling {
         let base = isVolatile ? localPathProvider.path(for: .cache) : localPathProvider.path(for: .documents)
 
         return base?.appendingPathComponent("store")
+    }
+
+    private var volatileFileUrls: [URL] {
+        return cachesDirectoryFileUrls + temporaryDirectoryFileUrls
+    }
+    private var cachesDirectoryFileUrls: [URL] {
+        return retrieveContentsAt(.cachesDirectory)
+    }
+    private var temporaryDirectoryFileUrls: [URL] {
+        return retrieveContentsAt(.itemReplacementDirectory)
     }
 }
 

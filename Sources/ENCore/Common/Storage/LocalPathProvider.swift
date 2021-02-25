@@ -24,8 +24,6 @@ final class LocalPathProvider: LocalPathProviding, Logging {
 
     init(fileManager: FileManager = .default) {
         self.fileManager = fileManager
-
-        clearTemporaryFiles()
     }
 
     func path(for folder: LocalFolder) -> URL? {
@@ -60,54 +58,5 @@ final class LocalPathProvider: LocalPathProviding, Logging {
         }
     }
 
-    private func deleteFilesAtUrls(_ urls: [URL]) {
-        urls.forEach { url in
-            do {
-                try fileManager.removeItem(at: url)
-            } catch {
-                logError("Error deleting file at url \(url) with error: \(error)")
-            }
-        }
-    }
-
-    private func retreiveContentsAt(_ directory: FileManager.SearchPathDirectory) -> [URL] {
-
-        var files: [URL] = []
-        let urls = fileManager.urls(for: directory, in: .userDomainMask)
-
-        urls.forEach { url in
-            do {
-                let result = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
-                files.append(contentsOf: result)
-            } catch {
-                logError("Error retreiving file at url \(url) with error: \(error) and SearchPathDirectory: \(directory)")
-            }
-        }
-
-        return files
-    }
-
-    private func clearTemporaryFiles() {
-
-        if volatileFileUrls.isEmpty {
-            logDebug("Temporary directories are empty")
-            return
-        }
-
-        logDebug("Deleting \(cachesDirectoryFileUrls.count) cachesDirectoryFileUrls")
-        logDebug("Deleting \(temporaryDirectoryFileUrls.count) temporaryDirectoryFileUrls")
-
-        deleteFilesAtUrls(volatileFileUrls)
-    }
-
     private let fileManager: FileManager
-    private var volatileFileUrls: [URL] {
-        return cachesDirectoryFileUrls + temporaryDirectoryFileUrls
-    }
-    private var cachesDirectoryFileUrls: [URL] {
-        return retreiveContentsAt(.cachesDirectory)
-    }
-    private var temporaryDirectoryFileUrls: [URL] {
-        return retreiveContentsAt(.itemReplacementDirectory)
-    }
 }
