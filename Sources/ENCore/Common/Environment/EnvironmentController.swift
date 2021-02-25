@@ -15,6 +15,7 @@ protocol EnvironmentControlling {
     var gaenRateLimitingType: GAENRateLimitingType { get }
     var appVersion: String? { get }
     var supportsExposureNotification: Bool { get }
+    var isDebugVersion: Bool { get }
 }
 
 enum GAENRateLimitingType {
@@ -68,6 +69,14 @@ class EnvironmentController: EnvironmentControlling {
 
     var appVersion: String? {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+
+    var isDebugVersion: Bool {
+        #if DEBUG
+            return true
+        #else
+            return false
+        #endif
     }
 
     private var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion {

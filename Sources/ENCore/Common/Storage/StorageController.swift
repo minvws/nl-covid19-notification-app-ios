@@ -56,8 +56,9 @@ extension StorageControlling {
 
 final class StorageController: StorageControlling, Logging {
 
-    init(localPathProvider: LocalPathProviding) {
+    init(localPathProvider: LocalPathProviding, environmentController: EnvironmentControlling) {
         self.localPathProvider = localPathProvider
+        self.environmentController = environmentController
 
         prepareStore()
     }
@@ -349,6 +350,7 @@ final class StorageController: StorageControlling, Logging {
     }
 
     private let localPathProvider: LocalPathProviding
+    private let environmentController: EnvironmentControlling
     private let serviceName = (Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en") + ".exposure"
     private var storeAvailable = false
     private var inMemoryStore: [String: Any] = [:]
@@ -363,13 +365,26 @@ final class StorageController: StorageControlling, Logging {
     }
 
     private var volatileFileUrls: [URL] {
-        return cachesDirectoryFileUrls + temporaryDirectoryFileUrls
+
+        var urls: [URL] = []
+        urls += temporaryDirectoryFileUrls
+        urls.append(temporaryDirectoryUrl)
+
+        if !environmentController.isDebugVersion {
+            urls += cachesDirectoryFileUrls
+        }
+
+        return urls
     }
     private var cachesDirectoryFileUrls: [URL] {
         return retrieveContentsAt(.cachesDirectory)
     }
     private var temporaryDirectoryFileUrls: [URL] {
         return retrieveContentsAt(.itemReplacementDirectory)
+    }
+    private var temporaryDirectoryUrl: URL {
+        return URL(fileURLWithPath: NSTemporaryDirectory(),
+                   isDirectory: true)
     }
 }
 

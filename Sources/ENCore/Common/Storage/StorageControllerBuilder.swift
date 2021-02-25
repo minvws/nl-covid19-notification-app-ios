@@ -76,12 +76,16 @@ private final class StorageDependencyProvider: DependencyProvider<EmptyDependenc
     var localPathProvider: LocalPathProviding {
         return LocalPathProvider()
     }
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
 }
 
 final class StorageControllerBuilder: Builder<EmptyDependency>, StorageControllerBuildable {
     func build() -> StorageControlling {
         let dependencyProvider = StorageDependencyProvider()
 
-        return StorageController(localPathProvider: dependencyProvider.localPathProvider)
+        return StorageController(localPathProvider: dependencyProvider.localPathProvider,
+                                 environmentController: dependencyProvider.environmentController)
     }
 }
