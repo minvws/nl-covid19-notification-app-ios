@@ -50,6 +50,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let maximumDailyForegroundExposureDetectionAPICalls = 9
     private let maximumDailyBackgroundExposureDetectionAPICalls = 6
 
+    /// If an exposure happened more than x days ago, ignore it
+    private let daysSinceExposureCutOff = 14
+
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          exposureManager: ExposureManaging,
@@ -454,14 +457,21 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     /// Creates the final ExposureReport and triggers a local notification using the EN framework
     private func createReportAndTriggerNotification(forResult result: ExposureDetectionResult) -> Single<(ExposureDetectionResult, ExposureReport?)> {
 
+        let noExposureReport: Single<(ExposureDetectionResult, ExposureReport?)> = .just((result, nil))
+
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
-            return .just((result, nil))
+            return noExposureReport
         }
 
         guard summary.maximumRiskScore >= configuration.minimumRiskScope else {
             logDebug("Risk Score not high enough to see this as an exposure")
-            return .just((result, nil))
+            return noExposureReport
+        }
+
+        guard summary.daysSinceLastExposure <= daysSinceExposureCutOff else {
+            logDebug("Exposure was too long ago (\(summary.daysSinceLastExposure) days). Ignore it")
+            return noExposureReport
         }
 
         if let daysSinceLastExposure = daysSinceLastExposure() {
@@ -469,13 +479,13 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
             if summary.daysSinceLastExposure >= daysSinceLastExposure {
                 logDebug("Previous exposure was newer than new found exposure - skipping notification")
-                return .just((result, nil))
+                return noExposureReport
             }
         }
 
         guard let date = Calendar.current.date(byAdding: .day, value: -summary.daysSinceLastExposure, to: Date()) else {
             logError("Error triggering notification for \(summary), could not create date")
-            return .just((result, nil))
+            return noExposureReport
         }
 
         logDebug("Triggering notification for \(summary)")
