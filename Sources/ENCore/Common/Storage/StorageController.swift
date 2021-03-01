@@ -86,12 +86,23 @@ final class StorageController: StorageControlling, Logging {
                                                     withIntermediateDirectories: true,
                                                     attributes: nil)
         } catch {
+            logDebug("Error preparing store: \(error)")
             return
         }
 
         clearPreviouslyStoredVolatileFiles()
 
         storeAvailable = true
+    }
+
+    func clearPreviouslyStoredVolatileFiles() {
+        volatileFileUrls.forEach {
+            do {
+                try FileManager.default.removeItem(at: $0)
+            } catch {
+                logError("Error deleting file at url \($0) with error: \(error)")
+            }
+        }
     }
 
     func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
@@ -288,16 +299,6 @@ final class StorageController: StorageControlling, Logging {
         return files
     }
 
-    private func clearPreviouslyStoredVolatileFiles() {
-        volatileFileUrls.forEach {
-            do {
-                try FileManager.default.removeItem(at: $0)
-            } catch {
-                logError("Error deleting file at url \($0) with error: \(error)")
-            }
-        }
-    }
-
     // MARK: - Secure
 
     private func retrieveDataSecure(for key: String) -> Data? {
@@ -359,13 +360,12 @@ final class StorageController: StorageControlling, Logging {
     private let localPathProvider: LocalPathProviding
     private let environmentController: EnvironmentControlling
     private let serviceName = (Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en") + ".exposure"
-    private var storeAvailable = false
     private var inMemoryStore: [String: Any] = [:]
     private let secureAccessQueue = DispatchQueue(label: "secureAccessQueue")
     private let storageAccessQueue = DispatchQueue(label: "storageAccessQueue")
     private let accessQueue = DispatchQueue(label: "accessQueue", attributes: .concurrent)
 
-    private func storeUrl(isVolatile: Bool) -> URL? {
+    func storeUrl(isVolatile: Bool) -> URL? {
         let base = isVolatile ? localPathProvider.path(for: .cache) : localPathProvider.path(for: .documents)
 
         return base?.appendingPathComponent("store")
@@ -393,6 +393,8 @@ final class StorageController: StorageControlling, Logging {
         return URL(fileURLWithPath: NSTemporaryDirectory(),
                    isDirectory: true)
     }
+
+    var storeAvailable = false
 }
 
 private final class ExclusiveStorageController: StorageControlling {
@@ -403,6 +405,10 @@ private final class ExclusiveStorageController: StorageControlling {
 
     func prepareStore() {
         storageController.prepareStore()
+    }
+
+    func clearPreviouslyStoredVolatileFiles() {
+        storageController.clearPreviouslyStoredVolatileFiles()
     }
 
     func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
