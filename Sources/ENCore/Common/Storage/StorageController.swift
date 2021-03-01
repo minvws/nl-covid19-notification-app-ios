@@ -218,13 +218,7 @@ final class StorageController: StorageControlling, Logging {
             return
         }
 
-        volatileFileUrls.forEach {
-            do {
-                try FileManager.default.removeItem(at: $0)
-            } catch {
-                logError("Error deleting file at url \($0) with error: \(error)")
-            }
-        }
+        clearPreviouslyStoredVolatileFiles()
 
         storeAvailable = true
     }
@@ -289,6 +283,16 @@ final class StorageController: StorageControlling, Logging {
         }
 
         return files
+    }
+
+    private func clearPreviouslyStoredVolatileFiles() {
+        volatileFileUrls.forEach {
+            do {
+                try FileManager.default.removeItem(at: $0)
+            } catch {
+                logError("Error deleting file at url \($0) with error: \(error)")
+            }
+        }
     }
 
     // MARK: - Secure
