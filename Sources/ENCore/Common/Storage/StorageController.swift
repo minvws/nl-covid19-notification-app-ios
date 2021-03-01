@@ -59,11 +59,40 @@ final class StorageController: StorageControlling, Logging {
     init(localPathProvider: LocalPathProviding, environmentController: EnvironmentControlling) {
         self.localPathProvider = localPathProvider
         self.environmentController = environmentController
-
-        prepareStore()
     }
 
     // MARK: - StorageControlling
+
+    func prepareStore() {
+
+        guard !storeAvailable else {
+            return
+        }
+
+        guard let storeUrl = self.storeUrl(isVolatile: false) else {
+            return
+        }
+
+        guard let volatileStoreUrl = self.storeUrl(isVolatile: true) else {
+            return
+        }
+
+        do {
+            try FileManager.default.createDirectory(at: storeUrl,
+                                                    withIntermediateDirectories: true,
+                                                    attributes: nil)
+
+            try FileManager.default.createDirectory(at: volatileStoreUrl,
+                                                    withIntermediateDirectories: true,
+                                                    attributes: nil)
+        } catch {
+            return
+        }
+
+        clearPreviouslyStoredVolatileFiles()
+
+        storeAvailable = true
+    }
 
     func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
         return store(guardAccess: true, data: data, identifiedBy: key, completion: completion)
@@ -195,32 +224,6 @@ final class StorageController: StorageControlling, Logging {
         }
 
         guardAccess ? accessQueue.sync(execute: operation) : operation()
-    }
-
-    private func prepareStore() {
-        guard let storeUrl = self.storeUrl(isVolatile: false) else {
-            return
-        }
-
-        guard let volatileStoreUrl = self.storeUrl(isVolatile: true) else {
-            return
-        }
-
-        do {
-            try FileManager.default.createDirectory(at: storeUrl,
-                                                    withIntermediateDirectories: true,
-                                                    attributes: nil)
-
-            try FileManager.default.createDirectory(at: volatileStoreUrl,
-                                                    withIntermediateDirectories: true,
-                                                    attributes: nil)
-        } catch {
-            return
-        }
-
-        clearPreviouslyStoredVolatileFiles()
-
-        storeAvailable = true
     }
 
     private func retrieveData(for key: String, storeUrl: URL, maximumAge: TimeInterval?) -> Data? {
@@ -396,6 +399,10 @@ private final class ExclusiveStorageController: StorageControlling {
 
     fileprivate init(storageController: StorageController) {
         self.storageController = storageController
+    }
+
+    func prepareStore() {
+        storageController.prepareStore()
     }
 
     func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
