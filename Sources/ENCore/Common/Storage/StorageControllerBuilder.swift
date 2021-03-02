@@ -58,6 +58,7 @@ enum StoreError: Error {
 /// @mockable(history: retrieveData = true)
 protocol StorageControlling {
     func prepareStore()
+    func storeUrl(isVolatile: Bool) -> URL?
     func clearPreviouslyStoredVolatileFiles()
     func store<Key: StoreKey>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ())
     func retrieveData<Key: StoreKey>(identifiedBy key: Key) -> Data?
@@ -80,13 +81,18 @@ private final class StorageDependencyProvider: DependencyProvider<EmptyDependenc
     var environmentController: EnvironmentControlling {
         return EnvironmentController()
     }
+
+    var fileManager: FileManaging {
+        return FileManager()
+    }
 }
 
 final class StorageControllerBuilder: Builder<EmptyDependency>, StorageControllerBuildable {
     func build() -> StorageControlling {
         let dependencyProvider = StorageDependencyProvider()
 
-        let storageController = StorageController(localPathProvider: dependencyProvider.localPathProvider,
+        let storageController = StorageController(fileManager: dependencyProvider.fileManager,
+                                                  localPathProvider: dependencyProvider.localPathProvider,
                                                   environmentController: dependencyProvider.environmentController)
         storageController.prepareStore()
 

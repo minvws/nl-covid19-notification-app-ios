@@ -56,7 +56,8 @@ extension StorageControlling {
 
 final class StorageController: StorageControlling, Logging {
 
-    init(localPathProvider: LocalPathProviding, environmentController: EnvironmentControlling) {
+    init(fileManager: FileManaging, localPathProvider: LocalPathProviding, environmentController: EnvironmentControlling) {
+        self.fileManager = fileManager
         self.localPathProvider = localPathProvider
         self.environmentController = environmentController
     }
@@ -78,13 +79,11 @@ final class StorageController: StorageControlling, Logging {
         }
 
         do {
-            try FileManager.default.createDirectory(at: storeUrl,
-                                                    withIntermediateDirectories: true,
-                                                    attributes: nil)
+            try fileManager.createDirectory(at: storeUrl,
+                                            withIntermediateDirectories: true)
 
-            try FileManager.default.createDirectory(at: volatileStoreUrl,
-                                                    withIntermediateDirectories: true,
-                                                    attributes: nil)
+            try fileManager.createDirectory(at: volatileStoreUrl,
+                                            withIntermediateDirectories: true)
         } catch {
             logDebug("Error preparing store: \(error)")
             return
@@ -98,7 +97,7 @@ final class StorageController: StorageControlling, Logging {
     func clearPreviouslyStoredVolatileFiles() {
         volatileFileUrls.forEach {
             do {
-                try FileManager.default.removeItem(at: $0)
+                try fileManager.manager.removeItem(at: $0)
             } catch {
                 logError("Error deleting file at url \($0) with error: \(error)")
             }
@@ -242,7 +241,7 @@ final class StorageController: StorageControlling, Logging {
 
         // check date last modified, if any
         if let maximumAge = maximumAge,
-            let attributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+            let attributes = try? fileManager.manager.attributesOfItem(atPath: url.path),
             let dateLastModified = attributes[.modificationDate] as? Date {
 
             if dateLastModified.addingTimeInterval(maximumAge) < Date() {
@@ -252,7 +251,7 @@ final class StorageController: StorageControlling, Logging {
 
         // check if path exists and is a file
         var isDirectory = ObjCBool(false)
-        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), !isDirectory.boolValue else {
+        guard fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory), !isDirectory.boolValue else {
             return nil
         }
 
@@ -275,7 +274,7 @@ final class StorageController: StorageControlling, Logging {
         let url = storeUrl.appendingPathComponent(key)
 
         do {
-            try FileManager.default.removeItem(at: url)
+            try fileManager.removeItem(at: url)
             return true
         } catch {
             return false
@@ -285,11 +284,11 @@ final class StorageController: StorageControlling, Logging {
     private func retrieveContentsAt(_ directory: FileManager.SearchPathDirectory) -> [URL] {
 
         var files: [URL] = []
-        let urls = FileManager.default.urls(for: directory, in: .userDomainMask)
+        let urls = fileManager.manager.urls(for: directory, in: .userDomainMask)
 
         urls.forEach { url in
             do {
-                let result = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
+                let result = try fileManager.manager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
                 files.append(contentsOf: result)
             } catch {
                 logError("Error retreiving file at url \(url) with error: \(error) and SearchPathDirectory: \(directory)")
@@ -357,6 +356,7 @@ final class StorageController: StorageControlling, Logging {
         return query
     }
 
+    private let fileManager: FileManaging
     private let localPathProvider: LocalPathProviding
     private let environmentController: EnvironmentControlling
     private let serviceName = (Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en") + ".exposure"
@@ -405,6 +405,10 @@ private final class ExclusiveStorageController: StorageControlling {
 
     func prepareStore() {
         storageController.prepareStore()
+    }
+
+    func storeUrl(isVolatile: Bool) -> URL? {
+        return storageController.storeUrl(isVolatile: isVolatile)
     }
 
     func clearPreviouslyStoredVolatileFiles() {

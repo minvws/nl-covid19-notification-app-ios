@@ -13,6 +13,7 @@ import XCTest
 final class StorageControllerTests: TestCase {
 
     private var storageControlling: StorageControllingMock!
+    private var fileManaging: FileManagingMock!
     private var localPathProvider: LocalPathProvidingMock!
     private var environmentController: EnvironmentControllingMock!
     private var storageController: StorageController!
@@ -21,6 +22,7 @@ final class StorageControllerTests: TestCase {
         super.setUp()
 
         storageControlling = StorageControllingMock()
+        fileManaging = FileManagingMock(manager: FileManager.default)
         localPathProvider = LocalPathProvidingMock()
         environmentController = EnvironmentControllingMock()
 
@@ -33,16 +35,12 @@ final class StorageControllerTests: TestCase {
             return nil
         }
 
-        storageController = StorageController(localPathProvider: localPathProvider,
+        storageController = StorageController(fileManager: fileManaging,
+                                              localPathProvider: localPathProvider,
                                               environmentController: environmentController)
-        storageController.prepareStore()
     }
 
     func test_prepareStore() {
-
-        XCTAssertEqual(storageControlling.clearPreviouslyStoredVolatileFilesCallCount, 0)
-
-        storageController.storeAvailable = true
 
         let storeUrl = storageController.storeUrl(isVolatile: false)
         let volatileStoreUrl = storageController.storeUrl(isVolatile: true)
@@ -53,19 +51,68 @@ final class StorageControllerTests: TestCase {
         XCTAssertEqual(directoryExistsAtPath(String(describing: storeUrl)), false)
         XCTAssertEqual(directoryExistsAtPath(String(describing: volatileStoreUrl)), false)
 
-        let exp = expectation(description: "expectation")
-        storageControlling.prepareStoreHandler = {
+        let exp = expectation(description: "exp")
+        var count = 0
+        fileManaging.createDirectoryAtHandler = { _, _ in
+            count += 1
+            if count == 2 {
+                exp.fulfill()
+            }
+        }
+
+        storageController.prepareStore()
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func test_prepareStoreWhenAlreadyAvailable() {
+
+        storageController.storeAvailable = true
+        storageController.prepareStore()
+        XCTAssertEqual(fileManaging.createDirectoryAtCallCount, 0)
+    }
+
+    func test_prepareStoreWithCreateDirectoryError() {
+
+        let storeUrl = storageController.storeUrl(isVolatile: false)
+        let volatileStoreUrl = storageController.storeUrl(isVolatile: true)
+
+        XCTAssertNotNil(storeUrl)
+        XCTAssertNotNil(volatileStoreUrl)
+
+        XCTAssertEqual(directoryExistsAtPath(String(describing: storeUrl)), false)
+        XCTAssertEqual(directoryExistsAtPath(String(describing: volatileStoreUrl)), false)
+
+        fileManaging.createDirectoryAtHandler = { _, _ in
+            throw (FileManaging.createDirectoryError)
+        }
+
+        storageController.prepareStore()
+
+        XCTAssertEqual(storageController.storeAvailable, false)
+    }
+
+    func test_prepareStoreClearPreviouslyStoredVolatileFiles() {
+
+        let exp = expectation(description: "exp")
+        storageControlling.clearPreviouslyStoredVolatileFilesHandler = {
             exp.fulfill()
         }
 
-        storageControlling.prepareStore()
+        XCTAssertEqual(storageControlling.clearPreviouslyStoredVolatileFilesCallCount, 0)
+        storageControlling.clearPreviouslyStoredVolatileFiles()
+        XCTAssertEqual(storageControlling.clearPreviouslyStoredVolatileFilesCallCount, 1)
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
     private func directoryExistsAtPath(_ path: String) -> Bool {
         var isDirectory = ObjCBool(true)
-        let exists = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
+        let exists = fileManaging.fileExists(atPath: path, isDirectory: &isDirectory)
         return exists && isDirectory.boolValue
+    }
+
+    private enum FileManaging: Error {
+        case createDirectoryError
     }
 }
