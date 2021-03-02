@@ -63,7 +63,6 @@ extension RiskCalculationParameters {
         return ExposureRiskConfiguration(
             identifier: identifier,
             minimumRiskScore: minimumRiskScore,
-            windowCalculationType: windowCalculationType,
             reportTypeWeights: reportTypeWeights,
             reportTypeWhenMissing: reportTypeWhenMissing,
             infectiousnessWeights: infectiousnessWeights,

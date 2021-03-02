@@ -9,15 +9,6 @@ import ENFoundation
 import ExposureNotification
 import Foundation
 
-enum RiskCalculationType: Int {
-
-    /// Calculate risk by summing risk scores of all exposure windows in a day
-    case sum = 0
-
-    /// Calculate by comparing the maximum window risk score to the minimum required score for a notification
-    case max = 1
-}
-
 /// @mockable
 protocol RiskCalculationControlling {
     /// Gets the most recent day (if any) on which the user was considered "at risk" according to the given ExposureWindows and ExposureConfiguration.
@@ -67,10 +58,6 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
     /// - Returns: A dictionary where keys are a date and the value is the risk score on that specific date
     private func getDailyRiskScores(windows: [ExposureWindow], configuration: ExposureConfiguration) -> [Date: Double] {
 
-        guard let calculationType = RiskCalculationType(rawValue: configuration.windowCalculationType) else {
-            return [:]
-        }
-
         var perDayScore = [Date: Double]()
         windows.forEach { window in
 
@@ -78,12 +65,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
 
             // Windows are only included in the calculation if their score reaches the minimum window score
             if windowScore >= configuration.minimumWindowScore {
-                switch calculationType {
-                case RiskCalculationType.max:
-                    perDayScore[window.date] = max(perDayScore[window.date] ?? 0.0, windowScore)
-                case RiskCalculationType.sum:
-                    perDayScore[window.date] = perDayScore[window.date] ?? 0.0 + windowScore
-                }
+                perDayScore[window.date] = perDayScore[window.date] ?? 0.0 + windowScore
             }
         }
 

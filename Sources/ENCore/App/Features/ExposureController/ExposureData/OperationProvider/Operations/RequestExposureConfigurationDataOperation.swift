@@ -30,7 +30,6 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
         return .just(ExposureRiskConfiguration(
             identifier: "identifier",
             minimumRiskScore: 900,
-            windowCalculationType: WindowScoreType.max.rawValue,
             reportTypeWeights: [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
             reportTypeWhenMissing: 1,
             infectiousnessWeights: [0.0, 1.0, 2.0],

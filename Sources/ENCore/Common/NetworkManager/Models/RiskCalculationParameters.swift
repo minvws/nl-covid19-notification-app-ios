@@ -9,7 +9,6 @@ struct RiskCalculationParameters: Codable {
     let minimumRiskScore: Double
     let reportTypeWeights: [Double]
     let reportTypeWhenMissing: UInt32
-    let windowCalculationType: Int
     let infectiousnessWeights: [Double]
     let attenuationBucketThresholdDb: [Int]
     let attenuationBucketWeights: [Double]

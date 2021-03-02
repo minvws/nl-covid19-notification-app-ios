@@ -10,7 +10,6 @@ import Foundation
 struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
     let identifier: String
     let minimumRiskScore: Double
-    let windowCalculationType: Int
     let reportTypeWeights: [Double]
     let reportTypeWhenMissing: UInt32
     let infectiousnessWeights: [Double]

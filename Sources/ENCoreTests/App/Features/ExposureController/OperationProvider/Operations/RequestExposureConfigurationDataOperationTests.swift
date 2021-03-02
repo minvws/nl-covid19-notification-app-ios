@@ -122,7 +122,6 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
         ExposureRiskConfiguration(
             identifier: identifier,
             minimumRiskScore: 1,
-            windowCalculationType: WindowScoreType.sum.rawValue,
             reportTypeWeights: [7],
             reportTypeWhenMissing: 1,
             infectiousnessWeights: [8],

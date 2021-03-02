@@ -11,8 +11,6 @@ import Foundation
 protocol ExposureConfiguration {
     var minimumRiskScore: Double { get }
 
-    var windowCalculationType: Int { get }
-
     /// This list must have 6 elements: UNKNOWN, CONFIRMED_TEST, CONFIRMED_CLINICAL_DIAGNOSIS, SELF_REPORT, RECURSIVE and REVOKED
     var reportTypeWeights: [Double] { get }
 
