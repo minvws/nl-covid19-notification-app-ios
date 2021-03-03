@@ -94,7 +94,7 @@ final class StorageController: StorageControlling, Logging {
         storeAvailable = true
     }
 
-    func clearPreviouslyStoredVolatileFiles() {
+    fileprivate func clearPreviouslyStoredVolatileFiles() {
         volatileFileUrls.forEach {
             do {
                 try fileManager.manager.removeItem(at: $0)
@@ -365,7 +365,7 @@ final class StorageController: StorageControlling, Logging {
     private let storageAccessQueue = DispatchQueue(label: "storageAccessQueue")
     private let accessQueue = DispatchQueue(label: "accessQueue", attributes: .concurrent)
 
-    func storeUrl(isVolatile: Bool) -> URL? {
+    fileprivate func storeUrl(isVolatile: Bool) -> URL? {
         let base = isVolatile ? localPathProvider.path(for: .cache) : localPathProvider.path(for: .documents)
 
         return base?.appendingPathComponent("store")
@@ -394,7 +394,7 @@ final class StorageController: StorageControlling, Logging {
                    isDirectory: true)
     }
 
-    var storeAvailable = false
+    private(set) var storeAvailable = false
 }
 
 private final class ExclusiveStorageController: StorageControlling {

@@ -51,8 +51,8 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
         return ApplicationController()
     }
 
-    var fileManager: FileManager {
-        return FileManager().manager
+    var fileManager: FileManaging {
+        return FileManager.default
     }
 
     var environmentController: EnvironmentControlling {
