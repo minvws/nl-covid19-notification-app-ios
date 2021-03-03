@@ -146,11 +146,7 @@ class Label: UILabel {
         }
 
         func openUrl(_ url: String) {
-            var urlToOpen = url
-            if !urlToOpen.starts(with: "https://") {
-                urlToOpen = "https://" + url
-            }
-            guard let url = URL(string: urlToOpen) else { return }
+            guard let url = URL(string: url) else { return }
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
 
@@ -163,6 +159,7 @@ class Label: UILabel {
                                        options: [],
                                        range: NSRange(location: 0,
                                                       length: text.utf16.count))
+
         for match in matches {
             guard let range = Range(match.range, in: text) else { continue }
             if foundLinkInLabel(self,
