@@ -471,8 +471,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             return .error(ExposureDataError.internalError)
         }
 
-        let noExposureReport: Single<(ExposureDetectionResult, ExposureReport?)> = .just((result, nil))
-
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
             return .just((result, nil, nil))
@@ -500,8 +498,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     return
                 }
 
-                guard summary.daysSinceLastExposure <= daysSinceExposureCutOff else {
-                    logDebug("Exposure was too long ago (\(summary.daysSinceLastExposure) days). Ignore it")
+                guard summary.daysSinceLastExposure <= self.daysSinceExposureCutOff else {
+                    self.logDebug("Exposure was too long ago (\(summary.daysSinceLastExposure) days). Ignore it")
                     observer(.success((result, nil, nil)))
                     return
                 }

@@ -26,8 +26,12 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var disposeBag = DisposeBag()
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockRiskCalculationController: RiskCalculationControllingMock!
+    private var currentDate: Date!
 
     override func setUpWithError() throws {
+
+        currentDate = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
 
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()
@@ -311,14 +315,14 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
 
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate), count: 2)
 
         mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
 
         let subscriptionExpectation = expectation(description: "subscriptionExpectation")
 
         mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
-            return Calendar.current.date(byAdding: .day, value: -3, to: Date())
+            return Calendar.current.date(byAdding: .day, value: -3, to: self.currentDate)
         }
 
         sut.execute()
@@ -390,9 +394,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
 
         let exp = expectation(description: "detectExposuresExpectation")
-
-        let currentDate = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
 
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
         mockExposureManager.detectExposuresHandler = { _, _, completion in
