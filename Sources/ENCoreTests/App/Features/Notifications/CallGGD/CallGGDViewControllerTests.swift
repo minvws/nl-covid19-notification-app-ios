@@ -21,6 +21,7 @@ final class CallGGDControllerTests: TestCase {
 
         recordSnapshots = false
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        interfaceOrientationStream.currentOrientationIsLandscape = false
 
         viewController = CallGGDViewController(listener: listener,
                                                theme: theme,
