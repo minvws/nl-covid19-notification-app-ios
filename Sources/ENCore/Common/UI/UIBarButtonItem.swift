@@ -19,7 +19,7 @@ public extension UIBarButtonItem {
             button.imageView?.translatesAutoresizingMaskIntoConstraints = false
             button.imageView?.widthAnchor.constraint(equalToConstant: 32).isActive = true
             button.imageView?.heightAnchor.constraint(equalToConstant: 32).isActive = true
-
+            button.accessibilityLabel = .close
             let menuBarItem = UIBarButtonItem(customView: button)
             return menuBarItem
         }

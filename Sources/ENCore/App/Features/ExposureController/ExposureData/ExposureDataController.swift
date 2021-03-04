@@ -10,6 +10,9 @@ import Foundation
 import RxSwift
 
 enum Announcement: String, Codable {
+
+    @available(*, deprecated)
+    // Leaving this in place because the enum needs a case and we might want to know in the future what kind of announcements we could have stored before
     case interopAnnouncement
 }
 

@@ -147,8 +147,6 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                 return Disposables.create()
             }
 
-            let start = CFAbsoluteTimeGetCurrent()
-
             let (identifier, localUrl) = keySet
             let srcSignatureUrl = localUrl.appendingPathComponent(self.signatureFilename)
             let srcBinaryUrl = localUrl.appendingPathComponent(self.binaryFilename)
@@ -181,10 +179,6 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                                                     binaryFilename: dstBinaryFilename,
                                                     processDate: nil,
                                                     creationDate: Date())
-
-            let diff = CFAbsoluteTimeGetCurrent() - start
-            self.logDebug("Creating KeySetHolder Took \(diff) seconds")
-
             observer(.success(keySetHolder))
 
             return Disposables.create()
@@ -206,24 +200,17 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
     private func storeDownloadedKeySetsHolder(_ keySetHolder: ExposureKeySetHolder) -> Completable {
         return .create { (observer) -> Disposable in
 
-            let start = CFAbsoluteTimeGetCurrent()
-
             self.storageController.requestExclusiveAccess { storageController in
                 var keySetHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
 
                 let matchesKeySetsHolder: (ExposureKeySetHolder) -> Bool = { $0.identifier == keySetHolder.identifier }
 
                 if !keySetHolders.contains(where: matchesKeySetsHolder) {
-                    self.logDebug("Adding \(keySetHolder.identifier) to stored keysetholders")
                     keySetHolders.append(keySetHolder)
                 }
 
                 storageController.store(object: keySetHolders,
                                         identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
-
-                    let diff = CFAbsoluteTimeGetCurrent() - start
-                    self.logDebug("Storing KeySetHolder Took \(diff) seconds")
-
                     // ignore any storage error - in that case the keyset will be downloaded and processed again
                     observer(.completed)
                 }
