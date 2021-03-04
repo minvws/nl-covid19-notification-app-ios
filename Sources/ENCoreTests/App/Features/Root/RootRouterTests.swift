@@ -38,6 +38,7 @@ final class RootRouterTests: XCTestCase {
         super.setUp()
 
         mockEnvironmentController.supportsExposureNotification = true
+        mockEnvironmentController.appSupportsiOSversion = true
 
         mockPauseController = PauseControllingMock()
 
@@ -246,6 +247,17 @@ final class RootRouterTests: XCTestCase {
     func test_start_ENNotSupported_showsUpdateOperatingSystemViewController() {
 
         mockEnvironmentController.supportsExposureNotification = false
+
+        router.start()
+
+        XCTAssertEqual(launchScreenBuilder.buildCallCount, 0)
+        XCTAssertEqual(updateOperatingSystemBuilder.buildCallCount, 1)
+        XCTAssertEqual(viewController.presentCallCount, 1)
+    }
+
+    func test_start_appNotSupportsiOSversion_showsUpdateOperatingSystemViewController() {
+
+        mockEnvironmentController.appSupportsiOSversion = false
 
         router.start()
 
