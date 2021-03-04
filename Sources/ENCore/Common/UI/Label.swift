@@ -12,6 +12,12 @@ class Label: UILabel {
 
     private var charactersToRemove: String?
 
+    var isLinkInteractionEnabled: Bool = false {
+        willSet {
+            linkInteractionEnabled(newValue)
+        }
+    }
+
     /// Indicates that the text in this label can or can not be copied by using the long press gesture
     /// - Parameters:
     ///   - canBeCopied: Enable or disable copying
@@ -67,4 +73,105 @@ class Label: UILabel {
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         return gesture
     }()
+
+    private func linkInteractionEnabled(_ enabled: Bool) {
+
+        isUserInteractionEnabled = enabled
+
+        guard enabled else {
+            removeGestureRecognizer(linkTapGestureRecognizer)
+            return
+        }
+
+        addGestureRecognizer(linkTapGestureRecognizer)
+    }
+
+    private lazy var linkTapGestureRecognizer: UITapGestureRecognizer = {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleLinkTap(_:)))
+        return gesture
+    }()
+
+    @objc private func handleLinkTap(_ recognizer: UIGestureRecognizer) {
+        guard recognizer.state == .ended else {
+            return
+        }
+
+        guard let text = attributedText?.string else {
+            return
+        }
+
+        guard isLinkInteractionEnabled else {
+            return
+        }
+
+        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let foundLinks = detector.matches(in: text,
+                                          options: [],
+                                          range: NSRange(location: 0,
+                                                         length: text.utf16.count))
+
+        for link in foundLinks {
+            guard let range = Range(link.range, in: text) else { continue }
+            if didFoundLinkInLabel(self,
+                                   atRange: link.range,
+                                   withRecognizer: recognizer) {
+                openLinkInExternalBrowser(String(text[range]))
+                return
+            }
+        }
+    }
+
+    private func didFoundLinkInLabel(_ label: UILabel, atRange targetRange: NSRange, withRecognizer recognizer: UIGestureRecognizer) -> Bool {
+        guard let attributedText = label.attributedText else {
+            return false
+        }
+
+        let string = attributedText.string
+
+        guard !string.isEmpty else {
+            return false
+        }
+
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(size: CGSize.zero)
+        let textStorage = NSTextStorage(attributedString: attributedText)
+
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+
+        textContainer.lineFragmentPadding = 0.0
+        textContainer.lineBreakMode = label.lineBreakMode
+        textContainer.maximumNumberOfLines = label.numberOfLines
+        let labelSize = label.bounds.size
+        textContainer.size = labelSize
+
+        let locationOfTouchInLabel = recognizer.location(in: label)
+        let textBoundingBox = layoutManager.usedRect(for: textContainer)
+        let textContainerOffset = CGPoint(
+            x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
+            y: (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y
+        )
+        let locationOfTouchInTextContainer = CGPoint(
+            x: locationOfTouchInLabel.x - textContainerOffset.x,
+            y: locationOfTouchInLabel.y - textContainerOffset.y
+        )
+        var indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer,
+                                                            in: textContainer,
+                                                            fractionOfDistanceBetweenInsertionPoints: nil)
+
+        var lineBreakCounts = 0
+        lineBreakCounts += string.components(separatedBy: "\n").count
+        indexOfCharacter += lineBreakCounts
+
+        return NSLocationInRange(indexOfCharacter, targetRange)
+    }
+
+    private func openLinkInExternalBrowser(_ link: String) {
+        var linkToOpen = link
+        if !linkToOpen.starts(with: "https://") {
+            linkToOpen = "https://" + link
+        }
+        guard let url = URL(string: linkToOpen) else { return }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
 }
