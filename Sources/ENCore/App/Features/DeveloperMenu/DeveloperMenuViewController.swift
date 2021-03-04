@@ -28,7 +28,7 @@ private struct DeveloperItem {
     }
 }
 
-final class DeveloperMenuViewController: ViewController, DeveloperMenuViewControllable, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource, Logging {
+final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewControllable, UIGestureRecognizerDelegate, Logging {
 
     init(listener: DeveloperMenuListener,
          theme: Theme,
@@ -92,7 +92,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         return sections.count
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection sectionIndex: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection sectionIndex: Int) -> Int {
         let section = sections[sectionIndex]
 
         return section.items.count
@@ -104,7 +104,7 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
         return section.title
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell
         let cellIdentifier = "developerCell"
 

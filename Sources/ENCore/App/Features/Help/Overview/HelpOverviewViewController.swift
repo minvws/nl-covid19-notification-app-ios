@@ -8,7 +8,7 @@
 import ENFoundation
 import UIKit
 
-final class HelpOverviewViewController: ViewController, UITableViewDelegate, UITableViewDataSource {
+final class HelpOverviewViewController: TableViewController {
 
     init(listener: HelpOverviewListener,
          shouldShowEnableAppButton: Bool,
@@ -43,12 +43,11 @@ final class HelpOverviewViewController: ViewController, UITableViewDelegate, UIT
         navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return helpManager.entries.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell
         let cellIdentifier = "helpCell"
 

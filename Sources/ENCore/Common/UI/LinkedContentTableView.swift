@@ -40,6 +40,10 @@ final class LinkedContentTableViewManager: NSObject, UITableViewDelegate, UITabl
         return cell
     }
 
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        tableView.addListAccessibilityHint(cell: cell, indexPath: indexPath)
+    }
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return content.isEmpty ? UIView() : headerView
     }

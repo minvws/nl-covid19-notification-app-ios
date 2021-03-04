@@ -12,7 +12,7 @@ import UIKit
 /// @mockable
 protocol BluetoothSettingsViewControllable: ViewControllable {}
 
-final class BluetoothSettingsViewController: ViewController, BluetoothSettingsViewControllable, UITableViewDelegate, UITableViewDataSource {
+final class BluetoothSettingsViewController: TableViewController, BluetoothSettingsViewControllable {
 
     init(listener: BluetoothSettingsListener, theme: Theme) {
         self.listener = listener
@@ -49,11 +49,11 @@ final class BluetoothSettingsViewController: ViewController, BluetoothSettingsVi
         return 1
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return settings.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell: BluetoothSettingsTableViewCell
         let cellIdentifier = "BluetoothSettingsTableViewCell"
