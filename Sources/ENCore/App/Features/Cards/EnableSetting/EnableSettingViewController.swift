@@ -199,7 +199,9 @@ private final class EnableSettingView: View {
             return EnableSettingStepView(theme: theme, step: model, stepIndex: stepIndex)
         }
 
-        stepViews.forEach(scrollView.addSubview(_:))
+        stepViews.enumerated().forEach { index, stepView in
+            scrollView.addListSubview(stepView, index: index, total: stepViews.count)
+        }
 
         updateStepViewConstraints()
     }

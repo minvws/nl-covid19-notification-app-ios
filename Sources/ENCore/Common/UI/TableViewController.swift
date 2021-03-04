@@ -18,7 +18,6 @@ open class TableViewController: ViewController, UITableViewDelegate, UITableView
     }
 
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        print("BASE CLASS: Will display cell")
         tableView.addListAccessibilityHint(cell: cell, indexPath: indexPath)
     }
 }
