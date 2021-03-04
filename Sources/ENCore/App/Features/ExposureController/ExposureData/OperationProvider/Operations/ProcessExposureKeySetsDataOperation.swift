@@ -471,9 +471,11 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             return .error(ExposureDataError.internalError)
         }
 
+        let noExposureResult: (exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?) = (result, nil, nil)
+
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
-            return .just((result, nil, nil))
+            return .just(noExposureResult)
         }
 
         return .create { (observer) -> Disposable in
@@ -487,20 +489,20 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
                 guard case let .success(exposureWindows) = windowResult, let windows = exposureWindows else {
                     self.logDebug("Risk Calculation - No Exposure Windows found")
-                    observer(.success((result, nil, nil)))
+                    observer(.success(noExposureResult))
                     return
                 }
 
                 let lastDayOverMinimumRiskScore = self.riskCalculationController.getLastExposureDate(fromWindows: windows, withConfiguration: self.configuration)
 
                 guard let exposureDate = lastDayOverMinimumRiskScore else {
-                    observer(.success((result, nil, nil)))
+                    observer(.success(noExposureResult))
                     return
                 }
 
                 guard summary.daysSinceLastExposure <= self.daysSinceExposureCutOff else {
                     self.logDebug("Exposure was too long ago (\(summary.daysSinceLastExposure) days). Ignore it")
-                    observer(.success((result, nil, nil)))
+                    observer(.success(noExposureResult))
                     return
                 }
 
