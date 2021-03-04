@@ -121,6 +121,10 @@
 "error.title" = "حدث خطأ ما";
 "learnMore" = "إقرأ المزيد";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "لا يمكن فتح متجر التطبيقات [App Store]";
 "updateApp.title" = "التطبيق بحاجة إلى تحديث";

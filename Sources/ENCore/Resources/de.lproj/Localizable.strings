@@ -121,6 +121,10 @@
 "error.title" = "Es ist ein Fehler aufgetreten.";
 "learnMore" = "Lesen Sie weiter";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "Der App Store kann nicht geöffnet werden.";
 "updateApp.title" = "Die App muss aktualisiert werden.";

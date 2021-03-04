@@ -122,6 +122,10 @@
 "error.title" = "Something went wrong";
 "learnMore" = "Read more";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "Can't open the App Store";
 "updateApp.title" = "The app needs to be updated";

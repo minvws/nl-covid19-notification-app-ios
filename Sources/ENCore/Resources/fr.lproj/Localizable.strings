@@ -123,6 +123,10 @@
 "error.title" = "Un problème est survenu";
 "learnMore" = "En savoir plus";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "Impossible d'ouvrir l'App Store.";
 "updateApp.title" = "L'application a besoin d’être mise à jour";

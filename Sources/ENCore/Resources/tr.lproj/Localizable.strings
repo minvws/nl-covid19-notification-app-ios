@@ -121,6 +121,10 @@
 "error.title" = "Bir hata oluştu";
 "learnMore" = "Daha fazlasını oku";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store açılamıyor.";
 "updateApp.title" = "Uygulamanın güncellenmesi gerekiyor";

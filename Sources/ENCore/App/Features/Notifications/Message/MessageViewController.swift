@@ -131,7 +131,7 @@ private final class MessageView: View {
 
         let sections = treatmentPerspectiveMessage
             .paragraphs
-            .map { InfoSectionTextView(theme: theme, title: $0.title, content: [$0.body]) }
+            .map { InfoSectionTextView(theme: theme, title: $0.title, content: $0.body) }
 
         infoView.addSections(sections)
 

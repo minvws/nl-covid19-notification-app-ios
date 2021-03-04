@@ -121,6 +121,10 @@
 "error.title" = "Нещо се обърка";
 "learnMore" = "Повече информация";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store не се отваря.";
 "updateApp.title" = "Приложението се нуждае от актуализация";

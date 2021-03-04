@@ -121,6 +121,10 @@
 "error.title" = "Ceva nu a funcționat corect";
 "learnMore" = "Citiți mai mult";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store nu poate fi deschis";
 "updateApp.title" = "Aplicația trebuie actualizată";

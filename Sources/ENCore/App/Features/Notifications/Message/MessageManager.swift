@@ -87,15 +87,15 @@ final class MessageManager: MessageManaging, Logging {
                                                      withExposureDate: exposureDate,
                                                      quarantineDays: quarantineDays)
 
-            var paragraphBody = replacePlaceholders(inString: NSAttributedString(string: resourceBody),
-                                                    withExposureDate: exposureDate,
-                                                    quarantineDays: quarantineDays)
+            let htmlBody = replacePlaceholders(inString: NSAttributedString(string: resourceBody),
+                                               withExposureDate: exposureDate,
+                                               quarantineDays: quarantineDays)
 
-            paragraphBody = .htmlWithBulletList(text: paragraphBody.string,
-                                                font: theme.fonts.body,
-                                                textColor: theme.colors.gray,
-                                                theme: theme,
-                                                textAlignment: Localization.isRTL ? .right : .left)
+            let paragraphBody = NSAttributedString.htmlWithBulletList(text: htmlBody.string,
+                                                                      font: theme.fonts.body,
+                                                                      textColor: theme.colors.gray,
+                                                                      theme: theme,
+                                                                      textAlignment: Localization.isRTL ? .right : .left)
 
             return LocalizedTreatmentPerspective.Paragraph(
                 title: paragraphTitle.string,

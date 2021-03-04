@@ -46,7 +46,7 @@ struct LocalizedTreatmentPerspective: Equatable {
 
     struct Paragraph: Equatable {
         var title: String
-        var body: NSAttributedString
+        var body: [NSAttributedString]
         let type: ParagraphType
 
         enum ParagraphType: String {

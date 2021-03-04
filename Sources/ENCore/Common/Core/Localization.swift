@@ -132,6 +132,11 @@ extension String {
     static var errorTitle: String { return Localization.string(for: "error.title") }
     static var learnMore: String { return Localization.string(for: "learnMore") }
 
+    // MARK: - Accessibility
+
+    static var accessibilityStartOfList: String { return Localization.string(for: "accessibility.startOfList") }
+    static var accessibilityEndOfList: String { return Localization.string(for: "accessibility.endOfList") }
+
     // MARK: - Update App
 
     static var updateAppErrorMessage: String { return Localization.string(for: "updateApp.error.message") }

@@ -31,6 +31,40 @@ class Label: UILabel {
         addGestureRecognizer(longPressGestureRecognizer)
     }
 
+    override var attributedText: NSAttributedString? {
+        get {
+            return super.attributedText
+        }
+        set {
+            super.attributedText = newValue
+
+            guard let attributes = newValue?.attributes(at: 0, effectiveRange: nil) else {
+                return
+            }
+
+            guard let accessibilityTextCustom = attributes.filter({ (attribute) -> Bool in
+                attribute.key == .accessibilityTextCustom
+            }).first else {
+                return
+            }
+
+            guard let data = accessibilityTextCustom.value as? [String: Int] else {
+                return
+            }
+
+            guard let index = data[NSAttributedString.accessibilityListIndex],
+                let total = data[NSAttributedString.accessibilityListSize] else {
+                return
+            }
+
+            if index == 0 {
+                accessibilityHint = .accessibilityStartOfList
+            } else if index == total - 1 {
+                accessibilityHint = .accessibilityEndOfList
+            }
+        }
+    }
+
     override var canBecomeFirstResponder: Bool {
         return true
     }
