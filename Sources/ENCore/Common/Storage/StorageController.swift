@@ -91,21 +91,21 @@ final class StorageController: StorageControlling, Logging {
             return
         }
 
-        clearPreviouslyStoredVolatileFiles()
+        clearTemporaryDirectory()
 
         storeAvailable = true
     }
 
-    fileprivate func clearPreviouslyStoredVolatileFiles() {
+    fileprivate func clearTemporaryDirectory() {
 
-        logDebug("Removing contents of temporary folders: \(volatileFileUrls)")
+        let tempFolderURL = localPathProvider.temporaryDirectoryUrl
 
-        volatileFileUrls.forEach {
-            do {
-                try fileManager.removeItem(at: $0)
-            } catch {
-                logError("Error deleting file at url \($0) with error: \(error)")
-            }
+        logDebug("Removing contents of temporary folder: \(tempFolderURL)")
+
+        do {
+            try fileManager.removeItem(at: tempFolderURL)
+        } catch {
+            logError("Error deleting file at url \(tempFolderURL) with error: \(error)")
         }
     }
 
@@ -286,23 +286,6 @@ final class StorageController: StorageControlling, Logging {
         }
     }
 
-    private func retrieveContentsAt(_ directory: FileManager.SearchPathDirectory) -> [URL] {
-
-        var files: [URL] = []
-        let urls = fileManager.urls(for: directory, in: .userDomainMask)
-
-        urls.forEach { url in
-            do {
-                let result = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
-                files.append(contentsOf: result)
-            } catch {
-                logError("Error retreiving file at url \(url) with error: \(error) and SearchPathDirectory: \(directory)")
-            }
-        }
-
-        return files
-    }
-
     // MARK: - Secure
 
     private func retrieveDataSecure(for key: String) -> Data? {
@@ -376,19 +359,6 @@ final class StorageController: StorageControlling, Logging {
         return base?.appendingPathComponent("store")
     }
 
-    private var volatileFileUrls: [URL] {
-
-        var urls: [URL] = []
-        urls += retrieveContentsAt(.itemReplacementDirectory)
-        urls.append(localPathProvider.temporaryDirectoryUrl)
-
-        if !environmentController.isDebugVersion {
-            urls += retrieveContentsAt(.cachesDirectory)
-        }
-
-        return urls
-    }
-
     private(set) var storeAvailable = false
 }
 
@@ -407,7 +377,7 @@ private final class ExclusiveStorageController: StorageControlling {
     }
 
     func clearPreviouslyStoredVolatileFiles() {
-        storageController.clearPreviouslyStoredVolatileFiles()
+        storageController.clearTemporaryDirectory()
     }
 
     func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {

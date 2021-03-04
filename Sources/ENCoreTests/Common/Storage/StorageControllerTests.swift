@@ -89,29 +89,15 @@ final class StorageControllerTests: TestCase {
         XCTAssertEqual(storageController.storeAvailable, false)
     }
 
-    func test_prepareStoreClearPreviouslyStoredVolatileFiles() {
+    func test_prepareStore_shouldClearTemporaryDirectory() {
 
         environmentController.isDebugVersion = false
         XCTAssertEqual(fileManager.removeItemCallCount, 0)
 
         storageController.prepareStore()
 
-        XCTAssertEqual(fileManager.removeItemCallCount, 3)
-        XCTAssertEqual(fileManager.removeItemArgValues[0].absoluteString, "/folder/folder99/somefolder")
-        XCTAssertEqual(fileManager.removeItemArgValues[1].absoluteString, "/temp/")
-        XCTAssertEqual(fileManager.removeItemArgValues[2].absoluteString, "/folder/folder13/somefolder")
-    }
-
-    func test_prepareStore_debugVersionShouldNotClearTempFolder() {
-
-        environmentController.isDebugVersion = true
-        XCTAssertEqual(fileManager.removeItemCallCount, 0)
-
-        storageController.prepareStore()
-
-        XCTAssertEqual(fileManager.removeItemCallCount, 2)
-        XCTAssertEqual(fileManager.removeItemArgValues[0].absoluteString, "/folder/folder99/somefolder")
-        XCTAssertEqual(fileManager.removeItemArgValues[1].absoluteString, "/temp/")
+        XCTAssertEqual(fileManager.removeItemCallCount, 1)
+        XCTAssertEqual(fileManager.removeItemArgValues[0].absoluteString, "/temp/")
     }
 
     private enum FileManaging: Error {
