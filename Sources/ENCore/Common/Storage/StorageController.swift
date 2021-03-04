@@ -80,10 +80,12 @@ final class StorageController: StorageControlling, Logging {
 
         do {
             try fileManager.createDirectory(at: storeUrl,
-                                            withIntermediateDirectories: true)
+                                            withIntermediateDirectories: true,
+                                            attributes: nil)
 
             try fileManager.createDirectory(at: volatileStoreUrl,
-                                            withIntermediateDirectories: true)
+                                            withIntermediateDirectories: true,
+                                            attributes: nil)
         } catch {
             logDebug("Error preparing store: \(error)")
             return
@@ -97,7 +99,7 @@ final class StorageController: StorageControlling, Logging {
     fileprivate func clearPreviouslyStoredVolatileFiles() {
         volatileFileUrls.forEach {
             do {
-                try fileManager.manager.removeItem(at: $0)
+                try fileManager.removeItem(at: $0)
             } catch {
                 logError("Error deleting file at url \($0) with error: \(error)")
             }
@@ -241,7 +243,7 @@ final class StorageController: StorageControlling, Logging {
 
         // check date last modified, if any
         if let maximumAge = maximumAge,
-            let attributes = try? fileManager.manager.attributesOfItem(atPath: url.path),
+            let attributes = try? fileManager.attributesOfItem(atPath: url.path),
             let dateLastModified = attributes[.modificationDate] as? Date {
 
             if dateLastModified.addingTimeInterval(maximumAge) < Date() {
@@ -284,11 +286,11 @@ final class StorageController: StorageControlling, Logging {
     private func retrieveContentsAt(_ directory: FileManager.SearchPathDirectory) -> [URL] {
 
         var files: [URL] = []
-        let urls = fileManager.manager.urls(for: directory, in: .userDomainMask)
+        let urls = fileManager.urls(for: directory, in: .userDomainMask)
 
         urls.forEach { url in
             do {
-                let result = try fileManager.manager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
+                let result = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
                 files.append(contentsOf: result)
             } catch {
                 logError("Error retreiving file at url \(url) with error: \(error) and SearchPathDirectory: \(directory)")
@@ -374,24 +376,14 @@ final class StorageController: StorageControlling, Logging {
     private var volatileFileUrls: [URL] {
 
         var urls: [URL] = []
-        urls += temporaryDirectoryFileUrls
-        urls.append(temporaryDirectoryUrl)
+        urls += retrieveContentsAt(.itemReplacementDirectory)
+        urls.append(localPathProvider.temporaryDirectoryUrl)
 
         if !environmentController.isDebugVersion {
-            urls += cachesDirectoryFileUrls
+            urls += retrieveContentsAt(.cachesDirectory)
         }
 
         return urls
-    }
-    private var cachesDirectoryFileUrls: [URL] {
-        return retrieveContentsAt(.cachesDirectory)
-    }
-    private var temporaryDirectoryFileUrls: [URL] {
-        return retrieveContentsAt(.itemReplacementDirectory)
-    }
-    private var temporaryDirectoryUrl: URL {
-        return URL(fileURLWithPath: NSTemporaryDirectory(),
-                   isDirectory: true)
     }
 
     private(set) var storeAvailable = false

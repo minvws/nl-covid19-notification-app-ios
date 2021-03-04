@@ -12,8 +12,7 @@ import XCTest
 
 final class StorageControllerTests: TestCase {
 
-    private var storageControlling: StorageControllingMock!
-    private var fileManaging: FileManagingMock!
+    private var fileManager: FileManagingMock!
     private var localPathProvider: LocalPathProvidingMock!
     private var environmentController: EnvironmentControllingMock!
     private var storageController: StorageController!
@@ -21,69 +20,67 @@ final class StorageControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        storageControlling = StorageControllingMock()
-        fileManaging = FileManagingMock(manager: FileManager.default)
+        fileManager = FileManagingMock()
         localPathProvider = LocalPathProvidingMock()
         environmentController = EnvironmentControllingMock()
 
+        localPathProvider.temporaryDirectoryUrl = URL(string: "/temp/")!
         localPathProvider.pathHandler = { folder in
-            if folder == .cache {
-                return URL(string: "http://someurl.com")!
-            } else if folder == .documents {
-                return URL(string: "http://someurl.com")!
+            if folder == .documents {
+                return URL(string: "/documents/")!
+            } else if folder == .cache {
+                return URL(string: "/cache/")!
             }
             return nil
         }
 
-        storageController = StorageController(fileManager: fileManaging,
+        fileManager.urlsHandler = { folder, domainMask in
+            return [URL(string: "/folder/folder\(folder.rawValue)")!]
+        }
+
+        fileManager.contentsOfDirectoryHandler = { url, _, _ in
+            return [url.appendingPathComponent("somefolder")]
+        }
+
+        storageController = StorageController(fileManager: fileManager,
                                               localPathProvider: localPathProvider,
                                               environmentController: environmentController)
     }
 
     func test_prepareStore() {
 
-        let storeUrl = storageController.storeUrl(isVolatile: false)
-        let volatileStoreUrl = storageController.storeUrl(isVolatile: true)
+        let fileManagerExpectation = expectation(description: "filemanager")
+        fileManagerExpectation.expectedFulfillmentCount = 2
 
-        XCTAssertNotNil(storeUrl)
-        XCTAssertNotNil(volatileStoreUrl)
-
-        XCTAssertEqual(directoryExistsAtPath(String(describing: storeUrl)), false)
-        XCTAssertEqual(directoryExistsAtPath(String(describing: volatileStoreUrl)), false)
-
-        let exp = expectation(description: "exp")
-        var count = 0
-        fileManaging.createDirectoryAtHandler = { _, _ in
-            count += 1
-            if count == 2 {
-                exp.fulfill()
-            }
+        XCTAssertEqual(fileManager.createDirectoryCallCount, 0)
+        fileManager.createDirectoryHandler = { _, _, _ in
+            fileManagerExpectation.fulfill()
         }
 
         storageController.prepareStore()
 
         waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(fileManager.createDirectoryCallCount, 2)
+        XCTAssertEqual(fileManager.createDirectoryArgValues.first?.0.absoluteString, "/documents/store")
+        XCTAssertTrue(fileManager.createDirectoryArgValues.first?.1 == true)
+        XCTAssertEqual(fileManager.createDirectoryArgValues.last?.0.absoluteString, "/cache/store")
+        XCTAssertTrue(fileManager.createDirectoryArgValues.last?.1 == true)
     }
 
     func test_prepareStoreWhenAlreadyAvailable() {
 
-        storageController.storeAvailable = true
+        XCTAssertEqual(fileManager.createDirectoryCallCount, 0)
+
         storageController.prepareStore()
-        XCTAssertEqual(fileManaging.createDirectoryAtCallCount, 0)
+        storageController.prepareStore()
+
+        XCTAssertEqual(fileManager.createDirectoryCallCount, 2)
     }
 
     func test_prepareStoreWithCreateDirectoryError() {
 
-        let storeUrl = storageController.storeUrl(isVolatile: false)
-        let volatileStoreUrl = storageController.storeUrl(isVolatile: true)
-
-        XCTAssertNotNil(storeUrl)
-        XCTAssertNotNil(volatileStoreUrl)
-
-        XCTAssertEqual(directoryExistsAtPath(String(describing: storeUrl)), false)
-        XCTAssertEqual(directoryExistsAtPath(String(describing: volatileStoreUrl)), false)
-
-        fileManaging.createDirectoryAtHandler = { _, _ in
+        fileManager.createDirectoryHandler = { _, _, _ in
             throw (FileManaging.createDirectoryError)
         }
 
@@ -94,22 +91,27 @@ final class StorageControllerTests: TestCase {
 
     func test_prepareStoreClearPreviouslyStoredVolatileFiles() {
 
-        let exp = expectation(description: "exp")
-        storageControlling.clearPreviouslyStoredVolatileFilesHandler = {
-            exp.fulfill()
-        }
+        environmentController.isDebugVersion = false
+        XCTAssertEqual(fileManager.removeItemCallCount, 0)
 
-        XCTAssertEqual(storageControlling.clearPreviouslyStoredVolatileFilesCallCount, 0)
-        storageControlling.clearPreviouslyStoredVolatileFiles()
-        XCTAssertEqual(storageControlling.clearPreviouslyStoredVolatileFilesCallCount, 1)
+        storageController.prepareStore()
 
-        waitForExpectations(timeout: 2, handler: nil)
+        XCTAssertEqual(fileManager.removeItemCallCount, 3)
+        XCTAssertEqual(fileManager.removeItemArgValues[0].absoluteString, "/folder/folder99/somefolder")
+        XCTAssertEqual(fileManager.removeItemArgValues[1].absoluteString, "/temp/")
+        XCTAssertEqual(fileManager.removeItemArgValues[2].absoluteString, "/folder/folder13/somefolder")
     }
 
-    private func directoryExistsAtPath(_ path: String) -> Bool {
-        var isDirectory = ObjCBool(true)
-        let exists = fileManaging.fileExists(atPath: path, isDirectory: &isDirectory)
-        return exists && isDirectory.boolValue
+    func test_prepareStore_debugVersionShouldNotClearTempFolder() {
+
+        environmentController.isDebugVersion = true
+        XCTAssertEqual(fileManager.removeItemCallCount, 0)
+
+        storageController.prepareStore()
+
+        XCTAssertEqual(fileManager.removeItemCallCount, 2)
+        XCTAssertEqual(fileManager.removeItemArgValues[0].absoluteString, "/folder/folder99/somefolder")
+        XCTAssertEqual(fileManager.removeItemArgValues[1].absoluteString, "/temp/")
     }
 
     private enum FileManaging: Error {

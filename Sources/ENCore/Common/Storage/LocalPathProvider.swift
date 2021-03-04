@@ -18,6 +18,7 @@ enum LocalFolder {
 /// @mockable
 protocol LocalPathProviding {
     func path(for folder: LocalFolder) -> URL?
+    var temporaryDirectoryUrl: URL { get }
 }
 
 final class LocalPathProvider: LocalPathProviding, Logging {
@@ -45,6 +46,11 @@ final class LocalPathProvider: LocalPathProviding, Logging {
         }
 
         return createFolder(with: finalPath) ? finalPath : nil
+    }
+
+    var temporaryDirectoryUrl: URL {
+        return URL(fileURLWithPath: NSTemporaryDirectory(),
+                   isDirectory: true)
     }
 
     // MARK: - Private
