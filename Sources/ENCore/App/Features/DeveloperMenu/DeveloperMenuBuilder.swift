@@ -11,6 +11,8 @@ import Foundation
 protocol DeveloperMenuListener: AnyObject {
     func developerMenuRequestsOnboardingFlow()
     func developerMenuRequestMessage(exposureDate: Date)
+    func developerMenuRequestUpdateOperatingSystem()
+    func developerMenuRequestUpdateApp(appStoreURL: String, minimumVersionMessage: String?)
 }
 
 /// @mockable

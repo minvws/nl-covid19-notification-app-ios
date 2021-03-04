@@ -50,6 +50,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let maximumDailyForegroundExposureDetectionAPICalls = 9
     private let maximumDailyBackgroundExposureDetectionAPICalls = 6
 
+    /// If an exposure happened more than x days ago, ignore it
+    private let daysSinceExposureCutOff = 14
+
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          exposureManager: ExposureManaging,
@@ -161,8 +164,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             !validKeySetHolders.contains { $0.identifier == keySetHolder.identifier }
         }
 
-        logDebug("Invalid KeySetHolders: \(invalidKeySetHolders.map { $0.identifier })")
-        logDebug("Valid KeySetHolders: \(validKeySetHolders.map { $0.identifier })")
+        logDebug("Invalid KeySetHolders: \(invalidKeySetHolders.count)")
+        logDebug("Valid KeySetHolders: \(validKeySetHolders.count)")
 
         // create results for the keySetHolders with missing local files
         let invalidKeySetHolderResults = invalidKeySetHolders.map { keySetHolder in
@@ -468,6 +471,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             return .error(ExposureDataError.internalError)
         }
 
+        let noExposureReport: Single<(ExposureDetectionResult, ExposureReport?)> = .just((result, nil))
+
         guard let summary = result.exposureSummary else {
             logDebug("No summary to trigger notification for")
             return .just((result, nil, nil))
@@ -491,6 +496,12 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                 let lastDayOverMinimumRiskScore = self.riskCalculationController.getLastExposureDate(fromWindows: windows, withConfiguration: self.configuration)
 
                 guard let exposureDate = lastDayOverMinimumRiskScore else {
+                    observer(.success((result, nil, nil)))
+                    return
+                }
+
+                guard summary.daysSinceLastExposure <= daysSinceExposureCutOff else {
+                    logDebug("Exposure was too long ago (\(summary.daysSinceLastExposure) days). Ignore it")
                     observer(.success((result, nil, nil)))
                     return
                 }

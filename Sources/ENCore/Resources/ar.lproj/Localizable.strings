@@ -120,6 +120,7 @@
 "close" = "إغلاق";
 "error.title" = "حدث خطأ ما";
 "learnMore" = "إقرأ المزيد";
+"retry" = "حاول مجددًا";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "لا يمكن فتح متجر التطبيقات [App Store]";
@@ -469,11 +470,6 @@
 "cards.notificationsOff.title" = "تم <u>  إيقاف تشغيل</u> الإشعارات";
 "cards.notificationsOff.content" = "قم بتشغيل الإشعارات العامة حتى يقوم التطبيق بمشاركة المعلومات إذا لزم الأمر.";
 "cards.notificationsOff.action" = "تشغيل الإشعارات";
-
-"cards.interopannouncement.title" = "من الجيد معرفته";
-"cards.interopannouncement.content" = "اعتبارًا من 30 نوفمبر/تشرين الثاني سيعمل CoronaMelder مع تطبيقات كورونا من دول أوروبية أخرى.";
-"cards.interopannouncement.action" = "المزيد من المعلومات";
-"cards.interopannouncement.secondaryaction" = "إغلاق";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "تشغيل إشعارات التعرض للإصابة";

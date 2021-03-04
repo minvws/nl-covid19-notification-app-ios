@@ -18,13 +18,11 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
     // MARK: - Init
 
-    init(listener: UpdateAppListener,
-         theme: Theme,
+    init(theme: Theme,
          appStoreURL: String?,
          minimumVersionMessage: String?,
          interfaceOrientationStream: InterfaceOrientationStreaming) {
 
-        self.listener = listener
         self.appStoreURL = appStoreURL
         self.minimumVersionMessage = minimumVersionMessage
         self.interfaceOrientationStream = interfaceOrientationStream
@@ -85,7 +83,6 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 
     // MARK: - Private
 
-    private weak var listener: UpdateAppListener?
     private lazy var internalView: UpdateAppView = {
         UpdateAppView(theme: self.theme, showImage: !(interfaceOrientationStream.currentOrientationIsLandscape ?? false))
     }()
@@ -96,6 +93,11 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
 }
 
 private final class UpdateAppView: View {
+
+    lazy var scrollView: UIScrollView = {
+        let view = UIScrollView()
+        return view
+    }()
 
     lazy var stackView: UIStackView = {
         let view = UIStackView()
@@ -166,17 +168,23 @@ private final class UpdateAppView: View {
 
         hasBottomMargin = true
 
-        addSubview(stackView)
+        addSubview(scrollView)
+        scrollView.addSubview(stackView)
         addSubview(button)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
+        scrollView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(button.snp.top)
+        }
+
         stackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(75)
             make.leading.trailing.equalTo(self.safeAreaLayoutGuide).inset(20)
-            make.bottom.lessThanOrEqualTo(button.snp.top).offset(-50).priority(.high)
+            make.bottom.equalToSuperview().offset(-50).priority(.high)
         }
 
         button.snp.makeConstraints { make in

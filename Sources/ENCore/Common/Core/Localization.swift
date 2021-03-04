@@ -35,7 +35,6 @@ public final class Localization {
                 return (arguments.count > 0) ? String(format: value, arguments: arguments) : value
             }
             let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
-
             return (arguments.count > 0) ? String(format: localizedString, arguments: arguments) : localizedString
         }
 
@@ -105,7 +104,6 @@ extension String {
     static var coronaTestExposedPhoneNumber = "0800-2035" // Only shown/used when we know the user was exposed to an affected person
     static var coronaTestWebUrl = "https://coronatest.nl"
     static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
-    static var interoperabilityLink = "https://coronamelder.nl/%@/operabiliteit"
     static var interoperabilityFAQLink = "https://coronamelder.nl/%@/faq/13-gebruik-app-uit-ander-land/"
 
     static func phoneNumberLink(from phoneNumber: String) -> String {
@@ -129,6 +127,7 @@ extension String {
     static var close: String { return Localization.string(for: "close") }
     static var errorTitle: String { return Localization.string(for: "error.title") }
     static var learnMore: String { return Localization.string(for: "learnMore") }
+    static var retry: String { return Localization.string(for: "retry") }
 
     // MARK: - Update App
 
@@ -540,17 +539,6 @@ extension String {
     static var cardsNotificationsOffTitle: String { return Localization.string(for: "cards.notificationsOff.title") }
     static var cardsNotificationsOffContent: String { return Localization.string(for: "cards.notificationsOff.content") }
     static var cardsNotificationsOffAction: String { return Localization.string(for: "cards.notificationsOff.action") }
-
-    // MARK: - Cards | Interop Announcement
-
-    static var cardsInteropAnnouncementTitle: String { return Localization.string(for: "cards.interopannouncement.title") }
-    static var cardsInteropAnnouncementContent: String { return Localization.string(for: "cards.interopannouncement.content") }
-    static var cardsInteropAnnouncementAction: String { return Localization.string(for: "cards.interopannouncement.action") }
-    static var cardsInteropAnnouncementSecondaryAction: String { return Localization.string(for: "cards.interopannouncement.secondaryaction") }
-    static var cardsInteropabilityURL: String {
-        let interopURLLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
-        return Localization.string(for: .interoperabilityLink, [interopURLLanguage.rawValue])
-    }
 
     // MARK: - Enable Settings | Exposure Notifications
 

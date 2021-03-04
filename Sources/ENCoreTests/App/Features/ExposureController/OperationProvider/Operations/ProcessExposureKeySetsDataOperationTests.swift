@@ -333,6 +333,33 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationArgValues.first, 3)
     }
 
+    func test_shouldNotShowExposureNotificationForExposureMoreThan14DaysAgo() throws {
+
+        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+
+        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
+
+        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            let exposureSummary = ExposureDetectionSummaryMock()
+            exposureSummary.daysSinceLastExposure = 15
+            completion(.success(exposureSummary))
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                subscriptionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+    }
+
     func test_shouldPersistExposureReport() throws {
 
         let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)

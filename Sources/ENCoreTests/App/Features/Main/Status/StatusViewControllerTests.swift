@@ -33,7 +33,6 @@ final class StatusViewControllerTests: TestCase {
 
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
-        mockExposureDataController.seenAnnouncements = [.interopAnnouncement]
         mockWebViewBuildable = WebviewBuildableMock()
         mockPauseController = PauseControllingMock()
         mockPushNotificationStream = PushNotificationStreamingMock()
@@ -90,12 +89,6 @@ final class StatusViewControllerTests: TestCase {
     }
 
     func test_snapshot_authorized_denied_notified() {
-        set(activeState: .authorizationDenied, notified: true)
-        snapshots(matching: viewController)
-    }
-
-    func test_snapshot_authorized_denied_notified_whith_announcement() {
-        mockExposureDataController.seenAnnouncements = []
         set(activeState: .authorizationDenied, notified: true)
         snapshots(matching: viewController)
     }

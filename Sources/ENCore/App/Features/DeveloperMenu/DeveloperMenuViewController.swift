@@ -141,10 +141,16 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
 
     private var sections: [(title: String, items: [DeveloperItem])] {
         return [
-            ("Onboarding", [
+            ("Show Screens", [
                 DeveloperItem(title: "Show Onboarding",
                               subtitle: "Launches Onboarding",
-                              action: { [weak self] in self?.launchOnboarding() })
+                              action: { [weak self] in self?.launchOnboarding() }),
+                DeveloperItem(title: "Show OS Update Screen",
+                              subtitle: "Show screen informing user the operating system needs to be updated to support Exposure Notification",
+                              action: { [weak self] in self?.listener?.developerMenuRequestUpdateOperatingSystem() }),
+                DeveloperItem(title: "Show App Update Screen",
+                              subtitle: "Show screen informing user he needs to update the app to keep it working correctly",
+                              action: { [weak self] in self?.listener?.developerMenuRequestUpdateApp(appStoreURL: "https://apps.apple.com/nl/app/id1517652429", minimumVersionMessage: nil) })
             ]),
             ("Exposure", [
                 DeveloperItem(title: "Change Exposure State",
@@ -187,6 +193,9 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 DeveloperItem(title: "Schedule pause time in minutes instead of hours",
                               subtitle: "Currently set to: \(getPauseUnit())",
                               action: { [weak self] in self?.togglePauseTimeUnit() }),
+                DeveloperItem(title: "Force use of bundled treatment perspective",
+                              subtitle: "Current preference: \(getForceBundledTreatmentPerspective() ? "Bundled" : "Downloaded")",
+                              action: { [weak self] in self?.toggleForceBundledTreatmentPerspective() }),
                 DeveloperItem(title: "Download latest Treatment Perspective",
                               subtitle: "",
                               action: { [weak self] in self?.downloadLatestTreatmentPerspective() })
@@ -300,6 +309,20 @@ final class DeveloperMenuViewController: ViewController, DeveloperMenuViewContro
                 self?.internalView.tableView.reloadData()
             })
             .disposed(by: disposeBag)
+    }
+
+    private func getForceBundledTreatmentPerspective() -> Bool {
+        #if DEBUG || USE_DEVELOPER_MENU
+            return MessageManagerOverrides.forceBundledTreatmentPerspective
+        #else
+            return false
+        #endif
+    }
+
+    private func toggleForceBundledTreatmentPerspective() {
+        #if DEBUG || USE_DEVELOPER_MENU
+            MessageManagerOverrides.forceBundledTreatmentPerspective.toggle()
+        #endif
     }
 
     private func eraseCompleteStorage() {

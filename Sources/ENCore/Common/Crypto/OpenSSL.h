@@ -9,12 +9,20 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSUInteger, SignatureValidationResult) {
+    SIGNATUREVALIDATIONRESULT_SUCCESS = 1,
+    SIGNATUREVALIDATIONRESULT_GENERICERROR = 2,
+    SIGNATUREVALIDATIONRESULT_INCORRECTCOMMONNAME = 3,
+    SIGNATUREVALIDATIONRESULT_VERIFICATIONFAILED = 4,
+    SIGNATUREVALIDATIONRESULT_INCORRECTAUTHORITYKEYIDENTIFIER = 5
+};
+
 @interface OpenSSL : NSObject
 
 - (BOOL)validateSerialNumber:(uint64_t)serialNumber forCertificateData:(NSData *)certificateData;
 - (BOOL)validateSubjectKeyIdentifier:(NSData *)subjectKeyIdentifier forCertificateData:(NSData *)certificateData;
 
-- (BOOL)validatePKCS7Signature:(NSData *)signatureData
+- (SignatureValidationResult)validatePKCS7Signature:(NSData *)signatureData
                    contentData:(NSData *)contentData
                certificateData:(NSData *)certificateData
         authorityKeyIdentifier:(NSData *)expectedAuthorityKeyIdentifierData

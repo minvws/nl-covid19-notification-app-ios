@@ -36,16 +36,6 @@ final class CardViewControllerSnapshotTests: TestCase {
         snapshots(matching: viewController)
     }
 
-    func test_cardViewController_bluetoothOffAndInteropAnnouncement() {
-        viewController = CardViewController(listener: mockCardListener,
-                                            theme: theme,
-                                            types: [.bluetoothOff, .interopAnnouncement],
-                                            dataController: mockExposureDataController,
-                                            pauseController: mockPauseController)
-
-        snapshots(matching: viewController)
-    }
-
     func test_cardViewController_exposureOff() {
         viewController = CardViewController(listener: mockCardListener,
                                             theme: theme,
