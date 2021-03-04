@@ -97,6 +97,9 @@ final class StorageController: StorageControlling, Logging {
     }
 
     fileprivate func clearPreviouslyStoredVolatileFiles() {
+
+        logDebug("Removing contents of temporary folders: \(volatileFileUrls)")
+
         volatileFileUrls.forEach {
             do {
                 try fileManager.removeItem(at: $0)
