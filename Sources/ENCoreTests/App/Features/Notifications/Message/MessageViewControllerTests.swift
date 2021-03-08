@@ -39,6 +39,7 @@ final class MessageViewControllerTests: TestCase {
     }
 
     override func tearDownWithError() throws {
+        try super.tearDownWithError()
         LocalizationOverrides.overriddenIsRTL = nil
     }
 
@@ -129,7 +130,7 @@ final class MessageViewControllerTests: TestCase {
     private lazy var fakeMessageRTLWithList: LocalizedTreatmentPerspective = {
         LocalizedTreatmentPerspective(paragraphs: [
             .init(title: "هل أنت بحاجة الى مساعدة طبية؟",
-                  body: NSAttributedString.htmlWithBulletList(text: "هل أنت بحاجة الى مساعدة طبية؟\\n\\n<ul><li>لا تذهب إلى الطبيب أو المستشفى، ولكن اتصل بطبيبك أولاً. قل له أنك كنت بالقرب من شخص مصاب بفيروس كورونا.</li><li>.بإمكان طبيب العائلة أو مساعدة طبية أخرى القيام بزيارتك.</li></ul>", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .right),
+                  body: NSAttributedString.htmlWithBulletList(text: "<ul><li>انتبه لصحتك دائمًا. هل لديك أعراض؟ ابق في المنزل إذًا واخضع للفحص مرة أخرى على الفور.</li><li>ابق لغاية بعيدًا عن الأشخاص ذوي الصحة الضعيفة أو الاشخاص الأكثر عرضة للخطر. تجنب الأماكن المزدحمة وابق على مسافة 1.5 متر. </li></ul>", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .right),
                   type: .paragraph)
         ], quarantineDays: 10)
     }()
