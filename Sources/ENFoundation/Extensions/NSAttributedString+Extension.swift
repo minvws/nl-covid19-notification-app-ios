@@ -10,8 +10,10 @@ import UIKit
 
 public extension NSAttributedString {
 
-    static let accessibilityListIndex = "index"
-    static let accessibilityListSize = "count"
+    enum AccessibilityTextCustomValue: String {
+        case accessibilityListIndex = "index"
+        case accessibilityListSize = "count"
+    }
 
     static func make(text: String, font: UIFont, textColor: UIColor = .black, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil, letterSpacing: CGFloat? = nil) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
@@ -114,8 +116,8 @@ public extension NSAttributedString {
             let attributedLine = NSMutableAttributedString(attributedString: textToFormat.attributedSubstring(from: range))
             attributedLine.reformatBulletPoint(font: font, theme: theme, textAlignment: textAlignment)
             attributedLine.addAttribute(.accessibilityTextCustom, value: [
-                accessibilityListIndex: index,
-                accessibilityListSize: bullets.count
+                AccessibilityTextCustomValue.accessibilityListIndex.rawValue: index,
+                AccessibilityTextCustomValue.accessibilityListSize.rawValue: bullets.count
             ], range: NSRange(location: 0, length: attributedLine.length))
             textToFormat.replaceCharacters(in: range, with: attributedLine)
         }
@@ -192,8 +194,8 @@ public extension NSAttributedString {
 
         return bullets.enumerated().map { index, bullet in
             bullet.addAttribute(.accessibilityTextCustom, value: [
-                accessibilityListIndex: index,
-                accessibilityListSize: bullets.count
+                AccessibilityTextCustomValue.accessibilityListIndex.rawValue: index,
+                AccessibilityTextCustomValue.accessibilityListSize.rawValue: bullets.count
             ], range: NSRange(location: 0, length: bullet.string.count))
             return bullet
         }

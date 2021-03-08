@@ -38,9 +38,11 @@ class Label: UILabel {
         set {
             super.attributedText = newValue
 
-            guard let attributes = newValue?.attributes(at: 0, effectiveRange: nil) else {
+            guard let newText = newValue, newText.length > 0 else {
                 return
             }
+
+            let attributes = newText.attributes(at: 0, effectiveRange: nil)
 
             guard let accessibilityTextCustom = attributes.filter({ (attribute) -> Bool in
                 attribute.key == .accessibilityTextCustom
@@ -52,8 +54,8 @@ class Label: UILabel {
                 return
             }
 
-            guard let index = data[NSAttributedString.accessibilityListIndex],
-                let total = data[NSAttributedString.accessibilityListSize] else {
+            guard let index = data[NSAttributedString.AccessibilityTextCustomValue.accessibilityListIndex.rawValue],
+                let total = data[NSAttributedString.AccessibilityTextCustomValue.accessibilityListSize.rawValue] else {
                 return
             }
 
