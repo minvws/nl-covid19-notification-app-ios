@@ -124,8 +124,8 @@
 "learnMore" = "En savoir plus";
 
 /* MARK: - Accessibility */
-"accessibility.startOfList" = "Start of list";
-"accessibility.endOfList" = "End of list";
+"accessibility.startOfList" = "Début de liste";
+"accessibility.endOfList" = "Fin de liste";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Impossible d'ouvrir l'App Store.";

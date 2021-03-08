@@ -122,8 +122,8 @@
 "learnMore" = "Citiți mai mult";
 
 /* MARK: - Accessibility */
-"accessibility.startOfList" = "Start of list";
-"accessibility.endOfList" = "End of list";
+"accessibility.startOfList" = "Începutul listei";
+"accessibility.endOfList" = "Sfârșitul listei";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store nu poate fi deschis";

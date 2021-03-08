@@ -122,8 +122,8 @@
 "learnMore" = "Повече информация";
 
 /* MARK: - Accessibility */
-"accessibility.startOfList" = "Start of list";
-"accessibility.endOfList" = "End of list";
+"accessibility.startOfList" = "Начало на списъка";
+"accessibility.endOfList" = "Край на списъка";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store не се отваря.";

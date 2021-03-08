@@ -122,8 +122,8 @@
 "learnMore" = "Daha fazlasını oku";
 
 /* MARK: - Accessibility */
-"accessibility.startOfList" = "Start of list";
-"accessibility.endOfList" = "End of list";
+"accessibility.startOfList" = "Listenin başlangıcı";
+"accessibility.endOfList" = "Listenin sonu";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store açılamıyor.";

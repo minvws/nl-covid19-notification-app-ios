@@ -122,8 +122,8 @@
 "learnMore" = "إقرأ المزيد";
 
 /* MARK: - Accessibility */
-"accessibility.startOfList" = "Start of list";
-"accessibility.endOfList" = "End of list";
+"accessibility.startOfList" = "بداية القائمة";
+"accessibility.endOfList" = "نهاية القائمة";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "لا يمكن فتح متجر التطبيقات [App Store]";
