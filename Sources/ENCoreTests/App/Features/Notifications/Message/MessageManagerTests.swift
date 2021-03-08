@@ -56,7 +56,7 @@ class MessageManagerTests: TestCase {
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
         XCTAssertEqual(result.paragraphs.last?.title, "Title 2 French")
-        XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2") // Uses english resource because french stirng doesn't exist
+        XCTAssertEqual(result.paragraphs.last?.body.first?.string, "Body 2") // Uses english resource because french stirng doesn't exist
     }
 
     func test_getLocalizedTreatmentPerspective_shouldReplacePlaceHolders() {
@@ -76,9 +76,9 @@ class MessageManagerTests: TestCase {
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
         XCTAssertEqual(result.paragraphs.first?.title, "Title ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
-        XCTAssertEqual(result.paragraphs.first?.body.string, "Body ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
+        XCTAssertEqual(result.paragraphs.first?.body.first?.string, "Body ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
         XCTAssertEqual(result.paragraphs.last?.title, "Title 2")
-        XCTAssertEqual(result.paragraphs.last?.body.string, "Body 2")
+        XCTAssertEqual(result.paragraphs.last?.body.first?.string, "Body 2")
     }
 
     func test_getLocalizedTreatmentPerspective_shouldReplacePlaceHolders_Arabic() throws {
@@ -101,7 +101,7 @@ class MessageManagerTests: TestCase {
         let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
 
         // Assert
-        let bodyString = try XCTUnwrap(result.paragraphs.first?.body.string)
+        let bodyString = try XCTUnwrap(result.paragraphs.first?.body.first?.string)
         XCTAssertFalse(bodyString.contains("{ExposureDate+5}"))
         XCTAssertFalse(bodyString.contains("{ExposureDate+10}"))
     }
@@ -131,7 +131,7 @@ class MessageManagerTests: TestCase {
 
         // Assert
         XCTAssertEqual(result.paragraphs.first?.title, "{SomeUnknownPlaceholder} Tuesday, June 30, Tuesday, June 30")
-        XCTAssertEqual(result.paragraphs.first?.body.string, "{SomeUnknownPlaceholder} Tuesday, June 30")
+        XCTAssertEqual(result.paragraphs.first?.body.first?.string, "{SomeUnknownPlaceholder} Tuesday, June 30")
     }
 
     func test_getLocalizedTreatmentPerspective_shouldFormatBulletPoints() throws {
@@ -149,7 +149,9 @@ class MessageManagerTests: TestCase {
         // Assert
         XCTAssertEqual(result.paragraphs.count, 1)
         XCTAssertEqual(result.paragraphs.first?.title, "Title")
-        XCTAssertEqual(result.paragraphs.first?.body.string, "●\tsome bullet point\n●\tanother bullet point\nand some followup text")
+        XCTAssertEqual(result.paragraphs.first?.body[0].string, "●\tsome bullet point")
+        XCTAssertEqual(result.paragraphs.first?.body[1].string, "●\tanother bullet point")
+        XCTAssertEqual(result.paragraphs.first?.body[2].string, "and some followup text")
     }
 
     /// Makes sure all the resource keys are available in all languages
