@@ -84,14 +84,14 @@ public extension NSAttributedString {
         return output
     }
 
-    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment) -> [NSAttributedString] {
+    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment) -> NSAttributedString {
 
         let inputString = text
             .replacingOccurrences(of: "\\n", with: "\n")
             .replacingOccurrences(of: "\n\n", with: "<br /><br />")
 
         guard containsHtml(inputString) else {
-            return [NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))]
+            return NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
         }
 
         let textToFormat = NSMutableAttributedString(attributedString: makeFromHtml(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
@@ -99,7 +99,7 @@ public extension NSAttributedString {
         let bullet = "\t•\t"
 
         guard textToFormat.string.contains(bullet) else {
-            return [textToFormat]
+            return textToFormat
         }
 
         // Find all lines starting with bullets
@@ -124,7 +124,6 @@ public extension NSAttributedString {
 
         return textToFormat
             .attributedStringByTrimmingCharacterSet(charSet: .whitespacesAndNewlines)
-            .split("\n")
     }
 
     static func makeBullet(_ string: String,

@@ -149,9 +149,7 @@ class MessageManagerTests: TestCase {
         // Assert
         XCTAssertEqual(result.paragraphs.count, 1)
         XCTAssertEqual(result.paragraphs.first?.title, "Title")
-        XCTAssertEqual(result.paragraphs.first?.body[0].string, "●\tsome bullet point")
-        XCTAssertEqual(result.paragraphs.first?.body[1].string, "●\tanother bullet point")
-        XCTAssertEqual(result.paragraphs.first?.body[2].string, "and some followup text")
+        XCTAssertEqual(result.paragraphs.first?.body.first?.string, "●\tsome bullet point\n●\tanother bullet point\nand some followup text")
     }
 
     /// Makes sure all the resource keys are available in all languages

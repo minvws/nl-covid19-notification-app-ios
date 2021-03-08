@@ -99,7 +99,7 @@ final class MessageManager: MessageManaging, Logging {
 
             return LocalizedTreatmentPerspective.Paragraph(
                 title: paragraphTitle.string,
-                body: paragraphBody,
+                body: [paragraphBody],
                 type: type
             )
         }
