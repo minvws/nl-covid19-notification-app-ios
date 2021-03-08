@@ -123,6 +123,10 @@
 "learnMore" = "Read more";
 "retry" = "Try again";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "Can't open the App Store";
 "updateApp.title" = "The app needs to be updated";

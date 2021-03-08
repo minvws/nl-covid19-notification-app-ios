@@ -122,6 +122,10 @@
 "learnMore" = "Lees meer";
 "retry" = "Probeer opnieuw";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Begin van lijst";
+"accessibility.endOfList" = "Einde van lijst";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "De App Store kan niet geopend worden.";
 "updateApp.title" = "De app heeft een update nodig";

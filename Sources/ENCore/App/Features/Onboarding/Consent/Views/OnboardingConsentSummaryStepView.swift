@@ -45,10 +45,14 @@ final class OnboardingConsentSummaryStepView: View {
         clipsToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
 
-        self.imageView.image = self.consentSummaryStep.image
-        self.label.attributedText = self.consentSummaryStep.title
+        imageView.image = consentSummaryStep.image
+        label.attributedText = consentSummaryStep.title
 
         viewsInDisplayOrder.forEach { addSubview($0) }
+
+        isAccessibilityElement = true
+        shouldGroupAccessibilityChildren = true
+        accessibilityAttributedLabel = consentSummaryStep.title
     }
 
     override func setupConstraints() {

@@ -231,7 +231,7 @@ private final class MoreInformationView: View {
         for (index, object) in data.enumerated() {
             let borderIsHidden = index == lastIndex
             let view = MoreInformationCell(listener: listener, theme: theme, data: object, borderIsHidden: borderIsHidden)
-            stackView.addArrangedSubview(view)
+            stackView.addListSubview(view, index: index, total: data.count)
         }
     }
 }

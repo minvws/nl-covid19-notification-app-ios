@@ -42,6 +42,10 @@ final class EnableSettingStepView: View {
         if let actionView = actionView {
             addSubview(actionView)
         }
+
+        isAccessibilityElement = true
+        shouldGroupAccessibilityChildren = true
+        accessibilityLabel = String(format: "%d. %@", stepIndex, step.description.string)
     }
 
     override func setupConstraints() {

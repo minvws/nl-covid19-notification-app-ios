@@ -122,6 +122,10 @@
 "learnMore" = "Czytaj więcej";
 "retry" = "Spróbuj ponownie";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Początek listy";
+"accessibility.endOfList" = "Koniec listy";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "Nie można otworzyć App Store.";
 "updateApp.title" = "Aplikacja wymaga aktualizacji";
