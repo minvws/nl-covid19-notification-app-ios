@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 
 enum LocalFolder {
@@ -17,9 +18,10 @@ enum LocalFolder {
 /// @mockable
 protocol LocalPathProviding {
     func path(for folder: LocalFolder) -> URL?
+    var temporaryDirectoryUrl: URL { get }
 }
 
-final class LocalPathProvider: LocalPathProviding {
+final class LocalPathProvider: LocalPathProviding, Logging {
 
     init(fileManager: FileManager = .default) {
         self.fileManager = fileManager
@@ -44,6 +46,11 @@ final class LocalPathProvider: LocalPathProviding {
         }
 
         return createFolder(with: finalPath) ? finalPath : nil
+    }
+
+    var temporaryDirectoryUrl: URL {
+        return URL(fileURLWithPath: NSTemporaryDirectory(),
+                   isDirectory: true)
     }
 
     // MARK: - Private

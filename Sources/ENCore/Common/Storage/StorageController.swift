@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 
 /// On iOS version lower than 13, encoding values such as Booleans is not supported. To work around this we wrap the value in a struct
@@ -53,15 +54,60 @@ extension StorageControlling {
     }
 }
 
-final class StorageController: StorageControlling {
+final class StorageController: StorageControlling, Logging {
 
-    init(localPathProvider: LocalPathProviding) {
+    init(fileManager: FileManaging, localPathProvider: LocalPathProviding, environmentController: EnvironmentControlling) {
+        self.fileManager = fileManager
         self.localPathProvider = localPathProvider
-
-        prepareStore()
+        self.environmentController = environmentController
     }
 
     // MARK: - StorageControlling
+
+    func prepareStore() {
+
+        guard !storeAvailable else {
+            return
+        }
+
+        guard let storeUrl = self.storeUrl(isVolatile: false) else {
+            return
+        }
+
+        guard let volatileStoreUrl = self.storeUrl(isVolatile: true) else {
+            return
+        }
+
+        do {
+            try fileManager.createDirectory(at: storeUrl,
+                                            withIntermediateDirectories: true,
+                                            attributes: nil)
+
+            try fileManager.createDirectory(at: volatileStoreUrl,
+                                            withIntermediateDirectories: true,
+                                            attributes: nil)
+        } catch {
+            logDebug("Error preparing store: \(error)")
+            return
+        }
+
+        clearTemporaryDirectory()
+
+        storeAvailable = true
+    }
+
+    fileprivate func clearTemporaryDirectory() {
+
+        let tempFolderURL = localPathProvider.temporaryDirectoryUrl
+
+        logDebug("Removing contents of temporary folder: \(tempFolderURL)")
+
+        do {
+            try fileManager.removeItem(at: tempFolderURL)
+        } catch {
+            logError("Error deleting file at url \(tempFolderURL) with error: \(error)")
+        }
+    }
 
     func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
         return store(guardAccess: true, data: data, identifiedBy: key, completion: completion)
@@ -195,36 +241,12 @@ final class StorageController: StorageControlling {
         guardAccess ? accessQueue.sync(execute: operation) : operation()
     }
 
-    private func prepareStore() {
-        guard let storeUrl = self.storeUrl(isVolatile: false) else {
-            return
-        }
-
-        guard let volatileStoreUrl = self.storeUrl(isVolatile: true) else {
-            return
-        }
-
-        do {
-            try FileManager.default.createDirectory(at: storeUrl,
-                                                    withIntermediateDirectories: true,
-                                                    attributes: nil)
-
-            try FileManager.default.createDirectory(at: volatileStoreUrl,
-                                                    withIntermediateDirectories: true,
-                                                    attributes: nil)
-        } catch {
-            return
-        }
-
-        storeAvailable = true
-    }
-
     private func retrieveData(for key: String, storeUrl: URL, maximumAge: TimeInterval?) -> Data? {
         let url = storeUrl.appendingPathComponent(key)
 
         // check date last modified, if any
         if let maximumAge = maximumAge,
-            let attributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+            let attributes = try? fileManager.attributesOfItem(atPath: url.path),
             let dateLastModified = attributes[.modificationDate] as? Date {
 
             if dateLastModified.addingTimeInterval(maximumAge) < Date() {
@@ -234,7 +256,7 @@ final class StorageController: StorageControlling {
 
         // check if path exists and is a file
         var isDirectory = ObjCBool(false)
-        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), !isDirectory.boolValue else {
+        guard fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory), !isDirectory.boolValue else {
             return nil
         }
 
@@ -257,7 +279,7 @@ final class StorageController: StorageControlling {
         let url = storeUrl.appendingPathComponent(key)
 
         do {
-            try FileManager.default.removeItem(at: url)
+            try fileManager.removeItem(at: url)
             return true
         } catch {
             return false
@@ -322,25 +344,40 @@ final class StorageController: StorageControlling {
         return query
     }
 
+    private let fileManager: FileManaging
     private let localPathProvider: LocalPathProviding
+    private let environmentController: EnvironmentControlling
     private let serviceName = (Bundle.main.bundleIdentifier ?? "nl.rijksoverheid.en") + ".exposure"
-    private var storeAvailable = false
     private var inMemoryStore: [String: Any] = [:]
     private let secureAccessQueue = DispatchQueue(label: "secureAccessQueue")
     private let storageAccessQueue = DispatchQueue(label: "storageAccessQueue")
     private let accessQueue = DispatchQueue(label: "accessQueue", attributes: .concurrent)
 
-    private func storeUrl(isVolatile: Bool) -> URL? {
+    fileprivate func storeUrl(isVolatile: Bool) -> URL? {
         let base = isVolatile ? localPathProvider.path(for: .cache) : localPathProvider.path(for: .documents)
 
         return base?.appendingPathComponent("store")
     }
+
+    private(set) var storeAvailable = false
 }
 
 private final class ExclusiveStorageController: StorageControlling {
 
     fileprivate init(storageController: StorageController) {
         self.storageController = storageController
+    }
+
+    func prepareStore() {
+        storageController.prepareStore()
+    }
+
+    func storeUrl(isVolatile: Bool) -> URL? {
+        return storageController.storeUrl(isVolatile: isVolatile)
+    }
+
+    func clearPreviouslyStoredVolatileFiles() {
+        storageController.clearTemporaryDirectory()
     }
 
     func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {

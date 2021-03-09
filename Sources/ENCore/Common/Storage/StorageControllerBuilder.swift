@@ -57,10 +57,10 @@ enum StoreError: Error {
 
 /// @mockable(history: retrieveData = true)
 protocol StorageControlling {
+    func prepareStore()
     func store<Key: StoreKey>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ())
     func retrieveData<Key: StoreKey>(identifiedBy key: Key) -> Data?
     func removeData<Key: StoreKey>(for key: Key, completion: @escaping (StoreError?) -> ())
-
     func requestExclusiveAccess(_ work: @escaping (StorageControlling) -> ())
 }
 
@@ -76,12 +76,24 @@ private final class StorageDependencyProvider: DependencyProvider<EmptyDependenc
     var localPathProvider: LocalPathProviding {
         return LocalPathProvider()
     }
+    var environmentController: EnvironmentControlling {
+        return EnvironmentController()
+    }
+
+    var fileManager: FileManaging {
+        return FileManager()
+    }
 }
 
 final class StorageControllerBuilder: Builder<EmptyDependency>, StorageControllerBuildable {
     func build() -> StorageControlling {
         let dependencyProvider = StorageDependencyProvider()
 
-        return StorageController(localPathProvider: dependencyProvider.localPathProvider)
+        let storageController = StorageController(fileManager: dependencyProvider.fileManager,
+                                                  localPathProvider: dependencyProvider.localPathProvider,
+                                                  environmentController: dependencyProvider.environmentController)
+        storageController.prepareStore()
+
+        return storageController
     }
 }

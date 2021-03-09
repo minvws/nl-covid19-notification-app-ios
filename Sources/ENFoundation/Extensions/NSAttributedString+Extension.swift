@@ -10,6 +10,11 @@ import UIKit
 
 public extension NSAttributedString {
 
+    enum AccessibilityTextCustomValue: String {
+        case accessibilityListIndex = "index"
+        case accessibilityListSize = "count"
+    }
+
     static func make(text: String, font: UIFont, textColor: UIColor = .black, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil, letterSpacing: CGFloat? = nil) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment
@@ -63,14 +68,30 @@ public extension NSAttributedString {
         return NSAttributedString(string: text)
     }
 
-    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment) -> NSAttributedString {
+    func split(_ separatedBy: String) -> [NSAttributedString] {
+        var output = [NSAttributedString]()
+
+        let parts = string.components(separatedBy: separatedBy)
+
+        var start = 0
+        for part in parts {
+            let range = NSMakeRange(start, part.utf16.count)
+            let attributedString = attributedSubstring(from: range)
+            output.append(attributedString)
+            start += range.length + separatedBy.utf16.count
+        }
+
+        return output
+    }
+
+    static func htmlWithBulletList(text: String, font: UIFont, textColor: UIColor, theme: Theme, textAlignment: NSTextAlignment) -> [NSAttributedString] {
 
         let inputString = text
             .replacingOccurrences(of: "\\n", with: "\n")
             .replacingOccurrences(of: "\n\n", with: "<br /><br />")
 
         guard containsHtml(inputString) else {
-            return NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
+            return [NSMutableAttributedString(attributedString: make(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))]
         }
 
         let textToFormat = NSMutableAttributedString(attributedString: makeFromHtml(text: inputString, font: font, textColor: textColor, textAlignment: textAlignment))
@@ -78,23 +99,32 @@ public extension NSAttributedString {
         let bullet = "\t•\t"
 
         guard textToFormat.string.contains(bullet) else {
-            return textToFormat
+            return [textToFormat]
         }
 
-        // Replace all lines starting with bullets with our own custom-formatted bulleted line
-        textToFormat.string
+        // Find all lines starting with bullets
+        let bullets = textToFormat.string
             .components(separatedBy: "\n")
             .filter { $0.hasPrefix(bullet) }
-            .forEach { line in
-                guard let lineRange = textToFormat.string.range(of: line) else {
-                    return
-                }
-                let attributedLine = NSMutableAttributedString(attributedString: textToFormat.attributedSubstring(from: NSRange(lineRange, in: line)))
-                attributedLine.reformatBulletPoint(font: font, theme: theme, textAlignment: textAlignment)
-                textToFormat.replaceCharacters(in: NSRange(lineRange, in: line), with: attributedLine)
-            }
 
-        return textToFormat.attributedStringByTrimmingCharacterSet(charSet: .whitespacesAndNewlines)
+        // Replace all with our own custom-formatted bulleted line
+        bullets.enumerated().forEach { index, line in
+            guard let lineRange = textToFormat.string.range(of: line) else {
+                return
+            }
+            let range = NSRange(lineRange, in: line)
+            let attributedLine = NSMutableAttributedString(attributedString: textToFormat.attributedSubstring(from: range))
+            attributedLine.reformatBulletPoint(font: font, theme: theme, textAlignment: textAlignment)
+            attributedLine.addAttribute(.accessibilityTextCustom, value: [
+                AccessibilityTextCustomValue.accessibilityListIndex.rawValue: index,
+                AccessibilityTextCustomValue.accessibilityListSize.rawValue: bullets.count
+            ], range: NSRange(location: 0, length: attributedLine.length))
+            textToFormat.replaceCharacters(in: range, with: attributedLine)
+        }
+
+        return textToFormat
+            .attributedStringByTrimmingCharacterSet(charSet: .whitespacesAndNewlines)
+            .split("\n")
     }
 
     static func makeBullet(_ string: String,
@@ -103,7 +133,7 @@ public extension NSAttributedString {
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12,
-                           textAlignment: NSTextAlignment = .left) -> NSAttributedString {
+                           textAlignment: NSTextAlignment = .left) -> NSMutableAttributedString {
 
         let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
 
@@ -148,15 +178,27 @@ public extension NSAttributedString {
                            font: UIFont,
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
-                           paragraphSpacing: CGFloat = 12) -> [NSAttributedString] {
+                           paragraphSpacing: CGFloat = 12,
+                           textAlignment: NSTextAlignment = .left) -> [NSAttributedString] {
 
-        let bulletList = stringList.map {
+        let bullets = stringList.map {
             makeBullet($0,
                        theme: theme,
-                       font: font)
+                       font: font,
+                       bullet: bullet,
+                       indentation: indentation,
+                       paragraphSpacing: paragraphSpacing,
+                       textAlignment: textAlignment
+            )
         }
 
-        return bulletList
+        return bullets.enumerated().map { index, bullet in
+            bullet.addAttribute(.accessibilityTextCustom, value: [
+                AccessibilityTextCustomValue.accessibilityListIndex.rawValue: index,
+                AccessibilityTextCustomValue.accessibilityListSize.rawValue: bullets.count
+            ], range: NSRange(location: 0, length: bullet.string.count))
+            return bullet
+        }
     }
 
     private static func containsHtml(_ value: String) -> Bool {

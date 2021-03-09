@@ -9,7 +9,7 @@ import ENFoundation
 import SnapKit
 import UIKit
 
-final class AboutOverviewViewController: ViewController, Logging, UITableViewDelegate, UITableViewDataSource {
+final class AboutOverviewViewController: TableViewController, Logging {
 
     init(listener: AboutOverviewListener, aboutManager: AboutManaging, theme: Theme) {
         self.listener = listener
@@ -44,7 +44,7 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
         return 2
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == questionsSectionIndex {
             return aboutManager.questionsSection.entries.count
         } else {
@@ -52,7 +52,7 @@ final class AboutOverviewViewController: ViewController, Logging, UITableViewDel
         }
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell
         let cellIdentifier = "AboutCell"
         let questions = indexPath.section == questionsSectionIndex ? aboutManager.questionsSection.entries : aboutManager.aboutSection.entries

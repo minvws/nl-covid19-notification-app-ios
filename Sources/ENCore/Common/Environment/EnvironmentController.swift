@@ -16,6 +16,7 @@ protocol EnvironmentControlling {
     var appVersion: String? { get }
     var supportsExposureNotification: Bool { get }
     var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion { get }
+    var isDebugVersion: Bool { get }
     var appSupportsiOSversion: Bool { get }
 }
 
@@ -84,7 +85,15 @@ class EnvironmentController: EnvironmentControlling {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     }
 
-    var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion {
+    var isDebugVersion: Bool {
+        #if DEBUG
+            return true
+        #else
+            return false
+        #endif
+    }
+
+    private var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion {
         if #available(iOS 13.7, *) {
             return .version2
         } else if #available(iOS 13.5, *) {

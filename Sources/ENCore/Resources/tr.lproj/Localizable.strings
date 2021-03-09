@@ -122,6 +122,10 @@
 "learnMore" = "Daha fazlasını oku";
 "retry" = "Tekrar deneyin";
 
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Listenin başlangıcı";
+"accessibility.endOfList" = "Listenin sonu";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store açılamıyor.";
 "updateApp.title" = "Uygulamanın güncellenmesi gerekiyor";

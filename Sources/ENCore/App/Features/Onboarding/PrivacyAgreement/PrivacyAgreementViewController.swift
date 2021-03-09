@@ -115,7 +115,9 @@ private final class PrivacyAgreementView: View {
         scrollView.addSubview(readPrivacyAgreementLabel)
         scrollView.addSubview(stepsTitleLabel)
 
-        stepViews.forEach { stackView.addArrangedSubview($0) }
+        stepViews.enumerated().forEach { index, stepView in
+            stackView.addListSubview(stepView, index: index, total: stepViews.count)
+        }
 
         bottomStackView.addArrangedSubview(privacyAgreementButton)
         bottomStackView.addArrangedSubview(nextButton)
