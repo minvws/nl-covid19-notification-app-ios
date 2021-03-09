@@ -241,7 +241,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Toegankelijkheid";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben. En natuurlijk alleen als die persoon ook de app gebruikt.<br><br>Of je een melding krijgt hangt af van de sterkte van het bluetoothsignaal. En van de duur van jullie contact.<br><br>Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Jullie waren dicht bij elkaar, dus het bluetooth-signaal was sterk. Maar het contact duurde zo kort dat de kans op besmetting heel erg klein is.<br><br>Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het bluetoothsignaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
+"help.faq.notification.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je in totaal minstens 15 minuten dicht bij een of meerdere personen bent geweest die later corona bleken te hebben. En natuurlijk alleen als die persoon ook de app gebruikt.<br><br>Of je een melding krijgt hangt af van de sterkte van het bluetoothsignaal. En van de duur van jullie contact.<br><br>Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Jullie waren dicht bij elkaar, dus het bluetooth-signaal was sterk. Maar het contact duurde zo kort dat de kans op besmetting heel erg klein is.<br><br>Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het bluetoothsignaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
 "help.faq.bluetooth.title" = "Werkt bluetooth door muren heen?";
 "help.faq.bluetooth.description" = "Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon.<br><br>De kans is bijvoorbeeld heel klein dat je app het bluetoothsignaal van je buren ontvangt.<br><br>En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman corona blijkt te hebben en jullie niet in dezelfde ruimte zijn geweest.";
 "help.faq.power_usage.title" = "Hoeveel stroom gebruikt de app?";
@@ -274,7 +274,7 @@
 "help.technical_explanation.github.subtitle" = "Ga naar GitHub";
 
 "help.what_does_notification_mean.title" = "Wat betekent het als je een melding krijgt?";
-"help.what_does_notification_mean.description1" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben.";
+"help.what_does_notification_mean.description1" = "De app stuurt een melding als je in totaal minstens 15 minuten dicht bij een of meerdere personen bent geweest die later corona bleken te hebben.";
 "help.what_does_notification_mean.description2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
 "help.what_does_report_look_like.title" = "Hoe ziet een melding eruit?";
 "help.what_does_report_look_like.description" = "De melding lijkt op wat je ziet als je een sms-bericht ontvangt. In de melding staat op welke dag je in de buurt was van iemand met het coronavirus.<br><br>Klik op de melding om CoronaMelder te openen. Daar lees je wat je verder kunt doen.";
@@ -284,7 +284,7 @@
 "help.other_reports.title" = "Andere meldingen";
 "help.other_reports.description" = "CoronaMelder kan je ook een melding sturen als er een technisch probleem is. Bijvoorbeeld als je bluetooth uitstaat. Of als er langer dan een dag geen internetverbinding was. De app helpt je dit op te lossen.<br><br>Heb je zo’n melding ontvangen, en is de app wel gewoon actief? Dan is het probleem in de tussentijd al opgelost.<br><br>Je krijgt soms ook meldingen waarin staat dat je telefoon COVID-19 controles uitvoert. Open dan CoronaMelder. Goed om te weten: meestal is er niks aan de hand.";
 "help.other_what_does_report_say.title" = "Hoe herken ik een melding?";
-"help.other_what_does_report_say.content1" = "De app stuurt een melding als je minstens 15 minuten dicht bij iemand bent geweest die later corona blijkt te hebben.";
+"help.other_what_does_report_say.content1" = "De app stuurt een melding als je in totaal minstens 15 minuten dicht bij een of meerdere personen bent geweest die later corona bleken te hebben.";
 "help.other_what_does_report_say.content2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
 
 "help.pause_app.title" = "Kan ik de app pauzeren?";

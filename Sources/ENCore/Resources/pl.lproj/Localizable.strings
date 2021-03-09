@@ -240,7 +240,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Dostępność";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Otrzymasz powiadomienie, jeśli byłeś narażony na szczególne ryzyko zarażenia. Ma to miejsce, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której wykryto koronawirusa. I oczywiście wyłącznie, jeśli ta osoba również używa tej aplikacji.<br><br>To czy otrzymasz powiadomienie zależy od siły sygnału Bluetooth oraz od czasu trwania kontaktu.<br><br>Na ulicy przejeżdżał ktoś na rowerze? Nie otrzymasz później powiadomienia. Znajdowaliście się blisko siebie, więc sygnał Bluetooth był silny, jednak kontakt był na tyle krótki, że ryzyko zarażenia jest bardzo małe.<br><br>Siedziałeś obok kogoś w pociągu lub biurze? Zatem możesz otrzymać później powiadomienie. Sygnał Bluetooth był wystarczająco silny i znajdowaliście się przez dłuższy czas blisko siebie.";
+"help.faq.notification.description" = "Otrzymasz powiadomienie, jeśli byłeś narażony na szczególne ryzyko zarażenia. Ma to miejsce, jeśli znajdowałeś się w sumie przez co najmniej 15 minut w pobliżu jednej lub więcej osób, u których wykryto koronawirusa. I oczywiście wyłącznie, jeśli ta osoba również używa tej aplikacji.<br><br>To czy otrzymasz powiadomienie zależy od siły sygnału Bluetooth oraz od czasu trwania kontaktu.<br><br>Na ulicy przejeżdżał ktoś na rowerze? Nie otrzymasz później powiadomienia. Znajdowaliście się blisko siebie, więc sygnał Bluetooth był silny, jednak kontakt był na tyle krótki, że ryzyko zarażenia jest bardzo małe.<br><br>Siedziałeś obok kogoś w pociągu lub biurze? Zatem możesz otrzymać później powiadomienie. Sygnał Bluetooth był wystarczająco silny i znajdowaliście się przez dłuższy czas blisko siebie.";
 "help.faq.bluetooth.title" = "Czy Bluetooth działa przez ściany?";
 "help.faq.bluetooth.description" = "Tak, jednak sygnał jest wtedy naprawdę słaby. Bluetooth działa najlepiej, gdy Twój telefon znajduje się w tym samym pomieszczeniu, co telefon innej osoby.<br><br>Na przykład jest bardzo mało prawdopodobne, aby Twoja aplikacja odbierała sygnał Bluetooth od Twoich sąsiadów.<br><br>Przez co istnieje również bardzo mała szansa, że otrzymasz powiadomienie, jeśli okaże się, że Twój sąsiad ma koronawirusa, a nie przebywaliście w tym samym pomieszczeniu.";
 "help.faq.power_usage.title" = "Ile energii zużywa aplikacja?";
@@ -273,7 +273,7 @@
 "help.technical_explanation.github.subtitle" = "Przejdź do GitHub";
 
 "help.what_does_notification_mean.title" = "Otrzymałeś powiadomienie, co to oznacza?";
-"help.what_does_notification_mean.description1" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której potem wykryto koronawirusa.";
+"help.what_does_notification_mean.description1" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się w sumie przez co najmniej 15 minut w pobliżu jednej lub więcej osób, u których potem wykryto koronawirusa.";
 "help.what_does_notification_mean.description2" = "Powiadomienie pojawia się na ekranie głównym Twojego telefonu. Podobnie jak wiadomości od innych aplikacji. Powiadomienie posiada symbol CoronaMelder.<br><br>Otrzymałeś powiadomienie? Otwórz CoronaMelder. Tam przeczytasz co możesz zrobić.";
 "help.what_does_report_look_like.title" = "Jak wygląda powiadomienie?";
 "help.what_does_report_look_like.description" = "Powiadomienie przypomina wyglądem wiadomość SMS. Powiadomienie zawiera informację o tym, kiedy miałeś kontakt z osobą zarażoną koronawirusem.<br><br>Kliknij na powiadomienie, aby otworzyć CoronaMelder. Tam przeczytasz, jakie są zalecenia.";
@@ -283,7 +283,7 @@
 "help.other_reports.title" = "Inne powiadomienia";
 "help.other_reports.description" = "CoronaMelder może przesłać powiadomienie w przypadku problemu technicznego. Na przykład gdy Bluetooth jest wyłączony albo jeśli nie ma połączenia internetowego przez więcej niż jeden dzień. Aplikacja pomoże Ci to rozwiązać.<br><br>Otrzymałeś takie powiadomienie, a aplikacja jest aktywna? W międzyczasie problem został rozwiązany.<br><br>Czasami otrzymujesz również powiadomienie informujące o przeprowadzanej przez Twój telefon kontroli COVID-19. W takim przypadku otwórz CoronaMelder. Dobrze jest wiedzieć, że zazwyczaj nie dzieje się nic poważnego.";
 "help.other_what_does_report_say.title" = "Jak rozpoznać powiadomienie?";
-"help.other_what_does_report_say.content1" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się przez co najmniej 15 minut w pobliżu osoby, u której potem wykryto koronawirusa.";
+"help.other_what_does_report_say.content1" = "Aplikacja wysyła powiadomienie, jeśli znajdowałeś się w sumie przez co najmniej 15 minut w pobliżu jednej lub więcej osób, u których potem wykryto koronawirusa.";
 "help.other_what_does_report_say.content2" = "Powiadomienie pojawia się na ekranie głównym Twojego telefonu. Podobnie jak wiadomości od innych aplikacji. Powiadomienie posiada symbol CoronaMelder.<br><br>Otrzymałeś powiadomienie? Otwórz CoronaMelder. Tam przeczytasz co możesz zrobić.";
 
 "help.pause_app.title" = "Czy mogę wstrzymać aplikację?";

@@ -241,7 +241,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Ulaşılabilirlik";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Ekstra bir enfeksiyon riskine maruz kaldıktan sonra bir bildirim alırsınız. Bunu en az 15 dakika boyunca Korona olduğu ortaya çıkan birine yakın olduğunuz durumda olur. Ve tabii ki ancak bu kişi de uygulamayı kullanıyorsa.<br><br>Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne ve iletişim sürenize bağlıdır.<br><br>Birisi sokakta bisikletle yanınızdan mı geçti? O zaman sonrasında size bildirim gelmez. Birbirine çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski olmadı. <br><br>Trende ya da ofiste birinin yakınında mıydınız? O zaman sonrasında bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
+"help.faq.notification.description" = "Ekstra bir enfeksiyon riskine maruz kaldıktan sonra bir bildirim alırsınız. Bu en az 15 dakika boyunca Korona olduğu sonradan ortaya çıkan birine veya birden fazla kişiye yakın olduğunuz durumda olur. Ve tabii ki ancak bu kişi de uygulamayı kullanıyorsa.<br><br>Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne ve iletişim sürenize bağlıdır.<br><br>Birisi sokakta bisikletle yanınızdan mı geçti? O zaman sonrasında size bildirim gelmez. Birbirine çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski oluşmadı.<br><br>Trende ya da ofiste birinin yakınında mıydınız? O zaman sonrasında bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
 "help.faq.bluetooth.title" = "Bluetooth sinyali duvardan geçer mi?";
 "help.faq.bluetooth.description" = "Evet, ancak bu durumda sinyal çok zayıflar. Bluetooth, en iyi sonucu telefonunuz başka bir kişinin telefonuyla aynı odada bulunduğu takdirde verir.<br><br>Örneğin, uygulamanızın komşularınızdan Bluetooth sinyali alması ihtimali çok düşüktür.<br><br>Bu nedenle, komşunuzda Korona olduğu ortaya çıkarsa ve aynı odada bulunmuyorsanız, bildirim alma şansınız çok azdır.";
 "help.faq.power_usage.title" = "Uygulama ne kadar elektrik kullanıyor?";
@@ -274,7 +274,7 @@
 "help.technical_explanation.github.subtitle" = "GitHub'a gidin";
 
 "help.what_does_notification_mean.title" = "Bildirim almanız ne anlama gelir?";
-"help.what_does_notification_mean.description1" = "Daha sonra Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
+"help.what_does_notification_mean.description1" = "Korona olduğu sonradan ortaya çıkan birinin veya birden fazla kişinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
 "help.what_does_notification_mean.description2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 "help.what_does_report_look_like.title" = "Bildirim nasıl gözükür?";
 "help.what_does_report_look_like.description" = "Bildirim, kısa mesaj aldığınızda gördüklerinize benzer. Bildirim,Korona virüslü birinin yakınında olduğunuz günü belirtir.<br><br>CoronaMelder'ı açmak için bildirime tıklayın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
@@ -284,7 +284,7 @@
 "help.other_reports.title" = "Diğer bildirimler";
 "help.other_reports.description" = "CoronaMelder, teknik bir sorun olması durumunda da size bir bildirim gönderebilir. Örneğin, Bluetooth'unuz kapalıysa. Veya bir günden fazla bir süredir internet bağlantısı yoksa. Uygulama bunu çözmenize yardımcı olacaktır.<br><br>Böyle bir bildirim mi aldınız ve uygulama hala aktif mi? O zaman sorun bu meyanda çözülmüştür.<br><br>Bazen telefonunuzun COVID-19 kontrolleri yaptığını söyleyen bildirimler alırsınız. O zaman CoronaMelder'ı açın. Bilmekte fayda var: genellikle hiçbir sorun yoktur.";
 "help.other_what_does_report_say.title" = "Bildirimi nasıl tanırım?";
-"help.other_what_does_report_say.content1" = "Daha sonra Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
+"help.other_what_does_report_say.content1" = "Korona olduğu sonradan ortaya çıkan birinin veya birden fazla kişinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
 "help.other_what_does_report_say.content2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 
 "help.pause_app.title" = "Uygulamayı duraklatabilir miyim?";

@@ -241,7 +241,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accessibility";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent 15 minutes near someone who was later found to have coronavirus. Only if this person also uses the app.<br><br>Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter.<br><br>Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But only for a short time. So your risk of infection is very low.<br><br>Were you near someone in the train or office? Then you might get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
+"help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent at least 15 minutes near one or more people who were later found to have coronavirus. But only if they also use the app, of course.<br><br>Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter.<br><br>Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But only for a short time. So your risk of infection is very low.<br><br>Were you near someone in the train or office? Then you might get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
 "help.faq.bluetooth.title" = "Can the Bluetooth signal pass through walls?";
 "help.faq.bluetooth.description" = "Yes, but the signal would be very weak. Bluetooth works best when your phone is in the same room as another person's phone.<br><br>So the chance of you getting your neighbours' Bluetooth signal is very low.<br><br>That also means you probably won't get a notification if your neighbour has coronavirus and you haven't been in the same room.";
 "help.faq.power_usage.title" = "How much power does the app use?";
@@ -274,7 +274,7 @@
 "help.technical_explanation.github.subtitle" = "Go to GitHub";
 
 "help.what_does_notification_mean.title" = "What does it mean when you get a notification?";
-"help.what_does_notification_mean.description1" = "The app sends you a notification if you've spent 15 minutes near someone who was later found to have coronavirus.";
+"help.what_does_notification_mean.description1" = "The app sends you a notification if you've spent at least 15 minutes near one or more people who were later found to have coronavirus.";
 "help.what_does_notification_mean.description2" = "The notification looks like what you see when you receive a text message. Just like messages from other apps. The notification has the CoronaMelder icon.<br><br>Did you receive a notification? Open CoronaMelder. You'll find instructions on what to do in the app.";
 "help.what_does_report_look_like.title" = "What does a notification look like?";
 "help.what_does_report_look_like.description" = "The notification looks like what you see when you receive a text message. The notification tells you which day you were near someone who has coronavirus.<br><br>Click on the notification to open CoronaMelder. There you'll read what you can do next.";
@@ -284,7 +284,7 @@
 "help.other_reports.title" = "Other notifications";
 "help.other_reports.description" = "The app can also send you a notification if there's a technical problem. If your Bluetooth is turned off, for example. Or if your phone hasn't been connected to the internet for longer than a day. The app helps you resolve these problems.<br><br>Did you get such a notification even though the app is working correctly? This means the problem was fixed in the meantime.<br><br>Sometimes you'll get notifications that say your phone performed COVID-19 checks. If that happens, open the CoronaMelder app. Good to know: there's usually no cause for concern.";
 "help.other_what_does_report_say.title" = "How do I recognize a notification?";
-"help.other_what_does_report_say.content1" = "The app sends you a notification if you've spent at least 15 minutes near someone who was later found to have coronavirus.";
+"help.other_what_does_report_say.content1" = "The app sends you a notification if you've spent at least 15 minutes near one or more people who were later found to have coronavirus.";
 "help.other_what_does_report_say.content2" = "The notification looks like what you see when you receive a text message. Just like messages from other apps. The notification has the CoronaMelder icon.<br><br>Did you receive a notification? Open CoronaMelder. You'll find instructions on what to do in the app.";
 
 "help.pause_app.title" = "Can I pause the app?";
