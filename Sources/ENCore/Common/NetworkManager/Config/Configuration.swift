@@ -95,7 +95,7 @@ struct NetworkConfiguration {
             host: "coronamelder-api.nl",
             port: nil,
             path: ["v1"],
-            sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
+            sslFingerprints: [],
             tokenParams: [:]
         ),
         cdn: .init(
@@ -103,7 +103,7 @@ struct NetworkConfiguration {
             host: "productie.coronamelder-dist.nl",
             port: nil,
             path: ["v3"],
-            sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
+            sslFingerprints: [],
             tokenParams: [:]
         )
     )
