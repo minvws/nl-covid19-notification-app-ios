@@ -433,7 +433,7 @@ final class NetworkManagerTests: XCTestCase {
                                                   reportTypeWeights: [7],
                                                   reportTypeWhenMissing: 1,
                                                   infectiousnessWeights: [8],
-                                                  attenuationBucketThresholdDb: [9],
+                                                  attenuationBucketThresholds: [9],
                                                   attenuationBucketWeights: [10],
                                                   daysSinceExposureThreshold: 11,
                                                   minimumWindowScore: 12,
@@ -489,13 +489,14 @@ final class NetworkManagerTests: XCTestCase {
                                          reportTypeWeights: [7],
                                          reportTypeWhenMissing: 1,
                                          infectiousnessWeights: [8],
-                                         attenuationBucketThresholdDb: [9],
+                                         attenuationBucketThresholds: [9],
                                          attenuationBucketWeights: [10],
                                          daysSinceExposureThreshold: 11,
                                          minimumWindowScore: 12,
                                          daysSinceOnsetToInfectiousness: [],
                                          infectiousnessWhenDaysSinceOnsetMissing: 1)
     }
+
     func test_getRiskCalculationParameters_validateSignatureErrorShouldReturnError() throws {
 
         let mockData = try JSONEncoder().encode(mockRiskCalculationParameters)

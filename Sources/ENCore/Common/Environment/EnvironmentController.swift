@@ -93,7 +93,7 @@ class EnvironmentController: EnvironmentControlling {
         #endif
     }
 
-    private var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion {
+    var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion {
         if #available(iOS 13.7, *) {
             return .version2
         } else if #available(iOS 13.5, *) {
