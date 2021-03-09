@@ -66,7 +66,7 @@ extension RiskCalculationParameters {
             reportTypeWeights: reportTypeWeights,
             reportTypeWhenMissing: reportTypeWhenMissing,
             infectiousnessWeights: infectiousnessWeights,
-            attenuationBucketThresholdDb: attenuationBucketThresholdDb,
+            attenuationBucketThresholdDb: attenuationBucketThresholds,
             attenuationBucketWeights: attenuationBucketWeights,
             daysSinceExposureThreshold: daysSinceExposureThreshold,
             minimumWindowScore: minimumWindowScore,

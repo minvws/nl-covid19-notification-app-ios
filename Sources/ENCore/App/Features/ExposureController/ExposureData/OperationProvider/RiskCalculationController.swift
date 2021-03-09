@@ -28,7 +28,10 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
     /// - Returns: The most recent day on which the user was considered to have had a risky exposure.
     func getLastExposureDate(fromWindows windows: [ExposureWindow], withConfiguration configuration: ExposureConfiguration) -> Date? {
 
+        self.logDebug("Risk Calculation - getLastExposureDate")
+
         guard !windows.isEmpty else {
+            self.logDebug("Risk Calculation - No Exposure Windows found")
             return nil
         }
 
