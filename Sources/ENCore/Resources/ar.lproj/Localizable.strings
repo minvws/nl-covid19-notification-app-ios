@@ -1,3 +1,5 @@
+"enableInternetDescription" = "يحتاج التطبيق إلى الاتصال بالإنترنت للتحقق مما إذا كان الأشخاص الذين قابلتهم لاحقًا مصابين بكورونا. <br><br> اتصل بـالـ WiFi أو شغّل للتطبيق خدمة تجوال البيانات.";
+"enableInternetStepTitle" = "تشغيل خدمة تجوال البيانات";
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
@@ -206,12 +208,24 @@
 "enableBluetoothSettingTitleRow3" = "قم بتشغيل<b>البلوتوث<b/>";
 "enableBluetoothSettingTitleSettingRow3" = "البلوتوث";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "الاتصال بالإنترنت";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "إفتح <b>الإعدادات</b> في هاتفك باستخدام الزر أسفله.";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "قم <b> بتشغيل </b> خدمة تجوال البيانات من أجل CoronaMelder ";
+"enableInternetSettingTitleSettingRow2" = "خدمة تجوال البيانات";
+"enableInternetFooter" = "هل  لا يزال التطبيق غير نشط بشكل كامل؟ ربما هناك مشكلة فنية. لا يمكنك فعل أي شيء حيال هذا بنفسك في الوقت الراهن.";
+"enableInternetOpenSettingsButton" = "إفتح الإعدادات";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "تطبيق CoronaMelder غير نشط الآن، راجع إعداداتك.";
 
 "notification.upload.failed.header" = "اتصل بالمصلحة الصحية للبلدية";
 "moreInformation.about.helpdesk.title" = "هل لديك سؤال آخر عن التطبيق؟";
 "moreInformation.about.helpdesk.subtitle" = "اتصل مجانًا على الرقم 1280 -0800";
+"moreInformation.about.website.title" = "للمزيد من المعلومات حول التطبيق";
+"moreInformation.about.website.subtitle" = "راجع موقع Coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "تخطى";
@@ -325,10 +339,15 @@
 "status.appState.inactive.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة.";
 "status.appState.inactive.notification" = "لم يتمكن التطبيق من التحقق لمدة 24 ساعة فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا.";
 "status.appState.inactive.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
+"status.appState.partlyinactive.title" = "التطبيق نشط جزئيًا";
+"status.appState.partlyinactive.bluetooth.description" = "البلوتوث غير مشغّل. وبالتالي فإن التطبيق <b>لا</ b> يستطيع تتبع أي مخالطات جديدة. سيقوم التطبيق <b> بفحص </ b> ما إذا كان الأشخاص الذين قابلتهم من قبل مصابين بكورونا.";
+"status.appState.partlyinactive.nointernet.description" = "التطبيق غير متصل بشبكة الإنترنت. ونتيجة لذلك<b> لم </b> يتمكن التطبيق  لمدة 24 ساعة من التحقق مما إذا كان الأشخاص الذين قابلتهم لاحقًا مصابين بكورونا. <b>سيتعقب</b> التطبيق المخالطات التي قمت بها. <br/> <br/> <b> اتصل بشبكة الـ Wi-Fi أو شغَل التطبيق للسماح باستخدام خدمة تجوال البيانات </ b>";
+"status.appState.solveproblem.button" = "حل المشكلة ";
 "status.appState.card.title" = "التطبيق غير نشط";
 "status.appState.card.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة..";
 "status.appState.card.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
 "status.appState.card.button" = "تشغيل التطبيق";
+"status.appState.card.bluetooth.button" = "تشغيل البلوتوث";
 "status.appState.card.try_again" = "حاول مجددًا";
 "status.active.description" = "يقوم التطبيق بتسجيل المصادفات، حتى إذا قمت بإغلاق التطبيق.";
 "status.notified.days_ago_one" = "آخر%@";

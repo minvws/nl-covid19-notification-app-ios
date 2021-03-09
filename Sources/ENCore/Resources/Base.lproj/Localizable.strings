@@ -1,3 +1,7 @@
+"enableInternetDescription" = "The app needs an internet connection to check if people you've encountered later turned out to have coronavirus.<br><br>
+
+Connect to Wi-Fi or turn on mobile data for this app.";
+"enableInternetStepTitle" = "Turn on mobile data";
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "You have to update your phone's software";
@@ -22,8 +26,8 @@
 "moreInformation.cell.settings.subtitle" = "Pause app and manage mobile data";
 /* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Settings";
-"moreInformation.settings.mobiledata.paragraphtitle" = "Only check codes with WiFi";
-"moreInformation.settings.description" = "CoronaMelder checks a few times a day if you've been near someone who has corona. If you turn off your mobile data, the app will only do so if you're using WiFi. Your encounters are also tracked if you don't have an internet connection.";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Only check codes with Wi-Fi";
+"moreInformation.settings.description" = "CoronaMelder checks a few times a day if you've been near someone who has corona. If you turn off your mobile data, the app will only do so if you're using Wi-Fi. Your encounters are also tracked if you don't have an internet connection.";
 "moreInformation.settings.mobiledata.button" = "Open mobile data settings";
 
 /* MARK: - MoreInformation | Settings | Pause */
@@ -206,12 +210,24 @@
 "enableBluetoothSettingTitleRow3" = "Turn on <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "Connect to internet";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Open <b>Settings</b> in your phone using the button below";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "Turn <b>mobile data</b> on for CoronaMelder";
+"enableInternetSettingTitleSettingRow2" = "Mobile data";
+"enableInternetFooter" = "Is the app still not completely active? Then it's probably a technical issue. At this time, there's nothing you can do.";
+"enableInternetOpenSettingsButton" = "Open settings";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder is not active at the moment. Check your settings.";
 
 "notification.upload.failed.header" = "Call the GGD";
 "moreInformation.about.helpdesk.title" = "Other questions about the app?";
 "moreInformation.about.helpdesk.subtitle" = "Call 0800-1280";
+"moreInformation.about.website.title" = "More about the app";
+"moreInformation.about.website.subtitle" = "Go to coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "Skip";
@@ -322,10 +338,15 @@
 "status.appState.inactive.description" = "CoronaMelder only works if the necessary settings are turned on.";
 "status.appState.inactive.notification" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona.";
 "status.appState.inactive.no_recent_updates.description" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona. Check if your Wi-Fi or mobile data are turned on and try again.";
+"status.appState.partlyinactive.title" = "The app is partially active";
+"status.appState.partlyinactive.bluetooth.description" = "Bluetooth is turned off. Therefore, the app <b>does not</b> track any new encounters. The app <b>does</b> still check if people you've encountered later turn out to have coronavirus.";
+"status.appState.partlyinactive.nointernet.description" = "The app isn't connected to the internet. As a result, for 24 hours, the app <b>could not</b> check if people you've encountered later turned out to have coronavirus. However, the app <b>does</b> still track your encounters. <br/><br/><b>Connect to Wi-Fi or turn on the setting that allows the app to use mobile data.</b>";
+"status.appState.solveproblem.button" = "Resolve issue";
 "status.appState.card.title" = "App not active";
 "status.appState.card.description" = "%@ only works if the necessary settings are turned on.";
 "status.appState.card.no_recent_updates.description" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona. Check if your Wi-Fi or mobile data are turned on and try again.";
 "status.appState.card.button" = "Turn on app";
+"status.appState.card.bluetooth.button" = "Turn on Bluetooth";
 "status.appState.card.try_again" = "Try again";
 "status.active.description" = "Encounters will be tracked, even when you close the app";
 "status.notified.days_ago_one" = "%@ day ago";

@@ -1,3 +1,5 @@
+"enableInternetDescription" = "Приложението се нуждае от интернет връзка, за да може да проверява дали хората, които си срещнал, по-късно са се оказали заразени с коронавирус.<br><br>Премини на wifi или включи мобилни данни за това приложение.";
+"enableInternetStepTitle" = "Включване на мобилни данни";
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Трябва да актуализираш софтуера на телефона си";
@@ -205,12 +207,24 @@
 "enableBluetoothSettingTitleRow3" = "Включи <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "Създаване на връзка с интернет";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Отвори <b>Настройки</b> на твоя телефон чрез бутона по-долу";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "Включи <b>мобилни данни</b> за CoronaMelder";
+"enableInternetSettingTitleSettingRow2" = "Мобилни данни";
+"enableInternetFooter" = "Приложението все още не е напълно активно? Вероятно е възникнал технически проблем. Към момента самият ти не можеш да направиш нищо повече.";
+"enableInternetOpenSettingsButton" = "Отвори настройки";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "В момента CoronaMelder не е включен. Провери настройките си.";
 
 "notification.upload.failed.header" = "Обади се на Общинската здравна инспекция (GGD).";
 "moreInformation.about.helpdesk.title" = "Друг въпрос относно приложението?";
 "moreInformation.about.helpdesk.subtitle" = "Обади се на безплатен номер 0800-1280";
+"moreInformation.about.website.title" = "Повече за приложението";
+"moreInformation.about.website.subtitle" = "Отиди на coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "Пропусни";
@@ -320,10 +334,15 @@
 "status.appState.inactive.description" = "CoronaMelder работи само ако са включени необходимите настройки.";
 "status.appState.inactive.notification" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. ";
 "status.appState.inactive.no_recent_updates.description" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. Провери дали са включени wifi или мобилните ти данни и опитай отново.";
+"status.appState.partlyinactive.title" = "Приложението е частично активно";
+"status.appState.partlyinactive.bluetooth.description" = "Твоят bluetooth е изключен. Така приложението <b>не</b> следи за нови срещи. То <b>обаче</b> проверява дали хората, които си срещнал по-рано, са се оказали заразени с коронавирус.";
+"status.appState.partlyinactive.nointernet.description" = "Приложението няма връзка с интернет. Затова приложението 24 часа <b>не</b> можеше да проверява дали хората, които си срещнал, са се оказали заразени с коронавирус. Приложението <b>обаче</b> продължава да проследява твоите срещи.<br/><br/><b>Премини на wifi или настрой приложението да използва мобилни данни.</b>";
+"status.appState.solveproblem.button" = "Отстраняване на проблем";
 "status.appState.card.title" = "Приложението не е активно";
 "status.appState.card.description" = "CoronaMelder работи само ако са включени необходимите настройки.";
 "status.appState.card.no_recent_updates.description" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. Провери дали са включени wifi или мобилните ти данни и опитай отново.";
 "status.appState.card.button" = "Включване на приложението";
+"status.appState.card.bluetooth.button" = "Включване на bluetooth";
 "status.appState.card.try_again" = "Опитай отново";
 "status.active.description" = "Срещите продължават да се следят дори като затвориш приложението.";
 "status.notified.days_ago_one" = "Преди %@ ден ";

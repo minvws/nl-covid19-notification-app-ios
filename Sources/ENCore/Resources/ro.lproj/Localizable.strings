@@ -1,3 +1,5 @@
+"enableInternetDescription" = "Aplicația are nevoie de conexiune la internet pentru a putea controla dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. <br><br>Conectați-vă la wifi sau activați datele celulare pentru această aplicație.";
+"enableInternetStepTitle" = "Activare date celulare";
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Trebuie să actualizați software-ul pe telefonul dvs.";
@@ -205,12 +207,24 @@
 "enableBluetoothSettingTitleRow3" = "Activați <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "Conectare la internet";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Accesați <b>Configurări</b> pe telefonul dvs. folosind butonul de mai jos";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "Activați <b>datele celulare</b> pentru CoronaMelder";
+"enableInternetSettingTitleSettingRow2" = "Date celulare";
+"enableInternetFooter" = "Aplicația încă nu este activă după aceasta? Atunci, probabil,  este o problemă tehnică. În acest moment nu puteți face nimic în legătură cu acest lucru.";
+"enableInternetOpenSettingsButton" = "Accesați Configurări";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder nu este activată în acest moment. Controlați configurările.";
 
 "notification.upload.failed.header" = "Sunați la GGD (Serviciul de Sănătate Municipal)";
 "moreInformation.about.helpdesk.title" = "Altă întrebare despre aplicație?";
 "moreInformation.about.helpdesk.subtitle" = "Sunați gratuit la 0800-1280";
+"moreInformation.about.website.title" = "Mai multe informații despre aplicație";
+"moreInformation.about.website.subtitle" = "Accesați coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "Omiteți";
@@ -321,10 +335,15 @@
 "status.appState.inactive.description" = "CoronaMelder funcționează doar dacă configurările necesare sunt activate.";
 "status.appState.inactive.notification" = "Aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedid a fi infectate cu coronavirus.";
 "status.appState.inactive.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
+"status.appState.partlyinactive.title" = "Aplicația este parțial activă";
+"status.appState.partlyinactive.bluetooth.description" = "Semnalul Bluetooth este dezactivat. Din această cauză aplicația <b>nu</b> ține evidența noilor întâlniri. Aplicația controlează însă <b>încă</b> dacă persoanele  întâlnite mai devreme se dovedesc a fi infectate cu coronavirus.";
+"status.appState.partlyinactive.nointernet.description" = "Aplicația nu are conexiune la internet. Din această cauză,  timp de 24 de ore, aplicația <b>nu</b> a putut controla dacă personele întâlnite s-au dovedit mai târziu a fi infectate  cu coronavirus. Aplicația ține <b>încă</b> evidența întâlnirilor.<br/><br/><b>Conectați-vă la Wifi sau activați datele celulare pentru a permite aplicației să le folosească.</b>";
+"status.appState.solveproblem.button" = "Soluționarea problemei";
 "status.appState.card.title" = "Aplicația nu este activă";
 "status.appState.card.description" = "CoronaMelder funcționează doar dacă setările necesare sunt activate";
 "status.appState.card.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
 "status.appState.card.button" = "Activare aplicație";
+"status.appState.card.bluetooth.button" = "Activare Bluetooth";
 "status.appState.card.try_again" = "Încercați din nou";
 "status.active.description" = "Chiar dacă închideți aplicația, se va ține, în continuare, evidența întâlnirilor.";
 "status.notified.days_ago_one" = "Acum %@ zi";

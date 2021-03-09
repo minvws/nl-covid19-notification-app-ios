@@ -1,3 +1,5 @@
+"enableInternetDescription" = "Die App braucht eine Internetverbindung, um zu prüfen, ob bei den Personen, denen Sie begegnet sind, später Corona festgestellt wurde.<br><br>Nutzen Sie ein WLAN oder aktivieren Sie für diese App mobile Daten.";
+"enableInternetStepTitle" = "Mobile Daten aktivieren";
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Sie müssen die Software auf Ihrem Telefon aktualisieren.";
@@ -205,12 +207,24 @@
 "enableBluetoothSettingTitleRow3" = "Aktivieren Sie <b>Bluetooth</b>.";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "Internetverbindung herstellen";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Öffnen Sie über die nachstehende Schaltfläche <b>Einstellungen</b> auf Ihrem Telefon.";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "Aktivieren Sie <b>Mobile Daten</b> für CoronaMelder.";
+"enableInternetSettingTitleSettingRow2" = "Mobile Daten";
+"enableInternetFooter" = "Ist die App danach immer noch nicht ganz aktiviert? Dann gibt es wahrscheinlich ein technisches Problem. Das können Sie momentan selbst nicht lösen.";
+"enableInternetOpenSettingsButton" = "Einstellungen öffnen";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder ist momentan nicht aktiv. Kontrollieren Sie die Einstellungen.";
 
 "notification.upload.failed.header" = "Rufen Sie den GGD an.";
 "moreInformation.about.helpdesk.title" = "Eine andere Frage über die App?";
 "moreInformation.about.helpdesk.subtitle" = "Rufen Sie kostenlos 0800-1280 an";
+"moreInformation.about.website.title" = "Mehr über die App";
+"moreInformation.about.website.subtitle" = "Gehen Sie zu coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "Überspringen";
@@ -322,10 +336,15 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.appState.inactive.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
 "status.appState.inactive.notification" = "Die App konnte in den vergangenen 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde.";
 "status.appState.inactive.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. mobile Daten aktiviert sind. Versuchen Sie es dann erneut.";
+"status.appState.partlyinactive.title" = "Die App ist teilweise aktiviert.";
+"status.appState.partlyinactive.bluetooth.description" = "Bluetooth ist deaktiviert. Die App registriert deshalb <b>keine</b> neuen Begegnungen. Die App <b>kontrolliert aber noch</b>, ob bei den Personen, denen Sie früher begegnet sind, Corona festgestellt wurde.";
+"status.appState.partlyinactive.nointernet.description" = "Die App hat keine Internetverbindung. Deshalb konnte die App 24 Stunden lang <b>nicht</b> prüfen, ob bei den Personen, denen Sie begegnet sind, später Corona festgestellt wurde. Die App <b>registriert aber weiter</b> Ihre Begegnungen.<br/><br/><b>Nutzen Sie ein WLAN oder legen Sie fest, dass die App mobile Daten nutzen darf.</b>";
+"status.appState.solveproblem.button" = "Problem lösen";
 "status.appState.card.title" = "App ist nicht aktiv.";
 "status.appState.card.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
 "status.appState.card.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. mobile Daten aktiviert sind. Versuchen Sie es dann erneut.";
 "status.appState.card.button" = "App aktivieren";
+"status.appState.card.bluetooth.button" = "Bluetooth aktivieren";
 "status.appState.card.try_again" = "Versuchen Sie es erneut.";
 "status.active.description" = "Ihre Begegnungen werden nachverfolgt, auch wenn Sie die App schließen.";
 "status.notified.days_ago_one" = "vor %@ Tag";

@@ -1,3 +1,5 @@
+"enableInternetDescription" = "Aplikacja wymaga połączenia internetowego, aby móc kontrolować, czy wykryto koronawirusa u osób, które spotkałeś.<br><br>Włącz wi-fi lub korzystanie z danych komórkowych dla tej aplikacji.";
+"enableInternetStepTitle" = "Włącz dane komórkowe";
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Musisz zaktualizować oprogramowanie w swoim telefonie";
@@ -205,12 +207,24 @@
 "enableBluetoothSettingTitleRow3" = "Włącz <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "Połącz się z internetem";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Otwórz <b>Ustawienia</b> w swoim telefonie klikając poniższy przycisk";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "Włącz <b>dane komórkowe</b> dla CoronaMelder";
+"enableInternetSettingTitleSettingRow2" = "Dane komórkowe";
+"enableInternetFooter" = "Aplikacja wciąż nie jest w pełni aktywna? Prawdopodobnie jest to problem techniczny. W tym momencie nie możesz nic na to poradzić.";
+"enableInternetOpenSettingsButton" = "Otwórz Ustawienia";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "Aplikacja CoronaMelder nie jest obecnie aktywna. Sprawdź swoje ustawienia.";
 
 "notification.upload.failed.header" = "Zadzwoń do GGD";
 "moreInformation.about.helpdesk.title" = "Masz inne pytanie dotyczące aplikacji?";
 "moreInformation.about.helpdesk.subtitle" = "Zadzwoń pod bezpłatny numer 0800-1280";
+"moreInformation.about.website.title" = "Więcej o aplikacji";
+"moreInformation.about.website.subtitle" = "Przejdź na stronę coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "Pomiń";
@@ -320,10 +334,15 @@
 "status.appState.inactive.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia";
 "status.appState.inactive.notification" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś.";
 "status.appState.inactive.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
+"status.appState.partlyinactive.title" = "Aplikacja jest częściowo aktywna";
+"status.appState.partlyinactive.bluetooth.description" = "Bluetooth jest wyłączony. W związku z tym aplikacja <b>nie</b> monitoruje nowych spotkań. Aplikacja <b>wciąż</b> jeszcze kontroluje, czy wykryto koronawirusa u osób, które spotkałeś wcześniej.";
+"status.appState.partlyinactive.nointernet.description" = "Aplikacja nie ma dostępu do internetu. Z tego powodu w ciągu 24 godzin <b>nie<b> mogła skontrolować, czy wykryto koronwirusa u osób, które spotkałeś. Aplikacja <b>wciąż</b> jeszcze monitoruje twoje spotkania.<br><br><b>Włącz wifi lub zezwól aplikacji na korzystanie z danych komórkowych.</b>";
+"status.appState.solveproblem.button" = "Rozwiązywanie problemów";
 "status.appState.card.title" = "Aplikacja nie jest aktywna";
 "status.appState.card.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia.";
 "status.appState.card.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.button" = "Włącz aplikację";
+"status.appState.card.bluetooth.button" = "Włącz Bluetooth";
 "status.appState.card.try_again" = "Spróbuj ponownie";
 "status.active.description" = "Spotkania są kontrolowane również, gdy aplikacja jest zamknięta";
 "status.notified.days_ago_one" = "%@ dzień temu";
