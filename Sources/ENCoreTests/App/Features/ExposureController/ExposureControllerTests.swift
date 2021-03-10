@@ -578,6 +578,9 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_exposureNotificationStatusCheck_notActive_notifiesAfter24h() {
+        
+        XCTAssertEqual(userNotificationCenter.displayNotActiveNotificationCallCount, 0)
+        
         exposureManager.getExposureNotificationStatusHandler = {
             return .inactive(.disabled)
         }
@@ -591,11 +594,13 @@ final class ExposureControllerTests: TestCase {
             .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+        XCTAssertEqual(userNotificationCenter.displayNotActiveNotificationCallCount, 1)
     }
 
     func test_lastOpenedNotificationCheck_moreThan3Hours_postsNotification() {
+        
+        XCTAssertEqual(userNotificationCenter.displayExposureReminderNotificationCallCount, 0)
+        
         let timeInterval = TimeInterval(60 * 60 * 4) // 4 hours
         dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
         dataController.lastExposure = ExposureReport(date: Date())
@@ -606,8 +611,7 @@ final class ExposureControllerTests: TestCase {
             .subscribe { _ in }
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+        XCTAssertEqual(userNotificationCenter.displayExposureReminderNotificationCallCount, 1)
     }
 
     func test_lastOpenedNotificationCheck_lessThan3Hours_doesntPostNotification() {
