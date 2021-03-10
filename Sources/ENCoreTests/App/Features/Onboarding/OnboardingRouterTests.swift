@@ -24,7 +24,6 @@ final class OnboardingRouterTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        // TODO: Add other dependencies
         router = OnboardingRouter(viewController: viewController,
                                   stepBuilder: stepBuilder,
                                   consentBuilder: consentBuilder,

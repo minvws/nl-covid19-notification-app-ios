@@ -18,7 +18,8 @@ final class MainViewControllerTests: TestCase {
     private let exposureStateStream = ExposureStateStreamingMock()
     private var mockPauseController = PauseControllingMock()
     private var mockUserNotificationCenter = UserNotificationCenterMock()
-
+    private let alertControllerBuilder = AlertControllerBuildableMock()
+    
     override func setUp() {
         super.setUp()
 
@@ -26,7 +27,8 @@ final class MainViewControllerTests: TestCase {
                                             exposureController: exposureController,
                                             exposureStateStream: exposureStateStream,
                                             userNotificationCenter: mockUserNotificationCenter,
-                                            pauseController: mockPauseController)
+                                            pauseController: mockPauseController,
+                                            alertControllerBuilder: alertControllerBuilder)
         viewController.router = router
     }
 
@@ -96,9 +98,34 @@ final class MainViewControllerTests: TestCase {
         XCTAssertEqual(router.routeToMessageCallCount, 1)
     }
 
-    func test_handleButtonAction_removeNotification() {
-        // TODO: Internally this calls a `UIAlertController` which has a cancel & accept button
-        // we should create a mock for the controller and handle the desired button clicks.
+    func test_handleButtonAction_removeNotification_confirmShouldCallExposureController() {
+        var createdAlertController: UIAlertController?
+        var actionHandlers = [((UIAlertAction) -> Void)]()
+        
+        alertControllerBuilder.buildAlertControllerHandler = { title, message, prefferedStyle in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: prefferedStyle)
+            createdAlertController = alertController
+            return alertController
+        }
+        
+        alertControllerBuilder.buildAlertActionHandler = { title, style, handler in
+            actionHandlers.append(handler!)
+            return UIAlertAction(title: title, style: style, handler: handler)
+        }
+        
+        XCTAssertEqual(alertControllerBuilder.buildAlertControllerCallCount, 0)
+        XCTAssertEqual(exposureController.confirmExposureNotificationCallCount, 0)
+        
+        viewController.handleButtonAction(.removeNotification("SomeTitle"))
+        
+        // Execute the last action in the alert, this should call exposureController.confirmExposureNotification()
+        actionHandlers.last?(UIAlertAction())
+        
+        XCTAssertEqual(alertControllerBuilder.buildAlertControllerCallCount, 1)
+        XCTAssertEqual(exposureController.confirmExposureNotificationCallCount, 1)
+        XCTAssertEqual(createdAlertController?.title, "SomeTitle")
+        XCTAssertEqual(createdAlertController?.message, "Are you sure you want to delete this notification? You won\'t be able to find the date in the app anymore. So remember it well.")
+        XCTAssertEqual(createdAlertController?.preferredStyle, .alert)
     }
 
     func test_enableSettingShouldDismiss_callsRouter() {

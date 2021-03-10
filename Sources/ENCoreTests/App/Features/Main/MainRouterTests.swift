@@ -53,7 +53,7 @@ final class MainRouterTests: XCTestCase {
             receivedListener = listener
             receivedAnchor = anchor
 
-            return StatusRoutingMock()
+            return StatusViewControllableMock()
         }
 
         XCTAssertEqual(statusBuilder.buildCallCount, 0)
@@ -76,7 +76,7 @@ final class MainRouterTests: XCTestCase {
             receivedListener = listener
             receivedAnchor = anchor
 
-            return StatusRoutingMock()
+            return StatusViewControllableMock()
         }
 
         XCTAssertEqual(statusBuilder.buildCallCount, 0)
