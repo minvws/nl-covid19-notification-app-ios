@@ -703,8 +703,8 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     private func updatePushNotificationState(completition: @escaping () -> ()) {
-        userNotificationController.getAuthorizationStatus { authorizationStatus in
-            self.isPushNotificationsEnabled = authorizationStatus == .authorized
+        userNotificationController.getAuthorizationStatus { isAuthorized in
+            self.isPushNotificationsEnabled = isAuthorized
             completition()
         }
     }

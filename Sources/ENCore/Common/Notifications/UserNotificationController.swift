@@ -11,6 +11,7 @@ import ENFoundation
 
 /// @mockable(history:removeDeliveredNotifications = true;add=true;removePendingNotificationRequests=true)
 protocol UserNotificationCenter {
+    func getAuthorizationStatus(completionHandler: @escaping (_ isAuthorized: Bool) -> ())
     func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> ())
     func getNotificationSettings(completionHandler: @escaping (UNNotificationSettings) -> Void)
     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> ())?)
@@ -19,11 +20,11 @@ protocol UserNotificationCenter {
     func removePendingNotificationRequests(withIdentifiers identifiers: [String])
 }
 
-/// @mockable
+/// @mockable(history:removeDeliveredNotifications = true;removePendingNotificationRequests=true)
 protocol UserNotificationControlling {
     
     // Authorization and Permissions
-    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ())
+    func getAuthorizationStatus(completionHandler: @escaping (_ isAuthorized: Bool) -> ())
     func requestNotificationPermission(_ completion: @escaping (() -> ()))
     
     // Removing notifications
@@ -43,7 +44,15 @@ protocol UserNotificationControlling {
     func displayUploadFailedNotification()
 }
 
-extension UNUserNotificationCenter: UserNotificationCenter { }
+extension UNUserNotificationCenter: UserNotificationCenter {
+    func getAuthorizationStatus(completionHandler: @escaping (_ isAuthorized: Bool) -> ()) {
+        getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                completionHandler(settings.authorizationStatus == .authorized)
+            }
+        }
+    }
+}
 
 class UserNotificationController: UserNotificationControlling, Logging {
     
@@ -52,15 +61,11 @@ class UserNotificationController: UserNotificationControlling, Logging {
     init(userNotificationCenter: UserNotificationCenter = UNUserNotificationCenter.current()) {
         self.userNotificationCenter = userNotificationCenter
     }
-    
-    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ()) {
-        userNotificationCenter.getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                completionHandler(settings.authorizationStatus)
-            }
-        }
+        
+    func getAuthorizationStatus(completionHandler: @escaping (_ isAuthorized: Bool) -> ()) {
+        userNotificationCenter.getAuthorizationStatus(completionHandler: completionHandler)
     }
-    
+        
     func requestNotificationPermission(_ completion: @escaping (() -> ())) {
         func request() {
             userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
@@ -70,8 +75,8 @@ class UserNotificationController: UserNotificationControlling, Logging {
             }
         }
 
-        getAuthorizationStatus { authorizationStatus in
-            if authorizationStatus == .authorized {
+        userNotificationCenter.getAuthorizationStatus { isAuthorized in
+            if isAuthorized {
                 completion()
             } else {
                 request()
@@ -201,8 +206,9 @@ class UserNotificationController: UserNotificationControlling, Logging {
     
     private func addNotification(withContent content: UNNotificationContent, identifier: PushNotificationIdentifier, trigger: UNNotificationTrigger? = nil, completion: ((_ success: Bool) -> ())? = nil) {
         
-        getAuthorizationStatus { status in
-            guard status == .authorized else {
+        userNotificationCenter.getAuthorizationStatus { (isAuthorized) in
+            
+            guard isAuthorized else {
                 completion?(false)
                 return self.logError("Not authorized to post notifications")
             }

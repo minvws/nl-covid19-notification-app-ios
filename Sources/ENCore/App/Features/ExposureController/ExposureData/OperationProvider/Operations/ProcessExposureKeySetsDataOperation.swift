@@ -497,35 +497,28 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private func notifyUserOfExposure(daysSinceLastExposure: Int,
                                       exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
         return .create { (observer) -> Disposable in
-
-            self.userNotificationController.getAuthorizationStatus { status in
-                guard status == .authorized else {
+            
+            self.userNotificationController.displayExposureNotification(daysSinceLastExposure: daysSinceLastExposure) { (success) in
+                
+                guard success else {
                     observer(.failure(ExposureDataError.internalError))
-                    return self.logError("Not authorized to post notifications")
+                    return
                 }
-
-                self.userNotificationController.displayExposureNotification(daysSinceLastExposure: daysSinceLastExposure) { (success) in
-                    
-                    guard success else {
-                        observer(.failure(ExposureDataError.internalError))
-                        return
-                    }
-
-                    /// Store the unseen notification date, but only when the app is in the background
-                    if self.application.isInBackground {
-                        self.storageController.requestExclusiveAccess { storageController in
-                            storageController.store(object: Date(),
-                                                    identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { error in
-                                if error != nil {
-                                    observer(.failure(ExposureDataError.internalError))
-                                } else {
-                                    observer(.success(value))
-                                }
+                
+                /// Store the unseen notification date, but only when the app is in the background
+                if self.application.isInBackground {
+                    self.storageController.requestExclusiveAccess { storageController in
+                        storageController.store(object: Date(),
+                                                identifiedBy: ExposureDataStorageKey.lastUnseenExposureNotificationDate) { error in
+                            if error != nil {
+                                observer(.failure(ExposureDataError.internalError))
+                            } else {
+                                observer(.success(value))
                             }
                         }
-                    } else {
-                        observer(.success(value))
                     }
+                } else {
+                    observer(.success(value))
                 }
             }
 

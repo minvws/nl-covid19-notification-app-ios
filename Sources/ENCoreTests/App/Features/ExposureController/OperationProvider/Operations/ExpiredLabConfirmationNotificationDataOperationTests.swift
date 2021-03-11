@@ -14,20 +14,20 @@ import XCTest
 final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
     private var operation: ExpiredLabConfirmationNotificationDataOperation!
     private var mockStorageController: StorageControllingMock!
-    private var mockUserNotificationCenter: UserNotificationCenterMock!
+    private var mockUserNotificationController: UserNotificationControllingMock!
     private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
 
         mockStorageController = StorageControllingMock()
-        mockUserNotificationCenter = UserNotificationCenterMock()
+        mockUserNotificationController = UserNotificationControllingMock()
 
         mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
-        mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
+        mockUserNotificationController.getAuthorizationStatusHandler = { $0(true) }
 
         operation = ExpiredLabConfirmationNotificationDataOperation(storageController: mockStorageController,
-                                                                    userNotificationController: mockUserNotificationCenter)
+                                                                    userNotificationController: mockUserNotificationController)
     }
 
     func test_pendingRequestIsExpired_doesNotCallNetworkAndDoesNotStoreAgain() {
@@ -70,30 +70,7 @@ final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
 
         wait(for: operation)
 
-        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
-    }
-
-    func test_NotScheduledNotification() {
-        let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
-        DateTimeTestingOverrides.overriddenCurrentDate = date
-
-        XCTAssertEqual(date, currentDate())
-        XCTAssertNil(operation.getCalendarTriggerForGGDOpeningHourIfNeeded())
-    }
-
-    func test_ScheduledNotification() {
-        let date = Date(timeIntervalSince1970: 1593311000) // 28/06/20 02:23
-        DateTimeTestingOverrides.overriddenCurrentDate = date
-
-        let trigger = operation.getCalendarTriggerForGGDOpeningHourIfNeeded()
-
-        XCTAssertEqual(date, currentDate())
-        XCTAssertNotNil(trigger)
-
-        /// GGD working hours
-        XCTAssertEqual(trigger?.dateComponents.hour, 8)
-        XCTAssertEqual(trigger?.dateComponents.minute, 0)
-        XCTAssertEqual(trigger?.dateComponents.timeZone, TimeZone(identifier: "Europe/Amsterdam"))
+        XCTAssertEqual(mockUserNotificationController.displayUploadFailedNotificationCallCount, 1)
     }
 
     // MARK: - Private

@@ -26,7 +26,7 @@ final class RootRouterTests: XCTestCase {
     private let backgroundController = BackgroundControllingMock()
     private let updateAppBuilder = UpdateAppBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
-    private let userNotificationController = UserNotificationCenterMock()
+    private let userNotificationController = UserNotificationControllingMock()
     private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
     private let mockEnvironmentController = EnvironmentControllingMock()
     private let updateOperatingSystemBuilder = UpdateOperatingSystemBuildableMock()

@@ -18,7 +18,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockStorageController: StorageControllingMock!
     private var mockExposureManager: ExposureManagingMock!
     private var mockExposureConfiguration: ExposureConfigurationMock!
-    private var mockUserNotificationCenter: UserNotificationCenterMock!
+    private var mockUserNotificationController: UserNotificationControllingMock!
     private var mockApplication: ApplicationControllingMock!
     private var mockFileManager: FileManagingMock!
     private var mockEnvironmentController: EnvironmentControllingMock!
@@ -32,7 +32,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockStorageController = StorageControllingMock()
         mockExposureManager = ExposureManagingMock()
         mockExposureConfiguration = ExposureConfigurationMock()
-        mockUserNotificationCenter = UserNotificationCenterMock()
+        mockUserNotificationController = UserNotificationControllingMock()
         mockApplication = ApplicationControllingMock()
         mockFileManager = FileManagingMock()
         mockEnvironmentController = EnvironmentControllingMock()
@@ -41,8 +41,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         // Default handlers
         mockEnvironmentController.gaenRateLimitingType = .dailyLimit
-        mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
-        mockUserNotificationCenter.addHandler = { $1?(nil) }
+        mockUserNotificationController.displayExposureNotificationHandler = { _, completion in
+            completion(true)
+        }
+        
         mockExposureManager.detectExposuresHandler = { _, _, completion in
             completion(.success(ExposureDetectionSummaryMock()))
         }
@@ -69,7 +71,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             localPathProvider: mockLocalPathProvider,
             exposureDataController: mockExposureDataController,
             configuration: mockExposureConfiguration,
-            userNotificationController: mockUserNotificationCenter,
+            userNotificationController: mockUserNotificationController,
             application: mockApplication,
             fileManager: mockFileManager,
             environmentController: mockEnvironmentController
@@ -320,11 +322,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
 
-        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
-        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
-        XCTAssertEqual(notificationRequest.content.sound, .default)
-        XCTAssertEqual(notificationRequest.content.badge, 0)
-        XCTAssertEqual(notificationRequest.content.body, "You were near someone who has coronavirus 3 days ago. Read more in the app.")
+        XCTAssertEqual(mockUserNotificationController.displayExposureNotificationCallCount, 1)
+        
     }
 
     func test_shouldNotShowExposureNotificationForExposureMoreThan14DaysAgo() throws {
@@ -351,7 +350,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
 
-        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+        XCTAssertEqual(mockUserNotificationController.displayExposureReminderNotificationCallCount, 0)
     }
 
     func test_shouldPersistExposureReport() throws {

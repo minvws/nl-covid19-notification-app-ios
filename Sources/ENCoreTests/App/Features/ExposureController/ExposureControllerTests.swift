@@ -16,7 +16,7 @@ final class ExposureControllerTests: TestCase {
     private let mutableStateStream = MutableExposureStateStreamingMock()
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
-    private let userNotificationController = UserNotificationCenterMock()
+    private let userNotificationController = UserNotificationControllingMock()
     private let networkStatusStream = NetworkStatusStreamingMock()
     private let currentAppVersion = "1.0"
 
@@ -50,10 +50,7 @@ final class ExposureControllerTests: TestCase {
         exposureManager.isExposureNotificationEnabledHandler = { true }
 
         userNotificationController.getAuthorizationStatusHandler = { completition in
-            completition(.authorized)
-        }
-        userNotificationController.addHandler = { _, completition in
-            completition?(nil)
+            completition(true)
         }
     }
 
@@ -626,7 +623,7 @@ final class ExposureControllerTests: TestCase {
             .disposed(by: disposeBag)
 
         XCTAssertEqual(userNotificationController.getAuthorizationStatusCallCount, 0)
-        XCTAssertEqual(userNotificationController.addCallCount, 0)
+        XCTAssertEqual(userNotificationController.displayExposureReminderNotificationCallCount, 0)
     }
 
     func test_lastOpenedNotificationCheck_48Hours_ToDays() {
@@ -685,7 +682,7 @@ final class ExposureControllerTests: TestCase {
             completion(.active)
         }
         userNotificationController.getAuthorizationStatusHandler = { completion in
-            completion(.authorized)
+            completion(true)
         }
 
         controller.activate()
@@ -758,7 +755,7 @@ final class ExposureControllerTests: TestCase {
             completion(.active)
         }
         userNotificationController.getAuthorizationStatusHandler = { completion in
-            completion(.authorized)
+            completion(true)
         }
 
         controller.unpause()
@@ -782,7 +779,7 @@ final class ExposureControllerTests: TestCase {
             completion(.active)
         }
         userNotificationController.getAuthorizationStatusHandler = { completion in
-            completion(.authorized)
+            completion(true)
         }
     }
 

@@ -21,7 +21,7 @@ final class BackgroundControllerTests: XCTestCase {
     private let taskScheduler = TaskSchedulingMock()
 
     private var exposureManager = ExposureManagingMock(authorizationStatus: .authorized)
-    private let userNotificationController = UserNotificationControllerMock()
+    private let userNotificationController = UserNotificationControllingMock()
     private let mockRandomNumberGenerator = RandomNumberGeneratingMock()
     private let environmentController = EnvironmentControllingMock()
 

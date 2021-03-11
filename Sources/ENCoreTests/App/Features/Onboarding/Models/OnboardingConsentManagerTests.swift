@@ -15,18 +15,18 @@ class OnboardingConsentManagerTests: TestCase {
     private var mockExposureStateStream: ExposureStateStreamingMock!
     private var mockExposureController: ExposureControllingMock!
     private var mockExposureState = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
-    private var mockUserNotificationCenter: UserNotificationCenterMock!
+    private var mockUserNotificationController: UserNotificationControllingMock!
 
     override func setUpWithError() throws {
         mockExposureStateStream = ExposureStateStreamingMock()
         mockExposureController = ExposureControllingMock()
-        mockUserNotificationCenter = UserNotificationCenterMock()
+        mockUserNotificationController = UserNotificationControllingMock()
 
         mockExposureStateStream.exposureState = mockExposureState
 
         sut = OnboardingConsentManager(exposureStateStream: mockExposureStateStream,
                                        exposureController: mockExposureController,
-                                       userNotificationController: mockUserNotificationCenter,
+                                       userNotificationController: mockUserNotificationController,
                                        theme: theme)
     }
 
@@ -206,7 +206,7 @@ class OnboardingConsentManagerTests: TestCase {
     func test_askNotificationsAuthorization_shouldCallUserNotificationCenter() {
         let completionExpectation = expectation(description: "completion")
         let userNotificationExpectation = expectation(description: "userNotificationExpectation")
-        mockUserNotificationCenter.requestNotificationPermissionHandler = { completion in
+        mockUserNotificationController.requestNotificationPermissionHandler = { completion in
             userNotificationExpectation.fulfill()
             completion()
         }
@@ -217,6 +217,6 @@ class OnboardingConsentManagerTests: TestCase {
 
         waitForExpectations(timeout: 1, handler: nil)
 
-        XCTAssertEqual(mockUserNotificationCenter.requestNotificationPermissionCallCount, 1)
+        XCTAssertEqual(mockUserNotificationController.requestNotificationPermissionCallCount, 1)
     }
 }

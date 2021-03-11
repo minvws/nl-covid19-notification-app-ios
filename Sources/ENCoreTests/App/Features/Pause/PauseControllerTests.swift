@@ -15,7 +15,7 @@ final class PauseControllerTests: TestCase {
 
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockExposureController: ExposureControllingMock!
-    private var mockUserNotificationCenter: UserNotificationCenterMock!
+    private var mockUserNotificationController: UserNotificationControllingMock!
     private var mockBackgroundController: BackgroundControllingMock!
 
     override func setUp() {
@@ -23,12 +23,12 @@ final class PauseControllerTests: TestCase {
 
         mockExposureDataController = ExposureDataControllingMock()
         mockExposureController = ExposureControllingMock()
-        mockUserNotificationCenter = UserNotificationCenterMock()
+        mockUserNotificationController = UserNotificationControllingMock()
         mockBackgroundController = BackgroundControllingMock()
 
         sut = PauseController(exposureDataController: mockExposureDataController,
                               exposureController: mockExposureController,
-                              userNotificationController: mockUserNotificationCenter,
+                              userNotificationController: mockUserNotificationController,
                               backgroundController: mockBackgroundController)
     }
 
@@ -84,20 +84,20 @@ final class PauseControllerTests: TestCase {
 
         XCTAssertEqual(mockExposureController.pauseCallCount, 1)
         XCTAssertEqual(mockExposureController.pauseArgValues.first, expectedPauseEndDate)
-        XCTAssertEqual(mockUserNotificationCenter.removeAllPendingNotificationRequestsCallCount, 1)
+        XCTAssertEqual(mockUserNotificationController.removeAllPendingNotificationRequestsCallCount, 1)
     }
 
     func test_unpause() {
         sut.unpauseApp()
 
         XCTAssertEqual(mockExposureController.unpauseCallCount, 1)
-        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsCallCount, 1)
-        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsArgValues.first?.first, PushNotificationIdentifier.pauseEnded.rawValue)
-        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsArgValues.first?.count, 1)
+        XCTAssertEqual(mockUserNotificationController.removeDeliveredNotificationsCallCount, 1)
+        XCTAssertEqual(mockUserNotificationController.removeDeliveredNotificationsArgValues.first?.first, PushNotificationIdentifier.pauseEnded.rawValue)
+        XCTAssertEqual(mockUserNotificationController.removeDeliveredNotificationsArgValues.first?.count, 1)
 
-        XCTAssertEqual(mockUserNotificationCenter.removePendingNotificationRequestsCallCount, 1)
-        XCTAssertEqual(mockUserNotificationCenter.removePendingNotificationRequestsArgValues.first?.first, PushNotificationIdentifier.pauseEnded.rawValue)
-        XCTAssertEqual(mockUserNotificationCenter.removePendingNotificationRequestsArgValues.first?.count, 1)
+        XCTAssertEqual(mockUserNotificationController.removePendingNotificationRequestsCallCount, 1)
+        XCTAssertEqual(mockUserNotificationController.removePendingNotificationRequestsArgValues.first?.first, PushNotificationIdentifier.pauseEnded.rawValue)
+        XCTAssertEqual(mockUserNotificationController.removePendingNotificationRequestsArgValues.first?.count, 1)
     }
 
     func test_hidePauseInformationScreen() {
