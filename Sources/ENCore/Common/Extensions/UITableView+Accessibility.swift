@@ -29,7 +29,10 @@ extension UITableView {
     }
 
     func addListAccessibilityHint(cell: UITableViewCell, indexPath: IndexPath) {
-        if isFirstItemOfSection(indexPath) {
+        if isFirstItemOfSection(indexPath) && isLastItemOfSection(indexPath) {
+            // only item in list, don't add accessibilityHint
+            cell.accessibilityHint = nil
+        } else if isFirstItemOfSection(indexPath) {
             cell.accessibilityHint = .accessibilityStartOfList
         } else if isLastItemOfSection(indexPath) {
             cell.accessibilityHint = .accessibilityEndOfList

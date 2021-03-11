@@ -123,8 +123,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return NetworkConfigurationStream(configuration: networkConfiguration)
     }()
 
-    var networkConfigurationProvider: NetworkConfigurationProvider {
-        // TODO: Replace this with static configuration when releasing
+    var networkConfigurationProvider: NetworkConfigurationProvider {        
         return DynamicNetworkConfigurationProvider(configurationStream: mutableNetworkConfigurationStream)
     }
 

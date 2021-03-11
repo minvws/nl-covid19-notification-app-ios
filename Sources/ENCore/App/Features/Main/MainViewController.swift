@@ -53,11 +53,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
          userNotificationController: UserNotificationControlling,
-         pauseController: PauseControlling) {
+         pauseController: PauseControlling,
+         alertControllerBuilder: AlertControllerBuildable) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
         self.pauseController = pauseController
         self.userNotificationController = userNotificationController
+        self.alertControllerBuilder = alertControllerBuilder
         super.init(theme: theme)
     }
 
@@ -272,7 +274,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private let exposureStateStream: ExposureStateStreaming
     private let pauseController: PauseControlling
     private let userNotificationController: UserNotificationControlling
-
+    private let alertControllerBuilder: AlertControllerBuildable
+    
     private var disposeBag = DisposeBag()
 
     @objc private func didQuadrupleTap(sender: UITapGestureRecognizer) {
@@ -283,13 +286,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     private func confirmNotificationRemoval(title: String) {
         let message = .mainConfirmNotificationRemovalTitle + " " + .mainConfirmNotificationRemovalMessage
-        let alertController = UIAlertController(title: title,
-                                                message: message,
-                                                preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: .cancel, style: .default) { [weak self] _ in
+        let alertController = alertControllerBuilder.buildAlertController(withTitle: title, message: message, preferredStyle: .alert)
+        alertController.addAction(alertControllerBuilder.buildAlertAction(title: .cancel, style: .default) { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
             })
-        alertController.addAction(UIAlertAction(title: .mainConfirmNotificationRemovalConfirm, style: .default) { [weak self] _ in
+        alertController.addAction(alertControllerBuilder.buildAlertAction(title: .mainConfirmNotificationRemovalConfirm, style: .default) { [weak self] _ in
             self?.exposureController.confirmExposureNotification()
             })
         present(alertController, animated: true, completion: nil)

@@ -17,8 +17,7 @@ protocol MoreInformationCellListner: AnyObject {
 final class MoreInformationCell: UIControl, Themeable {
 
     override var isHighlighted: Bool {
-        didSet {
-            // TODO: Should actually to proper UITableView touch styling
+        didSet {            
             UIView.animate(withDuration: 0.25) {
                 self.alpha = self.isHighlighted ? 0.6 : 1.0
             }

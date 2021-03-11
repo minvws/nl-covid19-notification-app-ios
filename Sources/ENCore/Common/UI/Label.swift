@@ -65,10 +65,12 @@ class Label: UILabel {
                 return
             }
 
-            if index == 0 {
-                accessibilityHint = .accessibilityStartOfList
-            } else if index == total - 1 {
-                accessibilityHint = .accessibilityEndOfList
+            if total > 1 {
+                if index == 0 {
+                    accessibilityHint = .accessibilityStartOfList
+                } else if index == total - 1 {
+                    accessibilityHint = .accessibilityEndOfList
+                }
             }
         }
     }

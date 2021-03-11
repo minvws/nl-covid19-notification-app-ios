@@ -89,7 +89,6 @@ private final class ThankYouView: View {
 
     // MARK: - Init
 
-    // TODO: Remove exposureConfirmationKey from init and make it settable
     init(theme: Theme, exposureConfirmationKey: ExposureConfirmationKey) {
         let config = InfoViewConfig(actionButtonTitle: .close,
                                     headerImage: .thankYouHeader)

@@ -63,8 +63,7 @@ final class StatusViewControllerTests: TestCase {
                                               theme: theme,
                                               topAnchor: nil,
                                               dataController: mockExposureDataController,
-                                              pushNotificationStream: mockPushNotificationStream)
-        viewController.router = router
+                                              pushNotificationStream: mockPushNotificationStream)        
     }
 
     func test_snapshot_active_not_notified() {
