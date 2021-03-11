@@ -20,7 +20,7 @@ protocol StatusBuildable {
     ///
     /// - Parameter listener: Listener of created Status component
     /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> Routing
+    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> ViewControllable
 }
 
 protocol StatusDependency {
@@ -64,7 +64,7 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
-    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> Routing {
+    func build(withListener listener: StatusListener, topAnchor: NSLayoutYAxisAnchor?) -> ViewControllable {
         let dependencyProvider = StatusDependencyProvider(dependency: dependency)
 
         let viewController = StatusViewController(
@@ -78,7 +78,6 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
             pushNotificationStream: dependencyProvider.dependency.pushNotificationStream
         )
 
-        return StatusRouter(listener: listener,
-                            viewController: viewController)
+        return viewController
     }
 }

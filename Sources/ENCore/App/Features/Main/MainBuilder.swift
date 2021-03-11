@@ -116,6 +116,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var pushNotificationStream: PushNotificationStreaming {
         dependency.pushNotificationStream
     }
+    
+    var alertControllerBuilder: AlertControllerBuildable {
+        AlertControllerBuilder()
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -125,7 +129,8 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                                                 exposureController: dependencyProvider.exposureController,
                                                 exposureStateStream: dependencyProvider.exposureStateStream,
                                                 userNotificationCenter: dependencyProvider.userNotificationCenter,
-                                                pauseController: dependencyProvider.pauseController)
+                                                pauseController: dependencyProvider.pauseController,
+                                                alertControllerBuilder: dependencyProvider.alertControllerBuilder)
 
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,

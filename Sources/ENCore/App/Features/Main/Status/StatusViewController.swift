@@ -18,8 +18,6 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     // MARK: - StatusViewControllable
 
-    weak var router: StatusRouting?
-
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
     private let dataController: ExposureDataControlling

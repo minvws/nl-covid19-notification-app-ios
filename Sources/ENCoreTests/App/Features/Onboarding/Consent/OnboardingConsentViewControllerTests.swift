@@ -27,6 +27,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
         recordSnapshots = false
 
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        interfaceOrientationStream.currentOrientationIsLandscape = false
 
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,

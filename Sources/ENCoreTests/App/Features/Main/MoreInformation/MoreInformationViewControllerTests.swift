@@ -17,8 +17,6 @@ final class MoreInformationViewControllerTests: TestCase {
 
     private var viewController: MoreInformationViewController!
     private let listener = MoreInformationListenerMock()
-    private let tableViewDelegate = UITableViewDelegateMock()
-    private let tableViewDataSource = UITableViewDataSourceMock()
     private let exposureControllerMock = ExposureControllingMock()
 
     // MARK: - Setup

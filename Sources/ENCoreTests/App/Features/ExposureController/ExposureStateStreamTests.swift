@@ -33,7 +33,7 @@ class ExposureStateStreamTests: TestCase {
         sut.update(state: .init(notifiedState: .notNotified, activeState: .active))
         sut.update(state: .init(notifiedState: .notNotified, activeState: .authorizationDenied))
 
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 3, handler: nil)
 
         XCTAssertEqual(lastActiveState, .authorizationDenied)
     }
@@ -48,9 +48,7 @@ class ExposureStateStreamTests: TestCase {
             subscriptionCallsExpectation.fulfill()
         }.disposed(by: disposeBag)
 
-        // DispatchQueue.global(qos: .background).async {
         self.sut.update(state: .init(notifiedState: .notNotified, activeState: .active))
-        // }
 
         waitForExpectations(timeout: 2, handler: nil)
     }

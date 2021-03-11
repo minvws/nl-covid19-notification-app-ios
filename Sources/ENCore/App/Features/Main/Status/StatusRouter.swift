@@ -8,24 +8,5 @@
 import UIKit
 
 /// @mockable
-protocol StatusViewControllable: ViewControllable {
-    var router: StatusRouting? { get set }
-}
-
-final class StatusRouter: Router<StatusViewControllable>, StatusRouting {
-
-    // MARK: - Initialisation
-
-    init(listener: StatusListener,
-         viewController: StatusViewControllable) {
-        self.listener = listener
-
-        super.init(viewController: viewController)
-
-        viewController.router = self
-    }
-
-    // MARK: - Private
-
-    private weak var listener: StatusListener?
+protocol StatusViewControllable: ViewControllable {    
 }

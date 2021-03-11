@@ -53,12 +53,12 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     // MARK: - MainRouting
 
     func attachStatus(topAnchor: NSLayoutYAxisAnchor) {
-        guard statusRouter == nil else { return }
+        guard statusViewController == nil else { return }
 
-        let statusRouter = statusBuilder.build(withListener: viewController, topAnchor: topAnchor)
-        self.statusRouter = statusRouter
+        let statusViewController = statusBuilder.build(withListener: viewController, topAnchor: topAnchor)
+        self.statusViewController = statusViewController
 
-        viewController.embed(stackedViewController: statusRouter.viewControllable)
+        viewController.embed(stackedViewController: statusViewController)
     }
 
     func attachMoreInformation() {
@@ -270,7 +270,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     // MARK: - Private
 
     private let statusBuilder: StatusBuildable
-    private var statusRouter: Routing?
+    private var statusViewController: ViewControllable?
 
     private let moreInformationBuilder: MoreInformationBuildable
     private var moreInformationViewController: ViewControllable?
