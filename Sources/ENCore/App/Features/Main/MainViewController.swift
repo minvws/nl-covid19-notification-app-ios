@@ -313,9 +313,9 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 }
             }
         case let .inactive(reason) where reason == .pushNotifications:
-            UNUserNotificationCenter.current().getNotificationSettings { settings in
+            userNotificationController.getAuthorizationStatus { (authorizationStatus) in
                 DispatchQueue.main.async {
-                    self.handlePushNotificationSettings(authorizationStatus: settings.authorizationStatus)
+                    self.handlePushNotificationSettings(authorizationStatus: authorizationStatus)
                 }
             }
         case let .inactive(reason) where reason == .noRecentNotificationUpdates:
@@ -327,7 +327,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
     }
 
-    private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {
+    private func handlePushNotificationSettings(authorizationStatus: NotificationAuthorizationStatus) {
         switch authorizationStatus {
         case .notDetermined:
             userNotificationController.requestNotificationPermission {}

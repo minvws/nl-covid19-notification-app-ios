@@ -24,7 +24,7 @@ final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
         mockUserNotificationController = UserNotificationControllingMock()
 
         mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
-        mockUserNotificationController.getAuthorizationStatusHandler = { $0(true) }
+        mockUserNotificationController.getAuthorizationStatusHandler = { $0(.authorized) }
 
         operation = ExpiredLabConfirmationNotificationDataOperation(storageController: mockStorageController,
                                                                     userNotificationController: mockUserNotificationController)

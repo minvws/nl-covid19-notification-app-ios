@@ -49,7 +49,7 @@ final class ExposureControllerTests: TestCase {
         exposureManager.getExposureNotificationStatusHandler = { .active }
         exposureManager.isExposureNotificationEnabledHandler = { true }
 
-        userNotificationController.getAuthorizationStatusHandler = { completition in
+        userNotificationController.getIsAuthorizedHandler = { completition in
             completition(true)
         }
     }
@@ -682,7 +682,7 @@ final class ExposureControllerTests: TestCase {
             completion(.active)
         }
         userNotificationController.getAuthorizationStatusHandler = { completion in
-            completion(true)
+            completion(.authorized)
         }
 
         controller.activate()
@@ -755,7 +755,7 @@ final class ExposureControllerTests: TestCase {
             completion(.active)
         }
         userNotificationController.getAuthorizationStatusHandler = { completion in
-            completion(true)
+            completion(.authorized)
         }
 
         controller.unpause()
@@ -779,7 +779,7 @@ final class ExposureControllerTests: TestCase {
             completion(.active)
         }
         userNotificationController.getAuthorizationStatusHandler = { completion in
-            completion(true)
+            completion(.authorized)
         }
     }
 

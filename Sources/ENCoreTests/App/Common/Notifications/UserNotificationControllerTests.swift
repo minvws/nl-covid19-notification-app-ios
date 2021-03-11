@@ -18,10 +18,234 @@ class UserNotificationControllerTests: TestCase {
         
         mockUserNotificationCenter = UserNotificationCenterMock()
         mockUserNotificationCenter.getAuthorizationStatusHandler = { completion in
-            completion(true)
+            completion(.authorized)
         }
         
         sut = UserNotificationController(userNotificationCenter: mockUserNotificationCenter)
+    }
+    
+    func test_getIsAuthorized_shouldCallUserNotificationCenter() {
+        
+        XCTAssertEqual(mockUserNotificationCenter.getAuthorizationStatusCallCount, 0)
+        
+        sut.getIsAuthorized { (authorized) in
+            XCTAssertTrue(authorized)
+        }
+        
+        XCTAssertEqual(mockUserNotificationCenter.getAuthorizationStatusCallCount, 1)
+    }
+    
+    func test_getAuthorizationStatus_shouldCallUserNotificationCenter() {
+        
+        mockUserNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.denied)
+        }
+        
+        XCTAssertEqual(mockUserNotificationCenter.getAuthorizationStatusCallCount, 0)
+        
+        sut.getAuthorizationStatus { (status) in
+            XCTAssertEqual(status, .denied)
+        }
+        
+        XCTAssertEqual(mockUserNotificationCenter.getAuthorizationStatusCallCount, 1)
+    }
+    
+    func test_requestNotificationPermission_shouldNotRequestAuthorizationIfAlreadyAuthorized() {
+        mockUserNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.authorized)
+        }
+                
+        let completionExpectation = expectation(description: "completion")
+        
+        XCTAssertEqual(mockUserNotificationCenter.getAuthorizationStatusCallCount, 0)
+        XCTAssertEqual(mockUserNotificationCenter.requestAuthorizationCallCount, 0)
+        
+        sut.requestNotificationPermission {
+            completionExpectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 2, handler: nil)
+        
+        XCTAssertEqual(mockUserNotificationCenter.getAuthorizationStatusCallCount, 1)
+        XCTAssertEqual(mockUserNotificationCenter.requestAuthorizationCallCount, 0)
+    }
+    
+    func test_requestNotificationPermission_shouldRequestAuthorizationIfNotYetAuthorized() {
+        mockUserNotificationCenter.getAuthorizationStatusHandler = { completion in
+            completion(.notDetermined)
+        }
+        
+        mockUserNotificationCenter.requestAuthorizationHandler = { _, completion in
+            completion(true, nil)
+        }
+        
+        let completionExpectation = expectation(description: "completion")
+        
+        XCTAssertEqual(mockUserNotificationCenter.getAuthorizationStatusCallCount, 0)
+        XCTAssertEqual(mockUserNotificationCenter.requestAuthorizationCallCount, 0)
+        
+        sut.requestNotificationPermission {
+            completionExpectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 2, handler: nil)
+        
+        XCTAssertEqual(mockUserNotificationCenter.getAuthorizationStatusCallCount, 1)
+        XCTAssertEqual(mockUserNotificationCenter.requestAuthorizationCallCount, 1)
+    }
+    
+    func test_removeAllPendingNotificationRequests_shouldCallUserNotificationCenter() {
+        XCTAssertEqual(mockUserNotificationCenter.removeAllPendingNotificationRequestsCallCount, 0)
+        
+        sut.removeAllPendingNotificationRequests()
+        
+        XCTAssertEqual(mockUserNotificationCenter.removeAllPendingNotificationRequestsCallCount, 1)
+    }
+    
+    func test_removePendingNotificationRequests_shouldCallUserNotificationCenter() {
+        XCTAssertEqual(mockUserNotificationCenter.removePendingNotificationRequestsCallCount, 0)
+        
+        sut.removePendingNotificationRequests(withIdentifiers: ["identifier"])
+        
+        XCTAssertEqual(mockUserNotificationCenter.removePendingNotificationRequestsCallCount, 1)
+        XCTAssertEqual(mockUserNotificationCenter.removePendingNotificationRequestsArgValues.first?.count, 1)
+        XCTAssertEqual(mockUserNotificationCenter.removePendingNotificationRequestsArgValues.first?[0], "identifier")
+    }
+    
+    func test_removeDeliveredNotifications_shouldCallUserNotificationCenter() {
+        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsCallCount, 0)
+        
+        sut.removeDeliveredNotifications(withIdentifiers: ["identifier"])
+        
+        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsCallCount, 1)
+        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsArgValues.first?.count, 1)
+        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsArgValues.first?[0], "identifier")
+    }
+    
+    func test_removeNotificationsFromNotificationsCenter() {
+        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsCallCount, 0)
+        
+        sut.removeNotificationsFromNotificationsCenter()
+        
+        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsCallCount, 1)
+        XCTAssertEqual(mockUserNotificationCenter.removeDeliveredNotificationsArgValues.first, [
+            "nl.rijksoverheid.en.exposure",
+            "nl.rijksoverheid.en.inactive",
+            "nl.rijksoverheid.en.statusDisabled",
+            "nl.rijksoverheid.en.appUpdateRequired",
+            "nl.rijksoverheid.en.pauseended"
+        ])
+    }
+    
+    func test_schedulePauseExpirationNotification() throws {
+        let pauseEndDate = Date(timeIntervalSince1970: 1593311000) // 28/06/20 02:23
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+        
+        sut.schedulePauseExpirationNotification(pauseEndDate: pauseEndDate)
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+        XCTAssertEqual(notificationRequest.content.sound, .default)
+        XCTAssertEqual(notificationRequest.content.badge, 0)
+        XCTAssertEqual(notificationRequest.content.title, "Turn CoronaMelder on again")
+        XCTAssertEqual(notificationRequest.content.body, "The app is not active yet. You need to turn it on in the app itself.")
+        
+        let trigger = try XCTUnwrap(notificationRequest.trigger as? UNCalendarNotificationTrigger)
+        // These components match with pauseEndDate + 30 seconds
+        XCTAssertEqual(trigger.dateComponents.hour, 4)
+        XCTAssertEqual(trigger.dateComponents.minute, 23)
+        XCTAssertEqual(trigger.dateComponents.second, 50)
+    }
+    
+    func test_displayPauseExpirationReminder() throws {
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+        
+        sut.displayPauseExpirationReminder(completion: { _ in })
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+        XCTAssertEqual(notificationRequest.content.sound, .default)
+        XCTAssertEqual(notificationRequest.content.badge, 0)
+        XCTAssertEqual(notificationRequest.content.title, "Turn CoronaMelder on again")
+        XCTAssertEqual(notificationRequest.content.body, "The app is not active yet. You need to turn it on in the app itself.")
+        XCTAssertNil(notificationRequest.trigger)
+    }
+    
+    func test_displayNotActiveNotification() throws {
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+        
+        sut.displayNotActiveNotification(completion: { _ in })
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+        XCTAssertEqual(notificationRequest.content.sound, .default)
+        XCTAssertEqual(notificationRequest.content.badge, 0)
+        XCTAssertEqual(notificationRequest.content.title, "")
+        XCTAssertEqual(notificationRequest.content.body, "CoronaMelder is not active at the moment. Check your settings.")
+        XCTAssertNil(notificationRequest.trigger)
+    }
+    
+    func test_displayAppUpdateRequiredNotification() throws {
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+        
+        sut.displayAppUpdateRequiredNotification(withUpdateMessage: "updateMessage", completion: { _ in })
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+        XCTAssertEqual(notificationRequest.content.sound, .default)
+        XCTAssertEqual(notificationRequest.content.badge, 0)
+        XCTAssertEqual(notificationRequest.content.title, "")
+        XCTAssertEqual(notificationRequest.content.body, "updateMessage")
+        XCTAssertNil(notificationRequest.trigger)
+    }
+    
+    func test_displayExposureNotification() throws {
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+        
+        sut.displayExposureNotification(daysSinceLastExposure: 5, completion: { _ in })
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+        XCTAssertEqual(notificationRequest.content.sound, .default)
+        XCTAssertEqual(notificationRequest.content.badge, 0)
+        XCTAssertEqual(notificationRequest.content.title, "")
+        XCTAssertEqual(notificationRequest.content.body, "You were near someone who has coronavirus 5 days ago. Read more in the app.")
+        XCTAssertNil(notificationRequest.trigger)
+    }
+    
+    func test_displayExposureReminderNotification() throws {
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+        
+        sut.displayExposureReminderNotification(daysSinceLastExposure: 5, completion: { _ in })
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+        XCTAssertEqual(notificationRequest.content.sound, .default)
+        XCTAssertEqual(notificationRequest.content.badge, 0)
+        XCTAssertEqual(notificationRequest.content.title, "")
+        XCTAssertEqual(notificationRequest.content.body, "Reminder: You were near someone who has coronavirus 5 days ago. Read more in the app.")
+        XCTAssertNil(notificationRequest.trigger)
+    }
+    
+    func test_display24HoursNoActivityNotification() throws {
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+        
+        sut.display24HoursNoActivityNotification(completion: { _ in })
+        
+        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+        XCTAssertEqual(notificationRequest.content.sound, .default)
+        XCTAssertEqual(notificationRequest.content.badge, 0)
+        XCTAssertEqual(notificationRequest.content.title, "The app is not active")
+        XCTAssertEqual(notificationRequest.content.body, "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona.")
+        XCTAssertNil(notificationRequest.trigger)
     }
     
     func test_displayUploadFailedNotification_shouldShowNotificationDuringGGDOpeningHours() {
