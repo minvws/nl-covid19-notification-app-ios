@@ -30,7 +30,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
 
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,
-                                           userNotificationCenter: mockUserNotificationCenter,
+                                           userNotificationController: mockUserNotificationCenter,
                                            theme: theme)
 
         AnimationTestingOverrides.animationsEnabled = false

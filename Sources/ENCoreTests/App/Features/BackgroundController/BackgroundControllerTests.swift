@@ -21,7 +21,7 @@ final class BackgroundControllerTests: XCTestCase {
     private let taskScheduler = TaskSchedulingMock()
 
     private var exposureManager = ExposureManagingMock(authorizationStatus: .authorized)
-    private let userNotificationCenter = UserNotificationCenterMock()
+    private let userNotificationController = UserNotificationControllerMock()
     private let mockRandomNumberGenerator = RandomNumberGeneratingMock()
     private let environmentController = EnvironmentControllingMock()
 
@@ -41,7 +41,7 @@ final class BackgroundControllerTests: XCTestCase {
                                           configuration: configuration,
                                           exposureManager: exposureManager,
                                           dataController: dataController,
-                                          userNotificationCenter: userNotificationCenter,
+                                          userNotificationController: userNotificationController,
                                           taskScheduler: taskScheduler,
                                           bundleIdentifier: "nl.rijksoverheid.en",
                                           randomNumberGenerator: mockRandomNumberGenerator,
@@ -261,9 +261,9 @@ final class BackgroundControllerTests: XCTestCase {
             exp.fulfill()
         }
 
-        userNotificationCenter.displayPauseExpirationReminderHandler = { completion in
+        userNotificationController.displayPauseExpirationReminderHandler = { completion in
             notificationExpectation.fulfill()
-            completion()
+            completion(true)
         }
 
         let now = Date()
@@ -277,7 +277,7 @@ final class BackgroundControllerTests: XCTestCase {
 
         XCTAssertNotNil(task.completed)
 
-        XCTAssertEqual(userNotificationCenter.displayPauseExpirationReminderCallCount, 1)
+        XCTAssertEqual(userNotificationController.displayPauseExpirationReminderCallCount, 1)
 
         XCTAssertEqual(exposureController.updateAndProcessPendingUploadsCallCount, 0)
         XCTAssertEqual(exposureController.exposureNotificationStatusCheckCallCount, 0)
@@ -293,8 +293,8 @@ final class BackgroundControllerTests: XCTestCase {
             exp.fulfill()
         }
 
-        userNotificationCenter.displayPauseExpirationReminderHandler = { completion in
-            completion()
+        userNotificationController.displayPauseExpirationReminderHandler = { completion in
+            completion(true)
         }
 
         dataController.isAppPaused = true
@@ -306,7 +306,7 @@ final class BackgroundControllerTests: XCTestCase {
 
         XCTAssertNotNil(task.completed)
 
-        XCTAssertEqual(userNotificationCenter.displayPauseExpirationReminderCallCount, 0)
+        XCTAssertEqual(userNotificationController.displayPauseExpirationReminderCallCount, 0)
     }
 
     func test_notHandleBackgroundDecoyRegisterENinactive() {

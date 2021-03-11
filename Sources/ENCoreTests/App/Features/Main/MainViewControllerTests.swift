@@ -25,7 +25,7 @@ final class MainViewControllerTests: TestCase {
         viewController = MainViewController(theme: theme,
                                             exposureController: exposureController,
                                             exposureStateStream: exposureStateStream,
-                                            userNotificationCenter: mockUserNotificationCenter,
+                                            userNotificationController: mockUserNotificationCenter,
                                             pauseController: mockPauseController)
         viewController.router = router
     }

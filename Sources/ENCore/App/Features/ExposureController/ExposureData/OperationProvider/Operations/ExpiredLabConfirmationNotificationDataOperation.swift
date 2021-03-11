@@ -17,9 +17,9 @@ protocol ExpiredLabConfirmationNotificationDataOperationProtocol {
 final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmationNotificationDataOperationProtocol, Logging {
 
     init(storageController: StorageControlling,
-         userNotificationCenter: UserNotificationCenter) {
+         userNotificationController: UserNotificationControlling) {
         self.storageController = storageController
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
     }
 
     // MARK: - ExposureDataOperation
@@ -33,7 +33,7 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
 
         if !expiredRequests.isEmpty {
             logDebug("Expired requests: \(expiredRequests.count) Expiration dates: \(expiredRequests.map { String(describing: $0.expiryDate) }.joined(separator: "\n"))")
-            notifyUser()
+            userNotificationController.displayUploadFailedNotification()
         }
 
         return removeExpiredRequestsFromStorage(expiredRequests: expiredRequests)
@@ -89,54 +89,8 @@ final class ExpiredLabConfirmationNotificationDataOperation: ExpiredLabConfirmat
         }
     }
 
-    private func notifyUser() {
-        func notify() {
-            let content = UNMutableNotificationContent()
-            content.sound = UNNotificationSound.default
-            content.body = .notificationUploadFailedNotification
-            content.badge = 0
-
-            let request = UNNotificationRequest(identifier: PushNotificationIdentifier.uploadFailed.rawValue,
-                                                content: content,
-                                                trigger: getCalendarTriggerForGGDOpeningHourIfNeeded())
-
-            userNotificationCenter.add(request) { error in
-                if let error = error {
-                    self.logError("\(error.localizedDescription)")
-                }
-            }
-        }
-
-        userNotificationCenter.getAuthorizationStatus { status in
-            guard status == .authorized else {
-                self.logError("Cannot notify user `authorizationStatus`: \(status)")
-                return
-            }
-            notify()
-        }
-    }
-
-    /// Generates a UNCalendarNotificationTrigger if the current time is outside the GGD working hours
-    func getCalendarTriggerForGGDOpeningHourIfNeeded() -> UNCalendarNotificationTrigger? {
-
-        let date = currentDate()
-        let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: date)
-
-        if hour > 20 || hour < 8 {
-
-            var dateComponents = DateComponents()
-            dateComponents.hour = 8
-            dateComponents.minute = 0
-            dateComponents.timeZone = TimeZone(identifier: "Europe/Amsterdam")
-            return UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-        }
-
-        return nil
-    }
-
     private let storageController: StorageControlling
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
     private let disposeBag = DisposeBag()
 }
 

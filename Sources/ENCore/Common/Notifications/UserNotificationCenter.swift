@@ -11,31 +11,50 @@ import ENFoundation
 
 /// @mockable(history:removeDeliveredNotifications = true;add=true;removePendingNotificationRequests=true)
 protocol UserNotificationCenter {
-    /// Gets the authroization status and returns the result on the main thread.
-    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ())
     func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> ())
-    func requestNotificationPermission(_ completion: @escaping (() -> ()))
-
+    func getNotificationSettings(completionHandler: @escaping (UNNotificationSettings) -> Void)
     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> ())?)
-
-    func removeNotificationsFromNotificationsCenter()
     func removeDeliveredNotifications(withIdentifiers identifiers: [String])
     func removeAllPendingNotificationRequests()
     func removePendingNotificationRequests(withIdentifiers identifiers: [String])
-
-    // Scheduling or displaying actual notifications
-    func schedulePauseExpirationNotification(pauseEndDate: Date)
-    func displayPauseExpirationReminder(completion: @escaping () -> ())
-    func displayNotActiveNotification(completion: @escaping () -> ())
-    func displayAppUpdateRequiredNotification(withUpdateMessage body: String, completion: @escaping () -> ())
-    func displayExposureReminderNotification(exposureDaysAgo days: Int, completion: @escaping () -> ())
-    func display24HoursNoActivityNotification(completion: @escaping () -> ())
 }
 
-extension UNUserNotificationCenter: UserNotificationCenter, Logging {
+/// @mockable
+protocol UserNotificationControlling {
+    
+    // Authorization and Permissions
+    func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ())
+    func requestNotificationPermission(_ completion: @escaping (() -> ()))
+    
+    // Removing notifications
+    func removeNotificationsFromNotificationsCenter()
+    func removeAllPendingNotificationRequests()
+    func removePendingNotificationRequests(withIdentifiers identifiers: [String])
+    func removeDeliveredNotifications(withIdentifiers identifiers: [String])
+    
+    // Scheduling or displaying actual notifications
+    func schedulePauseExpirationNotification(pauseEndDate: Date)
+    func displayPauseExpirationReminder(completion: @escaping (_ success: Bool) -> ())
+    func displayNotActiveNotification(completion: @escaping (_ success: Bool) -> ())
+    func displayAppUpdateRequiredNotification(withUpdateMessage body: String, completion: @escaping (_ success: Bool) -> ())
+    func displayExposureNotification(daysSinceLastExposure: Int, completion: @escaping (_ success: Bool) -> ())
+    func displayExposureReminderNotification(daysSinceLastExposure: Int, completion: @escaping (_ success: Bool) -> ())
+    func display24HoursNoActivityNotification(completion: @escaping (_ success: Bool) -> ())
+    func displayUploadFailedNotification()
+}
 
+extension UNUserNotificationCenter: UserNotificationCenter { }
+
+class UserNotificationController: UserNotificationControlling, Logging {
+    
+    private let userNotificationCenter: UserNotificationCenter
+    
+    init(userNotificationCenter: UserNotificationCenter = UNUserNotificationCenter.current()) {
+        self.userNotificationCenter = userNotificationCenter
+    }
+    
     func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ()) {
-        getNotificationSettings { settings in
+        userNotificationCenter.getNotificationSettings { settings in
             DispatchQueue.main.async {
                 completionHandler(settings.authorizationStatus)
             }
@@ -44,7 +63,7 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
     
     func requestNotificationPermission(_ completion: @escaping (() -> ())) {
         func request() {
-            requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
+            userNotificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -59,6 +78,18 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
             }
         }
     }
+    
+    func removeAllPendingNotificationRequests() {
+        userNotificationCenter.removeAllPendingNotificationRequests()
+    }
+    
+    func removePendingNotificationRequests(withIdentifiers identifiers: [String]) {
+        userNotificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+    
+    func removeDeliveredNotifications(withIdentifiers identifiers: [String]) {
+        userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
+    }
 
     func removeNotificationsFromNotificationsCenter() {
 
@@ -70,7 +101,7 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
             PushNotificationIdentifier.pauseEnded.rawValue
         ]
 
-        removeDeliveredNotifications(withIdentifiers: identifiers)
+        userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
     }
 
     func schedulePauseExpirationNotification(pauseEndDate: Date) {
@@ -89,7 +120,7 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
         addNotification(withContent: content, identifier: .pauseEnded, trigger: trigger, completion: nil)
     }
 
-    func displayPauseExpirationReminder(completion: @escaping () -> ()) {
+    func displayPauseExpirationReminder(completion: @escaping (_ success: Bool) -> ()) {
         let content = UNMutableNotificationContent()
         content.sound = UNNotificationSound.default
         content.title = .notificationAppUnpausedTitle
@@ -99,7 +130,7 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
         addNotification(withContent: content, identifier: .pauseEnded, completion: completion)
     }
     
-    func displayNotActiveNotification(completion: @escaping () -> ()) {
+    func displayNotActiveNotification(completion: @escaping (_ success: Bool) -> ()) {
         let content = UNMutableNotificationContent()
         content.body = .notificationEnStatusNotActive
         content.sound = .default
@@ -108,7 +139,7 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
         addNotification(withContent: content, identifier: .enStatusDisabled, completion: completion)
     }
     
-    func displayAppUpdateRequiredNotification(withUpdateMessage body: String, completion: @escaping () -> ()) {
+    func displayAppUpdateRequiredNotification(withUpdateMessage body: String, completion: @escaping (_ success: Bool) -> ()) {
         let content = UNMutableNotificationContent()
         content.body = body
         content.sound = .default
@@ -117,16 +148,25 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
         addNotification(withContent: content, identifier: .appUpdateRequired, completion: completion)
     }
     
-    func displayExposureReminderNotification(exposureDaysAgo days: Int, completion: @escaping () -> ()) {
+    func displayExposureNotification(daysSinceLastExposure: Int, completion: @escaping (_ success: Bool) -> ()) {
         let content = UNMutableNotificationContent()
-        content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: days)))
+        content.body = .exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure))
         content.sound = .default
         content.badge = 0
 
         addNotification(withContent: content, identifier: .exposure, completion: completion)
     }
     
-    func display24HoursNoActivityNotification(completion: @escaping () -> ()) {
+    func displayExposureReminderNotification(daysSinceLastExposure: Int, completion: @escaping (_ success: Bool) -> ()) {
+        let content = UNMutableNotificationContent()
+        content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure)))
+        content.sound = .default
+        content.badge = 0
+
+        addNotification(withContent: content, identifier: .exposure, completion: completion)
+    }
+    
+    func display24HoursNoActivityNotification(completion: @escaping (_ success: Bool) -> ()) {
         let content = UNMutableNotificationContent()
         content.title = .statusAppStateInactiveTitle
         content.body = String(format: .statusAppStateInactiveNotification)
@@ -136,11 +176,34 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
         addNotification(withContent: content, identifier: .inactive, completion: completion)
     }
     
-    private func addNotification(withContent content: UNNotificationContent, identifier: PushNotificationIdentifier, trigger: UNNotificationTrigger? = nil, completion: (() -> ())?) {
+    func displayUploadFailedNotification() {
+        let content = UNMutableNotificationContent()
+        content.sound = UNNotificationSound.default
+        content.body = .notificationUploadFailedNotification
+        content.badge = 0
+
+        let date = currentDate()
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: date)
+
+        var trigger: UNNotificationTrigger?
+        // Make sure notification is only shown during GGD opening hours
+        if hour > 20 || hour < 8 {
+            var dateComponents = DateComponents()
+            dateComponents.hour = 8
+            dateComponents.minute = 0
+            dateComponents.timeZone = TimeZone(identifier: "Europe/Amsterdam")
+            trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        }
+        
+        addNotification(withContent: content, identifier: .uploadFailed, trigger: trigger)
+    }
+    
+    private func addNotification(withContent content: UNNotificationContent, identifier: PushNotificationIdentifier, trigger: UNNotificationTrigger? = nil, completion: ((_ success: Bool) -> ())? = nil) {
         
         getAuthorizationStatus { status in
             guard status == .authorized else {
-                completion?()
+                completion?(false)
                 return self.logError("Not authorized to post notifications")
             }
 
@@ -148,15 +211,15 @@ extension UNUserNotificationCenter: UserNotificationCenter, Logging {
                                                 content: content,
                                                 trigger: trigger)
 
-            self.add(request) { error in
+            self.userNotificationCenter.add(request) { error in
                 guard let error = error else {
                     self.logDebug("Did send local notification `\(content)`")
-                    completion?()
+                    completion?(true)
                     return
                 }
                 
                 self.logError("Error posting notification: \(identifier.rawValue) \(error.localizedDescription)")
-                completion?()
+                completion?(false)
             }
         }
     }

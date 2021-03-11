@@ -27,7 +27,7 @@ final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
 
         operation = ExpiredLabConfirmationNotificationDataOperation(storageController: mockStorageController,
-                                                                    userNotificationCenter: mockUserNotificationCenter)
+                                                                    userNotificationController: mockUserNotificationCenter)
     }
 
     func test_pendingRequestIsExpired_doesNotCallNetworkAndDoesNotStoreAgain() {

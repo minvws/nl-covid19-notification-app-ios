@@ -43,8 +43,8 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
         return LocalPathProvider()
     }
 
-    var userNotificationCenter: UserNotificationCenter {
-        return UNUserNotificationCenter.current()
+    var userNotificationController: UserNotificationControlling {
+        return UserNotificationController()
     }
 
     var application: ApplicationControlling {
@@ -68,7 +68,7 @@ final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationP
                                                  storageController: dependencyProvider.dependency.storageController,
                                                  applicationSignatureController: dependencyProvider.dependency.applicationSignatureController,
                                                  localPathProvider: dependencyProvider.localPathProvider,
-                                                 userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                                 userNotificationController: dependencyProvider.userNotificationController,
                                                  application: dependencyProvider.application,
                                                  fileManager: dependencyProvider.fileManager,
                                                  environmentController: dependencyProvider.environmentController)

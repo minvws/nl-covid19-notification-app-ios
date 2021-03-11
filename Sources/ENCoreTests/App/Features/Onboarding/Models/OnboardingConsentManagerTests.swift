@@ -26,7 +26,7 @@ class OnboardingConsentManagerTests: TestCase {
 
         sut = OnboardingConsentManager(exposureStateStream: mockExposureStateStream,
                                        exposureController: mockExposureController,
-                                       userNotificationCenter: mockUserNotificationCenter,
+                                       userNotificationController: mockUserNotificationCenter,
                                        theme: theme)
     }
 

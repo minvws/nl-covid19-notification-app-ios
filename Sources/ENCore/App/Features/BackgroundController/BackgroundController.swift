@@ -42,7 +42,7 @@ final class BackgroundController: BackgroundControlling, Logging {
          configuration: BackgroundTaskConfiguration,
          exposureManager: ExposureManaging,
          dataController: ExposureDataControlling,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          taskScheduler: TaskScheduling,
          bundleIdentifier: String,
          randomNumberGenerator: RandomNumberGenerating,
@@ -52,7 +52,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         self.networkController = networkController
         self.exposureManager = exposureManager
         self.dataController = dataController
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
         self.taskScheduler = taskScheduler
         self.bundleIdentifier = bundleIdentifier
         self.randomNumberGenerator = randomNumberGenerator
@@ -121,7 +121,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         if identifier == .refresh, shouldShowPauseExpirationReminder {
             logInfo("Displaying unpause reminder notification")
-            userNotificationCenter.displayPauseExpirationReminder {
+            userNotificationController.displayPauseExpirationReminder { _ in
                 completeTask()
             }
         } else {
@@ -156,7 +156,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
                 if strongSelf.shouldShowPauseExpirationReminder {
                     strongSelf.logInfo("Displaying unpause reminder notification")
-                    strongSelf.userNotificationCenter.displayPauseExpirationReminder(completion: {})
+                    strongSelf.userNotificationController.displayPauseExpirationReminder(completion: { _ in })
                 } else {
                     strongSelf.refresh(task: nil)
                 }
@@ -176,7 +176,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private let taskScheduler: TaskScheduling
     private let exposureManager: ExposureManaging
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
     private let exposureController: ExposureControlling
     private let dataController: ExposureDataControlling
     private let networkController: NetworkControlling
@@ -568,28 +568,6 @@ final class BackgroundController: BackgroundControlling, Logging {
             return true
         } else {
             return false
-        }
-    }
-
-    private func sendNotification(content: UNNotificationContent, identifier: PushNotificationIdentifier, completion: @escaping (Bool) -> ()) {
-        userNotificationCenter.getAuthorizationStatus { status in
-            guard status == .authorized else {
-                completion(false)
-                return self.logError("Not authorized to post notifications")
-            }
-
-            let request = UNNotificationRequest(identifier: identifier.rawValue,
-                                                content: content,
-                                                trigger: nil)
-
-            self.userNotificationCenter.add(request) { error in
-                guard let error = error else {
-                    completion(true)
-                    return
-                }
-                self.logError("Error posting notification: \(identifier.rawValue) \(error.localizedDescription)")
-                completion(false)
-            }
         }
     }
 }

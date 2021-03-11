@@ -69,7 +69,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             localPathProvider: mockLocalPathProvider,
             exposureDataController: mockExposureDataController,
             configuration: mockExposureConfiguration,
-            userNotificationCenter: mockUserNotificationCenter,
+            userNotificationController: mockUserNotificationCenter,
             application: mockApplication,
             fileManager: mockFileManager,
             environmentController: mockEnvironmentController

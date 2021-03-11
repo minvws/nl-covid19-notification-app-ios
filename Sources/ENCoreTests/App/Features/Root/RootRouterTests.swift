@@ -26,7 +26,7 @@ final class RootRouterTests: XCTestCase {
     private let backgroundController = BackgroundControllingMock()
     private let updateAppBuilder = UpdateAppBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
-    private let userNotificationCenter = UserNotificationCenterMock()
+    private let userNotificationController = UserNotificationCenterMock()
     private let mutableNetworkStatusStream = MutableNetworkStatusStreamingMock()
     private let mockEnvironmentController = EnvironmentControllingMock()
     private let updateOperatingSystemBuilder = UpdateOperatingSystemBuildableMock()
@@ -83,7 +83,7 @@ final class RootRouterTests: XCTestCase {
                             updateAppBuilder: updateAppBuilder,
                             updateOperatingSystemBuilder: updateOperatingSystemBuilder,
                             webviewBuilder: webviewBuilder,
-                            userNotificationCenter: userNotificationCenter,
+                            userNotificationController: userNotificationController,
                             currentAppVersion: "1.0",
                             environmentController: mockEnvironmentController,
                             pauseController: mockPauseController)

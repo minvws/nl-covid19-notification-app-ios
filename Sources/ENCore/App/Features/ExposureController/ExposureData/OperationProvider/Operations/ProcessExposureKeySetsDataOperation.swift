@@ -59,7 +59,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
          localPathProvider: LocalPathProviding,
          exposureDataController: ExposureDataControlling,
          configuration: ExposureConfiguration,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          application: ApplicationControlling,
          fileManager: FileManaging,
          environmentController: EnvironmentControlling) {
@@ -69,7 +69,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.localPathProvider = localPathProvider
         self.exposureDataController = exposureDataController
         self.configuration = configuration
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
         self.application = application
         self.fileManager = fileManager
         self.environmentController = environmentController
@@ -498,25 +498,15 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                       exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
         return .create { (observer) -> Disposable in
 
-            self.userNotificationCenter.getAuthorizationStatus { status in
+            self.userNotificationController.getAuthorizationStatus { status in
                 guard status == .authorized else {
                     observer(.failure(ExposureDataError.internalError))
                     return self.logError("Not authorized to post notifications")
                 }
 
-                let content = UNMutableNotificationContent()
-                content.body = .exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure))
-                content.sound = .default
-                content.badge = 0
-
-                let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
-                                                    content: content,
-                                                    trigger: nil)
-
-                self.userNotificationCenter.add(request) { error in
-
-                    if let error = error {
-                        self.logError("Error posting notification: \(error.localizedDescription)")
+                self.userNotificationController.displayExposureNotification(daysSinceLastExposure: daysSinceLastExposure) { (success) in
+                    
+                    guard success else {
                         observer(.failure(ExposureDataError.internalError))
                         return
                     }
@@ -623,7 +613,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let exposureDataController: ExposureDataControlling
     private let localPathProvider: LocalPathProviding
     private let configuration: ExposureConfiguration
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
     private let application: ApplicationControlling
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling

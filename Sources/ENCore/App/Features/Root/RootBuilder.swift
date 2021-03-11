@@ -173,7 +173,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     var pauseController: PauseControlling {
         PauseController(exposureDataController: dataController,
                         exposureController: exposureController,
-                        userNotificationCenter: userNotificationCenter,
+                        userNotificationController: userNotificationController,
                         backgroundController: backgroundController)
     }
 
@@ -192,8 +192,8 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return MessageManager(storageController: storageController, theme: theme)
     }
 
-    fileprivate var userNotificationCenter: UserNotificationCenter {
-        return UNUserNotificationCenter.current()
+    fileprivate var userNotificationController: UserNotificationControlling {
+        UserNotificationController()
     }
 
     var randomNumberGenerator: RandomNumberGenerating {
@@ -253,7 +253,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           updateAppBuilder: dependencyProvider.updateAppBuilder,
                           updateOperatingSystemBuilder: dependencyProvider.updateOperatingSystemBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
-                          userNotificationCenter: dependencyProvider.userNotificationCenter,
+                          userNotificationController: dependencyProvider.userNotificationController,
                           currentAppVersion: unwrappedCurrentAppVersion,
                           environmentController: dependencyProvider.environmentController,
                           pauseController: dependencyProvider.pauseController)

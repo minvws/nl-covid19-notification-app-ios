@@ -73,8 +73,8 @@ protocol BackgroundControllerBuildable {
 
 private final class BackgroundControllerDependencyProvider: DependencyProvider<BackgroundDependency> {
 
-    fileprivate var userNotificationCenter: UserNotificationCenter {
-        UNUserNotificationCenter.current()
+    fileprivate var userNotificationController: UserNotificationControlling {
+        UserNotificationController()
     }
 
     fileprivate var bundleIdentifier: String {
@@ -101,7 +101,7 @@ final class BackgroundControllerBuilder: Builder<BackgroundDependency>, Backgrou
                                     configuration: configuration,
                                     exposureManager: dependencyProvider.dependency.exposureManager,
                                     dataController: dependencyProvider.dependency.dataController,
-                                    userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                    userNotificationController: dependencyProvider.userNotificationController,
                                     taskScheduler: taskScheduling,
                                     bundleIdentifier: dependencyProvider.bundleIdentifier,
                                     randomNumberGenerator: dependencyProvider.dependency.randomNumberGenerator,

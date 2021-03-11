@@ -50,7 +50,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          updateAppBuilder: UpdateAppBuildable,
          updateOperatingSystemBuilder: UpdateOperatingSystemBuildable,
          webviewBuilder: WebviewBuildable,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          currentAppVersion: String,
          environmentController: EnvironmentControlling,
          pauseController: PauseControlling) {
@@ -74,7 +74,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.updateAppBuilder = updateAppBuilder
         self.currentAppVersion = currentAppVersion
 
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
         self.mutableNetworkStatusStream = mutableNetworkStatusStream
 
         self.updateOperatingSystemBuilder = updateOperatingSystemBuilder
@@ -191,7 +191,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.clearUnseenExposureNotificationDate()
 
-        userNotificationCenter.removeNotificationsFromNotificationsCenter()
+        userNotificationController.removeNotificationsFromNotificationsCenter()
 
         // On iOS 12 the app is not informed of entering the foreground on startup, call didEnterForeground manually
         if environmentController.isiOS12 {
@@ -528,7 +528,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
 
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
 
     private let mutableNetworkStatusStream: MutableNetworkStatusStreaming
 

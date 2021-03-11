@@ -28,7 +28,7 @@ final class PauseControllerTests: TestCase {
 
         sut = PauseController(exposureDataController: mockExposureDataController,
                               exposureController: mockExposureController,
-                              userNotificationCenter: mockUserNotificationCenter,
+                              userNotificationController: mockUserNotificationCenter,
                               backgroundController: mockBackgroundController)
     }
 
