@@ -702,10 +702,10 @@ final class ExposureController: ExposureControlling, Logging {
             .disposed(by: disposeBag)
     }
 
-    private func updatePushNotificationState(completition: @escaping () -> ()) {
+    private func updatePushNotificationState(completion: @escaping () -> ()) {
         userNotificationController.getIsAuthorized { isAuthorized in
             self.isPushNotificationsEnabled = isAuthorized
-            completition()
+            completion()
         }
     }
 

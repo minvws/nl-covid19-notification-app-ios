@@ -5,8 +5,6 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import NotificationCenter
-
 /// @mockable(history: processPendingLabConfirmationUploadRequestsOperation = true)
 protocol ExposureDataOperationProvider {
     func processExposureKeySetsOperation(exposureManager: ExposureManaging,

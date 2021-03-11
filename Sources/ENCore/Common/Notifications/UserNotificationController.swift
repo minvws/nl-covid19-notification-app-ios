@@ -13,7 +13,6 @@ import ENFoundation
 protocol UserNotificationCenter {
     func getAuthorizationStatus(completionHandler: @escaping (_ status: NotificationAuthorizationStatus) -> ())
     func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> ())
-    func getNotificationSettings(completionHandler: @escaping (UNNotificationSettings) -> Void)
     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> ())?)
     func removeDeliveredNotifications(withIdentifiers identifiers: [String])
     func removeAllPendingNotificationRequests()
@@ -45,6 +44,7 @@ protocol UserNotificationControlling {
     func displayUploadFailedNotification()
 }
 
+/// Internal representation mirroring UNAuthorizationStatus
 enum NotificationAuthorizationStatus: Int {
     // The user has not yet made a choice regarding whether the application may post user notifications.
     case notDetermined = 0
@@ -200,6 +200,7 @@ class UserNotificationController: UserNotificationControlling, Logging {
         let hour = calendar.component(.hour, from: date)
 
         var trigger: UNNotificationTrigger?
+        
         // Make sure notification is only shown during GGD opening hours
         if hour > 20 || hour < 8 {
             var dateComponents = DateComponents()

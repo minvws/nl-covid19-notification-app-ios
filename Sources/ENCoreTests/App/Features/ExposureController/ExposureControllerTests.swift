@@ -49,8 +49,8 @@ final class ExposureControllerTests: TestCase {
         exposureManager.getExposureNotificationStatusHandler = { .active }
         exposureManager.isExposureNotificationEnabledHandler = { true }
 
-        userNotificationController.getIsAuthorizedHandler = { completition in
-            completition(true)
+        userNotificationController.getIsAuthorizedHandler = { completion in
+            completion(true)
         }
     }
 
