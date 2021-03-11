@@ -10,10 +10,12 @@ import UIKit
 extension UIStackView {
 
     func addListSubview(_ view: UIView, index: Int, total: Int) {
-        if index == 0 {
-            view.accessibilityHint = .accessibilityStartOfList
-        } else if index == total - 1 {
-            view.accessibilityHint = .accessibilityEndOfList
+        if total > 1 {
+            if index == 0 {
+                view.accessibilityHint = .accessibilityStartOfList
+            } else if index == total - 1 {
+                view.accessibilityHint = .accessibilityEndOfList
+            }
         }
         addArrangedSubview(view)
     }
