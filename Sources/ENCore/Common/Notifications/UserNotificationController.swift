@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ * Copyright (c) 2021 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
  *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
  *
  *  SPDX-License-Identifier: EUPL-1.2
@@ -8,16 +8,6 @@
 import Foundation
 import NotificationCenter
 import ENFoundation
-
-/// @mockable(history:removeDeliveredNotifications = true;add=true;removePendingNotificationRequests=true)
-protocol UserNotificationCenter {
-    func getAuthorizationStatus(completionHandler: @escaping (_ status: NotificationAuthorizationStatus) -> ())
-    func requestAuthorization(options: UNAuthorizationOptions, completionHandler: @escaping (Bool, Error?) -> ())
-    func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> ())?)
-    func removeDeliveredNotifications(withIdentifiers identifiers: [String])
-    func removeAllPendingNotificationRequests()
-    func removePendingNotificationRequests(withIdentifiers identifiers: [String])
-}
 
 /// @mockable(history:removeDeliveredNotifications = true;removePendingNotificationRequests=true)
 protocol UserNotificationControlling {
@@ -64,17 +54,6 @@ enum NotificationAuthorizationStatus: Int {
     case ephemeral = 4
 }
 
-extension UNUserNotificationCenter: UserNotificationCenter {
-    func getAuthorizationStatus(completionHandler: @escaping (_ status: NotificationAuthorizationStatus) -> ()) {
-        getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                let status = NotificationAuthorizationStatus(rawValue: settings.authorizationStatus.rawValue) ?? .notDetermined
-                completionHandler(status)
-            }
-        }
-    }
-}
-
 class UserNotificationController: UserNotificationControlling, Logging {
     
     private let userNotificationCenter: UserNotificationCenter
@@ -94,7 +73,7 @@ class UserNotificationController: UserNotificationControlling, Logging {
     func getAuthorizationStatus(completionHandler: @escaping (_ status: NotificationAuthorizationStatus) -> ()) {
         userNotificationCenter.getAuthorizationStatus(completionHandler: completionHandler)
     }
-            
+    
     func requestNotificationPermission(_ completion: @escaping (() -> ())) {
         
         userNotificationCenter.getAuthorizationStatus { authorizationStatus in
@@ -122,7 +101,7 @@ class UserNotificationController: UserNotificationControlling, Logging {
     func removeDeliveredNotifications(withIdentifiers identifiers: [String]) {
         userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
     }
-
+    
     func removeNotificationsFromNotificationsCenter() {
         
         let identifiers = [
@@ -132,23 +111,23 @@ class UserNotificationController: UserNotificationControlling, Logging {
             PushNotificationIdentifier.appUpdateRequired.rawValue,
             PushNotificationIdentifier.pauseEnded.rawValue
         ]
-
+        
         userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
     }
-
+    
     func schedulePauseExpirationNotification(pauseEndDate: Date) {
         
         // Notification is scheduled 30 seconds after the actual pause end date to make it more likely that
         // the app updates correctly if the notification comes in while the app is in the foreground
         let dateComponents = Calendar.current.dateComponents([.hour, .minute, .second], from: pauseEndDate.addingTimeInterval(.seconds(30)))
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-
+        
         addNotification(title: .notificationAppUnpausedTitle,
                         body: .notificationManualUnpauseDescription,
                         identifier: .pauseEnded,
                         trigger: trigger)
     }
-
+    
     func displayPauseExpirationReminder(completion: @escaping (_ success: Bool) -> ()) {
         
         addNotification(title: .notificationAppUnpausedTitle,
@@ -194,11 +173,11 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
     
     func displayUploadFailedNotification() {
-
+        
         let date = currentDate()
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
-
+        
         var trigger: UNNotificationTrigger?
         
         // Make sure notification is only shown during GGD opening hours
@@ -215,15 +194,23 @@ class UserNotificationController: UserNotificationControlling, Logging {
     
     // MARK: - Private
     
-    private func addNotification(title: String = "", body: String, identifier: PushNotificationIdentifier, trigger: UNNotificationTrigger? = nil, completion: ((_ success: Bool) -> ())? = nil) {
+    private func addNotification(
+        title: String = "",
+        body: String,
+        identifier: PushNotificationIdentifier,
+        trigger: UNNotificationTrigger? = nil,
+        completion: ((_ success: Bool) -> ())? = nil
+    ) {
         
-        userNotificationCenter.getAuthorizationStatus { (authorizationStatus) in
+        userNotificationCenter.getAuthorizationStatus { [weak self] (authorizationStatus) in
+            
+            guard let strongSelf = self else { return }
             
             guard authorizationStatus == .authorized else {
                 completion?(false)
-                return self.logError("Not authorized to post notifications")
+                return strongSelf.logError("Not authorized to post notification with identifier \(identifier.rawValue)")
             }
-
+            
             let content = UNMutableNotificationContent()
             content.sound = UNNotificationSound.default
             content.title = title
@@ -233,15 +220,16 @@ class UserNotificationController: UserNotificationControlling, Logging {
             let request = UNNotificationRequest(identifier: identifier.rawValue,
                                                 content: content,
                                                 trigger: trigger)
-
-            self.userNotificationCenter.add(request) { error in
+            
+            strongSelf.userNotificationCenter.add(request) { error in
+                
                 guard let error = error else {
-                    self.logDebug("Did send local notification `\(content)`")
+                    strongSelf.logDebug("Did send local notification `\(content)`")
                     completion?(true)
                     return
                 }
                 
-                self.logError("Error posting notification: \(identifier.rawValue) \(error.localizedDescription)")
+                strongSelf.logError("Error posting notification: \(identifier.rawValue). \(error.localizedDescription)")
                 completion?(false)
             }
         }
