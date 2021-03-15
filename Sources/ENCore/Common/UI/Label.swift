@@ -12,12 +12,6 @@ class Label: UILabel {
 
     private var charactersToRemove: String?
 
-    var isLinkInteractionEnabled: Bool = false {
-        willSet {
-            linkInteractionEnabled(newValue)
-        }
-    }
-
     /// Indicates that the text in this label can or can not be copied by using the long press gesture
     /// - Parameters:
     ///   - canBeCopied: Enable or disable copying
@@ -44,6 +38,8 @@ class Label: UILabel {
         set {
             super.attributedText = newValue
 
+            updateLinkInteraction()
+            
             guard let newText = newValue, newText.length > 0 else {
                 return
             }
@@ -112,16 +108,26 @@ class Label: UILabel {
         return gesture
     }()
 
-    private func linkInteractionEnabled(_ enabled: Bool) {
+    private func updateLinkInteraction() {
+        let hasLinks = hasLinksInText
+        
+        isUserInteractionEnabled = hasLinks
 
-        isUserInteractionEnabled = enabled
-
-        guard enabled else {
+        if hasLinks {
+            addGestureRecognizer(linkTapGestureRecognizer)
+        } else {
             removeGestureRecognizer(linkTapGestureRecognizer)
-            return
         }
-
-        addGestureRecognizer(linkTapGestureRecognizer)
+    }
+        
+    private var hasLinksInText: Bool {
+        guard let text = attributedText?.string else {
+            return false
+        }
+        
+        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let foundLinks = detector.matches(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count))
+        return !foundLinks.isEmpty
     }
 
     private lazy var linkTapGestureRecognizer: UITapGestureRecognizer = {
@@ -135,10 +141,6 @@ class Label: UILabel {
         }
 
         guard let text = attributedText?.string else {
-            return
-        }
-
-        guard isLinkInteractionEnabled else {
             return
         }
 
