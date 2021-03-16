@@ -221,7 +221,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                                  diagnosisKeyURLs: diagnosisKeyUrls) { result in
                 switch result {
                 case let .success(summary):
-                    self.logDebug("Successfully detected exposures: \(String(describing: summary))")
+                    self.logDebug("Successfully called detectExposures function of framework: \(String(describing: summary))")
 
                     let validKeySetHolderResults = keySetHoldersToProcess.map { keySetHolder in
                         return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
