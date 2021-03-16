@@ -25,8 +25,13 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockLocalPathProvider: LocalPathProvidingMock!
     private var disposeBag = DisposeBag()
     private var mockExposureDataController: ExposureDataControllingMock!
+    private var mockRiskCalculationController: RiskCalculationControllingMock!
+    private var currentDate: Date!
 
     override func setUpWithError() throws {
+
+        currentDate = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
 
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()
@@ -38,13 +43,19 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockEnvironmentController = EnvironmentControllingMock()
         mockLocalPathProvider = LocalPathProvidingMock()
         mockExposureDataController = ExposureDataControllingMock()
+        mockRiskCalculationController = RiskCalculationControllingMock()
 
         // Default handlers
         mockEnvironmentController.gaenRateLimitingType = .dailyLimit
+        mockEnvironmentController.maximumSupportedExposureNotificationVersion = .version2
         mockUserNotificationCenter.getAuthorizationStatusHandler = { $0(.authorized) }
         mockUserNotificationCenter.addHandler = { $1?(nil) }
+        mockUserNotificationCenter.displayExposureNotificationHandler = { _, completion in completion(.success(())) }
         mockExposureManager.detectExposuresHandler = { _, _, completion in
             completion(.success(ExposureDetectionSummaryMock()))
+        }
+        mockExposureManager.getExposureWindowsHandler = { _, completion in
+            completion(.success([ExposureWindowMock()]))
         }
         mockFileManager.fileExistsHandler = { _, _ in true }
         mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
@@ -62,6 +73,10 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _ in }
 
+        mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
+            return Date()
+        }
+
         sut = ProcessExposureKeySetsDataOperation(
             networkController: mockNetworkController,
             storageController: mockStorageController,
@@ -72,7 +87,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             userNotificationCenter: mockUserNotificationCenter,
             application: mockApplication,
             fileManager: mockFileManager,
-            environmentController: mockEnvironmentController
+            environmentController: mockEnvironmentController,
+            riskCalculationController: mockRiskCalculationController
         )
     }
 
@@ -299,17 +315,14 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
 
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate), count: 2)
 
         mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
 
         let subscriptionExpectation = expectation(description: "subscriptionExpectation")
 
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            let exposureSummary = ExposureDetectionSummaryMock()
-            exposureSummary.daysSinceLastExposure = 3
-
-            completion(.success(exposureSummary))
+        mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
+            return Calendar.current.date(byAdding: .day, value: -3, to: self.currentDate)
         }
 
         sut.execute()
@@ -320,11 +333,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
 
-        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
-        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
-        XCTAssertEqual(notificationRequest.content.sound, .default)
-        XCTAssertEqual(notificationRequest.content.badge, 0)
-        XCTAssertEqual(notificationRequest.content.body, "You were near someone who has coronavirus 3 days ago. Read more in the app.")
+        XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationCallCount, 1)
+        XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationArgValues.first, 3)
     }
 
     func test_shouldNotShowExposureNotificationForExposureMoreThan14DaysAgo() throws {
@@ -384,9 +394,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
 
         let exp = expectation(description: "detectExposuresExpectation")
-
-        let currentDate = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
 
         mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
         mockExposureManager.detectExposuresHandler = { _, _, completion in

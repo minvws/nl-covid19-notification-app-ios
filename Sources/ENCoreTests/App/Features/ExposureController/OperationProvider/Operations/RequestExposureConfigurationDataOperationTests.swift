@@ -121,12 +121,16 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
     private func createConfiguration(withIdentifier identifier: String = "test") -> ExposureRiskConfiguration {
         ExposureRiskConfiguration(
             identifier: identifier,
-            minimumRiskScope: 1,
-            attenuationLevelValues: [2],
-            daysSinceLastExposureLevelValues: [3],
-            durationLevelValues: [4],
-            transmissionRiskLevelValues: [5],
-            attenuationDurationThresholds: [6]
+            minimumRiskScore: 1,
+            reportTypeWeights: [7],
+            reportTypeWhenMissing: 1,
+            infectiousnessWeights: [8],
+            attenuationBucketThresholdDb: [9],
+            attenuationBucketWeights: [10],
+            daysSinceExposureThreshold: 11,
+            minimumWindowScore: 12,
+            daysSinceOnsetToInfectiousness: [],
+            infectiousnessWhenDaysSinceOnsetMissing: 1
         )
     }
 }

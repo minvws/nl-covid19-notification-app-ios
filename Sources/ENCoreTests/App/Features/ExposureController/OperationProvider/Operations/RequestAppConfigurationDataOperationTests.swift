@@ -50,9 +50,9 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 0)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 0)
     }
 
     func test_execute_withStoredConfiguration_andNoSignature_shouldRetrieveFromNetwork() {
@@ -71,9 +71,9 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
     }
 
     func test_execute_withStoredConfiguration_andNonMatchingIdentifier_shouldRetrieveFromNetwork() {
@@ -92,9 +92,9 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
     }
 
     func test_execute_withStoredConfiguration_andNonMatchingSignature_shouldRetrieveFromNetwork() {
@@ -116,11 +116,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
+        waitForExpectations(timeout: 1, handler: nil)
+        
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeAppConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeSignatureCallCount, 1)
-
-        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_execute_withoutStoredConfiguration_shouldRetrieveFromNetwork() {
@@ -138,11 +138,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
+        waitForExpectations(timeout: 1, handler: nil)
+        
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeAppConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeSignatureCallCount, 1)
-
-        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_execute_retrieveFromNetwork_withError_shouldMapExposureDataError() {
@@ -168,9 +168,9 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
                 exp.fulfill()
             }).disposed(by: disposeBag)
 
-        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
     }
 
     // MARK: - Helper functions

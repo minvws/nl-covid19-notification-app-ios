@@ -71,7 +71,7 @@ targets:
         UIUserInterfaceStyle: Light
         UIViewControllerBasedStatusBarAppearance: true
         ENDeveloperRegion: TEST_NL_TEST
-        ENAPIVersion: 1
+        ENAPIVersion: 2
     platform: iOS
     scheme:
       gatherCoverageData: true

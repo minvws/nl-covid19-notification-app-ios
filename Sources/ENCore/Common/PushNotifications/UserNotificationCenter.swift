@@ -5,10 +5,11 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import NotificationCenter
 
-/// @mockable(history:removeDeliveredNotifications = true;add=true;removePendingNotificationRequests=true)
+/// @mockable(history:removeDeliveredNotifications = true;add=true;removePendingNotificationRequests=true;displayExposureNotification=true)
 protocol UserNotificationCenter {
     /// Gets the authroization status and returns the result on the main thread.
     func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ())
@@ -24,9 +25,10 @@ protocol UserNotificationCenter {
 
     func schedulePauseExpirationNotification(pauseEndDate: Date)
     func displayPauseExpirationReminder(completion: @escaping () -> ())
+    func displayExposureNotification(daysSinceLastExposure: Int, completion: @escaping (Result<(), Error>) -> ())
 }
 
-extension UNUserNotificationCenter: UserNotificationCenter {
+extension UNUserNotificationCenter: UserNotificationCenter, Logging {
 
     func getAuthorizationStatus(completionHandler: @escaping (UNAuthorizationStatus) -> ()) {
         getNotificationSettings { settings in
@@ -83,6 +85,36 @@ extension UNUserNotificationCenter: UserNotificationCenter {
 
         self.add(request) { _ in
             completion()
+        }
+    }
+
+    func displayExposureNotification(daysSinceLastExposure: Int, completion: @escaping (Result<(), Error>) -> ()) {
+
+        self.getAuthorizationStatus { status in
+
+            guard status == .authorized else {
+                completion(.failure(ExposureDataError.internalError))
+                return self.logError("Not authorized to post notifications")
+            }
+
+            let content = UNMutableNotificationContent()
+            content.body = .exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure))
+            content.sound = .default
+            content.badge = 0
+
+            let request = UNNotificationRequest(identifier: PushNotificationIdentifier.exposure.rawValue,
+                                                content: content,
+                                                trigger: nil)
+
+            self.add(request) { error in
+
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                completion(.success(()))
+            }
         }
     }
 

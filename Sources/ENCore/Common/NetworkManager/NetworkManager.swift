@@ -430,11 +430,20 @@ final class NetworkManager: NetworkManaging, Logging {
                 let object = try self.jsonDecoder.decode(Object.self, from: data)
                 self.logDebug("Response Object: \(object)")
                 observer(.success(object))
-            } catch {
-                if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    self.logDebug("Raw JSON: \(json)")
-                }
-                self.logError("Error Deserializing \(Object.self): \(error.localizedDescription)")
+            } catch let DecodingError.keyNotFound(key, context) {
+                self.logError("could not find key \(key) in JSON: \(context.debugDescription)")
+                observer(.failure(NetworkResponseHandleError.cannotDeserialize))
+            } catch let DecodingError.valueNotFound(type, context) {
+                self.logError("could not find type \(type) in JSON: \(context.debugDescription)")
+                observer(.failure(NetworkResponseHandleError.cannotDeserialize))
+            } catch let DecodingError.typeMismatch(type, context) {
+                self.logError("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+                observer(.failure(NetworkResponseHandleError.cannotDeserialize))
+            } catch let DecodingError.dataCorrupted(context) {
+                self.logError("data found to be corrupted in JSON: \(context.debugDescription)")
+                observer(.failure(NetworkResponseHandleError.cannotDeserialize))
+            } catch let error as NSError {
+                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
                 observer(.failure(NetworkResponseHandleError.cannotDeserialize))
             }
 
