@@ -12,7 +12,6 @@ struct TreatmentPerspective: Codable {
     let guidance: Guidance
 
     struct Guidance: Codable {
-        let quarantineDays: Int
         let layout: [LayoutElement]
     }
 
@@ -35,14 +34,13 @@ extension TreatmentPerspective {
     }
 
     static var emptyMessage: TreatmentPerspective {
-        return TreatmentPerspective(resources: [:], guidance: Guidance(quarantineDays: 10, layout: []))
+        return TreatmentPerspective(resources: [:], guidance: Guidance(layout: []))
     }
 }
 
 struct LocalizedTreatmentPerspective: Equatable {
 
     var paragraphs: [Paragraph]
-    let quarantineDays: Int
 
     struct Paragraph: Equatable {
         var title: String
@@ -57,6 +55,6 @@ struct LocalizedTreatmentPerspective: Equatable {
 
 extension LocalizedTreatmentPerspective {
     static var emptyMessage: LocalizedTreatmentPerspective {
-        return LocalizedTreatmentPerspective(paragraphs: [], quarantineDays: 10)
+        return LocalizedTreatmentPerspective(paragraphs: [])
     }
 }

@@ -156,7 +156,6 @@
         }
     },
     "guidance": {
-        "quarantineDays": 10,
         "layout": [
             {
                 "title": "exposure_notification_title",

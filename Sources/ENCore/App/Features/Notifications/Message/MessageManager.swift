@@ -26,7 +26,6 @@ final class MessageManager: MessageManaging, Logging {
         case exposureDate = "ExposureDate"
         case exposureDaysAgo = "ExposureDaysAgo"
         case exposureDateShort = "ExposureDateShort"
-        case stayHomeUntilDate = "StayHomeUntilDate"
     }
 
     // MARK: - Init
@@ -56,13 +55,11 @@ final class MessageManager: MessageManaging, Logging {
         let paragraphs = paragraphsFromLayout(
             treatmentPerspective.guidance.layout,
             exposureDate: exposureDate,
-            quarantineDays: treatmentPerspective.guidance.quarantineDays,
             withLanguageResource: resource,
             languageResourceFallback: fallbackResource
         )
 
-        return LocalizedTreatmentPerspective(paragraphs: paragraphs,
-                                             quarantineDays: treatmentPerspective.guidance.quarantineDays)
+        return LocalizedTreatmentPerspective(paragraphs: paragraphs)
     }
 
     // MARK: - Private
@@ -70,7 +67,6 @@ final class MessageManager: MessageManaging, Logging {
     private func paragraphsFromLayout(
         _ layoutElements: [TreatmentPerspective.LayoutElement],
         exposureDate: Date,
-        quarantineDays: Int,
         withLanguageResource resource: [String: String]?,
         languageResourceFallback fallback: [String: String]?
     ) -> [LocalizedTreatmentPerspective.Paragraph] {
@@ -84,12 +80,10 @@ final class MessageManager: MessageManaging, Logging {
             }
 
             let paragraphTitle = replacePlaceholders(inString: NSAttributedString(string: resourceTitle),
-                                                     withExposureDate: exposureDate,
-                                                     quarantineDays: quarantineDays)
+                                                     withExposureDate: exposureDate)
 
             let htmlBody = replacePlaceholders(inString: NSAttributedString(string: resourceBody),
-                                               withExposureDate: exposureDate,
-                                               quarantineDays: quarantineDays)
+                                               withExposureDate: exposureDate)
 
             let paragraphBody = NSAttributedString.htmlWithBulletList(text: htmlBody.string,
                                                                       font: theme.fonts.body,
@@ -105,7 +99,7 @@ final class MessageManager: MessageManaging, Logging {
         }
     }
 
-    private func replacePlaceholders(inString attributedString: NSAttributedString, withExposureDate exposureDate: Date, quarantineDays: Int) -> NSAttributedString {
+    private func replacePlaceholders(inString attributedString: NSAttributedString, withExposureDate exposureDate: Date) -> NSAttributedString {
 
         let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
         let originalText = mutableAttributedString.string
@@ -146,8 +140,6 @@ final class MessageManager: MessageManaging, Logging {
                     replacementString = formatDate(exposureDate, fromTemplate: "dMMMM", addingDays: daysAdded)
                 case .exposureDaysAgo:
                     replacementString = statusNotifiedDaysAgo(withExposureDate: exposureDate)
-                case .stayHomeUntilDate:
-                    replacementString = formatStayHomeUntilDate(withExposureDate: exposureDate, andQuarantineDays: quarantineDays) ?? replacementString
                 }
 
                 modifiedText = modifiedText.replacingOccurrences(of: placeholder, with: replacementString)
@@ -174,21 +166,6 @@ final class MessageManager: MessageManaging, Logging {
         let now = currentDate()
         let days = now.days(sinceDate: exposureDate) ?? 0
         return String.statusNotifiedDaysAgo(days: days)
-    }
-
-    private func formatStayHomeUntilDate(withExposureDate exposureDate: Date, andQuarantineDays quarantineDays: Int) -> String? {
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "EEEEddMMMM", options: 0, locale: Locale.current)
-
-        var addingDaysComponents = DateComponents()
-        addingDaysComponents.day = quarantineDays
-
-        guard let daysAfterExposure = Calendar.current.date(byAdding: addingDaysComponents, to: exposureDate) else {
-            return nil
-        }
-
-        return dateFormatter.string(from: daysAfterExposure)
     }
 
     private let storageController: StorageControlling

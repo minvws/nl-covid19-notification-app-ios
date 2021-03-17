@@ -376,7 +376,7 @@ final class ExposureDataControllerTests: TestCase {
 
 private extension TreatmentPerspective {
     static func testData(manifestRefreshFrequency: Int = 3600) -> TreatmentPerspective {
-        TreatmentPerspective(resources: ["nl": ["key": "value"]], guidance: .init(quarantineDays: 2, layout: []))
+        TreatmentPerspective(resources: ["nl": ["key": "value"]], guidance: .init(layout: []))
     }
 }
 

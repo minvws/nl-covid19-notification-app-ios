@@ -113,7 +113,7 @@ final class MessageViewControllerTests: TestCase {
             .init(title: "Paragraph Title",
                   body: NSAttributedString.htmlWithBulletList(text: "<b>Intro text</b>.\\n\\n<i>Second intro</i>.\n\n<ul><li>List Item 1</li><li>List Item 2</li></ul>\\nText below list", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
                   type: .paragraph)
-        ], quarantineDays: 10)
+        ])
     }()
 
     private lazy var fakeMessageWithListOnly: LocalizedTreatmentPerspective = {
@@ -124,7 +124,7 @@ final class MessageViewControllerTests: TestCase {
             .init(title: "Paragraph 2 Title",
                   body: NSAttributedString.htmlWithBulletList(text: "<ul><li>List Item 1</li><li>List Item 2</li></ul>", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
                   type: .paragraph)
-        ], quarantineDays: 10)
+        ])
     }()
 
     private lazy var fakeMessageRTLWithList: LocalizedTreatmentPerspective = {
@@ -132,7 +132,7 @@ final class MessageViewControllerTests: TestCase {
             .init(title: "هل أنت بحاجة الى مساعدة طبية؟",
                   body: NSAttributedString.htmlWithBulletList(text: "<ul><li>انتبه لصحتك دائمًا. هل لديك أعراض؟ ابق في المنزل إذًا واخضع للفحص مرة أخرى على الفور.</li><li>ابق لغاية بعيدًا عن الأشخاص ذوي الصحة الضعيفة أو الاشخاص الأكثر عرضة للخطر. تجنب الأماكن المزدحمة وابق على مسافة 1.5 متر. </li></ul>", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .right),
                   type: .paragraph)
-        ], quarantineDays: 10)
+        ])
     }()
 
     private lazy var fakeMessageWithoutList: LocalizedTreatmentPerspective = {
@@ -143,6 +143,6 @@ final class MessageViewControllerTests: TestCase {
             .init(title: "Paragraph Title",
                   body: NSAttributedString.htmlWithBulletList(text: "Some paragraph of text that is not followed by a list\\n\\nSome other paragraph of text", font: self.theme.fonts.body, textColor: self.theme.colors.gray, theme: self.theme, textAlignment: .left),
                   type: .paragraph)
-        ], quarantineDays: 10)
+        ])
     }()
 }

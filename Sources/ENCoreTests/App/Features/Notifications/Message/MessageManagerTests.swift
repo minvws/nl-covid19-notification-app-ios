@@ -75,8 +75,8 @@ class MessageManagerTests: TestCase {
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
-        XCTAssertEqual(result.paragraphs.first?.title, "Title ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
-        XCTAssertEqual(result.paragraphs.first?.body.first?.string, "Body ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago, StayHomeUntilDate:Friday, July 10")
+        XCTAssertEqual(result.paragraphs.first?.title, "Title ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago")
+        XCTAssertEqual(result.paragraphs.first?.body.first?.string, "Body ExposureDate:Tuesday, June 30, ExposureDateWithCalculation:Monday, July 20, ExposureDateShort:June 30, ExposureDateShortWithCalculation:July 2, ExposureDaysAgo:1 day ago")
         XCTAssertEqual(result.paragraphs.last?.title, "Title 2")
         XCTAssertEqual(result.paragraphs.last?.body.first?.string, "Body 2")
     }
@@ -117,7 +117,6 @@ class MessageManagerTests: TestCase {
                 "en": ["some_resource_title": "{SomeUnknownPlaceholder} {ExposureDate}, {ExposureDate+0}", "some_resource_body": "{SomeUnknownPlaceholder} {ExposureDate}"]
             ],
             guidance: .init(
-                quarantineDays: 10,
                 layout: [.init(title: "some_resource_title", body: "some_resource_body", type: "paragraph")]
             )
         )
@@ -158,9 +157,6 @@ class MessageManagerTests: TestCase {
     func test_defaultTreatmentPerspective_sanityCheck() {
         let model = TreatmentPerspective.fallbackMessage
 
-        // Quarantine days must be set
-        XCTAssertNotEqual(model.guidance.quarantineDays, 0)
-
         // English (base) resource should always be available
         XCTAssertTrue(model.resources.contains(where: { $0.key == "en" }))
 
@@ -184,8 +180,8 @@ class MessageManagerTests: TestCase {
         TreatmentPerspective(
             resources: [
                 "en": [
-                    "some_resource_title": "Title ExposureDate:{ExposureDate}, ExposureDateWithCalculation:{ExposureDate+20}, ExposureDateShort:{ExposureDateShort}, ExposureDateShortWithCalculation:{ExposureDateShort+2}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
-                    "some_resource_body": "Body ExposureDate:{ExposureDate}, ExposureDateWithCalculation:{ExposureDate+20}, ExposureDateShort:{ExposureDateShort}, ExposureDateShortWithCalculation:{ExposureDateShort+2}, ExposureDaysAgo:{ExposureDaysAgo}, StayHomeUntilDate:{StayHomeUntilDate}",
+                    "some_resource_title": "Title ExposureDate:{ExposureDate}, ExposureDateWithCalculation:{ExposureDate+20}, ExposureDateShort:{ExposureDateShort}, ExposureDateShortWithCalculation:{ExposureDateShort+2}, ExposureDaysAgo:{ExposureDaysAgo}",
+                    "some_resource_body": "Body ExposureDate:{ExposureDate}, ExposureDateWithCalculation:{ExposureDate+20}, ExposureDateShort:{ExposureDateShort}, ExposureDateShortWithCalculation:{ExposureDateShort+2}, ExposureDaysAgo:{ExposureDaysAgo}",
                     "some_resource_title2": "Title 2",
                     "some_resource_body2": "Body 2"
                 ],
@@ -199,8 +195,7 @@ class MessageManagerTests: TestCase {
                     "some_resource_body2": "<ul><li>هل ظهرت لديك مؤخرًا أعراض جديدة تتناسب مع فيروس كورونا؟ قم بإجراء اختبار كورونا في أسرع وقت ممكن.</li><li> أليست لديك أعراض؟ اتصل من أجل إجراء اختبار كورونا في أو بعد {ExposureDate+5}. فقط اعتبارًا من هذا التاريخ تكون نتيجة اختبار كورونا في حالتك موثوقة بدرجة كافية. </li><li> ألم تتمكن من إجراء الاختبار؟ ابق في المنزل حتى{ExposureDate+10}. تستطيع بعد ذلك الخروج من المنزل إذا لم تظهر لديك أعراض.</li><li> هل لديك أعراض خطيرة كارتفاع درجة الحرارة أو صعوبة في التنفس؟ أم أنك من ضمن مجموعة معرضة للخطر وأصبت بالحمى؟ اتصل بطبيبك أولاً </li></ul>\n<b> هل تعطيك الـ GGD عبر الهاتف نصائح مختلفة عن النصائح الموجودة في التطبيق؟ اتبع إذًا نصيحة الـ GGD.</b>"
                 ]
             ],
-            guidance: .init(quarantineDays: 10,
-                            layout: [
+            guidance: .init(layout: [
                                 .init(title: "some_resource_title", body: "some_resource_body", type: "paragraph"),
                                 .init(title: "some_resource_title2", body: "some_resource_body2", type: "paragraph"),
                                 .init(title: "some_resource_title2", body: "some_resource_body2", type: "some-unknown-type")
@@ -215,7 +210,7 @@ class MessageManagerTests: TestCase {
                 "some_resource_title": "Title",
                 "some_resource_body": "<ul><li>some bullet point</li><li>another bullet point</li></ul>and some followup text"
             ]],
-            guidance: .init(quarantineDays: 10, layout: [.init(title: "some_resource_title", body: "some_resource_body", type: "paragraph")])
+            guidance: .init(layout: [.init(title: "some_resource_title", body: "some_resource_body", type: "paragraph")])
         )
     }
 }
