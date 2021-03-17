@@ -38,11 +38,6 @@ final class MessageViewControllerTests: TestCase {
         mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
     }
 
-    override func tearDownWithError() throws {
-        try super.tearDownWithError()
-        LocalizationOverrides.overriddenIsRTL = nil
-    }
-
     // MARK: - Tests
 
     func testSnapshotMessageViewController_withListAndText() {

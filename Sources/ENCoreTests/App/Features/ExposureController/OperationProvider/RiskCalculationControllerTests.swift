@@ -8,7 +8,7 @@
 @testable import ENCore
 import XCTest
 
-class RiskCalculationControllerTests: XCTestCase {
+class RiskCalculationControllerTests: TestCase {
 
     private var sut: RiskCalculationController!
 

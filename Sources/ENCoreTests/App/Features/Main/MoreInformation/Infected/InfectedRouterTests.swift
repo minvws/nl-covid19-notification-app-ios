@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-final class InfectedRouterTests: XCTestCase {
+final class InfectedRouterTests: TestCase {
     private let viewController = InfectedViewControllableMock()
     private let listener = InfectedListenerMock()
 

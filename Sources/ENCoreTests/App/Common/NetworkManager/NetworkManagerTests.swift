@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-final class NetworkManagerTests: XCTestCase {
+final class NetworkManagerTests: TestCase {
 
     private var sut: NetworkManager!
 

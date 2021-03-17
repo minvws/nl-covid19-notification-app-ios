@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import XCTest
 
-final class RootRouterTests: XCTestCase {
+final class RootRouterTests: TestCase {
     private let viewController = RootViewControllableMock()
     private let launchScreenBuilder = LaunchScreenBuildableMock()
     private let onboardingBuilder = OnboardingBuildableMock()

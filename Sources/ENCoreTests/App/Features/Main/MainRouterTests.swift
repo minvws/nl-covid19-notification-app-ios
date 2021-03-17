@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-final class MainRouterTests: XCTestCase {
+final class MainRouterTests: TestCase {
     private let viewController = MainViewControllableMock()
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()

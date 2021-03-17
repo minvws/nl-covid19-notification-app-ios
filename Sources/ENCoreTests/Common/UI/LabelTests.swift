@@ -8,7 +8,7 @@
 @testable import ENCore
 import XCTest
 
-class LabelTests: XCTestCase {
+class LabelTests: TestCase {
 
     private var sut: Label!
 

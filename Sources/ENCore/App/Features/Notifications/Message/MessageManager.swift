@@ -51,9 +51,13 @@ final class MessageManager: MessageManaging, Logging {
         guard resource != nil || fallbackResource != nil else {
             return .emptyMessage
         }
+        
+        guard let layout = getLayout(forExposureDate: exposureDate, fromTreatmentPerspective: treatmentPerspective) else {
+            return .emptyMessage
+        }
 
         let paragraphs = paragraphsFromLayout(
-            treatmentPerspective.guidance.layout,
+            layout,
             exposureDate: exposureDate,
             withLanguageResource: resource,
             languageResourceFallback: fallbackResource
@@ -63,6 +67,31 @@ final class MessageManager: MessageManaging, Logging {
     }
 
     // MARK: - Private
+    
+    /// Gets a treatment perspective layout from the TreatmentPerspective model that is relevant for the given exposure date.
+    /// - Parameters:
+    ///   - exposureDate: The day on which the exposure occured
+    ///   - treatmentPerspective: Treatment Perspective model returned from the API
+    /// - Returns: A Treatment Perspective layout that is specific for the current number of days since exposure or a generic layout if none can be found
+    private func getLayout(forExposureDate exposureDate: Date, fromTreatmentPerspective treatmentPerspective: TreatmentPerspective) -> [TreatmentPerspective.LayoutElement]? {
+        guard let daysSinceExposure = currentDate().days(sinceDate: exposureDate) else {
+            return treatmentPerspective.guidance.layout
+        }
+        
+        let dayRelativeLayout = treatmentPerspective.guidance.layoutByRelativeExposureDay?.first(where: { (relativeExposureDayLayout) -> Bool in
+            guard relativeExposureDayLayout.exposureDaysLowerBoundary <= daysSinceExposure else {
+                return false
+            }
+            
+            if let upperBoundary = relativeExposureDayLayout.exposureDaysUpperBoundary {
+                return upperBoundary >= daysSinceExposure
+            }
+            
+            return true
+        })
+        
+        return dayRelativeLayout?.layout ?? treatmentPerspective.guidance.layout
+    }
 
     private func paragraphsFromLayout(
         _ layoutElements: [TreatmentPerspective.LayoutElement],

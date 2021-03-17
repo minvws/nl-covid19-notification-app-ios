@@ -19,7 +19,7 @@ class MessageManagerTests: TestCase {
 
         sut = MessageManager(storageController: mockStorageController, theme: theme)
     }
-
+    
     func test_getLocalizedTreatmentPerspective_shouldGetPerspectiveFromStorageController() throws {
         // Arrange
         let calledStorageControllerExpectation = expectation(description: "called storagecontroller")
@@ -152,16 +152,72 @@ class MessageManagerTests: TestCase {
         XCTAssertEqual(result.paragraphs.first?.body[1].string, "●\tanother bullet point")
         XCTAssertEqual(result.paragraphs.first?.body[2].string, "and some followup text")
     }
+    
+    func test_getLocalizedTreatmentPerspective_shouldUseLayoutRelativeToExposureDay_lessThan5Days() throws {
+        // Arrange
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
+        let exposureDate = Date().addingTimeInterval(.days(-4))
 
-    /// Makes sure all the resource keys are available in all languages
-    func test_defaultTreatmentPerspective_sanityCheck() {
+        mockStorageController.retrieveDataHandler = { key in
+            return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithRelativeDayLayout)
+        }
+
+        // Act
+        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+
+        // Assert
+        XCTAssertEqual(result.paragraphs.count, 1)
+        XCTAssertEqual(result.paragraphs.first?.title, "Title")
+    }
+    
+    func test_getLocalizedTreatmentPerspective_shouldUseLayoutRelativeToExposureDay_over5Days() throws {
+        // Arrange
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
+        let exposureDate = Date().addingTimeInterval(.days(-6))
+
+        mockStorageController.retrieveDataHandler = { key in
+            return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithRelativeDayLayout)
+        }
+
+        // Act
+        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+
+        // Assert
+        XCTAssertEqual(result.paragraphs.count, 1)
+        XCTAssertEqual(result.paragraphs.first?.title, "Title Over 5 days")
+    }
+    
+    func test_getLocalizedTreatmentPerspective_shouldFallBackToNonRelativeLayout() throws {
+        // Arrange
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
+        let date = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = date
+        let exposureDate = date.addingTimeInterval(.days(-6))
+
+        mockStorageController.retrieveDataHandler = { key in
+            return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithIncorrectRelativeDayLayout)
+        }
+
+        // Act
+        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+
+        // Assert
+        XCTAssertEqual(result.paragraphs.count, 1)
+        XCTAssertEqual(result.paragraphs.first?.title, "Non Relative Title")
+    }
+
+    /// Makes sure all the resource keys are available in all languages and that the general format of the model is correct
+    func test_defaultTreatmentPerspective_sanityCheck() throws {
         let model = TreatmentPerspective.fallbackMessage
 
         // English (base) resource should always be available
         XCTAssertTrue(model.resources.contains(where: { $0.key == "en" }))
 
+        let layout = try XCTUnwrap(model.guidance.layout)
+        let relativeLayouts = try XCTUnwrap(model.guidance.layoutByRelativeExposureDay?.flatMap({ $0.layout}))
+        
         // All referenced resource keys must be available in all languages
-        model.guidance.layout.forEach { layoutElement in
+        (relativeLayouts + layout).forEach { layoutElement in
             model.resources.forEach { resource in
                 if let title = layoutElement.title {
                     XCTAssertNotNil(resource.value[title], "resource with key `\(resource.key)` does not contain string with key `\(title)`")
@@ -172,6 +228,20 @@ class MessageManagerTests: TestCase {
                 XCTAssertNotNil(LocalizedTreatmentPerspective.Paragraph.ParagraphType(rawValue: layoutElement.type), "paragraph type is not implemented in app")
             }
         }
+        
+        let layoutByRelativeExposureDay = try XCTUnwrap(model.guidance.layoutByRelativeExposureDay)
+        
+        XCTAssertFalse(layoutByRelativeExposureDay.isEmpty)
+        
+        // layout relative to day should at least have a lower boundary day set
+        layoutByRelativeExposureDay.forEach({ (relativeExposureDayLayout) in
+            XCTAssertNotNil(relativeExposureDayLayout.exposureDaysLowerBoundary)
+        })
+        
+        // lower boundaries and upper boundaries should all be unique
+        let lowerDayBoundaries = layoutByRelativeExposureDay.compactMap { $0.exposureDaysLowerBoundary }
+        let upperDayBoundaries = layoutByRelativeExposureDay.compactMap { $0.exposureDaysUpperBoundary }
+        XCTAssertEqual(Set(lowerDayBoundaries + upperDayBoundaries).count, lowerDayBoundaries.count + upperDayBoundaries.count, "upper and lower layout boundaries clash")
     }
 
     // MARK: - Private
@@ -211,6 +281,42 @@ class MessageManagerTests: TestCase {
                 "some_resource_body": "<ul><li>some bullet point</li><li>another bullet point</li></ul>and some followup text"
             ]],
             guidance: .init(layout: [.init(title: "some_resource_title", body: "some_resource_body", type: "paragraph")])
+        )
+    }
+    
+    private var fakeTreatmentPerspectiveWithRelativeDayLayout: TreatmentPerspective {
+        TreatmentPerspective(
+            resources: ["en": [
+                "some_resource_title": "Title",
+                "some_resource_body": "<ul><li>some bullet point</li><li>another bullet point</li></ul>and some followup text",
+                "some_resource_title_over5days": "Title Over 5 days",
+            ]],
+            guidance: .init(
+                layoutByRelativeExposureDay: [
+                    .init(exposureDaysLowerBoundary: 0, exposureDaysUpperBoundary: 4, layout: [
+                        .init(title: "some_resource_title", body: "some_resource_body", type: "paragraph")
+                    ]),
+                    .init(exposureDaysLowerBoundary: 5, layout: [
+                        .init(title: "some_resource_title_over5days", body: "some_resource_body", type: "paragraph")
+                    ])
+                ]
+            )
+        )
+    }
+    
+    private var fakeTreatmentPerspectiveWithIncorrectRelativeDayLayout: TreatmentPerspective {
+        TreatmentPerspective(
+            resources: ["en": [
+                "some_resource_title_default": "Non Relative Title",
+                "some_resource_title": "Title",
+                "some_resource_body": "<ul><li>some bullet point</li><li>another bullet point</li></ul>and some followup text",
+                "some_resource_title_over5days": "Title Over 5 days",
+            ]],
+            guidance: .init(
+                layoutByRelativeExposureDay: [
+                ],
+                layout: [.init(title: "some_resource_title_default", body: "some_resource_body", type: "paragraph")]
+            )
         )
     }
 }
