@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -35,7 +36,7 @@ final class ExposureControllerTests: TestCase {
                                         userNotificationCenter: userNotificationCenter,
                                         currentAppVersion: currentAppVersion)
 
-        dataController.lastSuccessfulExposureProcessingDate = Date()
+        dataController.lastSuccessfulExposureProcessingDate = currentDate()
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in .empty() }
 
         let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
@@ -174,7 +175,7 @@ final class ExposureControllerTests: TestCase {
         activate()
 
         dataController.removeLastExposureHandler = {
-            return .empty()
+            .empty()
         }
 
         XCTAssertEqual(dataController.removeLastExposureCallCount, 0)
@@ -260,7 +261,7 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_requestLabConfirmationKey_isSuccess_callsCompletionWithKey() {
-        let expirationDate = Date()
+        let expirationDate = currentDate()
 
         dataController.requestLabConfirmationKeyHandler = {
             let labConfirmationKey = LabConfirmationKey(identifier: "identifier",
@@ -292,7 +293,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_requestLabConfirmationKey_isFailure_callsCompletionWithFailure() {
         dataController.requestLabConfirmationKeyHandler = {
-            return .error(ExposureDataError.serverError)
+            .error(ExposureDataError.serverError)
         }
 
         XCTAssertEqual(dataController.requestLabConfirmationKeyCallCount, 0)
@@ -390,7 +391,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .empty()
+            .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -407,7 +408,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .empty()
+            .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -424,7 +425,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.pushNotifications))
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .empty()
+            .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -441,7 +442,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .authorizationDenied)
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .empty()
+            .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -458,7 +459,7 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
         mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
-            return .empty()
+            .empty()
         }
 
         XCTAssertEqual(dataController.fetchAndProcessExposureKeySetsCallCount, 0)
@@ -472,8 +473,7 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
-
-        dataController.lastSuccessfulExposureProcessingDate = Date().addingTimeInterval(-24 * 60 * 60 - 1)
+        dataController.lastSuccessfulExposureProcessingDate = currentDate().addingTimeInterval(-24 * 60 * 60 - 1)
 
         exposureManager.isExposureNotificationEnabledHandler = { true }
         exposureManager.activateHandler = { $0(.active) }
@@ -533,7 +533,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_exposureNotificationStatusCheck_active_setsLastENStatusCheck() {
         exposureManager.getExposureNotificationStatusHandler = {
-            return .active
+            .active
         }
 
         controller
@@ -547,7 +547,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_exposureNotificationStatusCheck_notActive_noLastCheck_setsLastENStatusCheck() {
         exposureManager.getExposureNotificationStatusHandler = {
-            return .inactive(.disabled)
+            .inactive(.disabled)
         }
         dataController.lastENStatusCheckDate = nil
 
@@ -562,11 +562,11 @@ final class ExposureControllerTests: TestCase {
 
     func test_exposureNotificationStatusCheck_notActive_lessThan24h_doesntSetLastENStatusCheck() {
         exposureManager.getExposureNotificationStatusHandler = {
-            return .inactive(.disabled)
+            .inactive(.disabled)
         }
 
         let timeInterval = TimeInterval(60 * 60 * 20) // 20 hours
-        dataController.lastENStatusCheckDate = Date().advanced(by: -timeInterval)
+        dataController.lastENStatusCheckDate = currentDate().advanced(by: -timeInterval)
 
         controller
             .exposureNotificationStatusCheck()
@@ -579,11 +579,11 @@ final class ExposureControllerTests: TestCase {
 
     func test_exposureNotificationStatusCheck_notActive_notifiesAfter24h() {
         exposureManager.getExposureNotificationStatusHandler = {
-            return .inactive(.disabled)
+            .inactive(.disabled)
         }
 
         let timeInterval = TimeInterval(60 * 60 * 25) // 25 hours
-        dataController.lastENStatusCheckDate = Date().advanced(by: -timeInterval)
+        dataController.lastENStatusCheckDate = currentDate().advanced(by: -timeInterval)
 
         controller
             .exposureNotificationStatusCheck()
@@ -597,9 +597,9 @@ final class ExposureControllerTests: TestCase {
 
     func test_lastOpenedNotificationCheck_moreThan3Hours_postsNotification() {
         let timeInterval = TimeInterval(60 * 60 * 4) // 4 hours
-        dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
-        dataController.lastExposure = ExposureReport(date: Date())
-        dataController.lastUnseenExposureNotificationDate = Date().advanced(by: -timeInterval)
+        dataController.lastAppLaunchDate = currentDate().advanced(by: -(timeInterval + 1))
+        dataController.lastExposure = ExposureReport(date: currentDate())
+        dataController.lastUnseenExposureNotificationDate = currentDate().advanced(by: -timeInterval)
 
         controller
             .lastOpenedNotificationCheck()
@@ -612,9 +612,9 @@ final class ExposureControllerTests: TestCase {
 
     func test_lastOpenedNotificationCheck_lessThan3Hours_doesntPostNotification() {
         let timeInterval = TimeInterval(60 * 60 * 2) // 2 hours
-        dataController.lastAppLaunchDate = Date().advanced(by: -timeInterval)
-        dataController.lastExposure = ExposureReport(date: Date())
-        dataController.lastUnseenExposureNotificationDate = Date().advanced(by: -timeInterval)
+        dataController.lastAppLaunchDate = currentDate().advanced(by: -timeInterval)
+        dataController.lastExposure = ExposureReport(date: currentDate())
+        dataController.lastUnseenExposureNotificationDate = currentDate().advanced(by: -timeInterval)
 
         controller
             .lastOpenedNotificationCheck()
@@ -627,15 +627,14 @@ final class ExposureControllerTests: TestCase {
 
     func test_lastOpenedNotificationCheck_48Hours_ToDays() {
         let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
-        dataController.lastExposure = ExposureReport(date: Date().advanced(by: -timeInterval))
+        dataController.lastExposure = ExposureReport(date: currentDate().advanced(by: -timeInterval))
 
-        let days = Date().days(sinceDate: dataController.lastExposure!.date)
+        let days = currentDate().days(sinceDate: dataController.lastExposure!.date)
 
         XCTAssertEqual(days, 2)
     }
 
     func test_getAppVersionInformation_shouldCallDataController() {
-
         let completionExpectation = expectation(description: "completion")
 
         dataController.getAppVersionInformationHandler = {
@@ -651,7 +650,6 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_getAppVersionInformation_shouldReturnNilOnError() {
-
         let completionExpectation = expectation(description: "completion")
 
         dataController.getAppVersionInformationHandler = {
@@ -669,12 +667,11 @@ final class ExposureControllerTests: TestCase {
     // MARK: - postExposureManagerActivation
 
     func test_postExposureManagerActivation_shouldUpdateStatusStream() {
-
         networkStatusStream.networkReachable = true
         let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
         mutableStateStream.exposureState = stream
 
-        exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in
+        exposureManager.setExposureNotificationEnabledHandler = { _, completion in
             completion(.success(()))
         }
         exposureManager.activateHandler = { completion in
@@ -720,7 +717,6 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_unpause() {
-
         activate()
 
         let exposureManagerExpectation = expectation(description: "setExposureNotificationEnabled")
@@ -742,7 +738,6 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_unpause_inInactiveState() {
-
         let exposureManagerExpectation = expectation(description: "setExposureNotificationEnabled")
         exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in
             XCTAssertTrue(enabled)
@@ -844,6 +839,6 @@ private extension LabConfirmationKey {
         return LabConfirmationKey(identifier: "test",
                                   bucketIdentifier: Data(),
                                   confirmationKey: Data(),
-                                  validUntil: Date())
+                                  validUntil: currentDate())
     }
 }

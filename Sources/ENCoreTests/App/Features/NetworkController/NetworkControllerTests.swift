@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import RxSwift
 import XCTest
 
@@ -111,7 +112,7 @@ final class NetworkControllerTests: TestCase {
         cryptoUtility.signatureHandler = { _, _ in Data() }
 
         let exp = expectation(description: "wait")
-        let key = LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: Date())
+        let key = LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: currentDate())
 
         networkController
             .postKeys(keys: [], labConfirmationKey: key, padding: padding)

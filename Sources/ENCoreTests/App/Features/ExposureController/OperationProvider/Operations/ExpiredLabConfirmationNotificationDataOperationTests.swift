@@ -33,7 +33,7 @@ final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
     func test_pendingRequestIsExpired_doesNotCallNetworkAndDoesNotStoreAgain() {
         let expiredRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
                                                                  diagnosisKeys: createDiagnosisKeys(),
-                                                                 expiryDate: Date().addingTimeInterval(-1))
+                                                                 expiryDate: currentDate().addingTimeInterval(-1))
 
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
@@ -57,7 +57,7 @@ final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
     func test_pendingRequestIsExpired_notifiesUser() {
         let expiredRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
                                                                  diagnosisKeys: createDiagnosisKeys(),
-                                                                 expiryDate: Date().addingTimeInterval(-1))
+                                                                 expiryDate: currentDate().addingTimeInterval(-1))
 
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
@@ -113,7 +113,7 @@ final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
         return LabConfirmationKey(identifier: "test",
                                   bucketIdentifier: Data(),
                                   confirmationKey: Data(),
-                                  validUntil: Date())
+                                  validUntil: currentDate())
     }
 
     private func createDiagnosisKeys() -> [DiagnosisKey] {

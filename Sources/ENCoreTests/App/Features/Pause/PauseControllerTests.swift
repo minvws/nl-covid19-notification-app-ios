@@ -41,23 +41,17 @@ final class PauseControllerTests: TestCase {
     }
 
     func test_pauseTimeElapsed_withNoEndDate() {
-        let now = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = now
         mockExposureDataController.pauseEndDate = nil
         XCTAssertTrue(sut.pauseTimeElapsed)
     }
 
     func test_pauseTimeElapsed_withElapsedPauseEndDate() {
-        let now = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = now
-        mockExposureDataController.pauseEndDate = now.addingTimeInterval(-1)
+        mockExposureDataController.pauseEndDate = currentDate().addingTimeInterval(-1)
         XCTAssertTrue(sut.pauseTimeElapsed)
     }
 
     func test_pauseTimeElapsed_withPauseEndDateInFuture() {
-        let now = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = now
-        mockExposureDataController.pauseEndDate = now.addingTimeInterval(1)
+        mockExposureDataController.pauseEndDate = currentDate().addingTimeInterval(1)
         XCTAssertFalse(sut.pauseTimeElapsed)
     }
 
@@ -73,10 +67,7 @@ final class PauseControllerTests: TestCase {
     }
 
     func test_getPauseTimeOptionsController_alertActionShouldPauseApp() throws {
-        let now = Date()
-        let expectedPauseEndDate = now.addingTimeInterval(.hours(1))
-
-        DateTimeTestingOverrides.overriddenCurrentDate = now
+        let expectedPauseEndDate = currentDate().addingTimeInterval(.hours(1))
 
         let alertController = sut.getPauseTimeOptionsController()
 
@@ -108,37 +99,25 @@ final class PauseControllerTests: TestCase {
     }
 
     func test_getPauseCountdownString_pauseTimeElapsed() {
-        let now = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = now
-
-        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(-1), center: false, emphasizeTime: false)
+        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: currentDate().addingTimeInterval(-1), center: false, emphasizeTime: false)
 
         XCTAssertEqual(countdownString.string, "CoronaMelder is not active yet. You need to turn it on yourself.")
     }
 
     func test_getPauseCountdownString_pauseEndTimeWithinAMinute() {
-        let now = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = now
-
-        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(1), center: false, emphasizeTime: false)
+        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: currentDate().addingTimeInterval(1), center: false, emphasizeTime: false)
 
         XCTAssertEqual(countdownString.string, "You'll get a notification in 1 minute to turn on the app again.")
     }
 
     func test_getPauseCountdownString_shouldRoundUp() {
-        let now = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = now
-
-        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(91), center: false, emphasizeTime: false)
+        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: currentDate().addingTimeInterval(91), center: false, emphasizeTime: false)
 
         XCTAssertEqual(countdownString.string, "You'll get a notification in 2 minutes to turn on the app again.")
     }
 
     func test_getPauseCountdownString_pauseEndTimeWithin2hours() {
-        let now = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = now
-
-        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: now.addingTimeInterval(.hours(1.5)), center: false, emphasizeTime: false)
+        let countdownString = PauseController.getPauseCountdownString(theme: theme, endDate: currentDate().addingTimeInterval(.hours(1.5)), center: false, emphasizeTime: false)
 
         XCTAssertEqual(countdownString.string, "You'll get a notification in 1 hour, 30 minutes to turn on the app again.")
     }

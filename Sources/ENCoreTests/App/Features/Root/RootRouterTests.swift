@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -393,7 +394,7 @@ final class RootRouterTests: TestCase {
 
     func test_receivingExposureNotification_shouldRouteToMessage() {
         exposureController.didCompleteOnboarding = true
-        exposureController.lastExposureDate = Date()
+        exposureController.lastExposureDate = currentDate()
 
         let messageBuilderExpectation = expectation(description: "messageBuilder")
 
