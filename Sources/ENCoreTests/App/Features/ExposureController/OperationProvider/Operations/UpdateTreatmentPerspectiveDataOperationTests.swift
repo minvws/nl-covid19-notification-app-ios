@@ -50,7 +50,7 @@ final class UpdateTreatmentPerspectiveDataOperationTests: TestCase {
 
     func test_execute_shouldRequestTreatmentPerspectiveFromNetwork() {
 
-        let storedManifest = ApplicationManifest.testData(creationDate: Date(), appConfigurationIdentifier: "SomeIdentifier")
+        let storedManifest = ApplicationManifest.testData(creationDate: currentDate(), appConfigurationIdentifier: "SomeIdentifier")
         let streamExpectation = expectation(description: "stream")
         let networkCallExpectation = expectation(description: "networkCallExpectation")
 
@@ -79,7 +79,7 @@ final class UpdateTreatmentPerspectiveDataOperationTests: TestCase {
 
     func test_execute_shouldStoreRetrievedTreatmentPerspective() {
 
-        let storedManifest = ApplicationManifest.testData(creationDate: Date(), appConfigurationIdentifier: "SomeIdentifier")
+        let storedManifest = ApplicationManifest.testData(creationDate: currentDate(), appConfigurationIdentifier: "SomeIdentifier")
         let streamExpectation = expectation(description: "stream")
         let storageExpectation = expectation(description: "storageExpectation")
 
@@ -112,7 +112,7 @@ final class UpdateTreatmentPerspectiveDataOperationTests: TestCase {
 }
 
 private extension ApplicationManifest {
-    static func testData(creationDate: Date = Date(), appConfigurationIdentifier: String = "appConfigurationIdentifier") -> ApplicationManifest {
+    static func testData(creationDate: Date = currentDate(), appConfigurationIdentifier: String = "appConfigurationIdentifier") -> ApplicationManifest {
         ApplicationManifest(exposureKeySetsIdentifiers: [], riskCalculationParametersIdentifier: "riskCalculationParametersIdentifier", appConfigurationIdentifier: appConfigurationIdentifier, creationDate: creationDate, resourceBundle: "resourceBundle")
     }
 }

@@ -24,15 +24,11 @@ final class BackgroundControllerTests: XCTestCase {
     private let userNotificationCenter = UserNotificationCenterMock()
     private let mockRandomNumberGenerator = RandomNumberGeneratingMock()
     private let environmentController = EnvironmentControllingMock()
-    private var currentDate: Date!
 
     // MARK: - Setup
 
     override func setUp() {
         super.setUp()
-
-        currentDate = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
 
         let configuration = BackgroundTaskConfiguration(decoyProbabilityRange: 0 ..< 1,
                                                         decoyHourRange: 0 ... 1,
@@ -237,7 +233,7 @@ final class BackgroundControllerTests: XCTestCase {
         dataController.canProcessDecoySequence = true
         exposureController.getDecoyProbabilityHandler = { .just(1) }
         exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: self.currentDate)))
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
         exposureController.getPaddingHandler = {
             return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
@@ -271,7 +267,7 @@ final class BackgroundControllerTests: XCTestCase {
         }
 
         dataController.isAppPaused = true
-        dataController.pauseEndDate = currentDate.addingTimeInterval(-.hours(2))
+        dataController.pauseEndDate = currentDate().addingTimeInterval(-.hours(2))
 
         controller.handle(task: task)
 
@@ -300,7 +296,7 @@ final class BackgroundControllerTests: XCTestCase {
         }
 
         dataController.isAppPaused = true
-        dataController.pauseEndDate = currentDate.addingTimeInterval(-.minutes(10))
+        dataController.pauseEndDate = currentDate().addingTimeInterval(-.minutes(10))
 
         controller.handle(task: task)
 
@@ -461,7 +457,7 @@ final class BackgroundControllerTests: XCTestCase {
         mockRandomNumberGenerator.randomFloatHandler = { _ in 0 }
         exposureController.getDecoyProbabilityHandler = { .just(1) }
         exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: self.currentDate)))
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
 
         exposureController.getPaddingHandler = {
@@ -493,7 +489,7 @@ final class BackgroundControllerTests: XCTestCase {
         exposureController.getDecoyProbabilityHandler = { .just(1) }
 
         exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: self.currentDate)))
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
 
         exposureManager.getExposureNotificationStatusHandler = {
@@ -510,7 +506,7 @@ final class BackgroundControllerTests: XCTestCase {
         }
 
         exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: self.currentDate)))
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
 
         controller.performDecoySequenceIfNeeded()
@@ -560,7 +556,7 @@ final class BackgroundControllerTests: XCTestCase {
     // MARK: - Private
 
     private var labConfirmationKey: LabConfirmationKey {
-        LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: self.currentDate)
+        LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: currentDate())
     }
 }
 

@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -47,7 +48,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     }
 
     func test_error_schedulesRetryRequest() {
-        let expiryDate = Date().addingTimeInterval(60)
+        let expiryDate = currentDate().addingTimeInterval(60)
         let alreadyPendingRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(validUntil: expiryDate),
                                                                         diagnosisKeys: [],
                                                                         expiryDate: expiryDate)
@@ -127,7 +128,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         }
     }
 
-    private func createOperation(withKeys keys: [DiagnosisKey], expiryDate: Date = Date()) -> UploadDiagnosisKeysDataOperation {
+    private func createOperation(withKeys keys: [DiagnosisKey], expiryDate: Date = currentDate()) -> UploadDiagnosisKeysDataOperation {
         return UploadDiagnosisKeysDataOperation(networkController: networkController,
                                                 storageController: storageController,
                                                 diagnosisKeys: keys,
@@ -135,7 +136,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
                                                 padding: Padding(minimumRequestSize: 0, maximumRequestSize: 0))
     }
 
-    private func createLabConfirmationKey(validUntil: Date = Date()) -> LabConfirmationKey {
+    private func createLabConfirmationKey(validUntil: Date = currentDate()) -> LabConfirmationKey {
         LabConfirmationKey(identifier: "test",
                            bucketIdentifier: "bucket".data(using: .utf8)!,
                            confirmationKey: Data(),

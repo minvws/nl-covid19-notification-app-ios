@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -37,7 +38,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
             let labConfirmationKey = LabConfirmationKey(identifier: "id",
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
-                                                        validUntil: Date())
+                                                        validUntil: currentDate())
             return .just(labConfirmationKey)
         }
 
@@ -104,7 +105,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
             let labConfirmationKey = LabConfirmationKey(identifier: "id",
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
-                                                        validUntil: Date())
+                                                        validUntil: currentDate())
             return .just(labConfirmationKey)
         }
 

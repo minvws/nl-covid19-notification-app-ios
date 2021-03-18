@@ -44,7 +44,7 @@ final class RequestTestViewControllerTests: TestCase {
     }
 
     func testSnapshotRequestTestViewControllerExposed() {
-        exposureStateStream.currentExposureState = .init(notifiedState: .notified(Date()), activeState: .active)
+        exposureStateStream.currentExposureState = .init(notifiedState: .notified(currentDate()), activeState: .active)
 
         viewController = RequestTestViewController(listener: listener,
                                                    theme: theme,

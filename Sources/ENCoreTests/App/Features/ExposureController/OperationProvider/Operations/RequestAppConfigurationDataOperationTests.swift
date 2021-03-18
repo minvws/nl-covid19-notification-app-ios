@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -36,7 +37,6 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
     }
 
     func test_execute_withStoredConfiguration_andCorrectSignature_shouldReturnStoredAppConfiguration() {
-
         let appConfig = createApplicationConfiguration()
 
         mockApplicationConfigurationResults(storedConfiguration: appConfig, storedSignature: appConfig.signature, signatureForStoredConfiguration: appConfig.signature)
@@ -51,12 +51,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
-        
+
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 0)
     }
 
     func test_execute_withStoredConfiguration_andNoSignature_shouldRetrieveFromNetwork() {
-
         let appConfig = createApplicationConfiguration()
         let networkAppConfig = createApplicationConfiguration(withIdentifier: "appconfig from network")
 
@@ -72,12 +71,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
-        
+
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
     }
 
     func test_execute_withStoredConfiguration_andNonMatchingIdentifier_shouldRetrieveFromNetwork() {
-
         let appConfig = createApplicationConfiguration(withIdentifier: "some non matching identifier")
         let networkAppConfig = createApplicationConfiguration(withIdentifier: "appconfig from network")
 
@@ -93,12 +91,11 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
-        
+
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
     }
 
     func test_execute_withStoredConfiguration_andNonMatchingSignature_shouldRetrieveFromNetwork() {
-
         let appConfig = createApplicationConfiguration()
         let networkAppConfig = createApplicationConfiguration(withIdentifier: "appconfig from network")
 
@@ -117,14 +114,13 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
-        
+
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeAppConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeSignatureCallCount, 1)
     }
 
     func test_execute_withoutStoredConfiguration_shouldRetrieveFromNetwork() {
-
         let networkAppConfig = createApplicationConfiguration(withIdentifier: "appconfig from network")
 
         mockApplicationConfigurationResults(networkConfiguration: networkAppConfig)
@@ -139,21 +135,20 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
-        
+
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeAppConfigurationCallCount, 1)
         XCTAssertEqual(mockApplicationSignatureController.storeSignatureCallCount, 1)
     }
 
     func test_execute_retrieveFromNetwork_withError_shouldMapExposureDataError() {
-
         let networkAppConfig = createApplicationConfiguration(withIdentifier: "appconfig from network")
 
         mockApplicationConfigurationResults(networkConfiguration: networkAppConfig)
 
         // override networkcontroller call to return an error
         mockNetworkController.applicationConfigurationHandler = { _ in
-            return .error(NetworkError.invalidRequest)
+            .error(NetworkError.invalidRequest)
         }
 
         let exp = expectation(description: "Completion")
@@ -169,7 +164,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             }).disposed(by: disposeBag)
 
         waitForExpectations(timeout: 1, handler: nil)
-        
+
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 1)
     }
 
@@ -180,7 +175,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             version: 0,
             manifestRefreshFrequency: 0,
             decoyProbability: 0,
-            creationDate: Date(),
+            creationDate: currentDate(),
             identifier: identifier,
             minimumVersion: "",
             minimumVersionMessage: "",

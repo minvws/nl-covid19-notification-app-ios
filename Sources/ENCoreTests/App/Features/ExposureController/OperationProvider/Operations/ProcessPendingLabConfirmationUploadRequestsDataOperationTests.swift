@@ -33,7 +33,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
     func test_singlePendingRequest_callsPostKeys_andRemovesFromStorageWhenSuccessful() {
         let pendingRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
                                                                  diagnosisKeys: createDiagnosisKeys(),
-                                                                 expiryDate: Date().addingTimeInterval(20))
+                                                                 expiryDate: currentDate().addingTimeInterval(20))
 
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
@@ -78,7 +78,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
     func test_multiplePendingOperations_callPostKeysMultipleTimes() {
         let pendingRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
                                                                  diagnosisKeys: createDiagnosisKeys(),
-                                                                 expiryDate: Date().addingTimeInterval(20))
+                                                                 expiryDate: currentDate().addingTimeInterval(20))
         let pendingRequests = [pendingRequest, pendingRequest, pendingRequest]
 
         mockStorageController.retrieveDataHandler = { _ in
@@ -102,7 +102,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
     func test_pendingRequestIsExpired_doesNotCallNetworkAndDoesNotStoreAgain() {
         let expiredRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
                                                                  diagnosisKeys: createDiagnosisKeys(),
-                                                                 expiryDate: Date().addingTimeInterval(-1))
+                                                                 expiryDate: currentDate().addingTimeInterval(-1))
 
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
@@ -129,7 +129,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
     func test_failedRequest_isScheduledAgain() {
         let request = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(),
                                                           diagnosisKeys: createDiagnosisKeys(),
-                                                          expiryDate: Date().addingTimeInterval(20))
+                                                          expiryDate: currentDate().addingTimeInterval(20))
 
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
@@ -172,7 +172,7 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
         return LabConfirmationKey(identifier: "test",
                                   bucketIdentifier: Data(),
                                   confirmationKey: Data(),
-                                  validUntil: Date())
+                                  validUntil: currentDate())
     }
 
     private func createDiagnosisKeys() -> [DiagnosisKey] {
