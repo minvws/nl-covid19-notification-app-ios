@@ -156,9 +156,9 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 DeveloperItem(title: "Change Exposure State",
                               subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState?.activeState.asString ?? "None")",
                               action: { [weak self] in self?.changeExposureState() }),
-                DeveloperItem(title: "Change Notified",
-                              subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState?.notifiedState.asString ?? "No")",
-                              action: { [weak self] in self?.changeNotified() }),
+                DeveloperItem(title: "Trigger Exposure",
+                              subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState?.notifiedState.asString ?? "No")",
+                              action: { [weak self] in self?.triggerExposure() }),
                 DeveloperItem(title: "Upload Exposure Keys",
                               subtitle: "Upload keys after giving permission",
                               action: { [weak self] in self?.uploadKeys() }),
@@ -210,15 +210,12 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               subtitle: "Current: \(self.mutableNetworkConfigurationStream.configuration.name)",
                               action: { [weak self] in self?.changeNetworkConfiguration() })
             ]),
-            ("Push Notifications", [
-                DeveloperItem(title: "Launch Message Flow",
-                              subtitle: "Launches the message flow as would be done from a exposure push notification with today's date",
-                              action: { [weak self] in self?.listener?.developerMenuRequestMessage(exposureDate: Date()); self?.hide() }),
+            ("Push Notifications", [                
                 DeveloperItem(title: "Schedule Message Flow",
-                              subtitle: "Schedules a push notification to be sent in 5 seconds",
-                              action: { [weak self] in self?.wantsScheduleNotification(identifier: "com.apple.en.mock") }),
+                              subtitle: "Schedules a push notification to be sent in 5 seconds.",
+                              action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.exposure.rawValue) }),
                 DeveloperItem(title: "Schedule Upload Failed Flow",
-                              subtitle: "Schedules a push notifiction to be sent in 5 seconds",
+                              subtitle: "Schedules a push notification to be sent in 5 seconds",
                               action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.uploadFailed.rawValue) })
             ]),
             ("Logging", [
@@ -270,16 +267,15 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         internalView.tableView.reloadData()
     }
 
-    private func changeNotified() {
-        let exposureState: ExposureState
-
-        if let current = mutableExposureStateStream.currentExposureState {
-            exposureState = .init(notifiedState: current.notifiedState.toggled, activeState: current.activeState)
-        } else {
-            exposureState = .init(notifiedState: .notified(Date()), activeState: .active)
+    private func triggerExposure() {
+        
+        let exposureReport = ExposureReport(date: Date())
+        
+        storageController.store(object: exposureReport,
+                                identifiedBy: ExposureDataStorageKey.lastExposureReport) { error in
+            self.exposureController.updateExposureFirstNotificationReceivedDate(Date())
+            self.exposureController.refreshStatus()
         }
-
-        mutableExposureStateStream.update(state: exposureState)
     }
 
     private func changeNetworkConfiguration() {
@@ -381,7 +377,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
     private func removeLastExposure() {
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
-
+        
         exposureController.refreshStatus()
         internalView.tableView.reloadData()
     }

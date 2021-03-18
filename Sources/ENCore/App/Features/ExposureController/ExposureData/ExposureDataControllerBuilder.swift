@@ -44,6 +44,7 @@ protocol ExposureDataControlling: AnyObject {
     var canProcessDecoySequence: Bool { get }
 
     func removeLastExposure() -> Completable
+    func removeFirstNotificationReceivedDate() -> Completable
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable
     func setLastENStatusCheckDate(_ date: Date)
     func setLastAppLaunchDate(_ date: Date)

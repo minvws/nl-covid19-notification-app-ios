@@ -74,6 +74,8 @@ protocol ExposureControlling: AnyObject {
     /// Removes the unseen exposure notification date
     func clearUnseenExposureNotificationDate()
 
+    func updateExposureFirstNotificationReceivedDate(_ date: Date)
+    
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
     func updateAndProcessPendingUploads() -> Completable
 

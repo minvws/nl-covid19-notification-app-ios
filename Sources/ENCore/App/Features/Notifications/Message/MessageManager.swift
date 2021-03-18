@@ -19,7 +19,7 @@ protocol MessageManaging: AnyObject {
     func getLocalizedTreatmentPerspective() -> LocalizedTreatmentPerspective
 }
 
-enum TreatmentPerspectiveError: Error {
+fileprivate enum TreatmentPerspectiveError: Error {
     case unfillablePlaceHolderError
 }
 

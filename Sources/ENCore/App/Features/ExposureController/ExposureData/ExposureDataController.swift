@@ -166,6 +166,15 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             return Disposables.create()
         }
     }
+    
+    func removeFirstNotificationReceivedDate() -> Completable {
+        return .create { observer in
+            self.storageController.removeData(for: ExposureDataStorageKey.exposureFirstNotificationReceivedDate) { _ in
+                observer(.completed)
+            }
+            return Disposables.create()
+        }
+    }
 
     private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Completable {
         self.logDebug("ExposureDataController: processStoredExposureKeySets")

@@ -139,10 +139,6 @@ final class RootViewController: ViewController, RootViewControllable {
         router?.routeToOnboarding()
     }
 
-    func developerMenuRequestMessage(exposureDate: Date) {
-        router?.routeToMessage()
-    }
-
     func developerMenuRequestUpdateOperatingSystem() {
         router?.routeToUpdateOperatingSystem()
     }
