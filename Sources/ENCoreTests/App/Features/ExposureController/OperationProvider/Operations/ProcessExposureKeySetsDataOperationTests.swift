@@ -331,6 +331,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationCallCount, 1)
         XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationArgValues.first, 3)
+        XCTAssertEqual(mockExposureDataController.updateExposureFirstNotificationReceivedDateCallCount, 1)
     }
 
     func test_shouldNotShowExposureNotificationForExposureMoreThan14DaysAgo() throws {

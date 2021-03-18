@@ -271,6 +271,29 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockOperationProvider.processPendingLabConfirmationUploadRequestsOperationCallCount, 1)
         XCTAssertEqual(mockProcessPendingLabConfirmationUploadRequestsOperation.executeCallCount, 1)
     }
+    
+    // MARK: - updateExposureFirstNotificationReceivedDate
+    
+    func test_updateExposureFirstNotificationReceivedDate() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+        
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        XCTAssertEqual(mockStorageController.requestExclusiveAccessCallCount, 0)
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
+        
+        sut.updateExposureFirstNotificationReceivedDate(currentDate())
+        
+        XCTAssertEqual(mockStorageController.requestExclusiveAccessCallCount, 1)
+        XCTAssertEqual(mockStorageController.storeCallCount, 2)
+    }
 
     // MARK: - Private Helper Functions
 

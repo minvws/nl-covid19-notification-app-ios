@@ -45,10 +45,6 @@ final class MessageManager: MessageManaging, Logging {
 
     func getLocalizedTreatmentPerspective() -> LocalizedTreatmentPerspective {
 
-        guard let exposureDate = exposureDataController.lastExposure?.date else {
-            return .emptyMessage
-        }
-        
         var treatmentPerspective: TreatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) ?? .fallbackMessage
 
         #if USE_DEVELOPER_MENU || DEBUG
@@ -60,6 +56,10 @@ final class MessageManager: MessageManaging, Logging {
         let resource = treatmentPerspective.resources[.currentLanguageIdentifier]
         let fallbackResource = treatmentPerspective.resources["en"]
 
+        guard let exposureDate = exposureDataController.lastExposure?.date else {
+            return .emptyMessage
+        }
+        
         guard resource != nil || fallbackResource != nil else {
             return .emptyMessage
         }
