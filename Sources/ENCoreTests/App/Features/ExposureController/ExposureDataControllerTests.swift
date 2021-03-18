@@ -6,16 +6,15 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
 
 final class ExposureDataControllerTests: TestCase {
-
     private var disposeBag = DisposeBag()
 
     func test_firstRun_erasesStorage() {
-
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
@@ -49,7 +48,6 @@ final class ExposureDataControllerTests: TestCase {
     }
 
     func test_update_erasesStoredManifest() {
-
         let removedManifestExpectation = expectation(description: "Removed Manifest")
 
         // Creating controller within this test to test initialisation code
@@ -145,11 +143,11 @@ final class ExposureDataControllerTests: TestCase {
             return .empty()
         }
 
-        mockOperationProvider.uploadDiagnosisKeysOperationHandler = { diagnosisKeys, labConfirmationKey, padding in
+        mockOperationProvider.uploadDiagnosisKeysOperationHandler = { _, _, _ in
             uploadOperationMock
         }
 
-        let mockLabConfirmationKey = LabConfirmationKey(identifier: "", bucketIdentifier: "".data(using: .utf8)!, confirmationKey: "".data(using: .utf8)!, validUntil: Date().addingTimeInterval(20000))
+        let mockLabConfirmationKey = LabConfirmationKey(identifier: "", bucketIdentifier: "".data(using: .utf8)!, confirmationKey: "".data(using: .utf8)!, validUntil: currentDate().addingTimeInterval(20000))
 
         sut.upload(diagnosisKeys: [], labConfirmationKey: mockLabConfirmationKey)
             .subscribe(onCompleted: {
@@ -172,7 +170,7 @@ final class ExposureDataControllerTests: TestCase {
 
         let removeDataExpectation = expectation(description: "removeData")
 
-        mockStorageController.removeDataHandler = { key, completion in
+        mockStorageController.removeDataHandler = { key, _ in
             XCTAssertTrue((key as? CodableStorageKey<ExposureReport>)?.asString == ExposureDataStorageKey.lastExposureReport.asString)
             removeDataExpectation.fulfill()
         }
@@ -213,7 +211,6 @@ final class ExposureDataControllerTests: TestCase {
     }
 
     func test_fetchAndProcessExposureKeySets_shouldRequestApplicationConfiguration() {
-
         let mockExposureManager = ExposureManagingMock()
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
@@ -358,7 +355,7 @@ final class ExposureDataControllerTests: TestCase {
             expectation?.fulfill()
             return .just(testData)
         }
-        mockOperationProvider.requestAppConfigurationOperationHandler = { identifier in operationMock }
+        mockOperationProvider.requestAppConfigurationOperationHandler = { _ in operationMock }
         return operationMock
     }
 
@@ -381,14 +378,14 @@ private extension TreatmentPerspective {
 }
 
 private extension ApplicationManifest {
-    static func testData(creationDate: Date = Date(), appConfigurationIdentifier: String = "appConfigurationIdentifier") -> ApplicationManifest {
+    static func testData(creationDate: Date = currentDate(), appConfigurationIdentifier: String = "appConfigurationIdentifier") -> ApplicationManifest {
         ApplicationManifest(exposureKeySetsIdentifiers: [], riskCalculationParametersIdentifier: "riskCalculationParametersIdentifier", appConfigurationIdentifier: appConfigurationIdentifier, creationDate: creationDate, resourceBundle: "resourceBundle")
     }
 }
 
 private extension ApplicationConfiguration {
     static func testData(manifestRefreshFrequency: Int = 3600) -> ApplicationConfiguration {
-        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: Date(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber")
+        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber")
     }
 }
 

@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import RxSwift
 import XCTest
 
@@ -175,7 +176,7 @@ class ApplicationSignatureControllerTests: TestCase {
             version: version,
             manifestRefreshFrequency: manifestRefreshFrequency,
             decoyProbability: 0,
-            creationDate: Date(),
+            creationDate: currentDate(),
             identifier: "test",
             minimumVersion: "",
             minimumVersionMessage: "",

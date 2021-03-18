@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import SnapshotTesting
@@ -28,7 +29,7 @@ final class ThankYouViewControllerTests: TestCase {
         let key = LabConfirmationKey(identifier: "Key Here",
                                      bucketIdentifier: Data(),
                                      confirmationKey: Data(),
-                                     validUntil: Date())
+                                     validUntil: currentDate())
 
         viewController = ThankYouViewController(listener: listener,
                                                 theme: theme,

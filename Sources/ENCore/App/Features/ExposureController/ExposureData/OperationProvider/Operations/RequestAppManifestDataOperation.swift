@@ -23,7 +23,6 @@ protocol RequestAppManifestDataOperationProtocol {
 }
 
 final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProtocol, Logging {
-
     init(networkController: NetworkControlling,
          storageController: StorageControlling) {
         self.networkController = networkController

@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -255,12 +256,11 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
 
             // Check that all processdates of fake-processed keysets are more than 24 hours ago,
             // to avoid them interfering with GAEN API file limits on iOS 13.5
-            let currentDate = Date()
-            let oneDay: TimeInterval = 60 * 60 * 24
+            let oneDay: TimeInterval = 60 * 60 * 24 - 1
             keySetHolders
                 .compactMap { $0.processDate }
                 .forEach { processDate in
-                    XCTAssertTrue(currentDate.timeIntervalSince(processDate) >= oneDay)
+                    XCTAssertTrue(currentDate().timeIntervalSince(processDate) >= oneDay)
                 }
 
             storedKeySetsExpectation.fulfill()
@@ -279,7 +279,7 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     }
 
     private func dummyKeySetHolder(withIdentifier identifier: String = "identifier") -> ExposureKeySetHolder {
-        ExposureKeySetHolder(identifier: identifier, signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date())
+        ExposureKeySetHolder(identifier: identifier, signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate())
     }
 
     private func mockStorage(storedKeySetHolders: [ExposureKeySetHolder] = [],

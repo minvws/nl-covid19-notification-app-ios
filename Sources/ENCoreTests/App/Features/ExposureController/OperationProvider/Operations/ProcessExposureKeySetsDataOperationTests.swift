@@ -26,12 +26,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var disposeBag = DisposeBag()
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockRiskCalculationController: RiskCalculationControllingMock!
-    private var currentDate: Date!
 
     override func setUpWithError() throws {
-
-        currentDate = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
 
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()
@@ -74,7 +70,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _ in }
 
         mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
-            return Date()
+            return currentDate()
         }
 
         sut = ProcessExposureKeySetsDataOperation(
@@ -115,7 +111,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         let exp = expectation(description: "detectExposuresExpectation")
 
-        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+        let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
         mockApplication.isInBackground = true
         mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
@@ -134,7 +130,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldDetectExposuresIfBackgroundCallsAvailable() {
 
         mockApplication.isInBackground = true
-        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+        let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
 
         let exp = expectation(description: "detectExposuresExpectation")
 
@@ -157,7 +153,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldNotDetectExposuresIfBackgroundCallLimitReached() {
 
         mockApplication.isInBackground = true
-        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 6)
+        let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 6)
 
         let exp = expectation(description: "detectExposuresExpectation")
 
@@ -178,7 +174,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldDetectExposuresIfForegroundCallsAvailable() {
 
         mockApplication.isInBackground = false
-        let exposureApiForegroundCallDates = Array(repeating: Date(), count: 8)
+        let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 8)
 
         let exp = expectation(description: "detectExposuresExpectation")
 
@@ -201,7 +197,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldNotDetectExposuresIfForegroundCallLimitReached() {
 
         mockApplication.isInBackground = false
-        let exposureApiForegroundCallDates = Array(repeating: Date(), count: 9)
+        let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 9)
 
         let exp = expectation(description: "detectExposuresExpectation")
 
@@ -222,8 +218,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldNotDetectExposuresIfCombinedCallLimitReached() {
 
         mockApplication.isInBackground = true
-        let exposureApiForegroundCallDates = Array(repeating: Date(), count: 20)
-        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 2)
+        let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 20)
+        let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 2)
 
         let exp = expectation(description: "detectExposuresExpectation")
 
@@ -245,8 +241,8 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
 
         // 10 processed keysets should not trigger the file limit
-        let processedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: Date().addingTimeInterval(-200), creationDate: Date()), count: 10)
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+        let processedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: currentDate().addingTimeInterval(-200), creationDate: currentDate()), count: 10)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)
 
         let exp = expectation(description: "detectExposuresExpectation")
 
@@ -269,7 +265,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
 
-        let keySetHolder = ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: Date().addingTimeInterval(-200), creationDate: Date())
+        let keySetHolder = ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: currentDate().addingTimeInterval(-200), creationDate: currentDate())
         let processedKeySetHolders = Array(repeating: keySetHolder, count: 20)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -315,14 +311,14 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
 
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate), count: 2)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)
 
         mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
 
         let subscriptionExpectation = expectation(description: "subscriptionExpectation")
 
         mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
-            return Calendar.current.date(byAdding: .day, value: -3, to: self.currentDate)
+            return Calendar.current.date(byAdding: .day, value: -3, to: currentDate())
         }
 
         sut.execute()
@@ -341,7 +337,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
 
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)
 
         mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
 
@@ -366,7 +362,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     func test_shouldPersistExposureReport() throws {
 
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 2)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)
 
         let subscriptionExpectation = expectation(description: "subscriptionExpectation")
         let storedExposureReportExpectation = expectation(description: "storedExposureReportExpectation")
@@ -391,7 +387,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldUpdateLastProcessingDate() {
 
         mockApplication.isInBackground = true
-        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+        let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
 
         let exp = expectation(description: "detectExposuresExpectation")
 
@@ -410,12 +406,12 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
         XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
-        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate())
     }
 
     func test_shouldRemoveBlobsForProcessedKeySets() throws {
 
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date()), count: 1)
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 1)
 
         let subscriptionExpectation = expectation(description: "subscriptionExpectation")
 
@@ -436,7 +432,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     // MARK: - Private Helper Functions
 
     private var dummyKeySetHolder: ExposureKeySetHolder {
-        ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: Date())
+        ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate())
     }
 
     private func mockStorage(storedKeySetHolders: [ExposureKeySetHolder] = [],

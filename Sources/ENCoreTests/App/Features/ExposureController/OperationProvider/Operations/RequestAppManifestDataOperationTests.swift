@@ -68,7 +68,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
     func test_execute_shouldReturnValidManifestFromStorage() {
 
         let storedConfiguration = ApplicationConfiguration.testData(manifestRefreshFrequency: 3600)
-        let storedManifest = ApplicationManifest.testData(creationDate: Date().addingTimeInterval(-10), appConfigurationIdentifier: "SomeIdentifier")
+        let storedManifest = ApplicationManifest.testData(creationDate: currentDate().addingTimeInterval(-10), appConfigurationIdentifier: "SomeIdentifier")
         let streamExpectation = expectation(description: "stream")
 
         mockStorageController.retrieveDataHandler = { key in
@@ -94,13 +94,10 @@ final class RequestAppManifestDataOperationTests: TestCase {
 
     func test_execute_shouldReturnNetworkManifestIfStoredManifestIsInvalid() {
 
-        let date = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = date
-
         let storedConfiguration = ApplicationConfiguration.testData(manifestRefreshFrequency: 60) // refesh manifest every 60 minutes
         let twoHours: TimeInterval = 2 * 60 * 60
-        let storedManifest = ApplicationManifest.testData(creationDate: date.addingTimeInterval(-twoHours), appConfigurationIdentifier: "SomeIdentifier")
-        let apiManifest = ApplicationManifest.testData(creationDate: date.addingTimeInterval(-10), appConfigurationIdentifier: "ApiManifestConfigurationIdentifier")
+        let storedManifest = ApplicationManifest.testData(creationDate: currentDate().addingTimeInterval(-twoHours), appConfigurationIdentifier: "SomeIdentifier")
+        let apiManifest = ApplicationManifest.testData(creationDate: currentDate().addingTimeInterval(-10), appConfigurationIdentifier: "ApiManifestConfigurationIdentifier")
         let streamExpectation = expectation(description: "stream")
         let storeExpectation = expectation(description: "storeExpectation")
 
@@ -186,12 +183,12 @@ final class RequestAppManifestDataOperationTests: TestCase {
 
 private extension ApplicationConfiguration {
     static func testData(manifestRefreshFrequency: Int = 3600) -> ApplicationConfiguration {
-        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: Date(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber")
+        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber")
     }
 }
 
 private extension ApplicationManifest {
-    static func testData(creationDate: Date = Date(), appConfigurationIdentifier: String = "appConfigurationIdentifier") -> ApplicationManifest {
+    static func testData(creationDate: Date = currentDate(), appConfigurationIdentifier: String = "appConfigurationIdentifier") -> ApplicationManifest {
         ApplicationManifest(exposureKeySetsIdentifiers: [], riskCalculationParametersIdentifier: "riskCalculationParametersIdentifier", appConfigurationIdentifier: appConfigurationIdentifier, creationDate: creationDate, resourceBundle: "resourceBundle")
     }
 }

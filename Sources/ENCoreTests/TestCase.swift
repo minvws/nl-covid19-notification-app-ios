@@ -24,6 +24,9 @@ class TestCase: XCTestCase {
     override func setUp() {
         super.setUp()
         SnapshotTesting.diffTool = "ksdiff"
+
+        let now = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = now
     }
 
     func snapshots(

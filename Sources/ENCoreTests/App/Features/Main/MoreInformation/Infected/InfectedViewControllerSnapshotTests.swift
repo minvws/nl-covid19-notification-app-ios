@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import SnapshotTesting
@@ -54,7 +55,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
         viewController.state = .success(confirmationKey: LabConfirmationKey(identifier: "key here",
                                                                             bucketIdentifier: Data(),
                                                                             confirmationKey: Data(),
-                                                                            validUntil: Date()))
+                                                                            validUntil: currentDate()))
         snapshots(matching: viewController)
     }
 
@@ -67,7 +68,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
         viewController.state = .success(confirmationKey: LabConfirmationKey(identifier: "key here",
                                                                             bucketIdentifier: Data(),
                                                                             confirmationKey: Data(),
-                                                                            validUntil: Date()))
+                                                                            validUntil: currentDate()))
 
         let cardViewController = CardViewController(listener: mockCardListener,
                                                     theme: theme,
