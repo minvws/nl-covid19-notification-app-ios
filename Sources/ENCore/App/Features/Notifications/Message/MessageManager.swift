@@ -16,7 +16,11 @@ import UIKit
 
 /// @mockable
 protocol MessageManaging: AnyObject {
-    func getLocalizedTreatmentPerspective(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective
+    func getLocalizedTreatmentPerspective() -> LocalizedTreatmentPerspective
+}
+
+enum TreatmentPerspectiveError: Error {
+    case unfillablePlaceHolderError
 }
 
 final class MessageManager: MessageManaging, Logging {
@@ -26,17 +30,25 @@ final class MessageManager: MessageManaging, Logging {
         case exposureDate = "ExposureDate"
         case exposureDaysAgo = "ExposureDaysAgo"
         case exposureDateShort = "ExposureDateShort"
+        case notificationReceivedDate = "NotificationReceivedDate"
     }
 
     // MARK: - Init
 
-    init(storageController: StorageControlling, theme: Theme) {
+    init(storageController: StorageControlling,
+         exposureDataController: ExposureDataControlling,
+         theme: Theme) {
         self.storageController = storageController
+        self.exposureDataController = exposureDataController
         self.theme = theme
     }
 
-    func getLocalizedTreatmentPerspective(withExposureDate exposureDate: Date) -> LocalizedTreatmentPerspective {
+    func getLocalizedTreatmentPerspective() -> LocalizedTreatmentPerspective {
 
+        guard let exposureDate = exposureDataController.lastExposure?.date else {
+            return .emptyMessage
+        }
+        
         var treatmentPerspective: TreatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) ?? .fallbackMessage
 
         #if USE_DEVELOPER_MENU || DEBUG
@@ -52,18 +64,23 @@ final class MessageManager: MessageManaging, Logging {
             return .emptyMessage
         }
         
-        guard let layout = getLayout(forExposureDate: exposureDate, fromTreatmentPerspective: treatmentPerspective) else {
+        guard let layout = getLayout(exposureDate: exposureDate, notificationDate: exposureDataController.exposureFirstNotificationReceivedDate, treatmentPerspective: treatmentPerspective) else {
             return .emptyMessage
         }
 
-        let paragraphs = paragraphsFromLayout(
-            layout,
-            exposureDate: exposureDate,
-            withLanguageResource: resource,
-            languageResourceFallback: fallbackResource
-        )
-
-        return LocalizedTreatmentPerspective(paragraphs: paragraphs)
+        do {
+            let paragraphs = try paragraphsFromLayoutElements(
+                layout,
+                exposureDate: exposureDate,
+                withLanguageResource: resource,
+                languageResourceFallback: fallbackResource
+            )
+            
+            return LocalizedTreatmentPerspective(paragraphs: paragraphs)
+            
+        } catch {
+            return .emptyMessage
+        }
     }
 
     // MARK: - Private
@@ -71,10 +88,15 @@ final class MessageManager: MessageManaging, Logging {
     /// Gets a treatment perspective layout from the TreatmentPerspective model that is relevant for the given exposure date.
     /// - Parameters:
     ///   - exposureDate: The day on which the exposure occured
+    ///   - notificationDate: The day on which the user was first informed of this exposure
     ///   - treatmentPerspective: Treatment Perspective model returned from the API
     /// - Returns: A Treatment Perspective layout that is specific for the current number of days since exposure or a generic layout if none can be found
-    private func getLayout(forExposureDate exposureDate: Date, fromTreatmentPerspective treatmentPerspective: TreatmentPerspective) -> [TreatmentPerspective.LayoutElement]? {
-        guard let daysSinceExposure = currentDate().days(sinceDate: exposureDate) else {
+    private func getLayout(exposureDate: Date,
+                           notificationDate: Date?,
+                           treatmentPerspective: TreatmentPerspective) -> [TreatmentPerspective.LayoutElement]? {
+        
+        // Fall back to a non-date-relative layout if we can't determine the number of days since exposure or we don't know the date of the first notification
+        guard let daysSinceExposure = currentDate().days(sinceDate: exposureDate), notificationDate != nil else {
             return treatmentPerspective.guidance.layout
         }
         
@@ -93,14 +115,14 @@ final class MessageManager: MessageManaging, Logging {
         return dayRelativeLayout?.layout ?? treatmentPerspective.guidance.layout
     }
 
-    private func paragraphsFromLayout(
+    private func paragraphsFromLayoutElements(
         _ layoutElements: [TreatmentPerspective.LayoutElement],
         exposureDate: Date,
         withLanguageResource resource: [String: String]?,
         languageResourceFallback fallback: [String: String]?
-    ) -> [LocalizedTreatmentPerspective.Paragraph] {
+    ) throws -> [LocalizedTreatmentPerspective.Paragraph] {
 
-        return layoutElements.compactMap {
+        return try layoutElements.compactMap {
 
             guard let title = $0.title, let resourceTitle = resource?[title] ?? fallback?[title],
                 let body = $0.body, let resourceBody = resource?[body] ?? fallback?[body],
@@ -108,10 +130,10 @@ final class MessageManager: MessageManaging, Logging {
                 return nil
             }
 
-            let paragraphTitle = replacePlaceholders(inString: NSAttributedString(string: resourceTitle),
+            let paragraphTitle = try replacePlaceholders(inString: NSAttributedString(string: resourceTitle),
                                                      withExposureDate: exposureDate)
 
-            let htmlBody = replacePlaceholders(inString: NSAttributedString(string: resourceBody),
+            let htmlBody = try replacePlaceholders(inString: NSAttributedString(string: resourceBody),
                                                withExposureDate: exposureDate)
 
             let paragraphBody = NSAttributedString.htmlWithBulletList(text: htmlBody.string,
@@ -128,7 +150,8 @@ final class MessageManager: MessageManaging, Logging {
         }
     }
 
-    private func replacePlaceholders(inString attributedString: NSAttributedString, withExposureDate exposureDate: Date) -> NSAttributedString {
+    private func replacePlaceholders(inString attributedString: NSAttributedString,
+                                     withExposureDate exposureDate: Date) throws -> NSAttributedString {
 
         let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString)
         let originalText = mutableAttributedString.string
@@ -136,9 +159,9 @@ final class MessageManager: MessageManaging, Logging {
 
         // Find all placeholders in the string
         let fullRange = NSRange(location: 0, length: originalText.utf16.count)
-        let regex = try! NSRegularExpression(pattern: "\\{[a-zA-Z]+[+]?[0-9]*\\}")
+        let regex = try NSRegularExpression(pattern: "\\{[a-zA-Z]+[+]?[0-9]*\\}")
 
-        regex
+        try regex
             .matches(in: originalText, options: [], range: fullRange)
             .compactMap { Range($0.range, in: originalText) }
             .forEach { placeholderRange in
@@ -169,6 +192,12 @@ final class MessageManager: MessageManaging, Logging {
                     replacementString = formatDate(exposureDate, fromTemplate: "dMMMM", addingDays: daysAdded)
                 case .exposureDaysAgo:
                     replacementString = statusNotifiedDaysAgo(withExposureDate: exposureDate)
+                case .notificationReceivedDate:
+                    if let notificationReceivedDate = exposureDataController.exposureFirstNotificationReceivedDate {
+                        replacementString = formatDate(notificationReceivedDate, fromTemplate: "EEEEdMMMM", addingDays: daysAdded)
+                    } else {
+                        throw TreatmentPerspectiveError.unfillablePlaceHolderError
+                    }
                 }
 
                 modifiedText = modifiedText.replacingOccurrences(of: placeholder, with: replacementString)
@@ -198,5 +227,6 @@ final class MessageManager: MessageManaging, Logging {
     }
 
     private let storageController: StorageControlling
+    private let exposureDataController: ExposureDataControlling
     private let theme: Theme
 }

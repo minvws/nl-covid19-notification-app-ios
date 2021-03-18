@@ -155,10 +155,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 switch pushNotificationIdentifier {
                 case .exposure:
-                    guard let lastExposureDate = strongSelf.exposureController.lastExposureDate else {
-                        return strongSelf.logError("No Last Exposure Date to present")
-                    }
-                    strongSelf.routeToMessage(exposureDate: lastExposureDate)
+                    strongSelf.routeToMessage()
                 case .inactive:
                     () // Do nothing
                 case .uploadFailed:
@@ -267,11 +264,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         detachOnboarding(animated: animated)
     }
 
-    func routeToMessage(exposureDate: Date) {
+    func routeToMessage() {
         guard messageViewController == nil else {
             return
         }
-        let messageViewController = messageBuilder.build(withListener: viewController, exposureDate: exposureDate)
+        let messageViewController = messageBuilder.build(withListener: viewController)
         self.messageViewController = messageViewController
 
         viewController.presentInNavigationController(viewController: messageViewController, animated: true, presentFullScreen: false)

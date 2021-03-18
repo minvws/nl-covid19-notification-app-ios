@@ -31,6 +31,8 @@ struct ExposureDataStorageKey {
                                                                       storeType: .secure)
     static let lastExposureProcessingDate = CodableStorageKey<Date>(name: "lastExposureProcessingDate",
                                                                     storeType: .insecure(volatile: false))
+    static let exposureFirstNotificationReceivedDate = CodableStorageKey<Date>(name: "exposureNotificationReceivedDate",
+                                                                    storeType: .insecure(volatile: false))
     static let lastLocalNotificationExposureDate = CodableStorageKey<Date>(name: "lastLocalNotificationExposureDate",
                                                                            storeType: .insecure(volatile: false))
     static let lastENStatusCheck = CodableStorageKey<Date>(name: "lastENStatusCheck",
@@ -114,6 +116,11 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     var lastLocalNotificationExposureDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate)
+    }
+    
+    /// The date on which a notification was first sent to the user for the current / latest exposure
+    var exposureFirstNotificationReceivedDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureFirstNotificationReceivedDate)
     }
 
     var lastENStatusCheckDate: Date? {
@@ -350,6 +357,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                 completion: { _ in
                     self.lastExposureProcessingDateSubject.onNext(date)
                 }
+            )
+        }
+    }
+    
+    func updateExposureFirstNotificationReceivedDate(_ date: Date) {
+
+        storageController.requestExclusiveAccess { storageController in
+            storageController.store(
+                object: date,
+                identifiedBy: ExposureDataStorageKey.exposureFirstNotificationReceivedDate,
+                completion: { _ in }
             )
         }
     }

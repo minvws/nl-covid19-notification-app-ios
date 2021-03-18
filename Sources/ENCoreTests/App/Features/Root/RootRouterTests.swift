@@ -398,8 +398,7 @@ final class RootRouterTests: TestCase {
         let messageBuilderExpectation = expectation(description: "messageBuilder")
 
         let mockMessageViewController = ViewControllableMock()
-        messageBuilder.buildHandler = { _, date in
-            XCTAssertEqual(date, self.exposureController.lastExposureDate)
+        messageBuilder.buildHandler = { _ in            
             messageBuilderExpectation.fulfill()
             return mockMessageViewController
         }

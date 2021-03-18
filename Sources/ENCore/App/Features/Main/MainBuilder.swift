@@ -98,7 +98,7 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     }
 
     var messageManager: MessageManaging {
-        return MessageManager(storageController: storageController, theme: dependency.theme)
+        return MessageManager(storageController: storageController, exposureDataController: dataController, theme: dependency.theme)
     }
 
     var dataController: ExposureDataControlling {

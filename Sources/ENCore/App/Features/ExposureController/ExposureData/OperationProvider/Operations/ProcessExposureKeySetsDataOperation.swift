@@ -545,6 +545,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     observer(.failure(ExposureDataError.internalError))
                     return
                 }
+                
+                self.updateExposureFirstNotificationReceivedDate()
 
                 /// Store the unseen notification date, but only when the app is in the background
                 if !applicationIsInBackground {
@@ -607,6 +609,14 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.logDebug("Updating last process date to \(date)")
 
         self.exposureDataController.updateLastSuccessfulExposureProcessingDate(date)
+    }
+    
+    private func updateExposureFirstNotificationReceivedDate() {
+        let date = currentDate()
+
+        self.logDebug("Updating ExposureNotificationReceivedDate to \(date)")
+
+        self.exposureDataController.updateExposureFirstNotificationReceivedDate(date)
     }
 
     private func signatureFileUrl(forKeySetHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> URL? {

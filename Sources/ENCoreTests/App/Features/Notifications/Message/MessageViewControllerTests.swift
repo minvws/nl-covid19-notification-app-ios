@@ -42,53 +42,53 @@ final class MessageViewControllerTests: TestCase {
 
     func testSnapshotMessageViewController_withListAndText() {
 
-        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+        messageManager.getLocalizedTreatmentPerspectiveHandler = {
             self.fakeMessageWithListAndText
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
 
         snapshots(matching: viewController)
     }
 
     func testSnapshotMessageViewController_withListOnly() {
 
-        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+        messageManager.getLocalizedTreatmentPerspectiveHandler = {
             self.fakeMessageWithListOnly
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
         snapshots(matching: viewController)
     }
 
     func testSnapshotMessageViewController_withoutList() {
-        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+        messageManager.getLocalizedTreatmentPerspectiveHandler = {
             self.fakeMessageWithoutList
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
         snapshots(matching: viewController)
     }
 
     func testSnapshotMessageViewController_rtl() {
         LocalizationOverrides.overriddenIsRTL = true
 
-        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+        messageManager.getLocalizedTreatmentPerspectiveHandler = {
             self.fakeMessageRTLWithList
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
         snapshots(matching: viewController)
 
         LocalizationOverrides.overriddenIsRTL = nil
     }
 
     func testPresentationControllerDidDismissCallsListener() {
-        messageManager.getLocalizedTreatmentPerspectiveHandler = { date in
+        messageManager.getLocalizedTreatmentPerspectiveHandler = {
             self.fakeMessageWithListAndText
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, exposureDate: exposureDate, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
         listener.messageWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }

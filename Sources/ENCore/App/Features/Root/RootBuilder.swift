@@ -188,7 +188,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
 
     var messageManager: MessageManaging {
-        return MessageManager(storageController: storageController, theme: theme)
+        return MessageManager(storageController: storageController, exposureDataController: dataController, theme: theme)
     }
 
     fileprivate var userNotificationCenter: UserNotificationCenter {

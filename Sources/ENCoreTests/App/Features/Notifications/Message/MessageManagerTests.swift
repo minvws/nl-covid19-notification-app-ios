@@ -13,18 +13,20 @@ class MessageManagerTests: TestCase {
 
     private var sut: MessageManager!
     private var mockStorageController: StorageControllingMock!
+    private var mockExposureDataController: ExposureDataControllingMock!
 
     override func setUpWithError() throws {
         mockStorageController = StorageControllingMock()
+        mockExposureDataController = ExposureDataControllingMock()
 
-        sut = MessageManager(storageController: mockStorageController, theme: theme)
+        sut = MessageManager(storageController: mockStorageController, exposureDataController: mockExposureDataController, theme: theme)
     }
     
     func test_getLocalizedTreatmentPerspective_shouldGetPerspectiveFromStorageController() throws {
         // Arrange
         let calledStorageControllerExpectation = expectation(description: "called storagecontroller")
 
-        let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        mockExposureDataController.lastExposure = .init(date: Date(timeIntervalSince1970: 1593538088)) // 30/06/20 17:28
 
         mockStorageController.retrieveDataHandler = { key in
             XCTAssertTrue(key is CodableStorageKey<TreatmentPerspective>)
@@ -33,7 +35,7 @@ class MessageManagerTests: TestCase {
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         waitForExpectations(timeout: 2.0, handler: nil)
@@ -44,14 +46,15 @@ class MessageManagerTests: TestCase {
         // Arrange
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "fr"
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593624480) // 01/07/20 17:28
-        let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        
+        mockExposureDataController.lastExposure = .init(date: Date(timeIntervalSince1970: 1593538088)) // 30/06/20 17:28
 
         mockStorageController.retrieveDataHandler = { key in
             return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithPlaceholders)
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
@@ -64,14 +67,14 @@ class MessageManagerTests: TestCase {
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593624480) // 01/07/20 17:28
 
-        let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        mockExposureDataController.lastExposure = .init(date: Date(timeIntervalSince1970: 1593538088)) // 30/06/20 17:28
 
         mockStorageController.retrieveDataHandler = { key in
             return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithPlaceholders)
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 2)
@@ -86,7 +89,7 @@ class MessageManagerTests: TestCase {
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "ar"
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593624480) // 01/07/20 17:28
 
-        let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        mockExposureDataController.lastExposure = .init(date: Date(timeIntervalSince1970: 1593538088)) // 30/06/20 17:28
 
         mockStorageController.retrieveDataHandler = { key in
 
@@ -98,7 +101,7 @@ class MessageManagerTests: TestCase {
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         let bodyString = try XCTUnwrap(result.paragraphs.first?.body.first?.string)
@@ -111,7 +114,8 @@ class MessageManagerTests: TestCase {
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593624480) // 01/07/20 17:28
 
-        let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        mockExposureDataController.lastExposure = .init(date: Date(timeIntervalSince1970: 1593538088)) // 30/06/20 17:28
+        
         let treatmentPerspective = TreatmentPerspective(
             resources: [
                 "en": ["some_resource_title": "{SomeUnknownPlaceholder} {ExposureDate}, {ExposureDate+0}", "some_resource_body": "{SomeUnknownPlaceholder} {ExposureDate}"]
@@ -126,7 +130,7 @@ class MessageManagerTests: TestCase {
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         XCTAssertEqual(result.paragraphs.first?.title, "{SomeUnknownPlaceholder} Tuesday, June 30, Tuesday, June 30")
@@ -136,14 +140,15 @@ class MessageManagerTests: TestCase {
     func test_getLocalizedTreatmentPerspective_shouldFormatBulletPoints() throws {
         // Arrange
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
-        let exposureDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        
+        mockExposureDataController.lastExposure = .init(date: Date(timeIntervalSince1970: 1593538088)) // 30/06/20 17:28
 
         mockStorageController.retrieveDataHandler = { key in
             return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithBulletPoints)
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 1)
@@ -156,14 +161,16 @@ class MessageManagerTests: TestCase {
     func test_getLocalizedTreatmentPerspective_shouldUseLayoutRelativeToExposureDay_lessThan5Days() throws {
         // Arrange
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
-        let exposureDate = Date().addingTimeInterval(.days(-4))
-
+        
+        mockExposureDataController.lastExposure = .init(date: Date().addingTimeInterval(.days(-4)))
+        mockExposureDataController.exposureFirstNotificationReceivedDate = mockExposureDataController.lastExposure?.date
+        
         mockStorageController.retrieveDataHandler = { key in
             return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithRelativeDayLayout)
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 1)
@@ -173,14 +180,16 @@ class MessageManagerTests: TestCase {
     func test_getLocalizedTreatmentPerspective_shouldUseLayoutRelativeToExposureDay_over5Days() throws {
         // Arrange
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
-        let exposureDate = Date().addingTimeInterval(.days(-6))
-
+        
+        mockExposureDataController.lastExposure = .init(date: Date().addingTimeInterval(.days(-6)))
+        mockExposureDataController.exposureFirstNotificationReceivedDate = mockExposureDataController.lastExposure?.date
+        
         mockStorageController.retrieveDataHandler = { key in
             return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithRelativeDayLayout)
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 1)
@@ -192,14 +201,14 @@ class MessageManagerTests: TestCase {
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "en"
         let date = Date()
         DateTimeTestingOverrides.overriddenCurrentDate = date
-        let exposureDate = date.addingTimeInterval(.days(-6))
+        mockExposureDataController.lastExposure = .init(date: date.addingTimeInterval(.days(-6)))
 
         mockStorageController.retrieveDataHandler = { key in
             return try! JSONEncoder().encode(self.fakeTreatmentPerspectiveWithIncorrectRelativeDayLayout)
         }
 
         // Act
-        let result = sut.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
+        let result = sut.getLocalizedTreatmentPerspective()
 
         // Assert
         XCTAssertEqual(result.paragraphs.count, 1)

@@ -94,7 +94,7 @@ final class MainViewControllerTests: TestCase {
 
     func test_handleButtonAction_explainRisk() {
         XCTAssertEqual(router.routeToMessageCallCount, 0)
-        viewController.handleButtonAction(.explainRisk(Date()))
+        viewController.handleButtonAction(.explainRisk)
         XCTAssertEqual(router.routeToMessageCallCount, 1)
     }
 
