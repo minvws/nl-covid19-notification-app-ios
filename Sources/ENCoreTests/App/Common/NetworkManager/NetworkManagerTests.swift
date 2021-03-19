@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-final class NetworkManagerTests: XCTestCase {
+final class NetworkManagerTests: TestCase {
 
     private var sut: NetworkManager!
 
@@ -312,7 +312,7 @@ final class NetworkManagerTests: XCTestCase {
 
     func test_getTreatmentPerspective_requestSuccessShouldReturnModel() throws {
 
-        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
+        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(layout: []))
         let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
 
         mockUrlSession(mockData: mockData)
@@ -336,7 +336,7 @@ final class NetworkManagerTests: XCTestCase {
 
     func test_getTreatmentPerspective_unzipErrorShouldReturnError() throws {
 
-        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
+        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(layout: []))
         let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
 
         mockUrlSession(mockData: mockData)
@@ -360,7 +360,7 @@ final class NetworkManagerTests: XCTestCase {
 
     func test_getTreatmentPerspective_validateSignatureErrorShouldReturnError() throws {
 
-        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
+        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(layout: []))
         let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
 
         mockUrlSession(mockData: mockData)
@@ -384,7 +384,7 @@ final class NetworkManagerTests: XCTestCase {
 
     func test_getTreatmentPerspective_ReadFromDiskErrorShouldReturnError() throws {
 
-        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(quarantineDays: 10, layout: []))
+        let mockTreatmentPerspective = TreatmentPerspective(resources: ["nl": ["someKey": "someValue"]], guidance: .init(layout: []))
         let mockData = try JSONEncoder().encode(mockTreatmentPerspective)
 
         mockUrlSession(mockData: mockData)

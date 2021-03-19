@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-final class OnboardingRouterTests: XCTestCase {
+final class OnboardingRouterTests: TestCase {
     private let viewController = OnboardingViewControllableMock()
     private let stepBuilder = OnboardingStepBuildableMock()
     private let consentBuilder = OnboardingConsentBuildableMock()

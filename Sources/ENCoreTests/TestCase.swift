@@ -28,6 +28,17 @@ class TestCase: XCTestCase {
         let now = Date()
         DateTimeTestingOverrides.overriddenCurrentDate = now
     }
+    
+    override func tearDownWithError() throws {
+        try super.tearDownWithError()
+        
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = nil
+        LocalizationOverrides.overriddenIsRTL = nil
+        LocalizationOverrides.overriddenLocalization = nil
+        DateTimeTestingOverrides.overriddenCurrentDate = nil
+        AnimationTestingOverrides.animationsEnabled = nil
+        WebViewTestingOverrides.webViewLoadingEnabled = nil
+    }
 
     func snapshots(
         matching viewController: UIViewController,

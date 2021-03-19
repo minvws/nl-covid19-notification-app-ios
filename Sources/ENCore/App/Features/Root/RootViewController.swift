@@ -25,7 +25,7 @@ protocol RootRouting: Routing {
     func detachOnboardingAndRouteToMain(animated: Bool)
 
     /// Routes to the message flow
-    func routeToMessage(exposureDate: Date)
+    func routeToMessage()
 
     /// Detaches the message flow
     ///
@@ -137,10 +137,6 @@ final class RootViewController: ViewController, RootViewControllable {
 
     func developerMenuRequestsOnboardingFlow() {
         router?.routeToOnboarding()
-    }
-
-    func developerMenuRequestMessage(exposureDate: Date) {
-        router?.routeToMessage(exposureDate: exposureDate)
     }
 
     func developerMenuRequestUpdateOperatingSystem() {

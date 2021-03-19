@@ -12,7 +12,7 @@ import Foundation
 import RxSwift
 import XCTest
 
-final class BackgroundControllerTests: XCTestCase {
+final class BackgroundControllerTests: TestCase {
     private var controller: BackgroundController!
 
     private let exposureController = ExposureControllingMock()

@@ -11,7 +11,7 @@ import Foundation
 import RxSwift
 import XCTest
 
-final class RootRouterTests: XCTestCase {
+final class RootRouterTests: TestCase {
     private let viewController = RootViewControllableMock()
     private let launchScreenBuilder = LaunchScreenBuildableMock()
     private let onboardingBuilder = OnboardingBuildableMock()
@@ -399,8 +399,7 @@ final class RootRouterTests: XCTestCase {
         let messageBuilderExpectation = expectation(description: "messageBuilder")
 
         let mockMessageViewController = ViewControllableMock()
-        messageBuilder.buildHandler = { _, date in
-            XCTAssertEqual(date, self.exposureController.lastExposureDate)
+        messageBuilder.buildHandler = { _ in            
             messageBuilderExpectation.fulfill()
             return mockMessageViewController
         }
