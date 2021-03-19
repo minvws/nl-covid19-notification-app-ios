@@ -269,13 +269,30 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
     private func triggerExposure() {
         
-        let exposureReport = ExposureReport(date: Date())
-        
-        storageController.store(object: exposureReport,
-                                identifiedBy: ExposureDataStorageKey.lastExposureReport) { error in
-            self.exposureController.updateExposureFirstNotificationReceivedDate(Date())
-            self.exposureController.refreshStatus()
+        let dayOptions = [-15, -14, -13, -3, -2, -1, 0]
+        let actionItems = dayOptions.reversed().map { (day) -> UIAlertAction in
+            let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
+                let exposureReport = ExposureReport(date: Date().addingTimeInterval(.days(Double(day))))
+                
+                self?.storageController.store(object: exposureReport, identifiedBy: ExposureDataStorageKey.lastExposureReport) { _ in
+                    self?.exposureController.updateExposureFirstNotificationReceivedDate(Date())
+                    self?.exposureController.refreshStatus()
+                }
+            }
+
+            var title = ""
+            if day < 0 {
+                title = "\(abs(day)) days ago"
+            } else if day == 0 {
+                title = "Today"
+            }
+            
+            return UIAlertAction(title: title,
+                                 style: .default,
+                                 handler: actionHandler)
         }
+
+        present(actionItems: actionItems, title: "Select exposure date")
     }
 
     private func changeNetworkConfiguration() {
