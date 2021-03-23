@@ -1,5 +1,9 @@
 "enableInternetDescription" = "Приложението се нуждае от интернет връзка, за да може да проверява дали хората, които си срещнал, по-късно са се оказали заразени с коронавирус.<br><br>Премини на wifi или включи мобилни данни за това приложение.";
 "enableInternetStepTitle" = "Включване на мобилни данни";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Начало на списъка";
+"accessibility.endOfList" = "Край на списъка";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Трябва да актуализираш софтуера на телефона си";
@@ -123,10 +127,6 @@
 "error.title" = "Нещо се обърка";
 "learnMore" = "Повече информация";
 "retry" = "Опитай отново";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Начало на списъка";
-"accessibility.endOfList" = "Край на списъка";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store не се отваря.";
@@ -342,6 +342,7 @@
 "status.appState.card.description" = "CoronaMelder работи само ако са включени необходимите настройки.";
 "status.appState.card.no_recent_updates.description" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. Провери дали са включени wifi или мобилните ти данни и опитай отново.";
 "status.appState.card.button" = "Включване на приложението";
+"status.appState.card.bluetooth" = "Твоят bluetooth e изключен. Приложението не може да следи срещите ти.";
 "status.appState.card.bluetooth.button" = "Включване на bluetooth";
 "status.appState.card.try_again" = "Опитай отново";
 "status.active.description" = "Срещите продължават да се следят дори като затвориш приложението.";

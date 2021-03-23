@@ -1,5 +1,9 @@
 "enableInternetDescription" = "La app necesita una conexión a internet para poder controlar si las personas con las que te has encontrado resultaron tener coronavirus.<br><br> Conéctate al wifi o activa los datos móviles para esta app.";
 "enableInternetStepTitle" = "Activar datos móviles";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Inicio de lista";
+"accessibility.endOfList" = "Fin de lista";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Tienes que actualizar el software de tu teléfono";
@@ -123,10 +127,6 @@
 "error.title" = "Ha habido un error";
 "learnMore" = "Más información";
 "retry" = "Prueba otra vez";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Inicio de lista";
-"accessibility.endOfList" = "Fin de lista";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "No se puede abrir la App Store.";
@@ -343,6 +343,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.appState.card.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios.";
 "status.appState.card.no_recent_updates.description" = "La app no ha podido controlar si las personas con las que te has encontrado resultaron tener coronavirus. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
 "status.appState.card.button" = "Activar la app";
+"status.appState.card.bluetooth" = "Tu Bluetooth está desactivado. Esta app no puede registrar nuevos encuentros.";
 "status.appState.card.bluetooth.button" = "Activar Bluetooth";
 "status.appState.card.try_again" = "Prueba otra vez";
 "status.active.description" = "Los encuentros seguirán registrándose, incluso aunque cierres la app";

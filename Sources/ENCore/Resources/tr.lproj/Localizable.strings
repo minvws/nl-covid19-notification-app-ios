@@ -1,5 +1,9 @@
 "enableInternetDescription" = "Karşılaştığınız kişilerin sonradan Korona'ya yakalanıp yakalanmadığını kontrol edebilmek için uygulamanın bir internet bağlantısına ihtiyacı var.<br><br>WiFi'ye bağlanın veya bu uygulama için mobil verileri açın.";
 "enableInternetStepTitle" = "Mobil verileri açın";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Listenin başlangıcı";
+"accessibility.endOfList" = "Listenin sonu";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Telefonunuzdaki yazılımı güncellemeniz gerekiyor";
@@ -123,10 +127,6 @@
 "error.title" = "Bir hata oluştu";
 "learnMore" = "Daha fazlasını oku";
 "retry" = "Tekrar deneyin";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Listenin başlangıcı";
-"accessibility.endOfList" = "Listenin sonu";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store açılamıyor.";
@@ -343,6 +343,7 @@
 "status.appState.card.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır.";
 "status.appState.card.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
 "status.appState.card.button" = "Uygulamayı açmak";
+"status.appState.card.bluetooth" = "Bluetooth'unuz kapalı. Uygulama yeni karşılaşmaları takip edemez.";
 "status.appState.card.bluetooth.button" = "Bluetooth'u açın";
 "status.appState.card.try_again" = "Tekrar deneyin";
 "status.active.description" = "Uygulamayı kapatsanız bile buluşmalar izlenir";

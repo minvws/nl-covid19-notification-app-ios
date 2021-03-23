@@ -1,5 +1,9 @@
 "enableInternetDescription" = "Die App braucht eine Internetverbindung, um zu prüfen, ob bei den Personen, denen Sie begegnet sind, später Corona festgestellt wurde.<br><br>Nutzen Sie ein WLAN oder aktivieren Sie für diese App mobile Daten.";
 "enableInternetStepTitle" = "Mobile Daten aktivieren";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Beginn der Liste";
+"accessibility.endOfList" = "Ende der Liste";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Sie müssen die Software auf Ihrem Telefon aktualisieren.";
@@ -123,10 +127,6 @@
 "error.title" = "Es ist ein Fehler aufgetreten.";
 "learnMore" = "Lesen Sie weiter";
 "retry" = "Versuchen Sie es erneut.";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Beginn der Liste";
-"accessibility.endOfList" = "Ende der Liste";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Der App Store kann nicht geöffnet werden.";
@@ -344,6 +344,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.appState.card.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
 "status.appState.card.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. mobile Daten aktiviert sind. Versuchen Sie es dann erneut.";
 "status.appState.card.button" = "App aktivieren";
+"status.appState.card.bluetooth" = "Bluetooth ist deaktiviert. Die App kann keine neuen Begegnungen registrieren.";
 "status.appState.card.bluetooth.button" = "Bluetooth aktivieren";
 "status.appState.card.try_again" = "Versuchen Sie es erneut.";
 "status.active.description" = "Ihre Begegnungen werden nachverfolgt, auch wenn Sie die App schließen.";
