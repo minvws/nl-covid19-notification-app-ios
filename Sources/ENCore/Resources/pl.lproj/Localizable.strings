@@ -1,5 +1,9 @@
 "enableInternetDescription" = "Aplikacja wymaga połączenia internetowego, aby móc kontrolować, czy wykryto koronawirusa u osób, które spotkałeś.<br><br>Włącz wi-fi lub korzystanie z danych komórkowych dla tej aplikacji.";
 "enableInternetStepTitle" = "Włącz dane komórkowe";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Początek listy";
+"accessibility.endOfList" = "Koniec listy";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Musisz zaktualizować oprogramowanie w swoim telefonie";
@@ -123,10 +127,6 @@
 "error.title" = "Coś poszło nie tak";
 "learnMore" = "Czytaj więcej";
 "retry" = "Spróbuj ponownie";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Początek listy";
-"accessibility.endOfList" = "Koniec listy";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Nie można otworzyć App Store.";
@@ -342,6 +342,7 @@
 "status.appState.card.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia.";
 "status.appState.card.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.card.button" = "Włącz aplikację";
+"status.appState.card.bluetooth" = "Bluetooth jest wyłączony. Aplikacja nie może monitorować żadnych nowych spotkań.";
 "status.appState.card.bluetooth.button" = "Włącz Bluetooth";
 "status.appState.card.try_again" = "Spróbuj ponownie";
 "status.active.description" = "Spotkania są kontrolowane również, gdy aplikacja jest zamknięta";

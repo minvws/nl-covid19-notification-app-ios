@@ -349,7 +349,8 @@ extension String {
     static var statusAppStateCardDescription: String { return Localization.string(for: "status.appState.card.description") }
     static var statusAppStateCardNoRecentUpdatesDescription: String { return Localization.string(for: "status.appState.card.no_recent_updates.description") }
     static var statusAppStateCardButton: String { return Localization.string(for: "status.appState.card.button") }
-    static var statusAppStateCardBluetoothButton: String { return Localization.string(for: "status.appState.card.bluetooth.button") }    
+    static var statusAppStateCardBluetoothButton: String { return Localization.string(for: "status.appState.card.bluetooth.button") }
+    static var statusAppStateCardBluetooth: String { return Localization.string(for: "status.appState.card.bluetooth") }    
     static var statusAppStateCardTryAgain: String { return Localization.string(for: "status.appState.card.try_again") }
     static var statusActiveDescription: String { return Localization.string(for: "status.active.description") }
     static var statusPausedCardTitle: String { return Localization.string(for: "status.appState.card.paused.title") }

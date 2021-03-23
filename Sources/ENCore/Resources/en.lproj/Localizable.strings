@@ -2,6 +2,10 @@
 
 Connect to Wi-Fi or turn on mobile data for this app.";
 "enableInternetStepTitle" = "Turn on mobile data";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "You have to update your phone's software";
@@ -126,10 +130,6 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "error.title" = "Something went wrong";
 "learnMore" = "Read more";
 "retry" = "Try again";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Start of list";
-"accessibility.endOfList" = "End of list";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Can't open the App Store";
@@ -346,6 +346,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "status.appState.card.description" = "%@ only works if the necessary settings are turned on.";
 "status.appState.card.no_recent_updates.description" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona. Check if your Wi-Fi or mobile data are turned on and try again.";
 "status.appState.card.button" = "Turn on app";
+"status.appState.card.bluetooth" = "Bluetooth is turned off. The app can't track any new encounters.";
 "status.appState.card.bluetooth.button" = "Turn on Bluetooth";
 "status.appState.card.try_again" = "Try again";
 "status.active.description" = "Encounters will be tracked, even when you close the app";
