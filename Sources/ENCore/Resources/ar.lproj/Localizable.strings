@@ -1,5 +1,9 @@
 "enableInternetDescription" = "يحتاج التطبيق إلى الاتصال بالإنترنت للتحقق مما إذا كان الأشخاص الذين قابلتهم لاحقًا مصابين بكورونا. <br><br> اتصل بـالـ WiFi أو شغّل للتطبيق خدمة تجوال البيانات.";
 "enableInternetStepTitle" = "تشغيل خدمة تجوال البيانات";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "بداية القائمة";
+"accessibility.endOfList" = "نهاية القائمة";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
@@ -123,10 +127,6 @@
 "error.title" = "حدث خطأ ما";
 "learnMore" = "إقرأ المزيد";
 "retry" = "حاول مجددًا";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "بداية القائمة";
-"accessibility.endOfList" = "نهاية القائمة";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "لا يمكن فتح متجر التطبيقات [App Store]";
@@ -347,6 +347,7 @@
 "status.appState.card.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة..";
 "status.appState.card.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
 "status.appState.card.button" = "تشغيل التطبيق";
+"status.appState.card.bluetooth" = "البلوتوث غير مشغّل. وبالتالي فإن التطبيق لا يستطيع تتبع أي مخالطات جديدة. ";
 "status.appState.card.bluetooth.button" = "تشغيل البلوتوث";
 "status.appState.card.try_again" = "حاول مجددًا";
 "status.active.description" = "يقوم التطبيق بتسجيل المصادفات، حتى إذا قمت بإغلاق التطبيق.";

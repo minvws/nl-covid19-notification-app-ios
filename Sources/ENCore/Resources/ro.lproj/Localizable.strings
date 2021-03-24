@@ -1,5 +1,9 @@
 "enableInternetDescription" = "Aplicația are nevoie de conexiune la internet pentru a putea controla dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. <br><br>Conectați-vă la wifi sau activați datele celulare pentru această aplicație.";
 "enableInternetStepTitle" = "Activare date celulare";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Începutul listei";
+"accessibility.endOfList" = "Sfârșitul listei";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Trebuie să actualizați software-ul pe telefonul dvs.";
@@ -123,10 +127,6 @@
 "error.title" = "Ceva nu a funcționat corect";
 "learnMore" = "Citiți mai mult";
 "retry" = "Încercați încă o dată";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Începutul listei";
-"accessibility.endOfList" = "Sfârșitul listei";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store nu poate fi deschis";
@@ -343,6 +343,7 @@
 "status.appState.card.description" = "CoronaMelder funcționează doar dacă setările necesare sunt activate";
 "status.appState.card.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
 "status.appState.card.button" = "Activare aplicație";
+"status.appState.card.bluetooth" = "Semnalul Bluetooth este dezactivat. Aplicația nu poate ține evidența întâlnirilor.";
 "status.appState.card.bluetooth.button" = "Activare Bluetooth";
 "status.appState.card.try_again" = "Încercați din nou";
 "status.active.description" = "Chiar dacă închideți aplicația, se va ține, în continuare, evidența întâlnirilor.";

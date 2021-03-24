@@ -168,7 +168,10 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
-
+            
+        case let (.inactive(reason), .notNotified) where reason == .bluetoothOff:
+            statusViewModel = .bluetoothInactiveWithNotNotified(theme: theme)
+            
         case (.inactive, .notNotified):
             statusViewModel = .inactiveWithNotNotified
 

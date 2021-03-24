@@ -54,6 +54,12 @@ struct StatusViewButtonModel {
         style: .primary,
         action: .updateAppSettings
     )
+    
+    static let enableBluetooth = StatusViewButtonModel(
+        title: .statusAppStateCardBluetoothButton,
+        style: .primary,
+        action: .updateAppSettings
+    )
 
     static let unpause = StatusViewButtonModel(
         title: .statusAppStateCardButton,
@@ -176,7 +182,7 @@ struct StatusViewModel {
     static let inactiveWithNotNotified = StatusViewModel(
         icon: .inactive,
         title: .init(string: .statusAppStateInactiveTitle),
-        description: .init(string: String(format: .statusAppStateInactiveDescription)),
+        description: .init(string: .statusAppStateInactiveDescription),
         buttons: [.enableSettings],
         footer: nil,
         shouldShowHideMessage: false,
@@ -185,6 +191,21 @@ struct StatusViewModel {
         showClouds: false,
         showEmitter: true
     )
+    
+    static func bluetoothInactiveWithNotNotified(theme: Theme) -> StatusViewModel {
+        StatusViewModel(
+            icon: .inactive,
+            title: .init(string: .statusAppStatePartlyInactiveTitle),
+            description: .makeFromHtml(text: .statusAppStatePartlyInactiveBluetoothDescription, font: theme.fonts.body, textColor: .black, textAlignment: .center),
+            buttons: [.enableBluetooth],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.lightOrange,
+            showScene: false,
+            showClouds: false,
+            showEmitter: true
+        )
+    }
 
     static let inactiveTryAgainWithNotNotified = StatusViewModel(
         icon: .inactive,

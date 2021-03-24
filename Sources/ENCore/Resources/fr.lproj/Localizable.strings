@@ -1,5 +1,9 @@
 "enableInternetDescription" = "L'application a besoin d'une connexion à Internet pour pouvoir contrôler si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19 par la suite.<br><br>Connectez-vous au Wifi ou activez les données mobiles pour cette application.";
 "enableInternetStepTitle" = "Activer les données mobiles";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Début de liste";
+"accessibility.endOfList" = "Fin de liste";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Vous devez mettre à jour le logiciel sur votre téléphone";
@@ -125,10 +129,6 @@
 "error.title" = "Un problème est survenu";
 "learnMore" = "En savoir plus";
 "retry" = "Veuillez réessayer.";
-
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Début de liste";
-"accessibility.endOfList" = "Fin de liste";
 
 /* MARK: - Update App */
 "updateApp.error.message" = "Impossible d'ouvrir l'App Store.";
@@ -345,6 +345,7 @@
 "status.appState.card.description" = "CoronaMelder ne fonctionne que si les paramètres nécessaires ont été activés";
 "status.appState.card.no_recent_updates.description" = "L'application n'a pas pu vérifier pendant 24 heures si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
 "status.appState.card.button" = "Ouvrir l'application";
+"status.appState.card.bluetooth" = "Votre Bluetooth est désactivé. L'application ne peut pas enregistrer les nouvelles rencontres.";
 "status.appState.card.bluetooth.button" = "Activer le Bluetooth";
 "status.appState.card.try_again" = "Veuillez réessayer";
 "status.active.description" = "Les rencontres sont sauvegardées, même si vous fermez l'application";
