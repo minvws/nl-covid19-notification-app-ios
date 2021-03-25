@@ -68,7 +68,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
 
             // Windows are only included in the calculation if their score reaches the minimum window score
             if windowScore >= configuration.minimumWindowScore {
-                perDayScore[window.date] = perDayScore[window.date] ?? 0.0 + windowScore
+                perDayScore[window.date] = (perDayScore[window.date] ?? 0.0) + windowScore
             }
         }
 
@@ -85,18 +85,19 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
         let scansScore = window.scans.reduce(Double(0)) { result, scan in
             let secondsSinceLastScan = Double(scan.secondsSinceLastScan)
             let attenuationMultiplier = self.getAttenuationMultiplier(forAttenuation: scan.typicalAttenuation, configuration: configuration)
-            self.logDebug("ExposureWindow Scan: typicalAttenuation: \(scan.typicalAttenuation), attenuationMultiplier: \(attenuationMultiplier)")
-            return result + (secondsSinceLastScan * attenuationMultiplier)
+            let scanScore = result + (secondsSinceLastScan * attenuationMultiplier)
+            self.logDebug("ExposureWindow Scan: typicalAttenuation: \(scan.typicalAttenuation), attenuationMultiplier: \(attenuationMultiplier), secondsSinceLastScan: \(scan.secondsSinceLastScan), scanScore: \(scanScore)")
+            return scanScore
         }
 
         let reportTypeMultiplier = getReportTypeMultiplier(reportType: window.diagnosisReportType, configuration: configuration)
         self.logDebug("ReportTypeMultiplier for reportType \(window.diagnosisReportType): \(reportTypeMultiplier)")
 
         let infectiousnessMultiplier = getInfectiousnessMultiplier(infectiousness: window.infectiousness, configuration: configuration)
-        self.logDebug("infectiousnessMultiplier: \(infectiousnessMultiplier)")
+        self.logDebug("infectiousnessMultiplier for infectiousness \(window.infectiousness): \(infectiousnessMultiplier)")
 
         let windowScore = scansScore * reportTypeMultiplier * infectiousnessMultiplier
-        self.logDebug("windowScore: \(windowScore)")
+        self.logDebug("windowScore: \(windowScore) (minimum window score is: \(configuration.minimumWindowScore))")
 
         return windowScore
     }
