@@ -68,7 +68,7 @@ class RiskCalculationController: RiskCalculationControlling, Logging {
 
             // Windows are only included in the calculation if their score reaches the minimum window score
             if windowScore >= configuration.minimumWindowScore {
-                perDayScore[window.date] = perDayScore[window.date] ?? 0.0 + windowScore
+                perDayScore[window.date] = (perDayScore[window.date] ?? 0.0) + windowScore
             }
         }
 

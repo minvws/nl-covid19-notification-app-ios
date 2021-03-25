@@ -83,6 +83,23 @@ class RiskCalculationControllerTests: TestCase {
 
         XCTAssertEqual(exposureDate, scanInstanceDate)
     }
+    
+    func test_getLastExposureDate_summedScoreOverMinimumScoreOverMultipleWindowsShouldReturnDate() {
+        let configuration = getMockExposureRiskConfiguration(minimumRiskScore: 500)
+        let scanInstanceDate = Date()
+        let exposureWindows: [ExposureWindow] = [
+            ExposureWindowMock(calibrationConfidence: .high, date: scanInstanceDate, diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
+                ScanInstanceMock(minimumAttenuation: 50, typicalAttenuation: 50, secondsSinceLastScan: 300)
+            ]),
+            ExposureWindowMock(calibrationConfidence: .high, date: scanInstanceDate, diagnosisReportType: .confirmedTest, infectiousness: .high, scans: [
+                ScanInstanceMock(minimumAttenuation: 50, typicalAttenuation: 50, secondsSinceLastScan: 300)
+            ])
+        ]
+
+        let exposureDate = sut.getLastExposureDate(fromWindows: exposureWindows, withConfiguration: configuration)
+
+        XCTAssertEqual(exposureDate, scanInstanceDate)
+    }
 
     func test_getLastExposureDate_summedScoreBelowMinimumScoreShouldNotReturnDate() {
         let configuration = getMockExposureRiskConfiguration(minimumRiskScore: 800)
@@ -167,11 +184,13 @@ class RiskCalculationControllerTests: TestCase {
 
         XCTAssertEqual(exposureDate, scanInstanceDate)
     }
+    
 
     // MARK: - Private Helpers
 
     private func getMockExposureRiskConfiguration(
-        minimumRiskScore: Double = 200,
+        minimumRiskScore: Double = 900,
+        minimumWindowScore: Double = 300,
         reportTypeWeights: [Double] = [0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
         infectiousnessWeights: [Double] = [0.0, 1.0, 1.0],
         attenuationBucketWeights: [Double] = [1.0, 1.0, 1.0, 0.0]
@@ -186,7 +205,7 @@ class RiskCalculationControllerTests: TestCase {
             attenuationBucketThresholdDb: [50, 60, 70],
             attenuationBucketWeights: attenuationBucketWeights,
             daysSinceExposureThreshold: 10,
-            minimumWindowScore: 0,
+            minimumWindowScore: minimumWindowScore,
             daysSinceOnsetToInfectiousness: [
                 .init(daysSinceOnsetOfSymptoms: -14, infectiousness: 1),
                 .init(daysSinceOnsetOfSymptoms: -13, infectiousness: 1),
