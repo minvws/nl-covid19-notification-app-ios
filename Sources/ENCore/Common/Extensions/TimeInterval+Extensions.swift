@@ -34,4 +34,8 @@ extension TimeInterval {
             return self
         }
     }
+    
+    var minutes: Int {
+        return Int(self / 60)
+    }
 }

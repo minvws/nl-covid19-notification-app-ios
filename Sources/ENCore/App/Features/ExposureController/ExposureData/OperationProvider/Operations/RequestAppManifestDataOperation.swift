@@ -33,7 +33,8 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
         let updateFrequency = retrieveManifestUpdateFrequency()
 
         if let manifest = retrieveStoredManifest(), manifest.isValid(forUpdateFrequency: updateFrequency) {
-            logDebug("Using cached manifest")
+            let expirationDate = manifest.expirationDate(forUpdateFrequency: updateFrequency)
+            logDebug("Using cached manifest (expires at \(expirationDate), in \(expirationDate.timeIntervalSince(Date()).minutes) minutes)")
             return .just(manifest)
         }
 
@@ -88,8 +89,11 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
 
 extension ApplicationManifest {
     func isValid(forUpdateFrequency updateFrequency: Int) -> Bool {
+        return expirationDate(forUpdateFrequency: updateFrequency) >= currentDate()
+    }
+    
+    func expirationDate(forUpdateFrequency updateFrequency: Int) -> Date {
         let expirationTimeInSeconds = TimeInterval(updateFrequency * 60)
-        let expirationDate = creationDate.addingTimeInterval(expirationTimeInSeconds)
-        return expirationDate >= currentDate()
+        return creationDate.addingTimeInterval(expirationTimeInSeconds)
     }
 }
