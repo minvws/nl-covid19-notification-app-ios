@@ -39,7 +39,7 @@ protocol ExposureDataControlling: AnyObject {
     var lastENStatusCheckDate: Date? { get }
     var lastAppLaunchDate: Date? { get }
     var lastUnseenExposureNotificationDate: Date? { get }
-
+    
     func setLastDecoyProcessDate(_ date: Date)
     var canProcessDecoySequence: Bool { get }
 
@@ -50,6 +50,12 @@ protocol ExposureDataControlling: AnyObject {
     func setLastAppLaunchDate(_ date: Date)
     func clearLastUnseenExposureNotificationDate()
 
+    // MARK: - Previous known exposure dates
+    
+    func addPreviousExposureDate(_ exposureDate: Date) -> Completable
+    func isKnownPreviousExposureDate(_ exposureDate: Date) -> Bool
+    func purgePreviousExposureDates() -> Completable
+    
     // MARK: - Lab Flow
 
     func processPendingUploadRequests() -> Completable

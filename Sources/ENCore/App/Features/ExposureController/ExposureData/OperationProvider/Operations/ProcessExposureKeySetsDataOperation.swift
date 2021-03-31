@@ -108,11 +108,11 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             // create an exposureReport and trigger a local notification
             .flatMap(self.createExposureReport)
             // Send a local notification to inform the user of an exposure if neccesary
-            .flatMap {
-                self.notifyUserOfExposure(inBackground: applicationIsInBackground, value: $0)
-            }
+            .flatMap { self.notifyUserOfExposure(inBackground: applicationIsInBackground, value: $0) }
             // persist the ExposureReport
             .flatMap(self.persist(exposureReport:))
+            // store exposure date in previous exposure dates array
+            .flatMap(self.storeInPreviousExposureDates(exposureReport:))
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
@@ -463,7 +463,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         return Array(keySetHoldersToProcess.prefix(maximum))
     }
 
-    /// Creates the final ExposureReport and triggers a local notification using the EN framework
+    /// Creates the final ExposureReport
     private func createExposureReport(forResult result: ExposureDetectionResult) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
 
         guard environmentController.maximumSupportedExposureNotificationVersion == .version2 else {
@@ -500,12 +500,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     return
                 }
 
-                guard summary.daysSinceLastExposure <= self.daysSinceExposureCutOff else {
-                    self.logDebug("Exposure was too long ago (\(summary.daysSinceLastExposure) days). Ignore it")
-                    observer(.success(noExposureResult))
-                    return
-                }
-
                 guard let daysSinceLastExposure = currentDate().days(sinceDate: exposureDate) else {
                     observer(.failure(ExposureDataError.internalError))
                     return
@@ -518,20 +512,40 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
+    
+    /// Determines wether or not the user needs to receive a notification for an exposure and triggers the notification if needed
+    /// - Parameters:
+    ///   - applicationIsInBackground: boolean that indicates wether the app is currently in the background. If the app is in the background, the triggered notification is marked as "unseen" so we can remind the user of the exposure later on.
+    ///   - value: Information received from the RxSwift chain
+    /// - Returns: A tuplet with an ExposureDetectionResult and ExposureReport (if an exposure was found)
     private func notifyUserOfExposure(inBackground applicationIsInBackground: Bool,
                                       value: (exposureDetectionResult: ExposureDetectionResult,
                                               exposureReport: ExposureReport?,
                                               daysSinceLastExposure: Int?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
 
+        let emptyReport = Single<(ExposureDetectionResult, ExposureReport?)>.just((value.exposureDetectionResult, nil))
+        
         // Check if we actually found an exposure
         guard let exposureReport = value.exposureReport, let daysSinceLastExposure = value.daysSinceLastExposure else {
-            return .just((value.exposureDetectionResult, nil))
+            return emptyReport
+        }
+        
+        // We only show a notification for exposures that happened within the last x days
+        guard daysSinceLastExposure <= self.daysSinceExposureCutOff else {
+            self.logDebug("Exposure was too long ago (\(daysSinceLastExposure) days). Ignore it")
+            return emptyReport
         }
 
         // We only show a notification if the found exposure was newer than the previously known exposure
         if let previousDaysSinceLastExposure = getStoredDaysSinceLastExposure(), previousDaysSinceLastExposure >= daysSinceLastExposure {
             logDebug("Previous exposure \(previousDaysSinceLastExposure) days ago was newer than new found exposure - skipping notification")
-            return .just((value.exposureDetectionResult, nil))
+            return emptyReport
+        }
+        
+        // We only show a notification if the found exposure date was not found before
+        if exposureDataController.isKnownPreviousExposureDate(exposureReport.date) {
+            logDebug("Exposure on date \(exposureReport.date) was already detected before - skipping notification")
+            return emptyReport
         }
 
         logDebug("Triggering notification for \(exposureReport)")
@@ -570,6 +584,28 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
+    /// Stores the exposure date in the previous exposure dates list
+    private func storeInPreviousExposureDates(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
+        return .create { (observer) -> Disposable in
+            guard let exposureReport = value.1 else {
+                observer(.success(value))
+                return Disposables.create()
+            }
+
+            self.exposureDataController.addPreviousExposureDate(exposureReport.date)
+                .subscribe { (event) in
+                    switch event {
+                    case .error(let error):
+                        observer(.failure(error))
+                    case .completed:
+                        observer(.success(value))
+                    }
+                }.disposed(by: self.disposeBag)
+            
+            return Disposables.create()
+        }
+    }
+        
     /// Stores the exposureReport in local storage (which triggers the 'notified' state)
     private func persist(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
         return .create { (observer) -> Disposable in
@@ -577,10 +613,10 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                 observer(.success(value))
                 return Disposables.create()
             }
-
+            
             self.storageController.requestExclusiveAccess { storageController in
                 let lastExposureReport = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport)
-
+                
                 if let lastExposureReport = lastExposureReport, lastExposureReport.date > exposureReport.date {
                     // already stored a newer report, ignore this one
                     observer(.success(value))
@@ -663,4 +699,5 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling
     private let riskCalculationController: RiskCalculationControlling
+    private let disposeBag = DisposeBag()
 }
