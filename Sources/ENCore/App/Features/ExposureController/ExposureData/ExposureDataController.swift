@@ -439,7 +439,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
     
     private func createPreviousExposureDateHash(_ date: Date) -> String? {
-        let startOfDay = Calendar.current.startOfDay(for: date).timeIntervalSince1970
+        let startOfDay = Calendar(identifier: .gregorian).startOfDay(for: date).timeIntervalSince1970
         return "\(startOfDay)".data(using: .utf8)?.sha256String
     }
     
