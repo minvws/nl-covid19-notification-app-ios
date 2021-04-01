@@ -15,7 +15,8 @@ class MessageManagerTests: TestCase {
     private var mockStorageController: StorageControllingMock!
     private var mockExposureDataController: ExposureDataControllingMock!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         mockStorageController = StorageControllingMock()
         mockExposureDataController = ExposureDataControllingMock()
 

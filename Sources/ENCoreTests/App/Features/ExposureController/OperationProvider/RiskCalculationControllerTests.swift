@@ -12,7 +12,8 @@ class RiskCalculationControllerTests: TestCase {
 
     private var sut: RiskCalculationController!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         sut = RiskCalculationController()
     }
 

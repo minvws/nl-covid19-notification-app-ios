@@ -13,7 +13,8 @@ class CryptoUtilityTests: TestCase {
     private var mockSignatureValidator: SignatureValidatingMock!
     private var sut: CryptoUtilityImpl!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         mockSignatureValidator = SignatureValidatingMock()
         sut = CryptoUtilityImpl(signatureValidator: mockSignatureValidator)
     }
