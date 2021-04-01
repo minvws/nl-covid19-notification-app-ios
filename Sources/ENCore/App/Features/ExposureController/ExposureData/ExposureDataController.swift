@@ -19,7 +19,7 @@ enum Announcement: String, Codable {
 struct PreviousExposureDate: Codable {
     /// A sha256 hash of a timestamp string
     let exposureDate: String
-    let notificationDate: Date
+    let addDate: Date
 }
 
 struct ExposureDataStorageKey {
@@ -86,10 +86,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling,
-         environmentController: EnvironmentControlling) {
+         environmentController: EnvironmentControlling,
+         randomNumberGenerator: RandomNumberGenerating) {
         self.operationProvider = operationProvider
         self.storageController = storageController
         self.environmentController = environmentController
+        self.randomNumberGenerator = randomNumberGenerator
 
         detectFirstRunAndEraseKeychainIfRequired()
         compareAndUpdateLastRanAppVersion(isFirstRun: isFirstRun)
@@ -331,35 +333,24 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
     
     func addPreviousExposureDate(_ exposureDate: Date) -> Completable {
-        
-        guard let startOfDayHash = createPreviousExposureDateHash(exposureDate) else {
+        return storePreviousExposureDate(exposureDate)
+    }
+    
+    func addDummyPreviousExposureDate() -> Completable {
+        // dummy exposure dates are a random date between 1/1/1970 and 1/1/2000
+        let minimumDateTimestamp: Double = 0
+        guard let maximumDateTimeStamp = DateComponents(year: 2000, month: 1, day: 1).date?.timeIntervalSince1970 else {
             return .error(ExposureDataError.internalError)
         }
         
-        let newDates = previousExposureDates + [.init(exposureDate: startOfDayHash, notificationDate: currentDate())]
-        
-        return .create { observer in
-            self.storageController.requestExclusiveAccess { storageController in
-                storageController.store(
-                    object: newDates,
-                    identifiedBy: ExposureDataStorageKey.previousExposureDates,
-                    completion: { error in                        
-                        if let error = error {
-                            observer(.error(error))
-                        } else {
-                            observer(.completed)
-                        }
-                    }
-                )
-            }
-            return Disposables.create()
-        }
+        let dummyTimeStamp = randomNumberGenerator.randomDouble(in: minimumDateTimestamp ..< Double(maximumDateTimeStamp))
+        return storePreviousExposureDate(Date(timeIntervalSince1970: dummyTimeStamp))
     }
     
     /// Removes all previously known exposure dates for which the notification date was longer than 14 days ago
     func purgePreviousExposureDates() -> Completable {
         let newDates = previousExposureDates.filter { (date) -> Bool in
-            (currentDate().days(sinceDate: date.notificationDate) ?? 0) > 14
+            (currentDate().days(sinceDate: date.addDate) ?? 0) > 14
         }
         
         return .create { observer in
@@ -451,6 +442,31 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return "\(startOfDay)".data(using: .utf8)?.sha256String
     }
     
+    private func storePreviousExposureDate(_ exposureDate: Date) -> Completable {
+        guard let startOfDayHash = createPreviousExposureDateHash(exposureDate) else {
+            return .error(ExposureDataError.internalError)
+        }
+        
+        let newDates = previousExposureDates + [.init(exposureDate: startOfDayHash, addDate: currentDate())]
+        
+        return .create { observer in
+            self.storageController.requestExclusiveAccess { storageController in
+                storageController.store(
+                    object: newDates,
+                    identifiedBy: ExposureDataStorageKey.previousExposureDates,
+                    completion: { error in
+                        if let error = error {
+                            observer(.error(error))
+                        } else {
+                            observer(.completed)
+                        }
+                    }
+                )
+            }
+            return Disposables.create()
+        }
+    }
+    
     private var lastDecoyProcessDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
     }
@@ -537,5 +553,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
     private let environmentController: EnvironmentControlling
+    private let randomNumberGenerator: RandomNumberGenerating
     private let disposeBag = DisposeBag()
 }

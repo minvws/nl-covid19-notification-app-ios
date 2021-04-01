@@ -587,20 +587,22 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     /// Stores the exposure date in the previous exposure dates list
     private func storeInPreviousExposureDates(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
         return .create { (observer) -> Disposable in
-            guard let exposureReport = value.1 else {
-                observer(.success(value))
-                return Disposables.create()
+            
+            let completable: Completable
+            if let exposureDate = value.1?.date {
+                completable = self.exposureDataController.addPreviousExposureDate(exposureDate)
+            } else {
+                completable = self.exposureDataController.addDummyPreviousExposureDate()
             }
-
-            self.exposureDataController.addPreviousExposureDate(exposureReport.date)
-                .subscribe { (event) in
-                    switch event {
-                    case .error(let error):
-                        observer(.failure(error))
-                    case .completed:
-                        observer(.success(value))
-                    }
-                }.disposed(by: self.disposeBag)
+            
+            completable.subscribe { (event) in
+                switch event {
+                case .error(let error):
+                    observer(.failure(error))
+                case .completed:
+                    observer(.success(value))
+                }
+            }.disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

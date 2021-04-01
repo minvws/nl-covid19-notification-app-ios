@@ -11,6 +11,7 @@ import Foundation
 protocol RandomNumberGenerating {
     func randomInt(in range: ClosedRange<Int>) -> Int
     func randomFloat(in range: Range<Float>) -> Float
+    func randomDouble(in range: Range<Double>) -> Double
 }
 
 class RandomNumberGenerator: RandomNumberGenerating {
@@ -20,5 +21,9 @@ class RandomNumberGenerator: RandomNumberGenerating {
 
     func randomFloat(in range: Range<Float>) -> Float {
         Float.random(in: range)
+    }
+    
+    func randomDouble(in range: Range<Double>) -> Double {
+        Double.random(in: range)
     }
 }
