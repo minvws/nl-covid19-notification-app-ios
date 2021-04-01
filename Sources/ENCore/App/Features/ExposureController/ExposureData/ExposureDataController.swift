@@ -339,7 +339,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func addDummyPreviousExposureDate() -> Completable {
         // dummy exposure dates are a random date between 1/1/1970 and 1/1/2000
         let minimumDateTimestamp: Double = 0
-        guard let maximumDateTimeStamp = DateComponents(year: 2000, month: 1, day: 1).date?.timeIntervalSince1970 else {
+        guard let maximumDateTimeStamp = Calendar.current.date(from: DateComponents(year: 2000, month: 1, day: 1))?.timeIntervalSince1970 else {
             return .error(ExposureDataError.internalError)
         }
         
@@ -350,7 +350,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     /// Removes all previously known exposure dates for which the notification date was longer than 14 days ago
     func purgePreviousExposureDates() -> Completable {
         let newDates = previousExposureDates.filter { (date) -> Bool in
-            (currentDate().days(sinceDate: date.addDate) ?? 0) > 14
+            let age = currentDate().days(sinceDate: date.addDate)
+            return (age ?? 0) <= 14
         }
         
         return .create { observer in

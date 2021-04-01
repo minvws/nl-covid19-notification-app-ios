@@ -114,6 +114,14 @@ final class BackgroundControllerTests: TestCase {
 
         XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
     }
+    
+    func test_refresh_shouldPurgePreviousExposureDates() {
+        XCTAssertEqual(dataController.purgePreviousExposureDatesCallCount, 0)
+        
+        controller.refresh(task: nil)
+
+        XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
+    }
 
     func test_refresh_shouldFetchAndProcessKeySets() {
         let completableCreationExpectation = expectation(description: "completable created")

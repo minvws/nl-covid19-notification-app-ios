@@ -24,7 +24,7 @@ struct ExposureDataAppVersionInformation {
     let appStoreURL: String
 }
 
-/// @mockable(history:updateLastSuccessfulExposureProcessingDate=true)
+/// @mockable(history:updateLastSuccessfulExposureProcessingDate=true;addPreviousExposureDate=true;isKnownPreviousExposureDate=true)
 protocol ExposureDataControlling: AnyObject {
 
     // MARK: - Exposure Detection

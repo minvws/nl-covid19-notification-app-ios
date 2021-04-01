@@ -312,6 +312,236 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.requestExclusiveAccessCallCount, 1)
         XCTAssertEqual(mockStorageController.storeCallCount, 2)
     }
+    
+    // MARK: - isKnownPreviousExposureDate
+    
+    func test_isKnownPreviousExposureDate_withPreviousDate() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController,
+                                         randomNumberGenerator: mockRandomNumberGenerator)
+        
+        let hashOfExposureDate = "SHA256 digest: a660cc30b15a91e9de69b6491194a8ca0316587aed682b3edc6b5235789f2d95"
+        
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode([PreviousExposureDate(exposureDate: hashOfExposureDate, addDate: currentDate())])
+        }
+        
+        let exposureDate = currentDate()
+        
+        // Act
+        let result = sut.isKnownPreviousExposureDate(exposureDate)
+        
+        // Assert
+        XCTAssertTrue(result)
+    }
+    
+    func test_isKnownPreviousExposureDate_withNoPreviousDate() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController,
+                                         randomNumberGenerator: mockRandomNumberGenerator)
+        
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode([PreviousExposureDate]())
+        }
+        
+        let exposureDate = currentDate()
+        
+        // Act
+        let result = sut.isKnownPreviousExposureDate(exposureDate)
+        
+        // Assert
+        XCTAssertFalse(result)
+    }
+    
+    func test_addPreviousExposureDate() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController,
+                                         randomNumberGenerator: mockRandomNumberGenerator)
+        
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        let exposureDate = Date(timeIntervalSince1970: 0)
+        let completionExpectation = expectation(description: "completion")
+        
+        var receivedDates: [PreviousExposureDate]!
+        mockStorageController.storeHandler = { data, _, completion in
+            let jsonDecoder = JSONDecoder()
+            receivedDates = try! jsonDecoder.decode([PreviousExposureDate].self, from: data)
+            completion(nil)
+        }
+        
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
+        
+        // Act
+        sut.addPreviousExposureDate(exposureDate)
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertEqual(mockStorageController.storeCallCount, 2)
+        XCTAssertEqual(receivedDates.first?.addDate, currentDate())
+        XCTAssertEqual(receivedDates.first?.exposureDate, "SHA256 digest: f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
+    }
+    
+    func test_addDummyPreviousExposureDate() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController,
+                                         randomNumberGenerator: mockRandomNumberGenerator)
+        
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        mockRandomNumberGenerator.randomDoubleHandler = { _ in
+            return 100 // random but predictable double
+        }
+        
+        let completionExpectation = expectation(description: "completion")
+        
+        var receivedDates: [PreviousExposureDate]!
+        mockStorageController.storeHandler = { data, _, completion in
+            let jsonDecoder = JSONDecoder()
+            receivedDates = try! jsonDecoder.decode([PreviousExposureDate].self, from: data)
+            completion(nil)
+        }
+        
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
+        XCTAssertEqual(mockRandomNumberGenerator.randomDoubleCallCount, 0)
+        
+        // Act
+        sut.addDummyPreviousExposureDate()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertEqual(mockStorageController.storeCallCount, 2)
+        XCTAssertEqual(mockRandomNumberGenerator.randomDoubleCallCount, 1)
+        XCTAssertEqual(receivedDates.first?.addDate, currentDate())
+        XCTAssertEqual(receivedDates.first?.exposureDate, "SHA256 digest: f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
+    }
+    
+    func test_purgePreviousExposureDates_withDateLongerThan14DaysAgo() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController,
+                                         randomNumberGenerator: mockRandomNumberGenerator)
+        
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        let hashOfExposureDate = "SHA256 digest: a660cc30b15a91e9de69b6491194a8ca0316587aed682b3edc6b5235789f2d95"
+        let oldAddDate = currentDate().addingTimeInterval(.days(-15))
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode([PreviousExposureDate(exposureDate: hashOfExposureDate, addDate: oldAddDate)])
+        }
+        
+        var receivedDates: [PreviousExposureDate]!
+        mockStorageController.storeHandler = { data, _, completion in
+            let jsonDecoder = JSONDecoder()
+            receivedDates = try! jsonDecoder.decode([PreviousExposureDate].self, from: data)
+            completion(nil)
+        }
+        
+        let completionExpectation = expectation(description: "completion")
+        
+        // Act
+        sut.purgePreviousExposureDates()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertEqual(mockStorageController.storeCallCount, 2)
+        XCTAssertTrue(receivedDates.isEmpty)
+    }
+    
+    func test_purgePreviousExposureDates_withDateShorterThan14DaysAgo() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController,
+                                         randomNumberGenerator: mockRandomNumberGenerator)
+        
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        let hashOfExposureDate = "SHA256 digest: a660cc30b15a91e9de69b6491194a8ca0316587aed682b3edc6b5235789f2d95"
+        let oldAddDate = currentDate().addingTimeInterval(.days(-14))
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode([PreviousExposureDate(exposureDate: hashOfExposureDate, addDate: oldAddDate)])
+        }
+        
+        var receivedDates: [PreviousExposureDate]!
+        mockStorageController.storeHandler = { data, _, completion in
+            let jsonDecoder = JSONDecoder()
+            receivedDates = try! jsonDecoder.decode([PreviousExposureDate].self, from: data)
+            completion(nil)
+        }
+        
+        let completionExpectation = expectation(description: "completion")
+        
+        // Act
+        sut.purgePreviousExposureDates()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertEqual(mockStorageController.storeCallCount, 2)
+        XCTAssertEqual(receivedDates.first?.addDate, oldAddDate)
+        XCTAssertEqual(receivedDates.first?.exposureDate, "SHA256 digest: a660cc30b15a91e9de69b6491194a8ca0316587aed682b3edc6b5235789f2d95")
+    }
 
     // MARK: - Private Helper Functions
 
