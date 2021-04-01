@@ -26,7 +26,7 @@ final class ThankYouViewControllerTests: TestCase {
 
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
-        let key = LabConfirmationKey(identifier: "Key Here",
+        let key = LabConfirmationKey(identifier: "ABCDEFG".asGGDkey,
                                      bucketIdentifier: Data(),
                                      confirmationKey: Data(),
                                      validUntil: currentDate())

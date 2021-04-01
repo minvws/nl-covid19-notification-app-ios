@@ -34,11 +34,11 @@ struct InfoViewConfig {
 }
 
 final class InfoView: View {
-
     var actionHandler: (() -> ())?
     var isActionButtonEnabled: Bool = true {
         didSet { actionButton.isEnabled = isActionButtonEnabled }
     }
+
     var secondaryActionHandler: (() -> ())?
 
     var showHeader: Bool = true {
@@ -68,22 +68,22 @@ final class InfoView: View {
     // MARK: - Init
 
     init(theme: Theme, config: InfoViewConfig, itemSpacing: CGFloat = 40) {
-        self.contentView = UIView(frame: .zero)
-        self.headerImageView = UIImageView(image: config.headerImage)
-        self.stackView = UIStackView(frame: .zero)
-        self.buttonStackView = UIStackView(frame: .zero)
-        self.scrollView = UIScrollView(frame: .zero)
-        self.headerBackgroundView = UIView(frame: .zero)
-        self.actionButton = Button(title: config.actionButtonTitle ?? "", theme: theme)
-        self.buttonSeparator = GradientView(startColor: UIColor.white.withAlphaComponent(0), endColor: UIColor.black.withAlphaComponent(0.1))
+        contentView = UIView(frame: .zero)
+        headerImageView = UIImageView(image: config.headerImage)
+        stackView = UIStackView(frame: .zero)
+        buttonStackView = UIStackView(frame: .zero)
+        scrollView = UIScrollView(frame: .zero)
+        headerBackgroundView = UIView(frame: .zero)
+        actionButton = Button(title: config.actionButtonTitle ?? "", theme: theme)
+        buttonSeparator = GradientView(startColor: UIColor.white.withAlphaComponent(0), endColor: UIColor.black.withAlphaComponent(0.1))
         if let title = config.secondaryButtonTitle {
-            self.secondaryButton = Button(title: title, theme: theme)
+            secondaryButton = Button(title: title, theme: theme)
         } else {
-            self.secondaryButton = nil
+            secondaryButton = nil
         }
-        self.showButtons = config.showButtons
-        self.stickyButtons = config.stickyButtons
-        self.headerBackgroundView.backgroundColor = config.headerBackgroundViewColor ?? theme.colors.headerBackgroundBlue
+        showButtons = config.showButtons
+        stickyButtons = config.stickyButtons
+        headerBackgroundView.backgroundColor = config.headerBackgroundViewColor ?? theme.colors.headerBackgroundBlue
         self.itemSpacing = itemSpacing
         super.init(theme: theme)
     }
@@ -223,14 +223,13 @@ final class InfoView: View {
 }
 
 final class InfoSectionContentView: View, UITextViewDelegate {
-
     private let contentTextView: TextView
     var linkHandler: ((String) -> ())?
 
     // MARK: - Init
 
     init(theme: Theme, content: NSAttributedString) {
-        self.contentTextView = TextView(frame: .zero)
+        contentTextView = TextView(frame: .zero)
 
         super.init(theme: theme)
 
@@ -268,7 +267,6 @@ final class InfoSectionContentView: View, UITextViewDelegate {
 }
 
 final class InfoSectionStepView: View {
-
     private let iconImageView: UIImageView
     private let titleLabel: Label
     private let progressLine: View
@@ -277,9 +275,9 @@ final class InfoSectionStepView: View {
     // MARK: - Init
 
     init(theme: Theme, title: String, stepImage: UIImage?, isLastStep: Bool = false) {
-        self.iconImageView = UIImageView(image: stepImage)
-        self.titleLabel = Label(frame: .zero)
-        self.progressLine = View(theme: theme)
+        iconImageView = UIImageView(image: stepImage)
+        titleLabel = Label(frame: .zero)
+        progressLine = View(theme: theme)
         self.isLastStep = isLastStep
         super.init(theme: theme)
 
@@ -329,7 +327,6 @@ final class InfoSectionStepView: View {
 }
 
 final class InfoSectionTextView: View {
-
     private let titleLabel: Label
     private let contentStack: UIStackView
     private let content: [NSAttributedString]
@@ -338,8 +335,8 @@ final class InfoSectionTextView: View {
     // MARK: - Init
 
     init(theme: Theme, title: String, content: [NSAttributedString], contentAccessibilityTraits: UIAccessibilityTraits? = nil) {
-        self.titleLabel = Label(frame: .zero)
-        self.contentStack = UIStackView()
+        titleLabel = Label(frame: .zero)
+        contentStack = UIStackView()
         self.content = content
         self.contentAccessibilityTraits = contentAccessibilityTraits
 
@@ -366,7 +363,7 @@ final class InfoSectionTextView: View {
         addSubview(titleLabel)
         addSubview(contentStack)
 
-        for text in self.content {
+        for text in content {
             let label = Label(frame: .zero)
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
@@ -396,14 +393,13 @@ final class InfoSectionTextView: View {
 }
 
 final class InfoSectionContentTextView: View {
-
     private let contentStack: UIStackView
     private let content: [NSAttributedString]
 
     // MARK: - Init
 
     init(theme: Theme, content: [NSAttributedString]) {
-        self.contentStack = UIStackView()
+        contentStack = UIStackView()
         self.content = content
 
         super.init(theme: theme)
@@ -421,7 +417,7 @@ final class InfoSectionContentTextView: View {
 
         addSubview(contentStack)
 
-        for text in self.content {
+        for text in content {
             let label = Label(frame: .zero)
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
@@ -444,7 +440,6 @@ final class InfoSectionContentTextView: View {
 }
 
 final class InfoSectionCalloutView: View {
-
     private let backgroundView: View
 
     private let contentLabel: Label
@@ -453,9 +448,9 @@ final class InfoSectionCalloutView: View {
     // MARK: - Init
 
     init(theme: Theme, content: NSAttributedString) {
-        self.backgroundView = View(theme: theme)
-        self.contentLabel = Label(frame: .zero)
-        self.iconImageView = UIImageView(image: .info)
+        backgroundView = View(theme: theme)
+        contentLabel = Label(frame: .zero)
+        iconImageView = UIImageView(image: .info)
         super.init(theme: theme)
 
         contentLabel.attributedText = content
@@ -498,7 +493,6 @@ final class InfoSectionCalloutView: View {
 }
 
 final class InfoSectionDynamicCalloutView: View {
-
     enum State {
         case loading(String)
         case success(String)
@@ -513,10 +507,10 @@ final class InfoSectionDynamicCalloutView: View {
     // MARK: - Init
 
     init(theme: Theme, title: String, stepImage: UIImage?) {
-        self.iconImageView = UIImageView(image: stepImage)
-        self.titleLabel = Label(frame: .zero)
-        self.contentView = View(theme: theme)
-        self.progressLine = View(theme: theme)
+        iconImageView = UIImageView(image: stepImage)
+        titleLabel = Label(frame: .zero)
+        contentView = View(theme: theme)
+        progressLine = View(theme: theme)
         super.init(theme: theme)
 
         titleLabel.text = title
@@ -601,7 +595,6 @@ final class InfoSectionDynamicCalloutView: View {
 }
 
 private final class InfoSectionDynamicLoadingView: View {
-
     private let activityIndicator: UIActivityIndicatorView
     private let loadingLabel: Label
 
@@ -611,9 +604,9 @@ private final class InfoSectionDynamicLoadingView: View {
         if #available(iOS 13.0, *) {
             self.activityIndicator = UIActivityIndicatorView(style: .large)
         } else {
-            self.activityIndicator = UIActivityIndicatorView(style: .gray)
+            activityIndicator = UIActivityIndicatorView(style: .gray)
         }
-        self.loadingLabel = Label()
+        loadingLabel = Label()
         super.init(theme: theme)
 
         loadingLabel.text = title
@@ -656,16 +649,15 @@ private final class InfoSectionDynamicLoadingView: View {
 }
 
 private final class InfoSectionDynamicSuccessView: View {
-
     private let titleLabel: Label
 
     // MARK: - Init
 
     init(theme: Theme, title: String) {
-        self.titleLabel = Label()
+        titleLabel = Label()
         super.init(theme: theme)
 
-        titleLabel.text = title
+        titleLabel.text = title.asGGDkey
         titleLabel.textCanBeCopied(charactersToRemove: "-")
 
         let accessibilityText = title.replacingOccurrences(of: "-", with: "").lowercased()
@@ -699,7 +691,6 @@ private final class InfoSectionDynamicSuccessView: View {
 }
 
 private final class InfoSectionDynamicErrorView: View {
-
     private var actionHandler: () -> ()
 
     private let titleLabel: Label
@@ -708,8 +699,8 @@ private final class InfoSectionDynamicErrorView: View {
     // MARK: - Init
 
     init(theme: Theme, title: String, actionHandler: @escaping () -> ()) {
-        self.titleLabel = Label()
-        self.actionButton = Button(theme: theme)
+        titleLabel = Label()
+        actionButton = Button(theme: theme)
         self.actionHandler = actionHandler
         super.init(theme: theme)
 
@@ -753,7 +744,6 @@ private final class InfoSectionDynamicErrorView: View {
 }
 
 private extension UITapGestureRecognizer {
-
     // taken from https://stackoverflow.com/questions/1256887/create-tap-able-links-in-the-nsattributedstring-of-a-uilabel
     func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
@@ -773,7 +763,7 @@ private extension UITapGestureRecognizer {
         textContainer.size = labelSize
 
         // Find the tapped character location and compare it to the specified range
-        let locationOfTouchInLabel = self.location(in: label)
+        let locationOfTouchInLabel = location(in: label)
         let textBoundingBox = layoutManager.usedRect(for: textContainer)
         let textContainerOffset = CGPoint(
             x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
