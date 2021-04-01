@@ -74,6 +74,6 @@ extension Data {
     var sha256String: String {
         let digest = self.sha256
         let hexBytes = digest.map { String(format: "%02hhx", $0) }
-        return "SHA256 digest: \(hexBytes.joined())"
+        return "\(hexBytes.joined())"
     }
 }

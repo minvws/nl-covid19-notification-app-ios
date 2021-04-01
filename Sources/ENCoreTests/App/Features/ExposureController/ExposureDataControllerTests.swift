@@ -337,7 +337,7 @@ final class ExposureDataControllerTests: TestCase {
                                          environmentController: mockEnvironmentController,
                                          randomNumberGenerator: mockRandomNumberGenerator)
         
-        let hashOfExposureDate = "SHA256 digest: 3bdaec38afd41a177167d5478d45d861b4d75de644026ed71d9e5e185a3aba65"
+        let hashOfExposureDate = "3bdaec38afd41a177167d5478d45d861b4d75de644026ed71d9e5e185a3aba65"
         
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
@@ -416,7 +416,7 @@ final class ExposureDataControllerTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
         XCTAssertEqual(mockStorageController.storeCallCount, 2)
         XCTAssertEqual(receivedDates.first?.addDate, currentDate())
-        XCTAssertEqual(receivedDates.first?.exposureDate, "SHA256 digest: f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
+        XCTAssertEqual(receivedDates.first?.exposureDate, "f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
     }
     
     func test_addDummyPreviousExposureDate() {
@@ -462,7 +462,7 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.storeCallCount, 2)
         XCTAssertEqual(mockRandomNumberGenerator.randomDoubleCallCount, 1)
         XCTAssertEqual(receivedDates.first?.addDate, currentDate())
-        XCTAssertEqual(receivedDates.first?.exposureDate, "SHA256 digest: f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
+        XCTAssertEqual(receivedDates.first?.exposureDate, "f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
     }
     
     func test_purgePreviousExposureDates_withDateLongerThan14DaysAgo() {
