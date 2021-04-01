@@ -69,6 +69,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _ in }
         mockExposureDataController.addPreviousExposureDateHandler = { _ in return .empty() }
+        mockExposureDataController.addDummyPreviousExposureDateHandler = { return .empty() }
         mockExposureDataController.isKnownPreviousExposureDateHandler = { _ in return false }
         
         mockRiskCalculationController.getLastExposureDateHandler = { _, _ in

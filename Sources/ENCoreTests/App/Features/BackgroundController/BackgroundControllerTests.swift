@@ -47,35 +47,17 @@ final class BackgroundControllerTests: TestCase {
                                           randomNumberGenerator: mockRandomNumberGenerator,
                                           environmentController: environmentController)
 
-        exposureManager.getExposureNotificationStatusHandler = {
-            return .active
-        }
-        exposureController.activateHandler = {
-            return .empty()
-        }
-        exposureController.updateWhenRequiredHandler = {
-            return .empty()
-        }
-        exposureController.processPendingUploadRequestsHandler = {
-            return .empty()
-        }
-        exposureController.exposureNotificationStatusCheckHandler = {
-            .empty()
-        }
-        exposureController.updateAndProcessPendingUploadsHandler = {
-            .empty()
-        }
-
-        exposureController.sendNotificationIfAppShouldUpdateHandler = {
-            .empty()
-        }
-        exposureController.updateTreatmentPerspectiveHandler = {
-            .empty()
-        }
-
-        exposureController.lastOpenedNotificationCheckHandler = {
-            .empty()
-        }
+        exposureManager.getExposureNotificationStatusHandler = { .active }
+        exposureController.activateHandler = { .empty() }
+        exposureController.updateWhenRequiredHandler = { .empty() }
+        exposureController.processPendingUploadRequestsHandler = { .empty() }
+        exposureController.exposureNotificationStatusCheckHandler = { .empty() }
+        exposureController.updateAndProcessPendingUploadsHandler = { .empty() }
+        exposureController.sendNotificationIfAppShouldUpdateHandler = { .empty() }
+        exposureController.updateTreatmentPerspectiveHandler = { .empty() }
+        exposureController.lastOpenedNotificationCheckHandler = { .empty() }
+        
+        dataController.purgePreviousExposureDatesHandler = { .empty() }
     }
 
     // MARK: - Tests
