@@ -14,6 +14,17 @@ import XCTest
 final class ExposureDataControllerTests: TestCase {
     private var disposeBag = DisposeBag()
 
+    override func setUp() {
+        super.setUp()
+        
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
+    }
+    
+    override class func tearDown() {
+        super.tearDown()
+        DateTimeTestingOverrides.overriddenCurrentDate = nil
+    }
+    
     func test_firstRun_erasesStorage() {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
@@ -326,7 +337,7 @@ final class ExposureDataControllerTests: TestCase {
                                          environmentController: mockEnvironmentController,
                                          randomNumberGenerator: mockRandomNumberGenerator)
         
-        let hashOfExposureDate = "SHA256 digest: a660cc30b15a91e9de69b6491194a8ca0316587aed682b3edc6b5235789f2d95"
+        let hashOfExposureDate = "SHA256 digest: 3bdaec38afd41a177167d5478d45d861b4d75de644026ed71d9e5e185a3aba65"
         
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()

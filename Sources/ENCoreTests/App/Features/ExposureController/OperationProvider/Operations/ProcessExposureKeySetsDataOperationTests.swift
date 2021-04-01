@@ -30,7 +30,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        DateTimeTestingOverrides.overriddenCurrentDate = Calendar.current.date(from: DateComponents(year: 2020, month: 10, day: 10, hour: 0, minute: 0, second: 0)) 
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
         
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()
@@ -349,7 +349,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
         mockExposureDataController.isKnownPreviousExposureDateHandler = { date in
-            XCTAssertEqual(date.timeIntervalSince1970, 1602021600.0)
+            XCTAssertEqual(date.timeIntervalSince1970, 1593030800.0)
             return true
         }
 
@@ -424,7 +424,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mockExposureDataController.addPreviousExposureDateCallCount, 1)
-        XCTAssertEqual(mockExposureDataController.addPreviousExposureDateArgValues.first?.timeIntervalSince1970, 1602021600.0)
+        XCTAssertEqual(mockExposureDataController.addPreviousExposureDateArgValues.first?.timeIntervalSince1970, 1593030800.0)
     }
     
     func test_shouldStoreDummyExposureInPreviousExposureDates() {
