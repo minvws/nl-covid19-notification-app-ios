@@ -438,8 +438,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.previousExposureDates) ?? []
     }
     
-    func createPreviousExposureDateHash(_ date: Date) -> String? {
-        let calendar = Calendar.current
+    private func createPreviousExposureDateHash(_ date: Date) -> String? {
+        // Simplify the date by removing the time and fixing the timezone
+        let calendar = Calendar(identifier: .gregorian)
         var components = calendar.dateComponents([.day, .month, .year], from: date)
         components.hour = 0
         components.minute = 0
@@ -447,6 +448,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         components.timeZone = TimeZone(secondsFromGMT: 0)
         let timeAdjustedDate = calendar.date(from: components)?.timeIntervalSince1970
         
+        // Create sha256 string from the timeinterval
         return "\(timeAdjustedDate ?? 0)".data(using: .utf8)?.sha256String
     }
     

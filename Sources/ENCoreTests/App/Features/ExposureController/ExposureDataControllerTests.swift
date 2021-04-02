@@ -464,32 +464,7 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(receivedDates.first?.addDate, currentDate())
         XCTAssertEqual(receivedDates.first?.exposureDateHash, "8aed642bf5118b9d3c859bd4be35ecac75b6e873cce34e7b6f554b06f75550d7")
     }
-    
-    func test_createPreviousExposureDateHash() {
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
         
-        let calendar = Calendar.current
-        var components = calendar.dateComponents([.day, .month, .year], from: Date(timeIntervalSince1970: 0))
-        components.hour = 0
-        components.minute = 0
-        components.second = 0
-        components.timeZone = TimeZone(secondsFromGMT: 0)
-        let timeAdjustedDate = calendar.date(from: components)
-        
-        let startOfDay = timeAdjustedDate!.timeIntervalSince1970
-        XCTAssertEqual(startOfDay, 0)
-        XCTAssertEqual(sut.createPreviousExposureDateHash(Date(timeIntervalSince1970: 0)), "8aed642bf5118b9d3c859bd4be35ecac75b6e873cce34e7b6f554b06f75550d7")
-        XCTAssertEqual(sut.createPreviousExposureDateHash(DateTimeTestingOverrides.overriddenCurrentDate!), "a4107974f7083bfe4b8db5c9f4410497e08a1852a196a881aa5b4893f193c896")
-        XCTAssertEqual(DateTimeTestingOverrides.overriddenCurrentDate!, Date(timeIntervalSince1970: 1593290000))
-    }
-    
     func test_purgePreviousExposureDates_withDateLongerThan14DaysAgo() {
         // Arrange
         let mockOperationProvider = ExposureDataOperationProviderMock()
