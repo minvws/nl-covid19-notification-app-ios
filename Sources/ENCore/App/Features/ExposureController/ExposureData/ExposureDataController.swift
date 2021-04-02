@@ -439,8 +439,15 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
     
     func createPreviousExposureDateHash(_ date: Date) -> String? {
-        let startOfDay = Calendar(identifier: .gregorian).startOfDay(for: date).timeIntervalSince1970
-        return "\(startOfDay)".data(using: .utf8)?.sha256String
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.day, .month, .year], from: date)
+        components.hour = 0
+        components.minute = 0
+        components.second = 0
+        components.timeZone = TimeZone(secondsFromGMT: 0)
+        let timeAdjustedDate = calendar.date(from: components)?.timeIntervalSince1970
+        
+        return "\(timeAdjustedDate ?? 0)".data(using: .utf8)?.sha256String
     }
     
     private func storePreviousExposureDate(_ exposureDate: Date) -> Completable {

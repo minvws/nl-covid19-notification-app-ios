@@ -337,7 +337,7 @@ final class ExposureDataControllerTests: TestCase {
                                          environmentController: mockEnvironmentController,
                                          randomNumberGenerator: mockRandomNumberGenerator)
         
-        let hashOfExposureDate = "3bdaec38afd41a177167d5478d45d861b4d75de644026ed71d9e5e185a3aba65"
+        let hashOfExposureDate = "a4107974f7083bfe4b8db5c9f4410497e08a1852a196a881aa5b4893f193c896"
         
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
@@ -416,7 +416,7 @@ final class ExposureDataControllerTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
         XCTAssertEqual(mockStorageController.storeCallCount, 2)
         XCTAssertEqual(receivedDates.first?.addDate, currentDate())
-        XCTAssertEqual(receivedDates.first?.exposureDateHash, "f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
+        XCTAssertEqual(receivedDates.first?.exposureDateHash, "8aed642bf5118b9d3c859bd4be35ecac75b6e873cce34e7b6f554b06f75550d7")
     }
     
     func test_addDummyPreviousExposureDate() {
@@ -462,7 +462,7 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.storeCallCount, 2)
         XCTAssertEqual(mockRandomNumberGenerator.randomDoubleCallCount, 1)
         XCTAssertEqual(receivedDates.first?.addDate, currentDate())
-        XCTAssertEqual(receivedDates.first?.exposureDateHash, "f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
+        XCTAssertEqual(receivedDates.first?.exposureDateHash, "8aed642bf5118b9d3c859bd4be35ecac75b6e873cce34e7b6f554b06f75550d7")
     }
     
     func test_createPreviousExposureDateHash() {
@@ -475,8 +475,18 @@ final class ExposureDataControllerTests: TestCase {
                                          environmentController: mockEnvironmentController,
                                          randomNumberGenerator: mockRandomNumberGenerator)
         
-        XCTAssertEqual(sut.createPreviousExposureDateHash(Date(timeIntervalSince1970: 0)), "f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
-        XCTAssertEqual(sut.createPreviousExposureDateHash(DateTimeTestingOverrides.overriddenCurrentDate!), "3bdaec38afd41a177167d5478d45d861b4d75de644026ed71d9e5e185a3aba65")
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.day, .month, .year], from: Date(timeIntervalSince1970: 0))
+        components.hour = 0
+        components.minute = 0
+        components.second = 0
+        components.timeZone = TimeZone(secondsFromGMT: 0)
+        let timeAdjustedDate = calendar.date(from: components)
+        
+        let startOfDay = timeAdjustedDate!.timeIntervalSince1970
+        XCTAssertEqual(startOfDay, 0)
+        XCTAssertEqual(sut.createPreviousExposureDateHash(Date(timeIntervalSince1970: 0)), "8aed642bf5118b9d3c859bd4be35ecac75b6e873cce34e7b6f554b06f75550d7")
+        XCTAssertEqual(sut.createPreviousExposureDateHash(DateTimeTestingOverrides.overriddenCurrentDate!), "a4107974f7083bfe4b8db5c9f4410497e08a1852a196a881aa5b4893f193c896")
         XCTAssertEqual(DateTimeTestingOverrides.overriddenCurrentDate!, Date(timeIntervalSince1970: 1593290000))
     }
     
