@@ -465,6 +465,21 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(receivedDates.first?.exposureDateHash, "f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
     }
     
+    func test_createPreviousExposureDateHash() {
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController,
+                                         randomNumberGenerator: mockRandomNumberGenerator)
+        
+        XCTAssertEqual(sut.createPreviousExposureDateHash(Date(timeIntervalSince1970: 0)), "f479418833af89816a4a37e9bd6a0cef2fe38f0bf8e1ccf8ff29777c6325b983")
+        XCTAssertEqual(sut.createPreviousExposureDateHash(DateTimeTestingOverrides.overriddenCurrentDate!), "3bdaec38afd41a177167d5478d45d861b4d75de644026ed71d9e5e185a3aba65")
+        XCTAssertEqual(DateTimeTestingOverrides.overriddenCurrentDate!, Date(timeIntervalSince1970: 1593290000))
+    }
+    
     func test_purgePreviousExposureDates_withDateLongerThan14DaysAgo() {
         // Arrange
         let mockOperationProvider = ExposureDataOperationProviderMock()

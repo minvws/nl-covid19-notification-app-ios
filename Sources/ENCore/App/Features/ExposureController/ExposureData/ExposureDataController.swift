@@ -344,7 +344,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
         
         let dummyTimeStamp = randomNumberGenerator.randomDouble(in: minimumDateTimestamp ..< Double(maximumDateTimeStamp))
-        print("dummytimestamp: \(dummyTimeStamp)")
         return storePreviousExposureDate(Date(timeIntervalSince1970: dummyTimeStamp))
     }
     
@@ -439,7 +438,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.previousExposureDates) ?? []
     }
     
-    private func createPreviousExposureDateHash(_ date: Date) -> String? {
+    func createPreviousExposureDateHash(_ date: Date) -> String? {
         let startOfDay = Calendar(identifier: .gregorian).startOfDay(for: date).timeIntervalSince1970
         return "\(startOfDay)".data(using: .utf8)?.sha256String
     }
@@ -449,7 +448,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             return .error(ExposureDataError.internalError)
         }
         
-        print("startOfDayHash: \(startOfDayHash)")
         let newDates = previousExposureDates + [.init(exposureDateHash: startOfDayHash, addDate: currentDate())]
         
         return .create { observer in
