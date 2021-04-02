@@ -18,7 +18,7 @@ enum Announcement: String, Codable {
 
 struct PreviousExposureDate: Codable {
     /// A sha256 hash of a timestamp string
-    let exposureDate: String
+    let exposureDateHash: String
     let addDate: Date
 }
 
@@ -329,7 +329,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     
     func isKnownPreviousExposureDate(_ exposureDate: Date) -> Bool {
         let startOfDayHash = createPreviousExposureDateHash(exposureDate)
-        return previousExposureDates.contains(where: { $0.exposureDate == startOfDayHash })
+        return previousExposureDates.contains(where: { $0.exposureDateHash == startOfDayHash })
     }
     
     func addPreviousExposureDate(_ exposureDate: Date) -> Completable {
@@ -344,6 +344,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
         
         let dummyTimeStamp = randomNumberGenerator.randomDouble(in: minimumDateTimestamp ..< Double(maximumDateTimeStamp))
+        print("dummytimestamp: \(dummyTimeStamp)")
         return storePreviousExposureDate(Date(timeIntervalSince1970: dummyTimeStamp))
     }
     
@@ -448,7 +449,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             return .error(ExposureDataError.internalError)
         }
         
-        let newDates = previousExposureDates + [.init(exposureDate: startOfDayHash, addDate: currentDate())]
+        print("startOfDayHash: \(startOfDayHash)")
+        let newDates = previousExposureDates + [.init(exposureDateHash: startOfDayHash, addDate: currentDate())]
         
         return .create { observer in
             self.storageController.requestExclusiveAccess { storageController in
