@@ -29,7 +29,6 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
 
         var removedKeys: [StoreKey] = []
         mockStorageController.removeDataHandler = { key, _ in
@@ -45,8 +44,7 @@ final class ExposureDataControllerTests: TestCase {
 
         _ = ExposureDataController(operationProvider: mockOperationProvider,
                                    storageController: mockStorageController,
-                                   environmentController: mockEnvironmentController,
-                                   randomNumberGenerator: mockRandomNumberGenerator)
+                                   environmentController: mockEnvironmentController)
 
         XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
         XCTAssertEqual(mockStorageController.storeCallCount, 1)
@@ -67,7 +65,6 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         
         mockEnvironmentController.appVersion = "2.0.0"
 
@@ -93,8 +90,7 @@ final class ExposureDataControllerTests: TestCase {
 
         _ = ExposureDataController(operationProvider: mockOperationProvider,
                                    storageController: mockStorageController,
-                                   environmentController: mockEnvironmentController,
-                                   randomNumberGenerator: mockRandomNumberGenerator)
+                                   environmentController: mockEnvironmentController)
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }
@@ -107,11 +103,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
 
         let streamExpectation = expectation(description: "stream")
 
@@ -141,11 +135,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
 
         let streamExpectation = expectation(description: "stream")
 
@@ -183,11 +175,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
 
         let removeDataExpectation = expectation(description: "removeData")
 
@@ -212,11 +202,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
 
         let subscriptionExpectation = expectation(description: "subscription")
 
@@ -238,11 +226,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
 
         let completionExpectation = expectation(description: "completion")
 
@@ -275,11 +261,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
 
         mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
         mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
@@ -305,11 +289,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
         
         mockStorageController.requestExclusiveAccessHandler = { completion in
             completion(mockStorageController)
@@ -331,11 +313,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
         
         let exposureDate = currentDate().startOfDay!
         
@@ -356,11 +336,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
         
         mockStorageController.retrieveDataHandler = { _ in
             return nil
@@ -380,11 +358,9 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
         
         mockStorageController.requestExclusiveAccessHandler = { completion in
             completion(mockStorageController)
@@ -419,16 +395,14 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(receivedDate, exposureDate)
     }
     
-    func test_purgePreviousExposureDate_withDateLongerThan14DaysAgo() {
+    func test_removePreviousExposureDate_withDateLongerThan14DaysAgo() {
         // Arrange
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
         
         mockStorageController.requestExclusiveAccessHandler = { completion in
             completion(mockStorageController)
@@ -451,7 +425,7 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
         
         // Act
-        sut.purgePreviousExposureDate()
+        sut.removePreviousExposureDate()
             .subscribe(onCompleted: {
                 completionExpectation.fulfill()
             })
@@ -464,16 +438,14 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.previousExposureDate.asString))
     }
     
-    func test_purgePreviousExposureDate_withDateShorterThan14DaysAgo() {
+    func test_removePreviousExposureDate_withDateShorterThan14DaysAgo() {
         // Arrange
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-        let mockRandomNumberGenerator = RandomNumberGeneratingMock()
         let sut = ExposureDataController(operationProvider: mockOperationProvider,
                                          storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController,
-                                         randomNumberGenerator: mockRandomNumberGenerator)
+                                         environmentController: mockEnvironmentController)
         
         mockStorageController.requestExclusiveAccessHandler = { completion in
             completion(mockStorageController)
@@ -490,7 +462,7 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
         
         // Act
-        sut.purgePreviousExposureDate()
+        sut.removePreviousExposureDate()
             .subscribe(onCompleted: {
                 completionExpectation.fulfill()
             })

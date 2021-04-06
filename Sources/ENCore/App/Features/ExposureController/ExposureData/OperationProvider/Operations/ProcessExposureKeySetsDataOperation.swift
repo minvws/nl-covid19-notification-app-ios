@@ -112,7 +112,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             // persist the ExposureReport
             .flatMap(self.persist(exposureReport:))
             // store exposure date in previous exposure dates array
-            .flatMap(self.storeInPreviousExposureDates(exposureReport:))
+            .flatMap(self.storeAsPreviousExposureDate(exposureReport:))
             // remove all blobs for all keySetHolders - successful ones are processed and
             // should not be processed again. Failed ones should be downloaded again and
             // have already been removed from the list of keySetHolders in localStorage by persistResult(_:)
@@ -584,8 +584,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
-    /// Stores the exposure date in the previous exposure dates list
-    private func storeInPreviousExposureDates(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
+    private func storeAsPreviousExposureDate(exposureReport value: (ExposureDetectionResult, ExposureReport?)) -> Single<(ExposureDetectionResult, ExposureReport?)> {
         return .create { (observer) -> Disposable in
             
             guard let exposureDate = value.1?.date else {

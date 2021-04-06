@@ -80,12 +80,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling,
-         environmentController: EnvironmentControlling,
-         randomNumberGenerator: RandomNumberGenerating) {
+         environmentController: EnvironmentControlling) {
         self.operationProvider = operationProvider
         self.storageController = storageController
         self.environmentController = environmentController
-        self.randomNumberGenerator = randomNumberGenerator
 
         detectFirstRunAndEraseKeychainIfRequired()
         compareAndUpdateLastRanAppVersion(isFirstRun: isFirstRun)
@@ -352,8 +350,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
         
-    /// Removes all previously known exposure dates for which the notification date was longer than 14 days ago
-    func purgePreviousExposureDate() -> Completable {
+    func removePreviousExposureDate() -> Completable {
         guard let previousDate = previousExposureDate,
               let daysPast = currentDate().days(sinceDate: previousDate),
               daysPast > 14 else {
@@ -530,6 +527,5 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private let operationProvider: ExposureDataOperationProvider
     private let storageController: StorageControlling
     private let environmentController: EnvironmentControlling
-    private let randomNumberGenerator: RandomNumberGenerating
     private let disposeBag = DisposeBag()
 }

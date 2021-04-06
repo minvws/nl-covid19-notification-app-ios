@@ -54,7 +54,7 @@ protocol ExposureDataControlling: AnyObject {
     
     func addPreviousExposureDate(_ exposureDate: Date) -> Completable
     func isKnownPreviousExposureDate(_ exposureDate: Date) -> Bool
-    func purgePreviousExposureDate() -> Completable
+    func removePreviousExposureDate() -> Completable
     
     // MARK: - Lab Flow
 
@@ -114,10 +114,6 @@ private final class ExposureDataControllerDependencyProvider: DependencyProvider
         return EnvironmentController()
     }
     
-    var randomNumberGenerator: RandomNumberGenerating {
-        return RandomNumberGenerator()
-    }
-
     // MARK: - Private Dependencies
 
     var operationProvider: ExposureDataOperationProvider {
@@ -131,7 +127,6 @@ final class ExposureDataControllerBuilder: Builder<ExposureDataControllerDepende
 
         return ExposureDataController(operationProvider: dependencyProvider.operationProvider,
                                       storageController: dependencyProvider.storageController,
-                                      environmentController: dependencyProvider.environmentController,
-                                      randomNumberGenerator: dependencyProvider.randomNumberGenerator)
+                                      environmentController: dependencyProvider.environmentController)
     }
 }
