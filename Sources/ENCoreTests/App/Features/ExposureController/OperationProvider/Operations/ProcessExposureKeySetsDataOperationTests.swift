@@ -72,7 +72,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         mockExposureDataController.updateLastSuccessfulExposureProcessingDateHandler = { _ in }
         mockExposureDataController.addPreviousExposureDateHandler = { _ in return .empty() }
-        mockExposureDataController.addDummyPreviousExposureDateHandler = { return .empty() }
         mockExposureDataController.isKnownPreviousExposureDateHandler = { _ in return false }
         
         mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
@@ -427,31 +426,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockExposureDataController.addPreviousExposureDateArgValues.first?.timeIntervalSince1970, 1593030800.0)
     }
     
-    func test_shouldStoreDummyExposureInPreviousExposureDates() {
-
-        mockEnvironmentController.gaenRateLimitingType = .fileLimit
-
-        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)
-
-        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
-
-        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
-
-        mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
-            return nil
-        }
-
-        sut.execute()
-            .subscribe(onCompleted: {
-                subscriptionExpectation.fulfill()
-            })
-            .disposed(by: disposeBag)
-
-        waitForExpectations(timeout: 2, handler: nil)
-
-        XCTAssertEqual(mockExposureDataController.addDummyPreviousExposureDateCallCount, 1)
-    }
-
     func test_shouldPersistExposureReport() {
 
         let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)

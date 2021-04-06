@@ -265,7 +265,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             updateTreatmentPerspective(),
             sendExposureReminderNotificationIfNeeded(),
             processDecoyRegisterAndStopKeys(),
-            purgePreviousExposureDates()
+            purgePreviousExposureDate()
         ]
 
         logDebug("Background: starting refresh task")
@@ -524,9 +524,9 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
     
     /// Removes stored exposure dates for which the detection date was more than 14 days ago
-    private func purgePreviousExposureDates() -> Completable {
-        logDebug("Background: purgePreviousExposureDates()")
-        return dataController.purgePreviousExposureDates()
+    private func purgePreviousExposureDate() -> Completable {
+        logDebug("Background: purgePreviousExposureDate()")
+        return dataController.purgePreviousExposureDate()
     }
 
     // Returns a Date with the specified hour and minute, for the next day

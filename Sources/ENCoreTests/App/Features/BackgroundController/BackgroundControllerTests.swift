@@ -57,7 +57,7 @@ final class BackgroundControllerTests: TestCase {
         exposureController.updateTreatmentPerspectiveHandler = { .empty() }
         exposureController.lastOpenedNotificationCheckHandler = { .empty() }
         
-        dataController.purgePreviousExposureDatesHandler = { .empty() }
+        dataController.purgePreviousExposureDateHandler = { .empty() }
     }
 
     // MARK: - Tests
@@ -116,11 +116,11 @@ final class BackgroundControllerTests: TestCase {
     }
     
     func test_refresh_shouldPurgePreviousExposureDates() {
-        XCTAssertEqual(dataController.purgePreviousExposureDatesCallCount, 0)
+        XCTAssertEqual(dataController.purgePreviousExposureDateCallCount, 0)
         
         controller.refresh(task: nil)
 
-        XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
+        XCTAssertEqual(dataController.purgePreviousExposureDateCallCount, 1)
     }
 
     func test_refresh_shouldFetchAndProcessKeySets() {

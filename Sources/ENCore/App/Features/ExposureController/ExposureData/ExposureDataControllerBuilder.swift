@@ -53,9 +53,8 @@ protocol ExposureDataControlling: AnyObject {
     // MARK: - Previous known exposure dates
     
     func addPreviousExposureDate(_ exposureDate: Date) -> Completable
-    func addDummyPreviousExposureDate() -> Completable
     func isKnownPreviousExposureDate(_ exposureDate: Date) -> Bool
-    func purgePreviousExposureDates() -> Completable
+    func purgePreviousExposureDate() -> Completable
     
     // MARK: - Lab Flow
 
