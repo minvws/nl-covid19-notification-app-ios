@@ -15,7 +15,8 @@ class CardBuilderTests: TestCase {
     private var mockCardDependency: CardDependencyMock!
     private var mockCardListener: CardListeningMock!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         mockCardDependency = CardDependencyMock()
         mockCardDependency.theme = theme
 

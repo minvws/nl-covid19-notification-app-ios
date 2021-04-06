@@ -31,6 +31,8 @@ struct ExposureDataStorageKey {
                                                                       storeType: .secure)
     static let lastExposureProcessingDate = CodableStorageKey<Date>(name: "lastExposureProcessingDate",
                                                                     storeType: .insecure(volatile: false))
+    static let previousExposureDate = CodableStorageKey<Date>(name: "previousExposureDate",
+                                                                    storeType: .secure)
     static let exposureFirstNotificationReceivedDate = CodableStorageKey<Date>(name: "exposureNotificationReceivedDate",
                                                                     storeType: .insecure(volatile: false))
     static let lastLocalNotificationExposureDate = CodableStorageKey<Date>(name: "lastLocalNotificationExposureDate",
@@ -316,6 +318,58 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func updateLastLocalNotificationExposureDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
     }
+    
+    func isKnownPreviousExposureDate(_ exposureDate: Date) -> Bool {
+        guard let startOfDay = exposureDate.startOfDay else {
+            return false
+        }
+        
+        return previousExposureDate == startOfDay
+    }
+    
+    func addPreviousExposureDate(_ exposureDate: Date) -> Completable {
+        guard let startOfDay = exposureDate.startOfDay else {
+            return .error(ExposureDataError.internalError)
+        }
+                
+        return .create { observer in
+            self.storageController.requestExclusiveAccess { storageController in
+                storageController.store(
+                    object: startOfDay,
+                    identifiedBy: ExposureDataStorageKey.previousExposureDate,
+                    completion: { error in
+                        if let error = error {
+                            observer(.error(error))
+                        } else {
+                            observer(.completed)
+                        }
+                    }
+                )
+            }
+            return Disposables.create()
+        }
+    }
+        
+    func removePreviousExposureDate() -> Completable {
+        guard let previousDate = previousExposureDate,
+              let daysPast = currentDate().days(sinceDate: previousDate),
+              daysPast > 14 else {
+            return .empty()
+        }
+        
+        return .create { observer in
+            self.storageController.requestExclusiveAccess { storageController in
+                storageController.removeData(for: ExposureDataStorageKey.previousExposureDate, completion: { error in
+                    if let error = error {
+                        observer(.error(error))
+                    } else {
+                        observer(.completed)
+                    }
+                })
+            }
+            return Disposables.create()
+        }
+    }
 
     var didCompleteOnboarding: Bool {
         get {
@@ -383,6 +437,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - Private
 
+    private var previousExposureDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.previousExposureDate)
+    }
+    
     private var lastDecoyProcessDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
     }

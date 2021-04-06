@@ -14,6 +14,17 @@ import XCTest
 final class ExposureDataControllerTests: TestCase {
     private var disposeBag = DisposeBag()
 
+    override func setUp() {
+        super.setUp()
+        
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
+    }
+    
+    override class func tearDown() {
+        super.tearDown()
+        DateTimeTestingOverrides.overriddenCurrentDate = nil
+    }
+    
     func test_firstRun_erasesStorage() {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
@@ -54,7 +65,7 @@ final class ExposureDataControllerTests: TestCase {
         let mockOperationProvider = ExposureDataOperationProviderMock()
         let mockStorageController = StorageControllingMock()
         let mockEnvironmentController = EnvironmentControllingMock()
-
+        
         mockEnvironmentController.appVersion = "2.0.0"
 
         mockStorageController.retrieveDataHandler = { key in
@@ -293,6 +304,173 @@ final class ExposureDataControllerTests: TestCase {
         
         XCTAssertEqual(mockStorageController.requestExclusiveAccessCallCount, 1)
         XCTAssertEqual(mockStorageController.storeCallCount, 2)
+    }
+    
+    // MARK: - isKnownPreviousExposureDate
+    
+    func test_isKnownPreviousExposureDate_withPreviousDate() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+        
+        let exposureDate = currentDate().startOfDay!
+        
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode(exposureDate)
+        }
+        
+        // Act
+        let result = sut.isKnownPreviousExposureDate(exposureDate)
+        
+        // Assert
+        XCTAssertTrue(result)
+    }
+    
+    func test_isKnownPreviousExposureDate_withNoPreviousDate() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+        
+        mockStorageController.retrieveDataHandler = { _ in
+            return nil
+        }
+        
+        let exposureDate = currentDate()
+        
+        // Act
+        let result = sut.isKnownPreviousExposureDate(exposureDate)
+        
+        // Assert
+        XCTAssertFalse(result)
+    }
+    
+    func test_addPreviousExposureDate() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+        
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        mockStorageController.removeDataHandler = { key, _ in
+            return
+        }        
+        
+        let exposureDate = currentDate().startOfDay!
+        let completionExpectation = expectation(description: "completion")
+        
+        var receivedDate: Date?
+        mockStorageController.storeHandler = { data, _, completion in
+            let jsonDecoder = JSONDecoder()
+            receivedDate = try! jsonDecoder.decode(Date.self, from: data)
+            completion(nil)
+        }
+        
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
+        
+        // Act
+        sut.addPreviousExposureDate(exposureDate)
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertEqual(mockStorageController.storeCallCount, 2)
+        XCTAssertEqual(receivedDate, exposureDate)
+    }
+    
+    func test_removePreviousExposureDate_withDateLongerThan14DaysAgo() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+        
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        let oldExposureDate = currentDate().addingTimeInterval(.days(-15)).startOfDay!
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode(oldExposureDate)
+        }
+        
+        var removedKeys: [StoreKey] = []
+        mockStorageController.removeDataHandler = { key, completion in
+            removedKeys.append(key as! StoreKey)
+            completion(nil)
+        }
+        
+        let completionExpectation = expectation(description: "completion")
+        
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
+        
+        // Act
+        sut.removePreviousExposureDate()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 4)
+        let removedKeysStrings = removedKeys.map { $0.asString }
+        XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.previousExposureDate.asString))
+    }
+    
+    func test_removePreviousExposureDate_withDateShorterThan14DaysAgo() {
+        // Arrange
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        let sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                         storageController: mockStorageController,
+                                         environmentController: mockEnvironmentController)
+        
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        let oldExposureDate = currentDate().addingTimeInterval(.days(-14))
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode(oldExposureDate)
+        }
+        
+        let completionExpectation = expectation(description: "completion")
+        
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
+        
+        // Act
+        sut.removePreviousExposureDate()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
     }
 
     // MARK: - Private Helper Functions

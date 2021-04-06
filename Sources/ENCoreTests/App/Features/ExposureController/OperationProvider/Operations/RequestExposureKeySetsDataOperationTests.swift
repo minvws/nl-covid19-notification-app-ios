@@ -21,7 +21,8 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     private var exposureKeySetIdentifiers: [String]!
     private var disposeBag = DisposeBag()
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
 
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()

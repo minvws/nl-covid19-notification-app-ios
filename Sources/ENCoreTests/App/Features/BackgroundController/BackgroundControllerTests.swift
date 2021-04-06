@@ -47,35 +47,17 @@ final class BackgroundControllerTests: TestCase {
                                           randomNumberGenerator: mockRandomNumberGenerator,
                                           environmentController: environmentController)
 
-        exposureManager.getExposureNotificationStatusHandler = {
-            return .active
-        }
-        exposureController.activateHandler = {
-            return .empty()
-        }
-        exposureController.updateWhenRequiredHandler = {
-            return .empty()
-        }
-        exposureController.processPendingUploadRequestsHandler = {
-            return .empty()
-        }
-        exposureController.exposureNotificationStatusCheckHandler = {
-            .empty()
-        }
-        exposureController.updateAndProcessPendingUploadsHandler = {
-            .empty()
-        }
-
-        exposureController.sendNotificationIfAppShouldUpdateHandler = {
-            .empty()
-        }
-        exposureController.updateTreatmentPerspectiveHandler = {
-            .empty()
-        }
-
-        exposureController.lastOpenedNotificationCheckHandler = {
-            .empty()
-        }
+        exposureManager.getExposureNotificationStatusHandler = { .active }
+        exposureController.activateHandler = { .empty() }
+        exposureController.updateWhenRequiredHandler = { .empty() }
+        exposureController.processPendingUploadRequestsHandler = { .empty() }
+        exposureController.exposureNotificationStatusCheckHandler = { .empty() }
+        exposureController.updateAndProcessPendingUploadsHandler = { .empty() }
+        exposureController.sendNotificationIfAppShouldUpdateHandler = { .empty() }
+        exposureController.updateTreatmentPerspectiveHandler = { .empty() }
+        exposureController.lastOpenedNotificationCheckHandler = { .empty() }
+        
+        dataController.removePreviousExposureDateHandler = { .empty() }
     }
 
     // MARK: - Tests
@@ -131,6 +113,14 @@ final class BackgroundControllerTests: TestCase {
         controller.refresh(task: nil)
 
         XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
+    }
+    
+    func test_refresh_shouldRemovePreviousExposureDates() {
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 0)
+        
+        controller.refresh(task: nil)
+
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 1)
     }
 
     func test_refresh_shouldFetchAndProcessKeySets() {

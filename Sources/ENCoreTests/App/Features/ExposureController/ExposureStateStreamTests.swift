@@ -14,7 +14,8 @@ class ExposureStateStreamTests: TestCase {
     private var sut: ExposureStateStream!
     private var disposeBag = DisposeBag()
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         sut = ExposureStateStream()
     }
 
