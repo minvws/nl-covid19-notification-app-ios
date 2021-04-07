@@ -513,7 +513,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
-    // Ignore the first exposure detection run on the v2 framework
+    // When upgrading to the 2.0 version of the app from an app version that uses GAEN v1, We ignore any exposure we detect
+    // on the first call to the GAEN API. We do this because it is likely that any such exposure would already have been seen by the user and it is actually a
+    // re-trigger of the same exposure date caused by GAEN v2's "exposure memory".
     private func ignoreFirstV2Exposure(value: (exposureDetectionResult: ExposureDetectionResult,
                                                exposureReport: ExposureReport?,
                                                daysSinceLastExposure: Int?)) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
