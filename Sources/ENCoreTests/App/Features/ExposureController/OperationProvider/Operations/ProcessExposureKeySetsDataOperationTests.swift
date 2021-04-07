@@ -344,6 +344,63 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockExposureDataController.updateExposureFirstNotificationReceivedDateCallCount, 1)
     }
     
+    func test_shouldNotShowExposureNotificationIfIgnoringFirstV2Exposure() {
+
+        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+        mockExposureDataController.ignoreFirstV2Exposure = true
+
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)
+
+        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
+
+        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+
+        let exposureDate = Calendar.current.date(byAdding: .day, value: -3, to: currentDate())
+        mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
+            return exposureDate
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                subscriptionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureDataController.addPreviousExposureDateCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.addPreviousExposureDateArgValues.first, exposureDate)
+        XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationCallCount, 0)
+        XCTAssertFalse(mockExposureDataController.ignoreFirstV2Exposure)
+    }
+    
+    func test_shouldResetV2IgnoreBoolean() {
+
+        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+        mockExposureDataController.ignoreFirstV2Exposure = true
+
+        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)
+
+        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
+
+        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+
+        mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
+            return nil
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                subscriptionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationCallCount, 0)
+        XCTAssertFalse(mockExposureDataController.ignoreFirstV2Exposure)
+    }
+    
     func test_shouldNotShowExposureNotificationForPreviousEposureDate() {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit

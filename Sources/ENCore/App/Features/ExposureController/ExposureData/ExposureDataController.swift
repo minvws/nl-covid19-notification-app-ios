@@ -366,7 +366,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
     }
         
-    /// Can be called to remove the stored previous expsure date in case it is more than 14 days ago
+    /// Can be called to remove the stored previous exposure date in case it is more than 14 days ago
     func removePreviousExposureDate() -> Completable {
         guard let previousDate = previousExposureDate,
               let daysPast = currentDate().days(sinceDate: previousDate),
