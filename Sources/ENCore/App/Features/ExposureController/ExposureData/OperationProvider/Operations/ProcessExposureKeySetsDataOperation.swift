@@ -522,7 +522,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             return .just(value)
         }
         
-        guard value.exposureReport != nil else {
+        guard let exposureDate = value.exposureReport?.date else {
             exposureDataController.ignoreFirstV2Exposure = false
             return .just(value)
         }
@@ -531,27 +531,23 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         
         return .create { (observer) -> Disposable in
             
-            if let exposureDate = value.exposureReport?.date {
-                
-                self.logDebug("Storing previous exposure date: \(exposureDate)")
-                
-                self.exposureDataController.addPreviousExposureDate(exposureDate)
-                    .subscribe { (event) in
-
-                        self.exposureDataController.ignoreFirstV2Exposure = false
-
-                        switch event {
-                        case .error(let error):
-                            observer(.failure(error))
-                        case .completed:
-                            // Remove exposurereport from result in order to ignore it
-                            observer(.success((value.exposureDetectionResult, nil, nil)))
-                        }
-
-                    }.disposed(by: self.disposeBag)
-            } else {
-                observer(.success(value))
-            }
+            self.logDebug("Storing previous exposure date: \(exposureDate)")
+            
+            self.exposureDataController
+                .addPreviousExposureDate(exposureDate)
+                .subscribe { (event) in
+                    
+                    self.exposureDataController.ignoreFirstV2Exposure = false
+                    
+                    switch event {
+                    case .error(let error):
+                        observer(.failure(error))
+                    case .completed:
+                        // Remove exposurereport from result in order to ignore it
+                        observer(.success((value.exposureDetectionResult, nil, nil)))
+                    }
+                    
+                }.disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

@@ -374,7 +374,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertFalse(mockExposureDataController.ignoreFirstV2Exposure)
     }
     
-    func test_shouldResetV2IgnoreBoolean() {
+    func test_shouldResetV2IgnoreBoolean_withoutExposure() {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
         mockExposureDataController.ignoreFirstV2Exposure = true
@@ -401,7 +401,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertFalse(mockExposureDataController.ignoreFirstV2Exposure)
     }
     
-    func test_shouldNotShowExposureNotificationForPreviousEposureDate() {
+    func test_shouldNotShowExposureNotificationForPreviousExposureDate() {
 
         mockEnvironmentController.gaenRateLimitingType = .fileLimit
         mockExposureDataController.isKnownPreviousExposureDateHandler = { date in
