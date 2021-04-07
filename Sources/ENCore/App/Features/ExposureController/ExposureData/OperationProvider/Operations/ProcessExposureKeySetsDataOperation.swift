@@ -107,6 +107,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             .flatMap(self.persistResult(_:))
             // create an exposureReport and trigger a local notification
             .flatMap(self.createExposureReport)
+            .flatMap(self.ignoreFirstV2Exposure(value:))
             // Send a local notification to inform the user of an exposure if neccesary
             .flatMap { self.notifyUserOfExposure(inBackground: applicationIsInBackground, value: $0) }
             // persist the ExposureReport
@@ -512,7 +513,47 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
-    
+    // When upgrading to the 2.0 version of the app from an app version that uses GAEN v1, We ignore any exposure we detect
+    // on the first call to the GAEN API. We do this because it is likely that any such exposure would already have been seen by the user and it is actually a
+    // re-trigger of the same exposure date caused by GAEN v2's "exposure memory".
+    private func ignoreFirstV2Exposure(value: (exposureDetectionResult: ExposureDetectionResult,
+                                               exposureReport: ExposureReport?,
+                                               daysSinceLastExposure: Int?)) -> Single<(exposureDetectionResult: ExposureDetectionResult, exposureReport: ExposureReport?, daysSinceLastExposure: Int?)> {
+        
+        guard exposureDataController.ignoreFirstV2Exposure else {
+            return .just(value)
+        }
+        
+        guard let exposureDate = value.exposureReport?.date else {
+            exposureDataController.ignoreFirstV2Exposure = false
+            return .just(value)
+        }
+        
+        self.logDebug("Ignoring exposure detection run on v2 framework to prevent exposure that was potentially already seen on v1")
+        
+        return .create { (observer) -> Disposable in
+            
+            self.logDebug("Storing previous exposure date: \(exposureDate)")
+            
+            self.exposureDataController
+                .addPreviousExposureDate(exposureDate)
+                .subscribe { (event) in
+                    
+                    self.exposureDataController.ignoreFirstV2Exposure = false
+                    
+                    switch event {
+                    case .error(let error):
+                        observer(.failure(error))
+                    case .completed:
+                        // Remove exposurereport from result in order to ignore it
+                        observer(.success((value.exposureDetectionResult, nil, nil)))
+                    }
+                    
+                }.disposed(by: self.disposeBag)
+            
+            return Disposables.create()
+        }
+    }
     /// Determines wether or not the user needs to receive a notification for an exposure and triggers the notification if needed
     /// - Parameters:
     ///   - applicationIsInBackground: boolean that indicates wether the app is currently in the background. If the app is in the background, the triggered notification is marked as "unseen" so we can remind the user of the exposure later on.

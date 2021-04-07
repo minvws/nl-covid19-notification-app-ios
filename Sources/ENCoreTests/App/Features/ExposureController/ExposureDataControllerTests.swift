@@ -95,8 +95,51 @@ final class ExposureDataControllerTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_subsequentRun_doesNotEraseStorage() {}
+    func test_update_ignoresFirstV2Exposure() {
+        let storedIgnoreBoolean = expectation(description: "storedIgnoreBoolean")
 
+        // Creating controller within this test to test initialisation code
+        let mockOperationProvider = ExposureDataOperationProviderMock()
+        let mockStorageController = StorageControllingMock()
+        let mockEnvironmentController = EnvironmentControllingMock()
+        
+        mockEnvironmentController.appVersion = "2.0.0"
+        mockStorageController.requestExclusiveAccessHandler = { completion in
+            completion(mockStorageController)
+        }
+        
+        mockStorageController.storeHandler = { data, key, _ in
+            if (key as? StoreKey)?.asString == ExposureDataStorageKey.ignoreFirstV2Exposure.asString {
+                
+                let jsonDecoder = JSONDecoder()
+                let receivedBoolean = try! jsonDecoder.decode(Bool.self, from: data)
+                XCTAssertTrue(receivedBoolean)
+                
+                storedIgnoreBoolean.fulfill()
+            }
+        }
+        
+        mockStorageController.retrieveDataHandler = { key in
+            // mock the last run app version
+            if (key as? CodableStorageKey<String>)?.asString == ExposureDataStorageKey.lastRanAppVersion.asString {
+                return try! JSONEncoder().encode("1.0.0")
+            }
+
+            // Make sure this is not the first run of the app
+            if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.firstRunIdentifier.asString {
+                return try! JSONEncoder().encode(false)
+            }
+
+            return nil
+        }
+
+        _ = ExposureDataController(operationProvider: mockOperationProvider,
+                                   storageController: mockStorageController,
+                                   environmentController: mockEnvironmentController)
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+    
     // MARK: - requestTreatmentPerspective
 
     func test_requestTreatmentPerspective_shouldRequestApplicationManifest() {
