@@ -86,7 +86,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         self.operationProvider = operationProvider
         self.storageController = storageController
         self.environmentController = environmentController
-
+    }
+    
+    func performInitialisationTasks() {
         detectFirstRunAndEraseKeychainIfRequired()
         compareAndUpdateLastRanAppVersion(isFirstRun: isFirstRun)
     }
