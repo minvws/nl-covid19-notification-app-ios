@@ -13,11 +13,27 @@ import XCTest
 
 final class ExposureDataControllerTests: TestCase {
     private var disposeBag = DisposeBag()
+    
+    private var sut: ExposureDataController!
+    private var mockOperationProvider: ExposureDataOperationProviderMock!
+    private var mockStorageController: StorageControllingMock!
+    private var mockEnvironmentController: EnvironmentControllingMock!
 
     override func setUp() {
         super.setUp()
         
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
+        
+        mockOperationProvider = ExposureDataOperationProviderMock()
+        mockStorageController = StorageControllingMock()
+        mockEnvironmentController = EnvironmentControllingMock()
+        
+        // default mocking
+        mockStorageController.requestExclusiveAccessHandler = { completion in completion(self.mockStorageController) }
+        
+        sut = ExposureDataController(operationProvider: mockOperationProvider,
+                                     storageController: mockStorageController,
+                                     environmentController: mockEnvironmentController)
     }
     
     override class func tearDown() {
@@ -25,11 +41,10 @@ final class ExposureDataControllerTests: TestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = nil
     }
     
-    func test_firstRun_erasesStorage() {
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-
+    // MARK: - Tests
+    
+    func test_performInitialisationTasks_firstRun_erasesStorage() {
+        
         var removedKeys: [StoreKey] = []
         mockStorageController.removeDataHandler = { key, _ in
             removedKeys.append(key as! StoreKey)
@@ -42,10 +57,8 @@ final class ExposureDataControllerTests: TestCase {
             receivedData = data
         }
 
-        _ = ExposureDataController(operationProvider: mockOperationProvider,
-                                   storageController: mockStorageController,
-                                   environmentController: mockEnvironmentController)
-
+        sut.performInitialisationTasks()
+        
         XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
         XCTAssertEqual(mockStorageController.storeCallCount, 1)
 
@@ -58,14 +71,9 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(receivedData, Data([116, 114, 117, 101])) // true
     }
 
-    func test_update_erasesStoredManifest() {
+    func test_performInitialisationTasks_update_erasesStoredManifest() {
         let removedManifestExpectation = expectation(description: "Removed Manifest")
 
-        // Creating controller within this test to test initialisation code
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        
         mockEnvironmentController.appVersion = "2.0.0"
 
         mockStorageController.retrieveDataHandler = { key in
@@ -88,26 +96,17 @@ final class ExposureDataControllerTests: TestCase {
             }
         }
 
-        _ = ExposureDataController(operationProvider: mockOperationProvider,
-                                   storageController: mockStorageController,
-                                   environmentController: mockEnvironmentController)
+        sut.performInitialisationTasks()
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_update_ignoresFirstV2Exposure() {
+    func test_performInitialisationTasks_update_ignoresFirstV2Exposure() {
+        // Arrange
         let storedIgnoreBoolean = expectation(description: "storedIgnoreBoolean")
 
-        // Creating controller within this test to test initialisation code
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        
         mockEnvironmentController.appVersion = "2.0.0"
-        mockStorageController.requestExclusiveAccessHandler = { completion in
-            completion(mockStorageController)
-        }
-        
+                
         mockStorageController.storeHandler = { data, key, _ in
             if (key as? StoreKey)?.asString == ExposureDataStorageKey.ignoreFirstV2Exposure.asString {
                 
@@ -133,55 +132,41 @@ final class ExposureDataControllerTests: TestCase {
             return nil
         }
 
-        _ = ExposureDataController(operationProvider: mockOperationProvider,
-                                   storageController: mockStorageController,
-                                   environmentController: mockEnvironmentController)
+        // Act
+        sut.performInitialisationTasks()
 
+        // Assert
         waitForExpectations(timeout: 2.0, handler: nil)
     }
     
-    // MARK: - requestTreatmentPerspective
-
-    func test_requestTreatmentPerspective_shouldRequestApplicationManifest() {
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-
+    func test_updateTreatmentPerspective_shouldRequestApplicationManifest() {
+        // Arrange
         let streamExpectation = expectation(description: "stream")
 
         let manifestOperationCalledExpectation = expectation(description: "manifestOperationCalled")
         mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: manifestOperationCalledExpectation)
 
-        let treatmentPerspectiveOperationCalled = expectation(description: "treatmentPerspectiveOperationCalled")
         let treatmentPerspectiveOperationMock = UpdateTreatmentPerspectiveDataOperationProtocolMock()
         treatmentPerspectiveOperationMock.executeHandler = {
-            treatmentPerspectiveOperationCalled.fulfill()
             return .empty()
         }
         mockOperationProvider.updateTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
 
+        // Act
         sut.updateTreatmentPerspective()
             .subscribe(onCompleted: {
                 streamExpectation.fulfill()
             })
             .disposed(by: disposeBag)
 
+        // Assert
         waitForExpectations(timeout: 2, handler: nil)
+        
+        XCTAssertEqual(treatmentPerspectiveOperationMock.executeCallCount, 1)
     }
 
-    // MARK: - upload
-
     func test_upload_shouldRequestApplicationManifestAndAppConfiguration() {
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-
+        // Arrange
         let streamExpectation = expectation(description: "stream")
 
         let manifestOperationCalledExpectation = expectation(description: "manifestOperationCalled")
@@ -190,10 +175,8 @@ final class ExposureDataControllerTests: TestCase {
         let configurationOperationCalledExpectation = expectation(description: "configurationOperationCalled")
         mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData(), andExpectation: configurationOperationCalledExpectation)
 
-        let uploadCalledExpectation = expectation(description: "uploadCalled")
         let uploadOperationMock = UploadDiagnosisKeysDataOperationProtocolMock()
         uploadOperationMock.executeHandler = {
-            uploadCalledExpectation.fulfill()
             return .empty()
         }
 
@@ -203,25 +186,21 @@ final class ExposureDataControllerTests: TestCase {
 
         let mockLabConfirmationKey = LabConfirmationKey(identifier: "", bucketIdentifier: "".data(using: .utf8)!, confirmationKey: "".data(using: .utf8)!, validUntil: currentDate().addingTimeInterval(20000))
 
+        // Act
         sut.upload(diagnosisKeys: [], labConfirmationKey: mockLabConfirmationKey)
             .subscribe(onCompleted: {
                 streamExpectation.fulfill()
             })
             .dispose()
 
+        // Assert
         waitForExpectations(timeout: 2, handler: nil)
+        
+        XCTAssertEqual(uploadOperationMock.executeCallCount, 1)
     }
 
-    // MARK: - removeLastExposure
-
     func test_removeLastExposure_shouldCallStorageController() {
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-
+        // Arrange
         let removeDataExpectation = expectation(description: "removeData")
 
         mockStorageController.removeDataHandler = { key, _ in
@@ -229,31 +208,24 @@ final class ExposureDataControllerTests: TestCase {
             removeDataExpectation.fulfill()
         }
 
-        // Initialisation of ExposureDataController apparently already removes some data, so the starting situation is not completely clean
-        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
-
+        // Act
         sut.removeLastExposure()
             .subscribe()
             .disposed(by: disposeBag)
 
+        // Assert
         waitForExpectations(timeout: 2, handler: nil)
-
-        XCTAssertEqual(mockStorageController.removeDataCallCount, 4)
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 1)
     }
 
     func test_getAppointmentPhoneNumber() {
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-
+        // Arrange
         let subscriptionExpectation = expectation(description: "subscription")
 
         mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
         mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
 
+        // Act
         sut.getAppointmentPhoneNumber()
             .subscribe(onSuccess: { phoneNumber in
                 XCTAssertEqual(phoneNumber, "appointmentPhoneNumber")
@@ -261,32 +233,29 @@ final class ExposureDataControllerTests: TestCase {
             })
             .dispose()
 
+        // Assert
         waitForExpectations(timeout: 2, handler: nil)
     }
 
     func test_fetchAndProcessExposureKeySets_shouldRequestApplicationConfiguration() {
-        let mockExposureManager = ExposureManagingMock()
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-
+        // Arrange
         let completionExpectation = expectation(description: "completion")
-
+        
+        let mockExposureManager = ExposureManagingMock()
         let mockManifestOperation = mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
         let mockConfigurationOperation = mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
         let mockRequestExposureKeySetsOperation = mockRequestExposureKeySetsDataOperation(in: mockOperationProvider)
         let mockRequestExposureConfigurationOperation = mockRequestExposureConfigurationDataOperation(in: mockOperationProvider, withTestData: .testData())
         let mockProcessExposureKeySetsDataOperation = mockProcessExposureKeySetsDataOperationProtocol(in: mockOperationProvider)
 
+        // Act
         sut.fetchAndProcessExposureKeySets(exposureManager: mockExposureManager)
             .subscribe(onCompleted: {
                 completionExpectation.fulfill()
             })
             .disposed(by: disposeBag)
 
+        // Assert
         waitForExpectations(timeout: 1, handler: nil)
 
         // Manifest operation is called multiple times during this action. This is intentional and should not lead to multiple network requests
@@ -298,68 +267,42 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockProcessExposureKeySetsDataOperation.executeCallCount, 1)
     }
 
-    // MARK: - processPendingUploadRequests
-
     func test_processPendingUploadRequests() {
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-
+        // Arrange
         mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
         mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
         let mockProcessPendingLabConfirmationUploadRequestsOperation = mockProcessPendingLabConfirmationUploadRequestsDataOperation(in: mockOperationProvider)
 
         let completionExpectation = expectation(description: "completion")
 
+        // Act
         sut.processPendingUploadRequests()
             .subscribe(onCompleted: {
                 completionExpectation.fulfill()
             })
             .disposed(by: disposeBag)
 
+        // Assert
         waitForExpectations(timeout: 1, handler: nil)
 
         XCTAssertEqual(mockOperationProvider.processPendingLabConfirmationUploadRequestsOperationCallCount, 1)
         XCTAssertEqual(mockProcessPendingLabConfirmationUploadRequestsOperation.executeCallCount, 1)
     }
     
-    // MARK: - updateExposureFirstNotificationReceivedDate
-    
     func test_updateExposureFirstNotificationReceivedDate() {
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
+        // Arrange
+        let date = currentDate()
         
-        mockStorageController.requestExclusiveAccessHandler = { completion in
-            completion(mockStorageController)
-        }
+        // Act
+        sut.updateExposureFirstNotificationReceivedDate(date)
         
-        XCTAssertEqual(mockStorageController.requestExclusiveAccessCallCount, 0)
-        XCTAssertEqual(mockStorageController.storeCallCount, 1)
-        
-        sut.updateExposureFirstNotificationReceivedDate(currentDate())
-        
+        // Assert
         XCTAssertEqual(mockStorageController.requestExclusiveAccessCallCount, 1)
-        XCTAssertEqual(mockStorageController.storeCallCount, 2)
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
     }
-    
-    // MARK: - isKnownPreviousExposureDate
-    
+        
     func test_isKnownPreviousExposureDate_withPreviousDate() {
         // Arrange
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-        
         let exposureDate = currentDate().startOfDay!
         
         mockStorageController.retrieveDataHandler = { _ in
@@ -376,21 +319,12 @@ final class ExposureDataControllerTests: TestCase {
     
     func test_isKnownPreviousExposureDate_withNoPreviousDate() {
         // Arrange
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-        
         mockStorageController.retrieveDataHandler = { _ in
             return nil
         }
         
-        let exposureDate = currentDate()
-        
         // Act
-        let result = sut.isKnownPreviousExposureDate(exposureDate)
+        let result = sut.isKnownPreviousExposureDate(currentDate())
         
         // Assert
         XCTAssertFalse(result)
@@ -398,17 +332,6 @@ final class ExposureDataControllerTests: TestCase {
     
     func test_addPreviousExposureDate() {
         // Arrange
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-        
-        mockStorageController.requestExclusiveAccessHandler = { completion in
-            completion(mockStorageController)
-        }
-        
         mockStorageController.removeDataHandler = { key, _ in
             return
         }        
@@ -422,9 +345,7 @@ final class ExposureDataControllerTests: TestCase {
             receivedDate = try! jsonDecoder.decode(Date.self, from: data)
             completion(nil)
         }
-        
-        XCTAssertEqual(mockStorageController.storeCallCount, 1)
-        
+                
         // Act
         sut.addPreviousExposureDate(exposureDate)
             .subscribe(onCompleted: {
@@ -434,23 +355,12 @@ final class ExposureDataControllerTests: TestCase {
         
         // Assert
         waitForExpectations(timeout: 2.0, handler: nil)
-        XCTAssertEqual(mockStorageController.storeCallCount, 2)
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
         XCTAssertEqual(receivedDate, exposureDate)
     }
     
     func test_removePreviousExposureDate_withDateLongerThan14DaysAgo() {
         // Arrange
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-        
-        mockStorageController.requestExclusiveAccessHandler = { completion in
-            completion(mockStorageController)
-        }
-        
         let oldExposureDate = currentDate().addingTimeInterval(.days(-15)).startOfDay!
         mockStorageController.retrieveDataHandler = { _ in
             let jsonEncoder = JSONEncoder()
@@ -464,9 +374,7 @@ final class ExposureDataControllerTests: TestCase {
         }
         
         let completionExpectation = expectation(description: "completion")
-        
-        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
-        
+                
         // Act
         sut.removePreviousExposureDate()
             .subscribe(onCompleted: {
@@ -476,23 +384,13 @@ final class ExposureDataControllerTests: TestCase {
         
         // Assert
         waitForExpectations(timeout: 2.0, handler: nil)
-        XCTAssertEqual(mockStorageController.removeDataCallCount, 4)
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 1)
         let removedKeysStrings = removedKeys.map { $0.asString }
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.previousExposureDate.asString))
     }
     
     func test_removePreviousExposureDate_withDateShorterThan14DaysAgo() {
         // Arrange
-        let mockOperationProvider = ExposureDataOperationProviderMock()
-        let mockStorageController = StorageControllingMock()
-        let mockEnvironmentController = EnvironmentControllingMock()
-        let sut = ExposureDataController(operationProvider: mockOperationProvider,
-                                         storageController: mockStorageController,
-                                         environmentController: mockEnvironmentController)
-        
-        mockStorageController.requestExclusiveAccessHandler = { completion in
-            completion(mockStorageController)
-        }
         
         let oldExposureDate = currentDate().addingTimeInterval(.days(-14))
         mockStorageController.retrieveDataHandler = { _ in
@@ -501,9 +399,7 @@ final class ExposureDataControllerTests: TestCase {
         }
         
         let completionExpectation = expectation(description: "completion")
-        
-        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
-        
+                
         // Act
         sut.removePreviousExposureDate()
             .subscribe(onCompleted: {
@@ -513,7 +409,7 @@ final class ExposureDataControllerTests: TestCase {
         
         // Assert
         waitForExpectations(timeout: 2.0, handler: nil)
-        XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
+        XCTAssertEqual(mockStorageController.removeDataCallCount, 0)
     }
 
     // MARK: - Private Helper Functions
@@ -614,6 +510,8 @@ final class ExposureDataControllerTests: TestCase {
         mockOperationProvider.updateTreatmentPerspectiveDataOperation = operationMock
     }
 }
+
+// MARK: - Helper Extensions
 
 private extension TreatmentPerspective {
     static func testData(manifestRefreshFrequency: Int = 3600) -> TreatmentPerspective {

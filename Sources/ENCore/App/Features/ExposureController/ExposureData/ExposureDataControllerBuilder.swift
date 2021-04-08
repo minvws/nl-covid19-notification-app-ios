@@ -126,8 +126,12 @@ final class ExposureDataControllerBuilder: Builder<ExposureDataControllerDepende
     func build() -> ExposureDataControlling {
         let dependencyProvider = ExposureDataControllerDependencyProvider(dependency: dependency)
 
-        return ExposureDataController(operationProvider: dependencyProvider.operationProvider,
+        let controller = ExposureDataController(operationProvider: dependencyProvider.operationProvider,
                                       storageController: dependencyProvider.storageController,
                                       environmentController: dependencyProvider.environmentController)
+        
+        controller.performInitialisationTasks()
+        
+        return controller
     }
 }
