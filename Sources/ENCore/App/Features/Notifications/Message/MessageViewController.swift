@@ -23,11 +23,13 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
          exposureDate: Date,
          interfaceOrientationStream: InterfaceOrientationStreaming,
          dataController: ExposureDataControlling,
-         messageManager: MessageManaging) {
+         messageManager: MessageManaging,
+         applicationController: ApplicationControlling) {
         self.listener = listener
         self.interfaceOrientationStream = interfaceOrientationStream
         self.dataController = dataController
         self.messageManager = messageManager
+        self.applicationController = applicationController
 
         self.treatmentPerspectiveMessage = messageManager.getLocalizedTreatmentPerspective(withExposureDate: exposureDate)
 
@@ -99,8 +101,22 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
     }
 
     private lazy var internalView: MessageView = {
-        MessageView(theme: self.theme, treatmentPerspectiveMessage: treatmentPerspectiveMessage)
+        MessageView(theme: self.theme, treatmentPerspectiveMessage: treatmentPerspectiveMessage, linkHandler: { [weak self] link in
+            self?.openLinkInExternalBrowser(link)
+        })
     }()
+    
+    private func openLinkInExternalBrowser(_ link: String) {
+        var linkToOpen = link
+        if !linkToOpen.starts(with: "https://") {
+            linkToOpen = "https://" + link
+        }
+        guard let url = URL(string: linkToOpen) else {
+            logError("Unable to create URL from string: \(linkToOpen)")
+            return
+        }
+        applicationController.open(url)
+    }
 
     private weak var listener: MessageListener?
     private let messageManager: MessageManaging
@@ -108,18 +124,20 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
     private let dataController: ExposureDataControlling
     private var disposeBag = DisposeBag()
     private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private let applicationController: ApplicationControlling
 }
 
 private final class MessageView: View {
 
     // MARK: - Init
 
-    init(theme: Theme, treatmentPerspectiveMessage: LocalizedTreatmentPerspective) {
+    init(theme: Theme, treatmentPerspectiveMessage: LocalizedTreatmentPerspective, linkHandler: @escaping ((String) -> ())) {
         let config = InfoViewConfig(actionButtonTitle: .messageButtonTitle,
                                     headerImage: .messageHeader,
                                     headerBackgroundViewColor: theme.colors.headerBackgroundRed,
                                     stickyButtons: true)
-        self.infoView = InfoView(theme: theme, config: config)
+        self.infoView = InfoView(theme: theme, config: config, itemSpacing: 26)
+        self.linkHandler = linkHandler
         self.treatmentPerspectiveMessage = treatmentPerspectiveMessage
         super.init(theme: theme)
     }
@@ -131,13 +149,15 @@ private final class MessageView: View {
 
         let sections = treatmentPerspectiveMessage
             .paragraphs
-            .map { InfoSectionTextView(theme: theme, title: $0.title, content: $0.body) }
+            .map {
+                InfoSectionTextViewWithLinks(theme: theme, title: $0.title, content: $0.body, linkHandler: linkHandler)
+            }
 
         infoView.addSections(sections)
 
         addSubview(infoView)
     }
-
+    
     override func setupConstraints() {
         super.setupConstraints()
 
@@ -151,4 +171,5 @@ private final class MessageView: View {
 
     private let treatmentPerspectiveMessage: LocalizedTreatmentPerspective
     fileprivate let infoView: InfoView
+    private let linkHandler: ((String) -> ())
 }
