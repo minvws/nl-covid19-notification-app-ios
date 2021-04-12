@@ -111,7 +111,10 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
         if !linkToOpen.starts(with: "https://") {
             linkToOpen = "https://" + link
         }
-        guard let url = URL(string: linkToOpen) else { return }
+        guard let url = URL(string: linkToOpen) else {
+            logError("Unable to create URL from string: \(linkToOpen)")
+            return
+        }
         applicationController.open(url)
     }
 
