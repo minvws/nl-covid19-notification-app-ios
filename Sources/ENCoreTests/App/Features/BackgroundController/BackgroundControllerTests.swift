@@ -410,6 +410,32 @@ final class BackgroundControllerTests: TestCase {
         XCTAssertEqual(taskScheduler.cancelCallCount, 0)
         XCTAssertEqual(taskScheduler.submitCallCount, 0)
     }
+    
+    func test_scheduleTasks_shouldCancelAllTaskRequestsAppIsDeactivated() {
+
+        let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
+        exposureController.isAppDeactivatedHandler = { .just(true) }
+        taskScheduler.cancelAllTaskRequestsHandler = { cancelAllTaskExpectation.fulfill() }
+
+        controller.scheduleTasks()
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+    
+    func test_scheduleTasks_shouldRemovePreviousExposureDateAppIsDeactivated() {
+        let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
+        taskScheduler.cancelAllTaskRequestsHandler = { cancelAllTaskExpectation.fulfill() }
+        
+        exposureController.isAppDeactivatedHandler = { .just(true) }
+        
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 0)
+        
+        controller.scheduleTasks()
+        
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 1)
+    }
 
     func test_scheduleTasks_shouldScheduleRefreshIfAppDeactivatedCannotBeDetermined() {
 
