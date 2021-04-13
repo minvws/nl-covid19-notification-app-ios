@@ -437,7 +437,7 @@ final class InfoSectionTextViewWithLinks: View, UITextViewDelegate {
             let textView = TextView(frame: .zero)
             textView.delegate = self
             textView.isEditable = false
-            textView.isSelectable = false
+            textView.isSelectable = true
             textView.isScrollEnabled = false
             textView.isAccessibilityElement = true
             textView.font = theme.fonts.body
