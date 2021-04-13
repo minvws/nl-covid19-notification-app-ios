@@ -272,7 +272,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
     private func triggerExposure() {
         
-        let dayOptions = [-15, -14, -13, -3, -2, -1, 0]
+        let dayOptions = [-15, -14, -13, -6, -5, -4, -3, -2, -1, 0]
         let actionItems = dayOptions.reversed().map { (day) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
                 let exposureReport = ExposureReport(date: Date().addingTimeInterval(.days(Double(day))))
@@ -353,6 +353,8 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         storageController.removeData(for: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastDecoyProcessDate, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.previousExposureDate, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.ignoreFirstV2Exposure, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.seenAnnouncements, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.treatmentPerspective, completion: { _ in })

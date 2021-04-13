@@ -12,7 +12,8 @@ class LabelTests: TestCase {
 
     private var sut: Label!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         sut = Label()
     }
 

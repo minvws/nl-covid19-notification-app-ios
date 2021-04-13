@@ -31,6 +31,8 @@ struct ExposureDataStorageKey {
                                                                       storeType: .secure)
     static let lastExposureProcessingDate = CodableStorageKey<Date>(name: "lastExposureProcessingDate",
                                                                     storeType: .insecure(volatile: false))
+    static let previousExposureDate = CodableStorageKey<Date>(name: "previousExposureDate",
+                                                                    storeType: .secure)
     static let exposureFirstNotificationReceivedDate = CodableStorageKey<Date>(name: "exposureNotificationReceivedDate",
                                                                     storeType: .insecure(volatile: false))
     static let lastLocalNotificationExposureDate = CodableStorageKey<Date>(name: "lastLocalNotificationExposureDate",
@@ -53,6 +55,8 @@ struct ExposureDataStorageKey {
                                                                           storeType: .insecure(volatile: false))
     static let onboardingCompleted = CodableStorageKey<Bool>(name: "onboardingCompleted",
                                                              storeType: .insecure(volatile: false))
+    static let ignoreFirstV2Exposure = CodableStorageKey<Bool>(name: "ignoreFirstV2Exposure",
+                                                             storeType: .secure)
     static let lastRanAppVersion = CodableStorageKey<String>(name: "lastRanAppVersion",
                                                              storeType: .insecure(volatile: false))
     static let treatmentPerspective = CodableStorageKey<TreatmentPerspective>(name: "treatmentPerspective",
@@ -82,7 +86,9 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         self.operationProvider = operationProvider
         self.storageController = storageController
         self.environmentController = environmentController
-
+    }
+    
+    func performInitialisationTasks() {
         detectFirstRunAndEraseKeychainIfRequired()
         compareAndUpdateLastRanAppVersion(isFirstRun: isFirstRun)
     }
@@ -130,7 +136,21 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     var lastAppLaunchDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastAppLaunchDate)
     }
-
+    
+    var ignoreFirstV2Exposure: Bool {
+        get {
+            return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.ignoreFirstV2Exposure) ?? false
+        } set {
+            self.storageController.requestExclusiveAccess { storageController in
+                storageController.store(
+                    object: newValue,
+                    identifiedBy: ExposureDataStorageKey.ignoreFirstV2Exposure,
+                    completion: { _ in }
+                )
+            }
+        }
+    }
+    
     func setLastENStatusCheckDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastENStatusCheck, completion: { _ in })
     }
@@ -316,6 +336,59 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func updateLastLocalNotificationExposureDate(_ date: Date) {
         storageController.store(object: date, identifiedBy: ExposureDataStorageKey.lastLocalNotificationExposureDate, completion: { _ in })
     }
+    
+    func isKnownPreviousExposureDate(_ exposureDate: Date) -> Bool {
+        guard let startOfDay = exposureDate.startOfDay else {
+            return false
+        }
+        
+        return previousExposureDate == startOfDay
+    }
+    
+    func addPreviousExposureDate(_ exposureDate: Date) -> Completable {
+        guard let startOfDay = exposureDate.startOfDay else {
+            return .error(ExposureDataError.internalError)
+        }
+        
+        return .create { observer in
+            self.storageController.requestExclusiveAccess { storageController in
+                storageController.store(
+                    object: startOfDay,
+                    identifiedBy: ExposureDataStorageKey.previousExposureDate,
+                    completion: { error in
+                        if let error = error {
+                            observer(.error(error))
+                        } else {
+                            observer(.completed)
+                        }
+                    }
+                )
+            }
+            return Disposables.create()
+        }
+    }
+        
+    /// Can be called to remove the stored previous exposure date in case it is more than 14 days ago
+    func removePreviousExposureDate() -> Completable {
+        guard let previousDate = previousExposureDate,
+              let daysPast = currentDate().days(sinceDate: previousDate),
+              daysPast > 14 else {
+            return .empty()
+        }
+        
+        return .create { observer in
+            self.storageController.requestExclusiveAccess { storageController in
+                storageController.removeData(for: ExposureDataStorageKey.previousExposureDate, completion: { error in
+                    if let error = error {
+                        observer(.error(error))
+                    } else {
+                        observer(.completed)
+                    }
+                })
+            }
+            return Disposables.create()
+        }
+    }
 
     var didCompleteOnboarding: Bool {
         get {
@@ -383,6 +456,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     // MARK: - Private
 
+    private var previousExposureDate: Date? {
+        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.previousExposureDate)
+    }
+    
     private var lastDecoyProcessDate: Date? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastDecoyProcessDate)
     }
@@ -460,9 +537,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             // this variable is not set, even though they most likely completed onboarding. Those users
             // will be treated as onboarding completed to prevent everyone who is updating to go through
             // onboarding again
-            storageController.store(object: true,
-                                    identifiedBy: ExposureDataStorageKey.onboardingCompleted,
-                                    completion: { _ in })
+            storageController.store(object: true, identifiedBy: ExposureDataStorageKey.onboardingCompleted, completion: { _ in })
+            
+        }
+        
+        if let firstVersionCharacter = fromVersion.first,
+           let firstVersionInt = Int(String(firstVersionCharacter)),
+           firstVersionInt < 2 {
+            // When upgrading to the 2.0 version of the app from an app version that uses GAEN v1, set a flag that reminds us to ignore any exposure we detect
+            // on the first call to the GAEN API. We do this because it is likely that any such exposure would already have been seen by the user and it is actually a
+            // re-trigger of the same exposure date caused by GAEN v2's "exposure memory".
+            ignoreFirstV2Exposure = true
         }
     }
 

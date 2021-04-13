@@ -47,35 +47,17 @@ final class BackgroundControllerTests: TestCase {
                                           randomNumberGenerator: mockRandomNumberGenerator,
                                           environmentController: environmentController)
 
-        exposureManager.getExposureNotificationStatusHandler = {
-            return .active
-        }
-        exposureController.activateHandler = {
-            return .empty()
-        }
-        exposureController.updateWhenRequiredHandler = {
-            return .empty()
-        }
-        exposureController.processPendingUploadRequestsHandler = {
-            return .empty()
-        }
-        exposureController.exposureNotificationStatusCheckHandler = {
-            .empty()
-        }
-        exposureController.updateAndProcessPendingUploadsHandler = {
-            .empty()
-        }
-
-        exposureController.sendNotificationIfAppShouldUpdateHandler = {
-            .empty()
-        }
-        exposureController.updateTreatmentPerspectiveHandler = {
-            .empty()
-        }
-
-        exposureController.lastOpenedNotificationCheckHandler = {
-            .empty()
-        }
+        exposureManager.getExposureNotificationStatusHandler = { .active }
+        exposureController.activateHandler = { .empty() }
+        exposureController.updateWhenRequiredHandler = { .empty() }
+        exposureController.processPendingUploadRequestsHandler = { .empty() }
+        exposureController.exposureNotificationStatusCheckHandler = { .empty() }
+        exposureController.updateAndProcessPendingUploadsHandler = { .empty() }
+        exposureController.sendNotificationIfAppShouldUpdateHandler = { .empty() }
+        exposureController.updateTreatmentPerspectiveHandler = { .empty() }
+        exposureController.lastOpenedNotificationCheckHandler = { .empty() }
+        
+        dataController.removePreviousExposureDateHandler = { .empty() }
     }
 
     // MARK: - Tests
@@ -131,6 +113,14 @@ final class BackgroundControllerTests: TestCase {
         controller.refresh(task: nil)
 
         XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
+    }
+    
+    func test_refresh_shouldRemovePreviousExposureDates() {
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 0)
+        
+        controller.refresh(task: nil)
+
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 1)
     }
 
     func test_refresh_shouldFetchAndProcessKeySets() {
@@ -419,6 +409,32 @@ final class BackgroundControllerTests: TestCase {
         XCTAssertEqual(taskScheduler.cancelAllTaskRequestsCallCount, 1)
         XCTAssertEqual(taskScheduler.cancelCallCount, 0)
         XCTAssertEqual(taskScheduler.submitCallCount, 0)
+    }
+    
+    func test_scheduleTasks_shouldCancelAllTaskRequestsAppIsDeactivated() {
+
+        let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
+        exposureController.isAppDeactivatedHandler = { .just(true) }
+        taskScheduler.cancelAllTaskRequestsHandler = { cancelAllTaskExpectation.fulfill() }
+
+        controller.scheduleTasks()
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+    
+    func test_scheduleTasks_shouldRemovePreviousExposureDateAppIsDeactivated() {
+        let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
+        taskScheduler.cancelAllTaskRequestsHandler = { cancelAllTaskExpectation.fulfill() }
+        
+        exposureController.isAppDeactivatedHandler = { .just(true) }
+        
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 0)
+        
+        controller.scheduleTasks()
+        
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 1)
     }
 
     func test_scheduleTasks_shouldScheduleRefreshIfAppDeactivatedCannotBeDetermined() {
