@@ -7,28 +7,32 @@
 
 import Foundation
 
-struct Path {
-    let components: [String]
-
-    init(components: String...) {
-        self.components = Array(components)
-    }
-}
-
 struct Endpoint {
+    
+    let version: String?
+    let pathComponents: [String]
+
+    /// Initialize endpoint definition
+    /// - Parameters:
+    ///   - version: specific version of the endpoint that should be used (Configuration's `path` component will be used as a prefix if this is nil)
+    ///   - components: other path components for the endpoint
+    init(version: String? = nil, components: String...) {
+        self.version = version
+        self.pathComponents = Array(components)
+    }
 
     // MARK: - CDN
 
-    static let manifest = Path(components: "manifest")
+    static let manifest = Endpoint(components: "manifest")
 
-    static func appConfig(identifier: String) -> Path { Path(components: "appconfig", identifier) }
-    static func exposureKeySet(identifier: String) -> Path { Path(components: "exposurekeyset", identifier) }
-    static func riskCalculationParameters(identifier: String) -> Path { Path(components: "riskcalculationparameters", identifier) }
-    static func treatmentPerspective(identifier: String) -> Path { Path(components: "resourcebundle", identifier) }
+    static func appConfig(identifier: String) -> Endpoint { Endpoint(components: "appconfig", identifier) }
+    static func exposureKeySet(identifier: String) -> Endpoint { Endpoint(components: "exposurekeyset", identifier) }
+    static func riskCalculationParameters(identifier: String) -> Endpoint { Endpoint(components: "riskcalculationparameters", identifier) }
+    static func treatmentPerspective(identifier: String) -> Endpoint { Endpoint(components: "resourcebundle", identifier) }
 
     // MARK: - API
 
-    static let register = Path(components: "register")
-    static let postKeys = Path(components: "postkeys")
-    static let stopKeys = Path(components: "stopkeys")
+    static let register = Endpoint(version: "v2", components: "register")
+    static let postKeys = Endpoint(components: "postkeys")
+    static let stopKeys = Endpoint(components: "stopkeys")
 }

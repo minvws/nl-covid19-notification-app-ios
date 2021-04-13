@@ -659,7 +659,7 @@ final class NetworkManagerTests: TestCase {
 
     func test_postRegister_requestSuccessShouldReturnModel() throws {
 
-        let mockModel = LabInformation(labConfirmationId: "labConfirmationId", bucketId: "bucketId", confirmationKey: "confirmationKey", validity: 1)
+        let mockModel = LabInformation(ggdKey: "ggdKey", bucketId: "bucketId", confirmationKey: "confirmationKey", validity: 1)
         let mockData = try JSONEncoder().encode(mockModel)
 
         mockUrlSession(mockData: mockData)
@@ -672,7 +672,7 @@ final class NetworkManagerTests: TestCase {
                 return
             }
 
-            XCTAssertEqual(model.labConfirmationId, "labConfirmationId")
+            XCTAssertEqual(model.ggdKey, "ggdKey")
 
             completionExpectation.fulfill()
         }

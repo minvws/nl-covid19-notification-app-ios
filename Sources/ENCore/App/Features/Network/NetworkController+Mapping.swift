@@ -15,7 +15,7 @@ extension LabInformation {
             return nil
         }
 
-        return LabConfirmationKey(identifier: labConfirmationId,
+        return LabConfirmationKey(identifier: ggdKey,
                                   bucketIdentifier: bucketIdentifier,
                                   confirmationKey: confirmationKey,
                                   validUntil: Date(timeIntervalSinceNow: TimeInterval(validity)))
