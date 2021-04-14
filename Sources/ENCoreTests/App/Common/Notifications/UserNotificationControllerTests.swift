@@ -161,8 +161,7 @@ class UserNotificationControllerTests: TestCase {
     
     func test_schedulePauseExpirationNotification() throws {
         // Arrange
-        let pauseEndDate = Date(timeIntervalSince1970: 1593311000) // 28/06/20 02:23
-        
+        let pauseEndDate = DateComponents(calendar: Calendar.current, year: 2020, month: 6, day: 28, hour: 2, minute: 23, second: 00).date!
         XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
         
         // Act
@@ -177,9 +176,9 @@ class UserNotificationControllerTests: TestCase {
         
         let trigger = try XCTUnwrap(notificationRequest.trigger as? UNCalendarNotificationTrigger)
         // These components match with pauseEndDate + 30 seconds
-        XCTAssertEqual(trigger.dateComponents.hour, 4)
+        XCTAssertEqual(trigger.dateComponents.hour, 2)
         XCTAssertEqual(trigger.dateComponents.minute, 23)
-        XCTAssertEqual(trigger.dateComponents.second, 50)
+        XCTAssertEqual(trigger.dateComponents.second, 30)
     }
     
     func test_displayPauseExpirationReminder() throws {
