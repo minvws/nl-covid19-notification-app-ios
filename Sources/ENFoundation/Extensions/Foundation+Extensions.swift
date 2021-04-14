@@ -97,7 +97,7 @@ public extension String {
 
 public extension String {
     var asGGDkey: String {
-        guard !self.contains("-") || self.count == 7 else {
+        guard !self.contains("-") && self.count == 7 else {
             return self
         }
 
