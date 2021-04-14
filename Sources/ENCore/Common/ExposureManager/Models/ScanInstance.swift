@@ -5,13 +5,11 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-@testable import ENCore
 import Foundation
-import XCTest
 
-final class StoreControllerTests: TestCase {
-
-    override class func setUp() {
-        super.setUp()
-    }
+/// @mockable
+protocol ScanInstance {
+    var minimumAttenuation: UInt8 { get }
+    var typicalAttenuation: UInt8 { get }
+    var secondsSinceLastScan: Int { get }
 }

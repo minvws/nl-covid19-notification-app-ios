@@ -69,6 +69,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 .subscribe(onSuccess: { isDeactivated in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
+                        self.removePreviousExposureDate().subscribe().disposed(by: self.disposeBag)
                         self.removeAllTasks()
                     } else {
                         self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
@@ -96,37 +97,12 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
         logDebug("Background: Handling task \(identifier)")
 
-        // in a paused state, we only handle refresh background tasks.
-        // We use this process to send a reminder to users that the app is still in a paused state
-        guard !dataController.isAppPaused else {
-            handleTaskDuringPause(task: task, withIdentifier: identifier)
-            return
-        }
-
         let handleTask: () -> () = {
             self.refresh(task: task)
             self.scheduleRefresh()
         }
 
         operationQueue.async(execute: handleTask)
-    }
-
-    @available(iOS 13, *)
-    private func handleTaskDuringPause(task: BGTask, withIdentifier identifier: BackgroundTaskIdentifiers) {
-        logInfo("Handling background task in paused state")
-        func completeTask() {
-            self.scheduleRefresh()
-            task.setTaskCompleted(success: true)
-        }
-
-        if identifier == .refresh, shouldShowPauseExpirationReminder {
-            logInfo("Displaying unpause reminder notification")
-            userNotificationController.displayPauseExpirationReminder { _ in
-                completeTask()
-            }
-        } else {
-            completeTask()
-        }
     }
 
     // ENManager gives apps that register an activity handler
@@ -151,15 +127,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             if activityFlags.contains(.periodicRun) {
 
                 strongSelf.logInfo("Periodic activity callback called (iOS 12.5)")
-
-                // in a paused state we don't to a refresh
-
-                if strongSelf.shouldShowPauseExpirationReminder {
-                    strongSelf.logInfo("Displaying unpause reminder notification")
-                    strongSelf.userNotificationController.displayPauseExpirationReminder(completion: { _ in })
-                } else {
-                    strongSelf.refresh(task: nil)
-                }
+                strongSelf.refresh(task: nil)
             }
         }
     }
@@ -255,17 +223,31 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Refresh
 
     func refresh(task: BackgroundTask?) {
-        let sequence: [Completable] = [
-            activateExposureController(),
-            updateStatusStream(),
-            fetchAndProcessKeysets(),
-            processPendingUploads(),
-            sendInactiveFrameworkNotificationIfNeeded(),
-            sendNotificationIfAppShouldUpdate(),
-            updateTreatmentPerspective(),
-            sendExposureReminderNotificationIfNeeded(),
-            processDecoyRegisterAndStopKeys()
-        ]
+        let sequence: [Completable]
+        
+        
+        if dataController.isAppPaused {
+            // When the app is paused we only perform a limited set of actions in the background
+            
+            sequence = [
+                removePreviousExposureDate(),
+                displayPauseExpirationReminderIfNeeded()
+            ]
+            
+        } else {
+            sequence = [
+                activateExposureController(),
+                updateStatusStream(),
+                fetchAndProcessKeysets(),
+                processPendingUploads(),
+                sendInactiveFrameworkNotificationIfNeeded(),
+                sendNotificationIfAppShouldUpdate(),
+                updateTreatmentPerspective(),
+                sendExposureReminderNotificationIfNeeded(),
+                processDecoyRegisterAndStopKeys(),
+                removePreviousExposureDate()
+            ]
+        }
 
         logDebug("Background: starting refresh task")
 
@@ -353,6 +335,28 @@ final class BackgroundController: BackgroundControlling, Logging {
             observer(.completed)
             return Disposables.create()
         }
+    }
+    
+    private func displayPauseExpirationReminderIfNeeded() -> Completable {
+        logDebug("BackgroundTask: displayPauseExpirationReminderIfNeeded")
+        
+        return .create { (observer) -> Disposable in
+            
+            if self.shouldShowPauseExpirationReminder {
+                self.userNotificationController.displayPauseExpirationReminder { success in
+                    if success {
+                        observer(.completed)
+                    } else {
+                        observer(.error(ExposureDataError.internalError))
+                    }
+                }
+            } else {
+                observer(.completed)
+            }
+            
+            return Disposables.create()
+        }
+    
     }
 
     private func fetchAndProcessKeysets() -> Completable {
@@ -520,6 +524,12 @@ final class BackgroundController: BackgroundControlling, Logging {
 
             return Disposables.create()
         }
+    }
+    
+    /// Removes stored previous exposure date in case it is longer than 14 days ago
+    private func removePreviousExposureDate() -> Completable {
+        logDebug("Background: removePreviousExposureDate()")
+        return dataController.removePreviousExposureDate()
     }
 
     // Returns a Date with the specified hour and minute, for the next day

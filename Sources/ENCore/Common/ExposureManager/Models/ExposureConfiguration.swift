@@ -9,10 +9,29 @@ import Foundation
 
 /// @mockable
 protocol ExposureConfiguration {
-    var minimumRiskScope: UInt8 { get }
-    var attenuationLevelValues: [UInt8] { get }
-    var daysSinceLastExposureLevelValues: [UInt8] { get }
-    var durationLevelValues: [UInt8] { get }
-    var transmissionRiskLevelValues: [UInt8] { get }
-    var attenuationDurationThresholds: [Int] { get }
+    var minimumRiskScore: Double { get }
+
+    /// This list must have 6 elements: UNKNOWN, CONFIRMED_TEST, CONFIRMED_CLINICAL_DIAGNOSIS, SELF_REPORT, RECURSIVE and REVOKED
+    var reportTypeWeights: [Double] { get }
+
+    var reportTypeWhenMissing: UInt32 { get }
+
+    /// This list must have 3 elements: NONE, STANDARD and HIGH infectiousness
+    var infectiousnessWeights: [Double] { get }
+
+    /// This list must have 3 elements: the immediate, near, and medium thresholds
+    var attenuationBucketThresholdDb: [Int] { get }
+
+    /// This list must have 4 elements, corresponding to the weights for the 4 buckets.
+    var attenuationBucketWeights: [Double] { get }
+
+    /// Include exposures for only the last X days
+    var daysSinceExposureThreshold: Int { get }
+
+    /// Minimum risk score sum to trigger an exposure notification
+    var minimumWindowScore: Double { get }
+
+    var daysSinceOnsetToInfectiousness: [DayInfectiousness] { get }
+
+    var infectiousnessWhenDaysSinceOnsetMissing: Int { get }
 }

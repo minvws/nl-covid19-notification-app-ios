@@ -1,3 +1,9 @@
+"enableInternetDescription" = "La app necesita una conexión a internet para poder controlar si las personas con las que te has encontrado resultaron tener coronavirus.<br><br> Conéctate al wifi o activa los datos móviles para esta app.";
+"enableInternetStepTitle" = "Activar datos móviles";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Inicio de lista";
+"accessibility.endOfList" = "Fin de lista";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Tienes que actualizar el software de tu teléfono";
@@ -122,10 +128,6 @@
 "learnMore" = "Más información";
 "retry" = "Prueba otra vez";
 
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Inicio de lista";
-"accessibility.endOfList" = "Fin de lista";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "No se puede abrir la App Store.";
 "updateApp.title" = "La app necesita actualizarse";
@@ -206,12 +208,24 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "enableBluetoothSettingTitleRow3" = "Activa <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "Conectarse a internet";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Abre los <b>ajustes</b> de tu teléfono pulsando el siguiente botón";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "Activar <b>datos móviles</b> para CoronaMelder";
+"enableInternetSettingTitleSettingRow2" = "Datos móviles";
+"enableInternetFooter" = "¿Después de todo esto la app aún no está totalmente activada? Entonces es probable que sea un problema técnico. En estos momentos no puedes hacer nada para arreglarlo.";
+"enableInternetOpenSettingsButton" = "Abrir Ajustes";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder no está activada en estos momentos. Controla tus ajustes.";
 
 "notification.upload.failed.header" = "Llamar al GGD";
 "moreInformation.about.helpdesk.title" = "¿Tienes más preguntas sobre la app?";
 "moreInformation.about.helpdesk.subtitle" = "Llama gratis al 0800-1280";
+"moreInformation.about.website.title" = "Más información sobre la app";
+"moreInformation.about.website.subtitle" = "Visita coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "Omitir";
@@ -241,7 +255,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accesibilidad";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Recibirás una notificación cuando hayas corrido riesgo de contagio. Esto ocurre si has estado al menos 15 minutos cerca de alguien que resultó tener coronavirus, siempre y cuando también utilice la app.<br><br>Recibirás una notificación, o no, dependiendo de la fuerza de la señal de Bluetooth y de la duración del contacto con la otra persona.<br><br>¿Te ha pasado alguien en bicicleta? Entonces no recibirás ninguna notificación. Estuvisteis cerca el uno del otro, así que la señal de Bluetooth fue fuerte, pero el contacto fue tan corto que la posibilidad de contagio es muy pequeña.<br><br>¿Has estado sentado cerca de alguien en el tren o en la oficina? Entonces puede que recibas una notificación más adelante. La señal de Bluetooth fue lo suficientemente fuerte y el contacto fue prolongado.";
+"help.faq.notification.description" = "Recibirás una notificación cuando hayas corrido riesgo de contagio. Esto ocurre si has estado al menos 15 minutos en total cerca de una o más personas que más tarde resultaron tener coronavirus, siempre y cuando utilicen también la app.<br><br>Recibirás una notificación, o no, dependiendo de la fuerza de la señal de Bluetooth y de la duración del contacto con la otra persona.<br><br>¿Te ha pasado alguien en bicicleta? Entonces no recibirás ninguna notificación. Estuvisteis cerca el uno del otro, así que la señal de Bluetooth fue fuerte, pero el contacto fue tan corto que la posibilidad de contagio es muy pequeña.<br><br>¿Has estado sentado cerca de alguien en el tren o en la oficina? Entonces puede que recibas una notificación más tarde. La señal de Bluetooth fue lo suficientemente fuerte y el contacto fue prolongado.";
 "help.faq.bluetooth.title" = "¿Funciona Bluetooth a través de las paredes?";
 "help.faq.bluetooth.description" = "Sí, pero la señal se vuelve muy débil. Bluetooth funciona mejor si tu teléfono se encuentra en el mismo espacio que el teléfono de otra persona.<br><br>Por ejemplo, la probabilidad de que recibas la señal de Bluetooth de tus vecinos es mínima y, por tanto, la probabilidad de que recibas una notificación si tu vecino resulta tener el coronavirus y no habéis estado en el mismo espacio es también mínima.";
 "help.faq.power_usage.title" = "¿Cuánta batería utiliza la app?";
@@ -274,7 +288,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.technical_explanation.github.subtitle" = "Ir a GitHub";
 
 "help.what_does_notification_mean.title" = "¿Qué significa si recibes una notificación?";
-"help.what_does_notification_mean.description1" = "La app te enviará una notificación si has estado al menos 15 minutos cerca de alguien que más tarde resultó tener coronavirus.";
+"help.what_does_notification_mean.description1" = "La app te enviará una notificación si has estado al menos 15 minutos en total cerca de una o más personas que más tarde resultaron tener coronavirus.";
 "help.what_does_notification_mean.description2" = "La notificación aparece en el centro de notificaciones, como hacen los mensajes de otras apps. La notificación tiene el símbolo de CoronaMelder.<br><br>¿Has recibido una notificación? Abre CoronaMelder y lee lo que tienes que hacer.";
 "help.what_does_report_look_like.title" = "¿Qué aspecto tiene una notificación?";
 "help.what_does_report_look_like.description" = "Una notificación se parece a lo que ves cuando recibes un mensaje de texto. En la notificación pone qué día estuviste cerca de alguien con coronavirus.<br><br>Pulsa la notificación para abrir CoronaMelder y consultar qué puedes hacer.";
@@ -284,7 +298,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.other_reports.title" = "Otras notificaciones";
 "help.other_reports.description" = "CoronaMelder también envía una notificación si hay un problema técnico, por ejemplo, si tienes el Bluetooth desactivado o si la app lleva más de un día sin conexión a internet. La app te ayudará a resolverlo.<br><br>¿Has recibido una notificación pero la app funciona sin problemas? Entonces ya se ha resuelto el problema.<br><br>A veces recibirás también notificaciones en las que ponen que tu teléfono está llevando a cabo controles de COVID-19. En ese caso, abre CoronaMelder. Importante saber: normalmente no significa ningún problema.";
 "help.other_what_does_report_say.title" = "¿Qué aspecto tiene una notificación?";
-"help.other_what_does_report_say.content1" = "La app te enviará una notificación si has estado al menos 15 minutos cerca de alguien que más tarde resultó tener coronavirus.";
+"help.other_what_does_report_say.content1" = "La app te enviará una notificación si has estado al menos 15 minutos en total cerca de una o más personas que más tarde resultaron tener coronavirus.";
 "help.other_what_does_report_say.content2" = "La notificación aparece en el centro de notificaciones, como hacen los mensajes de otras apps. La notificación tiene el símbolo de CoronaMelder.<br><br>¿Has recibido una notificación? Abre CoronaMelder y lee lo que tienes que hacer.";
 
 "help.pause_app.title" = "¿Puedo pausar la app?";
@@ -321,10 +335,16 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.appState.inactive.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios";
 "status.appState.inactive.notification" = "La app no ha podido controlar en las últimas 24 horas si las personas con las que te encontraste resultaron tener coronavirus.";
 "status.appState.inactive.no_recent_updates.description" = "La app no ha podido controlar si las personas con las que te has encontrado resultaron tener coronavirus. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
+"status.appState.partlyinactive.title" = "La app está parcialmente activada";
+"status.appState.partlyinactive.bluetooth.description" = "Tu Bluetooth está desactivado, por lo que la app no registrará <b>ningún</b> encuentro nuevo. La app <b>sigue</b> controlando si las personas con las que te has encontrado resultan tener coronavirus.";
+"status.appState.partlyinactive.nointernet.description" = "La app no tiene conexión a internet, por lo que <b>no</b> ha podido controlar durante 24 horas si las personas con las que te has encontrado resultaron tener coronavirus. Aun así, la app <b>sigue</b> registrando tus encuentros.<br><br><b>Conéctate al wifi o permite que la app utilice datos móviles.</b>";
+"status.appState.solveproblem.button" = "Solucionar problema";
 "status.appState.card.title" = "La app no está activada";
 "status.appState.card.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios.";
 "status.appState.card.no_recent_updates.description" = "La app no ha podido controlar si las personas con las que te has encontrado resultaron tener coronavirus. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
 "status.appState.card.button" = "Activar la app";
+"status.appState.card.bluetooth" = "Tu Bluetooth está desactivado. Esta app no puede registrar nuevos encuentros.";
+"status.appState.card.bluetooth.button" = "Activar Bluetooth";
 "status.appState.card.try_again" = "Prueba otra vez";
 "status.active.description" = "Los encuentros seguirán registrándose, incluso aunque cierres la app";
 "status.notified.days_ago_one" = "hace %@ día";

@@ -1,3 +1,9 @@
+"enableInternetDescription" = "يحتاج التطبيق إلى الاتصال بالإنترنت للتحقق مما إذا كان الأشخاص الذين قابلتهم لاحقًا مصابين بكورونا. <br><br> اتصل بـالـ WiFi أو شغّل للتطبيق خدمة تجوال البيانات.";
+"enableInternetStepTitle" = "تشغيل خدمة تجوال البيانات";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "بداية القائمة";
+"accessibility.endOfList" = "نهاية القائمة";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "يجب عليك تحديث البرمجيات في هاتفك.";
@@ -122,10 +128,6 @@
 "learnMore" = "إقرأ المزيد";
 "retry" = "حاول مجددًا";
 
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "بداية القائمة";
-"accessibility.endOfList" = "نهاية القائمة";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "لا يمكن فتح متجر التطبيقات [App Store]";
 "updateApp.title" = "التطبيق بحاجة إلى تحديث";
@@ -206,12 +208,24 @@
 "enableBluetoothSettingTitleRow3" = "قم بتشغيل<b>البلوتوث<b/>";
 "enableBluetoothSettingTitleSettingRow3" = "البلوتوث";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "الاتصال بالإنترنت";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "إفتح <b>الإعدادات</b> في هاتفك باستخدام الزر أسفله.";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "قم <b> بتشغيل </b> خدمة تجوال البيانات من أجل CoronaMelder ";
+"enableInternetSettingTitleSettingRow2" = "خدمة تجوال البيانات";
+"enableInternetFooter" = "هل  لا يزال التطبيق غير نشط بشكل كامل؟ ربما هناك مشكلة فنية. لا يمكنك فعل أي شيء حيال هذا بنفسك في الوقت الراهن.";
+"enableInternetOpenSettingsButton" = "إفتح الإعدادات";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "تطبيق CoronaMelder غير نشط الآن، راجع إعداداتك.";
 
 "notification.upload.failed.header" = "اتصل بالمصلحة الصحية للبلدية";
 "moreInformation.about.helpdesk.title" = "هل لديك سؤال آخر عن التطبيق؟";
 "moreInformation.about.helpdesk.subtitle" = "اتصل مجانًا على الرقم 1280 -0800";
+"moreInformation.about.website.title" = "للمزيد من المعلومات حول التطبيق";
+"moreInformation.about.website.subtitle" = "راجع موقع Coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "تخطى";
@@ -242,7 +256,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "قابلية الوصول";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "ستستلم إشعارًا بعد أن كنت أكثر عرضة للإصابة. يحدث ذلك بعد أن تواجدت لمدة 15 دقيقة على الأقل بالقرب من شخص تبين لاحقاً أنه مصاب بكورونا. وبالطبع فقط إذا كان هذا الشخص يستخدم التطبيق أيضًا. <br><br> يعتمد ما إذا كنت ستتلقى إشعارًا على قوة إشارة البلوتوث ومدة احتكاككم. <br><br>هل مر بجوارك شخص  بدراجة هوائية؟ لن يصلك إشعارًا لاحقًا. كنتما قريبين من بعضكما وكانت إشارة البلوتوث قوية، إلا أن الاحتكاك استمر لفترة وجيزة لدرجة أن خطر الإصابة بالعدوى ضئيل للغاية. <br><br>هل كنت جالسًا قريبًا من شخص ما في القطار أو في المكتب؟ يمكنك أن تتلقى إشعارًا في وقت لاحق. كانت إشارة البلوتوث قوية بدرجة كافية وكنتما قريبين من بعضكما لفترة طويلة.";
+"help.faq.notification.description" = "ستستلم إشعارًا بعد أن كنت أكثر عرضة للإصابة. يحدث ذلك بعد أن تواجدت لمدة 15 دقيقة على الأقل بالقرب من شخص أو أشخاص تبين لاحقاً أنهم مصابين بكورونا. وبالطبع فقط إذا كان هذا الشخص يستخدم التطبيق أيضًا. <br><br> يعتمد ما إذا كنت ستتلقى إشعارًا على قوة إشارة البلوتوث ومدة احتكاككم. <br><br>هل مر بجوارك شخص  بدراجة هوائية؟ لن يصلك إشعار لاحقًا. كنتما قريبين من بعضكما وكانت إشارة البلوتوث قوية، إلا أن الاختلاط استمر لفترة وجيزة لدرجة أن يكون خطر الإصابة بالعدوى ضئيلا للغاية. <br><br>هل كنت جالسًا قريبًا من شخص ما في القطار أو في المكتب؟ يمكنك أن تتلقى إشعارًا في وقت لاحق. كانت إشارة البلوتوث قوية بدرجة كافية وكنتما قريبين من بعضكما لفترة طويلة.";
 "help.faq.bluetooth.title" = "هل بإمكان إشارة البلوتوث اختراق الجدران؟";
 "help.faq.bluetooth.description" = "نعم، إلا أن الإشارة ستكون ضعيفة جدًا. يعمل البلوتوث على أكمل وجه عندما يتواجد هاتفك في نفس الغرفة التي يتواجد فيها هاتف الشخص الآخر.<br><br>احتمالية استلامك لإشارة البلوتوث من الجيران على سبيل المثال ضئيلة جداً. <br><br>لذلك فإن احتمالية استلامك لتحذير ضئيلة أيضًا بعد أن تبين أن جارك مصاب بكورونا ولم تكن متواجدًا معه في نفس الغرفة.";
 "help.faq.power_usage.title" = "ما كمية الطاقة التي يستهلكها التطبيق؟";
@@ -276,7 +290,7 @@
 "help.technical_explanation.github.subtitle" = "انتقل إلى GitHub";
 
 "help.what_does_notification_mean.title" = "ماذا يعني إذا استلمت إشعارًا؟";
-"help.what_does_notification_mean.description1" = "يرسل هذا التطبيق إشعاراً في حال تواجدك لمدة 15 دقيقة على الأقل بالقرب من شخص تبين لاحقاً إصابته بفيروس كورونا.";
+"help.what_does_notification_mean.description1" = "يرسل هذا التطبيق إشعاراً في حال تواجدك لمدة 15 دقيقة على الأقل بالقرب من شخص أو أشخاص تبين لاحقاً إصابتهم بفيروس كورونا.";
 "help.what_does_notification_mean.description2" = "سيظهر الإشعار على الشاشة الرئيسية لهاتفك. تمامًا مثل الرسائل الواردة من التطبيقات الأخرى. الإشعار لديه رمز CoronaMelder. <br> <br> هل تلقيت إشعارًا؟ افتح CoronaMelder. هناك يمكنك قراءة ما يمكنك القيام به بعد ذلك.";
 "help.what_does_report_look_like.title" = "كيف يبدو الإشعار؟";
 "help.what_does_report_look_like.description" = "يشبه الإشعار ما تراه عندما تتلقى رسالة نصية. يورد في الإشعار اليوم الذي كنت فيه بالقرب من شخص مصاب بفيروس كورونا.
@@ -288,7 +302,7 @@
 "help.other_reports.title" = "إشعارات أخرى";
 "help.other_reports.description" = "يمكن لـ CoronaMelder أيضًا أن يرسل لك إشعارًا في حالة وجود مشكلة تقنية. إذا تم إيقاف تشغيل البلوتوث على سبيل المثال. أو إذا لم يكن هناك اتصال بالإنترنت لأكثر من يوم. سيساعدك التطبيق في حل هذه المشكلة.<br><br>هل تلقيت مثل هذا الإشعار، وهل لا يزال التطبيق نشطًا؟ تم في هذه الأثناء انحلت المشكلة بالفعل.<br> <br> تتلقى أحيانًا أيضًا إشعارات تفيد بأن هاتفك يجري فحوصات COVID-19. إفتح CoronaMelder عندئذ. من المهم أن تعرف: لا يوجد هناك في العادة شيء يدعو إلى القلق.";
 "help.other_what_does_report_say.title" = "كيف أتعرف على الإشعار؟";
-"help.other_what_does_report_say.content1" = "يرسل هذا التطبيق إشعاراً في حال تواجدك لمدة 15 دقيقة على الأقل بالقرب من شخص تبين لاحقاً إصابته بفيروس كورونا.";
+"help.other_what_does_report_say.content1" = "يرسل هذا التطبيق إشعاراً في حال تواجدك لمدة 15 دقيقة على الأقل بالقرب من شخص أو أشخاص تبين لاحقاً إصابتهم بفيروس كورونا.";
 "help.other_what_does_report_say.content2" = "سيظهر الإشعار على الشاشة الرئيسية لهاتفك. تمامًا مثل الرسائل الواردة من التطبيقات الأخرى. الإشعار لديه رمز CoronaMelder <br> <br> هل تلقيت إشعارًا؟ ثم افتح CoronaMelder. هناك يمكنك قراءة ما يمكنك القيام به بعد ذلك";
 
 "help.pause_app.title" = "Can I pause the app?";
@@ -325,10 +339,16 @@
 "status.appState.inactive.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة.";
 "status.appState.inactive.notification" = "لم يتمكن التطبيق من التحقق لمدة 24 ساعة فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا.";
 "status.appState.inactive.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
+"status.appState.partlyinactive.title" = "التطبيق نشط جزئيًا";
+"status.appState.partlyinactive.bluetooth.description" = "البلوتوث غير مشغّل. وبالتالي فإن التطبيق <b>لا</ b> يستطيع تتبع أي مخالطات جديدة. سيقوم التطبيق <b> بفحص </ b> ما إذا كان الأشخاص الذين قابلتهم من قبل مصابين بكورونا.";
+"status.appState.partlyinactive.nointernet.description" = "التطبيق غير متصل بشبكة الإنترنت. ونتيجة لذلك<b> لم </b> يتمكن التطبيق  لمدة 24 ساعة من التحقق مما إذا كان الأشخاص الذين قابلتهم لاحقًا مصابين بكورونا. <b>سيتعقب</b> التطبيق المخالطات التي قمت بها. <br/> <br/> <b> اتصل بشبكة الـ Wi-Fi أو شغَل التطبيق للسماح باستخدام خدمة تجوال البيانات </ b>";
+"status.appState.solveproblem.button" = "حل المشكلة ";
 "status.appState.card.title" = "التطبيق غير نشط";
 "status.appState.card.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة..";
 "status.appState.card.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
 "status.appState.card.button" = "تشغيل التطبيق";
+"status.appState.card.bluetooth" = "البلوتوث غير مشغّل. وبالتالي فإن التطبيق لا يستطيع تتبع أي مخالطات جديدة. ";
+"status.appState.card.bluetooth.button" = "تشغيل البلوتوث";
 "status.appState.card.try_again" = "حاول مجددًا";
 "status.active.description" = "يقوم التطبيق بتسجيل المصادفات، حتى إذا قمت بإغلاق التطبيق.";
 "status.notified.days_ago_one" = "آخر%@";

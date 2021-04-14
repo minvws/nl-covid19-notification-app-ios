@@ -5,13 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-@testable import ENCore
-import Foundation
-import XCTest
-
-final class StoreControllerTests: TestCase {
-
-    override class func setUp() {
-        super.setUp()
-    }
+struct DayInfectiousness: Codable, Equatable {
+    let daysSinceOnsetOfSymptoms: Int
+    let infectiousness: Int
 }

@@ -15,6 +15,7 @@ protocol EnvironmentControlling {
     var gaenRateLimitingType: GAENRateLimitingType { get }
     var appVersion: String? { get }
     var supportsExposureNotification: Bool { get }
+    var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion { get }
     var isDebugVersion: Bool { get }
     var appSupportsiOSversion: Bool { get }
 }
@@ -92,7 +93,7 @@ class EnvironmentController: EnvironmentControlling {
         #endif
     }
 
-    private var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion {
+    var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion {
         if #available(iOS 13.7, *) {
             return .version2
         } else if #available(iOS 13.5, *) {

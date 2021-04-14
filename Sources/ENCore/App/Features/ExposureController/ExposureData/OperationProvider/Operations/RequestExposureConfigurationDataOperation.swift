@@ -8,16 +8,6 @@
 import Foundation
 import RxSwift
 
-struct ExposureRiskConfiguration: Codable, ExposureConfiguration, Equatable {
-    let identifier: String
-    let minimumRiskScope: UInt8
-    let attenuationLevelValues: [UInt8]
-    let daysSinceLastExposureLevelValues: [UInt8]
-    let durationLevelValues: [UInt8]
-    let transmissionRiskLevelValues: [UInt8]
-    let attenuationDurationThresholds: [Int]
-}
-
 /// @mockable
 protocol RequestExposureConfigurationDataOperationProtocol {
     func execute() -> Single<ExposureConfiguration>
@@ -35,6 +25,7 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
     // MARK: - ExposureDataOperation
 
     func execute() -> Single<ExposureConfiguration> {
+
         if let exposureConfiguration = retrieveStoredConfiguration(), exposureConfiguration.identifier == exposureConfigurationIdentifier {
             return .just(exposureConfiguration)
         }

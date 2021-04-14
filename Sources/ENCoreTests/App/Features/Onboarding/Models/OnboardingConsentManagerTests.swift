@@ -17,7 +17,8 @@ class OnboardingConsentManagerTests: TestCase {
     private var mockExposureState = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
     private var mockUserNotificationController: UserNotificationControllingMock!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         mockExposureStateStream = ExposureStateStreamingMock()
         mockExposureController = ExposureControllingMock()
         mockUserNotificationController = UserNotificationControllingMock()

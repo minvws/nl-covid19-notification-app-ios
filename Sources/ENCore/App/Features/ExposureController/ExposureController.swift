@@ -282,9 +282,10 @@ final class ExposureController: ExposureControlling, Logging {
         return completable
     }
 
-    func confirmExposureNotification() {
+    func confirmExposureNotification() {        
         dataController
             .removeLastExposure()
+            .andThen(dataController.removeFirstNotificationReceivedDate())
             .subscribe(onCompleted: { [weak self] in
                 self?.updateStatusStream()
             }, onError: { [weak self] _ in
@@ -337,6 +338,10 @@ final class ExposureController: ExposureControlling, Logging {
 
     func clearUnseenExposureNotificationDate() {
         dataController.clearLastUnseenExposureNotificationDate()
+    }
+    
+    func updateExposureFirstNotificationReceivedDate(_ date: Date) {
+        dataController.updateExposureFirstNotificationReceivedDate(date)
     }
 
     func updateAndProcessPendingUploads() -> Completable {

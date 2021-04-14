@@ -10,7 +10,7 @@ import ExposureNotification
 import Foundation
 import XCTest
 
-final class ExposureManagerTests: XCTestCase {
+final class ExposureManagerTests: TestCase {
     private var manager: ExposureManager!
     private let mock = ENManagingMock()
 

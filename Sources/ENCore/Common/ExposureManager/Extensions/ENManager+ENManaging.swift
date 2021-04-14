@@ -17,6 +17,8 @@ protocol ENManaging {
                          diagnosisKeyURLs: [URL],
                          completionHandler: @escaping ENDetectExposuresHandler) -> Progress
 
+    func getExposureWindows(summary: ENExposureDetectionSummary, completionHandler: @escaping ENGetExposureWindowsHandler) -> Progress
+
     func getDiagnosisKeys(completionHandler: @escaping ENGetDiagnosisKeysHandler)
     func getTestDiagnosisKeys(completionHandler: @escaping ENGetDiagnosisKeysHandler)
 
@@ -37,6 +39,10 @@ extension ENManager: ENManaging {}
 
 extension ENExposureDetectionSummary: ExposureDetectionSummary {}
 extension ENExposureInfo: ExposureInformation {}
+extension ENScanInstance: ScanInstance {}
+extension ENExposureWindow: ExposureWindow {
+    var scans: [ScanInstance] { scanInstances }
+}
 
 extension ExposureConfiguration {
     var asExposureConfiguration: ENExposureConfiguration {
@@ -50,12 +56,44 @@ private class DefaultExposureConfiguration: ENExposureConfiguration {
 
         super.init()
 
-        self.minimumRiskScore = exposureConfiguration.minimumRiskScope
-        self.attenuationLevelValues = exposureConfiguration.attenuationLevelValues as [NSNumber]
-        self.daysSinceLastExposureLevelValues = exposureConfiguration.daysSinceLastExposureLevelValues as [NSNumber]
-        self.durationLevelValues = exposureConfiguration.durationLevelValues as [NSNumber]
-        self.transmissionRiskLevelValues = exposureConfiguration.transmissionRiskLevelValues as [NSNumber]
-        self.metadata = ["attenuationDurationThresholds": exposureConfiguration.attenuationDurationThresholds]
+        minimumRiskScoreFullRange = exposureConfiguration.minimumRiskScore
+
+        immediateDurationWeight = exposureConfiguration.attenuationBucketWeights[0]
+        nearDurationWeight = exposureConfiguration.attenuationBucketWeights[1]
+        mediumDurationWeight = exposureConfiguration.attenuationBucketWeights[2]
+        otherDurationWeight = exposureConfiguration.attenuationBucketWeights[3]
+
+        var infectiousnessMap = [NSNumber: NSNumber]()
+
+        exposureConfiguration.daysSinceOnsetToInfectiousness.forEach { item in
+            infectiousnessMap[NSNumber(integerLiteral: item.daysSinceOnsetOfSymptoms)] = NSNumber(integerLiteral: item.infectiousness)
+        }
+
+        if #available(iOS 14.0, *) {
+            infectiousnessMap[NSNumber(value: ENDaysSinceOnsetOfSymptomsUnknown)] = NSNumber(value: exposureConfiguration.infectiousnessWhenDaysSinceOnsetMissing)
+        } else {
+            // ENDaysSinceOnsetOfSymptomsUnknown is not available
+            // in earlier versions of iOS; use an equivalent value
+            infectiousnessMap[NSNumber(value: NSIntegerMax)] = NSNumber(value: exposureConfiguration.infectiousnessWhenDaysSinceOnsetMissing)
+        }
+
+        infectiousnessForDaysSinceOnsetOfSymptoms = infectiousnessMap
+
+        infectiousnessStandardWeight = exposureConfiguration.infectiousnessWeights[1]
+        infectiousnessHighWeight = exposureConfiguration.infectiousnessWeights[2]
+
+        reportTypeConfirmedTestWeight = exposureConfiguration.reportTypeWeights[1]
+        reportTypeConfirmedClinicalDiagnosisWeight = exposureConfiguration.reportTypeWeights[2]
+        reportTypeSelfReportedWeight = exposureConfiguration.reportTypeWeights[3]
+        reportTypeRecursiveWeight = exposureConfiguration.reportTypeWeights[4]
+        reportTypeNoneMap = ENDiagnosisReportType(rawValue: exposureConfiguration.reportTypeWhenMissing) ?? .unknown
+
+        attenuationDurationThresholds = exposureConfiguration.attenuationBucketThresholdDb.compactMap {
+            let dbInt = Int($0)
+            return NSNumber(integerLiteral: dbInt)
+        }
+
+        daysSinceLastExposureThreshold = Int(exposureConfiguration.daysSinceExposureThreshold)
     }
 
     // MARK: - Private

@@ -8,7 +8,7 @@
 @testable import ENCore
 import XCTest
 
-final class SignatureValidatorTests: XCTestCase {
+final class SignatureValidatorTests: TestCase {
 
     func test_validateSignature_withDefaultSignatureConfiguration() {
         let validSignature = dataFromFile(withName: "signature-valid", fileType: "sig")

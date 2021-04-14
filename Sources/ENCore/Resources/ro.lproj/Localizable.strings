@@ -1,3 +1,9 @@
+"enableInternetDescription" = "Aplicația are nevoie de conexiune la internet pentru a putea controla dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. <br><br>Conectați-vă la wifi sau activați datele celulare pentru această aplicație.";
+"enableInternetStepTitle" = "Activare date celulare";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Începutul listei";
+"accessibility.endOfList" = "Sfârșitul listei";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Trebuie să actualizați software-ul pe telefonul dvs.";
@@ -122,10 +128,6 @@
 "learnMore" = "Citiți mai mult";
 "retry" = "Încercați încă o dată";
 
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Începutul listei";
-"accessibility.endOfList" = "Sfârșitul listei";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store nu poate fi deschis";
 "updateApp.title" = "Aplicația trebuie actualizată";
@@ -205,12 +207,24 @@
 "enableBluetoothSettingTitleRow3" = "Activați <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "Conectare la internet";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Accesați <b>Configurări</b> pe telefonul dvs. folosind butonul de mai jos";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "Activați <b>datele celulare</b> pentru CoronaMelder";
+"enableInternetSettingTitleSettingRow2" = "Date celulare";
+"enableInternetFooter" = "Aplicația încă nu este activă după aceasta? Atunci, probabil,  este o problemă tehnică. În acest moment nu puteți face nimic în legătură cu acest lucru.";
+"enableInternetOpenSettingsButton" = "Accesați Configurări";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder nu este activată în acest moment. Controlați configurările.";
 
 "notification.upload.failed.header" = "Sunați la GGD (Serviciul de Sănătate Municipal)";
 "moreInformation.about.helpdesk.title" = "Altă întrebare despre aplicație?";
 "moreInformation.about.helpdesk.subtitle" = "Sunați gratuit la 0800-1280";
+"moreInformation.about.website.title" = "Mai multe informații despre aplicație";
+"moreInformation.about.website.subtitle" = "Accesați coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "Omiteți";
@@ -241,7 +255,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accesibilitate";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Veți primi notificări după ce ați fost expus unui risc ridicat de infectare. Acest lucru se întâmplă dacă ați fost cel puțin 15 minute aproape de cineva care se dovedește a fi infectat cu coronavirus. Bineînțeles, acest lucru este posibil doar dacă și acea persoană folosește aplicația.<br><br>Primirea unei notificări depinde de puterea semnalului Bluetooth și de durata contactului.<br><br>A trecut cineva cu bicicleta pe lângă dvs.? Atunci nu veți primi notificări în viitor. Ați fost aproape unul de altul, deci semnalul Bluetooth a fost puternic. Însă durata contactului a fost așa de scurtă încât riscul de infectare este foarte mic.<br><br>Ați stat aproape de cineva în tren sau la birou? Atunci puteți primi notificări în viitor. Semnalul Bluetooth a fost puternic și ați fost aproape unul de celălalt mult timp.";
+"help.faq.notification.description" = "Veți primi notificări după ce ați fost expus unui risc ridicat de infectare. Acest lucru se întâmplă dacă ați fost cel puțin 15 minute aproape de una sau mai multe persoane care se dovedesc ulterior a fi infectate cu coronavirus. Bineînțeles, acest lucru este posibil doar dacă și acea persoană folosește aplicația.<br><br>Primirea unei notificări depinde de puterea semnalului Bluetooth și de durata contactului.<br><br>A trecut cineva cu bicicleta pe lângă dvs.? Atunci nu veți primi notificări în viitor. Ați fost aproape unul de altul, deci semnalul Bluetooth a fost puternic. Însă durata contactului a fost așa de scurtă încât riscul de infectare este foarte mic.<br><br>Ați stat aproape de cineva în tren sau la birou? Atunci puteți primi notificări în viitor. Semnalul Bluetooth a fost puternic și ați fost aproape unul de celălalt mult timp.";
 "help.faq.bluetooth.title" = "Poate trece semnalul Bluetooth prin pereți?";
 "help.faq.bluetooth.description" = "Da, dar semnalul este foarte slab. Bluetooth funcționează cel mai bine dacă telefonul dvs. se află în aceeași cameră cu telefonul unei alte persoane.<br><br>De exemplu, este puțin probabil ca aplicația dvs. să primească semnalul Bluetooth de la vecini.<br><br>De aceea, este puțin probabil să primiți o notificare dacă vecinul dvs. se dovedește a avea coronavirus dar nu ați fost în aceeași cameră.";
 "help.faq.power_usage.title" = "Câtă baterie utilizează aplicația?";
@@ -274,7 +288,7 @@
 "help.technical_explanation.github.subtitle" = "Accesați GitHub";
 
 "help.what_does_notification_mean.title" = "Ce înseamnă dacă primiți o notificare?";
-"help.what_does_notification_mean.description1" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei persoane care se dovedește ulterior a fi infectată cu coronavirus.";
+"help.what_does_notification_mean.description1" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei sau mai multor persoane care se dovedesc ulterior a fi infectate cu coronavirus.";
 "help.what_does_notification_mean.description2" = "Notificarea apare pe ecranul telefonului dvs., la fel ca mesajele primite prin alte aplicații. Notificarea are simbolul aplicației CoronaMelder.<br><br>Ați primit o notificare? Atunci deschideți CoronaMelder. În aplicație veți citi ce puteți face mai departe.";
 "help.what_does_report_look_like.title" = "Cum arată o notificare?";
 "help.what_does_report_look_like.description" = "Notificarea este asemănătoare unui mesaj sms. În notificare se menționează în ce zi v-ați aflat în apropierea cuiva infectat cu coronavirus.<br><br>Deschideți notificarea. În notificare veți putea citi ce puteți face mai departe.";
@@ -284,7 +298,7 @@
 "help.other_reports.title" = "Alte notificări";
 "help.other_reports.description" = "Aplicația vă poate trimite și notificări în cazul unor probleme tehnice. De exemplu, dacă bluetooth este dezactivat sau dacă nu ați avut legătură la internet mai mult de o zi. Aplicația vă ajută să soluționați problema.<br><br>Ați primit o astfel de notificare dar aplicația este activă? Înseamnă că problema a fost rezolvată între timp.<br><br> Uneori primiți notificări în care se menționează că telefonul dvs. face controale COVID-19.  Deschideți aplicația CoronaMelder. Bine de reținut: de cele mai multe ori, nu este nici o problemă.";
 "help.other_what_does_report_say.title" = "Cum recunosc o notificare?";
-"help.other_what_does_report_say.content1" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei persoane care se dovedește ulterior a fi infectată cu coronavirus.  ";
+"help.other_what_does_report_say.content1" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei sau mai multor persoane care se dovedesc ulterior a fi infectate cu coronavirus.";
 "help.other_what_does_report_say.content2" = "Notificarea apare pe ecranul telefonului dvs., la fel ca mesajele primite prin alte aplicații. Notificarea are simbolul aplicației CoronaMelder.<br><br>Ați primit o notificare? Atunci deschideți CoronaMelder. În aplicație veți citi ce puteți face mai departe.";
 
 "help.pause_app.title" = "Pot pune aplicația pe pauză?";
@@ -321,10 +335,16 @@
 "status.appState.inactive.description" = "CoronaMelder funcționează doar dacă configurările necesare sunt activate.";
 "status.appState.inactive.notification" = "Aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedid a fi infectate cu coronavirus.";
 "status.appState.inactive.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
+"status.appState.partlyinactive.title" = "Aplicația este parțial activă";
+"status.appState.partlyinactive.bluetooth.description" = "Semnalul Bluetooth este dezactivat. Din această cauză aplicația <b>nu</b> ține evidența noilor întâlniri. Aplicația controlează însă <b>încă</b> dacă persoanele  întâlnite mai devreme se dovedesc a fi infectate cu coronavirus.";
+"status.appState.partlyinactive.nointernet.description" = "Aplicația nu are conexiune la internet. Din această cauză,  timp de 24 de ore, aplicația <b>nu</b> a putut controla dacă personele întâlnite s-au dovedit mai târziu a fi infectate  cu coronavirus. Aplicația ține <b>încă</b> evidența întâlnirilor.<br/><br/><b>Conectați-vă la Wifi sau activați datele celulare pentru a permite aplicației să le folosească.</b>";
+"status.appState.solveproblem.button" = "Soluționarea problemei";
 "status.appState.card.title" = "Aplicația nu este activă";
 "status.appState.card.description" = "CoronaMelder funcționează doar dacă setările necesare sunt activate";
 "status.appState.card.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
 "status.appState.card.button" = "Activare aplicație";
+"status.appState.card.bluetooth" = "Semnalul Bluetooth este dezactivat. Aplicația nu poate ține evidența întâlnirilor.";
+"status.appState.card.bluetooth.button" = "Activare Bluetooth";
 "status.appState.card.try_again" = "Încercați din nou";
 "status.active.description" = "Chiar dacă închideți aplicația, se va ține, în continuare, evidența întâlnirilor.";
 "status.notified.days_ago_one" = "Acum %@ zi";

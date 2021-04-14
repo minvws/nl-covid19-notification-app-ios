@@ -12,7 +12,7 @@ import Foundation
 import RxSwift
 import XCTest
 
-final class BackgroundControllerTests: XCTestCase {
+final class BackgroundControllerTests: TestCase {
     private var controller: BackgroundController!
 
     private let exposureController = ExposureControllingMock()
@@ -47,35 +47,17 @@ final class BackgroundControllerTests: XCTestCase {
                                           randomNumberGenerator: mockRandomNumberGenerator,
                                           environmentController: environmentController)
 
-        exposureManager.getExposureNotificationStatusHandler = {
-            return .active
-        }
-        exposureController.activateHandler = {
-            return .empty()
-        }
-        exposureController.updateWhenRequiredHandler = {
-            return .empty()
-        }
-        exposureController.processPendingUploadRequestsHandler = {
-            return .empty()
-        }
-        exposureController.exposureNotificationStatusCheckHandler = {
-            .empty()
-        }
-        exposureController.updateAndProcessPendingUploadsHandler = {
-            .empty()
-        }
-
-        exposureController.sendNotificationIfAppShouldUpdateHandler = {
-            .empty()
-        }
-        exposureController.updateTreatmentPerspectiveHandler = {
-            .empty()
-        }
-
-        exposureController.lastOpenedNotificationCheckHandler = {
-            .empty()
-        }
+        exposureManager.getExposureNotificationStatusHandler = { .active }
+        exposureController.activateHandler = { .empty() }
+        exposureController.updateWhenRequiredHandler = { .empty() }
+        exposureController.processPendingUploadRequestsHandler = { .empty() }
+        exposureController.exposureNotificationStatusCheckHandler = { .empty() }
+        exposureController.updateAndProcessPendingUploadsHandler = { .empty() }
+        exposureController.sendNotificationIfAppShouldUpdateHandler = { .empty() }
+        exposureController.updateTreatmentPerspectiveHandler = { .empty() }
+        exposureController.lastOpenedNotificationCheckHandler = { .empty() }
+        
+        dataController.removePreviousExposureDateHandler = { .empty() }
     }
 
     // MARK: - Tests
@@ -131,6 +113,14 @@ final class BackgroundControllerTests: XCTestCase {
         controller.refresh(task: nil)
 
         XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
+    }
+    
+    func test_refresh_shouldRemovePreviousExposureDates() {
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 0)
+        
+        controller.refresh(task: nil)
+
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 1)
     }
 
     func test_refresh_shouldFetchAndProcessKeySets() {
@@ -233,7 +223,7 @@ final class BackgroundControllerTests: XCTestCase {
         dataController.canProcessDecoySequence = true
         exposureController.getDecoyProbabilityHandler = { .just(1) }
         exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
         exposureController.getPaddingHandler = {
             return .just(Padding(minimumRequestSize: 0, maximumRequestSize: 1))
@@ -266,10 +256,8 @@ final class BackgroundControllerTests: XCTestCase {
             completion(true)
         }
 
-        let now = Date()
-        DateTimeTestingOverrides.overriddenCurrentDate = now
         dataController.isAppPaused = true
-        dataController.pauseEndDate = now.addingTimeInterval(-.hours(2))
+        dataController.pauseEndDate = currentDate().addingTimeInterval(-.hours(2))
 
         controller.handle(task: task)
 
@@ -298,7 +286,7 @@ final class BackgroundControllerTests: XCTestCase {
         }
 
         dataController.isAppPaused = true
-        dataController.pauseEndDate = Date().addingTimeInterval(-.minutes(10))
+        dataController.pauseEndDate = currentDate().addingTimeInterval(-.minutes(10))
 
         controller.handle(task: task)
 
@@ -422,6 +410,32 @@ final class BackgroundControllerTests: XCTestCase {
         XCTAssertEqual(taskScheduler.cancelCallCount, 0)
         XCTAssertEqual(taskScheduler.submitCallCount, 0)
     }
+    
+    func test_scheduleTasks_shouldCancelAllTaskRequestsAppIsDeactivated() {
+
+        let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
+        exposureController.isAppDeactivatedHandler = { .just(true) }
+        taskScheduler.cancelAllTaskRequestsHandler = { cancelAllTaskExpectation.fulfill() }
+
+        controller.scheduleTasks()
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+    
+    func test_scheduleTasks_shouldRemovePreviousExposureDateAppIsDeactivated() {
+        let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
+        taskScheduler.cancelAllTaskRequestsHandler = { cancelAllTaskExpectation.fulfill() }
+        
+        exposureController.isAppDeactivatedHandler = { .just(true) }
+        
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 0)
+        
+        controller.scheduleTasks()
+        
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 1)
+    }
 
     func test_scheduleTasks_shouldScheduleRefreshIfAppDeactivatedCannotBeDetermined() {
 
@@ -459,7 +473,7 @@ final class BackgroundControllerTests: XCTestCase {
         mockRandomNumberGenerator.randomFloatHandler = { _ in 0 }
         exposureController.getDecoyProbabilityHandler = { .just(1) }
         exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
 
         exposureController.getPaddingHandler = {
@@ -491,7 +505,7 @@ final class BackgroundControllerTests: XCTestCase {
         exposureController.getDecoyProbabilityHandler = { .just(1) }
 
         exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
 
         exposureManager.getExposureNotificationStatusHandler = {
@@ -508,7 +522,7 @@ final class BackgroundControllerTests: XCTestCase {
         }
 
         exposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: Date())))
+            completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
 
         controller.performDecoySequenceIfNeeded()
@@ -558,7 +572,7 @@ final class BackgroundControllerTests: XCTestCase {
     // MARK: - Private
 
     private var labConfirmationKey: LabConfirmationKey {
-        LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: Date())
+        LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: currentDate())
     }
 }
 

@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import Foundation
 import RxSwift
 import XCTest
@@ -26,6 +27,8 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
     }
 
     func test_execute_noPreviousKey() {
+        let exp = expectation(description: "expectation")
+        
         storageController.retrieveDataHandler = { _ in
             return nil
         }
@@ -37,7 +40,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
             let labConfirmationKey = LabConfirmationKey(identifier: "id",
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
-                                                        validUntil: Date())
+                                                        validUntil: currentDate())
             return .just(labConfirmationKey)
         }
 
@@ -50,9 +53,11 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
             .execute()
             .subscribe(onSuccess: { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
+                exp.fulfill()
             })
             .disposed(by: disposeBag)
 
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
         XCTAssertEqual(storageController.storeCallCount, 1)
         XCTAssertEqual(networkController.requestLabConfirmationKeyCallCount, 1)
@@ -88,6 +93,8 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
     }
 
     func test_execute_previousButExpiredKey_downloadsAndStoresNewKey() {
+        let exp = expectation(description: "expectation")
+        
         storageController.retrieveDataHandler = { _ in
             let key = LabConfirmationKey(identifier: "id",
                                          bucketIdentifier: Data(),
@@ -104,7 +111,7 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
             let labConfirmationKey = LabConfirmationKey(identifier: "id",
                                                         bucketIdentifier: Data(),
                                                         confirmationKey: Data(),
-                                                        validUntil: Date())
+                                                        validUntil: currentDate())
             return .just(labConfirmationKey)
         }
 
@@ -117,9 +124,12 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
             .execute()
             .subscribe(onSuccess: { labConfirmationKey in
                 receivedLabConfirmationKey = labConfirmationKey
+                exp.fulfill()
             })
             .disposed(by: disposeBag)
 
+        waitForExpectations(timeout: 2, handler: nil)
+        
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
         XCTAssertEqual(storageController.storeCallCount, 1)
         XCTAssertEqual(networkController.requestLabConfirmationKeyCallCount, 1)

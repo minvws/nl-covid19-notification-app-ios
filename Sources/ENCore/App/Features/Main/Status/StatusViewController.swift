@@ -120,9 +120,12 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func refreshCurrentState() {
-        if let currentState = exposureStateStream.currentExposureState,
-            let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape {
-            update(exposureState: currentState, isLandscape: isLandscape)
+        guard let currentState = exposureStateStream.currentExposureState, let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape else {
+            return
+        }
+        
+        mainThreadIfNeeded {
+            self.update(exposureState: currentState, isLandscape: isLandscape)
         }
     }
 
@@ -165,7 +168,10 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
-
+            
+        case let (.inactive(reason), .notNotified) where reason == .bluetoothOff:
+            statusViewModel = .bluetoothInactiveWithNotNotified(theme: theme)
+            
         case (.inactive, .notNotified):
             statusViewModel = .inactiveWithNotNotified
 

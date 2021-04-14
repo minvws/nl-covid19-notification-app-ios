@@ -33,7 +33,7 @@ protocol MainRouting: Routing {
     func routeToInfected()
     func detachInfected(shouldDismissViewController: Bool)
 
-    func routeToMessage(exposureDate: Date)
+    func routeToMessage()
     func detachMessage(shouldDismissViewController: Bool)
 
     func routeToEnableSetting(_ setting: EnableSetting)
@@ -244,8 +244,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func handleButtonAction(_ action: StatusViewButtonModel.Action) {
         switch action {
-        case let .explainRisk(date):
-            router?.routeToMessage(exposureDate: date)
+        case .explainRisk:
+            router?.routeToMessage()
         case let .removeNotification(title):
             confirmNotificationRemoval(title: title)
         case .updateAppSettings:

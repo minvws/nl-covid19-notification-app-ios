@@ -6,6 +6,7 @@
  */
 
 @testable import ENCore
+import ENFoundation
 import RxSwift
 import XCTest
 
@@ -16,7 +17,8 @@ class ApplicationSignatureControllerTests: TestCase {
     private var mockCryptoUtility: CryptoUtilityMock!
     private var disposeBag = DisposeBag()
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
 
         mockStorageController = StorageControllingMock()
         mockCryptoUtility = CryptoUtilityMock()
@@ -175,7 +177,7 @@ class ApplicationSignatureControllerTests: TestCase {
             version: version,
             manifestRefreshFrequency: manifestRefreshFrequency,
             decoyProbability: 0,
-            creationDate: Date(),
+            creationDate: currentDate(),
             identifier: "test",
             minimumVersion: "",
             minimumVersionMessage: "",

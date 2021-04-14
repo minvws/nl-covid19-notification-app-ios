@@ -26,18 +26,18 @@ struct StatusViewButtonModel {
     let action: Action
 
     enum Action {
-        case explainRisk(Date)
+        case explainRisk
         case removeNotification(String)
         case updateAppSettings
         case tryAgain
         case unpause
     }
 
-    static func moreInfo(date: Date) -> StatusViewButtonModel {
+    static func moreInfo() -> StatusViewButtonModel {
         StatusViewButtonModel(
             title: .statusNotifiedMoreInfo,
             style: .warning,
-            action: .explainRisk(date)
+            action: .explainRisk
         )
     }
 
@@ -51,6 +51,12 @@ struct StatusViewButtonModel {
 
     static let enableSettings = StatusViewButtonModel(
         title: .statusAppStateCardButton,
+        style: .primary,
+        action: .updateAppSettings
+    )
+    
+    static let enableBluetooth = StatusViewButtonModel(
+        title: .statusAppStateCardBluetoothButton,
         style: .primary,
         action: .updateAppSettings
     )
@@ -109,7 +115,7 @@ struct StatusViewModel {
             icon: .notified,
             title: .init(string: .messageDefaultTitle),
             description: .init(string: description),
-            buttons: [.moreInfo(date: date), .removeNotification(title: description)],
+            buttons: [.moreInfo(), .removeNotification(title: description)],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
@@ -143,7 +149,7 @@ struct StatusViewModel {
             icon: .notified,
             title: .init(string: .messageDefaultTitle),
             description: .init(string: description),
-            buttons: [.moreInfo(date: date), .removeNotification(title: description)],
+            buttons: [.moreInfo(), .removeNotification(title: description)],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.statusGradientNotified,
@@ -176,7 +182,7 @@ struct StatusViewModel {
     static let inactiveWithNotNotified = StatusViewModel(
         icon: .inactive,
         title: .init(string: .statusAppStateInactiveTitle),
-        description: .init(string: String(format: .statusAppStateInactiveDescription)),
+        description: .init(string: .statusAppStateInactiveDescription),
         buttons: [.enableSettings],
         footer: nil,
         shouldShowHideMessage: false,
@@ -185,6 +191,21 @@ struct StatusViewModel {
         showClouds: false,
         showEmitter: true
     )
+    
+    static func bluetoothInactiveWithNotNotified(theme: Theme) -> StatusViewModel {
+        StatusViewModel(
+            icon: .inactive,
+            title: .init(string: .statusAppStatePartlyInactiveTitle),
+            description: .makeFromHtml(text: .statusAppStatePartlyInactiveBluetoothDescription, font: theme.fonts.body, textColor: .black, textAlignment: .center),
+            buttons: [.enableBluetooth],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.lightOrange,
+            showScene: false,
+            showClouds: false,
+            showEmitter: true
+        )
+    }
 
     static let inactiveTryAgainWithNotNotified = StatusViewModel(
         icon: .inactive,

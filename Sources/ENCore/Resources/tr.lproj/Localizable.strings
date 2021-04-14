@@ -1,3 +1,9 @@
+"enableInternetDescription" = "Karşılaştığınız kişilerin sonradan Korona'ya yakalanıp yakalanmadığını kontrol edebilmek için uygulamanın bir internet bağlantısına ihtiyacı var.<br><br>WiFi'ye bağlanın veya bu uygulama için mobil verileri açın.";
+"enableInternetStepTitle" = "Mobil verileri açın";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Listenin başlangıcı";
+"accessibility.endOfList" = "Listenin sonu";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "Telefonunuzdaki yazılımı güncellemeniz gerekiyor";
@@ -122,10 +128,6 @@
 "learnMore" = "Daha fazlasını oku";
 "retry" = "Tekrar deneyin";
 
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Listenin başlangıcı";
-"accessibility.endOfList" = "Listenin sonu";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store açılamıyor.";
 "updateApp.title" = "Uygulamanın güncellenmesi gerekiyor";
@@ -205,12 +207,24 @@
 "enableBluetoothSettingTitleRow3" = "<b>Bluetooth</b>'u açın";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "İnternete bağlanmak";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Aşağıdaki düğmeyi kullanarak telefonunuzda <b>ayarlar</b> ’ı açın";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "CoronaMelder için <b>mobil verileri</b> etkinleştirin";
+"enableInternetSettingTitleSettingRow2" = "Mobil veriler";
+"enableInternetFooter" = "Uygulama bu işlemden sonra hala tam olarak aktif değil mi? O halde bu muhtemelen teknik bir sorundur. Şu anda bu konuda hiçbir şey yapamazsınız.";
+"enableInternetOpenSettingsButton" = "Ayarları açın";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder şu anda etkin değil. Ayarlarınızı kontrol edin.";
 
 "notification.upload.failed.header" = "GGD'yi arayın";
 "moreInformation.about.helpdesk.title" = "Uygulama hakkında başka sorunuz mu var?";
 "moreInformation.about.helpdesk.subtitle" = "0800-1280'i ücretsiz olarak arayın";
+"moreInformation.about.website.title" = "Uygulama hakkında daha fazla bilgi";
+"moreInformation.about.website.subtitle" = "Coronamelder.nl adresine gidin";
 
 /* MARK: - Consent */
 "skipStep" = "Atla";
@@ -241,7 +255,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Ulaşılabilirlik";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Ekstra bir enfeksiyon riskine maruz kaldıktan sonra bir bildirim alırsınız. Bunu en az 15 dakika boyunca Korona olduğu ortaya çıkan birine yakın olduğunuz durumda olur. Ve tabii ki ancak bu kişi de uygulamayı kullanıyorsa.<br><br>Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne ve iletişim sürenize bağlıdır.<br><br>Birisi sokakta bisikletle yanınızdan mı geçti? O zaman sonrasında size bildirim gelmez. Birbirine çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski olmadı. <br><br>Trende ya da ofiste birinin yakınında mıydınız? O zaman sonrasında bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
+"help.faq.notification.description" = "Ekstra bir enfeksiyon riskine maruz kaldıktan sonra bir bildirim alırsınız. Bu en az 15 dakika boyunca Korona olduğu sonradan ortaya çıkan birine veya birden fazla kişiye yakın olduğunuz durumda olur. Ve tabii ki ancak bu kişi de uygulamayı kullanıyorsa.<br><br>Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne ve iletişim sürenize bağlıdır.<br><br>Birisi sokakta bisikletle yanınızdan mı geçti? O zaman sonrasında size bildirim gelmez. Birbirine çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski oluşmadı.<br><br>Trende ya da ofiste birinin yakınında mıydınız? O zaman sonrasında bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
 "help.faq.bluetooth.title" = "Bluetooth sinyali duvardan geçer mi?";
 "help.faq.bluetooth.description" = "Evet, ancak bu durumda sinyal çok zayıflar. Bluetooth, en iyi sonucu telefonunuz başka bir kişinin telefonuyla aynı odada bulunduğu takdirde verir.<br><br>Örneğin, uygulamanızın komşularınızdan Bluetooth sinyali alması ihtimali çok düşüktür.<br><br>Bu nedenle, komşunuzda Korona olduğu ortaya çıkarsa ve aynı odada bulunmuyorsanız, bildirim alma şansınız çok azdır.";
 "help.faq.power_usage.title" = "Uygulama ne kadar elektrik kullanıyor?";
@@ -274,7 +288,7 @@
 "help.technical_explanation.github.subtitle" = "GitHub'a gidin";
 
 "help.what_does_notification_mean.title" = "Bildirim almanız ne anlama gelir?";
-"help.what_does_notification_mean.description1" = "Daha sonra Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
+"help.what_does_notification_mean.description1" = "Korona olduğu sonradan ortaya çıkan birinin veya birden fazla kişinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
 "help.what_does_notification_mean.description2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 "help.what_does_report_look_like.title" = "Bildirim nasıl gözükür?";
 "help.what_does_report_look_like.description" = "Bildirim, kısa mesaj aldığınızda gördüklerinize benzer. Bildirim,Korona virüslü birinin yakınında olduğunuz günü belirtir.<br><br>CoronaMelder'ı açmak için bildirime tıklayın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
@@ -284,7 +298,7 @@
 "help.other_reports.title" = "Diğer bildirimler";
 "help.other_reports.description" = "CoronaMelder, teknik bir sorun olması durumunda da size bir bildirim gönderebilir. Örneğin, Bluetooth'unuz kapalıysa. Veya bir günden fazla bir süredir internet bağlantısı yoksa. Uygulama bunu çözmenize yardımcı olacaktır.<br><br>Böyle bir bildirim mi aldınız ve uygulama hala aktif mi? O zaman sorun bu meyanda çözülmüştür.<br><br>Bazen telefonunuzun COVID-19 kontrolleri yaptığını söyleyen bildirimler alırsınız. O zaman CoronaMelder'ı açın. Bilmekte fayda var: genellikle hiçbir sorun yoktur.";
 "help.other_what_does_report_say.title" = "Bildirimi nasıl tanırım?";
-"help.other_what_does_report_say.content1" = "Daha sonra Korona olduğu ortaya çıkan birinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
+"help.other_what_does_report_say.content1" = "Korona olduğu sonradan ortaya çıkan birinin veya birden fazla kişinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
 "help.other_what_does_report_say.content2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 
 "help.pause_app.title" = "Uygulamayı duraklatabilir miyim?";
@@ -321,10 +335,16 @@
 "status.appState.inactive.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır";
 "status.appState.inactive.notification" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi.";
 "status.appState.inactive.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
+"status.appState.partlyinactive.title" = "Uygulama kısmen etkin";
+"status.appState.partlyinactive.bluetooth.description" = "Bluetooth'unuz kapalı. Bu nedenle uygulama yeni karşılaşmaları <b> takip etmez</b>. Uygulama daha önce karşılaştığınız kişilerde Korona olup olmadığını hala<b>kontrol eder</b>.";
+"status.appState.partlyinactive.nointernet.description" = "Uygulama internete bağlı değil. Sonuç olarak, uygulama daha sonra karşılaştığınız kişilerin Korona geçirip geçirmediğini 24 saat boyunca <b>kontrol edemedi</b>. Uygulama, karşılaşmalarınızı<b>takip edecektir</b><br><br><b>Kablosuz ağa bağlanın veya uygulamanın mobil verileri kullanmasını sağlayın.</b>";
+"status.appState.solveproblem.button" = "Sorunu çözmek";
 "status.appState.card.title" = "Uygulama etkin değil";
 "status.appState.card.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır.";
 "status.appState.card.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
 "status.appState.card.button" = "Uygulamayı açmak";
+"status.appState.card.bluetooth" = "Bluetooth'unuz kapalı. Uygulama yeni karşılaşmaları takip edemez.";
+"status.appState.card.bluetooth.button" = "Bluetooth'u açın";
 "status.appState.card.try_again" = "Tekrar deneyin";
 "status.active.description" = "Uygulamayı kapatsanız bile buluşmalar izlenir";
 "status.notified.days_ago_one" = "%@ gün önce";

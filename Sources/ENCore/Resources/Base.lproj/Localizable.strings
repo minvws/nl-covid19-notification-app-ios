@@ -1,3 +1,11 @@
+"enableInternetDescription" = "The app needs an internet connection to check if people you've encountered later turned out to have coronavirus.<br><br>
+
+Connect to Wi-Fi or turn on mobile data for this app.";
+"enableInternetStepTitle" = "Turn on mobile data";
+/* MARK: - Accessibility */
+"accessibility.startOfList" = "Start of list";
+"accessibility.endOfList" = "End of list";
+
 /* MARK: - Update Operating System */
 
 "update.software.os.title" = "You have to update your phone's software";
@@ -22,8 +30,8 @@
 "moreInformation.cell.settings.subtitle" = "Pause app and manage mobile data";
 /* MARK: - MoreInformation | Settings */
 "moreInformation.settings.title" = "Settings";
-"moreInformation.settings.mobiledata.paragraphtitle" = "Only check codes with WiFi";
-"moreInformation.settings.description" = "CoronaMelder checks a few times a day if you've been near someone who has corona. If you turn off your mobile data, the app will only do so if you're using WiFi. Your encounters are also tracked if you don't have an internet connection.";
+"moreInformation.settings.mobiledata.paragraphtitle" = "Only check codes with Wi-Fi";
+"moreInformation.settings.description" = "CoronaMelder checks a few times a day if you've been near someone who has corona. If you turn off your mobile data, the app will only do so if you're using Wi-Fi. Your encounters are also tracked if you don't have an internet connection.";
 "moreInformation.settings.mobiledata.button" = "Open mobile data settings";
 
 /* MARK: - MoreInformation | Settings | Pause */
@@ -123,10 +131,6 @@
 "learnMore" = "Read more";
 "retry" = "Try again";
 
-/* MARK: - Accessibility */
-"accessibility.startOfList" = "Start of list";
-"accessibility.endOfList" = "End of list";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "Can't open the App Store";
 "updateApp.title" = "The app needs to be updated";
@@ -206,12 +210,24 @@
 "enableBluetoothSettingTitleRow3" = "Turn on <b>Bluetooth</b>";
 "enableBluetoothSettingTitleSettingRow3" = "Bluetooth";
 
+/* MARK: - Connect to internet */
+"enableInternetTitle" = "Connect to internet";
+"enableInternetIndexRow1" = "1.";
+"enableInternetTitleRow1" = "Open <b>Settings</b> in your phone using the button below";
+"enableInternetSettingIndexRow2" = "2.";
+"enableInternetSettingTitleRow2" = "Turn <b>mobile data</b> on for CoronaMelder";
+"enableInternetSettingTitleSettingRow2" = "Mobile data";
+"enableInternetFooter" = "Is the app still not completely active? Then it's probably a technical issue. At this time, there's nothing you can do.";
+"enableInternetOpenSettingsButton" = "Open settings";
+
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder is not active at the moment. Check your settings.";
 
 "notification.upload.failed.header" = "Call the GGD";
 "moreInformation.about.helpdesk.title" = "Other questions about the app?";
 "moreInformation.about.helpdesk.subtitle" = "Call 0800-1280";
+"moreInformation.about.website.title" = "More about the app";
+"moreInformation.about.website.subtitle" = "Go to coronamelder.nl";
 
 /* MARK: - Consent */
 "skipStep" = "Skip";
@@ -224,7 +240,7 @@
 
 "help.faq.notification.title" = "When does the app send notifications?";
 "help.faq.location.title" = "Can the app see my location?";
-"help.faq.location.description" = "No. Using Bluetooth, the app only sees if you're near other people who also have the app. Bluetooth isn't linked to your location, so the app never sees where you are.<br><br>Bluetooth only wirelessly connects 2 devices that are near each other. Like your phone and a speaker, or a pair of wireless headphones.<br><br>The app can estimate the distance between 2 phones using the strength of the Bluetooth signal.";
+"help.faq.location.description" = "No, the app cannot see your location. Using Bluetooth, the app only sees if you're near other people who also have the app. Bluetooth isn't linked to your location, so the app never sees where you are.<br><br>Bluetooth only wirelessly connects 2 devices that are near each other. Like your phone and a speaker, or a pair of wireless headphones.<br><br>The app can estimate the distance between 2 phones using the strength of the Bluetooth signal.";
 "help.faq.anonymous.title" = "Does the app know who I am and who I've encountered?";
 "help.faq.anonymous.description_1" = "The app exchanges codes with other phones. These codes don't include any personal or location data. They're completely random. The code exchange happens when you're near a person who also has the app.";
 "help.faq.anonymous.description_2" = "Was this person later found to have coronavirus? Together with the GGD, they can add their code to a list of codes of infected people. By doing so the infection can be confirmed.<br><br>After this, a notification is sent to all people who have these codes on their phones. This notification only says when they've been near an infected person. Not who this person is and where they've encountered them.";
@@ -241,7 +257,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accessibility";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent 15 minutes near someone who was later found to have coronavirus. Only if this person also uses the app.<br><br>Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter.<br><br>Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But only for a short time. So your risk of infection is very low.<br><br>Were you near someone in the train or office? Then you might get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
+"help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent at least 15 minutes near one or more people who were later found to have coronavirus. But only if they also use the app, of course.<br><br>Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter.<br><br>Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But only for a short time. So your risk of infection is very low.<br><br>Were you near someone in the train or office? Then you might get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
 "help.faq.bluetooth.title" = "Can the Bluetooth signal pass through walls?";
 "help.faq.bluetooth.description" = "Yes, but the signal would be very weak. Bluetooth works best when your phone is in the same room as another person's phone.<br><br>So the chance of you getting your neighbours' Bluetooth signal is very low.<br><br>That also means you probably won't get a notification if your neighbour has coronavirus and you haven't been in the same room.";
 "help.faq.power_usage.title" = "How much power does the app use?";
@@ -274,7 +290,7 @@
 "help.technical_explanation.github.subtitle" = "Go to GitHub";
 
 "help.what_does_notification_mean.title" = "What does it mean when you get a notification?";
-"help.what_does_notification_mean.description1" = "The app sends you a notification if you've spent 15 minutes near someone who was later found to have coronavirus.";
+"help.what_does_notification_mean.description1" = "The app sends you a notification if you've spent at least 15 minutes near one or more people who were later found to have coronavirus.";
 "help.what_does_notification_mean.description2" = "The notification looks like what you see when you receive a text message. Just like messages from other apps. The notification has the CoronaMelder icon.<br><br>Did you receive a notification? Open CoronaMelder. You'll find instructions on what to do in the app.";
 "help.what_does_report_look_like.title" = "What does a notification look like?";
 "help.what_does_report_look_like.description" = "The notification looks like what you see when you receive a text message. The notification tells you which day you were near someone who has coronavirus.<br><br>Click on the notification to open CoronaMelder. There you'll read what you can do next.";
@@ -284,7 +300,7 @@
 "help.other_reports.title" = "Other notifications";
 "help.other_reports.description" = "The app can also send you a notification if there's a technical problem. If your Bluetooth is turned off, for example. Or if your phone hasn't been connected to the internet for longer than a day. The app helps you resolve these problems.<br><br>Did you get such a notification even though the app is working correctly? This means the problem was fixed in the meantime.<br><br>Sometimes you'll get notifications that say your phone performed COVID-19 checks. If that happens, open the CoronaMelder app. Good to know: there's usually no cause for concern.";
 "help.other_what_does_report_say.title" = "How do I recognize a notification?";
-"help.other_what_does_report_say.content1" = "The app sends you a notification if you've spent at least 15 minutes near someone who was later found to have coronavirus.";
+"help.other_what_does_report_say.content1" = "The app sends you a notification if you've spent at least 15 minutes near one or more people who were later found to have coronavirus.";
 "help.other_what_does_report_say.content2" = "The notification looks like what you see when you receive a text message. Just like messages from other apps. The notification has the CoronaMelder icon.<br><br>Did you receive a notification? Open CoronaMelder. You'll find instructions on what to do in the app.";
 
 "help.pause_app.title" = "Can I pause the app?";
@@ -322,10 +338,16 @@
 "status.appState.inactive.description" = "CoronaMelder only works if the necessary settings are turned on.";
 "status.appState.inactive.notification" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona.";
 "status.appState.inactive.no_recent_updates.description" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona. Check if your Wi-Fi or mobile data are turned on and try again.";
+"status.appState.partlyinactive.title" = "The app is partially active";
+"status.appState.partlyinactive.bluetooth.description" = "Bluetooth is turned off. Therefore, the app <b>does not</b> track any new encounters. The app <b>does</b> still check if people you've encountered later turn out to have coronavirus.";
+"status.appState.partlyinactive.nointernet.description" = "The app isn't connected to the internet. As a result, for 24 hours, the app <b>could not</b> check if people you've encountered later turned out to have coronavirus. However, the app <b>does</b> still track your encounters. <br/><br/><b>Connect to Wi-Fi or turn on the setting that allows the app to use mobile data.</b>";
+"status.appState.solveproblem.button" = "Resolve issue";
 "status.appState.card.title" = "App not active";
 "status.appState.card.description" = "%@ only works if the necessary settings are turned on.";
 "status.appState.card.no_recent_updates.description" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona. Check if your Wi-Fi or mobile data are turned on and try again.";
 "status.appState.card.button" = "Turn on app";
+"status.appState.card.bluetooth" = "Bluetooth is turned off. The app can't track any new encounters.";
+"status.appState.card.bluetooth.button" = "Turn on Bluetooth";
 "status.appState.card.try_again" = "Try again";
 "status.active.description" = "Encounters will be tracked, even when you close the app";
 "status.notified.days_ago_one" = "%@ day ago";

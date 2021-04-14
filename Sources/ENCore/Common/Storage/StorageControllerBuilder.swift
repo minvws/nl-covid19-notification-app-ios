@@ -55,7 +55,7 @@ enum StoreError: Error {
     case cannotEncode
 }
 
-/// @mockable(history: retrieveData = true)
+/// @mockable(history: retrieveData = true; store=true)
 protocol StorageControlling {
     func prepareStore()
     func store<Key: StoreKey>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ())

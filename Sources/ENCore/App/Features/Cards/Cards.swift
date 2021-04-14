@@ -69,9 +69,9 @@ struct Card {
     }
 
     static func bluetoothOff(theme: Theme) -> Card {
-        let title: String = .cardsBluetoothOffTitle
-        let content: String = .cardsBluetoothOffContent
-        let action: String = .cardsBluetoothOffAction
+        let title: String = .statusAppStatePartlyInactiveTitle
+        let content: String = .statusAppStateCardBluetooth
+        let action: String = .statusAppStateCardBluetoothButton
 
         return Card(icon: .warning, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
