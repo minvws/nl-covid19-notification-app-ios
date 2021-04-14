@@ -8,7 +8,7 @@
 import Foundation
 
 struct LabInformation: Codable {
-    let labConfirmationId: String
+    let ggdKey: String
     let bucketId: String
     let confirmationKey: String
     let validity: Int

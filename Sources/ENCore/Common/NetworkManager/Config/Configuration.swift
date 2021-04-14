@@ -109,45 +109,49 @@ struct NetworkConfiguration {
     )
 
     var manifestUrl: URL? {
-        return self.combine(path: Endpoint.manifest, fromCdn: true, params: cdn.tokenParams)
+        return self.combine(endpoint: Endpoint.manifest, fromCdn: true, params: cdn.tokenParams)
     }
 
     func exposureKeySetUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.exposureKeySet(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+        return self.combine(endpoint: Endpoint.exposureKeySet(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     func riskCalculationParametersUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.riskCalculationParameters(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+        return self.combine(endpoint: Endpoint.riskCalculationParameters(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     func appConfigUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.appConfig(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+        return self.combine(endpoint: Endpoint.appConfig(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     var registerUrl: URL? {
-        return self.combine(path: Endpoint.register, fromCdn: false)
+        return self.combine(endpoint: Endpoint.register, fromCdn: false)
     }
 
     func postKeysUrl(signature: String) -> URL? {
-        return self.combine(path: Endpoint.postKeys, fromCdn: false, params: ["sig": signature])
+        return self.combine(endpoint: Endpoint.postKeys, fromCdn: false, params: ["sig": signature])
     }
 
     func stopKeysUrl(signature: String) -> URL? {
-        return self.combine(path: Endpoint.stopKeys, fromCdn: false, params: ["sig": signature])
+        return self.combine(endpoint: Endpoint.stopKeys, fromCdn: false, params: ["sig": signature])
     }
 
     func getTreatmentPerspectiveUrl(identifier: String) -> URL? {
-        return self.combine(path: Endpoint.treatmentPerspective(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+        return self.combine(endpoint: Endpoint.treatmentPerspective(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
-    private func combine(path: Path, fromCdn: Bool, params: [String: String] = [:]) -> URL? {
+    private func combine(endpoint: Endpoint, fromCdn: Bool, params: [String: String] = [:]) -> URL? {
         let config = fromCdn ? cdn : api
 
         var urlComponents = URLComponents()
         urlComponents.scheme = config.scheme
         urlComponents.host = config.host
         urlComponents.port = config.port
-        urlComponents.path = "/" + (config.path + path.components).joined(separator: "/")
+        if let endpointVersion = endpoint.version {
+            urlComponents.path = "/" + ([endpointVersion] + endpoint.pathComponents).joined(separator: "/")
+        } else {
+            urlComponents.path = "/" + (config.path + endpoint.pathComponents).joined(separator: "/")
+        }
 
         if !params.isEmpty {
             urlComponents.percentEncodedQueryItems = params.compactMap { parameter in

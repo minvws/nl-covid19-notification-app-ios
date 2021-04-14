@@ -42,7 +42,7 @@ targets:
         CFBundleDisplayName: "🐞 CoronaMelder"
         CFBundleIconName: Media.xcassets/AppIcon.appiconset
         CFBundleName: CoronaMelder
-        CFBundleShortVersionString: 2.0.0
+        CFBundleShortVersionString: 2.1.0
         CFBundleVersion: "1"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationQueriesSchemes:
@@ -77,6 +77,8 @@ targets:
       gatherCoverageData: true
       testTargets:
         - name: ENCoreTests
+          randomExecutionOrder: true
+        - name: ENFoundationTests
           randomExecutionOrder: true
     settings:
       base:
@@ -150,6 +152,11 @@ targets:
         product: CocoaLumberjackSwift
     deploymentTarget: '12.0'
     platform: iOS
+    scheme:
+      gatherCoverageData: true
+      testTargets:
+        - name: ENFoundationTests
+          randomExecutionOrder: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: nl.rijksoverheid.en.foundation
@@ -158,3 +165,14 @@ targets:
     sources:
       - Sources/ENFoundation
     type: framework
+  ENFoundationTests:
+    dependencies:
+      - target: ENFoundation
+    deploymentTarget: '12.5'
+    platform: iOS
+    settings:
+      base:
+        SWIFT_VERSION: 5.2
+    sources:
+      - Sources/ENFoundationTests
+    type: bundle.unit-test

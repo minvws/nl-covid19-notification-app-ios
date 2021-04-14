@@ -85,10 +85,10 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
+        waitForExpectations(timeout: 1, handler: nil)
+
         XCTAssertEqual(mockNetworkController.exposureRiskConfigurationParametersCallCount, 1)
         XCTAssertEqual(storedConfiguration, networkConfiguration)
-
-        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_execute_retrieveFromNetwork_withError_shouldMapExposureDataError() {

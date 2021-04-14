@@ -94,3 +94,23 @@ public extension String {
         return prefix(1).capitalized + dropFirst()
     }
 }
+
+public extension String {
+    var asGGDkey: String {
+        guard !self.contains("-") && self.count == 7 else {
+            return self
+        }
+
+        var elements = Array(self)
+        var formattedKey = "\(elements[0])"
+        elements.remove(at: 0)
+
+        stride(from: 0, to: elements.count, by: 2).forEach {
+            formattedKey += String(elements[$0 ..< min($0 + 2, elements.count)])
+            if $0 + 2 < elements.count {
+                formattedKey += "-"
+            }
+        }
+        return formattedKey
+    }
+}

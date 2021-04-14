@@ -352,6 +352,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         storageController.removeData(for: ExposureDataStorageKey.exposureKeySetsHolders, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.lastDecoyProcessDate, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.previousExposureDate, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.ignoreFirstV2Exposure, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.pendingLabUploadRequests, completion: { _ in })

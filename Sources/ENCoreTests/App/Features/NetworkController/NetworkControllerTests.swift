@@ -26,7 +26,7 @@ final class NetworkControllerTests: TestCase {
 
     func test_requestLabConfirmationKey_callsNetworkManager_returnsKeyOnSuccess() {
         networkManager.postRegisterHandler = { _, completion in
-            let key = LabInformation(labConfirmationId: "test",
+            let key = LabInformation(ggdKey: "test",
                                      bucketId: "dGVzdA==",
                                      confirmationKey: "dGVzdA==",
                                      validity: 22)

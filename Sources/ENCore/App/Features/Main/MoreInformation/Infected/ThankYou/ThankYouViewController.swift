@@ -111,7 +111,7 @@ private final class ThankYouView: View {
 
         footer.append(
             NSAttributedString.make(
-                text: String(exposureConfirmationKey.key),
+                text: String(exposureConfirmationKey.key.asGGDkey),
                 font: theme.fonts.body,
                 letterSpacing: 5))
 
