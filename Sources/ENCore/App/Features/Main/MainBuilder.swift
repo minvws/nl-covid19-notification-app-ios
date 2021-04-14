@@ -105,8 +105,8 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
         dependency.dataController
     }
 
-    var userNotificationCenter: UserNotificationCenter {
-        UNUserNotificationCenter.current()
+    var userNotificationController: UserNotificationControlling {
+        UserNotificationController()
     }
 
     var pauseController: PauseControlling {
@@ -128,7 +128,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
                                                 exposureController: dependencyProvider.exposureController,
                                                 exposureStateStream: dependencyProvider.exposureStateStream,
-                                                userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                                userNotificationController: dependencyProvider.userNotificationController,
                                                 pauseController: dependencyProvider.pauseController,
                                                 alertControllerBuilder: dependencyProvider.alertControllerBuilder)
 

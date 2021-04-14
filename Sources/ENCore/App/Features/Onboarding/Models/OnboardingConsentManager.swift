@@ -28,16 +28,16 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
     var onboardingConsentSteps: [OnboardingConsentStep] = []
     private var disposeBag = DisposeBag()
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
 
     init(exposureStateStream: ExposureStateStreaming,
          exposureController: ExposureControlling,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          theme: Theme) {
 
         self.exposureStateStream = exposureStateStream
         self.exposureController = exposureController
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
 
         onboardingConsentSteps.append(
             OnboardingConsentStep(
@@ -188,7 +188,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
     func askNotificationsAuthorization(_ completion: @escaping (() -> ())) {
 
-        userNotificationCenter.requestNotificationPermission {
+        userNotificationController.requestNotificationPermission {
             completion()
         }
     }

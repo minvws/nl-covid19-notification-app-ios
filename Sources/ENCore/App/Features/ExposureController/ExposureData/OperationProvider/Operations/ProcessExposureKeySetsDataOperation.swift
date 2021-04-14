@@ -59,7 +59,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
          localPathProvider: LocalPathProviding,
          exposureDataController: ExposureDataControlling,
          configuration: ExposureConfiguration,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          application: ApplicationControlling,
          fileManager: FileManaging,
          environmentController: EnvironmentControlling,
@@ -69,7 +69,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         self.exposureManager = exposureManager
         self.localPathProvider = localPathProvider
         self.exposureDataController = exposureDataController
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
         self.application = application
         self.fileManager = fileManager
         self.environmentController = environmentController
@@ -593,10 +593,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
         return .create { (observer) -> Disposable in
 
-            self.userNotificationCenter.displayExposureNotification(daysSinceLastExposure: daysSinceLastExposure) { result in
+            self.userNotificationController.displayExposureNotification(daysSinceLastExposure: daysSinceLastExposure) { success in
 
-                if case let .failure(error) = result {
-                    self.logError("Error posting notification: \(error.localizedDescription)")
+                guard success else {
                     observer(.failure(ExposureDataError.internalError))
                     return
                 }
@@ -736,7 +735,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private let exposureDataController: ExposureDataControlling
     private let localPathProvider: LocalPathProviding
     private let configuration: ExposureConfiguration
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
     private let application: ApplicationControlling
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling

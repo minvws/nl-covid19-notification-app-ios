@@ -17,7 +17,7 @@ final class MainViewControllerTests: TestCase {
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
     private var mockPauseController = PauseControllingMock()
-    private var mockUserNotificationCenter = UserNotificationCenterMock()
+    private var mockUserNotificationController = UserNotificationControllingMock()
     private let alertControllerBuilder = AlertControllerBuildableMock()
     
     override func setUp() {
@@ -26,7 +26,7 @@ final class MainViewControllerTests: TestCase {
         viewController = MainViewController(theme: theme,
                                             exposureController: exposureController,
                                             exposureStateStream: exposureStateStream,
-                                            userNotificationCenter: mockUserNotificationCenter,
+                                            userNotificationController: mockUserNotificationController,
                                             pauseController: mockPauseController,
                                             alertControllerBuilder: alertControllerBuilder)
         viewController.router = router

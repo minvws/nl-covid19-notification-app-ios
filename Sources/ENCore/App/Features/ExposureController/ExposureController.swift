@@ -16,13 +16,13 @@ final class ExposureController: ExposureControlling, Logging {
          exposureManager: ExposureManaging,
          dataController: ExposureDataControlling,
          networkStatusStream: NetworkStatusStreaming,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          currentAppVersion: String) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
         self.networkStatusStream = networkStatusStream
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
         self.currentAppVersion = currentAppVersion
     }
 
@@ -408,16 +408,10 @@ final class ExposureController: ExposureControlling, Logging {
             self.logDebug("EN Status Check not active within 24h: \(status)")
             self.dataController.setLastENStatusCheckDate(now)
 
-            let content = UNMutableNotificationContent()
-            content.body = .notificationEnStatusNotActive
-            content.sound = .default
-            content.badge = 0
-
-            self.sendNotification(content: content, identifier: .enStatusDisabled) { didSend in
-                self.logDebug("Did send local notification `\(content)`: \(didSend)")
+            self.userNotificationController.displayNotActiveNotification { _ in
                 observer(.completed)
             }
-
+            
             return Disposables.create()
         }
     }
@@ -449,13 +443,7 @@ final class ExposureController: ExposureControlling, Logging {
 
                 let message = appVersionInformation.minimumVersionMessage.isEmpty ? String.updateAppContent : appVersionInformation.minimumVersionMessage
 
-                let content = UNMutableNotificationContent()
-                content.body = message
-                content.sound = .default
-                content.badge = 0
-
-                self.sendNotification(content: content, identifier: .appUpdateRequired) { didSend in
-                    self.logDebug("Did send local notification `\(content)`: \(didSend)")
+                self.userNotificationController.displayAppUpdateRequiredNotification(withUpdateMessage: message) { _ in
                     observer(.completed)
                 }
             }
@@ -512,16 +500,10 @@ final class ExposureController: ExposureControlling, Logging {
 
             let days = Date().days(sinceDate: lastExposure.date) ?? 0
 
-            let content = UNMutableNotificationContent()
-            content.body = .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: days)))
-            content.sound = .default
-            content.badge = 0
-
-            self.sendNotification(content: content, identifier: .exposure) { didSend in
-                self.logDebug("Did send local notification `\(content)`: \(didSend)")
+            self.userNotificationController.displayExposureReminderNotification(daysSinceLastExposure: days) { _ in
                 observer(.completed)
             }
-
+            
             return Disposables.create()
         }
     }
@@ -529,23 +511,9 @@ final class ExposureController: ExposureControlling, Logging {
     func notifyUser24HoursNoCheckIfRequired() {
 
         func notifyUser() {
-
-            let content = UNMutableNotificationContent()
-            content.title = .statusAppStateInactiveTitle
-            content.body = String(format: .statusAppStateInactiveNotification)
-            content.sound = UNNotificationSound.default
-            content.badge = 0
-
-            let identifier = PushNotificationIdentifier.inactive.rawValue
-            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-
-            userNotificationCenter.add(request, withCompletionHandler: { [weak self] error in
-                if let error = error {
-                    self?.logError("\(error.localizedDescription)")
-                } else {
-                    self?.dataController.updateLastLocalNotificationExposureDate(Date())
-                }
-            })
+            self.userNotificationController.display24HoursNoActivityNotification { [weak self] _ in
+                self?.dataController.updateLastLocalNotificationExposureDate(Date())
+            }
         }
 
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
@@ -739,32 +707,10 @@ final class ExposureController: ExposureControlling, Logging {
             .disposed(by: disposeBag)
     }
 
-    private func updatePushNotificationState(completition: @escaping () -> ()) {
-        userNotificationCenter.getAuthorizationStatus { authorizationStatus in
-            self.isPushNotificationsEnabled = authorizationStatus == .authorized
-            completition()
-        }
-    }
-
-    private func sendNotification(content: UNNotificationContent, identifier: PushNotificationIdentifier, completion: @escaping (Bool) -> ()) {
-        userNotificationCenter.getAuthorizationStatus { status in
-            guard status == .authorized else {
-                completion(false)
-                return self.logError("Not authorized to post notifications")
-            }
-
-            let request = UNNotificationRequest(identifier: identifier.rawValue,
-                                                content: content,
-                                                trigger: nil)
-
-            self.userNotificationCenter.add(request) { error in
-                guard let error = error else {
-                    completion(true)
-                    return
-                }
-                self.logError("Error posting notification: \(identifier.rawValue) \(error.localizedDescription)")
-                completion(false)
-            }
+    private func updatePushNotificationState(completion: @escaping () -> ()) {
+        userNotificationController.getIsAuthorized { isAuthorized in
+            self.isPushNotificationsEnabled = isAuthorized
+            completion()
         }
     }
 
@@ -776,7 +722,7 @@ final class ExposureController: ExposureControlling, Logging {
     private let networkStatusStream: NetworkStatusStreaming
     private var isActivated = false
     private var isPushNotificationsEnabled = false
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
     private var updateStream: Completable?
     private var activationCompletable: Completable?
     private let currentAppVersion: String

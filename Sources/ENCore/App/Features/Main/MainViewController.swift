@@ -52,13 +52,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     init(theme: Theme,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          pauseController: PauseControlling,
          alertControllerBuilder: AlertControllerBuildable) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
         self.pauseController = pauseController
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
         self.alertControllerBuilder = alertControllerBuilder
         super.init(theme: theme)
     }
@@ -273,7 +273,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
     private let pauseController: PauseControlling
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
     private let alertControllerBuilder: AlertControllerBuildable
     
     private var disposeBag = DisposeBag()
@@ -314,9 +314,9 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 }
             }
         case let .inactive(reason) where reason == .pushNotifications:
-            UNUserNotificationCenter.current().getNotificationSettings { settings in
+            userNotificationController.getAuthorizationStatus { (authorizationStatus) in
                 DispatchQueue.main.async {
-                    self.handlePushNotificationSettings(authorizationStatus: settings.authorizationStatus)
+                    self.handlePushNotificationSettings(authorizationStatus: authorizationStatus)
                 }
             }
         case let .inactive(reason) where reason == .noRecentNotificationUpdates:
@@ -328,10 +328,10 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         }
     }
 
-    private func handlePushNotificationSettings(authorizationStatus: UNAuthorizationStatus) {
+    private func handlePushNotificationSettings(authorizationStatus: NotificationAuthorizationStatus) {
         switch authorizationStatus {
         case .notDetermined:
-            userNotificationCenter.requestNotificationPermission {}
+            userNotificationController.requestNotificationPermission {}
         case .denied:
             router?.routeToEnableSetting(.enableLocalNotifications)
         default:

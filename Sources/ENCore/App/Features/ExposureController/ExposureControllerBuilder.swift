@@ -196,8 +196,8 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
         return dependency.dataController
     }
 
-    fileprivate var userNotificationCenter: UserNotificationCenter {
-        return UNUserNotificationCenter.current()
+    fileprivate var userNotificationController: UserNotificationControlling {
+        return UserNotificationController()
     }
 
     fileprivate var currentAppVersion: String {
@@ -213,7 +213,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
                                   exposureManager: dependencyProvider.exposureManager,
                                   dataController: dependencyProvider.dataController,
                                   networkStatusStream: dependencyProvider.dependency.networkStatusStream,
-                                  userNotificationCenter: dependencyProvider.userNotificationCenter,
+                                  userNotificationController: dependencyProvider.userNotificationController,
                                   currentAppVersion: dependencyProvider.currentAppVersion)
     }
 }

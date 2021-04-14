@@ -17,7 +17,7 @@ final class ExposureControllerTests: TestCase {
     private let mutableStateStream = MutableExposureStateStreamingMock()
     private let exposureManager = ExposureManagingMock()
     private let dataController = ExposureDataControllingMock()
-    private let userNotificationCenter = UserNotificationCenterMock()
+    private let userNotificationController = UserNotificationControllingMock()
     private let networkStatusStream = NetworkStatusStreamingMock()
     private let currentAppVersion = "1.0"
 
@@ -33,7 +33,7 @@ final class ExposureControllerTests: TestCase {
                                         exposureManager: exposureManager,
                                         dataController: dataController,
                                         networkStatusStream: networkStatusStream,
-                                        userNotificationCenter: userNotificationCenter,
+                                        userNotificationController: userNotificationController,
                                         currentAppVersion: currentAppVersion)
 
         dataController.lastSuccessfulExposureProcessingDate = currentDate()
@@ -50,11 +50,8 @@ final class ExposureControllerTests: TestCase {
         exposureManager.getExposureNotificationStatusHandler = { .active }
         exposureManager.isExposureNotificationEnabledHandler = { true }
 
-        userNotificationCenter.getAuthorizationStatusHandler = { completition in
-            completition(.authorized)
-        }
-        userNotificationCenter.addHandler = { _, completition in
-            completition?(nil)
+        userNotificationController.getIsAuthorizedHandler = { completion in
+            completion(true)
         }
     }
 
@@ -547,7 +544,7 @@ final class ExposureControllerTests: TestCase {
             .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
+        XCTAssertEqual(userNotificationController.getAuthorizationStatusCallCount, 0)
     }
 
     func test_exposureNotificationStatusCheck_notActive_noLastCheck_setsLastENStatusCheck() {
@@ -562,7 +559,7 @@ final class ExposureControllerTests: TestCase {
             .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
+        XCTAssertEqual(userNotificationController.getAuthorizationStatusCallCount, 0)
     }
 
     func test_exposureNotificationStatusCheck_notActive_lessThan24h_doesntSetLastENStatusCheck() {
@@ -579,10 +576,13 @@ final class ExposureControllerTests: TestCase {
             .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 0)
-        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
+        XCTAssertEqual(userNotificationController.getAuthorizationStatusCallCount, 0)
     }
 
     func test_exposureNotificationStatusCheck_notActive_notifiesAfter24h() {
+        
+        XCTAssertEqual(userNotificationController.displayNotActiveNotificationCallCount, 0)
+        
         exposureManager.getExposureNotificationStatusHandler = {
             .inactive(.disabled)
         }
@@ -596,11 +596,13 @@ final class ExposureControllerTests: TestCase {
             .disposed(by: disposeBag)
 
         XCTAssertEqual(dataController.setLastENStatusCheckDateCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+        XCTAssertEqual(userNotificationController.displayNotActiveNotificationCallCount, 1)
     }
 
     func test_lastOpenedNotificationCheck_moreThan3Hours_postsNotification() {
+        
+        XCTAssertEqual(userNotificationController.displayExposureReminderNotificationCallCount, 0)
+        
         let timeInterval = TimeInterval(60 * 60 * 4) // 4 hours
         dataController.lastAppLaunchDate = currentDate().advanced(by: -(timeInterval + 1))
         dataController.lastExposure = ExposureReport(date: currentDate())
@@ -611,8 +613,7 @@ final class ExposureControllerTests: TestCase {
             .subscribe { _ in }
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 1)
-        XCTAssertEqual(userNotificationCenter.addCallCount, 1)
+        XCTAssertEqual(userNotificationController.displayExposureReminderNotificationCallCount, 1)
     }
 
     func test_lastOpenedNotificationCheck_lessThan3Hours_doesntPostNotification() {
@@ -626,8 +627,8 @@ final class ExposureControllerTests: TestCase {
             .subscribe { _ in }
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(userNotificationCenter.getAuthorizationStatusCallCount, 0)
-        XCTAssertEqual(userNotificationCenter.addCallCount, 0)
+        XCTAssertEqual(userNotificationController.getAuthorizationStatusCallCount, 0)
+        XCTAssertEqual(userNotificationController.displayExposureReminderNotificationCallCount, 0)
     }
 
     func test_lastOpenedNotificationCheck_48Hours_ToDays() {
@@ -682,7 +683,7 @@ final class ExposureControllerTests: TestCase {
         exposureManager.activateHandler = { completion in
             completion(.active)
         }
-        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+        userNotificationController.getAuthorizationStatusHandler = { completion in
             completion(.authorized)
         }
 
@@ -753,7 +754,7 @@ final class ExposureControllerTests: TestCase {
         exposureManager.activateHandler = { completion in
             completion(.active)
         }
-        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+        userNotificationController.getAuthorizationStatusHandler = { completion in
             completion(.authorized)
         }
 
@@ -777,7 +778,7 @@ final class ExposureControllerTests: TestCase {
         exposureManager.activateHandler = { completion in
             completion(.active)
         }
-        userNotificationCenter.getAuthorizationStatusHandler = { completion in
+        userNotificationController.getAuthorizationStatusHandler = { completion in
             completion(.authorized)
         }
     }

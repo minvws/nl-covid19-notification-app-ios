@@ -14,7 +14,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
          storageController: StorageControlling,
          applicationSignatureController: ApplicationSignatureControlling,
          localPathProvider: LocalPathProviding,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          application: ApplicationControlling,
          fileManager: FileManaging,
          environmentController: EnvironmentControlling,
@@ -23,7 +23,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
         self.storageController = storageController
         self.applicationSignatureController = applicationSignatureController
         self.localPathProvider = localPathProvider
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
         self.application = application
         self.fileManager = fileManager
         self.environmentController = environmentController
@@ -42,7 +42,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                    localPathProvider: localPathProvider,
                                                    exposureDataController: exposureDataController,
                                                    configuration: configuration,
-                                                   userNotificationCenter: userNotificationCenter,
+                                                   userNotificationController: userNotificationController,
                                                    application: application,
                                                    fileManager: fileManager,
                                                    environmentController: environmentController,
@@ -57,7 +57,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
 
     func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation {
         return ExpiredLabConfirmationNotificationDataOperation(storageController: storageController,
-                                                               userNotificationCenter: userNotificationCenter)
+                                                               userNotificationController: userNotificationController)
     }
 
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol {
@@ -113,7 +113,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     private let storageController: StorageControlling
     private let applicationSignatureController: ApplicationSignatureControlling
     private let localPathProvider: LocalPathProviding
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
     private let application: ApplicationControlling
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling

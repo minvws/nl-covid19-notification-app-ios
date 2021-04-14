@@ -32,16 +32,16 @@ final class PauseController: PauseControlling, Logging {
 
     private let exposureDataController: ExposureDataControlling
     private let exposureController: ExposureControlling
-    private let userNotificationCenter: UserNotificationCenter
+    private let userNotificationController: UserNotificationControlling
     private let backgroundController: BackgroundControlling
 
     init(exposureDataController: ExposureDataControlling,
          exposureController: ExposureControlling,
-         userNotificationCenter: UserNotificationCenter,
+         userNotificationController: UserNotificationControlling,
          backgroundController: BackgroundControlling) {
         self.exposureDataController = exposureDataController
         self.exposureController = exposureController
-        self.userNotificationCenter = userNotificationCenter
+        self.userNotificationController = userNotificationController
         self.backgroundController = backgroundController
     }
 
@@ -115,10 +115,10 @@ final class PauseController: PauseControlling, Logging {
         exposureController.pause(untilDate: date)
 
         // Remove any currently pending notifications
-        userNotificationCenter.removeAllPendingNotificationRequests()
+        userNotificationController.removeAllPendingNotificationRequests()
 
         // Schedule the notification to inform the user of elapsed pause state
-        userNotificationCenter.schedulePauseExpirationNotification(pauseEndDate: date)
+        userNotificationController.schedulePauseExpirationNotification(pauseEndDate: date)
     }
 
     func unpauseApp() {
@@ -129,10 +129,10 @@ final class PauseController: PauseControlling, Logging {
         exposureController.unpause()
 
         // remove already-delivered unpause reminder notification
-        userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [PushNotificationIdentifier.pauseEnded.rawValue])
+        userNotificationController.removeDeliveredNotifications(withIdentifiers: [PushNotificationIdentifier.pauseEnded.rawValue])
 
         // remove pending unpause reminder notification
-        userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [PushNotificationIdentifier.pauseEnded.rawValue])
+        userNotificationController.removePendingNotificationRequests(withIdentifiers: [PushNotificationIdentifier.pauseEnded.rawValue])
     }
 
     func hidePauseInformationScreen() {
