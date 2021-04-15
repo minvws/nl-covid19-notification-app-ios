@@ -372,7 +372,7 @@ final class InfoSectionTextView: View {
             label.lineBreakMode = .byWordWrapping
             label.font = theme.fonts.body
             label.textColor = theme.colors.gray
-            label.attributedText = text
+            label.attributedText = text            
             if let traits = contentAccessibilityTraits {
                 label.accessibilityTraits = traits
             }
@@ -392,6 +392,78 @@ final class InfoSectionTextView: View {
             maker.leading.trailing.equalTo(titleLabel)
             maker.bottom.equalToSuperview()
         }
+    }
+}
+
+final class InfoSectionTextViewWithLinks: View, UITextViewDelegate {
+
+    private let titleLabel: Label
+    private let contentStack: UIStackView
+    private let content: [NSAttributedString]
+    private let linkHandler: ((String) -> ())
+    
+    // MARK: - Init
+
+    init(theme: Theme, title: String, content: [NSAttributedString], linkHandler: @escaping ((String) -> ())) {
+        self.titleLabel = Label(frame: .zero)
+        self.contentStack = UIStackView()
+        self.content = content
+        self.linkHandler = linkHandler
+
+        super.init(theme: theme)
+
+        titleLabel.text = title
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        titleLabel.numberOfLines = 0
+        titleLabel.font = theme.fonts.title2
+        titleLabel.accessibilityTraits = .header
+        titleLabel.textAlignment = Localization.isRTL ? .right : .left
+
+        contentStack.axis = .vertical
+        contentStack.alignment = .top
+        contentStack.distribution = .fill
+        contentStack.spacing = 0
+
+        addSubview(titleLabel)
+        addSubview(contentStack)
+
+        for text in self.content {
+            let textView = TextView(frame: .zero)
+            textView.delegate = self
+            textView.isEditable = false
+            textView.isSelectable = true
+            textView.isScrollEnabled = false
+            textView.isAccessibilityElement = true
+            textView.font = theme.fonts.body
+            textView.textColor = theme.colors.gray
+            textView.attributedText = text
+            contentStack.addArrangedSubview(textView)
+        }
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        titleLabel.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.leading.trailing.equalToSuperview().inset(16)
+        }
+        contentStack.snp.makeConstraints { maker in
+            maker.top.equalTo(titleLabel.snp.bottom).offset(20)
+            maker.leading.trailing.equalTo(titleLabel)
+            maker.bottom.equalToSuperview()
+        }
+    }
+    
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {        
+        linkHandler(URL.absoluteString)
+        return false
     }
 }
 
@@ -749,42 +821,5 @@ private final class InfoSectionDynamicErrorView: View {
 
     @objc private func didTapActionButton(sender: Button) {
         actionHandler()
-    }
-}
-
-private extension UITapGestureRecognizer {
-
-    // taken from https://stackoverflow.com/questions/1256887/create-tap-able-links-in-the-nsattributedstring-of-a-uilabel
-    func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
-        // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
-        let layoutManager = NSLayoutManager()
-        let textContainer = NSTextContainer(size: CGSize.zero)
-        let textStorage = NSTextStorage(attributedString: label.attributedText!)
-
-        // Configure layoutManager and textStorage
-        layoutManager.addTextContainer(textContainer)
-        textStorage.addLayoutManager(layoutManager)
-
-        // Configure textContainer
-        textContainer.lineFragmentPadding = 0.0
-        textContainer.lineBreakMode = label.lineBreakMode
-        textContainer.maximumNumberOfLines = label.numberOfLines
-        let labelSize = label.bounds.size
-        textContainer.size = labelSize
-
-        // Find the tapped character location and compare it to the specified range
-        let locationOfTouchInLabel = self.location(in: label)
-        let textBoundingBox = layoutManager.usedRect(for: textContainer)
-        let textContainerOffset = CGPoint(
-            x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
-            y: (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y
-        )
-        let locationOfTouchInTextContainer = CGPoint(
-            x: locationOfTouchInLabel.x - textContainerOffset.x,
-            y: locationOfTouchInLabel.y - textContainerOffset.y
-        )
-        let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-
-        return NSLocationInRange(indexOfCharacter, targetRange)
     }
 }
