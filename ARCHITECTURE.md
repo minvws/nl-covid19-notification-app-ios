@@ -191,5 +191,5 @@ More conventions could be added later (e.g. once decisions have been made about 
 
 ## Questions / Feedback / Remarks
 
-Please use our public GitHub repository for any questions: https://github.com/minvws/nl-covid19-notification-app-ios
+Please use our [public GitHub repository](https://github.com/minvws/nl-covid19-notification-app-ios) for any questions or remarks.
 
