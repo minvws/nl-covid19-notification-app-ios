@@ -17,19 +17,19 @@ Examples:
 - `Router`s are defined by `Routing` interfaces
 - `ViewController`'s are defined by `ViewControllable` interfaces
 
-### Component
+### Feature
 
-Every isolated piece of functionality/logic in the app is called a component.
+Every isolated piece of functionality/logic in the app is called a `feature`.
 
-A component always consists of a `Builder` together with the object it builds. In most cases `Builder`s build `Controller`s or `Router`s. Some examples:
+A feature always consists of a `Builder` together with the object it builds. In most cases `Builder`s build `Controller`s or `Router`s. Some examples:
 
 - `Builder` builds `ViewController`
 - `Builder` builds `Controller` (e.g. `networkController`, `exposureNotificationController`)
 - `Builder` builds a `Router` which uses a `ViewController` to present other `viewController`s
 
-Some examples of components are:
+Some examples of features are:
 
-- ExposureNotification (consists of `ExposureNotificationBuilder` and `ExposureNotificationController`) - Not live yet
+- ExposureController (consists of `ExposureControllerBuilder` and `ExposureController`)
 - Onboarding (consists of `OnboardingBuilder`, `OnboardingRouter` and `OnboardingViewController`)
 
 ### Builder Pattern
@@ -37,7 +37,7 @@ Some examples of components are:
 To simplify object construction, and to remove the need to deal with dependencies during object creation, `Builder`s are used. `Builder`s can define the dependencies they require by creating a `Dependency` interface:
 
 ```
-/// Specifies dependencies for the Main component
+/// Specifies dependencies for the Main feature
 protocol MainDependency {
     var exposureNotificationController: ExposureNotificationControlling { get }
 }
@@ -92,7 +92,7 @@ Finally (3), a concrete `Builder` class is created. Its structure follows the sa
 
 The Router concept comes from VIPER and is used to extract router specific logic. A `Router` has an associated `viewController` that it uses to route with. Usually routers call `present`/`dismiss`/`push`/`pop` methods on their `viewControllers`. ViewControllers have a **weak** reference to their router to initiate routing requests.
 
-A component with a router is structured as following:
+A feature with a router is structured as following:
 
 `Builder` -> builds -> `Router` -> uses `ViewController` -> calls back into the same `Router`.
 
@@ -170,14 +170,13 @@ More conventions could be added later (e.g. once decisions have been made about 
 
 - All concrete classes are defined by protocols
 - Follow the [Swift API design](https://swift.org/documentation/api-design-guidelines/) guidelines to name your entities 
-- Every component should expose the smallest API possible. Instead of returning `MainRouting` from `MainBuilder`, just return `Routing`
+- Every feature should expose the smallest API possible. Instead of returning `MainRouting` from `MainBuilder`, just return `Routing`
     - Example showing difference of 'external' vs 'internal' interface: `RootBuilder` returns `AppEntryPoint`
 - Use the Common UI objects provided as base classes. This will allow to easily extend common functionality in the future. If a base class is missing and you feel there's a need to have one, please add it.
-- Keep the file tree organised by ceature and component instead of Model / Controller / View
-    - For now there are only a few features - high levels components: Root, Onboarding and Main 
+- Keep the file tree organised by feature instead of Model / Controller / View 
 - Use the provided `.xctemplate` for easy and consistent scaffolding
 - As a rule, start with the `final` and `private` modifiers and relax when needed (by removing them, `public` is not used as everything is in one module)
-- Shared extensions can go, for now, in Common/Extensions. If your extension is limited to a component, it can live next to the component
+- Shared extensions can go, for now, in Common/Extensions. If your extension is limited to a feature, it can live next to the feature itself
 - Testing
     - Business logic and routing logic should be covered by unit tests
     - The plan for UI tests and possibly snapshot tests will be added in the future
@@ -192,5 +191,5 @@ More conventions could be added later (e.g. once decisions have been made about 
 
 ## Questions / Feedback / Remarks
 
-Please reach out to the #notificatie-app-ios channel in the [CodeFor.NL](codefor.nl) slack workspace or directly to one us of: Leon Boon, Rob Mulder, Cameron Mc Gorian or Robin van Dijke.
+Please use our [public GitHub repository](https://github.com/minvws/nl-covid19-notification-app-ios) for any questions or remarks.
 
