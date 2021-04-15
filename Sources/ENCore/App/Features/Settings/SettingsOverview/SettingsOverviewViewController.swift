@@ -73,7 +73,7 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
 
         pushNotificationStream.foregroundNotificationStream.subscribe(onNext: { [weak self] notification in
             guard let strongSelf = self else { return }
-            if notification.request.identifier == PushNotificationIdentifier.pauseEnded.rawValue {
+            if notification.requestIdentifier == PushNotificationIdentifier.pauseEnded.rawValue {
                 self?.logDebug("Refreshing settings pause state due to pauseEnded notification")
                 strongSelf.updatePausedState()
             }

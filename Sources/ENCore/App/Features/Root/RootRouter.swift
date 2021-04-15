@@ -221,7 +221,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     @available(iOS 13, *)
-    func handle(backgroundTask: BGTask) {
+    func handle(backgroundTask: BackgroundTask) {
         backgroundController.handle(task: backgroundTask)
     }
 

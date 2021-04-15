@@ -14,8 +14,8 @@ import UIKit
 
 /// The App's entry point.
 ///
-/// @mockable
-protocol AppEntryPoint {
+/// @mockable(history:handle=true)
+public protocol AppEntryPoint {
     /// The `UIViewController` instance that should be used as `keyWindow` property
     var uiviewController: UIViewController { get }
 
@@ -37,7 +37,7 @@ protocol AppEntryPoint {
 
     // Should handle the background task
     @available(iOS 13, *)
-    func handle(backgroundTask: BGTask)
+    func handle(backgroundTask: BackgroundTask)
 }
 
 /// Provides all dependencies to build the RootRouter
@@ -208,7 +208,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 /// the App's entry point
 ///
 /// @mockable
-protocol RootBuildable {
+public protocol RootBuildable {
     /// Builds application's entry point
     ///
     /// - Returns: Application's entry point

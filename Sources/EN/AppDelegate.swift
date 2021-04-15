@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     var window: UIWindow?
 
-    private var appRoot: ENAppRoot?
+    private var appRoot: AppRoot?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Note: The following needs to be set before application:didFinishLaunchingWithOptions: returns
@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
             let window = UIWindow(frame: UIScreen.main.bounds)
             self.window = window
 
-            appRoot = ENAppRoot()
+            appRoot = AppRoot()
             appRoot?.attach(toWindow: window)
 
             window.makeKeyAndVisible()
@@ -122,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-    func setAppRoot(appRoot: ENAppRoot?) {
+    func setAppRoot(appRoot: AppRoot?) {
         logDebug("AppDelegate - setAppRoot")
 
         self.appRoot = appRoot
