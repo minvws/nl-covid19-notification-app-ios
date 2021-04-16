@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import UserNotifications
 
-enum PushNotificationIdentifier: String {
+public enum PushNotificationIdentifier: String {
     case exposure = "nl.rijksoverheid.en.exposure"
     case inactive = "nl.rijksoverheid.en.inactive"
     case uploadFailed = "nl.rijksoverheid.en.uploadFailed"
@@ -31,15 +31,15 @@ enum PushNotificationIdentifier: String {
 }
 
 /// @mockable
-protocol PushNotificationStreaming {
+public protocol PushNotificationStreaming {
     var pushNotificationStream: Observable<PushNotificationIdentifier> { get }
-    var foregroundNotificationStream: Observable<UNNotification> { get }
+    var foregroundNotificationStream: Observable<UserNotification> { get }
 }
 
-/// @mockable
-protocol MutablePushNotificationStreaming: PushNotificationStreaming {
+/// @mockable(history:update=true)
+public protocol MutablePushNotificationStreaming: PushNotificationStreaming {
     func update(identifier: PushNotificationIdentifier)
-    func update(notification: UNNotification)
+    func update(notification: UserNotification)
 }
 
 final class PushNotificationStream: MutablePushNotificationStreaming, Logging {
@@ -53,7 +53,7 @@ final class PushNotificationStream: MutablePushNotificationStreaming, Logging {
             .compactMap { $0 }
     }
 
-    var foregroundNotificationStream: Observable<UNNotification> {
+    var foregroundNotificationStream: Observable<UserNotification> {
         return foregroundNotificationSubject
             .subscribe(on: MainScheduler.instance)
             .compactMap { $0 }
@@ -65,10 +65,10 @@ final class PushNotificationStream: MutablePushNotificationStreaming, Logging {
         pushNotificationSubject.onNext(identifier)
     }
 
-    func update(notification: UNNotification) {
+    func update(notification: UserNotification) {
         foregroundNotificationSubject.onNext(notification)
     }
 
     private let pushNotificationSubject = BehaviorSubject<PushNotificationIdentifier?>(value: nil)
-    private let foregroundNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
+    private let foregroundNotificationSubject = BehaviorSubject<UserNotification?>(value: nil)
 }

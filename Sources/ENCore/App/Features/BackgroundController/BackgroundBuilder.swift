@@ -18,7 +18,7 @@ protocol BackgroundControlling {
     func registerActivityHandle()
     func refresh(task: BackgroundTask?)
     @available(iOS 13, *)
-    func handle(task: BGTask)
+    func handle(task: BackgroundTask)
     func removeAllTasks()
     func performDecoySequenceIfNeeded()
 }
@@ -50,7 +50,8 @@ class DummyTaskScheduling: TaskScheduling {
     func cancelAllTaskRequests() {}
 }
 
-protocol BackgroundTask {
+/// @mockable
+@objc public protocol BackgroundTask {
     var identifier: String { get }
     var expirationHandler: (() -> ())? { get set }
     func setTaskCompleted(success: Bool)

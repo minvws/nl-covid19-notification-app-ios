@@ -14,7 +14,7 @@ import Foundation
 import UIKit
 
 @available(iOS 12.5,*)
-@objc public final class ENAppRoot: NSObject, Logging {
+@objc public final class AppRoot: NSObject, Logging {
     private static var version: String {
         let dictionary = Bundle.main.infoDictionary
         let version = dictionary?["CFBundleShortVersionString"] as? String ?? "n/a"
@@ -24,14 +24,19 @@ import UIKit
         return "OS: \(UIDevice.current.systemVersion) App: \(version)-(\(build)) Bundle Identifier: \(bundleIdentifier)"
     }
 
-    private let rootBuilder = RootBuilder()
+    private let rootBuilder: RootBuildable
     private var appEntryPoint: AppEntryPoint?
 
+    // Optional RootBuildable gives us the possibility to inject a mock for unit testing
+    public init(rootBuilder: RootBuildable? = nil) {
+        self.rootBuilder = rootBuilder ?? RootBuilder()
+    }
+    
     @objc
     public func attach(toWindow window: UIWindow) {
-        logDebug("`attach` \(ENAppRoot.version)")
+        logDebug("`attach` \(AppRoot.version)")
         guard appEntryPoint == nil else {
-            logDebug("ENAppRoot - appEntryPoint already attached")
+            logDebug("AppRoot - appEntryPoint already attached")
             return
         }
 
@@ -43,36 +48,36 @@ import UIKit
 
     @objc
     public func start() {
-        logDebug("`start` \(ENAppRoot.version)")
+        logDebug("`start` \(AppRoot.version)")
         guard let appEntryPoint = appEntryPoint else {
-            logError("ENAppRoot - start - appEntryPoint not initialized")
+            logError("AppRoot - start - appEntryPoint not initialized")
             return
         }
         appEntryPoint.start()
     }
 
     @objc
-    public func receiveRemoteNotification(response: UNNotificationResponse) {
-        logDebug("`receiveRemoteNotification` \(ENAppRoot.version)")
+    public func receiveRemoteNotification(response: NotificationResponse) {
+        logDebug("`receiveRemoteNotification` \(AppRoot.version)")
 
-        guard let identifier = PushNotificationIdentifier(rawValue: response.notification.request.identifier) else {
-            return logError("Push notification for \(response.notification.request.identifier) not handled")
+        guard let identifier = PushNotificationIdentifier(rawValue: response.notificationRequestIdentifier) else {
+            return logError("Push notification for \(response.notificationRequestIdentifier) not handled")
         }
 
         appEntryPoint?.mutablePushNotificationStream.update(identifier: identifier)
     }
 
     @objc
-    public func receiveForegroundNotification(_ notification: UNNotification) {
-        logDebug("`receiveRemoteNotificationInForeground` \(ENAppRoot.version)")
+    public func receiveForegroundNotification(_ notification: UserNotification) {
+        logDebug("`receiveRemoteNotificationInForeground` \(AppRoot.version)")
         appEntryPoint?.mutablePushNotificationStream.update(notification: notification)
     }
 
     @objc
     public func didBecomeActive() {
-        logDebug("`didBecomeActive` \(ENAppRoot.version)")
+        logDebug("`didBecomeActive` \(AppRoot.version)")
         guard let appEntryPoint = appEntryPoint else {
-            logError("ENAppRoot - didBecomeActive - appEntryPoint not initialized")
+            logError("AppRoot - didBecomeActive - appEntryPoint not initialized")
             return
         }
         appEntryPoint.didBecomeActive()
@@ -80,9 +85,9 @@ import UIKit
 
     @objc
     public func didEnterForeground() {
-        logDebug("`didEnterForeground` \(ENAppRoot.version)")
+        logDebug("`didEnterForeground` \(AppRoot.version)")
         guard let appEntryPoint = appEntryPoint else {
-            logError("ENAppRoot - didEnterForeground - appEntryPoint not initialized")
+            logError("AppRoot - didEnterForeground - appEntryPoint not initialized")
             return
         }
         appEntryPoint.didEnterForeground()
@@ -90,9 +95,9 @@ import UIKit
 
     @objc
     public func didEnterBackground() {
-        logDebug("`didEnterBackground` \(ENAppRoot.version)")
+        logDebug("`didEnterBackground` \(AppRoot.version)")
         guard let appEntryPoint = appEntryPoint else {
-            logError("ENAppRoot - didEnterBackground - appEntryPoint not initialized")
+            logError("AppRoot - didEnterBackground - appEntryPoint not initialized")
             return
         }
         appEntryPoint.didEnterBackground()
@@ -100,8 +105,8 @@ import UIKit
 
     @objc
     @available(iOS 13.5,*)
-    public func handle(backgroundTask: BGTask) {
-        logDebug("`handle` \(ENAppRoot.version)")
+    public func handle(backgroundTask: BackgroundTask) {
+        logDebug("`handle` \(AppRoot.version)")
         appEntryPoint?.handle(backgroundTask: backgroundTask)
     }
 }

@@ -112,7 +112,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         }.disposed(by: disposeBag)
 
         pushNotificationStream.foregroundNotificationStream.subscribe(onNext: { [weak self] notification in
-            if notification.request.identifier == PushNotificationIdentifier.pauseEnded.rawValue {
+            if notification.requestIdentifier == PushNotificationIdentifier.pauseEnded.rawValue {
                 self?.logDebug("Refreshing state due to pauseEnded notification")
                 self?.refreshCurrentState()
             }
