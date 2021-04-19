@@ -579,7 +579,10 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
         // We only show a notification if the found exposure was newer than the previously known exposure
         if let previousDaysSinceLastExposure = getStoredDaysSinceLastExposure(), previousDaysSinceLastExposure >= daysSinceLastExposure {
-            logDebug("Previous exposure \(previousDaysSinceLastExposure) days ago was newer than new found exposure - skipping notification")
+            if let lastExposureDate = lastStoredExposureReport()?.date {
+                logDebug("lastExposureDate: \(lastExposureDate). exposureReport.date: \(exposureReport.date)")
+            }
+            logDebug("Previous exposure (\(previousDaysSinceLastExposure) days ago) was more recent than found exposure (\(daysSinceLastExposure) days ago) - skipping notification")
             return emptyReport
         }
         

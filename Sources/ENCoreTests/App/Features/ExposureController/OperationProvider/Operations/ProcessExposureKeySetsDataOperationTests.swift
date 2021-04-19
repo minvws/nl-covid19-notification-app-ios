@@ -429,6 +429,38 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationCallCount, 0)
     }
+    
+    func test_shouldNotShowExposureNotificationIfNewerExposureDateExists() {
+        let today = Date(timeIntervalSince1970: 1618826400) // Monday, April 19, 2021 10:00:00
+        let todayExposureDate = Date(timeIntervalSince1970: 1618790400) // Monday, April 19, 2021 0:00:00
+        let previousExposureDate = Date(timeIntervalSince1970: 1618704000) // Sunday, April 18, 2021 0:00:00
+        
+        let dayCount = Calendar.current.dateComponents([.day], from: lastExposureDate, to: today).day
+        
+//        mockEnvironmentController.gaenRateLimitingType = .fileLimit
+//
+//        let unprocessedKeySetHolders = Array(repeating: ExposureKeySetHolder(identifier: "identifier", signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate()), count: 2)
+//
+//        mockStorage(storedKeySetHolders: unprocessedKeySetHolders)
+//
+//        let subscriptionExpectation = expectation(description: "subscriptionExpectation")
+//
+//        mockRiskCalculationController.getLastExposureDateHandler = { _, _ in
+//            return Calendar.current.date(byAdding: .day, value: -3, to: currentDate())
+//        }
+//
+//        sut.execute()
+//            .subscribe(onCompleted: {
+//                subscriptionExpectation.fulfill()
+//            })
+//            .disposed(by: disposeBag)
+//
+//        waitForExpectations(timeout: 2, handler: nil)
+//
+//        XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationCallCount, 1)
+//        XCTAssertEqual(mockUserNotificationCenter.displayExposureNotificationArgValues.first, 3)
+//        XCTAssertEqual(mockExposureDataController.updateExposureFirstNotificationReceivedDateCallCount, 1)
+    }
 
     func test_shouldNotShowExposureNotificationForExposureMoreThan14DaysAgo() {
 
