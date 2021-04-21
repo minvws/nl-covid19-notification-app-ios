@@ -100,6 +100,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         logDebug("RootRouter - start() called")
 
         guard mainRouter == nil, onboardingRouter == nil else {
+            logTrace()
             logDebug("RootRouter - already started")
             return
         }
@@ -112,7 +113,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         // Copy of launch screen is shown to give the app time to determine the proper
         // screen to route to. If the network is slow this can take a few seconds.
-        routeToLaunchScreen()
+        routeToLaunchScreen { [weak self] in
+            self?.logDebug("Finished routing to launch screen")
+        }
 
         backgroundController.registerActivityHandle()
 
@@ -130,11 +133,16 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
             strongSelf.detachLaunchScreenIfNeeded(animated: false) { [weak self] in
 
+                self?.logTrace()
+                
                 guard let strongSelf = self else { return }
 
                 if strongSelf.exposureController.didCompleteOnboarding {
+                    self?.logTrace()
                     strongSelf.routeToMain()
+                    
                 } else {
+                    self?.logTrace()
                     strongSelf.routeToOnboarding()
                 }
             }
@@ -227,7 +235,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     // MARK: - RootRouting
 
-    func routeToLaunchScreen() {
+    func routeToLaunchScreen(completion: @escaping () -> Void) {
         guard launchScreenController == nil else {
             // already presented
             return
@@ -238,15 +246,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         viewController.present(viewController: launchScreenViewController,
                                animated: false,
-                               completion: nil)
+                               completion: completion)
     }
 
     func routeToOnboarding() {
+        logTrace()
         guard onboardingRouter == nil else {
             // already presented
             return
         }
-
+        
+        logTrace()
         let onboardingRouter = onboardingBuilder.build(withListener: viewController)
         self.onboardingRouter = onboardingRouter
 
