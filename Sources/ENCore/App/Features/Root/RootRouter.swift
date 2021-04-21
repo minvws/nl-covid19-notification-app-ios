@@ -30,7 +30,6 @@ protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMe
 }
 
 final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint, Logging {
-
     // MARK: - Initialisation
 
     init(viewController: RootViewControllable,
@@ -96,7 +95,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     let mutablePushNotificationStream: MutablePushNotificationStreaming
 
     func start() {
-
         logDebug("RootRouter - start() called")
 
         guard mainRouter == nil, onboardingRouter == nil else {
@@ -114,73 +112,49 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         // Copy of launch screen is shown to give the app time to determine the proper
         // screen to route to. If the network is slow this can take a few seconds.
         routeToLaunchScreen { [weak self] in
+
             self?.logDebug("Finished routing to launch screen")
-        }
-
-        backgroundController.registerActivityHandle()
-
-        routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
 
             guard let strongSelf = self else { return }
 
-            if strongSelf.exposureController.didCompleteOnboarding {
-                strongSelf.backgroundController.scheduleTasks()
-            }
+            strongSelf.backgroundController.registerActivityHandle()
 
-            guard !didRoute else {
-                return
-            }
+            strongSelf.routeToDeactivatedOrUpdateScreenIfNeeded { [weak self] didRoute in
 
-            strongSelf.detachLaunchScreenIfNeeded(animated: false) { [weak self] in
-
-                self?.logTrace()
-                
                 guard let strongSelf = self else { return }
 
                 if strongSelf.exposureController.didCompleteOnboarding {
-                    self?.logTrace()
-                    strongSelf.routeToMain()
-                    
-                } else {
-                    self?.logTrace()
-                    strongSelf.routeToOnboarding()
+                    strongSelf.backgroundController.scheduleTasks()
                 }
-            }
 
-            #if USE_DEVELOPER_MENU || DEBUG
-                strongSelf.attachDeveloperMenu()
-            #endif
-        }
-
-        mutablePushNotificationStream
-            .pushNotificationStream
-            .subscribe(onNext: { [weak self] pushNotificationIdentifier in
-                guard let strongSelf = self else {
+                guard !didRoute else {
                     return
                 }
 
-                self?.logDebug("Push Notification Identifier: \(pushNotificationIdentifier.rawValue)")
+                strongSelf.detachLaunchScreenIfNeeded(animated: false) { [weak self] in
 
-                switch pushNotificationIdentifier {
-                case .exposure:
-                    strongSelf.routeToMessage()
-                case .inactive:
-                    () // Do nothing
-                case .uploadFailed:
-                    strongSelf.routeToCallGGD()
-                case .enStatusDisabled:
-                    () // Do nothing
-                case .appUpdateRequired:
-                    () // Do nothing
-                case .pauseEnded:
-                    () // Do nothing
+                    self?.logTrace()
+
+                    guard let strongSelf = self else { return }
+
+                    if strongSelf.exposureController.didCompleteOnboarding {
+                        self?.logTrace()
+                        strongSelf.routeToMain()
+                        strongSelf.subscribeToPushNotificationStream()
+                    } else {
+                        self?.logTrace()
+                        strongSelf.routeToOnboarding()
+                    }
                 }
-            })
-            .disposed(by: disposeBag)
+
+                #if USE_DEVELOPER_MENU || DEBUG
+                    strongSelf.attachDeveloperMenu()
+                #endif
+            }
+        }
     }
 
     func didBecomeActive() {
-
         exposureController.refreshStatus()
 
         if mainRouter != nil || onboardingRouter != nil {
@@ -205,7 +179,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func didEnterForeground() {
-
         mutableNetworkStatusStream.startObservingNetworkReachability()
 
         guard mainRouter != nil || onboardingRouter != nil else {
@@ -216,7 +189,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController.refreshStatus()
 
         if !pauseController.isAppPaused {
-
             exposureController
                 .updateWhenRequired()
                 .subscribe(onCompleted: {})
@@ -235,14 +207,14 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     // MARK: - RootRouting
 
-    func routeToLaunchScreen(completion: @escaping () -> Void) {
+    func routeToLaunchScreen(completion: @escaping () -> ()) {
         guard launchScreenController == nil else {
             // already presented
             return
         }
 
         let launchScreenViewController = launchScreenBuilder.build()
-        self.launchScreenController = launchScreenViewController
+        launchScreenController = launchScreenViewController
 
         viewController.present(viewController: launchScreenViewController,
                                animated: false,
@@ -255,7 +227,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             // already presented
             return
         }
-        
+
         logTrace()
         let onboardingRouter = onboardingBuilder.build(withListener: viewController)
         self.onboardingRouter = onboardingRouter
@@ -323,7 +295,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
         let updateOSViewController = updateOperatingSystemBuilder.build()
 
-        self.updateOperatingSystemViewController = updateOSViewController
+        updateOperatingSystemViewController = updateOSViewController
 
         viewController.present(viewController: updateOSViewController, animated: true, completion: nil)
     }
@@ -356,10 +328,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             return
         }
 
-        let mainRouter = self.mainBuilder.build()
+        let mainRouter = mainBuilder.build()
         self.mainRouter = mainRouter
 
-        self.viewController.embed(viewController: mainRouter.viewControllable)
+        viewController.embed(viewController: mainRouter.viewControllable)
     }
 
     private func routeToEndOfLife() {
@@ -373,7 +345,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         let endOfLifeViewController = endOfLifeBuilder.build(withListener: viewController)
         self.endOfLifeViewController = endOfLifeViewController
-        self.viewController.presentInNavigationController(viewController: endOfLifeViewController, animated: false, presentFullScreen: true)
+        viewController.presentInNavigationController(viewController: endOfLifeViewController, animated: false, presentFullScreen: true)
     }
 
     private func routeToCallGGD() {
@@ -419,12 +391,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: ((_ didRoute: Bool) -> ())? = nil) {
-
         Observable
             .combineLatest(exposureController.isAppDeactivated().asObservable(), exposureController.appShouldUpdateCheck().asObservable())
             .subscribe { [weak self] isDeactivated, updateInformation in
                 if isDeactivated {
-
                     self?.detachLaunchScreenIfNeeded(animated: false) {
                         self?.routeToEndOfLife()
                         self?.exposureController.deactivate()
@@ -436,7 +406,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 }
 
                 if updateInformation.shouldUpdate, let versionInformation = updateInformation.versionInformation {
-
                     let minimumVersionMessage = versionInformation.minimumVersionMessage.isEmpty ? nil : versionInformation.minimumVersionMessage
 
                     self?.detachLaunchScreenIfNeeded(animated: false) {
@@ -469,7 +438,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     exposureDataError == .serverError ||
                     exposureDataError == .internalError ||
                     exposureDataError == .responseCached {
-
                     guard let strongSelf = self else {
                         self?.logError("Root Router released before routing")
                         completion?(false)
@@ -492,6 +460,34 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         exposureController
             .updateTreatmentPerspective()
             .subscribe { _ in }
+            .disposed(by: disposeBag)
+    }
+
+    private func subscribeToPushNotificationStream() {
+        mutablePushNotificationStream
+            .pushNotificationStream
+            .subscribe(onNext: { [weak self] pushNotificationIdentifier in
+                guard let strongSelf = self else {
+                    return
+                }
+
+                self?.logDebug("Push Notification Identifier: \(pushNotificationIdentifier.rawValue)")
+
+                switch pushNotificationIdentifier {
+                case .exposure:
+                    strongSelf.routeToMessage()
+                case .inactive:
+                    () // Do nothing
+                case .uploadFailed:
+                    strongSelf.routeToCallGGD()
+                case .enStatusDisabled:
+                    () // Do nothing
+                case .appUpdateRequired:
+                    () // Do nothing
+                case .pauseEnded:
+                    () // Do nothing
+                }
+            })
             .disposed(by: disposeBag)
     }
 
