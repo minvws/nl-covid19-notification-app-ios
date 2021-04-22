@@ -15,7 +15,6 @@ final class RequestAppManifestDataOperationTests: TestCase {
     private var sut: RequestAppManifestDataOperation!
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
-    private let disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
