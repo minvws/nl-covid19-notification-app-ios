@@ -15,7 +15,6 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
     private var operation: UploadDiagnosisKeysDataOperation!
     private let networkController = NetworkControllingMock()
     private let storageController = StorageControllingMock()
-    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()

@@ -22,7 +22,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     private var mockFileManager: FileManagingMock!
     private var mockEnvironmentController: EnvironmentControllingMock!
     private var mockLocalPathProvider: LocalPathProvidingMock!
-    private var disposeBag = DisposeBag()
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockRiskCalculationController: RiskCalculationControllingMock!
 

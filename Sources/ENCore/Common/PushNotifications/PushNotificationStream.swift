@@ -49,7 +49,6 @@ final class PushNotificationStream: MutablePushNotificationStreaming, Logging {
     var pushNotificationStream: Observable<PushNotificationIdentifier> {
         return pushNotificationSubject
             .subscribe(on: MainScheduler.instance)
-            .distinctUntilChanged()
             .compactMap { $0 }
     }
 

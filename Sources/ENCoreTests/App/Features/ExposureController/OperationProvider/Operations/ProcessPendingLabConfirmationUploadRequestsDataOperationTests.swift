@@ -15,7 +15,6 @@ final class ProcessPendingLabConfirmationUploadRequestsDataOperationTests: TestC
     private var operation: ProcessPendingLabConfirmationUploadRequestsDataOperation!
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
-    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()

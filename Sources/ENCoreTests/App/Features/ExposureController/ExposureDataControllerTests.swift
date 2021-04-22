@@ -12,7 +12,6 @@ import RxSwift
 import XCTest
 
 final class ExposureDataControllerTests: TestCase {
-    private var disposeBag = DisposeBag()
     
     private var sut: ExposureDataController!
     private var mockOperationProvider: ExposureDataOperationProviderMock!

@@ -15,7 +15,6 @@ final class RequestLabConfirmationKeyDataOperationTests: TestCase {
     private var operation: RequestLabConfirmationKeyDataOperation!
     private let networkController = NetworkControllingMock()
     private let storageController = StorageControllingMock()
-    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()
