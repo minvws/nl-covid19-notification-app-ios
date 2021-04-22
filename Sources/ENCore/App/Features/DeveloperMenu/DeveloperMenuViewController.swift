@@ -159,6 +159,10 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 DeveloperItem(title: "Trigger Exposure",
                               subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState?.notifiedState.asString ?? "No")",
                               action: { [weak self] in self?.triggerExposure() }),
+                
+                DeveloperItem(title: "Trigger Exposure and Schedule Message Flow",
+                              subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState?.notifiedState.asString ?? "No")",
+                              action: { [weak self] in self?.triggerExposureAndScheduleMessage() }),
                 DeveloperItem(title: "Upload Exposure Keys",
                               subtitle: "Upload keys after giving permission",
                               action: { [weak self] in self?.uploadKeys() }),
@@ -303,6 +307,40 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
         present(actionItems: actionItems, title: "Select exposure date")
     }
+    
+    private func triggerExposureAndScheduleMessage() {
+        
+        let dayOptions = [-15, -14, -13, -6, -5, -4, -3, -2, -1, 0]
+        let actionItems = dayOptions.reversed().map { (day) -> UIAlertAction in
+            let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
+                let exposureDate = Date().addingTimeInterval(.days(Double(day))).startOfDay!
+                let exposureReport = ExposureReport(date: exposureDate)
+                
+                self?.storageController.store(object: exposureReport, identifiedBy: ExposureDataStorageKey.lastExposureReport) { _ in
+                    self?.exposureController.updateExposureFirstNotificationReceivedDate(Date())
+                    self?.storageController.store(object: exposureDate, identifiedBy: ExposureDataStorageKey.previousExposureDate) { _ in
+                        self?.exposureController.refreshStatus()
+                        self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.exposure.rawValue)
+                    }
+                }
+            }
+
+            var title = ""
+            if day < 0 {
+                title = "\(abs(day)) days ago"
+            } else if day == 0 {
+                title = "Today"
+            }
+            
+            return UIAlertAction(title: title,
+                                 style: .default,
+                                 handler: actionHandler)
+        }
+
+        present(actionItems: actionItems, title: "Select exposure date")
+    }
+    
+    
 
     private func changeNetworkConfiguration() {
         let configurations: [NetworkConfiguration] = [.development, .test, .acceptance, .production]
