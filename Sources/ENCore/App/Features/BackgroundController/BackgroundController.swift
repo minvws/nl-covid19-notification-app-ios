@@ -69,7 +69,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 .subscribe(onSuccess: { isDeactivated in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
-                        self.removePreviousExposureDate().subscribe().disposed(by: self.disposeBag)
+                        self.removePreviousExposureDateIfNeeded().subscribe().disposed(by: self.disposeBag)
                         self.removeAllTasks()
                     } else {
                         self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
@@ -225,17 +225,17 @@ final class BackgroundController: BackgroundControlling, Logging {
     func refresh(task: BackgroundTask?) {
         let sequence: [Completable]
         
-        
         if dataController.isAppPaused {
             // When the app is paused we only perform a limited set of actions in the background
             
             sequence = [
-                removePreviousExposureDate(),
+                removePreviousExposureDateIfNeeded(),
                 displayPauseExpirationReminderIfNeeded()
             ]
             
         } else {
             sequence = [
+                removePreviousExposureDateIfNeeded(),
                 activateExposureController(),
                 updateStatusStream(),
                 fetchAndProcessKeysets(),
@@ -244,8 +244,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 sendNotificationIfAppShouldUpdate(),
                 updateTreatmentPerspective(),
                 sendExposureReminderNotificationIfNeeded(),
-                processDecoyRegisterAndStopKeys(),
-                removePreviousExposureDate()
+                processDecoyRegisterAndStopKeys()
             ]
         }
 
@@ -523,9 +522,9 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
     
     /// Removes stored previous exposure date in case it is longer than 14 days ago
-    private func removePreviousExposureDate() -> Completable {
+    private func removePreviousExposureDateIfNeeded() -> Completable {
         logDebug("Background: removePreviousExposureDate()")
-        return dataController.removePreviousExposureDate()
+        return dataController.removePreviousExposureDateIfNeeded()
     }
 
     // Returns a Date with the specified hour and minute, for the next day
