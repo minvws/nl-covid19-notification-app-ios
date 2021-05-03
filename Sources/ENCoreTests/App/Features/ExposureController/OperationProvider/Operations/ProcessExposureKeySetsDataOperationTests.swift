@@ -131,6 +131,30 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
     }
+    
+    func test_shouldUpdateProcessingDateIfNoStoredKeySets() {
+
+        let currentDate = Date()
+        DateTimeTestingOverrides.overriddenCurrentDate = currentDate
+        
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
+        mockApplication.isInBackground = true
+        mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate)
+    }
 
     // If the number of background calls has not reached the limit, a detection call should be made
     func test_shouldDetectExposuresIfBackgroundCallsAvailable() {
