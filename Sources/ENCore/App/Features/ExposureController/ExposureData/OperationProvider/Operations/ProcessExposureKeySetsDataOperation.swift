@@ -93,7 +93,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         if exposureKeySetHolders.count > 0 {
             logDebug("Processing \(exposureKeySetHolders.count) KeySets: \(exposureKeySetHolders.map { $0.identifier }.joined(separator: "\n"))")
         } else {
-            logDebug("No additional keysets to process")
+            logDebug("No additional keysets to process.")            
+            updateLastProcessingDate()
             return .empty()
         }
 
