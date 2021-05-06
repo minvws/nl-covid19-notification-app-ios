@@ -108,6 +108,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         case .en:
             exposureStateStream
                 .exposureState
+                .observe(on: MainScheduler.instance)
                 .filter { $0.activeState != .notAuthorized || skippedCurrentStep }
                 .take(1)
                 .subscribe(onNext: { value in
@@ -162,6 +163,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
         exposureStateSubscription = exposureStateStream
             .exposureState
+            .observe(on: MainScheduler.instance)
             .filter { $0.activeState != .notAuthorized && $0.activeState != .inactive(.disabled) }
             .take(1)
             .subscribe(onNext: { [weak self] state in

@@ -183,8 +183,10 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func refreshStatus() {
-        updatePushNotificationState {
-            self.updateStatusStream()
+        updatePushNotificationState { [weak self] in
+            backgroundThreadIfNeeded { [weak self] in
+                self?.updateStatusStream()
+            }
         }
     }
 
@@ -594,7 +596,7 @@ final class ExposureController: ExposureControlling, Logging {
             .disposed(by: disposeBag)
     }
 
-    func updateStatusStream() {
+    private func updateStatusStream() {
 
         if let pauseEndDate = dataController.pauseEndDate {
             mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused(pauseEndDate))))

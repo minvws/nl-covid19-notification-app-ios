@@ -331,7 +331,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         // even though exposureController.updateStatusStream() is a synchronous call,
         // we still wrap it in a completable to make it possible to schedule the work in the refresh sequence
         return .create { (observer) -> Disposable in
-            self.exposureController.updateStatusStream()
+            self.exposureController.refreshStatus()
             observer(.completed)
             return Disposables.create()
         }

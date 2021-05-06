@@ -20,7 +20,6 @@ protocol ExposureControlling: AnyObject {
     func activate() -> Completable
     func deactivate()
     func postExposureManagerActivation()
-    func updateStatusStream()
 
     func pause(untilDate date: Date)
     func unpause()

@@ -112,7 +112,7 @@ final class BackgroundControllerTests: TestCase {
 
         controller.refresh(task: nil)
 
-        XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 1)
     }
     
     func test_refresh_shouldRemovePreviousExposureDates() {
