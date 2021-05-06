@@ -412,6 +412,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         Observable
             .combineLatest(exposureController.isAppDeactivated().asObservable(), exposureController.appShouldUpdateCheck().asObservable())
+            .observe(on: MainScheduler.instance)
             .subscribe { [weak self] isDeactivated, updateInformation in
                 if isDeactivated {
 

@@ -111,7 +111,9 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             return nil
         }
 
-        _ = sut.execute()
+        sut.execute()
+            .subscribe()
+            .disposed(by: disposeBag)
 
         XCTAssertTrue(mockStorageController.retrieveDataArgValues.first is CodableStorageKey<[ExposureKeySetHolder]>)
         waitForExpectations(timeout: 2.0, handler: nil)

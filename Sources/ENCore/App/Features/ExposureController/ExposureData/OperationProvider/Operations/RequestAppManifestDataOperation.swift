@@ -35,14 +35,18 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
         if let manifest = retrieveStoredManifest(), manifest.isValid(forUpdateFrequency: updateFrequency) {
             let expirationDate = manifest.expirationDate(forUpdateFrequency: updateFrequency)
             logDebug("Using cached manifest (expires at \(expirationDate), in \(expirationDate.timeIntervalSince(Date()).minutes) minutes)")
-            return .just(manifest)
+            let manifestSingle = Single<ApplicationManifest>.create { (observer) in
+                observer(.success(manifest))
+                return Disposables.create()
+            }
+            return manifestSingle.observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
         }
 
         logDebug("Getting fresh manifest from network")
 
         return networkController
             .applicationManifest
-            .subscribe(on: MainScheduler.instance)
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
             .catch { throw $0.asExposureDataError }
             .flatMap(store(manifest:))
     }
