@@ -377,11 +377,17 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             return .empty()
         }
         
-        return .create { observer in
-            self.storageController.removeData(for: ExposureDataStorageKey.previousExposureDate, completion: { error in
+        return .create { [weak self] observer in
+            guard let strongSelf = self else {
+                observer(.completed)
+                return Disposables.create()
+            }
+            
+            strongSelf.storageController.removeData(for: ExposureDataStorageKey.previousExposureDate, completion: { error in
                 if let error = error {
                     observer(.error(error))
                 } else {
+                    strongSelf.logDebug("Previous exposure date (\(previousDate)) removed from storage")
                     observer(.completed)
                 }
             })
