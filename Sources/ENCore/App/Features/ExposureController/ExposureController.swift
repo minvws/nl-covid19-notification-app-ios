@@ -561,6 +561,7 @@ final class ExposureController: ExposureControlling, Logging {
 
         mutableStateStream
             .exposureState
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
             .flatMap { [weak self] (exposureState) -> Single<Bool> in
                 let stateActive = [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
                     && (self?.networkStatusStream.networkReachable == true)
@@ -582,6 +583,7 @@ final class ExposureController: ExposureControlling, Logging {
 
         networkStatusStream
             .networkReachableStream
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
             .do(onNext: { [weak self] _ in
                 self?.updateStatusStream()
             }, onError: { [weak self] _ in

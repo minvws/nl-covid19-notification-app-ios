@@ -443,7 +443,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
-                strongSelf.exposureController.activate()
+                strongSelf.exposureController
+                    .activate()
+                    .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .background))
                     .subscribe(onCompleted: {
                         strongSelf.exposureController.postExposureManagerActivation()
                         strongSelf.backgroundController.performDecoySequenceIfNeeded()
