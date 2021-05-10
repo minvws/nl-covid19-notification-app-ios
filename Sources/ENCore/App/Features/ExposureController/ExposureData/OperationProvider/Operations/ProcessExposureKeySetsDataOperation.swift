@@ -49,6 +49,24 @@ fileprivate struct DetectionInput {
         // filter out already processed ones
         .filter { $0.processed == false }
     }
+    
+    var numberOfProcessedKeySetsInLast24Hours: Int {
+        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: currentDate()) else {
+            return 0
+        }
+
+        let wasProcessedInLast24h: (ExposureKeySetHolder) -> Bool = { keySetHolder in
+            guard let processDate = keySetHolder.processDate else {
+                return false
+            }
+
+            return processDate > cutOffDate
+        }
+
+        return storedKeysetHolders
+            .filter(wasProcessedInLast24h)
+            .count
+    }
 }
 
 final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOperationProtocol, Logging {
@@ -191,7 +209,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
         // Determine if we are limited by the number of daily API calls or KeySets
         let numberOfDailyAPICallsLeft = getNumberOfDailyAPICallsLeft(inBackground: detectionInput.applicationInBackground)
-        let numberOfDailyKeySetsLeft = getNumberOfDailyKeySetsLeft()
+        let numberOfDailyKeySetsLeft = getNumberOfDailyKeySetsLeft(detectionInput: detectionInput)
 
         // get most recent keySetHolders and limit by `numberOfDailyKeysetsLeft`
         let keySetHoldersToProcess = selectKeySetHoldersToProcess(from: validKeySetHolders, maximum: numberOfDailyKeySetsLeft)
@@ -364,24 +382,6 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
-    private func getNumberOfProcessedKeySetsInLast24Hours() -> Int {
-        guard let cutOffDate = Calendar.current.date(byAdding: .hour, value: -24, to: currentDate()) else {
-            return 0
-        }
-
-        let wasProcessedInLast24h: (ExposureKeySetHolder) -> Bool = { keySetHolder in
-            guard let processDate = keySetHolder.processDate else {
-                return false
-            }
-
-            return processDate > cutOffDate
-        }
-
-        return getStoredKeySetsHolders()
-            .filter(wasProcessedInLast24h)
-            .count
-    }
-
     func updateNumberOfApiCallsMade(inBackground: Bool) -> Completable {
         return .create { (observer) -> Disposable in
             self.storageController.requestExclusiveAccess { storageController in
@@ -453,7 +453,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         return numberOfCallsLeft
     }
 
-    private func getNumberOfDailyKeySetsLeft() -> Int {
+    private func getNumberOfDailyKeySetsLeft(detectionInput: DetectionInput) -> Int {
         guard environmentController.gaenRateLimitingType == .fileLimit else {
             // iOS 13.6+ is not limited in the number of daily keysets but in the number of API calls
             logDebug("Number of keysets left to process today: infinite (no limit on iOS 13.6+)")
@@ -467,7 +467,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             }
         #endif
 
-        let numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - getNumberOfProcessedKeySetsInLast24Hours()
+        let numberOfKeySetsLeftToProcess = maximumDailyOfKeySetsToProcess - detectionInput.numberOfProcessedKeySetsInLast24Hours
         logDebug("Number of keysets left to process today: \(numberOfKeySetsLeftToProcess)")
 
         return numberOfKeySetsLeftToProcess

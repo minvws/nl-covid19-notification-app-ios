@@ -101,18 +101,25 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     func test_shouldRetrieveStoredKeySetHolders() {
 
         let keySetExpectation = expectation(description: "keySetHoldersRequested")
-
+        
+        // Stored keysets are request 2 times, once at the start of the operation and once when the result of the operation is stored
+        keySetExpectation.expectedFulfillmentCount = 2
+        
+        let completionExpectation = expectation(description: "subscriptionEnded")
+        
         mockStorageController.retrieveDataHandler = { key in
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
                 keySetExpectation.fulfill()
-                return try! JSONEncoder().encode([self.dummyKeySetHolder])
+                return try! JSONEncoder().encode([ExposureKeySetHolder]())
             }
 
             return nil
         }
 
         sut.execute()
-            .subscribe()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
             .disposed(by: disposeBag)
 
         XCTAssertTrue(mockStorageController.retrieveDataArgValues.first is CodableStorageKey<[ExposureKeySetHolder]>)
