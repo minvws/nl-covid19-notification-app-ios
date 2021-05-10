@@ -209,11 +209,20 @@ final class RootRouterTests: TestCase {
     }
 
     func test_start_activatesExposureController() {
+        
+        let postExposureManagerActivationExpectation = expectation(description: "postExposureManagerActivation")
+        let decoySequenceExpectation = expectation(description: "decoySequence")
+        
         XCTAssertEqual(exposureController.activateCallCount, 0)
         XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 0)
         XCTAssertEqual(backgroundController.performDecoySequenceIfNeededCallCount, 0)
 
+        exposureController.postExposureManagerActivationHandler = { postExposureManagerActivationExpectation.fulfill() }
+        backgroundController.performDecoySequenceIfNeededHandler = { decoySequenceExpectation.fulfill() }
+        
         router.start()
+        
+        waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(exposureController.activateCallCount, 1)
         XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 1)

@@ -539,6 +539,10 @@ final class ExposureController: ExposureControlling, Logging {
     func lastTEKProcessingDate() -> Observable<Date?> {
         return dataController.lastSuccessfulExposureProcessingDateObservable
     }
+    
+    func updateLastExposureProcessingDateSubject() {
+        dataController.updateLastExposureProcessingDateSubject()
+    }
 
     // MARK: - Private
 

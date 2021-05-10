@@ -78,7 +78,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private(set) var isFirstRun: Bool = false
     private lazy var pauseEndDateSubject = BehaviorSubject<Date?>(value: pauseEndDate)
 
-    private lazy var lastExposureProcessingDateSubject = BehaviorSubject<Date?>(value: lastSuccessfulExposureProcessingDate)
+    private lazy var lastExposureProcessingDateSubject = BehaviorSubject<Date?>(value: nil)
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling,
@@ -424,6 +424,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .distinctUntilChanged()
             .compactMap { $0 }
             .subscribe(on: MainScheduler.instance)
+    }
+    
+    func updateLastExposureProcessingDateSubject() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.lastExposureProcessingDateSubject.onNext(self.lastSuccessfulExposureProcessingDate)
+        }
     }
 
     var lastSuccessfulExposureProcessingDate: Date? {

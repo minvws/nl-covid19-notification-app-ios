@@ -30,6 +30,7 @@ protocol ExposureDataControlling: AnyObject {
     // MARK: - Exposure Detection
 
     var lastExposure: ExposureReport? { get }
+    func updateLastExposureProcessingDateSubject()
     var lastSuccessfulExposureProcessingDateObservable: Observable<Date?> { get }
     var lastSuccessfulExposureProcessingDate: Date? { get }
     func updateLastSuccessfulExposureProcessingDate(_ date: Date)
