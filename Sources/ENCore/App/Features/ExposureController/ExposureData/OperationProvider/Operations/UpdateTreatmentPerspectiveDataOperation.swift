@@ -31,7 +31,7 @@ final class UpdateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveD
 
             return networkController
                 .treatmentPerspective(identifier: identifier)
-                .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+                .observe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
                 .catch { throw $0.asExposureDataError }
                 .flatMapCompletable(store(treatmentPerspective:))
         }

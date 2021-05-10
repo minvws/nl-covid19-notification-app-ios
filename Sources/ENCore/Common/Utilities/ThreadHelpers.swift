@@ -16,13 +16,3 @@ func mainThreadIfNeeded(work: @escaping () -> ()) {
         }
     }
 }
-
-func backgroundThreadIfNeeded(work: @escaping () -> ()) {
-    if Thread.current.isMainThread {
-        DispatchQueue.global(qos: .background).async {
-            work()
-        }
-    } else {
-        work()
-    }
-}

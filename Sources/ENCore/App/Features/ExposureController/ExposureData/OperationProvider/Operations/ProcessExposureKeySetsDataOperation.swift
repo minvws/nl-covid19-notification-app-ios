@@ -123,7 +123,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
         // Batch detect exposures
         return getDetectionInput()
-            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
             .flatMap { detectionInput in
                 self.detectExposures(detectionInput: detectionInput, exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
             }

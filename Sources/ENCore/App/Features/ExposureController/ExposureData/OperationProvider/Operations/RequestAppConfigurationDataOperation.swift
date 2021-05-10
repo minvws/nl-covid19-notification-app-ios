@@ -61,7 +61,7 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
 
         return networkController
             .applicationConfiguration(identifier: appConfigurationIdentifier)
-            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
             .catch { throw $0.asExposureDataError }
             .flatMap(storeAppConfiguration)
             .flatMap(storeSignature(for:))

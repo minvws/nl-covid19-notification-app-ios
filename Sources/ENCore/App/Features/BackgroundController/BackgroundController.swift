@@ -209,6 +209,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         exposureController
             .getDecoyProbability()
             .delay(.seconds(randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .utility))
             .subscribe(onSuccess: { decoyProbability in
                 execute(decoyProbability: decoyProbability)
             })

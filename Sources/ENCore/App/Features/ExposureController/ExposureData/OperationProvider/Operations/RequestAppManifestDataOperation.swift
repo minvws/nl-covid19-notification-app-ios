@@ -46,7 +46,7 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
 
         return networkController
             .applicationManifest
-            .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
             .catch { throw $0.asExposureDataError }
             .flatMap(store(manifest:))
     }

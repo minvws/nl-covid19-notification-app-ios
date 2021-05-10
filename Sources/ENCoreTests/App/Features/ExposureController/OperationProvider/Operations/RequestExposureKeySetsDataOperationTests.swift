@@ -161,9 +161,9 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
     }
 
     func test_execute_removeItem_withError_shouldMapExposureDataError() {
@@ -193,9 +193,9 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
     }
 
     func test_shouldNotDownloadKeySetsIfFirstBatchIsNotYetIgnored() {

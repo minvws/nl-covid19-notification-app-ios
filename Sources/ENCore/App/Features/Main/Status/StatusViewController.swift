@@ -145,7 +145,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
         
-        backgroundThreadIfNeeded { [weak self] in
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.updatePauseTimer()
         }
         

@@ -184,7 +184,7 @@ final class ExposureController: ExposureControlling, Logging {
 
     func refreshStatus() {
         updatePushNotificationState { [weak self] in
-            backgroundThreadIfNeeded { [weak self] in
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 self?.updateStatusStream()
             }
         }

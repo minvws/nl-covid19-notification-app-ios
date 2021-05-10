@@ -87,6 +87,8 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         let start = CFAbsoluteTimeGetCurrent()
 
         return Observable.from(exposureKeySetStreams)
+            .subscribe(on: ConcurrentDispatchQueueScheduler.init(qos: .utility))
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .utility))            
             .flatMap { $0 }
             .catch { error in
                 throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
