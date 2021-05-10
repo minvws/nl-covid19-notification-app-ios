@@ -60,13 +60,17 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
 
         moreInformationView.set(data: objects, listener: self)
 
-        exposureController.lastTEKProcessingDate()
-            .subscribe(onNext: { lastTEKProcessingDate in
-                let date = self.formatTEKProcessingDateToString(lastTEKProcessingDate)
-                self.moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
-            })
-            .disposed(by: disposeBag)
-
+        DispatchQueue.global(qos: .background).async {
+            self.exposureController.lastTEKProcessingDate()
+                .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
+                .observe(on: MainScheduler.instance)
+                .subscribe(onNext: { lastTEKProcessingDate in
+                    let date = self.formatTEKProcessingDateToString(lastTEKProcessingDate)
+                    self.moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
+                })
+                .disposed(by: self.disposeBag)
+        }
+        
         if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
             let build = dictionary["CFBundleVersion"] as? String,
