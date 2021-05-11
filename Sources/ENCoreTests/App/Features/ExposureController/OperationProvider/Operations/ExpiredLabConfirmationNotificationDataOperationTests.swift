@@ -15,7 +15,6 @@ final class ExpiredLabConfirmationNotificationDataOperationTests: TestCase {
     private var operation: ExpiredLabConfirmationNotificationDataOperation!
     private var mockStorageController: StorageControllingMock!
     private var mockUserNotificationController: UserNotificationControllingMock!
-    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()

@@ -103,6 +103,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     @objc private func updateExposureStateView() {
 
         exposureStateStream.exposureState
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
                 self?.refreshCurrentState()
             }).disposed(by: disposeBag)

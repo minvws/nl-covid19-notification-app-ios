@@ -15,7 +15,6 @@ final class NetworkControllerTests: TestCase {
     private var networkController: NetworkController!
     private let networkManager = NetworkManagingMock()
     private let cryptoUtility = CryptoUtilityMock()
-    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()

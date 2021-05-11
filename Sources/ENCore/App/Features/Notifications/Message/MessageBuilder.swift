@@ -37,6 +37,10 @@ private final class MessageDependencyProvider: DependencyProvider<MessageDepende
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         return dependency.interfaceOrientationStream
     }
+    
+    var applicationController: ApplicationControlling {
+        return ApplicationController()
+    }
 }
 
 final class MessageBuilder: Builder<MessageDependency>, MessageBuildable {
@@ -46,6 +50,7 @@ final class MessageBuilder: Builder<MessageDependency>, MessageBuildable {
                                      theme: dependencyProvider.dependency.theme,
                                      interfaceOrientationStream: dependencyProvider.interfaceOrientationStream,
                                      dataController: dependency.dataController,
-                                     messageManager: dependencyProvider.messageManager)
+                                     messageManager: dependencyProvider.messageManager,
+                                     applicationController: dependencyProvider.applicationController)
     }
 }

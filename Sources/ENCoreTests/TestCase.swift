@@ -9,9 +9,12 @@
 import ENFoundation
 import SnapshotTesting
 import XCTest
+import RxSwift
 
 class TestCase: XCTestCase {
 
+    var disposeBag = DisposeBag()
+    
     var recordSnapshots: Bool {
         get { SnapshotTesting.record }
         set { SnapshotTesting.record = newValue }

@@ -34,6 +34,7 @@ extension StorageControlling {
 
     func retrieveObject<Key: CodableStoreKey>(identifiedBy key: Key) -> Key.Object? {
         guard let data = retrieveData(identifiedBy: key) else {
+            logDebug("StorageControlling: No data found when retrieving data for key \(key.asString)")
             return nil
         }
 
@@ -47,6 +48,7 @@ extension StorageControlling {
 
         if objectToReturn == nil {
             // data is corrupt / backwards incompatible - delete it
+            logError("StorageControlling: Unable to retrieve object. Removing data for key \(key.asString)")
             removeData(for: key, completion: { _ in })
         }
 
@@ -269,6 +271,7 @@ final class StorageController: StorageControlling, Logging {
         do {
             try data.write(to: url, options: .atomicWrite)
         } catch {
+            logError("Error storing data for key \(key): \(error)")
             return false
         }
 
@@ -282,6 +285,7 @@ final class StorageController: StorageControlling, Logging {
             try fileManager.removeItem(at: url)
             return true
         } catch {
+            logError("Error removing data for key \(key): \(error)")
             return false
         }
     }

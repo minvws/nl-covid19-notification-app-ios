@@ -17,7 +17,6 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
     private var mockApplicationSignatureController: ApplicationSignatureControllingMock!
-    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()

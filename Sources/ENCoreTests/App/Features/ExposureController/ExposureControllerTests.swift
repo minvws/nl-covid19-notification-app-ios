@@ -21,8 +21,6 @@ final class ExposureControllerTests: TestCase {
     private let networkStatusStream = NetworkStatusStreamingMock()
     private let currentAppVersion = "1.0"
 
-    private var disposeBag = DisposeBag()
-
     override func setUp() {
         super.setUp()
 

@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import ENFoundation
 
 protocol StoreKey {
     var asString: String { get }
@@ -56,7 +57,7 @@ enum StoreError: Error {
 }
 
 /// @mockable(history: retrieveData = true; store=true)
-protocol StorageControlling {
+protocol StorageControlling: Logging {
     func prepareStore()
     func store<Key: StoreKey>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ())
     func retrieveData<Key: StoreKey>(identifiedBy key: Key) -> Data?
