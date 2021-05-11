@@ -122,19 +122,7 @@ final class ExposureManager: ExposureManaging, Logging {
             assert(Thread.isMainThread)
         #endif
 
-        let retrieve: (@escaping ENGetDiagnosisKeysHandler) -> ()
-
-        #if DEBUG || USE_DEVELOPER_MENU
-            if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys, !useTestDiagnosisKeys {
-                retrieve = manager.getDiagnosisKeys(completionHandler:)
-            } else {
-                retrieve = manager.getDiagnosisKeys(completionHandler:)
-            }
-        #else
-            retrieve = manager.getDiagnosisKeys(completionHandler:)
-        #endif
-
-        retrieve { keys, error in
+        manager.getDiagnosisKeys(completionHandler:) { keys, error in
             if let error = error.map({ $0.asExposureManagerError }) {
                 completion(.failure(error))
                 return

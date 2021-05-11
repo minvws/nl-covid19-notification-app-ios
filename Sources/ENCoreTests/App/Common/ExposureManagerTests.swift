@@ -58,4 +58,24 @@ final class ExposureManagerTests: TestCase {
 
         XCTAssertEqual(mock.activateCallCount, 1)
     }
+
+    func test_getDiagnosisKeys() {
+        mock.getDiagnosisKeysHandler = { completion in
+            let keys = self.diagnosisKeys()
+            completion(keys, nil)
+        }
+
+        XCTAssertEqual(mock.getDiagnosisKeysCallCount, 0)
+
+        manager.getDiagnosisKeys { _ in }
+
+        XCTAssertEqual(mock.getDiagnosisKeysCallCount, 1)
+        XCTAssertEqual(mock.getTestDiagnosisKeysCallCount, 0)
+    }
+
+    private func diagnosisKeys() -> [ENTemporaryExposureKey] {
+        return (0 ... 3).map { _ in
+            ENTemporaryExposureKey()
+        }
+    }
 }
