@@ -151,20 +151,17 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             let input = DetectionInput(
                 exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
                 applicationInBackground: self.application.isInBackground,
-                storedKeysetHolders: self.getStoredKeySetsHolders()
+                storedKeysetHolders: self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
             )
             
             observer(.success(input))
             return Disposables.create()
         }
+        
+        // Subscribing on main scheduler is needed because application.isInBackground should only be called from the main thread
         return input.subscribe(on: MainScheduler.instance)
     }
     
-    /// Retrieves all stores keySetHolders from local storage
-    private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
-    }
-
     /// Verifies whether the KeySetHolder URLs point to valid files
     private func verifyLocalFileUrl(forKeySetsHolder keySetHolder: ExposureKeySetHolder, exposureKeySetsStorageUrl: URL) -> Bool {
         var isDirectory = ObjCBool(booleanLiteral: false)
@@ -388,7 +385,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
     }
 
-    func updateNumberOfApiCallsMade(inBackground: Bool) -> Completable {
+    private func updateNumberOfApiCallsMade(inBackground: Bool) -> Completable {
         return .create { (observer) -> Disposable in
             self.storageController.requestExclusiveAccess { storageController in
                 let storageKey: CodableStorageKey<[Date]> = inBackground ? ExposureDataStorageKey.exposureApiBackgroundCallDates : ExposureDataStorageKey.exposureApiCallDates
@@ -479,6 +476,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         return numberOfKeySetsLeftToProcess
     }
 
+    /// Gets most recent keySetHolders and limits by `maximum`
     private func selectKeySetHoldersToProcess(from keySetsHolders: [ExposureKeySetHolder], maximum: Int) -> [ExposureKeySetHolder] {
 
         let keySetHoldersToProcess = keySetsHolders
@@ -491,7 +489,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         return Array(keySetHoldersToProcess.prefix(maximum))
     }
 
-    /// Creates the final ExposureReport
+    /// Creates the final ExposureReport that includes a date for which a risky exposure was detected
     private func createExposureReport(forDetectionOutput detectionOutput: DetectionOutput) -> Single<DetectionOutput> {
 
         guard environmentController.maximumSupportedExposureNotificationVersion == .version2 else {
