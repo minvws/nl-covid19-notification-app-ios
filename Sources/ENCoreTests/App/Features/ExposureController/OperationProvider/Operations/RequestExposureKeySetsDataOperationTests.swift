@@ -19,7 +19,6 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     private var mockLocalPathProvider: LocalPathProvidingMock!
     private var mockFileManager: FileManagingMock!
     private var exposureKeySetIdentifiers: [String]!
-    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()

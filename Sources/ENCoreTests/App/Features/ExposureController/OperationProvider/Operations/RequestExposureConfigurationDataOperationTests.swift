@@ -16,8 +16,6 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
 
-    private var disposeBag = DisposeBag()
-
     override func setUp() {
         super.setUp()
 
