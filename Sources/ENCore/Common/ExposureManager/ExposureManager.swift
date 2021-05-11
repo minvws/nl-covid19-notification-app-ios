@@ -19,9 +19,7 @@ import Foundation
 #endif
 
 final class ExposureManager: ExposureManaging, Logging {
-
     init(manager: ENManaging) {
-
         self.manager = manager
     }
 
@@ -75,9 +73,8 @@ final class ExposureManager: ExposureManaging, Logging {
             assert(Thread.isMainThread)
         #endif
 
-        self.manager.detectExposures(configuration: configuration.asExposureConfiguration,
-                                     diagnosisKeyURLs: diagnosisKeyURLs)
-        { summary, error in
+        manager.detectExposures(configuration: configuration.asExposureConfiguration,
+                                diagnosisKeyURLs: diagnosisKeyURLs) { summary, error in
             if let error = error.map({ $0.asExposureManagerError }) {
                 completion(.failure(error))
                 return
@@ -95,7 +92,6 @@ final class ExposureManager: ExposureManaging, Logging {
     }
 
     func getExposureWindows(summary: ExposureDetectionSummary, completion: @escaping (Result<[ExposureWindow]?, ExposureManagerError>) -> ()) {
-
         #if DEBUG
             assert(Thread.isMainThread)
         #endif
@@ -132,7 +128,7 @@ final class ExposureManager: ExposureManaging, Logging {
             if let useTestDiagnosisKeys = ExposureManagerOverrides.useTestDiagnosisKeys, !useTestDiagnosisKeys {
                 retrieve = manager.getDiagnosisKeys(completionHandler:)
             } else {
-                retrieve = manager.getTestDiagnosisKeys(completionHandler:)
+                retrieve = manager.getDiagnosisKeys(completionHandler:)
             }
         #else
             retrieve = manager.getDiagnosisKeys(completionHandler:)
@@ -146,16 +142,20 @@ final class ExposureManager: ExposureManaging, Logging {
 
             guard let keys = keys else {
                 // call is success, no keys
+                if let ENAPIVersion = Bundle.main.object(forInfoDictionaryKey: "ENAPIVersion") as? Int,
+                    ENAPIVersion == 2 {
+                    self.logWarning("ExposureManager - `getDiagnosisKeys` - Using ENAPIVersion 2 but no keys available")
+                }
                 completion(.success([]))
                 return
             }
 
             // Convert keys to generic struct
             let diagnosisKeys = keys.map { diagnosisKey -> DiagnosisKey in
-                return DiagnosisKey(keyData: diagnosisKey.keyData,
-                                    rollingPeriod: diagnosisKey.rollingPeriod,
-                                    rollingStartNumber: diagnosisKey.rollingStartNumber,
-                                    transmissionRiskLevel: diagnosisKey.transmissionRiskLevel)
+                DiagnosisKey(keyData: diagnosisKey.keyData,
+                             rollingPeriod: diagnosisKey.rollingPeriod,
+                             rollingStartNumber: diagnosisKey.rollingStartNumber,
+                             transmissionRiskLevel: diagnosisKey.transmissionRiskLevel)
             }
 
             completion(.success(diagnosisKeys))
@@ -279,12 +279,10 @@ struct ENActivityFlags: OptionSet {
 typealias ENActivityHandler = (ENActivityFlags) -> ()
 
 extension ENManager: Logging {
-
     /// On iOS 12.5 only, this will ensure the app receives 3.5 minutes of background processing
     /// every 4 hours. This function is needed on iOS 12.5 because the BackgroundTask framework, used
     /// for Exposure Notifications background processing in iOS 13.5+ does not exist in iOS 12.
     func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler) {
-
         logDebug("ENManager.setLaunchActivityHandler() called")
 
         let proxyActivityHandler: @convention(block) (UInt32) -> () = { integerFlag in
