@@ -202,6 +202,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     }
 
     func didCompleteConsent() {
+        logTrace()
         exposureController.didCompleteOnboarding = true
 
         // Mark all announcements that were made during the onboarding process as "seen"

@@ -21,6 +21,7 @@ final class MessageViewControllerTests: TestCase {
     private var exposureDate: Date!
     private let mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
     private let dataController = ExposureDataControllingMock()
+    private var mockApplicationController: ApplicationControllingMock!
 
     override func setUp() {
         super.setUp()
@@ -28,6 +29,7 @@ final class MessageViewControllerTests: TestCase {
         listener = MessageListenerMock()
         storageController = StorageControllingMock()
         messageManager = MessageManagingMock()
+        mockApplicationController = ApplicationControllingMock()
 
         LocalizationOverrides.overriddenIsRTL = nil
 
@@ -46,7 +48,7 @@ final class MessageViewControllerTests: TestCase {
             self.fakeMessageWithListAndText
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager, applicationController: mockApplicationController)
 
         snapshots(matching: viewController)
     }
@@ -57,7 +59,7 @@ final class MessageViewControllerTests: TestCase {
             self.fakeMessageWithListOnly
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager, applicationController: mockApplicationController)
         snapshots(matching: viewController)
     }
 
@@ -66,7 +68,7 @@ final class MessageViewControllerTests: TestCase {
             self.fakeMessageWithoutList
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager, applicationController: mockApplicationController)
         snapshots(matching: viewController)
     }
 
@@ -77,7 +79,7 @@ final class MessageViewControllerTests: TestCase {
             self.fakeMessageRTLWithList
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager, applicationController: mockApplicationController)
         snapshots(matching: viewController)
 
         LocalizationOverrides.overriddenIsRTL = nil
@@ -88,7 +90,7 @@ final class MessageViewControllerTests: TestCase {
             self.fakeMessageWithListAndText
         }
 
-        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager)
+        viewController = MessageViewController(listener: listener, theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream, dataController: dataController, messageManager: messageManager, applicationController: mockApplicationController)
         listener.messageWantsDismissalHandler = { value in
             XCTAssertFalse(value)
         }

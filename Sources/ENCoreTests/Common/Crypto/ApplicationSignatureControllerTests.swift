@@ -15,7 +15,6 @@ class ApplicationSignatureControllerTests: TestCase {
     private var sut: ApplicationSignatureController!
     private var mockStorageController: StorageControllingMock!
     private var mockCryptoUtility: CryptoUtilityMock!
-    private var disposeBag = DisposeBag()
 
     override func setUp() {
         super.setUp()

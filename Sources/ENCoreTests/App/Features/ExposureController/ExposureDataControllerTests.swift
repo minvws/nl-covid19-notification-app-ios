@@ -12,7 +12,6 @@ import RxSwift
 import XCTest
 
 final class ExposureDataControllerTests: TestCase {
-    private var disposeBag = DisposeBag()
     
     private var sut: ExposureDataController!
     private var mockOperationProvider: ExposureDataOperationProviderMock!
@@ -99,6 +98,36 @@ final class ExposureDataControllerTests: TestCase {
         sut.performInitialisationTasks()
 
         waitForExpectations(timeout: 2.0, handler: nil)
+    }
+    
+    func test_performInitialisationTasks_shouldRemovePreviousExposureDateIfNeeded() {
+        // Arrange
+        
+        let removalExpectation = expectation(description: "completion")
+        
+        let oldExposureDate = currentDate().addingTimeInterval(.days(-15)).startOfDay!
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode(oldExposureDate)
+        }
+        
+        var removedKeys: [StoreKey] = []
+        mockStorageController.removeDataHandler = { key, completion in
+            let storeKey = key as! StoreKey
+            removedKeys.append(storeKey)
+            if storeKey.asString == ExposureDataStorageKey.previousExposureDate.asString {
+                removalExpectation.fulfill()
+            }
+            completion(nil)
+        }
+                
+        // Act
+        sut.performInitialisationTasks()
+        
+        // Assert
+        waitForExpectations(timeout: 2.0, handler: nil)
+        let removedKeysStrings = removedKeys.map { $0.asString }
+        XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.previousExposureDate.asString))
     }
 
     func test_performInitialisationTasks_update_ignoresFirstV2Exposure() {
@@ -359,7 +388,7 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(receivedDate, exposureDate)
     }
     
-    func test_removePreviousExposureDate_withDateLongerThan14DaysAgo() {
+    func test_removePreviousExposureDateIfNeeded_withDateLongerThan14DaysAgo() {
         // Arrange
         let oldExposureDate = currentDate().addingTimeInterval(.days(-15)).startOfDay!
         mockStorageController.retrieveDataHandler = { _ in
@@ -376,7 +405,7 @@ final class ExposureDataControllerTests: TestCase {
         let completionExpectation = expectation(description: "completion")
                 
         // Act
-        sut.removePreviousExposureDate()
+        sut.removePreviousExposureDateIfNeeded()
             .subscribe(onCompleted: {
                 completionExpectation.fulfill()
             })
@@ -389,7 +418,7 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.previousExposureDate.asString))
     }
     
-    func test_removePreviousExposureDate_withDateShorterThan14DaysAgo() {
+    func test_removePreviousExposureDateIfNeeded_withDateShorterThan14DaysAgo() {
         // Arrange
         
         let oldExposureDate = currentDate().addingTimeInterval(.days(-14))
@@ -401,7 +430,7 @@ final class ExposureDataControllerTests: TestCase {
         let completionExpectation = expectation(description: "completion")
                 
         // Act
-        sut.removePreviousExposureDate()
+        sut.removePreviousExposureDateIfNeeded()
             .subscribe(onCompleted: {
                 completionExpectation.fulfill()
             })

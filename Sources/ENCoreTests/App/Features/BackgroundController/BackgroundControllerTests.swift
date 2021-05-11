@@ -57,7 +57,7 @@ final class BackgroundControllerTests: TestCase {
         exposureController.updateTreatmentPerspectiveHandler = { .empty() }
         exposureController.lastOpenedNotificationCheckHandler = { .empty() }
         
-        dataController.removePreviousExposureDateHandler = { .empty() }
+        dataController.removePreviousExposureDateIfNeededHandler = { .empty() }
     }
 
     // MARK: - Tests
@@ -116,11 +116,11 @@ final class BackgroundControllerTests: TestCase {
     }
     
     func test_refresh_shouldRemovePreviousExposureDates() {
-        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 0)
+        XCTAssertEqual(dataController.removePreviousExposureDateIfNeededCallCount, 0)
         
         controller.refresh(task: nil)
 
-        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 1)
+        XCTAssertEqual(dataController.removePreviousExposureDateIfNeededCallCount, 1)
     }
 
     func test_refresh_shouldFetchAndProcessKeySets() {
@@ -428,13 +428,13 @@ final class BackgroundControllerTests: TestCase {
         
         exposureController.isAppDeactivatedHandler = { .just(true) }
         
-        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 0)
+        XCTAssertEqual(dataController.removePreviousExposureDateIfNeededCallCount, 0)
         
         controller.scheduleTasks()
         
         waitForExpectations(timeout: 2, handler: nil)
 
-        XCTAssertEqual(dataController.removePreviousExposureDateCallCount, 1)
+        XCTAssertEqual(dataController.removePreviousExposureDateIfNeededCallCount, 1)
     }
 
     func test_scheduleTasks_shouldScheduleRefreshIfAppDeactivatedCannotBeDetermined() {
