@@ -118,7 +118,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         }
 
         return getDetectionInput(exposureKeySetsStorageUrl: exposureKeySetsStorageUrl)
-            .observe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
             .flatMap(detectExposures) // Batch detect exposures
             .flatMap(persistResult) // Persist created keySetHolders in local storage to remember which ones have been processed correctly
             .flatMap(createExposureReport) // Create an exposureReport and trigger a local notification
@@ -142,18 +142,25 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     private func getDetectionInput(exposureKeySetsStorageUrl: URL) -> Single<DetectionInput> {
         let input = Single<DetectionInput>.create { (observer) in
             
-            let input = DetectionInput(
-                exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
-                applicationInBackground: self.application.isInBackground,
-                storedKeysetHolders: self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
-            )
+            DispatchQueue.global(qos: .userInitiated).async {
+                let storedKeysetHolders = self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
+                
+                DispatchQueue.main.async {
+                    
+                    let input = DetectionInput(
+                        exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
+                        applicationInBackground: self.application.isInBackground,
+                        storedKeysetHolders: storedKeysetHolders
+                    )
+                    
+                    observer(.success(input))
+                }
+            }
             
-            observer(.success(input))
             return Disposables.create()
         }
         
-        // Subscribing on main scheduler is needed because application.isInBackground should only be called from the main thread
-        return input.subscribe(on: MainScheduler.instance)
+        return input
     }
     
     /// Verifies whether the KeySetHolder URLs point to valid files
@@ -546,21 +553,23 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
     // re-trigger of the same exposure date caused by GAEN v2's "exposure memory".
     private func ignoreFirstV2Exposure(_ detectionOutput: DetectionOutput) -> Single<DetectionOutput> {
 
-        guard exposureDataController.ignoreFirstV2Exposure else {
-            return .just(detectionOutput)
-        }
+        let ignoreSingle: Single<DetectionOutput> =  .create { (observer) -> Disposable in
+            
+            guard self.exposureDataController.ignoreFirstV2Exposure else {
+                observer(.success(detectionOutput))
+                return Disposables.create()
+            }
 
-        guard let exposureDate = detectionOutput.exposureReport?.date else {
-            exposureDataController.ignoreFirstV2Exposure = false
-            return .just(detectionOutput)
-        }
+            guard let exposureDate = detectionOutput.exposureReport?.date else {
+                self.exposureDataController.ignoreFirstV2Exposure = false
+                observer(.success(detectionOutput))
+                return Disposables.create()
+            }
 
-        self.logDebug("Ignoring exposure detection run on v2 framework to prevent exposure that was potentially already seen on v1")
-
-        return .create { (observer) -> Disposable in
+            self.logDebug("Ignoring exposure detection run on v2 framework to prevent exposure that was potentially already seen on v1")
 
             self.logDebug("Storing previous exposure date: \(exposureDate)")
-
+            
             self.exposureDataController
                 .addPreviousExposureDate(exposureDate)
                 .subscribe { event in
@@ -586,6 +595,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
             return Disposables.create()
         }
+        
+        return ignoreSingle.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
     }
     
     /// Determines wether or not the user needs to receive a notification for an exposure and triggers the notification if needed

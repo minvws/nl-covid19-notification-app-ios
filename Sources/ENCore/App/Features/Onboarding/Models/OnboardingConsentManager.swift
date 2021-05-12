@@ -203,10 +203,14 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
     func didCompleteConsent() {
         logTrace()
-        exposureController.didCompleteOnboarding = true
-
-        // Mark all announcements that were made during the onboarding process as "seen"
-        exposureController.seenAnnouncements = []
+        
+        // Change stored flags asynchronously to not block the main thread
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.exposureController.didCompleteOnboarding = true
+            
+            // Mark all announcements that were made during the onboarding process as "seen"
+            self.exposureController.seenAnnouncements = []
+        }
     }
 
     private let exposureStateStream: ExposureStateStreaming

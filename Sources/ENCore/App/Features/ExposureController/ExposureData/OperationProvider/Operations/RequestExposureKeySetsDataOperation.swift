@@ -87,8 +87,8 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         let start = CFAbsoluteTimeGetCurrent()
 
         return Observable.from(exposureKeySetStreams)
-            .subscribe(on: ConcurrentDispatchQueueScheduler.init(qos: .utility))
-            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .utility))            
+            .subscribe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))            
             .flatMap { $0 }
             .catch { error in
                 throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
@@ -119,7 +119,9 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             .do(onError: { _ in
                 self.logDebug("KeySet: Creating ignored keysets failed ")
             }, onCompleted: {
-                self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                }
             })
     }
 

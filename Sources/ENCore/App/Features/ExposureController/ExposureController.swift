@@ -58,23 +58,26 @@ final class ExposureController: ExposureControlling, Logging {
     func activate() -> Completable {
         logDebug("Request EN framework activation")
 
-        guard isActivated == false else {
-            logDebug("Already activated")
-            // already activated, return success
-            return .empty()
-        }
-
-        // Don't activate EN if we're in a paused state
-        guard !dataController.isAppPaused else {
-            return .empty()
-        }
-
         if let existingCompletable = activationCompletable {
             logDebug("Already activating")
             return existingCompletable
         }
 
         let observable = Observable<Never>.create { (observer) -> Disposable in
+            
+            guard self.isActivated == false else {
+                self.logDebug("Already activated")
+                // already activated, return success
+                observer.onCompleted()
+                return Disposables.create()
+            }
+
+            // Don't activate EN if we're in a paused state
+            guard !self.dataController.isAppPaused else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
                 self.exposureManager.activate { error in
@@ -248,7 +251,7 @@ final class ExposureController: ExposureControlling, Logging {
             // wait for 0.2s, there seems to be a glitch in the framework
             // where after successful activation it returns '.disabled' for a
             // split second
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.2) {
                 if case let .failure(error) = result {
                     completion?(error)
                 } else {

@@ -31,7 +31,7 @@ protocol RequestAppConfigurationDataOperationProtocol {
 }
 
 final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOperationProtocol, Logging {
-
+    
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          applicationSignatureController: ApplicationSignatureControlling,
@@ -41,40 +41,46 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
         self.applicationSignatureController = applicationSignatureController
         self.appConfigurationIdentifier = appConfigurationIdentifier
     }
-
+    
     // MARK: - ExposureDataOperation
-
+    
     func execute() -> Single<ApplicationConfiguration> {
         self.logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
-
-        if let appConfiguration = applicationSignatureController.retrieveStoredConfiguration(),
-            let storedSignature = applicationSignatureController.retrieveStoredSignature(),
-            appConfiguration.identifier == appConfigurationIdentifier,
-            storedSignature == applicationSignatureController.signature(for: appConfiguration) {
-
-            self.logDebug("RequestAppConfigurationDataOperation: Using cached version")
-
-            return .just(appConfiguration)
+        
+        let configurationSingle = Single<ApplicationConfiguration>.create { (observer) in
+            if let appConfiguration = self.applicationSignatureController.retrieveStoredConfiguration(),
+               let storedSignature = self.applicationSignatureController.retrieveStoredSignature(),
+               appConfiguration.identifier == self.appConfigurationIdentifier,
+               storedSignature == self.applicationSignatureController.signature(for: appConfiguration) {
+                
+                self.logDebug("RequestAppConfigurationDataOperation: Using cached version")
+                
+                observer(.success(appConfiguration))
+                return Disposables.create()
+            }
+            
+            self.logDebug("RequestAppConfigurationDataOperation: Using network version")
+            
+            return self.networkController
+                .applicationConfiguration(identifier: self.appConfigurationIdentifier)
+                .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
+                .catch { throw $0.asExposureDataError }
+                .flatMap(self.storeAppConfiguration)
+                .flatMap(self.storeSignature(for:))
+                .subscribe(observer)
         }
-
-        self.logDebug("RequestAppConfigurationDataOperation: Using network version")
-
-        return networkController
-            .applicationConfiguration(identifier: appConfigurationIdentifier)
-            .observe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
-            .catch { throw $0.asExposureDataError }
-            .flatMap(storeAppConfiguration)
-            .flatMap(storeSignature(for:))
+        
+        return configurationSingle.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
     }
-
+    
     private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
         return applicationSignatureController.storeAppConfiguration(appConfiguration)
     }
-
+    
     private func storeSignature(for appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
         return applicationSignatureController.storeSignature(for: appConfiguration)
     }
-
+    
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let applicationSignatureController: ApplicationSignatureControlling

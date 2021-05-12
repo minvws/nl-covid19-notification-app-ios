@@ -33,6 +33,7 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
         return networkController
             .exposureRiskConfigurationParameters(identifier: exposureConfigurationIdentifier)
             .subscribe(on: MainScheduler.instance)
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
             .catch { throw $0.asExposureDataError }
             .flatMap(store(exposureConfiguration:))
     }
