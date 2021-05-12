@@ -16,7 +16,7 @@ private struct StorageWrapper<T>: Codable where T: Codable {
 extension StorageControlling {
     func store<Key: CodableStoreKey>(object: Key.Object, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
         if Thread.current.isMainThread {
-            logDebug("StorageControlling: Accessing storage from main thread. This might be slow on older devices")
+            logWarning("StorageControlling: Accessing storage from main thread. This might be slow on older devices")
         }
         
         var encodedData = try? JSONEncoder().encode(object)
@@ -37,7 +37,7 @@ extension StorageControlling {
 
     func retrieveObject<Key: CodableStoreKey>(identifiedBy key: Key) -> Key.Object? {
         if Thread.current.isMainThread {
-            logDebug("StorageControlling: Accessing storage from main thread. This might be slow on older devices")
+            logWarning("StorageControlling: Accessing storage from main thread. This might be slow on older devices")
         }
         
         guard let data = retrieveData(identifiedBy: key) else {

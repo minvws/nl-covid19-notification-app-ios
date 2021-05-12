@@ -53,8 +53,15 @@ final class OnboardingConsentViewControllerTests: TestCase {
 
     func test_didCompleteConsent() {
 
+        let completionExpectation = expectation(description: "completion")
+        
         manager.didCompleteConsent()
 
-        XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 1)
+        DispatchQueue.global(qos: .userInitiated).async {
+            XCTAssertEqual(self.exposureController.didCompleteOnboardingSetCallCount, 1)
+            completionExpectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 2, handler: nil)
     }
 }

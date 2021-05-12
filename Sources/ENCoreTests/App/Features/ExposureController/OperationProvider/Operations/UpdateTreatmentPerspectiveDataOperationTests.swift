@@ -31,6 +31,7 @@ final class UpdateTreatmentPerspectiveDataOperationTests: TestCase {
 
     func test_execute_shouldRetrieveManifestFromStorage() {
 
+        let completionExpectation = expectation(description: "completion")
         let storageExpectation = expectation(description: "storage")
 
         mockStorageController.retrieveDataHandler = { key in
@@ -42,7 +43,11 @@ final class UpdateTreatmentPerspectiveDataOperationTests: TestCase {
             return nil
         }
 
-        _ = sut.execute()
+        sut.execute()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }
