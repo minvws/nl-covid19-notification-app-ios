@@ -35,7 +35,7 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         self.helpBuilder = helpBuilder
         self.webviewBuilder = webviewBuilder
 
-        // Pre-build viewcontrollers
+        // These viewcontrollers take some time to build. We build them before starting the onboarding flow to speed up the UI once the use hits these screens
         self.privacyAgreementViewController = privacyAgreementBuilder.build(withListener: viewController)
         self.consentViewController = consentBuilder.build(withListener: viewController)
         

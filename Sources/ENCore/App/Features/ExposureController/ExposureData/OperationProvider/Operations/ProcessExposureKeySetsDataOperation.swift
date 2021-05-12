@@ -16,9 +16,7 @@ fileprivate struct DetectionInput {
     let storedKeysetHolders: [ExposureKeySetHolder]
     
     var unprocessedExposureKeySetHolders: [ExposureKeySetHolder] {
-        storedKeysetHolders
-        // filter out already processed ones
-        .filter { $0.processed == false }
+        storedKeysetHolders.filter { $0.processed == false }
     }
     
     var numberOfProcessedKeySetsInLast24Hours: Int {
@@ -145,8 +143,8 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
             DispatchQueue.global(qos: .userInitiated).async {
                 let storedKeysetHolders = self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
                 
+                // Main thread is required for accessing `application.isInBackground`
                 DispatchQueue.main.async {
-                    
                     let input = DetectionInput(
                         exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
                         applicationInBackground: self.application.isInBackground,

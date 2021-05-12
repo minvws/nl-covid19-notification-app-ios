@@ -48,6 +48,7 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
         self.logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
         
         let configurationSingle = Single<ApplicationConfiguration>.create { (observer) in
+            
             if let appConfiguration = self.applicationSignatureController.retrieveStoredConfiguration(),
                let storedSignature = self.applicationSignatureController.retrieveStoredSignature(),
                appConfiguration.identifier == self.appConfigurationIdentifier,
@@ -66,7 +67,7 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
                 .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
                 .catch { throw $0.asExposureDataError }
                 .flatMap(self.storeAppConfiguration)
-                .flatMap(self.storeSignature(for:))
+                .flatMap(self.storeSignature)
                 .subscribe(observer)
         }
         
@@ -77,7 +78,7 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
         return applicationSignatureController.storeAppConfiguration(appConfiguration)
     }
     
-    private func storeSignature(for appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
+    private func storeSignature(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
         return applicationSignatureController.storeSignature(for: appConfiguration)
     }
     

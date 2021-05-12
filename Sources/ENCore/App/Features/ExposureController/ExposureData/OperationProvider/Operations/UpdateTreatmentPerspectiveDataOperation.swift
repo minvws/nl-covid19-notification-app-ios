@@ -26,7 +26,7 @@ final class UpdateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveD
 
     func execute() -> Completable {
 
-        let output = Completable.create { (observer) -> Disposable in
+        let completable = Completable.create { (observer) -> Disposable in
             
             guard let manifest = self.retrieveStoredManifest(), let identifier = manifest.resourceBundle else {
                 // can't update, just return a success message. We can get the stored treatment perspective from disk later on
@@ -42,7 +42,7 @@ final class UpdateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveD
                 .subscribe(observer)
         }
         
-        return output.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
+        return completable.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
     }
 
     // MARK: - Private

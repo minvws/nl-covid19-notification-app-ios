@@ -63,18 +63,18 @@ final class ExposureController: ExposureControlling, Logging {
             return existingCompletable
         }
 
-        let observable = Observable<Never>.create { (observer) -> Disposable in
+        let completable = Completable.create { (observer) -> Disposable in
             
             guard self.isActivated == false else {
                 self.logDebug("Already activated")
                 // already activated, return success
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
 
             // Don't activate EN if we're in a paused state
             guard !self.dataController.isAppPaused else {
-                observer.onCompleted()
+                observer(.completed)
                 return Disposables.create()
             }
             
@@ -97,10 +97,10 @@ final class ExposureController: ExposureControlling, Logging {
                                 self.logDebug("Returned from `setExposureNotificationEnabled` (success)")
                             }
 
-                            observer.onCompleted()
+                            observer(.completed)
                         }
                     } else {
-                        observer.onCompleted()
+                        observer(.completed)
                     }
                 }
             }
@@ -108,18 +108,16 @@ final class ExposureController: ExposureControlling, Logging {
             return Disposables.create()
         }
 
-        let completable = observable
-//            .share()
+        let resettingCompletable = completable
             .do(onError: { [weak self] _ in
                 self?.activationCompletable = nil
             }, onCompleted: { [weak self] in
                 self?.activationCompletable = nil
             })
-            .asCompletable()
 
-        activationCompletable = completable
+        activationCompletable = resettingCompletable
 
-        return completable
+        return resettingCompletable
     }
 
     func deactivate() {

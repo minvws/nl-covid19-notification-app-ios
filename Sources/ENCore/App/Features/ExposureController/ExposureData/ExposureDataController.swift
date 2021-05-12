@@ -372,7 +372,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     /// Can be called to remove the stored previous exposure date in case it is more than 14 days ago
     func removePreviousExposureDateIfNeeded() -> Completable {
         
-        let removalCompletable = Completable.create { [weak self] observer in
+        let completable = Completable.create { [weak self] observer in
             
             guard let previousDate = self?.previousExposureDate,
                   let daysPast = currentDate().days(sinceDate: previousDate),
@@ -397,7 +397,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             return Disposables.create()
         }
         
-        return removalCompletable.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
+        return completable.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
     }
 
     var didCompleteOnboarding: Bool {
