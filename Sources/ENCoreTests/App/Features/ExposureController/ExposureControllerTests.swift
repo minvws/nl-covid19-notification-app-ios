@@ -675,6 +675,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_postExposureManagerActivation_shouldUpdateStatusStream() {
         networkStatusStream.networkReachable = true
+        let completionExpectation = expectation(description: "completion")
         let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
         mutableStateStream.exposureState = stream
 
@@ -691,10 +692,14 @@ final class ExposureControllerTests: TestCase {
         controller.activate()
             .subscribe(onCompleted: {
                 self.controller.postExposureManagerActivation()
+                completionExpectation.fulfill()
+                
             })
             .disposed(by: disposeBag)
 
         stream.onNext(.init(notifiedState: .notNotified, activeState: .active))
+        
+        waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.activeState, .active)
