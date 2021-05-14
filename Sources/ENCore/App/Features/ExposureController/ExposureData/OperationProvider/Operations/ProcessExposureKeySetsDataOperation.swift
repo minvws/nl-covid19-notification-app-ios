@@ -147,7 +147,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                 DispatchQueue.main.async {
                     let input = DetectionInput(
                         exposureKeySetsStorageUrl: exposureKeySetsStorageUrl,
-                        applicationInBackground: self.application.isInBackground,
+                        applicationInBackground: self.application.isInBackground(),
                         storedKeysetHolders: storedKeysetHolders
                     )
                     

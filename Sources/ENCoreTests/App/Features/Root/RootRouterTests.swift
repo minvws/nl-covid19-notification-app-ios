@@ -377,7 +377,10 @@ final class RootRouterTests: TestCase {
         
         let completionExpectation = expectation(description: "completion")
         
-        exposureController.updateWhenRequiredHandler = { .empty() }
+        exposureController.updateWhenRequiredHandler = {
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+            return .empty()
+        }
 
         // Required to attach main router
         router.start()
@@ -385,7 +388,6 @@ final class RootRouterTests: TestCase {
         XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
 
         router.didEnterForeground()
-
         
         DispatchQueue.global(qos: .userInitiated).async {
             XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)

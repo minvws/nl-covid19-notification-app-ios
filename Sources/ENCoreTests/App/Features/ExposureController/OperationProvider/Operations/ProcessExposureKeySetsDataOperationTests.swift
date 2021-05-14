@@ -96,16 +96,24 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         DateTimeTestingOverrides.overriddenCurrentDate = nil
     }
 
-    func test_shouldRetrieveStoredKeySetHolders() {
+    func test_shouldDetermineDetectionInput() {
         let keySetExpectation = expectation(description: "keySetHoldersRequested")
         
         // Stored keysets are requested 2 times, once at the start of the operation and once when the result of the operation is stored
         keySetExpectation.expectedFulfillmentCount = 2
         
         let completionExpectation = expectation(description: "subscriptionEnded")
+        let backgroundCheckExpectation = expectation(description: "backgroundCheck")
+        
+        mockApplication.isInBackgroundHandler = {
+            XCTAssertTrue(Thread.current.isMainThread)
+            backgroundCheckExpectation.fulfill()
+            return true
+        }
         
         mockStorageController.retrieveDataHandler = { key in
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
                 keySetExpectation.fulfill()
                 return try! JSONEncoder().encode([ExposureKeySetHolder]())
             }
@@ -119,15 +127,16 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertTrue(mockStorageController.retrieveDataArgValues.first is CodableStorageKey<[ExposureKeySetHolder]>)
         waitForExpectations(timeout: 2.0, handler: nil)
+        XCTAssertTrue(mockStorageController.retrieveDataArgValues.first is CodableStorageKey<[ExposureKeySetHolder]>)
+        XCTAssertEqual(mockApplication.isInBackgroundCallCount, 1)
     }
 
     func test_shouldNotDetectExposuresIfNoStoredKeySets() {
         let exp = expectation(description: "detectExposuresExpectation")
 
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
-        mockApplication.isInBackground = true
+        mockApplication.isInBackgroundHandler = {true}
         mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
@@ -149,7 +158,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         let exp = expectation(description: "detectExposuresExpectation")
 
         let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
-        mockApplication.isInBackground = true
+        mockApplication.isInBackgroundHandler = {true}
         mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
@@ -167,7 +176,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the number of background calls has not reached the limit, a detection call should be made
     func test_shouldDetectExposuresIfBackgroundCallsAvailable() {
-        mockApplication.isInBackground = true
+        mockApplication.isInBackgroundHandler = {true}
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -189,7 +198,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the number of background calls has reached the limit, no calls should be allowed anymore
     func test_shouldNotDetectExposuresIfBackgroundCallLimitReached() {
-        mockApplication.isInBackground = true
+        mockApplication.isInBackgroundHandler = {true}
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 6)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -209,7 +218,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the number of foreground calls has not reached the limit, a detection call should be made
     func test_shouldDetectExposuresIfForegroundCallsAvailable() {
-        mockApplication.isInBackground = false
+        mockApplication.isInBackgroundHandler = {false}
         let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 8)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -231,7 +240,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the number of foreground calls has reached the limit, no calls should be allowed anymore
     func test_shouldNotDetectExposuresIfForegroundCallLimitReached() {
-        mockApplication.isInBackground = false
+        mockApplication.isInBackgroundHandler = {false}
         let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 9)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -251,7 +260,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the combined call count for foreground and background detection is over the maximum, no calls should be allowed anymore
     func test_shouldNotDetectExposuresIfCombinedCallLimitReached() {
-        mockApplication.isInBackground = true
+        mockApplication.isInBackgroundHandler = {true}
         let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 20)
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 2)
 
@@ -268,6 +277,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 0)
     }
 
     func test_shouldDetectExposuresIfFileLimitNotReached() {
@@ -564,7 +574,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     }
 
     func test_shouldUpdateLastProcessingDate() {
-        mockApplication.isInBackground = true
+        mockApplication.isInBackgroundHandler = {true}
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
 
         let exp = expectation(description: "detectExposuresExpectation")

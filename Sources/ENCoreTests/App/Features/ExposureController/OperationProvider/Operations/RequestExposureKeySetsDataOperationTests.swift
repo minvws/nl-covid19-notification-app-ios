@@ -78,9 +78,14 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
             initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
         )
+        
+        mockNetworkController.fetchExposureKeySetHandler = { identifier in
+            return .just((identifier, URL(string: "http://someurl.com")!))
+        }
 
         sut.execute()
             .subscribe(onCompleted: {
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
                 exp.fulfill()
             })
             .disposed(by: disposeBag)

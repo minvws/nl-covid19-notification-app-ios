@@ -82,12 +82,12 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
             self.networkController
                 .fetchExposureKeySet(identifier: identifier)
+            
         }
 
         let start = CFAbsoluteTimeGetCurrent()
 
         return Observable.from(exposureKeySetStreams)
-            .subscribe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
             .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))            
             .flatMap { $0 }
             .catch { error in

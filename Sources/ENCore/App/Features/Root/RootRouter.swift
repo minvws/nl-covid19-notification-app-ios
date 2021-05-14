@@ -195,7 +195,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             if !self.pauseController.isAppPaused {
                 self.exposureController
                     .updateWhenRequired()
-                    .subscribe(onCompleted: {})
+                    .subscribe()
                     .disposed(by: self.disposeBag)
             }
         }

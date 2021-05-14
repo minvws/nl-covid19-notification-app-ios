@@ -27,13 +27,19 @@ final class EnableSettingViewControllerTests: TestCase {
 
     func test_presentationControllerDidDismiss_callsListener() {
         var shouldDismissViewController: Bool!
+        let completionExpectation = expectation(description: "completion")
 
-        listener.enableSettingRequestsDismissHandler = { shouldDismissViewController = $0 }
+        listener.enableSettingRequestsDismissHandler = {
+            shouldDismissViewController = $0
+            XCTAssertTrue(Thread.current.isMainThread)
+            completionExpectation.fulfill()
+        }
 
         XCTAssertEqual(listener.enableSettingRequestsDismissCallCount, 0)
 
         viewController.presentationControllerDidDismiss(UIPresentationController(presentedViewController: UIViewController(), presenting: nil))
 
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertEqual(listener.enableSettingRequestsDismissCallCount, 1)
         XCTAssertEqual(shouldDismissViewController, false)
     }

@@ -32,6 +32,9 @@ final class RequestAppManifestDataOperationTests: TestCase {
         let storageExpectation = expectation(description: "storage")
 
         mockStorageController.retrieveDataHandler = { key in
+            
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+            
             if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
                 storageExpectation.fulfill()
                 return try! JSONEncoder().encode(ApplicationConfiguration.testData())
@@ -44,6 +47,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
 
         sut.execute()
             .subscribe(onSuccess: { (manifest) in
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
                 completionExpectation.fulfill()
             })
             .disposed(by: disposeBag)

@@ -680,12 +680,15 @@ final class ExposureControllerTests: TestCase {
         mutableStateStream.exposureState = stream
 
         exposureManager.setExposureNotificationEnabledHandler = { _, completion in
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             completion(.success(()))
         }
         exposureManager.activateHandler = { completion in
+            XCTAssertTrue(Thread.current.isMainThread)
             completion(.active)
         }
         userNotificationController.getAuthorizationStatusHandler = { completion in
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             completion(.authorized)
         }
 
@@ -773,6 +776,22 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(dataController.pauseEndDate, nil)
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.activeState, .active)
+    }
+    
+    func test_refreshStatus_shouldRunOnBackgroundThread() {
+        // Arrange
+        let updateStreamExpectation = expectation(description: "updateStream")
+        dataController.pauseEndDate = currentDate().addingTimeInterval(2000) // some random enddate
+        mutableStateStream.updateHandler = { _ in
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+            updateStreamExpectation.fulfill()
+        }
+        
+        // Act
+        controller.refreshStatus()
+        
+        // Assert
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
     // MARK: - Private
