@@ -9,7 +9,7 @@ import ENFoundation
 import Foundation
 import UIKit
 
-/// @mockable(history:routeToConsent=true)
+/// @mockable(history:routeToConsent=true;routeToConsentWithIndex;routeToStep=true;routeToWebview=true;dismissWebview=true)
 protocol OnboardingRouting: Routing {
     func routeToSteps()
     func routeToStep(withIndex index: Int, animated: Bool)
@@ -19,6 +19,7 @@ protocol OnboardingRouting: Routing {
     func routeToBluetoothSettings()
     func routeToPrivacyAgreement()
     func routeToWebview(url: URL)
+    func routeToShareApp()
     func dismissWebview(shouldHideViewController: Bool)
 }
 
@@ -42,6 +43,10 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
         present(viewController.uiviewController, animated: animated, completion: completion)
+    }
+    
+    func present(activityViewController: UIActivityViewController, animated: Bool, completion: (() -> ())?) {
+        present(activityViewController, animated: animated, completion: completion)
     }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool) {
@@ -161,18 +166,8 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
         }
     }
 
-    func displayShareApp(completion: (() -> ())?) {
-        if let storeLink = URL(string: .shareAppUrl) {
-            let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
-            activityVC.completionWithItemsHandler = { _, _, _, _ in
-                if let handler = completion {
-                    handler()
-                }
-            }
-            self.present(activityVC, animated: true)
-        } else {
-            self.logError("Couldn't retreive a valid url")
-        }
+    func displayShareApp() {
+        router?.routeToShareApp()        
     }
 
     // MARK: - ViewController Lifecycle

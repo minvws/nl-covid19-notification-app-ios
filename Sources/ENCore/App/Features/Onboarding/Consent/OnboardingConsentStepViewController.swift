@@ -109,7 +109,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
             case .bluetooth:
                 self.listener?.displayBluetoothSettings()
             case .share:
-                self.listener?.displayShareApp(completion: nil)
+                self.listener?.displayShareApp()
             }
         }
     }

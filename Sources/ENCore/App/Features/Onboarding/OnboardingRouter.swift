@@ -6,6 +6,8 @@
  */
 
 import Foundation
+import UIKit
+import ENFoundation
 
 /// @mockable
 protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener, WebviewListener {
@@ -13,11 +15,12 @@ protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, O
 
     func push(viewController: ViewControllable, animated: Bool)
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
+    func present(activityViewController: UIActivityViewController, animated: Bool, completion: (() -> ())?)
     func presentInNavigationController(viewController: ViewControllable, animated: Bool)
     func dismiss(viewController: ViewControllable, animated: Bool)
 }
 
-final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
+final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting, Logging {
 
     init(viewController: OnboardingViewControllable,
          stepBuilder: OnboardingStepBuildable,
@@ -109,6 +112,15 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.present(viewController: bluetoothSettingsViewController,
                                animated: true,
                                completion: nil)
+    }
+    
+    func routeToShareApp() {
+        if let storeLink = URL(string: .shareAppUrl) {
+            let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
+            viewController.present(activityViewController: activityVC, animated: true, completion: nil)
+        } else {
+            self.logError("Couldn't retreive a valid url")
+        }
     }
 
     private let stepBuilder: OnboardingStepBuildable
