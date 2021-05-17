@@ -29,15 +29,18 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     var onboardingConsentSteps: [OnboardingConsentStep] = []
     private var disposeBag = DisposeBag()
     private let userNotificationController: UserNotificationControlling
-
+    private let applicationController: ApplicationControlling
+    
     init(exposureStateStream: ExposureStateStreaming,
          exposureController: ExposureControlling,
          userNotificationController: UserNotificationControlling,
+         applicationController: ApplicationControlling,
          theme: Theme) {
 
         self.exposureStateStream = exposureStateStream
         self.exposureController = exposureController
         self.userNotificationController = userNotificationController
+        self.applicationController = applicationController
 
         onboardingConsentSteps.append(
             OnboardingConsentStep(
@@ -180,8 +183,8 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     func goToBluetoothSettings(_ completion: @escaping (() -> ())) {
 
         if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
-            if UIApplication.shared.canOpenURL(settingsUrl) {
-                UIApplication.shared.open(settingsUrl)
+            if applicationController.canOpenURL(settingsUrl) {
+                applicationController.open(settingsUrl)
             }
         }
 

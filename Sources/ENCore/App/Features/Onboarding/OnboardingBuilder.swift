@@ -44,6 +44,7 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
         return OnboardingConsentManager(exposureStateStream: dependency.exposureStateStream,
                                         exposureController: dependency.exposureController,
                                         userNotificationController: dependency.userNotificationController,
+                                        applicationController: applicationController,
                                         theme: self.theme)
     }()
 
@@ -54,6 +55,10 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
     var theme: Theme {
         return dependency.theme
     }
+    
+    lazy var applicationController: ApplicationControlling = {
+        return ApplicationController()
+    }()
 
     // MARK: - Child Builders
 
