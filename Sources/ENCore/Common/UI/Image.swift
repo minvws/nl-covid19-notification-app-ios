@@ -66,6 +66,7 @@ extension UIImage {
     static var aboutAppInformation: UIImage? { return Image.named("AboutAppInformation") }
     static var aboutTechnicalInformation: UIImage? { return Image.named("AboutTechnicalInformation") }
     static var aboutHelpdesk: UIImage? { return Image.named("AboutHelpdesk") }
+    static var aboutWebsite: UIImage? { return Image.named("AboutWebsite") }
     static var checkmarkChecked: UIImage? { return Image.named("checkmarkChecked") }
     static var checkmarkUnchecked: UIImage? { return Image.named("checkmarkUnchecked") }
     static var helpNotificationExample: UIImage? { return Image.named("notification-example") }
