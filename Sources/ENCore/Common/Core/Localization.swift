@@ -350,7 +350,7 @@ extension String {
     static var statusAppStateCardNoRecentUpdatesDescription: String { return Localization.string(for: "status.appState.card.no_recent_updates.description") }
     static var statusAppStateCardButton: String { return Localization.string(for: "status.appState.card.button") }
     static var statusAppStateCardBluetoothButton: String { return Localization.string(for: "status.appState.card.bluetooth.button") }
-    static var statusAppStateCardBluetooth: String { return Localization.string(for: "status.appState.card.bluetooth") }    
+    static var statusAppStateCardBluetooth: String { return Localization.string(for: "status.appState.card.bluetooth") }
     static var statusAppStateCardTryAgain: String { return Localization.string(for: "status.appState.card.try_again") }
     static var statusActiveDescription: String { return Localization.string(for: "status.active.description") }
     static var statusPausedCardTitle: String { return Localization.string(for: "status.appState.card.paused.title") }
@@ -406,6 +406,9 @@ extension String {
     static var aboutAppInformationDescription: String { return Localization.string(for: "moreInformation.about.onboarding.description") }
     static var aboutHelpdeskTitle: String { return Localization.string(for: "moreInformation.about.helpdesk.title") }
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
+    static var aboutWebsiteTitle: String { return Localization.string(for: "moreInformation.about.website.title") }
+    static var aboutWebsiteSubtitle: String { return Localization.string(for: "moreInformation.about.website.subtitle") }
+    static var aboutWebsiteLink: String { return Localization.string(for: "https://coronamelder.nl") }
     static var aboutInteroperabilityTitle: String { return Localization.string(for: "moreInformation.about.interoperability.title") }
     static var aboutInteroperabilityFAQLink: String {
         let interopURLLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en

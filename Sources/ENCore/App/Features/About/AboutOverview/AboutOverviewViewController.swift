@@ -10,7 +10,6 @@ import SnapKit
 import UIKit
 
 final class AboutOverviewViewController: TableViewController, Logging {
-
     init(listener: AboutOverviewListener, aboutManager: AboutManaging, theme: Theme) {
         self.listener = listener
         self.aboutManager = aboutManager
@@ -20,8 +19,8 @@ final class AboutOverviewViewController: TableViewController, Logging {
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-        self.view = internalView
-        self.view.frame = UIScreen.main.bounds
+        view = internalView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -35,7 +34,7 @@ final class AboutOverviewViewController: TableViewController, Logging {
             self?.internalView.tableView.reloadData()
         }
 
-        navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
+        navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
     }
 
     // MARK: - TableView
@@ -128,15 +127,19 @@ final class AboutOverviewViewController: TableViewController, Logging {
         let headerView = SectionHeaderView(theme: theme)
         headerView.sectionHeaderLabel.text = aboutManager.aboutSection.title
 
+        let websiteButton = CardButton(title: .aboutWebsiteTitle, subtitle: .aboutWebsiteSubtitle, image: UIImage.aboutWebsite, theme: theme)
+        websiteButton.backgroundColor = theme.colors.headerBackgroundBlue
+        websiteButton.action = { [weak self] in
+            self?.aboutManager.open(.aboutWebsiteLink)
+        }
+
+        headerView.addSections([websiteButton])
+
         let helpdeskButton = CardButton(title: .aboutHelpdeskTitle, subtitle: .aboutHelpdeskSubtitle, image: UIImage.aboutHelpdesk, theme: theme)
         helpdeskButton.backgroundColor = theme.colors.headerBackgroundBlue
         helpdeskButton.action = { [weak self] in
             let phoneNumberLink: String = .phoneNumberLink(from: .helpDeskPhoneNumber)
-            if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            } else {
-                self?.logError("Unable to open \(phoneNumberLink)")
-            }
+            self?.aboutManager.open(phoneNumberLink)
         }
 
         headerView.addSections([helpdeskButton])
@@ -146,7 +149,6 @@ final class AboutOverviewViewController: TableViewController, Logging {
 }
 
 private final class AboutView: View {
-
     lazy var tableView = HelpTableView()
 
     override func build() {
@@ -165,7 +167,6 @@ private final class AboutView: View {
 }
 
 private final class SectionHeaderView: View {
-
     let titleLabel = Label(frame: .zero)
     let sectionHeaderLabel = Label(frame: .zero)
 
