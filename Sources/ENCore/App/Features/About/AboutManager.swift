@@ -14,8 +14,9 @@ protocol AboutManaging: AnyObject {
     var aboutSection: AboutSection { get }
     var appInformationEntry: AboutEntry { get }
     var technicalInformationEntry: AboutEntry { get }
-
     var didUpdate: (() -> ())? { get set }
+
+    func open(_ urlString: String)
 }
 
 struct AboutSection {
@@ -23,7 +24,7 @@ struct AboutSection {
     fileprivate(set) var entries: [AboutEntry]
 }
 
-final class AboutManager: AboutManaging {
+final class AboutManager: AboutManaging, Logging {
 
     var didUpdate: (() -> ())?
 
@@ -132,5 +133,13 @@ final class AboutManager: AboutManaging {
             .link(title: .helpAccessibilityTitle, link: .helpAccessibilityLink),
             .link(title: .helpColofonTitle, link: .helpColofonLink)
         ])
+    }
+
+    func open(_ urlString: String) {
+        if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            self.logError("Unable to open \(urlString)")
+        }
     }
 }

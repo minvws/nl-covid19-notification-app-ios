@@ -130,12 +130,7 @@ final class AboutOverviewViewController: TableViewController, Logging {
         let websiteButton = CardButton(title: .aboutWebsiteTitle, subtitle: .aboutWebsiteSubtitle, image: UIImage.aboutWebsite, theme: theme)
         websiteButton.backgroundColor = theme.colors.headerBackgroundBlue
         websiteButton.action = { [weak self] in
-            let websiteLink: String = .aboutWebsiteLink
-            if let url = URL(string: websiteLink), UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            } else {
-                self?.logError("Unable to open \(websiteLink)")
-            }
+            self?.aboutManager.open(.aboutWebsiteLink)
         }
 
         headerView.addSections([websiteButton])
@@ -144,11 +139,7 @@ final class AboutOverviewViewController: TableViewController, Logging {
         helpdeskButton.backgroundColor = theme.colors.headerBackgroundBlue
         helpdeskButton.action = { [weak self] in
             let phoneNumberLink: String = .phoneNumberLink(from: .helpDeskPhoneNumber)
-            if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            } else {
-                self?.logError("Unable to open \(phoneNumberLink)")
-            }
+            self?.aboutManager.open(phoneNumberLink)
         }
 
         headerView.addSections([helpdeskButton])
