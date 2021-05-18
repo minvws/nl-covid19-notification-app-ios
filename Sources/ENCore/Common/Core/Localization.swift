@@ -408,7 +408,10 @@ extension String {
     static var aboutHelpdeskSubtitle: String { return Localization.string(for: "moreInformation.about.helpdesk.subtitle") }
     static var aboutWebsiteTitle: String { return Localization.string(for: "moreInformation.about.website.title") }
     static var aboutWebsiteSubtitle: String { return Localization.string(for: "moreInformation.about.website.subtitle") }
-    static var aboutWebsiteLink: String { return Localization.string(for: "https://coronamelder.nl") }
+    static var aboutWebsiteLink: String {
+        let urlLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
+        return Localization.string(for: "https://coronamelder.nl/%@", [urlLanguage.rawValue])
+    }
     static var aboutInteroperabilityTitle: String { return Localization.string(for: "moreInformation.about.interoperability.title") }
     static var aboutInteroperabilityFAQLink: String {
         let interopURLLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
