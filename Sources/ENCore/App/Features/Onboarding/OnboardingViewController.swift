@@ -12,8 +12,8 @@ import UIKit
 /// @mockable(history:routeToConsent=true;routeToConsentWithIndex;routeToStep=true;routeToWebview=true;dismissWebview=true)
 protocol OnboardingRouting: Routing {
     func routeToSteps()
-    func routeToStep(withIndex index: Int, animated: Bool)
-    func routeToConsent(animated: Bool)
+    func routeToStep(withIndex index: Int)
+    func routeToConsent()
     func routeToConsent(withIndex index: Int, animated: Bool)
     func routeToHelp()
     func routeToBluetoothSettings()
@@ -80,7 +80,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     func nextStepAtIndex(_ index: Int) {
-        router?.routeToStep(withIndex: index, animated: true)
+        router?.routeToStep(withIndex: index)
     }
 
     // MARK: - OnboardingConsentListener
@@ -99,7 +99,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     // MARK: - PrivacyAgreementListener
 
     func privacyAgreementDidComplete() {
-        router?.routeToConsent(animated: true)
+        router?.routeToConsent()
     }
 
     func privacyAgreementRequestsRedirect(to url: URL) {

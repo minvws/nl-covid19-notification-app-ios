@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import ENFoundation
 
-/// @mockable
+/// @mockable(history:push=true;present=true;presentInNavigationController=true)
 protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener, WebviewListener {
     var router: OnboardingRouting? { get set }
 
@@ -58,15 +58,15 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.push(viewController: stepViewController, animated: false)
     }
 
-    func routeToStep(withIndex index: Int, animated: Bool) {
+    func routeToStep(withIndex index: Int) {
         let stepViewController = stepBuilder.build(withListener: viewController, initialIndex: index)
         self.stepViewController = stepViewController
 
-        viewController.push(viewController: stepViewController, animated: animated)
+        viewController.push(viewController: stepViewController, animated: true)
     }
 
-    func routeToConsent(animated: Bool) {
-        viewController.push(viewController: consentViewController, animated: animated)
+    func routeToConsent() {
+        viewController.push(viewController: consentViewController, animated: true)
     }
 
     func routeToConsent(withIndex index: Int, animated: Bool) {

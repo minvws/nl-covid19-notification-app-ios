@@ -47,8 +47,7 @@ final class OnboardingViewControllerTests: TestCase {
         sut.nextStepAtIndex(10)
         
         // Assert
-        XCTAssertEqual(mockOnboardingRouter.routeToStepCallCount, 1)
-        XCTAssertTrue(mockOnboardingRouter.routeToStepArgValues.first!.1)
+        XCTAssertEqual(mockOnboardingRouter.routeToStepCallCount, 1)        
     }
     
     func test_consentClose_shouldCallListener() {
@@ -100,8 +99,7 @@ final class OnboardingViewControllerTests: TestCase {
         sut.privacyAgreementDidComplete()
         
         // Assert
-        XCTAssertEqual(mockOnboardingRouter.routeToConsentCallCount, 1)
-        XCTAssertTrue(mockOnboardingRouter.routeToConsentArgValues.first!)
+        XCTAssertEqual(mockOnboardingRouter.routeToConsentCallCount, 1)        
     }
     
     func test_privacyAgreementRequestsRedirect_shouldCallRouter() {

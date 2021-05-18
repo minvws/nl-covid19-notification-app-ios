@@ -13,7 +13,7 @@ protocol WebviewListener: AnyObject {
     func webviewRequestsDismissal(shouldHideViewController: Bool)
 }
 
-/// @mockable
+/// @mockable(history:build=true)
 protocol WebviewBuildable {
     func build(withListener listener: WebviewListener, url: URL) -> ViewControllable
 }
