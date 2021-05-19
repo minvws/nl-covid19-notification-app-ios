@@ -127,28 +127,40 @@ final class NetworkManager: NetworkManaging, Logging {
             return
         }
         
-        let backgroundTasks: [URLSessionDownloadTask] = identifiers.compactMap { identifier in
+        keySetURLSession.getAllTasks { (existingTasks) in
             
-            let expectedContentType = HTTPContentType.zip
-            let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-            let url = configuration.exposureKeySetUrl(identifier: identifier)
-            let urlRequest = constructRequest(url: url,
-                                              method: .GET,
-                                              headers: headers)
-            switch urlRequest {
-            case let .success(request):
+            let existingURLS = existingTasks.compactMap { $0.originalRequest?.url }
+            
+            let backgroundTasks: [URLSessionDownloadTask] = identifiers.compactMap { identifier in
+                
+                let expectedContentType = HTTPContentType.zip
+                let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+                
+                guard let url = self.configuration.exposureKeySetUrl(identifier: identifier) else {
+                    self.logError("Unable to create exposureKeySetUrl for identifier \(identifier) ")
+                    return nil
+                }
+                
+                guard !existingURLS.contains(url) else {
+                    self.logDebug("download task already created for URL: \(url)")
+                    return nil
+                }
+                
+                let urlRequest = self.constructRequest(url: url, method: .GET, headers: headers)
+                
+                guard case let .success(request) = urlRequest else {
+                    return nil
+                }
+                
                 let backgroundTask = keySetURLSession.downloadTask(with: request)
                 backgroundTask.countOfBytesClientExpectsToSend = 200
                 backgroundTask.countOfBytesClientExpectsToReceive = 500 * 1024 // 500KB
                 return backgroundTask
-                
-            case .failure:
-                return nil
             }
-        }
-        
-        backgroundTasks.forEach { (task) in
-            task.resume()
+            
+            backgroundTasks.forEach { (task) in
+                task.resume()
+            }
         }
     }
     
