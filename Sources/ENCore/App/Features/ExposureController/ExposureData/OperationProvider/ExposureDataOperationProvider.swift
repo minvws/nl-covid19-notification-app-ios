@@ -18,7 +18,9 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
          application: ApplicationControlling,
          fileManager: FileManaging,
          environmentController: EnvironmentControlling,
-         riskCalculationController: RiskCalculationControlling) {
+         riskCalculationController: RiskCalculationControlling,
+         featureFlagsController: FeatureFlagControlling,
+         keySetDownloadProcessor: KeySetDownloadProcessing) {
         self.networkController = networkController
         self.storageController = storageController
         self.applicationSignatureController = applicationSignatureController
@@ -28,6 +30,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
         self.fileManager = fileManager
         self.environmentController = environmentController
         self.riskCalculationController = riskCalculationController
+        self.featureFlagsController = featureFlagsController
+        self.keySetDownloadProcessor = keySetDownloadProcessor
     }
 
     // MARK: - ExposureDataOperationProvider
@@ -78,7 +82,9 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                    storageController: storageController,
                                                    localPathProvider: localPathProvider,
                                                    exposureKeySetIdentifiers: identifiers,
-                                                   fileManager: fileManager)
+                                                   fileManager: fileManager,
+                                                   featureFlagController: featureFlagsController,
+                                                   keySetDownloadProcessor: keySetDownloadProcessor)
     }
 
     var requestManifestOperation: RequestAppManifestDataOperationProtocol {
@@ -118,6 +124,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling
     private let riskCalculationController: RiskCalculationControlling
+    private let featureFlagsController: FeatureFlagControlling
+    private let keySetDownloadProcessor: KeySetDownloadProcessing
 }
 
 extension NetworkError {

@@ -10,8 +10,21 @@ import Foundation
 import RxSwift
 import UIKit
 
+enum URLSessionIdentifier: String {
+    case keysetURLSession
+}
+
 final class NetworkManager: NetworkManaging, Logging {
 
+    private lazy var keySetURLSession: URLSession? = {
+        let config = URLSessionConfiguration.background(withIdentifier: URLSessionIdentifier.keysetURLSession.rawValue)
+        config.sessionSendsLaunchEvents = true
+        guard let sessionDelegate = sessionDelegate as? URLSessionDelegate else {
+            return nil
+        }
+        return URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
+    }()
+    
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          storageController: StorageControlling,
@@ -105,6 +118,42 @@ final class NetworkManager: NetworkManaging, Logging {
                     .disposed(by: self.disposeBag)
             }
         }
+    }
+    
+    func getExposureKeySetsInBackground(identifiers: [String]) {
+        
+        guard let keySetURLSession = keySetURLSession else {
+            self.logError("Unable to download keysets. URLSession could not be constructed")
+            return
+        }
+        
+        let backgroundTasks: [URLSessionDownloadTask] = identifiers.compactMap { identifier in
+            
+            let expectedContentType = HTTPContentType.zip
+            let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+            let url = configuration.exposureKeySetUrl(identifier: identifier)
+            let urlRequest = constructRequest(url: url,
+                                              method: .GET,
+                                              headers: headers)
+            switch urlRequest {
+            case let .success(request):
+                let backgroundTask = keySetURLSession.downloadTask(with: request)
+                backgroundTask.countOfBytesClientExpectsToSend = 200
+                backgroundTask.countOfBytesClientExpectsToReceive = 500 * 1024 // 500KB
+                return backgroundTask
+                
+            case .failure:
+                return nil
+            }
+        }
+        
+        backgroundTasks.forEach { (task) in
+            task.resume()
+        }
+    }
+    
+    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ()) {
+        (sessionDelegate as? NetworkManagerURLSessionDelegate)?.urlSessionBackgroundCompletionHandler = completionHandler
     }
 
     /// Upload diagnosis keys (TEKs) to the server
@@ -399,17 +448,12 @@ final class NetworkManager: NetworkManaging, Logging {
                 .observe(on: concurrentUtilityScheduler)
         }
 
-        let start = CFAbsoluteTimeGetCurrent()
-
         // unzip
         let unzipResponseHandler = responseHandlerProvider.unzipNetworkResponseHandler
         if unzipResponseHandler.isApplicable(for: response, input: url) {
             localUrl = localUrl
                 .flatMap { localUrl in unzipResponseHandler.process(response: response, input: localUrl) }
         }
-
-        let diff = CFAbsoluteTimeGetCurrent() - start
-        logDebug("Unzip Took \(diff) seconds")
 
         // verify signature
         let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler

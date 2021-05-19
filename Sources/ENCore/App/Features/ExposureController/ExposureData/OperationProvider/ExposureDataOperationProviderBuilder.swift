@@ -60,6 +60,16 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
     var riskCalculationController: RiskCalculationControlling {
         RiskCalculationController()
     }
+    
+    var featureFlagsController: FeatureFlagControlling {
+        return FeatureFlagController.shared
+    }
+    
+    var keySetDownloadProcessor: KeySetDownloadProcessing {
+        return KeySetDownloadProcessor(storageController: dependency.storageController,
+                                       localPathProvider: localPathProvider,
+                                       fileManager: fileManager)
+    }
 }
 
 final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationProviderDependency>, ExposureDataOperationProviderBuildable {
@@ -74,6 +84,8 @@ final class ExposureDataOperationProviderBuilder: Builder<ExposureDataOperationP
                                                  application: dependencyProvider.application,
                                                  fileManager: dependencyProvider.fileManager,
                                                  environmentController: dependencyProvider.environmentController,
-                                                 riskCalculationController: dependencyProvider.riskCalculationController)
+                                                 riskCalculationController: dependencyProvider.riskCalculationController,
+                                                 featureFlagsController: dependencyProvider.featureFlagsController,
+                                                 keySetDownloadProcessor: dependencyProvider.keySetDownloadProcessor)
     }
 }

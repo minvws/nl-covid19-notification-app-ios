@@ -30,7 +30,9 @@ protocol NetworkManaging {
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ())
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ())
     func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ())
-
+    func getExposureKeySetsInBackground(identifiers: [String])
+    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ())
+    
     // MARK: Enrollment
 
     func postRegister(request: RegisterRequest, completion: @escaping (Result<LabInformation, NetworkError>) -> ())
@@ -46,6 +48,7 @@ protocol NetworkManagerBuildable {
 protocol NetworkManagerDependency {
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
     var storageController: StorageControlling { get }
+    var localPathProvider: LocalPathProviding { get }
 }
 
 /// @mockable
@@ -97,7 +100,23 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
     }
 
     var sessionDelegate: URLSessionDelegate? {
-        return NetworkManagerURLSessionDelegate(configurationProvider: dependency.networkConfigurationProvider)
+        return NetworkManagerURLSessionDelegate(configurationProvider: dependency.networkConfigurationProvider,
+                                                urlResponseSaver: urlResponseSaving,
+                                                keySetDownloadProcessor: keySetDownloadProcessor)
+    }
+    
+    var urlResponseSaving: URLResponseSaving {
+        return URLResponseSaver(responseHandlerProvider: responseHandlerProvider)
+    }
+    
+    var keySetDownloadProcessor: KeySetDownloadProcessing {
+        return KeySetDownloadProcessor(storageController: dependency.storageController,
+                                       localPathProvider: dependency.localPathProvider,
+                                       fileManager: fileManager)
+    }
+    
+    var fileManager: FileManaging {
+        FileManager.default
     }
 }
 

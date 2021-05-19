@@ -32,12 +32,16 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
          storageController: StorageControlling,
          localPathProvider: LocalPathProviding,
          exposureKeySetIdentifiers: [String],
-         fileManager: FileManaging) {
+         fileManager: FileManaging,
+         featureFlagController: FeatureFlagControlling,
+         keySetDownloadProcessor: KeySetDownloadProcessing) {
         self.networkController = networkController
         self.storageController = storageController
         self.localPathProvider = localPathProvider
         self.exposureKeySetIdentifiers = exposureKeySetIdentifiers
         self.fileManager = fileManager
+        self.featureFlagController = featureFlagController
+        self.keySetDownloadProcessor = keySetDownloadProcessor
     }
 
     // MARK: - ExposureDataOperation
@@ -76,8 +80,18 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             return ignoreFirstKeySetBatch(keySetIdentifiers: identifiers)
         }
 
+        if featureFlagController.backgroundKeysetDownloading.isEnabled {
+            
+            networkController.fetchExposureKeySetsInBackground(identifiers: identifiers)
+                        
+            logDebug("Triggered background download for keysets with identifiers: \(identifiers.joined(separator: "\n"))")
+            logDebug("--- END REQUESTING KEYSETS ---")
+            
+            return .empty()
+        }
+        
         logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
-
+        
         // download remaining keysets
         let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
             self.networkController
@@ -92,10 +106,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                 throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
             }
             .flatMap { identifierUrlCombo in
-                self.createKeySetHolder(forDownloadedKeySet: identifierUrlCombo)
-            }
-            .flatMap { keySetHolder in
-                self.storeDownloadedKeySetsHolder(keySetHolder)
+                self.keySetDownloadProcessor.process(identifier: identifierUrlCombo.0, url: identifierUrlCombo.1)
             }
             .toArray() // toArray is called only after the creation and storage of keysetholders. This means that if at any point during this process the app is killed due to high CPU usage, the previous progress will not be lost and the app will only have to download the remaining keysets
             .do { [weak self] _ in
@@ -119,7 +130,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                 self.createIgnoredKeySetHolder(forKeySetIdentifier: identifier)
             }
             .flatMap { keySetHolder in
-                self.storeDownloadedKeySetsHolder(keySetHolder)
+                self.keySetDownloadProcessor.storeDownloadedKeySetsHolder(keySetHolder)
             }
             .do(onError: { _ in
                 self.logDebug("KeySet: Creating ignored keysets failed ")
@@ -139,52 +150,6 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         return identifiers.filter(isNotDownloadedOrProcessed)
     }
 
-    private func createKeySetHolder(forDownloadedKeySet keySet: (String, URL)) -> Single<ExposureKeySetHolder> {
-        return .create { (observer) -> Disposable in
-
-            guard let keySetStorageUrl = self.localPathProvider.path(for: .exposureKeySets) else {
-                observer(.failure(ExposureDataError.internalError))
-                return Disposables.create()
-            }
-
-            let (identifier, localUrl) = keySet
-            let srcSignatureUrl = localUrl.appendingPathComponent(self.signatureFilename)
-            let srcBinaryUrl = localUrl.appendingPathComponent(self.binaryFilename)
-
-            let dstSignatureFilename = [identifier, "sig"].joined(separator: ".")
-            let dstSignatureUrl = keySetStorageUrl.appendingPathComponent(dstSignatureFilename)
-            let dstBinaryFilename = [identifier, "bin"].joined(separator: ".")
-            let dstBinaryUrl = keySetStorageUrl.appendingPathComponent(dstBinaryFilename)
-
-            do {
-                if self.fileManager.fileExists(atPath: dstSignatureUrl.path) {
-                    try self.fileManager.removeItem(atPath: dstSignatureUrl.path)
-                }
-
-                if self.fileManager.fileExists(atPath: dstBinaryUrl.path) {
-                    try self.fileManager.removeItem(atPath: dstBinaryUrl.path)
-                }
-
-                try self.fileManager.moveItem(at: srcSignatureUrl, to: dstSignatureUrl)
-                try self.fileManager.moveItem(at: srcBinaryUrl, to: dstBinaryUrl)
-            } catch {
-                self.logDebug("Error while moving KeySet \(identifier) to final destination: \(error)")
-                // do nothing, just ignore this keySetHolder
-                observer(.failure(ExposureDataError.internalError))
-                return Disposables.create()
-            }
-
-            let keySetHolder = ExposureKeySetHolder(identifier: identifier,
-                                                    signatureFilename: dstSignatureFilename,
-                                                    binaryFilename: dstBinaryFilename,
-                                                    processDate: nil,
-                                                    creationDate: Date())
-            observer(.success(keySetHolder))
-
-            return Disposables.create()
-        }
-    }
-
     private func createIgnoredKeySetHolder(forKeySetIdentifier identifier: String) -> Single<ExposureKeySetHolder> {
 
         // mark keyset as processed
@@ -196,33 +161,11 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                                           creationDate: Date()))
     }
 
-    // stores the downloaded keysets holder
-    private func storeDownloadedKeySetsHolder(_ keySetHolder: ExposureKeySetHolder) -> Completable {
-        return .create { (observer) -> Disposable in
-
-            self.storageController.requestExclusiveAccess { storageController in
-                var keySetHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
-
-                let matchesKeySetsHolder: (ExposureKeySetHolder) -> Bool = { $0.identifier == keySetHolder.identifier }
-
-                if !keySetHolders.contains(where: matchesKeySetsHolder) {
-                    keySetHolders.append(keySetHolder)
-                }
-
-                storageController.store(object: keySetHolders,
-                                        identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
-                    // ignore any storage error - in that case the keyset will be downloaded and processed again
-                    observer(.completed)
-                }
-            }
-
-            return Disposables.create()
-        }
-    }
-
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let localPathProvider: LocalPathProviding
     private let exposureKeySetIdentifiers: [String]
     private let fileManager: FileManaging
+    private let featureFlagController: FeatureFlagControlling
+    private let keySetDownloadProcessor: KeySetDownloadProcessing
 }

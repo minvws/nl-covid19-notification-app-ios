@@ -109,6 +109,14 @@ final class NetworkController: NetworkControlling, Logging {
             return Disposables.create()
         }).observe(on: MainScheduler.instance)
     }
+    
+    func fetchExposureKeySetsInBackground(identifiers: [String]) {
+        networkManager.getExposureKeySetsInBackground(identifiers: identifiers)
+    }
+    
+    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ()) {
+        networkManager.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
+    }
 
     func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey> {
         let observable = Single<LabConfirmationKey>.create { observer in
