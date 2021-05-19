@@ -35,13 +35,15 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
          mutableExposureStateStream: MutableExposureStateStreaming,
          mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming,
          exposureController: ExposureControlling,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         featureFlagController: FeatureFlagControlling) {
         self.listener = listener
         self.mutableExposureStateStream = mutableExposureStateStream
         self.mutableNetworkConfigurationStream = mutableNetworkConfigurationStream
         self.exposureController = exposureController
         self.storageController = storageController
-
+        self.featureFlagController = featureFlagController
+        
         super.init(theme: theme)
 
         attach()
@@ -140,7 +142,17 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     // MARK: - Sections
 
     private var sections: [(title: String, items: [DeveloperItem])] {
+        let featureFlagOptions = Feature
+            .allCases
+            .map { feature in
+                DeveloperItem(title: feature.displayName,
+                              subtitle: "Feature Enabled: \(featureFlagController.isFeatureFlagEnabled(feature: feature) ? "Yes" : "No")",
+                              action: { [weak self] in self?.toggleFeatureFlag(forFeature: feature) })
+                
+            }
+        
         return [
+            ("Feature Flags", featureFlagOptions),
             ("Show Screens", [
                 DeveloperItem(title: "Show Onboarding",
                               subtitle: "Launches Onboarding",
@@ -238,6 +250,11 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
     // MARK: - Actions
 
+    private func toggleFeatureFlag(forFeature feature: Feature) {
+        featureFlagController.toggleFeatureFlag(forFeature: feature)
+        internalView.tableView.reloadData()
+    }
+    
     private func launchOnboarding() {
         hide()
 
@@ -780,6 +797,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     private let mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
+    private let featureFlagController: FeatureFlagControlling
     private var disposeBag = DisposeBag()
 
     private var isFetchingKeys: Bool {

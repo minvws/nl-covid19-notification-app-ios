@@ -1,18 +1,26 @@
-//
-//  FeatureFlags.swift
-//  ENCore
-//
-//  Created by Roel Spruit on 19/05/2021.
-//
+/*
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
 
 import Foundation
 
-struct Feature {
-    let isEnabled: Bool
+protocol FeatureFlagControlling {
+    func isFeatureFlagEnabled(feature: Feature) -> Bool
+    func toggleFeatureFlag(forFeature feature: Feature)
 }
 
-protocol FeatureFlagControlling {
-    var backgroundKeysetDownloading: Feature { get }
+enum Feature: String, CaseIterable {
+    case backgroundKeysetDownloading
+    
+    var displayName: String {
+        switch self {
+        case .backgroundKeysetDownloading:
+            return "Background Keyset Downloading"
+        }
+    }
 }
 
 class FeatureFlagController: FeatureFlagControlling {
@@ -21,5 +29,11 @@ class FeatureFlagController: FeatureFlagControlling {
     
     private init() {}
     
-    var backgroundKeysetDownloading = Feature(isEnabled: true)
+    func isFeatureFlagEnabled(feature: Feature) -> Bool {
+        UserDefaults.standard.bool(forKey: feature.rawValue)
+    }
+    
+    func toggleFeatureFlag(forFeature feature: Feature) {
+        UserDefaults.standard.set(!isFeatureFlagEnabled(feature: feature), forKey: feature.rawValue)
+    }
 }

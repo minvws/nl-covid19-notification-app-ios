@@ -80,9 +80,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol {
         return RequestExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
-                                                   localPathProvider: localPathProvider,
                                                    exposureKeySetIdentifiers: identifiers,
-                                                   fileManager: fileManager,
                                                    featureFlagController: featureFlagsController,
                                                    keySetDownloadProcessor: keySetDownloadProcessor)
     }

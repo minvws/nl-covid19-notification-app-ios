@@ -144,6 +144,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
     }
     
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> ()) {
+        
+        logTrace()
+        
         backgroundURLSessionCompletionHandler = completionHandler
         appRoot?.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
     }
