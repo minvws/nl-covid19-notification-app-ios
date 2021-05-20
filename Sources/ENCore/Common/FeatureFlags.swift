@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// @mockable
 protocol FeatureFlagControlling {
     func isFeatureFlagEnabled(feature: Feature) -> Bool
     func toggleFeatureFlag(forFeature feature: Feature)

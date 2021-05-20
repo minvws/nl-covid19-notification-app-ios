@@ -16,26 +16,32 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     private var sut: RequestExposureKeySetsDataOperation!
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
-    private var mockLocalPathProvider: LocalPathProvidingMock!
-    private var mockFileManager: FileManagingMock!
+    private var mockFeatureFlagController: FeatureFlagControllingMock!
+    private var mockKeySetDownloadProcessor: KeySetDownloadProcessingMock!
+    
     private var exposureKeySetIdentifiers: [String]!
-
+    
     override func setUp() {
         super.setUp()
 
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()
-        mockLocalPathProvider = LocalPathProvidingMock()
-        mockFileManager = FileManagingMock()
+        mockFeatureFlagController = FeatureFlagControllingMock()
+        mockKeySetDownloadProcessor = KeySetDownloadProcessingMock()
+        
         exposureKeySetIdentifiers = ["identifier"]
 
         // Default handlers
-        mockFileManager.fileExistsHandler = { _, _ in true }
+        mockKeySetDownloadProcessor.processHandler = { _, _ in
+            .empty()
+        }
+        
+        mockKeySetDownloadProcessor.storeDownloadedKeySetsHolderHandler = { _ in
+            .empty()
+        }
+        
         mockNetworkController.fetchExposureKeySetHandler = { identifier in
             return .just((identifier, URL(string: "http://someurl.com")!))
-        }
-        mockLocalPathProvider.pathHandler = { localFolder in
-            return URL(string: "http://someurl.com")!
         }
         mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
         mockStorageController.storeHandler = { object, identifiedBy, completion in
@@ -45,9 +51,9 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         sut = RequestExposureKeySetsDataOperation(
             networkController: mockNetworkController,
             storageController: mockStorageController,
-            localPathProvider: mockLocalPathProvider,
             exposureKeySetIdentifiers: exposureKeySetIdentifiers,
-            fileManager: mockFileManager
+            featureFlagController: mockFeatureFlagController,
+            keySetDownloadProcessor: mockKeySetDownloadProcessor
         )
     }
 
@@ -116,85 +122,26 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
 
     func test_execute_retrieveObject_withNil() {
 
+        // Arrange
         mockStorageController.retrieveDataHandler = { _ in
             return nil
         }
 
         let exp = expectation(description: "Completion")
 
+        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 0)
+        
+        // Act
         _ = sut.execute()
             .subscribe(onCompleted: {
                 exp.fulfill()
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 3)
-
+        // Assert
         waitForExpectations(timeout: 1, handler: nil)
-    }
-
-    func test_execute_createKeySetHolder_withError_shouldMapExposureDataError() {
-
-        mockStorage(
-            storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
-            initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
-        )
-
-        mockLocalPathProvider.pathHandler = { _ in
-            return nil
-        }
-
-        mockFileManager.removeItemHandler = { _ in
-            throw ExposureDataError.internalError
-        }
-
-        mockFileManager.fileExistsHandler = { _, _ in
-            return true
-        }
-
-        let exp = expectation(description: "Completion")
-        _ = sut.execute()
-            .subscribe(onError: { error in
-                XCTAssertEqual(error as? ExposureDataError, ExposureDataError.internalError)
-                exp.fulfill()
-            })
-            .disposed(by: disposeBag)
-
-        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
-
-        waitForExpectations(timeout: 1, handler: nil)
-    }
-
-    func test_execute_removeItem_withError_shouldMapExposureDataError() {
-
-        mockStorage(
-            storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
-            initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
-        )
-
-        mockFileManager.fileExistsHandler = { _, _ in
-            return true
-        }
-
-        mockFileManager.removeItemHandler = { _ in
-            throw ExposureDataError.internalError
-        }
-
-        mockFileManager.moveItemHandler = { _, _ in
-            throw ExposureDataError.internalError
-        }
-
-        let exp = expectation(description: "Completion")
-        _ = sut.execute()
-            .subscribe(onError: { error in
-                XCTAssertEqual(error as? ExposureDataError, ExposureDataError.internalError)
-                exp.fulfill()
-            })
-            .disposed(by: disposeBag)
-
-        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
-
-        waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 2)
     }
 
     func test_shouldNotDownloadKeySetsIfFirstBatchIsNotYetIgnored() {
@@ -235,37 +182,16 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 1)
+        XCTAssertEqual(mockNetworkController.fetchExposureKeySetsInBackgroundCallCount, 0)
     }
 
     func test_shouldFakeProcessFirstKeySetBatch() {
 
         let exp = expectation(description: "expectation")
-        let storedKeySetsExpectation = expectation(description: "storedKeySets")
         mockStorage(
             storedKeySetHolders: [],
             initialKeySetsIgnored: false
         )
-
-        mockStorageController.storeHandler = { object, key, completion in
-            guard (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString else {
-                completion(nil)
-                return
-            }
-
-            let keySetHolders = try! JSONDecoder().decode([ExposureKeySetHolder].self, from: object)
-
-            // Check that all processdates of fake-processed keysets are more than 24 hours ago,
-            // to avoid them interfering with GAEN API file limits on iOS 13.5
-            let oneDay: TimeInterval = 60 * 60 * 24 - 1
-            keySetHolders
-                .compactMap { $0.processDate }
-                .forEach { processDate in
-                    XCTAssertTrue(currentDate().timeIntervalSince(processDate) >= oneDay)
-                }
-
-            storedKeySetsExpectation.fulfill()
-            completion(nil)
-        }
 
         sut.execute()
             .subscribe(onCompleted: {
@@ -275,8 +201,45 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
 
+        // Check that all processdates of fake-processed keysets are more than 24 hours ago,
+        // to avoid them interfering with GAEN API file limits on iOS 13.5
+        let oneDay: TimeInterval = 60 * 60 * 24 - 1
+        mockKeySetDownloadProcessor.storeDownloadedKeySetsHolderArgValues
+            .compactMap { $0.processDate }
+            .forEach { processDate in
+                XCTAssertTrue(currentDate().timeIntervalSince(processDate) >= oneDay)
+            }
+        
+        XCTAssertEqual(mockKeySetDownloadProcessor.storeDownloadedKeySetsHolderCallCount, 1)
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 0)
     }
+    
+    func test_execute_shouldFetchExposureKeysetsInBackground() {
+        // Arrange
+        XCTAssertEqual(mockNetworkController.fetchExposureKeySetsInBackgroundCallCount, 0)
+        
+        let exp = expectation(description: "expectation")
+        let keySetHolder = dummyKeySetHolder(withIdentifier: "someStoredKeyset")
+        mockStorage(storedKeySetHolders: [keySetHolder], initialKeySetsIgnored: true)
+        mockFeatureFlagController.isFeatureFlagEnabledHandler = { flag in
+            return flag == .backgroundKeysetDownloading
+        }
+        
+        // Act
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations(timeout: 2, handler: nil)
+        
+        XCTAssertEqual(mockNetworkController.fetchExposureKeySetsInBackgroundCallCount, 1)
+        XCTAssertEqual(mockNetworkController.fetchExposureKeySetsInBackgroundArgValues.first, [exposureKeySetIdentifiers.first!])
+    }
+    
+    // MARK: - Private helper functions
 
     private func dummyKeySetHolder(withIdentifier identifier: String = "identifier") -> ExposureKeySetHolder {
         ExposureKeySetHolder(identifier: identifier, signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: nil, creationDate: currentDate())

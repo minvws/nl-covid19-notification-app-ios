@@ -9,6 +9,7 @@ import RxSwift
 import ENFoundation
 import Foundation
 
+/// @mockable(history:process = true; storeDownloadedKeySetsHolder = true)
 protocol KeySetDownloadProcessing {
     func process(identifier: String, url: URL) -> Completable
     func storeDownloadedKeySetsHolder(_ keySetHolder: ExposureKeySetHolder) -> Completable
@@ -68,7 +69,7 @@ final class KeySetDownloadProcessor: KeySetDownloadProcessing, Logging {
                                                     signatureFilename: dstSignatureFilename,
                                                     binaryFilename: dstBinaryFilename,
                                                     processDate: nil,
-                                                    creationDate: Date())
+                                                    creationDate: currentDate())
             observer(.success(keySetHolder))
 
             return Disposables.create()

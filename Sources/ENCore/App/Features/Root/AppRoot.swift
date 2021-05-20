@@ -111,7 +111,7 @@ import UIKit
     }
     
     public func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ()) {
-        logDebug("`receiveURLSessionBackgroundCompletionHandler`")
-//        appEntryPoint?.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
+        logTrace()
+        appEntryPoint?.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
     }
 }
