@@ -122,6 +122,8 @@ final class NetworkManager: NetworkManaging, Logging {
     
     func getExposureKeySetsInBackground(identifiers: [String]) {
         
+        logTrace()
+        
         guard let keySetURLSession = keySetURLSession else {
             self.logError("Unable to download keysets. URLSession could not be constructed")
             return
@@ -131,8 +133,10 @@ final class NetworkManager: NetworkManaging, Logging {
             
             let existingURLS = existingTasks.compactMap { $0.originalRequest?.url }
             
+            self.logDebug("Currently active keyset downloads: \n\(existingURLS.compactMap { $0.absoluteString }.joined(separator: "\n"))")
+            
             let backgroundTasks: [URLSessionDownloadTask] = identifiers.compactMap { identifier in
-                
+                    
                 let expectedContentType = HTTPContentType.zip
                 let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
                 
@@ -161,6 +165,8 @@ final class NetworkManager: NetworkManaging, Logging {
             backgroundTasks.forEach { (task) in
                 task.resume()
             }
+            
+            self.logDebug("Triggered background downloads for keysets: \n\(backgroundTasks.compactMap { $0.originalRequest?.url?.absoluteString }.joined(separator: "\n"))")
         }
     }
     

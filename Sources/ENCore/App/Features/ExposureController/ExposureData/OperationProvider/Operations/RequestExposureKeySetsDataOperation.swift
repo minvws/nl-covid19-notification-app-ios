@@ -79,8 +79,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         if featureFlagController.isFeatureFlagEnabled(feature: .backgroundKeysetDownloading) {
             
             networkController.fetchExposureKeySetsInBackground(identifiers: identifiers)
-                        
-            logDebug("Triggered background download for keysets with identifiers: \(identifiers.joined(separator: "\n"))")
+            
             logDebug("--- END REQUESTING KEYSETS ---")
             
             return .empty()
