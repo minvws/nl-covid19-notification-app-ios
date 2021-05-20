@@ -209,6 +209,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         exposureController
             .getDecoyProbability()
             .delay(.seconds(randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .utility))
             .subscribe(onSuccess: { decoyProbability in
                 execute(decoyProbability: decoyProbability)
             })
@@ -330,7 +331,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         // even though exposureController.updateStatusStream() is a synchronous call,
         // we still wrap it in a completable to make it possible to schedule the work in the refresh sequence
         return .create { (observer) -> Disposable in
-            self.exposureController.updateStatusStream()
+            self.exposureController.refreshStatus()
             observer(.completed)
             return Disposables.create()
         }

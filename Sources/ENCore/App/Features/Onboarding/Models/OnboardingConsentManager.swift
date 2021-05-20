@@ -108,6 +108,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         case .en:
             exposureStateStream
                 .exposureState
+                .observe(on: MainScheduler.instance)
                 .filter { $0.activeState != .notAuthorized || skippedCurrentStep }
                 .take(1)
                 .subscribe(onNext: { value in
@@ -162,6 +163,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
         exposureStateSubscription = exposureStateStream
             .exposureState
+            .observe(on: MainScheduler.instance)
             .filter { $0.activeState != .notAuthorized && $0.activeState != .inactive(.disabled) }
             .take(1)
             .subscribe(onNext: { [weak self] state in
@@ -201,10 +203,14 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
 
     func didCompleteConsent() {
         logTrace()
-        exposureController.didCompleteOnboarding = true
-
-        // Mark all announcements that were made during the onboarding process as "seen"
-        exposureController.seenAnnouncements = []
+        
+        // Change stored flags asynchronously to not block the main thread
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.exposureController.didCompleteOnboarding = true
+            
+            // Mark all announcements that were made during the onboarding process as "seen"
+            self.exposureController.seenAnnouncements = []
+        }
     }
 
     private let exposureStateStream: ExposureStateStreaming

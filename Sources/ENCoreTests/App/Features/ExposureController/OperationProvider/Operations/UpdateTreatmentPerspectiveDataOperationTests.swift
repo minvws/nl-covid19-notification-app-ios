@@ -31,9 +31,12 @@ final class UpdateTreatmentPerspectiveDataOperationTests: TestCase {
 
     func test_execute_shouldRetrieveManifestFromStorage() {
 
+        let completionExpectation = expectation(description: "completion")
         let storageExpectation = expectation(description: "storage")
 
         mockStorageController.retrieveDataHandler = { key in
+            
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             if (key as? CodableStorageKey<ApplicationManifest>)?.asString == ExposureDataStorageKey.appManifest.asString {
                 storageExpectation.fulfill()
                 return try! JSONEncoder().encode(ApplicationManifest.testData())
@@ -42,7 +45,12 @@ final class UpdateTreatmentPerspectiveDataOperationTests: TestCase {
             return nil
         }
 
-        _ = sut.execute()
+        sut.execute()
+            .subscribe(onCompleted: {
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }

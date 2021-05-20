@@ -26,15 +26,22 @@ final class RequestExposureConfigurationDataOperation: RequestExposureConfigurat
 
     func execute() -> Single<ExposureConfiguration> {
 
-        if let exposureConfiguration = retrieveStoredConfiguration(), exposureConfiguration.identifier == exposureConfigurationIdentifier {
-            return .just(exposureConfiguration)
+        let resultSingle = Single<ExposureConfiguration>.create { (observer) -> Disposable in
+            
+            if let exposureConfiguration = self.retrieveStoredConfiguration(), exposureConfiguration.identifier == self.exposureConfigurationIdentifier {
+                observer(.success(exposureConfiguration))
+                return Disposables.create()
+            }
+            
+            return self.networkController
+                .exposureRiskConfigurationParameters(identifier: self.exposureConfigurationIdentifier)                
+                .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
+                .catch { throw $0.asExposureDataError }
+                .flatMap(self.store(exposureConfiguration:))
+                .subscribe(observer)
         }
-
-        return networkController
-            .exposureRiskConfigurationParameters(identifier: exposureConfigurationIdentifier)
-            .subscribe(on: MainScheduler.instance)
-            .catch { throw $0.asExposureDataError }
-            .flatMap(store(exposureConfiguration:))
+        
+        return resultSingle.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
     }
 
     // MARK: - Private

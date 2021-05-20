@@ -82,21 +82,19 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
             self.networkController
                 .fetchExposureKeySet(identifier: identifier)
+            
         }
 
         let start = CFAbsoluteTimeGetCurrent()
 
         return Observable.from(exposureKeySetStreams)
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))            
             .flatMap { $0 }
             .catch { error in
                 throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
             }
-            .flatMap { identifierUrlCombo in
-                self.createKeySetHolder(forDownloadedKeySet: identifierUrlCombo)
-            }
-            .flatMap { keySetHolder in
-                self.storeDownloadedKeySetsHolder(keySetHolder)
-            }
+            .flatMap(createKeySetHolder)
+            .flatMap(storeDownloadedKeySetsHolder)
             .toArray() // toArray is called only after the creation and storage of keysetholders. This means that if at any point during this process the app is killed due to high CPU usage, the previous progress will not be lost and the app will only have to download the remaining keysets
             .do { [weak self] _ in
                 let diff = CFAbsoluteTimeGetCurrent() - start
@@ -115,18 +113,16 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         logDebug("KeySet: Ignoring KeySets because it is the first batch after first install: \(keySetIdentifiers.joined(separator: "\n"))")
 
         return Observable.from(keySetIdentifiers)
-            .flatMap { identifier in
-                self.createIgnoredKeySetHolder(forKeySetIdentifier: identifier)
-            }
-            .flatMap { keySetHolder in
-                self.storeDownloadedKeySetsHolder(keySetHolder)
-            }
+            .flatMap (createIgnoredKeySetHolder)
+            .toArray()
+            .flatMapCompletable(storeIgnoredKeySetsHolders)
             .do(onError: { _ in
                 self.logDebug("KeySet: Creating ignored keysets failed ")
             }, onCompleted: {
-                self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                }
             })
-            .asCompletable()
     }
 
     private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
@@ -139,7 +135,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         return identifiers.filter(isNotDownloadedOrProcessed)
     }
 
-    private func createKeySetHolder(forDownloadedKeySet keySet: (String, URL)) -> Single<ExposureKeySetHolder> {
+    private func createKeySetHolder(_ keySet: (String, URL)) -> Single<ExposureKeySetHolder> {
         return .create { (observer) -> Disposable in
 
             guard let keySetStorageUrl = self.localPathProvider.path(for: .exposureKeySets) else {
@@ -185,7 +181,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         }
     }
 
-    private func createIgnoredKeySetHolder(forKeySetIdentifier identifier: String) -> Single<ExposureKeySetHolder> {
+    private func createIgnoredKeySetHolder(_ identifier: String) -> Single<ExposureKeySetHolder> {
 
         // mark keyset as processed
         // ensure processDate is in the past to not have these keysets count towards the rate limit
@@ -219,6 +215,31 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             return Disposables.create()
         }
     }
+    
+    /// Stores a batch of keysets holders
+    private func storeIgnoredKeySetsHolders(_ keySetHolders: [ExposureKeySetHolder]) -> Completable {
+        return .create { (observer) -> Disposable in
+
+            self.logDebug("Storing ignored keysetholders")
+            
+            self.storageController.requestExclusiveAccess { storageController in
+                var updatedKeySetHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
+                let existingKeySetHolderIds = updatedKeySetHolders.map { $0.identifier }
+                let deduplicatedKeySetHolders = keySetHolders.filter { !existingKeySetHolderIds.contains($0.identifier) }
+                
+                updatedKeySetHolders.append(contentsOf: deduplicatedKeySetHolders)
+                
+                storageController.store(object: keySetHolders,
+                                        identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
+                    // ignore any storage error - in that case the keyset will be downloaded and processed again
+                    observer(.completed)
+                }
+            }
+
+            return Disposables.create()
+        }
+    }
+
 
     private let networkController: NetworkControlling
     private let storageController: StorageControlling

@@ -39,6 +39,7 @@ class OnboardingConsentManagerTests: TestCase {
         let currentStep: OnboardingConsentStep.Index = .en
         let skippedCurrentStep: Bool = false
         let completion: (OnboardingConsentStep.Index?) -> () = { stepIndex in
+            XCTAssertTrue(Thread.current.isMainThread)
             XCTAssertEqual(stepIndex, .share)
             completionExpectation.fulfill()
         }
@@ -161,6 +162,7 @@ class OnboardingConsentManagerTests: TestCase {
         mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .active))
 
         let completion: (ExposureActiveState) -> () = { state in
+            XCTAssertTrue(Thread.current.isMainThread)
             XCTAssertEqual(state, .active)
             completionExpectation.fulfill()
         }
@@ -219,5 +221,23 @@ class OnboardingConsentManagerTests: TestCase {
         waitForExpectations(timeout: 1, handler: nil)
 
         XCTAssertEqual(mockUserNotificationController.requestNotificationPermissionCallCount, 1)
+    }
+    
+    func test_didCompleteConsent_shouldCompleteOnboardingInExposureController() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        XCTAssertFalse(mockExposureController.didCompleteOnboarding)
+        
+        // Act
+        sut.didCompleteConsent()
+        
+        // Assert
+        DispatchQueue.global(qos: .userInitiated).async {
+            XCTAssertTrue(self.mockExposureController.didCompleteOnboarding)
+            XCTAssertEqual(self.mockExposureController.seenAnnouncements, [])
+            completionExpectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 2, handler: nil)
     }
 }

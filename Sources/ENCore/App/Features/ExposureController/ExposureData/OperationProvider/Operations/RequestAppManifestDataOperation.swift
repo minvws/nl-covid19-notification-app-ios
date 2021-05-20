@@ -30,21 +30,29 @@ final class RequestAppManifestDataOperation: RequestAppManifestDataOperationProt
     }
 
     func execute() -> Single<ApplicationManifest> {
-        let updateFrequency = retrieveManifestUpdateFrequency()
-
-        if let manifest = retrieveStoredManifest(), manifest.isValid(forUpdateFrequency: updateFrequency) {
-            let expirationDate = manifest.expirationDate(forUpdateFrequency: updateFrequency)
-            logDebug("Using cached manifest (expires at \(expirationDate), in \(expirationDate.timeIntervalSince(Date()).minutes) minutes)")
-            return .just(manifest)
+        
+        let manifestSingle = Single<ApplicationManifest>.create { (observer) in
+            
+            let updateFrequency = self.retrieveManifestUpdateFrequency()
+            
+            if let manifest = self.retrieveStoredManifest(), manifest.isValid(forUpdateFrequency: updateFrequency) {
+                let expirationDate = manifest.expirationDate(forUpdateFrequency: updateFrequency)
+                self.logDebug("Using cached manifest (expires at \(expirationDate), in \(expirationDate.timeIntervalSince(Date()).minutes) minutes)")
+                observer(.success(manifest))
+                return Disposables.create()
+            }
+            
+            self.logDebug("Getting fresh manifest from network")
+            
+            return self.networkController
+                .applicationManifest
+                .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
+                .catch { throw $0.asExposureDataError }
+                .flatMap(self.store(manifest:))
+                .subscribe(observer)
         }
-
-        logDebug("Getting fresh manifest from network")
-
-        return networkController
-            .applicationManifest
-            .subscribe(on: MainScheduler.instance)
-            .catch { throw $0.asExposureDataError }
-            .flatMap(store(manifest:))
+        
+        return manifestSingle.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
     }
 
     // MARK: - Private

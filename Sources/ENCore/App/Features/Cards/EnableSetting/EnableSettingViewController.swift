@@ -80,6 +80,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 
         exposureStateDisposable = exposureStateStream
             .exposureState
+            .observe(on: MainScheduler.instance)
             .filter { (state) -> Bool in
                 state.activeState != .inactive(.bluetoothOff)
             }

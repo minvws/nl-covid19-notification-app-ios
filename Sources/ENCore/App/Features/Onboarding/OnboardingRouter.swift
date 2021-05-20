@@ -35,8 +35,12 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         self.helpBuilder = helpBuilder
         self.webviewBuilder = webviewBuilder
 
+        // These viewcontrollers take some time to build. We build them before starting the onboarding flow to speed up the UI once the use hits these screens
+        self.privacyAgreementViewController = privacyAgreementBuilder.build(withListener: viewController)
+        self.consentViewController = consentBuilder.build(withListener: viewController)
+        
         super.init(viewController: viewController)
-
+        
         viewController.router = self
     }
 
@@ -52,7 +56,6 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     }
 
     func routeToStep(withIndex index: Int, animated: Bool) {
-
         let stepViewController = stepBuilder.build(withListener: viewController, initialIndex: index)
         self.stepViewController = stepViewController
 
@@ -60,9 +63,6 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     }
 
     func routeToConsent(animated: Bool) {
-        let consentViewController = consentBuilder.build(withListener: viewController)
-        self.consentViewController = consentViewController
-
         viewController.push(viewController: consentViewController, animated: animated)
     }
 
@@ -74,8 +74,6 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     }
 
     func routeToPrivacyAgreement() {
-        let privacyAgreementViewController = privacyAgreementBuilder.build(withListener: viewController)
-        self.privacyAgreementViewController = privacyAgreementViewController
         viewController.push(viewController: privacyAgreementViewController, animated: true)
     }
 
@@ -117,13 +115,13 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
     private var stepViewController: ViewControllable?
 
     private let consentBuilder: OnboardingConsentBuildable
-    private var consentViewController: ViewControllable?
+    private var consentViewController: ViewControllable
 
     private let shareSheetBuilder: ShareSheetBuildable
     private var shareSheetViewController: ShareSheetViewControllable?
 
     private let privacyAgreementBuilder: PrivacyAgreementBuildable
-    private var privacyAgreementViewController: ViewControllable?
+    private var privacyAgreementViewController: ViewControllable
 
     private let bluetoothSettingsBuilder: BluetoothSettingsBuildable
     private var bluetoothSettingsViewController: ViewControllable?
