@@ -51,28 +51,6 @@ protocol NetworkManagerDependency {
     var localPathProvider: LocalPathProviding { get }
 }
 
-/// @mockable
-protocol URLSessionDataTaskProtocol {
-    func resume()
-}
-
-extension URLSessionDataTask: URLSessionDataTaskProtocol {}
-
-/// @mockable
-protocol URLSessionProtocol {
-    func resumableDataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol
-}
-
-/// @mockable
-protocol URLSessionDelegateProtocol {}
-
-extension URLSession: URLSessionProtocol {
-    func resumableDataTask(with request: URLRequest,
-                           completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol {
-        return dataTask(with: request, completionHandler: completionHandler)
-    }
-}
-
 private final class NetworkManagerDependencyProvider: DependencyProvider<NetworkManagerDependency> {
     lazy var responseHandlerProvider: NetworkResponseHandlerProvider = {
         return NetworkResponseHandlerProviderBuilder().build()
@@ -118,6 +96,10 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
     var fileManager: FileManaging {
         FileManager.default
     }
+    
+    var urlSessionBuilder: URLSessionBuilding {
+        URLSessionBuilder()
+    }
 }
 
 final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkManagerBuildable {
@@ -129,6 +111,7 @@ final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkMan
                               responseHandlerProvider: dependencyProvider.responseHandlerProvider,
                               storageController: dependencyProvider.dependency.storageController,
                               session: dependencyProvider.session,
-                              sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol)
+                              sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol,
+                              urlSessionBuilder: dependencyProvider.urlSessionBuilder)
     }
 }

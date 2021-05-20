@@ -16,25 +16,24 @@ enum URLSessionIdentifier: String {
 
 final class NetworkManager: NetworkManaging, Logging {
 
-    private lazy var keySetURLSession: URLSession? = {
+    private lazy var keySetURLSession: URLSessionProtocol? = {
         let config = URLSessionConfiguration.background(withIdentifier: URLSessionIdentifier.keysetURLSession.rawValue)
-        config.sessionSendsLaunchEvents = true
-        guard let sessionDelegate = sessionDelegate as? URLSessionDelegate else {
-            return nil
-        }
-        return URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
+        config.sessionSendsLaunchEvents = true        
+        return urlSessionBuilder.build(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
     }()
     
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          storageController: StorageControlling,
          session: URLSessionProtocol,
-         sessionDelegate: URLSessionDelegateProtocol?) {
+         sessionDelegate: URLSessionDelegateProtocol?,
+         urlSessionBuilder: URLSessionBuilding) {
         self.configurationProvider = configurationProvider
         self.responseHandlerProvider = responseHandlerProvider
         self.storageController = storageController
         self.session = session
         self.sessionDelegate = sessionDelegate
+        self.urlSessionBuilder = urlSessionBuilder
     }
 
     // MARK: CDN
@@ -129,13 +128,13 @@ final class NetworkManager: NetworkManaging, Logging {
             return
         }
         
-        keySetURLSession.getAllTasks { (existingTasks) in
+        keySetURLSession.getAllURLSessionTasks { (existingTasks) in
             
             let existingURLS = existingTasks.compactMap { $0.originalRequest?.url }
             
             self.logDebug("Currently active keyset downloads: \n\(existingURLS.compactMap { $0.absoluteString }.joined(separator: "\n"))")
             
-            let backgroundTasks: [URLSessionDownloadTask] = identifiers.compactMap { identifier in
+            let backgroundTasks: [URLSessionDownloadTaskProtocol] = identifiers.compactMap { identifier in
                     
                 let expectedContentType = HTTPContentType.zip
                 let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
@@ -156,7 +155,7 @@ final class NetworkManager: NetworkManaging, Logging {
                     return nil
                 }
                 
-                let backgroundTask = keySetURLSession.downloadTask(with: request)
+                var backgroundTask = keySetURLSession.urlSessionDownloadTask(with: request)
                 backgroundTask.countOfBytesClientExpectsToSend = 200
                 backgroundTask.countOfBytesClientExpectsToReceive = 500 * 1024 // 500KB
                 return backgroundTask
@@ -520,6 +519,7 @@ final class NetworkManager: NetworkManaging, Logging {
     private let sessionDelegate: URLSessionDelegateProtocol? // hold on to delegate to prevent deallocation
     private let responseHandlerProvider: NetworkResponseHandlerProvider
     private let storageController: StorageControlling
+    private let urlSessionBuilder: URLSessionBuilding
 
     private var configuration: NetworkConfiguration {
         return configurationProvider.configuration

@@ -21,6 +21,7 @@ final class NetworkManagerTests: TestCase {
     private var mockUnzipResponseHandler: UnzipNetworkResponseHandlerProtocolMock!
     private var mockVerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocolMock!
     private var mockReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocolMock!
+    private var mockUrlSessionBuilder: URLSessionBuildingMock!
 
     override func setUp() {
         super.setUp()
@@ -33,7 +34,7 @@ final class NetworkManagerTests: TestCase {
         mockUnzipResponseHandler = UnzipNetworkResponseHandlerProtocolMock()
         mockVerifySignatureResponseHandler = VerifySignatureResponseHandlerProtocolMock()
         mockReadFromDiskResponseHandler = ReadFromDiskResponseHandlerProtocolMock()
-
+        mockUrlSessionBuilder = URLSessionBuildingMock()
         mockNetworkConfigurationProvider.configuration = .test
 
         mockNetworkResponseHandlerProvider.unzipNetworkResponseHandler = {
@@ -47,12 +48,17 @@ final class NetworkManagerTests: TestCase {
         mockNetworkResponseHandlerProvider.readFromDiskResponseHandler = {
             return self.mockReadFromDiskResponseHandler
         }()
+        
+        mockUrlSessionBuilder.buildHandler = { _, _, _ in
+            return URLSessionProtocolMock()
+        }
 
         sut = NetworkManager(configurationProvider: mockNetworkConfigurationProvider,
                              responseHandlerProvider: mockNetworkResponseHandlerProvider,
                              storageController: mockStorageControlling,
                              session: mockUrlSession,
-                             sessionDelegate: mockUrlSessionDelegate)
+                             sessionDelegate: mockUrlSessionDelegate,
+                             urlSessionBuilder: mockUrlSessionBuilder)
     }
 
     // MARK: - getManifest
@@ -678,6 +684,78 @@ final class NetworkManagerTests: TestCase {
         }
 
         waitForExpectations(timeout: 2.0, handler: nil)
+    }
+    
+    func test_getExposureKeySetsInBackground_shouldCreateURLSession() {
+        // Arrange
+        XCTAssertEqual(mockUrlSessionBuilder.buildCallCount, 0)
+        
+        // Act
+        sut.getExposureKeySetsInBackground(identifiers: ["identifier"])
+        
+        // Assert
+        XCTAssertEqual(mockUrlSessionBuilder.buildCallCount, 1)
+        XCTAssertTrue(mockUrlSessionBuilder.buildArgValues.first!.0.sessionSendsLaunchEvents)
+        XCTAssertTrue(mockUrlSessionBuilder.buildArgValues.first!.1 === mockUrlSessionDelegate)
+        XCTAssertNil(mockUrlSessionBuilder.buildArgValues.first!.2)
+    }
+    
+    func test_getExposureKeySetsInBackground_shouldCreateDownloadTaskForIdentifiers() {
+        // Arrange
+        var downloadTaskRequests = [URLRequest]()
+        var downloadTasks = [URLSessionDownloadTaskProtocolMock]()
+        mockUrlSessionBuilder.buildHandler = { _, _, _ in
+            let mock = URLSessionProtocolMock()
+            mock.getAllURLSessionTasksHandler = { completion in completion([]) }
+            mock.urlSessionDownloadTaskHandler = { request in
+                downloadTaskRequests.append(request)
+                let taskMock = URLSessionDownloadTaskProtocolMock()
+                downloadTasks.append(taskMock)
+                return taskMock
+            }
+            return mock
+        }
+                
+        // Act
+        sut.getExposureKeySetsInBackground(identifiers: ["identifier"])
+        
+        // Assert
+        
+        XCTAssertEqual(downloadTaskRequests.count, 1)
+        XCTAssertEqual(downloadTaskRequests.first?.httpMethod, "GET")
+        XCTAssertEqual(downloadTaskRequests.first?.url?.absoluteString, "https://test.coronamelder-dist.nl/v4/exposurekeyset/identifier")
+        XCTAssertEqual(downloadTaskRequests.first?.allHTTPHeaderFields![HTTPHeaderKey.acceptedContentType.rawValue], "application/zip")
+        
+        XCTAssertEqual(downloadTasks.count, 1)
+        XCTAssertEqual(downloadTasks.first?.countOfBytesClientExpectsToSend, 200)
+        XCTAssertEqual(downloadTasks.first?.countOfBytesClientExpectsToReceive, 512000)
+        XCTAssertEqual(downloadTasks.first?.resumeCallCount, 1)
+    }
+    
+    func test_getExposureKeySetsInBackground_shouldNotCreateDuplicateDownloadTasks() {
+        // Arrange
+        var downloadTaskRequests = [URLRequest]()
+        mockUrlSessionBuilder.buildHandler = { _, _, _ in
+            let mock = URLSessionProtocolMock()
+            mock.getAllURLSessionTasksHandler = { completion in
+                let existingTaskMock = URLSessionTaskProtocolMock()
+                existingTaskMock.originalRequest = URLRequest(url: URL(string: "https://test.coronamelder-dist.nl/v4/exposurekeyset/identifier")!)
+                completion([
+                    existingTaskMock
+                ])
+            }
+            mock.urlSessionDownloadTaskHandler = { request in
+                downloadTaskRequests.append(request)
+                return URLSessionDownloadTaskProtocolMock()
+            }
+            return mock
+        }
+                
+        // Act
+        sut.getExposureKeySetsInBackground(identifiers: ["identifier"])
+        
+        // Assert
+        XCTAssertEqual(downloadTaskRequests.count, 0)
     }
 
     // MARK: - Private Helper Functions
