@@ -19,7 +19,7 @@ protocol BluetoothSettingsDependency {
     var theme: Theme { get }
 }
 
-/// @mockable
+/// @mockable(history:build=true)
 protocol BluetoothSettingsBuildable {
     /// Builds  BluetoothSettingsViewController
     ///

@@ -6,18 +6,21 @@
  */
 
 import Foundation
+import UIKit
+import ENFoundation
 
-/// @mockable
+/// @mockable(history:push=true;present=true;presentInNavigationController=true)
 protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener, WebviewListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
+    func present(activityViewController: UIActivityViewController, animated: Bool, completion: (() -> ())?)
     func presentInNavigationController(viewController: ViewControllable, animated: Bool)
     func dismiss(viewController: ViewControllable, animated: Bool)
 }
 
-final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting {
+final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRouting, Logging {
 
     init(viewController: OnboardingViewControllable,
          stepBuilder: OnboardingStepBuildable,
@@ -55,15 +58,15 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.push(viewController: stepViewController, animated: false)
     }
 
-    func routeToStep(withIndex index: Int, animated: Bool) {
+    func routeToStep(withIndex index: Int) {
         let stepViewController = stepBuilder.build(withListener: viewController, initialIndex: index)
         self.stepViewController = stepViewController
 
-        viewController.push(viewController: stepViewController, animated: animated)
+        viewController.push(viewController: stepViewController, animated: true)
     }
 
-    func routeToConsent(animated: Bool) {
-        viewController.push(viewController: consentViewController, animated: animated)
+    func routeToConsent() {
+        viewController.push(viewController: consentViewController, animated: true)
     }
 
     func routeToConsent(withIndex index: Int, animated: Bool) {
@@ -109,6 +112,15 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         viewController.present(viewController: bluetoothSettingsViewController,
                                animated: true,
                                completion: nil)
+    }
+    
+    func routeToShareApp() {
+        if let storeLink = URL(string: .shareAppUrl) {
+            let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
+            viewController.present(activityViewController: activityVC, animated: true, completion: nil)
+        } else {
+            self.logError("Couldn't retreive a valid url")
+        }
     }
 
     private let stepBuilder: OnboardingStepBuildable

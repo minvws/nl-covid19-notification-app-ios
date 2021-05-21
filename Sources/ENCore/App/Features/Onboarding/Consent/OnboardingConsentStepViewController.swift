@@ -90,27 +90,29 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
     @objc private func primaryButtonPressed() {
         logDebug("`primaryButtonPressed` consentstep: \(String(describing: consentStep?.step))")
 
-        if let consentStep = consentStep {
-            switch consentStep.step {
-            case .en:
-                onboardingConsentManager.askNotificationsAuthorization {
-                    self.logDebug("after `onboardingConsentManager.askNotificationsAuthorization`")
-                    self.onboardingConsentManager.askEnableExposureNotifications { activeState in
-                        self.logDebug("after `onboardingConsentManager.askEnableExposureNotifications`. activeState: \(activeState)")
-
-                        switch activeState {
-                        case .notAuthorized:
-                            self.closeConsent()
-                        default:
-                            self.goToNextStepOrCloseConsent()
-                        }
+        guard let consentStep = consentStep else {
+            return
+        }
+        
+        switch consentStep.step {
+        case .en:
+            onboardingConsentManager.askNotificationsAuthorization {
+                self.logDebug("after `onboardingConsentManager.askNotificationsAuthorization`")
+                self.onboardingConsentManager.askEnableExposureNotifications { activeState in
+                    self.logDebug("after `onboardingConsentManager.askEnableExposureNotifications`. activeState: \(activeState)")
+                    
+                    switch activeState {
+                    case .notAuthorized:
+                        self.closeConsent()
+                    default:
+                        self.goToNextStepOrCloseConsent()
                     }
                 }
-            case .bluetooth:
-                self.listener?.displayBluetoothSettings()
-            case .share:
-                self.listener?.displayShareApp(completion: nil)
             }
+        case .bluetooth:
+            self.listener?.displayBluetoothSettings()
+        case .share:
+            self.listener?.displayShareApp()
         }
     }
 
@@ -141,7 +143,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         }
     }
 
-    @objc func skipStepButtonPressed() {
+    @objc private func skipStepButtonPressed() {
         if let consentStep = consentStep, consentStep.step == .en {
             onboardingConsentManager.isNotificationAuthorizationAsked { asked in
                 if !asked {
