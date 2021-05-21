@@ -22,6 +22,13 @@ enum Feature: String, CaseIterable {
             return "Background Keyset Downloading"
         }
     }
+    
+    var defaultEnabled: Bool {
+        switch self {
+        case .backgroundKeysetDownloading:
+            return true
+        }
+    }
 }
 
 class FeatureFlagController: FeatureFlagControlling {
@@ -31,7 +38,7 @@ class FeatureFlagController: FeatureFlagControlling {
     private init() {}
     
     func isFeatureFlagEnabled(feature: Feature) -> Bool {
-        UserDefaults.standard.bool(forKey: feature.rawValue)
+        UserDefaults.standard.object(forKey: feature.rawValue) as? Bool ?? feature.defaultEnabled
     }
     
     func toggleFeatureFlag(forFeature feature: Feature) {
