@@ -26,7 +26,7 @@ enum Feature: String, CaseIterable {
     var defaultEnabled: Bool {
         switch self {
         case .backgroundKeysetDownloading:
-            return true
+            return false
         }
     }
 }
