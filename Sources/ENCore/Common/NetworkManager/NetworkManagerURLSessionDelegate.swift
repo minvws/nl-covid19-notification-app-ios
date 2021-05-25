@@ -13,16 +13,13 @@ import ENFoundation
 final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLSessionDelegateProtocol, URLSessionDownloadDelegate, Logging {
     
     var urlSessionBackgroundCompletionHandler: (() -> ())?
-    let urlResponseSaver: URLResponseSaving
-    let keySetDownloadProcessor: KeySetDownloadProcessing
+    private let urlSessionDownloadHandler: URLSessionDownloadHandling
     
     /// Initialise session delegate with certificate used for SSL pinning
     init(configurationProvider: NetworkConfigurationProvider,
-         urlResponseSaver: URLResponseSaving,
-         keySetDownloadProcessor: KeySetDownloadProcessing) {
+         urlSessionDownloadHandler: URLSessionDownloadHandling) {
         self.configurationProvider = configurationProvider
-        self.urlResponseSaver = urlResponseSaver
-        self.keySetDownloadProcessor = keySetDownloadProcessor
+        self.urlSessionDownloadHandler = urlSessionDownloadHandler
     }
     
     // MARK: - URLSessionDelegate
@@ -81,23 +78,15 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLS
         // Make sure the download belongs to a known url session identifier
         guard let sessionConfigurationIdentifier = session.configuration.identifier,
               let urlSessionIdentifier = URLSessionIdentifier(rawValue: sessionConfigurationIdentifier),
+              let requestURL = downloadTask.originalRequest?.url,
               let response = downloadTask.response else {
             return
         }
-                
-        switch urlSessionIdentifier {
-        case .keysetURLSession:
-            guard let keySetIdentifier = downloadTask.originalRequest?.url?.pathComponents.last else {
-                return
-            }
-            
-            urlResponseSaver.responseToLocalUrl(for: response, url: location)
-                .flatMapCompletable { localURL in
-                    self.keySetDownloadProcessor.process(identifier: keySetIdentifier, url: localURL)
-                }
-                .subscribe()
-                .disposed(by: disposeBag)
-        }
+        
+        urlSessionDownloadHandler.processDownload(urlSessionIdentifier: urlSessionIdentifier,
+                                                  response: response,
+                                                  originalURL: requestURL,
+                                                  downloadLocation: location)
     }
     
     // MARK: - Private
@@ -105,3 +94,4 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLS
     private let configurationProvider: NetworkConfigurationProvider
     private let disposeBag = DisposeBag()
 }
+

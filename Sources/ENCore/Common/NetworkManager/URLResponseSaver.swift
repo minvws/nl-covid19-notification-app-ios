@@ -10,9 +10,10 @@ import Foundation
 import UIKit
 import ENFoundation
 
+/// @mockable
 protocol URLResponseSaving {
-    func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool) -> Single<URL>
-    func responseToLocalUrl(for response: URLResponse, url: URL) -> Single<URL>
+    func responseToLocalUrl(for response: URLResponseProtocol, url: URL, backgroundThreadIfPossible: Bool) -> Single<URL>
+    func responseToLocalUrl(for response: URLResponseProtocol, url: URL) -> Single<URL>
 }
 
 final class URLResponseSaver: URLResponseSaving, Logging {
@@ -24,11 +25,11 @@ final class URLResponseSaver: URLResponseSaving, Logging {
         self.responseHandlerProvider = responseHandlerProvider
     }
     
-    func responseToLocalUrl(for response: URLResponse, url: URL) -> Single<URL> {
+    func responseToLocalUrl(for response: URLResponseProtocol, url: URL) -> Single<URL> {
         responseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: false)
     }
 
-    func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool) -> Single<URL> {
+    func responseToLocalUrl(for response: URLResponseProtocol, url: URL, backgroundThreadIfPossible: Bool) -> Single<URL> {
         var localUrl = Single<URL>.just(url)
 
         if backgroundThreadIfPossible, UIApplication.shared.applicationState != .background {

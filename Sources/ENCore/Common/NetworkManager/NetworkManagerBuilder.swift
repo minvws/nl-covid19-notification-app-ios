@@ -79,11 +79,14 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
 
     var sessionDelegate: URLSessionDelegate? {
         return NetworkManagerURLSessionDelegate(configurationProvider: dependency.networkConfigurationProvider,
-                                                urlResponseSaver: urlResponseSaving,
-                                                keySetDownloadProcessor: keySetDownloadProcessor)
+                                                urlSessionDownloadHandler: urlSessionDownloadHandler)
     }
     
-    var urlResponseSaving: URLResponseSaving {
+    var urlSessionDownloadHandler: URLSessionDownloadHandling {
+        URLSessionDownloadHandler(urlResponseSaver: urlResponseSaver, keySetDownloadProcessor: keySetDownloadProcessor)
+    }
+    
+    var urlResponseSaver: URLResponseSaving {
         return URLResponseSaver(responseHandlerProvider: responseHandlerProvider)
     }
     

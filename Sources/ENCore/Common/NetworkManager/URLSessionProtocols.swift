@@ -71,3 +71,8 @@ protocol URLSessionDownloadTaskProtocol {
 }
 
 extension URLSessionDownloadTask: URLSessionDownloadTaskProtocol { }
+
+/// @mockable
+protocol URLResponseProtocol {}
+
+extension URLResponse: URLResponseProtocol {}
