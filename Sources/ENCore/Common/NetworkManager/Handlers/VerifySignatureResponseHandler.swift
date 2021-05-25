@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-/// @mockable
+/// @mockable(history:isApplicable=true;process = true)
 protocol VerifySignatureResponseHandlerProtocol {
     func isApplicable(for response: URLResponseProtocol, input: URL) -> Bool
     func process(response: URLResponseProtocol, input: URL) -> Single<URL>

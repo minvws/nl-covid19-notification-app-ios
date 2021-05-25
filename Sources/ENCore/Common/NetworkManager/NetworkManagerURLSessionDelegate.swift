@@ -12,7 +12,7 @@ import ENFoundation
 
 final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLSessionDelegateProtocol, URLSessionDownloadDelegate, Logging {
     
-    var urlSessionBackgroundCompletionHandler: (() -> ())?
+    private var urlSessionBackgroundCompletionHandler: (() -> ())?
     private let urlSessionDownloadHandler: URLSessionDownloadHandling
     
     /// Initialise session delegate with certificate used for SSL pinning
@@ -71,6 +71,10 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLS
     
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {}
     
+    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ()) {
+        urlSessionBackgroundCompletionHandler = completionHandler
+    }
+    
     // MARK: - URLSessionDownloadDelegate
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
@@ -92,6 +96,5 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLS
     // MARK: - Private
     
     private let configurationProvider: NetworkConfigurationProvider
-    private let disposeBag = DisposeBag()
 }
 

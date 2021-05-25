@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import ZIPFoundation
 
-/// @mockable
+/// @mockable(history:isApplicable=true;process = true)
 protocol UnzipNetworkResponseHandlerProtocol {
     func isApplicable(for response: URLResponseProtocol, input: URL) -> Bool
     func process(response: URLResponseProtocol, input: URL) -> Single<URL>

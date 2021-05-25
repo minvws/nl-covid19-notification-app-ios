@@ -170,7 +170,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
     
     func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ()) {
-        (sessionDelegate as? NetworkManagerURLSessionDelegate)?.urlSessionBackgroundCompletionHandler = completionHandler
+        (sessionDelegate as? NetworkManagerURLSessionDelegate)?.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
     }
 
     /// Upload diagnosis keys (TEKs) to the server

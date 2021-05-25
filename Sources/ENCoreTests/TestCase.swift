@@ -74,4 +74,8 @@ class TestCase: XCTestCase {
                         testName: testName + localization,
                         line: line)
     }
+    
+    func waitForExpectations() {
+        waitForExpectations(timeout: 2, handler: nil)
+    }
 }

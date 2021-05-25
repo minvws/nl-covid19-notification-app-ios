@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import ENFoundation
 
-/// @mockable
+/// @mockable(history:responseToLocalUrl=true)
 protocol URLResponseSaving {
     func responseToLocalUrl(for response: URLResponseProtocol, url: URL, backgroundThreadIfPossible: Bool) -> Single<URL>
     func responseToLocalUrl(for response: URLResponseProtocol, url: URL) -> Single<URL>
