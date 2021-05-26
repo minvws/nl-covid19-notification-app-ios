@@ -19,8 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
     var window: UIWindow?
 
     private var appRoot: AppRoot?
-    private var backgroundURLSessionCompletionHandler: (() -> ())?
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Note: The following needs to be set before application:didFinishLaunchingWithOptions: returns
         let unc = UNUserNotificationCenter.current()
@@ -144,10 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
     }
     
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> ()) {
-        
-        logTrace()
-        
-        backgroundURLSessionCompletionHandler = completionHandler
+        logTrace()        
         appRoot?.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
     }
 }
