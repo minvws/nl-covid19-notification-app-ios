@@ -130,36 +130,7 @@ final class NetworkManager: NetworkManaging, Logging {
         
         keySetURLSession.getAllURLSessionTasks { (existingTasks) in
             
-            let existingURLS = existingTasks.compactMap { $0.originalRequest?.url }
-            
-            self.logDebug("Currently active keyset downloads: \n\(existingURLS.compactMap { $0.absoluteString }.joined(separator: "\n"))")
-            
-            let backgroundTasks: [URLSessionDownloadTaskProtocol] = identifiers.compactMap { identifier in
-                    
-                let expectedContentType = HTTPContentType.zip
-                let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-                
-                guard let url = self.configuration.exposureKeySetUrl(identifier: identifier) else {
-                    self.logError("Unable to create exposureKeySetUrl for identifier \(identifier) ")
-                    return nil
-                }
-                
-                guard !existingURLS.contains(url) else {
-                    self.logDebug("download task already created for URL: \(url)")
-                    return nil
-                }
-                
-                let urlRequest = self.constructRequest(url: url, method: .GET, headers: headers)
-                
-                guard case let .success(request) = urlRequest else {
-                    return nil
-                }
-                
-                var backgroundTask = keySetURLSession.urlSessionDownloadTask(with: request)
-                backgroundTask.countOfBytesClientExpectsToSend = 200
-                backgroundTask.countOfBytesClientExpectsToReceive = 500 * 1024 // 500KB
-                return backgroundTask
-            }
+            let backgroundTasks = self.createDownloadTasks(forKeySetIdentifiers: identifiers, withExistingTasks: existingTasks, inURLSession: keySetURLSession)
             
             backgroundTasks.forEach { (task) in
                 task.resume()
@@ -296,6 +267,40 @@ final class NetworkManager: NetworkManaging, Logging {
 
     // MARK: - Download Files
 
+    private func createDownloadTasks(forKeySetIdentifiers identifiers: [String], withExistingTasks existingTasks: [URLSessionTaskProtocol], inURLSession urlSession: URLSessionProtocol) -> [URLSessionDownloadTaskProtocol] {
+                
+        let existingURLS = existingTasks.compactMap { $0.originalRequest?.url }
+        
+        self.logDebug("Currently active keyset downloads: \n\(existingURLS.compactMap { $0.absoluteString }.joined(separator: "\n"))")
+        
+        return identifiers.compactMap { identifier in
+            
+            guard let url = self.configuration.exposureKeySetUrl(identifier: identifier) else {
+                self.logError("Unable to create exposureKeySetUrl for identifier \(identifier) ")
+                return nil
+            }
+            
+            guard !existingURLS.contains(url) else {
+                self.logDebug("download task already created for URL: \(url)")
+                return nil
+            }
+            
+            let expectedContentType = HTTPContentType.zip
+            let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+            let urlRequest = self.constructRequest(url: url, method: .GET, headers: headers)
+            
+            guard case let .success(request) = urlRequest else {
+                self.logError("Unable to create request for keyset identifier \(identifier) ")
+                return nil
+            }
+            
+            var backgroundTask = urlSession.urlSessionDownloadTask(with: request)
+            backgroundTask.countOfBytesClientExpectsToSend = 200
+            backgroundTask.countOfBytesClientExpectsToReceive = 20 * 1024 // 20KB
+            return backgroundTask
+        }
+    }
+    
     private func downloadAndDecodeURL<T: Decodable>(withURLRequest urlRequest: Result<URLRequest, NetworkError>,
                                                     decodeAsType modelType: T.Type,
                                                     backgroundThreadIfPossible: Bool = false,

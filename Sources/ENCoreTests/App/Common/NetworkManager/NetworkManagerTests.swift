@@ -728,7 +728,7 @@ final class NetworkManagerTests: TestCase {
         
         XCTAssertEqual(downloadTasks.count, 1)
         XCTAssertEqual(downloadTasks.first?.countOfBytesClientExpectsToSend, 200)
-        XCTAssertEqual(downloadTasks.first?.countOfBytesClientExpectsToReceive, 512000)
+        XCTAssertEqual(downloadTasks.first?.countOfBytesClientExpectsToReceive, 20480)
         XCTAssertEqual(downloadTasks.first?.resumeCallCount, 1)
     }
     
