@@ -14,7 +14,7 @@ protocol HelpListener: AnyObject {
     func helpRequestsDismissal(shouldHideViewController: Bool)
 }
 
-/// @mockable
+/// @mockable(history:build=true)
 protocol HelpBuildable {
     /// Builds Help
     ///

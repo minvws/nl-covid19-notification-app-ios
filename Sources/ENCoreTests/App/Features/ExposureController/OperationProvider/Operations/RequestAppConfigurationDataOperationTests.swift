@@ -35,6 +35,31 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
                                                          appConfigurationIdentifier: appConfigurationIdentifier)
     }
 
+    func test_execute_shouldRetrieveStoredConfiguration_onBackgroundThread() {
+        let appConfig = createApplicationConfiguration()
+
+        mockApplicationConfigurationResults(storedConfiguration: appConfig, storedSignature: appConfig.signature, signatureForStoredConfiguration: appConfig.signature)
+
+        mockApplicationSignatureController.retrieveStoredConfigurationHandler = {
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+            return appConfig
+        }
+        
+        let exp = expectation(description: "Completion")
+
+        operation.execute()
+            .subscribe(onSuccess: { configuration in
+                XCTAssertEqual(configuration, appConfig)
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 0)
+    }
+    
     func test_execute_withStoredConfiguration_andCorrectSignature_shouldReturnStoredAppConfiguration() {
         let appConfig = createApplicationConfiguration()
 
@@ -45,6 +70,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
         operation.execute()
             .subscribe(onSuccess: { configuration in
                 XCTAssertEqual(configuration, appConfig)
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
                 exp.fulfill()
             })
             .disposed(by: disposeBag)

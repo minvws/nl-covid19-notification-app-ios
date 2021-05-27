@@ -37,19 +37,4 @@ class ExposureStateStreamTests: TestCase {
 
         XCTAssertEqual(lastActiveState, .authorizationDenied)
     }
-
-    func test_shouldAlwaysSubscribeOnMainThread() {
-
-        let subscriptionCallsExpectation = expectation(description: "subscriptionCalled")
-
-        sut.exposureState.subscribe(on: MainScheduler.instance).subscribe { state in
-            XCTAssertTrue(Thread.current.isMainThread)
-            XCTAssertEqual(state.element?.activeState, .active)
-            subscriptionCallsExpectation.fulfill()
-        }.disposed(by: disposeBag)
-
-        self.sut.update(state: .init(notifiedState: .notNotified, activeState: .active))
-
-        waitForExpectations(timeout: 2, handler: nil)
-    }
 }

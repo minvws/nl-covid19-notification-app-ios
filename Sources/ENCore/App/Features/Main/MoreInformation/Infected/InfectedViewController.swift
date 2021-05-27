@@ -77,6 +77,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         exposureStateStream
             .exposureState
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] state in
                 self?.update(exposureState: state)
             })

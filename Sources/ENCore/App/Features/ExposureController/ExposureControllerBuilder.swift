@@ -20,7 +20,6 @@ protocol ExposureControlling: AnyObject {
     func activate() -> Completable
     func deactivate()
     func postExposureManagerActivation()
-    func updateStatusStream()
 
     func pause(untilDate date: Date)
     func unpause()
@@ -112,6 +111,8 @@ protocol ExposureControlling: AnyObject {
 
     /// Get the latest  TEK processing date
     func lastTEKProcessingDate() -> Observable<Date?>
+    
+    func updateLastExposureProcessingDateSubject()
 }
 
 /// Represents a ConfirmationKey for the Lab Flow

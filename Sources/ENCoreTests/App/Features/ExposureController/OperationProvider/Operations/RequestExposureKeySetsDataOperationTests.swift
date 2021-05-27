@@ -78,9 +78,14 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
             initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
         )
+        
+        mockNetworkController.fetchExposureKeySetHandler = { identifier in
+            return .just((identifier, URL(string: "http://someurl.com")!))
+        }
 
         sut.execute()
             .subscribe(onCompleted: {
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
                 exp.fulfill()
             })
             .disposed(by: disposeBag)
@@ -160,9 +165,9 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
     }
 
     func test_execute_removeItem_withError_shouldMapExposureDataError() {
@@ -192,9 +197,9 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
     }
 
     func test_shouldNotDownloadKeySetsIfFirstBatchIsNotYetIgnored() {

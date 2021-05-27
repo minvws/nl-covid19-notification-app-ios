@@ -398,6 +398,7 @@ final class ExposureDataControllerTests: TestCase {
         
         var removedKeys: [StoreKey] = []
         mockStorageController.removeDataHandler = { key, completion in
+            XCTAssertTrue(Thread.current.qualityOfService == .utility)
             removedKeys.append(key as! StoreKey)
             completion(nil)
         }
@@ -439,6 +440,33 @@ final class ExposureDataControllerTests: TestCase {
         // Assert
         waitForExpectations(timeout: 2.0, handler: nil)
         XCTAssertEqual(mockStorageController.removeDataCallCount, 0)
+    }
+    
+    func test_updateLastExposureProcessingDateSubject_shouldUpdateExposureProcessingDateSubject() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        
+        let oldExposureDate = currentDate().addingTimeInterval(.days(-14))
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode(oldExposureDate)
+        }
+        
+        sut.lastSuccessfulExposureProcessingDateObservable
+            .subscribe(onNext: { date in
+                if date != nil {
+                    XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+                    XCTAssertEqual(date, oldExposureDate)
+                    completionExpectation.fulfill()
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        // Act
+        sut.updateLastExposureProcessingDateSubject()
+        
+        // Assert
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
     // MARK: - Private Helper Functions

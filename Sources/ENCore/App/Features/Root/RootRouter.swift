@@ -162,13 +162,16 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             routeToDeactivatedOrUpdateScreenIfNeeded()
         }
 
-        if !pauseController.isAppPaused {
-            updateTreatmentPerspective()
+        // Perform storage-related tasks in background to prevent blocking the main thread on slower devices
+        DispatchQueue.global(qos: .userInitiated).async {
+            if !self.pauseController.isAppPaused {
+                self.updateTreatmentPerspective()
+            }
+            
+            self.exposureController.updateLastLaunch()
+
+            self.exposureController.clearUnseenExposureNotificationDate()
         }
-
-        exposureController.updateLastLaunch()
-
-        exposureController.clearUnseenExposureNotificationDate()
 
         userNotificationController.removeNotificationsFromNotificationsCenter()
 
@@ -188,11 +191,13 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         exposureController.refreshStatus()
 
-        if !pauseController.isAppPaused {
-            exposureController
-                .updateWhenRequired()
-                .subscribe(onCompleted: {})
-                .disposed(by: disposeBag)
+        DispatchQueue.global(qos: .userInitiated).async {
+            if !self.pauseController.isAppPaused {
+                self.exposureController
+                    .updateWhenRequired()
+                    .subscribe()
+                    .disposed(by: self.disposeBag)
+            }
         }
     }
 
@@ -393,6 +398,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private func routeToDeactivatedOrUpdateScreenIfNeeded(completion: ((_ didRoute: Bool) -> ())? = nil) {
         Observable
             .combineLatest(exposureController.isAppDeactivated().asObservable(), exposureController.appShouldUpdateCheck().asObservable())
+            .observe(on: MainScheduler.instance)
             .subscribe { [weak self] isDeactivated, updateInformation in
                 if isDeactivated {
                     self?.detachLaunchScreenIfNeeded(animated: false) {
@@ -421,7 +427,10 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     return
                 }
 
-                strongSelf.exposureController.activate()
+                strongSelf.exposureController
+                    .activate()
+                    .subscribe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
+                    .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
                     .subscribe(onCompleted: {
                         strongSelf.exposureController.postExposureManagerActivation()
                         strongSelf.backgroundController.performDecoySequenceIfNeeded()

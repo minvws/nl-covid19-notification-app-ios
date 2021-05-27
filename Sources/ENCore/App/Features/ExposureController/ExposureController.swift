@@ -58,23 +58,26 @@ final class ExposureController: ExposureControlling, Logging {
     func activate() -> Completable {
         logDebug("Request EN framework activation")
 
-        guard isActivated == false else {
-            logDebug("Already activated")
-            // already activated, return success
-            return .empty()
-        }
-
-        // Don't activate EN if we're in a paused state
-        guard !dataController.isAppPaused else {
-            return .empty()
-        }
-
         if let existingCompletable = activationCompletable {
             logDebug("Already activating")
             return existingCompletable
         }
 
-        let observable = Observable<Never>.create { (observer) -> Disposable in
+        let completable = Completable.create { (observer) -> Disposable in
+            
+            guard self.isActivated == false else {
+                self.logDebug("Already activated")
+                // already activated, return success
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            // Don't activate EN if we're in a paused state
+            guard !self.dataController.isAppPaused else {
+                observer(.completed)
+                return Disposables.create()
+            }
+            
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
                 self.exposureManager.activate { error in
@@ -94,10 +97,10 @@ final class ExposureController: ExposureControlling, Logging {
                                 self.logDebug("Returned from `setExposureNotificationEnabled` (success)")
                             }
 
-                            observer.onCompleted()
+                            observer(.completed)
                         }
                     } else {
-                        observer.onCompleted()
+                        observer(.completed)
                     }
                 }
             }
@@ -105,18 +108,16 @@ final class ExposureController: ExposureControlling, Logging {
             return Disposables.create()
         }
 
-        let completable = observable
-//            .share()
+        let resettingCompletable = completable
             .do(onError: { [weak self] _ in
                 self?.activationCompletable = nil
             }, onCompleted: { [weak self] in
                 self?.activationCompletable = nil
             })
-            .asCompletable()
 
-        activationCompletable = completable
+        activationCompletable = resettingCompletable
 
-        return completable
+        return resettingCompletable
     }
 
     func deactivate() {
@@ -183,8 +184,10 @@ final class ExposureController: ExposureControlling, Logging {
     }
 
     func refreshStatus() {
-        updatePushNotificationState {
-            self.updateStatusStream()
+        updatePushNotificationState { [weak self] in
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                self?.updateStatusStream()
+            }
         }
     }
 
@@ -246,7 +249,7 @@ final class ExposureController: ExposureControlling, Logging {
             // wait for 0.2s, there seems to be a glitch in the framework
             // where after successful activation it returns '.disabled' for a
             // split second
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.2) {
                 if case let .failure(error) = result {
                     completion?(error)
                 } else {
@@ -537,6 +540,10 @@ final class ExposureController: ExposureControlling, Logging {
     func lastTEKProcessingDate() -> Observable<Date?> {
         return dataController.lastSuccessfulExposureProcessingDateObservable
     }
+    
+    func updateLastExposureProcessingDateSubject() {
+        dataController.updateLastExposureProcessingDateSubject()
+    }
 
     // MARK: - Private
 
@@ -559,6 +566,7 @@ final class ExposureController: ExposureControlling, Logging {
 
         mutableStateStream
             .exposureState
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
             .flatMap { [weak self] (exposureState) -> Single<Bool> in
                 let stateActive = [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
                     && (self?.networkStatusStream.networkReachable == true)
@@ -580,6 +588,7 @@ final class ExposureController: ExposureControlling, Logging {
 
         networkStatusStream
             .networkReachableStream
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
             .do(onNext: { [weak self] _ in
                 self?.updateStatusStream()
             }, onError: { [weak self] _ in
@@ -594,7 +603,7 @@ final class ExposureController: ExposureControlling, Logging {
             .disposed(by: disposeBag)
     }
 
-    func updateStatusStream() {
+    private func updateStatusStream() {
 
         if let pauseEndDate = dataController.pauseEndDate {
             mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: .inactive(.paused(pauseEndDate))))
