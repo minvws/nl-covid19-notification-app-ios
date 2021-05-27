@@ -157,16 +157,23 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         case let (.inactive(.paused(pauseEndDate)), .notNotified):
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
         case let (.active, .notified(date)):
-            statusViewModel = .activeWithNotified(date: date)
-        case let (.inactive(reason), .notified(date)):
             if Date().days(sinceDate: date) ?? 0 > 14 {
                 statusViewModel = .activeWithNotNotified(showScene: true)
                 cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
                                                             explainRiskHandler: explainRisk,
                                                             removeNotificationHandler: removeNotification))
-                cardTypes.append(reason.cardType(listener: listener))
             } else {
                 statusViewModel = StatusViewModel.activeWithNotified(date: date)
+            }
+        case let (.inactive(reason), .notified(date)):
+            if Date().days(sinceDate: date) ?? 0 > 14 {
+                statusViewModel = .inactiveWithNotNotified
+                cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
+                                                            explainRiskHandler: explainRisk,
+                                                            removeNotificationHandler: removeNotification))
+                cardTypes.append(reason.cardType(listener: listener))
+            } else {
+                statusViewModel = StatusViewModel.inactiveWithNotified(date: date)
                 cardTypes.append(reason.cardType(listener: listener))
             }
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
