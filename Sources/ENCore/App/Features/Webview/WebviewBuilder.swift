@@ -22,12 +22,16 @@ protocol WebviewDependency {
     var theme: Theme { get }
 }
 
-private final class WebviewDependencyProvider: DependencyProvider<WebviewDependency> {}
+private final class WebviewDependencyProvider: DependencyProvider<WebviewDependency> {
+    var applicationController: ApplicationControlling {
+        ApplicationController()
+    }
+}
 
 final class WebviewBuilder: Builder<WebviewDependency>, WebviewBuildable {
     func build(withListener listener: WebviewListener, url: URL) -> ViewControllable {
         let dependencyProvider = WebviewDependencyProvider(dependency: dependency)
 
-        return WebviewViewController(listener: listener, url: url, theme: dependencyProvider.dependency.theme)
+        return WebviewViewController(listener: listener, applicationController: dependencyProvider.applicationController, url: url, theme: dependencyProvider.dependency.theme)
     }
 }
