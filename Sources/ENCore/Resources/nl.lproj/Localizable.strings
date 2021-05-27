@@ -362,6 +362,11 @@
 "status.card.manualunpause.title" = "Zet app weer aan";
 "status.card.manualunpause.description" = "De app is nog niet actief. Je moet deze zelf aanzetten.";
 
+/* MARK: - EN > 14 days */
+"status.en.contact.>14days.title" = "Contact meer dan 14 dagen geleden";
+"status.en.contact.>14days.description" = "Op %@ (%@) was je in de buurt van iemand met corona";
+"status.en.contact.>14days.secondary.button.title" = "Verwijderen";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Meer informatie";
 

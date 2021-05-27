@@ -15,7 +15,6 @@ import UIKit
 protocol StatusRouting: Routing {}
 
 final class StatusViewController: ViewController, StatusViewControllable, CardListening, Logging {
-
     // MARK: - StatusViewControllable
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
@@ -59,8 +58,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     // MARK: - View Lifecycle
 
     override func loadView() {
-        self.view = statusView
-        self.view.frame = UIScreen.main.bounds
+        view = statusView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -101,7 +100,6 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     // MARK: - Private
 
     @objc private func updateExposureStateView() {
-
         exposureStateStream.exposureState
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
@@ -124,8 +122,9 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         guard let currentState = exposureStateStream.currentExposureState, let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape else {
             return
         }
-        
-        update(exposureState: currentState, isLandscape: isLandscape)
+        mainThreadIfNeeded {
+            self.update(exposureState: currentState, isLandscape: isLandscape)
+        }
     }
 
     private func updatePauseTimer() {
@@ -144,65 +143,84 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
-        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.updatePauseTimer()
         }
-        
+
         let statusViewModel: StatusViewModel
         let announcementCardTypes = getAnnouncementCardTypes()
         var cardTypes = [CardType]()
-        
+
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
             statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
-            
         case let (.inactive(.paused(pauseEndDate)), .notNotified):
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
-            
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
-            
         case let (.inactive(reason), .notified(date)):
-            statusViewModel = StatusViewModel.activeWithNotified(date: date)
-            cardTypes.append(reason.cardType(listener: listener))
-            
+            if Date().days(sinceDate: date) ?? 0 > 14 {
+                statusViewModel = .activeWithNotNotified(showScene: true)
+                cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
+                                                            explainRiskHandler: explainRisk,
+                                                            removeNotificationHandler: removeNotification))
+                cardTypes.append(reason.cardType(listener: listener))
+            } else {
+                statusViewModel = StatusViewModel.activeWithNotified(date: date)
+                cardTypes.append(reason.cardType(listener: listener))
+            }
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
-            
+
         case let (.inactive(reason), .notNotified) where reason == .bluetoothOff:
             statusViewModel = .bluetoothInactiveWithNotNotified(theme: theme)
-            
+
         case (.inactive, .notNotified):
             statusViewModel = .inactiveWithNotNotified
-            
+
         case let (.authorizationDenied, .notified(date)):
-            statusViewModel = .inactiveWithNotified(date: date)
-            cardTypes.append(.exposureOff)
-            
+            if Date().days(sinceDate: date) ?? 0 > 14 {
+                statusViewModel = .inactiveWithNotNotified
+                cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
+                                                            explainRiskHandler: explainRisk,
+                                                            removeNotificationHandler: removeNotification))
+                cardTypes.append(.exposureOff)
+            } else {
+                statusViewModel = .inactiveWithNotified(date: date)
+                cardTypes.append(.exposureOff)
+            }
+
         case (.authorizationDenied, .notNotified):
             statusViewModel = .inactiveWithNotNotified
-            
+
         case let (.notAuthorized, .notified(date)):
-            statusViewModel = .inactiveWithNotified(date: date)
-            cardTypes.append(.exposureOff)
-            
+            if Date().days(sinceDate: date) ?? 0 > 14 {
+                statusViewModel = .inactiveWithNotNotified
+                cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
+                                                            explainRiskHandler: explainRisk,
+                                                            removeNotificationHandler: removeNotification))
+                cardTypes.append(.exposureOff)
+            } else {
+                statusViewModel = .inactiveWithNotified(date: date)
+                cardTypes.append(.exposureOff)
+            }
+
         case (.notAuthorized, .notNotified):
             statusViewModel = .inactiveWithNotNotified
         }
-        
+
         mainThreadIfNeeded { [weak self] in
-            
+
             guard let strongSelf = self else {
                 return
             }
-            
+
             strongSelf.statusView.update(with: statusViewModel)
-            
+
             // Add any non-status related card types and update the CardViewController via the router
             cardTypes.append(contentsOf: announcementCardTypes)
             strongSelf.cardRouter.types = cardTypes
-            
+
             strongSelf.showCard(!cardTypes.isEmpty)
         }
     }
@@ -220,12 +238,19 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         refreshCurrentState()
     }
 
+    @objc private func explainRisk() {
+        listener?.handleButtonAction(.explainRisk)
+    }
+
+    @objc private func removeNotification() {
+        listener?.handleButtonAction(.removeNotification(.warning))
+    }
+
     private lazy var statusView: StatusView = StatusView(theme: self.theme,
                                                          cardView: cardRouter.viewControllable.uiviewController.view)
 }
 
 private final class StatusView: View {
-
     weak var listener: StatusListener?
 
     fileprivate let stretchGuide = UILayoutGuide() // grows larger while stretching, grows all visible elements
@@ -360,7 +385,6 @@ private final class StatusView: View {
     // MARK: - Internal
 
     func update(with viewModel: StatusViewModel) {
-
         iconViewSizeConstraints?.layoutConstraints.forEach { constraint in
             // if the emitter animation is not shown, we use a slightly larger main icon
             constraint.constant = viewModel.showEmitter ? 48 : 56
@@ -481,7 +505,7 @@ private final class StatusAnimationView: View {
                                            repeats: false,
                                            block: { [weak self] _ in
                                                self?.playAnimation()
-            })
+                                           })
     }
 
     private func playAnimation() {

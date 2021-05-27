@@ -21,18 +21,19 @@ enum CardIcon {
     case info
     case warning
     case paused
+    case bell
 
     var image: UIImage? {
         switch self {
         case .info: return Image.named("InfoBordered")
         case .warning: return Image.named("StatusInactive")
         case .paused: return Image.named("StatusPaused")
+        case .bell: return Image.named("Bell")
         }
     }
 }
 
 struct Card {
-
     let icon: CardIcon
     let title: NSAttributedString
     let message: NSAttributedString
@@ -55,6 +56,20 @@ struct Card {
         self.actionTitle = actionTitle
         self.secondaryAction = secondaryAction
         self.secondaryActionTitle = secondaryActionTitle
+    }
+
+    static func notifiedMoreThan14DaysAgo(theme: Theme, date: Date, explainRiskHandler: @escaping () -> (), removeNotificationHandler: @escaping () -> ()) -> Card {
+        let title: String = .statusENContact14DaysTitle
+        let content: String = statusENContact14DaysDescription(from: date)
+        let actionTitle: String = .moreInformationHeaderTitle
+        let secondaryActionTitle: String = .statusENContact14DaysSecondaryButtonTitle
+
+        return Card(icon: .bell, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
+                    action: .custom(action: explainRiskHandler),
+                    actionTitle: actionTitle,
+                    secondaryAction: .custom(action: removeNotificationHandler),
+                    secondaryActionTitle: secondaryActionTitle)
     }
 
     static func paused(theme: Theme, pauseTimeElapsed: Bool, content: NSAttributedString) -> Card {
@@ -110,5 +125,16 @@ struct Card {
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
                     action: .openEnableSetting(.enableLocalNotifications),
                     actionTitle: action)
+    }
+
+    private static func statusENContact14DaysDescription(from: Date) -> String {
+        let now = currentDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .full
+
+        let dateString = dateFormatter.string(from: from)
+        let days = now.days(sinceDate: from) ?? 0
+
+        return .statusENContact14DaysDescription(dateString, two: .statusNotifiedDaysAgo(days: days))
     }
 }
