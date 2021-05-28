@@ -37,8 +37,6 @@ final class URLResponseSaver: URLResponseSaving, Logging {
                 .observe(on: concurrentUtilityScheduler)
         }
 
-        logDebug("unzipping file from \(url)")
-        
         // unzip
         let unzipResponseHandler = responseHandlerProvider.unzipNetworkResponseHandler
         if unzipResponseHandler.isApplicable(for: response, input: url) {
