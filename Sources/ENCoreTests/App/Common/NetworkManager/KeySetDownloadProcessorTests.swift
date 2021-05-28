@@ -116,7 +116,7 @@ final class KeySetDownloadProcessorTests: TestCase {
         XCTAssertEqual(mockLocalPathProvider.pathCallCount, 1)
     }
     
-    func test_process_shouldRemovedFilesIfTheyAlreadyExist() {
+    func test_process_shouldRemoveFilesIfTheyAlreadyExist() {
         // Arrange
         let identifier = "identifier"
         let url = URL(string: "//some/local/temporary/url")!

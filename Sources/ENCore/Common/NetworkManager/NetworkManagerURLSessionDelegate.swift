@@ -7,7 +7,6 @@
 
 import Foundation
 import Security
-import RxSwift
 
 final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLSessionDelegateProtocol {
     

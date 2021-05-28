@@ -14,7 +14,6 @@ class URLResponseSaverTests: TestCase {
 
     private var sut: URLResponseSaver!
     private var mockNetworkResponseHandlerProvider: NetworkResponseHandlerProviderMock!
-    
     private var mockVerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocolMock!
     private var mockUnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocolMock!
     

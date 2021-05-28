@@ -20,7 +20,7 @@ enum NetworkError: Error {
     case errorConversionError
 }
 
-/// @mockable(history:getExposureKeySetsInBackground = true;receiveURLSessionBackgroundCompletionHandler = true)
+/// @mockable
 protocol NetworkManaging {
 
     // MARK: CDN
