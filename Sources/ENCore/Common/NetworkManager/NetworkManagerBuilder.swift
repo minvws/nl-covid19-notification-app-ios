@@ -30,8 +30,6 @@ protocol NetworkManaging {
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ())
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ())
     func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ())
-    func getExposureKeySetsInBackground(identifiers: [String])
-    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ())
     
     // MARK: Enrollment
 
@@ -78,14 +76,9 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
     }
 
     var sessionDelegate: URLSessionDelegate? {
-        return NetworkManagerURLSessionDelegate(configurationProvider: dependency.networkConfigurationProvider,
-                                                urlSessionDownloadHandler: urlSessionDownloadHandler)
+        return NetworkManagerURLSessionDelegate(configurationProvider: dependency.networkConfigurationProvider)
     }
-    
-    var urlSessionDownloadHandler: URLSessionDownloadHandling {
-        URLSessionDownloadHandler(urlResponseSaver: urlResponseSaver, keySetDownloadProcessor: keySetDownloadProcessor)
-    }
-    
+        
     var urlResponseSaver: URLResponseSaving {
         return URLResponseSaver(responseHandlerProvider: responseHandlerProvider)
     }
@@ -115,6 +108,7 @@ final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkMan
                               storageController: dependencyProvider.dependency.storageController,
                               session: dependencyProvider.session,
                               sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol,
-                              urlSessionBuilder: dependencyProvider.urlSessionBuilder)
+                              urlSessionBuilder: dependencyProvider.urlSessionBuilder,
+                              urlResponseSaver: dependencyProvider.urlResponseSaver)
     }
 }

@@ -21,33 +21,8 @@ final class NetworkControllerTests: TestCase {
         
         sut = NetworkController(networkManager: mockNetworkManager,
                                 cryptoUtility: mockCryptoUtility)
-    }
-    
-    
-    func test_fetchExposureKeySetsInBackground() {
-        // Arrange
-        XCTAssertEqual(mockNetworkManager.getExposureKeySetsInBackgroundCallCount, 0)
+    }    
         
-        // Act
-        sut.fetchExposureKeySetsInBackground(identifiers: ["identifier"])
-        
-        // Assert
-        XCTAssertEqual(mockNetworkManager.getExposureKeySetsInBackgroundArgValues.first, ["identifier"])
-        XCTAssertEqual(mockNetworkManager.getExposureKeySetsInBackgroundCallCount, 1)
-        
-    }
-    
-    func test_receiveURLSessionBackgroundCompletionHandler() {
-        // Arrange
-        XCTAssertEqual(mockNetworkManager.receiveURLSessionBackgroundCompletionHandlerCallCount, 0)
-        
-        // Act
-        sut.receiveURLSessionBackgroundCompletionHandler(completionHandler: {})
-        
-        // Assert
-        XCTAssertEqual(mockNetworkManager.receiveURLSessionBackgroundCompletionHandlerCallCount, 1)
-    }
-    
     func test_requestLabConfirmationKey_callsNetworkManager_returnsKeyOnSuccess() {
         mockNetworkManager.postRegisterHandler = { _, completion in
             let key = LabInformation(ggdKey: "test",

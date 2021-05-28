@@ -10,30 +10,22 @@ import Foundation
 import RxSwift
 import UIKit
 
-enum URLSessionIdentifier: String {
-    case keysetURLSession
-}
-
 final class NetworkManager: NetworkManaging, Logging {
-
-    private lazy var keySetURLSession: URLSessionProtocol? = {
-        let config = URLSessionConfiguration.background(withIdentifier: URLSessionIdentifier.keysetURLSession.rawValue)
-        config.sessionSendsLaunchEvents = true        
-        return urlSessionBuilder.build(configuration: config, delegate: sessionDelegate, delegateQueue: nil)
-    }()
     
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          storageController: StorageControlling,
          session: URLSessionProtocol,
          sessionDelegate: URLSessionDelegateProtocol?,
-         urlSessionBuilder: URLSessionBuilding) {
+         urlSessionBuilder: URLSessionBuilding,
+         urlResponseSaver: URLResponseSaving) {
         self.configurationProvider = configurationProvider
         self.responseHandlerProvider = responseHandlerProvider
         self.storageController = storageController
         self.session = session
         self.sessionDelegate = sessionDelegate
         self.urlSessionBuilder = urlSessionBuilder
+        self.urlResponseSaver = urlResponseSaver
     }
 
     // MARK: CDN
@@ -101,7 +93,7 @@ final class NetworkManager: NetworkManaging, Logging {
             case let .failure(error):
                 completion(.failure(error))
             case let .success(result):
-                self
+                self.urlResponseSaver
                     .responseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
                     .subscribe { event in
                         switch event {
@@ -119,31 +111,6 @@ final class NetworkManager: NetworkManaging, Logging {
         }
     }
     
-    func getExposureKeySetsInBackground(identifiers: [String]) {
-        
-        logTrace()
-        
-        guard let keySetURLSession = keySetURLSession else {
-            self.logError("Unable to download keysets. URLSession could not be constructed")
-            return
-        }
-        
-        keySetURLSession.getAllURLSessionTasks { (existingTasks) in
-            
-            let backgroundTasks = self.createDownloadTasks(forKeySetIdentifiers: identifiers, withExistingTasks: existingTasks, inURLSession: keySetURLSession)
-            
-            backgroundTasks.forEach { (task) in
-                task.resume()
-            }
-            
-            self.logDebug("Triggered background downloads for keysets: \n\(backgroundTasks.compactMap { $0.originalRequest?.url?.absoluteString }.joined(separator: "\n"))")
-        }
-    }
-    
-    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ()) {
-        (sessionDelegate as? NetworkManagerURLSessionDelegate)?.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
-    }
-
     /// Upload diagnosis keys (TEKs) to the server
     /// - Parameters:
     ///   - request: PostKeysRequest
@@ -266,40 +233,6 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     // MARK: - Download Files
-
-    private func createDownloadTasks(forKeySetIdentifiers identifiers: [String], withExistingTasks existingTasks: [URLSessionTaskProtocol], inURLSession urlSession: URLSessionProtocol) -> [URLSessionDownloadTaskProtocol] {
-                
-        let existingURLS = existingTasks.compactMap { $0.originalRequest?.url }
-        
-        self.logDebug("Currently active keyset downloads: \n\(existingURLS.compactMap { $0.absoluteString }.joined(separator: "\n"))")
-        
-        return identifiers.compactMap { identifier in
-            
-            guard let url = self.configuration.exposureKeySetUrl(identifier: identifier) else {
-                self.logError("Unable to create exposureKeySetUrl for identifier \(identifier) ")
-                return nil
-            }
-            
-            guard !existingURLS.contains(url) else {
-                self.logDebug("download task already created for URL: \(url)")
-                return nil
-            }
-            
-            let expectedContentType = HTTPContentType.zip
-            let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-            let urlRequest = self.constructRequest(url: url, method: .GET, headers: headers)
-            
-            guard case let .success(request) = urlRequest else {
-                self.logError("Unable to create request for keyset identifier \(identifier) ")
-                return nil
-            }
-            
-            var backgroundTask = urlSession.urlSessionDownloadTask(with: request)
-            backgroundTask.countOfBytesClientExpectsToSend = 200
-            backgroundTask.countOfBytesClientExpectsToReceive = 20 * 1024 // 20KB
-            return backgroundTask
-        }
-    }
     
     private func downloadAndDecodeURL<T: Decodable>(withURLRequest urlRequest: Result<URLRequest, NetworkError>,
                                                     decodeAsType modelType: T.Type,
@@ -451,7 +384,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
     /// Unzips, verifies signature and reads response in memory
     private func responseToData(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Single<Data> {
-        let localUrl = responseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
+        let localUrl = urlResponseSaver.responseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
 
         let readFromDiskResponseHandler = responseHandlerProvider.readFromDiskResponseHandler
         if readFromDiskResponseHandler.isApplicable(for: response, input: url) {
@@ -460,31 +393,6 @@ final class NetworkManager: NetworkManaging, Logging {
         } else {
             return .error(NetworkResponseHandleError.cannotDeserialize)
         }
-    }
-
-    private func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Single<URL> {
-        var localUrl = Single<URL>.just(url)
-
-        if backgroundThreadIfPossible, UIApplication.shared.applicationState != .background {
-            localUrl = localUrl
-                .observe(on: concurrentUtilityScheduler)
-        }
-
-        // unzip
-        let unzipResponseHandler = responseHandlerProvider.unzipNetworkResponseHandler
-        if unzipResponseHandler.isApplicable(for: response, input: url) {
-            localUrl = localUrl
-                .flatMap { localUrl in unzipResponseHandler.process(response: response, input: localUrl) }
-        }
-
-        // verify signature
-        let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler
-        if verifySignatureResponseHandler.isApplicable(for: response, input: url) {
-            localUrl = localUrl
-                .flatMap { localUrl in verifySignatureResponseHandler.process(response: response, input: localUrl) }
-        }
-
-        return localUrl
     }
 
     /// Utility function to decode JSON
@@ -523,6 +431,7 @@ final class NetworkManager: NetworkManaging, Logging {
     private let session: URLSessionProtocol
     private let sessionDelegate: URLSessionDelegateProtocol? // hold on to delegate to prevent deallocation
     private let responseHandlerProvider: NetworkResponseHandlerProvider
+    private let urlResponseSaver: URLResponseSaving
     private let storageController: StorageControlling
     private let urlSessionBuilder: URLSessionBuilding
 

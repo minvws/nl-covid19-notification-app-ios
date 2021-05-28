@@ -8,18 +8,12 @@
 import Foundation
 import Security
 import RxSwift
-import ENFoundation
 
-final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLSessionDelegateProtocol, URLSessionDownloadDelegate, Logging {
-    
-    private var urlSessionBackgroundCompletionHandler: (() -> ())?
-    private let urlSessionDownloadHandler: URLSessionDownloadHandling
+final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLSessionDelegateProtocol {
     
     /// Initialise session delegate with certificate used for SSL pinning
-    init(configurationProvider: NetworkConfigurationProvider,
-         urlSessionDownloadHandler: URLSessionDownloadHandling) {
+    init(configurationProvider: NetworkConfigurationProvider) {
         self.configurationProvider = configurationProvider
-        self.urlSessionDownloadHandler = urlSessionDownloadHandler
     }
     
     // MARK: - URLSessionDelegate
@@ -59,40 +53,10 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLS
         completionHandler(.useCredential, URLCredential(trust: serverTrust))
     }
     
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        logTrace()
-        
-        DispatchQueue.main.async {
-            self.urlSessionBackgroundCompletionHandler?()
-        }
-    }
-    
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {}
     
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {}
-    
-    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ()) {
-        urlSessionBackgroundCompletionHandler = completionHandler
-    }
-    
-    // MARK: - URLSessionDownloadDelegate
-    
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         
-        // Make sure the download belongs to a known url session identifier
-        guard let sessionConfigurationIdentifier = session.configuration.identifier,
-              let urlSessionIdentifier = URLSessionIdentifier(rawValue: sessionConfigurationIdentifier),
-              let requestURL = downloadTask.originalRequest?.url,
-              let response = downloadTask.response else {
-            return
-        }
-        
-        urlSessionDownloadHandler.processDownload(urlSessionIdentifier: urlSessionIdentifier,
-                                                  response: response,
-                                                  originalURL: requestURL,
-                                                  downloadLocation: location)
-    }
-    
     // MARK: - Private
     
     private let configurationProvider: NetworkConfigurationProvider

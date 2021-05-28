@@ -31,12 +31,10 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          exposureKeySetIdentifiers: [String],
-         featureFlagController: FeatureFlagControlling,
          keySetDownloadProcessor: KeySetDownloadProcessing) {
         self.networkController = networkController
         self.storageController = storageController
         self.exposureKeySetIdentifiers = exposureKeySetIdentifiers
-        self.featureFlagController = featureFlagController
         self.keySetDownloadProcessor = keySetDownloadProcessor
     }
 
@@ -74,15 +72,6 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
 
         if !ignoredInitialKeySets {
             return ignoreFirstKeySetBatch(keySetIdentifiers: identifiers)
-        }
-
-        if featureFlagController.isFeatureFlagEnabled(feature: .backgroundKeysetDownloading) {
-            
-            networkController.fetchExposureKeySetsInBackground(identifiers: identifiers)
-            
-            logDebug("--- END REQUESTING KEYSETS ---")
-            
-            return .empty()
         }
         
         logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
@@ -159,6 +148,5 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureKeySetIdentifiers: [String]
-    private let featureFlagController: FeatureFlagControlling
     private let keySetDownloadProcessor: KeySetDownloadProcessing
 }

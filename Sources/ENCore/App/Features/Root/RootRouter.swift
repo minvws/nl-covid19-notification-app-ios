@@ -154,11 +154,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
     
-    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ()) {
-        networkController.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
-    }
-
-
     func didBecomeActive() {
         exposureController.refreshStatus()
 

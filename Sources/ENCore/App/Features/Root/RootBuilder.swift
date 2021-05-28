@@ -37,9 +37,7 @@ public protocol AppEntryPoint {
 
     // Should handle the background task
     @available(iOS 13, *)
-    func handle(backgroundTask: BackgroundTask)
-    
-    func receiveURLSessionBackgroundCompletionHandler(completionHandler: @escaping () -> ())
+    func handle(backgroundTask: BackgroundTask)    
 }
 
 /// Provides all dependencies to build the RootRouter

@@ -408,17 +408,6 @@ final class RootRouterTests: TestCase {
         XCTAssertTrue(lastPresenterViewController === mockMessageViewController)
     }
     
-    func test_receiveURLSessionBackgroundCompletionHandler() {
-        // Arrange
-        XCTAssertEqual(networkController.receiveURLSessionBackgroundCompletionHandlerCallCount, 0)
-        
-        // Act
-        router.receiveURLSessionBackgroundCompletionHandler(completionHandler: {})
-        
-        // Assert
-        XCTAssertEqual(networkController.receiveURLSessionBackgroundCompletionHandlerCallCount, 1)
-    }
-
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState) {

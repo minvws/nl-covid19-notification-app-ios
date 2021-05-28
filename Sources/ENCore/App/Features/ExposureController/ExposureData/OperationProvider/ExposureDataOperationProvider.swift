@@ -19,7 +19,6 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
          fileManager: FileManaging,
          environmentController: EnvironmentControlling,
          riskCalculationController: RiskCalculationControlling,
-         featureFlagsController: FeatureFlagControlling,
          keySetDownloadProcessor: KeySetDownloadProcessing) {
         self.networkController = networkController
         self.storageController = storageController
@@ -30,7 +29,6 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
         self.fileManager = fileManager
         self.environmentController = environmentController
         self.riskCalculationController = riskCalculationController
-        self.featureFlagsController = featureFlagsController
         self.keySetDownloadProcessor = keySetDownloadProcessor
     }
 
@@ -81,7 +79,6 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
         return RequestExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
                                                    exposureKeySetIdentifiers: identifiers,
-                                                   featureFlagController: featureFlagsController,
                                                    keySetDownloadProcessor: keySetDownloadProcessor)
     }
 
@@ -122,7 +119,6 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling
     private let riskCalculationController: RiskCalculationControlling
-    private let featureFlagsController: FeatureFlagControlling
     private let keySetDownloadProcessor: KeySetDownloadProcessing
 }
 

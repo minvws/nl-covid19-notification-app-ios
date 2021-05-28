@@ -18,11 +18,10 @@ final class NetworkManagerTests: TestCase {
     private var mockStorageControlling: StorageControllingMock!
     private var mockUrlSession: URLSessionProtocolMock!
     private var mockUrlSessionDelegate: URLSessionDelegateProtocolMock!
-    private var mockUnzipResponseHandler: UnzipNetworkResponseHandlerProtocolMock!
-    private var mockVerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocolMock!
     private var mockReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocolMock!
     private var mockUrlSessionBuilder: URLSessionBuildingMock!
-
+    private var mockUrlResponseSaver: URLResponseSavingMock!
+    
     override func setUp() {
         super.setUp()
 
@@ -31,19 +30,10 @@ final class NetworkManagerTests: TestCase {
         mockStorageControlling = StorageControllingMock()
         mockUrlSession = URLSessionProtocolMock()
         mockUrlSessionDelegate = URLSessionDelegateProtocolMock()
-        mockUnzipResponseHandler = UnzipNetworkResponseHandlerProtocolMock()
-        mockVerifySignatureResponseHandler = VerifySignatureResponseHandlerProtocolMock()
         mockReadFromDiskResponseHandler = ReadFromDiskResponseHandlerProtocolMock()
         mockUrlSessionBuilder = URLSessionBuildingMock()
         mockNetworkConfigurationProvider.configuration = .test
-
-        mockNetworkResponseHandlerProvider.unzipNetworkResponseHandler = {
-            return self.mockUnzipResponseHandler
-        }()
-
-        mockNetworkResponseHandlerProvider.verifySignatureResponseHandler = {
-            return self.mockVerifySignatureResponseHandler
-        }()
+        mockUrlResponseSaver = URLResponseSavingMock()
 
         mockNetworkResponseHandlerProvider.readFromDiskResponseHandler = {
             return self.mockReadFromDiskResponseHandler
@@ -52,13 +42,14 @@ final class NetworkManagerTests: TestCase {
         mockUrlSessionBuilder.buildHandler = { _, _, _ in
             return URLSessionProtocolMock()
         }
-
+        
         sut = NetworkManager(configurationProvider: mockNetworkConfigurationProvider,
                              responseHandlerProvider: mockNetworkResponseHandlerProvider,
                              storageController: mockStorageControlling,
                              session: mockUrlSession,
                              sessionDelegate: mockUrlSessionDelegate,
-                             urlSessionBuilder: mockUrlSessionBuilder)
+                             urlSessionBuilder: mockUrlSessionBuilder,
+                             urlResponseSaver: mockUrlResponseSaver)
     }
 
     // MARK: - getManifest
@@ -594,7 +585,7 @@ final class NetworkManagerTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_getExposureKeySet_unzipErrorShouldReturnError() throws {
+    func test_getExposureKeySet_urlResponseSavingErrorShouldReturnError() throws {
 
         let mockModel = URL(string: "http://someurl.com")
         let mockData = try JSONEncoder().encode(mockModel)
@@ -685,78 +676,6 @@ final class NetworkManagerTests: TestCase {
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }
-    
-    func test_getExposureKeySetsInBackground_shouldCreateURLSession() {
-        // Arrange
-        XCTAssertEqual(mockUrlSessionBuilder.buildCallCount, 0)
-        
-        // Act
-        sut.getExposureKeySetsInBackground(identifiers: ["identifier"])
-        
-        // Assert
-        XCTAssertEqual(mockUrlSessionBuilder.buildCallCount, 1)
-        XCTAssertTrue(mockUrlSessionBuilder.buildArgValues.first!.0.sessionSendsLaunchEvents)
-        XCTAssertTrue(mockUrlSessionBuilder.buildArgValues.first!.1 === mockUrlSessionDelegate)
-        XCTAssertNil(mockUrlSessionBuilder.buildArgValues.first!.2)
-    }
-    
-    func test_getExposureKeySetsInBackground_shouldCreateDownloadTaskForIdentifiers() {
-        // Arrange
-        var downloadTaskRequests = [URLRequest]()
-        var downloadTasks = [URLSessionDownloadTaskProtocolMock]()
-        mockUrlSessionBuilder.buildHandler = { _, _, _ in
-            let mock = URLSessionProtocolMock()
-            mock.getAllURLSessionTasksHandler = { completion in completion([]) }
-            mock.urlSessionDownloadTaskHandler = { request in
-                downloadTaskRequests.append(request)
-                let taskMock = URLSessionDownloadTaskProtocolMock()
-                downloadTasks.append(taskMock)
-                return taskMock
-            }
-            return mock
-        }
-                
-        // Act
-        sut.getExposureKeySetsInBackground(identifiers: ["identifier"])
-        
-        // Assert
-        
-        XCTAssertEqual(downloadTaskRequests.count, 1)
-        XCTAssertEqual(downloadTaskRequests.first?.httpMethod, "GET")
-        XCTAssertEqual(downloadTaskRequests.first?.url?.absoluteString, "https://test.coronamelder-dist.nl/v4/exposurekeyset/identifier")
-        XCTAssertEqual(downloadTaskRequests.first?.allHTTPHeaderFields![HTTPHeaderKey.acceptedContentType.rawValue], "application/zip")
-        
-        XCTAssertEqual(downloadTasks.count, 1)
-        XCTAssertEqual(downloadTasks.first?.countOfBytesClientExpectsToSend, 200)
-        XCTAssertEqual(downloadTasks.first?.countOfBytesClientExpectsToReceive, 20480)
-        XCTAssertEqual(downloadTasks.first?.resumeCallCount, 1)
-    }
-    
-    func test_getExposureKeySetsInBackground_shouldNotCreateDuplicateDownloadTasks() {
-        // Arrange
-        var downloadTaskRequests = [URLRequest]()
-        mockUrlSessionBuilder.buildHandler = { _, _, _ in
-            let mock = URLSessionProtocolMock()
-            mock.getAllURLSessionTasksHandler = { completion in
-                let existingTaskMock = URLSessionTaskProtocolMock()
-                existingTaskMock.originalRequest = URLRequest(url: URL(string: "https://test.coronamelder-dist.nl/v4/exposurekeyset/identifier")!)
-                completion([
-                    existingTaskMock
-                ])
-            }
-            mock.urlSessionDownloadTaskHandler = { request in
-                downloadTaskRequests.append(request)
-                return URLSessionDownloadTaskProtocolMock()
-            }
-            return mock
-        }
-                
-        // Act
-        sut.getExposureKeySetsInBackground(identifiers: ["identifier"])
-        
-        // Assert
-        XCTAssertEqual(downloadTaskRequests.count, 0)
-    }
 
     // MARK: - Private Helper Functions
 
@@ -774,16 +693,19 @@ final class NetworkManagerTests: TestCase {
                                       simulateUnzipError: Bool = false,
                                       simulateValidateSignatureError: Bool = false,
                                       simulateReadFromDiskError: Bool = false) {
-        mockUnzipResponseHandler.isApplicableHandler = { _, _ in return true }
-        mockUnzipResponseHandler.processHandler = { _, _ in
+        
+        mockUrlResponseSaver.responseToLocalUrlHandler = { _, _, _ in
             if simulateUnzipError { return .error(NetworkResponseHandleError.cannotUnzip) }
+            else if simulateValidateSignatureError { return .error(NetworkResponseHandleError.invalidSignature) }
             else { return .just(URL(string: "http://someurl.com")!) }
         }
-        mockVerifySignatureResponseHandler.isApplicableHandler = { _, _ in return true }
-        mockVerifySignatureResponseHandler.processHandler = { _, _ in
-            if simulateValidateSignatureError { return .error(NetworkResponseHandleError.invalidSignature) }
+        
+        mockUrlResponseSaver.responseToLocalUrlForHandler = { _, _ in
+            if simulateUnzipError { return .error(NetworkResponseHandleError.cannotUnzip) }
+            else if simulateValidateSignatureError { return .error(NetworkResponseHandleError.invalidSignature) }
             else { return .just(URL(string: "http://someurl.com")!) }
         }
+                
         mockReadFromDiskResponseHandler.isApplicableHandler = { _, _ in return true }
         mockReadFromDiskResponseHandler.processHandler = { _, _ in
             if simulateReadFromDiskError { return .error(NetworkResponseHandleError.cannotDeserialize) }

@@ -141,11 +141,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
         appRoot.handle(backgroundTask: backgroundTask)
     }
-    
-    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> ()) {
-        logTrace()        
-        appRoot?.receiveURLSessionBackgroundCompletionHandler(completionHandler: completionHandler)
-    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {

@@ -16,7 +16,6 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     private var sut: RequestExposureKeySetsDataOperation!
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
-    private var mockFeatureFlagController: FeatureFlagControllingMock!
     private var mockKeySetDownloadProcessor: KeySetDownloadProcessingMock!
     
     private var exposureKeySetIdentifiers: [String]!
@@ -26,7 +25,6 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
 
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()
-        mockFeatureFlagController = FeatureFlagControllingMock()
         mockKeySetDownloadProcessor = KeySetDownloadProcessingMock()
         
         exposureKeySetIdentifiers = ["identifier"]
@@ -52,7 +50,6 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             networkController: mockNetworkController,
             storageController: mockStorageController,
             exposureKeySetIdentifiers: exposureKeySetIdentifiers,
-            featureFlagController: mockFeatureFlagController,
             keySetDownloadProcessor: mockKeySetDownloadProcessor
         )
     }
@@ -182,7 +179,6 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 1)
-        XCTAssertEqual(mockNetworkController.fetchExposureKeySetsInBackgroundCallCount, 0)
     }
 
     func test_shouldFakeProcessFirstKeySetBatch() {
@@ -213,32 +209,7 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockKeySetDownloadProcessor.storeDownloadedKeySetsHolderCallCount, 1)
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 0)
     }
-    
-    func test_execute_shouldFetchExposureKeysetsInBackground() {
-        // Arrange
-        XCTAssertEqual(mockNetworkController.fetchExposureKeySetsInBackgroundCallCount, 0)
         
-        let exp = expectation(description: "expectation")
-        let keySetHolder = dummyKeySetHolder(withIdentifier: "someStoredKeyset")
-        mockStorage(storedKeySetHolders: [keySetHolder], initialKeySetsIgnored: true)
-        mockFeatureFlagController.isFeatureFlagEnabledHandler = { flag in
-            return flag == .backgroundKeysetDownloading
-        }
-        
-        // Act
-        sut.execute()
-            .subscribe(onCompleted: {
-                exp.fulfill()
-            })
-            .disposed(by: disposeBag)
-        
-        // Assert
-        waitForExpectations(timeout: 2, handler: nil)
-        
-        XCTAssertEqual(mockNetworkController.fetchExposureKeySetsInBackgroundCallCount, 1)
-        XCTAssertEqual(mockNetworkController.fetchExposureKeySetsInBackgroundArgValues.first, [exposureKeySetIdentifiers.first!])
-    }
-    
     // MARK: - Private helper functions
 
     private func dummyKeySetHolder(withIdentifier identifier: String = "identifier") -> ExposureKeySetHolder {
