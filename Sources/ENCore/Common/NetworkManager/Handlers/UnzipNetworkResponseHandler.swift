@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import ZIPFoundation
+import ENFoundation
 
 /// @mockable(history:isApplicable=true;process = true)
 protocol UnzipNetworkResponseHandlerProtocol {
@@ -15,8 +16,8 @@ protocol UnzipNetworkResponseHandlerProtocol {
     func process(response: URLResponseProtocol, input: URL) -> Single<URL>
 }
 
-final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol {
-
+final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol, Logging {
+   
     init(fileManager: FileManaging) {
         self.fileManager = fileManager
     }
@@ -31,19 +32,35 @@ final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol {
 
         return contentTypeHeader.lowercased() == HTTPContentType.zip.rawValue.lowercased()
     }
-
+    
     func process(response: URLResponseProtocol, input: URL) -> Single<URL> {
+        
+        logDebug("unzipping file from \(input)")
+        
         guard let destinationURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString) else {
             return .error(NetworkResponseHandleError.cannotUnzip)
         }
 
+        let start = CFAbsoluteTimeGetCurrent()
+        
+        var skipCRC32 = false
+        #if DEBUG
+            skipCRC32 = true
+        #endif
+        
         do {
-            try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.unzipItem(at: input, to: destinationURL, skipCRC32: false, progress: nil, preferredEncoding: nil)
-        } catch {
+            
+            try fileManager.createDirectory(at: input, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.unzipItem(at: input, to: destinationURL, skipCRC32: skipCRC32, progress: nil, preferredEncoding: nil)
+            
+            let diff = CFAbsoluteTimeGetCurrent() - start
+            print("KSSPEED Unzipping file Took \(diff) seconds")
+        }
+        catch {
+            logError("unzip error: \(error) for file \(input)")
             return .error(NetworkResponseHandleError.cannotUnzip)
         }
-
+        
         return .just(destinationURL)
     }
 
