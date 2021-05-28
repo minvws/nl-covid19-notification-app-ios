@@ -82,20 +82,6 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
     var urlResponseSaver: URLResponseSaving {
         return URLResponseSaver(responseHandlerProvider: responseHandlerProvider)
     }
-    
-    var keySetDownloadProcessor: KeySetDownloadProcessing {
-        return KeySetDownloadProcessor(storageController: dependency.storageController,
-                                       localPathProvider: dependency.localPathProvider,
-                                       fileManager: fileManager)
-    }
-    
-    var fileManager: FileManaging {
-        FileManager.default
-    }
-    
-    var urlSessionBuilder: URLSessionBuilding {
-        URLSessionBuilder()
-    }
 }
 
 final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkManagerBuildable {
@@ -108,7 +94,6 @@ final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkMan
                               storageController: dependencyProvider.dependency.storageController,
                               session: dependencyProvider.session,
                               sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol,
-                              urlSessionBuilder: dependencyProvider.urlSessionBuilder,
                               urlResponseSaver: dependencyProvider.urlResponseSaver)
     }
 }

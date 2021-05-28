@@ -46,22 +46,6 @@ extension URLSession: URLSessionProtocol {
     }
 }
 
-/// @mockable(history:build = true)
-protocol URLSessionBuilding {
-    func build(configuration: URLSessionConfiguration, delegate: URLSessionDelegateProtocol?, delegateQueue queue: OperationQueue?) -> URLSessionProtocol?
-}
-
-class URLSessionBuilder: URLSessionBuilding {
-    func build(configuration: URLSessionConfiguration, delegate: URLSessionDelegateProtocol?, delegateQueue queue: OperationQueue?) -> URLSessionProtocol?  {
-        
-        guard let delegate = delegate as? URLSessionDelegate else {
-            return nil
-        }
-        
-        return URLSession(configuration: configuration, delegate: delegate, delegateQueue: queue)
-    }
-}
-
 /// @mockable
 protocol URLSessionDownloadTaskProtocol {
     var countOfBytesClientExpectsToSend: Int64 { get set }

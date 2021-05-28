@@ -17,14 +17,12 @@ final class NetworkManager: NetworkManaging, Logging {
          storageController: StorageControlling,
          session: URLSessionProtocol,
          sessionDelegate: URLSessionDelegateProtocol?,
-         urlSessionBuilder: URLSessionBuilding,
          urlResponseSaver: URLResponseSaving) {
         self.configurationProvider = configurationProvider
         self.responseHandlerProvider = responseHandlerProvider
         self.storageController = storageController
         self.session = session
         self.sessionDelegate = sessionDelegate
-        self.urlSessionBuilder = urlSessionBuilder
         self.urlResponseSaver = urlResponseSaver
     }
 
@@ -433,7 +431,6 @@ final class NetworkManager: NetworkManaging, Logging {
     private let responseHandlerProvider: NetworkResponseHandlerProvider
     private let urlResponseSaver: URLResponseSaving
     private let storageController: StorageControlling
-    private let urlSessionBuilder: URLSessionBuilding
 
     private var configuration: NetworkConfiguration {
         return configurationProvider.configuration

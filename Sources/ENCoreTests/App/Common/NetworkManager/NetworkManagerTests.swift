@@ -19,7 +19,6 @@ final class NetworkManagerTests: TestCase {
     private var mockUrlSession: URLSessionProtocolMock!
     private var mockUrlSessionDelegate: URLSessionDelegateProtocolMock!
     private var mockReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocolMock!
-    private var mockUrlSessionBuilder: URLSessionBuildingMock!
     private var mockUrlResponseSaver: URLResponseSavingMock!
     
     override func setUp() {
@@ -31,24 +30,18 @@ final class NetworkManagerTests: TestCase {
         mockUrlSession = URLSessionProtocolMock()
         mockUrlSessionDelegate = URLSessionDelegateProtocolMock()
         mockReadFromDiskResponseHandler = ReadFromDiskResponseHandlerProtocolMock()
-        mockUrlSessionBuilder = URLSessionBuildingMock()
         mockNetworkConfigurationProvider.configuration = .test
         mockUrlResponseSaver = URLResponseSavingMock()
 
         mockNetworkResponseHandlerProvider.readFromDiskResponseHandler = {
             return self.mockReadFromDiskResponseHandler
         }()
-        
-        mockUrlSessionBuilder.buildHandler = { _, _, _ in
-            return URLSessionProtocolMock()
-        }
-        
+                
         sut = NetworkManager(configurationProvider: mockNetworkConfigurationProvider,
                              responseHandlerProvider: mockNetworkResponseHandlerProvider,
                              storageController: mockStorageControlling,
                              session: mockUrlSession,
                              sessionDelegate: mockUrlSessionDelegate,
-                             urlSessionBuilder: mockUrlSessionBuilder,
                              urlResponseSaver: mockUrlResponseSaver)
     }
 
