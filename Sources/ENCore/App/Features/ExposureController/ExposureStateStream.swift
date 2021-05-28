@@ -63,7 +63,6 @@ final class ExposureStateStream: MutableExposureStateStreaming {
         subject
             .distinctUntilChanged()
             .compactMap { $0 }
-            .subscribe(on: MainScheduler.instance)
     }
 
     var currentExposureState: ExposureState?

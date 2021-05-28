@@ -209,11 +209,20 @@ final class RootRouterTests: TestCase {
     }
 
     func test_start_activatesExposureController() {
+        
+        let postExposureManagerActivationExpectation = expectation(description: "postExposureManagerActivation")
+        let decoySequenceExpectation = expectation(description: "decoySequence")
+        
         XCTAssertEqual(exposureController.activateCallCount, 0)
         XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 0)
         XCTAssertEqual(backgroundController.performDecoySequenceIfNeededCallCount, 0)
 
+        exposureController.postExposureManagerActivationHandler = { postExposureManagerActivationExpectation.fulfill() }
+        backgroundController.performDecoySequenceIfNeededHandler = { decoySequenceExpectation.fulfill() }
+        
         router.start()
+        
+        waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(exposureController.activateCallCount, 1)
         XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 1)
@@ -304,6 +313,9 @@ final class RootRouterTests: TestCase {
     }
 
     func test_didBecomeActive_shouldAlsoPerformForegroundActionsOniOS12() {
+        
+        let completionExpectation = expectation(description: "completion")
+        
         mockEnvironmentController.isiOS12 = true
         exposureController.updateWhenRequiredHandler = {
             .empty()
@@ -313,14 +325,19 @@ final class RootRouterTests: TestCase {
         XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
 
         router.start()
-
+        
         XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
         XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
-
+        
         router.didBecomeActive()
-
-        XCTAssertEqual(exposureController.refreshStatusCallCount, 2)
-        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            XCTAssertEqual(self.exposureController.refreshStatusCallCount, 2)
+            XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)
+            completionExpectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
     func test_didEnterForeground_startsObservingNetworkReachability() {
@@ -357,7 +374,13 @@ final class RootRouterTests: TestCase {
     }
 
     func test_didEnterForeground_callsUpdateWhenRequired() {
-        exposureController.updateWhenRequiredHandler = { .empty() }
+        
+        let completionExpectation = expectation(description: "completion")
+        
+        exposureController.updateWhenRequiredHandler = {
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+            return .empty()
+        }
 
         // Required to attach main router
         router.start()
@@ -365,8 +388,12 @@ final class RootRouterTests: TestCase {
         XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
 
         router.didEnterForeground()
-
-        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)
+            completionExpectation.fulfill()
+        }
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
     // MARK: - Handling Notifications

@@ -78,7 +78,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     private(set) var isFirstRun: Bool = false
     private lazy var pauseEndDateSubject = BehaviorSubject<Date?>(value: pauseEndDate)
 
-    private lazy var lastExposureProcessingDateSubject = BehaviorSubject<Date?>(value: lastSuccessfulExposureProcessingDate)
+    private lazy var lastExposureProcessingDateSubject = BehaviorSubject<Date?>(value: nil)
 
     init(operationProvider: ExposureDataOperationProvider,
          storageController: StorageControlling,
@@ -371,13 +371,16 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         
     /// Can be called to remove the stored previous exposure date in case it is more than 14 days ago
     func removePreviousExposureDateIfNeeded() -> Completable {
-        guard let previousDate = previousExposureDate,
-              let daysPast = currentDate().days(sinceDate: previousDate),
-              daysPast > 14 else {
-            return .empty()
-        }
         
-        return .create { [weak self] observer in
+        let completable = Completable.create { [weak self] observer in
+            
+            guard let previousDate = self?.previousExposureDate,
+                  let daysPast = currentDate().days(sinceDate: previousDate),
+                  daysPast > 14 else {
+                observer(.completed)
+                return Disposables.create()
+            }
+            
             guard let strongSelf = self else {
                 observer(.completed)
                 return Disposables.create()
@@ -393,6 +396,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             })
             return Disposables.create()
         }
+        
+        return completable.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
     }
 
     var didCompleteOnboarding: Bool {
@@ -429,6 +434,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .distinctUntilChanged()
             .compactMap { $0 }
             .subscribe(on: MainScheduler.instance)
+    }
+    
+    func updateLastExposureProcessingDateSubject() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.lastExposureProcessingDateSubject.onNext(self.lastSuccessfulExposureProcessingDate)
+        }
     }
 
     var lastSuccessfulExposureProcessingDate: Date? {

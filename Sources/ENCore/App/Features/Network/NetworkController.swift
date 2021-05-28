@@ -107,7 +107,7 @@ final class NetworkController: NetworkControlling, Logging {
             }
 
             return Disposables.create()
-        }).observe(on: MainScheduler.instance)
+        })
     }
     
     func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey> {

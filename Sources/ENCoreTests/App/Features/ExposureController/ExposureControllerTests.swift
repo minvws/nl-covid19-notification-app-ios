@@ -190,7 +190,8 @@ final class ExposureControllerTests: TestCase {
         let expectation = expect(activeState: .active)
 
         triggerUpdateStream()
-
+        
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
 
@@ -201,7 +202,8 @@ final class ExposureControllerTests: TestCase {
         let expectation = expect(activeState: .inactive(.bluetoothOff))
 
         triggerUpdateStream()
-
+        
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
 
@@ -213,6 +215,7 @@ final class ExposureControllerTests: TestCase {
 
         triggerUpdateStream()
 
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
 
@@ -224,6 +227,7 @@ final class ExposureControllerTests: TestCase {
 
         triggerUpdateStream()
 
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
 
@@ -235,6 +239,7 @@ final class ExposureControllerTests: TestCase {
 
         triggerUpdateStream()
 
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
 
@@ -242,10 +247,11 @@ final class ExposureControllerTests: TestCase {
         activate()
         exposureManager.getExposureNotificationStatusHandler = { .inactive(.unknown) }
 
-        let expectation = expect()
+        let expectation = expect(noUpdateExpected: true)
 
         triggerUpdateStream()
 
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
 
@@ -257,6 +263,7 @@ final class ExposureControllerTests: TestCase {
 
         triggerUpdateStream()
 
+        waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
 
@@ -474,17 +481,13 @@ final class ExposureControllerTests: TestCase {
 
     func test_noRecentUpdate_returnsNoRecentNotificationInactiveState() {
         dataController.lastSuccessfulExposureProcessingDate = currentDate().addingTimeInterval(-24 * 60 * 60 - 1)
+        activate()
+        let expectation = expect(activeState: .inactive(.noRecentNotificationUpdates))
 
-        exposureManager.isExposureNotificationEnabledHandler = { true }
-        exposureManager.activateHandler = { $0(.active) }
-
-        controller.activate()
-            .subscribe()
-            .disposed(by: disposeBag)
-
-        controller.refreshStatus()
-
-        XCTAssertEqual(mutableStateStream.currentExposureState?.activeState, .inactive(.noRecentNotificationUpdates))
+        triggerUpdateStream()
+        
+        waitForExpectations(timeout: 10, handler: nil)
+        XCTAssertTrue(expectation.evaluate())
     }
 
     func test_updateAndProcessPendingUploads() {
@@ -672,26 +675,34 @@ final class ExposureControllerTests: TestCase {
 
     func test_postExposureManagerActivation_shouldUpdateStatusStream() {
         networkStatusStream.networkReachable = true
+        let completionExpectation = expectation(description: "completion")
         let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
         mutableStateStream.exposureState = stream
 
         exposureManager.setExposureNotificationEnabledHandler = { _, completion in
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             completion(.success(()))
         }
         exposureManager.activateHandler = { completion in
+            XCTAssertTrue(Thread.current.isMainThread)
             completion(.active)
         }
         userNotificationController.getAuthorizationStatusHandler = { completion in
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             completion(.authorized)
         }
 
         controller.activate()
             .subscribe(onCompleted: {
                 self.controller.postExposureManagerActivation()
+                completionExpectation.fulfill()
+                
             })
             .disposed(by: disposeBag)
 
         stream.onNext(.init(notifiedState: .notNotified, activeState: .active))
+        
+        waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.activeState, .active)
@@ -766,6 +777,22 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.activeState, .active)
     }
+    
+    func test_refreshStatus_shouldRunOnBackgroundThread() {
+        // Arrange
+        let updateStreamExpectation = expectation(description: "updateStream")
+        dataController.pauseEndDate = currentDate().addingTimeInterval(2000) // some random enddate
+        mutableStateStream.updateHandler = { _ in
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+            updateStreamExpectation.fulfill()
+        }
+        
+        // Act
+        controller.refreshStatus()
+        
+        // Assert
+        waitForExpectations(timeout: 2, handler: nil)
+    }
 
     // MARK: - Private
 
@@ -792,8 +819,10 @@ final class ExposureControllerTests: TestCase {
         controller.refreshStatus()
     }
 
-    private func expect(activeState: ExposureActiveState? = nil, notifiedState: ExposureNotificationState? = nil) -> ExpectStatusEvaluator {
-        let evaluator = ExpectStatusEvaluator(activeState: activeState, notifiedState: notifiedState)
+    private func expect(activeState: ExposureActiveState? = nil, notifiedState: ExposureNotificationState? = nil, noUpdateExpected: Bool = false) -> ExpectStatusEvaluator {
+        let completionExpectation = expectation(description: "completion")
+        completionExpectation.isInverted = noUpdateExpected
+        let evaluator = ExpectStatusEvaluator(activeState: activeState, notifiedState: notifiedState, updateExpectation: completionExpectation)
 
         mutableStateStream.updateHandler = evaluator.updateHandler
 
@@ -803,17 +832,20 @@ final class ExposureControllerTests: TestCase {
     private final class ExpectStatusEvaluator {
         private let expectedActiveState: ExposureActiveState?
         private let expectedNotifiedState: ExposureNotificationState?
+        private let updateExpectation: XCTestExpectation
 
         private var receivedState: ExposureState?
 
-        init(activeState: ExposureActiveState?, notifiedState: ExposureNotificationState?) {
+        init(activeState: ExposureActiveState?, notifiedState: ExposureNotificationState?, updateExpectation expectation: XCTestExpectation) {
             expectedActiveState = activeState
             expectedNotifiedState = notifiedState
+            updateExpectation = expectation
         }
 
         var updateHandler: (ExposureState) -> () {
             return { [weak self] state in
                 self?.receivedState = state
+                self?.updateExpectation.fulfill()
             }
         }
 

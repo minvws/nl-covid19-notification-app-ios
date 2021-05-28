@@ -20,7 +20,8 @@ final class OnboardingConsentViewControllerTests: TestCase {
     private var manager: OnboardingConsentManager!
     private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
     private var mockUserNotificationController = UserNotificationControllingMock()
-
+    private var mockApplicationController = ApplicationControllingMock()
+    
     override func setUp() {
         super.setUp()
 
@@ -32,6 +33,7 @@ final class OnboardingConsentViewControllerTests: TestCase {
         manager = OnboardingConsentManager(exposureStateStream: exposureStateStream,
                                            exposureController: exposureController,
                                            userNotificationController: mockUserNotificationController,
+                                           applicationController: mockApplicationController,
                                            theme: theme)
 
         AnimationTestingOverrides.animationsEnabled = false
@@ -53,8 +55,15 @@ final class OnboardingConsentViewControllerTests: TestCase {
 
     func test_didCompleteConsent() {
 
+        let completionExpectation = expectation(description: "completion")
+        
         manager.didCompleteConsent()
 
-        XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 1)
+        DispatchQueue.global(qos: .userInitiated).async {
+            completionExpectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 2, handler: nil)
+        XCTAssertTrue(exposureController.didCompleteOnboarding)
     }
 }

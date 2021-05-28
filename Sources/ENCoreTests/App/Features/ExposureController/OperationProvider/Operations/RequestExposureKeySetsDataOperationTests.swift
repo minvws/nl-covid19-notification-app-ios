@@ -38,6 +38,10 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             .empty()
         }
         
+        mockKeySetDownloadProcessor.storeIgnoredKeySetsHoldersHandler = { _ in
+            .empty()
+        }
+        
         mockNetworkController.fetchExposureKeySetHandler = { identifier in
             return .just((identifier, URL(string: "http://someurl.com")!))
         }
@@ -81,9 +85,14 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
             initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
         )
+        
+        mockNetworkController.fetchExposureKeySetHandler = { identifier in
+            return .just((identifier, URL(string: "http://someurl.com")!))
+        }
 
         sut.execute()
             .subscribe(onCompleted: {
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
                 exp.fulfill()
             })
             .disposed(by: disposeBag)
@@ -115,30 +124,6 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 1)
 
         waitForExpectations(timeout: 1, handler: nil)
-    }
-
-    func test_execute_retrieveObject_withNil() {
-
-        // Arrange
-        mockStorageController.retrieveDataHandler = { _ in
-            return nil
-        }
-
-        let exp = expectation(description: "Completion")
-
-        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 0)
-        
-        // Act
-        _ = sut.execute()
-            .subscribe(onCompleted: {
-                exp.fulfill()
-            })
-            .disposed(by: disposeBag)
-
-        // Assert
-        waitForExpectations(timeout: 1, handler: nil)
-        
-        XCTAssertEqual(mockStorageController.retrieveDataCallCount, 2)
     }
 
     func test_shouldNotDownloadKeySetsIfFirstBatchIsNotYetIgnored() {
@@ -206,7 +191,7 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
                 XCTAssertTrue(currentDate().timeIntervalSince(processDate) >= oneDay)
             }
         
-        XCTAssertEqual(mockKeySetDownloadProcessor.storeDownloadedKeySetsHolderCallCount, 1)
+        XCTAssertEqual(mockKeySetDownloadProcessor.storeIgnoredKeySetsHoldersCallCount, 1)
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 0)
     }
         

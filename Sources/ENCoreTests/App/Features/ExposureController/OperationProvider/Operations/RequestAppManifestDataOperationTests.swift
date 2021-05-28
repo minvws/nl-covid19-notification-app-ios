@@ -28,9 +28,13 @@ final class RequestAppManifestDataOperationTests: TestCase {
 
     func test_execute_shouldRetrieveApplicationConfigurationFromStorage() {
 
+        let completionExpectation = expectation(description: "completion")
         let storageExpectation = expectation(description: "storage")
 
         mockStorageController.retrieveDataHandler = { key in
+            
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+            
             if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
                 storageExpectation.fulfill()
                 return try! JSONEncoder().encode(ApplicationConfiguration.testData())
@@ -41,13 +45,19 @@ final class RequestAppManifestDataOperationTests: TestCase {
             return nil
         }
 
-        _ = sut.execute()
+        sut.execute()
+            .subscribe(onSuccess: { (manifest) in
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
     func test_execute_shouldRetrieveManifestFromStorage() {
 
+        let completionExpectation = expectation(description: "completion")
         let storageExpectation = expectation(description: "storage")
 
         mockStorageController.retrieveDataHandler = { key in
@@ -59,7 +69,11 @@ final class RequestAppManifestDataOperationTests: TestCase {
             return nil
         }
 
-        _ = sut.execute()
+        sut.execute()
+            .subscribe(onSuccess: { (manifest) in
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2.0, handler: nil)
     }

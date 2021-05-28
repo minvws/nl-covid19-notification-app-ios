@@ -11,9 +11,13 @@ import WebKit
 
 final class WebviewViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate, WebviewViewDelegate {
 
-    init(listener: WebviewListener, url: URL, theme: Theme) {
+    init(listener: WebviewListener,
+         applicationController: ApplicationControlling,
+         url: URL,
+         theme: Theme) {
         self.listener = listener
         self.initialURL = url
+        self.applicationController = applicationController
 
         super.init(theme: theme)
 
@@ -43,15 +47,15 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
         listener?.webviewRequestsDismissal(shouldHideViewController: false)
     }
 
-    @objc func didTapClose() {
+    @objc private func didTapClose() {
         listener?.webviewRequestsDismissal(shouldHideViewController: true)
     }
 
     // MARK: - WebviewViewDelegate
 
     fileprivate func webView(_ webView: WebviewView, didClickLink linkURL: URL) {
-        if UIApplication.shared.canOpenURL(linkURL) {
-            UIApplication.shared.open(linkURL, options: [:], completionHandler: nil)
+        if applicationController.canOpenURL(linkURL) {
+            applicationController.open(linkURL)
         } else {
             logError("Unable to open \(linkURL)")
         }
@@ -60,8 +64,10 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
     // MARK: - Private
 
     private lazy var internalView: WebviewView = WebviewView(theme: theme)
-    private weak var listener: WebviewListener?
+    private let applicationController: ApplicationControlling
     private let initialURL: URL
+    private weak var listener: WebviewListener?
+    
     private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }
 

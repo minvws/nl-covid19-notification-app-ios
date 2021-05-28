@@ -35,6 +35,7 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
         let storedConfiguration = createConfiguration()
 
         mockStorageController.retrieveDataHandler = { key in
+            XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             if (key as? CodableStorageKey<ExposureRiskConfiguration>)?.asString == ExposureDataStorageKey.exposureConfiguration.asString {
                 return try! JSONEncoder().encode(storedConfiguration)
             }
@@ -45,14 +46,15 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
 
         operation.execute()
             .subscribe(onSuccess: { configuration in
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
                 XCTAssertEqual(configuration as? ExposureRiskConfiguration, storedConfiguration)
                 exp.fulfill()
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockNetworkController.exposureRiskConfigurationParametersCallCount, 0)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockNetworkController.exposureRiskConfigurationParametersCallCount, 0)
     }
 
     func test_execute_withoutStoredConfiguration_shouldRetrieveFromNetwork_andStoreConfiguration() {
@@ -109,9 +111,9 @@ final class RequestExposureConfigurationDataOperationTests: TestCase {
             })
             .disposed(by: disposeBag)
 
-        XCTAssertEqual(mockNetworkController.exposureRiskConfigurationParametersCallCount, 1)
-
         waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(mockNetworkController.exposureRiskConfigurationParametersCallCount, 1)
     }
 
     // MARK: - Helper functions

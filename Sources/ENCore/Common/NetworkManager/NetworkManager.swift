@@ -448,7 +448,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
     private lazy var jsonEncoder = JSONEncoder()
     private var disposeBag = DisposeBag()
-    private let concurrentUtilityScheduler = ConcurrentDispatchQueueScheduler(qos: .utility)
+    private let concurrentUtilityScheduler = ConcurrentDispatchQueueScheduler(qos: .userInitiated)
 }
 
 extension NetworkResponseHandleError {

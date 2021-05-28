@@ -80,11 +80,13 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
             self.networkController
                 .fetchExposureKeySet(identifier: identifier)
+            
         }
 
         let start = CFAbsoluteTimeGetCurrent()
 
         return Observable.from(exposureKeySetStreams)
+            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))            
             .flatMap { $0 }
             .catch { error in
                 throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
@@ -110,18 +112,16 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         logDebug("KeySet: Ignoring KeySets because it is the first batch after first install: \(keySetIdentifiers.joined(separator: "\n"))")
 
         return Observable.from(keySetIdentifiers)
-            .flatMap { identifier in
-                self.createIgnoredKeySetHolder(forKeySetIdentifier: identifier)
-            }
-            .flatMap { keySetHolder in
-                self.keySetDownloadProcessor.storeDownloadedKeySetsHolder(keySetHolder)
-            }
+            .flatMap (createIgnoredKeySetHolder)
+            .toArray()
+            .flatMapCompletable(keySetDownloadProcessor.storeIgnoredKeySetsHolders)
             .do(onError: { _ in
                 self.logDebug("KeySet: Creating ignored keysets failed ")
             }, onCompleted: {
-                self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.storageController.store(object: true, identifiedBy: ExposureDataStorageKey.initialKeySetsIgnored, completion: { _ in })
+                }
             })
-            .asCompletable()
     }
 
     private func getStoredKeySetsHolders() -> [ExposureKeySetHolder] {
@@ -144,7 +144,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                                           processDate: Date().addingTimeInterval(-60 * 60 * 24),
                                           creationDate: Date()))
     }
-
+    
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureKeySetIdentifiers: [String]

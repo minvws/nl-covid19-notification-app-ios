@@ -112,7 +112,7 @@ final class BackgroundControllerTests: TestCase {
 
         controller.refresh(task: nil)
 
-        XCTAssertEqual(exposureController.updateStatusStreamCallCount, 1)
+        XCTAssertEqual(exposureController.refreshStatusCallCount, 1)
     }
     
     func test_refresh_shouldRemovePreviousExposureDates() {
@@ -473,6 +473,7 @@ final class BackgroundControllerTests: TestCase {
         mockRandomNumberGenerator.randomFloatHandler = { _ in 0 }
         exposureController.getDecoyProbabilityHandler = { .just(1) }
         exposureController.requestLabConfirmationKeyHandler = { completion in
+            XCTAssertTrue(Thread.current.qualityOfService == .utility)
             completion(.success(ExposureConfirmationKeyMock(key: "", expiration: currentDate())))
         }
 

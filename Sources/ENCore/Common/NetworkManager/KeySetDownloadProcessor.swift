@@ -13,6 +13,7 @@ import Foundation
 protocol KeySetDownloadProcessing {
     func process(identifier: String, url: URL) -> Completable
     func storeDownloadedKeySetsHolder(_ keySetHolder: ExposureKeySetHolder) -> Completable
+    func storeIgnoredKeySetsHolders(_ keySetHolders: [ExposureKeySetHolder]) -> Completable
 }
 
 final class KeySetDownloadProcessor: KeySetDownloadProcessing, Logging {
@@ -88,6 +89,30 @@ final class KeySetDownloadProcessor: KeySetDownloadProcessing, Logging {
                     keySetHolders.append(keySetHolder)
                 }
 
+                storageController.store(object: keySetHolders,
+                                        identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
+                    // ignore any storage error - in that case the keyset will be downloaded and processed again
+                    observer(.completed)
+                }
+            }
+
+            return Disposables.create()
+        }
+    }
+    
+    /// Stores a batch of keysets holders
+    func storeIgnoredKeySetsHolders(_ keySetHolders: [ExposureKeySetHolder]) -> Completable {
+        return .create { (observer) -> Disposable in
+
+            self.logDebug("Storing ignored keysetholders")
+            
+            self.storageController.requestExclusiveAccess { storageController in
+                var updatedKeySetHolders = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) ?? []
+                let existingKeySetHolderIds = updatedKeySetHolders.map { $0.identifier }
+                let deduplicatedKeySetHolders = keySetHolders.filter { !existingKeySetHolderIds.contains($0.identifier) }
+                
+                updatedKeySetHolders.append(contentsOf: deduplicatedKeySetHolders)
+                
                 storageController.store(object: keySetHolders,
                                         identifiedBy: ExposureDataStorageKey.exposureKeySetsHolders) { _ in
                     // ignore any storage error - in that case the keyset will be downloaded and processed again

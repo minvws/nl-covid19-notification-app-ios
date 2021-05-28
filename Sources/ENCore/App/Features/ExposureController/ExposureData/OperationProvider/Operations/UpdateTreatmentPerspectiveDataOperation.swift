@@ -26,25 +26,26 @@ final class UpdateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveD
 
     func execute() -> Completable {
 
-        if let manifest = retrieveStoredManifest(),
-            let identifier = manifest.resourceBundle {
-
-            return networkController
+        let completable = Completable.create { (observer) -> Disposable in
+            
+            guard let manifest = self.retrieveStoredManifest(), let identifier = manifest.resourceBundle else {
+                // can't update, just return a success message. We can get the stored treatment perspective from disk later on
+                observer(.completed)
+                return Disposables.create()
+            }
+            
+            return self.networkController
                 .treatmentPerspective(identifier: identifier)
-                .subscribe(on: MainScheduler.instance)
+                .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
                 .catch { throw $0.asExposureDataError }
-                .flatMapCompletable(store(treatmentPerspective:))
+                .flatMapCompletable(self.store(treatmentPerspective:))
+                .subscribe(observer)
         }
-
-        // can't update, just return a success message. We can get the stored treatment perspective from disk later on
-        return .empty()
+        
+        return completable.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
     }
 
     // MARK: - Private
-
-    private func retrieveStoredTreatmentPerspective() -> TreatmentPerspective? {
-        return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective)
-    }
 
     private func retrieveStoredManifest() -> ApplicationManifest? {
         return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appManifest)

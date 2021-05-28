@@ -8,7 +8,7 @@
 import ENFoundation
 import Foundation
 
-/// @mockable
+/// @mockable(history:build=true;)
 protocol OnboardingStepBuildable {
     func build(withListener listener: OnboardingStepListener) -> ViewControllable
     func build(withListener listener: OnboardingStepListener, initialIndex: Int) -> ViewControllable

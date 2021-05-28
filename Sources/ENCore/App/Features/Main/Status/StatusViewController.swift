@@ -125,9 +125,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             return
         }
         
-        mainThreadIfNeeded {
-            self.update(exposureState: currentState, isLandscape: isLandscape)
-        }
+        update(exposureState: currentState, isLandscape: isLandscape)
     }
 
     private func updatePauseTimer() {
@@ -146,27 +144,29 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
-
-        updatePauseTimer()
-
+        
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.updatePauseTimer()
+        }
+        
         let statusViewModel: StatusViewModel
         let announcementCardTypes = getAnnouncementCardTypes()
         var cardTypes = [CardType]()
-
+        
         switch (status.activeState, status.notifiedState) {
         case (.active, .notNotified):
             statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
-
+            
         case let (.inactive(.paused(pauseEndDate)), .notNotified):
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
-
+            
         case let (.active, .notified(date)):
             statusViewModel = .activeWithNotified(date: date)
-
+            
         case let (.inactive(reason), .notified(date)):
             statusViewModel = StatusViewModel.activeWithNotified(date: date)
             cardTypes.append(reason.cardType(listener: listener))
-
+            
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
             
@@ -175,29 +175,36 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             
         case (.inactive, .notNotified):
             statusViewModel = .inactiveWithNotNotified
-
+            
         case let (.authorizationDenied, .notified(date)):
             statusViewModel = .inactiveWithNotified(date: date)
             cardTypes.append(.exposureOff)
-
+            
         case (.authorizationDenied, .notNotified):
             statusViewModel = .inactiveWithNotNotified
-
+            
         case let (.notAuthorized, .notified(date)):
             statusViewModel = .inactiveWithNotified(date: date)
             cardTypes.append(.exposureOff)
-
+            
         case (.notAuthorized, .notNotified):
             statusViewModel = .inactiveWithNotNotified
         }
-
-        statusView.update(with: statusViewModel)
-
-        // Add any non-status related card types and update the CardViewController via the router
-        cardTypes.append(contentsOf: announcementCardTypes)
-        cardRouter.types = cardTypes
-
-        showCard(!cardTypes.isEmpty)
+        
+        mainThreadIfNeeded { [weak self] in
+            
+            guard let strongSelf = self else {
+                return
+            }
+            
+            strongSelf.statusView.update(with: statusViewModel)
+            
+            // Add any non-status related card types and update the CardViewController via the router
+            cardTypes.append(contentsOf: announcementCardTypes)
+            strongSelf.cardRouter.types = cardTypes
+            
+            strongSelf.showCard(!cardTypes.isEmpty)
+        }
     }
 
     private func getAnnouncementCardTypes() -> [CardType] {
