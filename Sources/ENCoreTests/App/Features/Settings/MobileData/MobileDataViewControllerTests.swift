@@ -19,7 +19,7 @@ final class MobileDataViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = true
+        recordSnapshots = false
 
         mockListener = MobileDataListenerMock()
 
