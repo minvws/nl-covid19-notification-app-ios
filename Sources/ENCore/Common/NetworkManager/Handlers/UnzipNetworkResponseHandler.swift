@@ -54,7 +54,7 @@ final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol, Lo
             try fileManager.unzipItem(at: input, to: destinationURL, skipCRC32: skipCRC32, progress: nil, preferredEncoding: nil)
             
             let diff = CFAbsoluteTimeGetCurrent() - start
-            print("KSSPEED Unzipping file Took \(diff) seconds")
+            logDebug("KSSPEED Unzipping file Took \(diff) seconds")
         }
         catch {
             logError("unzip error: \(error) for file \(input)")
