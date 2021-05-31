@@ -158,7 +158,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
         case let (.active, .notified(date)):
             if Date().days(sinceDate: date) ?? 0 > 14 {
-                statusViewModel = .activeWithNotNotified(showScene: true)
+                statusViewModel = .activeWithNotified14DaysAgoCard(showScene: true)
                 cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
                                                             explainRiskHandler: explainRisk,
                                                             removeNotificationHandler: removeNotification))
@@ -167,7 +167,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             }
         case let (.inactive(reason), .notified(date)):
             if Date().days(sinceDate: date) ?? 0 > 14 {
-                statusViewModel = .inactiveWithNotNotified
+                statusViewModel = .activeWithNotified14DaysAgoCard(showScene: true)
                 cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
                                                             explainRiskHandler: explainRisk,
                                                             removeNotificationHandler: removeNotification))
@@ -260,12 +260,16 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 private final class StatusView: View {
     weak var listener: StatusListener?
 
+    private var attachCardToBottom = false
+
     fileprivate let stretchGuide = UILayoutGuide() // grows larger while stretching, grows all visible elements
     private let contentStretchGuide = UILayoutGuide() // grows larger while stretching, used to center the content
+    private let bottomCardStretchGuide = UILayoutGuide()
 
     private let contentContainer = UIStackView()
     private let textContainer = UIStackView()
     private let buttonContainer = UIStackView()
+    private let bottomCardContainer = UIStackView()
     private let cardView: UIView
 
     private var iconViewSizeConstraints: Constraint?
@@ -331,11 +335,14 @@ private final class StatusView: View {
         contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
         contentContainer.addArrangedSubview(cardView)
+
         addSubview(cloudsView)
         addSubview(sceneImageView)
         addSubview(contentContainer)
+        addSubview(bottomCardContainer)
         addLayoutGuide(contentStretchGuide)
         addLayoutGuide(stretchGuide)
+        addLayoutGuide(bottomCardStretchGuide)
     }
 
     override func setupConstraints() {
@@ -344,6 +351,7 @@ private final class StatusView: View {
         cloudsView.translatesAutoresizingMaskIntoConstraints = false
         sceneImageView.translatesAutoresizingMaskIntoConstraints = false
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
+        bottomCardContainer.translatesAutoresizingMaskIntoConstraints = false
 
         containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(equalTo: contentStretchGuide.bottomAnchor, constant: -48)
         heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
@@ -356,7 +364,8 @@ private final class StatusView: View {
             maker.leading.trailing.equalTo(stretchGuide)
         }
         sceneImageView.snp.makeConstraints { maker in
-            maker.leading.trailing.bottom.equalTo(stretchGuide)
+            maker.leading.trailing.equalTo(stretchGuide)
+            maker.bottom.equalTo(bottomCardContainer.snp.top)
             maker.centerX.equalTo(stretchGuide)
         }
         stretchGuide.snp.makeConstraints { maker in
@@ -375,6 +384,20 @@ private final class StatusView: View {
         iconView.snp.makeConstraints { maker in
             iconViewSizeConstraints = maker.width.height.equalTo(48).constraint
         }
+
+        bottomCardStretchGuide.snp.makeConstraints { maker in
+            maker.top.equalTo(sceneImageView.snp.bottom)
+            maker.leading.equalTo(stretchGuide).offset(16)
+            maker.trailing.equalTo(stretchGuide).offset(-16)
+            maker.bottom.equalTo(stretchGuide.snp.bottom)
+        }
+
+        bottomCardContainer.snp.makeConstraints { maker in
+            maker.top.equalTo(sceneImageView.snp.bottom)
+            maker.leading.trailing.equalTo(bottomCardStretchGuide)
+            maker.bottom.equalTo(bottomCardStretchGuide)
+            maker.centerX.equalTo(bottomCardStretchGuide)
+        }
     }
 
     override func layoutSubviews() {
@@ -392,6 +415,12 @@ private final class StatusView: View {
     // MARK: - Internal
 
     func update(with viewModel: StatusViewModel) {
+        attachCardToBottom = viewModel.attachCardToBottom
+        if attachCardToBottom {
+            cardView.removeFromSuperview()
+            bottomCardContainer.addArrangedSubview(cardView)
+        }
+
         iconViewSizeConstraints?.layoutConstraints.forEach { constraint in
             // if the emitter animation is not shown, we use a slightly larger main icon
             constraint.constant = viewModel.showEmitter ? 48 : 56

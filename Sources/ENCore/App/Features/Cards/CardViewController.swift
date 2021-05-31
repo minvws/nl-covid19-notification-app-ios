@@ -243,6 +243,7 @@ final class CardView: View {
         descriptionLabel.adjustsFontForContentSizeCategory = true
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
+        descriptionLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         container.addArrangedSubview(descriptionLabel)
 
         // primary button
