@@ -12,7 +12,7 @@ import XCTest
 
 final class HelpOverviewViewControllerTests: TestCase {
 
-    private let listern = HelpOverviewListenerMock()
+    private let listener = HelpOverviewListenerMock()
 
     // MARK: - Setup
 
@@ -35,7 +35,7 @@ final class HelpOverviewViewControllerTests: TestCase {
     // MARK: - Private
 
     private func viewController(shouldShowEnableAppButton: Bool) -> HelpOverviewViewController {
-        HelpOverviewViewController(listener: listern,
+        HelpOverviewViewController(listener: listener,
                                    shouldShowEnableAppButton: shouldShowEnableAppButton,
                                    helpManager: HelpManager(),
                                    theme: theme)

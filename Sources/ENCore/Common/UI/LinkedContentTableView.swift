@@ -9,6 +9,7 @@ import ENFoundation
 import Foundation
 import UIKit
 
+/// @mockable
 protocol LinkedContent {
     var title: String { get }
 }

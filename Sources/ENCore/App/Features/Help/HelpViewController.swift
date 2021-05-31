@@ -9,7 +9,7 @@ import ENFoundation
 import UIKit
 import WebKit
 
-/// @mockable
+/// @mockable(history: routeTo = true; routeToOverview = true; detachHelpOverview = true; detachHelpDetail = true; detachReceivedNotification = true)
 protocol HelpRouting: Routing {
     func routeToOverview(shouldShowEnableAppButton: Bool)
     func routeTo(entry: HelpOverviewEntry, shouldShowEnableAppButton: Bool)
@@ -109,10 +109,6 @@ final class HelpViewController: NavigationController, HelpViewControllable, UIAd
     }
 
     // MARK: - ViewController Lifecycle
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
