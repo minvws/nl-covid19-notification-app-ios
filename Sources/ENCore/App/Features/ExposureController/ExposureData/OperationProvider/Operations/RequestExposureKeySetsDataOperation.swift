@@ -112,7 +112,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         logDebug("KeySet: Ignoring KeySets because it is the first batch after first install: \(keySetIdentifiers.joined(separator: "\n"))")
 
         return Observable.from(keySetIdentifiers)
-            .flatMap (createIgnoredKeySetHolder)
+            .flatMap (keySetDownloadProcessor.createIgnoredKeySetHolder)
             .toArray()
             .flatMapCompletable(keySetDownloadProcessor.storeIgnoredKeySetsHolders)
             .do(onError: { _ in

@@ -12,6 +12,7 @@ import Foundation
 /// @mockable(history:process = true; storeDownloadedKeySetsHolder = true)
 protocol KeySetDownloadProcessing {
     func process(identifier: String, url: URL) -> Completable
+    func createIgnoredKeySetHolder(forKeySetIdentifier identifier: String) -> Single<ExposureKeySetHolder>
     func storeDownloadedKeySetsHolder(_ keySetHolder: ExposureKeySetHolder) -> Completable
     func storeIgnoredKeySetsHolders(_ keySetHolders: [ExposureKeySetHolder]) -> Completable
 }
@@ -75,6 +76,17 @@ final class KeySetDownloadProcessor: KeySetDownloadProcessing, Logging {
 
             return Disposables.create()
         }
+    }
+    
+    func createIgnoredKeySetHolder(forKeySetIdentifier identifier: String) -> Single<ExposureKeySetHolder> {
+
+        // mark keyset as processed
+        // ensure processDate is in the past to not have these keysets count towards the rate limit
+        return .just(ExposureKeySetHolder(identifier: identifier,
+                                          signatureFilename: nil,
+                                          binaryFilename: nil,
+                                          processDate: currentDate().addingTimeInterval(-60 * 60 * 24),
+                                          creationDate: currentDate()))
     }
 
     func storeDownloadedKeySetsHolder(_ keySetHolder: ExposureKeySetHolder) -> Completable {

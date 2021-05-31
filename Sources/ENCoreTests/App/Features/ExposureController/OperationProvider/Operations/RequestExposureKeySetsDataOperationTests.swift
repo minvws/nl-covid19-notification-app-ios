@@ -34,6 +34,11 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             .empty()
         }
         
+        mockKeySetDownloadProcessor.createIgnoredKeySetHolderHandler = { identifier in
+            .just(.init(identifier: identifier, signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: currentDate(), creationDate: currentDate()))
+        }
+        
+        
         mockKeySetDownloadProcessor.storeDownloadedKeySetsHolderHandler = { _ in
             .empty()
         }
