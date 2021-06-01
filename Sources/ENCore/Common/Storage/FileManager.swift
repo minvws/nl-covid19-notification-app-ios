@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// @mockable(history: removeItem = true;createDirectory=true)
+/// @mockable(history: removeItem = true;createDirectory=true;fileExists = true;moveItem = true)
 protocol FileManaging {
     func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool
     func fileExists(atPath path: String) -> Bool

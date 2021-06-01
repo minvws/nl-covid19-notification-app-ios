@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
     var window: UIWindow?
 
     private var appRoot: AppRoot?
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Note: The following needs to be set before application:didFinishLaunchingWithOptions: returns
         let unc = UNUserNotificationCenter.current()

@@ -18,10 +18,9 @@ final class NetworkManagerTests: TestCase {
     private var mockStorageControlling: StorageControllingMock!
     private var mockUrlSession: URLSessionProtocolMock!
     private var mockUrlSessionDelegate: URLSessionDelegateProtocolMock!
-    private var mockUnzipResponseHandler: UnzipNetworkResponseHandlerProtocolMock!
-    private var mockVerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocolMock!
     private var mockReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocolMock!
-
+    private var mockUrlResponseSaver: URLResponseSavingMock!
+    
     override func setUp() {
         super.setUp()
 
@@ -30,29 +29,20 @@ final class NetworkManagerTests: TestCase {
         mockStorageControlling = StorageControllingMock()
         mockUrlSession = URLSessionProtocolMock()
         mockUrlSessionDelegate = URLSessionDelegateProtocolMock()
-        mockUnzipResponseHandler = UnzipNetworkResponseHandlerProtocolMock()
-        mockVerifySignatureResponseHandler = VerifySignatureResponseHandlerProtocolMock()
         mockReadFromDiskResponseHandler = ReadFromDiskResponseHandlerProtocolMock()
-
         mockNetworkConfigurationProvider.configuration = .test
-
-        mockNetworkResponseHandlerProvider.unzipNetworkResponseHandler = {
-            return self.mockUnzipResponseHandler
-        }()
-
-        mockNetworkResponseHandlerProvider.verifySignatureResponseHandler = {
-            return self.mockVerifySignatureResponseHandler
-        }()
+        mockUrlResponseSaver = URLResponseSavingMock()
 
         mockNetworkResponseHandlerProvider.readFromDiskResponseHandler = {
             return self.mockReadFromDiskResponseHandler
         }()
-
+                
         sut = NetworkManager(configurationProvider: mockNetworkConfigurationProvider,
                              responseHandlerProvider: mockNetworkResponseHandlerProvider,
                              storageController: mockStorageControlling,
                              session: mockUrlSession,
-                             sessionDelegate: mockUrlSessionDelegate)
+                             sessionDelegate: mockUrlSessionDelegate,
+                             urlResponseSaver: mockUrlResponseSaver)
     }
 
     // MARK: - getManifest
@@ -588,7 +578,7 @@ final class NetworkManagerTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
-    func test_getExposureKeySet_unzipErrorShouldReturnError() throws {
+    func test_getExposureKeySet_urlResponseSavingErrorShouldReturnError() throws {
 
         let mockModel = URL(string: "http://someurl.com")
         let mockData = try JSONEncoder().encode(mockModel)
@@ -696,16 +686,19 @@ final class NetworkManagerTests: TestCase {
                                       simulateUnzipError: Bool = false,
                                       simulateValidateSignatureError: Bool = false,
                                       simulateReadFromDiskError: Bool = false) {
-        mockUnzipResponseHandler.isApplicableHandler = { _, _ in return true }
-        mockUnzipResponseHandler.processHandler = { _, _ in
+        
+        mockUrlResponseSaver.responseToLocalUrlHandler = { _, _, _ in
             if simulateUnzipError { return .error(NetworkResponseHandleError.cannotUnzip) }
+            else if simulateValidateSignatureError { return .error(NetworkResponseHandleError.invalidSignature) }
             else { return .just(URL(string: "http://someurl.com")!) }
         }
-        mockVerifySignatureResponseHandler.isApplicableHandler = { _, _ in return true }
-        mockVerifySignatureResponseHandler.processHandler = { _, _ in
-            if simulateValidateSignatureError { return .error(NetworkResponseHandleError.invalidSignature) }
+        
+        mockUrlResponseSaver.responseToLocalUrlForHandler = { _, _ in
+            if simulateUnzipError { return .error(NetworkResponseHandleError.cannotUnzip) }
+            else if simulateValidateSignatureError { return .error(NetworkResponseHandleError.invalidSignature) }
             else { return .just(URL(string: "http://someurl.com")!) }
         }
+                
         mockReadFromDiskResponseHandler.isApplicableHandler = { _, _ in return true }
         mockReadFromDiskResponseHandler.processHandler = { _, _ in
             if simulateReadFromDiskError { return .error(NetworkResponseHandleError.cannotDeserialize) }

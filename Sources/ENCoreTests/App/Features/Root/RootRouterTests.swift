@@ -434,7 +434,7 @@ final class RootRouterTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
         XCTAssertTrue(lastPresenterViewController === mockMessageViewController)
     }
-
+    
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState) {

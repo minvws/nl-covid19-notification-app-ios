@@ -41,7 +41,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         self.mutableNetworkConfigurationStream = mutableNetworkConfigurationStream
         self.exposureController = exposureController
         self.storageController = storageController
-
+        
         super.init(theme: theme)
 
         attach()
@@ -140,6 +140,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     // MARK: - Sections
 
     private var sections: [(title: String, items: [DeveloperItem])] {
+        
         return [
             ("Show Screens", [
                 DeveloperItem(title: "Show Onboarding",
@@ -237,7 +238,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     }
 
     // MARK: - Actions
-
+    
     private func launchOnboarding() {
         hide()
 

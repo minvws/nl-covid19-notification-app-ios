@@ -8,10 +8,10 @@
 import Foundation
 import RxSwift
 
-/// @mockable
+/// @mockable(history:isApplicable=true;process = true)
 protocol VerifySignatureResponseHandlerProtocol {
-    func isApplicable(for response: URLResponse, input: URL) -> Bool
-    func process(response: URLResponse, input: URL) -> Single<URL>
+    func isApplicable(for response: URLResponseProtocol, input: URL) -> Bool
+    func process(response: URLResponseProtocol, input: URL) -> Single<URL>
 }
 
 final class VerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol {
@@ -25,11 +25,11 @@ final class VerifySignatureResponseHandler: VerifySignatureResponseHandlerProtoc
 
     // MARK: - RxVerifySignatureResponseHandlerProtocol
 
-    func isApplicable(for response: URLResponse, input: URL) -> Bool {
+    func isApplicable(for response: URLResponseProtocol, input: URL) -> Bool {
         return true
     }
 
-    func process(response: URLResponse, input: URL) -> Single<URL> {
+    func process(response: URLResponseProtocol, input: URL) -> Single<URL> {
         guard let fileURLs = getFileURLs(from: input) else {
             return .error(NetworkResponseHandleError.invalidSignature)
         }

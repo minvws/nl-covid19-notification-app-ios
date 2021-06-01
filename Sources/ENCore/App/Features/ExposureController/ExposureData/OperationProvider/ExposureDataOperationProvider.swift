@@ -18,7 +18,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
          application: ApplicationControlling,
          fileManager: FileManaging,
          environmentController: EnvironmentControlling,
-         riskCalculationController: RiskCalculationControlling) {
+         riskCalculationController: RiskCalculationControlling,
+         keySetDownloadProcessor: KeySetDownloadProcessing) {
         self.networkController = networkController
         self.storageController = storageController
         self.applicationSignatureController = applicationSignatureController
@@ -28,6 +29,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
         self.fileManager = fileManager
         self.environmentController = environmentController
         self.riskCalculationController = riskCalculationController
+        self.keySetDownloadProcessor = keySetDownloadProcessor
     }
 
     // MARK: - ExposureDataOperationProvider
@@ -76,9 +78,8 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol {
         return RequestExposureKeySetsDataOperation(networkController: networkController,
                                                    storageController: storageController,
-                                                   localPathProvider: localPathProvider,
                                                    exposureKeySetIdentifiers: identifiers,
-                                                   fileManager: fileManager)
+                                                   keySetDownloadProcessor: keySetDownloadProcessor)
     }
 
     var requestManifestOperation: RequestAppManifestDataOperationProtocol {
@@ -118,6 +119,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
     private let fileManager: FileManaging
     private let environmentController: EnvironmentControlling
     private let riskCalculationController: RiskCalculationControlling
+    private let keySetDownloadProcessor: KeySetDownloadProcessing
 }
 
 extension NetworkError {

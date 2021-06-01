@@ -108,5 +108,5 @@ import UIKit
     public func handle(backgroundTask: BackgroundTask) {
         logDebug("`handle` \(AppRoot.version)")
         appEntryPoint?.handle(backgroundTask: backgroundTask)
-    }
+    }    
 }

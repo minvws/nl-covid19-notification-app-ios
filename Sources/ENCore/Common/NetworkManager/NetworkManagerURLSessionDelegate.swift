@@ -9,26 +9,29 @@ import Foundation
 import Security
 
 final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLSessionDelegateProtocol {
+    
     /// Initialise session delegate with certificate used for SSL pinning
     init(configurationProvider: NetworkConfigurationProvider) {
         self.configurationProvider = configurationProvider
     }
-
+    
+    // MARK: - URLSessionDelegate
+    
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> ()) {
-
+        
         guard let localFingerprints = configurationProvider.configuration.sslFingerprints(forHost: challenge.protectionSpace.host),
-            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-            let serverTrust = challenge.protectionSpace.serverTrust else {
+              challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+              let serverTrust = challenge.protectionSpace.serverTrust else {
             // no pinning
             completionHandler(.performDefaultHandling, nil)
             return
         }
-
+        
         let policies = [SecPolicyCreateSSL(true, challenge.protectionSpace.host as CFString)]
         SecTrustSetPolicies(serverTrust, policies as CFTypeRef)
-
+        
         let certificateCount = SecTrustGetCertificateCount(serverTrust)
-
+        
         guard
             SecTrustEvaluateWithError(serverTrust, nil),
             certificateCount > 0,
@@ -38,18 +41,23 @@ final class NetworkManagerURLSessionDelegate: NSObject, URLSessionDelegate, URLS
             completionHandler(.cancelAuthenticationChallenge, nil)
             return
         }
-
+        
         guard localFingerprints.contains(fingerprint) else {
             // signatures don't match
             completionHandler(.cancelAuthenticationChallenge, nil)
             return
         }
-
+        
         // all good
         completionHandler(.useCredential, URLCredential(trust: serverTrust))
     }
-
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {}
+    
+    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {}
+        
     // MARK: - Private
-
+    
     private let configurationProvider: NetworkConfigurationProvider
 }
+

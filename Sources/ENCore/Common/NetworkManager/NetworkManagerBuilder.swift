@@ -30,7 +30,7 @@ protocol NetworkManaging {
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ())
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ())
     func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ())
-
+    
     // MARK: Enrollment
 
     func postRegister(request: RegisterRequest, completion: @escaping (Result<LabInformation, NetworkError>) -> ())
@@ -46,28 +46,7 @@ protocol NetworkManagerBuildable {
 protocol NetworkManagerDependency {
     var networkConfigurationProvider: NetworkConfigurationProvider { get }
     var storageController: StorageControlling { get }
-}
-
-/// @mockable
-protocol URLSessionDataTaskProtocol {
-    func resume()
-}
-
-extension URLSessionDataTask: URLSessionDataTaskProtocol {}
-
-/// @mockable
-protocol URLSessionProtocol {
-    func resumableDataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol
-}
-
-/// @mockable
-protocol URLSessionDelegateProtocol {}
-
-extension URLSession: URLSessionProtocol {
-    func resumableDataTask(with request: URLRequest,
-                           completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol {
-        return dataTask(with: request, completionHandler: completionHandler)
-    }
+    var localPathProvider: LocalPathProviding { get }
 }
 
 private final class NetworkManagerDependencyProvider: DependencyProvider<NetworkManagerDependency> {
@@ -99,6 +78,10 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
     var sessionDelegate: URLSessionDelegate? {
         return NetworkManagerURLSessionDelegate(configurationProvider: dependency.networkConfigurationProvider)
     }
+        
+    var urlResponseSaver: URLResponseSaving {
+        return URLResponseSaver(responseHandlerProvider: responseHandlerProvider)
+    }
 }
 
 final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkManagerBuildable {
@@ -110,6 +93,7 @@ final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkMan
                               responseHandlerProvider: dependencyProvider.responseHandlerProvider,
                               storageController: dependencyProvider.dependency.storageController,
                               session: dependencyProvider.session,
-                              sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol)
+                              sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol,
+                              urlResponseSaver: dependencyProvider.urlResponseSaver)
     }
 }

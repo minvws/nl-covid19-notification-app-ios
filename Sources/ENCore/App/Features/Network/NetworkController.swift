@@ -109,7 +109,7 @@ final class NetworkController: NetworkControlling, Logging {
             return Disposables.create()
         })
     }
-
+    
     func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey> {
         let observable = Single<LabConfirmationKey>.create { observer in
 

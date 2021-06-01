@@ -11,17 +11,19 @@ import RxSwift
 import UIKit
 
 final class NetworkManager: NetworkManaging, Logging {
-
+    
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          storageController: StorageControlling,
          session: URLSessionProtocol,
-         sessionDelegate: URLSessionDelegateProtocol?) {
+         sessionDelegate: URLSessionDelegateProtocol?,
+         urlResponseSaver: URLResponseSaving) {
         self.configurationProvider = configurationProvider
         self.responseHandlerProvider = responseHandlerProvider
         self.storageController = storageController
         self.session = session
         self.sessionDelegate = sessionDelegate
+        self.urlResponseSaver = urlResponseSaver
     }
 
     // MARK: CDN
@@ -89,7 +91,7 @@ final class NetworkManager: NetworkManaging, Logging {
             case let .failure(error):
                 completion(.failure(error))
             case let .success(result):
-                self
+                self.urlResponseSaver
                     .responseToLocalUrl(for: result.0, url: result.1, backgroundThreadIfPossible: true)
                     .subscribe { event in
                         switch event {
@@ -106,7 +108,7 @@ final class NetworkManager: NetworkManaging, Logging {
             }
         }
     }
-
+    
     /// Upload diagnosis keys (TEKs) to the server
     /// - Parameters:
     ///   - request: PostKeysRequest
@@ -229,7 +231,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     // MARK: - Download Files
-
+    
     private func downloadAndDecodeURL<T: Decodable>(withURLRequest urlRequest: Result<URLRequest, NetworkError>,
                                                     decodeAsType modelType: T.Type,
                                                     backgroundThreadIfPossible: Bool = false,
@@ -380,7 +382,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
     /// Unzips, verifies signature and reads response in memory
     private func responseToData(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Single<Data> {
-        let localUrl = responseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
+        let localUrl = urlResponseSaver.responseToLocalUrl(for: response, url: url, backgroundThreadIfPossible: backgroundThreadIfPossible)
 
         let readFromDiskResponseHandler = responseHandlerProvider.readFromDiskResponseHandler
         if readFromDiskResponseHandler.isApplicable(for: response, input: url) {
@@ -389,36 +391,6 @@ final class NetworkManager: NetworkManaging, Logging {
         } else {
             return .error(NetworkResponseHandleError.cannotDeserialize)
         }
-    }
-
-    private func responseToLocalUrl(for response: URLResponse, url: URL, backgroundThreadIfPossible: Bool = false) -> Single<URL> {
-        var localUrl = Single<URL>.just(url)
-
-        if backgroundThreadIfPossible, UIApplication.shared.applicationState != .background {
-            localUrl = localUrl
-                .observe(on: concurrentUtilityScheduler)
-        }
-
-        let start = CFAbsoluteTimeGetCurrent()
-
-        // unzip
-        let unzipResponseHandler = responseHandlerProvider.unzipNetworkResponseHandler
-        if unzipResponseHandler.isApplicable(for: response, input: url) {
-            localUrl = localUrl
-                .flatMap { localUrl in unzipResponseHandler.process(response: response, input: localUrl) }
-        }
-
-        let diff = CFAbsoluteTimeGetCurrent() - start
-        logDebug("Unzip Took \(diff) seconds")
-
-        // verify signature
-        let verifySignatureResponseHandler = responseHandlerProvider.verifySignatureResponseHandler
-        if verifySignatureResponseHandler.isApplicable(for: response, input: url) {
-            localUrl = localUrl
-                .flatMap { localUrl in verifySignatureResponseHandler.process(response: response, input: localUrl) }
-        }
-
-        return localUrl
     }
 
     /// Utility function to decode JSON
@@ -457,6 +429,7 @@ final class NetworkManager: NetworkManaging, Logging {
     private let session: URLSessionProtocol
     private let sessionDelegate: URLSessionDelegateProtocol? // hold on to delegate to prevent deallocation
     private let responseHandlerProvider: NetworkResponseHandlerProvider
+    private let urlResponseSaver: URLResponseSaving
     private let storageController: StorageControlling
 
     private var configuration: NetworkConfiguration {

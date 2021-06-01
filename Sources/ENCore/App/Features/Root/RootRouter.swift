@@ -153,7 +153,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
     }
-
+    
     func didBecomeActive() {
         exposureController.refreshStatus()
 
