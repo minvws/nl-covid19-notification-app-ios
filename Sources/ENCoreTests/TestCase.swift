@@ -76,6 +76,6 @@ class TestCase: XCTestCase {
     }
     
     func waitForExpectations() {
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 }
