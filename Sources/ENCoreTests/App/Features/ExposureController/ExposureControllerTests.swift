@@ -673,7 +673,7 @@ final class ExposureControllerTests: TestCase {
 
     // MARK: - postExposureManagerActivation
 
-    func test_postExposureManagerActivation_shouldUpdateStatusStream() {
+    func test_postExposureManagerActivation_shouldUpdateStateStream() {
         networkStatusStream.networkReachable = true
         let completionExpectation = expectation(description: "completion")
         let stream = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))

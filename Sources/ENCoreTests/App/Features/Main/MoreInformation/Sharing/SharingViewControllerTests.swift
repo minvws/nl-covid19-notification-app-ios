@@ -26,6 +26,9 @@ final class SharingViewControllerTests: TestCase {
         viewController = ShareSheetViewController(listener: listener,
                                                   theme: theme,
                                                   interfaceOrientationStream: interfaceOrientationStream)
+        
+        viewController.view.setNeedsLayout()
+        viewController.view.layoutIfNeeded()
     }
 
     // MARK: - Tests
