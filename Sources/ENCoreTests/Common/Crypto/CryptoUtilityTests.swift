@@ -35,4 +35,48 @@ class CryptoUtilityTests: TestCase {
         let sha = sut.sha256(data: data)
         XCTAssertEqual(sha, "SHA256 digest: 80ed7fe2957fa688284716753d339d019d490d4589ac4999ec8827ef3f84be29")
     }
+    
+    func test_validate_withSuccess() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        let data = "SomeData".data(using: .utf8)!
+        let key = "SomeKey".data(using: .utf8)!
+        let signature = sut.signature(forData: data, key: key)
+        
+        mockSignatureValidator.validateHandler = { _, _, _ in
+            .SIGNATUREVALIDATIONRESULT_SUCCESS
+        }
+        
+        // Act
+        sut.validate(data: data, signature: signature) { (isValid) in
+            XCTAssertTrue(isValid)
+            completionExpectation.fulfill()
+        }
+        
+        // Assert
+        waitForExpectations()
+        XCTAssertEqual(mockSignatureValidator.validateCallCount, 1)
+    }
+    
+    func test_validate_withError() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        let data = "SomeData".data(using: .utf8)!
+        let key = "SomeKey".data(using: .utf8)!
+        let signature = sut.signature(forData: data, key: key)
+        
+        mockSignatureValidator.validateHandler = { _, _, _ in
+            .SIGNATUREVALIDATIONRESULT_VERIFICATIONFAILED
+        }
+        
+        // Act
+        sut.validate(data: data, signature: signature) { (isValid) in
+            XCTAssertFalse(isValid)
+            completionExpectation.fulfill()
+        }
+        
+        // Assert
+        waitForExpectations()
+        XCTAssertEqual(mockSignatureValidator.validateCallCount, 1)
+    }
 }

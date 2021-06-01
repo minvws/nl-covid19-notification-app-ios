@@ -28,7 +28,7 @@ final class CryptoUtilityImpl: CryptoUtility {
 
     // MARK: - CryptoUtility
 
-    func validate(data: Data, signature: Data, completion: @escaping (Bool) -> ()) {
+    func validate(data: Data, signature: Data, completion: @escaping (_ isValid: Bool) -> ()) {
         DispatchQueue.global().async {
             let result = self.signatureValidator.validate(signature: signature, content: data, validateRootCertificate: true)
 
