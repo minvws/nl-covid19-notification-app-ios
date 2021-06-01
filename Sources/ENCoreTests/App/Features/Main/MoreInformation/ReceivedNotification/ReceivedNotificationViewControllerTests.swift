@@ -30,6 +30,9 @@ final class ReceivedNotificationViewControllerTests: TestCase {
                                                             actionButtonTitle: nil,
                                                             theme: theme,
                                                             interfaceOrientationStream: interfaceOrientationStream)
+        
+        viewController.view.setNeedsLayout()
+        viewController.view.layoutIfNeeded()
     }
 
     // MARK: - Tests

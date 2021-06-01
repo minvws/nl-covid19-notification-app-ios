@@ -434,6 +434,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .distinctUntilChanged()
             .compactMap { $0 }
             .subscribe(on: MainScheduler.instance)
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
     }
     
     func updateLastExposureProcessingDateSubject() {
