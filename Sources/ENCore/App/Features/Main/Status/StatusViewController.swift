@@ -34,6 +34,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }()
 
     private var pauseTimer: Timer?
+    private let notifiedShouldShowCardDaysThreshold = 14
 
     init(exposureStateStream: ExposureStateStreaming,
          interfaceOrientationStream: InterfaceOrientationStreaming,
@@ -157,7 +158,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         case let (.inactive(.paused(pauseEndDate)), .notNotified):
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
         case let (.active, .notified(date)):
-            if Date().days(sinceDate: date) ?? 0 > 14 {
+            if currentDate().days(sinceDate: date) ?? 0 > notifiedShouldShowCardDaysThreshold {
                 statusViewModel = .activeWithNotified14DaysAgoCard(showScene: true)
                 cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
                                                             explainRiskHandler: explainRisk,
@@ -166,8 +167,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
                 statusViewModel = StatusViewModel.activeWithNotified(date: date)
             }
         case let (.inactive(reason), .notified(date)):
-            if Date().days(sinceDate: date) ?? 0 > 14 {
-                statusViewModel = .activeWithNotified14DaysAgoCard(showScene: true)
+            if currentDate().days(sinceDate: date) ?? 0 > notifiedShouldShowCardDaysThreshold {
+                statusViewModel = .inactiveWithNotNotified
                 cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
                                                             explainRiskHandler: explainRisk,
                                                             removeNotificationHandler: removeNotification))
@@ -186,7 +187,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             statusViewModel = .inactiveWithNotNotified
 
         case let (.authorizationDenied, .notified(date)):
-            if Date().days(sinceDate: date) ?? 0 > 14 {
+            if currentDate().days(sinceDate: date) ?? 0 > notifiedShouldShowCardDaysThreshold {
                 statusViewModel = .inactiveWithNotNotified
                 cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
                                                             explainRiskHandler: explainRisk,
@@ -201,7 +202,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             statusViewModel = .inactiveWithNotNotified
 
         case let (.notAuthorized, .notified(date)):
-            if Date().days(sinceDate: date) ?? 0 > 14 {
+            if currentDate().days(sinceDate: date) ?? 0 > notifiedShouldShowCardDaysThreshold {
                 statusViewModel = .inactiveWithNotNotified
                 cardTypes.append(.notifiedMoreThan14DaysAgo(date: date,
                                                             explainRiskHandler: explainRisk,
