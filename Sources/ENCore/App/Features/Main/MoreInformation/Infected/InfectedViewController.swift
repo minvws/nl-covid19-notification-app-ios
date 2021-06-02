@@ -85,6 +85,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         interfaceOrientationStream
             .isLandscape
+            .observe(on: MainScheduler.instance)
             .subscribe { [weak self] isLandscape in
                 self?.internalView.infoView.showHeader = !isLandscape
             }.disposed(by: disposeBag)
@@ -195,18 +196,20 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     }
 
     private func updateState() {
-        switch state {
-        case .loading:
-            internalView.infoView.isActionButtonEnabled = false
-            internalView.controlCode.set(state: .loading(.moreInformationInfectedLoading))
-        case let .success(key):
-            internalView.infoView.isActionButtonEnabled = true
-            internalView.controlCode.set(state: .success(key.key))
-        case .error:
-            internalView.infoView.isActionButtonEnabled = false
-            internalView.controlCode.set(state: .error(.moreInformationInfectedError) { [weak self] in
-                self?.requestLabConfirmationKey()
-            })
+        DispatchQueue.main.async {
+            switch self.state {
+            case .loading:
+                self.internalView.infoView.isActionButtonEnabled = false
+                self.internalView.controlCode.set(state: .loading(.moreInformationInfectedLoading))
+            case let .success(key):
+                self.internalView.infoView.isActionButtonEnabled = true
+                self.internalView.controlCode.set(state: .success(key.key))
+            case .error:
+                self.internalView.infoView.isActionButtonEnabled = false
+                self.internalView.controlCode.set(state: .error(.moreInformationInfectedError) { [weak self] in
+                    self?.requestLabConfirmationKey()
+                })
+            }
         }
     }
 
