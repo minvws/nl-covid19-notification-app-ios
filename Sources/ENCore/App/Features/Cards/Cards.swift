@@ -58,11 +58,11 @@ struct Card {
         self.secondaryActionTitle = secondaryActionTitle
     }
 
-    static func notifiedMoreThan14DaysAgo(theme: Theme, date: Date, explainRiskHandler: @escaping () -> (), removeNotificationHandler: @escaping () -> ()) -> Card {
-        let title: String = .statusENContact14DaysTitle
-        let content: String = statusENContact14DaysDescription(from: date)
+    static func notifiedMoreThanThresholdDaysAgo(theme: Theme, date: Date, explainRiskHandler: @escaping () -> (), removeNotificationHandler: @escaping () -> ()) -> Card {
+        let title: String = .statusENContactThresholdDaysTitle
+        let content: String = statusENContactThresholdDaysDescription(from: date)
         let actionTitle: String = .moreInformationHeaderTitle
-        let secondaryActionTitle: String = .statusENContact14DaysSecondaryButtonTitle
+        let secondaryActionTitle: String = .statusENContactThresholdDaysSecondaryButtonTitle
 
         return Card(icon: .bell, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
                     message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
@@ -127,7 +127,7 @@ struct Card {
                     actionTitle: action)
     }
 
-    private static func statusENContact14DaysDescription(from: Date) -> String {
+    private static func statusENContactThresholdDaysDescription(from: Date) -> String {
         let now = currentDate()
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .full
@@ -135,6 +135,6 @@ struct Card {
         let dateString = dateFormatter.string(from: from)
         let days = now.days(sinceDate: from) ?? 0
 
-        return .statusENContact14DaysDescription(dateString, two: .statusNotifiedDaysAgo(days: days))
+        return .statusENContactThresholdDaysDescription(dateString, two: .statusNotifiedDaysAgo(days: days))
     }
 }

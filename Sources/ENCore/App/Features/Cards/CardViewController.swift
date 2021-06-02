@@ -235,7 +235,8 @@ final class CardView: View {
         headerTitleLabel.adjustsFontForContentSizeCategory = true
         headerTitleLabel.font = theme.fonts.title3
         headerTitleLabel.numberOfLines = 0
-        headerTitleLabel.preferredMaxLayoutWidth = 1000
+        headerTitleLabel.preferredMaxLayoutWidth = 200
+        headerTitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         header.addArrangedSubview(headerTitleLabel)
         container.addArrangedSubview(header)
 
@@ -314,8 +315,8 @@ private extension CardType {
             return .noInternet(theme: theme, retryHandler: retryHandler)
         case .noLocalNotifications:
             return .noLocalNotifications(theme: theme)
-        case let .notifiedMoreThan14DaysAgo(date: date, explainRiskHandler: explainRiskHandler, removeNotificationHandler: removeNotificationHandler):
-            return .notifiedMoreThan14DaysAgo(theme: theme, date: date, explainRiskHandler: explainRiskHandler, removeNotificationHandler: removeNotificationHandler)
+        case let .notifiedMoreThanThresholdDaysAgo(date: date, explainRiskHandler: explainRiskHandler, removeNotificationHandler: removeNotificationHandler):
+            return .notifiedMoreThanThresholdDaysAgo(theme: theme, date: date, explainRiskHandler: explainRiskHandler, removeNotificationHandler: removeNotificationHandler)
         }
     }
 }

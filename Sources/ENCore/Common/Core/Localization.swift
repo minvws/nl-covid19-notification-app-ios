@@ -556,9 +556,9 @@ extension String {
     static var cardsNotificationsOffAction: String { return Localization.string(for: "cards.notificationsOff.action") }
 
     /* MARK: - Cards | EN > 14 days */
-    static var statusENContact14DaysTitle: String { return Localization.string(for: "status.en.contact.>14days.title") }
-    static func statusENContact14DaysDescription(_ one: String, two: String) -> String { return Localization.string(for: "status.en.contact.>14days.description", [one, two]) }
-    static var statusENContact14DaysSecondaryButtonTitle: String { return Localization.string(for: "status.en.contact.>14days.secondary.button.title") }
+    static var statusENContactThresholdDaysTitle: String { return Localization.string(for: "status.en.contact.>14days.title") }
+    static func statusENContactThresholdDaysDescription(_ one: String, two: String) -> String { return Localization.string(for: "status.en.contact.>14days.description", [one, two]) }
+    static var statusENContactThresholdDaysSecondaryButtonTitle: String { return Localization.string(for: "status.en.contact.>14days.secondary.button.title") }
 
     // MARK: - Enable Settings | Exposure Notifications
 

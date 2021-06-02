@@ -144,7 +144,7 @@ struct StatusViewModel {
         )
     }
 
-    static func activeWithNotified14DaysAgoCard(showScene: Bool) -> StatusViewModel {
+    static func activeWithNotifiedThresholdDaysAgoCard(showScene: Bool) -> StatusViewModel {
 
         return StatusViewModel(
             icon: .ok,

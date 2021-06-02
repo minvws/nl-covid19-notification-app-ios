@@ -9,7 +9,7 @@ import ENFoundation
 import Foundation
 
 enum CardType: Equatable {
-    case notifiedMoreThan14DaysAgo(date: Date, explainRiskHandler: () -> (), removeNotificationHandler: () -> ())
+    case notifiedMoreThanThresholdDaysAgo(date: Date, explainRiskHandler: () -> (), removeNotificationHandler: () -> ())
     case exposureOff
     case bluetoothOff
     case noInternet(retryHandler: () -> ())
@@ -18,7 +18,7 @@ enum CardType: Equatable {
 
     static func == (lhs: CardType, rhs: CardType) -> Bool {
         switch (lhs, rhs) {
-        case (.notifiedMoreThan14DaysAgo, .notifiedMoreThan14DaysAgo), (.exposureOff, .exposureOff), (.bluetoothOff, .bluetoothOff), (.noInternet, .noInternet), (.noLocalNotifications, .noLocalNotifications), (.paused, .paused):
+        case (.notifiedMoreThanThresholdDaysAgo, .notifiedMoreThanThresholdDaysAgo), (.exposureOff, .exposureOff), (.bluetoothOff, .bluetoothOff), (.noInternet, .noInternet), (.noLocalNotifications, .noLocalNotifications), (.paused, .paused):
             return true
         default:
             return false
