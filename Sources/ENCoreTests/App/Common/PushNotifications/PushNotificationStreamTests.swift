@@ -34,7 +34,7 @@ class PushNotificationStreamTests: TestCase {
         sut.update(identifier: identifier)
         
         // Assert
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations()
     }
 
 }

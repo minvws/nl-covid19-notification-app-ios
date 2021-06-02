@@ -15,71 +15,75 @@ protocol VerifySignatureResponseHandlerProtocol {
 }
 
 final class VerifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol {
+    
+    private let cryptoUtility: CryptoUtility
+    private let fileManager: FileManaging
+    
     private let signatureFilename = "content.sig"
     private let contentFilename = "content.bin"
     private let tekFilename = "export.bin"
-
-    init(cryptoUtility: CryptoUtility) {
+    
+    init(cryptoUtility: CryptoUtility,
+         fileManager: FileManaging) {
         self.cryptoUtility = cryptoUtility
+        self.fileManager = fileManager
     }
-
+    
     // MARK: - RxVerifySignatureResponseHandlerProtocol
-
+    
     func isApplicable(for response: URLResponseProtocol, input: URL) -> Bool {
         return true
     }
-
+    
     func process(response: URLResponseProtocol, input: URL) -> Single<URL> {
         guard let fileURLs = getFileURLs(from: input) else {
             return .error(NetworkResponseHandleError.invalidSignature)
         }
-
+        
         let (signatureFileUrl, binaryFileUrl) = fileURLs
-
+        
         guard
             let signatureData = try? Data(contentsOf: signatureFileUrl),
             let binaryData = try? Data(contentsOf: binaryFileUrl) else {
             return .error(NetworkResponseHandleError.invalidSignature)
         }
-
+        
         return .create { observer in
             self.cryptoUtility.validate(data: binaryData,
                                         signature: signatureData) { isValid in
-
+                
                 if isValid {
                     observer(.success(input))
                 } else {
                     observer(.failure(NetworkResponseHandleError.invalidSignature))
                 }
             }
-
+            
             return Disposables.create()
         }
     }
-
+    
     // MARK: - Private
-
+    
     private func getFileURLs(from url: URL) -> (signatureFileUrl: URL, contentFileUrl: URL)? {
         var isFolder = ObjCBool(false)
-
+        
         // verify signature file
         let signatureFileUrl = url.appendingPathComponent(signatureFilename)
-        guard FileManager.default.fileExists(atPath: signatureFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false else {
+        guard fileManager.fileExists(atPath: signatureFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false else {
             return nil
         }
-
+        
         var binaryFileUrl = url.appendingPathComponent(contentFilename)
-        if FileManager.default.fileExists(atPath: binaryFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false {
+        if fileManager.fileExists(atPath: binaryFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false {
             return (signatureFileUrl, binaryFileUrl)
         }
-
+        
         binaryFileUrl = url.appendingPathComponent(tekFilename)
-        if FileManager.default.fileExists(atPath: binaryFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false {
+        if fileManager.fileExists(atPath: binaryFileUrl.path, isDirectory: &isFolder), isFolder.boolValue == false {
             return (signatureFileUrl, binaryFileUrl)
         }
-
+        
         return nil
     }
-
-    private let cryptoUtility: CryptoUtility
 }

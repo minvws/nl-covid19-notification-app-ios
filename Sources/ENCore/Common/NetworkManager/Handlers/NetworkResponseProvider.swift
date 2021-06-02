@@ -41,7 +41,8 @@ final class NetworkResponseHandlerProviderImpl: NetworkResponseHandlerProvider {
     }
 
     var verifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol {
-        return VerifySignatureResponseHandler(cryptoUtility: cryptoUtility)
+        return VerifySignatureResponseHandler(cryptoUtility: cryptoUtility,
+                                              fileManager: FileManager.default)
     }
 
     // MARK: - Private
