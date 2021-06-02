@@ -77,12 +77,14 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         interfaceOrientationStream
             .isLandscape
+            .observe(on: MainScheduler.instance)
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
             }.disposed(by: disposeBag)
 
         dataController
             .getAppointmentPhoneNumber()
+            .observe(on: MainScheduler.instance)
             .subscribe(onSuccess: { exposedPhoneNumber in
                 self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
             }, onFailure: { _ in

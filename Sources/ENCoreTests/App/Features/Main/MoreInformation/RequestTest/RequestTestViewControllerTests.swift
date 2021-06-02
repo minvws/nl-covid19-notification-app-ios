@@ -40,7 +40,7 @@ final class RequestTestViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotRequestTestViewController() {
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 
     func testSnapshotRequestTestViewControllerExposed() {
@@ -52,7 +52,7 @@ final class RequestTestViewControllerTests: TestCase {
                                                    exposureStateStream: exposureStateStream,
                                                    dataController: datacontroller)
 
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 
     // Tests the screen with arabic (RTL) language to ensure proper formatting of phone numbers in text and buttons

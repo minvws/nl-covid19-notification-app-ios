@@ -48,7 +48,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
 
     func test_infected_snapshotStateLoading() {
         viewController.state = .loading
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 
     func test_infected_snapshotStateSuccess() {
@@ -56,12 +56,12 @@ final class InfectedViewControllerSnapshotTests: TestCase {
                                                                             bucketIdentifier: Data(),
                                                                             confirmationKey: Data(),
                                                                             validUntil: currentDate()))
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 
     func test_infected_snapshotStateError() {
         viewController.state = .error
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 
     func test_infected_errorCard() {
@@ -78,7 +78,7 @@ final class InfectedViewControllerSnapshotTests: TestCase {
 
         viewController.set(cardViewController: cardViewController)
 
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 
     func test_viewDidLoad_calls_exposureController() {
