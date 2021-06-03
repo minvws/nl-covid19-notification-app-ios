@@ -157,7 +157,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
         case let (.active, .notified(date)):
             if currentDate().days(sinceDate: date) ?? 0 > notifiedShouldShowCardDaysThreshold {
-                statusViewModel = .activeWithNotifiedThresholdDaysAgoCard(showScene: true)
+                statusViewModel = .activeWithNotifiedThresholdDaysAgoCard(showScene: !isLandscape && announcementCardTypes.isEmpty)
                 cardTypes.append(.notifiedMoreThanThresholdDaysAgo(date: date,
                                                                    explainRiskHandler: explainRisk,
                                                                    removeNotificationHandler: removeNotification))
