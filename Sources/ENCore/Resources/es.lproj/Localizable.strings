@@ -362,6 +362,11 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.card.manualunpause.title" = "Volver a activar la app";
 "status.card.manualunpause.description" = "La app todavía no está activada. Debes activarla tú mismo.";
 
+/* MARK: - EN > 14 days */
+"status.en.contact.>14days.title" = "Contact more than 14 days ago";
+"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
+"status.en.contact.>14days.secondary.button.title" = "Delete";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Más información";
 

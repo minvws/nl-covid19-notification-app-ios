@@ -366,6 +366,11 @@
 "status.card.manualunpause.title" = "قم بتشغيل التطبيق من جديد";
 "status.card.manualunpause.description" = "التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
 
+/* MARK: - EN > 14 days */
+"status.en.contact.>14days.title" = "Contact more than 14 days ago";
+"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
+"status.en.contact.>14days.secondary.button.title" = "Delete";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "المزيد من المعلومات";
 
