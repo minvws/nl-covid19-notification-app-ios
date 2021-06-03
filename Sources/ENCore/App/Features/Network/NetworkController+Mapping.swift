@@ -54,7 +54,14 @@ extension AppConfig {
                                         requestMaximumSize: requestMaximumSize ?? 17000,
                                         repeatedUploadDelay: repeatedUploadDelay ?? 14400,
                                         decativated: coronaMelderDeactivated == "deactivated",
-                                        appointmentPhoneNumber: appointmentPhoneNumber ?? .coronaTestExposedPhoneNumber)
+                                        appointmentPhoneNumber: appointmentPhoneNumber ?? .coronaTestExposedPhoneNumber,
+                                        featureFlags: featureFlags?.map { $0.asApplicationConfigurationFeatureFlag() })
+    }
+}
+
+extension AppConfig.FeatureFlag {
+    func asApplicationConfigurationFeatureFlag() -> ApplicationConfiguration.FeatureFlag {
+        .init(id: id, featureEnabled: featureEnabled)
     }
 }
 

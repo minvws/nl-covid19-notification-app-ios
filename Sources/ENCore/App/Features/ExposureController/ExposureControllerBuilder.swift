@@ -92,6 +92,8 @@ protocol ExposureControlling: AnyObject {
 
     /// Updates the treatment perspective message
     func updateTreatmentPerspective() -> Completable
+    
+    func getAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]?
 
     // MARK: - Onboarding
 
