@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 public final class Localization {
-
     enum SupportedLanguageIdentifier: String {
         case ar
         case bg
@@ -82,7 +81,6 @@ public final class Localization {
 }
 
 extension String {
-
     // MARK: - Update Operating System
 
     static var updateSoftwareOSTitle: String { return Localization.string(for: "update.software.os.title") }
@@ -412,6 +410,7 @@ extension String {
         let urlLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
         return Localization.string(for: "https://coronamelder.nl/%@", [urlLanguage.rawValue])
     }
+
     static var aboutInteroperabilityTitle: String { return Localization.string(for: "moreInformation.about.interoperability.title") }
     static var aboutInteroperabilityFAQLink: String {
         let interopURLLanguage = Localization.SupportedLanguageIdentifier(rawValue: .currentLanguageIdentifier) ?? .en
@@ -431,6 +430,7 @@ extension String {
 
     static var moreInformationSettingsPauseYesPause: String { return Localization.string(for: "moreInformation.settings.pause.yesbutton")
     }
+
     static var moreInformationSettingsPauseNoCancelPause: String { return Localization.string(for: "moreInformation.settings.pause.cancelbutton")
     }
 
@@ -555,6 +555,11 @@ extension String {
     static var cardsNotificationsOffContent: String { return Localization.string(for: "cards.notificationsOff.content") }
     static var cardsNotificationsOffAction: String { return Localization.string(for: "cards.notificationsOff.action") }
 
+    /* MARK: - Cards | EN > 14 days */
+    static var statusENContactThresholdDaysTitle: String { return Localization.string(for: "status.en.contact.>14days.title") }
+    static func statusENContactThresholdDaysDescription(_ one: String, two: String) -> String { return Localization.string(for: "status.en.contact.>14days.description", [one, two]) }
+    static var statusENContactThresholdDaysSecondaryButtonTitle: String { return Localization.string(for: "status.en.contact.>14days.secondary.button.title") }
+
     // MARK: - Enable Settings | Exposure Notifications
 
     static var enableSettingsExposureNotificationsTitle: String { return Localization.string(for: "enableSettings.exposureNotifications.title") }
@@ -645,7 +650,7 @@ extension String {
 
     func attributedStrings() -> [NSMutableAttributedString] {
         let paragraph = "\n\n"
-        let strings = self.components(separatedBy: paragraph)
+        let strings = components(separatedBy: paragraph)
 
         return strings.enumerated().map { (index, element) -> NSMutableAttributedString in
             let value = index < strings.count - 1 ? element + "\n" : element

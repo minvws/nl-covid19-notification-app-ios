@@ -54,7 +54,7 @@ struct StatusViewButtonModel {
         style: .primary,
         action: .updateAppSettings
     )
-    
+
     static let enableBluetooth = StatusViewButtonModel(
         title: .statusAppStateCardBluetoothButton,
         style: .primary,
@@ -106,6 +106,7 @@ struct StatusViewModel {
     var showScene: Bool
     var showClouds: Bool
     var showEmitter: Bool
+    var attachCardToBottom: Bool
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
         let description = timeAgo(from: date)
@@ -121,7 +122,8 @@ struct StatusViewModel {
             gradientColor: \.statusGradientNotified,
             showScene: false,
             showClouds: false,
-            showEmitter: true
+            showEmitter: true,
+            attachCardToBottom: false
         )
     }
 
@@ -137,7 +139,25 @@ struct StatusViewModel {
             gradientColor: \.statusGradientActive,
             showScene: showScene,
             showClouds: true,
-            showEmitter: true
+            showEmitter: true,
+            attachCardToBottom: false
+        )
+    }
+
+    static func activeWithNotifiedThresholdDaysAgoCard(showScene: Bool) -> StatusViewModel {
+
+        return StatusViewModel(
+            icon: .ok,
+            title: .init(string: .statusAppState),
+            description: .init(string: String(format: .statusActiveDescription)),
+            buttons: [],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.statusGradientActive,
+            showScene: showScene,
+            showClouds: true,
+            showEmitter: true,
+            attachCardToBottom: true
         )
     }
 
@@ -155,7 +175,8 @@ struct StatusViewModel {
             gradientColor: \.statusGradientNotified,
             showScene: false,
             showClouds: false,
-            showEmitter: true
+            showEmitter: true,
+            attachCardToBottom: false
         )
     }
 
@@ -175,7 +196,8 @@ struct StatusViewModel {
             gradientColor: \.statusGradientPaused,
             showScene: false,
             showClouds: false,
-            showEmitter: false
+            showEmitter: false,
+            attachCardToBottom: false
         )
     }
 
@@ -189,9 +211,10 @@ struct StatusViewModel {
         gradientColor: \.lightOrange,
         showScene: false,
         showClouds: false,
-        showEmitter: true
+        showEmitter: true,
+        attachCardToBottom: false
     )
-    
+
     static func bluetoothInactiveWithNotNotified(theme: Theme) -> StatusViewModel {
         StatusViewModel(
             icon: .inactive,
@@ -203,7 +226,8 @@ struct StatusViewModel {
             gradientColor: \.lightOrange,
             showScene: false,
             showClouds: false,
-            showEmitter: true
+            showEmitter: true,
+            attachCardToBottom: false
         )
     }
 
@@ -217,7 +241,8 @@ struct StatusViewModel {
         gradientColor: \.lightOrange,
         showScene: false,
         showClouds: false,
-        showEmitter: true
+        showEmitter: true,
+        attachCardToBottom: false
     )
 
     static func timeAgo(from: Date) -> String {

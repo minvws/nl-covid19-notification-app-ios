@@ -363,6 +363,11 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.card.manualunpause.title" = "App wieder aktivieren";
 "status.card.manualunpause.description" = "Die App ist noch nicht aktiv. Sie müssen sie selbst aktivieren.";
 
+/* MARK: - EN > 14 days */
+"status.en.contact.>14days.title" = "Contact more than 14 days ago";
+"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
+"status.en.contact.>14days.secondary.button.title" = "Delete";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mehr Informationen";
 
