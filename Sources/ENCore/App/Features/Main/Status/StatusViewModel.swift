@@ -106,7 +106,6 @@ struct StatusViewModel {
     var showScene: Bool
     var showClouds: Bool
     var showEmitter: Bool
-    var attachCardToBottom: Bool
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
         let description = timeAgo(from: date)
@@ -122,8 +121,7 @@ struct StatusViewModel {
             gradientColor: \.statusGradientNotified,
             showScene: false,
             showClouds: false,
-            showEmitter: true,
-            attachCardToBottom: false
+            showEmitter: true
         )
     }
 
@@ -139,8 +137,7 @@ struct StatusViewModel {
             gradientColor: \.statusGradientActive,
             showScene: showScene,
             showClouds: true,
-            showEmitter: true,
-            attachCardToBottom: false
+            showEmitter: true
         )
     }
 
@@ -156,8 +153,7 @@ struct StatusViewModel {
             gradientColor: \.statusGradientActive,
             showScene: showScene,
             showClouds: true,
-            showEmitter: true,
-            attachCardToBottom: true
+            showEmitter: true
         )
     }
 
@@ -175,8 +171,7 @@ struct StatusViewModel {
             gradientColor: \.statusGradientNotified,
             showScene: false,
             showClouds: false,
-            showEmitter: true,
-            attachCardToBottom: false
+            showEmitter: true
         )
     }
 
@@ -196,8 +191,7 @@ struct StatusViewModel {
             gradientColor: \.statusGradientPaused,
             showScene: false,
             showClouds: false,
-            showEmitter: false,
-            attachCardToBottom: false
+            showEmitter: false
         )
     }
 
@@ -211,8 +205,7 @@ struct StatusViewModel {
         gradientColor: \.lightOrange,
         showScene: false,
         showClouds: false,
-        showEmitter: true,
-        attachCardToBottom: false
+        showEmitter: true
     )
 
     static func bluetoothInactiveWithNotNotified(theme: Theme) -> StatusViewModel {
@@ -226,8 +219,7 @@ struct StatusViewModel {
             gradientColor: \.lightOrange,
             showScene: false,
             showClouds: false,
-            showEmitter: true,
-            attachCardToBottom: false
+            showEmitter: true
         )
     }
 
@@ -241,8 +233,7 @@ struct StatusViewModel {
         gradientColor: \.lightOrange,
         showScene: false,
         showClouds: false,
-        showEmitter: true,
-        attachCardToBottom: false
+        showEmitter: true
     )
 
     static func timeAgo(from: Date) -> String {
