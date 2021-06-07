@@ -358,7 +358,7 @@ private final class StatusView: View {
         stretchGuide.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(contentStretchGuide).inset(-16)
 
-            maker.top.equalTo(contentStretchGuide).inset(-70)
+            maker.top.equalTo(contentStretchGuide).inset(-86)
             maker.bottom.greaterThanOrEqualTo(contentStretchGuide.snp.bottom)
             maker.leading.trailing.bottom.equalToSuperview()
             maker.top.equalToSuperview().priority(.low)
@@ -380,7 +380,7 @@ private final class StatusView: View {
         }
 
         bottomCardContainer.snp.makeConstraints { maker in
-            maker.top.equalTo(sceneImageViewContainer.snp.bottom).offset(16)
+            maker.top.equalTo(sceneImageViewContainer.snp.bottom)
             maker.leading.trailing.equalTo(bottomCardStretchGuide)
             maker.bottom.equalTo(stretchGuide)
         }
