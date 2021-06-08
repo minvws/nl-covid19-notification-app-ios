@@ -78,20 +78,40 @@ private final class InfectedDependencyProvider: DependencyProvider<InfectedDepen
     var pauseController: PauseControlling {
         dependency.pauseController
     }
+    
+    var featureFlagController: FeatureFlagControlling {
+        FeatureFlagController(userDefaults: UserDefaults.standard,
+                              exposureController: dependency.exposureController)
+    }
 }
 
 final class InfectedBuilder: Builder<InfectedDependency>, InfectedBuildable {
     func build(withListener listener: InfectedListener) -> Routing {
+        
         let dependencyProvider = InfectedDependencyProvider(dependency: dependency)
-        let viewController = InfectedViewController(theme: dependencyProvider.dependency.theme,
-                                                    exposureController: dependencyProvider.dependency.exposureController,
-                                                    exposureStateStream: dependencyProvider.dependency.exposureStateStream,
-                                                    interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
+        
+        if dependencyProvider.featureFlagController.isFeatureFlagEnabled(feature: .independentKeySharing) {
+            let viewController = InfectedViewController(theme: dependencyProvider.dependency.theme,
+                                                        exposureController: dependencyProvider.dependency.exposureController,
+                                                        exposureStateStream: dependencyProvider.dependency.exposureStateStream,
+                                                        interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
 
-        return InfectedRouter(listener: listener,
-                              viewController: viewController,
-                              thankYouBuilder: dependencyProvider.thankYouBuilder,
-                              cardBuilder: dependencyProvider.cardBuilder,
-                              helpDetailBuilder: dependencyProvider.helpDetailBuilder)
+            return InfectedRouter(listener: listener,
+                                  viewController: viewController,
+                                  thankYouBuilder: dependencyProvider.thankYouBuilder,
+                                  cardBuilder: dependencyProvider.cardBuilder,
+                                  helpDetailBuilder: dependencyProvider.helpDetailBuilder)
+        } else {
+            let viewController = InfectedViewController(theme: dependencyProvider.dependency.theme,
+                                                        exposureController: dependencyProvider.dependency.exposureController,
+                                                        exposureStateStream: dependencyProvider.dependency.exposureStateStream,
+                                                        interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
+
+            return InfectedRouter(listener: listener,
+                                  viewController: viewController,
+                                  thankYouBuilder: dependencyProvider.thankYouBuilder,
+                                  cardBuilder: dependencyProvider.cardBuilder,
+                                  helpDetailBuilder: dependencyProvider.helpDetailBuilder)
+        }
     }
 }

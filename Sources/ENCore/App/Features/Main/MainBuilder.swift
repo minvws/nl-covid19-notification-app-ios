@@ -27,7 +27,7 @@ protocol MainDependency {
     var pushNotificationStream: PushNotificationStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency, KeySharingFlowChoiceDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -120,6 +120,15 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var alertControllerBuilder: AlertControllerBuildable {
         AlertControllerBuilder()
     }
+    
+    var keySharingFlowChoiceBuilder: KeySharingFlowChoiceBuildable {
+        KeySharingFlowChoiceBuilder(dependency: self)
+    }
+    
+    var featureFlagController: FeatureFlagControlling {
+        FeatureFlagController(userDefaults: UserDefaults.standard,
+                              exposureController: dependency.exposureController)
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -139,10 +148,12 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           shareBuilder: dependencyProvider.shareBuilder,
                           receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder,
                           requestTestBuilder: dependencyProvider.requestTestBuilder,
+                          keySharingFlowChoiceBuilder: dependencyProvider.keySharingFlowChoiceBuilder,
                           infectedBuilder: dependencyProvider.infectedBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
-                          settingsBuilder: dependencyProvider.settingsBuilder)
+                          settingsBuilder: dependencyProvider.settingsBuilder,
+                          featureFlagController: dependencyProvider.featureFlagController)
     }
 }

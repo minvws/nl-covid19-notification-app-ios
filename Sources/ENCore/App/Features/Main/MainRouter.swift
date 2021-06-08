@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable(history: present = true)
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingFlowChoiceListener {
 
     var router: MainRouting? { get set }
 
@@ -28,22 +28,26 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          shareBuilder: ShareSheetBuildable,
          receivedNotificationBuilder: ReceivedNotificationBuildable,
          requestTestBuilder: RequestTestBuildable,
+         keySharingFlowChoiceBuilder: KeySharingFlowChoiceBuildable,
          infectedBuilder: InfectedBuildable,
          messageBuilder: MessageBuildable,
          enableSettingBuilder: EnableSettingBuildable,
          webviewBuilder: WebviewBuildable,
-         settingsBuilder: SettingsBuildable) {
+         settingsBuilder: SettingsBuildable,
+         featureFlagController: FeatureFlagControlling) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
         self.shareBuilder = shareBuilder
         self.receivedNotificationBuilder = receivedNotificationBuilder
         self.requestTestBuilder = requestTestBuilder
+        self.keySharingFlowChoiceBuilder = keySharingFlowChoiceBuilder
         self.infectedBuilder = infectedBuilder
         self.messageBuilder = messageBuilder
         self.enableSettingBuilder = enableSettingBuilder
         self.webviewBuilder = webviewBuilder
         self.settingsBuilder = settingsBuilder
+        self.featureFlagController = featureFlagController
 
         super.init(viewController: viewController)
 
@@ -162,9 +166,15 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
             return
         }
 
-        let infectedRouter = infectedBuilder.build(withListener: viewController)
+        let infectedRouter: Routing
+        
+        if featureFlagController.isFeatureFlagEnabled(feature: .independentKeySharing) {
+            infectedRouter = keySharingFlowChoiceBuilder.build(withListener: viewController)
+        } else {
+            infectedRouter = infectedBuilder.build(withListener: viewController)
+        }
+        
         self.infectedRouter = infectedRouter
-
         viewController.present(viewController: infectedRouter.viewControllable, animated: true)
     }
 
@@ -290,6 +300,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private let requestTestBuilder: RequestTestBuildable
     private var requestTestViewController: ViewControllable?
 
+    private let keySharingFlowChoiceBuilder: KeySharingFlowChoiceBuildable
     private let infectedBuilder: InfectedBuildable
     private var infectedRouter: Routing?
 
@@ -301,4 +312,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
+    
+    private let featureFlagController: FeatureFlagControlling
 }

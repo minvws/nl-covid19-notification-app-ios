@@ -18,6 +18,8 @@ enum MoreInformationIdentifier: CaseIterable {
     case infected
     case receivedNotification
     case requestTest
+    case shareKeyGGD
+    case shareKeyWebsite
 }
 
 protocol MoreInformation {
@@ -95,6 +97,9 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             listener?.moreInformationRequestsReceivedNotification()
         case .requestTest:
             listener?.moreInformationRequestsRequestTest()
+        case .shareKeyGGD, .shareKeyWebsite:
+            // Unhandled cases in this screen
+            return
         }
     }
 

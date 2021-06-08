@@ -44,7 +44,7 @@ protocol MainRouting: Routing {
 }
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, Logging {
-
+    
     weak var router: MainRouting?
 
     // MARK: - Init
@@ -231,6 +231,11 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     // MARK: - InfectedListener
 
     func infectedWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachInfected(shouldDismissViewController: shouldDismissViewController)
+    }
+    
+    // MARK: - KeySharingFlowChoiceListener
+    func KeySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachInfected(shouldDismissViewController: shouldDismissViewController)
     }
 
