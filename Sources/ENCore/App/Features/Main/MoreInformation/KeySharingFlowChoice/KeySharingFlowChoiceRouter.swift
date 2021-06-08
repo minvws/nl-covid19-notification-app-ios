@@ -10,23 +10,8 @@ import UIKit
 /// @mockable
 protocol KeySharingFlowChoiceViewControllable: ViewControllable {
     var router: KeySharingFlowChoiceRouting? { get set }
-
-    // TODO: Validate whether you need the below functions and remove or replace
-    //       them as desired.
-
-    /// Presents a viewController
-    ///
-    /// - Parameter viewController: ViewController to present
-    /// - Parameter animated: Animates the transition
-    /// - Parameter completion: Executed upon presentation completion
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
-
-    /// Dismisses a viewController
-    ///
-    /// - Parameter viewController: ViewController to dismiss
-    /// - Parameter animated: Animates the transition
-    /// - Parameter completion: Executed upon presentation completion
-//    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
+    func presentInNavigationController(viewController: ViewControllable)
+    func dismiss(viewController: ViewControllable)
 }
 
 final class KeySharingFlowChoiceRouter: Router<KeySharingFlowChoiceViewControllable>, KeySharingFlowChoiceRouting, InfectedListener {
@@ -53,11 +38,9 @@ final class KeySharingFlowChoiceRouter: Router<KeySharingFlowChoiceViewControlla
         }
         
         let router = self.infectedBuilder.build(withListener: self)
-        self.infectedRouter = router
+        infectedRouter = router
         
-        self.viewController.present(viewController: router.viewControllable,
-                                    animated: true,
-                                    completion: nil)
+        viewController.presentInNavigationController(viewController: router.viewControllable)
     }
     
     func routeToShareKeyViaWebsite() {
@@ -65,13 +48,17 @@ final class KeySharingFlowChoiceRouter: Router<KeySharingFlowChoiceViewControlla
     }
     
     func keySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool) {
-        listener?.KeySharingFlowChoiceWantsDismissal(shouldDismissViewController: shouldDismissViewController)
+        listener?.keySharingFlowChoiceWantsDismissal(shouldDismissViewController: shouldDismissViewController)
     }
     
     // MARK: - InfectedListener
     
     func infectedWantsDismissal(shouldDismissViewController: Bool) {
-        listener?.KeySharingFlowChoiceWantsDismissal(shouldDismissViewController: shouldDismissViewController)
+        guard let infectedRouter = infectedRouter, shouldDismissViewController else {
+            return
+        }
+        
+        viewController.dismiss(viewController: infectedRouter.viewControllable)
     }
     
     // MARK: - Private

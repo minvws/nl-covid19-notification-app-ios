@@ -15,7 +15,7 @@ protocol KeySharingFlowChoiceRouting: Routing {
     func keySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool)
 }
 
-final class KeySharingFlowChoiceViewController: ViewController, KeySharingFlowChoiceViewControllable, KeySharingFlowChoiceViewListener {
+final class KeySharingFlowChoiceViewController: ViewController, KeySharingFlowChoiceViewControllable, KeySharingFlowChoiceViewListener, UIAdaptivePresentationControllerDelegate {
     
     // MARK: - KeySharingFlowChoiceViewControllable
     
@@ -37,25 +37,22 @@ final class KeySharingFlowChoiceViewController: ViewController, KeySharingFlowCh
         
     }
     
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        
-        navigationController?.pushViewController(viewController.uiviewController, animated: true)
-//        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
-////        }
-////
-////        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
-////            navigationController.presentationController?.delegate = presentationDelegate
-////        }
-//
-//        if let presentedViewController = presentedViewController {
-//            presentedViewController.present(navigationController, animated: true, completion: completion)
-//        } else {
-//            present(navigationController, animated: animated, completion: completion)
-//        }
-//
-//        present(viewController.uiviewController,
-//                animated: animated,
-//                completion: completion)
+    func presentInNavigationController(viewController: ViewControllable) {
+        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
+
+        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
+            navigationController.presentationController?.delegate = presentationDelegate
+        }
+
+        present(navigationController, animated: true, completion: nil)
+    }
+    
+    func dismiss(viewController: ViewControllable) {
+        if let navigationController = viewController.uiviewController.navigationController {
+            navigationController.dismiss(animated: true, completion: nil)
+        } else {
+            viewController.uiviewController.dismiss(animated: true, completion: nil)
+        }
     }
     
     func didSelect(identifier: MoreInformationIdentifier) {
@@ -63,10 +60,19 @@ final class KeySharingFlowChoiceViewController: ViewController, KeySharingFlowCh
         case .shareKeyGGD:
             router?.routeToShareKeyViaGGD()
         case .shareKeyWebsite:
+            let alert = UIAlertController(title: "Not implemented yet", message: nil, preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
             router?.routeToShareKeyViaWebsite()
         default:
             return
         }
+    }
+    
+    // MARK: - UIAdaptivePresentationControllerDelegate
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        router?.keySharingFlowChoiceWantsDismissal(shouldDismissViewController: false)
     }
     
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
@@ -164,7 +170,7 @@ private final class KeySharingFlowChoiceView: View, MoreInformationCellListner {
         }
         
         titleLabel.snp.makeConstraints { (maker) in
-            maker.top.equalTo(contentContainer.safeAreaLayoutGuide)
+            maker.top.equalTo(contentContainer)
             maker.leading.trailing.equalTo(contentContainer.safeAreaLayoutGuide).inset(16)
         }
         

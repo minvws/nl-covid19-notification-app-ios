@@ -235,7 +235,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     }
     
     // MARK: - KeySharingFlowChoiceListener
-    func KeySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool) {
+    func keySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachInfected(shouldDismissViewController: shouldDismissViewController)
     }
 

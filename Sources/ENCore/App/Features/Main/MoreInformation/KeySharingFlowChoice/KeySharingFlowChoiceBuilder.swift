@@ -10,7 +10,7 @@ import Foundation
 
 /// @mockable
 protocol KeySharingFlowChoiceListener: AnyObject {
-    func KeySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool)
+    func keySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool)
 }
 
 /// @mockable
