@@ -63,7 +63,7 @@ final class StatusViewControllerTests: TestCase {
                                               theme: theme,
                                               topAnchor: nil,
                                               dataController: mockExposureDataController,
-                                              pushNotificationStream: mockPushNotificationStream)        
+                                              pushNotificationStream: mockPushNotificationStream)
     }
 
     func test_snapshot_active_not_notified() {
@@ -157,6 +157,30 @@ final class StatusViewControllerTests: TestCase {
 
         let date = now.addingTimeInterval(-7200)
         set(activeState: .inactive(.paused(date)), notified: true)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_active_notified_15DaysAgo() {
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1595843261) // 27/07/20 09:47
+        set(activeState: .active, notified: true)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_inactive_notified_15DaysAgo() {
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1595843261) // 27/07/20 09:47
+        set(activeState: .inactive(.noRecentNotificationUpdates), notified: true)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_authdenied_notified_15DaysAgo() {
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1595843261) // 27/07/20 09:47
+        set(activeState: .authorizationDenied, notified: true)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_notauthorized_notified_15DaysAgo() {
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1595843261) // 27/07/20 09:47
+        set(activeState: .notAuthorized, notified: true)
         snapshots(matching: viewController)
     }
 

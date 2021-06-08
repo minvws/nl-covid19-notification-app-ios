@@ -18,7 +18,6 @@ protocol CardRouting: Routing {
 }
 
 final class CardViewController: ViewController, CardViewControllable, Logging {
-
     init(listener: CardListening?,
          theme: Theme,
          types: [CardType],
@@ -35,8 +34,8 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-        self.view = stackView
-        self.view.frame = UIScreen.main.bounds
+        view = stackView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -50,7 +49,7 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     // MARK: - CardViewControllable
 
     func update(cardTypes: [CardType]) {
-        self.types = cardTypes
+        types = cardTypes
     }
 
     func present(viewController: ViewControllable) {
@@ -147,7 +146,6 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
     }
 
     private func recreateCards() {
-
         let existingCardViews: [CardView] = stackView.arrangedSubviews.compactMap { $0 as? CardView }
         let existingCardTypes = existingCardViews.compactMap { $0.cardType }
         let cardsToUpdate = existingCardViews.filter { self.dynamicCardTypes.contains($0.cardType) && types.contains($0.cardType) }
@@ -195,6 +193,7 @@ final class CardView: View {
     private lazy var headerIconView = {
         UIImageView(image: nil)
     }()
+
     private let headerTitleLabel = Label()
 
     private let descriptionLabel = Label()
@@ -236,7 +235,8 @@ final class CardView: View {
         headerTitleLabel.adjustsFontForContentSizeCategory = true
         headerTitleLabel.font = theme.fonts.title3
         headerTitleLabel.numberOfLines = 0
-        headerTitleLabel.preferredMaxLayoutWidth = 1000
+        headerTitleLabel.preferredMaxLayoutWidth = 200
+        headerTitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         header.addArrangedSubview(headerTitleLabel)
         container.addArrangedSubview(header)
 
@@ -244,6 +244,7 @@ final class CardView: View {
         descriptionLabel.adjustsFontForContentSizeCategory = true
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
+        descriptionLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         container.addArrangedSubview(descriptionLabel)
 
         // primary button
@@ -314,6 +315,8 @@ private extension CardType {
             return .noInternet(theme: theme, retryHandler: retryHandler)
         case .noLocalNotifications:
             return .noLocalNotifications(theme: theme)
+        case let .notifiedMoreThanThresholdDaysAgo(date: date, explainRiskHandler: explainRiskHandler, removeNotificationHandler: removeNotificationHandler):
+            return .notifiedMoreThanThresholdDaysAgo(theme: theme, date: date, explainRiskHandler: explainRiskHandler, removeNotificationHandler: removeNotificationHandler)
         }
     }
 }
