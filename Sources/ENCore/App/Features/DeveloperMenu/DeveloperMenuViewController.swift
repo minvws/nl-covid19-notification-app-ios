@@ -169,7 +169,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             }
         
         return [
-            ("Feature Flags", featureFlagOptions),
+            ("Feature Flags (swipe to reset)", featureFlagOptions),
             ("Show Screens", [
                 DeveloperItem(title: "Show Onboarding",
                               subtitle: "Launches Onboarding",

@@ -8,8 +8,8 @@
 import UIKit
 
 /// @mockable
-protocol InfectedViewControllable: ViewControllable, ThankYouListener, HelpDetailListener {
-    var router: InfectedRouting? { get set }
+protocol ShareKeyViaPhoneViewControllable: ViewControllable, ThankYouListener, HelpDetailListener {
+    var router: ShareKeyViaPhoneRouting? { get set }
 
     func push(viewController: ViewControllable)
     func set(cardViewController: ViewControllable?)
@@ -18,12 +18,12 @@ protocol InfectedViewControllable: ViewControllable, ThankYouListener, HelpDetai
     func dismiss(viewController: ViewControllable)
 }
 
-final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
+final class ShareKeyViaPhoneRouter: Router<ShareKeyViaPhoneViewControllable>, ShareKeyViaPhoneRouting {
 
     // MARK: - Initialisation
 
-    init(listener: InfectedListener,
-         viewController: InfectedViewControllable,
+    init(listener: ShareKeyViaPhoneListener,
+         viewController: ShareKeyViaPhoneViewControllable,
          thankYouBuilder: ThankYouBuildable,
          cardBuilder: CardBuildable,
          helpDetailBuilder: HelpDetailBuildable) {
@@ -37,12 +37,12 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
         viewController.router = self
     }
 
-    // MARK: - InfectedRouting
+    // MARK: - ShareKeyViaPhoneRouting
 
     func infectedWantsDismissal(shouldDismissViewController: Bool) {
         listener?.infectedWantsDismissal(shouldDismissViewController: shouldDismissViewController)
     }
-
+    
     func didUploadCodes(withKey key: ExposureConfirmationKey) {
         guard thankYouViewController == nil else {
             return
@@ -97,7 +97,7 @@ final class InfectedRouter: Router<InfectedViewControllable>, InfectedRouting {
 
     // MARK: - Private
 
-    private weak var listener: InfectedListener?
+    private weak var listener: ShareKeyViaPhoneListener?
 
     private let thankYouBuilder: ThankYouBuildable
     private var thankYouViewController: ViewControllable?

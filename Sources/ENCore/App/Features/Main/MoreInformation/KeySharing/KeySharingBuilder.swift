@@ -9,20 +9,20 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol KeySharingFlowChoiceListener: AnyObject {
-    func keySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool)
+protocol KeySharingListener: AnyObject {
+    func keySharingWantsDismissal(shouldDismissViewController: Bool)
 }
 
 /// @mockable
-protocol KeySharingFlowChoiceBuildable {
-    /// Builds KeySharingFlowChoice
+protocol KeySharingBuildable {
+    /// Builds KeySharing
     ///
-    /// - Parameter listener: Listener of created KeySharingFlowChoice component
+    /// - Parameter listener: Listener of created KeySharing component
     /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: KeySharingFlowChoiceListener) -> Routing
+    func build(withListener listener: KeySharingListener) -> Routing
 }
 
-protocol KeySharingFlowChoiceDependency {
+protocol KeySharingDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
@@ -33,7 +33,7 @@ protocol KeySharingFlowChoiceDependency {
     var pauseController: PauseControlling { get }
 }
 
-private final class KeySharingFlowChoiceDependencyProvider: DependencyProvider<KeySharingFlowChoiceDependency>, InfectedDependency {
+private final class KeySharingDependencyProvider: DependencyProvider<KeySharingDependency>, ShareKeyViaPhoneDependency {
     var theme: Theme {
         dependency.theme
     }
@@ -66,21 +66,27 @@ private final class KeySharingFlowChoiceDependencyProvider: DependencyProvider<K
         dependency.pauseController
     }
     
-    var infectedBuilder: InfectedBuildable {
-        return InfectedBuilder(dependency: self)
+    var shareKeyViaPhoneBuilder: ShareKeyViaPhoneBuildable {
+        return ShareKeyViaPhoneBuilder(dependency: self)
+    }
+    
+    var featureFlagController: FeatureFlagControlling {
+        FeatureFlagController(userDefaults: UserDefaults.standard,
+                              exposureController: exposureController)
     }
 }
 
-final class KeySharingFlowChoiceBuilder: Builder<KeySharingFlowChoiceDependency>, KeySharingFlowChoiceBuildable {
-    func build(withListener listener: KeySharingFlowChoiceListener) -> Routing {
+final class KeySharingBuilder: Builder<KeySharingDependency>, KeySharingBuildable {
+    func build(withListener listener: KeySharingListener) -> Routing {
         
-        let dependencyProvider = KeySharingFlowChoiceDependencyProvider(dependency: dependency)
+        let dependencyProvider = KeySharingDependencyProvider(dependency: dependency)
         
-        let viewController = KeySharingFlowChoiceViewController(theme: dependencyProvider.dependency.theme)
+        let viewController = KeySharingViewController(theme: dependencyProvider.dependency.theme)
         
-        return KeySharingFlowChoiceRouter(listener: listener,
+        return KeySharingRouter(listener: listener,
                                           viewController: viewController,
-                                          infectedBuilder: dependencyProvider.infectedBuilder
+                                          shareKeyViaPhoneBuilder: dependencyProvider.shareKeyViaPhoneBuilder,
+                                          featureFlagController: dependencyProvider.featureFlagController
         )
     }
 }

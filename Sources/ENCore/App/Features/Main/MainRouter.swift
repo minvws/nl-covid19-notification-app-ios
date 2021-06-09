@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable(history: present = true)
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingFlowChoiceListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingListener {
 
     var router: MainRouting? { get set }
 
@@ -28,8 +28,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          shareBuilder: ShareSheetBuildable,
          receivedNotificationBuilder: ReceivedNotificationBuildable,
          requestTestBuilder: RequestTestBuildable,
-         keySharingFlowChoiceBuilder: KeySharingFlowChoiceBuildable,
-         infectedBuilder: InfectedBuildable,
+         keySharingBuilder: KeySharingBuildable,
          messageBuilder: MessageBuildable,
          enableSettingBuilder: EnableSettingBuildable,
          webviewBuilder: WebviewBuildable,
@@ -41,8 +40,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.shareBuilder = shareBuilder
         self.receivedNotificationBuilder = receivedNotificationBuilder
         self.requestTestBuilder = requestTestBuilder
-        self.keySharingFlowChoiceBuilder = keySharingFlowChoiceBuilder
-        self.infectedBuilder = infectedBuilder
+        self.keySharingBuilder = keySharingBuilder
         self.messageBuilder = messageBuilder
         self.enableSettingBuilder = enableSettingBuilder
         self.webviewBuilder = webviewBuilder
@@ -161,32 +159,27 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         }
     }
 
-    func routeToInfected() {
-        guard infectedRouter == nil else {
+    func routeToKeySharing() {
+        guard keySharingRouter == nil else {
             return
         }
 
-        let infectedRouter: Routing
-        
-        if featureFlagController.isFeatureFlagEnabled(feature: .independentKeySharing) {
-            infectedRouter = keySharingFlowChoiceBuilder.build(withListener: viewController)
-        } else {
-            infectedRouter = infectedBuilder.build(withListener: viewController)
-        }
-        
-        self.infectedRouter = infectedRouter
-        viewController.present(viewController: infectedRouter.viewControllable, animated: true)
+        let keySharingRouter = keySharingBuilder.build(withListener: viewController)
+        self.keySharingRouter = keySharingRouter
+        viewController.present(viewController: keySharingRouter.viewControllable, animated: true)
     }
 
-    func detachInfected(shouldDismissViewController: Bool) {
-        guard let infectedRouter = infectedRouter else {
+    func detachKeySharing(shouldDismissViewController: Bool) {
+        guard keySharingRouter != nil else {
             return
         }
-        self.infectedRouter = nil
 
         if shouldDismissViewController {
-            viewController.dismiss(viewController: infectedRouter.viewControllable, animated: true)
+            // Dismisses all presented viewcontrollers
+            UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
         }
+        
+        self.keySharingRouter = nil
     }
 
     func routeToRequestTest() {
@@ -300,9 +293,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private let requestTestBuilder: RequestTestBuildable
     private var requestTestViewController: ViewControllable?
 
-    private let keySharingFlowChoiceBuilder: KeySharingFlowChoiceBuildable
-    private let infectedBuilder: InfectedBuildable
-    private var infectedRouter: Routing?
+    private let keySharingBuilder: KeySharingBuildable
+    private var keySharingRouter: Routing?
 
     private let messageBuilder: MessageBuildable
     private var messageViewController: ViewControllable?

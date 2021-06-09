@@ -30,8 +30,8 @@ protocol MainRouting: Routing {
     func routeToRequestTest()
     func detachRequestTest(shouldDismissViewController: Bool)
 
-    func routeToInfected()
-    func detachInfected(shouldDismissViewController: Bool)
+    func routeToKeySharing()
+    func detachKeySharing(shouldDismissViewController: Bool)
 
     func routeToMessage()
     func detachMessage(shouldDismissViewController: Bool)
@@ -167,7 +167,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     func receivedNotificationActionButtonTapped() {}
 
     func moreInformationRequestsInfected() {
-        router?.routeToInfected()
+        router?.routeToKeySharing()
     }
 
     func moreInformationRequestsRequestTest() {
@@ -231,12 +231,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     // MARK: - InfectedListener
 
     func infectedWantsDismissal(shouldDismissViewController: Bool) {
-        router?.detachInfected(shouldDismissViewController: shouldDismissViewController)
+        router?.detachKeySharing(shouldDismissViewController: shouldDismissViewController)
     }
-    
-    // MARK: - KeySharingFlowChoiceListener
-    func keySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool) {
-        router?.detachInfected(shouldDismissViewController: shouldDismissViewController)
+        
+    // MARK: - KeySharingListener
+    func keySharingWantsDismissal(shouldDismissViewController: Bool) {
+        router?.detachKeySharing(shouldDismissViewController: shouldDismissViewController)
     }
 
     // MARK: - MessageListener

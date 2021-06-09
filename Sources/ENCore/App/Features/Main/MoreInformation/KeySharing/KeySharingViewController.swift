@@ -9,17 +9,18 @@ import UIKit
 import ENFoundation
 
 /// @mockable
-protocol KeySharingFlowChoiceRouting: Routing {
-    func routeToShareKeyViaGGD()
+protocol KeySharingRouting: Routing {
+    func routeToShareKeyViaGGD(animated: Bool, withBackButton: Bool)
     func routeToShareKeyViaWebsite()
-    func keySharingFlowChoiceWantsDismissal(shouldDismissViewController: Bool)
+    func keySharingWantsDismissal(shouldDismissViewController: Bool)
+    func viewDidLoad()
 }
 
-final class KeySharingFlowChoiceViewController: ViewController, KeySharingFlowChoiceViewControllable, KeySharingFlowChoiceViewListener, UIAdaptivePresentationControllerDelegate {
+final class KeySharingViewController: ViewController, KeySharingViewControllable, KeySharingViewListener, UIAdaptivePresentationControllerDelegate {
     
-    // MARK: - KeySharingFlowChoiceViewControllable
+    // MARK: - KeySharingViewControllable
     
-    weak var router: KeySharingFlowChoiceRouting?
+    weak var router: KeySharingRouting?
     
     override init(theme: Theme) {
         super.init(theme: theme)
@@ -35,16 +36,11 @@ final class KeySharingFlowChoiceViewController: ViewController, KeySharingFlowCh
         setThemeNavigationBar(withTitle: .moreInformationInfectedTitle)
         navigationItem.rightBarButtonItem = closeBarButtonItem
         
+        router?.viewDidLoad()
     }
     
-    func presentInNavigationController(viewController: ViewControllable) {
-        let navigationController = NavigationController(rootViewController: viewController.uiviewController, theme: theme)
-
-        if let presentationDelegate = viewController.uiviewController as? UIAdaptivePresentationControllerDelegate {
-            navigationController.presentationController?.delegate = presentationDelegate
-        }
-
-        present(navigationController, animated: true, completion: nil)
+    func push(viewController: ViewControllable, animated: Bool) {
+        navigationController?.pushViewController(viewController.uiviewController, animated: animated)
     }
     
     func dismiss(viewController: ViewControllable) {
@@ -58,7 +54,7 @@ final class KeySharingFlowChoiceViewController: ViewController, KeySharingFlowCh
     func didSelect(identifier: MoreInformationIdentifier) {
         switch identifier {
         case .shareKeyGGD:
-            router?.routeToShareKeyViaGGD()
+            router?.routeToShareKeyViaGGD(animated: true, withBackButton: true)
         case .shareKeyWebsite:
             let alert = UIAlertController(title: "Not implemented yet", message: nil, preferredStyle: .alert)
             alert.addAction(.init(title: "OK", style: .default, handler: nil))
@@ -72,27 +68,27 @@ final class KeySharingFlowChoiceViewController: ViewController, KeySharingFlowCh
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        router?.keySharingFlowChoiceWantsDismissal(shouldDismissViewController: false)
+        router?.keySharingWantsDismissal(shouldDismissViewController: false)
     }
     
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
-        router?.keySharingFlowChoiceWantsDismissal(shouldDismissViewController: true)
+        router?.keySharingWantsDismissal(shouldDismissViewController: true)
     }
     
     // MARK: - Private
     
-    private lazy var choiceView = KeySharingFlowChoiceView(theme: self.theme, listener: self)
+    private lazy var choiceView = KeySharingView(theme: self.theme, listener: self)
     private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton))    
 }
 
-fileprivate protocol KeySharingFlowChoiceViewListener: AnyObject {
+fileprivate protocol KeySharingViewListener: AnyObject {
     func didSelect(identifier: MoreInformationIdentifier)
 }
 
-private final class KeySharingFlowChoiceView: View, MoreInformationCellListner {
+private final class KeySharingView: View, MoreInformationCellListner {
     
     private lazy var scrollableStackView = ScrollableStackView(theme: theme)
-    private weak var listener: KeySharingFlowChoiceViewListener?
+    private weak var listener: KeySharingViewListener?
     
     private lazy var contentContainer: UIView = {
         let view = UIView(frame: .zero)
@@ -138,7 +134,7 @@ private final class KeySharingFlowChoiceView: View, MoreInformationCellListner {
     // MARK: - Init
     
     init(theme: Theme,
-         listener: KeySharingFlowChoiceViewListener) {
+         listener: KeySharingViewListener) {
         self.listener = listener
         super.init(theme: theme)
     }

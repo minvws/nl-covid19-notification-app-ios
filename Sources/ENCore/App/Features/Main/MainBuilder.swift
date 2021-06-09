@@ -27,7 +27,7 @@ protocol MainDependency {
     var pushNotificationStream: PushNotificationStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency, KeySharingFlowChoiceDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, ShareKeyViaPhoneDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency, KeySharingDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -71,10 +71,6 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var requestTestBuilder: RequestTestBuildable {
         return RequestTestBuilder(dependency: self)
-    }
-
-    var infectedBuilder: InfectedBuildable {
-        return InfectedBuilder(dependency: self)
     }
 
     var exposureController: ExposureControlling {
@@ -121,8 +117,8 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
         AlertControllerBuilder()
     }
     
-    var keySharingFlowChoiceBuilder: KeySharingFlowChoiceBuildable {
-        KeySharingFlowChoiceBuilder(dependency: self)
+    var keySharingBuilder: KeySharingBuildable {
+        KeySharingBuilder(dependency: self)
     }
     
     var featureFlagController: FeatureFlagControlling {
@@ -148,8 +144,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           shareBuilder: dependencyProvider.shareBuilder,
                           receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder,
                           requestTestBuilder: dependencyProvider.requestTestBuilder,
-                          keySharingFlowChoiceBuilder: dependencyProvider.keySharingFlowChoiceBuilder,
-                          infectedBuilder: dependencyProvider.infectedBuilder,
+                          keySharingBuilder: dependencyProvider.keySharingBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
