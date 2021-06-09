@@ -148,7 +148,6 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           messageBuilder: dependencyProvider.messageBuilder,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
-                          settingsBuilder: dependencyProvider.settingsBuilder,
-                          featureFlagController: dependencyProvider.featureFlagController)
+                          settingsBuilder: dependencyProvider.settingsBuilder)
     }
 }

@@ -11,9 +11,9 @@ import RxSwift
 import SnapshotTesting
 import XCTest
 
-final class InfectedViewControllerTests: TestCase {
-    private var viewController: InfectedViewController!
-    private var mockRouter: InfectedRoutingMock!
+final class ShareKeyViaPhoneViewControllerTests: TestCase {
+    private var viewController: ShareKeyViaPhoneViewController!
+    private var mockRouter: ShareKeyViaPhoneRoutingMock!
     private var mockExposureController: ExposureControllingMock!
     private var mockExposureStateStream: ExposureStateStreamingMock!
     private var mockInterfaceOrientationStream: InterfaceOrientationStreamingMock!
@@ -23,17 +23,18 @@ final class InfectedViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        mockRouter = InfectedRoutingMock()
+        mockRouter = ShareKeyViaPhoneRoutingMock()
         mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
         mockExposureController = ExposureControllingMock()
         mockExposureStateStream = ExposureStateStreamingMock(exposureState: exposureStateSubject)
 
         mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
-        viewController = InfectedViewController(theme: theme,
+        viewController = ShareKeyViaPhoneViewController(theme: theme,
                                                 exposureController: mockExposureController,
                                                 exposureStateStream: mockExposureStateStream,
-                                                interfaceOrientationStream: mockInterfaceOrientationStream)
+                                                interfaceOrientationStream: mockInterfaceOrientationStream,
+                                                withBackButton: false)
         viewController.router = mockRouter
 
         // force viewDidLoad

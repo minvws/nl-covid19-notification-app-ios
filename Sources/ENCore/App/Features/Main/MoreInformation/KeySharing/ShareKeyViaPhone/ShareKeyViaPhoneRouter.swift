@@ -39,8 +39,8 @@ final class ShareKeyViaPhoneRouter: Router<ShareKeyViaPhoneViewControllable>, Sh
 
     // MARK: - ShareKeyViaPhoneRouting
 
-    func infectedWantsDismissal(shouldDismissViewController: Bool) {
-        listener?.infectedWantsDismissal(shouldDismissViewController: shouldDismissViewController)
+    func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool) {
+        listener?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: shouldDismissViewController)
     }
     
     func didUploadCodes(withKey key: ExposureConfirmationKey) {

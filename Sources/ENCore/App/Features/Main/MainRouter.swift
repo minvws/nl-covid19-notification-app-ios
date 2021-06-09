@@ -32,8 +32,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          messageBuilder: MessageBuildable,
          enableSettingBuilder: EnableSettingBuildable,
          webviewBuilder: WebviewBuildable,
-         settingsBuilder: SettingsBuildable,
-         featureFlagController: FeatureFlagControlling) {
+         settingsBuilder: SettingsBuildable) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
@@ -45,7 +44,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.enableSettingBuilder = enableSettingBuilder
         self.webviewBuilder = webviewBuilder
         self.settingsBuilder = settingsBuilder
-        self.featureFlagController = featureFlagController
 
         super.init(viewController: viewController)
 
@@ -304,6 +302,4 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
-    
-    private let featureFlagController: FeatureFlagControlling
 }

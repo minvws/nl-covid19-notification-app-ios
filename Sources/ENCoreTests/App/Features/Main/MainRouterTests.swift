@@ -17,12 +17,12 @@ final class MainRouterTests: TestCase {
     private let shareBuilder = ShareSheetBuildableMock()
     private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
     private let requestTestBuilder = RequestTestBuildableMock()
-    private let infectedBuilder = InfectedBuildableMock()
     private let messageBuilder = MessageBuildableMock()
     private let enableSettingBuilder = EnableSettingBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
     private let settingsBuilder = SettingsBuildableMock()
-
+    private let keySharingBuilder = KeySharingBuildableMock()
+    
     private var router: MainRouter!
 
     override func setUp() {
@@ -35,7 +35,7 @@ final class MainRouterTests: TestCase {
                             shareBuilder: shareBuilder,
                             receivedNotificationBuilder: receivedNotificationBuilder,
                             requestTestBuilder: requestTestBuilder,
-                            infectedBuilder: infectedBuilder,
+                            keySharingBuilder: keySharingBuilder,
                             messageBuilder: messageBuilder,
                             enableSettingBuilder: enableSettingBuilder,
                             webviewBuilder: webviewBuilder,

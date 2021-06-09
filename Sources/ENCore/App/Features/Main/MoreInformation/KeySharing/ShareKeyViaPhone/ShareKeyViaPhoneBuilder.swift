@@ -10,14 +10,14 @@ import Foundation
 
 /// @mockable
 protocol ShareKeyViaPhoneListener: AnyObject {
-    func infectedWantsDismissal(shouldDismissViewController: Bool)
+    func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool)
 }
 
 /// @mockable
 protocol ShareKeyViaPhoneBuildable {
-    /// Builds Infected
+    /// Builds ShareKeyViaPhone
     ///
-    /// - Parameter listener: Listener of created Infected component
+    /// - Parameter listener: Listener of created component
     /// - Returns Routing instance which should be presented by parent
     func build(withListener listener: ShareKeyViaPhoneListener, withBackButton: Bool) -> Routing
 }

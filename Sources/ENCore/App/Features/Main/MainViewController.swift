@@ -166,7 +166,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func receivedNotificationActionButtonTapped() {}
 
-    func moreInformationRequestsInfected() {
+    func moreInformationRequestsKeySharing() {
         router?.routeToKeySharing()
     }
 
@@ -226,12 +226,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func requestTestWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachRequestTest(shouldDismissViewController: shouldDismissViewController)
-    }
-
-    // MARK: - InfectedListener
-
-    func infectedWantsDismissal(shouldDismissViewController: Bool) {
-        router?.detachKeySharing(shouldDismissViewController: shouldDismissViewController)
     }
         
     // MARK: - KeySharingListener

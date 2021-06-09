@@ -39,8 +39,9 @@ final class KeySharingRouter: Router<KeySharingViewControllable>, KeySharingRout
     }
     
     func routeToShareKeyViaGGD(animated: Bool, withBackButton: Bool) {
-        let shareKeyViewController = self.shareKeyViaPhoneBuilder.build(withListener: self, withBackButton: withBackButton).viewControllable
-        viewController.push(viewController: shareKeyViewController, animated: animated)
+        let router = shareKeyViaPhoneBuilder.build(withListener: self, withBackButton: withBackButton)
+        shareKeyViaPhoneRouter = router
+        viewController.push(viewController: router.viewControllable, animated: animated)
     }
     
     func routeToShareKeyViaWebsite() {
@@ -51,10 +52,10 @@ final class KeySharingRouter: Router<KeySharingViewControllable>, KeySharingRout
         listener?.keySharingWantsDismissal(shouldDismissViewController: shouldDismissViewController)
     }
         
-    // MARK: - InfectedListener
+    // MARK: - ShareKeyViewPhoneListener
     
-    func infectedWantsDismissal(shouldDismissViewController: Bool) {        
-        // infected flow finished or cancelled. Signal back to listener to dismiss all presented viewcontrollers
+    func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool) {
+        // ShareKeyViaPhone flow finished or cancelled. Signal back to listener to dismiss all presented viewcontrollers
         listener?.keySharingWantsDismissal(shouldDismissViewController: shouldDismissViewController)
     }
     
@@ -63,4 +64,5 @@ final class KeySharingRouter: Router<KeySharingViewControllable>, KeySharingRout
     private weak var listener: KeySharingListener?
     private let shareKeyViaPhoneBuilder: ShareKeyViaPhoneBuildable
     private let featureFlagController: FeatureFlagControlling
+    private var shareKeyViaPhoneRouter: Routing?
 }

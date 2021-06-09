@@ -15,7 +15,7 @@ enum MoreInformationIdentifier: CaseIterable {
     case about
     case settings
     case share
-    case infected
+    case keySharing
     case receivedNotification
     case requestTest
     case shareKeyGGD
@@ -91,8 +91,8 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             listener?.moreInformationRequestsSettings()
         case .share:
             listener?.moreInformationRequestsSharing()
-        case .infected:
-            listener?.moreInformationRequestsInfected()
+        case .keySharing:
+            listener?.moreInformationRequestsKeySharing()
         case .receivedNotification:
             listener?.moreInformationRequestsReceivedNotification()
         case .requestTest:
@@ -131,7 +131,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
                                                             title: .moreInformationCellRequestTestTitle,
                                                             subtitle: .moreInformationCellRequestTestSubtitle)
 
-        let infectedModel = MoreInformationCellViewModel(identifier: .infected,
+        let keySharingModel = MoreInformationCellViewModel(identifier: .keySharing,
                                                          icon: .infected,
                                                          title: .moreInformationCellInfectedTitle,
                                                          subtitle: .moreInformationCellInfectedSubtitle)
@@ -142,7 +142,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             receivedNotificationModel,
             requestTestModel,
             shareAppModel,
-            infectedModel
+            keySharingModel
         ]
     }
 

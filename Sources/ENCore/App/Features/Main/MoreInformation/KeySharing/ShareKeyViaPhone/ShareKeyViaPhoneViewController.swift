@@ -13,7 +13,7 @@ import UIKit
 /// @mockable
 protocol ShareKeyViaPhoneRouting: Routing {
     func didUploadCodes(withKey key: ExposureConfirmationKey)
-    func infectedWantsDismissal(shouldDismissViewController: Bool)
+    func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool)
     func showInactiveCard()
     func removeInactiveCard()
 
@@ -97,10 +97,10 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        router?.infectedWantsDismissal(shouldDismissViewController: false)
+        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: false)
     }
 
-    // MARK: - InfectedViewControllable
+    // MARK: - ShareKeyViaPhoneViewControllable
 
     func push(viewController: ViewControllable) {
         navigationController?.pushViewController(viewController.uiviewController, animated: true)
@@ -125,7 +125,7 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     }
 
     func thankYouWantsDismissal() {
-        router?.infectedWantsDismissal(shouldDismissViewController: true)
+        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)
     }
 
     func set(cardViewController: ViewControllable?) {
@@ -194,7 +194,7 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     private var cardViewController: ViewControllable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
-        router?.infectedWantsDismissal(shouldDismissViewController: true)        
+        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)        
     }
 
     private func updateState() {
