@@ -454,31 +454,32 @@
 
 /* MARK: - MoreInformation | Infected - Coronatest.nl flow */
 
-"moreInformation.infected.coronatest.header.title" = "Kies hoe je een melding wilt sturen";
-"moreInformation.infected.coronatest.header.content" = "Je kunt alleen een melding sturen als uit een coronatest blijkt dat je besmet bent.";
-"moreInformation.infected.coronatest.option1.title" = "Via coronatest.nl";
-"moreInformation.infected.coronatest.option1.content" = "Dit kan alleen als je de testuitslag ontvangt via coronatest.nl";
-"moreInformation.infected.coronatest.option2.title" = "Als de GGD jou belt";
-"moreInformation.infected.coronatest.option2.content" = "Dit kan alleen als je nu de GGD aan de telefoon hebt";
-"moreInformation.infected.coronatest.steps.header.title" = "Ontdek je via coronatest.nl dat je corona hebt? Dan kun je via CoronaMelder direct een melding versturen.";
-"moreInformation.infected.coronatest.steps.header.button" = "Hoe werkt dit?";
-"moreInformation.infected.coronatest.step1.title" = "Deel de codes die CoronaMelder heeft gemaakt";
-"moreInformation.infected.coronatest.step1.button" = "Codes delen";
-"moreInformation.infected.coronatest.step2.title" = "Schrijf je GGD-sleutel op of kopieer deze";
-"moreInformation.infected.coronatest.step3.title" = "Vul je GGD-sleutel in op coronatest.nl. Zo waarschuw  je anderen bij wie je in de buurt bent geweest";
-"moreInformation.infected.coronatest.step3.button" = "Naar coronatest.nl";
-"moreInformation.infected.coronatest.step4.title" = "GGD-sleutel ingevuld?";
-"moreInformation.infected.coronatest.step4.content" = "Je bent klaar. Mensen bij wie je in de buurt bent geweest, terwijl je besmettelijk was, krijgen een melding. Dit gebeurt binnen 8 uur.";
-"moreInformation.infected.coronatest.complete" = "Afronden";
-"moreInformation.infected.coronatest.complete.notification.title" = "Weet je zeker dat je wilt afronden?";
-"moreInformation.infected.coronatest.complete.notification.content" = "Heb je de GGD-sleutel ingevuld op coronatest.nl en een bevestiging gekregen? Zo ja, dan kun je dit scherm afsluiten.";
-"moreInformation.infected.coronatest.complete.notification.ok" = "Afsluiten";
-"moreInformation.infected.coronatest.complete.notification.cancel" = "Annuleren";
-"moreInformation.infected.coronatest.thankyou.title" = "Bedankt voor het versturen van de melding";
-"moreInformation.infected.coronatest.thankyou.content" = "De GGD vertelt je wat je verder kunt doen om te voorkomen dat je anderen besmet. Beterschap en sterkte met je herstel. ";
-"moreInformation.infected.coronatest.thankyou.confirmation" = "De melding wordt alleen verstuurd als je jouw GGD-sleutel hebt doorgegeven aan de GGD of via coronatest.nl";
-"moreInformation.infected.coronatest.faq.title" = "Kan ik anderen een melding sturen als ik corona heb?";
-"moreInformation.infected.coronatest.faq.content" = "Je kunt alleen een melding naar anderen sturen als je getest bent door de GGD en corona blijkt te hebben. De melding verstuur je met de GGD als die je belt of zelf via coronatest.nl.<br><br>Als je een melding wilt versturen, wordt er naar je GGD-sleutel gevraagd. Jouw GGD-sleutel vind je in de app. Een GGD-sleutel zorgt ervoor dat alleen mensen die echt besmet zijn meldingen kunnen versturen.<br><br>Nadat je GGD-sleutel is gecontroleerd, worden de codes gedeeld die jouw telefooon de afgelopen 14 dagen naar andere telefoons heeft verzonden.<br><br>Zo kunnen mensen, bij wie je in de buurt bent geweest toen je besmettelijk was, een melding krijgen. Alleen als deze mensen ook de app gebruiken.";
+"moreInformation.keysharing.coronatest.header.title" = "Kies hoe je een melding wilt sturen";
+"moreInformation.keysharing.coronatest.header.content" = "Je kunt alleen een melding sturen als uit een coronatest blijkt dat je besmet bent.";
+"moreInformation.keysharing.coronatest.option1.title" = "Via coronatest.nl";
+"moreInformation.keysharing.coronatest.option1.content" = "Dit kan alleen als je de testuitslag ontvangt via coronatest.nl";
+"moreInformation.keysharing.coronatest.option2.title" = "Als de GGD jou belt";
+"moreInformation.keysharing.coronatest.option2.content" = "Dit kan alleen als je nu de GGD aan de telefoon hebt";
+"moreInformation.keysharing.coronatest.steps.header.title" = "Ontdek je via coronatest.nl dat je corona hebt? Dan kun je via CoronaMelder direct een melding versturen.";
+"moreInformation.keysharing.coronatest.steps.header.button" = "Hoe werkt dit?";
+"moreInformation.keysharing.coronatest.step1.title" = "Deel de codes die CoronaMelder heeft gemaakt";
+"moreInformation.keysharing.coronatest.step1.button" = "Codes delen";
+"moreInformation.keysharing.coronatest.step2.title" = "Schrijf je GGD-sleutel op of kopieer deze";
+"moreInformation.keysharing.coronatest.step3.title" = "Vul je GGD-sleutel in op coronatest.nl. Zo waarschuw je anderen bij wie je in de buurt bent geweest";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Ga (terug) naar coronatest.nl en vul je GGD-sleutel in. Zo waarschuw je anderen bij wie je in de buurt bent geweest";
+"moreInformation.keysharing.coronatest.step3.button" = "Naar coronatest.nl";
+"moreInformation.keysharing.coronatest.step4.title" = "GGD-sleutel ingevuld?";
+"moreInformation.keysharing.coronatest.step4.content" = "Je bent klaar. Mensen bij wie je in de buurt bent geweest, terwijl je besmettelijk was, krijgen een melding. Dit gebeurt binnen 8 uur.";
+"moreInformation.keysharing.coronatest.complete" = "Afronden";
+"moreInformation.keysharing.coronatest.complete.notification.title" = "Weet je zeker dat je wilt afronden?";
+"moreInformation.keysharing.coronatest.complete.notification.content" = "Heb je de GGD-sleutel ingevuld op coronatest.nl en een bevestiging gekregen? Zo ja, dan kun je dit scherm afsluiten.";
+"moreInformation.keysharing.coronatest.complete.notification.ok" = "Afsluiten";
+"moreInformation.keysharing.coronatest.complete.notification.cancel" = "Annuleren";
+"moreInformation.keysharing.coronatest.thankyou.title" = "Bedankt voor het versturen van de melding";
+"moreInformation.keysharing.coronatest.thankyou.content" = "De GGD vertelt je wat je verder kunt doen om te voorkomen dat je anderen besmet. Beterschap en sterkte met je herstel. ";
+"moreInformation.keysharing.coronatest.thankyou.confirmation" = "De melding wordt alleen verstuurd als je jouw GGD-sleutel hebt doorgegeven aan de GGD of via coronatest.nl";
+"moreInformation.keysharing.coronatest.faq.title" = "Kan ik anderen een melding sturen als ik corona heb?";
+"moreInformation.keysharing.coronatest.faq.content" = "Je kunt alleen een melding naar anderen sturen als je getest bent door de GGD en corona blijkt te hebben. De melding verstuur je met de GGD als die je belt of zelf via coronatest.nl.<br><br>Als je een melding wilt versturen, wordt er naar je GGD-sleutel gevraagd. Jouw GGD-sleutel vind je in de app. Een GGD-sleutel zorgt ervoor dat alleen mensen die echt besmet zijn meldingen kunnen versturen.<br><br>Nadat je GGD-sleutel is gecontroleerd, worden de codes gedeeld die jouw telefooon de afgelopen 14 dagen naar andere telefoons heeft verzonden.<br><br>Zo kunnen mensen, bij wie je in de buurt bent geweest toen je besmettelijk was, een melding krijgen. Alleen als deze mensen ook de app gebruiken.";
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Melding gekregen";
