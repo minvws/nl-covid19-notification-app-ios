@@ -66,7 +66,6 @@ final class CardViewControllerSnapshotTests: TestCase {
     }
 
     func test_cardViewController_paused() {
-
         mockPauseController.pauseTimeElapsed = false
         mockPauseController.getPauseCountdownStringHandler = { _, emphasizeTime in
             XCTAssertFalse(emphasizeTime)
@@ -83,7 +82,6 @@ final class CardViewControllerSnapshotTests: TestCase {
     }
 
     func test_cardViewController_paused_pauseTimeElapsed() {
-
         mockPauseController.pauseTimeElapsed = true
         mockPauseController.getPauseCountdownStringHandler = { _, emphasizeTime in
             XCTAssertFalse(emphasizeTime)

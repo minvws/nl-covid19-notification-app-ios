@@ -54,7 +54,7 @@ struct StatusViewButtonModel {
         style: .primary,
         action: .updateAppSettings
     )
-    
+
     static let enableBluetooth = StatusViewButtonModel(
         title: .statusAppStateCardBluetoothButton,
         style: .primary,
@@ -141,6 +141,22 @@ struct StatusViewModel {
         )
     }
 
+    static func activeWithNotifiedThresholdDaysAgoCard(showScene: Bool) -> StatusViewModel {
+
+        return StatusViewModel(
+            icon: .ok,
+            title: .init(string: .statusAppState),
+            description: .init(string: String(format: .statusActiveDescription)),
+            buttons: [],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.statusGradientActive,
+            showScene: showScene,
+            showClouds: true,
+            showEmitter: true
+        )
+    }
+
     static func inactiveWithNotified(date: Date) -> StatusViewModel {
         let description = timeAgo(from: date)
             .capitalizedFirstLetterOnly
@@ -191,7 +207,7 @@ struct StatusViewModel {
         showClouds: false,
         showEmitter: true
     )
-    
+
     static func bluetoothInactiveWithNotNotified(theme: Theme) -> StatusViewModel {
         StatusViewModel(
             icon: .inactive,

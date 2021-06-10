@@ -15,7 +15,6 @@ import UIKit
 protocol StatusRouting: Routing {}
 
 final class StatusViewController: ViewController, StatusViewControllable, CardListening, Logging {
-
     // MARK: - StatusViewControllable
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
@@ -35,6 +34,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }()
 
     private var pauseTimer: Timer?
+    private let notifiedShouldShowCardDaysThreshold = 14
 
     init(exposureStateStream: ExposureStateStreaming,
          interfaceOrientationStream: InterfaceOrientationStreaming,
@@ -59,8 +59,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     // MARK: - View Lifecycle
 
     override func loadView() {
-        self.view = statusView
-        self.view.frame = UIScreen.main.bounds
+        view = statusView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -101,7 +101,6 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     // MARK: - Private
 
     @objc private func updateExposureStateView() {
-
         exposureStateStream.exposureState
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
@@ -124,7 +123,6 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         guard let currentState = exposureStateStream.currentExposureState, let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape else {
             return
         }
-        
         update(exposureState: currentState, isLandscape: isLandscape)
     }
 
@@ -144,65 +142,74 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
-        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.updatePauseTimer()
         }
-        
+
         let statusViewModel: StatusViewModel
         let announcementCardTypes = getAnnouncementCardTypes()
         var cardTypes = [CardType]()
+
+        var notifiedState = status.notifiedState
         
-        switch (status.activeState, status.notifiedState) {
+        // Override notified state if the notification date was more than `notifiedShouldShowCardDaysThreshold` days ago
+        if case let .notified(date) = notifiedState,
+           currentDate().days(sinceDate: date) ?? 0 > notifiedShouldShowCardDaysThreshold {
+            
+            notifiedState = .notNotified
+            
+            cardTypes.append(.notifiedMoreThanThresholdDaysAgo(date: date,
+                                                               explainRiskHandler: explainRisk,
+                                                               removeNotificationHandler: removeNotification))
+            
+        }
+        
+        switch (status.activeState, notifiedState) {
         case (.active, .notNotified):
             statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
-            
         case let (.inactive(.paused(pauseEndDate)), .notNotified):
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
-            
         case let (.active, .notified(date)):
-            statusViewModel = .activeWithNotified(date: date)
-            
-        case let (.inactive(reason), .notified(date)):
             statusViewModel = StatusViewModel.activeWithNotified(date: date)
+        case let (.inactive(reason), .notified(date)):
+            statusViewModel = StatusViewModel.inactiveWithNotified(date: date)
             cardTypes.append(reason.cardType(listener: listener))
-            
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
-            
+
         case let (.inactive(reason), .notNotified) where reason == .bluetoothOff:
             statusViewModel = .bluetoothInactiveWithNotNotified(theme: theme)
-            
+
         case (.inactive, .notNotified):
             statusViewModel = .inactiveWithNotNotified
-            
+
         case let (.authorizationDenied, .notified(date)):
             statusViewModel = .inactiveWithNotified(date: date)
             cardTypes.append(.exposureOff)
-            
+
         case (.authorizationDenied, .notNotified):
             statusViewModel = .inactiveWithNotNotified
-            
+
         case let (.notAuthorized, .notified(date)):
             statusViewModel = .inactiveWithNotified(date: date)
             cardTypes.append(.exposureOff)
-            
+
         case (.notAuthorized, .notNotified):
             statusViewModel = .inactiveWithNotNotified
         }
-        
+
         mainThreadIfNeeded { [weak self] in
-            
+
             guard let strongSelf = self else {
                 return
             }
-            
+
             strongSelf.statusView.update(with: statusViewModel)
-            
+
             // Add any non-status related card types and update the CardViewController via the router
             cardTypes.append(contentsOf: announcementCardTypes)
             strongSelf.cardRouter.types = cardTypes
-            
+
             strongSelf.showCard(!cardTypes.isEmpty)
         }
     }
@@ -220,20 +227,29 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         refreshCurrentState()
     }
 
+    @objc private func explainRisk() {
+        listener?.handleButtonAction(.explainRisk)
+    }
+
+    @objc private func removeNotification() {
+        listener?.handleButtonAction(.removeNotification(.warning))
+    }
+
     private lazy var statusView: StatusView = StatusView(theme: self.theme,
                                                          cardView: cardRouter.viewControllable.uiviewController.view)
 }
 
 private final class StatusView: View {
-
     weak var listener: StatusListener?
 
     fileprivate let stretchGuide = UILayoutGuide() // grows larger while stretching, grows all visible elements
     private let contentStretchGuide = UILayoutGuide() // grows larger while stretching, used to center the content
+    private let bottomCardStretchGuide = UILayoutGuide()
 
     private let contentContainer = UIStackView()
     private let textContainer = UIStackView()
     private let buttonContainer = UIStackView()
+    private let bottomCardContainer = UIStackView()
     private let cardView: UIView
 
     private var iconViewSizeConstraints: Constraint?
@@ -247,6 +263,7 @@ private final class StatusView: View {
     private let gradientLayer = CAGradientLayer()
     private lazy var cloudsView = CloudView(theme: theme)
     private lazy var sceneImageView = StatusAnimationView(theme: theme)
+    private lazy var sceneImageViewContainer = UIView()
 
     private var containerToSceneVerticalConstraint: NSLayoutConstraint?
     private var heightConstraint: NSLayoutConstraint?
@@ -298,12 +315,18 @@ private final class StatusView: View {
         contentContainer.addArrangedSubview(iconView)
         contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
-        contentContainer.addArrangedSubview(cardView)
+        
+        sceneImageViewContainer.addSubview(sceneImageView)
+                
+        bottomCardContainer.addArrangedSubview(cardView)
+
         addSubview(cloudsView)
-        addSubview(sceneImageView)
+        addSubview(sceneImageViewContainer)
         addSubview(contentContainer)
+        addSubview(bottomCardContainer)
         addLayoutGuide(contentStretchGuide)
         addLayoutGuide(stretchGuide)
+        addLayoutGuide(bottomCardStretchGuide)
     }
 
     override func setupConstraints() {
@@ -311,9 +334,10 @@ private final class StatusView: View {
 
         cloudsView.translatesAutoresizingMaskIntoConstraints = false
         sceneImageView.translatesAutoresizingMaskIntoConstraints = false
+        sceneImageViewContainer.translatesAutoresizingMaskIntoConstraints = false
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
+        bottomCardContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        containerToSceneVerticalConstraint = sceneImageView.topAnchor.constraint(equalTo: contentStretchGuide.bottomAnchor, constant: -48)
         heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
         sceneImageHeightConstraint = sceneImageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * sceneImageAspectRatio)
@@ -323,14 +347,18 @@ private final class StatusView: View {
             maker.centerY.equalTo(iconView.snp.centerY)
             maker.leading.trailing.equalTo(stretchGuide)
         }
-        sceneImageView.snp.makeConstraints { maker in
-            maker.leading.trailing.bottom.equalTo(stretchGuide)
+        sceneImageViewContainer.snp.makeConstraints { maker in
+            maker.top.equalTo(contentStretchGuide.snp.bottom).inset(48)
+            maker.leading.trailing.equalTo(stretchGuide)
             maker.centerX.equalTo(stretchGuide)
+        }
+        sceneImageView.snp.makeConstraints { maker in
+            maker.leading.trailing.top.bottom.equalToSuperview()
         }
         stretchGuide.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(contentStretchGuide).inset(-16)
 
-            maker.top.equalTo(contentStretchGuide).inset(-70)
+            maker.top.equalTo(contentStretchGuide).inset(-86)
             maker.bottom.greaterThanOrEqualTo(contentStretchGuide.snp.bottom)
             maker.leading.trailing.bottom.equalToSuperview()
             maker.top.equalToSuperview().priority(.low)
@@ -343,8 +371,21 @@ private final class StatusView: View {
         iconView.snp.makeConstraints { maker in
             iconViewSizeConstraints = maker.width.height.equalTo(48).constraint
         }
-    }
 
+        bottomCardStretchGuide.snp.makeConstraints { maker in
+            maker.top.equalTo(stretchGuide.snp.top)
+            maker.leading.equalTo(stretchGuide).offset(16)
+            maker.trailing.equalTo(stretchGuide).offset(-16)
+            maker.bottom.equalTo(stretchGuide.snp.bottom)
+        }
+
+        bottomCardContainer.snp.makeConstraints { maker in
+            maker.top.equalTo(sceneImageViewContainer.snp.bottom)
+            maker.leading.trailing.equalTo(bottomCardStretchGuide)
+            maker.bottom.equalTo(stretchGuide)
+        }
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -387,12 +428,11 @@ private final class StatusView: View {
         gradientLayer.colors = [theme.colors[keyPath: viewModel.gradientColor].cgColor, UIColor.white.withAlphaComponent(0).cgColor]
 
         sceneImageView.isHidden = !viewModel.showScene
-        containerToSceneVerticalConstraint?.isActive = viewModel.showScene
         cloudsView.isHidden = !viewModel.showClouds
 
         evaluateHeight()
         evaluateImageSize()
-
+        
         showStatus(true)
     }
 
@@ -411,7 +451,12 @@ private final class StatusView: View {
 
     /// Manually adjusts sceneImage height constraint after layout pass
     private func evaluateImageSize() {
-        sceneImageHeightConstraint?.constant = UIScreen.main.bounds.width * sceneImageAspectRatio
+        if sceneImageView.isHidden {
+            // If the scene is hidden we still give it a size to push other content (such as cards) lower
+            sceneImageHeightConstraint?.constant = 75
+        } else {
+            sceneImageHeightConstraint?.constant = UIScreen.main.bounds.width * sceneImageAspectRatio
+        }
     }
 
     private func showStatus(_ show: Bool) {
@@ -481,7 +526,7 @@ private final class StatusAnimationView: View {
                                            repeats: false,
                                            block: { [weak self] _ in
                                                self?.playAnimation()
-            })
+                                           })
     }
 
     private func playAnimation() {

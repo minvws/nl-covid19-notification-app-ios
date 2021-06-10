@@ -19,7 +19,6 @@ protocol CardViewControllable: ViewControllable, EnableSettingListener, WebviewL
 }
 
 final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSettable {
-
     init(viewController: CardViewControllable,
          enableSettingBuilder: EnableSettingBuildable,
          webviewBuilder: WebviewBuildable) {
@@ -37,12 +36,11 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
         let viewController = enableSettingBuilder.build(withListener: self.viewController,
                                                         setting: enableSetting)
 
-        self.enableSettingViewController = viewController
+        enableSettingViewController = viewController
         self.viewController.present(viewController: viewController)
     }
 
     func route(to url: URL) {
-
         guard webviewViewController == nil else { return }
 
         let webviewViewController = webviewBuilder.build(withListener: viewController, url: url)

@@ -365,6 +365,11 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "status.card.manualunpause.title" = "Turn the app on again";
 "status.card.manualunpause.description" = "The app is not active yet. You need to turn it on yourself.";
 
+/* MARK: - EN > 14 days */
+"status.en.contact.>14days.title" = "Contact more than 14 days ago";
+"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
+"status.en.contact.>14days.secondary.button.title" = "Delete";
+
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "More information";
 

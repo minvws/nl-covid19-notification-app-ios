@@ -50,7 +50,7 @@ final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol, Lo
         
         do {
             
-            try fileManager.createDirectory(at: input, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
             try fileManager.unzipItem(at: input, to: destinationURL, skipCRC32: skipCRC32, progress: nil, preferredEncoding: nil)
             
             let diff = CFAbsoluteTimeGetCurrent() - start
