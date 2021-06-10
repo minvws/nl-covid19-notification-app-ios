@@ -123,7 +123,8 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     
     var featureFlagController: FeatureFlagControlling {
         FeatureFlagController(userDefaults: UserDefaults.standard,
-                              exposureController: dependency.exposureController)
+                              exposureController: dependency.exposureController,
+                              environmentController: environmentController)
     }
 }
 

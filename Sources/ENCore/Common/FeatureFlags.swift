@@ -31,31 +31,48 @@ enum Feature: CaseIterable {
 }
 
 struct FeatureFlag {
+    
+    /// Feature that is enabled / disabled by this flag
     let feature: Feature
+    
+    /// Identifier for this featureflag. This should match with the identifier that returned in the remote feature flag settings coming from the AppConfig file in the API
     let identifier: String
+    
+    /// Determines if this feature is enabled by default
     let enabledByDefault: Bool
+    
+    /// Determines if this feature should be available in non-debug / tests builds (in other words: wether the feature is ready for release to the general public)
+    let releasable: Bool
 }
 
 class FeatureFlagController: FeatureFlagControlling {
     
     private let flags = [
-        FeatureFlag(feature: .independentKeySharing, identifier: "independentKeySharing", enabledByDefault: false)
+        FeatureFlag(feature: .independentKeySharing, identifier: "independentKeySharing", enabledByDefault: false, releasable: false)
     ]
     
     private let userDefaults: UserDefaultsProtocol
     private let exposureController: ExposureControlling
+    private let environmentController: EnvironmentControlling
     
     init(
         userDefaults: UserDefaultsProtocol,
-        exposureController: ExposureControlling
+        exposureController: ExposureControlling,
+        environmentController: EnvironmentControlling
     ) {
         self.userDefaults = userDefaults
         self.exposureController = exposureController
+        self.environmentController = environmentController
     }
     
     func isFeatureFlagEnabled(feature: Feature) -> Bool {
         
         guard let flag = flag(forFeature: feature) else {
+            return false
+        }
+        
+        // Should this feature even be available in a release build?
+        guard environmentController.isDebugVersion || flag.releasable else {
             return false
         }
         

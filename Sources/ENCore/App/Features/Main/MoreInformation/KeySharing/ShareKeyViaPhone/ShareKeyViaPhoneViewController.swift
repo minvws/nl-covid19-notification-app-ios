@@ -61,8 +61,6 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
 
         hasBottomMargin = true
 
-        setThemeNavigationBar(withTitle: .moreInformationInfectedTitle)
-
         navigationItem.hidesBackButton = !withBackButton
         navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
@@ -93,7 +91,12 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
                 self?.internalView.infoView.showHeader = !isLandscape
             }.disposed(by: disposeBag)
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setThemeNavigationBar(withTitle: .moreInformationInfectedTitle, topItem: navigationItem)
+    }
+    
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {

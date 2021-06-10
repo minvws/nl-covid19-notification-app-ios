@@ -464,6 +464,14 @@ extension String {
 
     // MARK: - MoreInformation | Infected
 
+    static var moreInformationKeySharingCoronaTestHeaderTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.header.title") }
+    static var moreInformationKeySharingCoronaTestHeaderContent: String { return Localization.string(for: "moreInformation.keysharing.coronatest.header.content") }
+    
+    static var moreInformationKeySharingCoronaTestOption1Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.option1.title") }
+    static var moreInformationKeySharingCoronaTestOption1Content: String { return Localization.string(for: "moreInformation.keysharing.coronatest.option1.content") }
+    static var moreInformationKeySharingCoronaTestOption2Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.option2.title") }
+    static var moreInformationKeySharingCoronaTestOption2Content: String { return Localization.string(for: "moreInformation.keysharing.coronatest.option2.content") }
+    
     static var moreInformationInfectedTitle: String { return Localization.string(for: "moreInformation.infected.title") }
     static var moreInformationInfectedLoading: String { return Localization.string(for: "moreInformation.infected.loading") }
     static var moreInformationInfectedUpload: String { return Localization.string(for: "moreInformation.infected.upload") }

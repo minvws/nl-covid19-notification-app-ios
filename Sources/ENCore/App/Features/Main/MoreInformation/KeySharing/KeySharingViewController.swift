@@ -22,10 +22,6 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
     
     weak var router: KeySharingRouting?
     
-    override init(theme: Theme) {
-        super.init(theme: theme)
-    }
-    
     override func loadView() {
         self.view = choiceView
         self.view.frame = UIScreen.main.bounds
@@ -33,12 +29,15 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setThemeNavigationBar(withTitle: .moreInformationInfectedTitle)
         navigationItem.rightBarButtonItem = closeBarButtonItem
-        
         router?.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setThemeNavigationBar(withTitle: .moreInformationInfectedTitle, topItem: navigationItem)
+    }
+        
     func push(viewController: ViewControllable, animated: Bool) {
         navigationController?.pushViewController(viewController.uiviewController, animated: animated)
     }
@@ -102,13 +101,13 @@ private final class KeySharingView: View, MoreInformationCellListner {
         stack.axis = .vertical
         stack.addArrangedSubview(MoreInformationCell(listener: self, theme: theme, data: MoreInformationCellViewModel(identifier: .shareKeyWebsite,
                                                                                                              icon: .computer,
-                                                                                                             title: "via website title",
-                                                                                                             subtitle: "via website subtitle")))
+                                                                                                             title: .moreInformationKeySharingCoronaTestOption1Title,
+                                                                                                             subtitle: .moreInformationKeySharingCoronaTestOption1Content)))
         
         stack.addArrangedSubview(MoreInformationCell(listener: self, theme: theme, data: MoreInformationCellViewModel(identifier: .shareKeyGGD,
                                                                                              icon: .phone,
-                                                                                             title: "via phone title",
-                                                                                             subtitle: "via phone subtitle")))
+                                                                                             title: .moreInformationKeySharingCoronaTestOption2Title,
+                                                                                             subtitle: .moreInformationKeySharingCoronaTestOption2Content)))
         
         return stack
     }()
@@ -117,7 +116,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         let label = Label(frame: .zero)
         label.isUserInteractionEnabled = true
         label.font = theme.fonts.title3
-        label.text = "some title"
+        label.text = .moreInformationKeySharingCoronaTestHeaderTitle
         label.numberOfLines = 0
         label.accessibilityTraits = .header
         return label
@@ -127,7 +126,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         let label = Label()
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "some text"
+        label.text = .moreInformationKeySharingCoronaTestHeaderContent
         return label
     }()
     
@@ -149,7 +148,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         super.build()
         
         addSubview(scrollableStackView)
-        scrollableStackView.spacing = 64
+        scrollableStackView.spacing = 0
         scrollableStackView.stackViewBottomMargin = 32
         scrollableStackView.addSections([
             contentContainer,
@@ -172,7 +171,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         
         descriptionLabel.snp.makeConstraints { (maker) in
             maker.top.equalTo(titleLabel.snp.bottom).offset(21)
-            maker.bottom.equalTo(contentContainer.safeAreaLayoutGuide)
+            maker.bottom.equalTo(contentContainer).inset(64)
             maker.leading.trailing.equalTo(contentContainer.safeAreaLayoutGuide).inset(16)
         }
     }

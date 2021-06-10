@@ -72,7 +72,8 @@ private final class KeySharingDependencyProvider: DependencyProvider<KeySharingD
     
     var featureFlagController: FeatureFlagControlling {
         FeatureFlagController(userDefaults: UserDefaults.standard,
-                              exposureController: exposureController)
+                              exposureController: exposureController,
+                              environmentController: environmentController)
     }
 }
 

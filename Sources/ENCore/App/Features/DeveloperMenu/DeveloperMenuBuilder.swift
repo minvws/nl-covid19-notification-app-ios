@@ -37,7 +37,12 @@ private final class DeveloperMenuDependencyProvider: DependencyProvider<Develope
     
     var featureFlagController: FeatureFlagControlling {
         FeatureFlagController(userDefaults: UserDefaults.standard,
-                              exposureController: dependency.exposureController)
+                              exposureController: dependency.exposureController,
+                              environmentController: environmentController)
+    }
+    
+    var environmentController: EnvironmentControlling {
+        EnvironmentController()
     }
     
 }
