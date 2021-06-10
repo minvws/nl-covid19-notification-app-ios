@@ -8,12 +8,12 @@
 import ENFoundation
 import Foundation
 
-/// @mockable
+/// @mockable(history:keySharingWantsDismissal=true)
 protocol KeySharingListener: AnyObject {
     func keySharingWantsDismissal(shouldDismissViewController: Bool)
 }
 
-/// @mockable
+/// @mockable(history:build=true)
 protocol KeySharingBuildable {
     /// Builds KeySharing
     ///
@@ -22,6 +22,7 @@ protocol KeySharingBuildable {
     func build(withListener listener: KeySharingListener) -> Routing
 }
 
+/// @mockable
 protocol KeySharingDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }

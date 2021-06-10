@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-final class InfectedRouterTests: TestCase {
+final class ShareKeyViaPhoneRouterTests: TestCase {
     private let viewController = ShareKeyViaPhoneViewControllableMock()
     private let listener = ShareKeyViaPhoneListenerMock()
 

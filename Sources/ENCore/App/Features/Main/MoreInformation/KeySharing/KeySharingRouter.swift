@@ -7,7 +7,7 @@
 
 import UIKit
 
-/// @mockable
+/// @mockable(history:push = true)
 protocol KeySharingViewControllable: ViewControllable {
     var router: KeySharingRouting? { get set }
     func push(viewController: ViewControllable, animated: Bool)

@@ -126,6 +126,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
                               exposureController: dependency.exposureController,
                               environmentController: environmentController)
     }
+    
+    var applicationController: ApplicationControlling {
+        ApplicationController()
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -149,6 +153,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           messageBuilder: dependencyProvider.messageBuilder,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
-                          settingsBuilder: dependencyProvider.settingsBuilder)
+                          settingsBuilder: dependencyProvider.settingsBuilder,
+                          applicationController: dependencyProvider.applicationController)
     }
 }

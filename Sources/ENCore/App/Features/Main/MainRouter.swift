@@ -32,7 +32,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          messageBuilder: MessageBuildable,
          enableSettingBuilder: EnableSettingBuildable,
          webviewBuilder: WebviewBuildable,
-         settingsBuilder: SettingsBuildable) {
+         settingsBuilder: SettingsBuildable,
+         applicationController: ApplicationControlling) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
@@ -44,7 +45,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.enableSettingBuilder = enableSettingBuilder
         self.webviewBuilder = webviewBuilder
         self.settingsBuilder = settingsBuilder
-
+        self.applicationController = applicationController
         super.init(viewController: viewController)
 
         viewController.router = self
@@ -174,7 +175,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
         if shouldDismissViewController {
             // Dismisses all presented viewcontrollers
-            UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
+            applicationController.dismissAllPresentedViewController(animated: true, completion: nil)
         }
         
         self.keySharingRouter = nil
@@ -302,4 +303,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
+    
+    private let applicationController: ApplicationControlling
 }

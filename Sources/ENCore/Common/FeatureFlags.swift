@@ -82,7 +82,7 @@ class FeatureFlagController: FeatureFlagControlling {
         }
         
         // Find remote feature flag for feature
-        guard let remoteFeatureFlag = exposureController.getAppConfigFeatureFlags()?.first(where: { $0.id == flag.identifier }) else {
+        guard let remoteFeatureFlag = exposureController.getStoredAppConfigFeatureFlags()?.first(where: { $0.id == flag.identifier }) else {
             return flag.enabledByDefault
         }
         

@@ -275,7 +275,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
     
-    func getAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]? {
+    func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]? {
         guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
             return nil
         }

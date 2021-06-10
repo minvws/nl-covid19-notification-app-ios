@@ -183,8 +183,8 @@ final class ExposureController: ExposureControlling, Logging {
             .getPadding()
     }
     
-    func getAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]? {
-        dataController.getAppConfigFeatureFlags()
+    func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]? {
+        dataController.getStoredAppConfigFeatureFlags()
     }
 
     func refreshStatus() {

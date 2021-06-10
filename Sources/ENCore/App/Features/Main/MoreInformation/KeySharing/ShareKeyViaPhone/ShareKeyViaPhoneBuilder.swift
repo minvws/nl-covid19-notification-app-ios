@@ -13,7 +13,7 @@ protocol ShareKeyViaPhoneListener: AnyObject {
     func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool)
 }
 
-/// @mockable
+/// @mockable(history:build=true)
 protocol ShareKeyViaPhoneBuildable {
     /// Builds ShareKeyViaPhone
     ///
