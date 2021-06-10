@@ -19,7 +19,7 @@ class KeySharingViewControllerTests: TestCase {
         sut.router = mockRouter
     }
             
-    func test_snapshot() {
+    func test_snapshot_keySharingViewController() {
         snapshots(matching: sut, waitForMainThread: true)
     }
 }
