@@ -293,7 +293,8 @@ private final class ShareKeyViaPhoneView: View {
 
     override init(theme: Theme) {
         let config = InfoViewConfig(actionButtonTitle: .moreInformationInfectedUpload,
-                                    headerImage: .infectedHeader)
+                                    headerImage: .infectedHeader,
+                                    stickyButtons: true)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)
     }
