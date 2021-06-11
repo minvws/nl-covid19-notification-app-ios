@@ -30,6 +30,7 @@ extension UIImage {
     static var moreInformationStep1: UIImage? { return Image.named("MoreInformation.Step1") }
     static var moreInformationStep2: UIImage? { return Image.named("MoreInformation.Step2") }
     static var moreInformationStep3: UIImage? { return Image.named("MoreInformation.Step3") }
+    static var moreInformationStep4: UIImage? { return Image.named("MoreInformation.Step4") }
     static var infectedHeader: UIImage? { return Image.named("InfectedHeader") }
     static var thankYouHeader: UIImage? { return Image.named("ThankYouHeader") }
     static var receivedNotificationHeader: UIImage? { return Image.named("ReceivedNotificationHeader") }

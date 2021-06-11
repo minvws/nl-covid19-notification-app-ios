@@ -267,21 +267,75 @@ final class InfoSectionContentView: View, UITextViewDelegate {
 }
 
 final class InfoSectionStepView: View {
+    
+    var buttonEnabled: Bool {
+        didSet {
+            actionButton?.isEnabled = buttonEnabled
+        }
+    }
+    
     private let iconImageView: UIImageView
     private let titleLabel: Label
+    private let descriptionLabel: Label
     private let progressLine: View
     private let isLastStep: Bool
+    
+    private var buttonActionHandler: (() -> ())?
+    private var buttonTitle: String?
+    private var disabledButtonTitle: String?
+    
+    private lazy var actionButton: Button? = {
+        guard let buttonActionHandler = buttonActionHandler, let buttonTitle = buttonTitle else {
+            return nil
+        }
+        
+        let button = Button(title: buttonTitle, theme: theme)
+        button.setTitle(disabledButtonTitle, for: .disabled)
+        button.isEnabled = buttonEnabled
+        button.action = buttonActionHandler
+        return button
+    }()
+    
+    private lazy var contentStackView: UIStackView = {
+        let stack = UIStackView(frame: .zero)
+        stack.axis = .vertical
+        stack.spacing = 16
+        stack.addArrangedSubview(titleLabel)
+        if let descriptionText = descriptionLabel.text, !descriptionText.isEmpty {
+            stack.addArrangedSubview(descriptionLabel)
+        }
+        if let actionButton = actionButton {
+            stack.addArrangedSubview(actionButton)
+        }
+        return stack
+    }()
 
     // MARK: - Init
 
-    init(theme: Theme, title: String, stepImage: UIImage?, isLastStep: Bool = false) {
+    init(theme: Theme,
+         title: String,
+         description: String? = nil,
+         stepImage: UIImage?,
+         isLastStep: Bool = false,
+         buttonTitle: String? = nil,
+         disabledButtonTitle: String? = nil,
+         buttonActionHandler: (() -> ())? = nil,
+         buttonEnabled: Bool = false) {
+        
         iconImageView = UIImageView(image: stepImage)
         titleLabel = Label(frame: .zero)
+        descriptionLabel = Label(frame: .zero)
         progressLine = View(theme: theme)
+                
         self.isLastStep = isLastStep
-        super.init(theme: theme)
-
+        self.buttonActionHandler = buttonActionHandler
+        self.buttonTitle = buttonTitle
+        self.buttonEnabled = buttonEnabled
+        
         titleLabel.text = title
+        descriptionLabel.text = description
+        
+        super.init(theme: theme)
     }
 
     // MARK: - Overrides
@@ -292,13 +346,17 @@ final class InfoSectionStepView: View {
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title3
         titleLabel.accessibilityTraits = .header
+        
+        descriptionLabel.numberOfLines = 0
+        descriptionLabel.font = theme.fonts.body
+        descriptionLabel.accessibilityTraits = .staticText
 
         progressLine.backgroundColor = theme.colors.tertiary
         progressLine.isHidden = isLastStep
-
+        
         addSubview(iconImageView)
         addSubview(progressLine)
-        addSubview(titleLabel)
+        addSubview(contentStackView)
     }
 
     override func setupConstraints() {
@@ -311,17 +369,25 @@ final class InfoSectionStepView: View {
             maker.top.equalToSuperview()
             maker.width.height.equalTo(32)
         }
+        
         progressLine.snp.makeConstraints { maker in
             maker.centerX.equalTo(iconImageView)
             maker.top.equalTo(iconImageView.snp.bottom).offset(2)
             maker.bottom.equalToSuperview()
             maker.width.equalTo(4)
         }
-        titleLabel.snp.makeConstraints { maker in
+        
+        contentStackView.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
             maker.trailing.equalToSuperview().inset(16)
             maker.leading.equalTo(iconImageView.snp.trailing).offset(16)
             maker.bottom.equalToSuperview().inset(isLastStep ? 0 : 40)
+        }
+        
+        if let button = actionButton {
+            button.snp.makeConstraints { maker in
+                maker.height.equalTo(48)
+            }
         }
     }
 }

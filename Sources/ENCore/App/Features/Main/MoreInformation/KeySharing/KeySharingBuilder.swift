@@ -34,7 +34,7 @@ protocol KeySharingDependency {
     var pauseController: PauseControlling { get }
 }
 
-private final class KeySharingDependencyProvider: DependencyProvider<KeySharingDependency>, ShareKeyViaPhoneDependency {
+private final class KeySharingDependencyProvider: DependencyProvider<KeySharingDependency>, ShareKeyViaPhoneDependency, ShareKeyViaWebsiteDependency {
     var theme: Theme {
         dependency.theme
     }
@@ -71,6 +71,10 @@ private final class KeySharingDependencyProvider: DependencyProvider<KeySharingD
         return ShareKeyViaPhoneBuilder(dependency: self)
     }
     
+    var shareKeyViaWebsiteBuilder: ShareKeyViaWebsiteBuildable {
+        return ShareKeyViaWebsiteBuilder(dependency: self)
+    }
+    
     var featureFlagController: FeatureFlagControlling {
         FeatureFlagController(userDefaults: UserDefaults.standard,
                               exposureController: exposureController,
@@ -88,6 +92,7 @@ final class KeySharingBuilder: Builder<KeySharingDependency>, KeySharingBuildabl
         return KeySharingRouter(listener: listener,
                                           viewController: viewController,
                                           shareKeyViaPhoneBuilder: dependencyProvider.shareKeyViaPhoneBuilder,
+                                          shareKeyViaWebsiteBuilder: dependencyProvider.shareKeyViaWebsiteBuilder,
                                           featureFlagController: dependencyProvider.featureFlagController
         )
     }

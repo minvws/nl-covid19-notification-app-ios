@@ -11,9 +11,9 @@ import SnapKit
 import UIKit
 
 /// @mockable
-protocol ShareKeyViaPhoneRouting: Routing {
-    func didUploadCodes(withKey key: ExposureConfirmationKey)
-    func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool)
+protocol ShareKeyViaWebsiteRouting: Routing {
+    func didCompleteScreen(withKey key: ExposureConfirmationKey)
+    func shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: Bool)
     func showInactiveCard()
     func removeInactiveCard()
 
@@ -21,15 +21,15 @@ protocol ShareKeyViaPhoneRouting: Routing {
     func hideFAQ(shouldDismissViewController: Bool)
 }
 
-final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
-
+final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsiteViewControllable, UIAdaptivePresentationControllerDelegate, Logging, ShareKeyViaWebsiteViewListener {
+    
     enum State {
         case loading
         case success(confirmationKey: ExposureConfirmationKey)
         case error
     }
 
-    weak var router: ShareKeyViaPhoneRouting?
+    weak var router: ShareKeyViaWebsiteRouting?
 
     var state: State = .loading {
         didSet {
@@ -41,11 +41,11 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
          interfaceOrientationStream: InterfaceOrientationStreaming,
-         withBackButton: Bool) {
+         applicationController: ApplicationControlling) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
-        self.withBackButton = withBackButton
+        self.applicationController = applicationController
         super.init(theme: theme)
     }
 
@@ -61,13 +61,18 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
 
         hasBottomMargin = true
 
-        navigationItem.hidesBackButton = !withBackButton
         navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 
+        internalView.listener = self
+        
         internalView.infoView.actionHandler = { [weak self] in
-            self?.uploadCodes()
+            guard let state = self?.state, case let .success(key) = state else {
+                return
+            }
+            
+            self?.router?.didCompleteScreen(withKey: key)
         }
 
         internalView.contentView.linkHandler = { [weak self] link in
@@ -75,7 +80,7 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
 
             self?.router?.showFAQ()
         }
-
+        
         exposureStateStream
             .exposureState
             .observe(on: MainScheduler.instance)
@@ -100,10 +105,10 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: false)
+        router?.shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: false)
     }
 
-    // MARK: - ShareKeyViaPhoneViewControllable
+    // MARK: - ShareKeyViaWebsiteViewControllable
 
     func push(viewController: ViewControllable) {
         navigationController?.pushViewController(viewController.uiviewController, animated: true)
@@ -128,7 +133,7 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     }
 
     func thankYouWantsDismissal() {
-        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)
+        router?.shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: true)
     }
 
     func set(cardViewController: ViewControllable?) {
@@ -147,6 +152,21 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
 
             self.cardViewController = cardViewController
         }
+    }
+    
+    // MARK: - ShareKeyViaWebsiteViewListener
+    
+    func didRequestShareCodes() {
+        uploadCodes()
+    }
+    
+    func didRequestWebsiteOpen() {
+        guard let urlString = exposureController.getStoredShareKeyURL(),
+              let url = URL(string: urlString),
+              applicationController.canOpenURL(url) else {
+            return
+        }
+        applicationController.open(url)
     }
 
     // MARK: - HelpDetailListener
@@ -182,22 +202,26 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
             case .notAuthorized:
                 () // The user did not allow uploading the keys so we do nothing.
             default:
-                self?.router?.didUploadCodes(withKey: key)
+                self?.internalView.shareCodeButtonEnabled = false
             }
         }
     }
 
-    private lazy var internalView: ShareKeyViaPhoneView = ShareKeyViaPhoneView(theme: self.theme)
+    private lazy var internalView: ShareKeyViaWebsiteView = {
+        let view = ShareKeyViaWebsiteView(theme: self.theme, showWebsiteLink: exposureController.getStoredShareKeyURL() != nil)
+        return view
+    }()
+    
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
-    private let withBackButton: Bool
+    private let applicationController: ApplicationControlling
     private var disposeBag = DisposeBag()
     private let interfaceOrientationStream: InterfaceOrientationStreaming
 
     private var cardViewController: ViewControllable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
-        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)        
+        router?.shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: true)
     }
 
     private func updateState() {
@@ -231,17 +255,31 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     }
 }
 
-private final class ShareKeyViaPhoneView: View {
+protocol ShareKeyViaWebsiteViewListener: AnyObject {
+    func didRequestShareCodes()
+    func didRequestWebsiteOpen()
+}
+
+private final class ShareKeyViaWebsiteView: View {
 
     fileprivate let infoView: InfoView
+    private let showWebsiteLink: Bool
+
+    weak var listener: ShareKeyViaWebsiteViewListener?
+    
+    var shareCodeButtonEnabled: Bool = true {
+        didSet {
+            shareYourCodes.buttonEnabled = shareCodeButtonEnabled
+        }
+    }
 
     private var content: NSAttributedString {
-        let header = NSAttributedString(string: .moreInformationInfectedHeader,
+        let header = NSAttributedString(string: .moreInformationKeySharingCoronaTestTitle,
                                         attributes: [
                                             NSAttributedString.Key.foregroundColor: theme.colors.gray,
                                             NSAttributedString.Key.font: theme.fonts.body
                                         ])
-        let howDoesItWork = NSAttributedString(string: .moreInformationInfectedHowDoesItWork,
+        let howDoesItWork = NSAttributedString(string: .moreInformationKeySharingCoronaTestHowDoesItWork,
                                                attributes: [
                                                    NSAttributedString.Key.foregroundColor: theme.colors.primary,
                                                    NSAttributedString.Key.font: theme.fonts.bodyBold,
@@ -265,39 +303,60 @@ private final class ShareKeyViaPhoneView: View {
         stackView.axis = .vertical
         stackView.spacing = 2
 
-        stackView.addArrangedSubview(controlCode)
-        stackView.addArrangedSubview(waitForTheGGD)
         stackView.addArrangedSubview(shareYourCodes)
+        stackView.addArrangedSubview(controlCode)
+        stackView.addArrangedSubview(goToWebsite)
+        stackView.addArrangedSubview(youAreDone)
         return stackView
     }()
 
+    private lazy var shareYourCodes: InfoSectionStepView = {
+        InfoSectionStepView(theme: theme,
+                            title: .moreInformationKeySharingCoronaTestStep1Title,
+                            stepImage: .moreInformationStep1,
+                            buttonTitle: .moreInformationKeySharingCoronaTestStep1Button,
+                            disabledButtonTitle: .moreInformationKeySharingCoronaTestStep1Done,
+                            buttonActionHandler: { [weak self] in
+                                self?.listener?.didRequestShareCodes()
+                            },
+                            buttonEnabled: shareCodeButtonEnabled)
+    }()
+    
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
-                                      title: .moreInformationInfectedStep1,
-                                      stepImage: .moreInformationStep1)
+                                      title: .moreInformationKeySharingCoronaTestStep2Title,
+                                      stepImage: .moreInformationStep2)
     }()
 
-    private lazy var waitForTheGGD: View = {
-        InfoSectionStepView(theme: theme,
-                            title: .moreInformationInfectedStep2,
-                            stepImage: .moreInformationStep2)
-    }()
-
-    private lazy var shareYourCodes: View = {
-        InfoSectionStepView(theme: theme,
-                            title: .moreInformationInfectedStep3,
+    private lazy var goToWebsite: View = {
+        let buttonTitle: String? = showWebsiteLink ? .moreInformationKeySharingCoronaTestStep3Button : nil
+        let buttonActionHandler: (() ->())? = showWebsiteLink ? { [weak self] in self?.listener?.didRequestWebsiteOpen()} : nil
+        
+        return InfoSectionStepView(theme: theme,
+                            title: .moreInformationKeySharingCoronaTestStep3Title,
                             stepImage: .moreInformationStep3,
+                            buttonTitle: buttonTitle,
+                            buttonActionHandler: buttonActionHandler,
+                            buttonEnabled: true)
+    }()
+    
+    private lazy var youAreDone: View = {
+        InfoSectionStepView(theme: theme,
+                            title: .moreInformationKeySharingCoronaTestStep4Title,
+                            description: .moreInformationKeySharingCoronaTestStep4Content,
+                            stepImage: .moreInformationStep4,
                             isLastStep: true)
     }()
-
+    
     private lazy var cardContentView: View = View(theme: theme)
 
     // MARK: - Init
 
-    override init(theme: Theme) {
-        let config = InfoViewConfig(actionButtonTitle: .moreInformationInfectedUpload,
+    init(theme: Theme, showWebsiteLink: Bool) {
+        let config = InfoViewConfig(actionButtonTitle: .moreInformationKeySharingCoronaTestComplete,
                                     headerImage: .infectedHeader,
                                     stickyButtons: true)
+        self.showWebsiteLink = showWebsiteLink
         self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
         super.init(theme: theme)
     }
