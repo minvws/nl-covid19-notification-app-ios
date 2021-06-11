@@ -464,6 +464,7 @@
 "moreInformation.keysharing.coronatest.steps.header.button" = "Hoe werkt dit?";
 "moreInformation.keysharing.coronatest.step1.title" = "Deel de codes die CoronaMelder heeft gemaakt";
 "moreInformation.keysharing.coronatest.step1.button" = "Codes delen";
+"moreInformation.keysharing.coronatest.step1.done" = "Codes gedeeld";
 "moreInformation.keysharing.coronatest.step2.title" = "Schrijf je GGD-sleutel op of kopieer deze";
 "moreInformation.keysharing.coronatest.step3.title" = "Vul je GGD-sleutel in op coronatest.nl. Zo waarschuw je anderen bij wie je in de buurt bent geweest";
 "moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Ga (terug) naar coronatest.nl en vul je GGD-sleutel in. Zo waarschuw je anderen bij wie je in de buurt bent geweest";
