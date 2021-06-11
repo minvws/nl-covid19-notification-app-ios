@@ -501,7 +501,13 @@ extension String {
     static var moreInformationThankYouListItem2: String { return Localization.string(for: "moreInformation.thankyou.list.item2") }
     static var moreInformationThankYouListItem3: String { return Localization.string(for: "moreInformation.thankyou.list.item3") }
     static var moreInformationThankYouInfo: String { return Localization.string(for: "moreInformation.thankyou.info.title") }
-
+    
+    // MARK: - MoreInformation | KeySharing | Thank You
+    
+    static var moreInformationKeySharingThankYouTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.title") }
+    static var moreInformationKeySharingThankYouContent: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.content") }
+    static var moreInformationKeySharingThankYouConfirmation: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.confirmation") }
+    
     // MARK: - MoreInformation | Received Notification
 
     static var moreInformationReceivedNotificationTitle: String { return Localization.string(for: "moreInformation.receivedNotification.title") }

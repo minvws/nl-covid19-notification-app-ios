@@ -21,10 +21,12 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
     init(listener: ThankYouListener,
          theme: Theme,
          exposureConfirmationKey: ExposureConfirmationKey,
-         interfaceOrientationStream: InterfaceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming,
+         featureFlagController: FeatureFlagControlling) {
         self.listener = listener
         self.exposureConfirmationKey = exposureConfirmationKey
         self.interfaceOrientationStream = interfaceOrientationStream
+        self.featureFlagController = featureFlagController
 
         super.init(theme: theme)
     }
@@ -66,9 +68,10 @@ final class ThankYouViewController: ViewController, ThankYouViewControllable, UI
     // MARK: - Private
 
     private weak var listener: ThankYouListener?
-    private lazy var internalView: ThankYouView = ThankYouView(theme: self.theme, exposureConfirmationKey: exposureConfirmationKey)
+    private lazy var internalView: ThankYouView = ThankYouView(theme: self.theme, exposureConfirmationKey: exposureConfirmationKey, featureFlagController: featureFlagController)
     private let exposureConfirmationKey: ExposureConfirmationKey
     private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private let featureFlagController: FeatureFlagControlling
     private var disposeBag = DisposeBag()
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
@@ -80,7 +83,8 @@ private final class ThankYouView: View {
 
     fileprivate let infoView: InfoView
     private let exposureConfirmationKey: ExposureConfirmationKey
-
+    private let featureFlagController: FeatureFlagControlling
+    
     var showVisual: Bool = true {
         didSet {
             infoView.showHeader = showVisual
@@ -89,11 +93,14 @@ private final class ThankYouView: View {
 
     // MARK: - Init
 
-    init(theme: Theme, exposureConfirmationKey: ExposureConfirmationKey) {
+    init(theme: Theme,
+         exposureConfirmationKey: ExposureConfirmationKey,
+         featureFlagController: FeatureFlagControlling) {
         let config = InfoViewConfig(actionButtonTitle: .close,
                                     headerImage: .thankYouHeader)
-        self.infoView = InfoView(theme: theme, config: config)
+        self.infoView = InfoView(theme: theme, config: config, itemSpacing: 8)
         self.exposureConfirmationKey = exposureConfirmationKey
+        self.featureFlagController = featureFlagController
         super.init(theme: theme)
     }
 
@@ -102,10 +109,10 @@ private final class ThankYouView: View {
     override func build() {
         super.build()
 
-        let header = String.moreInformationThankYouSectionHeader.attributed()
+        let header = String.moreInformationKeySharingThankYouContent.attributed()
         let footer = NSMutableAttributedString(string: "\n")
         footer.append(NSAttributedString.make(
-            text: String(format: .moreInformationThankYouSectionFooter, "\n"),
+            text: String(format: .moreInformationThankYouSectionFooter, ""),
             font: theme.fonts.bodyBold,
             lineHeight: 5))
 
@@ -120,7 +127,7 @@ private final class ThankYouView: View {
         string.append(footer)
 
         let view = InfoSectionTextView(theme: theme,
-                                       title: .moreInformationThankYouSectionTitle,
+                                       title: .moreInformationKeySharingThankYouTitle,
                                        content: string)
 
         infoView.addSections([view, info()])
@@ -138,7 +145,10 @@ private final class ThankYouView: View {
     }
 
     private func info() -> View {
-        let string = NSAttributedString.make(text: .moreInformationThankYouInfo, font: theme.fonts.subhead, textColor: theme.colors.gray)
+        let string = NSAttributedString.make(text: featureFlagController.isFeatureFlagEnabled(feature: .independentKeySharing)
+                                                ? .moreInformationKeySharingThankYouConfirmation
+                                                : .moreInformationThankYouInfo,
+                                             font: theme.fonts.subhead, textColor: theme.colors.gray)
         return InfoSectionCalloutView(theme: theme, content: string)
     }
 }
