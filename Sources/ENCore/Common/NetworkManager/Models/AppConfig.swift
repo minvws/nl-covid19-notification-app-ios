@@ -19,4 +19,10 @@ struct AppConfig: Codable {
     let repeatedUploadDelay: Int?
     let coronaMelderDeactivated: String?
     let appointmentPhoneNumber: String?
+    let featureFlags: [FeatureFlag]?
+    
+    struct FeatureFlag: Codable {
+        let id: String
+        let featureEnabled: Bool
+    }
 }

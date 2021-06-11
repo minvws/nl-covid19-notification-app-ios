@@ -17,7 +17,7 @@ protocol MoreInformationListener: AnyObject {
     func moreInformationRequestsSettings()
     func moreInformationRequestsSharing()
     func moreInformationRequestsReceivedNotification()
-    func moreInformationRequestsInfected()
+    func moreInformationRequestsKeySharing()
     func moreInformationRequestsRequestTest()
 }
 

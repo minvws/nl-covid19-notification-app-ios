@@ -29,12 +29,17 @@ extension ViewControllable where Self: ViewController {
         navigationController?.setNavigationBarHidden(false, animated: showAnimated)
     }
 
-    func setThemeNavigationBar(withTitle title: String = "", shouldHideBackTitle: Bool = false) {
+    func setThemeNavigationBar(withTitle title: String = "", shouldHideBackTitle: Bool = false, topItem: UINavigationItem? = nil) {
         guard let navigationBar = navigationController?.navigationBar else {
             return
         }
 
-        navigationBar.topItem?.title = title
+        if let topItem = topItem {
+            topItem.title = title
+        } else {
+            navigationBar.topItem?.title = title
+        }
+        
         navigationBar.isTranslucent = false
         navigationBar.barTintColor = theme.colors.navigationControllerBackground
         navigationBar.tintColor = theme.colors.primary

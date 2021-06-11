@@ -15,9 +15,11 @@ enum MoreInformationIdentifier: CaseIterable {
     case about
     case settings
     case share
-    case infected
+    case keySharing
     case receivedNotification
     case requestTest
+    case shareKeyGGD
+    case shareKeyWebsite
 }
 
 protocol MoreInformation {
@@ -89,12 +91,15 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             listener?.moreInformationRequestsSettings()
         case .share:
             listener?.moreInformationRequestsSharing()
-        case .infected:
-            listener?.moreInformationRequestsInfected()
+        case .keySharing:
+            listener?.moreInformationRequestsKeySharing()
         case .receivedNotification:
             listener?.moreInformationRequestsReceivedNotification()
         case .requestTest:
             listener?.moreInformationRequestsRequestTest()
+        case .shareKeyGGD, .shareKeyWebsite:
+            // Unhandled cases in this screen
+            return
         }
     }
 
@@ -126,7 +131,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
                                                             title: .moreInformationCellRequestTestTitle,
                                                             subtitle: .moreInformationCellRequestTestSubtitle)
 
-        let infectedModel = MoreInformationCellViewModel(identifier: .infected,
+        let keySharingModel = MoreInformationCellViewModel(identifier: .keySharing,
                                                          icon: .infected,
                                                          title: .moreInformationCellInfectedTitle,
                                                          subtitle: .moreInformationCellInfectedSubtitle)
@@ -137,7 +142,7 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
             receivedNotificationModel,
             requestTestModel,
             shareAppModel,
-            infectedModel
+            keySharingModel
         ]
     }
 

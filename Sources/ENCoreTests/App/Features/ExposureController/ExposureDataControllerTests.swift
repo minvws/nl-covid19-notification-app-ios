@@ -468,6 +468,46 @@ final class ExposureDataControllerTests: TestCase {
         // Assert
         waitForExpectations(timeout: 2, handler: nil)
     }
+    
+    func test_getAppConfigFeatureFlags_shouldReturnAppConfigFromStorageController() {
+        // Arrange
+        let storageExpectation = expectation(description: "storageExpectation")
+        mockStorageController.retrieveDataHandler = { key in
+            // mock the last run app version
+            if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
+                storageExpectation.fulfill()
+                return try! JSONEncoder().encode(ApplicationConfiguration.testData(featureFlags: [.init(id: "someId", featureEnabled: true)]))
+            }
+            return nil
+        }
+        
+        // Act
+        let featureFlags = sut.getStoredAppConfigFeatureFlags()
+        
+        // Assert
+        waitForExpectations()
+        XCTAssertEqual(featureFlags, [.init(id: "someId", featureEnabled: true)])
+    }
+    
+    func test_getAppConfigFeatureFlags_shouldReturnNil() {
+        // Arrange
+        let storageExpectation = expectation(description: "storageExpectation")
+        mockStorageController.retrieveDataHandler = { key in
+            // mock the last run app version
+            if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
+                storageExpectation.fulfill()
+                return nil
+            }
+            return nil
+        }
+        
+        // Act
+        let featureFlags = sut.getStoredAppConfigFeatureFlags()
+        
+        // Assert
+        waitForExpectations()
+        XCTAssertNil(featureFlags)
+    }
 
     // MARK: - Private Helper Functions
 
@@ -583,8 +623,8 @@ private extension ApplicationManifest {
 }
 
 private extension ApplicationConfiguration {
-    static func testData(manifestRefreshFrequency: Int = 3600) -> ApplicationConfiguration {
-        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber")
+    static func testData(manifestRefreshFrequency: Int = 3600, featureFlags: [ApplicationConfiguration.FeatureFlag] = []) -> ApplicationConfiguration {
+        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber", featureFlags: featureFlags)
     }
 }
 

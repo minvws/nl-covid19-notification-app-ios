@@ -50,12 +50,12 @@ final class MainViewControllerTests: TestCase {
         XCTAssertEqual(router.routeToReceivedNotificationCallCount, 1)
     }
 
-    func test_moreInformationRequestsInfected_callsRouter() {
-        XCTAssertEqual(router.routeToInfectedCallCount, 0)
+    func test_moreInformationRequestsKeySharing_callsRouter() {
+        XCTAssertEqual(router.routeToKeySharingCallCount, 0)
 
-        viewController.moreInformationRequestsInfected()
+        viewController.moreInformationRequestsKeySharing()
 
-        XCTAssertEqual(router.routeToInfectedCallCount, 1)
+        XCTAssertEqual(router.routeToKeySharingCallCount, 1)
     }
 
     func test_moreInformationRequestsRequestTest_callsRouter() {

@@ -185,7 +185,8 @@ class ApplicationSignatureControllerTests: TestCase {
             requestMaximumSize: 0,
             repeatedUploadDelay: 0,
             decativated: false,
-            appointmentPhoneNumber: ""
+            appointmentPhoneNumber: "",
+            featureFlags: []
         )
     }
 }

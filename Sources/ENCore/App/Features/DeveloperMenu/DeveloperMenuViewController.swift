@@ -18,12 +18,16 @@ private struct DeveloperItem {
     let title: String
     let subtitle: String
     let action: () -> ()
+    let deleteAction: (() -> Void)?
+    let deleteActionTitle: String?
     let enabled: Bool
 
-    init(title: String, subtitle: String, action: @escaping () -> (), enabled: Bool = true) {
+    init(title: String, subtitle: String, action: @escaping () -> (), deleteAction: (() -> Void)? = nil, deleteActionTitle: String? = nil, enabled: Bool = true) {
         self.title = title
         self.subtitle = subtitle
         self.action = action
+        self.deleteAction = deleteAction
+        self.deleteActionTitle = deleteActionTitle
         self.enabled = enabled
     }
 }
@@ -35,12 +39,14 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
          mutableExposureStateStream: MutableExposureStateStreaming,
          mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming,
          exposureController: ExposureControlling,
-         storageController: StorageControlling) {
+         storageController: StorageControlling,
+         featureFlagController: FeatureFlagControlling) {
         self.listener = listener
         self.mutableExposureStateStream = mutableExposureStateStream
         self.mutableNetworkConfigurationStream = mutableNetworkConfigurationStream
         self.exposureController = exposureController
         self.storageController = storageController
+        self.featureFlagController = featureFlagController
         
         super.init(theme: theme)
 
@@ -136,12 +142,34 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         item.action()
         internalView.tableView.reloadData()
     }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        let item = sections[indexPath.section].items[indexPath.row]
+        return item.deleteAction != nil
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let item = sections[indexPath.section].items[indexPath.row]
+        return item.deleteAction != nil ? [.init(style: .destructive, title: item.deleteActionTitle, handler: {_, _ in item.deleteAction?() })] : nil
+    }
 
     // MARK: - Sections
 
     private var sections: [(title: String, items: [DeveloperItem])] {
+        let featureFlagOptions = Feature
+            .allCases
+            .map { feature in
+                DeveloperItem(title: feature.developerMenuDisplayName,
+                              subtitle: "Feature Enabled: \(featureFlagController.isFeatureFlagEnabled(feature: feature) ? "Yes" : "No")",
+                              action: { [weak self] in self?.toggleFeatureFlag(forFeature: feature) },
+                              deleteAction: { [weak self] in self?.resetFeatureFlag(forFeature: feature) },
+                              deleteActionTitle: "Reset"
+                )
+                
+            }
         
         return [
+            ("Feature Flags (swipe to reset)", featureFlagOptions),
             ("Show Screens", [
                 DeveloperItem(title: "Show Onboarding",
                               subtitle: "Launches Onboarding",
@@ -238,6 +266,16 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     }
 
     // MARK: - Actions
+    
+    private func toggleFeatureFlag(forFeature feature: Feature) {
+        featureFlagController.toggleFeatureFlag(forFeature: feature)
+        internalView.tableView.reloadData()
+    }
+    
+    private func resetFeatureFlag(forFeature feature: Feature) {
+        featureFlagController.resetFeatureFlag(forFeature: feature)
+        internalView.tableView.reloadData()
+    }
     
     private func launchOnboarding() {
         hide()
@@ -781,6 +819,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     private let mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
+    private let featureFlagController: FeatureFlagControlling
     private var disposeBag = DisposeBag()
 
     private var isFetchingKeys: Bool {

@@ -9,16 +9,16 @@
 import Foundation
 import XCTest
 
-final class InfectedRouterTests: TestCase {
-    private let viewController = InfectedViewControllableMock()
-    private let listener = InfectedListenerMock()
+final class ShareKeyViaPhoneRouterTests: TestCase {
+    private let viewController = ShareKeyViaPhoneViewControllableMock()
+    private let listener = ShareKeyViaPhoneListenerMock()
 
-    private var router: InfectedRouter!
+    private var router: ShareKeyViaPhoneRouter!
 
     override func setUp() {
         super.setUp()
 
-        router = InfectedRouter(listener: listener,
+        router = ShareKeyViaPhoneRouter(listener: listener,
                                 viewController: viewController,
                                 thankYouBuilder: ThankYouBuildableMock(),
                                 cardBuilder: CardBuildableMock(),

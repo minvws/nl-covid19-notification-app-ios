@@ -27,7 +27,7 @@ protocol MainDependency {
     var pushNotificationStream: PushNotificationStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, InfectedDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, ShareKeyViaPhoneDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency, KeySharingDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -73,10 +73,6 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
         return RequestTestBuilder(dependency: self)
     }
 
-    var infectedBuilder: InfectedBuildable {
-        return InfectedBuilder(dependency: self)
-    }
-
     var exposureController: ExposureControlling {
         return dependency.exposureController
     }
@@ -120,6 +116,20 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var alertControllerBuilder: AlertControllerBuildable {
         AlertControllerBuilder()
     }
+    
+    var keySharingBuilder: KeySharingBuildable {
+        KeySharingBuilder(dependency: self)
+    }
+    
+    var featureFlagController: FeatureFlagControlling {
+        FeatureFlagController(userDefaults: UserDefaults.standard,
+                              exposureController: dependency.exposureController,
+                              environmentController: environmentController)
+    }
+    
+    var applicationController: ApplicationControlling {
+        ApplicationController()
+    }
 }
 
 final class MainBuilder: Builder<MainDependency>, MainBuildable {
@@ -139,10 +149,11 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
                           shareBuilder: dependencyProvider.shareBuilder,
                           receivedNotificationBuilder: dependencyProvider.receivedNotificationBuilder,
                           requestTestBuilder: dependencyProvider.requestTestBuilder,
-                          infectedBuilder: dependencyProvider.infectedBuilder,
+                          keySharingBuilder: dependencyProvider.keySharingBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
                           webviewBuilder: dependencyProvider.webviewBuilder,
-                          settingsBuilder: dependencyProvider.settingsBuilder)
+                          settingsBuilder: dependencyProvider.settingsBuilder,
+                          applicationController: dependencyProvider.applicationController)
     }
 }

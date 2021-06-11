@@ -23,6 +23,12 @@ struct ApplicationConfiguration: Codable, Equatable {
     let repeatedUploadDelay: Int
     let decativated: Bool
     let appointmentPhoneNumber: String
+    let featureFlags: [FeatureFlag]?
+    
+    struct FeatureFlag: Codable, Equatable {
+        let id: String
+        let featureEnabled: Bool
+    }
 }
 
 /// @mockable

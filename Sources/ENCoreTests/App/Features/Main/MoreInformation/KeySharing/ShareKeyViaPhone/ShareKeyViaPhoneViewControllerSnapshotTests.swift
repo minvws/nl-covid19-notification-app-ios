@@ -12,9 +12,9 @@ import RxSwift
 import SnapshotTesting
 import XCTest
 
-final class InfectedViewControllerSnapshotTests: TestCase {
-    private var viewController: InfectedViewController!
-    private let router = InfectedRoutingMock()
+final class ShareKeyViaPhoneViewControllerSnapshotTests: TestCase {
+    private var viewController: ShareKeyViaPhoneViewController!
+    private let router = ShareKeyViaPhoneRoutingMock()
     private let exposureController = ExposureControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
     private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
@@ -37,21 +37,22 @@ final class InfectedViewControllerSnapshotTests: TestCase {
             activeState: .active
         ))
 
-        viewController = InfectedViewController(theme: theme,
+        viewController = ShareKeyViaPhoneViewController(theme: theme,
                                                 exposureController: exposureController,
                                                 exposureStateStream: exposureStateStream,
-                                                interfaceOrientationStream: interfaceOrientationStream)
+                                                interfaceOrientationStream: interfaceOrientationStream,
+                                                withBackButton: false)
         viewController.router = router
     }
 
     // MARK: - Tests
 
-    func test_infected_snapshotStateLoading() {
+    func test_snapshotStateLoading() {
         viewController.state = .loading
         snapshots(matching: viewController, waitForMainThread: true)
     }
 
-    func test_infected_snapshotStateSuccess() {
+    func test_snapshotStateSuccess() {
         viewController.state = .success(confirmationKey: LabConfirmationKey(identifier: "key here",
                                                                             bucketIdentifier: Data(),
                                                                             confirmationKey: Data(),
@@ -59,12 +60,12 @@ final class InfectedViewControllerSnapshotTests: TestCase {
         snapshots(matching: viewController, waitForMainThread: true)
     }
 
-    func test_infected_snapshotStateError() {
+    func test_snapshotStateError() {
         viewController.state = .error
         snapshots(matching: viewController, waitForMainThread: true)
     }
 
-    func test_infected_errorCard() {
+    func test_errorCard() {
         viewController.state = .success(confirmationKey: LabConfirmationKey(identifier: "key here",
                                                                             bucketIdentifier: Data(),
                                                                             confirmationKey: Data(),

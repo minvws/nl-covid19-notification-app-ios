@@ -182,6 +182,10 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController
             .getPadding()
     }
+    
+    func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]? {
+        dataController.getStoredAppConfigFeatureFlags()
+    }
 
     func refreshStatus() {
         updatePushNotificationState { [weak self] in
