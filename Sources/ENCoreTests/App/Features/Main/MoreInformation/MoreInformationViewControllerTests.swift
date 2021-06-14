@@ -70,9 +70,9 @@ final class MoreInformationViewControllerTests: TestCase {
     }
 
     func test_didSelectItem_infected() {
-        viewController.didSelect(identifier: .infected)
+        viewController.didSelect(identifier: .keySharing)
 
-        XCTAssertEqual(listener.moreInformationRequestsInfectedCallCount, 1)
+        XCTAssertEqual(listener.moreInformationRequestsKeySharingCallCount, 1)
     }
 
     func test_didSelectItem_receivedNotification() {

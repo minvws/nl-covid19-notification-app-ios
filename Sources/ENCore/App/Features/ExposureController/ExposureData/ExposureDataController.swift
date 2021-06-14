@@ -274,6 +274,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
                 )
             }
     }
+    
+    func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]? {
+        guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
+            return nil
+        }
+        return storedAppConfig.featureFlags
+    }
 
     func getDecoyProbability() -> Single<Float> {
         requestApplicationConfiguration()

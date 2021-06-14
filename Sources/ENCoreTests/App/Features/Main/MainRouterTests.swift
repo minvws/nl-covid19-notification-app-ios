@@ -17,12 +17,13 @@ final class MainRouterTests: TestCase {
     private let shareBuilder = ShareSheetBuildableMock()
     private let receivedNotificationBuilder = ReceivedNotificationBuildableMock()
     private let requestTestBuilder = RequestTestBuildableMock()
-    private let infectedBuilder = InfectedBuildableMock()
     private let messageBuilder = MessageBuildableMock()
     private let enableSettingBuilder = EnableSettingBuildableMock()
     private let webviewBuilder = WebviewBuildableMock()
     private let settingsBuilder = SettingsBuildableMock()
-
+    private let keySharingBuilder = KeySharingBuildableMock()
+    private let applicationController = ApplicationControllingMock()
+    
     private var router: MainRouter!
 
     override func setUp() {
@@ -35,11 +36,12 @@ final class MainRouterTests: TestCase {
                             shareBuilder: shareBuilder,
                             receivedNotificationBuilder: receivedNotificationBuilder,
                             requestTestBuilder: requestTestBuilder,
-                            infectedBuilder: infectedBuilder,
+                            keySharingBuilder: keySharingBuilder,
                             messageBuilder: messageBuilder,
                             enableSettingBuilder: enableSettingBuilder,
                             webviewBuilder: webviewBuilder,
-                            settingsBuilder: settingsBuilder)
+                            settingsBuilder: settingsBuilder,
+                            applicationController: applicationController)
     }
 
     func test_init_setsRouterOnViewController() {
@@ -229,5 +231,47 @@ final class MainRouterTests: TestCase {
         XCTAssertEqual(settingsBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.presentCallCount, 1)
         XCTAssertTrue(viewController.presentArgValues.last?.0 === mockRouter.viewControllable)
+    }
+    
+    
+    func test_routeToKeySharing() throws {
+        // Arrange
+        let mockRouter = RoutingMock()
+        mockRouter.viewControllable = ViewControllableMock()
+        keySharingBuilder.buildHandler = { _ in
+            return mockRouter
+        }
+        
+        XCTAssertEqual(keySharingBuilder.buildCallCount, 0)
+        
+        // Act
+        router.routeToKeySharing()
+        
+        // Assert
+        XCTAssertEqual(keySharingBuilder.buildCallCount, 1)
+        XCTAssertTrue(keySharingBuilder.buildArgValues.first === viewController)
+        XCTAssertEqual(viewController.presentCallCount, 1)
+        
+        let presented = try XCTUnwrap(viewController.presentArgValues.first)
+        XCTAssertTrue(presented.0 === mockRouter.viewControllable)
+        XCTAssertTrue(presented.1)
+    }
+    
+    func test_detachKeySharing_shouldDismissAllPresentedViewControllers() {
+        // Arrange
+        let mockRouter = RoutingMock()
+        mockRouter.viewControllable = ViewControllableMock()
+        keySharingBuilder.buildHandler = { _ in
+            return mockRouter
+        }
+        
+        XCTAssertEqual(applicationController.dismissAllPresentedViewControllerCallCount, 0)
+        
+        // Act
+        router.routeToKeySharing()
+        router.detachKeySharing(shouldDismissViewController: true)
+        
+        // Assert
+        XCTAssertEqual(applicationController.dismissAllPresentedViewControllerCallCount, 1)
     }
 }

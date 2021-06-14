@@ -68,6 +68,7 @@ protocol ExposureDataControlling: AnyObject {
     // MARK: - Misc
 
     func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation>
+    func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]?
     func isAppDeactivated() -> Single<Bool>
     func getDecoyProbability() -> Single<Float>
     func getPadding() -> Single<Padding>

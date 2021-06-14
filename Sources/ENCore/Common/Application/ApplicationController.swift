@@ -7,11 +7,12 @@
 
 import UIKit
 
-/// @mockable
+/// @mockable(history:dismissAllPresentedViewController=true)
 protocol ApplicationControlling {
     func isInBackground() -> Bool
     func canOpenURL(_ url: URL) -> Bool
     func open(_ url: URL)
+    func dismissAllPresentedViewController(animated: Bool, completion: (() -> Void)?)
 }
 
 class ApplicationController: ApplicationControlling {
@@ -25,5 +26,9 @@ class ApplicationController: ApplicationControlling {
 
     func canOpenURL(_ url: URL) -> Bool {
         UIApplication.shared.canOpenURL(url)
+    }
+    
+    func dismissAllPresentedViewController(animated: Bool, completion: (() -> Void)?) {
+        UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: animated, completion: completion)
     }
 }

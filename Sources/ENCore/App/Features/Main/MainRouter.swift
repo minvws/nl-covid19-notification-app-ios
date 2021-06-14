@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable(history: present = true)
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, InfectedListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener {
+protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingListener {
 
     var router: MainRouting? { get set }
 
@@ -28,23 +28,24 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          shareBuilder: ShareSheetBuildable,
          receivedNotificationBuilder: ReceivedNotificationBuildable,
          requestTestBuilder: RequestTestBuildable,
-         infectedBuilder: InfectedBuildable,
+         keySharingBuilder: KeySharingBuildable,
          messageBuilder: MessageBuildable,
          enableSettingBuilder: EnableSettingBuildable,
          webviewBuilder: WebviewBuildable,
-         settingsBuilder: SettingsBuildable) {
+         settingsBuilder: SettingsBuildable,
+         applicationController: ApplicationControlling) {
         self.statusBuilder = statusBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
         self.shareBuilder = shareBuilder
         self.receivedNotificationBuilder = receivedNotificationBuilder
         self.requestTestBuilder = requestTestBuilder
-        self.infectedBuilder = infectedBuilder
+        self.keySharingBuilder = keySharingBuilder
         self.messageBuilder = messageBuilder
         self.enableSettingBuilder = enableSettingBuilder
         self.webviewBuilder = webviewBuilder
         self.settingsBuilder = settingsBuilder
-
+        self.applicationController = applicationController
         super.init(viewController: viewController)
 
         viewController.router = self
@@ -157,26 +158,27 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         }
     }
 
-    func routeToInfected() {
-        guard infectedRouter == nil else {
+    func routeToKeySharing() {
+        guard keySharingRouter == nil else {
             return
         }
 
-        let infectedRouter = infectedBuilder.build(withListener: viewController)
-        self.infectedRouter = infectedRouter
-
-        viewController.present(viewController: infectedRouter.viewControllable, animated: true)
+        let keySharingRouter = keySharingBuilder.build(withListener: viewController)
+        self.keySharingRouter = keySharingRouter
+        viewController.present(viewController: keySharingRouter.viewControllable, animated: true)
     }
 
-    func detachInfected(shouldDismissViewController: Bool) {
-        guard let infectedRouter = infectedRouter else {
+    func detachKeySharing(shouldDismissViewController: Bool) {
+        guard keySharingRouter != nil else {
             return
         }
-        self.infectedRouter = nil
 
         if shouldDismissViewController {
-            viewController.dismiss(viewController: infectedRouter.viewControllable, animated: true)
+            // Dismisses all presented viewcontrollers
+            applicationController.dismissAllPresentedViewController(animated: true, completion: nil)
         }
+        
+        self.keySharingRouter = nil
     }
 
     func routeToRequestTest() {
@@ -290,8 +292,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private let requestTestBuilder: RequestTestBuildable
     private var requestTestViewController: ViewControllable?
 
-    private let infectedBuilder: InfectedBuildable
-    private var infectedRouter: Routing?
+    private let keySharingBuilder: KeySharingBuildable
+    private var keySharingRouter: Routing?
 
     private let messageBuilder: MessageBuildable
     private var messageViewController: ViewControllable?
@@ -301,4 +303,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
+    
+    private let applicationController: ApplicationControlling
 }

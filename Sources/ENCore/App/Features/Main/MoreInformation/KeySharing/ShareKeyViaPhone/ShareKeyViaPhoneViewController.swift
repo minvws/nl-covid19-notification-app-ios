@@ -11,9 +11,9 @@ import SnapKit
 import UIKit
 
 /// @mockable
-protocol InfectedRouting: Routing {
+protocol ShareKeyViaPhoneRouting: Routing {
     func didUploadCodes(withKey key: ExposureConfirmationKey)
-    func infectedWantsDismissal(shouldDismissViewController: Bool)
+    func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool)
     func showInactiveCard()
     func removeInactiveCard()
 
@@ -21,7 +21,7 @@ protocol InfectedRouting: Routing {
     func hideFAQ(shouldDismissViewController: Bool)
 }
 
-final class InfectedViewController: ViewController, InfectedViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
+final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
 
     enum State {
         case loading
@@ -29,7 +29,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         case error
     }
 
-    weak var router: InfectedRouting?
+    weak var router: ShareKeyViaPhoneRouting?
 
     var state: State = .loading {
         didSet {
@@ -40,10 +40,12 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     init(theme: Theme,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
-         interfaceOrientationStream: InterfaceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming,
+         withBackButton: Bool) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
+        self.withBackButton = withBackButton
         super.init(theme: theme)
     }
 
@@ -59,8 +61,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
 
         hasBottomMargin = true
 
-        setThemeNavigationBar(withTitle: .moreInformationInfectedTitle)
-
+        navigationItem.hidesBackButton = !withBackButton
         navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
         internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
@@ -90,14 +91,19 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
                 self?.internalView.infoView.showHeader = !isLandscape
             }.disposed(by: disposeBag)
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setThemeNavigationBar(withTitle: .moreInformationInfectedTitle, topItem: navigationItem)
+    }
+    
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        router?.infectedWantsDismissal(shouldDismissViewController: false)
+        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: false)
     }
 
-    // MARK: - InfectedViewControllable
+    // MARK: - ShareKeyViaPhoneViewControllable
 
     func push(viewController: ViewControllable) {
         navigationController?.pushViewController(viewController.uiviewController, animated: true)
@@ -122,9 +128,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     }
 
     func thankYouWantsDismissal() {
-        router?.infectedWantsDismissal(shouldDismissViewController: false)
-
-        navigationController?.dismiss(animated: true, completion: nil)
+        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)
     }
 
     func set(cardViewController: ViewControllable?) {
@@ -183,16 +187,17 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
         }
     }
 
-    private lazy var internalView: InfectedView = InfectedView(theme: self.theme)
+    private lazy var internalView: ShareKeyViaPhoneView = ShareKeyViaPhoneView(theme: self.theme)
     private let exposureController: ExposureControlling
     private let exposureStateStream: ExposureStateStreaming
+    private let withBackButton: Bool
     private var disposeBag = DisposeBag()
     private let interfaceOrientationStream: InterfaceOrientationStreaming
 
     private var cardViewController: ViewControllable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
-        router?.infectedWantsDismissal(shouldDismissViewController: true)
+        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)        
     }
 
     private func updateState() {
@@ -226,7 +231,7 @@ final class InfectedViewController: ViewController, InfectedViewControllable, UI
     }
 }
 
-private final class InfectedView: View {
+private final class ShareKeyViaPhoneView: View {
 
     fileprivate let infoView: InfoView
 

@@ -670,6 +670,23 @@ final class ExposureControllerTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
     }
+    
+    func test_getStoredAppConfigFeatureFlags_shouldCallDataController() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.getStoredAppConfigFeatureFlagsHandler = {
+            completionExpectation.fulfill()
+            return [.init(id: "someId", featureEnabled: true)]
+        }
+
+        // Act
+        let featureFlags = controller.getStoredAppConfigFeatureFlags()
+
+        // Assert
+        waitForExpectations()
+        XCTAssertEqual(featureFlags, [.init(id: "someId", featureEnabled: true)])
+    }
 
     // MARK: - postExposureManagerActivation
 
