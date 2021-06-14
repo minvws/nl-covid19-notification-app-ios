@@ -267,13 +267,7 @@ final class InfoSectionContentView: View, UITextViewDelegate {
 }
 
 final class InfoSectionStepView: View {
-    
-    var buttonEnabled: Bool {
-        didSet {
-            actionButton?.isEnabled = buttonEnabled
-        }
-    }
-    
+        
     private let iconImageView: UIImageView
     private let titleLabel: Label
     private let descriptionLabel: Label
@@ -284,6 +278,28 @@ final class InfoSectionStepView: View {
     private var buttonTitle: String?
     private var disabledButtonTitle: String?
     
+    private let stepImage: UIImage?
+    private let disabledStepImage: UIImage?
+    
+    var buttonEnabled: Bool = true {
+        didSet {
+            actionButton?.isEnabled = buttonEnabled
+        }
+    }
+    
+    var isDisabled: Bool {
+        didSet {
+            updateEnabledState()
+        }
+    }
+    
+    private func updateEnabledState() {
+        iconImageView.image = isDisabled ? disabledStepImage : stepImage
+        actionButton?.isEnabled = !isDisabled
+        titleLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.gray
+        descriptionLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.gray
+    }
+    
     private lazy var actionButton: Button? = {
         guard let buttonActionHandler = buttonActionHandler, let buttonTitle = buttonTitle else {
             return nil
@@ -291,7 +307,7 @@ final class InfoSectionStepView: View {
         
         let button = Button(title: buttonTitle, theme: theme)
         button.setTitle(disabledButtonTitle, for: .disabled)
-        button.isEnabled = buttonEnabled
+        button.isEnabled = !isDisabled
         button.action = buttonActionHandler
         return button
     }()
@@ -316,26 +332,31 @@ final class InfoSectionStepView: View {
          title: String,
          description: String? = nil,
          stepImage: UIImage?,
+         disabledStepImage: UIImage? = nil,
          isLastStep: Bool = false,
          buttonTitle: String? = nil,
          disabledButtonTitle: String? = nil,
          buttonActionHandler: (() -> ())? = nil,
-         buttonEnabled: Bool = false) {
+         isDisabled: Bool = false) {
         
-        iconImageView = UIImageView(image: stepImage)
+        iconImageView = UIImageView(image: isDisabled ? disabledStepImage : stepImage)
         titleLabel = Label(frame: .zero)
         descriptionLabel = Label(frame: .zero)
         progressLine = View(theme: theme)
-                
+        
+        self.stepImage = stepImage
+        self.disabledStepImage = disabledStepImage
+        self.isDisabled = isDisabled
         self.isLastStep = isLastStep
         self.buttonActionHandler = buttonActionHandler
         self.buttonTitle = buttonTitle
-        self.buttonEnabled = buttonEnabled
         
         titleLabel.text = title
         descriptionLabel.text = description
         
         super.init(theme: theme)
+        
+        updateEnabledState()
     }
 
     // MARK: - Overrides
@@ -632,6 +653,7 @@ final class InfoSectionCalloutView: View {
 
 final class InfoSectionDynamicCalloutView: View {
     enum State {
+        case disabled
         case loading(String)
         case success(String)
         case error(String, () -> ())
@@ -641,17 +663,26 @@ final class InfoSectionDynamicCalloutView: View {
     private let titleLabel: Label
     private let contentView: View
     private let progressLine: View
-
+    
+    private let stepImage: UIImage?
+    private let disabledStepImage: UIImage?
+        
     // MARK: - Init
 
-    init(theme: Theme, title: String, stepImage: UIImage?) {
+    init(theme: Theme, title: String, stepImage: UIImage?, disabledStepImage: UIImage? = nil, initialState: State = .disabled) {
+        self.stepImage = stepImage
+        self.disabledStepImage = disabledStepImage
+        
         iconImageView = UIImageView(image: stepImage)
         titleLabel = Label(frame: .zero)
         contentView = View(theme: theme)
         progressLine = View(theme: theme)
+        
         super.init(theme: theme)
 
         titleLabel.text = title
+        
+        set(state: initialState)
     }
 
     // MARK: - Overrides
@@ -707,7 +738,7 @@ final class InfoSectionDynamicCalloutView: View {
             view.backgroundColor = .clear
 
             contentView.subviews.filter {
-                $0 is InfoSectionDynamicLoadingView || $0 is InfoSectionDynamicSuccessView || $0 is InfoSectionDynamicErrorView
+                $0 is InfoSectionDynamicLoadingView || $0 is InfoSectionDynamicSuccessView || $0 is InfoSectionDynamicErrorView || $0 is InfoSectionDynamicDisabledView
             }.forEach {
                 $0.removeFromSuperview()
             }
@@ -719,13 +750,28 @@ final class InfoSectionDynamicCalloutView: View {
         }
 
         switch state {
+        case .disabled:
+            iconImageView.image = disabledStepImage
+            titleLabel.textColor = theme.colors.disabled
+            
+            let view = InfoSectionDynamicDisabledView(theme: theme)
+            add(view)
         case let .loading(title):
+            iconImageView.image = stepImage
+            titleLabel.textColor = theme.colors.gray
+            
             let view = InfoSectionDynamicLoadingView(theme: theme, title: title)
             add(view)
         case let .success(code):
+            iconImageView.image = stepImage
+            titleLabel.textColor = theme.colors.gray
+            
             let view = InfoSectionDynamicSuccessView(theme: theme, title: code)
             add(view)
         case let .error(error, actionHandler):
+            iconImageView.image = stepImage
+            titleLabel.textColor = theme.colors.gray
+            
             let view = InfoSectionDynamicErrorView(theme: theme, title: error, actionHandler: actionHandler)
             add(view)
         }
@@ -782,6 +828,44 @@ private final class InfoSectionDynamicLoadingView: View {
             maker.top.equalTo(activityIndicator.snp.bottom).offset(12)
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.bottom.equalToSuperview().inset(12)
+        }
+    }
+}
+
+private final class InfoSectionDynamicDisabledView: View {
+    private let stackView: UIStackView
+    
+    // MARK: - Init
+
+    override init(theme: Theme) {
+        stackView = UIStackView(frame: .zero)
+        
+        super.init(theme: theme)
+    }
+
+    // MARK: - Overrides
+
+    override func build() {
+        super.build()
+
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 8
+        
+        (0..<3).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
+        stackView.addArrangedSubview(UIImageView(image: .dash))
+        (0..<2).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
+        stackView.addArrangedSubview(UIImageView(image: .dash))
+        (0..<2).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
+        addSubview(stackView)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        stackView.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.top.bottom.equalToSuperview().inset(27)
+            maker.centerX.equalToSuperview()
         }
     }
 }

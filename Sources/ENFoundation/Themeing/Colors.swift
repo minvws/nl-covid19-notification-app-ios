@@ -20,6 +20,7 @@ public protocol Colors: AnyObject {
     var notified: UIColor { get }
     var inactive: UIColor { get }
     var inactiveGray: UIColor { get }
+    var disabled: UIColor { get }
 
     var statusGradientActive: UIColor { get }
     var statusGradientNotified: UIColor { get }
@@ -68,6 +69,10 @@ final class ENColors: Colors, Logging {
 
     var inactive: UIColor {
         return color(for: "InactiveOrange")
+    }
+    
+    var disabled: UIColor {
+        return color(for: "Disabled")
     }
 
     var inactiveGray: UIColor {

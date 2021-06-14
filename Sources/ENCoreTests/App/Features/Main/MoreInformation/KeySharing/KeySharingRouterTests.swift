@@ -15,16 +15,19 @@ class KeySharingRouterTests: TestCase {
     private var mockViewController: KeySharingViewControllableMock!
     private var mockShareKeyViaPhoneBuilder: ShareKeyViaPhoneBuildableMock!
     private var mockFeatureFlagController: FeatureFlagControllingMock!
+    private var mockShareKeyViaWebsiteBuilder: ShareKeyViaWebsiteBuildableMock!
     
     override func setUp() {
         mockKeySharingListener = KeySharingListenerMock()
         mockViewController = KeySharingViewControllableMock()
         mockShareKeyViaPhoneBuilder = ShareKeyViaPhoneBuildableMock()
         mockFeatureFlagController = FeatureFlagControllingMock()
+        mockShareKeyViaWebsiteBuilder = ShareKeyViaWebsiteBuildableMock()
         
         sut = KeySharingRouter(listener: mockKeySharingListener,
                                viewController: mockViewController,
                                shareKeyViaPhoneBuilder: mockShareKeyViaPhoneBuilder,
+                               shareKeyViaWebsiteBuilder: mockShareKeyViaWebsiteBuilder,
                                featureFlagController: mockFeatureFlagController)
     }
 
