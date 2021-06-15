@@ -147,6 +147,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         present(navigationController, animated: true, completion: nil)
     }
     
+    
     func dismiss(viewController: ViewControllable) {
         if let navigationController = viewController.uiviewController.navigationController {
             navigationController.dismiss(animated: true, completion: nil)

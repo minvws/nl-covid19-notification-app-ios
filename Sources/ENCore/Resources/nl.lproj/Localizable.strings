@@ -474,7 +474,7 @@
 "moreInformation.keysharing.coronatest.complete" = "Afronden";
 "moreInformation.keysharing.coronatest.complete.notification.title" = "Weet je zeker dat je wilt afronden?";
 "moreInformation.keysharing.coronatest.complete.notification.content" = "Heb je de GGD-sleutel ingevuld op coronatest.nl en een bevestiging gekregen? Zo ja, dan kun je dit scherm afsluiten.";
-"moreInformation.keysharing.coronatest.complete.notification.ok" = "Afsluiten";
+"moreInformation.keysharing.coronatest.complete.notification.ok" = "Ja, afronden";
 "moreInformation.keysharing.coronatest.complete.notification.cancel" = "Annuleren";
 "moreInformation.keysharing.coronatest.thankyou.title" = "Bedankt voor het versturen van de melding";
 "moreInformation.keysharing.coronatest.thankyou.content" = "De GGD vertelt je wat je verder kunt doen om te voorkomen dat je anderen besmet. Beterschap en sterkte met je herstel. ";

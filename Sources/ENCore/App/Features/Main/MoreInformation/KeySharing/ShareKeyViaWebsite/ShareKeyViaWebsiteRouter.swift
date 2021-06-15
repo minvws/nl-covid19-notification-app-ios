@@ -15,6 +15,7 @@ protocol ShareKeyViaWebsiteViewControllable: ViewControllable, ThankYouListener,
     func set(cardViewController: ViewControllable?)
 
     func presentInNavigationController(viewController: ViewControllable)
+    func present(_ viewController: UIViewController, animated: Bool, completion: (() -> ())?)
     func dismiss(viewController: ViewControllable)
 }
 
@@ -26,12 +27,14 @@ final class ShareKeyViaWebsiteRouter: Router<ShareKeyViaWebsiteViewControllable>
          viewController: ShareKeyViaWebsiteViewControllable,
          thankYouBuilder: ThankYouBuildable,
          cardBuilder: CardBuildable,
-         helpDetailBuilder: HelpDetailBuildable) {
+         helpDetailBuilder: HelpDetailBuildable,
+         alertControllerBuilder: AlertControllerBuildable) {
         self.listener = listener
         self.thankYouBuilder = thankYouBuilder
         self.cardBuilder = cardBuilder
         self.helpDetailBuilder = helpDetailBuilder
-
+        self.alertControllerBuilder = alertControllerBuilder
+        
         super.init(viewController: viewController)
 
         viewController.router = self
@@ -48,11 +51,24 @@ final class ShareKeyViaWebsiteRouter: Router<ShareKeyViaWebsiteViewControllable>
             return
         }
 
-        let thankYouViewController = thankYouBuilder.build(withListener: viewController,
-                                                           exposureConfirmationKey: key)
-        self.thankYouViewController = thankYouViewController
-
-        viewController.push(viewController: thankYouViewController)
+        let alertController = alertControllerBuilder.buildAlertController(
+            withTitle: .moreInformationKeySharingCoronaTestCompleteTitle,
+            message: .moreInformationKeySharingCoronaTestCompleteContent,
+            preferredStyle: .alert)
+        
+        alertController.addAction(alertControllerBuilder.buildAlertAction(title: .moreInformationKeySharingCoronaTestCompleteCancel, style: .cancel, handler: nil))
+        alertController.addAction(alertControllerBuilder.buildAlertAction(title: .moreInformationKeySharingCoronaTestCompleteOK, style: .default) { [weak self] (_) in
+            guard let self = self else { return }
+            
+            let thankYouViewController = self.thankYouBuilder.build(
+                withListener: self.viewController,
+                exposureConfirmationKey: key
+            )
+            self.thankYouViewController = thankYouViewController
+            self.viewController.push(viewController: thankYouViewController)
+        })
+        
+        viewController.present(alertController, animated: true, completion: nil)
     }
 
     func showInactiveCard() {
@@ -107,4 +123,6 @@ final class ShareKeyViaWebsiteRouter: Router<ShareKeyViaWebsiteViewControllable>
 
     private let helpDetailBuilder: HelpDetailBuildable
     private var helpDetailViewController: ViewControllable?
+    
+    private let alertControllerBuilder: AlertControllerBuildable
 }

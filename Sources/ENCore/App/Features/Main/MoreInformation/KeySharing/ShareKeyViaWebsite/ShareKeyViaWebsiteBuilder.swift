@@ -31,10 +31,15 @@ protocol ShareKeyViaWebsiteDependency {
     var storageController: StorageControlling { get }
     var dataController: ExposureDataControlling { get }
     var pauseController: PauseControlling { get }
+    var featureFlagController: FeatureFlagControlling { get }
 }
 
 private final class ShareKeyViaWebsiteDependencyProvider: DependencyProvider<ShareKeyViaWebsiteDependency>, ThankYouDependency, CardDependency, HelpDetailDependency {
-
+    
+    var featureFlagController: FeatureFlagControlling {
+        dependency.featureFlagController
+    }
+    
     var theme: Theme {
         dependency.theme
     }
@@ -82,6 +87,10 @@ private final class ShareKeyViaWebsiteDependencyProvider: DependencyProvider<Sha
     var applicationController: ApplicationControlling {
         return ApplicationController()
     }
+    
+    var alertControllerBuilder: AlertControllerBuildable {
+        AlertControllerBuilder()
+    }
 }
 
 final class ShareKeyViaWebsiteBuilder: Builder<ShareKeyViaWebsiteDependency>, ShareKeyViaWebsiteBuildable {
@@ -99,6 +108,7 @@ final class ShareKeyViaWebsiteBuilder: Builder<ShareKeyViaWebsiteDependency>, Sh
                                       viewController: viewController,
                                       thankYouBuilder: dependencyProvider.thankYouBuilder,
                                       cardBuilder: dependencyProvider.cardBuilder,
-                                      helpDetailBuilder: dependencyProvider.helpDetailBuilder)
+                                      helpDetailBuilder: dependencyProvider.helpDetailBuilder,
+                                      alertControllerBuilder: dependencyProvider.alertControllerBuilder)
     }
 }
