@@ -31,6 +31,7 @@ protocol ShareKeyViaPhoneDependency {
     var storageController: StorageControlling { get }
     var dataController: ExposureDataControlling { get }
     var pauseController: PauseControlling { get }
+    var featureFlagController: FeatureFlagControlling { get }
 }
 
 private final class ShareKeyViaPhoneDependencyProvider: DependencyProvider<ShareKeyViaPhoneDependency>, ThankYouDependency, CardDependency, HelpDetailDependency {
@@ -77,6 +78,10 @@ private final class ShareKeyViaPhoneDependencyProvider: DependencyProvider<Share
 
     var pauseController: PauseControlling {
         dependency.pauseController
+    }
+    
+    var featureFlagController: FeatureFlagControlling {
+        dependency.featureFlagController
     }
 }
 

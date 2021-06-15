@@ -140,7 +140,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         let item = sections[indexPath.section].items[indexPath.row]
 
         item.action()
-        internalView.tableView.reloadData()
+        reloadData()
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -154,8 +154,10 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     }
 
     // MARK: - Sections
-
-    private var sections: [(title: String, items: [DeveloperItem])] {
+    private var sections: [(title: String, items: [DeveloperItem])] = []
+    
+    private func reloadData() {
+        
         let featureFlagOptions = Feature
             .allCases
             .map { feature in
@@ -168,7 +170,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 
             }
         
-        return [
+        sections = [
             ("Feature Flags (swipe to reset)", featureFlagOptions),
             ("Show Screens", [
                 DeveloperItem(title: "Show Onboarding",
@@ -263,6 +265,8 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               action: { [weak self] in self?.emailLogFiles() })
             ])
         ]
+        
+        internalView.tableView.reloadData()
     }
 
     // MARK: - Actions
@@ -313,7 +317,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         }
 
         mutableExposureStateStream.update(state: exposureState)
-        internalView.tableView.reloadData()
+        reloadData()
     }
 
     private func triggerExposure() {
@@ -390,7 +394,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 self?.eraseCompleteStorage()
 
                 self?.exposureController.refreshStatus()
-                self?.internalView.tableView.reloadData()
+                self?.reloadData()
             }
 
             return UIAlertAction(title: configuration.name,
@@ -405,7 +409,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         exposureController
             .updateTreatmentPerspective()
             .subscribe(onCompleted: { [weak self] in
-                self?.internalView.tableView.reloadData()
+                self?.reloadData()
             })
             .disposed(by: disposeBag)
     }
@@ -482,14 +486,14 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
 
         exposureController.refreshStatus()
-        internalView.tableView.reloadData()
+        reloadData()
     }
 
     private func removeLastExposure() {
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
         
         exposureController.refreshStatus()
-        internalView.tableView.reloadData()
+        reloadData()
     }
 
     private func removeAllExposureKeySets() {
@@ -501,7 +505,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         }
 
         exposureController.refreshStatus()
-        internalView.tableView.reloadData()
+        reloadData()
     }
 
     private func emailLogFiles() {
@@ -519,7 +523,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             return
         }
 
-        internalView.tableView.reloadData()
+        reloadData()
 
         fetchAndProcessDisposable = exposureController
             .fetchAndProcessExposureKeySets().subscribe { _ in
@@ -528,21 +532,21 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 self.fetchAndProcessDisposable = nil
 
                 assert(Thread.isMainThread)
-                self.internalView.tableView.reloadData()
+                self.reloadData()
             }
     }
 
     private func processPendingUploadRequests() {
         exposureController
             .processPendingUploadRequests().subscribe { _ in
-                self.internalView.tableView.reloadData()
+                self.reloadData()
             }.disposed(by: disposeBag)
     }
 
     private func processExpiredUploadRequests() {
         exposureController
             .processExpiredUploadRequests().subscribe { _ in
-                self.internalView.tableView.reloadData()
+                self.reloadData()
             }.disposed(by: disposeBag)
     }
 
@@ -767,7 +771,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         view.frame = window.bounds
         window.addSubview(view)
 
-        internalView.tableView.reloadData()
+        reloadData()
 
         internalView.showContentView()
         internalView.showBackgroundView()

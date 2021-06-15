@@ -521,6 +521,13 @@ extension String {
     static var moreInformationKeySharingCoronaTestCompleteOK: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.ok") }
     static var moreInformationKeySharingCoronaTestCompleteCancel: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.cancel") }
         
+    
+    // MARK: - MoreInformation | KeySharing | Thank You
+    
+    static var moreInformationKeySharingThankYouTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.title") }
+    static var moreInformationKeySharingThankYouContent: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.content") }
+    static var moreInformationKeySharingThankYouConfirmation: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.confirmation") }
+    
     // MARK: - MoreInformation | Received Notification
 
     static var moreInformationReceivedNotificationTitle: String { return Localization.string(for: "moreInformation.receivedNotification.title") }
