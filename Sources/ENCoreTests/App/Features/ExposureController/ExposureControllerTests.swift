@@ -687,6 +687,23 @@ final class ExposureControllerTests: TestCase {
         waitForExpectations()
         XCTAssertEqual(featureFlags, [.init(id: "someId", featureEnabled: true)])
     }
+    
+    func test_getStoredShareKeyURL_shouldCallDataController() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.getStoredShareKeyURLHandler = {
+            completionExpectation.fulfill()
+            return "http://www.someurl.com"
+        }
+
+        // Act
+        let url = controller.getStoredShareKeyURL()
+
+        // Assert
+        waitForExpectations()
+        XCTAssertEqual(url, "http://www.someurl.com")
+    }
 
     // MARK: - postExposureManagerActivation
 

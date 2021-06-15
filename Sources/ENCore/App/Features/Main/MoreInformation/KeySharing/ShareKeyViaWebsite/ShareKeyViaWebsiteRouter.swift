@@ -7,7 +7,7 @@
 
 import UIKit
 
-/// @mockable
+/// @mockable(history:present=true;push=true;set=true;presentInNavigationController=true;dismiss=true)
 protocol ShareKeyViaWebsiteViewControllable: ViewControllable, ThankYouListener, HelpDetailListener {
     var router: ShareKeyViaWebsiteRouting? { get set }
 

@@ -23,7 +23,7 @@ protocol ShareKeyViaWebsiteRouting: Routing {
 
 final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsiteViewControllable, UIAdaptivePresentationControllerDelegate, Logging, ShareKeyViaWebsiteViewListener {
     
-    private enum State {
+    enum State {
         /// Busy loading the labconfirmation key from the EN API
         case loading
         
@@ -51,7 +51,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         return view
     }()
     
-    private var state: State = .loading {
+    var state: State = .loading {
         didSet {
             updateState()
         }
@@ -240,9 +240,11 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
             switch self.state {
             case .loading:
                 self.internalView.infoView.isActionButtonEnabled = false
-                self.internalView.controlCode.set(state: .loading(.moreInformationInfectedLoading))
+                self.internalView.controlCode.set(state: .disabled)
+                self.internalView.shareYourCodes.buttonEnabled = false
             case .uploadKeys:
                 self.internalView.infoView.isActionButtonEnabled = false
+                self.internalView.shareYourCodes.buttonEnabled = true
                 self.internalView.controlCode.set(state: .disabled)
             case let .keysUploaded(key):
                 self.internalView.controlCode.set(state: .success(key.key))
@@ -254,9 +256,11 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
                 
             case .loadingError:
                 self.internalView.infoView.isActionButtonEnabled = false
-                self.internalView.controlCode.set(state: .error(.moreInformationInfectedError) { [weak self] in
-                    self?.requestLabConfirmationKey()
-                })
+                
+                // "retry" action should move to the 1st step of this flow
+//                self.internalView.controlCode.set(state: .error(.moreInformationInfectedError) { [weak self] in
+//                    self?.requestLabConfirmationKey()
+//                })
             }
         }
     }

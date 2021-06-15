@@ -8,7 +8,7 @@
 import ENFoundation
 import Foundation
 
-/// @mockable
+/// @mockable(history: shareKeyViaWebsiteWantsDismissal=true)
 protocol ShareKeyViaWebsiteListener: AnyObject {
     func shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: Bool)
 }
