@@ -247,7 +247,7 @@
 "help.faq.reason.title" = "Warum ist diese App wichtig?";
 "help.faq.reason.description" = "Die App kann Sie schnell warnen, wenn Sie in der Nähe einer Person mit Corona waren. Schon bevor Sie Beschwerden haben. Sie können nämlich Corona haben und ansteckend sein, ohne es zu wissen.<br><br>Wenn Sie über die App eine Warnmeldung bekommen, lesen Sie in der App, was zu tun ist. Und ob Sie sich testen lassen müssen. So verhindern Sie, dass Sie Personen in Ihrer Umgebung unbewusst anstecken.<br><br>Sie wurden getestet und haben Corona? Dann können Sie gemeinsam mit dem GGD (auch unbekannte) Personen warnen, die lange in Ihrer Nähe waren. Zum Beispiel in einem Restaurant, Kino oder Wartezimmer. Diese Personen müssen allerdings auch die App benutzen.<br><br>Dank CoronaMelder können wir schneller eingreifen und Neuansteckungen verhindern. Nur gemeinsam bekommen wir Corona unter Kontrolle.";
 "help.faq.upload_keys.title" = "Kann ich anderen eine Nachricht schicken, wenn ich Corona habe?";
-"help.faq.upload_keys.description" = "Sie können nur eine Nachricht an andere schicken, wenn sich nach einem Test herausstellt, dass Sie Corona haben. Der GGD ruft Sie in diesem Fall an.<br><br>Bei diesem Gespräch kontrolliert ein GGD-Mitarbeiter Ihren GGD-Schlüssel. Sie finden ihn in der App. So wird immer sichergestellt, dass nur Personen Nachrichten verschicken können, die wirklich Corona haben.<br><br>Nach der Kontrolle Ihres GGD-Schlüssels können Sie die Codes teilen, die Ihr Telefon in den letzten 14 Tagen an andere Telefone geschickt hat.<br><br>So können die Personen, in deren Nähe Sie waren, als Sie ansteckend waren, eine Nachricht erhalten. Aber nur, wenn diese Personen auch die App nutzen.";
+"help.faq.upload_keys.description" = "Sie können nur eine Nachricht an andere schicken, wenn sich nach einem Test herausstellt, dass Sie Corona haben. Der GGD ruft Sie in diesem Fall an.<br><br>Bei diesem Gespräch kontrolliert ein GGD-Mitarbeiter Ihren GGD-Schlüssel. Sie finden ihn in der App. So wird immer sichergestellt, dass nur Personen Nachrichten verschicken können, die wirklich Corona haben.<br><br>Nach der Kontrolle Ihres GGD-Schlüssels können Sie die Codes teilen, die Ihr Telefon in den letzten 14 Tagen an andere Telefone geschickt hat.<br><br>So bekommen die Personen, in deren Nähe Sie waren, als Sie ansteckend waren, eine Nachricht. Aber nur, wenn diese Personen auch die App nutzen.";
 "help.faq.deletion.title" = "Wie lösche ich meine Daten?";
 "help.faq.privacy_policy.title" = "Datenschutzerklärung";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -255,7 +255,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Zugänglichkeit";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Sie erhalten eine Nachricht, wenn für Sie eine erhöhte Ansteckungsgefahr bestand. Das ist der Fall, wenn Sie insgesamt mindestens 15 Minuten in der Nähe einer oder mehrerer Personen waren, bei der/denen später Corona festgestellt wurde. Und natürlich nur, wenn diese Person(en) auch die App benutzt/benutzen.<br><br>Ob Sie eine Nachricht erhalten, hängt von der Stärke des Bluetooth-Signals ab. Und von der Dauer der Begegnung.<br><br>Fuhr jemand auf der Straße mit dem Rad vorbei? Dann bekommen Sie später keine Nachricht. Sie waren dicht beieinander, also war das Bluetooth-Signal stark. Aber die Begegnung war so kurz, dass die Ansteckungsgefahr sehr gering ist.<br><br>Saßen Sie im Zug oder Büro dicht beieinander? Dann können Sie später eine Nachricht bekommen. Das Bluetooth-Signal war stark genug, und Sie waren längere Zeit nah beieinander.";
+"help.faq.notification.description" = "Sie erhalten eine Nachricht, wenn für Sie eine erhöhte Ansteckungsgefahr bestand. Das ist der Fall, wenn Sie an einem Tag mindestens 15 Minuten in der Nähe einer Person mit Corona waren. Es kann sich um eine oder mehrere Personen handeln. Und diese Person muss wie Sie auch die App benutzen.<br><br>Ob Sie eine Nachricht erhalten, hängt von der Stärke des Bluetooth-Signals ab. Und von der Dauer der Begegnung.<br><br>Fuhr jemand auf der Straße mit dem Rad vorbei? Dann bekommen Sie später keine Nachricht. Sie waren dicht beieinander, also war das Bluetooth-Signal stark. Aber die Begegnung war so kurz, dass die Ansteckungsgefahr sehr gering ist.<br><br>Saßen Sie im Zug oder Büro dicht beieinander? Dann können Sie später eine Nachricht bekommen. Das Bluetooth-Signal war stark genug, und Sie waren längere Zeit nah beieinander.";
 "help.faq.bluetooth.title" = "Funktioniert Bluetooth durch Wände hindurch?";
 "help.faq.bluetooth.description" = "Ja, aber das Signal ist dann sehr schwach. Bluetooth funktioniert am besten, wenn Ihr Telefon im selben Raum ist wie das Telefon der anderen Person.<br><br>Es ist zum Beispiel sehr unwahrscheinlich, dass Ihre App das Bluetooth-Signal des Nachbarn auffängt.<br><br>Deshalb ist es auch sehr unwahrscheinlich, dass Sie eine Nachricht erhalten, wenn sich Ihr Nachbar mit Corona angesteckt hat und Sie nicht im selben Raum waren.";
 "help.faq.power_usage.title" = "Wieviel Akku verbraucht die App?";
@@ -288,7 +288,7 @@
 "help.technical_explanation.github.subtitle" = "Zu GitHub wechseln";
 
 "help.what_does_notification_mean.title" = "Was bedeutet es, wenn Sie eine Nachricht erhalten?";
-"help.what_does_notification_mean.description1" = "Die App schickt eine Nachricht, wenn Sie insgesamt mindestens 15 Minuten in der Nähe einer oder mehrerer Personen waren, bei der/denen später Corona festgestellt wurde.";
+"help.what_does_notification_mean.description1" = "Die App schickt eine Nachricht, wenn Sie an einem Tag mindestens 15 Minuten in der Nähe einer Person mit Corona waren. Es kann sich um eine oder mehrere Personen handeln.";
 "help.what_does_notification_mean.description2" = "Die Nachricht erscheint auf dem Startbildschirm Ihres Telefons, genau wie die Nachrichten von anderen Apps. Die Nachricht hat das Symbol des CoronaMelders.<br><br> Haben Sie eine Nachricht erhalten? Dann öffnen Sie den CoronaMelder. Dort können Sie lesen, was in diesem Fall zu tun ist.";
 "help.what_does_report_look_like.title" = "Wie sieht eine Nachricht aus?";
 "help.what_does_report_look_like.description" = "Die Nachricht sieht in etwa wie eine SMS aus. In der Nachricht steht, an welchem Tag Sie in der Nähe einer Person mit Corona waren.<br><br> 
@@ -299,7 +299,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "help.other_reports.title" = "Andere Nachrichten";
 "help.other_reports.description" = "CoronaMelder kann Ihnen auch eine Nachricht schicken, wenn es ein technisches Problem gibt. Zum Beispiel, wenn Bluetooth bei Ihnen deaktiviert ist. Oder wenn es länger als einen Tag keine Internetverbindung gab. Die App hilft Ihnen, das zu lösen.<br><br>Haben Sie eine solche Meldung erhalten, obwohl die App ganz normal aktiviert ist? Dann wurde das Problem in der Zwischenzeit gelöst.<br><br>Manchmal erhalten Sie auch Nachrichten, in denen steht, dass Ihr Telefon COVID-19-Überprüfungen durchführt. Öffnen Sie  dann CoronaMelder. Gut zu wissen: Meistens ist alles in Ordnung.";
 "help.other_what_does_report_say.title" = "Wie erkenne ich eine Nachricht?";
-"help.other_what_does_report_say.content1" = "Die App schickt eine Nachricht, wenn Sie insgesamt mindestens 15 Minuten in der Nähe einer oder mehrerer Personen waren, bei der/denen später Corona festgestellt wurde.";
+"help.other_what_does_report_say.content1" = "Die App schickt eine Nachricht, wenn Sie an einem Tag mindestens 15 Minuten in der Nähe einer Person mit Corona waren. Es kann sich um eine oder mehrere Personen handeln.";
 "help.other_what_does_report_say.content2" = "Die Nachricht erscheint auf dem Startbildschirm Ihres Telefons, genau wie die Nachrichten von anderen Apps. Die Nachricht hat das Symbol des CoronaMelders.<br><br> Haben Sie eine Nachricht erhalten? Dann öffnen Sie den CoronaMelder. Dort können Sie lesen, was in diesem Fall zu tun ist.";
 
 "help.pause_app.title" = "Kann ich die App anhalten?";
@@ -364,9 +364,9 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.card.manualunpause.description" = "Die App ist noch nicht aktiv. Sie müssen sie selbst aktivieren.";
 
 /* MARK: - EN > 14 days */
-"status.en.contact.>14days.title" = "Contact more than 14 days ago";
-"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
-"status.en.contact.>14days.secondary.button.title" = "Delete";
+"status.en.contact.>14days.title" = "Kontakt vor mehr als 14 Tagen";
+"status.en.contact.>14days.description" = "Am %@ (%@) waren Sie in der Nähe einer Person mit Corona";
+"status.en.contact.>14days.secondary.button.title" = "Löschen";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mehr Informationen";
@@ -452,6 +452,36 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.thankyou.list.item2" = "Vermeiden Sie den Kontakt mit Mitbewohnern.";
 "moreInformation.thankyou.list.item3" = "Werden die Beschwerden schlimmer? Nehmen Sie dann umgehend Kontakt zum GGD oder Hausarzt auf.";
 "moreInformation.thankyou.info.title" = "Die Nachricht wird nur verschickt, wenn Sie vom GGD getestet wurden und Sie Corona haben.";
+
+/* MARK: - MoreInformation | Infected - Coronatest.nl flow */
+
+"moreInformation.keysharing.coronatest.header.title" = "Wählen Sie, wie Sie eine Nachricht verschicken möchten";
+"moreInformation.keysharing.coronatest.header.content" = "Sie können nur eine Nachricht schicken, wenn ein Coronatest ergibt, dass Sie Corona haben.";
+"moreInformation.keysharing.coronatest.option1.title" = "Über coronatest.nl";
+"moreInformation.keysharing.coronatest.option1.content" = "Das geht nur, wenn Sie das Testergebnis über coronatest.nl erhalten.";
+"moreInformation.keysharing.coronatest.option2.title" = "Wenn der GGD Sie anruft";
+"moreInformation.keysharing.coronatest.option2.content" = "Das geht nur, wenn Sie jetzt mit dem GGD telefonieren.";
+"moreInformation.keysharing.coronatest.steps.header.title" = "Entdecken Sie über coronatest.nl, dass Sie Corona haben? Dann können Sie über CoronaMelder sofort eine Nachricht schicken.";
+"moreInformation.keysharing.coronatest.steps.header.button" = "Wie geht das?";
+"moreInformation.keysharing.coronatest.step1.title" = "Teilen Sie die Codes, die CoronaMelder erstellt hat.";
+"moreInformation.keysharing.coronatest.step1.button" = "Codes teilen";
+"moreInformation.keysharing.coronatest.step1.done" = "Codes geteilt";
+"moreInformation.keysharing.coronatest.step2.title" = "Schreiben Sie Ihren GGD-Schlüssel auf oder kopieren Sie ihn.";
+"moreInformation.keysharing.coronatest.step3.title" = "Geben Sie Ihren GGD-Schlüssel auf coronatest.nl ein. So warnen Sie Personen, in deren Nähe Sie waren.";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Gehen Sie (zurück) zu coronatest.nl und geben Sie Ihren GGD-Schlüssel ein. So warnen Sie Personen, in deren Nähe Sie waren.";
+"moreInformation.keysharing.coronatest.step3.button" = "Zu coronatest.nl";
+"moreInformation.keysharing.coronatest.step4.title" = "GGD-Schlüssel eingegeben?";
+"moreInformation.keysharing.coronatest.step4.content" = "Sie sind fertig. Personen, in deren Nähe Sie waren, als Sie ansteckend waren, bekommen innerhalb von 8 Stunden eine Nachricht.";
+"moreInformation.keysharing.coronatest.complete" = "Ich bin fertig.";
+"moreInformation.keysharing.coronatest.complete.notification.title" = "Sind Sie sicher, dass Sie fertig sind?";
+"moreInformation.keysharing.coronatest.complete.notification.content" = "Haben Sie den GGD-Schlüssel auf coronatest.nl eingegeben und eine Bestätigung erhalten? Wenn ja, können Sie abschließen.";
+"moreInformation.keysharing.coronatest.complete.notification.ok" = "Ja, abschließen";
+"moreInformation.keysharing.coronatest.complete.notification.cancel" = "Annullieren";
+"moreInformation.keysharing.coronatest.thankyou.title" = "Vielen Dank, dass Sie die Nachricht geschickt haben.";
+"moreInformation.keysharing.coronatest.thankyou.content" = "Der GGD sagt Ihnen, was Sie sonst noch tun können, damit Sie andere nicht anstecken. Wir wünschen Ihnen gute Besserung. ";
+"moreInformation.keysharing.coronatest.thankyou.confirmation" = "Die Nachricht wird nur verschickt, wenn Sie Ihren GGD-Schlüssel dem GGD mitgeteilt oder ihn über coronatest.nl verschickt haben.";
+"moreInformation.keysharing.coronatest.faq.title" = "Kann ich anderen eine Nachricht schicken, wenn ich Corona habe?";
+"moreInformation.keysharing.coronatest.faq.content" = "Sie können nur eine Nachricht an andere schicken, wenn sich nach einem Test beim GGD herausstellt, dass Sie Corona haben. Die Nachricht schicken Sie, wenn der GGD Sie anruft. Oder Sie tun es selbst auf coronatest.nl.<br><br>Wenn Sie eine Nachricht schicken möchten, müssen Sie Ihren GGD-Schlüssel eingeben. Sie finden ihn in der App. Ein GGD-Schlüssel sorgt dafür, dass nur Personen Nachrichten verschicken können, die wirklich Corona haben.<br><br>Nach der Kontrolle Ihres GGD-Schlüssels werden die Codes geteilt, die Ihr Telefon in den letzten 14 Tagen an andere Telefone geschickt hat.<br><br>So bekommen die Personen, in deren Nähe Sie waren, als Sie ansteckend waren, eine Nachricht. Aber nur, wenn diese Personen auch die App nutzen.";
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Nachricht erhalten";

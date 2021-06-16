@@ -255,7 +255,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accesibilitate";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Veți primi notificări după ce ați fost expus unui risc ridicat de infectare. Acest lucru se întâmplă dacă ați fost cel puțin 15 minute aproape de una sau mai multe persoane care se dovedesc ulterior a fi infectate cu coronavirus. Bineînțeles, acest lucru este posibil doar dacă și acea persoană folosește aplicația.<br><br>Primirea unei notificări depinde de puterea semnalului Bluetooth și de durata contactului.<br><br>A trecut cineva cu bicicleta pe lângă dvs.? Atunci nu veți primi notificări în viitor. Ați fost aproape unul de altul, deci semnalul Bluetooth a fost puternic. Însă durata contactului a fost așa de scurtă încât riscul de infectare este foarte mic.<br><br>Ați stat aproape de cineva în tren sau la birou? Atunci puteți primi notificări în viitor. Semnalul Bluetooth a fost puternic și ați fost aproape unul de celălalt mult timp.";
+"help.faq.notification.description" = "Veți primi notificări după ce ați fost expus unui risc ridicat de infectare. Acest lucru se întâmplă dacă  într-o zi v-ați aflat în apropierea unei persoane infectate cu coronavirus timp de minimum 15 minute.  Poate fi vorba de una sau mai multe persoane. Bineînțeles că și acea persoană trebuie să folosească aplicația.<br><br>Primirea unei notificări depinde de puterea semnalului Bluetooth și de durata contactului.<br><br>A trecut cineva cu bicicleta pe lângă dvs.? Atunci nu veți primi notificări în viitor. Ați fost aproape unul de altul, deci semnalul Bluetooth a fost puternic. Însă durata contactului a fost așa de scurtă încât riscul de infectare este foarte mic.<br><br>Ați stat aproape de cineva în tren sau la birou? Atunci puteți primi notificări în viitor. Semnalul Bluetooth a fost puternic și ați fost aproape unul de celălalt mult timp.";
 "help.faq.bluetooth.title" = "Poate trece semnalul Bluetooth prin pereți?";
 "help.faq.bluetooth.description" = "Da, dar semnalul este foarte slab. Bluetooth funcționează cel mai bine dacă telefonul dvs. se află în aceeași cameră cu telefonul unei alte persoane.<br><br>De exemplu, este puțin probabil ca aplicația dvs. să primească semnalul Bluetooth de la vecini.<br><br>De aceea, este puțin probabil să primiți o notificare dacă vecinul dvs. se dovedește a avea coronavirus dar nu ați fost în aceeași cameră.";
 "help.faq.power_usage.title" = "Câtă baterie utilizează aplicația?";
@@ -288,7 +288,7 @@
 "help.technical_explanation.github.subtitle" = "Accesați GitHub";
 
 "help.what_does_notification_mean.title" = "Ce înseamnă dacă primiți o notificare?";
-"help.what_does_notification_mean.description1" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei sau mai multor persoane care se dovedesc ulterior a fi infectate cu coronavirus.";
+"help.what_does_notification_mean.description1" = "Aplicația trimite o notificare dacă într-o zi v-ați aflat cel puțin 15 minute în apropierea unei persoane  infectată cu coronavirus. Poate fi vorba de una sau mai multe persoane.";
 "help.what_does_notification_mean.description2" = "Notificarea apare pe ecranul telefonului dvs., la fel ca mesajele primite prin alte aplicații. Notificarea are simbolul aplicației CoronaMelder.<br><br>Ați primit o notificare? Atunci deschideți CoronaMelder. În aplicație veți citi ce puteți face mai departe.";
 "help.what_does_report_look_like.title" = "Cum arată o notificare?";
 "help.what_does_report_look_like.description" = "Notificarea este asemănătoare unui mesaj sms. În notificare se menționează în ce zi v-ați aflat în apropierea cuiva infectat cu coronavirus.<br><br>Deschideți notificarea. În notificare veți putea citi ce puteți face mai departe.";
@@ -298,7 +298,7 @@
 "help.other_reports.title" = "Alte notificări";
 "help.other_reports.description" = "Aplicația vă poate trimite și notificări în cazul unor probleme tehnice. De exemplu, dacă bluetooth este dezactivat sau dacă nu ați avut legătură la internet mai mult de o zi. Aplicația vă ajută să soluționați problema.<br><br>Ați primit o astfel de notificare dar aplicația este activă? Înseamnă că problema a fost rezolvată între timp.<br><br> Uneori primiți notificări în care se menționează că telefonul dvs. face controale COVID-19.  Deschideți aplicația CoronaMelder. Bine de reținut: de cele mai multe ori, nu este nici o problemă.";
 "help.other_what_does_report_say.title" = "Cum recunosc o notificare?";
-"help.other_what_does_report_say.content1" = "Aplicația trimite o notificare dacă ați fost cel puțin 15 minute în apropierea unei sau mai multor persoane care se dovedesc ulterior a fi infectate cu coronavirus.";
+"help.other_what_does_report_say.content1" = "Aplicația trimite o notificare dacă într-o zi v-ați aflat cel puțin 15 minute în apropierea unei persoane  infectată cu coronavirus. Poate fi vorba de una sau mai multe persoane.";
 "help.other_what_does_report_say.content2" = "Notificarea apare pe ecranul telefonului dvs., la fel ca mesajele primite prin alte aplicații. Notificarea are simbolul aplicației CoronaMelder.<br><br>Ați primit o notificare? Atunci deschideți CoronaMelder. În aplicație veți citi ce puteți face mai departe.";
 
 "help.pause_app.title" = "Pot pune aplicația pe pauză?";
@@ -363,9 +363,9 @@
 "status.card.manualunpause.description" = "Aplicația nu este activă. Trebuie să o reactivați.";
 
 /* MARK: - EN > 14 days */
-"status.en.contact.>14days.title" = "Contact more than 14 days ago";
-"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
-"status.en.contact.>14days.secondary.button.title" = "Delete";
+"status.en.contact.>14days.title" = "Contact mai vechi de 14 zile";
+"status.en.contact.>14days.description" = "Pe  %@ (%@) v-ați aflat în apropierea unei persoane infectate cu coronavirus.";
+"status.en.contact.>14days.secondary.button.title" = "Ștergeți";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Mai multe informații";
@@ -451,6 +451,36 @@
 "moreInformation.thankyou.list.item2" = "Evitați contactul cu persoanele cu care stați în casă";
 "moreInformation.thankyou.list.item3" = "Simptomele se agravează? Luați imediat legătura cu GGD sau cu doctorul de familie";
 "moreInformation.thankyou.info.title" = "Notificarea va fi trimisă numai dacă GGD v-a testat și sunteți infectat cu coronavirus.";
+
+/* MARK: - MoreInformation | Infected - Coronatest.nl flow */
+
+"moreInformation.keysharing.coronatest.header.title" = "Alegeți cum doriți să transmiteți notificarea";
+"moreInformation.keysharing.coronatest.header.content" = "Puteți trimite o notificare numai dacă în urma unui test corona reiese că sunteți infectat.";
+"moreInformation.keysharing.coronatest.option1.title" = "Prin coronatest.nl";
+"moreInformation.keysharing.coronatest.option1.content" = "Acest lucru este posibil numai dacă primiți rezultatul testului prin coronatest.nl";
+"moreInformation.keysharing.coronatest.option2.title" = "Dacă vă sună GGD";
+"moreInformation.keysharing.coronatest.option2.content" = "Acest lucru este posibil numai dacă vorbiți acum cu GGD la telefon";
+"moreInformation.keysharing.coronatest.steps.header.title" = "Ați descoperit că aveți corona prin coronatest.nl? Atunci puteți trimite imediat o notificare prin CoronaMelder.";
+"moreInformation.keysharing.coronatest.steps.header.button" = "Cum funcționează?";
+"moreInformation.keysharing.coronatest.step1.title" = "Distribuiți codurile pe care le-a generat CoronaMelder";
+"moreInformation.keysharing.coronatest.step1.button" = "Partajați coduri";
+"moreInformation.keysharing.coronatest.step1.done" = "Coduri partajate";
+"moreInformation.keysharing.coronatest.step2.title" = "Notați sau copiați cheia GGD";
+"moreInformation.keysharing.coronatest.step3.title" = "Introduceți cheia dvs. GGD pe coronatest.nl. Așa îi avertizați pe cei în apropierea cărora v-ați aflat";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Mergeți (înapoi) la coronatest.nl și introduceți cheia GGD. În acest fel avertizați persoanele în apropierea cărora v-ați aflat.";
+"moreInformation.keysharing.coronatest.step3.button" = "Mergeți la coronatest.nl";
+"moreInformation.keysharing.coronatest.step4.title" = "Ați introdus cheia GGD?";
+"moreInformation.keysharing.coronatest.step4.content" = "Sunteți gata. Persoanele în apropierea cărora ați fost în timp ce erați contagios vor primi o notificare. Acest lucru se întâmplă în decurs de 8 ore.";
+"moreInformation.keysharing.coronatest.complete" = "Sunt gata";
+"moreInformation.keysharing.coronatest.complete.notification.title" = "Sunteți sigur că sunteți gata?";
+"moreInformation.keysharing.coronatest.complete.notification.content" = "Ați introdus cheia GGD pe coronatest.nl și ați primit o notificare? Dacă răspunsul este da atunci puteți încheia.";
+"moreInformation.keysharing.coronatest.complete.notification.ok" = "Da, încheiere";
+"moreInformation.keysharing.coronatest.complete.notification.cancel" = "Anulare";
+"moreInformation.keysharing.coronatest.thankyou.title" = "Vă mulțumim pentru trimiterea notificării";
+"moreInformation.keysharing.coronatest.thankyou.content" = "GGD vă va spune ce trebuie sa faceți în continuare pentru nu infecta și alte persoane. Însănătoșire grabnică! ";
+"moreInformation.keysharing.coronatest.thankyou.confirmation" = "Notificarea este trimisă doar dacă ați transmis cheia la GGd sau prin coronatest.nl";
+"moreInformation.keysharing.coronatest.faq.title" = "Pot trimite notificări altora dacă sunt infectat cu coronavirus?";
+"moreInformation.keysharing.coronatest.faq.content" = "Puteți trimite notificări altor persoane doar dacă ați fost testat și rezultă că aveți coronavirus. În acest caz, GGD (Serviciul de Sănătate Municipal) vă va suna pentru a vă da rezultatul testului.<br><br>În timpul acestei conversații telefonice, angajatul GGD vă controlează cheia GGD personală. Aceasta se găsește în aplicație.  Această cheie garantează că doar codurile unei persoane contaminate pot fi adăugate pe listă.<br><br>După ce cheia GGD personală a fost controlată, puteți distribui codurile transmise de către telefonul dvs. altor telefoane în ultimele 14 zile.<br><br>În acest fel, persoanele care au fost în apropierea dvs. când erați contagios, pot primi o notificare. Notificarea poate fi trimisă doar dacă și aceste persoane folosesc aplicația.";
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Notificare primită";

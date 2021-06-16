@@ -255,7 +255,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Toegankelijkheid";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je in totaal minstens 15 minuten dicht bij een of meerdere personen bent geweest die later corona bleken te hebben. En natuurlijk alleen als die persoon ook de app gebruikt.<br><br>Of je een melding krijgt hangt af van de sterkte van het bluetoothsignaal. En van de duur van jullie contact.<br><br>Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Jullie waren dicht bij elkaar, dus het bluetooth-signaal was sterk. Maar het contact duurde zo kort dat de kans op besmetting heel erg klein is.<br><br>Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het bluetoothsignaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
+"help.faq.notification.description" = "Je krijgt een melding nadat je extra kans op besmetting hebt gelopen. Dit gebeurt als je op een dag minstens 15 minuten in de buurt bent geweest van iemand met corona. Dit kan één persoon zijn, maar ook meerdere personen. Ook moet de andere persoon net als jij de app gebruiken.<br><br>Of je een melding krijgt hangt af van de sterkte van het bluetoothsignaal. En van de duur van jullie contact.<br><br>Fietste er iemand voorbij op straat? Dan krijg je later geen melding. Jullie waren dicht bij elkaar, dus het bluetooth-signaal was sterk. Maar het contact duurde zo kort dat de kans op besmetting heel erg klein is.<br><br>Zat je dicht bij iemand in de trein of op kantoor? Dan kun je later wel een melding krijgen. Het bluetoothsignaal was sterk genoeg en jullie waren langere tijd dicht bij elkaar in de buurt.";
 "help.faq.bluetooth.title" = "Werkt bluetooth door muren heen?";
 "help.faq.bluetooth.description" = "Ja, maar het signaal wordt dan erg zwak. Bluetooth werkt het beste als jouw telefoon in dezelfde ruimte is als de telefoon van een andere persoon.<br><br>De kans is bijvoorbeeld heel klein dat je app het bluetoothsignaal van je buren ontvangt.<br><br>En daardoor is de kans ook heel klein dat je een melding krijgt als je buurman corona blijkt te hebben en jullie niet in dezelfde ruimte zijn geweest.";
 "help.faq.power_usage.title" = "Hoeveel stroom gebruikt de app?";
@@ -288,7 +288,7 @@
 "help.technical_explanation.github.subtitle" = "Ga naar GitHub";
 
 "help.what_does_notification_mean.title" = "Wat betekent het als je een melding krijgt?";
-"help.what_does_notification_mean.description1" = "De app stuurt een melding als je in totaal minstens 15 minuten dicht bij een of meerdere personen bent geweest die later corona bleken te hebben.";
+"help.what_does_notification_mean.description1" = "De app stuurt een melding als je op een dag minstens 15 minuten in de buurt bent geweest van iemand met corona. Dit kan één persoon zijn, maar ook meerdere personen.";
 "help.what_does_notification_mean.description2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
 "help.what_does_report_look_like.title" = "Hoe ziet een melding eruit?";
 "help.what_does_report_look_like.description" = "De melding lijkt op wat je ziet als je een sms-bericht ontvangt. In de melding staat op welke dag je in de buurt was van iemand met het coronavirus.<br><br>Klik op de melding om CoronaMelder te openen. Daar lees je wat je verder kunt doen.";
@@ -298,14 +298,16 @@
 "help.other_reports.title" = "Andere meldingen";
 "help.other_reports.description" = "CoronaMelder kan je ook een melding sturen als er een technisch probleem is. Bijvoorbeeld als je bluetooth uitstaat. Of als er langer dan een dag geen internetverbinding was. De app helpt je dit op te lossen.<br><br>Heb je zo’n melding ontvangen, en is de app wel gewoon actief? Dan is het probleem in de tussentijd al opgelost.<br><br>Je krijgt soms ook meldingen waarin staat dat je telefoon COVID-19 controles uitvoert. Open dan CoronaMelder. Goed om te weten: meestal is er niks aan de hand.";
 "help.other_what_does_report_say.title" = "Hoe herken ik een melding?";
-"help.other_what_does_report_say.content1" = "De app stuurt een melding als je in totaal minstens 15 minuten dicht bij een of meerdere personen bent geweest die later corona bleken te hebben.";
+"help.other_what_does_report_say.content1" = "De app stuurt een melding als je op een dag minstens 15 minuten in de buurt bent geweest van iemand met corona. Dit kan één persoon zijn, maar ook meerdere personen.";
 "help.other_what_does_report_say.content2" = "De melding verschijnt op het thuisscherm van je telefoon. Net als berichten van andere apps. De melding heeft het symbool van CoronaMelder.<br><br>Heb je een melding ontvangen? Open dan CoronaMelder. Daar lees je wat je verder kunt doen.";
 
 "help.pause_app.title" = "Kan ik de app pauzeren?";
 "help.pause_app.description" = "Ja, je kunt de app tijdelijk pauzeren. Dit doe je op het startscherm via <b>Instellingen > App pauzeren </b>. Als je de app pauzeert, worden je ontmoetingen tijdelijk niet bijgehouden. Ook kun je geen melding krijgen als je bij iemand in de buurt bent geweest die later corona blijkt te hebben.<br><br>Als de pauze is afgelopen, krijg je meteen een melding om de app weer aan te zetten. Nadat je de app hebt aangezet, kun je nog meldingen krijgen van ontmoetingen voordat je de app pauzeerde.<br><br>Het is meestal niet aan te raden om de app te pauzeren, omdat je misschien vergeet deze weer aan te zetten. Je kunt de app wel pauzeren in bijzondere situaties. Bijvoorbeeld als je in de buurt komt van (mogelijke) coronapatiënten, maar zeker weet dat je medische beschermingsmiddelen draagt.";
 
 "help.apps_other_countries.title" = "Werkt CoronaMelder ook samen met apps uit andere landen?";
-"help.apps_other_countries.description" = "CoronaMelder werkt samen met een aantal apps uit andere Europese landen. Onder andere Duitsland, Ierland en Italië.<br><br>Stel, je bent langere tijd in de buurt geweest bij een gebruiker van de Duitse Corona-Warn-App. Deze persoon wordt in Duitsland getest en blijkt corona te hebben. Als die persoon zijn codes deelt met de Duitse GGD, dan krijg jij via CoronaMelder een melding. Andersom geldt hetzelfde. Omdat de corona-apps onderling samenwerken, hoef je dus maar één app aan te hebben staan.<br><br>CoronaMelder controleert vanaf 30 november 2020 dagelijks de codes van gebruikers uit verschillende landen. Hierdoor verbruikt de app meer mobiele data dan vroeger.   Je kunt via <b>Instellingen</b> op het hoofdscherm instellen dat de app alleen via wifi controleert of je in de buurt bent geweest van iemand met corona.";
+"help.apps_other_countries.description" = "CoronaMelder werkt samen met een aantal apps uit andere Europese landen. Onder andere Duitsland, Ierland en Italië.<br><br>Stel, je bent langere tijd in de buurt geweest bij een gebruiker van de Duitse Corona-Warn-App. Deze persoon wordt in Duitsland getest en blijkt corona te hebben. Als die persoon zijn codes deelt met de Duitse GGD, dan krijg jij via CoronaMelder een melding. Andersom geldt hetzelfde. Omdat de corona-apps onderling samenwerken, hoef je dus maar één app aan te hebben staan.<br><br>CoronaMelder controleert vanaf 30 november 2020 dagelijks de codes van gebruikers uit verschillende landen. Hierdoor verbruikt de app meer mobiele data dan vroeger. 
+
+Je kunt via <b>Instellingen</b> op het hoofdscherm instellen dat de app alleen via wifi controleert of je in de buurt bent geweest van iemand met corona.";
 
 /* MARK: - Message */
 "message.default.title" = "Je was in de buurt van iemand met corona";
@@ -471,16 +473,16 @@
 "moreInformation.keysharing.coronatest.step3.button" = "Naar coronatest.nl";
 "moreInformation.keysharing.coronatest.step4.title" = "GGD-sleutel ingevuld?";
 "moreInformation.keysharing.coronatest.step4.content" = "Je bent klaar. Mensen bij wie je in de buurt bent geweest, terwijl je besmettelijk was, krijgen een melding. Dit gebeurt binnen 8 uur.";
-"moreInformation.keysharing.coronatest.complete" = "Afronden";
-"moreInformation.keysharing.coronatest.complete.notification.title" = "Weet je zeker dat je wilt afronden?";
-"moreInformation.keysharing.coronatest.complete.notification.content" = "Heb je de GGD-sleutel ingevuld op coronatest.nl en een bevestiging gekregen? Zo ja, dan kun je dit scherm afsluiten.";
+"moreInformation.keysharing.coronatest.complete" = "Ik ben klaar";
+"moreInformation.keysharing.coronatest.complete.notification.title" = "Weet je zeker dat je klaar bent?";
+"moreInformation.keysharing.coronatest.complete.notification.content" = "Heb je de GGD-sleutel ingevuld op coronatest.nl en een bevestiging gekregen? Zo ja, dan kun je afronden.";
 "moreInformation.keysharing.coronatest.complete.notification.ok" = "Ja, afronden";
 "moreInformation.keysharing.coronatest.complete.notification.cancel" = "Annuleren";
 "moreInformation.keysharing.coronatest.thankyou.title" = "Bedankt voor het versturen van de melding";
 "moreInformation.keysharing.coronatest.thankyou.content" = "De GGD vertelt je wat je verder kunt doen om te voorkomen dat je anderen besmet. Beterschap en sterkte met je herstel. ";
 "moreInformation.keysharing.coronatest.thankyou.confirmation" = "De melding wordt alleen verstuurd als je jouw GGD-sleutel hebt doorgegeven aan de GGD of via coronatest.nl";
 "moreInformation.keysharing.coronatest.faq.title" = "Kan ik anderen een melding sturen als ik corona heb?";
-"moreInformation.keysharing.coronatest.faq.content" = "Je kunt alleen een melding naar anderen sturen als je getest bent door de GGD en corona blijkt te hebben. De melding verstuur je met de GGD als die je belt of zelf via coronatest.nl.<br><br>Als je een melding wilt versturen, wordt er naar je GGD-sleutel gevraagd. Jouw GGD-sleutel vind je in de app. Een GGD-sleutel zorgt ervoor dat alleen mensen die echt besmet zijn meldingen kunnen versturen.<br><br>Nadat je GGD-sleutel is gecontroleerd, worden de codes gedeeld die jouw telefooon de afgelopen 14 dagen naar andere telefoons heeft verzonden.<br><br>Zo kunnen mensen, bij wie je in de buurt bent geweest toen je besmettelijk was, een melding krijgen. Alleen als deze mensen ook de app gebruiken.";
+"moreInformation.keysharing.coronatest.faq.content" = "Je kunt alleen een melding naar anderen sturen als je getest bent door de GGD en corona blijkt te hebben. De melding verstuur je met de GGD als die je belt of zelf via coronatest.nl.<br><br>Als je een melding wilt versturen, wordt er naar je GGD-sleutel gevraagd. Deze vind je in de app. Een GGD-sleutel zorgt ervoor dat alleen mensen die echt besmet zijn meldingen kunnen versturen.<br><br>Nadat je GGD-sleutel is gecontroleerd, worden de codes gedeeld die jouw telefooon de afgelopen 14 dagen naar andere telefoons heeft verzonden.<br><br>Zo kunnen mensen, bij wie je in de buurt bent geweest toen je besmettelijk was, een melding krijgen. Alleen als deze mensen ook de app gebruiken.";
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Melding gekregen";
