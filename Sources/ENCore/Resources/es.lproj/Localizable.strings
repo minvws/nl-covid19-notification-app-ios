@@ -247,7 +247,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.faq.reason.title" = "¿Por qué es importante esta app?";
 "help.faq.reason.description" = "La app te puede avisar rápidamente después de haber estado cerca de alguien que tiene coronavirus, incluso antes de que muestres síntomas. De hecho, puedes tener coronavirus y ser contagioso sin saberlo.<br><br>Si recibes un aviso de la app, consulta en la app lo que tienes que hacer y si tienes que hacerte un test. Así evitarás contagiar sin querer a la gente de tu entorno.<br><br>¿Te has hecho un test y tienes coronavirus? Entonces podrás avisar con ayuda del GGD a la gente (incluidos desconocidos) que haya tenido un contacto prolongado contigo en lugares como el cine, un restaurante o sala de espera, siempre y cuando también utilice la app.<br<br>>Gracias a CoronaMelder, podemos reaccionar más rápido y evitar nuevos contagios. Solo juntos podemos contener el coronavirus.";
 "help.faq.upload_keys.title" = "¿Puedo enviar una notificación a otras personas si tengo coronavirus?";
-"help.faq.upload_keys.description" = "Solo puedes enviar notificaciones a otras personas si te has hecho un test y resulta que tienes coronavirus. En ese caso, te llamará el GGD (servicio de salud municipal) con los resultados.<br><br>Durante la llamada, el asistente del GGD confirmará tu clave GGD que encontrarás en la app. Así siempre se está seguro de que solo las personas realmente contagiadas pueden enviar sus notificaciones.<br><br>Una vez confirmada tu clave GGD, podrás compartir los códigos que tu teléfono ha enviado a otros teléfonos en los últimos 14 días.<br><br>Así las personas que estuvieron cerca de ti mientras eras contagioso recibirán una notificación anónima, siempre y cuando también utilicen la app. ";
+"help.faq.upload_keys.description" = "Solo puedes enviar notificaciones a otras personas si te has hecho un test y resulta que tienes coronavirus. En ese caso, te llamará el GGD (servicio de salud municipal) con los resultados.<br><br>Durante la llamada, el asistente del GGD confirmará tu clave GGD que encontrarás en la app. Así siempre se está seguro de que solo las personas realmente contagiadas pueden enviar sus notificaciones.<br><br>Una vez confirmada tu clave GGD, podrás compartir los códigos que tu teléfono ha enviado a otros teléfonos en los últimos 14 días.<br><br>Así las personas que estuvieron cerca de ti mientras eras contagioso/a recibirán una notificación anónima, siempre y cuando también utilicen la app.";
 "help.faq.deletion.title" = "¿Cómo puedo eliminar mis datos?";
 "help.faq.privacy_policy.title" = "Declaración de privacidad";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -255,7 +255,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accesibilidad";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Recibirás una notificación cuando hayas corrido riesgo de contagio. Esto ocurre si has estado al menos 15 minutos en total cerca de una o más personas que más tarde resultaron tener coronavirus, siempre y cuando utilicen también la app.<br><br>Recibirás una notificación, o no, dependiendo de la fuerza de la señal de Bluetooth y de la duración del contacto con la otra persona.<br><br>¿Te ha pasado alguien en bicicleta? Entonces no recibirás ninguna notificación. Estuvisteis cerca el uno del otro, así que la señal de Bluetooth fue fuerte, pero el contacto fue tan corto que la posibilidad de contagio es muy pequeña.<br><br>¿Has estado sentado cerca de alguien en el tren o en la oficina? Entonces puede que recibas una notificación más tarde. La señal de Bluetooth fue lo suficientemente fuerte y el contacto fue prolongado.";
+"help.faq.notification.description" = "Recibirás una notificación cuando hayas corrido riesgo de contagio. Esto ocurre si has estado al menos 15 minutos en un solo día cerca de alguien que más tarde resultó tener coronavirus. Puede ser solo una persona o varias, siempre y cuando utilicen también la app.<br><br>Recibirás una notificación, o no, dependiendo de la fuerza de la señal de Bluetooth y de la duración del contacto con la otra persona.<br><br>¿Te ha pasado alguien en bicicleta? Entonces no recibirás ninguna notificación. Estuvisteis cerca el uno del otro, así que la señal de Bluetooth fue fuerte, pero el contacto fue tan corto que la posibilidad de contagio es muy pequeña.<br><br>¿Has estado sentado cerca de alguien en el tren o en la oficina? Entonces puede que recibas una notificación más tarde. La señal de Bluetooth fue lo suficientemente fuerte y el contacto fue prolongado.";
 "help.faq.bluetooth.title" = "¿Funciona Bluetooth a través de las paredes?";
 "help.faq.bluetooth.description" = "Sí, pero la señal se vuelve muy débil. Bluetooth funciona mejor si tu teléfono se encuentra en el mismo espacio que el teléfono de otra persona.<br><br>Por ejemplo, la probabilidad de que recibas la señal de Bluetooth de tus vecinos es mínima y, por tanto, la probabilidad de que recibas una notificación si tu vecino resulta tener el coronavirus y no habéis estado en el mismo espacio es también mínima.";
 "help.faq.power_usage.title" = "¿Cuánta batería utiliza la app?";
@@ -288,7 +288,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.technical_explanation.github.subtitle" = "Ir a GitHub";
 
 "help.what_does_notification_mean.title" = "¿Qué significa si recibes una notificación?";
-"help.what_does_notification_mean.description1" = "La app te enviará una notificación si has estado al menos 15 minutos en total cerca de una o más personas que más tarde resultaron tener coronavirus.";
+"help.what_does_notification_mean.description1" = "La app te enviará una notificación si has estado al menos 15 minutos en un solo día cerca de alguien que más tarde resultó tener coronavirus. Puede ser solo una persona o también varias.";
 "help.what_does_notification_mean.description2" = "La notificación aparece en el centro de notificaciones, como hacen los mensajes de otras apps. La notificación tiene el símbolo de CoronaMelder.<br><br>¿Has recibido una notificación? Abre CoronaMelder y lee lo que tienes que hacer.";
 "help.what_does_report_look_like.title" = "¿Qué aspecto tiene una notificación?";
 "help.what_does_report_look_like.description" = "Una notificación se parece a lo que ves cuando recibes un mensaje de texto. En la notificación pone qué día estuviste cerca de alguien con coronavirus.<br><br>Pulsa la notificación para abrir CoronaMelder y consultar qué puedes hacer.";
@@ -298,7 +298,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.other_reports.title" = "Otras notificaciones";
 "help.other_reports.description" = "CoronaMelder también envía una notificación si hay un problema técnico, por ejemplo, si tienes el Bluetooth desactivado o si la app lleva más de un día sin conexión a internet. La app te ayudará a resolverlo.<br><br>¿Has recibido una notificación pero la app funciona sin problemas? Entonces ya se ha resuelto el problema.<br><br>A veces recibirás también notificaciones en las que ponen que tu teléfono está llevando a cabo controles de COVID-19. En ese caso, abre CoronaMelder. Importante saber: normalmente no significa ningún problema.";
 "help.other_what_does_report_say.title" = "¿Qué aspecto tiene una notificación?";
-"help.other_what_does_report_say.content1" = "La app te enviará una notificación si has estado al menos 15 minutos en total cerca de una o más personas que más tarde resultaron tener coronavirus.";
+"help.other_what_does_report_say.content1" = "La app te enviará una notificación si has estado al menos 15 minutos en un solo día cerca de alguien que más tarde resultó tener coronavirus. Puede ser solo una persona o también varias.";
 "help.other_what_does_report_say.content2" = "La notificación aparece en el centro de notificaciones, como hacen los mensajes de otras apps. La notificación tiene el símbolo de CoronaMelder.<br><br>¿Has recibido una notificación? Abre CoronaMelder y lee lo que tienes que hacer.";
 
 "help.pause_app.title" = "¿Puedo pausar la app?";
@@ -363,9 +363,9 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.card.manualunpause.description" = "La app todavía no está activada. Debes activarla tú mismo.";
 
 /* MARK: - EN > 14 days */
-"status.en.contact.>14days.title" = "Contact more than 14 days ago";
-"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
-"status.en.contact.>14days.secondary.button.title" = "Delete";
+"status.en.contact.>14days.title" = "Contacto hace más de 14 días";
+"status.en.contact.>14days.description" = "El %@ (%@) estuviste cerca de alguien con coronavirus";
+"status.en.contact.>14days.secondary.button.title" = "Eliminar";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Más información";
@@ -451,6 +451,36 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.thankyou.list.item2" = "Evita el contacto con tus compañeros de piso";
 "moreInformation.thankyou.list.item3" = "¿Se han agravado tus síntomas? Ponte en contacto con el GGD (servicio de salud municipal) o tu médico de cabecera";
 "moreInformation.thankyou.info.title" = "La notificación solo se enviará si el GGD te ha hecho un test y resulta que tienes coronavirus";
+
+/* MARK: - MoreInformation | Infected - Coronatest.nl flow */
+
+"moreInformation.keysharing.coronatest.header.title" = "Elige cómo quieres enviar la notificación";
+"moreInformation.keysharing.coronatest.header.content" = "Solo puedes enviar una notificación si al hacerte un test resulta que estás contagiado/a.";
+"moreInformation.keysharing.coronatest.option1.title" = "Mediante coronatest.nl";
+"moreInformation.keysharing.coronatest.option1.content" = "Solo se puede hacer si recibes los resultados del test por coronatest.nl";
+"moreInformation.keysharing.coronatest.option2.title" = "Si te llama el GGD";
+"moreInformation.keysharing.coronatest.option2.content" = "Solo se puede hacer si estás ahora mismo al teléfono con el GGD";
+"moreInformation.keysharing.coronatest.steps.header.title" = "¿Te han informado por coronatest.nl que tienes coronavirus? Entonces puedes mandar directamente una notificación por CoronaMelder.";
+"moreInformation.keysharing.coronatest.steps.header.button" = "¿Cómo funciona?";
+"moreInformation.keysharing.coronatest.step1.title" = "Comparte los códigos que ha generado CoronaMelder";
+"moreInformation.keysharing.coronatest.step1.button" = "Compartir códigos";
+"moreInformation.keysharing.coronatest.step1.done" = "Códigos compartidos";
+"moreInformation.keysharing.coronatest.step2.title" = "Escribe tu clave GGD o cópiala";
+"moreInformation.keysharing.coronatest.step3.title" = "Introduce tu clave GGD en coronatest.nl. Así avisarás a las personas que estuvieron cerca de ti.";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Ve a coronatest.nl e introduce tu clave GGD. Así avisarás a las personas que estuvieron cerca de ti.";
+"moreInformation.keysharing.coronatest.step3.button" = "Ir a coronatest.nl";
+"moreInformation.keysharing.coronatest.step4.title" = "¿Ya has introducido tu clave GGD?";
+"moreInformation.keysharing.coronatest.step4.content" = "Ya has terminado. Las personas que estuvieron cerca de ti mientras eras contagioso/a recibirán una notificación. Esto ocurrirá en las próximas 8 horas.";
+"moreInformation.keysharing.coronatest.complete" = "Ya he terminado";
+"moreInformation.keysharing.coronatest.complete.notification.title" = "¿Estás seguro/a de que has terminado?";
+"moreInformation.keysharing.coronatest.complete.notification.content" = "¿Has introducido tu clave GGD en coronatest.nl y has recibido una confirmación? Entonces ya has terminado.";
+"moreInformation.keysharing.coronatest.complete.notification.ok" = "Sí, terminar";
+"moreInformation.keysharing.coronatest.complete.notification.cancel" = "Cancelar";
+"moreInformation.keysharing.coronatest.thankyou.title" = "Gracias por enviar la notificación";
+"moreInformation.keysharing.coronatest.thankyou.content" = "El GGD (servicio municipal de salud) te indicará qué tienes que hacer para evitar contagiar a otros. Mucho ánimo y que te recuperes pronto.";
+"moreInformation.keysharing.coronatest.thankyou.confirmation" = "Tu notificación solo se enviará si mandas tu clave GGD al GGD o mediante coronatest.nl.";
+"moreInformation.keysharing.coronatest.faq.title" = "¿Puedo enviar una notificación a otras personas si tengo coronavirus?";
+"moreInformation.keysharing.coronatest.faq.content" = "Solo puedes enviar notificaciones a otras personas si te has hecho un test con el GGD y resulta que tienes coronavirus. Puedes mandar la notificación llamando al GGD o tú mismo/a por coronatest.nl.<br><br>Si quieres enviar una notificación, necesitarás aportar tu clave GGD que encontrarás en la app. La clave GGD asegura que solo las personas que están realmente contagiadas puedan enviar una notificación.<br><br>Una vez confirmada tu clave GGD, podrás compartir los códigos que tu teléfono ha enviado a otros teléfonos en los últimos 14 días.<br><br>Así las personas que estuvieron cerca de ti mientras eras contagioso/a recibirán una notificación, siempre y cuando también utilicen la app.";
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Has recibido una notificación";
