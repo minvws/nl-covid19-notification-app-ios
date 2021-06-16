@@ -680,6 +680,110 @@ final class NetworkManagerTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
 
+    // MARK: - postKeys
+
+    func test_postKeys_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
+
+        let completionExpectation = expectation(description: "completion")
+        let postKeysRequest = PostKeysRequest(keys: [TemporaryKey(keyData: "",
+                                                                  rollingStartNumber: 1,
+                                                                  rollingPeriod: 1)],
+        bucketId: Data(),
+        padding: "000")
+
+        sut.postKeys(request: postKeysRequest, signature: "signature") { error in
+            guard error != nil else {
+                XCTFail("Expected error but got success response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_postKeys_requestSuccessShouldReturnEmpty() throws {
+
+        let postKeysRequest = PostKeysRequest(keys: [TemporaryKey(keyData: "",
+                                                                  rollingStartNumber: 1,
+                                                                  rollingPeriod: 1)],
+        bucketId: Data(),
+        padding: "000")
+
+        let mockData = try JSONEncoder().encode(postKeysRequest)
+
+        mockUrlSession(mockData: mockData)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.postKeys(request: postKeysRequest, signature: "signature") { error in
+            guard error == nil else {
+                XCTFail("Expected success but got error response instead")
+                return
+            }
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    // MARK: - postStopKeys
+
+    func test_postStopKeys_requestFailedShouldReturnError() {
+        mockUrlSession(mockData: nil)
+
+        let completionExpectation = expectation(description: "completion")
+        let postKeysRequest = PostKeysRequest(keys: [TemporaryKey(keyData: "",
+                                                                  rollingStartNumber: 1,
+                                                                  rollingPeriod: 1)],
+        bucketId: Data(),
+        padding: "000")
+
+        sut.postStopKeys(request: postKeysRequest, signature: "signature") { error in
+            guard error != nil else {
+                XCTFail("Expected error but got success response instead")
+                return
+            }
+
+            XCTAssertEqual(error, .invalidResponse)
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
+    func test_postStopKeys_requestSuccessShouldReturnEmpty() throws {
+
+        let postKeysRequest = PostKeysRequest(keys: [TemporaryKey(keyData: "",
+                                                                  rollingStartNumber: 1,
+                                                                  rollingPeriod: 1)],
+        bucketId: Data(),
+        padding: "000")
+
+        let mockData = try JSONEncoder().encode(postKeysRequest)
+
+        mockUrlSession(mockData: mockData)
+
+        let completionExpectation = expectation(description: "completion")
+
+        sut.postStopKeys(request: postKeysRequest, signature: "signature") { error in
+            guard error == nil else {
+                XCTFail("Expected success but got error response instead")
+                return
+            }
+
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+    }
+
     // MARK: - Private Helper Functions
 
     private func mockUrlSession(mockData: Data?) {
