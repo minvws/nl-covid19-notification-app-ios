@@ -249,7 +249,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "help.faq.reason.title" = "Why is this app important?";
 "help.faq.reason.description" = "The app can quickly warn you after you've been near someone who has coronavirus. Even before you show symptoms. Because it's possible to have coronavirus and be contagious without having symptoms. <br><br>If you get a warning through the app, you'll get instructions on what to do next. And if you should get tested. So you prevent unknowingly infecting people in your environment.<br><br>Did you get tested, and do you have coronavirus? Together with the GGD, you can warn people who were near you for an extended amount of time. Including people you don't know. In a restaurant, cinema or waiting room, and if those people also used the app.<br><br>Thanks to CoronaMelder we can act quicker and prevent new infections. Only together can we get coronavirus under control.";
 "help.faq.upload_keys.title" = "Can I send others a notification if I have coronavirus?";
-"help.faq.upload_keys.description" = "You can only send a notification to others if you were tested and found to have coronavirus. In this case, the GGD calls you with the test results.<br><br>During this phone call, a GGD employee checks your GGD key. You can find this key in the app. This way, we make sure only people who are truly infected can send notifications to others.<br><br>After your GGD key is checked, you can share the codes your phone has sent to other phones in the last 14 days.<br><br>By doing so, the people who were near you while you were contagious are notified. But only if these people also use the app.";
+"help.faq.upload_keys.description" = "You can only send a notification to others if you were tested and found to have coronavirus. In this case, you'll get a call from the GGD with the test results. <br><br>During this phone call, a GGD employee checks your GGD key. You can find this key in the app. This way, we make sure only people who are truly infected can send notifications to others.<br><br>After your GGD key is checked, you can share the codes your phone has sent to other phones in the last 14 days.<br><br>By doing so, the people who were near you while you were contagious are notified. But only if these people also use the app.";
 "help.faq.deletion.title" = "How do I delete my data?";
 "help.faq.privacy_policy.title" = "Privacy statement";
 "help.faq.privacy_policy.link" = "https://coronamelder.nl/%@/privacy-in-app";
@@ -257,7 +257,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Accessibility";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent at least 15 minutes near one or more people who were later found to have coronavirus. But only if they also use the app, of course.<br><br>Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter.<br><br>Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But only for a short time. So your risk of infection is very low.<br><br>Were you near someone in the train or office? Then you might get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
+"help.faq.notification.description" = "You get a notification after you've been exposed to a higher risk of infection. This happens if you've spent at least 15 minutes near someone who has coronavirus. This could be one or more people. But only if they also use the app.<br><br>Whether or not you get a notification depends on the strength of the Bluetooth signal and the duration of your encounter.<br><br>Did someone cycle past you on the street? Then you won't get a notification later. Yes, the Bluetooth signal was strong because you were near each other. But only for a short time. So your risk of infection is very low.<br><br>Were you near someone in the train or office? Then you might get a notification later. The Bluetooth signal was strong and you were near each other for a longer period of time.";
 "help.faq.bluetooth.title" = "Can the Bluetooth signal pass through walls?";
 "help.faq.bluetooth.description" = "Yes, but the signal would be very weak. Bluetooth works best when your phone is in the same room as another person's phone.<br><br>So the chance of you getting your neighbours' Bluetooth signal is very low.<br><br>That also means you probably won't get a notification if your neighbour has coronavirus and you haven't been in the same room.";
 "help.faq.power_usage.title" = "How much power does the app use?";
@@ -290,7 +290,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "help.technical_explanation.github.subtitle" = "Go to GitHub";
 
 "help.what_does_notification_mean.title" = "What does it mean when you get a notification?";
-"help.what_does_notification_mean.description1" = "The app sends you a notification if you've spent at least 15 minutes near one or more people who were later found to have coronavirus.";
+"help.what_does_notification_mean.description1" = "The app sends you a notification if you've spent at least 15 minutes near someone who has coronavirus. This could be one or more people.";
 "help.what_does_notification_mean.description2" = "The notification looks like what you see when you receive a text message. Just like messages from other apps. The notification has the CoronaMelder icon.<br><br>Did you receive a notification? Open CoronaMelder. You'll find instructions on what to do in the app.";
 "help.what_does_report_look_like.title" = "What does a notification look like?";
 "help.what_does_report_look_like.description" = "The notification looks like what you see when you receive a text message. The notification tells you which day you were near someone who has coronavirus.<br><br>Click on the notification to open CoronaMelder. There you'll read what you can do next.";
@@ -300,7 +300,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "help.other_reports.title" = "Other notifications";
 "help.other_reports.description" = "The app can also send you a notification if there's a technical problem. If your Bluetooth is turned off, for example. Or if your phone hasn't been connected to the internet for longer than a day. The app helps you resolve these problems.<br><br>Did you get such a notification even though the app is working correctly? This means the problem was fixed in the meantime.<br><br>Sometimes you'll get notifications that say your phone performed COVID-19 checks. If that happens, open the CoronaMelder app. Good to know: there's usually no cause for concern.";
 "help.other_what_does_report_say.title" = "How do I recognize a notification?";
-"help.other_what_does_report_say.content1" = "The app sends you a notification if you've spent at least 15 minutes near one or more people who were later found to have coronavirus.";
+"help.other_what_does_report_say.content1" = "The app sends you a notification if you've spent at least 15 minutes near someone who has coronavirus. This could be one or more people.";
 "help.other_what_does_report_say.content2" = "The notification looks like what you see when you receive a text message. Just like messages from other apps. The notification has the CoronaMelder icon.<br><br>Did you receive a notification? Open CoronaMelder. You'll find instructions on what to do in the app.";
 
 "help.pause_app.title" = "Can I pause the app?";
@@ -366,8 +366,8 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "status.card.manualunpause.description" = "The app is not active yet. You need to turn it on yourself.";
 
 /* MARK: - EN > 14 days */
-"status.en.contact.>14days.title" = "Contact more than 14 days ago";
-"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
+"status.en.contact.>14days.title" = "Contact over 14 days ago";
+"status.en.contact.>14days.description" = "On %@ (%@) you've been near someone who has coronavirus";
 "status.en.contact.>14days.secondary.button.title" = "Delete";
 
 /* The title for the table of items in more information */
@@ -436,7 +436,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "moreInformation.infected.error" = "The app couldn't retrieve a GGD key. Please check your internet connection.";
 "moreInformation.infected.error.upload" = "Something went wrong while sending the notification";
 
-"moreInformation.infected.header" = "Were you tested and found to have coronavirus? A GGD employee calls you. This employee helps you protect the people that were near you. You need your GGD key for this call.";
+"moreInformation.infected.header" = "Were you tested and found to have coronavirus? A GGD employee will call you. This employee helps you protect the people that were near you. You need your GGD key for this call.";
 "moreInformation.infected.how_does_it_work" = "How does this work?";
 "moreInformation.infected.step1" = "Give this GGD key to the GGD employee.";
 "moreInformation.infected.step2" = "Wait for the GGD employee for the next step";
@@ -454,6 +454,36 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "moreInformation.thankyou.list.item2" = "Avoid contact with your housemates";
 "moreInformation.thankyou.list.item3" = "Are your symptoms getting worse? Immediately contact the GGD or your doctor";
 "moreInformation.thankyou.info.title" = "The notification will only be sent if you've been tested by the GGD and have coronavirus";
+
+/* MARK: - MoreInformation | Infected - Coronatest.nl flow */
+
+"moreInformation.keysharing.coronatest.header.title" = "Choose how you want to send a notification";
+"moreInformation.keysharing.coronatest.header.content" = "You can only send a notification if a corona test shows you've been infected.";
+"moreInformation.keysharing.coronatest.option1.title" = "Via coronatest.nl";
+"moreInformation.keysharing.coronatest.option1.content" = "This is only possible if you receive the test result via coronatest.nl";
+"moreInformation.keysharing.coronatest.option2.title" = "If the GGD calls you";
+"moreInformation.keysharing.coronatest.option2.content" = "This is only possible if you're on the phone with the GGD right now";
+"moreInformation.keysharing.coronatest.steps.header.title" = "Do you discover through coronatest.nl that you have corona? Then you can use CoronaMelder to send a notification immediately.";
+"moreInformation.keysharing.coronatest.steps.header.button" = "How does this work?";
+"moreInformation.keysharing.coronatest.step1.title" = "Share the codes created by CoronaMelder";
+"moreInformation.keysharing.coronatest.step1.button" = "Share codes";
+"moreInformation.keysharing.coronatest.step1.done" = "Codes shared";
+"moreInformation.keysharing.coronatest.step2.title" = "Write down or copy your GGD key";
+"moreInformation.keysharing.coronatest.step3.title" = "Enter your GGD key on coronatest.nl. This way you warn others you've been near to";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Go (back) to coronatest.nl and enter your GGD key. This way you warn others you've been near to";
+"moreInformation.keysharing.coronatest.step3.button" = "To coronatest.nl";
+"moreInformation.keysharing.coronatest.step4.title" = "Entered your GGD key?";
+"moreInformation.keysharing.coronatest.step4.content" = "You're all done. People you've been near to, while you were contagious, will receive a notification. This happens within 8 hours.";
+"moreInformation.keysharing.coronatest.complete" = "I am done";
+"moreInformation.keysharing.coronatest.complete.notification.title" = "Are you sure you're done?";
+"moreInformation.keysharing.coronatest.complete.notification.content" = "Have you entered the GGD key on coronatest.nl and received a confirmation? If so, you can finish.";
+"moreInformation.keysharing.coronatest.complete.notification.ok" = "Yes, finish";
+"moreInformation.keysharing.coronatest.complete.notification.cancel" = "Cancel";
+"moreInformation.keysharing.coronatest.thankyou.title" = "Thanks for sending the notification";
+"moreInformation.keysharing.coronatest.thankyou.content" = "The GGD will tell you what you can do to prevent infecting others. Take care, and get well soon.";
+"moreInformation.keysharing.coronatest.thankyou.confirmation" = "The notification is only sent if you've submitted your GGD key to the GGD or entered it on coronatest.nl.";
+"moreInformation.keysharing.coronatest.faq.title" = "Can I send others a notification if I have coronavirus?";
+"moreInformation.keysharing.coronatest.faq.content" = "You can only send a notification to others if you were tested by the GGD and found to have coronavirus. You'll send the notification together with the GGD when they call you, or you can do it yourself via coronatest.nl.<br><br>If you want to send a notification, you'll be asked for your GGD key. You can find it in the app. A GGD key ensures only people who are truly infected can send notifications.<br><br>After your GGD key is checked, the codes your phone has sent to other phones in the last 14 days will be shared.<br><br>By doing so, the people who were near you while you were contagious are notified. But only if these people also use the app.";
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Got notification";
