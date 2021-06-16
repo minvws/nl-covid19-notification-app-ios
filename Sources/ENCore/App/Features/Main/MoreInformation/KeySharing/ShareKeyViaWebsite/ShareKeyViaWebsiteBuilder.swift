@@ -91,10 +91,6 @@ private final class ShareKeyViaWebsiteDependencyProvider: DependencyProvider<Sha
     var alertControllerBuilder: AlertControllerBuildable {
         AlertControllerBuilder()
     }
-    
-    var applicationLifecycleStream: ApplicationLifecycleStreaming {
-        ApplicationLifecycleStream()
-    }
 }
 
 final class ShareKeyViaWebsiteBuilder: Builder<ShareKeyViaWebsiteDependency>, ShareKeyViaWebsiteBuildable {
@@ -106,8 +102,7 @@ final class ShareKeyViaWebsiteBuilder: Builder<ShareKeyViaWebsiteDependency>, Sh
                                                             exposureController: dependencyProvider.dependency.exposureController,
                                                             exposureStateStream: dependencyProvider.dependency.exposureStateStream,
                                                             interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream,
-                                                            applicationController: dependencyProvider.applicationController,
-                                                            applicationLifecycleStream: dependencyProvider.applicationLifecycleStream)
+                                                            applicationController: dependencyProvider.applicationController)
         
         return ShareKeyViaWebsiteRouter(listener: listener,
                                       viewController: viewController,

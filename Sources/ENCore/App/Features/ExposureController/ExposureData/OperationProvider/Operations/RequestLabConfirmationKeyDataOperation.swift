@@ -7,7 +7,6 @@
 
 import Foundation
 import RxSwift
-import ENFoundation
 
 struct LabConfirmationKey: Codable, Equatable {
     let identifier: String
@@ -17,7 +16,7 @@ struct LabConfirmationKey: Codable, Equatable {
 }
 
 extension LabConfirmationKey {
-    var isValid: Bool { validUntil >= currentDate() }
+    var isValid: Bool { validUntil >= Date() }
 }
 
 protocol RequestLabConfirmationKeyDataOperationProtocol {

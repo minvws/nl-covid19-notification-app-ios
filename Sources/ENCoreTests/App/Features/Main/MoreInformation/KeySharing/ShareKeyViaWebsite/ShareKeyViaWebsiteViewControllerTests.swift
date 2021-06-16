@@ -9,7 +9,6 @@
 import ENFoundation
 import Foundation
 import RxSwift
-import RxRelay
 import SnapshotTesting
 import XCTest
 
@@ -25,10 +24,6 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockPauseController: PauseControllingMock!
     private var mockApplicationController: ApplicationControllingMock!
-    private var mockApplicationLifecycleStream: ApplicationLifecycleStreaming!
-    
-    private var didBecomeActiveRelay: PublishRelay<Void>!
-    private var mockExposureState = BehaviorSubject<ExposureState>(value: .init(notifiedState: .notNotified, activeState: .active))
     
     override func setUp() {
         super.setUp()
@@ -44,18 +39,17 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
         mockExposureDataController = ExposureDataControllingMock()
         mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         mockPauseController = PauseControllingMock()
-        
-        didBecomeActiveRelay = PublishRelay<Void>()
-        mockApplicationLifecycleStream = ApplicationLifecycleStreamingMock(didBecomeActive: didBecomeActiveRelay)
-        
-        mockExposureStateStream.exposureState = mockExposureState
+
+        mockExposureStateStream.exposureState = .just(ExposureState(
+            notifiedState: .notNotified,
+            activeState: .active
+        ))
 
         sut = ShareKeyViaWebsiteViewController(theme: theme,
                                                 exposureController: mockExposureController,
                                                 exposureStateStream: mockExposureStateStream,
                                                 interfaceOrientationStream: mockInterfaceOrientationStream,
-                                                applicationController: mockApplicationController,
-                                                applicationLifecycleStream: mockApplicationLifecycleStream)
+                                                applicationController: mockApplicationController)
         sut.router = mockRouter
     }
 
@@ -81,72 +75,13 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
         XCTAssertEqual(mockExposureController.requestLabConfirmationKeyCallCount, 1)
     }
     
-    func test_didBecomeActive_shouldDismissScreenIfConfirmationKeyIsExpired() {
-        // Arrange
-        let completionExpectation = expectation(description: "completionExpectation")
-        mockRouter.shareKeyViaWebsiteWantsDismissalHandler = { _ in completionExpectation.fulfill() }
-        XCTAssertEqual(mockRouter.shareKeyViaWebsiteWantsDismissalCallCount, 0)
-        
-        // Force an expired confirmation key
-        let keyExpirationDate = currentDate().addingTimeInterval(-1000)
-        let confirmationKey = getFakeLabConfirmationKey(validUntilDate: keyExpirationDate)
-        let confirmationKeyRequestExpectation = expectation(description: "completionExpectation")
-        mockExposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(confirmationKey))
-            confirmationKeyRequestExpectation.fulfill()
-        }
-        
-        // Setup listeners for state changes in viewDidLoad
-        sut.viewDidLoad()
-        
-        // Wait until the confirmation key was requested (and stored in the viewcontroller)
-        wait(for: [confirmationKeyRequestExpectation], timeout: 5)
-        
-        // Act
-        didBecomeActiveRelay.accept(())
-        
-        // Assert
-        waitForExpectations()
-        XCTAssertEqual(mockRouter.shareKeyViaWebsiteWantsDismissalCallCount, 1)
-    }
-    
-    func test_didBecomeActive_shouldNotDismissScreenIfConfirmationKeyIsNotExpired() {
-        // Arrange
-        let completionExpectation = expectation(description: "completionExpectation")
-        completionExpectation.isInverted = true
-        mockRouter.shareKeyViaWebsiteWantsDismissalHandler = { _ in completionExpectation.fulfill() }
-        XCTAssertEqual(mockRouter.shareKeyViaWebsiteWantsDismissalCallCount, 0)
-        
-        // expiration date 5 minutes in the future
-        let keyExpirationDate = currentDate().addingTimeInterval(5 * 60)
-        let confirmationKey = getFakeLabConfirmationKey(validUntilDate: keyExpirationDate)
-        let confirmationKeyRequestExpectation = expectation(description: "completionExpectation")
-        mockExposureController.requestLabConfirmationKeyHandler = { completion in
-            completion(.success(confirmationKey))
-            confirmationKeyRequestExpectation.fulfill()
-        }
-        
-        // Setup listeners for state changes in viewDidLoad
-        sut.viewDidLoad()
-        
-        // Wait until the confirmation key was requested (and stored in the viewcontroller)
-        wait(for: [confirmationKeyRequestExpectation], timeout: 5)
-        
-        // Act
-        didBecomeActiveRelay.accept(())
-        
-        // Assert
-        waitForExpectations()
-        XCTAssertEqual(mockRouter.shareKeyViaWebsiteWantsDismissalCallCount, 0)
-    }
-    
     // MARK: - Private Helpers
     
-    private func getFakeLabConfirmationKey(validUntilDate: Date = currentDate()) -> LabConfirmationKey {
+    private func getFakeLabConfirmationKey() -> LabConfirmationKey {
         LabConfirmationKey(identifier: "key here",
                            bucketIdentifier: Data(),
                            confirmationKey: Data(),
-                           validUntil: validUntilDate)
+                           validUntil: currentDate())
     }
 
 }
