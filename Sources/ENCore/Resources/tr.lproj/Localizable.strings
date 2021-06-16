@@ -255,7 +255,7 @@
 "help.faq.colofon.link" = "https://coronamelder.nl/%@/colofon-in-app";
 "help.faq.accessibility.title" = "Ulaşılabilirlik";
 "help.faq.accessibility.link" = "https://coronamelder.nl/%@/accessibility-in-app";
-"help.faq.notification.description" = "Ekstra bir enfeksiyon riskine maruz kaldıktan sonra bir bildirim alırsınız. Bu en az 15 dakika boyunca Korona olduğu sonradan ortaya çıkan birine veya birden fazla kişiye yakın olduğunuz durumda olur. Ve tabii ki ancak bu kişi de uygulamayı kullanıyorsa.<br><br>Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne ve iletişim sürenize bağlıdır.<br><br>Birisi sokakta bisikletle yanınızdan mı geçti? O zaman sonrasında size bildirim gelmez. Birbirine çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski oluşmadı.<br><br>Trende ya da ofiste birinin yakınında mıydınız? O zaman sonrasında bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
+"help.faq.notification.description" = "Ekstra bir enfeksiyon riskine maruz kaldıktan sonra bir bildirim alırsınız. Bu Korona olduğu sonradan ortaya çıkan birine veya birden fazla kişiye en az 15 dakika boyunca yakın olduğunuz durumda olur. Bu bir kişi olabilir, aynı zamanda birkaç kişi de olabilir. Elbette bu kişinin de sizin gibi uygulamayı kullanması gerekiyor.<br><br>Bildirim alıp almayacağınız Bluetooth sinyalinin gücüne ve iletişim sürenize bağlıdır.<br><br>Birisi sokakta bisikletle yanınızdan mı geçti? O zaman sonrasında size bildirim gelmez. Birbirinize çok yakındınız, Bluetooth sinyali onun için güçlüydü. Ancak temas o kadar kısa sürdü ki, daha fazla enfeksiyon riski oluşmadı.<br><br>Trende ya da ofiste birinin yakınında mıydınız? O zaman sonrasında bir bildirim alabilirsiniz. Bluetooth sinyali yeterince güçlüydü ve uzun süre birbirinize yakındınız.";
 "help.faq.bluetooth.title" = "Bluetooth sinyali duvardan geçer mi?";
 "help.faq.bluetooth.description" = "Evet, ancak bu durumda sinyal çok zayıflar. Bluetooth, en iyi sonucu telefonunuz başka bir kişinin telefonuyla aynı odada bulunduğu takdirde verir.<br><br>Örneğin, uygulamanızın komşularınızdan Bluetooth sinyali alması ihtimali çok düşüktür.<br><br>Bu nedenle, komşunuzda Korona olduğu ortaya çıkarsa ve aynı odada bulunmuyorsanız, bildirim alma şansınız çok azdır.";
 "help.faq.power_usage.title" = "Uygulama ne kadar elektrik kullanıyor?";
@@ -288,7 +288,7 @@
 "help.technical_explanation.github.subtitle" = "GitHub'a gidin";
 
 "help.what_does_notification_mean.title" = "Bildirim almanız ne anlama gelir?";
-"help.what_does_notification_mean.description1" = "Korona olduğu sonradan ortaya çıkan birinin veya birden fazla kişinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
+"help.what_does_notification_mean.description1" = "Korona olduğu sonradan ortaya çıkan birinin veya birden fazla kişinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir. Bu bir kişi olabilir, aynı zamanda birkaç kişi de olabilir.";
 "help.what_does_notification_mean.description2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 "help.what_does_report_look_like.title" = "Bildirim nasıl gözükür?";
 "help.what_does_report_look_like.description" = "Bildirim, kısa mesaj aldığınızda gördüklerinize benzer. Bildirim,Korona virüslü birinin yakınında olduğunuz günü belirtir.<br><br>CoronaMelder'ı açmak için bildirime tıklayın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
@@ -298,7 +298,7 @@
 "help.other_reports.title" = "Diğer bildirimler";
 "help.other_reports.description" = "CoronaMelder, teknik bir sorun olması durumunda da size bir bildirim gönderebilir. Örneğin, Bluetooth'unuz kapalıysa. Veya bir günden fazla bir süredir internet bağlantısı yoksa. Uygulama bunu çözmenize yardımcı olacaktır.<br><br>Böyle bir bildirim mi aldınız ve uygulama hala aktif mi? O zaman sorun bu meyanda çözülmüştür.<br><br>Bazen telefonunuzun COVID-19 kontrolleri yaptığını söyleyen bildirimler alırsınız. O zaman CoronaMelder'ı açın. Bilmekte fayda var: genellikle hiçbir sorun yoktur.";
 "help.other_what_does_report_say.title" = "Bildirimi nasıl tanırım?";
-"help.other_what_does_report_say.content1" = "Korona olduğu sonradan ortaya çıkan birinin veya birden fazla kişinin yakınında en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.";
+"help.other_what_does_report_say.content1" = "Korona olduğu sonradan ortaya çıkan birinin yakınında günde en az 15 dakika boyunca bulunduysanız, uygulama size bir bildirim gönderir.Bu bir kişi olabilir, aynı zamanda birkaç kişi de olabilir.";
 "help.other_what_does_report_say.content2" = "Bildirim, telefonunuzun ana ekranında görünecektir. Tıpkı diğer uygulamalardan gelen mesajlar gibi. Bildirimde CoronaMelder sembolü bulunur.<br><br>Bir bildirim mi aldınız? O zaman CoronaMelder'ı açın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 
 "help.pause_app.title" = "Uygulamayı duraklatabilir miyim?";
@@ -363,9 +363,9 @@
 "status.card.manualunpause.description" = "Uygulama henüz aktif değil. Bunu kendiniz açmanız gerekiyor.";
 
 /* MARK: - EN > 14 days */
-"status.en.contact.>14days.title" = "Contact more than 14 days ago";
-"status.en.contact.>14days.description" = "On %@ (%@) you were near someone with coronavirus";
-"status.en.contact.>14days.secondary.button.title" = "Delete";
+"status.en.contact.>14days.title" = "Temas 14 günden daha önce idi";
+"status.en.contact.>14days.description" = "%@ (%@) tarihinde Korona olan bir kişinin yakınında bulundunuz";
+"status.en.contact.>14days.secondary.button.title" = "Silin";
 
 /* The title for the table of items in more information */
 "moreInformation.headerTitle" = "Daha fazla bilgi";
@@ -451,6 +451,36 @@
 "moreInformation.thankyou.list.item2" = "Ev arkadaşlarınızla temastan kaçının";
 "moreInformation.thankyou.list.item3" = "Şikayetleriniz ağırlaşıyor mu? Derhal GGD veya doktorunuzla iletişime geçin";
 "moreInformation.thankyou.info.title" = "Bildirim ancak GGD sizi test ettiyse ve sizde Korona çıkmışsa gönderilir";
+
+/* MARK: - MoreInformation | Infected - Coronatest.nl flow */
+
+"moreInformation.keysharing.coronatest.header.title" = "Nasıl bildirim göndermek istediğinizi seçin";
+"moreInformation.keysharing.coronatest.header.content" = "Yalnızca bir Korona testi enfekte olduğunuzu gösterirse bir bildirim gönderebilirsiniz.";
+"moreInformation.keysharing.coronatest.option1.title" = "Coronatest.nl aracılığıyla";
+"moreInformation.keysharing.coronatest.option1.content" = "Bu, sadece test sonucunu coronatest.nl aracılığıyla alırsanız mümkündür.";
+"moreInformation.keysharing.coronatest.option2.title" = "GGD sizi aradığında";
+"moreInformation.keysharing.coronatest.option2.content" = "Bu, ancak şimdi GGD ile telefondaysanız mümkündür";
+"moreInformation.keysharing.coronatest.steps.header.title" = "Coronatest.nl aracılığıyla Korona olduğunuzu mu keşfettiniz? O zaman CoronaMelder aracılığıyla hemen bir bildirim gönderebilirsiniz.";
+"moreInformation.keysharing.coronatest.steps.header.button" = "Bu nasıl çalışıyor?";
+"moreInformation.keysharing.coronatest.step1.title" = "CoronaMelder'ın oluşturduğu kodları paylaşın";
+"moreInformation.keysharing.coronatest.step1.button" = "Kodları paylaşın";
+"moreInformation.keysharing.coronatest.step1.done" = "Kodlar paylaşıldı";
+"moreInformation.keysharing.coronatest.step2.title" = "GGD anahtarınızı yazın veya kopyalayın";
+"moreInformation.keysharing.coronatest.step3.title" = "Coronatest.nl adresinde GGD anahtarınızı girin. Yakınınında bulunmuş olduğunuz diğerlerini bu şekilde uyarırsınız";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Coronatest.nl'ye (geri) gidin ve GGD anahtarınızı girin. Böylelikle yakınında bulunmuş olduğunuz diğer kişileri uyarırsınız.";
+"moreInformation.keysharing.coronatest.step3.button" = "Coronatest.nl'ye";
+"moreInformation.keysharing.coronatest.step4.title" = "GGD anahtarı dolduruldu mu?";
+"moreInformation.keysharing.coronatest.step4.content" = "Şimdi tamam. Bulaşıcıyken yakınında bulunduğunuz kişiler bir bildirim alacak. Bu 8 saat içinde gerçekleşir.";
+"moreInformation.keysharing.coronatest.complete" = "Hazırım";
+"moreInformation.keysharing.coronatest.complete.notification.title" = "Hazır olduğunuzdan emin misiniz?";
+"moreInformation.keysharing.coronatest.complete.notification.content" = "Coronatest.nl'de GGD anahtarını doldurdunuz ve bir onay aldınız mı? Cevabınız evet ise, tamamlayabilirsiniz.";
+"moreInformation.keysharing.coronatest.complete.notification.ok" = "Evet, tamamlandı";
+"moreInformation.keysharing.coronatest.complete.notification.cancel" = "İptal";
+"moreInformation.keysharing.coronatest.thankyou.title" = "Bildirimi gönderdiğiniz için teşekkürler";
+"moreInformation.keysharing.coronatest.thankyou.content" = "GGD size başkalarına bulaştırmamak için neler yapabileceğinizi söyleyecektir. Geçmiş olsun ve umarız çabuk iyileşirsiniz. ";
+"moreInformation.keysharing.coronatest.thankyou.confirmation" = "Rapor ancak GGD anahtarınızı GGD'ye veya coronatest.nl aracılığıyla ilettiyseniz gönderilecektir.";
+"moreInformation.keysharing.coronatest.faq.title" = "Bende Korona olduğunda başkalarına bildirim gönderebilir miyim?";
+"moreInformation.keysharing.coronatest.faq.content" = "Sadece GGD tarafından test edildiyseniz ve Korona taşıdığınız tespit edildiyse başkalarına bildirim gönderebilirsiniz. Bildirimi sizi GGD aracılığıyla aradıklarında veya coronatest.nl aracılığıyla kendiniz gönderirsiniz.<br><br>Bildirim göndermek istiyorsanız GGD anahtarınız istenecektir. Bunu uygulamada bulacaksınız. Bir GGD anahtarı, sadece gerçekten virüs bulaşmış kişilerin rapor gönderebilmelerini sağlar.<br><br>GGD anahtarınız kontrol edildikten sonra, telefonunuzun son 14 gün içinde başka telefonlara gönderdiği kodları paylaşabilirsiniz.<br> <br>Bu şekilde, bulaşıcı olduğunuzda yakınında bulunduğunuz kişilere bir bildirim gönderilir. Ancak bu kişiler de uygulamayı kullanıyorsa.";
 
 /* MARK: - MoreInformation | Received Notification */
 "moreInformation.receivedNotification.title" = "Bildirim alındı";
