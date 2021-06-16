@@ -55,17 +55,17 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
 
     // MARK: - Tests
 
-    func test_snapshotStateLoading() {
+    func test_snapshot_stateLoading() {
         sut.state = .loading
         snapshots(matching: sut, waitForMainThread: true)
     }
 
-    func test_snapshotStateUploadKeys() {
+    func test_snapshot_stateUploadKeys() {
         sut.state = .uploadKeys(confirmationKey: getFakeLabConfirmationKey())
         snapshots(matching: sut, waitForMainThread: true)
     }
     
-    func test_snapshotStateKeysUploaded() {
+    func test_snapshot_stateKeysUploaded() {
         sut.state = .keysUploaded(confirmationKey: getFakeLabConfirmationKey())
         snapshots(matching: sut, waitForMainThread: true)
     }

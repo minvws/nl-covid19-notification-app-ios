@@ -101,6 +101,30 @@ class KeySharingRouterTests: TestCase {
         XCTAssertTrue(pushedViewController.1)
     }
     
+    func test_routeToShareKeyViaWebsite_shouldRouteToShareKeyViaWebsite() throws {
+        // Arrange
+        let mockRouter = RoutingMock()
+        mockRouter.viewControllable = ViewControllableMock()
+        mockShareKeyViaWebsiteBuilder.buildHandler = { _ in
+            return mockRouter
+        }
+        
+        XCTAssertEqual(mockShareKeyViaWebsiteBuilder.buildCallCount, 0)
+        XCTAssertEqual(mockViewController.pushCallCount, 0)
+        
+        // Act
+        sut.routeToShareKeyViaWebsite()
+        
+        // Assert
+        XCTAssertEqual(mockShareKeyViaWebsiteBuilder.buildCallCount, 1)
+        XCTAssertTrue(mockShareKeyViaWebsiteBuilder.buildArgValues.first === sut)
+        XCTAssertEqual(mockViewController.pushCallCount, 1)
+        
+        let pushedViewController = try XCTUnwrap(mockViewController.pushArgValues.first)
+        XCTAssertTrue(pushedViewController.0 === mockRouter.viewControllable)
+        XCTAssertTrue(pushedViewController.1)
+    }
+    
     func test_keySharingWantsDismissal_shouldCallListener() {
         // Arrange
         XCTAssertEqual(mockKeySharingListener.keySharingWantsDismissalCallCount, 0)
@@ -119,6 +143,18 @@ class KeySharingRouterTests: TestCase {
         
         // Act
         sut.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)
+        
+        // Assert
+        XCTAssertEqual(mockKeySharingListener.keySharingWantsDismissalCallCount, 1)
+        XCTAssertTrue(mockKeySharingListener.keySharingWantsDismissalArgValues.first!)
+    }
+    
+    func test_shareKeyViaWebsiteWantsDismissal_shouldCallListener() {
+        // Arrange
+        XCTAssertEqual(mockKeySharingListener.keySharingWantsDismissalCallCount, 0)
+        
+        // Act
+        sut.shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: true)
         
         // Assert
         XCTAssertEqual(mockKeySharingListener.keySharingWantsDismissalCallCount, 1)
