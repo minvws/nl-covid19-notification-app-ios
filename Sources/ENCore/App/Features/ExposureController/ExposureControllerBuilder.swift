@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import UserNotifications
+import ENFoundation
 
 /// @mockable(history: pause = true)
 protocol ExposureControlling: AnyObject {
@@ -127,6 +128,10 @@ protocol ExposureControlling: AnyObject {
 protocol ExposureConfirmationKey {
     var key: String { get }
     var expiration: Date { get }
+}
+
+extension ExposureConfirmationKey {
+    var isValid: Bool { expiration >= currentDate() }
 }
 
 struct AppUpdateInformation {

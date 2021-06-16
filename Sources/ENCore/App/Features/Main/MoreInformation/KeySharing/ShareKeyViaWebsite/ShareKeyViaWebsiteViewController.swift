@@ -45,6 +45,10 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
     private let applicationController: ApplicationControlling
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private var cardViewController: ViewControllable?
+    private let applicationLifecycleStream: ApplicationLifecycleStreaming
+    
+    private var exposureConfirmationKey: ExposureConfirmationKey?
+    private var didSubscribeToStreams = false
     
     private lazy var internalView: ShareKeyViaWebsiteView = {
         let view = ShareKeyViaWebsiteView(theme: self.theme, showWebsiteLink: exposureController.getStoredShareKeyURL() != nil)
@@ -61,11 +65,13 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
          interfaceOrientationStream: InterfaceOrientationStreaming,
-         applicationController: ApplicationControlling) {
+         applicationController: ApplicationControlling,
+         applicationLifecycleStream: ApplicationLifecycleStreaming) {
         self.exposureController = exposureController
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
         self.applicationController = applicationController
+        self.applicationLifecycleStream = applicationLifecycleStream
         
         super.init(theme: theme)
     }
@@ -102,6 +108,15 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
             self?.router?.showFAQ()
         }
         
+        subscribeToStreams()
+        
+        updateState()
+    }
+    
+    private func subscribeToStreams() {
+        
+        guard !didSubscribeToStreams else { return }
+        
         exposureStateStream
             .exposureState
             .observe(on: MainScheduler.instance)
@@ -118,11 +133,30 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
             }.disposed(by: disposeBag)
         
         updateState()
+        
+        applicationLifecycleStream
+            .didBecomeActive
+            .subscribe(onNext: { [weak self] _ in
+                self?.checkKeyExpiration()
+            })
+            .disposed(by: disposeBag)
+        
+        didSubscribeToStreams = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setThemeNavigationBar(withTitle: .moreInformationInfectedTitle, topItem: navigationItem)
+    }
+    
+    private func checkKeyExpiration() {
+        guard let exposureConfirmationKey = exposureConfirmationKey else {
+            return
+        }
+        
+        if !exposureConfirmationKey.isValid {
+            router?.shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: true)
+        }
     }
     
     // MARK: - UIAdaptivePresentationControllerDelegate
@@ -270,6 +304,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         exposureController.requestLabConfirmationKey { [weak self] result in
             switch result {
             case let .success(key):
+                self?.exposureConfirmationKey = key
                 self?.state = .uploadKeys(confirmationKey: key)
             case .failure:
                 self?.state = .loadingError
