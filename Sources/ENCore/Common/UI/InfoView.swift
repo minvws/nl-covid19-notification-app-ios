@@ -350,6 +350,7 @@ final class InfoSectionStepView: View {
         self.isLastStep = isLastStep
         self.buttonActionHandler = buttonActionHandler
         self.buttonTitle = buttonTitle
+        self.disabledButtonTitle = disabledButtonTitle
         
         titleLabel.text = title
         descriptionLabel.text = description

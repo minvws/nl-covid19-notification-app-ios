@@ -250,7 +250,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
                 self.internalView.controlCode.set(state: .success(key.key))
                 
                 self.internalView.infoView.isActionButtonEnabled = true
-                self.internalView.shareYourCodes.buttonEnabled = true
+                self.internalView.shareYourCodes.buttonEnabled = false
                 self.internalView.goToWebsite.isDisabled = false
                 self.internalView.youAreDone.isDisabled = false
                 
