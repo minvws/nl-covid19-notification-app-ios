@@ -7,7 +7,6 @@
 
 import ENFoundation
 import Foundation
-import Reachability
 import RxSwift
 
 /// @mockable
@@ -24,6 +23,9 @@ protocol MutableNetworkStatusStreaming: NetworkStatusStreaming {
 
 final class NetworkStatusStream: MutableNetworkStatusStreaming, Logging {
 
+    init(reachabilityProvider: ReachabilityProviding) {
+        self.reachabilityProvider = reachabilityProvider
+    }
     // MARK: - PushNotificationStreaming
 
     var networkReachable: Bool {
@@ -39,19 +41,13 @@ final class NetworkStatusStream: MutableNetworkStatusStreaming, Logging {
     // MARK: - MutablePushNotificationStreaming
 
     func startObservingNetworkReachability() {
-        if reachability == nil {
-            do {
-                self.reachability = try Reachability()
-            } catch {
-                logError("Unable to instantiate Reachability")
-            }
+        if self.reachability == nil, let reachability = reachabilityProvider.getReachability() {
+            self.reachability = reachability
         }
-        reachability?.whenReachable = { [weak self] status in
-            self?.subject.onNext(status.connection != .unavailable)
-        }
-        reachability?.whenUnreachable = { [weak self] status in
-            self?.subject.onNext(!(status.connection == .unavailable))
-        }
+        
+        reachability?.setNetworkAvailabilityChangeHandler(handler: { [weak self] (networkAvailable) in
+            self?.subject.onNext(networkAvailable)
+        })
 
         do {
             try reachability?.startNotifier()
@@ -72,5 +68,6 @@ final class NetworkStatusStream: MutableNetworkStatusStreaming, Logging {
     }
 
     private let subject = BehaviorSubject<Bool>(value: false)
-    private var reachability: Reachability?
+    private let reachabilityProvider: ReachabilityProviding
+    private var reachability: ReachabilityProtocol?
 }

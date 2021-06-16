@@ -185,7 +185,9 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     lazy var mutablePushNotificationStream: MutablePushNotificationStreaming = PushNotificationStream()
 
     /// Mutable stream for publishing the NetworkStatus reachability to
-    lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream()
+    lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream(reachabilityProvider: reachabilityProvider)
+    
+    private lazy var reachabilityProvider: ReachabilityProviding = ReachabilityProvider()
 
     var messageManager: MessageManaging {
         return MessageManager(storageController: storageController, exposureDataController: dataController, theme: theme)
