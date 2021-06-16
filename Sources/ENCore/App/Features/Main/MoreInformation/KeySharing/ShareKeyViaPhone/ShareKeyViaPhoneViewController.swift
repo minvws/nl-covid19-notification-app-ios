@@ -298,7 +298,7 @@ private final class ShareKeyViaPhoneView: View {
         let config = InfoViewConfig(actionButtonTitle: .moreInformationInfectedUpload,
                                     headerImage: .infectedHeader,
                                     stickyButtons: true)
-        self.infoView = InfoView(theme: theme, config: config)
+        self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
         super.init(theme: theme)
     }
 

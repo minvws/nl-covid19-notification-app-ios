@@ -501,6 +501,26 @@ extension String {
     static var moreInformationThankYouListItem2: String { return Localization.string(for: "moreInformation.thankyou.list.item2") }
     static var moreInformationThankYouListItem3: String { return Localization.string(for: "moreInformation.thankyou.list.item3") }
     static var moreInformationThankYouInfo: String { return Localization.string(for: "moreInformation.thankyou.info.title") }
+
+    // MARK: - MoreInformation | Key Sharing | Via Website
+    static var moreInformationKeySharingCoronaTestTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.steps.header.title") }
+    static var moreInformationKeySharingCoronaTestHowDoesItWork: String { return Localization.string(for: "moreInformation.keysharing.coronatest.steps.header.button") }
+    static var moreInformationKeySharingCoronaTestStep1Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step1.title") }
+    static var moreInformationKeySharingCoronaTestStep1Button: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step1.button") }
+    static var moreInformationKeySharingCoronaTestStep1Done: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step1.done") }
+    static var moreInformationKeySharingCoronaTestStep2Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step2.title") }
+    static var moreInformationKeySharingCoronaTestStep3Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step3.title") }
+    static var moreInformationKeySharingCoronaTestStep3NoDeeplinkTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step3.nodeeplink.title") }
+    static var moreInformationKeySharingCoronaTestStep3Button: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step3.button") }
+    static var moreInformationKeySharingCoronaTestStep4Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step4.title") }
+    static var moreInformationKeySharingCoronaTestStep4Content: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step4.content") }
+    
+    static var moreInformationKeySharingCoronaTestComplete: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete") }
+    static var moreInformationKeySharingCoronaTestCompleteTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.title") }
+    static var moreInformationKeySharingCoronaTestCompleteContent: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.content") }
+    static var moreInformationKeySharingCoronaTestCompleteOK: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.ok") }
+    static var moreInformationKeySharingCoronaTestCompleteCancel: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.cancel") }
+        
     
     // MARK: - MoreInformation | KeySharing | Thank You
     

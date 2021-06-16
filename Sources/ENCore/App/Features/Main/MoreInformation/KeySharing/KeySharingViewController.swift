@@ -55,9 +55,6 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
         case .shareKeyGGD:
             router?.routeToShareKeyViaGGD(animated: true, withBackButton: true)
         case .shareKeyWebsite:
-            let alert = UIAlertController(title: "Not implemented yet", message: nil, preferredStyle: .alert)
-            alert.addAction(.init(title: "OK", style: .default, handler: nil))
-            present(alert, animated: true, completion: nil)
             router?.routeToShareKeyViaWebsite()
         default:
             return

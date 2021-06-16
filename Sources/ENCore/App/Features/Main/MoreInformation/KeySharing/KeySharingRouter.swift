@@ -14,17 +14,20 @@ protocol KeySharingViewControllable: ViewControllable {
     func dismiss(viewController: ViewControllable)
 }
 
-final class KeySharingRouter: Router<KeySharingViewControllable>, KeySharingRouting, ShareKeyViaPhoneListener {
+final class KeySharingRouter: Router<KeySharingViewControllable>, KeySharingRouting, ShareKeyViaPhoneListener, ShareKeyViaWebsiteListener {
     
     // MARK: - Initialisation
 
     init(listener: KeySharingListener,
          viewController: KeySharingViewControllable,
          shareKeyViaPhoneBuilder: ShareKeyViaPhoneBuildable,
+         shareKeyViaWebsiteBuilder: ShareKeyViaWebsiteBuildable,
          featureFlagController: FeatureFlagControlling) {
         self.listener = listener
         self.shareKeyViaPhoneBuilder = shareKeyViaPhoneBuilder
         self.featureFlagController = featureFlagController
+        self.shareKeyViaWebsiteBuilder = shareKeyViaWebsiteBuilder
+        
         super.init(viewController: viewController)
 
         viewController.router = self
@@ -45,7 +48,9 @@ final class KeySharingRouter: Router<KeySharingViewControllable>, KeySharingRout
     }
     
     func routeToShareKeyViaWebsite() {
-        //TODO: Route to key sharing via website
+        let router = shareKeyViaWebsiteBuilder.build(withListener: self)
+        shareKeyViaWebsiteRouter = router
+        viewController.push(viewController: router.viewControllable, animated: true)
     }
     
     func keySharingWantsDismissal(shouldDismissViewController: Bool) {
@@ -59,10 +64,21 @@ final class KeySharingRouter: Router<KeySharingViewControllable>, KeySharingRout
         listener?.keySharingWantsDismissal(shouldDismissViewController: shouldDismissViewController)
     }
     
+    // MARK: - ShareKeyViewWebsiteListener
+    
+    func shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: Bool) {
+        // ShareKeyViaPhone flow finished or cancelled. Signal back to listener to dismiss all presented viewcontrollers
+        listener?.keySharingWantsDismissal(shouldDismissViewController: shouldDismissViewController)
+    }
+    
+    
+    
     // MARK: - Private
 
     private weak var listener: KeySharingListener?
-    private let shareKeyViaPhoneBuilder: ShareKeyViaPhoneBuildable
     private let featureFlagController: FeatureFlagControlling
+    private let shareKeyViaPhoneBuilder: ShareKeyViaPhoneBuildable
+    private let shareKeyViaWebsiteBuilder: ShareKeyViaWebsiteBuildable
     private var shareKeyViaPhoneRouter: Routing?
+    private var shareKeyViaWebsiteRouter: Routing?
 }

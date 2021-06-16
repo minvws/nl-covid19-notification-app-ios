@@ -186,6 +186,10 @@ final class ExposureController: ExposureControlling, Logging {
     func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]? {
         dataController.getStoredAppConfigFeatureFlags()
     }
+    
+    func getStoredShareKeyURL() -> String? {
+        dataController.getStoredShareKeyURL()
+    }
 
     func refreshStatus() {
         updatePushNotificationState { [weak self] in

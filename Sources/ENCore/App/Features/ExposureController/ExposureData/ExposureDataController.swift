@@ -281,6 +281,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         }
         return storedAppConfig.featureFlags
     }
+    
+    func getStoredShareKeyURL() -> String? {
+        guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
+            return nil
+        }
+        return storedAppConfig.shareKeyURL
+    }
 
     func getDecoyProbability() -> Single<Float> {
         requestApplicationConfiguration()

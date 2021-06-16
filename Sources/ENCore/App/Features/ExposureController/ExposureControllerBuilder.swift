@@ -95,6 +95,8 @@ protocol ExposureControlling: AnyObject {
     
     func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]?
 
+    func getStoredShareKeyURL() -> String?
+    
     // MARK: - Onboarding
 
     /// Whether the user runs the app for the first time

@@ -19,6 +19,8 @@ extension UIImage {
     static var gradient: UIImage? { return Image.named("Gradient") }
     static var chevron: UIImage? { return Image.named("Chevron") }
     static var about: UIImage? { return Image.named("About") }
+    static var star: UIImage? { return Image.named("Star") }
+    static var dash: UIImage? { return Image.named("Dash") }
     static var computer: UIImage? { return Image.named("Computer") }
     static var phone: UIImage? { return Image.named("Phone") }
     static var settings: UIImage? { return Image.named("Settings") }
@@ -29,7 +31,11 @@ extension UIImage {
     static var infected: UIImage? { return Image.named("Infected") }
     static var moreInformationStep1: UIImage? { return Image.named("MoreInformation.Step1") }
     static var moreInformationStep2: UIImage? { return Image.named("MoreInformation.Step2") }
+    static var moreInformationStep2Gray: UIImage? { return Image.named("MoreInformation.Step2-grayscale") }
     static var moreInformationStep3: UIImage? { return Image.named("MoreInformation.Step3") }
+    static var moreInformationStep3Gray: UIImage? { return Image.named("MoreInformation.Step3-grayscale") }
+    static var moreInformationStep4: UIImage? { return Image.named("MoreInformation.Step4") }
+    static var moreInformationStep4Gray: UIImage? { return Image.named("MoreInformation.Step4-grayscale") }
     static var infectedHeader: UIImage? { return Image.named("InfectedHeader") }
     static var thankYouHeader: UIImage? { return Image.named("ThankYouHeader") }
     static var receivedNotificationHeader: UIImage? { return Image.named("ReceivedNotificationHeader") }

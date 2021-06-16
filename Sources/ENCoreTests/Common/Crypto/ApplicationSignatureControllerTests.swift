@@ -186,7 +186,8 @@ class ApplicationSignatureControllerTests: TestCase {
             repeatedUploadDelay: 0,
             decativated: false,
             appointmentPhoneNumber: "",
-            featureFlags: []
+            featureFlags: [],
+            shareKeyURL: "http://www.coronatest.nl"
         )
     }
 }
