@@ -132,8 +132,6 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
                 self?.internalView.infoView.showHeader = !isLandscape
             }.disposed(by: disposeBag)
         
-        updateState()
-        
         applicationLifecycleStream
             .didBecomeActive
             .subscribe(onNext: { [weak self] _ in
