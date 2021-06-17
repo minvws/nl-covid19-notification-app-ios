@@ -280,6 +280,7 @@ final class InfoSectionStepView: View {
     
     private let stepImage: UIImage?
     private let disabledStepImage: UIImage?
+    private let loadingIndicatorTitle: String?
     
     var buttonEnabled: Bool = true {
         didSet {
@@ -323,7 +324,18 @@ final class InfoSectionStepView: View {
         if let actionButton = actionButton {
             stack.addArrangedSubview(actionButton)
         }
+        if let loadingIndicator = loadingIndicator {
+            stack.addArrangedSubview(loadingIndicator)
+        }
         return stack
+    }()
+    
+    private lazy var loadingIndicator: UIView? = {
+        if let loadingIndicatorTitle = loadingIndicatorTitle {
+            return InfoSectionDynamicLoadingView(theme: theme, title: loadingIndicatorTitle)
+        } else {
+            return nil
+        }
     }()
 
     // MARK: - Init
@@ -337,7 +349,8 @@ final class InfoSectionStepView: View {
          buttonTitle: String? = nil,
          disabledButtonTitle: String? = nil,
          buttonActionHandler: (() -> ())? = nil,
-         isDisabled: Bool = false) {
+         isDisabled: Bool = false,
+         loadingIndicatorTitle: String? = nil) {
         
         iconImageView = UIImageView(image: isDisabled ? disabledStepImage : stepImage)
         titleLabel = Label(frame: .zero)
@@ -351,6 +364,7 @@ final class InfoSectionStepView: View {
         self.buttonActionHandler = buttonActionHandler
         self.buttonTitle = buttonTitle
         self.disabledButtonTitle = disabledButtonTitle
+        self.loadingIndicatorTitle = loadingIndicatorTitle
         
         titleLabel.text = title
         descriptionLabel.text = description
@@ -399,11 +413,19 @@ final class InfoSectionStepView: View {
             maker.width.equalTo(4)
         }
         
+        var bottomSpacing: CGFloat = 40
+        if isLastStep {
+            bottomSpacing = 0
+        }
+        if loadingIndicatorTitle != nil {
+            bottomSpacing = 20
+        }
+        
         contentStackView.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
             maker.trailing.equalToSuperview().inset(16)
             maker.leading.equalTo(iconImageView.snp.trailing).offset(16)
-            maker.bottom.equalToSuperview().inset(isLastStep ? 0 : 40)
+            maker.bottom.equalToSuperview().inset(bottomSpacing)
         }
         
         if let button = actionButton {

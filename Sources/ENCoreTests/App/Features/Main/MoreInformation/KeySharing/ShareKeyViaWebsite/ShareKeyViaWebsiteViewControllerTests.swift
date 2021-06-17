@@ -33,7 +33,7 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = true
 
         mockRouter = ShareKeyViaWebsiteRoutingMock()
         mockExposureController = ExposureControllingMock()
@@ -73,6 +73,11 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
     
     func test_snapshot_stateKeysUploaded() {
         sut.state = .keysUploaded(confirmationKey: getFakeLabConfirmationKey())
+        snapshots(matching: sut, waitForMainThread: true)
+    }
+    
+    func test_snapshot_stateError() {
+        sut.state = .loadingError
         snapshots(matching: sut, waitForMainThread: true)
     }
     

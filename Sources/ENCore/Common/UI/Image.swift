@@ -30,6 +30,7 @@ extension UIImage {
     static var coronatestHeader: UIImage? { return Image.named("CoronatestHeader") }
     static var infected: UIImage? { return Image.named("Infected") }
     static var moreInformationStep1: UIImage? { return Image.named("MoreInformation.Step1") }
+    static var moreInformationStep1Gray: UIImage? { return Image.named("MoreInformation.Step1-grayscale") }
     static var moreInformationStep2: UIImage? { return Image.named("MoreInformation.Step2") }
     static var moreInformationStep2Gray: UIImage? { return Image.named("MoreInformation.Step2-grayscale") }
     static var moreInformationStep3: UIImage? { return Image.named("MoreInformation.Step3") }

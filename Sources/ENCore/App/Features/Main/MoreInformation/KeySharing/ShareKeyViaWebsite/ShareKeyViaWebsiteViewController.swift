@@ -21,21 +21,21 @@ protocol ShareKeyViaWebsiteRouting: Routing {
     func hideFAQ(shouldDismissViewController: Bool)
 }
 
-final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsiteViewControllable, UIAdaptivePresentationControllerDelegate, Logging, ShareKeyViaWebsiteViewListener {
+enum ShareKeyViaWebsiteState {
+    /// Busy loading the labconfirmation key
+    case loading
     
-    enum State {
-        /// Busy loading the labconfirmation key from the EN API
-        case loading
-        
-        /// User is given the option to share the keys
-        case uploadKeys(confirmationKey: ExposureConfirmationKey)
-        
-        /// Requesting the labconfirmation key from the EN API failed
-        case loadingError
-        
-        /// the keys were shared, user is given the option to copy the lab confirmation key so he can enter it on the website
-        case keysUploaded(confirmationKey: ExposureConfirmationKey)
-    }
+    /// User is given the option to share the keys
+    case uploadKeys(confirmationKey: ExposureConfirmationKey)
+    
+    /// Requesting the labconfirmation key  failed
+    case loadingError
+    
+    /// The keys were shared, user is given the option to copy the lab confirmation key so he can enter it on the website
+    case keysUploaded(confirmationKey: ExposureConfirmationKey)
+}
+
+final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsiteViewControllable, UIAdaptivePresentationControllerDelegate, Logging, ShareKeyViaWebsiteViewListener {
     
     weak var router: ShareKeyViaWebsiteRouting?
     
@@ -55,9 +55,9 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         return view
     }()
     
-    var state: State = .loading {
+    var state: ShareKeyViaWebsiteState = .loading {
         didSet {
-            updateState()
+            internalView.update(state: state)
         }
     }
     
@@ -110,7 +110,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         
         subscribeToStreams()
         
-        updateState()
+        internalView.update(state: state)
     }
     
     private func subscribeToStreams() {
@@ -179,7 +179,6 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         present(navigationController, animated: true, completion: nil)
     }
     
-    
     func dismiss(viewController: ViewControllable) {
         if let navigationController = viewController.uiviewController.navigationController {
             navigationController.dismiss(animated: true, completion: nil)
@@ -225,6 +224,10 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         applicationController.open(url)
     }
     
+    func didRequestRequestConfirmationKey() {
+        requestLabConfirmationKey()
+    }
+    
     // MARK: - HelpDetailListener
     
     func helpDetailRequestsDismissal(shouldDismissViewController: Bool) {
@@ -266,37 +269,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         router?.shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: true)
     }
-    
-    private func updateState() {
-        DispatchQueue.main.async {
-            switch self.state {
-            case .loading:
-                self.internalView.infoView.isActionButtonEnabled = false
-                self.internalView.controlCode.set(state: .disabled)
-                self.internalView.shareYourCodes.buttonEnabled = false
-            case .uploadKeys:
-                self.internalView.infoView.isActionButtonEnabled = false
-                self.internalView.shareYourCodes.buttonEnabled = true
-                self.internalView.controlCode.set(state: .disabled)
-            case let .keysUploaded(key):
-                self.internalView.controlCode.set(state: .success(key.key))
-                
-                self.internalView.infoView.isActionButtonEnabled = true
-                self.internalView.shareYourCodes.buttonEnabled = false
-                self.internalView.goToWebsite.isDisabled = false
-                self.internalView.youAreDone.isDisabled = false
-                
-            case .loadingError:
-                self.internalView.infoView.isActionButtonEnabled = false
-                
-                // "retry" action should move to the 1st step of this flow
-//                self.internalView.controlCode.set(state: .error(.moreInformationInfectedError) { [weak self] in
-//                    self?.requestLabConfirmationKey()
-//                })
-            }
-        }
-    }
-    
+        
     private func requestLabConfirmationKey() {
         state = .loading
         exposureController.requestLabConfirmationKey { [weak self] result in
@@ -313,6 +286,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
 
 private protocol ShareKeyViaWebsiteViewListener: AnyObject {
     func didRequestShareCodes()
+    func didRequestRequestConfirmationKey()
     func didRequestWebsiteOpen()
 }
 
@@ -349,16 +323,30 @@ private final class ShareKeyViaWebsiteView: View {
         return InfoSectionContentView(theme: theme, content: content)
     }()
     
-    private lazy var stepStackView: UIView = {
+    private lazy var stepStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 2
-        
-        stackView.addArrangedSubview(shareYourCodes)
-        stackView.addArrangedSubview(controlCode)
-        stackView.addArrangedSubview(goToWebsite)
-        stackView.addArrangedSubview(youAreDone)
         return stackView
+    }()
+    
+    fileprivate lazy var shareYourCodesLoading: InfoSectionStepView = {
+        InfoSectionStepView(theme: theme,
+                            title: .moreInformationKeySharingCoronaTestStep1Title,
+                            stepImage: .moreInformationStep1,
+                            loadingIndicatorTitle: .moreInformationInfectedLoading)
+    }()
+    
+    fileprivate lazy var shareYourCodesError: InfoSectionStepView = {
+        InfoSectionStepView(theme: theme,
+                            title: .moreInformationKeySharingCoronaTestStep1Title,
+                            description: .moreInformationInfectedError,
+                            stepImage: .moreInformationStep1,
+                            buttonTitle: .retry,
+                            disabledButtonTitle: .retry,
+                            buttonActionHandler: { [weak self] in
+                                self?.listener?.didRequestRequestConfirmationKey()
+                            })
     }()
     
     fileprivate lazy var shareYourCodes: InfoSectionStepView = {
@@ -372,6 +360,22 @@ private final class ShareKeyViaWebsiteView: View {
                             })
     }()
     
+    fileprivate lazy var shareYourCodesDone: InfoSectionStepView = {
+        let view = InfoSectionStepView(theme: theme,
+                            title: .moreInformationKeySharingCoronaTestStep1Title,
+                            stepImage: .moreInformationStep1,
+                            disabledStepImage: .moreInformationStep1Gray,
+                            buttonTitle: .moreInformationKeySharingCoronaTestStep1Button,
+                            disabledButtonTitle: .moreInformationKeySharingCoronaTestStep1Done,
+                            buttonActionHandler: { [weak self] in
+                                self?.listener?.didRequestShareCodes()
+                            }, isDisabled: true)
+        
+        view.buttonEnabled = false
+        return view
+    }()
+    
+    
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
                                       title: .moreInformationKeySharingCoronaTestStep2Title,
@@ -380,7 +384,7 @@ private final class ShareKeyViaWebsiteView: View {
                                       initialState: .disabled)
     }()
     
-    fileprivate lazy var goToWebsite: InfoSectionStepView = {
+    fileprivate func goToWebsite(disabled: Bool) -> InfoSectionStepView {
         let buttonTitle: String? = showWebsiteLink ? .moreInformationKeySharingCoronaTestStep3Button : nil
         let buttonActionHandler: (() ->())? = showWebsiteLink ? { [weak self] in self?.listener?.didRequestWebsiteOpen()} : nil
         
@@ -390,18 +394,18 @@ private final class ShareKeyViaWebsiteView: View {
                                    disabledStepImage: .moreInformationStep3Gray,
                                    buttonTitle: buttonTitle,
                                    buttonActionHandler: buttonActionHandler,
-                                   isDisabled: true)
-    }()
+                                   isDisabled: disabled)
+    }
     
-    fileprivate lazy var youAreDone: InfoSectionStepView = {
+    fileprivate func youAreDone(disabled: Bool) -> InfoSectionStepView {
         InfoSectionStepView(theme: theme,
                             title: .moreInformationKeySharingCoronaTestStep4Title,
                             description: .moreInformationKeySharingCoronaTestStep4Content,
                             stepImage: .moreInformationStep4,
                             disabledStepImage: .moreInformationStep4Gray,
                             isLastStep: true,
-                            isDisabled: true)
-    }()
+                            isDisabled: disabled)
+    }
     
     private lazy var cardContentView: View = View(theme: theme)
     
@@ -436,6 +440,48 @@ private final class ShareKeyViaWebsiteView: View {
         infoView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.top.bottom.equalToSuperview()
+        }
+    }
+    
+    // MARK: - Public
+    
+    func update(state: ShareKeyViaWebsiteState) {
+        
+        DispatchQueue.main.async { [weak self] in
+            
+            guard let self = self else { return }
+            
+            var websiteButtonSectionDisabled = true
+            var completionSectionDisabled = true
+            var actionButtonEnabled = false
+            
+            self.stepStackView.arrangedSubviews.forEach({ $0.removeFromSuperview()})
+            
+            switch state {
+            
+            case .loading:
+                self.stepStackView.addArrangedSubview(self.shareYourCodesLoading)
+                self.controlCode.set(state: .disabled)
+            case .loadingError:
+                self.stepStackView.addArrangedSubview(self.shareYourCodesError)
+                self.controlCode.set(state: .disabled)
+            case .uploadKeys(_):
+                self.stepStackView.addArrangedSubview(self.shareYourCodes)
+                self.controlCode.set(state: .disabled)
+            case .keysUploaded(let key):
+                self.stepStackView.addArrangedSubview(self.shareYourCodesDone)
+                self.controlCode.set(state: .success(key.key))
+                
+                websiteButtonSectionDisabled = false
+                completionSectionDisabled = false
+                actionButtonEnabled = true
+            }
+            
+            self.stepStackView.addArrangedSubview(self.controlCode)
+            self.stepStackView.addArrangedSubview(self.goToWebsite(disabled: websiteButtonSectionDisabled))
+            self.stepStackView.addArrangedSubview(self.youAreDone(disabled: completionSectionDisabled))
+            
+            self.infoView.isActionButtonEnabled = actionButtonEnabled
         }
     }
     
