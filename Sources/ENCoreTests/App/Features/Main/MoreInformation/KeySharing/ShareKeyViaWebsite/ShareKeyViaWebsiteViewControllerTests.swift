@@ -33,7 +33,7 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = true
+        recordSnapshots = false
 
         mockRouter = ShareKeyViaWebsiteRoutingMock()
         mockExposureController = ExposureControllingMock()
