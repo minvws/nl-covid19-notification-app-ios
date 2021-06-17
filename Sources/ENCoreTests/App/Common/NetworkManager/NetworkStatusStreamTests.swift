@@ -14,7 +14,7 @@ class NetworkStatusStreamTests: TestCase {
     private var sut: NetworkStatusStream!
     private var mockReachabilityProvider: ReachabilityProvidingMock!
     
-    private let disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     
     override func setUpWithError() throws {
         mockReachabilityProvider = ReachabilityProvidingMock()
