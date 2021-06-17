@@ -9,13 +9,11 @@ import XCTest
 import RxSwift
 @testable import ENCore
 
-class NetworkStatusStreamTests: TestCase {
+final class NetworkStatusStreamTests: TestCase {
 
     private var sut: NetworkStatusStream!
     private var mockReachabilityProvider: ReachabilityProvidingMock!
-    
-    private var disposeBag = DisposeBag()
-    
+        
     override func setUpWithError() throws {
         mockReachabilityProvider = ReachabilityProvidingMock()
         
@@ -60,6 +58,7 @@ class NetworkStatusStreamTests: TestCase {
     
     func test_networkAvailabilityChange_shouldOnlyTriggerDistinctStreamChanges() {
         // Arrange
+        let disposeBag = DisposeBag()
         var setHandler: ((Bool) -> Void)?
         _ = startReachability { (handler) in
             setHandler = handler
