@@ -148,7 +148,7 @@ private final class PauseConfirmationView: View {
         scrollableStackView.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.top.equalToSuperview()
-            maker.bottom.equalTo(checkmarkButton.snp.top).offset(16)
+            maker.bottom.equalTo(checkmarkButton.snp.top).offset(-16)
         }
 
         checkmarkButton.snp.makeConstraints { maker in
