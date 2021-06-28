@@ -65,7 +65,7 @@ final class ExposureStateStream: MutableExposureStateStreaming {
             .compactMap { $0 }
     }
 
-    var currentExposureState: ExposureState?
+    var currentExposureState: ExposureState? = .init(notifiedState: .notNotified, activeState: .notAuthorized)
 
     // MARK: - MutableExposureStateStreaming
 
@@ -77,5 +77,5 @@ final class ExposureStateStream: MutableExposureStateStreaming {
 
     // MARK: - Private
 
-    private var subject = BehaviorSubject<ExposureState?>(value: nil)
+    private var subject = BehaviorSubject<ExposureState?>(value: .init(notifiedState: .notNotified, activeState: .notAuthorized))
 }

@@ -100,63 +100,37 @@ class OnboardingConsentManagerTests: TestCase {
     }
 
     func test_isNotificationAuthorizationAsked_stateActive() {
-        let completionExpectation = expectation(description: "completion")
+        mockExposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
 
-        mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .active))
-
-        let completion: (Bool) -> () = { wasAsked in
-            XCTAssertTrue(wasAsked)
-            completionExpectation.fulfill()
-        }
-
-        sut.isNotificationAuthorizationAsked(completion)
-
-        waitForExpectations(timeout: 2.0, handler: nil)
+        let result = sut.isNotificationAuthorizationAsked()
+        
+        XCTAssertTrue(result)
     }
 
     func test_isNotificationAuthorizationAsked_stateAuthorizationDenied() {
-        let completionExpectation = expectation(description: "completion")
+        
+        mockExposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .authorizationDenied)
 
-        mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .authorizationDenied))
-
-        let completion: (Bool) -> () = { wasAsked in
-            XCTAssertTrue(wasAsked)
-            completionExpectation.fulfill()
-        }
-
-        sut.isNotificationAuthorizationAsked(completion)
-
-        waitForExpectations(timeout: 2.0, handler: nil)
+        let result = sut.isNotificationAuthorizationAsked()
+        
+        XCTAssertTrue(result)
     }
 
     func test_isNotificationAuthorizationAsked_stateNotAuthorized() {
-        let completionExpectation = expectation(description: "completion")
+        mockExposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
 
-        mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .notAuthorized))
-
-        let completion: (Bool) -> () = { wasAsked in
-            XCTAssertFalse(wasAsked)
-            completionExpectation.fulfill()
-        }
-
-        sut.isNotificationAuthorizationAsked(completion)
-
-        waitForExpectations(timeout: 2.0, handler: nil)
+        let result = sut.isNotificationAuthorizationAsked()
+        
+        XCTAssertFalse(result)
     }
 
     func test_isNotificationAuthorizationAsked_stateInactiveDisabled() {
-        let completionExpectation = expectation(description: "completion")
+        
+        mockExposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.disabled))
 
-        mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .inactive(.disabled)))
-
-        let completion: (Bool) -> () = { wasAsked in
-            XCTAssertFalse(wasAsked)
-            completionExpectation.fulfill()
-        }
-
-        sut.isNotificationAuthorizationAsked(completion)
-
-        waitForExpectations(timeout: 2.0, handler: nil)
+        let result = sut.isNotificationAuthorizationAsked()
+        
+        XCTAssertFalse(result)
     }
     
     func test_isBluetoothEnabled_withBluetoothOn() {

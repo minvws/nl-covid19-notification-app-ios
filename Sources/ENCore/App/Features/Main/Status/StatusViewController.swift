@@ -117,6 +117,8 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
                 self?.refreshCurrentState()
             }
         }).disposed(by: disposeBag)
+        
+        refreshCurrentState()
     }
 
     private func refreshCurrentState() {

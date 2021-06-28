@@ -21,11 +21,18 @@ class ExposureStateStreamTests: TestCase {
     func test_update_shouldUpdateState() {
         // Arrange
         let subscriptionCallsExpectation = expectation(description: "subscriptionCalled")
-        subscriptionCallsExpectation.expectedFulfillmentCount = 1
+        subscriptionCallsExpectation.expectedFulfillmentCount = 2
         
         sut.exposureState.subscribe { state in
-            XCTAssertEqual(state.element?.activeState, .active)
-            XCTAssertEqual(state.element?.notifiedState, .notNotified)
+            // initial state
+            if state.element?.activeState == .notAuthorized {
+                XCTAssertEqual(state.element?.notifiedState, .notNotified)
+            }
+            
+            // updated state
+            if state.element?.activeState == .active {
+                XCTAssertEqual(state.element?.notifiedState, .notNotified)
+            }
             subscriptionCallsExpectation.fulfill()
         }.disposed(by: disposeBag)
         
@@ -39,7 +46,7 @@ class ExposureStateStreamTests: TestCase {
     func test_update_shouldUpdateCurrentExposureState() {
         // Arrange
         let subscriptionCallsExpectation = expectation(description: "subscriptionCalled")
-        subscriptionCallsExpectation.expectedFulfillmentCount = 1
+        subscriptionCallsExpectation.expectedFulfillmentCount = 2
         
         sut.exposureState.subscribe { state in
             subscriptionCallsExpectation.fulfill()
@@ -57,7 +64,7 @@ class ExposureStateStreamTests: TestCase {
     func test_update_shouldOnlyStreamDistinctValues() {
 
         let subscriptionCallsExpectation = expectation(description: "subscriptionCalled")
-        subscriptionCallsExpectation.expectedFulfillmentCount = 2
+        subscriptionCallsExpectation.expectedFulfillmentCount = 3
         var lastActiveState: ExposureActiveState?
 
         sut.exposureState.subscribe { state in
