@@ -93,10 +93,10 @@ private final class PauseConfirmationView: View {
     }()
 
     lazy var descriptionLabel: Label = {
-        let label = Label()
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
+        let label = Label(frame: .zero)
+        label.font = theme.fonts.body
         label.text = .moreInformationSettingsPauseDescription
+        label.numberOfLines = 0
         return label
     }()
 

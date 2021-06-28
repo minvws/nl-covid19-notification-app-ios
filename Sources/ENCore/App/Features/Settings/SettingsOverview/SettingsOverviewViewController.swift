@@ -164,6 +164,7 @@ private final class SettingsView: View {
 
     private lazy var pauseAppDescriptionLabel: Label = {
         let label = Label()
+        label.font = theme.fonts.body
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = .moreInformationSettingsPauseDescriptionShort
@@ -211,6 +212,7 @@ private final class SettingsView: View {
 
     private lazy var mobileDataDescriptionLabel: Label = {
         let label = Label()
+        label.font = theme.fonts.body
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = .moreInformationSettingsDescription
