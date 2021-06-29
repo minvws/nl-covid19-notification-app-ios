@@ -57,8 +57,8 @@ class ExposureStateStreamTests: TestCase {
         
         // Assert
         waitForExpectations(timeout: 2, handler: nil)
-        XCTAssertEqual(sut.currentExposureState?.activeState, .active)
-        XCTAssertEqual(sut.currentExposureState?.notifiedState, .notNotified)
+        XCTAssertEqual(sut.currentExposureState.activeState, .active)
+        XCTAssertEqual(sut.currentExposureState.notifiedState, .notNotified)
     }
     
     func test_update_shouldOnlyStreamDistinctValues() {
@@ -79,6 +79,6 @@ class ExposureStateStreamTests: TestCase {
         waitForExpectations(timeout: 3, handler: nil)
 
         XCTAssertEqual(lastActiveState, .authorizationDenied)
-        XCTAssertEqual(sut.currentExposureState?.activeState, .authorizationDenied)
+        XCTAssertEqual(sut.currentExposureState.activeState, .authorizationDenied)
     }
 }

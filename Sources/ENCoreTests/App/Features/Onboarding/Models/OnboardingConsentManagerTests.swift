@@ -26,7 +26,8 @@ class OnboardingConsentManagerTests: TestCase {
         mockApplicationController = ApplicationControllingMock()
 
         mockExposureStateStream.exposureState = mockExposureState
-
+        mockExposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
+        
         sut = OnboardingConsentManager(exposureStateStream: mockExposureStateStream,
                                        exposureController: mockExposureController,
                                        userNotificationController: mockUserNotificationController,
@@ -166,6 +167,7 @@ class OnboardingConsentManagerTests: TestCase {
     func test_askEnableExposureNotifications_alreadyActive() {
         let completionExpectation = expectation(description: "completion")
 
+        mockExposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
         mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .active))
 
         let completion: (ExposureActiveState) -> () = { state in
@@ -182,6 +184,7 @@ class OnboardingConsentManagerTests: TestCase {
     func test_askEnableExposureNotifications_activatedAfterRequestingPermission() {
         let completionExpectation = expectation(description: "completion")
 
+        mockExposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.disabled))
         mockExposureState.onNext(.init(notifiedState: .notNotified, activeState: .inactive(.disabled)))
 
         let completion: (ExposureActiveState) -> () = { state in
