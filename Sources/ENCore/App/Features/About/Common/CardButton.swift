@@ -23,7 +23,7 @@ final class CardButton: Button {
         super.init(theme: theme)
 
         cardTitleLabel.text = title
-        subtitleLabel.text = subtitle
+        subtitleTextLabel.text = subtitle
 
         /// Fix for making the button accessible for voice over
         self.title = title + "\n" + subtitle
@@ -45,7 +45,7 @@ final class CardButton: Button {
     // MARK: - Private
 
     private let cardTitleLabel = Label(frame: .zero)
-    private let subtitleLabel = Label(frame: .zero)
+    private let subtitleTextLabel = Label(frame: .zero)
     private let cardImageView: UIImageView
     private let cardType: CardButton.CardType
 
@@ -53,12 +53,12 @@ final class CardButton: Button {
         cardImageView.contentMode = .scaleAspectFit
         cardTitleLabel.numberOfLines = 0
         cardTitleLabel.font = theme.fonts.title3
-        subtitleLabel.numberOfLines = 0
-        subtitleLabel.lineBreakMode = .byWordWrapping
-        subtitleLabel.font = theme.fonts.body
+        subtitleTextLabel.numberOfLines = 0
+        subtitleTextLabel.lineBreakMode = .byWordWrapping
+        subtitleTextLabel.font = theme.fonts.body
 
         addSubview(cardTitleLabel)
-        addSubview(subtitleLabel)
+        addSubview(subtitleTextLabel)
         addSubview(cardImageView)
     }
 
@@ -71,7 +71,7 @@ final class CardButton: Button {
             maker.trailing.equalTo(trailingConstraint).inset(16)
         }
 
-        subtitleLabel.snp.makeConstraints { maker in
+        subtitleTextLabel.snp.makeConstraints { maker in
             maker.top.equalTo(cardTitleLabel.snp.bottom).offset(6)
             maker.leading.equalToSuperview().inset(16)
 
@@ -94,7 +94,7 @@ final class CardButton: Button {
                 maker.trailing.equalToSuperview()
             } else {
                 maker.leading.trailing.equalToSuperview().inset(16)
-                maker.top.equalTo(subtitleLabel.snp.bottom).offset(4)
+                maker.top.equalTo(subtitleTextLabel.snp.bottom).offset(4)
 
                 // Height constraint has a sightly lower priority to prevent
                 // constraint errors during device rotation

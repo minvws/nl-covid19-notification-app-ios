@@ -396,7 +396,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_updateWhenRequired_callsDataControllerWhenActive() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
-        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             .empty()
         }
@@ -413,7 +413,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_updateWhenRequired_callsDataControllerWhenBluetoothInactive() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.bluetoothOff))
-        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             .empty()
         }
@@ -430,7 +430,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_updateWhenRequired_callsDataControllerWhenNotificationsDisabled() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .inactive(.pushNotifications))
-        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             .empty()
         }
@@ -447,7 +447,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_updateWhenRequired_doesNotCallDataControllerWhenAuthorizedDenied() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .authorizationDenied)
-        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             .empty()
         }
@@ -464,7 +464,7 @@ final class ExposureControllerTests: TestCase {
 
     func test_updateWhenRequired_doesNotCallDataControllerWhenNotAuthorized() {
         mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
-        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState!)
+        mutableStateStream.exposureState = .just(mutableStateStream.currentExposureState)
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             .empty()
         }
@@ -500,6 +500,7 @@ final class ExposureControllerTests: TestCase {
         }
 
         mutableStateStream.exposureState = .just(.init(notifiedState: .notNotified, activeState: .active))
+        mutableStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .active)
         exposureManager.authorizationStatus = .authorized
 
         let exp = expectation(description: "Wait for async")

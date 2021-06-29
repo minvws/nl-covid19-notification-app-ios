@@ -155,14 +155,14 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             ]),
             ("Exposure", [
                 DeveloperItem(title: "Change Exposure State",
-                              subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState?.activeState.asString ?? "None")",
+                              subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState.activeState.asString)",
                               action: { [weak self] in self?.changeExposureState() }),
                 DeveloperItem(title: "Trigger Exposure",
-                              subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState?.notifiedState.asString ?? "No")",
+                              subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState.notifiedState.asString)",
                               action: { [weak self] in self?.triggerExposure() }),
                 
                 DeveloperItem(title: "Trigger Exposure and Schedule Message Flow",
-                              subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState?.notifiedState.asString ?? "No")",
+                              subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState.notifiedState.asString)",
                               action: { [weak self] in self?.triggerExposureAndScheduleMessage() }),
                 DeveloperItem(title: "Upload Exposure Keys",
                               subtitle: "Upload keys after giving permission",
@@ -268,11 +268,8 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     private func updateExposureState(to: ExposureActiveState) {
         let exposureState: ExposureState
 
-        if let current = mutableExposureStateStream.currentExposureState {
-            exposureState = .init(notifiedState: current.notifiedState, activeState: to)
-        } else {
-            exposureState = .init(notifiedState: .notNotified, activeState: to)
-        }
+        let current = mutableExposureStateStream.currentExposureState
+        exposureState = .init(notifiedState: current.notifiedState, activeState: to)
 
         mutableExposureStateStream.update(state: exposureState)
         internalView.tableView.reloadData()
