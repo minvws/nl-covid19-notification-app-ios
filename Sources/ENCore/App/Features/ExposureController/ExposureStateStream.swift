@@ -47,7 +47,7 @@ protocol ExposureStateStreaming {
     var exposureState: Observable<ExposureState> { get }
 
     /// Returns the last state, if any was set
-    var currentExposureState: ExposureState? { get }
+    var currentExposureState: ExposureState { get }
 }
 
 /// @mockable(history: update = true)
@@ -65,7 +65,7 @@ final class ExposureStateStream: MutableExposureStateStreaming {
             .compactMap { $0 }
     }
 
-    var currentExposureState: ExposureState? = .init(notifiedState: .notNotified, activeState: .notAuthorized)
+    var currentExposureState: ExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
 
     // MARK: - MutableExposureStateStreaming
 

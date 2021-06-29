@@ -122,7 +122,9 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func refreshCurrentState() {
-        guard let currentState = exposureStateStream.currentExposureState, let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape else {
+        let currentState = exposureStateStream.currentExposureState
+        
+        guard let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape else {
             return
         }
         update(exposureState: currentState, isLandscape: isLandscape)

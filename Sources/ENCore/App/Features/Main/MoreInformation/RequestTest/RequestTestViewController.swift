@@ -28,7 +28,7 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
         self.dataController = dataController
 
         isExposed = false
-        if case .notified = exposureStateStream.currentExposureState?.notifiedState {
+        if case .notified = exposureStateStream.currentExposureState.notifiedState {
             isExposed = true
         }
 
