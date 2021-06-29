@@ -71,7 +71,7 @@ final class ThankYouViewControllerTests: TestCase {
         snapshots(matching: sut)
     }
     
-    func test_thankYou_snapshotStateLoading_arabic() {
+    func test_thankYou_snapshot_arabic() {
         
         LocalizationOverrides.overriddenLocalization = "ar"
         LocalizationOverrides.overriddenIsRTL = true
@@ -88,5 +88,9 @@ final class ThankYouViewControllerTests: TestCase {
                                      featureFlagController: mockFeatureFlagController)
         
         snapshots(matching: sut)
+        
+        LocalizationOverrides.overriddenLocalization = nil
+        LocalizationOverrides.overriddenIsRTL = nil
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = nil
     }
 }
