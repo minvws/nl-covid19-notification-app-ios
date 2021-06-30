@@ -35,6 +35,7 @@ enum EnableSetting {
     case enableBluetooth
     case enableLocalNotifications
     case updateOperatingSystem
+    case connectToInternet
 
     func model(theme: Theme, environmentController: EnvironmentControlling) -> EnableSettingModel {
         switch self {
@@ -50,6 +51,8 @@ enum EnableSetting {
             return EnableSettingModel.enableLocalNotifications(theme)
         case .updateOperatingSystem:
             return EnableSettingModel.updateOperatingSystem(theme)
+        case .connectToInternet:
+            return EnableSettingModel.connectToInternet(theme)
         }
     }
 }
@@ -124,7 +127,28 @@ struct EnableSettingModel {
                          actionTitle: .enableSettingsBluetoothAction)
         }
     }
+    
+    static var connectToInternet: (Theme) -> EnableSettingModel {
+        return { theme in
+            let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
+                                                                           font: theme.fonts.body,
+                                                                           textColor: .black,
+                                                                           textAlignment: Localization.isRTL ? .right : .left) }
 
+//            let step1 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow1),
+//                                          action: .custom(image: .settingsIcon, description: .enableBluetoothSettingTitleSettingRow1, showChevron: false, showSwitch: false))
+//            let step2 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow2),
+//                                          action: .custom(image: .bluetoothIcon, description: .enableBluetoothSettingTitleSettingRow2, showChevron: true, showSwitch: false))
+//            let step3 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow3),
+//                                          action: .toggle(description: .enableBluetoothSettingTitleSettingRow3))
+
+            return .init(title: .enableSettingsInternetTitle,
+                         steps: [],
+                         action: nil,
+                         actionTitle: .enableInternetOpenSettingsButton)
+        }
+    }
+    
     static var enableLocalNotifications: (Theme) -> EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,

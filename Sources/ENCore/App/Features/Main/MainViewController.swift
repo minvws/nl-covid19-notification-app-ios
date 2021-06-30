@@ -253,6 +253,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             updateWhenRequired()
         case .unpause:
             pauseController.unpauseApp()
+        case .enableInternet:
+            router?.routeToEnableSetting(.connectToInternet)
         }
     }
 

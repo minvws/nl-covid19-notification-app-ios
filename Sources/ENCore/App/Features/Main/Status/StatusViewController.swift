@@ -20,7 +20,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
     private let dataController: ExposureDataControlling
-
+    private let cellularDataStream: CellularDataStreaming
     private let pushNotificationStream: PushNotificationStreaming
 
     private weak var listener: StatusListener?
@@ -43,11 +43,13 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?,
          dataController: ExposureDataControlling,
-         pushNotificationStream: PushNotificationStreaming) {
+         pushNotificationStream: PushNotificationStreaming,
+         cellularDataStream: CellularDataStreaming) {
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
         self.dataController = dataController
         self.pushNotificationStream = pushNotificationStream
+        self.cellularDataStream = cellularDataStream
         self.listener = listener
         self.topAnchor = topAnchor
 
@@ -117,6 +119,10 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
                 self?.refreshCurrentState()
             }
         }).disposed(by: disposeBag)
+        
+        cellularDataStream.restrictedState.subscribe(onNext: { [weak self] _ in
+            self?.refreshCurrentState()
+        }).disposed(by: disposeBag)
     }
 
     private func refreshCurrentState() {
@@ -175,7 +181,13 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             statusViewModel = StatusViewModel.inactiveWithNotified(date: date)
             cardTypes.append(reason.cardType(listener: listener))
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
-            statusViewModel = .inactiveTryAgainWithNotNotified
+            
+            let cellularState = (try? cellularDataStream.restrictedState.value()) ?? .restrictedStateUnknown
+            if cellularState == .restricted {
+                statusViewModel = .internetInactiveWithNotNotified(theme: theme)
+            } else {
+                statusViewModel = .inactiveTryAgainWithNotNotified
+            }
 
         case let (.inactive(reason), .notNotified) where reason == .bluetoothOff:
             statusViewModel = .bluetoothInactiveWithNotNotified(theme: theme)

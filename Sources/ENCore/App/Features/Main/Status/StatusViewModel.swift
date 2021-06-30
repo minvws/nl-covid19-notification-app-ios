@@ -29,6 +29,7 @@ struct StatusViewButtonModel {
         case explainRisk
         case removeNotification(String)
         case updateAppSettings
+        case enableInternet
         case tryAgain
         case unpause
     }
@@ -59,6 +60,12 @@ struct StatusViewButtonModel {
         title: .statusAppStateCardBluetoothButton,
         style: .primary,
         action: .updateAppSettings
+    )
+    
+    static let enableInternet = StatusViewButtonModel(
+        title: .statusAppStateCardSolveProblemButton,
+        style: .primary,
+        action: .enableInternet
     )
 
     static let unpause = StatusViewButtonModel(
@@ -213,6 +220,21 @@ struct StatusViewModel {
             icon: .inactive,
             title: .init(string: .statusAppStatePartlyInactiveTitle),
             description: .makeFromHtml(text: .statusAppStatePartlyInactiveBluetoothDescription, font: theme.fonts.body, textColor: .black, textAlignment: .center),
+            buttons: [.enableBluetooth],
+            footer: nil,
+            shouldShowHideMessage: false,
+            gradientColor: \.lightOrange,
+            showScene: false,
+            showClouds: false,
+            showEmitter: true
+        )
+    }
+    
+    static func internetInactiveWithNotNotified(theme: Theme) -> StatusViewModel {
+        StatusViewModel(
+            icon: .inactive,
+            title: .init(string: .statusAppStatePartlyInactiveTitle),
+            description: .makeFromHtml(text: .statusAppStatePartlyInactiveInternetDescription, font: theme.fonts.body, textColor: .black, textAlignment: .center),
             buttons: [.enableBluetooth],
             footer: nil,
             shouldShowHideMessage: false,
