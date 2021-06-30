@@ -114,13 +114,14 @@ private final class ThankYouView: View {
         footer.append(NSAttributedString.make(
             text: String(format: .moreInformationThankYouSectionFooter, ""),
             font: theme.fonts.bodyBold,
+            textAlignment: Localization.isRTL ? .right : .left,
             lineHeight: 5))
 
         footer.append(
             NSAttributedString.make(
                 text: String(exposureConfirmationKey.key.asGGDkey),
                 font: theme.fonts.body,
-                letterSpacing: 5))
+                textAlignment: Localization.isRTL ? .right : .left))
 
         var string = [NSAttributedString]()
         string.append(header)
@@ -145,10 +146,13 @@ private final class ThankYouView: View {
     }
 
     private func info() -> View {
-        let string = NSAttributedString.make(text: featureFlagController.isFeatureFlagEnabled(feature: .independentKeySharing)
-                                                ? .moreInformationKeySharingThankYouConfirmation
-                                                : .moreInformationThankYouInfo,
-                                             font: theme.fonts.subhead, textColor: theme.colors.gray)
+        let string = NSAttributedString.make(
+            text: featureFlagController.isFeatureFlagEnabled(feature: .independentKeySharing)
+                ? .moreInformationKeySharingThankYouConfirmation
+                : .moreInformationThankYouInfo,
+            font: theme.fonts.subhead,
+            textColor: theme.colors.gray,
+            textAlignment: Localization.isRTL ? .right : .left)
         return InfoSectionCalloutView(theme: theme, content: string)
     }
 }

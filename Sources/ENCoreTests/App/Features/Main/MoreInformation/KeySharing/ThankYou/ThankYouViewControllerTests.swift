@@ -70,4 +70,27 @@ final class ThankYouViewControllerTests: TestCase {
         
         snapshots(matching: sut)
     }
+    
+    func test_thankYou_snapshot_arabic() {
+        
+        LocalizationOverrides.overriddenLocalization = "ar"
+        LocalizationOverrides.overriddenIsRTL = true
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = "ar"
+        
+        mockFeatureFlagController.isFeatureFlagEnabledHandler = { feature in
+            return feature != .independentKeySharing
+        }
+        
+        sut = ThankYouViewController(listener: mockListener,
+                                     theme: theme,
+                                     exposureConfirmationKey: labConfirmationKey,
+                                     interfaceOrientationStream: mockInterfaceOrientationStream,
+                                     featureFlagController: mockFeatureFlagController)
+        
+        snapshots(matching: sut)
+        
+        LocalizationOverrides.overriddenLocalization = nil
+        LocalizationOverrides.overriddenIsRTL = nil
+        LocalizationOverrides.overriddenCurrentLanguageIdentifier = nil
+    }
 }
