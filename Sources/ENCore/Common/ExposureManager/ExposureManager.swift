@@ -19,8 +19,10 @@ import Foundation
 #endif
 
 final class ExposureManager: ExposureManaging, Logging {
-    init(manager: ENManaging) {
+    init(manager: ENManaging,
+         environmentController: EnvironmentControlling) {
         self.manager = manager
+        self.environmentController = environmentController
     }
 
     deinit {
@@ -122,7 +124,7 @@ final class ExposureManager: ExposureManaging, Logging {
             assert(Thread.isMainThread)
         #endif
 
-        manager.getDiagnosisKeys(completionHandler:) { keys, error in
+        manager.getDiagnosisKeys(completionHandler:) { [weak self] keys, error in
             if let error = error.map({ $0.asExposureManagerError }) {
                 completion(.failure(error))
                 return
@@ -130,9 +132,9 @@ final class ExposureManager: ExposureManaging, Logging {
 
             guard let keys = keys else {
                 // call is success, no keys
-                if let ENAPIVersion = Bundle.main.object(forInfoDictionaryKey: "ENAPIVersion") as? Int,
+                if let ENAPIVersion = self?.environmentController.bundleENAPIVersion,
                     ENAPIVersion == 2 {
-                    self.logWarning("ExposureManager - `getDiagnosisKeys` - Using ENAPIVersion 2 but no keys available")
+                    self?.logWarning("ExposureManager - `getDiagnosisKeys` - Using ENAPIVersion 2 but no keys available")
                 }
                 completion(.success([]))
                 return
@@ -169,18 +171,11 @@ final class ExposureManager: ExposureManaging, Logging {
         let authorisationStatus = type(of: manager).authorizationStatus
         let result: ExposureManagerStatus
 
-        // iOS 14 returns unknown as authorizationStatus always
-        let isiOS14OrHigher: Bool
-        if #available(iOS 14, *) {
-            isiOS14OrHigher = true
-        } else {
-            isiOS14OrHigher = false
-        }
-
         logDebug("`getExposureNotificationStatus`. authorisationStatus: \(authorisationStatus.rawValue). exposureNotificationStatus: \(manager.exposureNotificationStatus.rawValue)")
 
         switch authorisationStatus {
-        case .unknown where isiOS14OrHigher:
+        case .unknown where environmentController.isiOS14orHigher:
+            // iOS 14 returns unknown as authorizationStatus always
             fallthrough
         case .authorized:
             switch manager.exposureNotificationStatus {
@@ -216,6 +211,7 @@ final class ExposureManager: ExposureManaging, Logging {
     }
 
     private let manager: ENManaging
+    private let environmentController: EnvironmentControlling
 }
 
 extension Error {
