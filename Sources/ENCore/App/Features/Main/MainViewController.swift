@@ -296,9 +296,8 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     }
 
     private func handleUpdateAppSettings() {
-        guard let exposureState = exposureStateStream.currentExposureState else {
-            return logError("Exposure State is `nil`")
-        }
+        let exposureState = exposureStateStream.currentExposureState
+        
         switch exposureState.activeState {
         case .authorizationDenied:
             router?.routeToEnableSetting(.enableExposureNotifications)
