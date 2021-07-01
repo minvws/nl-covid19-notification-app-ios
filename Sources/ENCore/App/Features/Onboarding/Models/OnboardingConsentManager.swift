@@ -20,7 +20,7 @@ protocol OnboardingConsentManaging {
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
     func getAppStoreUrl(_ completion: @escaping ((String?) -> ()))
-    func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ())
+    func isNotificationAuthorizationAsked() -> Bool
     func didCompleteConsent()
 }
 
@@ -123,6 +123,8 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                     }
                 })
                 .disposed(by: disposeBag)
+
+            
         case .bluetooth:
             completion(.share)
         case .share:
@@ -130,30 +132,27 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
         }
     }
 
-    func isNotificationAuthorizationAsked(_ completion: @escaping (Bool) -> ()) {
-        exposureStateStream
-            .exposureState
-            .take(1)
-            .subscribe(onNext: { value in
-                if value.activeState == .notAuthorized || value.activeState == .inactive(.disabled) {
-                    completion(false)
-                } else {
-                    completion(true)
-                }
-            })
-            .disposed(by: disposeBag)
+    func isNotificationAuthorizationAsked() -> Bool {
+        
+        let currentState = exposureStateStream.currentExposureState
+        
+        if ![ExposureActiveState.notAuthorized, ExposureActiveState.inactive(.disabled)].contains(currentState.activeState) {
+            return true
+        }
+            
+        return false
     }
 
     func isBluetoothEnabled(_ completion: @escaping (Bool) -> ()) {
-        if let exposureActiveState = exposureStateStream.currentExposureState?.activeState {
-            completion(exposureActiveState == .inactive(.bluetoothOff) ? false : true)
-        }
+        let exposureActiveState = exposureStateStream.currentExposureState.activeState
+        completion(exposureActiveState == .inactive(.bluetoothOff) ? false : true)
     }
 
     func askEnableExposureNotifications(_ completion: @escaping ((_ exposureActiveState: ExposureActiveState) -> ())) {
         logDebug("`askEnableExposureNotifications` started")
-        if let exposureActiveState = exposureStateStream.currentExposureState?.activeState,
-            exposureActiveState != .notAuthorized, exposureActiveState != .inactive(.disabled) {
+        let exposureActiveState = exposureStateStream.currentExposureState.activeState
+        
+        if exposureActiveState != .notAuthorized, exposureActiveState != .inactive(.disabled) {
             logDebug("`askEnableExposureNotifications` already authorised")
             // already authorized
             completion(exposureActiveState)

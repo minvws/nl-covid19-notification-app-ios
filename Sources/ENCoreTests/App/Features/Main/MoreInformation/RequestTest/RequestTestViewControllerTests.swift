@@ -25,7 +25,8 @@ final class RequestTestViewControllerTests: TestCase {
         recordSnapshots = false
 
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
-
+        exposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
+        
         datacontroller.getAppointmentPhoneNumberHandler = {
             return .just("0800-1234 (exposed)")
         }

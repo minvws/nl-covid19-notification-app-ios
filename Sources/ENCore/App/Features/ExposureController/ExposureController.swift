@@ -362,7 +362,7 @@ final class ExposureController: ExposureControlling, Logging {
             return .error(ExposureDataError.notAuthorized)
         }
 
-        logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState?.activeState)), activated before: \(isActivated)")
+        logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState.activeState)), activated before: \(isActivated)")
 
         let sequence: [Completable] = [
             self.processExpiredUploadRequests(),
