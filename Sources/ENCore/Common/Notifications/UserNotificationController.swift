@@ -9,7 +9,7 @@ import Foundation
 import NotificationCenter
 import ENFoundation
 
-/// @mockable(history:removeDeliveredNotifications = true;removePendingNotificationRequests=true)
+/// @mockable(history:removeDeliveredNotifications = true;removePendingNotificationRequests=true;displayAppUpdateRequiredNotification=true)
 protocol UserNotificationControlling {
     
     // Authorization and Permissions

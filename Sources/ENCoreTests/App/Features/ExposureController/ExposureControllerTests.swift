@@ -64,6 +64,23 @@ final class ExposureControllerTests: TestCase {
 
         XCTAssertEqual(exposureManager.activateCallCount, 1)
     }
+    
+    func test_activate_shouldNotCallActivateIfPaused() {
+        let completionExpectation = expectation(description: "completionExpectation")
+        exposureManager.activateHandler = { completion in completion(.active) }
+        dataController.isAppPaused = true
+        
+        XCTAssertEqual(exposureManager.activateCallCount, 0)
+
+        controller.activate()
+            .subscribe(onCompleted: {
+                XCTAssertEqual(self.exposureManager.activateCallCount, 0)
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations()
+    }
 
     func test_activate_shouldNotBePerformedTwice() {
         exposureManager.activateHandler = { completion in completion(.active) }
@@ -160,6 +177,62 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
         XCTAssertNotNil(receivedEnabled)
         XCTAssertTrue(receivedEnabled)
+    }
+    
+    func test_requestExposureNotificationPermission_errorShouldReturnError() {
+        let completionExpectation = expectation(description: "completionExpectation")
+        exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in
+            completion(.failure(.disabled))
+        }
+
+        XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 0)
+        XCTAssertEqual(mutableStateStream.updateCallCount, 0)
+
+        controller.requestExposureNotificationPermission { (error) in
+            XCTAssertEqual(error, .disabled)
+            completionExpectation.fulfill()
+        }
+
+        waitForExpectations()
+        XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
+    }
+    
+    func test_fetchAndProcessExposureKeySets() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in
+            .empty()
+        }
+        
+        // Act
+        controller.fetchAndProcessExposureKeySets()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations()
+    }
+    
+    func test_fetchAndProcessExposureKeySets_withError() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        
+        dataController.fetchAndProcessExposureKeySetsHandler = { _ in
+            .error(ExposureDataError.internalError)
+        }
+        
+        // Act
+        controller.fetchAndProcessExposureKeySets()
+            .subscribe(onError: { _ in
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations()
     }
 
     func test_requestPushNotificationPermission() {
@@ -600,6 +673,50 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(userNotificationController.displayNotActiveNotificationCallCount, 1)
     }
 
+    func test_appShouldUpdateCheck() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        
+        dataController.getAppVersionInformationHandler = {
+            return .just(.init(minimumVersion: "2.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://appStoreURL.com"))
+        }
+        
+        // Act
+        controller
+            .appShouldUpdateCheck()
+            .subscribe(onSuccess: { (appUpdateInformation) in
+                // Assert
+                XCTAssertTrue(appUpdateInformation.shouldUpdate)
+                XCTAssertEqual(appUpdateInformation.versionInformation?.appStoreURL, "http://appStoreURL.com")
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        waitForExpectations()
+    }
+    
+    func test_sendNotificationIfAppShouldUpdate() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        
+        dataController.getAppVersionInformationHandler = {
+            return .just(.init(minimumVersion: "2.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://appStoreURL.com"))
+        }
+        
+        // Act
+        controller
+            .sendNotificationIfAppShouldUpdate()
+            .subscribe(onCompleted: {
+                // Assert
+                XCTAssertEqual(self.userNotificationController.displayAppUpdateRequiredNotificationCallCount, 1)
+                XCTAssertEqual(self.userNotificationController.displayAppUpdateRequiredNotificationArgValues.first, "minimumVersionMessage")
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        waitForExpectations()
+    }
+    
     func test_lastOpenedNotificationCheck_moreThan3Hours_postsNotification() {
         
         XCTAssertEqual(userNotificationController.displayExposureReminderNotificationCallCount, 0)
