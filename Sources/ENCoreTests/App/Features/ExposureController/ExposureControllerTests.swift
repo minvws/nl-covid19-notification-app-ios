@@ -703,6 +703,10 @@ final class ExposureControllerTests: TestCase {
             return .just(.init(minimumVersion: "2.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://appStoreURL.com"))
         }
         
+        userNotificationController.displayAppUpdateRequiredNotificationHandler = { _, completion in
+            completion(true)
+        }
+        
         // Act
         controller
             .sendNotificationIfAppShouldUpdate()
@@ -715,6 +719,20 @@ final class ExposureControllerTests: TestCase {
             .disposed(by: disposeBag)
         
         waitForExpectations()
+    }
+    
+    func test_updateTreatmentPerspective() {
+        // Arrange
+        XCTAssertEqual(dataController.updateTreatmentPerspectiveCallCount, 0)
+        dataController.updateTreatmentPerspectiveHandler = { return .empty() }
+        
+        // Act
+        controller.updateTreatmentPerspective()
+            .subscribe()
+            .disposed(by: disposeBag)
+        
+        // Assert
+        XCTAssertEqual(dataController.updateTreatmentPerspectiveCallCount, 1)
     }
     
     func test_lastOpenedNotificationCheck_moreThan3Hours_postsNotification() {
@@ -748,23 +766,66 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(userNotificationController.getAuthorizationStatusCallCount, 0)
         XCTAssertEqual(userNotificationController.displayExposureReminderNotificationCallCount, 0)
     }
-
+    
     func test_lastOpenedNotificationCheck_48Hours_ToDays() {
         let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
         dataController.lastExposure = ExposureReport(date: currentDate().advanced(by: -timeInterval))
-
+        
         let days = currentDate().days(sinceDate: dataController.lastExposure!.date)
-
+        
         XCTAssertEqual(days, 2)
     }
-
+    
+    func test_notifyUser24HoursNoCheckIfRequired_shouldShowNotificationAfter25Hours() {
+        // Arrange
+        let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        DateTimeTestingOverrides.overriddenCurrentDate = date
+        dataController.lastSuccessfulExposureProcessingDate = date.addingTimeInterval(.hours(-25))
+        dataController.lastLocalNotificationExposureDate = nil
+        
+        XCTAssertEqual(userNotificationController.display24HoursNoActivityNotificationCallCount, 0)
+        
+        // Act
+        controller.notifyUser24HoursNoCheckIfRequired()
+        
+        // Assert
+        XCTAssertEqual(userNotificationController.display24HoursNoActivityNotificationCallCount, 1)
+    }
+    
+    func test_notifyUser24HoursNoCheckIfRequired_shouldShowReminderNotificationAfter50Hours() {
+        // Arrange
+        let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        DateTimeTestingOverrides.overriddenCurrentDate = date
+        dataController.lastSuccessfulExposureProcessingDate = date.addingTimeInterval(.hours(-50))
+        dataController.lastLocalNotificationExposureDate = date.addingTimeInterval(.hours(-25))
+        
+        XCTAssertEqual(userNotificationController.display24HoursNoActivityNotificationCallCount, 0)
+        
+        // Act
+        controller.notifyUser24HoursNoCheckIfRequired()
+        
+        // Assert
+        XCTAssertEqual(userNotificationController.display24HoursNoActivityNotificationCallCount, 1)
+    }
+    
+    func test_updateLastExposureProcessingDateSubject() {
+        // Arrange
+        XCTAssertEqual(dataController.updateLastExposureProcessingDateSubjectCallCount, 0)
+        
+        // Act
+        controller.updateLastExposureProcessingDateSubject()
+        
+        // Assert
+        XCTAssertEqual(dataController.updateLastExposureProcessingDateSubjectCallCount, 1)
+    }
+    
     func test_getAppVersionInformation_shouldCallDataController() {
         let completionExpectation = expectation(description: "completion")
-
+        
         dataController.getAppVersionInformationHandler = {
             .just(.init(minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://www.example.com"))
         }
-
+        
         controller.getAppVersionInformation { appVersionInformation in
             XCTAssertEqual(appVersionInformation?.minimumVersion, "1.0.0")
             completionExpectation.fulfill()
