@@ -102,7 +102,7 @@ private final class MobileDataView: View {
         model.steps.forEach { model in
             stepIndex += 1
             infoView.addSections([
-                EnableSettingStepView(theme: theme, step: model, stepIndex: stepIndex)
+                EnableSettingStepView(theme: theme, step: model, stepIndex: stepIndex, inset: true)
             ])
         }
 

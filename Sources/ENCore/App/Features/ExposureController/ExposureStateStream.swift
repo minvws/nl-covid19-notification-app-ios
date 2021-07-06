@@ -37,6 +37,7 @@ enum ExposureStateInactiveState: Equatable {
     case bluetoothOff
     case pushNotifications
     case noRecentNotificationUpdates
+    case noRecentNotificationUpdatesInternetOff
     case paused(_ endDate: Date)
 }
 

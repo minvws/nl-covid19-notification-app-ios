@@ -293,7 +293,8 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             .authorizationDenied,
             .inactive(.bluetoothOff),
             .inactive(.disabled),
-            .inactive(.noRecentNotificationUpdates)
+            .inactive(.noRecentNotificationUpdates),
+            .inactive(.noRecentNotificationUpdatesInternetOff)
         ]
 
         let actionItems = options.map { (option) -> UIAlertAction in
@@ -955,6 +956,8 @@ private extension ExposureActiveState {
                 return "Inactive - Push Notifications"
             case .noRecentNotificationUpdates:
                 return "Inactive - No Recent Updates"
+            case .noRecentNotificationUpdatesInternetOff:
+                return "Inactive - No Recent Updates Due To Internet"
             }
         }
     }

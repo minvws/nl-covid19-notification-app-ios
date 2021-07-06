@@ -181,14 +181,11 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             statusViewModel = StatusViewModel.inactiveWithNotified(date: date)
             cardTypes.append(reason.cardType(listener: listener))
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
+            statusViewModel = .inactiveTryAgainWithNotNotified
             
-            let cellularState = (try? cellularDataStream.restrictedState.value()) ?? .restrictedStateUnknown
-            if cellularState == .restricted {
-                statusViewModel = .internetInactiveWithNotNotified(theme: theme)
-            } else {
-                statusViewModel = .inactiveTryAgainWithNotNotified
-            }
-
+        case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdatesInternetOff:
+            statusViewModel = .internetInactiveWithNotNotified(theme: theme)
+            
         case let (.inactive(reason), .notNotified) where reason == .bluetoothOff:
             statusViewModel = .bluetoothInactiveWithNotNotified(theme: theme)
 
@@ -488,6 +485,10 @@ private extension ExposureStateInactiveState {
         case .disabled:
             return .exposureOff
         case .noRecentNotificationUpdates:
+            return .noInternet(retryHandler: {
+                listener?.handleButtonAction(.tryAgain)
+            })
+        case .noRecentNotificationUpdatesInternetOff:
             return .noInternet(retryHandler: {
                 listener?.handleButtonAction(.tryAgain)
             })

@@ -17,13 +17,15 @@ final class ExposureController: ExposureControlling, Logging {
          dataController: ExposureDataControlling,
          networkStatusStream: NetworkStatusStreaming,
          userNotificationController: UserNotificationControlling,
-         currentAppVersion: String) {
+         currentAppVersion: String,
+         cellularDataStream: CellularDataStreaming) {
         self.mutableStateStream = mutableStateStream
         self.exposureManager = exposureManager
         self.dataController = dataController
         self.networkStatusStream = networkStatusStream
         self.userNotificationController = userNotificationController
         self.currentAppVersion = currentAppVersion
+        self.cellularDataStream = cellularDataStream
     }
 
     // MARK: - ExposureControlling
@@ -214,7 +216,7 @@ final class ExposureController: ExposureControlling, Logging {
             .take(1)
             .flatMap { (state: ExposureState) -> Completable in
                 // update when active, or when inactive due to no recent updates
-                guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications), .inactive(.bluetoothOff)].contains(state.activeState) else {
+                guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.noRecentNotificationUpdatesInternetOff), .inactive(.pushNotifications), .inactive(.bluetoothOff)].contains(state.activeState) else {
                     self.logDebug("Not updating as inactive")
                     return .empty()
                 }
@@ -576,7 +578,7 @@ final class ExposureController: ExposureControlling, Logging {
             .exposureState
             .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
             .flatMap { [weak self] (exposureState) -> Single<Bool> in
-                let stateActive = [.active, .inactive(.noRecentNotificationUpdates), .inactive(.bluetoothOff)].contains(exposureState.activeState)
+                let stateActive = [.active, .inactive(.noRecentNotificationUpdates), .inactive(.noRecentNotificationUpdatesInternetOff), .inactive(.bluetoothOff)].contains(exposureState.activeState)
                     && (self?.networkStatusStream.networkReachable == true)
                 return .just(stateActive)
             }
@@ -636,15 +638,25 @@ final class ExposureController: ExposureControlling, Logging {
         let activeState: ExposureActiveState
         let exposureManagerStatus = exposureManager.getExposureNotificationStatus()
 
+        let cellularState = (try? cellularDataStream.restrictedState.value()) ?? .restrictedStateUnknown
+        
         switch exposureManagerStatus {
         case .active where hasBeenTooLongSinceLastUpdate:
-            activeState = .inactive(.noRecentNotificationUpdates)
+            if cellularState == .restricted {
+                activeState = .inactive(.noRecentNotificationUpdatesInternetOff)
+            } else {
+                activeState = .inactive(.noRecentNotificationUpdates)
+            }
         case .active where !isPushNotificationsEnabled:
             activeState = .inactive(.pushNotifications)
         case .active:
             activeState = .active
         case .inactive(_) where hasBeenTooLongSinceLastUpdate:
-            activeState = .inactive(.noRecentNotificationUpdates)
+            if cellularState == .restricted {
+                activeState = .inactive(.noRecentNotificationUpdatesInternetOff)
+            } else {
+                activeState = .inactive(.noRecentNotificationUpdates)
+            }
         case let .inactive(error) where error == .bluetoothOff:
             activeState = .inactive(.bluetoothOff)
         case let .inactive(error) where error == .disabled || error == .restricted:
@@ -737,6 +749,7 @@ final class ExposureController: ExposureControlling, Logging {
     private var disposeBag = DisposeBag()
     private var keysetFetchProcessCompletable: Completable?
     private let networkStatusStream: NetworkStatusStreaming
+    private let cellularDataStream: CellularDataStreaming
     private var isActivated = false
     private var isPushNotificationsEnabled = false
     private let userNotificationController: UserNotificationControlling

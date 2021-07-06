@@ -624,6 +624,8 @@ extension String {
     // MARK: - Enable Settings | Internet
 
     static var enableSettingsInternetTitle: String { return Localization.string(for: "enableInternetTitle") }
+    static var enableSettingsInternetStepTitle: String { return Localization.string(for: "enableInternetStepTitle") }
+    static var enableSettingsInternetIntroduction: String { return Localization.string(for: "enableInternetDescription") }
     static var enableInternetIndexRow1: String { return Localization.string(for: "enableInternetIndexRow1") }
     static var enableInternetTitleRow1: String { return Localization.string(for: "enableInternetTitleRow1") }
     static var enableInternetSettingIndexRow2: String { return Localization.string(for: "enableInternetSettingIndexRow2") }

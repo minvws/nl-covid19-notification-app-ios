@@ -94,12 +94,37 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
 private final class EnableSettingView: View {
     private lazy var scrollView = UIScrollView()
     private lazy var titleLabel = Label()
+    private lazy var introductionLabel = Label()
+    private lazy var stepTitleLabel = Label()
+    private lazy var footerLabel = Label()
+    
     fileprivate lazy var button = Button(theme: theme)
     fileprivate lazy var navigationBar = UINavigationBar()
-
-    private var stepViews: [EnableSettingStepView] = []
+    
     private weak var listener: EnableSettingListener?
-
+    private var buttonToBottomConstraint: Constraint?
+    private var contentToBottomConstraint: Constraint?
+    
+    private var stepViews: [EnableSettingStepView] = []
+    private lazy var stepContainerView: UIStackView = {
+        let stack = UIStackView(frame: .zero)
+        stack.axis = .vertical
+        stack.spacing = 8
+        return stack
+    }()
+    
+    private lazy var stackView: UIStackView = {
+        let stack = UIStackView(frame: .zero)
+        stack.axis = .vertical
+        stack.spacing = 32
+        stack.addArrangedSubview(titleLabel)
+        stack.addArrangedSubview(introductionLabel)
+        stack.addArrangedSubview(stepTitleLabel)
+        stack.addArrangedSubview(stepContainerView)
+        stack.addArrangedSubview(footerLabel)
+        return stack
+    }()
+    
     init(theme: Theme, listener: EnableSettingListener?) {
         self.listener = listener
         super.init(theme: theme)
@@ -112,8 +137,18 @@ private final class EnableSettingView: View {
         scrollView.alwaysBounceVertical = true
 
         titleLabel.font = theme.fonts.title1
+        titleLabel.accessibilityTraits = [.header]
         titleLabel.numberOfLines = 0
-        scrollView.addSubview(titleLabel)
+        
+        introductionLabel.font = theme.fonts.body
+        introductionLabel.numberOfLines = 0
+        
+        stepTitleLabel.font = theme.fonts.title2
+        stepTitleLabel.numberOfLines = 0
+        stepTitleLabel.accessibilityTraits = [.header]
+        
+        footerLabel.font = theme.fonts.body
+        footerLabel.numberOfLines = 0
 
         let navigationItem = UINavigationItem()
         navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
@@ -122,6 +157,7 @@ private final class EnableSettingView: View {
 
         button.isHidden = true
 
+        scrollView.addSubview(stackView)
         addSubview(navigationBar)
         addSubview(scrollView)
         addSubview(button)
@@ -130,9 +166,6 @@ private final class EnableSettingView: View {
     @objc func didTapClose() {
         listener?.enableSettingRequestsDismiss(shouldDismissViewController: true)
     }
-
-    private var buttonToBottomConstraint: Constraint?
-    private var contentToBottomConstraint: Constraint?
 
     override func setupConstraints() {
         super.setupConstraints()
@@ -148,12 +181,13 @@ private final class EnableSettingView: View {
             }
         }
 
-        titleLabel.snp.makeConstraints { make in
+        stackView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(8)
-            make.leading.equalToSuperview().inset(16)
-            make.trailing.equalToSuperview().inset(32)
+            make.leading.equalToSuperview().inset(16)            
+            make.bottom.equalToSuperview().inset(32)
+            make.width.equalTo(scrollView).inset(16)
         }
-
+        
         button.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(scrollView.snp.bottom).offset(16)
@@ -170,6 +204,13 @@ private final class EnableSettingView: View {
 
     fileprivate func update(model: EnableSettingModel, actionCompletion: @escaping () -> ()) {
         titleLabel.text = model.title
+        introductionLabel.attributedText = model.introduction
+        stepTitleLabel.attributedText = model.stepTitle
+        footerLabel.attributedText = model.footer
+        
+        introductionLabel.isHidden = introductionLabel.attributedText == nil
+        stepTitleLabel.isHidden = stepTitleLabel.attributedText == nil
+        footerLabel.isHidden = footerLabel.attributedText == nil
 
         buttonToBottomConstraint?.isActive = model.action != nil
         contentToBottomConstraint?.isActive = model.action == nil
@@ -201,37 +242,8 @@ private final class EnableSettingView: View {
         }
 
         stepViews.enumerated().forEach { index, stepView in
-            scrollView.addListSubview(stepView, index: index, total: stepViews.count)
+            stepContainerView.addListSubview(stepView, index: index, total: stepViews.count)
         }
 
-        updateStepViewConstraints()
-    }
-
-    private func updateStepViewConstraints() {
-        var isFirst = true
-
-        var yAnchor: View?
-
-        stepViews.forEach { view in
-
-            view.snp.makeConstraints { make in
-                make.leading.trailing.equalToSuperview()
-                make.width.equalTo(scrollView)
-
-                if isFirst {
-                    make.top.equalTo(titleLabel.snp.bottom).offset(32)
-                } else if let yAnchor = yAnchor {
-                    make.top.equalTo(yAnchor.snp.bottom).offset(8)
-                }
-
-                // Anchor the last stepview to the bottom of the scrollview
-                if view == stepViews.last {
-                    make.bottom.equalTo(scrollView.snp.bottom).inset(32)
-                }
-            }
-
-            yAnchor = view
-            isFirst = false
-        }
     }
 }

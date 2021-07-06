@@ -235,7 +235,7 @@ struct StatusViewModel {
             icon: .inactive,
             title: .init(string: .statusAppStatePartlyInactiveTitle),
             description: .makeFromHtml(text: .statusAppStatePartlyInactiveInternetDescription, font: theme.fonts.body, textColor: .black, textAlignment: .center),
-            buttons: [.enableBluetooth],
+            buttons: [.enableInternet],
             footer: nil,
             shouldShowHideMessage: false,
             gradientColor: \.lightOrange,
