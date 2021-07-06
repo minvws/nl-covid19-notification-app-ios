@@ -132,8 +132,7 @@ final class ExposureManager: ExposureManaging, Logging {
 
             guard let keys = keys else {
                 // call is success, no keys
-                if let ENAPIVersion = self?.environmentController.bundleENAPIVersion,
-                    ENAPIVersion == 2 {
+                if self?.environmentController.bundleENAPIVersion == 2 {
                     self?.logWarning("ExposureManager - `getDiagnosisKeys` - Using ENAPIVersion 2 but no keys available")
                 }
                 completion(.success([]))
