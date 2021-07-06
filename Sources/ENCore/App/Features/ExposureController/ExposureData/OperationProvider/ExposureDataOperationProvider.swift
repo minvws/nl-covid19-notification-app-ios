@@ -57,7 +57,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                                         padding: padding)
     }
 
-    func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation {
+    func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperationProtocol {
         return ExpiredLabConfirmationNotificationDataOperation(storageController: storageController,
                                                                userNotificationController: userNotificationController)
     }
@@ -92,7 +92,7 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                        storageController: storageController)
     }
 
-    func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation {
+    func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperationProtocol {
         return RequestLabConfirmationKeyDataOperation(networkController: networkController,
                                                       storageController: storageController,
                                                       padding: padding)

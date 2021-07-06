@@ -26,7 +26,7 @@ final class ShareKeyViaPhoneViewControllerTests: TestCase {
         mockRouter = ShareKeyViaPhoneRoutingMock()
         mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
         mockExposureController = ExposureControllingMock()
-        mockExposureStateStream = ExposureStateStreamingMock(exposureState: exposureStateSubject)
+        mockExposureStateStream = ExposureStateStreamingMock(exposureState: exposureStateSubject, currentExposureState: .init(notifiedState: .notNotified, activeState: .notAuthorized))
 
         mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 

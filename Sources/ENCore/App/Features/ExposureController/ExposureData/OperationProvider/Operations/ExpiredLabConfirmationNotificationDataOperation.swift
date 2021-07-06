@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 import UserNotifications
 
+/// @mockable
 protocol ExpiredLabConfirmationNotificationDataOperationProtocol {
     func execute() -> Completable
 }

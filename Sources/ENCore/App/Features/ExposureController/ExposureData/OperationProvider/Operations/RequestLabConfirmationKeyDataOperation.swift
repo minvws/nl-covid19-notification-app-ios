@@ -20,6 +20,7 @@ extension LabConfirmationKey {
     var isValid: Bool { validUntil >= currentDate() }
 }
 
+/// @mockable
 protocol RequestLabConfirmationKeyDataOperationProtocol {
     func execute() -> Single<LabConfirmationKey>
 }

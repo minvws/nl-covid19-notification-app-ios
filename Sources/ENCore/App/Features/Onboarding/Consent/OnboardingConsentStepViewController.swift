@@ -145,21 +145,19 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     @objc private func skipStepButtonPressed() {
         if let consentStep = consentStep, consentStep.step == .en {
-            onboardingConsentManager.isNotificationAuthorizationAsked { asked in
-                if !asked {
-                    let alertController = UIAlertController(title: .consentSkipEnTitle,
-                                                            message: .consentSkipEnMessage,
-                                                            preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: .consentSkipEnDeclineButton, style: .cancel, handler: { _ in
-                        self.goToNextStepOrCloseConsent(skipCurrentStep: true)
-                    }))
-                    alertController.addAction(UIAlertAction(title: .consentSkipEnAcceptButton, style: .default, handler: { _ in
-                        self.primaryButtonPressed()
-                    }))
-                    self.present(alertController, animated: true, completion: nil)
-                } else {
+            if !onboardingConsentManager.isNotificationAuthorizationAsked() {
+                let alertController = UIAlertController(title: .consentSkipEnTitle,
+                                                        message: .consentSkipEnMessage,
+                                                        preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: .consentSkipEnDeclineButton, style: .cancel, handler: { _ in
                     self.goToNextStepOrCloseConsent(skipCurrentStep: true)
-                }
+                }))
+                alertController.addAction(UIAlertAction(title: .consentSkipEnAcceptButton, style: .default, handler: { _ in
+                    self.primaryButtonPressed()
+                }))
+                self.present(alertController, animated: true, completion: nil)
+            } else {
+                self.goToNextStepOrCloseConsent(skipCurrentStep: true)
             }
         } else {
             goToNextStepOrCloseConsent(skipCurrentStep: true)

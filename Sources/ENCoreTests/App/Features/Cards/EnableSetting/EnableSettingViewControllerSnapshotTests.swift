@@ -19,6 +19,8 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
     override func setUp() {
         super.setUp()
 
+        exposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
+        
         recordSnapshots = false
     }
 

@@ -12,14 +12,14 @@ protocol ExposureDataOperationProvider {
                                          configuration: ExposureConfiguration) -> ProcessExposureKeySetsDataOperationProtocol
 
     func processPendingLabConfirmationUploadRequestsOperation(padding: Padding) -> ProcessPendingLabConfirmationUploadRequestsDataOperationProtocol
-    func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperation
+    func expiredLabConfirmationNotificationOperation() -> ExpiredLabConfirmationNotificationDataOperationProtocol
     func requestAppConfigurationOperation(identifier: String) -> RequestAppConfigurationDataOperationProtocol
     func requestExposureConfigurationOperation(identifier: String) -> RequestExposureConfigurationDataOperationProtocol
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol
 
     var requestManifestOperation: RequestAppManifestDataOperationProtocol { get }
     var updateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveDataOperationProtocol { get }
-    func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperation
+    func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperationProtocol
 
     func uploadDiagnosisKeysOperation(diagnosisKeys: [DiagnosisKey],
                                       labConfirmationKey: LabConfirmationKey,

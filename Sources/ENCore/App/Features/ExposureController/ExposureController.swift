@@ -364,7 +364,7 @@ final class ExposureController: ExposureControlling, Logging {
             return .error(ExposureDataError.notAuthorized)
         }
 
-        logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState?.activeState)), activated before: \(isActivated)")
+        logDebug("Current exposure notification status: \(String(describing: mutableStateStream.currentExposureState.activeState)), activated before: \(isActivated)")
 
         let sequence: [Completable] = [
             self.processExpiredUploadRequests(),
@@ -525,14 +525,14 @@ final class ExposureController: ExposureControlling, Logging {
 
         func notifyUser() {
             self.userNotificationController.display24HoursNoActivityNotification { [weak self] _ in
-                self?.dataController.updateLastLocalNotificationExposureDate(Date())
+                self?.dataController.updateLastLocalNotificationExposureDate(currentDate())
             }
         }
 
         let timeInterval = TimeInterval(60 * 60 * 24) // 24 hours
         guard
             let lastSuccessfulProcessingDate = dataController.lastSuccessfulExposureProcessingDate,
-            lastSuccessfulProcessingDate.addingTimeInterval(timeInterval) < Date()
+            lastSuccessfulProcessingDate.addingTimeInterval(timeInterval) < currentDate()
         else {
             return
         }
@@ -540,7 +540,7 @@ final class ExposureController: ExposureControlling, Logging {
             // We haven't shown a notification to the user before so we should show one now
             return notifyUser()
         }
-        guard lastLocalNotificationExposureDate.addingTimeInterval(timeInterval) < Date() else {
+        guard lastLocalNotificationExposureDate.addingTimeInterval(timeInterval) < currentDate() else {
             return
         }
 

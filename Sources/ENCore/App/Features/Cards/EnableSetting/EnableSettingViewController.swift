@@ -45,7 +45,7 @@ final class EnableSettingViewController: ViewController, UIAdaptivePresentationC
             self?.listener?.enableSettingDidTriggerAction()
             })
 
-        if self.setting == .enableBluetooth && exposureStateStream.currentExposureState?.activeState == .inactive(.bluetoothOff) {
+        if self.setting == .enableBluetooth && exposureStateStream.currentExposureState.activeState == .inactive(.bluetoothOff) {
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(checkBluetoothStatus),
                                                    name: UIApplication.didBecomeActiveNotification,

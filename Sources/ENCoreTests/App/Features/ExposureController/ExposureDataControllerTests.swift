@@ -43,21 +43,27 @@ final class ExposureDataControllerTests: TestCase {
     // MARK: - Tests
 
     func test_performInitialisationTasks_firstRun_erasesStorage() {
-
+        let completionExpectation = expectation(description: "completionExpectation")
         var removedKeys: [StoreKey] = []
         mockStorageController.removeDataHandler = { key, _ in
             removedKeys.append(key as! StoreKey)
         }
 
         var receivedKey: StoreKey!
-        var receivedData: Data!
+        var receivedBool: Bool!
         mockStorageController.storeHandler = { data, key, _ in
             receivedKey = key as? StoreKey
-            receivedData = data
+                        
+            let jsonDecoder = JSONDecoder()
+            receivedBool = try! jsonDecoder.decode(Bool.self, from: data)
+            
+            completionExpectation.fulfill()
         }
 
         sut.performInitialisationTasks()
 
+        waitForExpectations()
+        
         XCTAssertEqual(mockStorageController.removeDataCallCount, 3)
         XCTAssertEqual(mockStorageController.storeCallCount, 1)
 
@@ -67,7 +73,7 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssert(removedKeysStrings.contains(ExposureDataStorageKey.pendingLabUploadRequests.asString))
 
         XCTAssertEqual(receivedKey.asString, ExposureDataStorageKey.firstRunIdentifier.asString)
-        XCTAssertEqual(receivedData, Data([116, 114, 117, 101])) // true
+        XCTAssertTrue(receivedBool)
     }
 
     func test_performInitialisationTasks_update_erasesStoredManifest() {
@@ -295,6 +301,139 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(mockRequestExposureConfigurationOperation.executeCallCount, 1)
         XCTAssertEqual(mockProcessExposureKeySetsDataOperation.executeCallCount, 1)
     }
+    
+    func test_lastExposure_shouldCallStorageController() {
+        // Arrange
+        let storageExpectation = expectation(description: "storageExpectation")
+        mockStorageController.retrieveDataHandler = { key in
+            if (key as? CodableStorageKey<ExposureReport>)?.asString == ExposureDataStorageKey.lastExposureReport.asString {
+                storageExpectation.fulfill()
+                return try! JSONEncoder().encode(ExposureReport(date: Date()))
+            }
+            return nil
+        }
+        
+        // Act
+        _ = sut.lastExposure
+        
+        // Assert
+        waitForExpectations()
+    }
+    
+    func test_lastLocalNotificationExposureDate_shouldCallStorageController() {
+        // Arrange
+        let storageExpectation = expectation(description: "storageExpectation")
+        mockStorageController.retrieveDataHandler = { key in
+            if (key as? CodableStorageKey<Date>)?.asString == ExposureDataStorageKey.lastLocalNotificationExposureDate.asString {
+                storageExpectation.fulfill()
+                return try! JSONEncoder().encode(Date())
+            }
+            return nil
+        }
+        
+        // Act
+        _ = sut.lastLocalNotificationExposureDate
+        
+        // Assert
+        waitForExpectations()
+    }
+    
+    func test_exposureFirstNotificationReceivedDate_shouldCallStorageController() {
+        // Arrange
+        let storageExpectation = expectation(description: "storageExpectation")
+        mockStorageController.retrieveDataHandler = { key in
+            if (key as? CodableStorageKey<Date>)?.asString == ExposureDataStorageKey.exposureFirstNotificationReceivedDate.asString {
+                storageExpectation.fulfill()
+                return try! JSONEncoder().encode(Date())
+            }
+            return nil
+        }
+        
+        // Act
+        _ = sut.exposureFirstNotificationReceivedDate
+        
+        // Assert
+        waitForExpectations()
+    }
+    
+    func test_lastENStatusCheckDate_shouldCallStorageController() {
+        // Arrange
+        let storageExpectation = expectation(description: "storageExpectation")
+        mockStorageController.retrieveDataHandler = { key in
+            if (key as? CodableStorageKey<Date>)?.asString == ExposureDataStorageKey.lastENStatusCheck.asString {
+                storageExpectation.fulfill()
+                return try! JSONEncoder().encode(Date())
+            }
+            return nil
+        }
+        
+        // Act
+        _ = sut.lastENStatusCheckDate
+        
+        // Assert
+        waitForExpectations()
+    }
+    
+    func test_lastAppLaunchDate_shouldCallStorageController() {
+        // Arrange
+        let storageExpectation = expectation(description: "storageExpectation")
+        mockStorageController.retrieveDataHandler = { key in
+            if (key as? CodableStorageKey<Date>)?.asString == ExposureDataStorageKey.lastAppLaunchDate.asString {
+                storageExpectation.fulfill()
+                return try! JSONEncoder().encode(Date())
+            }
+            return nil
+        }
+        
+        // Act
+        _ = sut.lastAppLaunchDate
+        
+        // Assert
+        waitForExpectations()
+    }
+    
+    func test_ignoreFirstV2Exposure_getShouldCallStorageController() {
+        // Arrange
+        let storageExpectation = expectation(description: "storageExpectation")
+        mockStorageController.retrieveDataHandler = { key in
+            if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.ignoreFirstV2Exposure.asString {
+                storageExpectation.fulfill()
+                return try! JSONEncoder().encode(true)
+            }
+            return nil
+        }
+        
+        // Act
+        let result = sut.ignoreFirstV2Exposure
+        
+        // Assert
+        waitForExpectations()
+        XCTAssertTrue(result)
+    }
+    
+    func test_setLastENStatusCheckDate_shouldCallStorageController() {
+        // Arrange
+        XCTAssertEqual(mockStorageController.storeCallCount, 0)
+        let date = currentDate()
+        
+        // Act
+        sut.setLastAppLaunchDate(date)
+        
+        // Assert
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
+    }
+    
+    func test_setLastAppLaunchDate_shouldCallStorageController() {
+        // Arrange
+        XCTAssertEqual(mockStorageController.storeCallCount, 0)
+        let date = currentDate()
+        
+        // Act
+        sut.setLastAppLaunchDate(date)
+        
+        // Assert
+        XCTAssertEqual(mockStorageController.storeCallCount, 1)
+    }
 
     func test_processPendingUploadRequests() {
         // Arrange
@@ -316,6 +455,47 @@ final class ExposureDataControllerTests: TestCase {
 
         XCTAssertEqual(mockOperationProvider.processPendingLabConfirmationUploadRequestsOperationCallCount, 1)
         XCTAssertEqual(mockProcessPendingLabConfirmationUploadRequestsOperation.executeCallCount, 1)
+    }
+    
+    func test_processExpiredUploadRequests() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        let mockOperation =  mockExpiredLabConfirmationNotificationOperation(in: mockOperationProvider)
+
+        // Act
+        sut.processExpiredUploadRequests()
+            .subscribe(onCompleted: {
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        // Assert
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertEqual(mockOperationProvider.expiredLabConfirmationNotificationOperationCallCount, 1)
+        XCTAssertEqual(mockOperation.executeCallCount, 1)
+    }
+    
+    func test_requestLabConfirmationKey() {
+        // Arrange
+        mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        let configurationOperation = mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
+        let requestLabConfirmationKeyOperation = mockRequestLabConfirmationKeyOperation(in: mockOperationProvider)
+        let completionExpectation = expectation(description: "completion")
+
+        // Act
+        sut.requestLabConfirmationKey()            
+            .subscribe(onSuccess: { _ in
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        // Assert
+        waitForExpectations(timeout: 1, handler: nil)
+
+        XCTAssertEqual(mockOperationProvider.requestLabConfirmationKeyOperationCallCount, 1)
+        XCTAssertEqual(configurationOperation.executeCallCount, 1)
+        XCTAssertEqual(requestLabConfirmationKeyOperation.executeCallCount, 1)
     }
 
     func test_updateExposureFirstNotificationReceivedDate() {
@@ -469,11 +649,10 @@ final class ExposureDataControllerTests: TestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
     
-    func test_getAppConfigFeatureFlags_shouldReturnAppConfigFromStorageController() {
+    func test_getStoredAppConfigFeatureFlags_shouldReturnAppConfigFromStorageController() {
         // Arrange
         let storageExpectation = expectation(description: "storageExpectation")
         mockStorageController.retrieveDataHandler = { key in
-            // mock the last run app version
             if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
                 storageExpectation.fulfill()
                 return try! JSONEncoder().encode(ApplicationConfiguration.testData(featureFlags: [.init(id: "someId", featureEnabled: true)]))
@@ -489,11 +668,10 @@ final class ExposureDataControllerTests: TestCase {
         XCTAssertEqual(featureFlags, [.init(id: "someId", featureEnabled: true)])
     }
     
-    func test_getAppConfigFeatureFlags_shouldReturnNil() {
+    func test_getStoredAppConfigFeatureFlags_shouldReturnNil() {
         // Arrange
         let storageExpectation = expectation(description: "storageExpectation")
         mockStorageController.retrieveDataHandler = { key in
-            // mock the last run app version
             if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
                 storageExpectation.fulfill()
                 return nil
@@ -507,6 +685,103 @@ final class ExposureDataControllerTests: TestCase {
         // Assert
         waitForExpectations()
         XCTAssertNil(featureFlags)
+    }
+    
+    func test_getStoredShareKeyURL_shouldReturnNil() {
+        // Arrange
+        mockStorageController.retrieveDataHandler = { key in
+            if (key as? CodableStorageKey<ApplicationConfiguration>)?.asString == ExposureDataStorageKey.appConfiguration.asString {
+                return try! JSONEncoder().encode(ApplicationConfiguration.testData())
+            }
+            return nil
+        }
+        
+        // Act
+        let result = sut.getStoredShareKeyURL()
+        
+        // Assert
+        XCTAssertEqual(result, "http://www.coronatest.nl")
+    }
+    
+    func test_getDecoyProbability() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
+
+        // Act
+        sut.getDecoyProbability()
+            .subscribe(onSuccess: { result in
+                XCTAssertEqual(result, 2.0)
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        // Assert
+        waitForExpectations()
+    }
+    
+    func test_getPadding() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+        mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData())
+
+        // Act
+        sut.getPadding()
+            .subscribe(onSuccess: { result in
+                XCTAssertEqual(result.maximumRequestSize, 1)
+                XCTAssertEqual(result.minimumRequestSize, 1)
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        // Assert
+        waitForExpectations()
+    }
+    
+    func test_isAppDeactivated() {
+        // Arrange
+        let manifestOperation = mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        let appConfigOperation = mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData(deactivated: true))
+        let completionExpectation = expectation(description: "completionExpectation")
+        
+        // Act
+        sut.isAppDeactivated()
+            .subscribe(onSuccess: { (result) in
+                XCTAssertTrue(result)
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations()
+        
+        XCTAssertEqual(manifestOperation.executeCallCount, 1)
+        XCTAssertEqual(appConfigOperation.executeCallCount, 1)
+    }
+    
+    func test_getAppVersionInformation() {
+        // Arrange
+        let manifestOperation = mockApplicationManifestOperation(in: mockOperationProvider, withTestData: .testData())
+        let appConfigOperation = mockApplicationConfigurationOperation(in: mockOperationProvider, withTestData: .testData(deactivated: true))
+        let completionExpectation = expectation(description: "completionExpectation")
+        
+        // Act
+        sut.getAppVersionInformation()
+            .subscribe(onSuccess: { (result) in
+                XCTAssertEqual(result.appStoreURL, "appStoreURL")
+                XCTAssertEqual(result.minimumVersion, "1.0.0")
+                XCTAssertEqual(result.minimumVersionMessage, "minimumVersionMessage")
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+        
+        // Assert
+        waitForExpectations()
+        
+        XCTAssertEqual(manifestOperation.executeCallCount, 1)
+        XCTAssertEqual(appConfigOperation.executeCallCount, 1)
     }
 
     // MARK: - Private Helper Functions
@@ -595,6 +870,41 @@ final class ExposureDataControllerTests: TestCase {
         mockOperationProvider.requestAppConfigurationOperationHandler = { _ in operationMock }
         return operationMock
     }
+    
+    @discardableResult
+    private func mockExpiredLabConfirmationNotificationOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
+                                                       andExpectation expectation: XCTestExpectation? = nil) -> ExpiredLabConfirmationNotificationDataOperationProtocolMock {
+        
+        let operationMock = ExpiredLabConfirmationNotificationDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            expectation?.fulfill()
+            return .empty()
+        }
+        mockOperationProvider.expiredLabConfirmationNotificationOperationHandler = { operationMock }
+        return operationMock
+    }
+    
+    @discardableResult
+    private func mockUploadDiagnosisKeysOperation(in mockOperationProvider: ExposureDataOperationProviderMock) -> UploadDiagnosisKeysDataOperationProtocolMock {
+        
+        let operationMock = UploadDiagnosisKeysDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            return .empty()
+        }
+        mockOperationProvider.uploadDiagnosisKeysOperationHandler = { _, _, _ in operationMock }
+        return operationMock
+    }
+    
+    @discardableResult
+    private func mockRequestLabConfirmationKeyOperation(in mockOperationProvider: ExposureDataOperationProviderMock) -> RequestLabConfirmationKeyDataOperationProtocolMock {
+        
+        let operationMock = RequestLabConfirmationKeyDataOperationProtocolMock()
+        operationMock.executeHandler = {
+            return .just(.testData())
+        }
+        mockOperationProvider.requestLabConfirmationKeyOperationHandler = { _ in operationMock }
+        return operationMock
+    }
 
     private func mockTreatmentPerspectiveOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
                                                    withTestData testData: TreatmentPerspective,
@@ -623,13 +933,19 @@ private extension ApplicationManifest {
 }
 
 private extension ApplicationConfiguration {
-    static func testData(manifestRefreshFrequency: Int = 3600, featureFlags: [ApplicationConfiguration.FeatureFlag] = []) -> ApplicationConfiguration {
-        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber", featureFlags: featureFlags, shareKeyURL: "http://www.coronatest.nl")
+    static func testData(manifestRefreshFrequency: Int = 3600, featureFlags: [ApplicationConfiguration.FeatureFlag] = [], deactivated: Bool = false) -> ApplicationConfiguration {
+        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: deactivated, appointmentPhoneNumber: "appointmentPhoneNumber", featureFlags: featureFlags, shareKeyURL: "http://www.coronatest.nl")
     }
 }
 
-private extension ExposureConfigurationMock {
+extension ExposureConfigurationMock {
     static func testData() -> ExposureConfigurationMock {
-        ExposureConfigurationMock(minimumRiskScore: 1, reportTypeWeights: [3], infectiousnessWeights: [4], attenuationBucketThresholdDb: [5], attenuationBucketWeights: [6], daysSinceExposureThreshold: 7, minimumWindowScore: 8, daysSinceOnsetToInfectiousness: [])
+        ExposureConfigurationMock(minimumRiskScore: 1, reportTypeWeights: [3, 4, 5, 6, 7], infectiousnessWeights: [4, 5, 6], attenuationBucketThresholdDb: [5], attenuationBucketWeights: [6, 7, 8, 9], daysSinceExposureThreshold: 7, minimumWindowScore: 8, daysSinceOnsetToInfectiousness: [])
+    }
+}
+
+private extension LabConfirmationKey {
+    static func testData() -> LabConfirmationKey {
+        .init(identifier: "identifier", bucketIdentifier: "bucketIdentifier".data(using: .utf8)!, confirmationKey: "confirmationKey".data(using: .utf8)!, validUntil: Date())
     }
 }
