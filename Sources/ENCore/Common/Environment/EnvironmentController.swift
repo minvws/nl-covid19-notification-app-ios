@@ -12,8 +12,10 @@ protocol EnvironmentControlling {
     var isiOS12: Bool { get }
     var isiOS13orHigher: Bool { get }
     var isiOS137orHigher: Bool { get }
+    var isiOS14orHigher: Bool { get }
     var gaenRateLimitingType: GAENRateLimitingType { get }
     var appVersion: String? { get }
+    var bundleENAPIVersion: Int? { get }
     var supportsExposureNotification: Bool { get }
     var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion { get }
     var isDebugVersion: Bool { get }
@@ -72,7 +74,15 @@ class EnvironmentController: EnvironmentControlling {
             return false
         }
     }
-
+    
+    var isiOS14orHigher: Bool {
+        if #available(iOS 14, *) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     var gaenRateLimitingType: GAENRateLimitingType {
         if maximumSupportedExposureNotificationVersion == .version1 {
             return .fileLimit
@@ -83,6 +93,10 @@ class EnvironmentController: EnvironmentControlling {
 
     var appVersion: String? {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+    
+    var bundleENAPIVersion: Int? {
+        Bundle.main.object(forInfoDictionaryKey: "ENAPIVersion") as? Int
     }
 
     var isDebugVersion: Bool {
