@@ -54,10 +54,20 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         snapshots(matching: viewController)
     }
 
-    func test_enableLocalNotifications() {
+    func test_enableLocalNotifications() {        
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableLocalNotifications,
+                                                     exposureStateStream: exposureStateStream,
+                                                     environmentController: environmentController)
+
+        snapshots(matching: viewController)
+    }
+    
+    func test_enableInternet() {
+        viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
+                                                     theme: theme,
+                                                     setting: .connectToInternet,
                                                      exposureStateStream: exposureStateStream,
                                                      environmentController: environmentController)
 

@@ -420,10 +420,12 @@ final class RootRouterTests: TestCase {
         router.didEnterForeground()
         
         DispatchQueue.global(qos: .userInitiated).async {
-            XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)
             completionExpectation.fulfill()
         }
-        waitForExpectations(timeout: 2, handler: nil)
+        
+        waitForExpectations()
+        
+        XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)
     }
 
     // MARK: - Handling Notifications

@@ -60,11 +60,7 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 
     var pauseController: PauseControlling {
         dependency.pauseController
-    }
-    
-    var cellularDataStream: CellularDataStreaming {
-        CellularDataStream()
-    }
+    }    
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
@@ -79,8 +75,7 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
             theme: dependencyProvider.dependency.theme,
             topAnchor: topAnchor,
             dataController: dependencyProvider.dataController,
-            pushNotificationStream: dependencyProvider.dependency.pushNotificationStream,
-            cellularDataStream: dependencyProvider.cellularDataStream
+            pushNotificationStream: dependencyProvider.dependency.pushNotificationStream
         )
 
         return viewController

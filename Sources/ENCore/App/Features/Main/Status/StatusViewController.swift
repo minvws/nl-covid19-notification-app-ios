@@ -20,7 +20,6 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
     private let dataController: ExposureDataControlling
-    private let cellularDataStream: CellularDataStreaming
     private let pushNotificationStream: PushNotificationStreaming
 
     private weak var listener: StatusListener?
@@ -43,13 +42,11 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?,
          dataController: ExposureDataControlling,
-         pushNotificationStream: PushNotificationStreaming,
-         cellularDataStream: CellularDataStreaming) {
+         pushNotificationStream: PushNotificationStreaming) {
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
         self.dataController = dataController
         self.pushNotificationStream = pushNotificationStream
-        self.cellularDataStream = cellularDataStream
         self.listener = listener
         self.topAnchor = topAnchor
 
@@ -118,10 +115,6 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
                 self?.logDebug("Refreshing state due to pauseEnded notification")
                 self?.refreshCurrentState()
             }
-        }).disposed(by: disposeBag)
-        
-        cellularDataStream.restrictedState.subscribe(onNext: { [weak self] _ in
-            self?.refreshCurrentState()
         }).disposed(by: disposeBag)
     }
 

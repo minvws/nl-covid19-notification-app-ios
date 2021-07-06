@@ -574,6 +574,10 @@ final class ExposureController: ExposureControlling, Logging {
     func postExposureManagerActivation() {
         logDebug("`postExposureManagerActivation`")
 
+        cellularDataStream.restrictedState.subscribe(onNext: { [weak self] _ in
+            self?.updateStatusStream()
+        }).disposed(by: disposeBag)
+        
         mutableStateStream
             .exposureState
             .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
@@ -637,7 +641,6 @@ final class ExposureController: ExposureControlling, Logging {
 
         let activeState: ExposureActiveState
         let exposureManagerStatus = exposureManager.getExposureNotificationStatus()
-
         let cellularState = (try? cellularDataStream.restrictedState.value()) ?? .restrictedStateUnknown
         
         switch exposureManagerStatus {
