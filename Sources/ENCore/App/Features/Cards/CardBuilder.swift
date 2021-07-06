@@ -13,6 +13,8 @@ enum CardType: Equatable {
     case exposureOff
     case bluetoothOff
     case noInternet(retryHandler: () -> ())
+    case internetDisconnected
+    
     case noLocalNotifications
     case paused
 
