@@ -116,7 +116,7 @@ struct Card {
                     actionTitle: action)
     }
     
-    static func internetDisconnected(theme: Theme) -> Card {
+    static func noInternetFor24Hours(theme: Theme) -> Card {
         let title: String = .statusAppStatePartlyInactiveTitle
         let content: String = .statusAppStateInactiveNotification
         let action: String = .statusAppStateCardSolveProblemButton

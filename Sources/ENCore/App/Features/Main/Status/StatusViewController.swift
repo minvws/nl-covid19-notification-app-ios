@@ -486,7 +486,7 @@ private extension ExposureStateInactiveState {
                 listener?.handleButtonAction(.tryAgain)
             })
         case .noRecentNotificationUpdatesInternetOff:
-            return .internetDisconnected
+            return .noInternetFor24Hours
         case .pushNotifications:
             return .noLocalNotifications
         }

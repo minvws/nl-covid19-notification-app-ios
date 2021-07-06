@@ -313,8 +313,8 @@ private extension CardType {
             return .exposureOff(theme: theme)
         case let .noInternet(retryHandler: retryHandler):
             return .noInternet(theme: theme, retryHandler: retryHandler)
-        case .internetDisconnected:
-            return .internetDisconnected(theme: theme)
+        case .noInternetFor24Hours:
+            return .noInternetFor24Hours(theme: theme)
         case .noLocalNotifications:
             return .noLocalNotifications(theme: theme)
         case let .notifiedMoreThanThresholdDaysAgo(date: date, explainRiskHandler: explainRiskHandler, removeNotificationHandler: removeNotificationHandler):

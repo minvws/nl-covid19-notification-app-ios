@@ -573,10 +573,6 @@ final class ExposureController: ExposureControlling, Logging {
 
     func postExposureManagerActivation() {
         logDebug("`postExposureManagerActivation`")
-
-        cellularDataStream.restrictedState.subscribe(onNext: { [weak self] _ in
-            self?.updateStatusStream()
-        }).disposed(by: disposeBag)
         
         mutableStateStream
             .exposureState
