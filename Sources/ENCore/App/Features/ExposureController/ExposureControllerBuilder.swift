@@ -199,6 +199,10 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     var exposureManager: ExposureManaging {
         return dependency.exposureManager
     }
+    
+    var cellularDataStream: CellularDataStreaming {
+        CellularDataStream()
+    }
 
     // MARK: - Private Dependencies
 
@@ -224,6 +228,7 @@ final class ExposureControllerBuilder: Builder<ExposureControllerDependency>, Ex
                                   dataController: dependencyProvider.dataController,
                                   networkStatusStream: dependencyProvider.dependency.networkStatusStream,
                                   userNotificationController: dependencyProvider.userNotificationController,
-                                  currentAppVersion: dependencyProvider.currentAppVersion)
+                                  currentAppVersion: dependencyProvider.currentAppVersion,
+                                  cellularDataStream: dependencyProvider.cellularDataStream)
     }
 }

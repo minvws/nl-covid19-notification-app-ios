@@ -60,7 +60,7 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 
     var pauseController: PauseControlling {
         dependency.pauseController
-    }
+    }    
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {

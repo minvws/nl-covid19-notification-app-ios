@@ -19,11 +19,14 @@ final class ExposureControllerTests: TestCase {
     private let dataController = ExposureDataControllingMock()
     private let userNotificationController = UserNotificationControllingMock()
     private let networkStatusStream = NetworkStatusStreamingMock()
+    private let mockCellularDataStream = CellularDataStreamingMock()
     private let currentAppVersion = "1.0"
 
     override func setUp() {
         super.setUp()
 
+        mockCellularDataStream.restrictedState = .init(value: .notRestricted)
+        
         networkStatusStream.networkReachable = true
         networkStatusStream.networkReachableStream = .just(true)
 
@@ -32,7 +35,8 @@ final class ExposureControllerTests: TestCase {
                                         dataController: dataController,
                                         networkStatusStream: networkStatusStream,
                                         userNotificationController: userNotificationController,
-                                        currentAppVersion: currentAppVersion)
+                                        currentAppVersion: currentAppVersion,
+                                        cellularDataStream: mockCellularDataStream)
 
         dataController.lastSuccessfulExposureProcessingDate = currentDate()
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in .empty() }

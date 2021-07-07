@@ -422,7 +422,8 @@ final class RootRouterTests: TestCase {
         DispatchQueue.global(qos: .userInitiated).async {
             completionExpectation.fulfill()
         }
-        waitForExpectations(timeout: 2, handler: nil)
+        
+        waitForExpectations()
         
         XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)
     }

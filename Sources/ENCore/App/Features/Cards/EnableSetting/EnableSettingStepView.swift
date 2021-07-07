@@ -16,11 +16,13 @@ final class EnableSettingStepView: View {
 
     private let step: EnableSettingStep
     private let stepIndex: Int
+    private let inset: Bool
 
-    init(theme: Theme, step: EnableSettingStep, stepIndex: Int) {
+    init(theme: Theme, step: EnableSettingStep, stepIndex: Int, inset: Bool = false) {
         self.step = step
         self.stepIndex = stepIndex
         self.actionView = step.action.map { EnableSettingActionView(theme: theme, action: $0) }
+        self.inset = inset
 
         super.init(theme: theme)
     }
@@ -52,7 +54,7 @@ final class EnableSettingStepView: View {
         super.setupConstraints()
 
         indexLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(16)
+            make.leading.equalToSuperview().inset(self.inset ? 16 : 0)
             make.top.equalToSuperview().inset(16)
         }
 
@@ -61,7 +63,7 @@ final class EnableSettingStepView: View {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(indexLabel.snp.top)
             make.leading.equalTo(indexLabel.snp.trailing).offset(8)
-            make.trailing.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview().inset(self.inset ? 16 : 0)
 
             if !hasActionView {
                 make.bottom.equalToSuperview().inset(16)
@@ -71,7 +73,7 @@ final class EnableSettingStepView: View {
         if hasActionView {
             actionView?.snp.makeConstraints { make in
                 make.top.equalTo(titleLabel.snp.bottom).offset(12)
-                make.leading.trailing.equalToSuperview().inset(16)
+                make.leading.trailing.equalToSuperview().inset(self.inset ? 16 : 0)
                 make.bottom.equalToSuperview().inset(8)
             }
         }

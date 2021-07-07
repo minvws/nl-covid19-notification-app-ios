@@ -343,11 +343,13 @@ extension String {
     static var statusAppStateInactiveNoRecentUpdatesDescription: String { return Localization.string(for: "status.appState.inactive.no_recent_updates.description") }
     static var statusAppStatePartlyInactiveTitle: String { return Localization.string(for: "status.appState.partlyinactive.title") }
     static var statusAppStatePartlyInactiveBluetoothDescription: String { return Localization.string(for: "status.appState.partlyinactive.bluetooth.description") }
+    static var statusAppStatePartlyInactiveInternetDescription: String { return Localization.string(for: "status.appState.partlyinactive.nointernet.description") }
     static var statusAppStateCardTitle: String { return Localization.string(for: "status.appState.card.title") }
     static var statusAppStateCardDescription: String { return Localization.string(for: "status.appState.card.description") }
     static var statusAppStateCardNoRecentUpdatesDescription: String { return Localization.string(for: "status.appState.card.no_recent_updates.description") }
     static var statusAppStateCardButton: String { return Localization.string(for: "status.appState.card.button") }
     static var statusAppStateCardBluetoothButton: String { return Localization.string(for: "status.appState.card.bluetooth.button") }
+    static var statusAppStateCardSolveProblemButton: String { return Localization.string(for: "status.appState.solveproblem.button") }
     static var statusAppStateCardBluetooth: String { return Localization.string(for: "status.appState.card.bluetooth") }
     static var statusAppStateCardTryAgain: String { return Localization.string(for: "status.appState.card.try_again") }
     static var statusActiveDescription: String { return Localization.string(for: "status.active.description") }
@@ -618,7 +620,20 @@ extension String {
     static var enableSettingsBluetoothStep1: String { return Localization.string(for: "enableSettings.bluetooth.step1") }
     static var enableSettingsBluetoothStep2: String { return Localization.string(for: "enableSettings.bluetooth.step2") }
     static var enableSettingsBluetoothStep2ActionTitle: String { return Localization.string(for: "enableSettings.bluetooth.step2.action.title") }
+    
+    // MARK: - Enable Settings | Internet
 
+    static var enableSettingsInternetTitle: String { return Localization.string(for: "enableInternetTitle") }
+    static var enableSettingsInternetStepTitle: String { return Localization.string(for: "enableInternetStepTitle") }
+    static var enableSettingsInternetIntroduction: String { return Localization.string(for: "enableInternetDescription") }
+    static var enableInternetIndexRow1: String { return Localization.string(for: "enableInternetIndexRow1") }
+    static var enableInternetTitleRow1: String { return Localization.string(for: "enableInternetTitleRow1") }
+    static var enableInternetSettingIndexRow2: String { return Localization.string(for: "enableInternetSettingIndexRow2") }
+    static var enableInternetSettingTitleRow2: String { return Localization.string(for: "enableInternetSettingTitleRow2") }
+    static var enableInternetSettingTitleSettingRow2: String { return Localization.string(for: "enableInternetSettingTitleSettingRow2") }
+    static var enableInternetFooter: String { return Localization.string(for: "enableInternetFooter") }
+    static var enableInternetOpenSettingsButton: String { return Localization.string(for: "enableInternetOpenSettingsButton") }
+    
     // MARK: - Enable Settings | Local Notifications
 
     static var enableSettingsLocalNotificationsTitle: String { return Localization.string(for: "enableSettings.localNotifications.title") }

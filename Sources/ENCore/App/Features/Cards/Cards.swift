@@ -115,6 +115,17 @@ struct Card {
                     action: .custom(action: retryHandler),
                     actionTitle: action)
     }
+    
+    static func noInternetFor24Hours(theme: Theme) -> Card {
+        let title: String = .statusAppStatePartlyInactiveTitle
+        let content: String = .statusAppStateInactiveNotification
+        let action: String = .statusAppStateCardSolveProblemButton
+
+        return Card(icon: .warning, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
+                    action: .openEnableSetting(.connectToInternet),
+                    actionTitle: action)
+    }
 
     static func noLocalNotifications(theme: Theme) -> Card {
         let title: String = .cardsNotificationsOffTitle
