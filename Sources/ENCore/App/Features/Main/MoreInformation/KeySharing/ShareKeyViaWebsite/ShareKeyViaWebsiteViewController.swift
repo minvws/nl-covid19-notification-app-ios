@@ -25,6 +25,8 @@ enum ShareKeyViaWebsiteState {
     /// Busy loading the labconfirmation key
     case loading
     
+    case exposureStateInactive
+    
     /// User is given the option to share the keys
     case uploadKeys(confirmationKey: ExposureConfirmationKey)
     
@@ -244,6 +246,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         switch exposureState.activeState {
         case .authorizationDenied, .notAuthorized, .inactive(.disabled):
             router?.showInactiveCard()
+            state = .exposureStateInactive
         default:
             requestLabConfirmationKey()
             router?.removeInactiveCard()
@@ -375,6 +378,21 @@ private final class ShareKeyViaWebsiteView: View {
         return view
     }()
     
+    private lazy var shareYourCodesNotPossible: InfoSectionStepView = {
+        let view = InfoSectionStepView(theme: theme,
+                            title: .moreInformationKeySharingCoronaTestStep1Title,
+                            stepImage: .moreInformationStep1,
+                            disabledStepImage: .moreInformationStep1Gray,
+                            buttonTitle: .moreInformationKeySharingCoronaTestStep1Button,
+                            disabledButtonTitle: .moreInformationKeySharingCoronaTestStep1Button,
+                            buttonActionHandler: { [weak self] in
+                                self?.listener?.didRequestShareCodes()
+                            }, isDisabled: true)
+        
+        view.buttonEnabled = false
+        return view
+    }()
+    
     
     private lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
@@ -425,13 +443,27 @@ private final class ShareKeyViaWebsiteView: View {
     override func build() {
         super.build()
         
-        infoView.addSections([
-            contentView,
-            stepStackView,
-            cardContentView
-        ])
+        updateContentView()
         
         addSubview(infoView)
+    }
+    
+    private func updateContentView() {
+        
+        infoView.removeAllSections()
+        
+        if cardContentView.subviews.isEmpty {
+            infoView.addSections([
+                contentView,
+                stepStackView
+            ])
+        } else {
+            infoView.addSections([
+                contentView,
+                cardContentView,
+                stepStackView
+            ])
+        }
     }
     
     override func setupConstraints() {
@@ -461,6 +493,9 @@ private final class ShareKeyViaWebsiteView: View {
             
             case .loading:
                 self.stepStackView.addArrangedSubview(self.shareYourCodesLoading)
+                self.controlCode.set(state: .disabled)
+            case .exposureStateInactive:
+                self.stepStackView.addArrangedSubview(self.shareYourCodesNotPossible)
                 self.controlCode.set(state: .disabled)
             case .loadingError:
                 self.stepStackView.addArrangedSubview(self.shareYourCodesError)
@@ -498,5 +533,7 @@ private final class ShareKeyViaWebsiteView: View {
                 make.trailing.leading.equalToSuperview().inset(16)
             }
         }
+        
+        updateContentView()
     }
 }
