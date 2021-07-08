@@ -14,7 +14,7 @@ import UIKit
 protocol ShareKeyViaWebsiteRouting: Routing {
     func didCompleteScreen(withKey key: ExposureConfirmationKey)
     func shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: Bool)
-    func showInactiveCard()
+    func showInactiveCard(state: ExposureActiveState)
     func removeInactiveCard()
     
     func showFAQ()
@@ -245,7 +245,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
     private func update(exposureState: ExposureState) {
         switch exposureState.activeState {
         case .authorizationDenied, .notAuthorized, .inactive(.disabled):
-            router?.showInactiveCard()
+            router?.showInactiveCard(state: exposureState.activeState)
             state = .exposureStateInactive
         default:
             requestLabConfirmationKey()
@@ -523,9 +523,11 @@ private final class ShareKeyViaWebsiteView: View {
     // MARK: - Private
     
     fileprivate func set(cardView: UIView?) {
+        
         cardContentView.subviews.forEach { $0.removeFromSuperview() }
         
         if let cardView = cardView {
+            
             cardContentView.addSubview(cardView)
             
             cardView.snp.makeConstraints { make in

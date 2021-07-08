@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import ENFoundation
 
 /// @mockable
 protocol CardViewControllable: ViewControllable, EnableSettingListener, WebviewListener {
@@ -18,12 +19,14 @@ protocol CardViewControllable: ViewControllable, EnableSettingListener, WebviewL
     func dismiss(viewController: ViewControllable)
 }
 
-final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSettable {
+final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSettable, Logging {
     init(viewController: CardViewControllable,
          enableSettingBuilder: EnableSettingBuildable,
-         webviewBuilder: WebviewBuildable) {
+         webviewBuilder: WebviewBuildable,
+         exposureController: ExposureControlling) {
         self.enableSettingBuilder = enableSettingBuilder
         self.webviewBuilder = webviewBuilder
+        self.exposureController = exposureController
 
         super.init(viewController: viewController)
 
@@ -47,6 +50,14 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
         self.webviewViewController = webviewViewController
 
         viewController.present(viewController: webviewViewController, animated: true, inNavigationController: true)
+    }
+    
+    func routeToRequestExposureNotificationPermission() {
+        exposureController.requestExposureNotificationPermission { error in
+            if let error = error {
+                self.logError("Error `requestExposureNotificationPermission`: \(error.localizedDescription)")
+            }
+        }
     }
 
     func detachEnableSetting(hideViewController: Bool) {
@@ -87,4 +98,5 @@ final class CardRouter: Router<CardViewControllable>, CardRouting, CardTypeSetta
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
+    private let exposureController: ExposureControlling
 }

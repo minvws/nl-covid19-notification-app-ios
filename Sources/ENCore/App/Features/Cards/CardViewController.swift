@@ -13,6 +13,7 @@ import UIKit
 protocol CardRouting: Routing {
     func route(to enableSetting: EnableSetting)
     func route(to url: URL)
+    func routeToRequestExposureNotificationPermission()
     func detachEnableSetting(hideViewController: Bool)
     func detachWebview(shouldDismissViewController: Bool)
 }
@@ -120,6 +121,8 @@ final class CardViewController: ViewController, CardViewControllable, Logging {
                 self.router?.route(to: url)
             case let .dismissAnnouncement(announcement):
                 self.dismissAnnouncement(announcement)
+            case .requestExposureNotificationPermission:
+                self.router?.routeToRequestExposureNotificationPermission()
             case let .custom(action: action):
                 action()
             }
@@ -311,6 +314,8 @@ private extension CardType {
             return .bluetoothOff(theme: theme)
         case .exposureOff:
             return .exposureOff(theme: theme)
+        case .notAuthorized:
+            return .notAuthorized(theme: theme)
         case let .noInternet(retryHandler: retryHandler):
             return .noInternet(theme: theme, retryHandler: retryHandler)
         case .noInternetFor24Hours:

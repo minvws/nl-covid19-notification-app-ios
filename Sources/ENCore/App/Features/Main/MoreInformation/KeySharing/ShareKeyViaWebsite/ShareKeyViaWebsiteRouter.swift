@@ -71,8 +71,9 @@ final class ShareKeyViaWebsiteRouter: Router<ShareKeyViaWebsiteViewControllable>
         viewController.present(alertController, animated: true, completion: nil)
     }
 
-    func showInactiveCard() {
-        let cardRouter = cardBuilder.build(listener: nil, types: [.exposureOff])
+    func showInactiveCard(state: ExposureActiveState) {
+        let cardTypes: [CardType] = state == .notAuthorized ? [.notAuthorized] : [.exposureOff]
+        let cardRouter = cardBuilder.build(listener: nil, types: cardTypes)
         self.cardRouter = cardRouter
 
         viewController.set(cardViewController: cardRouter.viewControllable)

@@ -55,8 +55,9 @@ final class ShareKeyViaPhoneRouter: Router<ShareKeyViaPhoneViewControllable>, Sh
         viewController.push(viewController: thankYouViewController)
     }
 
-    func showInactiveCard() {
-        let cardRouter = cardBuilder.build(listener: nil, types: [.exposureOff])
+    func showInactiveCard(state: ExposureActiveState) {
+        let cardTypes: [CardType] = state == .notAuthorized ? [.notAuthorized] : [.exposureOff]
+        let cardRouter = cardBuilder.build(listener: nil, types: cardTypes)
         self.cardRouter = cardRouter
 
         viewController.set(cardViewController: cardRouter.viewControllable)

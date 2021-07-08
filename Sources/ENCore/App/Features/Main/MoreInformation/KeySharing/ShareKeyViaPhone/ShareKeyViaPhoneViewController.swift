@@ -14,7 +14,7 @@ import UIKit
 protocol ShareKeyViaPhoneRouting: Routing {
     func didUploadCodes(withKey key: ExposureConfirmationKey)
     func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool)
-    func showInactiveCard()
+    func showInactiveCard(state: ExposureActiveState)
     func removeInactiveCard()
 
     func showFAQ()
@@ -164,7 +164,7 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     private func update(exposureState: ExposureState) {
         switch exposureState.activeState {
         case .authorizationDenied, .notAuthorized, .inactive(.disabled):
-            router?.showInactiveCard()
+            router?.showInactiveCard(state: exposureState.activeState)
         default:
             requestLabConfirmationKey()
             router?.removeInactiveCard()
