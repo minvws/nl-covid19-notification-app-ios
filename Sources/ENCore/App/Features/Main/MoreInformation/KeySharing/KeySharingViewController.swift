@@ -133,6 +133,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = .moreInformationKeySharingCoronaTestHeaderContent
+        label.font = theme.fonts.body
         return label
     }()
     
