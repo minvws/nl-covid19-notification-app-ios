@@ -96,15 +96,24 @@ private final class KeySharingView: View, MoreInformationCellListner {
     private lazy var buttonContainer: UIStackView = {
         let stack = UIStackView(frame: .zero)
         stack.axis = .vertical
-        stack.addArrangedSubview(MoreInformationCell(listener: self, theme: theme, data: MoreInformationCellViewModel(identifier: .shareKeyWebsite,
-                                                                                                             icon: .computer,
-                                                                                                             title: .moreInformationKeySharingCoronaTestOption1Title,
-                                                                                                             subtitle: .moreInformationKeySharingCoronaTestOption1Content)))
         
-        stack.addArrangedSubview(MoreInformationCell(listener: self, theme: theme, data: MoreInformationCellViewModel(identifier: .shareKeyGGD,
-                                                                                             icon: .phone,
-                                                                                             title: .moreInformationKeySharingCoronaTestOption2Title,
-                                                                                             subtitle: .moreInformationKeySharingCoronaTestOption2Content)))
+        let cells = [
+            MoreInformationCellViewModel(
+                identifier: .shareKeyWebsite,
+                icon: .computer,
+                title: .moreInformationKeySharingCoronaTestOption1Title,
+                subtitle: .moreInformationKeySharingCoronaTestOption1Content),
+            MoreInformationCellViewModel(
+                identifier: .shareKeyGGD,
+                icon: .phone,
+                title: .moreInformationKeySharingCoronaTestOption2Title,
+                subtitle: .moreInformationKeySharingCoronaTestOption2Content)
+        ]
+        
+        for (index, object) in cells.enumerated() {
+            let view = MoreInformationCell(listener: self, theme: theme, data: object)
+            stack.addListSubview(view, index: index, total: cells.count)
+        }
         
         return stack
     }()
